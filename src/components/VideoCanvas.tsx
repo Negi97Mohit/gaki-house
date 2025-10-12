@@ -20,7 +20,6 @@ import { CaptionRenderer } from "./CaptionRenderer";
 // --- ADD THIS IMPORT ---
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, LineChart, Line, PieChart, Pie, Cell, Legend } from 'recharts';
 
-
 const useFetchedData = (fetchConfig: { url: string, interval?: number } | undefined) => {
     const [jsonData, setJsonData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -178,6 +177,9 @@ interface VideoCanvasProps {
   aiButtonPosition: { x: number; y: number };
   onAiButtonPositionChange: (position: { x: number; y: number }) => void;
   onCaptionLayoutChange: (layout: { position?: { x: number; y: number }, size?: { width: number, height: number } }) => void;
+  isNeonEdgeEnabled: boolean;
+  neonIntensity: number;
+  neonColor: string;
 }
 
 const VideoPlayer: React.FC<{
@@ -211,6 +213,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     aiButtonPosition,
     onAiButtonPositionChange,
     onCaptionLayoutChange,
+    isNeonEdgeEnabled,
+    neonIntensity,
+    neonColor,
     ...rest
   } = props;
   
@@ -434,9 +439,10 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
 
   const videoFilterString = getVideoFilterStyle();
 
+
   const renderCamera = (className?: string, style?: React.CSSProperties, isPip: boolean = false) => (
     <div className={cn("w-full h-full", className, isPip && rest.cameraShape === 'circle' && 'aspect-square')} style={getCameraShapeStyle()}>
-        {(rest.backgroundEffect !== 'none' || rest.isAutoFramingEnabled) ? (
+        {(rest.backgroundEffect !== 'none' || rest.isAutoFramingEnabled || isNeonEdgeEnabled) ? ( // MODIFIED: Added isNeonEdgeEnabled here to ensure canvas is used
           <CameraRenderer 
             stream={cameraStream} 
             backgroundEffect={rest.backgroundEffect} 
@@ -446,13 +452,17 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
             trackingSpeed={rest.trackingSpeed} 
             className="w-full h-full"
             style={{ ...style, filter: videoFilterString }}
+            // --- PASS PROPS DOWN TO CAMERARENDERER ---
+            isNeonEdgeEnabled={isNeonEdgeEnabled}
+            neonIntensity={neonIntensity}
+            neonColor={neonColor}
           />
         ) : (
           <VideoPlayer stream={cameraStream} className="w-full h-full object-cover" style={{ ...style, filter: videoFilterString }} />
         )}
     </div>
   );
-
+  
   const renderScreen = (className?: string) => (
       <VideoPlayer stream={screenStream} className={cn("w-full h-full object-cover", className)} />
   );

@@ -64,6 +64,9 @@ const Index = () => {
   const [isBeautifyEnabled, setIsBeautifyEnabled] = useState(false);
   const [isLowLightEnabled, setIsLowLightEnabled] = useState(false);
   const [dynamicStyle, setDynamicStyle] = useState('none');
+  const [isNeonEdgeEnabled, setIsNeonEdgeEnabled] = useState(false);
+  const [neonIntensity, setNeonIntensity] = useState(3);
+  const [neonColor, setNeonColor] = useState('cyan');
 
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(DEFAULT_LAYOUT_STATE.mode);
   const [cameraShape, setCameraShape] = useState<CameraShape>(DEFAULT_LAYOUT_STATE.cameraShape);
@@ -253,6 +256,12 @@ const Index = () => {
           isLowLightEnabled={isLowLightEnabled} onLowLightToggle={setIsLowLightEnabled}
           videoFilter={videoFilter}
           onVideoFilterChange={setVideoFilter}
+          isNeonEdgeEnabled={isNeonEdgeEnabled}
+          onNeonEdgeToggle={setIsNeonEdgeEnabled}
+          neonIntensity={neonIntensity}
+          onNeonIntensityChange={setNeonIntensity}
+          neonColor={neonColor}
+          onNeonColorChange={setNeonColor}
       />
         <VideoCanvas
           captionsEnabled={captionsEnabled} backgroundEffect={backgroundEffect} backgroundImageUrl={backgroundImageUrl}
@@ -271,6 +280,9 @@ const Index = () => {
           zoomSensitivity={zoomSensitivity} trackingSpeed={trackingSpeed}
           isBeautifyEnabled={isBeautifyEnabled} isLowLightEnabled={isLowLightEnabled}
           layoutMode={layoutMode} cameraShape={cameraShape}
+          isNeonEdgeEnabled={isNeonEdgeEnabled}
+          neonIntensity={neonIntensity}
+          neonColor={neonColor}
           splitRatio={splitRatio} pipPosition={pipPosition} pipSize={pipSize}
           onLayoutModeChange={setLayoutMode} onCameraShapeChange={setCameraShape}
           onSplitRatioChange={setSplitRatio} onPipPositionChange={setPipPosition} onPipSizeChange={setPipSize}

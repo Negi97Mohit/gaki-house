@@ -15,6 +15,7 @@ import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { DYNAMIC_STYLE_OPTIONS } from "@/components/styles";
 import { Input } from "./ui/input"; // Import the Input component
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"; // ADDED
 
 interface LeftSidebarProps {
   style: CaptionStyle;
@@ -45,6 +46,12 @@ interface LeftSidebarProps {
   onLowLightToggle: (enabled: boolean) => void;
   videoFilter: string;
   onVideoFilterChange: (filter: string) => void;
+  isNeonEdgeEnabled: boolean;
+  onNeonEdgeToggle: (enabled: boolean) => void;
+  neonIntensity: number;
+  onNeonIntensityChange: (value: number) => void;
+  neonColor: string;
+  onNeonColorChange: (value: string) => void;
 }
 
 const MIN_WIDTH = 280;
@@ -62,6 +69,9 @@ export const LeftSidebar = ({
   isBeautifyEnabled, onBeautifyToggle,
   isLowLightEnabled, onLowLightToggle,
   videoFilter, onVideoFilterChange,
+  isNeonEdgeEnabled, onNeonEdgeToggle,
+  neonIntensity, onNeonIntensityChange,
+  neonColor, onNeonColorChange,
 }: LeftSidebarProps) => {
   const [showDebug, setShowDebug] = useState(false);
   const [filterSearch, setFilterSearch] = useState(""); // State for the filter search
@@ -266,6 +276,41 @@ export const LeftSidebar = ({
                       </div>
                     </div>
                   </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t">
+                    <Label htmlFor="neon-edge-toggle" className="font-medium">Neon Edge Filter</Label>
+                    <Switch id="neon-edge-toggle" checked={isNeonEdgeEnabled} onCheckedChange={onNeonEdgeToggle} />
+                  </div>
+                  {isNeonEdgeEnabled && (
+                    <div className="space-y-4 pl-2 pr-1 pb-2 animate-fade-in">
+                      <div className="space-y-2">
+                        <Label htmlFor="neon-intensity" className="text-sm">Intensity</Label>
+                        <Slider 
+                          id="neon-intensity" 
+                          value={[neonIntensity]} 
+                          onValueChange={([value]) => onNeonIntensityChange(value)} 
+                          min={1} max={10} step={0.5} 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="neon-color" className="text-sm">Color</Label>
+                        <Select value={neonColor} onValueChange={onNeonColorChange}>
+                          <SelectTrigger id="neon-color">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="cyan">Cyan</SelectItem>
+                            <SelectItem value="magenta">Magenta</SelectItem>
+                            <SelectItem value="green">Green</SelectItem>
+                            <SelectItem value="blue">Blue</SelectItem>
+                            <SelectItem value="red">Red</SelectItem>
+                            <SelectItem value="yellow">Yellow</SelectItem>
+                            <SelectItem value="rainbow">Rainbow</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between pt-4 border-t">
                     <Label htmlFor="auto-framing-toggle" className="font-medium">Auto-framing</Label>
                     <Switch id="auto-framing-toggle" checked={isAutoFramingEnabled} onCheckedChange={onAutoFramingChange} />
