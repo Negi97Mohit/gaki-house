@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@babel/standalone": "^7.28.4",
+    "@deepgram/sdk": "^4.11.2",
     "@hookform/resolvers": "^3.10.0",
     "@mediapipe/face_detection": "^0.4.1646425229",
     "@mediapipe/selfie_segmentation": "^0.1.1675465747",

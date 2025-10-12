@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { toast } from "sonner";
 import { cn } from "../lib/utils";
-import { useBrowserSpeech } from "../hooks/useBrowserSpeech";
+import { useDeepgramSpeech } from "../hooks/useDeepgramSpeech"; // ADD THIS LINE
 import { useVideoStreams } from "../hooks/useVideoStreams";
 import { Rnd } from 'react-rnd';
 import * as Babel from '@babel/standalone';
@@ -240,7 +240,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [interimTranscript, setInterimTranscript] = useState("");
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
 
-  const handleFinalTranscript = (text: string) => {
+  const handleFinalTranscript = useCallback((text: string) => {
     setFullTranscript(prev => (prev + " " + text).trim());
     setInterimTranscript("");
     rest.onProcessTranscript(text);
@@ -249,12 +249,13 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     transcriptTimerRef.current = setTimeout(() => {
         setFullTranscript("");
     }, 4000);
-  };
+  }, [rest.onProcessTranscript]);
 
-  const { startRecognition, stopRecognition } = useBrowserSpeech({
+  const { startRecognition, stopRecognition } = useDeepgramSpeech({
     onFinalTranscript: handleFinalTranscript,
     onPartialTranscript: setInterimTranscript,
   });
+
 
   useEffect(() => {
     if (isAudioOn) {
@@ -265,6 +266,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       setInterimTranscript("");
     }
   }, [isAudioOn, startRecognition, stopRecognition]);
+
 
   useEffect(() => {
     const getDevices = async () => {
