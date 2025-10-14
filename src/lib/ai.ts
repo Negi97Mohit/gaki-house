@@ -1,7 +1,5 @@
 // src/lib/ai.ts
 
-import { GeneratedOverlay } from "@/types/caption";
-
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -34,6 +32,7 @@ CRITICAL REQUIREMENTS:
    - Ensure all CSS is in <style> tags
    - Ensure all JS is in <script> tags
    - Make code production-ready
+   - Inside the <head> of the HTML, you MUST include a <title> tag containing a short, descriptive name for the overlay (e.g., "<title>Animated Scoreboard</title>").
 
 5. STYLING & RESPONSIVENESS:
    - Use responsive design with percentage widths and viewport units (vw, vh, %)
@@ -86,10 +85,13 @@ async function fetchWithRetry(
 
 export async function processCommandWithAgent(
   prompt: string
-): Promise<string> {
+): Promise<{ name: string; htmlContent: string }> {
   if (!API_KEY) {
     console.error("API Key Missing");
-    return `<div style="background:red;color:white;padding:1rem;border-radius:8px;font-family:system-ui;"><strong>Error:</strong> VITE_GROQ_API_KEY is missing.</div>`;
+    return {
+        name: "AI Error",
+        htmlContent: `<div style="background:red;color:white;padding:1rem;border-radius:8px;font-family:system-ui;"><strong>Error:</strong> VITE_GROQ_API_KEY is missing.</div>`
+    };
   }
 
   const systemPrompt = MASTER_PROMPT;
@@ -125,12 +127,22 @@ export async function processCommandWithAgent(
     } else if (content.includes("```")) {
       content = content.split("```")[1].split("```")[0].trim();
     }
+    
+    // Extract the title to use as the overlay name
+    let name = "AI Generated Overlay"; // Default fallback name
+    const titleMatch = content.match(/<title>(.*?)<\/title>/i);
+    if (titleMatch && titleMatch[1]) {
+        name = titleMatch[1].trim();
+    }
 
-    return content;
+    return { name, htmlContent: content };
 
   } catch (err) {
     const errorMessage = (err as Error).message || "Unknown error";
     console.error("processCommandWithAgent error:", err);
-    return `<div style="background:red;color:white;padding:1rem;border-radius:8px;font-family:system-ui;"><strong>AI Error:</strong> ${errorMessage}</div>`;
+    return {
+        name: "AI Error",
+        htmlContent: `<div style="background:red;color:white;padding:1rem;border-radius:8px;font-family:system-ui;"><strong>AI Error:</strong> ${errorMessage}</div>`
+    };
   }
 }

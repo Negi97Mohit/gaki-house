@@ -26,11 +26,12 @@ export type GeneratedLayout = {
   size: { width: number; height: number };
   zIndex: number;
 };
-
 export interface GeneratedOverlay {
   id: string;
-  htmlContent: string; // The AI-generated HTML/CSS/JS snippet
-  layout: GeneratedLayout; // We keep layout for the draggable container
+  name: string; // ADDED: For a user-friendly name
+  htmlContent: string;
+  layout: GeneratedLayout;
+  preview?: string; // ADDED: To store the image data URL
 }
 
 // --- SINGLE ACTION COMMANDS ---
