@@ -5,20 +5,58 @@ import { GeneratedOverlay } from "@/types/caption";
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-// --- MODIFIED: Removed the instruction to remember and combine prompts ---
 const MASTER_PROMPT = `You are a versatile live streamer overlay AI. The user will give you an instruction for an overlay.
 You MUST produce a FULL HTML page with <html>, <head>, <body>, <style>, and <script> sections.
 
 CRITICAL REQUIREMENTS:
-- Set body background to transparent: background: transparent !important;
-- Set html background to transparent: background: transparent !important;
-- Do NOT use white, black, or solid colors as backgrounds unless specifically requested
-- Make sure the body has no padding/margin that creates a solid background
-- Use SVG for vector graphics, Canvas for dynamic pixel animations, WebGL for 3D, and standard HTML/CSS for layouts and text.
+1. TRANSPARENCY RULES (MOST IMPORTANT):
+   - If user explicitly says "transparent background" or "transparent": ALWAYS set background: transparent !important; on BOTH html and body. DO NOT override this.
+   - NEVER add solid backgrounds, gradients, or colors to html/body when transparency is requested
+   - When transparency is requested, ensure elements inside have their own styling but the container is fully transparent
+   - If user does NOT mention transparency: You decide based on the design (decorative → transparent, functional → opaque)
 
-Do NOT include markdown fences, explanations, or comments. Only return the raw, runnable HTML code.`;
+2. TRANSPARENCY ENFORCEMENT:
+   - Search for these keywords in the prompt: "transparent", "transparent background", "overlay", "see through"
+   - If found: Set BOTH elements to transparent: html { background: transparent !important; } body { background: transparent !important; margin: 0; padding: 0; }
+   - Do NOT add any background colors or images that would block transparency
+   - All visual elements should be positioned absolutely or use flexbox/grid, NOT rely on body background
 
-// Unchanged retry logic
+3. IMPLEMENTATION:
+   - Use SVG for vector graphics (flames, particles, shapes)
+   - Use Canvas for dynamic pixel animations
+   - Use WebGL for 3D effects
+   - Use standard HTML/CSS for layouts and text
+   - For colored backgrounds: Only use when user doesn't request transparency
+
+4. CODE QUALITY:
+   - Return ONLY raw, runnable HTML code
+   - Do NOT include markdown fences, explanations, or comments
+   - Ensure all CSS is in <style> tags
+   - Ensure all JS is in <script> tags
+   - Make code production-ready
+
+5. STYLING & RESPONSIVENESS:
+   - Use responsive design with percentage widths and viewport units (vw, vh, %)
+   - Set html and body to: width: 100%; height: 100%; overflow: hidden;
+   - Use flexbox or CSS Grid for layouts that adapt to container size
+   - Use calc(), min(), max() for dynamic sizing
+   - Add smooth animations where appropriate
+   - Ensure text is readable with proper contrast
+   - Use modern CSS features (gradients, shadows, transforms)
+   - Elements should use relative sizing (%, vw, vh) NOT fixed pixel sizes
+   - Use font-size with clamp() or viewport units for scalable text
+   - Ensure all elements scale proportionally when container is resized
+
+6. RESIZE ADAPTATION:
+   - Use CSS media queries or viewport units for responsive behavior
+   - Use window.addEventListener('resize', ...) in JavaScript if dynamic recalculation is needed
+   - Canvas elements should use: context.canvas.width = window.innerWidth; context.canvas.height = window.innerHeight;
+   - SVG should use: viewBox and preserveAspectRatio="xMidYMid meet" for scaling
+   - All layouts must adapt smoothly when the overlay container is resized
+
+GOLDEN RULE: If user says "transparent background" → html and body backgrounds MUST stay transparent. No exceptions.
+RESIZE RULE: Overlays MUST be fully responsive and adapt to any container size without breaking layout.`;
+
 async function fetchWithRetry(
   url: string,
   options: RequestInit,
@@ -46,16 +84,14 @@ async function fetchWithRetry(
   throw lastError || new Error("Max retries exceeded");
 }
 
-// --- MODIFIED: Removed 'promptHistory' parameter ---
 export async function processCommandWithAgent(
   prompt: string
 ): Promise<string> {
   if (!API_KEY) {
     console.error("API Key Missing");
-    return `<div style="background:red;color:white;padding:1rem;border-radius:8px;"><strong>Error:</strong> VITE_GROQ_API_KEY is missing.</div>`;
+    return `<div style="background:red;color:white;padding:1rem;border-radius:8px;font-family:system-ui;"><strong>Error:</strong> VITE_GROQ_API_KEY is missing.</div>`;
   }
 
-  // --- MODIFIED: Simplified system prompt assignment ---
   const systemPrompt = MASTER_PROMPT;
 
   try {
@@ -77,10 +113,17 @@ export async function processCommandWithAgent(
     });
 
     const data = await response.json();
-    const content = data?.choices?.[0]?.message?.content;
+    let content = data?.choices?.[0]?.message?.content;
 
     if (!content) {
       throw new Error("Empty response from API");
+    }
+
+    // Clean up markdown if present
+    if (content.includes("```html")) {
+      content = content.split("```html")[1].split("```")[0].trim();
+    } else if (content.includes("```")) {
+      content = content.split("```")[1].split("```")[0].trim();
     }
 
     return content;
@@ -88,6 +131,6 @@ export async function processCommandWithAgent(
   } catch (err) {
     const errorMessage = (err as Error).message || "Unknown error";
     console.error("processCommandWithAgent error:", err);
-    return `<div style="background:red;color:white;padding:1rem;border-radius:8px;"><strong>AI Error:</strong> ${errorMessage}</div>`;
+    return `<div style="background:red;color:white;padding:1rem;border-radius:8px;font-family:system-ui;"><strong>AI Error:</strong> ${errorMessage}</div>`;
   }
 }
