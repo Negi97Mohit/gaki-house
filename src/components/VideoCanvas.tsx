@@ -64,11 +64,8 @@ const DraggableOverlay: React.FC<{
 }> = ({ overlay, onLayoutChange, onRemoveOverlay, onPreviewGenerated, containerSize }) => {
   const elementRef = useRef<HTMLDivElement>(null);
   
-  // Effect to generate the preview after the overlay is rendered
   useEffect(() => {
-    // Only generate if the preview is missing (i.e., it's a new overlay)
     if (overlay.preview === "" && elementRef.current) {
-      // Wait a moment for the iframe content to render before capturing
       const timer = setTimeout(async () => {
         if (elementRef.current) {
             const previewDataUrl = await generatePreview(elementRef.current);
@@ -111,8 +108,20 @@ const DraggableOverlay: React.FC<{
       className="group pointer-events-auto border-2 border-dashed border-transparent hover:border-primary transition-colors"
       style={{ zIndex: overlay.layout.zIndex }}
     >
-      <div ref={elementRef} className="w-full h-full relative overflow-hidden">
-        <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
+      {/* This is the main container. The ref for preview generation is here.
+        CRITICAL CHANGE: "overflow-hidden" is REMOVED from this outer div.
+      */}
+      <div ref={elementRef} className="w-full h-full relative">
+        {/* This new inner div now wraps ONLY the iframe renderer and is responsible 
+          for clipping the AI-generated content.
+        */}
+        <div className="w-full h-full overflow-hidden">
+            <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
+        </div>
+        
+        {/* The button is now a child of the outer div, so it will render on top 
+          and not be clipped.
+        */}
         <button
           onClick={() => onRemoveOverlay(overlay.id)}
           className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50"

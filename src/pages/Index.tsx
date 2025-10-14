@@ -5,7 +5,7 @@ import { VideoCanvas } from "@/components/VideoCanvas";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { TopToolbar } from "@/components/TopToolbar";
 import { CaptionStyle, GeneratedOverlay, LayoutMode, CameraShape, DEFAULT_LAYOUT_STATE } from "@/types/caption";
-import { processCommandWithAgent } from "@/lib/ai";
+import { processCommandWithAgent, updateOverlay } from "@/lib/ai"; // MODIFIED: Import updateOverlay
 import { toast } from "sonner";
 import { useLog } from "@/context/LogContext";
 import { useDebug } from "@/context/DebugContext";
@@ -14,16 +14,13 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 const generateOverlayId = () => `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const Index = () => {
-  // State for the new HTML overlay system
   const [activeHtmlOverlay, setActiveHtmlOverlay] = useState<GeneratedOverlay | null>(null);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const [activeOverlays, setActiveOverlays] = useState<GeneratedOverlay[]>([]);
   const [isProcessingAi, setIsProcessingAi] = useState(false);
 
-  // ADDED: State for saved overlays using localStorage for persistence
   const [savedOverlays, setSavedOverlays] = useLocalStorage<GeneratedOverlay[]>('gaki-saved-overlays', []);
 
-  // Existing states for UI controls
   const [liveCaptionStyle, setLiveCaptionStyle] = useState<React.CSSProperties>({});
   const [videoFilter, setVideoFilter] = useState<string>('none');
   const [aiButtonPosition, setAiButtonPosition] = useState({ x: 92, y: 85 });
@@ -72,38 +69,53 @@ const Index = () => {
     }));
   }, []);
 
-  // MODIFIED: This function now handles targeting existing overlays
+  // MODIFIED: This function now routes to either create or update logic
   const processTranscript = useCallback(async (transcript: string, targetId: string | null = null) => {
     if (!isAiModeEnabled || isProcessingAi) return;
 
-    const currentHistory = [...promptHistory, transcript];
-    setPromptHistory(currentHistory);
-
+    setPromptHistory(prev => [...prev, transcript]);
     log('TRANSCRIPT', 'Processing command', { transcript, targetId });
     setDebugInfo(prev => ({ ...prev, rawTranscript: transcript, aiResponse: null, error: null }));
-    const thinkingToast = toast.loading("AI is creating...");
+    const thinkingToast = toast.loading(targetId ? "AI is updating..." : "AI is creating...");
     setIsProcessingAi(true);
     
-    // If targeting an existing overlay, prepend context for the AI
-    const finalPrompt = targetId 
-      ? `CONTEXT: The user wants to modify the overlay named "${activeOverlays.find(o => o.id === targetId)?.name}".\n\nINSTRUCTION: ${transcript}` 
-      : transcript;
-
     try {
-      // MODIFIED: The AI now returns an object with a name and htmlContent
-      const { name, htmlContent } = await processCommandWithAgent(finalPrompt);
-      log('AI_RESPONSE', `Agent HTML received for "${name}"`, htmlContent);
-      
-      const newOverlay: GeneratedOverlay = {
-        id: generateOverlayId(),
-        name, // Use the name from the AI
-        htmlContent,
-        layout: { position: { x: 50, y: 50 }, size: { width: 40, height: 40 }, zIndex: 10 },
-        preview: "", // Start with an empty preview
-      };
+      if (targetId) {
+        // --- UPDATE LOGIC ---
+        const existingOverlay = activeOverlays.find(o => o.id === targetId);
+        if (!existingOverlay) {
+          throw new Error("Target overlay not found for update.");
+        }
+        
+        log('AI_REQUEST', 'Requesting overlay update', { existingHtml: existingOverlay.htmlContent, prompt: transcript });
+        const { name, htmlContent } = await updateOverlay(existingOverlay.htmlContent, transcript);
+        log('AI_RESPONSE', `Agent HTML received for update on "${name}"`);
 
-      setActiveOverlays(prev => [...prev, newOverlay]);
-      toast.success(`AI generated "${name}".`);
+        setActiveOverlays(prev =>
+          prev.map(overlay =>
+            overlay.id === targetId
+              ? { ...overlay, name, htmlContent, preview: "" } // Update name/content and reset preview
+              : overlay
+          )
+        );
+        toast.success(`Updated overlay "${name}".`);
+
+      } else {
+        // --- CREATE LOGIC ---
+        log('AI_REQUEST', 'Requesting new overlay creation', { prompt: transcript });
+        const { name, htmlContent } = await processCommandWithAgent(transcript);
+        log('AI_RESPONSE', `Agent HTML received for new overlay "${name}"`);
+
+        const newOverlay: GeneratedOverlay = {
+          id: generateOverlayId(),
+          name,
+          htmlContent,
+          layout: { position: { x: 50, y: 50 }, size: { width: 40, height: 40 }, zIndex: 10 },
+          preview: "", // Preview will be generated after render
+        };
+        setActiveOverlays(prev => [...prev, newOverlay]);
+        toast.success(`AI generated "${name}".`);
+      }
 
     } catch (error) {
       log('ERROR', 'Error in processTranscript', error);
@@ -113,7 +125,7 @@ const Index = () => {
       setIsProcessingAi(false);
       toast.dismiss(thinkingToast);
     }
-  }, [isAiModeEnabled, isProcessingAi, log, setDebugInfo, promptHistory, activeOverlays]);
+  }, [isAiModeEnabled, isProcessingAi, log, setDebugInfo, activeOverlays]);
 
   const handleLayoutChange = (id: string, key: 'position' | 'size', value: any) => {
     setActiveOverlays(prev => 
@@ -138,19 +150,26 @@ const Index = () => {
     reader.readAsDataURL(file);
   };
 
-  // ADDED: Handler to save the generated preview to the saved overlays state
   const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) => {
     if (!previewDataUrl) return;
     
-    const newOverlay = activeOverlays.find(o => o.id === id);
-    if (newOverlay && !savedOverlays.some(so => so.id === newOverlay.id)) {
-        const overlayToSave = { ...newOverlay, preview: previewDataUrl };
-        setSavedOverlays(prev => [overlayToSave, ...prev.filter(so => so.id !== overlayToSave.id)]);
-        toast.info(`"${overlayToSave.name}" saved to your overlays.`);
-    }
-  }, [activeOverlays, savedOverlays, setSavedOverlays]);
+    setActiveOverlays(prevOverlays => {
+      const overlayExistsInSaved = savedOverlays.some(so => so.id === id);
+      const activeOverlay = prevOverlays.find(o => o.id === id);
 
-  // ADDED: Handler to add a saved overlay back to the active canvas
+      if (activeOverlay && !overlayExistsInSaved) {
+        const overlayToSave = { ...activeOverlay, preview: previewDataUrl };
+        setSavedOverlays(prev => [overlayToSave, ...prev]);
+        toast.info(`"${overlayToSave.name}" saved to your overlays.`);
+      } else if (activeOverlay && overlayExistsInSaved) {
+        // Update existing saved overlay preview
+        setSavedOverlays(prev => prev.map(so => so.id === id ? {...so, preview: previewDataUrl} : so));
+      }
+      return prevOverlays;
+    });
+
+  }, [savedOverlays, setSavedOverlays]);
+
   const handleAddSavedOverlay = (overlay: GeneratedOverlay) => {
     const newActiveOverlay = {
         ...overlay,
@@ -160,7 +179,6 @@ const Index = () => {
     setActiveOverlays(prev => [...prev, newActiveOverlay]);
   };
 
-  // ADDED: Handler to delete an overlay from the saved list
   const handleDeleteSavedOverlay = (id: string) => {
     setSavedOverlays(prev => prev.filter(o => o.id !== id));
     toast.success("Saved overlay deleted.");
@@ -184,7 +202,6 @@ const Index = () => {
           backgroundEffect={backgroundEffect} onBackgroundEffectChange={setBackgroundEffect}
           backgroundImageUrl={backgroundImageUrl} onBackgroundImageUrlChange={setBackgroundImageUrl}
           isAutoFramingEnabled={isAutoFramingEnabled} onAutoFramingChange={setIsAutoFramingEnabled}
-          // UPDATED: Pass the new state and handlers
           savedOverlays={savedOverlays} 
           onAddSavedOverlay={handleAddSavedOverlay} 
           onDeleteSavedOverlay={handleDeleteSavedOverlay}
@@ -207,7 +224,6 @@ const Index = () => {
           generatedHtmlOverlay={activeHtmlOverlay} onOverlayLayoutChange={handleLayoutChange}
           onRemoveOverlay={handleRemoveOverlay}
           generatedOverlays={activeOverlays}
-          // ADDED: Pass the preview handler down
           onPreviewGenerated={handlePreviewGenerated}
           liveCaptionStyle={{ ...liveCaptionStyle, ...captionStyle }}
           dynamicStyle={dynamicStyle}
@@ -237,3 +253,4 @@ const Index = () => {
 };
 
 export default Index;
+
