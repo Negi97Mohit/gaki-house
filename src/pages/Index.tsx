@@ -5,7 +5,7 @@ import { VideoCanvas } from "@/components/VideoCanvas";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { TopToolbar } from "@/components/TopToolbar";
 import { CaptionStyle, GeneratedOverlay, LayoutMode, CameraShape, DEFAULT_LAYOUT_STATE } from "@/types/caption";
-import { processCommandWithAgent, updateOverlay } from "@/lib/ai"; // MODIFIED: Import updateOverlay
+import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
 import { useLog } from "@/context/LogContext";
 import { useDebug } from "@/context/DebugContext";
@@ -18,9 +18,7 @@ const Index = () => {
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const [activeOverlays, setActiveOverlays] = useState<GeneratedOverlay[]>([]);
   const [isProcessingAi, setIsProcessingAi] = useState(false);
-
   const [savedOverlays, setSavedOverlays] = useLocalStorage<GeneratedOverlay[]>('gaki-saved-overlays', []);
-
   const [liveCaptionStyle, setLiveCaptionStyle] = useState<React.CSSProperties>({});
   const [videoFilter, setVideoFilter] = useState<string>('none');
   const [aiButtonPosition, setAiButtonPosition] = useState({ x: 92, y: 85 });
@@ -33,8 +31,7 @@ const Index = () => {
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
   const [isAutoFramingEnabled, setIsAutoFramingEnabled] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(384);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isHoveringSidebar, setIsHoveringSidebar] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // **MODIFIED: This is the only state that matters now**
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
   const [isAudioOn, setIsAudioOn] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(false);
@@ -69,54 +66,44 @@ const Index = () => {
     }));
   }, []);
 
-  // MODIFIED: This function now routes to either create or update logic
   const processTranscript = useCallback(async (transcript: string, targetId: string | null = null) => {
     if (!isAiModeEnabled || isProcessingAi) return;
-
     setPromptHistory(prev => [...prev, transcript]);
     log('TRANSCRIPT', 'Processing command', { transcript, targetId });
     setDebugInfo(prev => ({ ...prev, rawTranscript: transcript, aiResponse: null, error: null }));
     const thinkingToast = toast.loading(targetId ? "AI is updating..." : "AI is creating...");
     setIsProcessingAi(true);
-    
     try {
       if (targetId) {
-        // --- UPDATE LOGIC ---
         const existingOverlay = activeOverlays.find(o => o.id === targetId);
         if (!existingOverlay) {
           throw new Error("Target overlay not found for update.");
         }
-        
         log('AI_REQUEST', 'Requesting overlay update', { existingHtml: existingOverlay.htmlContent, prompt: transcript });
         const { name, htmlContent } = await updateOverlay(existingOverlay.htmlContent, transcript);
         log('AI_RESPONSE', `Agent HTML received for update on "${name}"`);
-
         setActiveOverlays(prev =>
           prev.map(overlay =>
             overlay.id === targetId
-              ? { ...overlay, name, htmlContent, preview: "" } // Update name/content and reset preview
+              ? { ...overlay, name, htmlContent, preview: "" }
               : overlay
           )
         );
         toast.success(`Updated overlay "${name}".`);
-
       } else {
-        // --- CREATE LOGIC ---
         log('AI_REQUEST', 'Requesting new overlay creation', { prompt: transcript });
         const { name, htmlContent } = await processCommandWithAgent(transcript);
         log('AI_RESPONSE', `Agent HTML received for new overlay "${name}"`);
-
         const newOverlay: GeneratedOverlay = {
           id: generateOverlayId(),
           name,
           htmlContent,
           layout: { position: { x: 50, y: 50 }, size: { width: 40, height: 40 }, zIndex: 10 },
-          preview: "", // Preview will be generated after render
+          preview: "",
         };
         setActiveOverlays(prev => [...prev, newOverlay]);
         toast.success(`AI generated "${name}".`);
       }
-
     } catch (error) {
       log('ERROR', 'Error in processTranscript', error);
       setDebugInfo(prev => ({ ...prev, error: "AI command processing failed." }));
@@ -152,23 +139,21 @@ const Index = () => {
 
   const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) => {
     if (!previewDataUrl) return;
-    
-    setActiveOverlays(prevOverlays => {
-      const overlayExistsInSaved = savedOverlays.some(so => so.id === id);
-      const activeOverlay = prevOverlays.find(o => o.id === id);
-
-      if (activeOverlay && !overlayExistsInSaved) {
+    setActiveOverlays(prev => 
+      prev.map(overlay => 
+        overlay.id === id ? { ...overlay, preview: previewDataUrl } : overlay
+      )
+    );
+    const isAlreadySaved = savedOverlays.some(so => so.id === id);
+    if (!isAlreadySaved) {
+      const activeOverlay = activeOverlays.find(o => o.id === id);
+      if (activeOverlay) {
         const overlayToSave = { ...activeOverlay, preview: previewDataUrl };
         setSavedOverlays(prev => [overlayToSave, ...prev]);
         toast.info(`"${overlayToSave.name}" saved to your overlays.`);
-      } else if (activeOverlay && overlayExistsInSaved) {
-        // Update existing saved overlay preview
-        setSavedOverlays(prev => prev.map(so => so.id === id ? {...so, preview: previewDataUrl} : so));
       }
-      return prevOverlays;
-    });
-
-  }, [savedOverlays, setSavedOverlays]);
+    }
+  }, [activeOverlays, savedOverlays, setSavedOverlays]);
 
   const handleAddSavedOverlay = (overlay: GeneratedOverlay) => {
     const newActiveOverlay = {
@@ -183,8 +168,9 @@ const Index = () => {
     setSavedOverlays(prev => prev.filter(o => o.id !== id));
     toast.success("Saved overlay deleted.");
   };
-
-  const isMinimized = isSidebarCollapsed && !isHoveringSidebar;
+  
+  // **MODIFIED: Simplified calculation, no more hover logic**
+  const isMinimized = isSidebarCollapsed;
 
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
@@ -198,7 +184,9 @@ const Index = () => {
           style={captionStyle} onStyleChange={setCaptionStyle}
           dynamicStyle={dynamicStyle} onDynamicStyleChange={setDynamicStyle}
           width={isMinimized ? 64 : sidebarWidth} isCollapsed={isMinimized}
-          onResize={setSidebarWidth} onMouseEnter={() => setIsHoveringSidebar(true)} onMouseLeave={() => setIsHoveringSidebar(false)}
+          onResize={setSidebarWidth} 
+          // **MODIFIED: Removed onMouseEnter and onMouseLeave**
+          onExpand={() => setIsSidebarCollapsed(false)} // **ADDED: Pass the expand function**
           backgroundEffect={backgroundEffect} onBackgroundEffectChange={setBackgroundEffect}
           backgroundImageUrl={backgroundImageUrl} onBackgroundImageUrlChange={setBackgroundImageUrl}
           isAutoFramingEnabled={isAutoFramingEnabled} onAutoFramingChange={setIsAutoFramingEnabled}
@@ -253,4 +241,3 @@ const Index = () => {
 };
 
 export default Index;
-

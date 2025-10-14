@@ -214,6 +214,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [pipContent, setPipContent] = useState<'camera' | 'screen'>('camera');
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const [isControlsVisible, setIsControlsVisible] = useState(true);
+  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
@@ -290,6 +292,41 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     resizeObserver.observe(container);
     return () => resizeObserver.disconnect();
   }, []);
+  // ADD THIS ENTIRE useEffect BLOCK
+  useEffect(() => {
+    const container = canvasContainerRef.current;
+    if (!container) return;
+
+    const handleActivity = () => {
+      // Clear any existing timer to reset the countdown
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+      
+      // Make the controls visible
+      setIsControlsVisible(true);
+      
+      // Set a new timer to hide the controls after 3 seconds
+      inactivityTimerRef.current = setTimeout(() => {
+        setIsControlsVisible(false);
+      }, 3000);
+    };
+
+    // Listen for mouse movement
+    container.addEventListener('mousemove', handleActivity);
+    
+    // Initial call to show controls and start the timer
+    handleActivity();
+
+    // Cleanup when the component unmounts
+    return () => {
+      container.removeEventListener('mousemove', handleActivity);
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+    };
+  }, []); // This effect runs only once
+
 
     const handleStartRecording = () => {
         const outputStream = new MediaStream();
@@ -621,9 +658,12 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
       )}
 
       {/* This bottom controls toolbar remains unchanged */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1001]">
+      <div className={cn(
+          "absolute bottom-6 left-1/2 -translate-x-1/2 z-[1001] transition-opacity duration-300 ease-in-out",
+          isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+      )}>
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
-          <div className="flex items-center">
+              <div className="flex items-center">
             <Button variant="ghost" size="icon" className="rounded-full h-10 w-10" onClick={() => onAudioToggle(!isAudioOn)}>
               {isAudioOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5 text-red-500"/>}
             </Button>

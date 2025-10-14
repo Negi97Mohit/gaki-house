@@ -96,7 +96,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       video.play().catch(console.error);
     }
 
-    const renderFrame = () => {
+const renderFrame = () => {
       if (!video.srcObject || video.paused || video.ended || video.videoWidth === 0) {
         animationFrameRef.current = requestAnimationFrame(renderFrame);
         return;
@@ -105,22 +105,41 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       
-      // Sync canvas size with its element size
       if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
       }
 
-      // --- THE CORE FIX IS HERE ---
-      // Instead of drawing/processing on the main canvas directly, we now have a clear pipeline.
-      
-      // 1. Draw the raw video to the main canvas. This becomes our base layer.
-      // We can add the auto-framing/cropping logic back here later. For now, let's keep it simple.
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // --- START OF FIX ---
+      // Clear the canvas before drawing each new frame
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 2. Apply the Neon Filter IF it's enabled
+      // Calculate aspect ratios to replicate CSS 'object-cover'
+      const canvasRatio = canvas.width / canvas.height;
+      const videoRatio = video.videoWidth / video.videoHeight;
+      
+      let finalWidth, finalHeight, offsetX, offsetY;
+
+      if (videoRatio > canvasRatio) {
+        // Video is wider than canvas, so height determines the scale
+        finalHeight = canvas.height;
+        finalWidth = finalHeight * videoRatio;
+        offsetX = (canvas.width - finalWidth) / 2; // Center horizontally
+        offsetY = 0;
+      } else {
+        // Video is taller than or same aspect as canvas, so width determines the scale
+        finalWidth = canvas.width;
+        finalHeight = finalWidth / videoRatio;
+        offsetX = 0;
+        offsetY = (canvas.height - finalHeight) / 2; // Center vertically
+      }
+
+      // 1. Draw the raw video to the main canvas with the correct aspect ratio.
+      ctx.drawImage(video, offsetX, offsetY, finalWidth, finalHeight);
+      // --- END OF FIX ---
+
+      // 2. Apply the Neon Filter IF it's enabled (This part remains the same)
       if (isNeonEdgeEnabled) {
-        // A. Get/create a temporary hidden canvas with the same size
         if (!tempCanvasRef.current || tempCanvasRef.current.width !== canvas.width) {
             tempCanvasRef.current = document.createElement('canvas');
             tempCanvasRef.current.width = canvas.width;
@@ -130,24 +149,20 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
         if (!tempCtx) return;
 
-        // B. Draw the video to the TEMP canvas. This creates a reliable snapshot.
-        tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+        // Draw the correctly-sized video to the TEMP canvas for processing
+        tempCtx.drawImage(video, offsetX, offsetY, finalWidth, finalHeight);
         
-        // C. Read the pixel data from the TEMP canvas. This will now work reliably.
         const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        
-        // D. Calculate the edges.
         const edges = detectEdges(tempCtx, frame, neonIntensity, neonColor);
         
-        // E. Apply the glowing edges ON TOP of the main canvas.
         ctx.globalCompositeOperation = 'lighter';
         ctx.putImageData(edges, 0, 0);
-        ctx.globalCompositeOperation = 'source-over'; // Reset for next frame
+        ctx.globalCompositeOperation = 'source-over';
       }
       
       animationFrameRef.current = requestAnimationFrame(renderFrame);
     };
-
+    
     renderFrame();
 
     return () => {

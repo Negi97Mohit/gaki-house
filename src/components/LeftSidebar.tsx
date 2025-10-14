@@ -14,9 +14,10 @@ import { FILTER_PRESETS } from "@/lib/filters.ts";
 import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { DYNAMIC_STYLE_OPTIONS } from "@/components/styles";
-import { Input } from "./ui/input"; // Import the Input component
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"; // ADDED
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
+// **MODIFIED: Added onExpand prop**
 interface LeftSidebarProps {
   style: CaptionStyle;
   onStyleChange: (style: CaptionStyle) => void;
@@ -25,8 +26,7 @@ interface LeftSidebarProps {
   width: number;
   isCollapsed: boolean;
   onResize: (width: number) => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
+  onExpand: () => void;
   backgroundEffect: 'none' | 'blur' | 'image';
   onBackgroundEffectChange: (effect: 'none' | 'blur' | 'image') => void;
   backgroundImageUrl: string | null;
@@ -60,7 +60,7 @@ const MAX_WIDTH = 600;
 export const LeftSidebar = ({
   style, onStyleChange,
   dynamicStyle, onDynamicStyleChange,
-  width, isCollapsed, onResize, onMouseEnter, onMouseLeave,
+  width, isCollapsed, onResize, onExpand,
   backgroundEffect, onBackgroundEffectChange, backgroundImageUrl, onBackgroundImageUrlChange,
   isAutoFramingEnabled, onAutoFramingChange,
   savedOverlays, onAddSavedOverlay, onDeleteSavedOverlay,
@@ -74,26 +74,29 @@ export const LeftSidebar = ({
   neonColor, onNeonColorChange,
 }: LeftSidebarProps) => {
   const [showDebug, setShowDebug] = useState(false);
-  const [filterSearch, setFilterSearch] = useState(""); // State for the filter search
+  const [filterSearch, setFilterSearch] = useState("");
+  // **ADDED: State to control the accordion sections**
+  const [openSections, setOpenSections] = useState<string[]>([]);
   const isResizing = React.useRef(false);
-  const filterContainerRef = useRef<HTMLDivElement>(null); // Ref for the filter container
+  const filterContainerRef = useRef<HTMLDivElement>(null);
 
-  // Automatically scroll to the selected filter
   useEffect(() => {
     if (videoFilter && filterContainerRef.current) {
       const activeFilter = FILTER_PRESETS.find(p => p.style === videoFilter);
       if (activeFilter) {
         const element = filterContainerRef.current.querySelector(`#filter-btn-${activeFilter.id}`);
         if (element) {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'center'
-          });
+          element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
       }
     }
   }, [videoFilter]);
+
+  // **ADDED: Helper function for the new click behavior**
+  const handleIconClick = (sectionId: string) => {
+    setOpenSections([sectionId]); // Set the section to open
+    onExpand(); // Tell the parent to expand the sidebar
+  };
 
   const handleBackgroundSelect = (effect: 'none' | 'blur' | 'image', url: string | null = null) => {
     onBackgroundEffectChange(effect);
@@ -126,7 +129,6 @@ export const LeftSidebar = ({
     document.removeEventListener('mouseup', handleMouseUp);
   }, [handleMouseMove]);
 
-  // Filter presets based on search query
   const displayedFilters = filterSearch
     ? FILTER_PRESETS.filter(p => p.name.toLowerCase().includes(filterSearch.toLowerCase()))
     : FILTER_PRESETS;
@@ -135,21 +137,28 @@ export const LeftSidebar = ({
     <aside
       className="relative bg-card/80 backdrop-blur-xl border-r flex flex-col h-full z-10 transition-all duration-300 ease-in-out shadow-lg"
       style={{ width: `${width}px` }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      // **MODIFIED: Removed onMouseEnter and onMouseLeave**
     >
       {isCollapsed ? (
         <div className="flex flex-col items-center gap-6 py-6 px-2">
-          <div className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Dynamic Styles"><Zap className="w-5 h-5 text-primary" /></div>
-          <div className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Saved Overlays"><Sparkles className="w-5 h-5 text-primary" /></div>
-          <div className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Text Styles"><Palette className="w-5 h-5 text-primary" /></div>
-          <div className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Video Effects"><Droplets className="w-5 h-5 text-primary" /></div>
-          <div className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Debug"><Bug className="w-5 h-5 text-primary" /></div>
+          {/* **MODIFIED: Added onClick handlers to all icons** */}
+          <div onClick={() => handleIconClick('dynamic-styles')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Dynamic Styles"><Zap className="w-5 h-5 text-primary" /></div>
+          <div onClick={() => handleIconClick('saved-overlays')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Saved Overlays"><Sparkles className="w-5 h-5 text-primary" /></div>
+          <div onClick={() => handleIconClick('presets')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Style Presets"><Paintbrush className="w-5 h-5 text-primary" /></div>
+          <div onClick={() => handleIconClick('customize')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Text Styles"><Palette className="w-5 h-5 text-primary" /></div>
+          <div onClick={() => handleIconClick('effects')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Video Effects"><Droplets className="w-5 h-5 text-primary" /></div>
+          <div onClick={() => handleIconClick('debug')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Debug"><Bug className="w-5 h-5 text-primary" /></div>
         </div>
       ) : (
         <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden transition-opacity duration-200 px-4">
-          <Accordion type="multiple" defaultValue={["dynamic-styles", "effects"]} className="w-full">
-
+          {/* **MODIFIED: Accordion is now fully controlled by state** */}
+          <Accordion 
+            type="multiple" 
+            className="w-full"
+            value={openSections}
+            onValueChange={setOpenSections}
+          >
+            {/* The rest of the AccordionItems remain unchanged */}
             <AccordionItem value="dynamic-styles">
               <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
                 <Zap className="w-4 h-4 flex-shrink-0 text-yellow-500" />
@@ -168,7 +177,6 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            
             <AccordionItem value="presets">
               <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
                 <Paintbrush className="w-4 h-4 flex-shrink-0" />
@@ -184,7 +192,6 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            
             <AccordionItem value="customize">
               <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
                 <Palette className="w-4 h-4 flex-shrink-0" />
@@ -197,7 +204,6 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-
             <AccordionItem value="saved-overlays">
               <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
                 <Sparkles className="w-4 h-4 flex-shrink-0" />
@@ -224,7 +230,6 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            
             <AccordionItem value="effects">
               <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
                 <Sparkles className="w-4 h-4 flex-shrink-0" />
@@ -276,7 +281,6 @@ export const LeftSidebar = ({
                       </div>
                     </div>
                   </div>
-
                   <div className="flex items-center justify-between pt-4 border-t">
                     <Label htmlFor="neon-edge-toggle" className="font-medium">Neon Edge Filter</Label>
                     <Switch id="neon-edge-toggle" checked={isNeonEdgeEnabled} onCheckedChange={onNeonEdgeToggle} />
