@@ -175,15 +175,20 @@ const { startRecognition, stopRecognition } = useDeepgramSpeech({
     stream: cameraStream,
   });
 
-  useEffect(() => {
-    if (isAudioOn) {
-      startRecognition();
-    } else {
-      stopRecognition();
+useEffect(() => {
+  // Check that audio is on AND the stream has an audio track before starting
+  if (isAudioOn && cameraStream?.getAudioTracks().length > 0) {
+    startRecognition();
+  } else {
+    stopRecognition();
+    // Only clear transcripts if the intent is to have audio off
+    if (!isAudioOn) {
       setFullTranscript("");
       setInterimTranscript("");
     }
-  }, [isAudioOn, startRecognition, stopRecognition]); // This is now safe and correct.
+  }
+  // Add cameraStream to the dependency array
+}, [isAudioOn, cameraStream, startRecognition, stopRecognition]);
 
   useEffect(() => {
     const getDevices = async () => {
