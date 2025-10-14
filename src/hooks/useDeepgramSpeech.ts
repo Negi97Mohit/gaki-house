@@ -1,5 +1,5 @@
 // src/hooks/useDeepgramSpeech.ts
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { createClient, LiveClient, LiveTranscriptionEvents } from '@deepgram/sdk';
 import { useContinuousAudio } from './useContinuousAudio';
 import { toast } from 'sonner';
@@ -9,16 +9,25 @@ const DEEPGRAM_API_KEY = import.meta.env.VITE_DEEPGRAM_API_KEY;
 interface UseDeepgramSpeechProps {
   onPartialTranscript: (transcript: string) => void;
   onFinalTranscript: (transcript: string) => void;
+  stream?: MediaStream | null;
 }
 
-export const useDeepgramSpeech = ({ onPartialTranscript, onFinalTranscript }: UseDeepgramSpeechProps) => {
+export const useDeepgramSpeech = ({ onPartialTranscript, onFinalTranscript, stream }: UseDeepgramSpeechProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const connectionRef = useRef<LiveClient | null>(null);
 
-  // This is the core change: we use our existing audio hook to get mic data.
+  // FIX: Use refs for the callbacks.
+  const onPartialTranscriptRef = useRef(onPartialTranscript);
+  const onFinalTranscriptRef = useRef(onFinalTranscript);
+
+  useEffect(() => {
+    onPartialTranscriptRef.current = onPartialTranscript;
+    onFinalTranscriptRef.current = onFinalTranscript;
+  }, [onPartialTranscript, onFinalTranscript]);
+
   const { startCapture, stopCapture } = useContinuousAudio({
+    stream,
     onAudioChunk: (chunk) => {
-      // Send the audio chunk to Deepgram if the connection is ready
       if (connectionRef.current?.getReadyState() === 1) {
         connectionRef.current.send(chunk);
       }
@@ -29,29 +38,24 @@ export const useDeepgramSpeech = ({ onPartialTranscript, onFinalTranscript }: Us
   });
 
   const startRecognition = useCallback(() => {
+    if (connectionRef.current) return;
     if (!DEEPGRAM_API_KEY) {
       toast.error("Deepgram API Key is missing.");
       return;
     }
-
-    if (isRecording) {
-      console.log("Recognition already in progress.");
-      return;
-    }
-
     console.log('🎤 Starting Deepgram speech recognition...');
     const deepgram = createClient(DEEPGRAM_API_KEY);
     const connection = deepgram.listen.live({
       model: 'nova-2',
       interim_results: true,
       smart_format: true,
-      puncutate: true,
+      punctuate: true, // Corrected typo from 'puncutate'
     });
     connectionRef.current = connection;
 
     connection.on(LiveTranscriptionEvents.Open, () => {
       console.log('✅ Deepgram connection opened.');
-      startCapture(); // Start capturing audio once the connection is open
+      startCapture();
       setIsRecording(true);
       toast.success('Voice recognition active');
     });
@@ -61,12 +65,12 @@ export const useDeepgramSpeech = ({ onPartialTranscript, onFinalTranscript }: Us
       if (!transcript) return;
 
       if (data.is_final) {
-        onFinalTranscript(transcript);
+        onFinalTranscriptRef.current(transcript);
       } else {
-        onPartialTranscript(transcript);
+        onPartialTranscriptRef.current(transcript);
       }
     });
-
+    
     connection.on(LiveTranscriptionEvents.Close, () => {
       console.log('🛑 Deepgram connection closed.');
       stopCapture();
@@ -79,15 +83,17 @@ export const useDeepgramSpeech = ({ onPartialTranscript, onFinalTranscript }: Us
       toast.error("Deepgram connection error.");
     });
 
-  }, [isRecording, startCapture, stopCapture, onFinalTranscript, onPartialTranscript]);
+  }, [startCapture, stopCapture]); // FIX: Remove changing dependencies.
 
   const stopRecognition = useCallback(() => {
     console.log('Pausing Deepgram speech recognition...');
     if (connectionRef.current) {
-      connectionRef.current.finish(); // This will trigger the 'Close' event
+      connectionRef.current.finish();
+      connectionRef.current = null;
     }
-    // The stopCapture and setIsRecording(false) are handled in the 'Close' event listener.
-  }, []);
+    stopCapture();
+    setIsRecording(false);
+  }, [stopCapture]);
 
   return { isRecording, startRecognition, stopRecognition };
 };

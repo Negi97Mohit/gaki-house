@@ -1,138 +1,60 @@
+// src/components/VideoCanvas.tsx
+
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Mic, MicOff, Webcam, VideoOff, ScreenShare, Square, ChevronUp, Check, Circle, RotateCcw, Sparkles, Timer, Users, Heart, ThumbsUp, CloudSun, Thermometer, Wind } from "lucide-react";
+import { Mic, MicOff, Webcam, VideoOff, ScreenShare, Square, ChevronUp, Check, Circle, RotateCcw, Sparkles, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { toast } from "sonner";
 import { cn } from "../lib/utils";
-import { useDeepgramSpeech } from "../hooks/useDeepgramSpeech"; // ADD THIS LINE
+import { useDeepgramSpeech } from "../hooks/useDeepgramSpeech";
 import { useVideoStreams } from "../hooks/useVideoStreams";
 import { Rnd } from 'react-rnd';
-import * as Babel from '@babel/standalone';
 import { GeneratedOverlay, LayoutMode, CameraShape, CaptionStyle } from "../types/caption";
 import { LayoutControls } from "./LayoutControls";
 import { CameraRenderer } from "./CameraRenderer";
 import { AICommandPopover } from "./AICommandPopover";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles.tsx";
 import { CaptionRenderer } from "./CaptionRenderer";
-// --- ADD THIS IMPORT ---
-import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, LineChart, Line, PieChart, Pie, Cell, Legend } from 'recharts';
 
-const useFetchedData = (fetchConfig: { url: string, interval?: number } | undefined) => {
-    const [jsonData, setJsonData] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!fetchConfig?.url) {
-            setJsonData(null);
-            return;
-        }
+// New component to render raw HTML safely in an iframe
+const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({ htmlContent }) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-        let isCancelled = false;
-        const fetchData = async () => {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const response = await fetch(fetchConfig.url);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                if (!isCancelled) setJsonData(data);
-            } catch (e) {
-                if (!isCancelled) setError((e as Error).message);
-            } finally {
-                if (!isCancelled) setIsLoading(false);
-            }
-        };
+  useEffect(() => {
+    if (iframeRef.current) {
+      // Set the iframe content
+      const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+      if (doc) {
+        doc.open();
+        doc.write(htmlContent);
+        doc.close();
+        
+        // Ensure body and html are transparent
+        doc.documentElement.style.background = 'transparent';
+        doc.body.style.background = 'transparent';
+        doc.body.style.margin = '0';
+        doc.body.style.padding = '0';
+        doc.body.style.overflow = 'hidden';
+      }
+    }
+  }, [htmlContent]);
 
-        fetchData();
-        const intervalId = fetchConfig.interval ? setInterval(fetchData, fetchConfig.interval * 1000) : null;
-
-        return () => {
-            isCancelled = true;
-            if (intervalId) clearInterval(intervalId);
-        };
-    }, [fetchConfig?.url, fetchConfig?.interval]);
-
-    return { jsonData, isLoading, error };
-};
-
-const DynamicCodeRenderer: React.FC<{
-    overlay: GeneratedOverlay;
-    onLayoutChange: (id: string, key: 'position' | 'size', value: any) => void;
-    onRemove: (id: string) => void;
-    containerSize: { width: number; height: number };
-    onStateChange: (id: string, state: any) => void;
-}> = ({ overlay, onLayoutChange, onRemove, containerSize, onStateChange }) => {
-    const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const data = useFetchedData(overlay.fetch);
-
-    useEffect(() => {
-        try {
-            setError(null);
-            const transformedCode = Babel.transform(overlay.componentCode, { presets: ['react'] }).code;
-            const executableCode = transformedCode.trim().startsWith('()') || transformedCode.trim().startsWith('({')
-                ? transformedCode
-                : `({ data, onStateChange }) => { return ${transformedCode} }`;
-
-            // --- UPDATE THIS SCOPE OBJECT ---
-            const componentScope = {
-                React, Card, CardHeader, CardTitle, CardContent, CardFooter,
-                Badge, Progress, Button,
-                Timer, Mic, MicOff, Users, Heart, ThumbsUp, CloudSun, Thermometer, Wind,
-                ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar,
-                LineChart, Line, PieChart, Pie, Cell, Legend
-            };
-
-            const componentFunction = new Function(...Object.keys(componentScope), `return ${executableCode}`);
-            setComponent(() => componentFunction(...Object.values(componentScope)));
-        } catch (e) {
-            console.error("Component generation error:", e);
-            setError((e as Error).message);
-            setComponent(null);
-        }
-    }, [overlay.componentCode]);
-
-    if (!containerSize.width || !containerSize.height) return null;
-
-    const position = {
-      x: (overlay.layout.position.x / 100) * containerSize.width,
-      y: (overlay.layout.position.y / 100) * containerSize.height,
-    };
-    const size = {
-      width: (overlay.layout.size.width / 100) * containerSize.width,
-      height: (overlay.layout.size.height / 100) * containerSize.height,
-    };
-
-    const content = error ? (
-        <div className="w-full h-full p-2 bg-red-900 text-white overflow-auto"><h4 className="font-bold">Render Error</h4><pre className="text-xs whitespace-pre-wrap">{error}</pre></div>
-    ) : Component ? (
-        <Component
-          data={data}
-          onStateChange={(value: any) => onStateChange(overlay.id, value)}
-          {...overlay.props} 
-        />
-    ) : <div>Loading...</div>;
-    return (
-        <Rnd
-            size={size} position={position} minWidth={50} minHeight={50} bounds="parent"
-            onDragStop={(e, d) => onLayoutChange(overlay.id, 'position', { x: (d.x / containerSize.width) * 100, y: (d.y / containerSize.height) * 100 })}
-            onResizeStop={(e, direction, ref, delta, pos) => {
-                const newWidth = size.width + delta.width;
-                const newHeight = size.height + delta.height;
-                onLayoutChange(overlay.id, 'size', { width: (newWidth / containerSize.width) * 100, height: (newHeight / containerSize.height) * 100 });
-                onLayoutChange(overlay.id, 'position', { x: (pos.x / containerSize.width) * 100, y: (pos.y / containerSize.height) * 100 });
-            }}
-            style={{ zIndex: overlay.layout.zIndex }}
-            className="flex items-center justify-center border-2 border-transparent hover:border-blue-500 hover:border-dashed group pointer-events-auto"
-        >
-            <div id={overlay.id} className="w-full h-full relative flex items-center justify-center">{content}</div>
-            <button onClick={() => onRemove(overlay.id)} className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-50">X</button>
-        </Rnd>
-    );
+  return (
+    <iframe
+      ref={iframeRef}
+      style={{
+        width: '100%',
+        height: '100%',
+        border: 'none',
+        // CRITICAL: pointer-events none prevents iframe from blocking Rnd
+        pointerEvents: 'none',
+        backgroundColor: 'transparent',
+        overflow: 'hidden',
+      }}
+      sandbox="allow-scripts allow-same-origin"
+      title="ai-generated-overlay"
+    />
+  );
 };
 
 interface VideoCanvasProps {
@@ -141,9 +63,9 @@ interface VideoCanvasProps {
   backgroundImageUrl: string | null;
   isAutoFramingEnabled: boolean;
   onProcessTranscript: (transcript: string) => void;
-  generatedOverlays: GeneratedOverlay[];
+  generatedOverlays: GeneratedOverlay[]; 
+  generatedHtmlOverlay: GeneratedOverlay | null;
   onOverlayLayoutChange: (id: string, key: 'position' | 'size', value: any) => void;
-  onOverlayStateChange: (id: string, state: any) => void;
   onRemoveOverlay: (id: string) => void;
   liveCaptionStyle: React.CSSProperties;
   dynamicStyle: string;
@@ -180,45 +102,37 @@ interface VideoCanvasProps {
   isNeonEdgeEnabled: boolean;
   neonIntensity: number;
   neonColor: string;
+  isProcessingAi: boolean;
 }
 
 const VideoPlayer: React.FC<{
-    stream: MediaStream | null;
-    className?: string;
-    style?: React.CSSProperties;
+  stream: MediaStream | null;
+  className?: string;
+  style?: React.CSSProperties;
 }> = ({ stream, className, style }) => {
-    const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-    useEffect(() => {
-        if (videoRef.current && stream) {
-            videoRef.current.srcObject = stream;
-        }
-    }, [stream]);
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
 
-    return <video ref={videoRef} autoPlay muted playsInline className={className} style={style} />;
+  return <video ref={videoRef} autoPlay muted playsInline className={className} style={style} />;
 };
 
 const SNAP_THRESHOLD = 5;
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const {
-    isVideoOn,
-    isAudioOn,
-    selectedVideoDevice,
-    selectedAudioDevice,
-    onVideoDeviceSelect,
-    onAudioDeviceSelect,
-    onVideoToggle,
-    onAudioToggle,
-    aiButtonPosition,
-    onAiButtonPositionChange,
-    onCaptionLayoutChange,
-    isNeonEdgeEnabled,
-    neonIntensity,
-    neonColor,
+    generatedOverlays,
+    isVideoOn, isAudioOn, selectedVideoDevice, selectedAudioDevice,
+    onVideoDeviceSelect, onAudioDeviceSelect, onVideoToggle, onAudioToggle,
+    aiButtonPosition, onAiButtonPositionChange, onCaptionLayoutChange,
+    isNeonEdgeEnabled, neonIntensity, neonColor, generatedHtmlOverlay,
     ...rest
   } = props;
-  
+
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [pipContent, setPipContent] = useState<'camera' | 'screen'>('camera');
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -236,11 +150,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const recordedChunksRef = useRef<Blob[]>([]);
   const splitDividerRef = useRef<HTMLDivElement>(null);
   const [isDraggingSplitter, setIsDraggingSplitter] = useState(false);
-  const overlayContainerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
-  
+
   const [fullTranscript, setFullTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
@@ -249,18 +162,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     setFullTranscript(prev => (prev + " " + text).trim());
     setInterimTranscript("");
     rest.onProcessTranscript(text);
-    
+
     clearTimeout(transcriptTimerRef.current);
     transcriptTimerRef.current = setTimeout(() => {
         setFullTranscript("");
     }, 4000);
   }, [rest.onProcessTranscript]);
 
-  const { startRecognition, stopRecognition } = useDeepgramSpeech({
+const { startRecognition, stopRecognition } = useDeepgramSpeech({
     onFinalTranscript: handleFinalTranscript,
     onPartialTranscript: setInterimTranscript,
+    stream: cameraStream,
   });
-
 
   useEffect(() => {
     if (isAudioOn) {
@@ -270,8 +183,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       setFullTranscript("");
       setInterimTranscript("");
     }
-  }, [isAudioOn, startRecognition, stopRecognition]);
-
+  }, [isAudioOn, startRecognition, stopRecognition]); // This is now safe and correct.
 
   useEffect(() => {
     const getDevices = async () => {
@@ -439,10 +351,9 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
 
   const videoFilterString = getVideoFilterStyle();
 
-
   const renderCamera = (className?: string, style?: React.CSSProperties, isPip: boolean = false) => (
     <div className={cn("w-full h-full", className, isPip && rest.cameraShape === 'circle' && 'aspect-square')} style={getCameraShapeStyle()}>
-        {(rest.backgroundEffect !== 'none' || rest.isAutoFramingEnabled || isNeonEdgeEnabled) ? ( // MODIFIED: Added isNeonEdgeEnabled here to ensure canvas is used
+        {(rest.backgroundEffect !== 'none' || rest.isAutoFramingEnabled || isNeonEdgeEnabled) ? (
           <CameraRenderer 
             stream={cameraStream} 
             backgroundEffect={rest.backgroundEffect} 
@@ -452,7 +363,6 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
             trackingSpeed={rest.trackingSpeed} 
             className="w-full h-full"
             style={{ ...style, filter: videoFilterString }}
-            // --- PASS PROPS DOWN TO CAMERARENDERER ---
             isNeonEdgeEnabled={isNeonEdgeEnabled}
             neonIntensity={neonIntensity}
             neonColor={neonColor}
@@ -524,23 +434,72 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
   };
 
   return (
-<div ref={canvasContainerRef} className="flex-1 relative bg-black overflow-hidden flex items-center justify-center">
+    <div ref={canvasContainerRef} className="flex-1 relative bg-black overflow-hidden flex items-center justify-center w-full h-full">
       {renderContent()}
       <div className="absolute top-4 right-4 z-50"> <LayoutControls {...rest} /> </div>
-      <div ref={overlayContainerRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 220 }}>
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 220 }}>
         <div className="w-full h-full relative">
-          {rest.generatedOverlays.map(overlay => (
-            <DynamicCodeRenderer key={overlay.id} overlay={overlay} onLayoutChange={rest.onOverlayLayoutChange} onRemove={rest.onRemoveOverlay} containerSize={containerSize} onStateChange={rest.onOverlayStateChange} />
-          ))}
-          
+{generatedOverlays.map(overlay => {
+  const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
+  const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
+  const xPx = (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2;
+  const yPx = (containerSize.height * overlay.layout.position.y) / 100 - heightPx / 2;
+
+  return (
+    <Rnd
+      key={overlay.id}
+      default={{
+        x: xPx,
+        y: yPx,
+        width: widthPx,
+        height: heightPx,
+      }}
+      onDragStop={(e, d) => {
+        const newX = ((d.x + widthPx / 2) / containerSize.width) * 100;
+        const newY = ((d.y + heightPx / 2) / containerSize.height) * 100;
+        rest.onOverlayLayoutChange(overlay.id, 'position', {
+          x: newX,
+          y: newY,
+        });
+      }}
+      onResizeStop={(e, direction, ref, delta, pos) => {
+        const newWidthPercent = (parseInt(ref.style.width, 10) / containerSize.width) * 100;
+        const newHeightPercent = (parseInt(ref.style.height, 10) / containerSize.height) * 100;
+        const newX = ((pos.x + parseInt(ref.style.width, 10) / 2) / containerSize.width) * 100;
+        const newY = ((pos.y + parseInt(ref.style.height, 10) / 2) / containerSize.height) * 100;
+        
+        rest.onOverlayLayoutChange(overlay.id, 'position', {
+          x: newX,
+          y: newY,
+        });
+        rest.onOverlayLayoutChange(overlay.id, 'size', {
+          width: newWidthPercent,
+          height: newHeightPercent,
+        });
+      }}
+      bounds="parent"
+      minWidth={50}
+      minHeight={50}
+      enableResizing={true}
+      className="group pointer-events-auto border-2 border-dashed border-transparent hover:border-primary transition-colors"
+      style={{ zIndex: overlay.layout.zIndex }}
+    >
+      <div className="w-full h-full relative overflow-hidden bg-black/5">
+        <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
+        <button
+          onClick={() => rest.onRemoveOverlay(overlay.id)}
+          className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+    </Rnd>
+  );
+})}
           {(() => {
             const captionText = (fullTranscript + " " + interimTranscript).trim();
             const captionStyle = rest.liveCaptionStyle as CaptionStyle;
-
-            if (!rest.captionsEnabled || !captionText || containerSize.width === 0) {
-              return null;
-            }
-            
+            if (!rest.captionsEnabled || !captionText || containerSize.width === 0) return null;
             return (
               <Rnd
                 size={{
@@ -599,19 +558,28 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
           })()}
         </div>
       </div>
+      {/* ===== THIS IS THE CORRECTED, DRAGGABLE AI BUTTON ===== */}
       {containerSize.width > 0 && (
-        <Rnd style={{ zIndex: 250 }} size={{ width: 64, height: 64 }} position={{ x: (aiButtonPosition.x / 100) * containerSize.width, y: (aiButtonPosition.y / 100) * containerSize.height, }} onDragStop={(e, d) => onAiButtonPositionChange({ x: (d.x / containerSize.width) * 100, y: (d.y / containerSize.height) * 100 })} bounds="parent" enableResizing={false} className="pointer-events-auto">
-          <AICommandPopover 
-            onSubmit={rest.onProcessTranscript}
-            activeOverlays={rest.generatedOverlays}
+          <Rnd
+            style={{ zIndex: 250 }}
+            size={{ width: 64, height: 64 }}
+            position={{ x: (aiButtonPosition.x / 100) * containerSize.width - 32, y: (aiButtonPosition.y / 100) * containerSize.height - 32 }}
+            onDragStop={(e, d) => {
+              const newX = ((d.x + 32) / containerSize.width) * 100;
+              const newY = ((d.y + 32) / containerSize.height) * 100;
+              onAiButtonPositionChange({ x: newX, y: newY });
+            }}
+            bounds="parent"
+            enableResizing={false}
+            className="pointer-events-auto"
           >
-            <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700">
-              <Sparkles className="h-8 w-8" />
-            </Button>
-          </AICommandPopover>
-        </Rnd>
+            <AICommandPopover onSubmit={rest.onProcessTranscript} isProcessing={props.isProcessingAi}>
+              <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700">
+                <Sparkles className="h-8 w-8" />
+              </Button>
+            </AICommandPopover>
+          </Rnd>
       )}
-
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1001]">
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
@@ -669,4 +637,3 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
     </div>
   );
 };
-

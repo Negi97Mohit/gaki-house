@@ -29,16 +29,8 @@ export type GeneratedLayout = {
 
 export interface GeneratedOverlay {
   id: string;
-  name: string;
-  componentCode: string;
-  layout: GeneratedLayout;
-  props?: { [key: string]: any }; // ADD THIS LINE
-  preview?: string;
-  chainedAction?: SingleActionCommand;
-  fetch?: {
-    url: string;
-    interval?: number; // Optional refresh interval in seconds
-  };
+  htmlContent: string; // The AI-generated HTML/CSS/JS snippet
+  layout: GeneratedLayout; // We keep layout for the draggable container
 }
 
 // --- SINGLE ACTION COMMANDS ---
@@ -74,21 +66,6 @@ export interface ApplyLiveCaptionStyleCommand {
   tool: 'apply_live_caption_style';
   style: React.CSSProperties;
 }
-
-// Union of all possible single actions
-export type SingleActionCommand =
-  | GenerateUICommand
-  | UpdateUICommand
-  | DeleteUICommand
-  | ApplyVideoEffectCommand
-  | ApplyLiveCaptionStyleCommand;
-
-export interface MultiActionCommand {
-  tool: 'multi_tool_reasoning';
-  actions: SingleActionCommand[];
-}
-
-export type AICommand = SingleActionCommand | MultiActionCommand;
 
 // --- Other types remain the same ---
 export type LayoutMode = 'split-vertical' | 'split-horizontal' | 'pip';
