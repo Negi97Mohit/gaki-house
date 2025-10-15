@@ -25,7 +25,7 @@ const Index = () => {
   const [captionStyle, setCaptionStyle] = useState<CaptionStyle>({
     fontFamily: "Inter", fontSize: 24, color: "#FFFFFF", backgroundColor: "rgba(0, 0, 0, 0.8)",
     position: { x: 50, y: 85 }, shape: "rounded", animation: "fade", outline: false, shadow: true,
-    bold: false, italic: false, underline: false, width: 80, height: 10,
+    bold: false, italic: false, underline: false, width: 80, height: 10, rotation: 0,
   });
   const [backgroundEffect, setBackgroundEffect] = useState<'none' | 'blur' | 'image'>('none');
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
@@ -103,7 +103,7 @@ const Index = () => {
           id: generateOverlayId(),
           name,
           htmlContent,
-          layout: { position: { x: 50, y: 50 }, size: { width: 40, height: 40 }, zIndex: 10 },
+          layout: { position: { x: 50, y: 50 }, size: { width: 40, height: 40 }, zIndex: 10, rotation: 0 },
           preview: "",
         };
         setActiveOverlays(prev => [...prev, newOverlay]);
@@ -119,7 +119,7 @@ const Index = () => {
     }
   }, [isAiModeEnabled, isProcessingAi, log, setDebugInfo, activeOverlays]);
 
-  const handleLayoutChange = (id: string, key: 'position' | 'size', value: any) => {
+  const handleLayoutChange = (id: string, key: 'position' | 'size' | 'rotation', value: any) => {
     setActiveOverlays(prev => 
       prev.map(o => o.id === id ? { ...o, layout: { ...o.layout, [key]: value } } : o)
     );
@@ -238,6 +238,7 @@ const Index = () => {
         )}
         <VideoCanvas
           isFullscreen={isFullscreen}
+          onStyleChange={setCaptionStyle}
           onToggleFullscreen={handleToggleFullscreen}
           isFsSidebarOpen={isFsSidebarOpen}
           onFsSidebarToggle={setIsFsSidebarOpen}

@@ -55,16 +55,15 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({ htmlContent })
   );
 };
 
-// Self-contained component to handle each draggable overlay and its preview generation
 const DraggableOverlay: React.FC<{
   overlay: GeneratedOverlay;
-  onLayoutChange: (id: string, key: 'position' | 'size', value: any) => void;
+  onLayoutChange: (id: string, key: 'position' | 'size' | 'rotation', value: any) => void;
   onRemoveOverlay: (id: string) => void;
   onPreviewGenerated: (id: string, dataUrl: string) => void;
   containerSize: { width: number; height: number };
 }> = ({ overlay, onLayoutChange, onRemoveOverlay, onPreviewGenerated, containerSize }) => {
   const elementRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     if (overlay.preview === "" && elementRef.current) {
       const timer = setTimeout(async () => {
@@ -78,6 +77,32 @@ const DraggableOverlay: React.FC<{
       return () => clearTimeout(timer);
     }
   }, [overlay.id, overlay.preview, onPreviewGenerated]);
+
+  const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!elementRef.current) return;
+    const box = elementRef.current.getBoundingClientRect();
+    const centerX = box.left + box.width / 2;
+    const centerY = box.top + box.height / 2;
+    const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+    const initialRotation = overlay.layout.rotation || 0;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const currentAngle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * (180 / Math.PI);
+      const angleDiff = currentAngle - startAngle;
+      onLayoutChange(overlay.id, 'rotation', initialRotation + angleDiff);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
   if (!containerSize.width || !containerSize.height) return null;
 
@@ -107,9 +132,13 @@ const DraggableOverlay: React.FC<{
       minHeight={50}
       enableResizing={true}
       className="group pointer-events-auto border-2 border-dashed border-transparent hover:border-primary transition-colors"
-      style={{ zIndex: overlay.layout.zIndex }}
+      style={{ zIndex: overlay.layout.zIndex }} // REMOVED transform from here
     >
-      <div ref={elementRef} className="w-full h-full relative">
+      <div
+        ref={elementRef}
+        className="w-full h-full relative"
+        style={{ transform: `rotate(${overlay.layout.rotation || 0}deg)` }} // MOVED transform here
+      >
         <div className="w-full h-full overflow-hidden">
           <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
         </div>
@@ -119,13 +148,21 @@ const DraggableOverlay: React.FC<{
         >
           <X className="w-4 h-4" />
         </button>
+        <div
+          onMouseDown={handleRotationStart}
+          className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50 cursor-alias"
+        >
+          <RotateCcw className="w-4 h-4" />
+        </div>
       </div>
     </Rnd>
   );
 };
 
+
 interface VideoCanvasProps {
   captionsEnabled: boolean;
+  onStyleChange: (style: any) => void; 
   onCaptionsToggle: (on: boolean) => void;
   isAiModeEnabled: boolean;
   onAiModeToggle: (on: boolean) => void;
@@ -646,10 +683,39 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               containerSize={containerSize}
             />
           ))}
-          {(() => {
+{(() => {
             const captionText = (fullTranscript + " " + interimTranscript).trim();
-            const captionStyle = rest.liveCaptionStyle as any;
+            const captionStyle = rest.liveCaptionStyle as any; 
             if (!captionsEnabled || !captionText || containerSize.width === 0) return null;
+            
+            const captionRef = React.createRef<HTMLDivElement>();
+            
+            const handleCaptionRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              if (!captionRef.current) return;
+              const box = captionRef.current.getBoundingClientRect();
+              const centerX = box.left + box.width / 2;
+              const centerY = box.top + box.height / 2;
+              const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+              const initialRotation = captionStyle.rotation || 0;
+
+              const handleMouseMove = (moveEvent: MouseEvent) => {
+                const currentAngle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * (180 / Math.PI);
+                const angleDiff = currentAngle - startAngle;
+                 props.onStyleChange({ ...captionStyle, rotation: initialRotation + angleDiff });
+              };
+
+              const handleMouseUp = () => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+              };
+
+              document.addEventListener('mousemove', handleMouseMove);
+              document.addEventListener('mouseup', handleMouseUp);
+            };
+
             return (
               <Rnd
                 size={{
@@ -681,34 +747,45 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   });
                 }}
                 bounds="parent"
-                className="pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
-                style={{ zIndex: 999 }}
+                className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
+                style={{ zIndex: 999 }} // REMOVED transform from here
                 minWidth="20%"
                 minHeight="5%"
               >
-                <CaptionRenderer
-                  activeStyleId={rest.dynamicStyle}
-                  captionStyle={captionStyle}
-                  text={captionText}
-                  fullTranscript={fullTranscript}
-                  interimTranscript={interimTranscript}
-                  baseStyle={{
-                    fontFamily: captionStyle.fontFamily,
-                    fontSize: `${captionStyle.fontSize}px`,
-                    color: captionStyle.color,
-                    backgroundColor: captionStyle.backgroundColor,
-                    textShadow: captionStyle.shadow ? "2px 2px 4px rgba(0,0,0,0.5)" : "none",
-                    fontWeight: captionStyle.bold ? "bold" : "normal",
-                    fontStyle: captionStyle.italic ? "italic" : "normal",
-                    textDecoration: captionStyle.underline ? "underline" : "none",
-                  }}
-                />
+                <div 
+                  ref={captionRef} 
+                  className="w-full h-full relative" 
+                  style={{ transform: `rotate(${captionStyle.rotation || 0}deg)` }} // MOVED transform here
+                >
+                  <CaptionRenderer
+                    activeStyleId={rest.dynamicStyle}
+                    captionStyle={captionStyle}
+                    text={captionText}
+                    fullTranscript={fullTranscript}
+                    interimTranscript={interimTranscript}
+                    baseStyle={{
+                      fontFamily: captionStyle.fontFamily,
+                      fontSize: `${captionStyle.fontSize}px`,
+                      color: captionStyle.color,
+                      backgroundColor: captionStyle.backgroundColor,
+                      textShadow: captionStyle.shadow ? "2px 2px 4px rgba(0,0,0,0.5)" : "none",
+                      fontWeight: captionStyle.bold ? "bold" : "normal",
+                      fontStyle: captionStyle.italic ? "italic" : "normal",
+                      textDecoration: captionStyle.underline ? "underline" : "none",
+                    }}
+                  />
+                  <div
+                    onMouseDown={handleCaptionRotationStart}
+                    className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50 cursor-alias"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </div>
+                </div>
               </Rnd>
             );
           })()}
-        </div>
-      </div>
-      
+                  </div>
+      </div>      
       {containerSize.width > 0 && (
         <Rnd
           style={{ zIndex: 1000 }}

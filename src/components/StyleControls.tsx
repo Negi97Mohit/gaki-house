@@ -19,6 +19,15 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
   return (
     <div className="space-y-6">
       {/* Font Family Dropdown */}
+              <Label htmlFor="rotation">Rotation: {style.rotation}°</Label>
+        <Slider
+          id="rotation"
+          value={[style.rotation]}
+          onValueChange={([value]) => handleValueChange("rotation", value)}
+          min={-180}
+          max={180}
+          step={1}
+        />
       <div className="space-y-2">
         <Label htmlFor="font-family">Font Family</Label>
         <Select

@@ -20,11 +20,13 @@ export interface CaptionStyle {
   textShadow?: string;
   width?: number; // ADD THIS LINE (percentage)
   height?: number; // ADD THIS LINE (percentage)
+  rotation: number;
 }
 export type GeneratedLayout = {
   position: { x: number; y: number };
   size: { width: number; height: number };
   zIndex: number;
+  rotation: number;
 };
 export interface GeneratedOverlay {
   id: string;
