@@ -1,3 +1,5 @@
+// src/components/LeftSidebar.tsx
+
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { CaptionStyle, GeneratedOverlay, CaptionTemplate } from "@/types/caption";
 import { StyleControls } from "./StyleControls";
@@ -6,7 +8,7 @@ import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { cn } from "@/lib/utils";
-import { Palette, Bug, Sparkles, Droplets, Trash2, Ban, Paintbrush, Zap } from "lucide-react";
+import { Palette, Bug, Sparkles, Droplets, Trash2, Ban, Paintbrush, Zap, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { BACKGROUND_PRESETS } from "@/lib/backgrounds";
 import { Slider } from "./ui/slider";
@@ -17,7 +19,6 @@ import { DYNAMIC_STYLE_OPTIONS } from "@/components/styles";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
-// **MODIFIED: Added onExpand prop**
 interface LeftSidebarProps {
   style: CaptionStyle;
   onStyleChange: (style: CaptionStyle) => void;
@@ -52,6 +53,8 @@ interface LeftSidebarProps {
   onNeonIntensityChange: (value: number) => void;
   neonColor: string;
   onNeonColorChange: (value: string) => void;
+  isOverlayMode?: boolean;
+  onClose?: () => void;
 }
 
 const MIN_WIDTH = 280;
@@ -63,7 +66,8 @@ export const LeftSidebar = ({
   width, isCollapsed, onResize, onExpand,
   backgroundEffect, onBackgroundEffectChange, backgroundImageUrl, onBackgroundImageUrlChange,
   isAutoFramingEnabled, onAutoFramingChange,
-  savedOverlays, onAddSavedOverlay, onDeleteSavedOverlay,
+  savedOverlays = [], 
+  onAddSavedOverlay, onDeleteSavedOverlay,
   zoomSensitivity, onZoomSensitivityChange,
   trackingSpeed, onTrackingSpeedChange,
   isBeautifyEnabled, onBeautifyToggle,
@@ -72,10 +76,11 @@ export const LeftSidebar = ({
   isNeonEdgeEnabled, onNeonEdgeToggle,
   neonIntensity, onNeonIntensityChange,
   neonColor, onNeonColorChange,
+  isOverlayMode = false,
+  onClose,
 }: LeftSidebarProps) => {
   const [showDebug, setShowDebug] = useState(false);
   const [filterSearch, setFilterSearch] = useState("");
-  // **ADDED: State to control the accordion sections**
   const [openSections, setOpenSections] = useState<string[]>([]);
   const isResizing = React.useRef(false);
   const filterContainerRef = useRef<HTMLDivElement>(null);
@@ -92,10 +97,9 @@ export const LeftSidebar = ({
     }
   }, [videoFilter]);
 
-  // **ADDED: Helper function for the new click behavior**
   const handleIconClick = (sectionId: string) => {
-    setOpenSections([sectionId]); // Set the section to open
-    onExpand(); // Tell the parent to expand the sidebar
+    setOpenSections([sectionId]);
+    onExpand();
   };
 
   const handleBackgroundSelect = (effect: 'none' | 'blur' | 'image', url: string | null = null) => {
@@ -137,11 +141,9 @@ export const LeftSidebar = ({
     <aside
       className="relative bg-card/80 backdrop-blur-xl border-r flex flex-col h-full z-10 transition-all duration-300 ease-in-out shadow-lg"
       style={{ width: `${width}px` }}
-      // **MODIFIED: Removed onMouseEnter and onMouseLeave**
     >
       {isCollapsed ? (
         <div className="flex flex-col items-center gap-6 py-6 px-2">
-          {/* **MODIFIED: Added onClick handlers to all icons** */}
           <div onClick={() => handleIconClick('dynamic-styles')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Dynamic Styles"><Zap className="w-5 h-5 text-primary" /></div>
           <div onClick={() => handleIconClick('saved-overlays')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Saved Overlays"><Sparkles className="w-5 h-5 text-primary" /></div>
           <div onClick={() => handleIconClick('presets')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Style Presets"><Paintbrush className="w-5 h-5 text-primary" /></div>
@@ -150,16 +152,23 @@ export const LeftSidebar = ({
           <div onClick={() => handleIconClick('debug')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Debug"><Bug className="w-5 h-5 text-primary" /></div>
         </div>
       ) : (
-        <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden transition-opacity duration-200 px-4">
-          {/* **MODIFIED: Accordion is now fully controlled by state** */}
-          <Accordion 
-            type="multiple" 
-            className="w-full"
-            value={openSections}
-            onValueChange={setOpenSections}
-          >
-            {/* The rest of the AccordionItems remain unchanged */}
-            <AccordionItem value="dynamic-styles">
+        <>
+          {isOverlayMode && (
+            <div className="flex-shrink-0 flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-semibold">Controls</h2>
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+          )}
+          <div className="flex-1 overflow-y-auto p-4">
+            <Accordion 
+              type="multiple" 
+              className="w-full"
+              value={openSections}
+              onValueChange={setOpenSections}
+            >
+              <AccordionItem value="dynamic-styles">
               <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
                 <Zap className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                 <span className="flex-1 text-left truncate">Dynamic Styles</span>
@@ -358,9 +367,10 @@ export const LeftSidebar = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-        </div>
+          </div>
+        </>
       )}
-      {!isCollapsed && (
+      {!isCollapsed && !isOverlayMode && (
         <div className="absolute top-0 right-0 h-full w-2 cursor-col-resize group" onMouseDown={handleMouseDown}>
           <div className="w-0.5 h-full bg-border group-hover:bg-primary transition-colors mx-auto" />
         </div>

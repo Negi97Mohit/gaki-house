@@ -4,32 +4,45 @@ import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Send, Loader2 } from "lucide-react";
+import { Sparkles, Send, Loader2, BrainCircuit, Eye, EyeOff } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { GeneratedOverlay } from "@/types/caption";
 
-// MODIFIED: Update props interface
+// MODIFIED: Update props interface to include fullscreen controls
 interface AICommandPopoverProps {
   onSubmit: (text: string, targetId: string | null) => void;
   isProcessing: boolean;
   children: React.ReactNode;
   activeOverlays: GeneratedOverlay[];
+  isFullscreen?: boolean;
+  isAiModeEnabled?: boolean;
+  onAiModeToggle?: (enabled: boolean) => void;
+  captionsEnabled?: boolean;
+  onCaptionsToggle?: (enabled: boolean) => void;
 }
 
-export const AICommandPopover = ({ onSubmit, isProcessing, children, activeOverlays }: AICommandPopoverProps) => {
+export const AICommandPopover = ({
+  onSubmit,
+  isProcessing,
+  children,
+  activeOverlays,
+  isFullscreen,
+  isAiModeEnabled,
+  onAiModeToggle,
+  captionsEnabled,
+  onCaptionsToggle,
+}: AICommandPopoverProps) => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
-  // ADDED: State to hold the ID of the targeted overlay
   const [targetId, setTargetId] = useState<string | null>(null);
 
-  // MODIFIED: Pass the targetId to the onSubmit handler
   const handleSubmit = () => {
     if (!text.trim() || isProcessing) return;
     onSubmit(text.trim(), targetId);
     setText("");
     setOpen(false);
-    setTargetId(null); // Reset target after submission
+    setTargetId(null);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -54,7 +67,28 @@ export const AICommandPopover = ({ onSubmit, isProcessing, children, activeOverl
             </p>
           </div>
 
-          {/* ADDED: Dropdown to select a target overlay or create a new one */}
+          {/* ADDED: Fullscreen-only controls for AI and Captions */}
+          {isFullscreen && (
+            <div className="grid grid-cols-2 gap-2">
+              <Button
+                variant={isAiModeEnabled ? "default" : "secondary"}
+                size="sm"
+                onClick={() => onAiModeToggle?.(!isAiModeEnabled)}
+              >
+                {isAiModeEnabled ? <Sparkles className="w-4 h-4 mr-2" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
+                AI Mode
+              </Button>
+              <Button
+                variant={captionsEnabled ? "default" : "secondary"}
+                size="sm"
+                onClick={() => onCaptionsToggle?.(!captionsEnabled)}
+              >
+                {captionsEnabled ? <Eye className="w-4 h-4 mr-2" /> : <EyeOff className="w-4 h-4 mr-2" />}
+                Captions
+              </Button>
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <Label htmlFor="target-overlay">Target</Label>
             <Select onValueChange={(value) => setTargetId(value === 'new' ? null : value)} disabled={activeOverlays.length === 0} defaultValue="new">

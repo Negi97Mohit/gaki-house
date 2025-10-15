@@ -1,6 +1,6 @@
 // src/pages/Index.tsx
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { VideoCanvas } from "@/components/VideoCanvas";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { TopToolbar } from "@/components/TopToolbar";
@@ -31,7 +31,7 @@ const Index = () => {
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
   const [isAutoFramingEnabled, setIsAutoFramingEnabled] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(384);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false); // **MODIFIED: This is the only state that matters now**
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
   const [isAudioOn, setIsAudioOn] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(false);
@@ -53,6 +53,11 @@ const Index = () => {
   const [pipPosition, setPipPosition] = useState(DEFAULT_LAYOUT_STATE.pipPosition);
   const [pipSize, setPipSize] = useState(DEFAULT_LAYOUT_STATE.pipSize);
   const [customMaskUrl, setCustomMaskUrl] = useState<string | undefined>(undefined);
+
+  // --- ADDED: State and ref for full-screen mode ---
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
+  const mainContainerRef = useRef<HTMLDivElement>(null);
 
   const { log } = useLog();
   const { setDebugInfo } = useDebug();
@@ -139,19 +144,19 @@ const Index = () => {
 
   const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) => {
     if (!previewDataUrl) return;
-    setActiveOverlays(prev => 
-      prev.map(overlay => 
-        overlay.id === id ? { ...overlay, preview: previewDataUrl } : overlay
-      )
-    );
-    const isAlreadySaved = savedOverlays.some(so => so.id === id);
-    if (!isAlreadySaved) {
-      const activeOverlay = activeOverlays.find(o => o.id === id);
-      if (activeOverlay) {
-        const overlayToSave = { ...activeOverlay, preview: previewDataUrl };
-        setSavedOverlays(prev => [overlayToSave, ...prev]);
-        toast.info(`"${overlayToSave.name}" saved to your overlays.`);
-      }
+    const activeOverlay = activeOverlays.find(o => o.id === id);
+    if (activeOverlay) {
+        const updatedOverlay = { ...activeOverlay, preview: previewDataUrl };
+        setActiveOverlays(prev => 
+          prev.map(overlay => 
+            overlay.id === id ? updatedOverlay : overlay
+          )
+        );
+        const isAlreadySaved = savedOverlays.some(so => so.htmlContent === updatedOverlay.htmlContent);
+        if (!isAlreadySaved) {
+            setSavedOverlays(prev => [updatedOverlay, ...prev]);
+            toast.info(`"${updatedOverlay.name}" saved to your overlays.`);
+        }
     }
   }, [activeOverlays, savedOverlays, setSavedOverlays]);
 
@@ -169,47 +174,81 @@ const Index = () => {
     toast.success("Saved overlay deleted.");
   };
   
-  // **MODIFIED: Simplified calculation, no more hover logic**
+  const handleToggleFullscreen = useCallback(() => {
+    if (!mainContainerRef.current) return;
+    if (!document.fullscreenElement) {
+      mainContainerRef.current.requestFullscreen().catch(err => {
+        toast.error(`Fullscreen failed: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+  
   const isMinimized = isSidebarCollapsed;
 
+  const sidebarProps = {
+    style: captionStyle, onStyleChange: setCaptionStyle,
+    dynamicStyle: dynamicStyle, onDynamicStyleChange: setDynamicStyle,
+    backgroundEffect: backgroundEffect, onBackgroundEffectChange: setBackgroundEffect,
+    backgroundImageUrl: backgroundImageUrl, onBackgroundImageUrlChange: setBackgroundImageUrl,
+    isAutoFramingEnabled: isAutoFramingEnabled, onAutoFramingChange: setIsAutoFramingEnabled,
+    savedOverlays: savedOverlays,
+    onAddSavedOverlay: handleAddSavedOverlay,
+    onDeleteSavedOverlay: handleDeleteSavedOverlay,
+    zoomSensitivity: zoomSensitivity, onZoomSensitivityChange: setZoomSensitivity,
+    trackingSpeed: trackingSpeed, onTrackingSpeedChange: setTrackingSpeed,
+    isBeautifyEnabled: isBeautifyEnabled, onBeautifyToggle: setIsBeautifyEnabled,
+    isLowLightEnabled: isLowLightEnabled, onLowLightToggle: setIsLowLightEnabled,
+    videoFilter: videoFilter,
+    onVideoFilterChange: setVideoFilter,
+    isNeonEdgeEnabled: isNeonEdgeEnabled,
+    onNeonEdgeToggle: setIsNeonEdgeEnabled,
+    neonIntensity: neonIntensity,
+    onNeonIntensityChange: setNeonIntensity,
+    neonColor: neonColor,
+    onNeonColorChange: setNeonColor,
+  };
+
   return (
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
-      <TopToolbar
-        captionsEnabled={captionsEnabled} onCaptionsToggle={setCaptionsEnabled}
-        isSidebarVisible={!isSidebarCollapsed} onSidebarToggle={() => setIsSidebarCollapsed(prev => !prev)}
-        isAiModeEnabled={isAiModeEnabled} onAiModeToggle={setIsAiModeEnabled}
-      />
-      <div className="flex flex-1 overflow-hidden">
-        <LeftSidebar
-          style={captionStyle} onStyleChange={setCaptionStyle}
-          dynamicStyle={dynamicStyle} onDynamicStyleChange={setDynamicStyle}
-          width={isMinimized ? 64 : sidebarWidth} isCollapsed={isMinimized}
-          onResize={setSidebarWidth} 
-          // **MODIFIED: Removed onMouseEnter and onMouseLeave**
-          onExpand={() => setIsSidebarCollapsed(false)} // **ADDED: Pass the expand function**
-          backgroundEffect={backgroundEffect} onBackgroundEffectChange={setBackgroundEffect}
-          backgroundImageUrl={backgroundImageUrl} onBackgroundImageUrlChange={setBackgroundImageUrl}
-          isAutoFramingEnabled={isAutoFramingEnabled} onAutoFramingChange={setIsAutoFramingEnabled}
-          savedOverlays={savedOverlays} 
-          onAddSavedOverlay={handleAddSavedOverlay} 
-          onDeleteSavedOverlay={handleDeleteSavedOverlay}
-          zoomSensitivity={zoomSensitivity} onZoomSensitivityChange={setZoomSensitivity}
-          trackingSpeed={trackingSpeed} onTrackingSpeedChange={setTrackingSpeed}
-          isBeautifyEnabled={isBeautifyEnabled} onBeautifyToggle={setIsBeautifyEnabled}
-          isLowLightEnabled={isLowLightEnabled} onLowLightToggle={setIsLowLightEnabled}
-          videoFilter={videoFilter}
-          onVideoFilterChange={setVideoFilter}
-          isNeonEdgeEnabled={isNeonEdgeEnabled}
-          onNeonEdgeToggle={setIsNeonEdgeEnabled}
-          neonIntensity={neonIntensity}
-          onNeonIntensityChange={setNeonIntensity}
-          neonColor={neonColor}
-          onNeonColorChange={setNeonColor}
+    <div ref={mainContainerRef} className="h-screen flex flex-col bg-background overflow-hidden">
+      {!isFullscreen && (
+        <TopToolbar
+          captionsEnabled={captionsEnabled} onCaptionsToggle={setCaptionsEnabled}
+          isSidebarVisible={!isSidebarCollapsed} onSidebarToggle={() => setIsSidebarCollapsed(prev => !prev)}
+          isAiModeEnabled={isAiModeEnabled} onAiModeToggle={setIsAiModeEnabled}
         />
+      )}
+      <div className="flex flex-1 overflow-hidden">
+        {!isFullscreen && (
+          <LeftSidebar
+            {...sidebarProps}
+            width={isMinimized ? 64 : sidebarWidth} isCollapsed={isMinimized}
+            onResize={setSidebarWidth} 
+            onExpand={() => setIsSidebarCollapsed(false)}
+          />
+        )}
         <VideoCanvas
-          captionsEnabled={captionsEnabled} backgroundEffect={backgroundEffect} backgroundImageUrl={backgroundImageUrl}
+          isFullscreen={isFullscreen}
+          onToggleFullscreen={handleToggleFullscreen}
+          isFsSidebarOpen={isFsSidebarOpen}
+          onFsSidebarToggle={setIsFsSidebarOpen}
+          isAiModeEnabled={isAiModeEnabled}
+          onAiModeToggle={setIsAiModeEnabled}
+          captionsEnabled={captionsEnabled} 
+          onCaptionsToggle={setCaptionsEnabled}
+          sidebarProps={sidebarProps}
+          backgroundEffect={backgroundEffect} backgroundImageUrl={backgroundImageUrl}
           isAutoFramingEnabled={isAutoFramingEnabled} onProcessTranscript={processTranscript}
-          generatedHtmlOverlay={activeHtmlOverlay} onOverlayLayoutChange={handleLayoutChange}
+          onOverlayLayoutChange={handleLayoutChange}
           onRemoveOverlay={handleRemoveOverlay}
           generatedOverlays={activeOverlays}
           onPreviewGenerated={handlePreviewGenerated}
@@ -220,7 +259,7 @@ const Index = () => {
           isAudioOn={isAudioOn} onAudioToggle={setIsAudioOn}
           isVideoOn={isVideoOn} onVideoToggle={setIsVideoOn}
           isRecording={isRecording} onRecordingToggle={setIsRecording}
-          selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedAudioDevice}
+          selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedVideoDevice}
           selectedVideoDevice={selectedVideoDevice} onVideoDeviceSelect={setSelectedVideoDevice}
           zoomSensitivity={zoomSensitivity} trackingSpeed={trackingSpeed}
           isBeautifyEnabled={isBeautifyEnabled} isLowLightEnabled={isLowLightEnabled}

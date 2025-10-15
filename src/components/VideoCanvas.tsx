@@ -1,7 +1,7 @@
 // src/components/VideoCanvas.tsx
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Mic, MicOff, Webcam, VideoOff, ScreenShare, Square, ChevronUp, Check, Circle, RotateCcw, Sparkles, X } from "lucide-react";
+import { Mic, MicOff, Webcam, VideoOff, ScreenShare, Square, ChevronUp, Check, Circle, RotateCcw, Sparkles, X, Expand, Shrink, PanelLeftOpen,PanelLeftClose  } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import { CameraRenderer } from "./CameraRenderer";
 import { AICommandPopover } from "./AICommandPopover";
 import { CaptionRenderer } from "./CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
+import { LeftSidebar } from "./LeftSidebar";
 
 // New component to render raw HTML safely in an iframe
 const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({ htmlContent }) => {
@@ -22,7 +23,7 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({ htmlContent })
 
   useEffect(() => {
     if (iframeRef.current) {
-      const doc = iframeRef.current.contentDocument || iframeRef.current.contentWindow?.document;
+      const doc = iframeRef.current.contentDocument;
       if (doc) {
         doc.open();
         doc.write(htmlContent);
@@ -54,7 +55,7 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({ htmlContent })
   );
 };
 
-// ADDED: New self-contained component to handle each draggable overlay and its preview generation
+// Self-contained component to handle each draggable overlay and its preview generation
 const DraggableOverlay: React.FC<{
   overlay: GeneratedOverlay;
   onLayoutChange: (id: string, key: 'position' | 'size', value: any) => void;
@@ -68,10 +69,10 @@ const DraggableOverlay: React.FC<{
     if (overlay.preview === "" && elementRef.current) {
       const timer = setTimeout(async () => {
         if (elementRef.current) {
-            const previewDataUrl = await generatePreview(elementRef.current);
-            if (previewDataUrl) {
-                onPreviewGenerated(overlay.id, previewDataUrl);
-            }
+          const previewDataUrl = await generatePreview(elementRef.current);
+          if (previewDataUrl) {
+            onPreviewGenerated(overlay.id, previewDataUrl);
+          }
         }
       }, 1000); 
       return () => clearTimeout(timer);
@@ -87,11 +88,11 @@ const DraggableOverlay: React.FC<{
 
   return (
     <Rnd
-      default={{ x: xPx, y: yPx, width: widthPx, height: heightPx, }}
+      default={{ x: xPx, y: yPx, width: widthPx, height: heightPx }}
       onDragStop={(e, d) => {
         const newX = ((d.x + widthPx / 2) / containerSize.width) * 100;
         const newY = ((d.y + heightPx / 2) / containerSize.height) * 100;
-        onLayoutChange(overlay.id, 'position', { x: newX, y: newY, });
+        onLayoutChange(overlay.id, 'position', { x: newX, y: newY });
       }}
       onResizeStop={(e, direction, ref, delta, pos) => {
         const newWidthPercent = (parseInt(ref.style.width, 10) / containerSize.width) * 100;
@@ -99,7 +100,7 @@ const DraggableOverlay: React.FC<{
         const newX = ((pos.x + parseInt(ref.style.width, 10) / 2) / containerSize.width) * 100;
         const newY = ((pos.y + parseInt(ref.style.height, 10) / 2) / containerSize.height) * 100;
         onLayoutChange(overlay.id, 'position', { x: newX, y: newY });
-        onLayoutChange(overlay.id, 'size', { width: newWidthPercent, height: newHeightPercent, });
+        onLayoutChange(overlay.id, 'size', { width: newWidthPercent, height: newHeightPercent });
       }}
       bounds="parent"
       minWidth={50}
@@ -108,20 +109,10 @@ const DraggableOverlay: React.FC<{
       className="group pointer-events-auto border-2 border-dashed border-transparent hover:border-primary transition-colors"
       style={{ zIndex: overlay.layout.zIndex }}
     >
-      {/* This is the main container. The ref for preview generation is here.
-        CRITICAL CHANGE: "overflow-hidden" is REMOVED from this outer div.
-      */}
       <div ref={elementRef} className="w-full h-full relative">
-        {/* This new inner div now wraps ONLY the iframe renderer and is responsible 
-          for clipping the AI-generated content.
-        */}
         <div className="w-full h-full overflow-hidden">
-            <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
+          <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
         </div>
-        
-        {/* The button is now a child of the outer div, so it will render on top 
-          and not be clipped.
-        */}
         <button
           onClick={() => onRemoveOverlay(overlay.id)}
           className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50"
@@ -135,12 +126,14 @@ const DraggableOverlay: React.FC<{
 
 interface VideoCanvasProps {
   captionsEnabled: boolean;
+  onCaptionsToggle: (on: boolean) => void;
+  isAiModeEnabled: boolean;
+  onAiModeToggle: (on: boolean) => void;
   backgroundEffect: 'none' | 'blur' | 'image';
   backgroundImageUrl: string | null;
   isAutoFramingEnabled: boolean;
   onProcessTranscript: (transcript: string, targetId: string | null) => void;
   generatedOverlays: GeneratedOverlay[]; 
-  generatedHtmlOverlay: GeneratedOverlay | null;
   onOverlayLayoutChange: (id: string, key: 'position' | 'size', value: any) => void;
   onRemoveOverlay: (id: string) => void;
   liveCaptionStyle: React.CSSProperties;
@@ -180,6 +173,11 @@ interface VideoCanvasProps {
   neonColor: string;
   isProcessingAi: boolean;
   onPreviewGenerated: (id: string, dataUrl: string) => void;
+  isFullscreen: boolean;
+  onToggleFullscreen: () => void;
+isFsSidebarOpen: boolean;
+  onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void; // MODIFIED
+  sidebarProps: Omit<React.ComponentProps<typeof LeftSidebar>, 'width' | 'isCollapsed' | 'onResize' | 'onExpand'>;
 }
 
 const VideoPlayer: React.FC<{
@@ -202,12 +200,13 @@ const SNAP_THRESHOLD = 5;
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const {
-    generatedOverlays,
-    isVideoOn, isAudioOn, selectedVideoDevice, selectedAudioDevice,
+    generatedOverlays, isVideoOn, isAudioOn, selectedVideoDevice, selectedAudioDevice,
     onVideoDeviceSelect, onAudioDeviceSelect, onVideoToggle, onAudioToggle,
     aiButtonPosition, onAiButtonPositionChange, onCaptionLayoutChange,
-    isNeonEdgeEnabled, neonIntensity, neonColor, generatedHtmlOverlay,
-    onPreviewGenerated,
+    isNeonEdgeEnabled, neonIntensity, neonColor, onPreviewGenerated,
+    isFullscreen, onToggleFullscreen, isFsSidebarOpen, onFsSidebarToggle,
+    isAiModeEnabled, onAiModeToggle, captionsEnabled, onCaptionsToggle,
+    sidebarProps,
     ...rest
   } = props;
 
@@ -245,7 +244,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     clearTimeout(transcriptTimerRef.current);
     transcriptTimerRef.current = setTimeout(() => {
-        setFullTranscript("");
+      setFullTranscript("");
     }, 4000);
   }, [rest.onProcessTranscript]);
 
@@ -285,96 +284,86 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     const container = canvasContainerRef.current;
     if (!container) return;
     const resizeObserver = new ResizeObserver(() => {
-        if (container) {
-            setContainerSize({ width: container.clientWidth, height: container.clientHeight });
-        }
+      if (container) {
+        setContainerSize({ width: container.clientWidth, height: container.clientHeight });
+      }
     });
     resizeObserver.observe(container);
     return () => resizeObserver.disconnect();
   }, []);
-  // ADD THIS ENTIRE useEffect BLOCK
+
+  // Auto-hide logic now depends on `isFullscreen`
   useEffect(() => {
     const container = canvasContainerRef.current;
     if (!container) return;
 
     const handleActivity = () => {
-      // Clear any existing timer to reset the countdown
-      if (inactivityTimerRef.current) {
-        clearTimeout(inactivityTimerRef.current);
-      }
-      
-      // Make the controls visible
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
       setIsControlsVisible(true);
       
-      // Set a new timer to hide the controls after 3 seconds
-      inactivityTimerRef.current = setTimeout(() => {
-        setIsControlsVisible(false);
-      }, 3000);
-    };
-
-    // Listen for mouse movement
-    container.addEventListener('mousemove', handleActivity);
-    
-    // Initial call to show controls and start the timer
-    handleActivity();
-
-    // Cleanup when the component unmounts
-    return () => {
-      container.removeEventListener('mousemove', handleActivity);
-      if (inactivityTimerRef.current) {
-        clearTimeout(inactivityTimerRef.current);
+      if (isFullscreen) {
+        inactivityTimerRef.current = setTimeout(() => {
+          setIsControlsVisible(false);
+        }, 3000);
       }
     };
-  }, []); // This effect runs only once
 
+    container.addEventListener('mousemove', handleActivity);
+    handleActivity();
 
-    const handleStartRecording = () => {
-        const outputStream = new MediaStream();
-
-        if (isScreenSharing && screenStream) {
-            const screenVideoTrack = screenStream.getVideoTracks()[0];
-            if (screenVideoTrack) outputStream.addTrack(screenVideoTrack.clone());
-        }
-        
-        if (isVideoOn && cameraStream) {
-            const cameraVideoTrack = cameraStream.getVideoTracks()[0];
-            if (cameraVideoTrack) outputStream.addTrack(cameraVideoTrack.clone());
-        }
-
-        if (isAudioOn) {
-            if (isScreenSharing && screenStream?.getAudioTracks().length > 0) {
-                 const screenAudioTrack = screenStream.getAudioTracks()[0];
-                 if(screenAudioTrack) outputStream.addTrack(screenAudioTrack.clone());
-            } else if (cameraStream?.getAudioTracks().length > 0) {
-                const cameraAudioTrack = cameraStream.getAudioTracks()[0];
-                if(cameraAudioTrack) outputStream.addTrack(cameraAudioTrack.clone());
-            }
-        }
-
-        if (outputStream.getTracks().length === 0) {
-            toast.error("No stream available to record.");
-            return;
-        }
-
-        recordedChunksRef.current = [];
-        mediaRecorderRef.current = new MediaRecorder(outputStream, { mimeType: 'video/webm; codecs=vp9' });
-        mediaRecorderRef.current.ondataavailable = (e) => {
-            if (e.data.size > 0) recordedChunksRef.current.push(e.data);
-        };
-        mediaRecorderRef.current.onstop = () => {
-            const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `gaki-recording-${Date.now()}.webm`;
-            a.click();
-            URL.revokeObjectURL(url);
-            toast.success("Recording downloaded!");
-        };
-        mediaRecorderRef.current.start();
-        rest.onRecordingToggle(true);
-        toast.info("Recording started!");
+    return () => {
+      container.removeEventListener('mousemove', handleActivity);
+      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
     };
+  }, [isFullscreen]);
+
+  const handleStartRecording = () => {
+    const outputStream = new MediaStream();
+
+    if (isScreenSharing && screenStream) {
+      const screenVideoTrack = screenStream.getVideoTracks()[0];
+      if (screenVideoTrack) outputStream.addTrack(screenVideoTrack.clone());
+    }
+    
+    if (isVideoOn && cameraStream) {
+      const cameraVideoTrack = cameraStream.getVideoTracks()[0];
+      if (cameraVideoTrack) outputStream.addTrack(cameraVideoTrack.clone());
+    }
+
+    if (isAudioOn) {
+      if (isScreenSharing && screenStream?.getAudioTracks().length > 0) {
+        const screenAudioTrack = screenStream.getAudioTracks()[0];
+        if (screenAudioTrack) outputStream.addTrack(screenAudioTrack.clone());
+      } else if (cameraStream?.getAudioTracks().length > 0) {
+        const cameraAudioTrack = cameraStream.getAudioTracks()[0];
+        if (cameraAudioTrack) outputStream.addTrack(cameraAudioTrack.clone());
+      }
+    }
+
+    if (outputStream.getTracks().length === 0) {
+      toast.error("No stream available to record.");
+      return;
+    }
+
+    recordedChunksRef.current = [];
+    mediaRecorderRef.current = new MediaRecorder(outputStream, { mimeType: 'video/webm; codecs=vp9' });
+    mediaRecorderRef.current.ondataavailable = (e) => {
+      if (e.data.size > 0) recordedChunksRef.current.push(e.data);
+    };
+    mediaRecorderRef.current.onstop = () => {
+      const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `gaki-recording-${Date.now()}.webm`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Recording downloaded!");
+    };
+    mediaRecorderRef.current.start();
+    rest.onRecordingToggle(true);
+    toast.info("Recording started!");
+  };
 
   const handleStopRecording = () => {
     if (mediaRecorderRef.current?.state === 'recording') mediaRecorderRef.current.stop();
@@ -430,9 +419,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     if (newY > 100 - pipHeightPercent - SNAP_THRESHOLD) newY = 98 - pipHeightPercent;
 
     rest.onPipPositionChange({ x: newX, y: newY });
-};
+  };
 
-const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: any, position: any) => {
+  const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: any, position: any) => {
     const container = canvasContainerRef.current;
     if (!container) return;
 
@@ -444,7 +433,7 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
     
     rest.onPipSizeChange({ width: Math.max(10, Math.min(50, newWidth)), height: Math.max(10, Math.min(50, newHeight)) });
     rest.onPipPositionChange({ x: newX, y: newY });
-};
+  };
 
   const getCameraShapeStyle = () => {
     const baseStyle: React.CSSProperties = { overflow: 'hidden' };
@@ -452,7 +441,7 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
       return { ...baseStyle, maskImage: `url(${rest.customMaskUrl})`, WebkitMaskImage: `url(${rest.customMaskUrl})`, maskSize: 'contain', WebkitMaskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat', maskPosition: 'center', WebkitMaskPosition: 'center' };
     }
     switch (rest.cameraShape) {
-      case 'circle': return { ...baseStyle, borderRadius: '50%'};
+      case 'circle': return { ...baseStyle, borderRadius: '50%' };
       case 'rounded': return { ...baseStyle, borderRadius: '16px' };
       case 'rectangle': default: return { ...baseStyle, borderRadius: '0' };
     }
@@ -470,28 +459,28 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
 
   const renderCamera = (className?: string, style?: React.CSSProperties, isPip: boolean = false) => (
     <div className={cn("w-full h-full", className, isPip && rest.cameraShape === 'circle' && 'aspect-square')} style={getCameraShapeStyle()}>
-        {(rest.backgroundEffect !== 'none' || rest.isAutoFramingEnabled || isNeonEdgeEnabled) ? (
-          <CameraRenderer 
-            stream={cameraStream} 
-            backgroundEffect={rest.backgroundEffect} 
-            backgroundImageUrl={rest.backgroundImageUrl} 
-            isAutoFramingEnabled={rest.isAutoFramingEnabled} 
-            zoomSensitivity={rest.zoomSensitivity} 
-            trackingSpeed={rest.trackingSpeed} 
-            className="w-full h-full"
-            style={{ ...style, filter: videoFilterString }}
-            isNeonEdgeEnabled={isNeonEdgeEnabled}
-            neonIntensity={neonIntensity}
-            neonColor={neonColor}
-          />
-        ) : (
-          <VideoPlayer stream={cameraStream} className="w-full h-full object-cover" style={{ ...style, filter: videoFilterString }} />
-        )}
+      {(rest.backgroundEffect !== 'none' || rest.isAutoFramingEnabled || isNeonEdgeEnabled) ? (
+        <CameraRenderer 
+          stream={cameraStream} 
+          backgroundEffect={rest.backgroundEffect} 
+          backgroundImageUrl={rest.backgroundImageUrl} 
+          isAutoFramingEnabled={rest.isAutoFramingEnabled} 
+          zoomSensitivity={rest.zoomSensitivity} 
+          trackingSpeed={rest.trackingSpeed} 
+          className="w-full h-full"
+          style={{ ...style, filter: videoFilterString }}
+          isNeonEdgeEnabled={isNeonEdgeEnabled}
+          neonIntensity={neonIntensity}
+          neonColor={neonColor}
+        />
+      ) : (
+        <VideoPlayer stream={cameraStream} className="w-full h-full object-cover" style={{ ...style, filter: videoFilterString }} />
+      )}
     </div>
   );
   
   const renderScreen = (className?: string) => (
-      <VideoPlayer stream={screenStream} className={cn("w-full h-full object-cover", className)} />
+    <VideoPlayer stream={screenStream} className={cn("w-full h-full object-cover", className)} />
   );
 
   const renderContent = () => {
@@ -503,14 +492,14 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
     const pipPositionPx = { x: (containerSize.width * rest.pipPosition.x) / 100, y: (containerSize.height * rest.pipPosition.y) / 100 };
 
     const pipContentEl = isScreenSharing && screenStream && isVideoOn && cameraStream && containerSize.width > 0 && (
-        <Rnd size={pipSizePx} position={pipPositionPx} minWidth={containerSize.width * 0.1} minHeight={containerSize.height * 0.1} maxWidth={containerSize.width * 0.5} maxHeight={containerSize.height * 0.5} bounds="parent" onDragStop={handlePipDragStop} onResizeStop={handlePipResizeStop} className="pointer-events-auto" style={{ zIndex: 210 }}>
-            <div className="w-full h-full relative group">
-                {pipVideo}
-                <Button size="icon" variant="secondary" className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setPipContent(pipContent === 'camera' ? 'screen' : 'camera')}>
-                    <RotateCcw className="h-4 w-4" />
-                </Button>
-            </div>
-        </Rnd>
+      <Rnd size={pipSizePx} position={pipPositionPx} minWidth={containerSize.width * 0.1} minHeight={containerSize.height * 0.1} maxWidth={containerSize.width * 0.5} maxHeight={containerSize.height * 0.5} bounds="parent" onDragStop={handlePipDragStop} onResizeStop={handlePipResizeStop} className="pointer-events-auto" style={{ zIndex: 210 }}>
+        <div className="w-full h-full relative group">
+          {pipVideo}
+          <Button size="icon" variant="secondary" className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setPipContent(pipContent === 'camera' ? 'screen' : 'camera')}>
+            <RotateCcw className="h-4 w-4" />
+          </Button>
+        </div>
+      </Rnd>
     );
 
     const getBackgroundStyle = (): React.CSSProperties => {
@@ -522,8 +511,12 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
 
     const contentWithBackground = (
       <div className="w-full h-full relative" style={getBackgroundStyle()}>
-        {rest.backgroundEffect === 'image' && rest.backgroundImageUrl && (<div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${rest.backgroundImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', }} />)}
-        <div className="relative w-full h-full" style={rest.backgroundEffect === 'blur' ? { backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' } : {}}>{mainContent}</div>
+        {rest.backgroundEffect === 'image' && rest.backgroundImageUrl && (
+          <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${rest.backgroundImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+        )}
+        <div className="relative w-full h-full" style={rest.backgroundEffect === 'blur' ? { backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' } : {}}>
+          {mainContent}
+        </div>
         {pipContentEl}
       </div>
     );
@@ -536,13 +529,30 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
         return (
           <div className={cn("w-full h-full flex", isVertical ? "flex-col" : "flex-row")}>
             <div className="relative bg-black flex items-center justify-center overflow-hidden" style={{ [isVertical ? 'height' : 'width']: `${rest.splitRatio * 100}%` }}>
-              {isScreenSharing && screenStream ? renderScreen() : (<div className="text-center text-muted-foreground"><ScreenShare className="w-16 h-16 mx-auto mb-2" /><p className="text-sm">Click Share Screen to start</p></div>)}
+              {isScreenSharing && screenStream ? renderScreen() : (
+                <div className="text-center text-muted-foreground">
+                  <ScreenShare className="w-16 h-16 mx-auto mb-2" />
+                  <p className="text-sm">Click Share Screen to start</p>
+                </div>
+              )}
             </div>
             <div ref={splitDividerRef} className={cn("bg-border hover:bg-primary transition-colors flex items-center justify-center group", isVertical ? "h-2 w-full cursor-row-resize" : "w-2 h-full cursor-col-resize")} onMouseDown={handleSplitterMouseDown}>
               <div className={cn("bg-primary/50 group-hover:bg-primary rounded-full transition-colors", isVertical ? "w-12 h-1" : "w-1 h-12")} />
             </div>
             <div className="relative bg-black flex items-center justify-center overflow-hidden" style={{ [isVertical ? 'height' : 'width']: `${(1 - rest.splitRatio) * 100}%` }}>
-              {isVideoOn && cameraStream ? (<div className="w-full h-full relative" style={getBackgroundStyle()}>{rest.backgroundEffect === 'image' && rest.backgroundImageUrl && (<div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${rest.backgroundImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', }} />)}<div className="relative w-full h-full">{renderCamera()}</div></div>) : (<div className="text-center text-muted-foreground"><Webcam className="w-16 h-16 mx-auto mb-2" /><p className="text-sm">Camera Off</p></div>)}
+              {isVideoOn && cameraStream ? (
+                <div className="w-full h-full relative" style={getBackgroundStyle()}>
+                  {rest.backgroundEffect === 'image' && rest.backgroundImageUrl && (
+                    <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${rest.backgroundImageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                  )}
+                  <div className="relative w-full h-full">{renderCamera()}</div>
+                </div>
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  <Webcam className="w-16 h-16 mx-auto mb-2" />
+                  <p className="text-sm">Camera Off</p>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -553,119 +563,150 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
   return (
     <div ref={canvasContainerRef} className="flex-1 relative bg-black overflow-hidden flex items-center justify-center w-full h-full">
       {renderContent()}
-      <div className="absolute top-4 right-4 z-50"> <LayoutControls {...rest} /> </div>
-      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 220 }}>
-        <div className="w-full h-full relative">
-            {/* MODIFIED: Render overlays using the new DraggableOverlay component */}
-            {generatedOverlays.map(overlay => (
-                <DraggableOverlay
-                  key={overlay.id}
-                  overlay={overlay}
-                  onLayoutChange={rest.onOverlayLayoutChange}
-                  onRemoveOverlay={rest.onRemoveOverlay}
-                  onPreviewGenerated={onPreviewGenerated}
-                  containerSize={containerSize}
-                />
-            ))}
-            {/* This self-invoking function for live captions remains unchanged */}
-            {(() => {
-                const captionText = (fullTranscript + " " + interimTranscript).trim();
-                const captionStyle = rest.liveCaptionStyle as any;
-                if (!rest.captionsEnabled || !captionText || containerSize.width === 0) return null;
-                return (
-                <Rnd
-                    size={{
-                    width: `${captionStyle.width || 80}%`,
-                    height: `${captionStyle.height || 10}%`,
-                    }}
-                    position={{
-                    x: ((captionStyle.position.x - (captionStyle.width || 80) / 2) / 100) * containerSize.width,
-                    y: ((captionStyle.position.y - (captionStyle.height || 10) / 2) / 100) * containerSize.height,
-                    }}
-                    onDragStop={(e, d) => {
-                    onCaptionLayoutChange({
-                        position: {
-                        x: ((d.x / containerSize.width) * 100) + ((captionStyle.width || 80) / 2),
-                        y: ((d.y / containerSize.height) * 100) + ((captionStyle.height || 10) / 2),
-                        }
-                    });
-                    }}
-                    onResizeStop={(e, direction, ref, delta, pos) => {
-                    onCaptionLayoutChange({
-                        position: {
-                        x: ((pos.x / containerSize.width) * 100) + ((parseInt(ref.style.width, 10) / containerSize.width * 100) / 2),
-                        y: ((pos.y / containerSize.height) * 100) + ((parseInt(ref.style.height, 10) / containerSize.height * 100) / 2),
-                        },
-                        size: {
-                        width: (parseInt(ref.style.width, 10) / containerSize.width) * 100,
-                        height: (parseInt(ref.style.height, 10) / containerSize.height) * 100,
-                        }
-                    });
-                    }}
-                    bounds="parent"
-                    className="pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
-                    style={{ zIndex: 999 }}
-                    minWidth="20%"
-                    minHeight="5%"
-                >
-                    <CaptionRenderer
-                    activeStyleId={rest.dynamicStyle}
-                    captionStyle={captionStyle}
-                    text={captionText}
-                    fullTranscript={fullTranscript}
-                    interimTranscript={interimTranscript}
-                    baseStyle={{
-                        fontFamily: captionStyle.fontFamily,
-                        fontSize: `${captionStyle.fontSize}px`,
-                        color: captionStyle.color,
-                        backgroundColor: captionStyle.backgroundColor,
-                        textShadow: captionStyle.shadow ? "2px 2px 4px rgba(0,0,0,0.5)" : "none",
-                        fontWeight: captionStyle.bold ? "bold" : "normal",
-                        fontStyle: captionStyle.italic ? "italic" : "normal",
-                        textDecoration: captionStyle.underline ? "underline" : "none",
-                    }}
-                    />
-                </Rnd>
-                );
-            })()}
-        </div>
-      </div>
-      {/* MODIFIED: Pass activeOverlays prop to the AICommandPopover */}
-      {containerSize.width > 0 && (
-          <Rnd
-            style={{ zIndex: 250 }}
-            size={{ width: 64, height: 64 }}
-            position={{ x: (aiButtonPosition.x / 100) * containerSize.width - 32, y: (aiButtonPosition.y / 100) * containerSize.height - 32 }}
-            onDragStop={(e, d) => {
-              const newX = ((d.x + 32) / containerSize.width) * 100;
-              const newY = ((d.y + 32) / containerSize.height) * 100;
-              onAiButtonPositionChange({ x: newX, y: newY });
-            }}
-            bounds="parent"
-            enableResizing={false}
-            className="pointer-events-auto"
-          >
-            <AICommandPopover
-              onSubmit={rest.onProcessTranscript}
-              isProcessing={props.isProcessingAi}
-              activeOverlays={generatedOverlays}
-            >
-              <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700">
-                <Sparkles className="h-8 w-8" />
-              </Button>
-            </AICommandPopover>
-          </Rnd>
+
+      {/* Floating Sidebar for Fullscreen Mode */}
+      {isFullscreen && (
+        <>
+    <div className={cn("absolute top-4 left-4 z-[1002] transition-opacity duration-300", isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none")}>
+      <Button variant="secondary" size="icon" onClick={() => onFsSidebarToggle(prev => !prev)}>
+        {isFsSidebarOpen ? (
+          <PanelLeftClose className="w-5 h-5" />
+        ) : (
+          <PanelLeftOpen className="w-5 h-5" />
+        )}
+      </Button>
+    </div>
+              {isFsSidebarOpen && (
+            <div className="absolute top-16 left-4 z-[1003] h-[85vh] rounded-xl border shadow-2xl bg-transparent">
+              <LeftSidebar
+                {...sidebarProps}
+                width={384}
+                isCollapsed={false}
+                onResize={() => {}}
+                onExpand={() => {}}
+                isOverlayMode={true}
+                onClose={() => onFsSidebarToggle(false)}
+              />
+            </div>
+          )}
+        </>
       )}
 
-      {/* This bottom controls toolbar remains unchanged */}
-      <div className={cn(
-          "absolute bottom-6 left-1/2 -translate-x-1/2 z-[1001] transition-opacity duration-300 ease-in-out",
-          isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-      )}>
+      <div className={cn("absolute top-4 right-4 z-50 transition-opacity duration-300", isControlsVisible || !isFullscreen ? "opacity-100" : "opacity-0 pointer-events-none")}>
+        <LayoutControls {...rest} />
+      </div>
+      
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 220 }}>
+        <div className="w-full h-full relative">
+          {generatedOverlays.map(overlay => (
+            <DraggableOverlay
+              key={overlay.id}
+              overlay={overlay}
+              onLayoutChange={rest.onOverlayLayoutChange}
+              onRemoveOverlay={rest.onRemoveOverlay}
+              onPreviewGenerated={onPreviewGenerated}
+              containerSize={containerSize}
+            />
+          ))}
+          {(() => {
+            const captionText = (fullTranscript + " " + interimTranscript).trim();
+            const captionStyle = rest.liveCaptionStyle as any;
+            if (!captionsEnabled || !captionText || containerSize.width === 0) return null;
+            return (
+              <Rnd
+                size={{
+                  width: `${captionStyle.width || 80}%`,
+                  height: `${captionStyle.height || 10}%`,
+                }}
+                position={{
+                  x: ((captionStyle.position.x - (captionStyle.width || 80) / 2) / 100) * containerSize.width,
+                  y: ((captionStyle.position.y - (captionStyle.height || 10) / 2) / 100) * containerSize.height,
+                }}
+                onDragStop={(e, d) => {
+                  onCaptionLayoutChange({
+                    position: {
+                      x: ((d.x / containerSize.width) * 100) + ((captionStyle.width || 80) / 2),
+                      y: ((d.y / containerSize.height) * 100) + ((captionStyle.height || 10) / 2),
+                    }
+                  });
+                }}
+                onResizeStop={(e, direction, ref, delta, pos) => {
+                  onCaptionLayoutChange({
+                    position: {
+                      x: ((pos.x / containerSize.width) * 100) + ((parseInt(ref.style.width, 10) / containerSize.width * 100) / 2),
+                      y: ((pos.y / containerSize.height) * 100) + ((parseInt(ref.style.height, 10) / containerSize.height * 100) / 2),
+                    },
+                    size: {
+                      width: (parseInt(ref.style.width, 10) / containerSize.width) * 100,
+                      height: (parseInt(ref.style.height, 10) / containerSize.height) * 100,
+                    }
+                  });
+                }}
+                bounds="parent"
+                className="pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
+                style={{ zIndex: 999 }}
+                minWidth="20%"
+                minHeight="5%"
+              >
+                <CaptionRenderer
+                  activeStyleId={rest.dynamicStyle}
+                  captionStyle={captionStyle}
+                  text={captionText}
+                  fullTranscript={fullTranscript}
+                  interimTranscript={interimTranscript}
+                  baseStyle={{
+                    fontFamily: captionStyle.fontFamily,
+                    fontSize: `${captionStyle.fontSize}px`,
+                    color: captionStyle.color,
+                    backgroundColor: captionStyle.backgroundColor,
+                    textShadow: captionStyle.shadow ? "2px 2px 4px rgba(0,0,0,0.5)" : "none",
+                    fontWeight: captionStyle.bold ? "bold" : "normal",
+                    fontStyle: captionStyle.italic ? "italic" : "normal",
+                    textDecoration: captionStyle.underline ? "underline" : "none",
+                  }}
+                />
+              </Rnd>
+            );
+          })()}
+        </div>
+      </div>
+      
+      {containerSize.width > 0 && (
+        <Rnd
+          style={{ zIndex: 250 }}
+          size={{ width: 64, height: 64 }}
+          position={{ x: (aiButtonPosition.x / 100) * containerSize.width - 32, y: (aiButtonPosition.y / 100) * containerSize.height - 32 }}
+          onDragStop={(e, d) => {
+            const newX = ((d.x + 32) / containerSize.width) * 100;
+            const newY = ((d.y + 32) / containerSize.height) * 100;
+            onAiButtonPositionChange({ x: newX, y: newY });
+          }}
+          bounds="parent"
+          enableResizing={false}
+          className={cn("pointer-events-auto transition-opacity duration-300", isControlsVisible || !isFullscreen ? "opacity-100" : "opacity-0")}
+        >
+          <AICommandPopover
+            onSubmit={rest.onProcessTranscript}
+            isProcessing={props.isProcessingAi}
+            activeOverlays={generatedOverlays}
+            isFullscreen={isFullscreen}
+            isAiModeEnabled={isAiModeEnabled}
+            onAiModeToggle={onAiModeToggle}
+            captionsEnabled={captionsEnabled}
+            onCaptionsToggle={onCaptionsToggle}
+          >
+            <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700">
+              <Sparkles className="h-8 w-8" />
+            </Button>
+          </AICommandPopover>
+        </Rnd>
+      )}
+
+      <div className={cn("absolute bottom-6 left-1/2 -translate-x-1/2 z-[1001] transition-opacity duration-300 ease-in-out", isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none")}>
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
-              <div className="flex items-center">
+          <div className="flex items-center">
             <Button variant="ghost" size="icon" className="rounded-full h-10 w-10" onClick={() => onAudioToggle(!isAudioOn)}>
-              {isAudioOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5 text-red-500"/>}
+              {isAudioOn ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5 text-red-500" />}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -674,7 +715,7 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
               <DropdownMenuContent>
                 {audioDevices.map((device, i) => (
                   <DropdownMenuItem key={device.deviceId} onClick={() => onAudioDeviceSelect(device.deviceId)}>
-                    {device.deviceId === selectedAudioDevice && <Check className="w-4 h-4 mr-2"/>}
+                    {device.deviceId === selectedAudioDevice && <Check className="w-4 h-4 mr-2" />}
                     {device.label || `Microphone ${i + 1}`}
                   </DropdownMenuItem>
                 ))}
@@ -684,7 +725,7 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
           <div className="w-px h-8 bg-border" />
           <div className="flex items-center">
             <Button variant="ghost" size="icon" className="rounded-full h-10 w-10" onClick={() => onVideoToggle(!isVideoOn)}>
-              {isVideoOn ? <Webcam className="h-5 w-5" /> : <VideoOff className="h-5 w-5 text-red-500"/>}
+              {isVideoOn ? <Webcam className="h-5 w-5" /> : <VideoOff className="h-5 w-5 text-red-500" />}
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -693,7 +734,7 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
               <DropdownMenuContent>
                 {videoDevices.map((device, i) => (
                   <DropdownMenuItem key={device.deviceId} onClick={() => onVideoDeviceSelect(device.deviceId)}>
-                    {device.deviceId === selectedVideoDevice && <Check className="w-4 h-4 mr-2"/>}
+                    {device.deviceId === selectedVideoDevice && <Check className="w-4 h-4 mr-2" />}
                     {device.label || `Camera ${i + 1}`}
                   </DropdownMenuItem>
                 ))}
@@ -711,6 +752,10 @@ const handlePipResizeStop = (e: any, direction: any, ref: HTMLElement, delta: an
             onClick={rest.isRecording ? handleStopRecording : handleStartRecording}
           >
             {rest.isRecording ? <Square className="h-6 w-6" /> : <Circle className="h-6 w-6 fill-current" />}
+          </Button>
+          <div className="w-px h-8 bg-border" />
+          <Button variant="ghost" size="icon" className="rounded-full h-10 w-10" onClick={onToggleFullscreen} title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}>
+            {isFullscreen ? <Shrink className="h-5 w-5" /> : <Expand className="h-5 w-5" />}
           </Button>
         </div>
       </div>
