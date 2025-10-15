@@ -234,7 +234,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
-
+  const [audioStreamForSpeech, setAudioStreamForSpeech] = useState<MediaStream | null>(null);
   const [fullTranscript, setFullTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
@@ -253,11 +253,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const { startRecognition, stopRecognition } = useDeepgramSpeech({
     onFinalTranscript: handleFinalTranscript,
     onPartialTranscript: setInterimTranscript,
-    stream: cameraStream,
+    stream: audioStreamForSpeech,
   });
 
   useEffect(() => {
-    if (isAudioOn && cameraStream?.getAudioTracks().length > 0) {
+    if (audioStreamForSpeech) {
       startRecognition();
     } else {
       stopRecognition();
@@ -266,7 +266,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         setInterimTranscript("");
       }
     }
-  }, [isAudioOn, cameraStream, startRecognition, stopRecognition]);
+  }, [audioStreamForSpeech, isAudioOn, startRecognition, stopRecognition]);
 
   useEffect(() => {
     const getDevices = async () => {
@@ -404,6 +404,42 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDraggingSplitter, rest.layoutMode, rest.onSplitRatioChange]);
+
+
+  useEffect(() => {
+    let dedicatedAudioStream: MediaStream | null = null;
+
+    const getAudioStream = async () => {
+      if (isAudioOn) {
+        if (cameraStream?.getAudioTracks().length > 0) {
+          // Use the existing audio track from the camera's stream
+          setAudioStreamForSpeech(cameraStream);
+        } else {
+          // If camera is off or has no audio, get a dedicated audio-only stream
+          try {
+            const constraints: MediaTrackConstraints = selectedAudioDevice ? { deviceId: { exact: selectedAudioDevice } } : true;
+            dedicatedAudioStream = await navigator.mediaDevices.getUserMedia({ audio: constraints });
+            setAudioStreamForSpeech(dedicatedAudioStream);
+          } catch (err) {
+            console.error("Failed to get dedicated audio stream:", err);
+            toast.error("Could not access microphone for captions.");
+          }
+        }
+      } else {
+        // Ensure the stream is null when audio is off
+        setAudioStreamForSpeech(null);
+      }
+    };
+
+    getAudioStream();
+
+    // Cleanup function to stop the dedicated stream's tracks
+    return () => {
+      if (dedicatedAudioStream) {
+        dedicatedAudioStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [isAudioOn, cameraStream, selectedAudioDevice]);
 
   const handlePipDragStop = (e: any, d: { x: number; y: number }) => {
     const container = canvasContainerRef.current;
