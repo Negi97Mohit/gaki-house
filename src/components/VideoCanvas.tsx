@@ -177,6 +177,8 @@ interface VideoCanvasProps {
   onToggleFullscreen: () => void;
 isFsSidebarOpen: boolean;
   onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void; // MODIFIED
+    portalContainer: HTMLElement | null; // ADD THIS LINE
+
   sidebarProps: Omit<React.ComponentProps<typeof LeftSidebar>, 'width' | 'isCollapsed' | 'onResize' | 'onExpand'>;
 }
 
@@ -206,7 +208,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isNeonEdgeEnabled, neonIntensity, neonColor, onPreviewGenerated,
     isFullscreen, onToggleFullscreen, isFsSidebarOpen, onFsSidebarToggle,
     isAiModeEnabled, onAiModeToggle, captionsEnabled, onCaptionsToggle,
-    sidebarProps,
+    sidebarProps,portalContainer,
     ...rest
   } = props;
 
@@ -593,7 +595,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       )}
 
       <div className={cn("absolute top-4 right-4 z-50 transition-opacity duration-300", isControlsVisible || !isFullscreen ? "opacity-100" : "opacity-0 pointer-events-none")}>
-        <LayoutControls {...rest} />
+        <LayoutControls {...rest} portalContainer={portalContainer} />
       </div>
       
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 220 }}>
@@ -673,7 +675,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       
       {containerSize.width > 0 && (
         <Rnd
-          style={{ zIndex: 250 }}
+          style={{ zIndex: 1000 }}
           size={{ width: 64, height: 64 }}
           position={{ x: (aiButtonPosition.x / 100) * containerSize.width - 32, y: (aiButtonPosition.y / 100) * containerSize.height - 32 }}
           onDragStop={(e, d) => {
@@ -694,8 +696,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             onAiModeToggle={onAiModeToggle}
             captionsEnabled={captionsEnabled}
             onCaptionsToggle={onCaptionsToggle}
+            portalContainer={portalContainer} 
           >
-            <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700">
+            <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700" onMouseDown={(e) => e.stopPropagation()}>
               <Sparkles className="h-8 w-8" />
             </Button>
           </AICommandPopover>

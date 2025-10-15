@@ -13,6 +13,7 @@ interface LayoutControlsProps {
   onLayoutModeChange: (mode: LayoutMode) => void;
   onCameraShapeChange: (shape: CameraShape) => void;
   onCustomMaskUpload?: (file: File) => void;
+  portalContainer?: HTMLElement | null;
 }
 
 export const LayoutControls = ({
@@ -21,6 +22,7 @@ export const LayoutControls = ({
   onLayoutModeChange,
   onCameraShapeChange,
   onCustomMaskUpload,
+  portalContainer,
 }: LayoutControlsProps) => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -36,7 +38,8 @@ export const LayoutControls = ({
           <Layout className="w-5 h-5" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+     {/* --- PASS THE PROP TO THE CONTENT --- */}
+      <DropdownMenuContent container={portalContainer} align="end" className="w-56">
         <DropdownMenuLabel>Layout Mode</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => onLayoutModeChange('split-vertical')}>
           <SplitSquareVertical className="w-4 h-4 mr-2" />

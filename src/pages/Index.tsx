@@ -273,6 +273,7 @@ const Index = () => {
           customMaskUrl={customMaskUrl} onCustomMaskUpload={handleCustomMaskUpload}
           aiButtonPosition={aiButtonPosition} onAiButtonPositionChange={setAiButtonPosition}
           isProcessingAi={isProcessingAi}
+            portalContainer={mainContainerRef.current}
         />
       </div>
     </div>

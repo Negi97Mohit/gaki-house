@@ -19,6 +19,7 @@ interface AICommandPopoverProps {
   isAiModeEnabled?: boolean;
   onAiModeToggle?: (enabled: boolean) => void;
   captionsEnabled?: boolean;
+  portalContainer?: HTMLElement | null; 
   onCaptionsToggle?: (enabled: boolean) => void;
 }
 
@@ -30,7 +31,7 @@ export const AICommandPopover = ({
   isFullscreen,
   isAiModeEnabled,
   onAiModeToggle,
-  captionsEnabled,
+  captionsEnabled,portalContainer,
   onCaptionsToggle,
 }: AICommandPopoverProps) => {
   const [open, setOpen] = useState(false);
@@ -52,10 +53,19 @@ export const AICommandPopover = ({
     }
   };
 
+  console.log('DEBUG: Popover open state is:', open);
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover 
+      open={open} 
+      onOpenChange={(isOpen) => {
+        // *** ADDED: DEBUG LOG to see when the open state is triggered ***
+        console.log(`DEBUG: Popover onOpenChange triggered. New state: ${isOpen}`);
+        setOpen(isOpen);
+      }}
+    >
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent className="w-96 p-4" align="end">
+      <PopoverContent container={portalContainer}  className="w-96 p-4" align="end">
         <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-semibold leading-none flex items-center gap-2">
