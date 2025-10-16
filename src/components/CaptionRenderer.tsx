@@ -26,6 +26,7 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
 
   const text = (props.fullTranscript + " " + props.interimTranscript).trim();
   if (!text) return null;
+const key = text; // ✅ Add this line
 
   const styleEntry = DYNAMIC_STYLES[activeStyleId] || DYNAMIC_STYLES["none"];
   const StyleComponent = styleEntry.component;

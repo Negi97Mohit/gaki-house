@@ -15,7 +15,7 @@ import { Slider } from "./ui/slider";
 import { FILTER_PRESETS } from "@/lib/filters.ts";
 import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { DYNAMIC_STYLE_OPTIONS } from "@/components/styles";
+import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 

@@ -1,3 +1,5 @@
+// src/components/StyleControls.tsx
+
 import { CaptionStyle } from "@/types/caption";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
@@ -75,12 +77,14 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="bg-color">Background Color</Label>
+          {/* --- THIS IS THE CHANGED LINE --- */}
           <Input
             id="bg-color"
-            type="color"
+            type="text" // Changed from "color" to "text"
             value={style.backgroundColor}
             onChange={(e) => handleValueChange("backgroundColor", e.target.value)}
-            className="p-1 h-10"
+            className="h-10 px-2"
+            placeholder="e.g., rgba(0,0,0,0.5)"
           />
         </div>
       </div>
@@ -99,7 +103,7 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           <Switch 
             id="italic-toggle"
             checked={style.italic}
-            onCheckedChange={(checked) => handleValueChange("italic", checked)}
+            onCheckedChange={(checked) => handleValue-Change("italic", checked)}
           />
           <Label htmlFor="italic-toggle">Italic</Label>
         </div>
