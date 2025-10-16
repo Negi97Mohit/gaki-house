@@ -216,6 +216,7 @@ export const DYNAMIC_STYLES: Record<string, CaptionStyleDef> = {
   "neon-pop": { id: "neon-pop", name: "Neon Pop", component: NeonPopComponent },
   "shimmer-slide": { id: "shimmer-slide", name: "Shimmer Slide", component: ShimmerSlideComponent },
   "pulse-glow-beat": { id: "pulse-glow-beat", name: "Pulse Glow Beat", component: PulseGlowBeatComponent },
+
 };
 
 export const DYNAMIC_STYLE_OPTIONS = Object.values(DYNAMIC_STYLES).map(({ id, name }) => ({ id, name }));

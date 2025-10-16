@@ -123,6 +123,40 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           />
           <Label htmlFor="shadow-toggle">Shadow</Label>
         </div>
+        <div className="flex items-center space-x-2">
+          <Switch 
+            id="border-toggle" 
+            checked={style.border} 
+            onCheckedChange={(checked) => handleValueChange("border", checked)}
+          />
+          <Label htmlFor="border-toggle">Border</Label>
+        </div>
+        {/* --- ADD THIS ENTIRE SECTION --- */}
+      {style.border && (
+        <div className="space-y-6 pt-4 border-t animate-fade-in">
+          <div className="space-y-2">
+            <Label htmlFor="border-color">Border Color</Label>
+            <Input
+              id="border-color"
+              type="color"
+              value={style.borderColor}
+              onChange={(e) => handleValueChange("borderColor", e.target.value)}
+              className="p-1 h-10"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="border-width">Border Width: {style.borderWidth}px</Label>
+            <Slider
+              id="border-width"
+              value={[style.borderWidth]}
+              onValueChange={([value]) => handleValueChange("borderWidth", value)}
+              min={1}
+              max={10}
+              step={1}
+            />
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );

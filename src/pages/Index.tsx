@@ -25,7 +25,8 @@ const Index = () => {
   const [captionStyle, setCaptionStyle] = useState<CaptionStyle>({
     fontFamily: "Inter", fontSize: 24, color: "#FFFFFF", backgroundColor: "rgba(0, 0, 0, 0.8)",
     position: { x: 50, y: 85 }, shape: "rounded", animation: "fade", outline: false, shadow: true,
-    bold: false, italic: false, underline: false, width: 80, height: 10, rotation: 0,
+    bold: false, italic: false, underline: false, width: 80, rotation: 0,
+    border: false, borderColor: '#FFFFFF', borderWidth: 2,
   });
   const [backgroundEffect, setBackgroundEffect] = useState<'none' | 'blur' | 'image'>('none');
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);

@@ -725,7 +725,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               <Rnd
                 size={{
                   width: `${captionStyle.width || 80}%`,
-                  height: `${captionStyle.height || 10}%`,
+                  height: 'auto',
                 }}
                 position={{
                   x: ((captionStyle.position.x - (captionStyle.width || 80) / 2) / 100) * containerSize.width,
@@ -747,7 +747,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     },
                     size: {
                       width: (parseInt(ref.style.width, 10) / containerSize.width) * 100,
-                      height: (parseInt(ref.style.height, 10) / containerSize.height) * 100,
                     }
                   });
                 }}

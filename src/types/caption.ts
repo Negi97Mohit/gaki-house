@@ -19,8 +19,10 @@ export interface CaptionStyle {
   underline: boolean;
   textShadow?: string;
   width?: number; // ADD THIS LINE (percentage)
-  height?: number; // ADD THIS LINE (percentage)
   rotation: number;
+  border: boolean;
+  borderColor: string;
+  borderWidth: number;
 }
 export type GeneratedLayout = {
   position: { x: number; y: number };

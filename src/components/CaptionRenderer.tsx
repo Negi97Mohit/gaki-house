@@ -1,6 +1,7 @@
 // src/components/CaptionRenderer.tsx
 import React from "react";
-import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";import { DynamicStyleProps } from "@/types/caption";
+import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";
+import { DynamicStyleProps } from "@/types/caption";
 import { CaptionStyle } from "@/types/caption";
 import { cn } from "@/lib/utils";
 
@@ -26,20 +27,23 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
 
   const text = (props.fullTranscript + " " + props.interimTranscript).trim();
   if (!text) return null;
-const key = text; // ✅ Add this line
 
   const styleEntry = DYNAMIC_STYLES[activeStyleId] || DYNAMIC_STYLES["none"];
   const StyleComponent = styleEntry.component;
 
-  // The style prop for absolute positioning has been removed.
-  // The component now fills its parent and centers its content.
+  // Create a new style object that combines the base style with our new border style
+  const combinedStyle: React.CSSProperties = { ...props.baseStyle };
+  if (captionStyle.border) {
+    combinedStyle.border = `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`;
+  }
+combinedStyle.minHeight = '2em'; // Set a minimum height to prevent collapse
   return (
     <div
       className={cn(
-        "w-full h-full p-2 max-w-full transition-all duration-200 flex items-center justify-center text-center", 
+        "w-full p-2 max-w-full transition-all duration-200 flex items-center justify-center text-center", 
         getShapeClasses()
       )}
-      style={props.baseStyle}
+      style={combinedStyle} // Use the new combined style object
     >
       <StyleComponent {...props} />
     </div>
