@@ -689,105 +689,135 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             />
           ))}
 {(() => {
-            const captionText = (fullTranscript + " " + interimTranscript).trim();
-            const captionStyle = rest.liveCaptionStyle as any; 
-            if (!captionsEnabled || !captionText || containerSize.width === 0) return null;
-            
-            const captionRef = React.createRef<HTMLDivElement>();
-            
-            const handleCaptionRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
-              e.preventDefault();
-              e.stopPropagation();
+  const captionText = (fullTranscript + " " + interimTranscript).trim();
+  const captionStyle = rest.liveCaptionStyle as any; 
+  if (!captionsEnabled || !captionText || containerSize.width === 0) return null;
+  
+  const captionRef = React.createRef<HTMLDivElement>();
+  
+  const handleCaptionRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-              if (!captionRef.current) return;
-              const box = captionRef.current.getBoundingClientRect();
-              const centerX = box.left + box.width / 2;
-              const centerY = box.top + box.height / 2;
-              const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-              const initialRotation = captionStyle.rotation || 0;
+    if (!captionRef.current) return;
+    const box = captionRef.current.getBoundingClientRect();
+    const centerX = box.left + box.width / 2;
+    const centerY = box.top + box.height / 2;
+    const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+    const initialRotation = captionStyle.rotation || 0;
 
-              const handleMouseMove = (moveEvent: MouseEvent) => {
-                const currentAngle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * (180 / Math.PI);
-                const angleDiff = currentAngle - startAngle;
-                 props.onStyleChange({ ...captionStyle, rotation: initialRotation + angleDiff });
-              };
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const currentAngle = Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) * (180 / Math.PI);
+      const angleDiff = currentAngle - startAngle;
+      props.onStyleChange({ ...captionStyle, rotation: initialRotation + angleDiff });
+    };
 
-              const handleMouseUp = () => {
-                document.removeEventListener('mousemove', handleMouseMove);
-                document.removeEventListener('mouseup', handleMouseUp);
-              };
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
 
-              document.addEventListener('mousemove', handleMouseMove);
-              document.addEventListener('mouseup', handleMouseUp);
-            };
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
 
-            return (
-              <Rnd
-                size={{
-                  width: `${captionStyle.width || 80}%`,
-                  height: 'auto',
-                }}
-                position={{
-                  x: ((captionStyle.position.x - (captionStyle.width || 80) / 2) / 100) * containerSize.width,
-                  y: ((captionStyle.position.y - (captionStyle.height || 10) / 2) / 100) * containerSize.height,
-                }}
-                onDragStop={(e, d) => {
-                  onCaptionLayoutChange({
-                    position: {
-                      x: ((d.x / containerSize.width) * 100) + ((captionStyle.width || 80) / 2),
-                      y: ((d.y / containerSize.height) * 100) + ((captionStyle.height || 10) / 2),
-                    }
-                  });
-                }}
-                onResizeStop={(e, direction, ref, delta, pos) => {
-                  onCaptionLayoutChange({
-                    position: {
-                      x: ((pos.x / containerSize.width) * 100) + ((parseInt(ref.style.width, 10) / containerSize.width * 100) / 2),
-                      y: ((pos.y / containerSize.height) * 100) + ((parseInt(ref.style.height, 10) / containerSize.height * 100) / 2),
-                    },
-                    size: {
-                      width: (parseInt(ref.style.width, 10) / containerSize.width) * 100,
-                    }
-                  });
-                }}
-                bounds="parent"
-                className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
-                style={{ zIndex: 999 }} // REMOVED transform from here
-                minWidth="20%"
-                minHeight="5%"
-              >
-                <div 
-                  ref={captionRef} 
-                  className="w-full h-full relative" 
-                  style={{ transform: `rotate(${captionStyle.rotation || 0}deg)` }} // MOVED transform here
-                >
-                  <CaptionRenderer
-                    activeStyleId={rest.dynamicStyle}
-                    captionStyle={captionStyle}
-                    text={captionText}
-                    fullTranscript={fullTranscript}
-                    interimTranscript={interimTranscript}
-                    baseStyle={{
-                      fontFamily: captionStyle.fontFamily,
-                      fontSize: `${captionStyle.fontSize}px`,
-                      color: captionStyle.color,
-                      backgroundColor: captionStyle.backgroundColor,
-                      textShadow: captionStyle.shadow ? "2px 2px 4px rgba(0,0,0,0.5)" : "none",
-                      fontWeight: captionStyle.bold ? "bold" : "normal",
-                      fontStyle: captionStyle.italic ? "italic" : "normal",
-                      textDecoration: captionStyle.underline ? "underline" : "none",
-                    }}
-                  />
-                  <div
-                    onMouseDown={handleCaptionRotationStart}
-                    className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50 cursor-alias"
-                  >
-                    <RotateCcw className="w-4 h-4" />
-                  </div>
-                </div>
-              </Rnd>
-            );
-          })()}
+  // Get current width percentage (default to 80% if not set)
+  const currentWidthPercent = captionStyle.width || 80;
+  
+  // Calculate pixel dimensions
+  const widthPx = (containerSize.width * currentWidthPercent) / 100;
+  
+  // Calculate position in pixels (center-based)
+  const xPx = (containerSize.width * captionStyle.position.x) / 100 - widthPx / 2;
+  const yPx = (containerSize.height * captionStyle.position.y) / 100;
+
+  return (
+    <Rnd
+      size={{
+        width: widthPx,
+        height: 'auto',
+      }}
+      position={{
+        x: xPx,
+        y: yPx,
+      }}
+      onDragStop={(e, d) => {
+        // Calculate new center position
+        const newCenterX = ((d.x + widthPx / 2) / containerSize.width) * 100;
+        const newCenterY = (d.y / containerSize.height) * 100;
+        
+        onCaptionLayoutChange({
+          position: {
+            x: newCenterX,
+            y: newCenterY,
+          }
+        });
+      }}
+      onResizeStop={(e, direction, ref, delta, pos) => {
+        const newWidthPx = parseInt(ref.style.width, 10);
+        const newWidthPercent = (newWidthPx / containerSize.width) * 100;
+        
+        // Calculate new center position after resize
+        const newCenterX = ((pos.x + newWidthPx / 2) / containerSize.width) * 100;
+        const newCenterY = (pos.y / containerSize.height) * 100;
+        
+        onCaptionLayoutChange({
+          position: {
+            x: newCenterX,
+            y: newCenterY,
+          },
+          size: {
+            width: newWidthPercent,
+          }
+        });
+      }}
+      bounds="parent"
+      className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
+      style={{ zIndex: 999 }}
+      minWidth={containerSize.width * 0.2}
+      enableResizing={{
+        left: true,
+        right: true,
+        top: false,
+        bottom: false,
+        topLeft: false,
+        topRight: false,
+        bottomLeft: false,
+        bottomRight: false,
+      }}
+    >
+      <div 
+        ref={captionRef} 
+        className="w-full h-full relative" 
+        style={{ transform: `rotate(${captionStyle.rotation || 0}deg)` }}
+      >
+        <CaptionRenderer
+          activeStyleId={rest.dynamicStyle}
+          captionStyle={captionStyle}
+          text={captionText}
+          fullTranscript={fullTranscript}
+          interimTranscript={interimTranscript}
+          baseStyle={{
+            fontFamily: captionStyle.fontFamily,
+            fontSize: `${captionStyle.fontSize}px`,
+            color: captionStyle.color,
+            backgroundColor: captionStyle.backgroundColor,
+            textShadow: captionStyle.shadow ? "2px 2px 4px rgba(0,0,0,0.5)" : "none",
+            fontWeight: captionStyle.bold ? "bold" : "normal",
+            fontStyle: captionStyle.italic ? "italic" : "normal",
+            textDecoration: captionStyle.underline ? "underline" : "none",
+          }}
+        />
+        <div
+          onMouseDown={handleCaptionRotationStart}
+          className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50 cursor-alias"
+        >
+          <RotateCcw className="w-4 h-4" />
+        </div>
+      </div>
+    </Rnd>
+  );
+})()}
                   </div>
       </div>      
       {containerSize.width > 0 && (
