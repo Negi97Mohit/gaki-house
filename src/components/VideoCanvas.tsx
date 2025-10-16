@@ -442,42 +442,47 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     };
   }, [isDraggingSplitter, rest.layoutMode, rest.onSplitRatioChange]);
 
+// src/components/VideoCanvas.tsx
 
+  // This useEffect now *only* manages the audio stream for speech recognition
   useEffect(() => {
+    // This variable holds the stream created within this effect's scope
     let dedicatedAudioStream: MediaStream | null = null;
 
-    const getAudioStream = async () => {
+    const manageAudioStream = async () => {
       if (isAudioOn) {
-        if (cameraStream?.getAudioTracks().length > 0) {
-          // Use the existing audio track from the camera's stream
-          setAudioStreamForSpeech(cameraStream);
-        } else {
-          // If camera is off or has no audio, get a dedicated audio-only stream
-          try {
-            const constraints: MediaTrackConstraints = selectedAudioDevice ? { deviceId: { exact: selectedAudioDevice } } : true;
-            dedicatedAudioStream = await navigator.mediaDevices.getUserMedia({ audio: constraints });
-            setAudioStreamForSpeech(dedicatedAudioStream);
-          } catch (err) {
-            console.error("Failed to get dedicated audio stream:", err);
-            toast.error("Could not access microphone for captions.");
-          }
+        // If the audio toggle is on, get a dedicated audio-only stream
+        try {
+          const constraints: MediaStreamConstraints = {
+            audio: selectedAudioDevice ? { deviceId: { exact: selectedAudioDevice } } : true,
+          };
+          dedicatedAudioStream = await navigator.mediaDevices.getUserMedia(constraints);
+          setAudioStreamForSpeech(dedicatedAudioStream);
+        } catch (err) {
+          console.error("Failed to get dedicated audio stream for captions:", err);
+          toast.error("Could not access microphone for captions.");
+          onAudioToggle(false); // Turn the toggle off if permission is denied
         }
       } else {
-        // Ensure the stream is null when audio is off
-        setAudioStreamForSpeech(null);
+        // If the audio toggle is off, stop any active stream and clear the state
+        if (audioStreamForSpeech) {
+          audioStreamForSpeech.getTracks().forEach(track => track.stop());
+          setAudioStreamForSpeech(null);
+        }
       }
     };
 
-    getAudioStream();
+    manageAudioStream();
 
-    // Cleanup function to stop the dedicated stream's tracks
+    // This cleanup function will stop the stream if the component unmounts
     return () => {
       if (dedicatedAudioStream) {
         dedicatedAudioStream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [isAudioOn, cameraStream, selectedAudioDevice]);
-
+    // The dependency array is now correctly scoped to only the audio controls
+  }, [isAudioOn, selectedAudioDevice, onAudioToggle]);
+  
   const handlePipDragStop = (e: any, d: { x: number; y: number }) => {
     const container = canvasContainerRef.current;
     if (!container) return;
