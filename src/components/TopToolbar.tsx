@@ -27,11 +27,14 @@ export const TopToolbar = ({
   return (
     <div className="h-16 border-b border-border bg-card px-4 flex items-center gap-4">
       {/* Logo */}
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-lg bg-gradient-primary" />
-        <span className="font-bold text-xl">gaki がき</span>
-      </div>
-
+<div className="flex items-center gap-2">
+  <img 
+    src="/icon.png" 
+    alt="gaki logo" 
+    className="w-8 h-8 rounded-lg" 
+  />
+  <span className="font-bold text-xl">gaki がき</span>
+</div>
       <Separator orientation="vertical" className="h-8" />
 
       {/* Sidebar Toggle Button */}
