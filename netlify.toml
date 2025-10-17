@@ -1,0 +1,22 @@
+# netlify.toml
+
+[build]
+  # This command builds your Vite app for production
+  command = "npm run build"
+  # Vite's output directory is 'dist'
+  publish = "dist"
+
+[dev]
+  # This is the command to run your Vite dev server
+  command = "npm run dev"
+  # The port your Vite server runs on
+  targetPort = 5173
+  # The port Netlify will expose for your local dev environment
+  port = 8888
+
+# This redirect rule is ESSENTIAL for Single-Page Applications (SPAs) like React.
+# It ensures that refreshing the page on a route like '/dashboard' doesn't result in a 404 error.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
