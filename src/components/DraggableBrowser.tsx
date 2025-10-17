@@ -1,0 +1,117 @@
+// src/components/DraggableBrowser.tsx
+import React, { useState } from 'react';
+import { Rnd } from 'react-rnd';
+import { cn } from '@/lib/utils';
+import { X, RotateCcw, Globe, ArrowRight } from 'lucide-react';
+
+// Define the shape of the browser overlay's state
+export interface BrowserOverlayState {
+  id: string;
+  url: string;
+  layout: {
+    position: { x: number; y: number };
+    size: { width: number; height: number };
+    zIndex: number;
+    rotation: number;
+  };
+}
+
+interface DraggableBrowserProps {
+  overlay: BrowserOverlayState;
+  onLayoutChange: (id: string, layout: Partial<BrowserOverlayState['layout']>) => void;
+  onUrlChange: (id: string, url: string) => void;
+  onRemove: (id: string) => void;
+  containerSize: { width: number; height: number };
+}
+
+export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
+  overlay,
+  onLayoutChange,
+  onUrlChange,
+  onRemove,
+  containerSize,
+}) => {
+  const [inputUrl, setInputUrl] = useState(overlay.url);
+
+  const handleSubmitUrl = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Basic check to add https:// if missing
+    const formattedUrl = inputUrl.startsWith('http') ? inputUrl : `https://${inputUrl}`;
+    onUrlChange(overlay.id, formattedUrl);
+  };
+  
+  // Convert percentage layout to pixel values for Rnd component
+  const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
+  const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
+  const xPx = (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2;
+  const yPx = (containerSize.height * overlay.layout.position.y) / 100 - heightPx / 2;
+
+  return (
+    <Rnd
+      size={{ width: widthPx, height: heightPx }}
+      position={{ x: xPx, y: yPx }}
+      minWidth={250}
+      minHeight={200}
+      bounds="parent"
+      onDragStop={(e, d) => {
+        onLayoutChange(overlay.id, {
+          position: {
+            x: ((d.x + widthPx / 2) / containerSize.width) * 100,
+            y: ((d.y + heightPx / 2) / containerSize.height) * 100,
+          },
+        });
+      }}
+      onResizeStop={(e, dir, ref, delta, pos) => {
+        const newWidth = parseInt(ref.style.width, 10);
+        const newHeight = parseInt(ref.style.height, 10);
+        onLayoutChange(overlay.id, {
+          position: {
+            x: ((pos.x + newWidth / 2) / containerSize.width) * 100,
+            y: ((pos.y + newHeight / 2) / containerSize.height) * 100,
+          },
+          size: {
+            width: (newWidth / containerSize.width) * 100,
+            height: (newHeight / containerSize.height) * 100,
+          },
+        });
+      }}
+      className="group pointer-events-auto border-2 border-primary/50 bg-card shadow-lg rounded-lg flex flex-col overflow-hidden"
+      style={{ zIndex: overlay.layout.zIndex, transform: `rotate(${overlay.layout.rotation}deg)` }}
+    >
+      {/* Browser Header/URL Bar */}
+      <div className="flex-shrink-0 h-10 bg-secondary flex items-center p-2 gap-2 cursor-move">
+        <Globe className="w-4 h-4 text-muted-foreground" />
+        <form onSubmit={handleSubmitUrl} className="flex-1">
+          <input
+            type="text"
+            value={inputUrl}
+            onChange={(e) => setInputUrl(e.target.value)}
+            // CHANGE THIS LINE
+            className="w-full bg-background rounded-sm px-2 py-0.5 text-[clamp(0.7rem,1.5vw,0.9rem)]"
+            onClick={(e) => e.stopPropagation()} 
+            placeholder="Enter URL..."
+          />
+        </form>
+        <button onClick={handleSubmitUrl} className="p-1 hover:bg-primary/20 rounded-sm">
+          <ArrowRight className="w-4 h-4"/>
+        </button>
+      </div>
+
+      {/* Iframe for the browser content */}
+      <iframe
+        src={overlay.url}
+        className="flex-grow w-full h-full border-none"
+        sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts"
+        title={`browser-overlay-${overlay.id}`}
+      />
+
+      {/* Controls (Close Button, etc.) */}
+      <button
+        onClick={() => onRemove(overlay.id)}
+        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-50"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </Rnd>
+  );
+};

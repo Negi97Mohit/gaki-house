@@ -16,6 +16,7 @@ import { AICommandPopover } from "./AICommandPopover";
 import { CaptionRenderer } from "./CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
 import { LeftSidebar } from "./LeftSidebar";
+import { DraggableBrowser, BrowserOverlayState } from "./DraggableBrowser";
 
 // New component to render raw HTML safely in an iframe
 const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({ htmlContent }) => {
@@ -215,7 +216,10 @@ interface VideoCanvasProps {
 isFsSidebarOpen: boolean;
   onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void; // MODIFIED
     portalContainer: HTMLElement | null; // ADD THIS LINE
-
+browserOverlays: BrowserOverlayState[];
+  onRemoveBrowser: (id: string) => void;
+  onBrowserUrlChange: (id: string, url: string) => void;
+  onBrowserLayoutChange: (id: string, layout: Partial<BrowserOverlayState['layout']>) => void;
   sidebarProps: Omit<React.ComponentProps<typeof LeftSidebar>, 'width' | 'isCollapsed' | 'onResize' | 'onExpand'>;
 }
 
@@ -245,7 +249,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isNeonEdgeEnabled, neonIntensity, neonColor, onPreviewGenerated,
     isFullscreen, onToggleFullscreen, isFsSidebarOpen, onFsSidebarToggle,
     isAiModeEnabled, onAiModeToggle, captionsEnabled, onCaptionsToggle,
-    sidebarProps,portalContainer,
+    sidebarProps,portalContainer,browserOverlays,
+    onRemoveBrowser,
+    onBrowserUrlChange,
+    onBrowserLayoutChange,
     ...rest
   } = props;
 
@@ -688,6 +695,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               containerSize={containerSize}
             />
           ))}
+          {browserOverlays.map(browser => (
+            <DraggableBrowser
+              key={browser.id}
+              overlay={browser}
+              onRemove={onRemoveBrowser}
+              onUrlChange={onBrowserUrlChange}
+              onLayoutChange={onBrowserLayoutChange}
+              containerSize={containerSize}
+            />
+          ))}
 {(() => {
   const captionText = (fullTranscript + " " + interimTranscript).trim();
   const captionStyle = rest.liveCaptionStyle as any; 
@@ -845,7 +862,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             onCaptionsToggle={onCaptionsToggle}
             portalContainer={portalContainer} 
           >
-            <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700" onMouseDown={(e) => e.stopPropagation()}>
+            <Button size="icon" className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700">
               <Sparkles className="h-8 w-8" />
             </Button>
           </AICommandPopover>

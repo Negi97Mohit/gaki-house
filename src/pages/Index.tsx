@@ -10,10 +10,13 @@ import { toast } from "sonner";
 import { useLog } from "@/context/LogContext";
 import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { DraggableBrowser, BrowserOverlayState } from '@/components/DraggableBrowser';
 
 const generateOverlayId = () => `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const generateBrowserId = () => `browser-${Date.now()}`;
 
 const Index = () => {
+  const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>([]);
   const [activeHtmlOverlay, setActiveHtmlOverlay] = useState<GeneratedOverlay | null>(null);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const [activeOverlays, setActiveOverlays] = useState<GeneratedOverlay[]>([]);
@@ -125,6 +128,57 @@ const Index = () => {
       prev.map(o => o.id === id ? { ...o, layout: { ...o.layout, [key]: value } } : o)
     );
   };
+
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore keypress if user is typing in an input, textarea, etc.
+      const target = e.target as HTMLElement;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
+        return;
+      }
+
+      if (e.key === '/') {
+        e.preventDefault(); // Prevent browser's default find-in-page action
+        
+        const newBrowser: BrowserOverlayState = {
+          id: generateBrowserId(),
+          // A default URL that works well in iframes
+          url: 'https://www.google.com/search?igu=1',
+          layout: {
+            position: { x: 50, y: 50 },
+            size: { width: 40, height: 50 },
+            zIndex: 100,
+            rotation: 0,
+          },
+        };
+
+        setBrowserOverlays(prev => [...prev, newBrowser]);
+        toast.info("Browser window added. Press '/' again for another.");
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []); // Empty dependency array ensures this runs only once
+
+  // ADD THESE HANDLERS to manage the browser overlays
+  const handleRemoveBrowser = (id: string) => {
+    setBrowserOverlays(prev => prev.filter(b => b.id !== id));
+  };
+  
+  const handleBrowserUrlChange = (id: string, url: string) => {
+    setBrowserOverlays(prev => 
+      prev.map(b => b.id === id ? { ...b, url } : b)
+    );
+  };
+  
+  const handleBrowserLayoutChange = (id: string, layout: Partial<BrowserOverlayState['layout']>) => {
+    setBrowserOverlays(prev => 
+      prev.map(b => b.id === id ? { ...b, layout: { ...b.layout, ...layout } } : b)
+    );
+  };
+
 
   const handleRemoveOverlay = (id: string) => {
     setActiveOverlays(prev => prev.filter(o => o.id !== id));
@@ -276,6 +330,10 @@ const Index = () => {
           aiButtonPosition={aiButtonPosition} onAiButtonPositionChange={setAiButtonPosition}
           isProcessingAi={isProcessingAi}
             portalContainer={mainContainerRef.current}
+            browserOverlays={browserOverlays}
+      onRemoveBrowser={handleRemoveBrowser}
+      onBrowserUrlChange={handleBrowserUrlChange}
+      onBrowserLayoutChange={handleBrowserLayoutChange}
         />
       </div>
     </div>
