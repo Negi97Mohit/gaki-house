@@ -221,6 +221,8 @@ browserOverlays: BrowserOverlayState[];
   onBrowserUrlChange: (id: string, url: string) => void;
   onBrowserLayoutChange: (id: string, layout: Partial<BrowserOverlayState['layout']>) => void;
   sidebarProps: Omit<React.ComponentProps<typeof LeftSidebar>, 'width' | 'isCollapsed' | 'onResize' | 'onExpand'>;
+selectedBrowserId: string | null;
+  setSelectedBrowserId: (id: string | null) => void;
 }
 
 const VideoPlayer: React.FC<{
@@ -252,7 +254,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     sidebarProps,portalContainer,browserOverlays,
     onRemoveBrowser,
     onBrowserUrlChange,
-    onBrowserLayoutChange,
+    onBrowserLayoutChange,selectedBrowserId,
+    setSelectedBrowserId,
     ...rest
   } = props;
 
@@ -696,14 +699,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             />
           ))}
           {browserOverlays.map(browser => (
-            <DraggableBrowser
-              key={browser.id}
-              overlay={browser}
-              onRemove={onRemoveBrowser}
-              onUrlChange={onBrowserUrlChange}
-              onLayoutChange={onBrowserLayoutChange}
-              containerSize={containerSize}
-            />
+<DraggableBrowser
+    key={browser.id}
+    overlay={browser}
+    onRemove={onRemoveBrowser}
+    onUrlChange={onBrowserUrlChange}
+    onLayoutChange={onBrowserLayoutChange}
+    containerSize={containerSize}
+    isSelected={selectedBrowserId === browser.id}
+    // ADD THIS LINE TO FIX THE ERROR
+    onSelect={setSelectedBrowserId}
+  />
           ))}
 {(() => {
   const captionText = (fullTranscript + " " + interimTranscript).trim();

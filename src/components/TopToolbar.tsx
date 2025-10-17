@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { CaptionStyle } from "@/types/caption";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Eye, EyeOff, PanelLeftClose, PanelLeftOpen, Sparkles, BrainCircuit } from "lucide-react";
+import { InstructionsDialog } from "./InstructionsDialog";
 
 interface TopToolbarProps {
   captionsEnabled: boolean;
@@ -40,6 +41,7 @@ export const TopToolbar = ({
       </Button>
 
       <div className="ml-auto flex items-center gap-2">
+        <InstructionsDialog />
         <Button
           variant="ghost"
           size="icon"

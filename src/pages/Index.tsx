@@ -25,6 +25,7 @@ const Index = () => {
   const [liveCaptionStyle, setLiveCaptionStyle] = useState<React.CSSProperties>({});
   const [videoFilter, setVideoFilter] = useState<string>('none');
   const [aiButtonPosition, setAiButtonPosition] = useState({ x: 92, y: 85 });
+const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(null);
   const [captionStyle, setCaptionStyle] = useState<CaptionStyle>({
     fontFamily: "Inter", fontSize: 24, color: "#FFFFFF", backgroundColor: "rgba(0, 0, 0, 0.8)",
     position: { x: 50, y: 85 }, shape: "rounded", animation: "fade", outline: false, shadow: true,
@@ -130,20 +131,20 @@ const Index = () => {
   };
 
 
-  useEffect(() => {
+// src/pages/Index.tsx
+
+useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore keypress if user is typing in an input, textarea, etc.
       const target = e.target as HTMLElement;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
         return;
       }
 
+      // FIX 1: Add the logic for the '/' key
       if (e.key === '/') {
-        e.preventDefault(); // Prevent browser's default find-in-page action
-        
+        e.preventDefault();
         const newBrowser: BrowserOverlayState = {
           id: generateBrowserId(),
-          // A default URL that works well in iframes
           url: 'https://www.google.com/search?igu=1',
           layout: {
             position: { x: 50, y: 50 },
@@ -152,17 +153,27 @@ const Index = () => {
             rotation: 0,
           },
         };
-
         setBrowserOverlays(prev => [...prev, newBrowser]);
-        toast.info("Browser window added. Press '/' again for another.");
+        toast.info("Browser window added.");
       }
-    };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []); // Empty dependency array ensures this runs only once
+if (e.key === 'Escape') {
+      // If a browser is selected, handle it and stop the event
+      if (selectedBrowserId) {
+        e.preventDefault();
+        e.stopPropagation(); // This is the key: stop the event from bubbling up
+        handleRemoveBrowser(selectedBrowserId);
+        setSelectedBrowserId(null);
+      }
+      // If no browser is selected, do nothing and let the browser exit fullscreen normally
+      return; 
+    }
+  };
 
-  // ADD THESE HANDLERS to manage the browser overlays
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [selectedBrowserId]);
+
   const handleRemoveBrowser = (id: string) => {
     setBrowserOverlays(prev => prev.filter(b => b.id !== id));
   };
@@ -315,9 +326,9 @@ const Index = () => {
           isAudioOn={isAudioOn} onAudioToggle={setIsAudioOn}
           isVideoOn={isVideoOn} onVideoToggle={setIsVideoOn}
           isRecording={isRecording} onRecordingToggle={setIsRecording}
-          selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedVideoDevice}
-          selectedVideoDevice={selectedVideoDevice} onVideoDeviceSelect={setSelectedVideoDevice}
-          zoomSensitivity={zoomSensitivity} trackingSpeed={trackingSpeed}
+selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedAudioDevice}
+  selectedVideoDevice={selectedVideoDevice} onVideoDeviceSelect={setSelectedVideoDevice}
+            zoomSensitivity={zoomSensitivity} trackingSpeed={trackingSpeed}
           isBeautifyEnabled={isBeautifyEnabled} isLowLightEnabled={isLowLightEnabled}
           layoutMode={layoutMode} cameraShape={cameraShape}
           isNeonEdgeEnabled={isNeonEdgeEnabled}
@@ -330,10 +341,12 @@ const Index = () => {
           aiButtonPosition={aiButtonPosition} onAiButtonPositionChange={setAiButtonPosition}
           isProcessingAi={isProcessingAi}
             portalContainer={mainContainerRef.current}
-            browserOverlays={browserOverlays}
       onRemoveBrowser={handleRemoveBrowser}
       onBrowserUrlChange={handleBrowserUrlChange}
       onBrowserLayoutChange={handleBrowserLayoutChange}
+        selectedBrowserId={selectedBrowserId}
+      setSelectedBrowserId={setSelectedBrowserId}
+      browserOverlays={browserOverlays}
         />
       </div>
     </div>
