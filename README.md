@@ -1,73 +1,94 @@
-# Welcome to your Lovable project
+# gaki がき
 
-## Project info
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![React](https://img.shields.io/badge/React-18-blue)
+![Vite](https://img.shields.io/badge/Vite-latest-purple)
 
-**URL**: https://lovable.dev/projects/e72938cf-5c52-4524-8498-de2ca271d819
+A powerful, web-based video recording studio that leverages AI to create dynamic overlays, real-time captions, and professional-grade video effects directly in your browser.
 
-## How can I edit this code?
 
-There are several ways of editing your application.
 
-**Use Lovable**
+## ✨ Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e72938cf-5c52-4524-8498-de2ca271d819) and start prompting.
+* **🤖 AI-Powered Overlays:** Generate complex HTML/CSS/JS visual overlays from natural language prompts using Groq's Llama 3.3 model. The AI can even use real-world assets like Font Awesome icons and brand logos.
+* **🌐 In-App Browser:** Press the **`/`** key to open a draggable, resizable, and rotatable browser window inside your video canvas, perfect for showcasing websites.
+* **✍️ Dynamic Live Captions:** Go beyond static text with word-by-word animated caption styles like Karaoke and Pop Up. A deep customization panel in the sidebar allows for full control over fonts, colors, shapes, and animations.
+* **🎨 Real-Time Video Effects:**
+    * **Backgrounds:** Instantly blur your background or replace it with a custom image.
+    * **Filters:** Apply over 50 different color filters, from vintage to cyberpunk.
+    * **Auto-Framing:** Automatically keeps your face centered in the frame.
+    * **Neon Edge:** A custom pixel-level effect that adds a glowing outline to your video feed.
+* **🧩 Flexible Layouts:** Arrange your content with professional layouts:
+    * **Picture-in-Picture (PiP):** A draggable and resizable video overlay.
+    * **Split Screen:** A vertically or horizontally split view with an adjustable divider.
+    * **Custom Shapes:** Mask your camera into a circle, rounded rectangle, or a custom-uploaded SVG/PNG shape.
+* **🎤 Multi-Engine Speech-to-Text:** The app is architected to support multiple STT engines:
+    * **Deepgram:** High-accuracy, cloud-based transcription.
+    * **Browser-native:** Utilizes the browser's built-in SpeechRecognition API.
+    * **Vosk:** Can be configured for offline transcription.
+* **🔴 Recording & Download:** Capture your camera, microphone, and screen share into a single high-quality `.webm` video file that you can download instantly.
 
-Changes made via Lovable will be committed automatically to this repo.
+## 💻 Tech Stack
 
-**Use your preferred IDE**
+* **Framework:** React 18 with TypeScript
+* **Bundler:** Vite
+* **Styling:** Tailwind CSS with Shadcn/UI for components
+* **AI:** Groq API (Llama 3.3) for generative UI
+* **Interactivity:** `react-rnd` for draggable components
+* **Icons:** Lucide React
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🚀 Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Follow these steps to set up and run the project locally.
 
-Follow these steps:
+### Prerequisites
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+* Node.js (v18 or later)
+* npm or yarn
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Installation & Setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+1.  **Clone the repository:**
+    ```bash
+    git clone <your-repository-url>
+    cd <your-project-directory>
+    ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-**Edit a file directly in GitHub**
+3.  **Set up environment variables:**
+    You'll need to provide API keys for the AI and speech recognition services. Create a new file named `.env` in the root of your project by copying the example file:
+    ```bash
+    cp .env.example .env
+    ```
+    Now, open the `.env` file and add your secret keys:
+    ```
+    VITE_GROQ_API_KEY="your-groq-api-key"
+    VITE_DEEPGRAM_API_KEY="your-deepgram-api-key"
+    ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Running the Development Server
 
-**Use GitHub Codespaces**
+This project is configured to run with the Netlify CLI to simulate the production environment, including serverless functions.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1.  **Install the Netlify CLI:**
+    ```bash
+    npm install -g netlify-cli
+    ```
 
-## What technologies are used for this project?
+2.  **Run the local dev server:**
+    ```bash
+    netlify dev
+    ```
 
-This project is built with:
+3.  Open your browser and navigate to `http://localhost:8888` (or the URL provided in your terminal).
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🌐 Deployment
 
-## How can I deploy this project?
+This project is pre-configured for seamless deployment to **Netlify**. The `netlify.toml` file contains all the necessary build commands, publish directories, and redirect rules for a Single-Page Application.
 
-Simply open [Lovable](https://lovable.dev/projects/e72938cf-5c52-4524-8498-de2ca271d819) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+To deploy, simply link your Git repository to a new Netlify site and configure the same environment variables in the Netlify dashboard under **Site settings > Build & deploy > Environment**.
