@@ -21,6 +21,10 @@ export const PRESET_TEMPLATES: CaptionTemplate[] = [
       bold: true,
       italic: false,
       underline: false,
+      rotation: 0,
+      border: false,
+      borderColor: "#e94560",
+      borderWidth: 2,
     },
   },
   {
@@ -31,9 +35,9 @@ export const PRESET_TEMPLATES: CaptionTemplate[] = [
     style: {
       fontFamily: "Bebas Neue",
       fontSize: 42,
-      color: "#00F5FF", // A bright cyan color
-      backgroundColor: "rgba(30, 30, 30, 0.9)", // A dark, semi-transparent bar
-      position: { x: 50, y: 90 }, // Positioned at the bottom
+      color: "#00F5FF",
+      backgroundColor: "rgba(30, 30, 30, 0.9)",
+      position: { x: 50, y: 90 },
       shape: "rectangular",
       animation: "slide-up",
       outline: false,
@@ -41,6 +45,10 @@ export const PRESET_TEMPLATES: CaptionTemplate[] = [
       bold: true,
       italic: false,
       underline: false,
+      rotation: 0,
+      border: false,
+      borderColor: "#00F5FF",
+      borderWidth: 2,
     },
   },
   {
@@ -61,6 +69,10 @@ export const PRESET_TEMPLATES: CaptionTemplate[] = [
       bold: true,
       italic: false,
       underline: false,
+      rotation: 0,
+      border: false,
+      borderColor: "#FFFFFF",
+      borderWidth: 2,
     },
   },
   {
@@ -72,15 +84,19 @@ export const PRESET_TEMPLATES: CaptionTemplate[] = [
       fontFamily: "Inter",
       fontSize: 26,
       color: "#FFFFFF",
-      backgroundColor: "rgba(0, 0, 0, 0)", // Transparent background
+      backgroundColor: "rgba(0, 0, 0, 0)",
       position: { x: 50, y: 85 },
       shape: "rounded",
       animation: "fade",
-      outline: true, // This would be handled by text-stroke css
+      outline: true,
       shadow: true,
       bold: true,
       italic: false,
       underline: false,
+      rotation: 0,
+      border: false,
+      borderColor: "#FFFFFF",
+      borderWidth: 2,
     },
   },
   {
@@ -101,6 +117,10 @@ export const PRESET_TEMPLATES: CaptionTemplate[] = [
       bold: false,
       italic: true,
       underline: false,
+      rotation: 0,
+      border: false,
+      borderColor: "#f5e5c5",
+      borderWidth: 2,
     },
   },
 ];

@@ -1116,8 +1116,11 @@ return (
                 }}
                 onResizeStop={(e, direction, ref, delta, pos) => {
                   const newWidthPx = parseInt(ref.style.width, 10);
+                  const newHeightPx = parseInt(ref.style.height, 10);
                   const newWidthPercent =
                     (newWidthPx / containerSize.width) * 100;
+                  const newHeightPercent =
+                    (newHeightPx / containerSize.height) * 100;
 
                   // Calculate new center position after resize
                   const newCenterX =
@@ -1131,6 +1134,7 @@ return (
                     },
                     size: {
                       width: newWidthPercent,
+                      height: newHeightPercent,
                     },
                   });
                 }}

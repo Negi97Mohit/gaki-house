@@ -103,7 +103,7 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           <Switch 
             id="italic-toggle"
             checked={style.italic}
-            onCheckedChange={(checked) => handleValue-Change("italic", checked)}
+            onCheckedChange={(checked) => handleValueChange("italic", checked)}
           />
           <Label htmlFor="italic-toggle">Italic</Label>
         </div>

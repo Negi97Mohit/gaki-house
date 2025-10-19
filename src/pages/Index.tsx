@@ -35,7 +35,7 @@ const Index = () => {
   const [backgroundEffect, setBackgroundEffect] = useState<'none' | 'blur' | 'image'>('none');
   const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(null);
   const [isAutoFramingEnabled, setIsAutoFramingEnabled] = useState(false);
-  const [sidebarWidth, setSidebarWidth] = useState(384);
+  const [sidebarWidth, setSidebarWidth] = useState(320);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
   const [isAudioOn, setIsAudioOn] = useState(false);
@@ -325,7 +325,7 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
           onRemoveOverlay={handleRemoveOverlay}
           generatedOverlays={activeOverlays}
           onPreviewGenerated={handlePreviewGenerated}
-          liveCaptionStyle={{ ...liveCaptionStyle, ...captionStyle }}
+          liveCaptionStyle={liveCaptionStyle}
           dynamicStyle={dynamicStyle}
           onCaptionLayoutChange={handleCaptionLayoutChange}
           videoFilter={videoFilter}

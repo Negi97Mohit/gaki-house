@@ -153,6 +153,8 @@ export const AmbientEffectsOverlay: React.FC<AmbientEffectsOverlayProps> = ({
           particles.current.push({
             x: random(0, width),
             y: random(0, height),
+            vx: 0,
+            vy: 0,
             radius: random(20, 100),
             life: 0,
             maxLife: random(80, 150),

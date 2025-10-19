@@ -58,7 +58,7 @@ interface LeftSidebarProps {
 }
 
 const MIN_WIDTH = 280;
-const MAX_WIDTH = 600;
+const MAX_WIDTH = 480;
 
 export const LeftSidebar = ({
   style, onStyleChange,
@@ -139,7 +139,12 @@ export const LeftSidebar = ({
 
   return (
     <aside
-      className="relative bg-card/80 backdrop-blur-xl border-r flex flex-col h-full z-10 transition-all duration-300 ease-in-out shadow-lg"
+      className={cn(
+        "relative flex flex-col h-full transition-all duration-300 ease-in-out",
+        isOverlayMode 
+          ? "bg-card/70 backdrop-blur-xl rounded-lg shadow-2xl border border-border/40" 
+          : "bg-card/50 backdrop-blur-sm border-r border-border/40"
+      )}
       style={{ width: `${width}px` }}
     >
       {isCollapsed ? (
@@ -168,9 +173,9 @@ export const LeftSidebar = ({
               value={openSections}
               onValueChange={setOpenSections}
             >
-              <AccordionItem value="dynamic-styles">
-              <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
-                <Zap className="w-4 h-4 flex-shrink-0 text-yellow-500" />
+              <AccordionItem value="dynamic-styles" className="border-b border-border/40">
+              <AccordionTrigger className="text-sm font-medium flex items-center gap-2 py-3 hover:no-underline">
+                <Zap className="w-4 h-4 flex-shrink-0 text-primary" />
                 <span className="flex-1 text-left truncate">Dynamic Styles</span>
               </AccordionTrigger>
               <AccordionContent>

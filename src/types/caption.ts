@@ -32,23 +32,42 @@ export type GeneratedLayout = {
 };
 export interface GeneratedOverlay {
   id: string;
-  name: string; // ADDED: For a user-friendly name
+  name: string;
   htmlContent: string;
   layout: GeneratedLayout;
-  preview?: string; // ADDED: To store the image data URL
+  preview?: string;
+  ambientEffect?: AmbientEffect;
 }
 
-// --- SINGLE ACTION COMMANDS ---
+export type AmbientEffect =
+  | "none"
+  | "snow"
+  | "rain"
+  | "fire"
+  | "fire-border"
+  | "fire-border-continuous"
+  | "sparkles"
+  | "neon-pulse"
+  | "bokeh"
+  | "dust";
 
-export type ChainedAction = Omit<SingleActionCommand, 'tool'> & { tool: SingleActionCommand['tool'] };
+// --- SINGLE ACTION COMMANDS ---
 
 export interface GenerateUICommand {
   tool: 'generate_ui_component';
   name: string;
   componentCode: string;
   layout: GeneratedLayout;
-  chained?: ChainedAction;
 }
+
+export type SingleActionCommand =
+  | GenerateUICommand
+  | UpdateUICommand
+  | DeleteUICommand
+  | ApplyVideoEffectCommand
+  | ApplyLiveCaptionStyleCommand;
+
+export type ChainedAction = Omit<SingleActionCommand, 'tool'> & { tool: SingleActionCommand['tool'] };
 
 export interface UpdateUICommand {
   tool: 'update_ui_component';

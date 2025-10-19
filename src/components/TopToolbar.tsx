@@ -4,6 +4,7 @@ import { CaptionStyle } from "@/types/caption";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Eye, EyeOff, PanelLeftClose, PanelLeftOpen, Sparkles, BrainCircuit } from "lucide-react";
 import { InstructionsDialog } from "./InstructionsDialog";
+import { cn } from "@/lib/utils";
 
 interface TopToolbarProps {
   captionsEnabled: boolean;
@@ -25,72 +26,81 @@ export const TopToolbar = ({
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="h-16 border-b border-border bg-card px-4 flex items-center gap-4">
+    <div className="h-14 border-b border-border/40 bg-background/95 backdrop-blur-sm px-4 flex items-center gap-3">
       {/* Logo */}
-<div className="flex items-center gap-2">
-  <img 
-    src="/icon.png" 
-    alt="gaki logo" 
-    className="w-8 h-8 rounded-lg" 
-  />
-  <span className="font-bold text-xl">gaki がき</span>
-</div>
-      <Separator orientation="vertical" className="h-8" />
+      <div className="flex items-center gap-2">
+        <img 
+          src="/icon.png" 
+          alt="gaki logo" 
+          className="w-7 h-7 rounded-md" 
+        />
+        <span className="font-semibold text-lg">gaki</span>
+      </div>
+      
+      <div className="w-px h-6 bg-border/40" />
 
       {/* Sidebar Toggle Button */}
-      <Button variant="ghost" size="icon" onClick={onSidebarToggle}>
-        {isSidebarVisible ? <PanelLeftClose /> : <PanelLeftOpen />}
+      <Button 
+        variant="ghost" 
+        size="icon"
+        className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
+        onClick={onSidebarToggle}
+      >
+        {isSidebarVisible ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
         <span className="sr-only">Toggle sidebar</span>
       </Button>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex items-center gap-1.5">
         <InstructionsDialog />
+        
         <Button
           variant="ghost"
           size="icon"
+          className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>
         </Button>
         
-        {/* --- NEW: AI Mode Toggle Button --- */}
         <Button
-          variant={isAiModeEnabled ? "default" : "secondary"}
-          size="sm"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-8 w-8 transition-all",
+            isAiModeEnabled 
+              ? "text-primary hover:text-primary/80" 
+              : "text-muted-foreground hover:text-foreground"
+          )}
           onClick={() => onAiModeToggle(!isAiModeEnabled)}
           title={isAiModeEnabled ? "Turn off AI features" : "Turn on AI features"}
         >
           {isAiModeEnabled ? (
-            <>
-              <Sparkles className="w-4 h-4 mr-2" />
-              AI Mode On
-            </>
+            <Sparkles className="h-4 w-4" />
           ) : (
-            <>
-              <BrainCircuit className="w-4 h-4 mr-2" />
-              AI Mode Off
-            </>
+            <BrainCircuit className="h-4 w-4" />
           )}
+          <span className="sr-only">Toggle AI Mode</span>
         </Button>
 
         <Button
-          variant={captionsEnabled ? "default" : "secondary"}
-          size="sm"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-8 w-8 transition-all",
+            captionsEnabled 
+              ? "text-primary hover:text-primary/80" 
+              : "text-muted-foreground hover:text-foreground"
+          )}
           onClick={() => onCaptionsToggle(!captionsEnabled)}
         >
           {captionsEnabled ? (
-            <>
-              <Eye className="w-4 h-4 mr-2" />
-              Captions On
-            </>
+            <Eye className="h-4 w-4" />
           ) : (
-            <>
-              <EyeOff className="w-4 h-4 mr-2" />
-              Captions Off
-            </>
+            <EyeOff className="h-4 w-4" />
           )}
+          <span className="sr-only">Toggle Captions</span>
         </Button>
       </div>
     </div>
