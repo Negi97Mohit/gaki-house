@@ -34,7 +34,7 @@ export const TopToolbar = ({
           alt="gaki logo" 
           className="w-7 h-7 rounded-md" 
         />
-        <span className="font-semibold text-lg">gaki</span>
+        <span className="font-semibold text-lg">GAKI がき</span>
       </div>
       
       <div className="w-px h-6 bg-border/40" />
