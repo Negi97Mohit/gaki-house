@@ -396,16 +396,24 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       onFsSidebarToggle(false);
     }
   });
+
+// In src/components/VideoCanvas.tsx...
+
   const handleFinalTranscript = useCallback(
     (text: string) => {
-      setFullTranscript((prev) => (prev + " " + text).trim());
-      setInterimTranscript("");
-      rest.onProcessTranscript(text, null);
+     // This is the new, improved logic
+     clearTimeout(transcriptTimerRef.current); // Immediately clear any pending removal
 
-      clearTimeout(transcriptTimerRef.current);
-      transcriptTimerRef.current = setTimeout(() => {
-        setFullTranscript("");
-      }, 4000);
+     setFullTranscript(text); // Replace the old caption with the new, final one
+     setInterimTranscript(""); // Clear the in-progress words
+
+     // Also process this transcript for AI commands if AI mode is on
+     rest.onProcessTranscript(text, null);
+
+     // Set a new timer to clear this caption after a few seconds of silence
+     transcriptTimerRef.current = setTimeout(() => {
+       setFullTranscript("");
+     }, 4000); // You can adjust this duration (in milliseconds)
     },
     [rest.onProcessTranscript]
   );
@@ -1035,7 +1043,7 @@ return (
               " " +
               interimTranscript
             ).trim();
-            const captionStyle = rest.liveCaptionStyle as any;
+            const captionStyle = sidebarProps.style;
             if (!captionsEnabled || !captionText || containerSize.width === 0)
               return null;
 
@@ -1116,11 +1124,8 @@ return (
                 }}
                 onResizeStop={(e, direction, ref, delta, pos) => {
                   const newWidthPx = parseInt(ref.style.width, 10);
-                  const newHeightPx = parseInt(ref.style.height, 10);
                   const newWidthPercent =
                     (newWidthPx / containerSize.width) * 100;
-                  const newHeightPercent =
-                    (newHeightPx / containerSize.height) * 100;
 
                   // Calculate new center position after resize
                   const newCenterX =
@@ -1134,7 +1139,6 @@ return (
                     },
                     size: {
                       width: newWidthPercent,
-                      height: newHeightPercent,
                     },
                   });
                 }}
