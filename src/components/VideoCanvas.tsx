@@ -64,7 +64,6 @@ const DraggableOverlay: React.FC<{
   containerSize: { width: number; height: number };
 }> = ({ overlay, onLayoutChange, onRemoveOverlay, onPreviewGenerated, containerSize }) => {
   const elementRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (overlay.preview === "" && elementRef.current) {
       const timer = setTimeout(async () => {
@@ -112,6 +111,7 @@ const DraggableOverlay: React.FC<{
   const xPx = (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2;
   const yPx = (containerSize.height * overlay.layout.position.y) / 100 - heightPx / 2;
 
+  const [isResizing, setIsResizing] = useState(false);
   return (
     <Rnd
       default={{ x: xPx, y: yPx, width: widthPx, height: heightPx }}
@@ -120,41 +120,47 @@ const DraggableOverlay: React.FC<{
         const newY = ((d.y + heightPx / 2) / containerSize.height) * 100;
         onLayoutChange(overlay.id, 'position', { x: newX, y: newY });
       }}
-      onResizeStop={(e, direction, ref, delta, pos) => {
-        const newWidthPercent = (parseInt(ref.style.width, 10) / containerSize.width) * 100;
-        const newHeightPercent = (parseInt(ref.style.height, 10) / containerSize.height) * 100;
-        const newX = ((pos.x + parseInt(ref.style.width, 10) / 2) / containerSize.width) * 100;
-        const newY = ((pos.y + parseInt(ref.style.height, 10) / 2) / containerSize.height) * 100;
-        onLayoutChange(overlay.id, 'position', { x: newX, y: newY });
-        onLayoutChange(overlay.id, 'size', { width: newWidthPercent, height: newHeightPercent });
-      }}
+onResizeStart={() => setIsResizing(true)} // <-- ADD THIS
+    onResizeStop={(e, direction, ref, delta, pos) => {
+      setIsResizing(false); // <-- ADD THIS
+      const newWidthPercent = (parseInt(ref.style.width, 10) / containerSize.width) * 100;
+      const newHeightPercent = (parseInt(ref.style.height, 10) / containerSize.height) * 100;
+      const newX = ((pos.x + parseInt(ref.style.width, 10) / 2) / containerSize.width) * 100;
+      const newY = ((pos.y + parseInt(ref.style.height, 10) / 2) / containerSize.height) * 100;
+      onLayoutChange(overlay.id, 'position', { x: newX, y: newY });
+      onLayoutChange(overlay.id, 'size', { width: newWidthPercent, height: newHeightPercent });
+    }}
       bounds="parent"
       minWidth={50}
       minHeight={50}
       enableResizing={true}
-      className="group pointer-events-auto border-2 border-dashed border-transparent hover:border-primary transition-colors"
+      className="group pointer-events-auto"
       style={{ zIndex: overlay.layout.zIndex }} // REMOVED transform from here
     >
       <div
         ref={elementRef}
-        className="w-full h-full relative"
-        style={{ transform: `rotate(${overlay.layout.rotation || 0}deg)` }} // MOVED transform here
-      >
-        <div className="w-full h-full overflow-hidden">
+className="w-full h-full relative border-2 border-dashed border-transparent group-hover:border-primary transition-colors" // Border classes MOVED here
+style={{
+        transform: `rotate(${isResizing ? 0 : (overlay.layout.rotation || 0)}deg)`,
+        transition: isResizing ? 'none' : 'transform 0.1s ease-in-out',
+      }}    >    <div className="w-full h-full overflow-hidden">
           <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
         </div>
-        <button
-          onClick={() => onRemoveOverlay(overlay.id)}
-          className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50"
-        >
-          <X className="w-4 h-4" />
-        </button>
-        <div
-          onMouseDown={handleRotationStart}
-          className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50 cursor-alias"
-        >
-          <RotateCcw className="w-4 h-4" />
-        </div>
+<button
+  onClick={() => onRemoveOverlay(overlay.id)}
+  className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50"
+  style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+>
+  <X className="w-4 h-4" />
+</button>
+
+<div
+  onMouseDown={handleRotationStart}
+  className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50 cursor-alias"
+  style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+>
+  <RotateCcw className="w-4 h-4" />
+</div>
       </div>
     </Rnd>
   );
