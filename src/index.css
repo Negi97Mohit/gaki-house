@@ -83,3 +83,10 @@
     background-color: hsl(var(--primary));
   }
 }
+
+.hide-cursor {
+  cursor: none;
+}
+body.cursor-inactive * {
+  cursor: none !important;
+}

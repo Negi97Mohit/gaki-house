@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun, Eye, EyeOff, PanelLeftClose, PanelLeftOpen, Sparkles, BrainCircuit } from "lucide-react";
 import { InstructionsDialog } from "./InstructionsDialog";
 import { cn } from "@/lib/utils";
+import { captureRejectionSymbol } from "events";
 
 interface TopToolbarProps {
   captionsEnabled: boolean;
@@ -74,7 +75,7 @@ export const TopToolbar = ({
               : "text-muted-foreground hover:text-foreground"
           )}
           onClick={() => onAiModeToggle(!isAiModeEnabled)}
-          title={isAiModeEnabled ? "Turn off AI features" : "Turn on AI features"}
+          title={isAiModeEnabled ? "Turn off AI Mode" : "Turn on AI Mode"}
         >
           {isAiModeEnabled ? (
             <Sparkles className="h-4 w-4" />
@@ -94,6 +95,8 @@ export const TopToolbar = ({
               : "text-muted-foreground hover:text-foreground"
           )}
           onClick={() => onCaptionsToggle(!captionsEnabled)}
+          title={captureRejectionSymbol ? "Turn on Caption" : "Turn off Caption"}
+
         >
           {captionsEnabled ? (
             <Eye className="h-4 w-4" />

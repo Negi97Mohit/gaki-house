@@ -19,59 +19,57 @@ import {
   PanelLeftOpen,
   PanelLeftClose,
 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { cn } from "../lib/utils";
-import { useDeepgramSpeech } from "../hooks/useDeepgramSpeech";
-import { useVideoStreams } from "../hooks/useVideoStreams";
+import { cn } from "@/lib/utils";
+import { useDeepgramSpeech } from "@/hooks/useDeepgramSpeech";
+import { useVideoStreams } from "@/hooks/useVideoStreams";
 import { Rnd } from "react-rnd";
-import { GeneratedOverlay, LayoutMode, CameraShape } from "../types/caption";
-import { LayoutControls } from "./LayoutControls";
-import { CameraRenderer } from "./CameraRenderer";
-import { AICommandPopover } from "./AICommandPopover";
-import { CaptionRenderer } from "./CaptionRenderer";
+import { GeneratedOverlay, LayoutMode, CameraShape } from "@/types/caption";
+import { LayoutControls } from "@/components/LayoutControls";
+import { CameraRenderer } from "@/components/CameraRenderer";
+import { AICommandPopover } from "@/components/AICommandPopover";
+import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
-import { LeftSidebar } from "./LeftSidebar";
-import { DraggableBrowser, BrowserOverlayState } from "./DraggableBrowser";
-import { useOnClickOutside } from "@/hooks/useOnClickOutside"; // Adjust path if needed
+import { LeftSidebar } from "@/components/LeftSidebar";
+import { DraggableBrowser, BrowserOverlayState } from "@/components/DraggableBrowser";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 
-// New component to render raw HTML safely in an iframe
-const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({
-  htmlContent,
+// --- THIS IS THE UPDATED COMPONENT ---
+// It now uses `srcDoc` to prevent the white background flash.
+const HtmlOverlayRenderer: React.FC<{ htmlContent: string; theme: string | undefined; }> = ({
+  htmlContent,theme
 }) => {
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const colorScheme = theme === 'dark' ? 'dark' : 'light';
+  // Define the CSS style that forces a transparent background.
+  const transparentStyle = `
+    <style>
+      html {
+        /* Use the dynamic color scheme */
+        color-scheme: ${colorScheme};
+      }
+      html, body {
+        background: transparent !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+      }
+    </style>
+  `;  
 
-useEffect(() => {
-  if (iframeRef.current) {
-    const doc = iframeRef.current.contentDocument;
-    if (doc) {
-      doc.open();
-      doc.write(htmlContent);
-      doc.close();
-  // Create a style element
-  const style = doc.createElement('style');
-  // This rule is more forceful and will override AI-generated backgrounds
-  style.innerHTML = `
-    html, body {
-      background: transparent !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-    }
-  `;
-  doc.head.appendChild(style);
-}
+  // Use string replacement to inject our style directly into the <head> of the AI-generated HTML.
+ const finalHtml = htmlContent.replace('</head>', `${transparentStyle}</head>`);
 
-} }, [htmlContent]);  return (
+  return (
     <iframe
-      ref={iframeRef}
+      srcDoc={finalHtml}
       style={{
         width: "100%",
         height: "100%",
@@ -85,6 +83,7 @@ useEffect(() => {
     />
   );
 };
+
 
 const DraggableOverlay: React.FC<{
   overlay: GeneratedOverlay;
@@ -150,6 +149,10 @@ const DraggableOverlay: React.FC<{
 
   if (!containerSize.width || !containerSize.height) return null;
 
+  // --- LOGIC TO CHECK FOR FULLSCREEN ---
+  const isFullscreen =
+    overlay.layout.size.width >= 99.5 && overlay.layout.size.height >= 99.5;
+
   const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
   const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
   const xPx =
@@ -161,15 +164,15 @@ const DraggableOverlay: React.FC<{
   return (
     <Rnd
       size={{ width: widthPx, height: heightPx }}
-     position={{ x: xPx, y: yPx }}
+      position={{ x: xPx, y: yPx }}
       onDragStop={(e, d) => {
         const newX = ((d.x + widthPx / 2) / containerSize.width) * 100;
         const newY = ((d.y + heightPx / 2) / containerSize.height) * 100;
         onLayoutChange(overlay.id, "position", { x: newX, y: newY });
       }}
-      onResizeStart={() => setIsResizing(true)} // <-- ADD THIS
+      onResizeStart={() => setIsResizing(true)}
       onResizeStop={(e, direction, ref, delta, pos) => {
-        setIsResizing(false); // <-- ADD THIS
+        setIsResizing(false);
         const newWidthPercent =
           (parseInt(ref.style.width, 10) / containerSize.width) * 100;
         const newHeightPercent =
@@ -191,37 +194,62 @@ const DraggableOverlay: React.FC<{
       minWidth={50}
       minHeight={50}
       enableResizing={true}
+      disableDragging={isFullscreen} // Keep this from before
       className="group pointer-events-auto"
-      style={{ zIndex: overlay.layout.zIndex }} // REMOVED transform from here
+      style={{ zIndex: overlay.layout.zIndex }}
     >
-      <div
-        ref={elementRef}
-        className="w-full h-full relative border-2 border-dashed border-transparent group-hover:border-primary transition-colors" // Border classes MOVED here
-        style={{
+<div
+  ref={elementRef}
+  className={cn(
+    // Base classes that are always applied
+    "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
+    
+    // Logic for the border: ONLY apply the hover effect if it's NOT fullscreen
+    !isFullscreen && "group-hover:border-primary",
+    
+    // Logic for the cursor: ONLY make it ignore the mouse IF it IS fullscreen
+    isFullscreen && "pointer-events-none"
+  )}
+  style={{
           transform: `rotate(${
             isResizing ? 0 : overlay.layout.rotation || 0
           }deg)`,
           transition: isResizing ? "none" : "transform 0.1s ease-in-out",
         }}
       >
-        {" "}
-        <div className="w-full h-full overflow-hidden">
-          <HtmlOverlayRenderer htmlContent={overlay.htmlContent} />
-        </div>
-        <button
-          onClick={() => onRemoveOverlay(overlay.id)}
-          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50"
-          style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
-        >
-          <X className="w-4 h-4" />
-        </button>
         <div
-          onMouseDown={handleRotationStart}
-          className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50 cursor-alias"
-          style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+          className={cn(
+            "w-full h-full overflow-hidden",
+            // --- FIX 2: Make the content area transparent to the mouse ---
+            isFullscreen && "pointer-events-none"
+          )}
         >
-          <RotateCcw className="w-4 h-4" />
+          <HtmlOverlayRenderer
+            key={theme}
+            htmlContent={overlay.htmlContent}
+            theme={theme}
+          />
         </div>
+        
+        {/* Hide buttons in fullscreen as they are non-interactive anyway */}
+        {!isFullscreen && (
+          <>
+            <button
+              onClick={() => onRemoveOverlay(overlay.id)}
+              className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50"
+              style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div
+              onMouseDown={handleRotationStart}
+              className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50 cursor-alias"
+              style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+            >
+              <RotateCcw className="w-4 h-4" />
+            </div>
+          </>
+        )}
       </div>
     </Rnd>
   );
@@ -287,8 +315,8 @@ interface VideoCanvasProps {
   isFullscreen: boolean;
   onToggleFullscreen: () => void;
   isFsSidebarOpen: boolean;
-  onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void; // MODIFIED
-  portalContainer: HTMLElement | null; // ADD THIS LINE
+  onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void;
+  portalContainer: HTMLElement | null;
   browserOverlays: BrowserOverlayState[];
   onRemoveBrowser: (id: string) => void;
   onBrowserUrlChange: (id: string, url: string) => void;
@@ -373,6 +401,39 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+// --- ⬇️ ADD THIS ENTIRE useEffect BLOCK ⬇️ ---
+  useEffect(() => {
+    const container = canvasContainerRef.current;
+    if (!container) return;
+
+    const handleActivity = () => {
+      // Clear any existing timer
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+      // Show controls and cursor
+      setIsControlsVisible(true);
+
+      // Set a new timer to hide them after 2 seconds
+      inactivityTimerRef.current = setTimeout(() => {
+        setIsControlsVisible(false);
+      }, 2000);
+    };
+
+    // Listen for mouse movement on the container
+    container.addEventListener("mousemove", handleActivity);
+
+    // Initial call to start the timer
+    handleActivity();
+
+    // Cleanup function to remove the listener when the component unmounts
+    return () => {
+      container.removeEventListener("mousemove", handleActivity);
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+    };
+  }, []);
 
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
@@ -397,29 +458,23 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
   const fsSidebarContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(fsSidebarContainerRef, () => {
-    // Only try to close the sidebar if it's already open
     if (isFsSidebarOpen) {
       onFsSidebarToggle(false);
     }
   });
 
-// In src/components/VideoCanvas.tsx...
-
   const handleFinalTranscript = useCallback(
     (text: string) => {
-     // This is the new, improved logic
-     clearTimeout(transcriptTimerRef.current); // Immediately clear any pending removal
+     clearTimeout(transcriptTimerRef.current);
 
-     setFullTranscript(text); // Replace the old caption with the new, final one
-     setInterimTranscript(""); // Clear the in-progress words
+     setFullTranscript(text);
+     setInterimTranscript("");
 
-     // Also process this transcript for AI commands if AI mode is on
      rest.onProcessTranscript(text, null);
 
-     // Set a new timer to clear this caption after a few seconds of silence
      transcriptTimerRef.current = setTimeout(() => {
        setFullTranscript("");
-     }, 4000); // You can adjust this duration (in milliseconds)
+     }, 4000);
     },
     [rest.onProcessTranscript]
   );
@@ -473,7 +528,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     return () => resizeObserver.disconnect();
   }, []);
 
-  // Auto-hide logic now depends on `isFullscreen`
   useEffect(() => {
     const container = canvasContainerRef.current;
     if (!container) return;
@@ -587,16 +641,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     };
   }, [isDraggingSplitter, rest.layoutMode, rest.onSplitRatioChange]);
 
-  // src/components/VideoCanvas.tsx
-
-  // This useEffect now *only* manages the audio stream for speech recognition
   useEffect(() => {
-    // This variable holds the stream created within this effect's scope
     let dedicatedAudioStream: MediaStream | null = null;
 
     const manageAudioStream = async () => {
       if (isAudioOn) {
-        // If the audio toggle is on, get a dedicated audio-only stream
         try {
           const constraints: MediaStreamConstraints = {
             audio: selectedAudioDevice
@@ -613,10 +662,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             err
           );
           toast.error("Could not access microphone for captions.");
-          onAudioToggle(false); // Turn the toggle off if permission is denied
+          onAudioToggle(false);
         }
       } else {
-        // If the audio toggle is off, stop any active stream and clear the state
         if (audioStreamForSpeech) {
           audioStreamForSpeech.getTracks().forEach((track) => track.stop());
           setAudioStreamForSpeech(null);
@@ -626,13 +674,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     manageAudioStream();
 
-    // This cleanup function will stop the stream if the component unmounts
     return () => {
       if (dedicatedAudioStream) {
         dedicatedAudioStream.getTracks().forEach((track) => track.stop());
       }
     };
-    // The dependency array is now correctly scoped to only the audio controls
   }, [isAudioOn, selectedAudioDevice, onAudioToggle]);
 
   const handlePipDragStop = (e: any, d: { x: number; y: number }) => {
@@ -763,7 +809,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   );
 
 const renderContent = () => {
-  // --- FIX: The getBackgroundStyle function is now defined at the top ---
   const getBackgroundStyle = (): React.CSSProperties => {
     const style: React.CSSProperties = {};
     if (rest.backgroundEffect === "blur") {
@@ -778,7 +823,6 @@ const renderContent = () => {
     return style;
   };
 
-  // The 'solo' mode logic can now access the function without error
   if (rest.layoutMode === "solo") {
     return (
       <div className="w-full h-full relative" style={getBackgroundStyle()}>
@@ -797,7 +841,6 @@ const renderContent = () => {
     );
   }
 
-  // --- All other layout logic for PiP and Split Screen follows ---
   const mainIsCamera =
     (pipContent === "screen" && isScreenSharing && screenStream) ||
     !isScreenSharing;
@@ -968,15 +1011,15 @@ const renderContent = () => {
 return (
     <div
       ref={canvasContainerRef}
-      className="flex-1 relative bg-black overflow-hidden flex items-center justify-center w-full h-full"
-    >
+      className={cn(
+        "flex-1 relative bg-black overflow-hidden flex items-center justify-center w-full h-full",
+        // ADD THIS LINE
+        isFullscreen && !isControlsVisible && "hide-cursor"
+      )}    >
       {renderContent()}
 
-      {/* Floating Sidebar for Fullscreen Mode */}
       {isFullscreen && (
-  // vvv This new container div wraps both the button and the panel vvv
   <div ref={fsSidebarContainerRef} className="absolute top-4 left-4">
-    {/* This is the trigger button */}
     <div className={cn("relative z-[1000] transition-opacity duration-300", isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none")}>
       <Button variant="secondary" size="icon" onClick={() => onFsSidebarToggle(prev => !prev)}>
         {isFsSidebarOpen ? (
@@ -987,7 +1030,6 @@ return (
       </Button>
     </div>
 
-    {/* This is the sidebar panel, now positioned relative to the new container */}
     {isFsSidebarOpen && (
       <div className="absolute top-12 left-0 z-[1020] h-[85vh] rounded-xl border shadow-2xl bg-transparent">
         <LeftSidebar
@@ -1039,7 +1081,6 @@ return (
               onLayoutChange={onBrowserLayoutChange}
               containerSize={containerSize}
               isSelected={selectedBrowserId === browser.id}
-              // ADD THIS LINE TO FIX THE ERROR
               onSelect={setSelectedBrowserId}
             />
           ))}
@@ -1093,13 +1134,8 @@ return (
               document.addEventListener("mouseup", handleMouseUp);
             };
 
-            // Get current width percentage (default to 80% if not set)
             const currentWidthPercent = captionStyle.width || 80;
-
-            // Calculate pixel dimensions
             const widthPx = (containerSize.width * currentWidthPercent) / 100;
-
-            // Calculate position in pixels (center-based)
             const xPx =
               (containerSize.width * captionStyle.position.x) / 100 -
               widthPx / 2;
@@ -1116,7 +1152,6 @@ return (
                   y: yPx,
                 }}
                 onDragStop={(e, d) => {
-                  // Calculate new center position
                   const newCenterX =
                     ((d.x + widthPx / 2) / containerSize.width) * 100;
                   const newCenterY = (d.y / containerSize.height) * 100;
@@ -1133,7 +1168,6 @@ return (
                   const newWidthPercent =
                     (newWidthPx / containerSize.width) * 100;
 
-                  // Calculate new center position after resize
                   const newCenterX =
                     ((pos.x + newWidthPx / 2) / containerSize.width) * 100;
                   const newCenterY = (pos.y / containerSize.height) * 100;
@@ -1251,7 +1285,6 @@ return (
           isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
-        {" "}
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
           <div className="flex items-center">
             <Button
