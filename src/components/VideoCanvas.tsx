@@ -40,6 +40,7 @@ import { generatePreview } from "@/lib/preview";
 import { LeftSidebar } from "./LeftSidebar";
 import { DraggableBrowser, BrowserOverlayState } from "./DraggableBrowser";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside"; // Adjust path if needed
+import { useTheme } from "next-themes";
 
 // New component to render raw HTML safely in an iframe
 const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({
@@ -47,24 +48,28 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string }> = ({
 }) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
-    if (iframeRef.current) {
-      const doc = iframeRef.current.contentDocument;
-      if (doc) {
-        doc.open();
-        doc.write(htmlContent);
-        doc.close();
-
-        doc.documentElement.style.background = "transparent";
-        doc.body.style.background = "transparent";
-        doc.body.style.margin = "0";
-        doc.body.style.padding = "0";
-        doc.body.style.overflow = "hidden";
-      }
+useEffect(() => {
+  if (iframeRef.current) {
+    const doc = iframeRef.current.contentDocument;
+    if (doc) {
+      doc.open();
+      doc.write(htmlContent);
+      doc.close();
+  // Create a style element
+  const style = doc.createElement('style');
+  // This rule is more forceful and will override AI-generated backgrounds
+  style.innerHTML = `
+    html, body {
+      background: transparent !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
     }
-  }, [htmlContent]);
+  `;
+  doc.head.appendChild(style);
+}
 
-  return (
+} }, [htmlContent]);  return (
     <iframe
       ref={iframeRef}
       style={{
@@ -98,6 +103,7 @@ const DraggableOverlay: React.FC<{
   onPreviewGenerated,
   containerSize,
 }) => {
+  const { theme } = useTheme();
   const elementRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (overlay.preview === "" && elementRef.current) {
