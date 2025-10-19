@@ -148,25 +148,94 @@ export const LeftSidebar = ({
       style={{ width: `${width}px` }}
     >
       {isCollapsed ? (
-        <div className="flex flex-col items-center gap-6 py-6 px-2">
-          <div onClick={() => handleIconClick('dynamic-styles')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Dynamic Styles"><Zap className="w-5 h-5 text-primary" /></div>
-          <div onClick={() => handleIconClick('saved-overlays')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Saved Overlays"><Sparkles className="w-5 h-5 text-primary" /></div>
-          <div onClick={() => handleIconClick('presets')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Style Presets"><Paintbrush className="w-5 h-5 text-primary" /></div>
-          <div onClick={() => handleIconClick('customize')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Text Styles"><Palette className="w-5 h-5 text-primary" /></div>
-          <div onClick={() => handleIconClick('effects')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Video Effects"><Droplets className="w-5 h-5 text-primary" /></div>
-          <div onClick={() => handleIconClick('debug')} className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 transition-colors cursor-pointer" title="Debug"><Bug className="w-5 h-5 text-primary" /></div>
+        <div className="flex flex-col items-center gap-4 py-4 px-2">
+          <div 
+            onClick={() => handleIconClick('dynamic-styles')} 
+            className={cn(
+              "p-2 rounded-lg transition-all cursor-pointer",
+              openSections.includes('dynamic-styles') 
+                ? "bg-yellow-500/20 ring-2 ring-yellow-500/50" 
+                : "bg-yellow-500/10 hover:bg-yellow-500/20"
+            )}
+            title="Dynamic Styles"
+          >
+            <Zap className="w-5 h-5 text-yellow-500" />
+          </div>
+          <div 
+            onClick={() => handleIconClick('saved-overlays')} 
+            className={cn(
+              "p-2 rounded-lg transition-all cursor-pointer",
+              openSections.includes('saved-overlays') 
+                ? "bg-purple-500/20 ring-2 ring-purple-500/50" 
+                : "bg-purple-500/10 hover:bg-purple-500/20"
+            )}
+            title="Saved Overlays"
+          >
+            <Sparkles className="w-5 h-5 text-purple-500" />
+          </div>
+          <div 
+            onClick={() => handleIconClick('presets')} 
+            className={cn(
+              "p-2 rounded-lg transition-all cursor-pointer",
+              openSections.includes('presets') 
+                ? "bg-pink-500/20 ring-2 ring-pink-500/50" 
+                : "bg-pink-500/10 hover:bg-pink-500/20"
+            )}
+            title="Style Presets"
+          >
+            <Paintbrush className="w-5 h-5 text-pink-500" />
+          </div>
+          <div 
+            onClick={() => handleIconClick('customize')} 
+            className={cn(
+              "p-2 rounded-lg transition-all cursor-pointer",
+              openSections.includes('customize') 
+                ? "bg-blue-500/20 ring-2 ring-blue-500/50" 
+                : "bg-blue-500/10 hover:bg-blue-500/20"
+            )}
+            title="Text Styles"
+          >
+            <Palette className="w-5 h-5 text-blue-500" />
+          </div>
+          <div 
+            onClick={() => handleIconClick('effects')} 
+            className={cn(
+              "p-2 rounded-lg transition-all cursor-pointer",
+              openSections.includes('effects') 
+                ? "bg-cyan-500/20 ring-2 ring-cyan-500/50" 
+                : "bg-cyan-500/10 hover:bg-cyan-500/20"
+            )}
+            title="Video Effects"
+          >
+            <Droplets className="w-5 h-5 text-cyan-500" />
+          </div>
+          <div 
+            onClick={() => handleIconClick('debug')} 
+            className={cn(
+              "p-2 rounded-lg transition-all cursor-pointer",
+              openSections.includes('debug') 
+                ? "bg-red-500/20 ring-2 ring-red-500/50" 
+                : "bg-red-500/10 hover:bg-red-500/20"
+            )}
+            title="Debug"
+          >
+            <Bug className="w-5 h-5 text-red-500" />
+          </div>
         </div>
       ) : (
         <>
           {isOverlayMode && (
-            <div className="flex-shrink-0 flex items-center justify-between p-4 border-b">
-              <h2 className="text-lg font-semibold">Controls</h2>
-              <Button variant="ghost" size="icon" onClick={onClose}>
-                <X className="w-5 h-5" />
+            <div className="flex-shrink-0 flex items-center justify-between px-3 py-2 border-b border-border/40">
+              <h2 className="text-sm font-semibold">Controls</h2>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
+                <X className="w-4 h-4" />
               </Button>
             </div>
           )}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className={cn(
+            "flex-1 overflow-y-auto",
+            isOverlayMode ? "p-2" : "p-4"
+          )}>
             <Accordion 
               type="multiple" 
               className="w-full"
@@ -174,8 +243,15 @@ export const LeftSidebar = ({
               onValueChange={setOpenSections}
             >
               <AccordionItem value="dynamic-styles" className="border-b border-border/40">
-              <AccordionTrigger className="text-sm font-medium flex items-center gap-2 py-3 hover:no-underline">
-                <Zap className="w-4 h-4 flex-shrink-0 text-primary" />
+              <AccordionTrigger 
+                className={cn(
+                  "text-sm font-medium flex items-center gap-2 py-3 hover:no-underline transition-colors",
+                  openSections.includes('dynamic-styles') 
+                    ? "text-yellow-500" 
+                    : "text-foreground hover:text-yellow-500"
+                )}
+              >
+                <Zap className="w-4 h-4 flex-shrink-0 text-yellow-500" />
                 <span className="flex-1 text-left truncate">Dynamic Styles</span>
               </AccordionTrigger>
               <AccordionContent>
@@ -191,9 +267,16 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="presets">
-              <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
-                <Paintbrush className="w-4 h-4 flex-shrink-0" />
+            <AccordionItem value="presets" className="border-b border-border/40">
+              <AccordionTrigger 
+                className={cn(
+                  "text-sm font-medium flex items-center gap-2 py-3 hover:no-underline transition-colors",
+                  openSections.includes('presets') 
+                    ? "text-pink-500" 
+                    : "text-foreground hover:text-pink-500"
+                )}
+              >
+                <Paintbrush className="w-4 h-4 flex-shrink-0 text-pink-500" />
                 <span className="flex-1 text-left truncate">Static Style Presets</span>
               </AccordionTrigger>
               <AccordionContent>
@@ -206,9 +289,16 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="customize">
-              <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
-                <Palette className="w-4 h-4 flex-shrink-0" />
+            <AccordionItem value="customize" className="border-b border-border/40">
+              <AccordionTrigger 
+                className={cn(
+                  "text-sm font-medium flex items-center gap-2 py-3 hover:no-underline transition-colors",
+                  openSections.includes('customize') 
+                    ? "text-blue-500" 
+                    : "text-foreground hover:text-blue-500"
+                )}
+              >
+                <Palette className="w-4 h-4 flex-shrink-0 text-blue-500" />
                 <span className="flex-1 text-left truncate">Base Text Style</span>
               </AccordionTrigger>
               <AccordionContent>
@@ -218,9 +308,16 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="saved-overlays">
-              <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
-                <Sparkles className="w-4 h-4 flex-shrink-0" />
+            <AccordionItem value="saved-overlays" className="border-b border-border/40">
+              <AccordionTrigger 
+                className={cn(
+                  "text-sm font-medium flex items-center gap-2 py-3 hover:no-underline transition-colors",
+                  openSections.includes('saved-overlays') 
+                    ? "text-purple-500" 
+                    : "text-foreground hover:text-purple-500"
+                )}
+              >
+                <Sparkles className="w-4 h-4 flex-shrink-0 text-purple-500" />
                 <span className="flex-1 text-left truncate">Saved Overlays</span>
               </AccordionTrigger>
               <AccordionContent>
@@ -244,9 +341,16 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="effects">
-              <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
-                <Sparkles className="w-4 h-4 flex-shrink-0" />
+            <AccordionItem value="effects" className="border-b border-border/40">
+              <AccordionTrigger 
+                className={cn(
+                  "text-sm font-medium flex items-center gap-2 py-3 hover:no-underline transition-colors",
+                  openSections.includes('effects') 
+                    ? "text-cyan-500" 
+                    : "text-foreground hover:text-cyan-500"
+                )}
+              >
+                <Droplets className="w-4 h-4 flex-shrink-0 text-cyan-500" />
                 <span className="flex-1 text-left truncate">Video Effects</span>
               </AccordionTrigger>
               <AccordionContent>
@@ -356,9 +460,16 @@ export const LeftSidebar = ({
                 </div>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="debug">
-               <AccordionTrigger className="text-base font-semibold flex items-center gap-2">
-                <Bug className="w-4 h-4 flex-shrink-0" />
+            <AccordionItem value="debug" className="border-b border-border/40">
+               <AccordionTrigger 
+                className={cn(
+                  "text-sm font-medium flex items-center gap-2 py-3 hover:no-underline transition-colors",
+                  openSections.includes('debug') 
+                    ? "text-red-500" 
+                    : "text-foreground hover:text-red-500"
+                )}
+              >
+                <Bug className="w-4 h-4 flex-shrink-0 text-red-500" />
                 <span className="flex-1 text-left truncate">Debug</span>
               </AccordionTrigger>
               <AccordionContent>
