@@ -25,7 +25,7 @@ const Index = () => {
   const [liveCaptionStyle, setLiveCaptionStyle] = useState<React.CSSProperties>({});
   const [videoFilter, setVideoFilter] = useState<string>('none');
   const [aiButtonPosition, setAiButtonPosition] = useState({ x: 92, y: 85 });
-const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(null);
+  const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(null);
   const [captionStyle, setCaptionStyle] = useState<CaptionStyle>({
     fontFamily: "Inter", fontSize: 24, color: "#FFFFFF", backgroundColor: "rgba(0, 0, 0, 0.8)",
     position: { x: 50, y: 85 }, shape: "rounded", animation: "fade", outline: false, shadow: true,
@@ -59,7 +59,6 @@ const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(null);
   const [pipSize, setPipSize] = useState(DEFAULT_LAYOUT_STATE.pipSize);
   const [customMaskUrl, setCustomMaskUrl] = useState<string | undefined>(undefined);
 
-  // --- ADDED: State and ref for full-screen mode ---
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
   const mainContainerRef = useRef<HTMLDivElement>(null);
@@ -72,7 +71,6 @@ const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(null);
       ...prev,
       position: newLayout.position ?? prev.position,
       width: newLayout.size?.width ?? prev.width,
-      height: newLayout.size?.height ?? prev.height,
     }));
   }, []);
 
@@ -130,17 +128,13 @@ const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(null);
     );
   };
 
-
-// src/pages/Index.tsx
-
-useEffect(() => {
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) {
         return;
       }
 
-      // FIX 1: Add the logic for the '/' key
       if (e.key === '/') {
         e.preventDefault();
         const newBrowser: BrowserOverlayState = {
@@ -157,22 +151,20 @@ useEffect(() => {
         toast.info("Browser window added.");
       }
 
-if (e.key === 'Escape') {
-      // If a browser is selected, handle it and stop the event
-      if (selectedBrowserId) {
-        e.preventDefault();
-        e.stopPropagation(); // This is the key: stop the event from bubbling up
-        handleRemoveBrowser(selectedBrowserId);
-        setSelectedBrowserId(null);
+      if (e.key === 'Escape') {
+        if (selectedBrowserId) {
+          e.preventDefault();
+          e.stopPropagation();
+          handleRemoveBrowser(selectedBrowserId);
+          setSelectedBrowserId(null);
+        }
+        return; 
       }
-      // If no browser is selected, do nothing and let the browser exit fullscreen normally
-      return; 
-    }
-  };
+    };
 
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [selectedBrowserId]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedBrowserId]);
 
   const handleRemoveBrowser = (id: string) => {
     setBrowserOverlays(prev => prev.filter(b => b.id !== id));
@@ -189,7 +181,6 @@ if (e.key === 'Escape') {
       prev.map(b => b.id === id ? { ...b, layout: { ...b.layout, ...layout } } : b)
     );
   };
-
 
   const handleRemoveOverlay = (id: string) => {
     setActiveOverlays(prev => prev.filter(o => o.id !== id));
@@ -208,29 +199,44 @@ if (e.key === 'Escape') {
     reader.readAsDataURL(file);
   };
 
-  const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) => {
-    if (!previewDataUrl) return;
-    const activeOverlay = activeOverlays.find(o => o.id === id);
-    if (activeOverlay) {
-        const updatedOverlay = { ...activeOverlay, preview: previewDataUrl };
-        setActiveOverlays(prev => 
-          prev.map(overlay => 
-            overlay.id === id ? updatedOverlay : overlay
-          )
-        );
-        const isAlreadySaved = savedOverlays.some(so => so.htmlContent === updatedOverlay.htmlContent);
-        if (!isAlreadySaved) {
-            setSavedOverlays(prev => [updatedOverlay, ...prev]);
-            toast.info(`"${updatedOverlay.name}" saved to your overlays.`);
-        }
-    }
-  }, [activeOverlays, savedOverlays, setSavedOverlays]);
+const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) => {
+  if (!previewDataUrl) return;
 
+  const activeOverlay = activeOverlays.find(o => o.id === id);
+  if (!activeOverlay) return;
+
+  const overlayWithPreview = { ...activeOverlay, preview: previewDataUrl };
+
+  // 1. Update the preview URL for the overlay currently on the canvas
+  setActiveOverlays(prev => 
+    prev.map(o => o.id === id ? overlayWithPreview : o)
+  );
+
+  // 2. Intelligently update or add the overlay to your saved library
+  setSavedOverlays(prevSaved => {
+    const existingSavedIndex = prevSaved.findIndex(saved => saved.id === overlayWithPreview.id);
+
+    if (existingSavedIndex !== -1) {
+      // --- THIS IS THE UPDATE LOGIC ---
+      // The overlay is already saved, so we replace it with the updated version.
+      const newSavedOverlays = [...prevSaved];
+      newSavedOverlays[existingSavedIndex] = overlayWithPreview;
+      return newSavedOverlays;
+    } else {
+      // --- THIS IS THE NEW SAVE LOGIC ---
+      // This is a new overlay being saved for the first time.
+      toast.info(`"${overlayWithPreview.name}" saved to your overlays.`);
+      return [overlayWithPreview, ...prevSaved];
+    }
+  });
+}, [activeOverlays, setActiveOverlays, setSavedOverlays]);
+  
+  // --- THIS IS THE CORRECTED FUNCTION ---
   const handleAddSavedOverlay = (overlay: GeneratedOverlay) => {
     const newActiveOverlay = {
         ...overlay,
-        id: generateOverlayId(),
-        layout: { position: { x: 50, y: 50 }, size: { width: 40, height: 40 }, zIndex: 10 }
+        id: generateOverlayId(), // This generates a NEW, UNIQUE ID for the instance on the canvas
+        layout: { position: { x: 50, y: 50 }, size: { width: 40, height: 40 }, zIndex: 10, rotation: 0 }
     };
     setActiveOverlays(prev => [...prev, newActiveOverlay]);
   };
@@ -326,9 +332,9 @@ if (e.key === 'Escape') {
           isAudioOn={isAudioOn} onAudioToggle={setIsAudioOn}
           isVideoOn={isVideoOn} onVideoToggle={setIsVideoOn}
           isRecording={isRecording} onRecordingToggle={setIsRecording}
-selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedAudioDevice}
-  selectedVideoDevice={selectedVideoDevice} onVideoDeviceSelect={setSelectedVideoDevice}
-            zoomSensitivity={zoomSensitivity} trackingSpeed={trackingSpeed}
+          selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedAudioDevice}
+          selectedVideoDevice={selectedVideoDevice} onVideoDeviceSelect={setSelectedVideoDevice}
+          zoomSensitivity={zoomSensitivity} trackingSpeed={trackingSpeed}
           isBeautifyEnabled={isBeautifyEnabled} isLowLightEnabled={isLowLightEnabled}
           layoutMode={layoutMode} cameraShape={cameraShape}
           isNeonEdgeEnabled={isNeonEdgeEnabled}
@@ -340,13 +346,13 @@ selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedAudioD
           customMaskUrl={customMaskUrl} onCustomMaskUpload={handleCustomMaskUpload}
           aiButtonPosition={aiButtonPosition} onAiButtonPositionChange={setAiButtonPosition}
           isProcessingAi={isProcessingAi}
-            portalContainer={mainContainerRef.current}
-      onRemoveBrowser={handleRemoveBrowser}
-      onBrowserUrlChange={handleBrowserUrlChange}
-      onBrowserLayoutChange={handleBrowserLayoutChange}
-        selectedBrowserId={selectedBrowserId}
-      setSelectedBrowserId={setSelectedBrowserId}
-      browserOverlays={browserOverlays}
+          portalContainer={mainContainerRef.current}
+          onRemoveBrowser={handleRemoveBrowser}
+          onBrowserUrlChange={handleBrowserUrlChange}
+          onBrowserLayoutChange={handleBrowserLayoutChange}
+          selectedBrowserId={selectedBrowserId}
+          setSelectedBrowserId={setSelectedBrowserId}
+          browserOverlays={browserOverlays}
         />
       </div>
     </div>

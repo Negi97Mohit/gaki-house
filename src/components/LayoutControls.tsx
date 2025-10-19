@@ -1,9 +1,26 @@
 // src/components/LayoutControls.tsx
 import React from "react";
 import { LayoutMode, CameraShape } from "@/types/caption";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { Layout, Circle, Square, RectangleHorizontal, SplitSquareVertical, SplitSquareHorizontal, Image, Upload } from "lucide-react";
+import {
+  Layout,
+  Circle,
+  Square,
+  RectangleHorizontal,
+  SplitSquareVertical,
+  SplitSquareHorizontal,
+  Image,
+  Upload,
+  UserSquare,
+} from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 
@@ -38,49 +55,65 @@ export const LayoutControls = ({
           <Layout className="w-5 h-5" />
         </Button>
       </DropdownMenuTrigger>
-     {/* --- PASS THE PROP TO THE CONTENT --- */}
-      <DropdownMenuContent container={portalContainer} align="end" className="w-56">
+      {/* --- PASS THE PROP TO THE CONTENT --- */}
+      <DropdownMenuContent
+        container={portalContainer}
+        align="end"
+        className="w-56 z-[1100]"
+      >
+        {" "}
         <DropdownMenuLabel>Layout Mode</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => onLayoutModeChange('split-vertical')}>
+        <DropdownMenuItem onClick={() => onLayoutModeChange("solo")}>
+          <UserSquare className="w-4 h-4 mr-2" />
+          Standard
+          {layoutMode === "solo" && <span className="ml-auto">✓</span>}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onLayoutModeChange("split-vertical")}>
           <SplitSquareVertical className="w-4 h-4 mr-2" />
           Split Vertical
-          {layoutMode === 'split-vertical' && <span className="ml-auto">✓</span>}
+          {layoutMode === "split-vertical" && (
+            <span className="ml-auto">✓</span>
+          )}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onLayoutModeChange('split-horizontal')}>
+        <DropdownMenuItem
+          onClick={() => onLayoutModeChange("split-horizontal")}
+        >
           <SplitSquareHorizontal className="w-4 h-4 mr-2" />
           Split Horizontal
-          {layoutMode === 'split-horizontal' && <span className="ml-auto">✓</span>}
+          {layoutMode === "split-horizontal" && (
+            <span className="ml-auto">✓</span>
+          )}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onLayoutModeChange('pip')}>
+        <DropdownMenuItem onClick={() => onLayoutModeChange("pip")}>
           <Image className="w-4 h-4 mr-2" />
           Picture in Picture
-          {layoutMode === 'pip' && <span className="ml-auto">✓</span>}
+          {layoutMode === "pip" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
-        
         <DropdownMenuSeparator />
-        
         <DropdownMenuLabel>Camera Shape</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => onCameraShapeChange('rectangle')}>
+        <DropdownMenuItem onClick={() => onCameraShapeChange("rectangle")}>
           <Square className="w-4 h-4 mr-2" />
           Rectangle
-          {cameraShape === 'rectangle' && <span className="ml-auto">✓</span>}
+          {cameraShape === "rectangle" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onCameraShapeChange('rounded')}>
+        <DropdownMenuItem onClick={() => onCameraShapeChange("rounded")}>
           <RectangleHorizontal className="w-4 h-4 mr-2" />
           Rounded
-          {cameraShape === 'rounded' && <span className="ml-auto">✓</span>}
+          {cameraShape === "rounded" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onCameraShapeChange('circle')}>
+        <DropdownMenuItem onClick={() => onCameraShapeChange("circle")}>
           <Circle className="w-4 h-4 mr-2" />
           Circle
-          {cameraShape === 'circle' && <span className="ml-auto">✓</span>}
+          {cameraShape === "circle" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
-        
         {onCustomMaskUpload && (
           <>
             <DropdownMenuSeparator />
             <div className="px-2 py-2">
-              <Label htmlFor="mask-upload" className="text-xs text-muted-foreground cursor-pointer flex items-center gap-2 hover:text-foreground">
+              <Label
+                htmlFor="mask-upload"
+                className="text-xs text-muted-foreground cursor-pointer flex items-center gap-2 hover:text-foreground"
+              >
                 <Upload className="w-4 h-4" />
                 Upload Custom Mask
               </Label>

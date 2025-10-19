@@ -73,7 +73,7 @@ export interface ApplyLiveCaptionStyleCommand {
 }
 
 // --- Other types remain the same ---
-export type LayoutMode = 'split-vertical' | 'split-horizontal' | 'pip';
+export type LayoutMode = 'solo' | 'split-vertical' | 'split-horizontal' | 'pip'; // 1. Add 'solo'
 export type CameraShape = 'rectangle' | 'circle' | 'rounded';
 
 export interface LayoutState {
@@ -86,7 +86,7 @@ export interface LayoutState {
 }
 
 export const DEFAULT_LAYOUT_STATE: LayoutState = {
-  mode: 'pip',
+  mode: 'solo',
   cameraShape: 'rectangle',
   splitRatio: 0.5,
   pipPosition: { x: 75, y: 75 },

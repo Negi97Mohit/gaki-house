@@ -65,8 +65,12 @@ export const AICommandPopover = ({
       }}
     >
       <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent container={portalContainer}  className="w-96 p-4" align="end">
-        <div className="grid gap-4">
+<PopoverContent 
+  container={portalContainer}  
+  className="w-96 p-4 z-[1100] aicp-content" // <-- Add the 'aicp-content' class
+  align="end"
+>  
+          <div className="grid gap-4">
           <div className="space-y-2">
             <h4 className="font-semibold leading-none flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
@@ -101,12 +105,16 @@ export const AICommandPopover = ({
 
           <div className="space-y-1.5">
             <Label htmlFor="target-overlay">Target</Label>
-            <Select onValueChange={(value) => setTargetId(value === 'new' ? null : value)} disabled={activeOverlays.length === 0} defaultValue="new">
-                <SelectTrigger id="target-overlay">
-                    <SelectValue placeholder="Create New Overlay" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="new">Create New Overlay</SelectItem>
+<Select 
+  value={targetId || 'new'} // <-- ADD THIS LINE
+  onValueChange={(value) => setTargetId(value === 'new' ? null : value)} 
+  disabled={activeOverlays.length === 0}
+>
+  <SelectTrigger id="target-overlay">
+    <SelectValue placeholder="Create New Overlay" />
+  </SelectTrigger>
+  <SelectContent>
+                      <SelectItem value="new">Create New Overlay</SelectItem>
                     {activeOverlays.map(overlay => (
                         <SelectItem key={overlay.id} value={overlay.id}>
                             {overlay.name}
