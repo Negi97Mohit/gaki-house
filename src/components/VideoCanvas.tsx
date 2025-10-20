@@ -38,16 +38,20 @@ import { AICommandPopover } from "@/components/AICommandPopover";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
 import { LeftSidebar } from "@/components/LeftSidebar";
-import { DraggableBrowser, BrowserOverlayState } from "@/components/DraggableBrowser";
+import {
+  DraggableBrowser,
+  BrowserOverlayState,
+} from "@/components/DraggableBrowser";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 
 // --- THIS IS THE UPDATED COMPONENT ---
 // It now uses `srcDoc` to prevent the white background flash.
-const HtmlOverlayRenderer: React.FC<{ htmlContent: string; theme: string | undefined; }> = ({
-  htmlContent,theme
-}) => {
-  const colorScheme = theme === 'dark' ? 'dark' : 'light';
+const HtmlOverlayRenderer: React.FC<{
+  htmlContent: string;
+  theme: string | undefined;
+}> = ({ htmlContent, theme }) => {
+  const colorScheme = theme === "dark" ? "dark" : "light";
   // Define the CSS style that forces a transparent background.
   const transparentStyle = `
     <style>
@@ -62,10 +66,13 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string; theme: string | undef
         overflow: hidden !important;
       }
     </style>
-  `;  
+  `;
 
   // Use string replacement to inject our style directly into the <head> of the AI-generated HTML.
- const finalHtml = htmlContent.replace('</head>', `${transparentStyle}</head>`);
+  const finalHtml = htmlContent.replace(
+    "</head>",
+    `${transparentStyle}</head>`
+  );
 
   return (
     <iframe
@@ -83,7 +90,6 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string; theme: string | undef
     />
   );
 };
-
 
 const DraggableOverlay: React.FC<{
   overlay: GeneratedOverlay;
@@ -198,19 +204,19 @@ const DraggableOverlay: React.FC<{
       className="group pointer-events-auto"
       style={{ zIndex: overlay.layout.zIndex }}
     >
-<div
-  ref={elementRef}
-  className={cn(
-    // Base classes that are always applied
-    "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
-    
-    // Logic for the border: ONLY apply the hover effect if it's NOT fullscreen
-    !isFullscreen && "group-hover:border-primary",
-    
-    // Logic for the cursor: ONLY make it ignore the mouse IF it IS fullscreen
-    isFullscreen && "pointer-events-none"
-  )}
-  style={{
+      <div
+        ref={elementRef}
+        className={cn(
+          // Base classes that are always applied
+          "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
+
+          // Logic for the border: ONLY apply the hover effect if it's NOT fullscreen
+          !isFullscreen && "group-hover:border-primary",
+
+          // Logic for the cursor: ONLY make it ignore the mouse IF it IS fullscreen
+          isFullscreen && "pointer-events-none"
+        )}
+        style={{
           transform: `rotate(${
             isResizing ? 0 : overlay.layout.rotation || 0
           }deg)`,
@@ -230,21 +236,25 @@ const DraggableOverlay: React.FC<{
             theme={theme}
           />
         </div>
-        
+
         {/* Hide buttons in fullscreen as they are non-interactive anyway */}
         {!isFullscreen && (
           <>
             <button
               onClick={() => onRemoveOverlay(overlay.id)}
               className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50"
-              style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+              style={{
+                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+              }}
             >
               <X className="w-4 h-4" />
             </button>
             <div
               onMouseDown={handleRotationStart}
               className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50 cursor-alias"
-              style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+              style={{
+                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+              }}
             >
               <RotateCcw className="w-4 h-4" />
             </div>
@@ -264,6 +274,8 @@ interface VideoCanvasProps {
   backgroundEffect: "none" | "blur" | "image";
   backgroundImageUrl: string | null;
   isAutoFramingEnabled: boolean;
+  isSidebarOpen: boolean;
+  onSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void;
   onProcessTranscript: (transcript: string, targetId: string | null) => void;
   generatedOverlays: GeneratedOverlay[];
   onOverlayLayoutChange: (
@@ -393,6 +405,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onBrowserLayoutChange,
     selectedBrowserId,
     setSelectedBrowserId,
+    isSidebarOpen,
+    onSidebarToggle,
     ...rest
   } = props;
 
@@ -401,7 +415,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
-// --- ⬇️ ADD THIS ENTIRE useEffect BLOCK ⬇️ ---
+  // --- ⬇️ ADD THIS ENTIRE useEffect BLOCK ⬇️ ---
   useEffect(() => {
     const container = canvasContainerRef.current;
     if (!container) return;
@@ -456,25 +470,26 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [fullTranscript, setFullTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
-  const fsSidebarContainerRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(fsSidebarContainerRef, () => {
-    if (isFsSidebarOpen) {
-      onFsSidebarToggle(false);
+
+  const sidebarContainerRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(sidebarContainerRef, () => {
+    if (isSidebarOpen) {
+      onSidebarToggle(false);
     }
   });
 
   const handleFinalTranscript = useCallback(
     (text: string) => {
-     clearTimeout(transcriptTimerRef.current);
+      clearTimeout(transcriptTimerRef.current);
 
-     setFullTranscript(text);
-     setInterimTranscript("");
+      setFullTranscript(text);
+      setInterimTranscript("");
 
-     rest.onProcessTranscript(text, null);
+      rest.onProcessTranscript(text, null);
 
-     transcriptTimerRef.current = setTimeout(() => {
-       setFullTranscript("");
-     }, 4000);
+      transcriptTimerRef.current = setTimeout(() => {
+        setFullTranscript("");
+      }, 4000);
     },
     [rest.onProcessTranscript]
   );
@@ -808,23 +823,92 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     />
   );
 
-const renderContent = () => {
-  const getBackgroundStyle = (): React.CSSProperties => {
-    const style: React.CSSProperties = {};
-    if (rest.backgroundEffect === "blur") {
-      style.backdropFilter = "blur(10px)";
-      style.WebkitBackdropFilter = "blur(10px)";
-    }
-    if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
-      style.backgroundImage = `url(${rest.backgroundImageUrl})`;
-      style.backgroundSize = "cover";
-      style.backgroundPosition = "center";
-    }
-    return style;
-  };
+  const renderContent = () => {
+    const getBackgroundStyle = (): React.CSSProperties => {
+      const style: React.CSSProperties = {};
+      if (rest.backgroundEffect === "blur") {
+        style.backdropFilter = "blur(10px)";
+        style.WebkitBackdropFilter = "blur(10px)";
+      }
+      if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
+        style.backgroundImage = `url(${rest.backgroundImageUrl})`;
+        style.backgroundSize = "cover";
+        style.backgroundPosition = "center";
+      }
+      return style;
+    };
 
-  if (rest.layoutMode === "solo") {
-    return (
+    if (rest.layoutMode === "solo") {
+      return (
+        <div className="w-full h-full relative" style={getBackgroundStyle()}>
+          {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{
+                backgroundImage: `url(${rest.backgroundImageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          )}
+          <div className="relative w-full h-full">{renderCamera()}</div>
+        </div>
+      );
+    }
+
+    const mainIsCamera =
+      (pipContent === "screen" && isScreenSharing && screenStream) ||
+      !isScreenSharing;
+    const mainContent = mainIsCamera ? renderCamera() : renderScreen();
+    const pipVideo =
+      pipContent === "camera"
+        ? renderCamera("cursor-move", {}, true)
+        : renderScreen("cursor-move");
+
+    const pipSizePx = {
+      width: (containerSize.width * rest.pipSize.width) / 100,
+      height: (containerSize.height * rest.pipSize.height) / 100,
+    };
+    const pipPositionPx = {
+      x: (containerSize.width * rest.pipPosition.x) / 100,
+      y: (containerSize.height * rest.pipPosition.y) / 100,
+    };
+
+    const pipContentEl = isScreenSharing &&
+      screenStream &&
+      isVideoOn &&
+      cameraStream &&
+      containerSize.width > 0 && (
+        <Rnd
+          size={pipSizePx}
+          position={pipPositionPx}
+          minWidth={containerSize.width * 0.1}
+          minHeight={containerSize.height * 0.1}
+          maxWidth={containerSize.width * 0.5}
+          maxHeight={containerSize.height * 0.5}
+          bounds="parent"
+          onDragStop={handlePipDragStop}
+          onResizeStop={handlePipResizeStop}
+          className="pointer-events-auto"
+          style={{ zIndex: 210 }}
+        >
+          <div className="w-full h-full relative group">
+            {pipVideo}
+            <Button
+              size="icon"
+              variant="secondary"
+              className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() =>
+                setPipContent(pipContent === "camera" ? "screen" : "camera")
+              }
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          </div>
+        </Rnd>
+      );
+
+    const contentWithBackground = (
       <div className="w-full h-full relative" style={getBackgroundStyle()}>
         {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
           <div
@@ -836,215 +920,157 @@ const renderContent = () => {
             }}
           />
         )}
-        <div className="relative w-full h-full">{renderCamera()}</div>
-      </div>
-    );
-  }
-
-  const mainIsCamera =
-    (pipContent === "screen" && isScreenSharing && screenStream) ||
-    !isScreenSharing;
-  const mainContent = mainIsCamera ? renderCamera() : renderScreen();
-  const pipVideo =
-    pipContent === "camera"
-      ? renderCamera("cursor-move", {}, true)
-      : renderScreen("cursor-move");
-
-  const pipSizePx = {
-    width: (containerSize.width * rest.pipSize.width) / 100,
-    height: (containerSize.height * rest.pipSize.height) / 100,
-  };
-  const pipPositionPx = {
-    x: (containerSize.width * rest.pipPosition.x) / 100,
-    y: (containerSize.height * rest.pipPosition.y) / 100,
-  };
-
-  const pipContentEl =
-    isScreenSharing &&
-    screenStream &&
-    isVideoOn &&
-    cameraStream &&
-    containerSize.width > 0 && (
-      <Rnd
-        size={pipSizePx}
-        position={pipPositionPx}
-        minWidth={containerSize.width * 0.1}
-        minHeight={containerSize.height * 0.1}
-        maxWidth={containerSize.width * 0.5}
-        maxHeight={containerSize.height * 0.5}
-        bounds="parent"
-        onDragStop={handlePipDragStop}
-        onResizeStop={handlePipResizeStop}
-        className="pointer-events-auto"
-        style={{ zIndex: 210 }}
-      >
-        <div className="w-full h-full relative group">
-          {pipVideo}
-          <Button
-            size="icon"
-            variant="secondary"
-            className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() =>
-              setPipContent(pipContent === "camera" ? "screen" : "camera")
-            }
-          >
-            <RotateCcw className="h-4 w-4" />
-          </Button>
-        </div>
-      </Rnd>
-    );
-
-  const contentWithBackground = (
-    <div className="w-full h-full relative" style={getBackgroundStyle()}>
-      {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
         <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: `url(${rest.backgroundImageUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-      )}
-      <div
-        className="relative w-full h-full"
-        style={
-          rest.backgroundEffect === "blur"
-            ? {
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-              }
-            : {}
-        }
-      >
-        {mainContent}
-      </div>
-      {pipContentEl}
-    </div>
-  );
-
-  switch (rest.layoutMode) {
-    case "pip":
-      return contentWithBackground;
-    case "split-vertical":
-    case "split-horizontal":
-      const isVertical = rest.layoutMode === "split-vertical";
-      return (
-        <div
-          className={cn(
-            "w-full h-full flex",
-            isVertical ? "flex-col" : "flex-row"
-          )}
+          className="relative w-full h-full"
+          style={
+            rest.backgroundEffect === "blur"
+              ? {
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                }
+              : {}
+          }
         >
+          {mainContent}
+        </div>
+        {pipContentEl}
+      </div>
+    );
+
+    switch (rest.layoutMode) {
+      case "pip":
+        return contentWithBackground;
+      case "split-vertical":
+      case "split-horizontal":
+        const isVertical = rest.layoutMode === "split-vertical";
+        return (
           <div
-            className="relative bg-black flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${rest.splitRatio * 100}%`,
-            }}
-          >
-            {isScreenSharing && screenStream ? (
-              renderScreen()
-            ) : (
-              <div className="text-center text-muted-foreground">
-                <ScreenShare className="w-16 h-16 mx-auto mb-2" />
-                <p className="text-sm">Click Share Screen to start</p>
-              </div>
-            )}
-          </div>
-          <div
-            ref={splitDividerRef}
             className={cn(
-              "bg-border hover:bg-primary transition-colors flex items-center justify-center group",
-              isVertical
-                ? "h-2 w-full cursor-row-resize"
-                : "w-2 h-full cursor-col-resize"
+              "w-full h-full flex",
+              isVertical ? "flex-col" : "flex-row"
             )}
-            onMouseDown={handleSplitterMouseDown}
           >
             <div
-              className={cn(
-                "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
-                isVertical ? "w-12 h-1" : "w-1 h-12"
+              className="relative bg-black flex items-center justify-center overflow-hidden"
+              style={{
+                [isVertical ? "height" : "width"]: `${rest.splitRatio * 100}%`,
+              }}
+            >
+              {isScreenSharing && screenStream ? (
+                renderScreen()
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  <ScreenShare className="w-16 h-16 mx-auto mb-2" />
+                  <p className="text-sm">Click Share Screen to start</p>
+                </div>
               )}
-            />
-          </div>
-          <div
-            className="relative bg-black flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${
-                (1 - rest.splitRatio) * 100
-              }%`,
-            }}
-          >
-            {isVideoOn && cameraStream ? (
+            </div>
+            <div
+              ref={splitDividerRef}
+              className={cn(
+                "bg-border hover:bg-primary transition-colors flex items-center justify-center group",
+                isVertical
+                  ? "h-2 w-full cursor-row-resize"
+                  : "w-2 h-full cursor-col-resize"
+              )}
+              onMouseDown={handleSplitterMouseDown}
+            >
               <div
-                className="w-full h-full relative"
-                style={getBackgroundStyle()}
-              >
-                {rest.backgroundEffect === "image" &&
-                  rest.backgroundImageUrl && (
-                    <div
-                      className="absolute inset-0 opacity-30"
-                      style={{
-                        backgroundImage: `url(${rest.backgroundImageUrl})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                  )}
-                <div className="relative w-full h-full">{renderCamera()}</div>
-              </div>
-            ) : (
-              <div className="text-center text-muted-foreground">
-                <Webcam className="w-16 h-16 mx-auto mb-2" />
-                <p className="text-sm">Camera Off</p>
-              </div>
-            )}
+                className={cn(
+                  "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
+                  isVertical ? "w-12 h-1" : "w-1 h-12"
+                )}
+              />
+            </div>
+            <div
+              className="relative bg-black flex items-center justify-center overflow-hidden"
+              style={{
+                [isVertical ? "height" : "width"]: `${
+                  (1 - rest.splitRatio) * 100
+                }%`,
+              }}
+            >
+              {isVideoOn && cameraStream ? (
+                <div
+                  className="w-full h-full relative"
+                  style={getBackgroundStyle()}
+                >
+                  {rest.backgroundEffect === "image" &&
+                    rest.backgroundImageUrl && (
+                      <div
+                        className="absolute inset-0 opacity-30"
+                        style={{
+                          backgroundImage: `url(${rest.backgroundImageUrl})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      />
+                    )}
+                  <div className="relative w-full h-full">{renderCamera()}</div>
+                </div>
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  <Webcam className="w-16 h-16 mx-auto mb-2" />
+                  <p className="text-sm">Camera Off</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      );
-    default:
-      return contentWithBackground;
-  }
-};
+        );
+      default:
+        return contentWithBackground;
+    }
+  };
 
-return (
+  return (
     <div
       ref={canvasContainerRef}
       className={cn(
         "flex-1 relative bg-black overflow-hidden flex items-center justify-center w-full h-full",
         // ADD THIS LINE
         isFullscreen && !isControlsVisible && "hide-cursor"
-      )}    >
+      )}
+    >
       {renderContent()}
 
-      {isFullscreen && (
-  <div ref={fsSidebarContainerRef} className="absolute top-4 left-4">
-    <div className={cn("relative z-[1000] transition-opacity duration-300", isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none")}>
-      <Button variant="secondary" size="icon" onClick={() => onFsSidebarToggle(prev => !prev)}>
-        {isFsSidebarOpen ? (
-          <PanelLeftClose className="w-5 h-5" />
-        ) : (
-          <PanelLeftOpen className="w-5 h-5" />
-        )}
-      </Button>
-    </div>
+      <div ref={sidebarContainerRef} className="absolute top-4 left-4">
+        <div
+          className={cn(
+            "relative z-[1000] transition-opacity duration-300",
+            // Logic for hiding the button can be different if needed,
+            // but for now, we'll use isControlsVisible like the other controls
+            isControlsVisible || !isFullscreen
+              ? "opacity-100"
+              : "opacity-0 pointer-events-none"
+          )}
+        >
+          <Button
+            variant="secondary"
+            size="icon"
+            onClick={() => onSidebarToggle((prev) => !prev)}
+          >
+            {isSidebarOpen ? (
+              <PanelLeftClose className="w-5 h-5" />
+            ) : (
+              <PanelLeftOpen className="w-5 h-5" />
+            )}
+          </Button>
+        </div>
 
-    {isFsSidebarOpen && (
-      <div className="absolute top-12 left-0 z-[1020] h-[85vh] rounded-xl border shadow-2xl bg-transparent">
-        <LeftSidebar
-          {...sidebarProps}
-          width={384}
-          isCollapsed={false}
-          onResize={() => {}}
-          onExpand={() => {}}
-          isOverlayMode={true}
-          onClose={() => onFsSidebarToggle(false)}
-        />
+        {isSidebarOpen && (
+          <div className="absolute top-12 left-0 z-[1020] h-[85vh] rounded-xl border shadow-2xl bg-transparent">
+            <LeftSidebar
+              {...sidebarProps}
+              width={384}
+              isCollapsed={false}
+              onResize={() => {}}
+              onExpand={() => {}}
+              isOverlayMode={true}
+              onClose={() => onSidebarToggle(false)}
+            />
+          </div>
+        )}
       </div>
-    )}
-  </div>
-)}
 
       <div
         className={cn(
