@@ -190,6 +190,130 @@ const RainbowWaveComponent: React.FC<DynamicStyleProps> = ({
   );
 };
 
+// --- BOO STYLE ---
+const BooComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
+  const words = useWords(fullTranscript, interimTranscript);
+  return (
+    <div>
+      {words.map((word, i) => (
+        <span
+          key={`${word}-${i}`}
+          className="animate-boo"
+          style={{
+            display: "inline-block",
+            marginRight: "8px",
+            color: "#ff8800",
+            fontFamily: "'Creepster', cursive",
+            fontSize: "72px",
+            fontWeight: "bold",
+            textShadow: "0 0 18px rgba(150, 80, 255, 0.8)",
+            animationDelay: `${i * 150}ms`,
+          }}
+        >
+          {word}
+        </span>
+      ))}
+      <style>{`
+        @keyframes boo-bounce {
+          0% { transform: scale(0.7); opacity: 0; }
+          50% { transform: scale(1.3); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-boo {
+          opacity: 0;
+          animation: boo-bounce 0.7s cubic-bezier(0.68,-0.55,0.265,1.55) forwards;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// --- SPOOKY STYLE ---
+const SpookyComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
+  const words = useWords(fullTranscript, interimTranscript);
+  return (
+    <div>
+      {words.map((word, i) => (
+        <span
+          key={`${word}-${i}`}
+          className="animate-spooky"
+          style={{
+            display: "inline-block",
+            marginRight: "8px",
+            color: "#ff4000",
+            fontFamily: "'Nosifer', cursive",
+            fontSize: "68px",
+            textShadow: `
+              0 0 8px #ccff00,
+              0 0 20px #bfff00,
+              0 0 30px #99ff00
+            `,
+            animationDelay: `${i * 120}ms`,
+          }}
+        >
+          {word}
+        </span>
+      ))}
+      <style>{`
+        @keyframes spooky-drip {
+          0% { transform: translateY(-10px) scale(0.9); opacity: 0; }
+          40% { transform: translateY(3px) scale(1.1); opacity: 1; }
+          100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .animate-spooky {
+          opacity: 0;
+          animation: spooky-drip 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// --- BOLD MOVES STYLE ---
+const BoldMovesComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
+  const words = useWords(fullTranscript, interimTranscript);
+  return (
+    <div style={{ fontFamily: "'Anton', sans-serif", fontWeight: 900 }}>
+      {words.map((word, i) => (
+        <span
+          key={`${word}-${i}`}
+          className="animate-bold"
+          style={{
+            display: "inline-block",
+            marginRight: "8px",
+            fontSize: "64px",
+            textTransform: "uppercase",
+            color: i % 2 === 0 ? "#ff4d00" : "#007b9e",
+            animationDelay: `${i * 100}ms`,
+          }}
+        >
+          {word}
+        </span>
+      ))}
+      <style>{`
+        @keyframes bold-slide {
+          0% { opacity: 0; transform: translateY(25px) rotate(-5deg); }
+          60% { opacity: 1; transform: translateY(-4px) rotate(3deg); }
+          100% { opacity: 1; transform: translateY(0) rotate(0); }
+        }
+        .animate-bold {
+          opacity: 0;
+          animation: bold-slide 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+      `}</style>
+    </div>
+  );
+};
+
 // --- TYPEWRITER GLOW STYLE ---
 const TypewriterGlowComponent: React.FC<DynamicStyleProps> = ({ text }) => (
   <div
@@ -217,7 +341,8 @@ const TypewriterGlowComponent: React.FC<DynamicStyleProps> = ({ text }) => (
 
 // --- NEON POP STYLE ---
 const NeonPopComponent: React.FC<DynamicStyleProps> = ({ text }) => (
-  <span className="neon-pop">{text}
+  <span className="neon-pop">
+    {text}
     <style>{`
       @keyframes neon {
         0%, 100% { text-shadow: 0 0 4px #ff00ff, 0 0 10px #ff00ff; }
@@ -230,7 +355,8 @@ const NeonPopComponent: React.FC<DynamicStyleProps> = ({ text }) => (
 
 // --- SHIMMER SLIDE STYLE ---
 const ShimmerSlideComponent: React.FC<DynamicStyleProps> = ({ text }) => (
-  <span className="shimmer-slide">{text}
+  <span className="shimmer-slide">
+    {text}
     <style>{`
       @keyframes shimmer { to { background-position: 200% center; } }
       .shimmer-slide {
@@ -246,7 +372,8 @@ const ShimmerSlideComponent: React.FC<DynamicStyleProps> = ({ text }) => (
 
 // --- PULSE GLOW BEAT STYLE ---
 const PulseGlowBeatComponent: React.FC<DynamicStyleProps> = ({ text }) => (
-  <span className="pulse-glow-beat">{text}
+  <span className="pulse-glow-beat">
+    {text}
     <style>{`
       @keyframes pulse {
         0%, 100% { transform: scale(1); text-shadow: 0 0 8px #ff00aa; }
@@ -260,12 +387,21 @@ const PulseGlowBeatComponent: React.FC<DynamicStyleProps> = ({ text }) => (
     `}</style>
   </span>
 );
-const WordPopMatrixComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, interimTranscript }) => {
+const WordPopMatrixComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
     <div>
       {words.map((word, i) => (
-        <span key={i} className="matrix-word" style={{ animationDelay: `${i * 120}ms` }}>{word}</span>
+        <span
+          key={i}
+          className="matrix-word"
+          style={{ animationDelay: `${i * 120}ms` }}
+        >
+          {word}
+        </span>
       ))}
       <style>{`
         @keyframes matrix {
@@ -284,9 +420,9 @@ const WordPopMatrixComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, i
   );
 };
 
-
 const WindSwipeComponent: React.FC<DynamicStyleProps> = ({ text }) => (
-  <span className="wind-swipe">{text}
+  <span className="wind-swipe">
+    {text}
     <style>{`
       @keyframes wind {
         0% { clip-path: inset(0 100% 0 0); opacity: 0; }
@@ -303,12 +439,21 @@ const WindSwipeComponent: React.FC<DynamicStyleProps> = ({ text }) => (
     `}</style>
   </span>
 );
-const PopRotateComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, interimTranscript }) => {
+const PopRotateComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
     <div>
       {words.map((word, i) => (
-        <span key={i} className="pop-rotate" style={{ animationDelay: `${i * 150}ms` }}>{word}</span>
+        <span
+          key={i}
+          className="pop-rotate"
+          style={{ animationDelay: `${i * 150}ms` }}
+        >
+          {word}
+        </span>
       ))}
       <style>{`
         @keyframes rotatePop {
@@ -327,12 +472,21 @@ const PopRotateComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, inter
   );
 };
 
-const FloatGlowComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, interimTranscript }) => {
+const FloatGlowComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
     <div>
       {words.map((word, i) => (
-        <span key={i} className="float-glow" style={{ animationDelay: `${i * 200}ms` }}>{word}</span>
+        <span
+          key={i}
+          className="float-glow"
+          style={{ animationDelay: `${i * 200}ms` }}
+        >
+          {word}
+        </span>
       ))}
       <style>{`
         @keyframes floatGlow {
@@ -351,7 +505,10 @@ const FloatGlowComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, inter
     </div>
   );
 };
-const SlideFadeComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, interimTranscript }) => {
+const SlideFadeComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
     <div>
@@ -379,7 +536,8 @@ const SlideFadeComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, inter
   );
 };
 const HeatGlowComponent: React.FC<DynamicStyleProps> = ({ text }) => (
-  <span className="heat-glow">{text}
+  <span className="heat-glow">
+    {text}
     <style>{`
       @keyframes heat {
         0%,100% { text-shadow: 0 0 5px #ff6600, 0 0 15px #ff3300; }
@@ -394,12 +552,21 @@ const HeatGlowComponent: React.FC<DynamicStyleProps> = ({ text }) => (
   </span>
 );
 
-const AudioWaveComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, interimTranscript }) => {
+const AudioWaveComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
     <div>
       {words.map((word, i) => (
-        <span key={i} className="audio-wave" style={{ animationDelay: `${i * 150}ms` }}>{word}</span>
+        <span
+          key={i}
+          className="audio-wave"
+          style={{ animationDelay: `${i * 150}ms` }}
+        >
+          {word}
+        </span>
       ))}
       <style>{`
         @keyframes wave {
@@ -419,12 +586,21 @@ const AudioWaveComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, inter
   );
 };
 
-const FlashZoomComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, interimTranscript }) => {
+const FlashZoomComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
     <div>
       {words.map((word, i) => (
-        <span key={i} className="flash-zoom" style={{ animationDelay: `${i * 120}ms` }}>{word}</span>
+        <span
+          key={i}
+          className="flash-zoom"
+          style={{ animationDelay: `${i * 120}ms` }}
+        >
+          {word}
+        </span>
       ))}
       <style>{`
         @keyframes flashZoom {
@@ -444,7 +620,8 @@ const FlashZoomComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, inter
 };
 
 const GradientPulseComponent: React.FC<DynamicStyleProps> = ({ text }) => (
-  <span className="gradient-pulse">{text}
+  <span className="gradient-pulse">
+    {text}
     <style>{`
       @keyframes gradientPulse {
         0%,100% { background-position: 0% 50%; transform: scale(1); }
@@ -462,12 +639,19 @@ const GradientPulseComponent: React.FC<DynamicStyleProps> = ({ text }) => (
   </span>
 );
 
-const BounceDropComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, interimTranscript }) => {
+const BounceDropComponent: React.FC<DynamicStyleProps> = ({
+  fullTranscript,
+  interimTranscript,
+}) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
     <div>
       {words.map((word, i) => (
-        <span key={i} className="bounce-drop" style={{ animationDelay: `${i * 150}ms` }}>
+        <span
+          key={i}
+          className="bounce-drop"
+          style={{ animationDelay: `${i * 150}ms` }}
+        >
           {word}
         </span>
       ))}
@@ -489,34 +673,104 @@ const BounceDropComponent: React.FC<DynamicStyleProps> = ({ fullTranscript, inte
   );
 };
 
-
-
 // --- EXPORT ALL STYLES ---
 export const DYNAMIC_STYLES: Record<string, CaptionStyleDef> = {
-  "none": { id: "none", name: "None (Static)", component: StaticComponent },
-  "karaoke": { id: "karaoke", name: "Karaoke", component: KaraokeComponent },
-  "pop-up": { id: "pop-up", name: "Pop Up (Smooth)", component: PopUpComponent },
+  none: { id: "none", name: "None (Static)", component: StaticComponent },
+  karaoke: { id: "karaoke", name: "Karaoke", component: KaraokeComponent },
+  "pop-up": {
+    id: "pop-up",
+    name: "Pop Up (Smooth)",
+    component: PopUpComponent,
+  },
   "pop-up-variable-size": {
     id: "pop-up-variable-size",
     name: "Pop Up (Variable Size)",
     component: PopUpVariableSizeComponent,
   },
-  "rainbow": { id: "rainbow", name: "Rainbow Wave", component: RainbowWaveComponent },
-  "typewriter-glow": { id: "typewriter-glow", name: "Typewriter Glow", component: TypewriterGlowComponent },
+  rainbow: {
+    id: "rainbow",
+    name: "Rainbow Wave",
+    component: RainbowWaveComponent,
+  },
+  "typewriter-glow": {
+    id: "typewriter-glow",
+    name: "Typewriter Glow",
+    component: TypewriterGlowComponent,
+  },
   "neon-pop": { id: "neon-pop", name: "Neon Pop", component: NeonPopComponent },
-  "shimmer-slide": { id: "shimmer-slide", name: "Shimmer Slide", component: ShimmerSlideComponent },
-  "pulse-glow-beat": { id: "pulse-glow-beat", name: "Pulse Glow Beat", component: PulseGlowBeatComponent },
-  "bounce-drop": { id: "bounce-drop", name: "Bounce Drop", component: BounceDropComponent },
-"gradient-pulse": { id: "gradient-pulse", name: "Gradient Pulse", component: GradientPulseComponent },
-"flash-zoom": { id: "flash-zoom", name: "Flash Zoom", component: FlashZoomComponent },
-"audio-wave": { id: "audio-wave", name: "Audio Wave", component: AudioWaveComponent },
-"heat-glow": { id: "heat-glow", name: "Heat Glow", component: HeatGlowComponent },
-"slide-fade": { id: "slide-fade", name: "Slide Fade", component: SlideFadeComponent },
-"float-glow": { id: "float-glow", name: "Float Glow", component: FloatGlowComponent },
-"pop-rotate": { id: "pop-rotate", name: "Pop Rotate", component: PopRotateComponent },
-"wind-swipe": { id: "wind-swipe", name: "Wind Swipe", component: WindSwipeComponent },
-"word-pop-matrix": { id: "word-pop-matrix", name: "Word Pop Matrix", component: WordPopMatrixComponent },
-
+  "shimmer-slide": {
+    id: "shimmer-slide",
+    name: "Shimmer Slide",
+    component: ShimmerSlideComponent,
+  },
+  "pulse-glow-beat": {
+    id: "pulse-glow-beat",
+    name: "Pulse Glow Beat",
+    component: PulseGlowBeatComponent,
+  },
+  "bounce-drop": {
+    id: "bounce-drop",
+    name: "Bounce Drop",
+    component: BounceDropComponent,
+  },
+  "gradient-pulse": {
+    id: "gradient-pulse",
+    name: "Gradient Pulse",
+    component: GradientPulseComponent,
+  },
+  "flash-zoom": {
+    id: "flash-zoom",
+    name: "Flash Zoom",
+    component: FlashZoomComponent,
+  },
+  "audio-wave": {
+    id: "audio-wave",
+    name: "Audio Wave",
+    component: AudioWaveComponent,
+  },
+  "heat-glow": {
+    id: "heat-glow",
+    name: "Heat Glow",
+    component: HeatGlowComponent,
+  },
+  "slide-fade": {
+    id: "slide-fade",
+    name: "Slide Fade",
+    component: SlideFadeComponent,
+  },
+  "float-glow": {
+    id: "float-glow",
+    name: "Float Glow",
+    component: FloatGlowComponent,
+  },
+  "pop-rotate": {
+    id: "pop-rotate",
+    name: "Pop Rotate",
+    component: PopRotateComponent,
+  },
+  "wind-swipe": {
+    id: "wind-swipe",
+    name: "Wind Swipe",
+    component: WindSwipeComponent,
+  },
+  "word-pop-matrix": {
+    id: "word-pop-matrix",
+    name: "Word Pop Matrix",
+    component: WordPopMatrixComponent,
+  },
+  boo: { id: "boo", name: "Boo (Halloween Glow)", component: BooComponent },
+  spooky: {
+    id: "spooky",
+    name: "Spooky (Glow Drip)",
+    component: SpookyComponent,
+  },
+  "bold-moves": {
+    id: "bold-moves",
+    name: "Bold Moves (Energetic)",
+    component: BoldMovesComponent,
+  },
 };
 
-export const DYNAMIC_STYLE_OPTIONS = Object.values(DYNAMIC_STYLES).map(({ id, name }) => ({ id, name }));
+export const DYNAMIC_STYLE_OPTIONS = Object.values(DYNAMIC_STYLES).map(
+  ({ id, name }) => ({ id, name })
+);
