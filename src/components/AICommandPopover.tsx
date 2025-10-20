@@ -176,35 +176,32 @@ export const AICommandPopover = ({
             </p>
           </div>
 
-          {isFullscreen && (
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant={isAiModeEnabled ? "default" : "secondary"}
-                size="sm"
-                onClick={() => onAiModeToggle?.(!isAiModeEnabled)}
-              >
-                {isAiModeEnabled ? (
-                  <Sparkles className="w-4 h-4 mr-2" />
-                ) : (
-                  <BrainCircuit className="w-4 h-4 mr-2" />
-                )}
-                AI Mode
-              </Button>
-              <Button
-                variant={captionsEnabled ? "default" : "secondary"}
-                size="sm"
-                onClick={() => onCaptionsToggle?.(!captionsEnabled)}
-              >
-                {captionsEnabled ? (
-                  <Eye className="w-4 h-4 mr-2" />
-                ) : (
-                  <EyeOff className="w-4 h-4 mr-2" />
-                )}
-                Captions
-              </Button>
-            </div>
-          )}
-
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant={isAiModeEnabled ? "default" : "secondary"}
+              size="sm"
+              onClick={() => onAiModeToggle?.(!isAiModeEnabled)}
+            >
+              {isAiModeEnabled ? (
+                <Sparkles className="w-4 h-4 mr-2" />
+              ) : (
+                <BrainCircuit className="w-4 h-4 mr-2" />
+              )}
+              AI Mode
+            </Button>
+            <Button
+              variant={captionsEnabled ? "default" : "secondary"}
+              size="sm"
+              onClick={() => onCaptionsToggle?.(!captionsEnabled)}
+            >
+              {captionsEnabled ? (
+                <Eye className="w-4 h-4 mr-2" />
+              ) : (
+                <EyeOff className="w-4 h-4 mr-2" />
+              )}
+              Captions
+            </Button>
+          </div>
           <div className="space-y-1.5">
             <Label htmlFor="target-overlay">Target</Label>
             <Select
