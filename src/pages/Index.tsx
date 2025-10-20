@@ -376,9 +376,9 @@ const Index = () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
   }, []);
 
-  // Mouse inactivity detection
+  // Inactivity detection for both mouse and keyboard
   useEffect(() => {
-    const handleMouseMove = () => {
+    const handleActivity = () => {
       setIsMouseActive(true);
 
       if (mouseTimeoutRef.current) {
@@ -387,23 +387,26 @@ const Index = () => {
 
       mouseTimeoutRef.current = setTimeout(() => {
         setIsMouseActive(false);
-      }, 3000); // Hide after 3 seconds of inactivity
+      }, 7000); // Hide after 3 seconds of inactivity
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mousedown", handleMouseMove);
+    // Listen for both mouse and keyboard activity
+    window.addEventListener("mousemove", handleActivity);
+    window.addEventListener("mousedown", handleActivity);
+    window.addEventListener("keydown", handleActivity); // <-- ADD THIS LINE
 
     // Initialize timeout
-    handleMouseMove();
+    handleActivity();
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mousedown", handleMouseMove);
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("mousedown", handleActivity);
+      window.removeEventListener("keydown", handleActivity); // <-- ADD THIS LINE
       if (mouseTimeoutRef.current) {
         clearTimeout(mouseTimeoutRef.current);
       }
     };
-  }, []);
+  }, []); // Dependency array is empty, runs only once
 
   const isMinimized = isSidebarCollapsed;
 

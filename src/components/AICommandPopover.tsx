@@ -25,9 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { GeneratedOverlay } from "@/types/caption";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 
-// MODIFIED: Update props interface to include fullscreen controls
 interface AICommandPopoverProps {
   onSubmit: (text: string, targetId: string | null) => void;
   isProcessing: boolean;
@@ -53,22 +51,27 @@ export const AICommandPopover = ({
   portalContainer,
   onCaptionsToggle,
 }: AICommandPopoverProps) => {
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useLocalStorage(
-    "gaki-onboarding-seen",
-    false
-  );
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [targetId, setTargetId] = useState<string | null>(null);
   const [placeholder, setPlaceholder] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const hasAutoOpenedRef = useRef(false);
 
-  const examples = [
+  // Use a ref to store animation state to prevent resets on re-render
+  const animationStateRef = useRef({
+    currentExample: 0,
+    currentChar: 0,
+    isDeleting: false,
+  });
+
+  // Move examples to ref to prevent recreation on every render
+  const examplesRef = useRef([
     "Create a countdown timer...",
     "Show my social media links...",
     "Add animated flames around the border...",
-  ];
+  ]);
 
   const handleSubmit = () => {
     if (!text.trim() || isProcessing) return;
@@ -85,90 +88,81 @@ export const AICommandPopover = ({
     }
   };
 
-  // Typing animation effect
   useEffect(() => {
-    if (!open || hasSeenOnboarding) return;
+    // Auto-open only once on initial mount
+    if (!hasAutoOpenedRef.current) {
+      const openTimer = setTimeout(() => {
+        setOpen(true);
+        hasAutoOpenedRef.current = true;
+      }, 800);
 
-    let currentExample = 0;
-    let currentChar = 0;
-    let isDeleting = false;
+      return () => clearTimeout(openTimer);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Animation logic that runs when popover is open
+    if (!open) {
+      return;
+    }
+
+    // Reset animation state when the popover opens
+    animationStateRef.current = {
+      currentExample: 0,
+      currentChar: 0,
+      isDeleting: false,
+    };
 
     const typeAnimation = () => {
-      const current = examples[currentExample];
+      const state = animationStateRef.current;
+      const current = examplesRef.current[state.currentExample];
 
-      if (!isDeleting) {
-        // Typing
-        if (currentChar < current.length) {
-          setPlaceholder(current.substring(0, currentChar + 1));
-          currentChar++;
-          typingTimeoutRef.current = setTimeout(typeAnimation, 80);
+      if (!state.isDeleting) {
+        if (state.currentChar < current.length) {
+          setPlaceholder(current.substring(0, state.currentChar + 1));
+          state.currentChar++;
+          typingTimeoutRef.current = setTimeout(typeAnimation, 100);
         } else {
-          // Pause before deleting
           typingTimeoutRef.current = setTimeout(() => {
-            isDeleting = true;
+            state.isDeleting = true;
             typeAnimation();
-          }, 1500);
+          }, 2000);
         }
       } else {
-        // Deleting
-        if (currentChar > 0) {
-          setPlaceholder(current.substring(0, currentChar - 1));
-          currentChar--;
-          typingTimeoutRef.current = setTimeout(typeAnimation, 40);
+        if (state.currentChar > 0) {
+          setPlaceholder(current.substring(0, state.currentChar - 1));
+          state.currentChar--;
+          typingTimeoutRef.current = setTimeout(typeAnimation, 50);
         } else {
-          // Move to next example
-          isDeleting = false;
-          currentExample = (currentExample + 1) % examples.length;
-
-          if (currentExample === 0) {
-            // Completed one full cycle, auto-close
-            typingTimeoutRef.current = setTimeout(() => {
-              setOpen(false);
-              setHasSeenOnboarding(true);
-            }, 500);
-          } else {
-            typingTimeoutRef.current = setTimeout(typeAnimation, 500);
-          }
+          state.isDeleting = false;
+          state.currentExample =
+            (state.currentExample + 1) % examplesRef.current.length;
+          typingTimeoutRef.current = setTimeout(typeAnimation, 500);
         }
       }
     };
 
-    // Focus textarea and start animation
-    setTimeout(() => {
+    // Start animation after popover is open
+    const animationTimer = setTimeout(() => {
       textareaRef.current?.focus();
       typeAnimation();
     }, 300);
 
+    // Cleanup function
     return () => {
+      clearTimeout(animationTimer);
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
     };
-  }, [open, hasSeenOnboarding, examples, setHasSeenOnboarding]);
-
-  // Auto-open on first load (only once)
-  useEffect(() => {
-    if (!hasSeenOnboarding) {
-      const timer = setTimeout(() => setOpen(true), 800);
-      return () => clearTimeout(timer);
-    }
-  }, [hasSeenOnboarding]);
+  }, [open]);
 
   return (
-    <Popover
-      open={open}
-      onOpenChange={(isOpen) => {
-        // *** ADDED: DEBUG LOG to see when the open state is triggered ***
-        console.log(
-          `DEBUG: Popover onOpenChange triggered. New state: ${isOpen}`
-        );
-        setOpen(isOpen);
-      }}
-    >
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent
         container={portalContainer}
-        className="w-96 p-4 z-[1100] aicp-content" // <-- Add the 'aicp-content' class
+        className="w-96 p-4 z-[1100] aicp-content"
         align="end"
       >
         <div className="grid gap-4">
@@ -182,7 +176,6 @@ export const AICommandPopover = ({
             </p>
           </div>
 
-          {/* ADDED: Fullscreen-only controls for AI and Captions */}
           {isFullscreen && (
             <div className="grid grid-cols-2 gap-2">
               <Button
@@ -215,7 +208,7 @@ export const AICommandPopover = ({
           <div className="space-y-1.5">
             <Label htmlFor="target-overlay">Target</Label>
             <Select
-              value={targetId || "new"} // <-- ADD THIS LINE
+              value={targetId || "new"}
               onValueChange={(value) =>
                 setTargetId(value === "new" ? null : value)
               }

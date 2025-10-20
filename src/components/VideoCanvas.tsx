@@ -440,41 +440,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [pipContent, setPipContent] = useState<"camera" | "screen">("camera");
   const canvasContainerRef = useRef<HTMLDivElement>(null);
-  const [isControlsVisible, setIsControlsVisible] = useState(true);
-  const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
-  // --- ⬇️ ADD THIS ENTIRE useEffect BLOCK ⬇️ ---
-  useEffect(() => {
-    const container = canvasContainerRef.current;
-    if (!container) return;
-
-    const handleActivity = () => {
-      // Clear any existing timer
-      if (inactivityTimerRef.current) {
-        clearTimeout(inactivityTimerRef.current);
-      }
-      // Show controls and cursor
-      setIsControlsVisible(true);
-
-      // Set a new timer to hide them after 2 seconds
-      inactivityTimerRef.current = setTimeout(() => {
-        setIsControlsVisible(false);
-      }, 2000);
-    };
-
-    // Listen for mouse movement on the container
-    container.addEventListener("mousemove", handleActivity);
-
-    // Initial call to start the timer
-    handleActivity();
-
-    // Cleanup function to remove the listener when the component unmounts
-    return () => {
-      container.removeEventListener("mousemove", handleActivity);
-      if (inactivityTimerRef.current) {
-        clearTimeout(inactivityTimerRef.current);
-      }
-    };
-  }, []);
 
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
@@ -574,30 +539,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     updateSize();
 
     return () => resizeObserver.disconnect();
-  }, [isFullscreen]);
-
-  useEffect(() => {
-    const container = canvasContainerRef.current;
-    if (!container) return;
-
-    const handleActivity = () => {
-      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-      setIsControlsVisible(true);
-
-      if (isFullscreen) {
-        inactivityTimerRef.current = setTimeout(() => {
-          setIsControlsVisible(false);
-        }, 3000);
-      }
-    };
-
-    container.addEventListener("mousemove", handleActivity);
-    handleActivity();
-
-    return () => {
-      container.removeEventListener("mousemove", handleActivity);
-      if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
-    };
   }, [isFullscreen]);
 
   const handleStartRecording = () => {
@@ -1062,9 +1003,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     <div
       ref={canvasContainerRef}
       className={cn(
-        "flex-1 relative bg-black overflow-hidden flex items-center justify-center w-full h-full",
-        // ADD THIS LINE
-        isFullscreen && !isControlsVisible && "hide-cursor"
+        "flex-1 ...",
+        isFullscreen && !isMouseActive && "hide-cursor"
       )}
     >
       {renderContent()}
@@ -1268,10 +1208,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           bounds="parent"
           enableResizing={false}
           className={cn(
-            "pointer-events-auto transition-opacity duration-300",
-            (isControlsVisible && isMouseActive) || !isFullscreen
-              ? "opacity-100"
-              : "opacity-0"
+            "pointer-events-auto ...",
+            isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
           )}
         >
           <AICommandPopover
@@ -1298,9 +1236,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       <div
         className={cn(
           "absolute bottom-6 left-1/2 -translate-x-1/2 z-[1010] transition-opacity duration-300 ease-in-out",
-          isControlsVisible && isMouseActive
-            ? "opacity-100"
-            : "opacity-0 pointer-events-none"
+          isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
