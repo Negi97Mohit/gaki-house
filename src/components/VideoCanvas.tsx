@@ -354,6 +354,7 @@ interface VideoCanvasProps {
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
+  isMouseActive: boolean;
 }
 
 const VideoPlayer: React.FC<{
@@ -417,6 +418,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onBrowserLayoutChange,
     selectedBrowserId,
     setSelectedBrowserId,
+    isMouseActive,
     ...rest
   } = props;
 
@@ -1243,7 +1245,7 @@ return (
           enableResizing={false}
           className={cn(
             "pointer-events-auto transition-opacity duration-300",
-            isControlsVisible || !isFullscreen ? "opacity-100" : "opacity-0"
+            isControlsVisible && isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
           )}
         >
           <AICommandPopover
@@ -1270,7 +1272,7 @@ return (
       <div
         className={cn(
           "absolute bottom-6 left-1/2 -translate-x-1/2 z-[1010] transition-opacity duration-300 ease-in-out",
-          isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+          isControlsVisible && isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
       >
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">

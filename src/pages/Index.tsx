@@ -373,6 +373,7 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
           onZoomSensitivityChange={setZoomSensitivity}
           trackingSpeed={trackingSpeed}
           onTrackingSpeedChange={setTrackingSpeed}
+          isMouseActive={isMouseActive}
         />
       </div>
       <VideoCanvas
@@ -420,6 +421,7 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
           selectedBrowserId={selectedBrowserId}
           setSelectedBrowserId={setSelectedBrowserId}
           browserOverlays={browserOverlays}
+          isMouseActive={isMouseActive}
         />
     </div>
   );

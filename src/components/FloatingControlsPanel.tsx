@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SlidersHorizontal, X, Trash2 } from "lucide-react";
+import { SlidersHorizontal, X, Trash2, Paintbrush } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { StyleControls } from "./StyleControls";
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
 import { FILTER_PRESETS } from "@/lib/filters";
+import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 
 interface FloatingControlsPanelProps {
@@ -39,12 +40,23 @@ interface FloatingControlsPanelProps {
   onZoomSensitivityChange: (value: number) => void;
   trackingSpeed: number;
   onTrackingSpeedChange: (value: number) => void;
+  isMouseActive: boolean;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<string[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  const handlePresetSelect = (preset: typeof CAPTION_PRESETS[0]) => {
+    const updates: Partial<CaptionStyle> = {
+      fontFamily: preset.style.fontFamily,
+      fontSize: preset.style.fontSize,
+      color: preset.style.color,
+      backgroundColor: preset.style.backgroundColor,
+    };
+    props.onStyleChange({ ...props.style, ...updates });
+  };
 
   // Click outside to close
   useEffect(() => {
@@ -67,15 +79,22 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   return (
     <>
       {/* Trigger Button */}
-      <Button
-        variant="secondary"
-        size="icon"
-        className="fixed bottom-6 left-6 z-[1000] rounded-full h-14 w-14 shadow-lg"
-        onClick={() => setIsOpen(!isOpen)}
-        data-floating-trigger
+      <div
+        className={cn(
+          "transition-opacity duration-300",
+          !props.isMouseActive && "opacity-0 pointer-events-none"
+        )}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <SlidersHorizontal className="w-6 h-6" />}
-      </Button>
+        <Button
+          variant="secondary"
+          size="icon"
+          className="fixed bottom-6 left-6 z-[1000] rounded-full h-14 w-14 shadow-lg"
+          onClick={() => setIsOpen(!isOpen)}
+          data-floating-trigger
+        >
+          {isOpen ? <X className="w-6 h-6" /> : <SlidersHorizontal className="w-6 h-6" />}
+        </Button>
+      </div>
 
       {/* Floating Panel */}
       <div
@@ -84,7 +103,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
           "fixed bottom-24 left-6 z-[999] w-[380px] max-h-[70vh] rounded-2xl",
           "bg-background/80 backdrop-blur-xl border border-border shadow-2xl",
           "transition-all duration-300 ease-out flex flex-col",
-          isOpen
+          isOpen && props.isMouseActive
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-8 pointer-events-none"
         )}
@@ -114,6 +133,30 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     ))}
                   </div>
                 </RadioGroup>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Static Style Presets */}
+            <AccordionItem value="static-presets" className="border rounded-lg px-3">
+              <AccordionTrigger className="hover:no-underline py-3">
+                <div className="flex items-center gap-2">
+                  <Paintbrush className="w-4 h-4" />
+                  <span className="text-sm font-semibold">Static Style Presets</span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pb-3">
+                <div className="grid grid-cols-2 gap-3">
+                  {CAPTION_PRESETS.map(preset => (
+                    <button
+                      key={preset.id}
+                      onClick={() => handlePresetSelect(preset)}
+                      title={preset.name}
+                      className="block w-full rounded-md overflow-hidden border-2 border-transparent hover:border-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                    >
+                      <img src={preset.preview} alt={preset.name} className="w-full aspect-video object-cover" />
+                    </button>
+                  ))}
+                </div>
               </AccordionContent>
             </AccordionItem>
 
