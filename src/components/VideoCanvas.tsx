@@ -1019,9 +1019,14 @@ return (
       {renderContent()}
 
       {isFullscreen && (
-  <div ref={fsSidebarContainerRef} className="absolute top-4 left-4">
+  <div ref={fsSidebarContainerRef} className="absolute bottom-24 left-6">
     <div className={cn("relative z-[1000] transition-opacity duration-300", isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none")}>
-      <Button variant="secondary" size="icon" onClick={() => onFsSidebarToggle(prev => !prev)}>
+      <Button 
+        variant="secondary" 
+        size="icon" 
+        className="rounded-full h-12 w-12 shadow-lg"
+        onClick={() => onFsSidebarToggle(prev => !prev)}
+      >
         {isFsSidebarOpen ? (
           <PanelLeftClose className="w-5 h-5" />
         ) : (
@@ -1031,10 +1036,10 @@ return (
     </div>
 
     {isFsSidebarOpen && (
-      <div className="absolute top-12 left-0 z-[1020] h-[85vh] rounded-xl border shadow-2xl bg-transparent">
+      <div className="absolute bottom-14 left-0 z-[1020] h-[75vh] w-[320px] rounded-xl border shadow-2xl bg-transparent">
         <LeftSidebar
           {...sidebarProps}
-          width={384}
+          width={320}
           isCollapsed={false}
           onResize={() => {}}
           onExpand={() => {}}
@@ -1046,16 +1051,6 @@ return (
   </div>
 )}
 
-      <div
-        className={cn(
-          "absolute top-4 right-4 z-[1000] transition-opacity duration-300",
-          isControlsVisible || !isFullscreen
-            ? "opacity-100"
-            : "opacity-0 pointer-events-none"
-        )}
-      >
-        <LayoutControls {...rest} portalContainer={portalContainer} />
-      </div>
 
       <div
         className="absolute inset-0 pointer-events-none"
@@ -1397,6 +1392,8 @@ return (
               <Circle className="h-6 w-6 fill-current" />
             )}
           </Button>
+          <div className="w-px h-8 bg-border" />
+          <LayoutControls {...rest} portalContainer={portalContainer} />
           <div className="w-px h-8 bg-border" />
           <Button
             variant="ghost"

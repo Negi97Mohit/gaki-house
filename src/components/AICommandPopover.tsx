@@ -125,12 +125,13 @@ export const AICommandPopover = ({
     };
   }, [open, hasSeenOnboarding, examples, setHasSeenOnboarding]);
 
-  // Auto-open on first load
+  // Auto-open on first load (only once)
   useEffect(() => {
-    if (!hasSeenOnboarding && !open) {
-      setTimeout(() => setOpen(true), 800);
+    if (!hasSeenOnboarding) {
+      const timer = setTimeout(() => setOpen(true), 800);
+      return () => clearTimeout(timer);
     }
-  }, [hasSeenOnboarding, open]);
+  }, [hasSeenOnboarding]);
 
   return (
     <Popover 
