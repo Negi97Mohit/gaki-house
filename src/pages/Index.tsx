@@ -13,6 +13,7 @@ import { useLog } from "@/context/LogContext";
 import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { DraggableBrowser, BrowserOverlayState } from '@/components/DraggableBrowser';
+import { cn } from "@/lib/utils";
 
 const generateOverlayId = () => `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 const generateBrowserId = () => `browser-${Date.now()}`;
@@ -63,6 +64,8 @@ const Index = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
+  const [isMouseActive, setIsMouseActive] = useState(true);
+  const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const mainContainerRef = useRef<HTMLDivElement>(null);
 
   const { log } = useLog();
@@ -266,6 +269,35 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
+
+  // Mouse inactivity detection
+  useEffect(() => {
+    const handleMouseMove = () => {
+      setIsMouseActive(true);
+      
+      if (mouseTimeoutRef.current) {
+        clearTimeout(mouseTimeoutRef.current);
+      }
+      
+      mouseTimeoutRef.current = setTimeout(() => {
+        setIsMouseActive(false);
+      }, 3000); // Hide after 3 seconds of inactivity
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseMove);
+    
+    // Initialize timeout
+    handleMouseMove();
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseMove);
+      if (mouseTimeoutRef.current) {
+        clearTimeout(mouseTimeoutRef.current);
+      }
+    };
+  }, []);
   
   const isMinimized = isSidebarCollapsed;
 
@@ -293,38 +325,56 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
   };
 
   return (
-    <div ref={mainContainerRef} className="h-screen flex bg-background overflow-hidden relative">
-      {!isFullscreen && (
-        <>
-          <FloatingLogo />
-          <FloatingControls
-            captionsEnabled={captionsEnabled}
-            onCaptionsToggle={setCaptionsEnabled}
-            isAiModeEnabled={isAiModeEnabled}
-            onAiModeToggle={setIsAiModeEnabled}
-          />
-        </>
+    <div 
+      ref={mainContainerRef} 
+      className={cn(
+        "h-screen flex bg-background overflow-hidden relative",
+        !isMouseActive && "cursor-none"
       )}
-      <FloatingControlsPanel
-        style={captionStyle}
-        onStyleChange={setCaptionStyle}
-        dynamicStyle={dynamicStyle}
-        onDynamicStyleChange={setDynamicStyle}
-        backgroundEffect={backgroundEffect}
-        onBackgroundEffectChange={setBackgroundEffect}
-        isAutoFramingEnabled={isAutoFramingEnabled}
-        onAutoFramingChange={setIsAutoFramingEnabled}
-        isBeautifyEnabled={isBeautifyEnabled}
-        onBeautifyToggle={setIsBeautifyEnabled}
-        isLowLightEnabled={isLowLightEnabled}
-        onLowLightToggle={setIsLowLightEnabled}
-        videoFilter={videoFilter}
-        onVideoFilterChange={setVideoFilter}
-        isNeonEdgeEnabled={isNeonEdgeEnabled}
-        onNeonEdgeToggle={setIsNeonEdgeEnabled}
-        neonIntensity={neonIntensity}
-        onNeonIntensityChange={setNeonIntensity}
-      />
+    >
+      <div className={cn(
+        "transition-opacity duration-300",
+        !isMouseActive && "opacity-0 pointer-events-none"
+      )}>
+        {!isFullscreen && (
+          <>
+            <FloatingLogo />
+            <FloatingControls
+              captionsEnabled={captionsEnabled}
+              onCaptionsToggle={setCaptionsEnabled}
+              isAiModeEnabled={isAiModeEnabled}
+              onAiModeToggle={setIsAiModeEnabled}
+            />
+          </>
+        )}
+        <FloatingControlsPanel
+          style={captionStyle}
+          onStyleChange={setCaptionStyle}
+          dynamicStyle={dynamicStyle}
+          onDynamicStyleChange={setDynamicStyle}
+          backgroundEffect={backgroundEffect}
+          onBackgroundEffectChange={setBackgroundEffect}
+          isAutoFramingEnabled={isAutoFramingEnabled}
+          onAutoFramingChange={setIsAutoFramingEnabled}
+          isBeautifyEnabled={isBeautifyEnabled}
+          onBeautifyToggle={setIsBeautifyEnabled}
+          isLowLightEnabled={isLowLightEnabled}
+          onLowLightToggle={setIsLowLightEnabled}
+          videoFilter={videoFilter}
+          onVideoFilterChange={setVideoFilter}
+          isNeonEdgeEnabled={isNeonEdgeEnabled}
+          onNeonEdgeToggle={setIsNeonEdgeEnabled}
+          neonIntensity={neonIntensity}
+          onNeonIntensityChange={setNeonIntensity}
+          savedOverlays={savedOverlays}
+          onAddSavedOverlay={handleAddSavedOverlay}
+          onDeleteSavedOverlay={handleDeleteSavedOverlay}
+          zoomSensitivity={zoomSensitivity}
+          onZoomSensitivityChange={setZoomSensitivity}
+          trackingSpeed={trackingSpeed}
+          onTrackingSpeedChange={setTrackingSpeed}
+        />
+      </div>
       <VideoCanvas
           isFullscreen={isFullscreen}
           onStyleChange={setCaptionStyle}

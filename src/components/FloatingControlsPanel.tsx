@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { SlidersHorizontal, X } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { SlidersHorizontal, X, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { StyleControls } from "./StyleControls";
@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
 import { FILTER_PRESETS } from "@/lib/filters";
-import { CaptionStyle } from "@/types/caption";
+import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;
@@ -32,11 +32,37 @@ interface FloatingControlsPanelProps {
   onNeonEdgeToggle: (enabled: boolean) => void;
   neonIntensity: number;
   onNeonIntensityChange: (value: number) => void;
+  savedOverlays: GeneratedOverlay[];
+  onAddSavedOverlay: (overlay: GeneratedOverlay) => void;
+  onDeleteSavedOverlay: (id: string) => void;
+  zoomSensitivity: number;
+  onZoomSensitivityChange: (value: number) => void;
+  trackingSpeed: number;
+  onTrackingSpeedChange: (value: number) => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openSections, setOpenSections] = useState<string[]>([]);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isOpen && panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        const target = e.target as HTMLElement;
+        // Don't close if clicking the trigger button
+        if (!target.closest('[data-floating-trigger]')) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -46,22 +72,24 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         size="icon"
         className="fixed bottom-6 left-6 z-[1000] rounded-full h-14 w-14 shadow-lg"
         onClick={() => setIsOpen(!isOpen)}
+        data-floating-trigger
       >
         {isOpen ? <X className="w-6 h-6" /> : <SlidersHorizontal className="w-6 h-6" />}
       </Button>
 
       {/* Floating Panel */}
       <div
+        ref={panelRef}
         className={cn(
           "fixed bottom-24 left-6 z-[999] w-[380px] max-h-[70vh] rounded-2xl",
           "bg-background/80 backdrop-blur-xl border border-border shadow-2xl",
-          "overflow-hidden transition-all duration-300 ease-out",
+          "transition-all duration-300 ease-out flex flex-col",
           isOpen
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-8 pointer-events-none"
         )}
       >
-        <div className="h-full overflow-y-auto p-4">
+        <div className="overflow-y-auto p-4 flex-1">
           <Accordion
             type="multiple"
             value={openSections}
@@ -161,12 +189,40 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                   )}
                 </div>
 
-                {/* Other Toggles */}
+                {/* Auto Framing Controls */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs">Auto Framing</Label>
                     <Switch checked={props.isAutoFramingEnabled} onCheckedChange={props.onAutoFramingChange} />
                   </div>
+                  {props.isAutoFramingEnabled && (
+                    <>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Zoom Sensitivity: {props.zoomSensitivity.toFixed(1)}</Label>
+                        <Slider
+                          value={[props.zoomSensitivity]}
+                          onValueChange={([v]) => props.onZoomSensitivityChange(v)}
+                          min={1}
+                          max={10}
+                          step={0.1}
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs">Tracking Speed: {props.trackingSpeed.toFixed(2)}</Label>
+                        <Slider
+                          value={[props.trackingSpeed]}
+                          onValueChange={([v]) => props.onTrackingSpeedChange(v)}
+                          min={0.01}
+                          max={0.5}
+                          step={0.01}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Other Toggles */}
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs">Beautify</Label>
                     <Switch checked={props.isBeautifyEnabled} onCheckedChange={props.onBeautifyToggle} />
@@ -176,6 +232,47 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     <Switch checked={props.isLowLightEnabled} onCheckedChange={props.onLowLightToggle} />
                   </div>
                 </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            {/* Saved Overlays */}
+            <AccordionItem value="saved-overlays" className="border rounded-lg px-3">
+              <AccordionTrigger className="hover:no-underline py-3">
+                <span className="text-sm font-semibold">Saved Overlays</span>
+              </AccordionTrigger>
+              <AccordionContent className="pb-3">
+                {props.savedOverlays.length === 0 ? (
+                  <p className="text-xs text-muted-foreground text-center p-4">
+                    Generated overlays will be saved here for reuse.
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-3 gap-2">
+                    {props.savedOverlays.map(overlay => (
+                      <div key={overlay.id} className="group relative aspect-square rounded-md bg-secondary/50 flex items-center justify-center overflow-hidden border">
+                        <button 
+                          className="w-full h-full" 
+                          onClick={() => props.onAddSavedOverlay(overlay)}
+                          title="Add overlay to canvas"
+                        >
+                          {overlay.preview ? (
+                            <img src={overlay.preview} alt="Overlay preview" className="absolute inset-0 w-full h-full object-contain p-1" />
+                          ) : (
+                            <span className="text-xs text-muted-foreground">No Preview</span>
+                          )}
+                        </button>
+                        <Button 
+                          variant="destructive" 
+                          size="icon" 
+                          className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => props.onDeleteSavedOverlay(overlay.id)}
+                          title="Delete saved overlay"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
