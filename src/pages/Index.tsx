@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { VideoCanvas } from "@/components/VideoCanvas";
 import { LeftSidebar } from "@/components/LeftSidebar";
+<<<<<<< HEAD
 import { TopToolbar } from "@/components/TopToolbar";
 import {
   CaptionStyle,
@@ -11,6 +12,11 @@ import {
   CameraShape,
   DEFAULT_LAYOUT_STATE,
 } from "@/types/caption";
+=======
+import { FloatingControls } from "@/components/FloatingControls";
+import { FloatingLogo } from "@/components/FloatingLogo";
+import { CaptionStyle, GeneratedOverlay, LayoutMode, CameraShape, DEFAULT_LAYOUT_STATE } from "@/types/caption";
+>>>>>>> 13adf4a7676c8bc9a1c1aab4238c291ca97c96aa
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
 import { useLog } from "@/context/LogContext";
@@ -394,6 +400,7 @@ const Index = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div
       ref={mainContainerRef}
       className="h-screen flex flex-col bg-background overflow-hidden"
@@ -477,6 +484,73 @@ const Index = () => {
           </div>
         )}
       </div>
+=======
+    <div ref={mainContainerRef} className="h-screen flex bg-background overflow-hidden relative">
+      {!isFullscreen && (
+        <>
+          <FloatingLogo onSidebarToggle={() => setIsSidebarCollapsed(prev => !prev)} />
+          <FloatingControls
+            captionsEnabled={captionsEnabled}
+            onCaptionsToggle={setCaptionsEnabled}
+            isAiModeEnabled={isAiModeEnabled}
+            onAiModeToggle={setIsAiModeEnabled}
+          />
+          <LeftSidebar
+            {...sidebarProps}
+            width={isMinimized ? 64 : sidebarWidth}
+            isCollapsed={isMinimized}
+            onResize={setSidebarWidth}
+            onExpand={() => setIsSidebarCollapsed(false)}
+          />
+        </>
+      )}
+      <VideoCanvas
+          isFullscreen={isFullscreen}
+          onStyleChange={setCaptionStyle}
+          onToggleFullscreen={handleToggleFullscreen}
+          isFsSidebarOpen={isFsSidebarOpen}
+          onFsSidebarToggle={setIsFsSidebarOpen}
+          isAiModeEnabled={isAiModeEnabled}
+          onAiModeToggle={setIsAiModeEnabled}
+          captionsEnabled={captionsEnabled} 
+          onCaptionsToggle={setCaptionsEnabled}
+          sidebarProps={sidebarProps}
+          backgroundEffect={backgroundEffect} backgroundImageUrl={backgroundImageUrl}
+          isAutoFramingEnabled={isAutoFramingEnabled} onProcessTranscript={processTranscript}
+          onOverlayLayoutChange={handleLayoutChange}
+          onRemoveOverlay={handleRemoveOverlay}
+          generatedOverlays={activeOverlays}
+          onPreviewGenerated={handlePreviewGenerated}
+          liveCaptionStyle={liveCaptionStyle}
+          dynamicStyle={dynamicStyle}
+          onCaptionLayoutChange={handleCaptionLayoutChange}
+          videoFilter={videoFilter}
+          isAudioOn={isAudioOn} onAudioToggle={setIsAudioOn}
+          isVideoOn={isVideoOn} onVideoToggle={setIsVideoOn}
+          isRecording={isRecording} onRecordingToggle={setIsRecording}
+          selectedAudioDevice={selectedAudioDevice} onAudioDeviceSelect={setSelectedAudioDevice}
+          selectedVideoDevice={selectedVideoDevice} onVideoDeviceSelect={setSelectedVideoDevice}
+          zoomSensitivity={zoomSensitivity} trackingSpeed={trackingSpeed}
+          isBeautifyEnabled={isBeautifyEnabled} isLowLightEnabled={isLowLightEnabled}
+          layoutMode={layoutMode} cameraShape={cameraShape}
+          isNeonEdgeEnabled={isNeonEdgeEnabled}
+          neonIntensity={neonIntensity}
+          neonColor={neonColor}
+          splitRatio={splitRatio} pipPosition={pipPosition} pipSize={pipSize}
+          onLayoutModeChange={setLayoutMode} onCameraShapeChange={setCameraShape}
+          onSplitRatioChange={setSplitRatio} onPipPositionChange={setPipPosition} onPipSizeChange={setPipSize}
+          customMaskUrl={customMaskUrl} onCustomMaskUpload={handleCustomMaskUpload}
+          aiButtonPosition={aiButtonPosition} onAiButtonPositionChange={setAiButtonPosition}
+          isProcessingAi={isProcessingAi}
+          portalContainer={mainContainerRef.current}
+          onRemoveBrowser={handleRemoveBrowser}
+          onBrowserUrlChange={handleBrowserUrlChange}
+          onBrowserLayoutChange={handleBrowserLayoutChange}
+          selectedBrowserId={selectedBrowserId}
+          setSelectedBrowserId={setSelectedBrowserId}
+          browserOverlays={browserOverlays}
+        />
+>>>>>>> 13adf4a7676c8bc9a1c1aab4238c291ca97c96aa
     </div>
   );
 };

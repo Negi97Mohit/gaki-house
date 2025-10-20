@@ -1191,6 +1191,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 }}
                 onResizeStop={(e, direction, ref, delta, pos) => {
                   const newWidthPx = parseInt(ref.style.width, 10);
+                  const newHeightPx = parseInt(ref.style.height, 10);
                   const newWidthPercent =
                     (newWidthPx / containerSize.width) * 100;
 
@@ -1205,6 +1206,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     },
                     size: {
                       width: newWidthPercent,
+                      height: (newHeightPx / containerSize.height) * 100,
                     },
                   });
                 }}

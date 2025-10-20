@@ -82,6 +82,20 @@
   ::-webkit-scrollbar-thumb:hover {
     background-color: hsl(var(--primary));
   }
+
+  /* Onboarding animation */
+  @keyframes pulse-border {
+    0%, 100% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 4px hsl(var(--primary) / 0.1);
+    }
+  }
+
+  .animate-pulse-border {
+    animation: pulse-border 2s ease-in-out infinite;
+  }
 }
 
 .hide-cursor {
