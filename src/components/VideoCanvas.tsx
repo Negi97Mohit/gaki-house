@@ -16,8 +16,6 @@ import {
   X,
   Expand,
   Shrink,
-  PanelLeftOpen,
-  PanelLeftClose,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,13 +29,12 @@ import { cn } from "@/lib/utils";
 import { useDeepgramSpeech } from "@/hooks/useDeepgramSpeech";
 import { useVideoStreams } from "@/hooks/useVideoStreams";
 import { Rnd } from "react-rnd";
-import { GeneratedOverlay, LayoutMode, CameraShape } from "@/types/caption";
+import { GeneratedOverlay, LayoutMode, CameraShape, CaptionStyle } from "@/types/caption";
 import { LayoutControls } from "@/components/LayoutControls";
 import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
-import { LeftSidebar } from "@/components/LeftSidebar";
 import { DraggableBrowser, BrowserOverlayState } from "@/components/DraggableBrowser";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
@@ -324,10 +321,37 @@ interface VideoCanvasProps {
     id: string,
     layout: Partial<BrowserOverlayState["layout"]>
   ) => void;
-  sidebarProps: Omit<
-    React.ComponentProps<typeof LeftSidebar>,
-    "width" | "isCollapsed" | "onResize" | "onExpand"
-  >;
+  sidebarProps: {
+    style: CaptionStyle;
+    onStyleChange: (style: CaptionStyle) => void;
+    dynamicStyle: string;
+    onDynamicStyleChange: (styleId: string) => void;
+    backgroundEffect: 'none' | 'blur' | 'image';
+    onBackgroundEffectChange: (effect: 'none' | 'blur' | 'image') => void;
+    backgroundImageUrl: string | null;
+    onBackgroundImageUrlChange: (url: string | null) => void;
+    isAutoFramingEnabled: boolean;
+    onAutoFramingChange: (enabled: boolean) => void;
+    savedOverlays: GeneratedOverlay[];
+    onAddSavedOverlay: (overlay: GeneratedOverlay) => void;
+    onDeleteSavedOverlay: (id: string) => void;
+    zoomSensitivity: number;
+    onZoomSensitivityChange: (value: number) => void;
+    trackingSpeed: number;
+    onTrackingSpeedChange: (value: number) => void;
+    isBeautifyEnabled: boolean;
+    onBeautifyToggle: (enabled: boolean) => void;
+    isLowLightEnabled: boolean;
+    onLowLightToggle: (enabled: boolean) => void;
+    videoFilter: string;
+    onVideoFilterChange: (filter: string) => void;
+    isNeonEdgeEnabled: boolean;
+    onNeonEdgeToggle: (enabled: boolean) => void;
+    neonIntensity: number;
+    onNeonIntensityChange: (value: number) => void;
+    neonColor: string;
+    onNeonColorChange: (value: string) => void;
+  };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
 }
@@ -1017,39 +1041,6 @@ return (
         isFullscreen && !isControlsVisible && "hide-cursor"
       )}    >
       {renderContent()}
-
-      {isFullscreen && (
-  <div ref={fsSidebarContainerRef} className="absolute bottom-24 left-6">
-    <div className={cn("relative z-[1000] transition-opacity duration-300", isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none")}>
-      <Button 
-        variant="secondary" 
-        size="icon" 
-        className="rounded-full h-12 w-12 shadow-lg"
-        onClick={() => onFsSidebarToggle(prev => !prev)}
-      >
-        {isFsSidebarOpen ? (
-          <PanelLeftClose className="w-5 h-5" />
-        ) : (
-          <PanelLeftOpen className="w-5 h-5" />
-        )}
-      </Button>
-    </div>
-
-    {isFsSidebarOpen && (
-      <div className="absolute bottom-14 left-0 z-[1020] h-[75vh] w-[320px] rounded-xl border shadow-2xl bg-transparent">
-        <LeftSidebar
-          {...sidebarProps}
-          width={320}
-          isCollapsed={false}
-          onResize={() => {}}
-          onExpand={() => {}}
-          isOverlayMode={true}
-          onClose={() => onFsSidebarToggle(false)}
-        />
-      </div>
-    )}
-  </div>
-)}
 
 
       <div

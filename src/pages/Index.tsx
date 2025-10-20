@@ -5,6 +5,7 @@ import { VideoCanvas } from "@/components/VideoCanvas";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { FloatingControls } from "@/components/FloatingControls";
 import { FloatingLogo } from "@/components/FloatingLogo";
+import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { CaptionStyle, GeneratedOverlay, LayoutMode, CameraShape, DEFAULT_LAYOUT_STATE } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
@@ -295,22 +296,35 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
     <div ref={mainContainerRef} className="h-screen flex bg-background overflow-hidden relative">
       {!isFullscreen && (
         <>
-          <FloatingLogo onSidebarToggle={() => setIsSidebarCollapsed(prev => !prev)} />
+          <FloatingLogo />
           <FloatingControls
             captionsEnabled={captionsEnabled}
             onCaptionsToggle={setCaptionsEnabled}
             isAiModeEnabled={isAiModeEnabled}
             onAiModeToggle={setIsAiModeEnabled}
           />
-          <LeftSidebar
-            {...sidebarProps}
-            width={isMinimized ? 64 : sidebarWidth}
-            isCollapsed={isMinimized}
-            onResize={setSidebarWidth}
-            onExpand={() => setIsSidebarCollapsed(false)}
-          />
         </>
       )}
+      <FloatingControlsPanel
+        style={captionStyle}
+        onStyleChange={setCaptionStyle}
+        dynamicStyle={dynamicStyle}
+        onDynamicStyleChange={setDynamicStyle}
+        backgroundEffect={backgroundEffect}
+        onBackgroundEffectChange={setBackgroundEffect}
+        isAutoFramingEnabled={isAutoFramingEnabled}
+        onAutoFramingChange={setIsAutoFramingEnabled}
+        isBeautifyEnabled={isBeautifyEnabled}
+        onBeautifyToggle={setIsBeautifyEnabled}
+        isLowLightEnabled={isLowLightEnabled}
+        onLowLightToggle={setIsLowLightEnabled}
+        videoFilter={videoFilter}
+        onVideoFilterChange={setVideoFilter}
+        isNeonEdgeEnabled={isNeonEdgeEnabled}
+        onNeonEdgeToggle={setIsNeonEdgeEnabled}
+        neonIntensity={neonIntensity}
+        onNeonIntensityChange={setNeonIntensity}
+      />
       <VideoCanvas
           isFullscreen={isFullscreen}
           onStyleChange={setCaptionStyle}
