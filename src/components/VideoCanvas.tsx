@@ -29,22 +29,31 @@ import { cn } from "@/lib/utils";
 import { useDeepgramSpeech } from "@/hooks/useDeepgramSpeech";
 import { useVideoStreams } from "@/hooks/useVideoStreams";
 import { Rnd } from "react-rnd";
-import { GeneratedOverlay, LayoutMode, CameraShape, CaptionStyle } from "@/types/caption";
+import {
+  GeneratedOverlay,
+  LayoutMode,
+  CameraShape,
+  CaptionStyle,
+} from "@/types/caption";
 import { LayoutControls } from "@/components/LayoutControls";
 import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
-import { DraggableBrowser, BrowserOverlayState } from "@/components/DraggableBrowser";
+import {
+  DraggableBrowser,
+  BrowserOverlayState,
+} from "@/components/DraggableBrowser";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 
 // --- THIS IS THE UPDATED COMPONENT ---
 // It now uses `srcDoc` to prevent the white background flash.
-const HtmlOverlayRenderer: React.FC<{ htmlContent: string; theme: string | undefined; }> = ({
-  htmlContent,theme
-}) => {
-  const colorScheme = theme === 'dark' ? 'dark' : 'light';
+const HtmlOverlayRenderer: React.FC<{
+  htmlContent: string;
+  theme: string | undefined;
+}> = ({ htmlContent, theme }) => {
+  const colorScheme = theme === "dark" ? "dark" : "light";
   // Define the CSS style that forces a transparent background.
   const transparentStyle = `
     <style>
@@ -59,10 +68,13 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string; theme: string | undef
         overflow: hidden !important;
       }
     </style>
-  `;  
+  `;
 
   // Use string replacement to inject our style directly into the <head> of the AI-generated HTML.
- const finalHtml = htmlContent.replace('</head>', `${transparentStyle}</head>`);
+  const finalHtml = htmlContent.replace(
+    "</head>",
+    `${transparentStyle}</head>`
+  );
 
   return (
     <iframe
@@ -80,7 +92,6 @@ const HtmlOverlayRenderer: React.FC<{ htmlContent: string; theme: string | undef
     />
   );
 };
-
 
 const DraggableOverlay: React.FC<{
   overlay: GeneratedOverlay;
@@ -195,19 +206,19 @@ const DraggableOverlay: React.FC<{
       className="group pointer-events-auto"
       style={{ zIndex: overlay.layout.zIndex }}
     >
-<div
-  ref={elementRef}
-  className={cn(
-    // Base classes that are always applied
-    "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
-    
-    // Logic for the border: ONLY apply the hover effect if it's NOT fullscreen
-    !isFullscreen && "group-hover:border-primary",
-    
-    // Logic for the cursor: ONLY make it ignore the mouse IF it IS fullscreen
-    isFullscreen && "pointer-events-none"
-  )}
-  style={{
+      <div
+        ref={elementRef}
+        className={cn(
+          // Base classes that are always applied
+          "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
+
+          // Logic for the border: ONLY apply the hover effect if it's NOT fullscreen
+          !isFullscreen && "group-hover:border-primary",
+
+          // Logic for the cursor: ONLY make it ignore the mouse IF it IS fullscreen
+          isFullscreen && "pointer-events-none"
+        )}
+        style={{
           transform: `rotate(${
             isResizing ? 0 : overlay.layout.rotation || 0
           }deg)`,
@@ -227,21 +238,25 @@ const DraggableOverlay: React.FC<{
             theme={theme}
           />
         </div>
-        
+
         {/* Hide buttons in fullscreen as they are non-interactive anyway */}
         {!isFullscreen && (
           <>
             <button
               onClick={() => onRemoveOverlay(overlay.id)}
               className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50"
-              style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+              style={{
+                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+              }}
             >
               <X className="w-4 h-4" />
             </button>
             <div
               onMouseDown={handleRotationStart}
               className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50 cursor-alias"
-              style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+              style={{
+                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+              }}
             >
               <RotateCcw className="w-4 h-4" />
             </div>
@@ -326,8 +341,8 @@ interface VideoCanvasProps {
     onStyleChange: (style: CaptionStyle) => void;
     dynamicStyle: string;
     onDynamicStyleChange: (styleId: string) => void;
-    backgroundEffect: 'none' | 'blur' | 'image';
-    onBackgroundEffectChange: (effect: 'none' | 'blur' | 'image') => void;
+    backgroundEffect: "none" | "blur" | "image";
+    onBackgroundEffectChange: (effect: "none" | "blur" | "image") => void;
     backgroundImageUrl: string | null;
     onBackgroundImageUrlChange: (url: string | null) => void;
     isAutoFramingEnabled: boolean;
@@ -427,7 +442,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
-// --- ⬇️ ADD THIS ENTIRE useEffect BLOCK ⬇️ ---
+  // --- ⬇️ ADD THIS ENTIRE useEffect BLOCK ⬇️ ---
   useEffect(() => {
     const container = canvasContainerRef.current;
     if (!container) return;
@@ -491,16 +506,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   const handleFinalTranscript = useCallback(
     (text: string) => {
-     clearTimeout(transcriptTimerRef.current);
+      clearTimeout(transcriptTimerRef.current);
 
-     setFullTranscript(text);
-     setInterimTranscript("");
+      setFullTranscript(text);
+      setInterimTranscript("");
 
-     rest.onProcessTranscript(text, null);
+      rest.onProcessTranscript(text, null);
 
-     transcriptTimerRef.current = setTimeout(() => {
-       setFullTranscript("");
-     }, 4000);
+      transcriptTimerRef.current = setTimeout(() => {
+        setFullTranscript("");
+      }, 4000);
     },
     [rest.onProcessTranscript]
   );
@@ -542,17 +557,24 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   useEffect(() => {
     const container = canvasContainerRef.current;
     if (!container) return;
-    const resizeObserver = new ResizeObserver(() => {
+
+    const updateSize = () => {
       if (container) {
         setContainerSize({
           width: container.clientWidth,
           height: container.clientHeight,
         });
       }
-    });
+    };
+
+    const resizeObserver = new ResizeObserver(updateSize);
     resizeObserver.observe(container);
+
+    // Update size immediately when fullscreen changes
+    updateSize();
+
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [isFullscreen]);
 
   useEffect(() => {
     const container = canvasContainerRef.current;
@@ -803,7 +825,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     >
       {rest.backgroundEffect !== "none" ||
       rest.isAutoFramingEnabled ||
-      isNeonEdgeEnabled ? (
+      isNeonEdgeEnabled ||
+      videoFilterString !== "none" ? ( // <-- ADD THIS CHECK
+        // --- END OF CHANGE ---
         <CameraRenderer
           stream={cameraStream}
           backgroundEffect={rest.backgroundEffect}
@@ -812,7 +836,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           zoomSensitivity={rest.zoomSensitivity}
           trackingSpeed={rest.trackingSpeed}
           className="w-full h-full"
-          style={{ ...style, filter: videoFilterString }}
+          style={{ ...style }}
+          videoFilter={videoFilterString}
           isNeonEdgeEnabled={isNeonEdgeEnabled}
           neonIntensity={neonIntensity}
           neonColor={neonColor}
@@ -834,23 +859,92 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     />
   );
 
-const renderContent = () => {
-  const getBackgroundStyle = (): React.CSSProperties => {
-    const style: React.CSSProperties = {};
-    if (rest.backgroundEffect === "blur") {
-      style.backdropFilter = "blur(10px)";
-      style.WebkitBackdropFilter = "blur(10px)";
-    }
-    if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
-      style.backgroundImage = `url(${rest.backgroundImageUrl})`;
-      style.backgroundSize = "cover";
-      style.backgroundPosition = "center";
-    }
-    return style;
-  };
+  const renderContent = () => {
+    const getBackgroundStyle = (): React.CSSProperties => {
+      const style: React.CSSProperties = {};
+      if (rest.backgroundEffect === "blur") {
+        style.backdropFilter = "blur(10px)";
+        style.WebkitBackdropFilter = "blur(10px)";
+      }
+      if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
+        style.backgroundImage = `url(${rest.backgroundImageUrl})`;
+        style.backgroundSize = "cover";
+        style.backgroundPosition = "center";
+      }
+      return style;
+    };
 
-  if (rest.layoutMode === "solo") {
-    return (
+    if (rest.layoutMode === "solo") {
+      return (
+        <div className="w-full h-full relative" style={getBackgroundStyle()}>
+          {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
+            <div
+              className="absolute inset-0 opacity-30"
+              style={{
+                backgroundImage: `url(${rest.backgroundImageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          )}
+          <div className="relative w-full h-full">{renderCamera()}</div>
+        </div>
+      );
+    }
+
+    const mainIsCamera =
+      (pipContent === "screen" && isScreenSharing && screenStream) ||
+      !isScreenSharing;
+    const mainContent = mainIsCamera ? renderCamera() : renderScreen();
+    const pipVideo =
+      pipContent === "camera"
+        ? renderCamera("cursor-move", {}, true)
+        : renderScreen("cursor-move");
+
+    const pipSizePx = {
+      width: (containerSize.width * rest.pipSize.width) / 100,
+      height: (containerSize.height * rest.pipSize.height) / 100,
+    };
+    const pipPositionPx = {
+      x: (containerSize.width * rest.pipPosition.x) / 100,
+      y: (containerSize.height * rest.pipPosition.y) / 100,
+    };
+
+    const pipContentEl = isScreenSharing &&
+      screenStream &&
+      isVideoOn &&
+      cameraStream &&
+      containerSize.width > 0 && (
+        <Rnd
+          size={pipSizePx}
+          position={pipPositionPx}
+          minWidth={containerSize.width * 0.1}
+          minHeight={containerSize.height * 0.1}
+          maxWidth={containerSize.width * 0.5}
+          maxHeight={containerSize.height * 0.5}
+          bounds="parent"
+          onDragStop={handlePipDragStop}
+          onResizeStop={handlePipResizeStop}
+          className="pointer-events-auto"
+          style={{ zIndex: 210 }}
+        >
+          <div className="w-full h-full relative group">
+            {pipVideo}
+            <Button
+              size="icon"
+              variant="secondary"
+              className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() =>
+                setPipContent(pipContent === "camera" ? "screen" : "camera")
+              }
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          </div>
+        </Rnd>
+      );
+
+    const contentWithBackground = (
       <div className="w-full h-full relative" style={getBackgroundStyle()}>
         {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
           <div
@@ -862,188 +956,118 @@ const renderContent = () => {
             }}
           />
         )}
-        <div className="relative w-full h-full">{renderCamera()}</div>
-      </div>
-    );
-  }
-
-  const mainIsCamera =
-    (pipContent === "screen" && isScreenSharing && screenStream) ||
-    !isScreenSharing;
-  const mainContent = mainIsCamera ? renderCamera() : renderScreen();
-  const pipVideo =
-    pipContent === "camera"
-      ? renderCamera("cursor-move", {}, true)
-      : renderScreen("cursor-move");
-
-  const pipSizePx = {
-    width: (containerSize.width * rest.pipSize.width) / 100,
-    height: (containerSize.height * rest.pipSize.height) / 100,
-  };
-  const pipPositionPx = {
-    x: (containerSize.width * rest.pipPosition.x) / 100,
-    y: (containerSize.height * rest.pipPosition.y) / 100,
-  };
-
-  const pipContentEl =
-    isScreenSharing &&
-    screenStream &&
-    isVideoOn &&
-    cameraStream &&
-    containerSize.width > 0 && (
-      <Rnd
-        size={pipSizePx}
-        position={pipPositionPx}
-        minWidth={containerSize.width * 0.1}
-        minHeight={containerSize.height * 0.1}
-        maxWidth={containerSize.width * 0.5}
-        maxHeight={containerSize.height * 0.5}
-        bounds="parent"
-        onDragStop={handlePipDragStop}
-        onResizeStop={handlePipResizeStop}
-        className="pointer-events-auto"
-        style={{ zIndex: 210 }}
-      >
-        <div className="w-full h-full relative group">
-          {pipVideo}
-          <Button
-            size="icon"
-            variant="secondary"
-            className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-            onClick={() =>
-              setPipContent(pipContent === "camera" ? "screen" : "camera")
-            }
-          >
-            <RotateCcw className="h-4 w-4" />
-          </Button>
-        </div>
-      </Rnd>
-    );
-
-  const contentWithBackground = (
-    <div className="w-full h-full relative" style={getBackgroundStyle()}>
-      {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
         <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: `url(${rest.backgroundImageUrl})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-      )}
-      <div
-        className="relative w-full h-full"
-        style={
-          rest.backgroundEffect === "blur"
-            ? {
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-              }
-            : {}
-        }
-      >
-        {mainContent}
-      </div>
-      {pipContentEl}
-    </div>
-  );
-
-  switch (rest.layoutMode) {
-    case "pip":
-      return contentWithBackground;
-    case "split-vertical":
-    case "split-horizontal":
-      const isVertical = rest.layoutMode === "split-vertical";
-      return (
-        <div
-          className={cn(
-            "w-full h-full flex",
-            isVertical ? "flex-col" : "flex-row"
-          )}
+          className="relative w-full h-full"
+          style={
+            rest.backgroundEffect === "blur"
+              ? {
+                  backdropFilter: "blur(20px)",
+                  WebkitBackdropFilter: "blur(20px)",
+                }
+              : {}
+          }
         >
+          {mainContent}
+        </div>
+        {pipContentEl}
+      </div>
+    );
+
+    switch (rest.layoutMode) {
+      case "pip":
+        return contentWithBackground;
+      case "split-vertical":
+      case "split-horizontal":
+        const isVertical = rest.layoutMode === "split-vertical";
+        return (
           <div
-            className="relative bg-black flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${rest.splitRatio * 100}%`,
-            }}
-          >
-            {isScreenSharing && screenStream ? (
-              renderScreen()
-            ) : (
-              <div className="text-center text-muted-foreground">
-                <ScreenShare className="w-16 h-16 mx-auto mb-2" />
-                <p className="text-sm">Click Share Screen to start</p>
-              </div>
-            )}
-          </div>
-          <div
-            ref={splitDividerRef}
             className={cn(
-              "bg-border hover:bg-primary transition-colors flex items-center justify-center group",
-              isVertical
-                ? "h-2 w-full cursor-row-resize"
-                : "w-2 h-full cursor-col-resize"
+              "w-full h-full flex",
+              isVertical ? "flex-col" : "flex-row"
             )}
-            onMouseDown={handleSplitterMouseDown}
           >
             <div
-              className={cn(
-                "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
-                isVertical ? "w-12 h-1" : "w-1 h-12"
+              className="relative bg-black flex items-center justify-center overflow-hidden"
+              style={{
+                [isVertical ? "height" : "width"]: `${rest.splitRatio * 100}%`,
+              }}
+            >
+              {isScreenSharing && screenStream ? (
+                renderScreen()
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  <ScreenShare className="w-16 h-16 mx-auto mb-2" />
+                  <p className="text-sm">Click Share Screen to start</p>
+                </div>
               )}
-            />
-          </div>
-          <div
-            className="relative bg-black flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${
-                (1 - rest.splitRatio) * 100
-              }%`,
-            }}
-          >
-            {isVideoOn && cameraStream ? (
+            </div>
+            <div
+              ref={splitDividerRef}
+              className={cn(
+                "bg-border hover:bg-primary transition-colors flex items-center justify-center group",
+                isVertical
+                  ? "h-2 w-full cursor-row-resize"
+                  : "w-2 h-full cursor-col-resize"
+              )}
+              onMouseDown={handleSplitterMouseDown}
+            >
               <div
-                className="w-full h-full relative"
-                style={getBackgroundStyle()}
-              >
-                {rest.backgroundEffect === "image" &&
-                  rest.backgroundImageUrl && (
-                    <div
-                      className="absolute inset-0 opacity-30"
-                      style={{
-                        backgroundImage: `url(${rest.backgroundImageUrl})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    />
-                  )}
-                <div className="relative w-full h-full">{renderCamera()}</div>
-              </div>
-            ) : (
-              <div className="text-center text-muted-foreground">
-                <Webcam className="w-16 h-16 mx-auto mb-2" />
-                <p className="text-sm">Camera Off</p>
-              </div>
-            )}
+                className={cn(
+                  "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
+                  isVertical ? "w-12 h-1" : "w-1 h-12"
+                )}
+              />
+            </div>
+            <div
+              className="relative bg-black flex items-center justify-center overflow-hidden"
+              style={{
+                [isVertical ? "height" : "width"]: `${
+                  (1 - rest.splitRatio) * 100
+                }%`,
+              }}
+            >
+              {isVideoOn && cameraStream ? (
+                <div
+                  className="w-full h-full relative"
+                  style={getBackgroundStyle()}
+                >
+                  {rest.backgroundEffect === "image" &&
+                    rest.backgroundImageUrl && (
+                      <div
+                        className="absolute inset-0 opacity-30"
+                        style={{
+                          backgroundImage: `url(${rest.backgroundImageUrl})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      />
+                    )}
+                  <div className="relative w-full h-full">{renderCamera()}</div>
+                </div>
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  <Webcam className="w-16 h-16 mx-auto mb-2" />
+                  <p className="text-sm">Camera Off</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      );
-    default:
-      return contentWithBackground;
-  }
-};
+        );
+      default:
+        return contentWithBackground;
+    }
+  };
 
-return (
+  return (
     <div
       ref={canvasContainerRef}
       className={cn(
         "flex-1 relative bg-black overflow-hidden flex items-center justify-center w-full h-full",
         // ADD THIS LINE
         isFullscreen && !isControlsVisible && "hide-cursor"
-      )}    >
+      )}
+    >
       {renderContent()}
-
 
       <div
         className="absolute inset-0 pointer-events-none"
@@ -1245,7 +1269,9 @@ return (
           enableResizing={false}
           className={cn(
             "pointer-events-auto transition-opacity duration-300",
-            isControlsVisible && isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
+            (isControlsVisible && isMouseActive) || !isFullscreen
+              ? "opacity-100"
+              : "opacity-0"
           )}
         >
           <AICommandPopover
@@ -1272,7 +1298,9 @@ return (
       <div
         className={cn(
           "absolute bottom-6 left-1/2 -translate-x-1/2 z-[1010] transition-opacity duration-300 ease-in-out",
-          isControlsVisible && isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
+          isControlsVisible && isMouseActive
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none"
         )}
       >
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
