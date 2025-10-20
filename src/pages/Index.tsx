@@ -3,7 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { VideoCanvas } from "@/components/VideoCanvas";
 import { LeftSidebar } from "@/components/LeftSidebar";
-import { TopToolbar } from "@/components/TopToolbar";
+import { FloatingControls } from "@/components/FloatingControls";
+import { FloatingLogo } from "@/components/FloatingLogo";
 import { CaptionStyle, GeneratedOverlay, LayoutMode, CameraShape, DEFAULT_LAYOUT_STATE } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
@@ -291,24 +292,26 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
   };
 
   return (
-    <div ref={mainContainerRef} className="h-screen flex flex-col bg-background overflow-hidden">
+    <div ref={mainContainerRef} className="h-screen flex bg-background overflow-hidden relative">
       {!isFullscreen && (
-        <TopToolbar
-          captionsEnabled={captionsEnabled} onCaptionsToggle={setCaptionsEnabled}
-          isSidebarVisible={!isSidebarCollapsed} onSidebarToggle={() => setIsSidebarCollapsed(prev => !prev)}
-          isAiModeEnabled={isAiModeEnabled} onAiModeToggle={setIsAiModeEnabled}
-        />
-      )}
-      <div className="flex flex-1 overflow-hidden">
-        {!isFullscreen && (
+        <>
+          <FloatingLogo onSidebarToggle={() => setIsSidebarCollapsed(prev => !prev)} />
+          <FloatingControls
+            captionsEnabled={captionsEnabled}
+            onCaptionsToggle={setCaptionsEnabled}
+            isAiModeEnabled={isAiModeEnabled}
+            onAiModeToggle={setIsAiModeEnabled}
+          />
           <LeftSidebar
             {...sidebarProps}
-            width={isMinimized ? 64 : sidebarWidth} isCollapsed={isMinimized}
-            onResize={setSidebarWidth} 
+            width={isMinimized ? 64 : sidebarWidth}
+            isCollapsed={isMinimized}
+            onResize={setSidebarWidth}
             onExpand={() => setIsSidebarCollapsed(false)}
           />
-        )}
-        <VideoCanvas
+        </>
+      )}
+      <VideoCanvas
           isFullscreen={isFullscreen}
           onStyleChange={setCaptionStyle}
           onToggleFullscreen={handleToggleFullscreen}
@@ -354,7 +357,6 @@ const handlePreviewGenerated = useCallback((id: string, previewDataUrl: string) 
           setSelectedBrowserId={setSelectedBrowserId}
           browserOverlays={browserOverlays}
         />
-      </div>
     </div>
   );
 };

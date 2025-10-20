@@ -1165,6 +1165,7 @@ return (
                 }}
                 onResizeStop={(e, direction, ref, delta, pos) => {
                   const newWidthPx = parseInt(ref.style.width, 10);
+                  const newHeightPx = parseInt(ref.style.height, 10);
                   const newWidthPercent =
                     (newWidthPx / containerSize.width) * 100;
 
@@ -1179,6 +1180,7 @@ return (
                     },
                     size: {
                       width: newWidthPercent,
+                      height: (newHeightPx / containerSize.height) * 100,
                     },
                   });
                 }}
