@@ -253,8 +253,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     <SelectTrigger>
                       <SelectValue /> {/* remove placeholder */}
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem>None</SelectItem>
+                    <SelectContent className="z-[2000]">
+                      <SelectItem value="None">None</SelectItem>
                       {FILTER_PRESETS.map((filter) => (
                         <SelectItem key={filter.id} value={filter.style}>
                           {filter.name}

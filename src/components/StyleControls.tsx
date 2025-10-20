@@ -2,7 +2,13 @@
 
 import { CaptionStyle } from "@/types/caption";
 import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import { Slider } from "./ui/slider";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
@@ -14,22 +20,25 @@ interface StyleControlsProps {
 
 export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
   // A single, robust handler for all style property updates
-  const handleValueChange = <K extends keyof CaptionStyle>(key: K, value: CaptionStyle[K]) => {
+  const handleValueChange = <K extends keyof CaptionStyle>(
+    key: K,
+    value: CaptionStyle[K]
+  ) => {
     onStyleChange({ ...style, [key]: value });
   };
 
   return (
     <div className="space-y-6">
       {/* Font Family Dropdown */}
-              <Label htmlFor="rotation">Rotation: {style.rotation}°</Label>
-        <Slider
-          id="rotation"
-          value={[style.rotation]}
-          onValueChange={([value]) => handleValueChange("rotation", value)}
-          min={-180}
-          max={180}
-          step={1}
-        />
+      <Label htmlFor="rotation">Rotation: {style.rotation}°</Label>
+      <Slider
+        id="rotation"
+        value={[style.rotation]}
+        onValueChange={([value]) => handleValueChange("rotation", value)}
+        min={-180}
+        max={180}
+        step={1}
+      />
       <div className="space-y-2">
         <Label htmlFor="font-family">Font Family</Label>
         <Select
@@ -39,7 +48,9 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           <SelectTrigger id="font-family">
             <SelectValue placeholder="Select a font" />
           </SelectTrigger>
-          <SelectContent>
+
+          {/* Add `portalled` or `position="popper"` depending on your UI lib */}
+          <SelectContent position="popper" className="z-[2000]">
             <SelectItem value="Inter">Inter</SelectItem>
             <SelectItem value="Roboto">Roboto</SelectItem>
             <SelectItem value="Open Sans">Open Sans</SelectItem>
@@ -82,25 +93,27 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
             id="bg-color"
             type="text" // Changed from "color" to "text"
             value={style.backgroundColor}
-            onChange={(e) => handleValueChange("backgroundColor", e.target.value)}
+            onChange={(e) =>
+              handleValueChange("backgroundColor", e.target.value)
+            }
             className="h-10 px-2"
             placeholder="e.g., rgba(0,0,0,0.5)"
           />
         </div>
       </div>
-      
+
       {/* Boolean Toggles */}
       <div className="grid grid-cols-2 gap-y-4 gap-x-2 pt-2">
         <div className="flex items-center space-x-2">
-          <Switch 
-            id="bold-toggle" 
-            checked={style.bold} 
+          <Switch
+            id="bold-toggle"
+            checked={style.bold}
             onCheckedChange={(checked) => handleValueChange("bold", checked)}
           />
           <Label htmlFor="bold-toggle">Bold</Label>
         </div>
         <div className="flex items-center space-x-2">
-          <Switch 
+          <Switch
             id="italic-toggle"
             checked={style.italic}
             onCheckedChange={(checked) => handleValueChange("italic", checked)}
@@ -108,15 +121,17 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           <Label htmlFor="italic-toggle">Italic</Label>
         </div>
         <div className="flex items-center space-x-2">
-          <Switch 
+          <Switch
             id="underline-toggle"
             checked={style.underline}
-            onCheckedChange={(checked) => handleValueChange("underline", checked)}
+            onCheckedChange={(checked) =>
+              handleValueChange("underline", checked)
+            }
           />
           <Label htmlFor="underline-toggle">Underline</Label>
         </div>
         <div className="flex items-center space-x-2">
-          <Switch 
+          <Switch
             id="shadow-toggle"
             checked={style.shadow}
             onCheckedChange={(checked) => handleValueChange("shadow", checked)}
@@ -124,39 +139,45 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           <Label htmlFor="shadow-toggle">Shadow</Label>
         </div>
         <div className="flex items-center space-x-2">
-          <Switch 
-            id="border-toggle" 
-            checked={style.border} 
+          <Switch
+            id="border-toggle"
+            checked={style.border}
             onCheckedChange={(checked) => handleValueChange("border", checked)}
           />
           <Label htmlFor="border-toggle">Border</Label>
         </div>
         {/* --- ADD THIS ENTIRE SECTION --- */}
-      {style.border && (
-        <div className="space-y-6 pt-4 border-t animate-fade-in">
-          <div className="space-y-2">
-            <Label htmlFor="border-color">Border Color</Label>
-            <Input
-              id="border-color"
-              type="color"
-              value={style.borderColor}
-              onChange={(e) => handleValueChange("borderColor", e.target.value)}
-              className="p-1 h-10"
-            />
+        {style.border && (
+          <div className="space-y-6 pt-4 border-t animate-fade-in">
+            <div className="space-y-2">
+              <Label htmlFor="border-color">Border Color</Label>
+              <Input
+                id="border-color"
+                type="color"
+                value={style.borderColor}
+                onChange={(e) =>
+                  handleValueChange("borderColor", e.target.value)
+                }
+                className="p-1 h-10"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="border-width">
+                Border Width: {style.borderWidth}px
+              </Label>
+              <Slider
+                id="border-width"
+                value={[style.borderWidth]}
+                onValueChange={([value]) =>
+                  handleValueChange("borderWidth", value)
+                }
+                min={1}
+                max={10}
+                step={1}
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="border-width">Border Width: {style.borderWidth}px</Label>
-            <Slider
-              id="border-width"
-              value={[style.borderWidth]}
-              onValueChange={([value]) => handleValueChange("borderWidth", value)}
-              min={1}
-              max={10}
-              step={1}
-            />
-          </div>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );
