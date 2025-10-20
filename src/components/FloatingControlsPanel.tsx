@@ -251,33 +251,15 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     onValueChange={props.onVideoFilterChange}
                   >
                     <SelectTrigger>
-                      <SelectValue />
+                      <SelectValue /> {/* remove placeholder */}
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
+                      <SelectItem>None</SelectItem>
                       {FILTER_PRESETS.map((filter) => (
                         <SelectItem key={filter.id} value={filter.style}>
                           {filter.name}
                         </SelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Background Effect */}
-                <div className="space-y-2">
-                  <Label className="text-xs">Background</Label>
-                  <Select
-                    value={props.backgroundEffect}
-                    onValueChange={props.onBackgroundEffectChange as any}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      <SelectItem value="blur">Blur</SelectItem>
-                      <SelectItem value="image">Image</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
