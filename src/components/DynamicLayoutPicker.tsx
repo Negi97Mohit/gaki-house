@@ -9,10 +9,14 @@ import {
   LayoutGrid,
   SplitSquareHorizontal,
   SplitSquareVertical,
+  Image as ImageIcon,
+  X,
 } from "lucide-react";
 
 interface DynamicLayoutPickerProps {
-  onSelectLayout: (mode: "split-vertical" | "split-horizontal") => void;
+  onSelectLayout: (
+    mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
+  ) => void;
 }
 
 export const DynamicLayoutPicker: React.FC<DynamicLayoutPickerProps> = ({
@@ -39,6 +43,17 @@ export const DynamicLayoutPicker: React.FC<DynamicLayoutPickerProps> = ({
         <DropdownMenuItem onClick={() => onSelectLayout("split-horizontal")}>
           <SplitSquareHorizontal className="w-4 h-4 mr-2" />
           Split Horizontally
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onSelectLayout("pip")}>
+          <ImageIcon className="w-4 h-4 mr-2" />
+          Picture in Picture
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => onSelectLayout("reset")}
+          className="text-red-500"
+        >
+          <X className="w-4 h-4 mr-2" />
+          Reset Layout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

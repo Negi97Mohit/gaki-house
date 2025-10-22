@@ -104,7 +104,7 @@ const DraggableOverlay: React.FC<{
   onPreviewGenerated: (id: string, dataUrl: string) => void;
   onSetDynamicLayout: (
     target: { id: string; type: "html" },
-    mode: "split-vertical" | "split-horizontal"
+    mode: "split-vertical" | "split-horizontal" | "pip"
   ) => void;
   containerSize: { width: number; height: number };
 }> = ({
@@ -538,6 +538,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [pipContent, setPipContent] = useState<"camera" | "screen">("camera");
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
+  const [dynamicSplitRatio, setDynamicSplitRatio] = useState(0.5);
+  const [isDraggingDynamicSplitter, setIsDraggingDynamicSplitter] =
+    useState(false);
+  const [dynamicPipPosition, setDynamicPipPosition] = useState({
+    x: 75,
+    y: 75,
+  });
+  const [dynamicPipSize, setDynamicPipSize] = useState({
+    width: 30,
+    height: 30,
+  });
+
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
     isAudioOn: isAudioOn,
@@ -727,6 +739,29 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   }, [isDraggingSplitter, rest.layoutMode, rest.onSplitRatioChange]);
 
   useEffect(() => {
+    if (!isDraggingDynamicSplitter) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      const container = canvasContainerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      let ratio: number;
+      if (dynamicLayout.mode === "split-vertical") {
+        ratio = (e.clientY - rect.top) / rect.height;
+      } else {
+        ratio = (e.clientX - rect.left) / rect.width;
+      }
+      setDynamicSplitRatio(Math.max(0.2, Math.min(0.8, ratio)));
+    };
+    const handleMouseUp = () => setIsDraggingDynamicSplitter(false);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDraggingDynamicSplitter, dynamicLayout.mode]);
+
+  useEffect(() => {
     let dedicatedAudioStream: MediaStream | null = null;
 
     const manageAudioStream = async () => {
@@ -898,6 +933,58 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const renderContent = () => {
     // --- NEW: DYNAMIC LAYOUT RENDERING LOGIC ---
     if (dynamicLayout.isActive && dynamicLayout.target) {
+      if (dynamicLayout.mode === "pip") {
+        const pipSizePx = {
+          width: (containerSize.width * dynamicPipSize.width) / 100,
+          height: (containerSize.height * dynamicPipSize.height) / 100,
+        };
+        const pipPositionPx = {
+          x: (containerSize.width * dynamicPipPosition.x) / 100,
+          y: (containerSize.height * dynamicPipPosition.y) / 100,
+        };
+
+        return (
+          <div className="w-full h-full relative bg-black">
+            {renderCamera()}
+            <Rnd
+              size={pipSizePx}
+              position={pipPositionPx}
+              minWidth={150}
+              minHeight={150}
+              bounds="parent"
+              onDragStop={(e, d) => {
+                setDynamicPipPosition({
+                  x: (d.x / containerSize.width) * 100,
+                  y: (d.y / containerSize.height) * 100,
+                });
+              }}
+              onResizeStop={(e, dir, ref, delta, pos) => {
+                setDynamicPipSize({
+                  width:
+                    (parseInt(ref.style.width, 10) / containerSize.width) * 100,
+                  height:
+                    (parseInt(ref.style.height, 10) / containerSize.height) *
+                    100,
+                });
+                setDynamicPipPosition({
+                  x: (pos.x / containerSize.width) * 100,
+                  y: (pos.y / containerSize.height) * 100,
+                });
+              }}
+              className="pointer-events-auto border-2 border-primary shadow-lg rounded-lg overflow-hidden"
+            >
+              <DynamicLayoutRenderer
+                target={dynamicLayout.target}
+                theme={theme}
+                fullTranscript={fullTranscript}
+                interimTranscript={interimTranscript}
+                sidebarProps={sidebarProps}
+              />
+            </Rnd>
+          </div>
+        );
+      }
+
       const isVertical = dynamicLayout.mode === "split-vertical";
       return (
         <div
@@ -907,8 +994,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           )}
         >
           <div
-            className="relative flex items-center justify-center overflow-hidden border-2 border-background"
-            style={{ [isVertical ? "height" : "width"]: "50%" }}
+            className="relative flex items-center justify-center overflow-hidden"
+            style={{
+              [isVertical ? "height" : "width"]: `${dynamicSplitRatio * 100}%`,
+            }}
           >
             <DynamicLayoutRenderer
               target={dynamicLayout.target}
@@ -919,8 +1008,28 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             />
           </div>
           <div
+            className={cn(
+              "bg-border hover:bg-primary transition-colors flex items-center justify-center group z-10",
+              isVertical
+                ? "h-2 w-full cursor-row-resize"
+                : "w-2 h-full cursor-col-resize"
+            )}
+            onMouseDown={() => setIsDraggingDynamicSplitter(true)}
+          >
+            <div
+              className={cn(
+                "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
+                isVertical ? "w-12 h-1" : "w-1 h-12"
+              )}
+            />
+          </div>
+          <div
             className="relative flex items-center justify-center overflow-hidden"
-            style={{ [isVertical ? "height" : "width"]: "50%" }}
+            style={{
+              [isVertical ? "height" : "width"]: `${
+                (1 - dynamicSplitRatio) * 100
+              }%`,
+            }}
           >
             {renderCamera()}
           </div>

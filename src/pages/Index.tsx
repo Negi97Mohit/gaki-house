@@ -39,7 +39,7 @@ const Index = () => {
 
   const [dynamicLayout, setDynamicLayout] = useState<{
     isActive: boolean;
-    mode: "split-vertical" | "split-horizontal";
+    mode: "split-vertical" | "split-horizontal" | "pip";
     target: {
       id: string;
       type: "html" | "file" | "browser" | "caption";
@@ -55,7 +55,7 @@ const Index = () => {
   const [fileOverlays, setFileOverlays] = useState<FileOverlayState[]>([]);
   const handleSetDynamicLayout = (
     target: { id: string; type: "html" | "file" | "browser" | "caption" },
-    mode: "split-vertical" | "split-horizontal"
+    mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
   ) => {
     let targetOverlay: any = null;
 
@@ -72,6 +72,15 @@ const Index = () => {
         type: "caption",
         layout: captionStyle,
       };
+    }
+
+    if (mode === "reset") {
+      setDynamicLayout({
+        isActive: false,
+        mode: "split-vertical", // Reset to default
+        target: null,
+      });
+      return;
     }
 
     if (!targetOverlay) return;
@@ -224,6 +233,13 @@ const Index = () => {
         o.id === id ? { ...o, layout: { ...o.layout, ...layout } } : o
       )
     );
+  };
+
+  const handleLayoutModeChange = (mode: LayoutMode) => {
+    // Deactivate any active dynamic layout when a global layout is chosen
+    setDynamicLayout({ isActive: false, mode: "split-vertical", target: null });
+    // Set the global layout mode
+    setLayoutMode(mode);
   };
 
   const handleDeselectAll = () => {
@@ -736,7 +752,7 @@ const Index = () => {
         splitRatio={splitRatio}
         pipPosition={pipPosition}
         pipSize={pipSize}
-        onLayoutModeChange={setLayoutMode}
+        onLayoutModeChange={handleLayoutModeChange}
         onCameraShapeChange={setCameraShape}
         onSplitRatioChange={setSplitRatio}
         onPipPositionChange={setPipPosition}
