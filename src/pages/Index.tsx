@@ -168,6 +168,11 @@ const Index = () => {
     const handleDragOver = (e: DragEvent) => e.preventDefault();
     const handleDrop = (e: DragEvent) => {
       e.preventDefault();
+      e.stopPropagation();
+      if (isDraggingInternally.current) {
+        isDraggingInternally.current = false;
+        return;
+      }
       if (e.dataTransfer?.files?.length) {
         Array.from(e.dataTransfer.files).forEach(handleAddFile);
       }
@@ -214,6 +219,13 @@ const Index = () => {
     };
   }, [handleAddFile, fileOverlays]);
 
+  const isDraggingInternally = useRef(false);
+  const handleInternalDragStart = () => {
+    isDraggingInternally.current = true;
+  };
+  const handleInternalDragStop = () => {
+    isDraggingInternally.current = false;
+  };
   const handleRemoveFile = (id: string) => {
     setFileOverlays((prev) => {
       const overlayToRemove = prev.find((o) => o.id === id);
@@ -775,6 +787,8 @@ const Index = () => {
         onFileLayoutChange={handleFileLayoutChange}
         selectedFileId={selectedFileId}
         setSelectedFileId={setSelectedFileId}
+        onInternalDragStart={handleInternalDragStart}
+        onInternalDragStop={handleInternalDragStop}
         onDeselectAll={handleDeselectAll}
         onSetDynamicLayout={handleSetDynamicLayout}
         dynamicLayout={dynamicLayout}

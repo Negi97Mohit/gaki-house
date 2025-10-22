@@ -17,10 +17,12 @@ interface DynamicLayoutPickerProps {
   onSelectLayout: (
     mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
   ) => void;
+  portalContainer?: HTMLElement | null;
 }
 
 export const DynamicLayoutPicker: React.FC<DynamicLayoutPickerProps> = ({
   onSelectLayout,
+  portalContainer,
 }) => {
   return (
     <DropdownMenu>
@@ -35,7 +37,10 @@ export const DynamicLayoutPicker: React.FC<DynamicLayoutPickerProps> = ({
           <LayoutGrid className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent onClick={(e) => e.stopPropagation()}>
+      <DropdownMenuContent
+        onClick={(e) => e.stopPropagation()}
+        container={portalContainer}
+      >
         <DropdownMenuItem onClick={() => onSelectLayout("split-vertical")}>
           <SplitSquareVertical className="w-4 h-4 mr-2" />
           Split Vertically

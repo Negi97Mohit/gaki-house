@@ -107,6 +107,7 @@ const DraggableOverlay: React.FC<{
     mode: "split-vertical" | "split-horizontal" | "pip"
   ) => void;
   containerSize: { width: number; height: number };
+  portalContainer?: HTMLElement | null;
 }> = ({
   overlay,
   onLayoutChange,
@@ -114,6 +115,7 @@ const DraggableOverlay: React.FC<{
   onPreviewGenerated,
   onSetDynamicLayout,
   containerSize,
+  portalContainer,
 }) => {
   const { theme } = useTheme();
   const elementRef = useRef<HTMLDivElement>(null);
@@ -240,6 +242,7 @@ const DraggableOverlay: React.FC<{
           onSelectLayout={(mode) =>
             onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
           }
+          portalContainer={portalContainer}
         />
         {!isFullscreen && (
           <>
@@ -378,6 +381,8 @@ interface VideoCanvasProps {
   ) => void;
   selectedFileId: string | null;
   setSelectedFileId: (id: string | null) => void;
+  onInternalDragStart: () => void;
+  onInternalDragStop: () => void;
   onSetDynamicLayout: (
     target: { id: string; type: any },
     mode: "split-vertical" | "split-horizontal"
@@ -527,6 +532,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     selectedFileId,
     setSelectedFileId,
     onSetDynamicLayout,
+    onInternalDragStart,
+    onInternalDragStop,
     dynamicLayout,
     onDeselectAll,
     isMouseActive,
@@ -1277,6 +1284,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onRemoveOverlay={rest.onRemoveOverlay}
               onPreviewGenerated={onPreviewGenerated}
               containerSize={containerSize}
+              portalContainer={portalContainer}
             />
           ))}
           {filteredBrowserOverlays.map((browser) => (
@@ -1289,7 +1297,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onLayoutChange={onBrowserLayoutChange}
               containerSize={containerSize}
               isSelected={selectedBrowserId === browser.id}
+              onInternalDragStart={onInternalDragStart}
+              onInternalDragStop={onInternalDragStop}
               onSelect={setSelectedBrowserId}
+              portalContainer={portalContainer}
             />
           ))}
           {filteredFileOverlays.map((file) => (
@@ -1301,7 +1312,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onLayoutChange={onFileLayoutChange}
               containerSize={containerSize}
               isSelected={selectedFileId === file.id}
+              onInternalDragStart={onInternalDragStart}
+              onInternalDragStop={onInternalDragStop}
               onSelect={setSelectedFileId}
+              portalContainer={portalContainer}
             />
           ))}
           {(() => {

@@ -32,6 +32,8 @@ interface DraggableBrowserProps {
   ) => void;
   isSelected: boolean;
   onSelect: (id: string) => void;
+  onInternalDragStart: () => void;
+  onInternalDragStop: () => void;
 }
 
 export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
@@ -43,6 +45,8 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   onSetDynamicLayout,
   isSelected,
   onSelect,
+  onInternalDragStart,
+  onInternalDragStop,
 }) => {
   const [inputUrl, setInputUrl] = useState(overlay.url);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -78,11 +82,16 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     <Rnd
       size={{ width: widthPx, height: heightPx }}
       position={{ x: xPx, y: yPx }}
-      onDragStart={() => {
-        onSelect(overlay.id);
-        setIsDragging(true);
+      onDragStart={(e) => {
+        if (!(e.target as HTMLElement).closest("input")) {
+          // Prevent dragging when clicking input
+          onInternalDragStart();
+          onSelect(overlay.id);
+          setIsDragging(true);
+        }
       }}
       onDragStop={(e, d) => {
+        onInternalDragStop();
         setIsDragging(false);
         onLayoutChange(overlay.id, {
           position: {
@@ -95,6 +104,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       minHeight={200}
       bounds="parent"
       onResizeStop={(e, dir, ref, delta, pos) => {
+        onInternalDragStop();
         const newWidth = parseInt(ref.style.width, 10);
         const newHeight = parseInt(ref.style.height, 10);
         onLayoutChange(overlay.id, {
@@ -113,7 +123,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
         // Set border and shadow only when selected
         isSelected
           ? "shadow-lg border-2 border-primary"
-          : "shadow-none border-2 border-transparent"
+          : "shadow-none border-2 border-transparent group-hover:border-primary/50"
       )}
       style={{
         zIndex: overlay.layout.zIndex,

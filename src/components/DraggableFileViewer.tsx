@@ -1,10 +1,10 @@
-// Replace the entire contents of this file with the code below
+// Replace the entire contents of this file with this corrected version
 
 import React, { useEffect, useState, useRef } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
 import { FileOverlayState, FileType } from "@/types/caption";
-import { X, File as FileIcon, Move, Loader2 } from "lucide-react";
+import { X, File as FileIcon, Loader2 } from "lucide-react";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 
 interface DraggableFileViewerProps {
@@ -18,12 +18,13 @@ interface DraggableFileViewerProps {
   isSelected: boolean;
   onSetDynamicLayout: (
     target: { id: string; type: "file" },
-    mode: "split-vertical" | "split-horizontal"
+    mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
   ) => void;
   onSelect: (id: string) => void;
+  onInternalDragStart: () => void;
+  onInternalDragStop: () => void;
 }
 
-// --- MOVED AND EXPORTED FOR REUSE ---
 export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
   overlay,
 }) => {
@@ -52,7 +53,6 @@ export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
       useEffect(() => {
         const video = videoRef.current;
         if (!video) return;
-
         const handleWaiting = () => setIsLoading(true);
         const handleCanPlay = () => setIsLoading(false);
         const handleProgress = () => {
@@ -62,13 +62,10 @@ export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
             setBufferedPercent(Math.round(percent));
           }
         };
-
         video.addEventListener("waiting", handleWaiting);
         video.addEventListener("canplay", handleCanPlay);
         video.addEventListener("progress", handleProgress);
-
         if (video.readyState >= 3) setIsLoading(false);
-
         return () => {
           video.removeEventListener("waiting", handleWaiting);
           video.removeEventListener("canplay", handleCanPlay);
@@ -132,8 +129,9 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   isSelected,
   onSetDynamicLayout,
   onSelect,
+  onInternalDragStart,
+  onInternalDragStop,
 }) => {
-  // Convert percentage-based layout to pixels for the Rnd component
   const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
   const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
   const xPx =
@@ -148,9 +146,13 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       minWidth={200}
       minHeight={150}
       bounds="parent"
-      dragHandleClassName=".drag-handle"
-      onDragStart={() => onSelect(overlay.id)}
+      // REMOVED dragHandleClassName and cancel props. We will control dragging via event propagation.
+      onDragStart={() => {
+        onInternalDragStart();
+        onSelect(overlay.id);
+      }}
       onDragStop={(e, d) => {
+        onInternalDragStop();
         onLayoutChange(overlay.id, {
           position: {
             x: ((d.x + widthPx / 2) / containerSize.width) * 100,
@@ -159,6 +161,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         });
       }}
       onResizeStop={(e, dir, ref, delta, pos) => {
+        onInternalDragStop();
         const newWidth = parseInt(ref.style.width, 10);
         const newHeight = parseInt(ref.style.height, 10);
         onLayoutChange(overlay.id, {
@@ -172,38 +175,41 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
           },
         });
       }}
+      onClick={(e) => {
+        // Stop clicks from bubbling up to the canvas and deselecting
+        e.stopPropagation();
+      }}
       className={cn(
         "group pointer-events-auto rounded-lg flex flex-col transition-all duration-200",
         overlay.fileType === "image" ? "bg-transparent" : "bg-card",
         isSelected
           ? "shadow-lg border-2 border-primary"
-          : "shadow-none border-2 border-transparent"
+          : "shadow-none border-2 border-transparent group-hover:border-primary/50"
       )}
       style={{
         zIndex: overlay.layout.zIndex,
         transform: `rotate(${overlay.layout.rotation}deg)`,
       }}
     >
+      {/* The content area will now allow dragging */}
+      <div
+        className={cn(
+          "flex-grow w-full h-full relative overflow-auto rounded-lg",
+          overlay.fileType !== "image" && "bg-background/50"
+        )}
+        onMouseDown={() => {
+          // We still want to select the item on click, but not stop the drag event.
+          onSelect(overlay.id);
+        }}
+      >
+        <FileRenderer overlay={overlay} />
+      </div>
       <DynamicLayoutPicker
         onSelectLayout={(mode) =>
           onSetDynamicLayout({ id: overlay.id, type: "file" }, mode)
         }
       />
-      <div
-        onMouseDown={(e) => {
-          e.stopPropagation();
-          onSelect(overlay.id);
-        }}
-        className={cn(
-          "flex-grow w-full h-full relative rounded-lg overflow-auto",
-          overlay.fileType !== "image" && "bg-background/50"
-        )}
-      >
-        <FileRenderer overlay={overlay} />
-      </div>
-      <div className="drag-handle absolute top-2 left-2 p-1.5 bg-black/20 rounded-md cursor-move opacity-0 group-hover:opacity-100 transition-opacity">
-        <Move className="w-4 h-4 text-white" />
-      </div>
+
       <button
         onClick={() => onRemove(overlay.id)}
         title="Remove file"
