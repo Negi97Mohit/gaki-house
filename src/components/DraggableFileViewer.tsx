@@ -1,3 +1,5 @@
+// Replace the entire contents of this file with the code below
+
 import React, { useEffect, useState, useRef } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
@@ -21,8 +23,10 @@ interface DraggableFileViewerProps {
   onSelect: (id: string) => void;
 }
 
-// A sub-component to render the correct element based on file type
-const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({ overlay }) => {
+// --- MOVED AND EXPORTED FOR REUSE ---
+export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
+  overlay,
+}) => {
   const [textContent, setTextContent] = useState("");
 
   useEffect(() => {
@@ -144,7 +148,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       minWidth={200}
       minHeight={150}
       bounds="parent"
-      dragHandleClassName="drag-handle"
+      dragHandleClassName=".drag-handle"
       onDragStart={() => onSelect(overlay.id)}
       onDragStop={(e, d) => {
         onLayoutChange(overlay.id, {
@@ -170,9 +174,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       }}
       className={cn(
         "group pointer-events-auto rounded-lg flex flex-col transition-all duration-200",
-        // Set transparent background for images, solid for others
         overlay.fileType === "image" ? "bg-transparent" : "bg-card",
-        // Set border and shadow only when selected
         isSelected
           ? "shadow-lg border-2 border-primary"
           : "shadow-none border-2 border-transparent"
@@ -194,7 +196,6 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         }}
         className={cn(
           "flex-grow w-full h-full relative rounded-lg overflow-auto",
-          // For non-images, add a semi-transparent background for readability
           overlay.fileType !== "image" && "bg-background/50"
         )}
       >

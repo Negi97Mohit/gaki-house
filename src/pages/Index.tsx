@@ -761,6 +761,7 @@ const Index = () => {
         setSelectedFileId={setSelectedFileId}
         onDeselectAll={handleDeselectAll}
         onSetDynamicLayout={handleSetDynamicLayout}
+        dynamicLayout={dynamicLayout}
       />
     </div>
   );

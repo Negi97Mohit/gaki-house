@@ -31,37 +31,36 @@ import { useVideoStreams } from "@/hooks/useVideoStreams";
 import { Rnd } from "react-rnd";
 import {
   GeneratedOverlay,
+  GeneratedLayout,
   LayoutMode,
   CameraShape,
   CaptionStyle,
   FileOverlayState,
+  BrowserOverlayState,
 } from "@/types/caption";
-import { DraggableFileViewer } from "@/components/DraggableFileViewer";
+import {
+  DraggableFileViewer,
+  FileRenderer,
+} from "@/components/DraggableFileViewer";
 import { LayoutControls } from "@/components/LayoutControls";
 import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
-import {
-  DraggableBrowser,
-  BrowserOverlayState,
-} from "@/components/DraggableBrowser";
+import { DraggableBrowser } from "@/components/DraggableBrowser";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 
-// --- THIS IS THE UPDATED COMPONENT ---
-// It now uses `srcDoc` to prevent the white background flash.
+// --- UPDATED COMPONENT ---
 const HtmlOverlayRenderer: React.FC<{
   htmlContent: string;
   theme: string | undefined;
 }> = ({ htmlContent, theme }) => {
   const colorScheme = theme === "dark" ? "dark" : "light";
-  // Define the CSS style that forces a transparent background.
   const transparentStyle = `
     <style>
       html {
-        /* Use the dynamic color scheme */
         color-scheme: ${colorScheme};
       }
       html, body {
@@ -72,8 +71,6 @@ const HtmlOverlayRenderer: React.FC<{
       }
     </style>
   `;
-
-  // Use string replacement to inject our style directly into the <head> of the AI-generated HTML.
   const finalHtml = htmlContent.replace(
     "</head>",
     `${transparentStyle}</head>`
@@ -165,7 +162,6 @@ const DraggableOverlay: React.FC<{
 
   if (!containerSize.width || !containerSize.height) return null;
 
-  // --- LOGIC TO CHECK FOR FULLSCREEN ---
   const isFullscreen =
     overlay.layout.size.width >= 99.5 && overlay.layout.size.height >= 99.5;
 
@@ -210,20 +206,15 @@ const DraggableOverlay: React.FC<{
       minWidth={50}
       minHeight={50}
       enableResizing={true}
-      disableDragging={isFullscreen} // Keep this from before
+      disableDragging={isFullscreen}
       className="group pointer-events-auto"
       style={{ zIndex: overlay.layout.zIndex }}
     >
       <div
         ref={elementRef}
         className={cn(
-          // Base classes that are always applied
           "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
-
-          // Logic for the border: ONLY apply the hover effect if it's NOT fullscreen
           !isFullscreen && "group-hover:border-primary",
-
-          // Logic for the cursor: ONLY make it ignore the mouse IF it IS fullscreen
           isFullscreen && "pointer-events-none"
         )}
         style={{
@@ -236,7 +227,6 @@ const DraggableOverlay: React.FC<{
         <div
           className={cn(
             "w-full h-full overflow-hidden",
-            // --- FIX 2: Make the content area transparent to the mouse ---
             isFullscreen && "pointer-events-none"
           )}
         >
@@ -251,7 +241,6 @@ const DraggableOverlay: React.FC<{
             onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
           }
         />
-        {/* Hide buttons in fullscreen as they are non-interactive anyway */}
         {!isFullscreen && (
           <>
             <button
@@ -292,7 +281,7 @@ interface VideoCanvasProps {
   generatedOverlays: GeneratedOverlay[];
   onOverlayLayoutChange: (
     id: string,
-    key: "position" | "size",
+    key: "position" | "size" | "rotation",
     value: any
   ) => void;
   onRemoveOverlay: (id: string) => void;
@@ -393,6 +382,16 @@ interface VideoCanvasProps {
     target: { id: string; type: any },
     mode: "split-vertical" | "split-horizontal"
   ) => void;
+  dynamicLayout: {
+    isActive: boolean;
+    mode: "split-vertical" | "split-horizontal";
+    target: {
+      id: string;
+      type: string;
+      content: any;
+      layout: GeneratedLayout;
+    } | null;
+  };
   onDeselectAll: () => void;
   isMouseActive: boolean;
 }
@@ -420,6 +419,70 @@ const VideoPlayer: React.FC<{
       style={style}
     />
   );
+};
+
+// --- NEW HELPER COMPONENT FOR DYNAMIC LAYOUTS ---
+const DynamicLayoutRenderer: React.FC<{
+  target: { type: string; content: any };
+  theme: string | undefined;
+  fullTranscript: string;
+  interimTranscript: string;
+  sidebarProps: any;
+}> = ({ target, theme, fullTranscript, interimTranscript, sidebarProps }) => {
+  switch (target.type) {
+    case "html":
+      return (
+        <HtmlOverlayRenderer
+          htmlContent={target.content.htmlContent}
+          theme={theme}
+        />
+      );
+    case "file":
+      return <FileRenderer overlay={target.content} />;
+    case "browser":
+      return (
+        <iframe
+          src={target.content.url}
+          className="w-full h-full border-none"
+          sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts"
+        />
+      );
+    case "caption":
+      const captionText = (fullTranscript + " " + interimTranscript).trim();
+      if (!captionText)
+        return (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+            <p>No speech detected.</p>
+          </div>
+        );
+      return (
+        <CaptionRenderer
+          activeStyleId={sidebarProps.dynamicStyle}
+          captionStyle={sidebarProps.style}
+          text={captionText}
+          fullTranscript={fullTranscript}
+          interimTranscript={interimTranscript}
+          baseStyle={{
+            fontFamily: sidebarProps.style.fontFamily,
+            fontSize: `${sidebarProps.style.fontSize}px`,
+            color: sidebarProps.style.color,
+            backgroundColor: sidebarProps.style.backgroundColor,
+            textShadow: sidebarProps.style.shadow
+              ? "2px 2px 4px rgba(0,0,0,0.5)"
+              : "none",
+            fontWeight: sidebarProps.style.bold ? "bold" : "normal",
+            fontStyle: sidebarProps.style.italic ? "italic" : "normal",
+            textDecoration: sidebarProps.style.underline ? "underline" : "none",
+          }}
+        />
+      );
+    default:
+      return (
+        <div className="w-full h-full flex items-center justify-center">
+          <p>Unsupported content type</p>
+        </div>
+      );
+  }
 };
 
 const SNAP_THRESHOLD = 5;
@@ -458,18 +521,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onBrowserLayoutChange,
     selectedBrowserId,
     setSelectedBrowserId,
-    onDeselectAll,
-    isMouseActive,
     fileOverlays,
     onRemoveFile,
     onFileLayoutChange,
     selectedFileId,
     setSelectedFileId,
     onSetDynamicLayout,
+    dynamicLayout,
+    onDeselectAll,
+    isMouseActive,
     ...rest
   } = props;
 
-  const handleCanvasClick = () => onDeselectAll();
+  const { theme } = useTheme();
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [pipContent, setPipContent] = useState<"camera" | "screen">("camera");
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -568,7 +632,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     const resizeObserver = new ResizeObserver(updateSize);
     resizeObserver.observe(container);
 
-    // Update size immediately when fullscreen changes
     updateSize();
 
     return () => resizeObserver.disconnect();
@@ -800,8 +863,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       {rest.backgroundEffect !== "none" ||
       rest.isAutoFramingEnabled ||
       isNeonEdgeEnabled ||
-      videoFilterString !== "none" ? ( // <-- ADD THIS CHECK
-        // --- END OF CHANGE ---
+      videoFilterString !== "none" ? (
         <CameraRenderer
           stream={cameraStream}
           backgroundEffect={rest.backgroundEffect}
@@ -834,6 +896,39 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   );
 
   const renderContent = () => {
+    // --- NEW: DYNAMIC LAYOUT RENDERING LOGIC ---
+    if (dynamicLayout.isActive && dynamicLayout.target) {
+      const isVertical = dynamicLayout.mode === "split-vertical";
+      return (
+        <div
+          className={cn(
+            "w-full h-full flex bg-black",
+            isVertical ? "flex-col" : "flex-row"
+          )}
+        >
+          <div
+            className="relative flex items-center justify-center overflow-hidden border-2 border-background"
+            style={{ [isVertical ? "height" : "width"]: "50%" }}
+          >
+            <DynamicLayoutRenderer
+              target={dynamicLayout.target}
+              theme={theme}
+              fullTranscript={fullTranscript}
+              interimTranscript={interimTranscript}
+              sidebarProps={sidebarProps}
+            />
+          </div>
+          <div
+            className="relative flex items-center justify-center overflow-hidden"
+            style={{ [isVertical ? "height" : "width"]: "50%" }}
+          >
+            {renderCamera()}
+          </div>
+        </div>
+      );
+    }
+    // --- END OF NEW LOGIC ---
+
     const getBackgroundStyle = (): React.CSSProperties => {
       const style: React.CSSProperties = {};
       if (rest.backgroundEffect === "blur") {
@@ -1032,23 +1127,39 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     }
   };
 
+  const handleCanvasClick = () => onDeselectAll();
+
+  // --- NEW: Filter out the active dynamic layout target from the main overlay lists ---
+  const filteredHtmlOverlays = dynamicLayout.isActive
+    ? generatedOverlays.filter((o) => o.id !== dynamicLayout.target?.id)
+    : generatedOverlays;
+  const filteredFileOverlays = dynamicLayout.isActive
+    ? fileOverlays.filter((o) => o.id !== dynamicLayout.target?.id)
+    : fileOverlays;
+  const filteredBrowserOverlays = dynamicLayout.isActive
+    ? browserOverlays.filter((o) => o.id !== dynamicLayout.target?.id)
+    : browserOverlays;
+  const shouldRenderCaptionOverlay =
+    !dynamicLayout.isActive || dynamicLayout.target?.type !== "caption";
+
   return (
     <div
       ref={canvasContainerRef}
       className={cn(
-        "flex-1 ...",
-        isFullscreen && !isMouseActive && "hide-cursor"
+        "flex-1 relative bg-neutral-900 rounded-lg overflow-hidden border border-border/40",
+        isFullscreen &&
+          "fixed inset-0 w-screen h-screen z-[2000] rounded-none border-none",
+        !isMouseActive && isFullscreen && "cursor-none"
       )}
       onClick={handleCanvasClick}
     >
       {renderContent()}
-
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ zIndex: 220 }}
       >
         <div className="w-full h-full relative">
-          {generatedOverlays.map((overlay) => (
+          {filteredHtmlOverlays.map((overlay) => (
             <DraggableOverlay
               key={overlay.id}
               overlay={overlay}
@@ -1059,7 +1170,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               containerSize={containerSize}
             />
           ))}
-          {browserOverlays.map((browser) => (
+          {filteredBrowserOverlays.map((browser) => (
             <DraggableBrowser
               key={browser.id}
               overlay={browser}
@@ -1072,8 +1183,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onSelect={setSelectedBrowserId}
             />
           ))}
-          {/* --- ADD THIS MAPPING LOGIC --- */}
-          {fileOverlays.map((file) => (
+          {filteredFileOverlays.map((file) => (
             <DraggableFileViewer
               key={file.id}
               overlay={file}
@@ -1085,7 +1195,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onSelect={setSelectedFileId}
             />
           ))}
-
           {(() => {
             const captionText = (
               fullTranscript +
@@ -1093,7 +1202,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               interimTranscript
             ).trim();
             const captionStyle = sidebarProps.style;
-            if (!captionsEnabled || !captionText || containerSize.width === 0)
+            if (
+              !captionsEnabled ||
+              !captionText ||
+              containerSize.width === 0 ||
+              !shouldRenderCaptionOverlay
+            )
               return null;
 
             const captionRef = React.createRef<HTMLDivElement>();
@@ -1208,6 +1322,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     transform: `rotate(${captionStyle.rotation || 0}deg)`,
                   }}
                 >
+                  <DynamicLayoutPicker
+                    onSelectLayout={(mode) =>
+                      onSetDynamicLayout(
+                        { id: "live-caption", type: "caption" },
+                        mode
+                      )
+                    }
+                  />
                   <CaptionRenderer
                     activeStyleId={rest.dynamicStyle}
                     captionStyle={captionStyle}
@@ -1258,7 +1380,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           bounds="parent"
           enableResizing={false}
           className={cn(
-            "pointer-events-auto ...",
+            "pointer-events-auto z-[1010] transition-opacity duration-300",
             isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
           )}
         >
