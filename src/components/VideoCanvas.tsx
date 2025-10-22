@@ -34,7 +34,9 @@ import {
   LayoutMode,
   CameraShape,
   CaptionStyle,
+  FileOverlayState,
 } from "@/types/caption";
+import { DraggableFileViewer } from "@/components/DraggableFileViewer";
 import { LayoutControls } from "@/components/LayoutControls";
 import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
@@ -369,6 +371,15 @@ interface VideoCanvasProps {
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
+  fileOverlays: FileOverlayState[];
+  onRemoveFile: (id: string) => void;
+  onFileLayoutChange: (
+    id: string,
+    layout: Partial<FileOverlayState["layout"]>
+  ) => void;
+  selectedFileId: string | null;
+  setSelectedFileId: (id: string | null) => void;
+  onDeselectAll: () => void;
   isMouseActive: boolean;
 }
 
@@ -433,10 +444,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onBrowserLayoutChange,
     selectedBrowserId,
     setSelectedBrowserId,
+    onDeselectAll,
     isMouseActive,
+    fileOverlays,
+    onRemoveFile,
+    onFileLayoutChange,
+    selectedFileId,
+    setSelectedFileId,
     ...rest
   } = props;
 
+  const handleCanvasClick = () => onDeselectAll();
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [pipContent, setPipContent] = useState<"camera" | "screen">("camera");
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -1006,6 +1024,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         "flex-1 ...",
         isFullscreen && !isMouseActive && "hide-cursor"
       )}
+      onClick={handleCanvasClick}
     >
       {renderContent()}
 
@@ -1036,6 +1055,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onSelect={setSelectedBrowserId}
             />
           ))}
+          {/* --- ADD THIS MAPPING LOGIC --- */}
+          {fileOverlays.map((file) => (
+            <DraggableFileViewer
+              key={file.id}
+              overlay={file}
+              onRemove={onRemoveFile}
+              onLayoutChange={onFileLayoutChange}
+              containerSize={containerSize}
+              isSelected={selectedFileId === file.id}
+              onSelect={setSelectedFileId}
+            />
+          ))}
+
           {(() => {
             const captionText = (
               fullTranscript +

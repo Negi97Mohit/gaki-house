@@ -11,6 +11,8 @@ import {
   LayoutMode,
   CameraShape,
   DEFAULT_LAYOUT_STATE,
+  FileOverlayState,
+  FileType,
 } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
@@ -25,6 +27,7 @@ import { cn } from "@/lib/utils";
 
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const generateFileId = () => `file-${Date.now()}`;
 const generateBrowserId = () => `browser-${Date.now()}`;
 
 const Index = () => {
@@ -32,6 +35,9 @@ const Index = () => {
   const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>(
     []
   );
+
+  const [fileOverlays, setFileOverlays] = useState<FileOverlayState[]>([]);
+
   const [activeHtmlOverlay, setActiveHtmlOverlay] =
     useState<GeneratedOverlay | null>(null);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
@@ -41,6 +47,142 @@ const Index = () => {
     "gaki-saved-overlays",
     []
   );
+
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+
+  const getFileType = (file: File): FileType => {
+    const fileType = file.type;
+    const fileName = file.name.toLowerCase();
+
+    // Prioritize MIME types
+    if (fileType.startsWith("image/")) return "image";
+    if (fileType.startsWith("video/")) return "video";
+    if (fileType.startsWith("audio/")) return "audio";
+    if (fileType === "application/pdf") return "pdf";
+    if (fileType.startsWith("text/")) return "text";
+
+    // Fallback to file extensions for common code/text files
+    const textExtensions = [
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx",
+      ".json",
+      ".py",
+      ".html",
+      ".css",
+      ".scss",
+      ".md",
+      ".txt",
+      ".csv",
+      ".xml",
+      ".yaml",
+      ".yml",
+      ".env",
+    ];
+    if (textExtensions.some((ext) => fileName.endsWith(ext))) {
+      return "text";
+    }
+
+    return "unknown";
+  };
+
+  const handleAddFile = useCallback((file: File) => {
+    if (!file) return;
+    const newOverlay: FileOverlayState = {
+      id: generateFileId(),
+      file: file,
+      fileName: file.name,
+      fileType: getFileType(file),
+      fileUrl: URL.createObjectURL(file),
+      layout: {
+        position: { x: 50, y: 50 },
+        size: { width: 35, height: 45 },
+        zIndex: 100,
+        rotation: 0,
+      },
+    };
+    setFileOverlays((prev) => [...prev, newOverlay]);
+    toast.info(`Added file: ${file.name}`);
+  }, []);
+
+  useEffect(() => {
+    const handleDragOver = (e: DragEvent) => e.preventDefault();
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault();
+      if (e.dataTransfer?.files?.length) {
+        Array.from(e.dataTransfer.files).forEach(handleAddFile);
+      }
+    };
+    const handlePaste = (e: ClipboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Prioritize pasting files
+      if (e.clipboardData?.files?.length > 0) {
+        Array.from(e.clipboardData.files).forEach(handleAddFile);
+        return;
+      }
+      // Fallback to pasting text as a URL
+      const pastedText = e.clipboardData?.getData("text/plain");
+      if (
+        pastedText &&
+        (pastedText.startsWith("http://") || pastedText.startsWith("https://"))
+      ) {
+        const newBrowser: BrowserOverlayState = {
+          id: generateBrowserId(),
+          url: pastedText,
+          layout: {
+            position: { x: 50, y: 50 },
+            size: { width: 40, height: 50 },
+            zIndex: 100,
+            rotation: 0,
+          },
+        };
+        setBrowserOverlays((prev) => [...prev, newBrowser]);
+        toast.info("Browser window added from URL.");
+      }
+    };
+
+    window.addEventListener("dragover", handleDragOver);
+    window.addEventListener("drop", handleDrop);
+    window.addEventListener("paste", handlePaste);
+
+    return () => {
+      window.removeEventListener("dragover", handleDragOver);
+      window.removeEventListener("drop", handleDrop);
+      window.removeEventListener("paste", handlePaste);
+      // Clean up object URLs to prevent memory leaks
+      fileOverlays.forEach((o) => URL.revokeObjectURL(o.fileUrl));
+    };
+  }, [handleAddFile, fileOverlays]);
+
+  const handleRemoveFile = (id: string) => {
+    setFileOverlays((prev) => {
+      const overlayToRemove = prev.find((o) => o.id === id);
+      if (overlayToRemove) {
+        URL.revokeObjectURL(overlayToRemove.fileUrl);
+      }
+      return prev.filter((o) => o.id !== id);
+    });
+  };
+
+  const handleFileLayoutChange = (
+    id: string,
+    layout: Partial<FileOverlayState["layout"]>
+  ) => {
+    setFileOverlays((prev) =>
+      prev.map((o) =>
+        o.id === id ? { ...o, layout: { ...o.layout, ...layout } } : o
+      )
+    );
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedBrowserId(null);
+    setSelectedFileId(null);
+  };
+  // --- END OF FILE HANDLING SECTION ---
+
   const [liveCaptionStyle, setLiveCaptionStyle] = useState<React.CSSProperties>(
     {}
   );
@@ -563,6 +705,12 @@ const Index = () => {
         setSelectedBrowserId={setSelectedBrowserId}
         browserOverlays={browserOverlays}
         isMouseActive={isMouseActive}
+        fileOverlays={fileOverlays}
+        onRemoveFile={handleRemoveFile}
+        onFileLayoutChange={handleFileLayoutChange}
+        selectedFileId={selectedFileId}
+        setSelectedFileId={setSelectedFileId}
+        onDeselectAll={handleDeselectAll}
       />
     </div>
   );

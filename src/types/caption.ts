@@ -1,7 +1,16 @@
 // src/types/caption.ts
-export type CaptionShape = "rectangular" | "rounded" | "pill" | "speech-bubble" | "banner";
-export type CaptionAnimation = "fade" | "bounce" | "karaoke" | "none" | "slide-up";
-
+export type CaptionShape =
+  | "rectangular"
+  | "rounded"
+  | "pill"
+  | "speech-bubble"
+  | "banner";
+export type CaptionAnimation =
+  | "fade"
+  | "bounce"
+  | "karaoke"
+  | "none"
+  | "slide-up";
 
 export interface CaptionStyle {
   fontFamily: string;
@@ -54,7 +63,7 @@ export type AmbientEffect =
 // --- SINGLE ACTION COMMANDS ---
 
 export interface GenerateUICommand {
-  tool: 'generate_ui_component';
+  tool: "generate_ui_component";
   name: string;
   componentCode: string;
   layout: GeneratedLayout;
@@ -67,33 +76,35 @@ export type SingleActionCommand =
   | ApplyVideoEffectCommand
   | ApplyLiveCaptionStyleCommand;
 
-export type ChainedAction = Omit<SingleActionCommand, 'tool'> & { tool: SingleActionCommand['tool'] };
+export type ChainedAction = Omit<SingleActionCommand, "tool"> & {
+  tool: SingleActionCommand["tool"];
+};
 
 export interface UpdateUICommand {
-  tool: 'update_ui_component';
+  tool: "update_ui_component";
   targetId: string;
   layout?: Partial<GeneratedLayout>;
   componentCode?: string;
 }
 
 export interface DeleteUICommand {
-  tool: 'delete_ui_component';
+  tool: "delete_ui_component";
   targetId: string;
 }
 
 export interface ApplyVideoEffectCommand {
-  tool: 'apply_video_effect';
+  tool: "apply_video_effect";
   filter: string;
 }
 
 export interface ApplyLiveCaptionStyleCommand {
-  tool: 'apply_live_caption_style';
+  tool: "apply_live_caption_style";
   style: React.CSSProperties;
 }
 
 // --- Other types remain the same ---
-export type LayoutMode = 'solo' | 'split-vertical' | 'split-horizontal' | 'pip'; // 1. Add 'solo'
-export type CameraShape = 'rectangle' | 'circle' | 'rounded';
+export type LayoutMode = "solo" | "split-vertical" | "split-horizontal" | "pip"; // 1. Add 'solo'
+export type CameraShape = "rectangle" | "circle" | "rounded";
 
 export interface LayoutState {
   mode: LayoutMode;
@@ -105,23 +116,23 @@ export interface LayoutState {
 }
 
 export const DEFAULT_LAYOUT_STATE: LayoutState = {
-  mode: 'solo',
-  cameraShape: 'rectangle',
+  mode: "solo",
+  cameraShape: "rectangle",
   splitRatio: 0.5,
   pipPosition: { x: 75, y: 75 },
   pipSize: { width: 20, height: 20 },
 };
 
-export type AIDecisionType = 'live' | 'static';
-export type AIDecisionChoice = 'SHOW' | 'HIDE';
+export type AIDecisionType = "live" | "static";
+export type AIDecisionChoice = "SHOW" | "HIDE";
 
 export interface AIDecision {
   id?: string;
   decision: AIDecisionChoice;
   type: AIDecisionType;
-  duration: number | 'permanent';
+  duration: number | "permanent";
   formattedText: string;
-  captionIntent?: 'title' | 'question' | 'list' | 'stat' | 'quote';
+  captionIntent?: "title" | "question" | "list" | "stat" | "quote";
 }
 
 export interface CaptionTemplate {
@@ -132,12 +143,19 @@ export interface CaptionTemplate {
   style: CaptionStyle;
 }
 
-export type GraphType = 'bar' | 'line' | 'pie';
-export interface GraphDataPoint { label: string; value: number; }
-export interface GraphConfig { title: string; xAxisLabel?: string; yAxisLabel?: string; }
+export type GraphType = "bar" | "line" | "pie";
+export interface GraphDataPoint {
+  label: string;
+  value: number;
+}
+export interface GraphConfig {
+  title: string;
+  xAxisLabel?: string;
+  yAxisLabel?: string;
+}
 export interface GraphObject {
   id: string;
-  type: 'graph';
+  type: "graph";
   graphType: GraphType;
   data: GraphDataPoint[];
   position: { x: number; y: number };
@@ -165,4 +183,15 @@ export interface CaptionStyleDef {
   component: React.FC<DynamicStyleProps>;
   tags?: string[];
   description?: string;
+}
+
+export type FileType = "image" | "video" | "pdf" | "audio" | "text" | "unknown";
+
+export interface FileOverlayState {
+  id: string;
+  file: File;
+  fileName: string;
+  fileType: FileType;
+  fileUrl: string;
+  layout: GeneratedLayout;
 }
