@@ -42,6 +42,7 @@ import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
+import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 import {
   DraggableBrowser,
   BrowserOverlayState,
@@ -104,12 +105,17 @@ const DraggableOverlay: React.FC<{
   ) => void;
   onRemoveOverlay: (id: string) => void;
   onPreviewGenerated: (id: string, dataUrl: string) => void;
+  onSetDynamicLayout: (
+    target: { id: string; type: "html" },
+    mode: "split-vertical" | "split-horizontal"
+  ) => void;
   containerSize: { width: number; height: number };
 }> = ({
   overlay,
   onLayoutChange,
   onRemoveOverlay,
   onPreviewGenerated,
+  onSetDynamicLayout,
   containerSize,
 }) => {
   const { theme } = useTheme();
@@ -240,7 +246,11 @@ const DraggableOverlay: React.FC<{
             theme={theme}
           />
         </div>
-
+        <DynamicLayoutPicker
+          onSelectLayout={(mode) =>
+            onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
+          }
+        />
         {/* Hide buttons in fullscreen as they are non-interactive anyway */}
         {!isFullscreen && (
           <>
@@ -379,6 +389,10 @@ interface VideoCanvasProps {
   ) => void;
   selectedFileId: string | null;
   setSelectedFileId: (id: string | null) => void;
+  onSetDynamicLayout: (
+    target: { id: string; type: any },
+    mode: "split-vertical" | "split-horizontal"
+  ) => void;
   onDeselectAll: () => void;
   isMouseActive: boolean;
 }
@@ -451,6 +465,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onFileLayoutChange,
     selectedFileId,
     setSelectedFileId,
+    onSetDynamicLayout,
     ...rest
   } = props;
 
@@ -1037,6 +1052,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <DraggableOverlay
               key={overlay.id}
               overlay={overlay}
+              onSetDynamicLayout={onSetDynamicLayout}
               onLayoutChange={rest.onOverlayLayoutChange}
               onRemoveOverlay={rest.onRemoveOverlay}
               onPreviewGenerated={onPreviewGenerated}
@@ -1047,6 +1063,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <DraggableBrowser
               key={browser.id}
               overlay={browser}
+              onSetDynamicLayout={onSetDynamicLayout}
               onRemove={onRemoveBrowser}
               onUrlChange={onBrowserUrlChange}
               onLayoutChange={onBrowserLayoutChange}
@@ -1060,6 +1077,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <DraggableFileViewer
               key={file.id}
               overlay={file}
+              onSetDynamicLayout={onSetDynamicLayout}
               onRemove={onRemoveFile}
               onLayoutChange={onFileLayoutChange}
               containerSize={containerSize}

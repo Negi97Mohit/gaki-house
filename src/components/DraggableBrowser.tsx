@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
 import { X, Globe, ArrowRight, ArrowLeft, RefreshCw } from "lucide-react";
+import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 
 export interface BrowserOverlayState {
   id: string;
@@ -25,6 +26,10 @@ interface DraggableBrowserProps {
   onUrlChange: (id: string, url: string) => void;
   onRemove: (id: string) => void;
   containerSize: { width: number; height: number };
+  onSetDynamicLayout: (
+    target: { id: string; type: "browser" },
+    mode: "split-vertical" | "split-horizontal"
+  ) => void;
   isSelected: boolean;
   onSelect: (id: string) => void;
 }
@@ -35,6 +40,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   onUrlChange,
   onRemove,
   containerSize,
+  onSetDynamicLayout,
   isSelected,
   onSelect,
 }) => {
@@ -114,6 +120,11 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
         transform: `rotate(${overlay.layout.rotation}deg)`,
       }}
     >
+      <DynamicLayoutPicker
+        onSelectLayout={(mode) =>
+          onSetDynamicLayout({ id: overlay.id, type: "browser" }, mode)
+        }
+      />
       <div
         onMouseDown={() => onSelect(overlay.id)}
         className="flex-shrink-0 h-10 bg-secondary flex items-center p-2 gap-2 cursor-move"

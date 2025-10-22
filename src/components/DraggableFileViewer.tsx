@@ -3,6 +3,7 @@ import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
 import { FileOverlayState, FileType } from "@/types/caption";
 import { X, File as FileIcon, Move, Loader2 } from "lucide-react";
+import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 
 interface DraggableFileViewerProps {
   overlay: FileOverlayState;
@@ -13,6 +14,10 @@ interface DraggableFileViewerProps {
   onRemove: (id: string) => void;
   containerSize: { width: number; height: number };
   isSelected: boolean;
+  onSetDynamicLayout: (
+    target: { id: string; type: "file" },
+    mode: "split-vertical" | "split-horizontal"
+  ) => void;
   onSelect: (id: string) => void;
 }
 
@@ -121,6 +126,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   onRemove,
   containerSize,
   isSelected,
+  onSetDynamicLayout,
   onSelect,
 }) => {
   // Convert percentage-based layout to pixels for the Rnd component
@@ -176,6 +182,11 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         transform: `rotate(${overlay.layout.rotation}deg)`,
       }}
     >
+      <DynamicLayoutPicker
+        onSelectLayout={(mode) =>
+          onSetDynamicLayout({ id: overlay.id, type: "file" }, mode)
+        }
+      />
       <div
         onMouseDown={(e) => {
           e.stopPropagation();

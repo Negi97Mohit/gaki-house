@@ -11,6 +11,7 @@ import {
   LayoutMode,
   CameraShape,
   DEFAULT_LAYOUT_STATE,
+  GeneratedLayout,
   FileOverlayState,
   FileType,
 } from "@/types/caption";
@@ -36,7 +37,55 @@ const Index = () => {
     []
   );
 
+  const [dynamicLayout, setDynamicLayout] = useState<{
+    isActive: boolean;
+    mode: "split-vertical" | "split-horizontal";
+    target: {
+      id: string;
+      type: "html" | "file" | "browser" | "caption";
+      content: any;
+      layout: GeneratedLayout;
+    } | null;
+  }>({
+    isActive: false,
+    mode: "split-vertical",
+    target: null,
+  });
+
   const [fileOverlays, setFileOverlays] = useState<FileOverlayState[]>([]);
+  const handleSetDynamicLayout = (
+    target: { id: string; type: "html" | "file" | "browser" | "caption" },
+    mode: "split-vertical" | "split-horizontal"
+  ) => {
+    let targetOverlay: any = null;
+
+    if (target.type === "html") {
+      targetOverlay = activeOverlays.find((o) => o.id === target.id);
+    } else if (target.type === "file") {
+      targetOverlay = fileOverlays.find((o) => o.id === target.id);
+    } else if (target.type === "browser") {
+      targetOverlay = browserOverlays.find((o) => o.id === target.id);
+    } else if (target.type === "caption") {
+      // For captions, we construct a temporary object
+      targetOverlay = {
+        id: "live-caption",
+        type: "caption",
+        layout: captionStyle,
+      };
+    }
+
+    if (!targetOverlay) return;
+
+    setDynamicLayout({
+      isActive: true,
+      mode: mode,
+      target: {
+        ...target,
+        content: targetOverlay,
+        layout: targetOverlay.layout,
+      },
+    });
+  };
 
   const [activeHtmlOverlay, setActiveHtmlOverlay] =
     useState<GeneratedOverlay | null>(null);
@@ -711,6 +760,7 @@ const Index = () => {
         selectedFileId={selectedFileId}
         setSelectedFileId={setSelectedFileId}
         onDeselectAll={handleDeselectAll}
+        onSetDynamicLayout={handleSetDynamicLayout}
       />
     </div>
   );
