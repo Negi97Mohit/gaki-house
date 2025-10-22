@@ -669,27 +669,19 @@ const Index = () => {
         !isMouseActive && "cursor-none"
       )}
     >
-      {/* --- START OF CHANGE --- */}
-      {/* Render logo permanently if NOT in fullscreen */}
-      {!isFullscreen && <FloatingLogo />}
-
       <div
         className={cn(
-          "transition-opacity duration-300",
-          !isMouseActive && "opacity-0 pointer-events-none"
+          "transition-opacity duration-300 relative z-[2010]",
+          !isMouseActive && isFullscreen && "opacity-0 pointer-events-none"
         )}
       >
-        {/* Render logo here ONLY IF in fullscreen, so it hides with other controls */}
-        {isFullscreen && <FloatingLogo />}
-
+        <FloatingLogo />
         <FloatingControls
           captionsEnabled={captionsEnabled}
           onCaptionsToggle={setCaptionsEnabled}
           isAiModeEnabled={isAiModeEnabled}
           onAiModeToggle={setIsAiModeEnabled}
         />
-        {/* --- END OF CHANGE --- */}
-
         <FloatingControlsPanel
           style={captionStyle}
           onStyleChange={setCaptionStyle}
@@ -719,6 +711,7 @@ const Index = () => {
           isMouseActive={isMouseActive}
         />
       </div>
+
       <VideoCanvas
         isFullscreen={isFullscreen}
         onStyleChange={setCaptionStyle}

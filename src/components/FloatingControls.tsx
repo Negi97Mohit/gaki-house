@@ -28,7 +28,7 @@ export const FloatingControls = ({
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="fixed top-4 right-4 z-[900] flex items-center gap-1.5 bg-card/70 backdrop-blur-xl rounded-full px-3 py-2 border border-border/40 shadow-lg">
+    <div className="fixed top-4 right-4 z-[1020] flex items-center gap-1.5 bg-card/70 backdrop-blur-xl rounded-full px-3 py-2 border border-border/40 shadow-lg">
       <InstructionsDialog />
 
       <Button

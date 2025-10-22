@@ -131,7 +131,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       <div
         ref={panelRef}
         className={cn(
-          "fixed bottom-24 left-6 z-[999] w-[380px] max-h-[70vh] rounded-2xl",
+          "fixed bottom-24 left-6 z-[1015] w-[380px] max-h-[70vh] rounded-2xl",
           "bg-white text-neutral-800 border border-border shadow-2xl dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700",
           "transition-all duration-300 ease-out flex flex-col",
           isOpen && props.isMouseActive

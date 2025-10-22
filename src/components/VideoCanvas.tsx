@@ -1516,7 +1516,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             onAiModeToggle={onAiModeToggle}
             captionsEnabled={captionsEnabled}
             onCaptionsToggle={onCaptionsToggle}
-            portalContainer={portalContainer}
+            portalContainer={canvasContainerRef.current}
           >
             <Button
               size="icon"
