@@ -25,6 +25,8 @@ import {
   BrowserOverlayState,
 } from "@/components/DraggableBrowser";
 import { cn } from "@/lib/utils";
+import { RecordingSession, ComponentTrack, Keyframe } from "@/types/editor";
+import { useNavigate } from "react-router-dom";
 
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -32,6 +34,9 @@ const generateFileId = () => `file-${Date.now()}`;
 const generateBrowserId = () => `browser-${Date.now()}`;
 
 const Index = () => {
+  const navigate = useNavigate();
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null); // ADDED
+  const recordedChunksRef = useRef<Blob[]>([]);
   // ... (all your existing state hooks remain the same) ...
   const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>(
     []
@@ -105,6 +110,27 @@ const Index = () => {
     "gaki-saved-overlays",
     []
   );
+
+  // --- RECORDING STATE TRACKING ---
+  const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
+    "gaki-recorded-sessions",
+    []
+  );
+  const recordingStartTime = useRef(0);
+  const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const keyframeDataRef = useRef<{
+    htmlOverlayTrack: ComponentTrack<GeneratedOverlay>[];
+    fileOverlayTrack: ComponentTrack<FileOverlayState>[];
+    browserOverlayTrack: ComponentTrack<BrowserOverlayState>[];
+    captionStyleTrack: ComponentTrack<CaptionStyle>;
+    layoutTrack: ComponentTrack<any>;
+  }>({
+    htmlOverlayTrack: [],
+    fileOverlayTrack: [],
+    browserOverlayTrack: [],
+    captionStyleTrack: { id: "live-caption", type: "caption", keyframes: [] },
+    layoutTrack: { id: "global-layout", type: "layout", keyframes: [] },
+  });
 
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
 
@@ -350,8 +376,9 @@ const Index = () => {
         position: newLayout.position ?? prev.position,
         width: newLayout.size?.width ?? prev.width,
       }));
+      if (isRecording) takeSnapshot();
     },
-    []
+    [isRecording]
   );
 
   const processTranscript = useCallback(
@@ -440,6 +467,7 @@ const Index = () => {
         o.id === id ? { ...o, layout: { ...o.layout, [key]: value } } : o
       )
     );
+    if (isRecording) takeSnapshot();
   };
 
   useEffect(() => {
@@ -661,6 +689,231 @@ const Index = () => {
     onNeonColorChange: setNeonColor,
   };
 
+  const createKeyframe = useCallback(
+    (state: any) => ({
+      timestamp: Date.now() - recordingStartTime.current,
+      state: state,
+    }),
+    [isRecording]
+  );
+
+  // Snapshots the entire screen state (called on interval and user interaction)
+  const takeSnapshot = useCallback(() => {
+    if (!isRecording) return;
+
+    // HTML Overlays (only snap position/size/rotation/zIndex)
+    activeOverlays.forEach((overlay) => {
+      let track = keyframeDataRef.current.htmlOverlayTrack.find(
+        (t) => t.id === overlay.id
+      );
+      if (!track) {
+        track = { id: overlay.id, type: "html", keyframes: [] };
+        keyframeDataRef.current.htmlOverlayTrack.push(track);
+      }
+      track.keyframes.push(createKeyframe(overlay));
+    });
+
+    // File Overlays (Track changes to file layout)
+    fileOverlays.forEach((overlay) => {
+      let track = keyframeDataRef.current.fileOverlayTrack.find(
+        (t) => t.id === overlay.id
+      );
+      if (!track) {
+        track = { id: overlay.id, type: "file", keyframes: [] };
+        keyframeDataRef.current.fileOverlayTrack.push(track);
+      }
+      track.keyframes.push(createKeyframe(overlay));
+    });
+
+    // Browser Overlays (Track changes to browser layout)
+    browserOverlays.forEach((overlay) => {
+      let track = keyframeDataRef.current.browserOverlayTrack.find(
+        (t) => t.id === overlay.id
+      );
+      if (!track) {
+        track = { id: overlay.id, type: "browser", keyframes: [] };
+        keyframeDataRef.current.browserOverlayTrack.push(track);
+      }
+      track.keyframes.push(createKeyframe(overlay));
+    });
+
+    // Caption Style
+    keyframeDataRef.current.captionStyleTrack.keyframes.push(
+      createKeyframe(captionStyle)
+    );
+
+    // Global Layout
+    keyframeDataRef.current.layoutTrack.keyframes.push(
+      createKeyframe({
+        mode: layoutMode,
+        cameraShape,
+        splitRatio,
+        pipPosition,
+        pipSize,
+      })
+    );
+  }, [
+    isRecording,
+    activeOverlays,
+    fileOverlays,
+    browserOverlays,
+    captionStyle,
+    layoutMode,
+    cameraShape,
+    splitRatio,
+    pipPosition,
+    pipSize,
+    createKeyframe,
+  ]);
+
+  const handleStartRecording = useCallback(
+    (stream: MediaStream, containerSize: { width: number; height: number }) => {
+      if (isRecording) return;
+      const outputStream = stream.clone(); // Clone the stream to ensure it's fresh
+      recordedChunksRef.current = [];
+
+      // --- START KEYFRAME TRACKING ---
+      recordingStartTime.current = Date.now();
+      // Initialize keyframe tracks with the starting state
+      keyframeDataRef.current = {
+        htmlOverlayTrack: activeOverlays.map((o) => ({
+          id: o.id,
+          type: "html",
+          keyframes: [createKeyframe(o)],
+        })),
+        fileOverlayTrack: fileOverlays.map((o) => ({
+          id: o.id,
+          type: "file",
+          keyframes: [createKeyframe(o)],
+        })),
+        browserOverlayTrack: browserOverlays.map((o) => ({
+          id: o.id,
+          type: "browser",
+          keyframes: [createKeyframe(o)],
+        })),
+        captionStyleTrack: {
+          id: "live-caption",
+          type: "caption",
+          keyframes: [createKeyframe(captionStyle)],
+        },
+        layoutTrack: {
+          id: "global-layout",
+          type: "layout",
+          keyframes: [
+            createKeyframe({
+              mode: layoutMode,
+              cameraShape,
+              splitRatio,
+              pipPosition,
+              pipSize,
+            }),
+          ],
+        },
+      };
+
+      // Set up snapshot interval (e.g., every 250ms)
+      frameIntervalRef.current = setInterval(takeSnapshot, 250);
+      // --- END KEYFRAME TRACKING ---
+
+      mediaRecorderRef.current = new MediaRecorder(outputStream, {
+        mimeType: "video/webm; codecs=vp9",
+      });
+
+      mediaRecorderRef.current.ondataavailable = (e) => {
+        if (e.data.size > 0) recordedChunksRef.current.push(e.data);
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        const blob = new Blob(recordedChunksRef.current, {
+          type: "video/webm",
+        });
+        const videoUrl = URL.createObjectURL(blob);
+        const duration = Date.now() - recordingStartTime.current;
+
+        // Stop the cloned tracks
+        outputStream.getTracks().forEach((t) => t.stop());
+
+        // --- FINALIZE SESSION ---
+        const newSession: RecordingSession = {
+          id: `session-${Date.now()}`,
+          name: new Date().toLocaleString(),
+          videoMetadata: {
+            duration: duration,
+            width: containerSize.width,
+            height: containerSize.height,
+            videoUrl: videoUrl,
+          },
+          htmlOverlayTrack: keyframeDataRef.current.htmlOverlayTrack,
+          fileOverlayTrack: keyframeDataRef.current.fileOverlayTrack,
+          browserOverlayTrack: keyframeDataRef.current.browserOverlayTrack,
+          captionStyleTrack: keyframeDataRef.current.captionStyleTrack,
+          layoutTrack: keyframeDataRef.current.layoutTrack,
+          settings: {
+            dynamicStyle: dynamicStyle,
+            videoFilter: videoFilter,
+            backgroundEffect: backgroundEffect,
+            backgroundImageUrl: backgroundImageUrl,
+          },
+        };
+        const updatedSessions = [newSession, ...allSessions];
+        setAllSessions(updatedSessions);
+        toast.success("Recording saved and ready for editing!");
+        setTimeout(() => {
+          navigate(`/edit/${newSession.id}`);
+        }, 50);
+      };
+
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+      toast.info("Recording started!");
+    },
+    [
+      isRecording,
+      activeOverlays,
+      fileOverlays,
+      browserOverlays,
+      captionStyle,
+      layoutMode,
+      cameraShape,
+      splitRatio,
+      pipPosition,
+      pipSize,
+      dynamicStyle,
+      videoFilter,
+      backgroundEffect,
+      backgroundImageUrl,
+      takeSnapshot,
+      createKeyframe,
+      allSessions,
+      setAllSessions,
+      navigate,
+    ] // DEPENDENCY LIST MODIFIED
+  );
+
+  const handleStopRecording = useCallback(() => {
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+      if (frameIntervalRef.current) clearInterval(frameIntervalRef.current); // Clear snapshot interval
+    }
+    setIsRecording(false);
+  }, []);
+
+  // NEW WRAPPER for VideoCanvas prop
+  const handleRecordingToggle = useCallback(
+    (
+      on: boolean,
+      stream?: MediaStream,
+      size?: { width: number; height: number }
+    ) => {
+      if (on && stream && size) {
+        handleStartRecording(stream, size);
+      } else {
+        handleStopRecording();
+      }
+    },
+    [handleStartRecording, handleStopRecording]
+  );
+
   return (
     <div
       ref={mainContainerRef}
@@ -740,7 +993,7 @@ const Index = () => {
         isVideoOn={isVideoOn}
         onVideoToggle={setIsVideoOn}
         isRecording={isRecording}
-        onRecordingToggle={setIsRecording}
+        onRecordingToggle={handleRecordingToggle}
         selectedAudioDevice={selectedAudioDevice}
         onAudioDeviceSelect={setSelectedAudioDevice}
         selectedVideoDevice={selectedVideoDevice}

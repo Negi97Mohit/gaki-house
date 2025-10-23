@@ -296,7 +296,11 @@ interface VideoCanvasProps {
   isVideoOn: boolean;
   onVideoToggle: (on: boolean) => void;
   isRecording: boolean;
-  onRecordingToggle: (on: boolean) => void;
+  onRecordingToggle: (
+    on: boolean,
+    stream?: MediaStream,
+    size?: { width: number; height: number }
+  ) => void; // MODIFIED
   selectedAudioDevice: string | undefined;
   onAudioDeviceSelect: (deviceId: string) => void;
   selectedVideoDevice: string | undefined;
@@ -1641,7 +1645,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 : "bg-primary hover:bg-primary/90"
             )}
             onClick={
-              rest.isRecording ? handleStopRecording : handleStartRecording
+              rest.isRecording
+                ? () => rest.onRecordingToggle(false)
+                : () =>
+                    rest.onRecordingToggle(true, cameraStream, containerSize)
             }
           >
             {rest.isRecording ? (

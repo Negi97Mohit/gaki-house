@@ -9,6 +9,7 @@ import { ThemeProvider } from "next-themes";
 import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
 import { useEffect, useRef } from "react"; // 👈 ADD THIS IMPORT
+import EditPage from "./pages/Edit";
 
 const queryClient = new QueryClient();
 
@@ -18,17 +19,17 @@ const App = () => {
 
   useEffect(() => {
     const handleActivity = () => {
-      document.body.classList.remove('cursor-inactive');
+      document.body.classList.remove("cursor-inactive");
       if (inactivityTimer.current) {
         clearTimeout(inactivityTimer.current);
       }
       inactivityTimer.current = setTimeout(() => {
-        document.body.classList.add('cursor-inactive');
+        document.body.classList.add("cursor-inactive");
       }, 2000);
     };
-    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener("mousemove", handleActivity);
     return () => {
-      window.removeEventListener('mousemove', handleActivity);
+      window.removeEventListener("mousemove", handleActivity);
       if (inactivityTimer.current) {
         clearTimeout(inactivityTimer.current);
       }
@@ -53,6 +54,7 @@ const App = () => {
               <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/edit/:sessionId" element={<EditPage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
