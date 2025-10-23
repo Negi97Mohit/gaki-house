@@ -471,9 +471,12 @@ const DynamicLayoutRenderer: React.FC<{
             fontFamily: sidebarProps.style.fontFamily,
             fontSize: `${sidebarProps.style.fontSize}px`,
             color: sidebarProps.style.color,
-            backgroundColor: sidebarProps.style.backgroundColor,
             textShadow: sidebarProps.style.shadow
               ? "2px 2px 4px rgba(0,0,0,0.5)"
+              : "none",
+            backgroundColor: sidebarProps.style.backgroundColor,
+            border: sidebarProps.style.border
+              ? `${sidebarProps.style.borderWidth}px solid ${sidebarProps.style.borderColor}`
               : "none",
             fontWeight: sidebarProps.style.bold ? "bold" : "normal",
             fontStyle: sidebarProps.style.italic ? "italic" : "normal",
@@ -1463,9 +1466,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                       fontFamily: captionStyle.fontFamily,
                       fontSize: `${captionStyle.fontSize}px`,
                       color: captionStyle.color,
-                      backgroundColor: captionStyle.backgroundColor,
                       textShadow: captionStyle.shadow
                         ? "2px 2px 4px rgba(0,0,0,0.5)"
+                        : "none",
+                      backgroundColor: captionStyle.backgroundColor,
+                      border: captionStyle.border
+                        ? `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`
                         : "none",
                       fontWeight: captionStyle.bold ? "bold" : "normal",
                       fontStyle: captionStyle.italic ? "italic" : "normal",

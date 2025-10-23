@@ -18,6 +18,15 @@ interface StyleControlsProps {
   onStyleChange: (style: CaptionStyle) => void;
 }
 
+const FONTS = [
+  "Inter",
+  "Roboto",
+  "Open Sans",
+  "Montserrat",
+  "Playfair Display",
+  "Bebas Neue",
+];
+
 export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
   // A single, robust handler for all style property updates
   const handleValueChange = <K extends keyof CaptionStyle>(
@@ -25,6 +34,35 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
     value: CaptionStyle[K]
   ) => {
     onStyleChange({ ...style, [key]: value });
+  };
+
+  const isTransparent =
+    style.backgroundColor.includes("transparent") ||
+    style.backgroundColor.endsWith("0)");
+  const handleTransparentToggle = (checked: boolean) => {
+    if (checked) {
+      // Store current color and set transparent
+      handleValueChange("backgroundColor", "rgba(0,0,0,0)");
+    } else {
+      // Revert to a non-transparent black color if it was fully transparent
+      handleValueChange(
+        "backgroundColor",
+        style.backgroundColor === "rgba(0,0,0,0)"
+          ? "#000000"
+          : style.backgroundColor.replace(/,[01]\)/, ",0.8)")
+      );
+    }
+  };
+  const handleBackgroundColorChange = (value: string) => {
+    // If setting a color with picker, ensure we have some opacity
+    if (isTransparent) {
+      handleValueChange(
+        "backgroundColor",
+        value.length === 7 ? `${value}80` : value
+      );
+    } else {
+      handleValueChange("backgroundColor", value);
+    }
   };
 
   return (
@@ -50,13 +88,12 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           </SelectTrigger>
 
           {/* Add `portalled` or `position="popper"` depending on your UI lib */}
-          <SelectContent position="popper" className="z-[2000]">
-            <SelectItem value="Inter">Inter</SelectItem>
-            <SelectItem value="Roboto">Roboto</SelectItem>
-            <SelectItem value="Open Sans">Open Sans</SelectItem>
-            <SelectItem value="Montserrat">Montserrat</SelectItem>
-            <SelectItem value="Playfair Display">Playfair Display</SelectItem>
-            <SelectItem value="Bebas Neue">Bebas Neue</SelectItem>
+          <SelectContent position="popper" className="z-[2050]">
+            {FONTS.map((font) => (
+              <SelectItem key={font} value={font}>
+                {font}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -91,17 +128,23 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           {/* --- THIS IS THE CHANGED LINE --- */}
           <Input
             id="bg-color"
-            type="text" // Changed from "color" to "text"
-            value={style.backgroundColor}
-            onChange={(e) =>
-              handleValueChange("backgroundColor", e.target.value)
-            }
-            className="h-10 px-2"
-            placeholder="e.g., rgba(0,0,0,0.5)"
-          />
+            type="color"
+            value={style.backgroundColor.substring(0, 7)} // Use only the hex part for the color picker
+            onChange={(e) => handleBackgroundColorChange(e.target.value)}
+            className="p-1 h-10"
+            disabled={isTransparent}
+          />{" "}
         </div>
       </div>
-
+      {/* Background Transparency Toggle (NEW) */}
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="transparent-toggle"
+          checked={isTransparent}
+          onCheckedChange={handleTransparentToggle}
+        />
+        <Label htmlFor="transparent-toggle">Transparent Background</Label>
+      </div>
       {/* Boolean Toggles */}
       <div className="grid grid-cols-2 gap-y-4 gap-x-2 pt-2">
         <div className="flex items-center space-x-2">
@@ -148,8 +191,8 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
         </div>
         {/* --- ADD THIS ENTIRE SECTION --- */}
         {style.border && (
-          <div className="space-y-6 pt-4 border-t animate-fade-in">
-            <div className="space-y-2">
+          <>
+            <div className="col-span-2 space-y-2 pt-4 border-t animate-fade-in">
               <Label htmlFor="border-color">Border Color</Label>
               <Input
                 id="border-color"
@@ -161,7 +204,7 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
                 className="p-1 h-10"
               />
             </div>
-            <div className="space-y-2">
+            <div className="col-span-2 space-y-2">
               <Label htmlFor="border-width">
                 Border Width: {style.borderWidth}px
               </Label>
@@ -176,7 +219,7 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
                 step={1}
               />
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

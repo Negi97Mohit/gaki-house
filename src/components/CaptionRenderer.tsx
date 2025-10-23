@@ -13,15 +13,21 @@ interface CaptionRendererProps extends DynamicStyleProps {
 export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
   activeStyleId,
   captionStyle,
+  baseStyle,
   ...props
 }) => {
   const getShapeClasses = () => {
     switch (captionStyle.shape) {
-      case "pill": return "rounded-full";
-      case "rectangular": return "rounded-none";
-      case "speech-bubble": return "rounded-2xl relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-8 after:border-transparent after:border-t-current";
-      case "banner": return "rounded-none w-full text-center";
-      default: return "rounded-xl";
+      case "pill":
+        return "rounded-full";
+      case "rectangular":
+        return "rounded-none";
+      case "speech-bubble":
+        return "rounded-2xl relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:translate-y-full after:border-8 after:border-transparent after:border-t-current";
+      case "banner":
+        return "rounded-none w-full text-center";
+      default:
+        return "rounded-xl";
     }
   };
 
@@ -32,20 +38,38 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
   const StyleComponent = styleEntry.component;
 
   // Create a new style object that combines the base style with our new border style
-  const combinedStyle: React.CSSProperties = { ...props.baseStyle };
+  const combinedStyle: React.CSSProperties = {
+    backgroundColor: captionStyle.backgroundColor,
+  };
   if (captionStyle.border) {
     combinedStyle.border = `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`;
   }
-combinedStyle.minHeight = '2em'; // Set a minimum height to prevent collapse
+  combinedStyle.minHeight = "2em"; // Set a minimum height to prevent collapse
+  const innerStyle: React.CSSProperties = {
+    fontFamily: baseStyle.fontFamily,
+    fontSize: baseStyle.fontSize,
+    color: baseStyle.color,
+    fontWeight: baseStyle.fontWeight,
+    fontStyle: baseStyle.fontStyle,
+    textDecoration: baseStyle.textDecoration,
+  };
+
   return (
     <div
       className={cn(
-        "w-full p-2 max-w-full transition-all duration-200 flex items-center justify-center text-center", 
-        getShapeClasses()
+        "w-full p-2 max-w-full transition-all duration-200 flex items-center justify-center text-center",
+        getShapeClasses(),
+        captionStyle.shape === "banner" && "px-8",
+        captionStyle.shape === "speech-bubble" &&
+          `after:border-t-[${captionStyle.backgroundColor.replace(/,/g, "-")}]` // Use the BG color for the speech bubble pointer
       )}
-      style={combinedStyle} // Use the new combined style object
+      style={combinedStyle}
     >
-      <StyleComponent {...props} />
+      <div style={innerStyle}>
+        {" "}
+        {/* <-- WRAP StyleComponent IN A DIV WITH TYPOGRAPHY STYLES */}
+        <StyleComponent {...props} baseStyle={baseStyle} />
+      </div>
     </div>
   );
 };

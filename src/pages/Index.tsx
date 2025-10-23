@@ -273,7 +273,7 @@ const Index = () => {
     fontSize: 24,
     color: "#FFFFFF",
     backgroundColor: "rgba(0, 0, 0, 0.8)",
-    position: { x: 50, y: 85 },
+    position: { x: 50, y: 50 },
     shape: "rounded",
     animation: "fade",
     outline: false,
