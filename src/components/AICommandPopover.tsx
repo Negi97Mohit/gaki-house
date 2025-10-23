@@ -233,9 +233,15 @@ export const AICommandPopover = ({
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
+            onPaste={(e) => {
+              const pasted = e.clipboardData.getData("text");
+              setText((prev) => prev + pasted);
+              e.preventDefault(); // prevent Radix from blocking
+            }}
             disabled={isProcessing}
             className="min-h-24 text-sm resize-none transition-all duration-300 focus:ring-2 focus:ring-primary/50"
           />
+
           <Button
             onClick={handleSubmit}
             disabled={!text.trim() || isProcessing}

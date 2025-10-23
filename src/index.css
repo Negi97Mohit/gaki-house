@@ -85,7 +85,8 @@
 
   /* Onboarding animation */
   @keyframes pulse-border {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
     }
     50% {
@@ -103,4 +104,8 @@
 }
 body.cursor-inactive * {
   cursor: none !important;
+}
+.aicp-content {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
 }
