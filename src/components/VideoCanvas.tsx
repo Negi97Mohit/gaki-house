@@ -53,7 +53,7 @@ import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 
 // --- UPDATED COMPONENT ---
-const HtmlOverlayRenderer: React.FC<{
+export const HtmlOverlayRenderer: React.FC<{
   htmlContent: string;
   theme: string | undefined;
 }> = ({ htmlContent, theme }) => {
@@ -93,7 +93,7 @@ const HtmlOverlayRenderer: React.FC<{
   );
 };
 
-const DraggableOverlay: React.FC<{
+export const DraggableOverlay: React.FC<{
   overlay: GeneratedOverlay;
   onLayoutChange: (
     id: string,
