@@ -25,7 +25,7 @@ const App = () => {
       }
       inactivityTimer.current = setTimeout(() => {
         document.body.classList.add("cursor-inactive");
-      }, 2000);
+      }, 5000);
     };
     window.addEventListener("mousemove", handleActivity);
     return () => {

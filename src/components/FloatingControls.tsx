@@ -1,9 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Circle,
-  SlidersHorizontal,
-  Video,
-} from "lucide-react";
+import { Circle, SlidersHorizontal, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FloatingControlsProps {
@@ -50,10 +46,7 @@ export const FloatingControls: React.FC<FloatingControlsProps> = ({
         title={isRecording ? "Stop Recording" : "Start Recording"}
       >
         <Circle
-          className={cn(
-            "w-6 h-6 transition-all",
-            isRecording && "fill-white"
-          )}
+          className={cn("w-6 h-6 transition-all", isRecording && "fill-white")}
         />
       </Button>
 

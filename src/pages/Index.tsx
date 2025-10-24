@@ -3,9 +3,9 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { VideoCanvas } from "@/components/VideoCanvas";
-import { FloatingControls } from "@/components/FloatingControls";
 import { FloatingLogo } from "@/components/FloatingLogo";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
+import { InstructionsDialog } from "@/components/InstructionsDialog";
 import {
   CaptionStyle,
   GeneratedOverlay,
@@ -18,8 +18,8 @@ import {
 } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
-import { useLog } from "@/context/LogContext";
-import { useDebug } from "@/context/DebugContext";
+import { useLog } from "@/context/LogContext"; // KEEP
+import { useDebug } from "@/context/DebugContext"; // KEEP
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useRecordingSession } from "@/hooks/useRecordingSession";
 import {
@@ -29,6 +29,10 @@ import {
 import { SavedSessionsPanel } from "@/components/SavedSessionsPanel";
 import { RecordingSession } from "@/types/editor";
 import { cn } from "@/lib/utils";
+import { SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button"; // FIXED: Missing Button import
+import { DEFAULT_LAYOUT_STATE as DLAYOUT } from "@/types/caption";
 
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -41,7 +45,7 @@ const DEFAULT_CAPTION_STYLE: CaptionStyle = {
   fontSize: 32,
   color: "#FFFFFF",
   backgroundColor: "rgba(0,0,0,0.8)",
-  position: { x: 50, y: 85 },
+  position: { x: 50, y: 50 },
   shape: "rounded",
   animation: "fade",
   outline: false,
@@ -53,46 +57,82 @@ const DEFAULT_CAPTION_STYLE: CaptionStyle = {
   border: false,
   borderColor: "#FFFFFF",
   borderWidth: 2,
-  width: 60, // Default width percentage
+  width: 60,
 };
 
 const Index = () => {
   const navigate = useNavigate();
-  // MOVED: Hoisted the hook to resolve TDZ
+  const { theme, setTheme } = useTheme();
+  // HOISTED HOOKS: MUST BE CALLED AT THE TOP LEVEL
   const recording = useRecordingSession();
+  const { log } = useLog(); // HOOK CALL
+  const { setDebugInfo } = useDebug(); // HOOK CALL
 
-  // --- MISSING GLOBAL STATE DECLARATIONS ---
-  const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(
-    null
-  );
+  // --- DEVICE/CONNECTION STATE ---
   const [selectedVideoDevice, setSelectedVideoDevice] = useState<
     string | undefined
   >(undefined);
   const [selectedAudioDevice, setSelectedAudioDevice] = useState<
     string | undefined
   >(undefined);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isAudioOn, setIsAudioOn] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(false);
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("solo");
-  const [cameraShape, setCameraShape] = useState<CameraShape>("rectangle");
-  const [splitRatio, setSplitRatio] = useState(0.5);
-  const [pipPosition, setPipPosition] = useState(
-    DEFAULT_LAYOUT_STATE.pipPosition
+
+  // --- UI & WINDOW STATE ---
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMouseActive, setIsMouseActive] = useState(true);
+  const [showSessionsPanel, setShowSessionsPanel] = useState(false);
+  const [showFloatingPanel, setShowFloatingPanel] = useState(false);
+  const [activeHtmlOverlay, setActiveHtmlOverlay] =
+    useState<GeneratedOverlay | null>(null);
+  const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(
+    null
   );
-  const [pipSize, setPipSize] = useState(DEFAULT_LAYOUT_STATE.pipSize);
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+
+  const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
+    "gaki-recorded-sessions",
+    []
+  );
+  const [savedOverlays, setSavedOverlays] = useLocalStorage<GeneratedOverlay[]>(
+    "gaki-saved-overlays",
+    []
+  );
+
+  const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // --- LAYOUT STATE ---
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(DLAYOUT.mode);
+  const [cameraShape, setCameraShape] = useState<CameraShape>(
+    DLAYOUT.cameraShape
+  );
+  const [splitRatio, setSplitRatio] = useState(DLAYOUT.splitRatio);
+  const [pipPosition, setPipPosition] = useState(DLAYOUT.pipPosition);
+  const [pipSize, setPipSize] = useState(DLAYOUT.pipSize);
   const [customMaskUrl, setCustomMaskUrl] = useState<string | undefined>(
     undefined
   );
-  const [aiButtonPosition, setAiButtonPosition] = useState({ x: 90, y: 50 });
-  const [captionsEnabled, setCaptionsEnabled] = useState(true);
+  const [aiButtonPosition, setAiButtonPosition] = useState({ x: 90, y: 90 });
 
-  // --- CAPTION / STYLE STATE ---
-  // FIXED: Used the defined default object
+  // --- CAPTION/OVERLAY STATE ---
   const [captionStyle, setCaptionStyle] = useState<CaptionStyle>(
     DEFAULT_CAPTION_STYLE
   );
   const [dynamicStyle, setDynamicStyle] = useState("none");
+  const [captionsEnabled, setCaptionsEnabled] = useState(true);
+  const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>(
+    []
+  );
+  const [fileOverlays, setFileOverlays] = useState<FileOverlayState[]>([]);
+  const [activeOverlays, setActiveOverlays] = useState<GeneratedOverlay[]>([]);
+  const [isProcessingAi, setIsProcessingAi] = useState(false);
+  const [isAiModeEnabled, setIsAiModeEnabled] = useState(true);
+  const [promptHistory, setPromptHistory] = useState<string[]>([]); // Keep this for potential use
 
   // --- VIDEO EFFECTS STATE ---
   const [videoFilter, setVideoFilter] = useState("none");
@@ -111,37 +151,6 @@ const Index = () => {
   const [neonIntensity, setNeonIntensity] = useState(20);
   const [neonColor, setNeonColor] = useState("cyan");
 
-  // --- OVERLAY & AI STATE ---
-  const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>(
-    []
-  );
-  const [fileOverlays, setFileOverlays] = useState<FileOverlayState[]>([]);
-  const [activeOverlays, setActiveOverlays] = useState<GeneratedOverlay[]>([]);
-  const [isProcessingAi, setIsProcessingAi] = useState(false);
-  const [isAiModeEnabled, setIsAiModeEnabled] = useState(true);
-  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
-  const [promptHistory, setPromptHistory] = useState<string[]>([]); // Keep this for potential use
-
-  // --- UI & RECORDING STATE ---
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
-  const [isMouseActive, setIsMouseActive] = useState(true);
-  const [showSessionsPanel, setShowSessionsPanel] = useState(false);
-  const [showFloatingPanel, setShowFloatingPanel] = useState(false);
-  const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
-    "gaki-recorded-sessions",
-    []
-  );
-  const [savedOverlays, setSavedOverlays] = useLocalStorage<GeneratedOverlay[]>(
-    "gaki-saved-overlays",
-    []
-  );
-
-  const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const mainContainerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
   const [dynamicLayout, setDynamicLayout] = useState<{
     isActive: boolean;
     mode: "split-vertical" | "split-horizontal" | "pip";
@@ -157,7 +166,8 @@ const Index = () => {
     target: null,
   });
 
-  // ... (handleSetDynamicLayout function remains the same)
+  // --- HANDLERS (useCallback and helpers) ---
+
   const handleSetDynamicLayout = (
     target: { id: string; type: "html" | "file" | "browser" | "caption" },
     mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
@@ -380,9 +390,6 @@ const Index = () => {
     setSelectedFileId(null);
   };
   // --- END OF FILE HANDLING SECTION ---
-
-  const { log } = useLog();
-  const { setDebugInfo } = useDebug();
 
   const handleCaptionLayoutChange = useCallback(
     (newLayout: {
@@ -629,6 +636,26 @@ const Index = () => {
   };
 
   const handleToggleFullscreen = () => setIsFullscreen((prev) => !prev);
+  useEffect(() => {
+    if (isFullscreen) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if ((document.documentElement as any).webkitRequestFullscreen) {
+        (document.documentElement as any).webkitRequestFullscreen(); // Safari
+      } else if ((document.documentElement as any).msRequestFullscreen) {
+        (document.documentElement as any).msRequestFullscreen(); // IE11
+      }
+    } else if (document.fullscreenElement) {
+      // FIX: Only attempt to exit if we are currently in fullscreen mode
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      } else if ((document as any).msExitFullscreen) {
+        (document as any).msExitFullscreen();
+      }
+    }
+  }, [isFullscreen]);
 
   // MOUSE ACTIVITY EFFECT
   useEffect(() => {
@@ -804,39 +831,42 @@ const Index = () => {
         !isMouseActive && "cursor-none"
       )}
     >
-      <div
-        className={cn(
-          "transition-opacity duration-300 relative z-[2010]",
-          !isMouseActive && isFullscreen && "opacity-0 pointer-events-none"
-        )}
-      >
+      <FloatingControlsPanel isMouseActive={isMouseActive} {...sidebarProps} />
+      {/* -------------------- TOP UI LAYER (Logo and Floating Panel Trigger) -------------------- */}
+      <div className="fixed top-6 left-6 z-[2015] transition-opacity duration-300">
         <FloatingLogo />
-        <FloatingControls
-          onRecord={() => {}}
-          isRecording={recording.isRecording}
-          onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
-          onOpenSessions={() => setShowSessionsPanel(true)}
-          sessionsCount={allSessions.length}
-        />
-        {showFloatingPanel && (
-          <FloatingControlsPanel
-            isOpen={showFloatingPanel}
-            onClose={() => setShowFloatingPanel(false)}
-            {...sidebarProps}
-          />
-        )}
       </div>
+      {/* ADDED: Top Right Corner - Theme and Info Buttons ONLY */}
+      <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
+        <Button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Toggle Theme"
+        >
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        </Button>
+        <InstructionsDialog />
+      </div>
+
+      {/* -------------------- SIDEBARS AND PANELS -------------------- */}
       <SavedSessionsPanel
         sessions={allSessions}
         onDeleteSession={handleDeleteSession}
         isOpen={showSessionsPanel}
         onClose={() => setShowSessionsPanel(false)}
       />
+
+      {/* -------------------- MAIN CANVAS -------------------- */}
       <VideoCanvas
         isFullscreen={isFullscreen}
         onToggleFullscreen={handleToggleFullscreen}
         isFsSidebarOpen={isFsSidebarOpen}
         onFsSidebarToggle={setIsFsSidebarOpen}
+        onOpenSessions={() => setShowSessionsPanel(true)}
+        onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
         isMouseActive={isMouseActive}
         // Media/Audio/Video Controls
         isAudioOn={isAudioOn}

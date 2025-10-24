@@ -12,10 +12,13 @@ import {
   Check,
   Circle,
   RotateCcw,
+  SlidersHorizontal,
   Sparkles,
+  Video,
   X,
   Expand,
   Shrink,
+  Library,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -407,6 +410,8 @@ interface VideoCanvasProps {
   onRecordingComplete: (
     session: import("@/types/editor").RecordingSession
   ) => void;
+  onOpenSessions: () => void;
+  onOpenSettings: () => void;
 }
 
 const VideoPlayer: React.FC<{
@@ -554,6 +559,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     dynamicLayout,
     onDeselectAll,
     isMouseActive,
+    onOpenSessions,
+    onOpenSettings,
+    isRecording, // <-- ADD THIS LINE
+    onRecordingToggle, // <-- ADD THIS LINE
     ...rest
   } = props;
 
@@ -1558,6 +1567,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         </Rnd>
       )}
 
+      {/* Bottom Left: Media/Layout Controls */}
       <div
         className={cn(
           "absolute bottom-6 left-1/2 -translate-x-1/2 z-[1010] transition-opacity duration-300 ease-in-out",
@@ -1658,22 +1668,37 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           <div className="w-px h-8 bg-border" />
           <Button
             size="icon"
+            variant="outline"
+            className={cn(
+              "relative rounded-full shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200 h-10 w-10"
+            )}
+            onClick={onOpenSessions} // CORRECT USAGE
+            title="Your Recordings"
+          >
+            <Library className="w-5 h-5" />
+            {/* Note: Sessions count badge is handled in FloatingControls (removed) or Index.tsx */}
+          </Button>
+          <div className="w-px h-8 bg-border" />
+          <Button
+            size="icon" // Record Button
             className={cn(
               "rounded-full h-12 w-12 transition-colors",
-              rest.isRecording
+              isRecording // <-- FIX
                 ? "bg-red-600 hover:bg-red-700"
                 : "bg-primary hover:bg-primary/90"
             )}
-            onClick={
-              rest.isRecording
-                ? () => handleStopRecording()
-                : () => {
-                    // Pass the current recording status, stream (placeholder), and size
-                    handleStartRecording();
-                  }
-            }
+            onClick={() => {
+              // This uses the fix from our previous conversation
+              onRecordingToggle(
+                // <-- FIX
+                isRecording, // <-- FIX
+                cameraStream as MediaStream,
+                containerSize
+              );
+            }}
+            title={isRecording ? "Stop Recording" : "Start Recording"} // <-- FIX
           >
-            {rest.isRecording ? (
+            {isRecording ? ( // <-- FIX
               <Square className="h-6 w-6" />
             ) : (
               <Circle className="h-6 w-6 fill-current" />
@@ -1681,7 +1706,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           </Button>
           <div className="w-px h-8 bg-border" />
           <LayoutControls {...rest} portalContainer={portalContainer} />
-          <div className="w-px h-8 bg-border" />
           <Button
             variant="ghost"
             size="icon"
