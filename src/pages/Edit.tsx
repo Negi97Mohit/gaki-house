@@ -113,6 +113,15 @@ const EditPage = () => {
     toast.success("Exporting video...");
   };
 
+  // Calculate these BEFORE any conditional returns (React hooks rule)
+  const currentTimeMs = currentTime * 1000;
+  const duration = session ? session.videoMetadata.duration / 1000 : 0;
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // Always call hooks in the same order - use EMPTY_SESSION as fallback
+  const playbackState = useSessionPlayback(session || EMPTY_SESSION, currentTimeMs);
+
+  // NOW we can conditionally return
   if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -123,12 +132,6 @@ const EditPage = () => {
       </div>
     );
   }
-
-  const currentTimeMs = currentTime * 1000;
-  const duration = session.videoMetadata.duration / 1000;
-  const progress = (currentTime / duration) * 100;
-
-  const playbackState = useSessionPlayback(session, currentTimeMs);
 
   return (
     <div className="h-screen flex flex-col bg-neutral-950 text-white overflow-hidden">
