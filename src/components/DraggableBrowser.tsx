@@ -132,7 +132,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     >
       <DynamicLayoutPicker
         onSelectLayout={(mode) =>
-          onSetDynamicLayout({ id: overlay.id, type: "browser" }, mode)
+          onSetDynamicLayout({ id: overlay.id, type: "browser" }, mode as "split-horizontal" | "split-vertical")
         }
       />
       <div

@@ -104,7 +104,7 @@ export const DraggableOverlay: React.FC<{
   onPreviewGenerated: (id: string, dataUrl: string) => void;
   onSetDynamicLayout: (
     target: { id: string; type: "html" },
-    mode: "split-vertical" | "split-horizontal" | "pip"
+    mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
   ) => void;
   containerSize: { width: number; height: number };
   portalContainer?: HTMLElement | null;
@@ -300,7 +300,7 @@ interface VideoCanvasProps {
     on: boolean,
     stream?: MediaStream,
     size?: { width: number; height: number }
-  ) => void; // MODIFIED
+  ) => void;
   selectedAudioDevice: string | undefined;
   onAudioDeviceSelect: (deviceId: string) => void;
   selectedVideoDevice: string | undefined;
@@ -358,22 +358,22 @@ interface VideoCanvasProps {
     savedOverlays: GeneratedOverlay[];
     onAddSavedOverlay: (overlay: GeneratedOverlay) => void;
     onDeleteSavedOverlay: (id: string) => void;
+    videoFilter: string;
+    onVideoFilterChange: (filter: string) => void;
+    isBeautifyEnabled: boolean;
+    onBeautifyChange: (enabled: boolean) => void;
+    isLowLightEnabled: boolean;
+    onLowLightChange: (enabled: boolean) => void;
+    isNeonEdgeEnabled: boolean;
+    neonIntensity: number;
+    neonColor: string;
+    onNeonEdgeChange: (enabled: boolean) => void;
+    onNeonIntensityChange: (intensity: number) => void;
+    onNeonColorChange: (color: string) => void;
     zoomSensitivity: number;
     onZoomSensitivityChange: (value: number) => void;
     trackingSpeed: number;
     onTrackingSpeedChange: (value: number) => void;
-    isBeautifyEnabled: boolean;
-    onBeautifyToggle: (enabled: boolean) => void;
-    isLowLightEnabled: boolean;
-    onLowLightToggle: (enabled: boolean) => void;
-    videoFilter: string;
-    onVideoFilterChange: (filter: string) => void;
-    isNeonEdgeEnabled: boolean;
-    onNeonEdgeToggle: (enabled: boolean) => void;
-    neonIntensity: number;
-    onNeonIntensityChange: (value: number) => void;
-    neonColor: string;
-    onNeonColorChange: (value: string) => void;
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
@@ -387,13 +387,10 @@ interface VideoCanvasProps {
   setSelectedFileId: (id: string | null) => void;
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
-  onSetDynamicLayout: (
-    target: { id: string; type: any },
-    mode: "split-vertical" | "split-horizontal"
-  ) => void;
+  onDeselectAll: () => void;
   dynamicLayout: {
     isActive: boolean;
-    mode: "split-vertical" | "split-horizontal";
+    mode: "split-vertical" | "split-horizontal" | "pip";
     target: {
       id: string;
       type: string;
@@ -401,8 +398,14 @@ interface VideoCanvasProps {
       layout: GeneratedLayout;
     } | null;
   };
-  onDeselectAll: () => void;
+  onSetDynamicLayout: (
+    target: { id: string; type: string },
+    mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
+  ) => void;
   isMouseActive: boolean;
+  recording: ReturnType<typeof import("@/hooks/useRecordingSession").useRecordingSession>;
+  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  onRecordingComplete: (session: import("@/types/editor").RecordingSession) => void;
 }
 
 const VideoPlayer: React.FC<{
@@ -1307,7 +1310,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onInternalDragStart={onInternalDragStart}
               onInternalDragStop={onInternalDragStop}
               onSelect={setSelectedBrowserId}
-              portalContainer={portalContainer}
             />
           ))}
           {filteredFileOverlays.map((file) => (
@@ -1322,7 +1324,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onInternalDragStart={onInternalDragStart}
               onInternalDragStop={onInternalDragStop}
               onSelect={setSelectedFileId}
-              portalContainer={portalContainer}
             />
           ))}
           {(() => {
@@ -1456,7 +1457,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onSelectLayout={(mode) =>
                       onSetDynamicLayout(
                         { id: "live-caption", type: "caption" },
-                        mode
+                        mode as "split-horizontal" | "split-vertical" | "pip" | "reset"
                       )
                     }
                   />

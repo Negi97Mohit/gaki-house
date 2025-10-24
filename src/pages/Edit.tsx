@@ -1,18 +1,17 @@
 // src/pages/Edit.tsx
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { RecordingSession, EMPTY_SESSION } from "@/types/editor";
+import { RecordingSession, EMPTY_SESSION, ComponentTrack } from "@/types/editor";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Button } from "@/components/ui/button";
 import { Video, Edit, X, Play, Pause, Rewind, FastForward } from "lucide-react";
 import { toast } from "sonner";
-import { DraggableBrowser } from "@/components/DraggableBrowser"; // ADDED
-import { DraggableFileViewer } from "@/components/DraggableFileViewer"; // ADDED
-import { CaptionPreviewRenderer } from "@/components/CaptionPreviewRenderer"; // New preview renderer for editor
+import { DraggableBrowser } from "@/components/DraggableBrowser";
+import { DraggableFileViewer } from "@/components/DraggableFileViewer";
+import { CaptionPreviewRenderer } from "@/components/CaptionPreviewRenderer";
 import { useSessionPlayback } from "@/hooks/useSessionPlayback";
 import { DraggableOverlay } from "@/components/VideoCanvas";
 import {
-  ComponentTrack,
   GeneratedOverlay,
   CaptionStyle,
 } from "@/types/caption";

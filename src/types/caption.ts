@@ -195,3 +195,9 @@ export interface FileOverlayState {
   fileUrl: string;
   layout: GeneratedLayout;
 }
+
+export interface BrowserOverlayState {
+  id: string;
+  url: string;
+  layout: GeneratedLayout;
+}

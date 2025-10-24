@@ -42,9 +42,6 @@ export const CaptionPreviewRenderer: React.FC<CaptionPreviewRendererProps> = ({
       : "none",
     textShadow: style.shadow ? "0 2px 4px rgba(0,0,0,0.5)" : "none",
     transform: `rotate(${style.rotation || 0}deg)`,
-    // Ensure the speech bubble pointer color uses the background color
-    "--tw-border-t-current": style.backgroundColor,
-    // Ensure the text itself is readable even with a transparent BG
     minWidth: "200px",
   };
 

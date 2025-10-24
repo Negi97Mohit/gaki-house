@@ -47,7 +47,7 @@ const Index = () => {
     mode: "split-vertical" | "split-horizontal" | "pip";
     target: {
       id: string;
-      type: "html" | "file" | "browser" | "caption";
+      type: string;
       content: any;
       layout: GeneratedLayout;
     } | null;
