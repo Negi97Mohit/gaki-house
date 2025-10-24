@@ -9,7 +9,9 @@ import {
   LayoutMode,
   CameraShape,
 } from "@/types/caption";
-import { v4 as uuidv4 } from "uuid";
+
+const generateSessionId = () =>
+  `session-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
 
 interface RecordingState {
   isRecording: boolean;
@@ -28,16 +30,24 @@ export const useRecordingSession = () => {
 
   // Tracks for recording all state changes
   const captionTrackRef = useRef<Keyframe<CaptionStyle>[]>([]);
-  const layoutTrackRef = useRef<Keyframe<{
-    mode: LayoutMode;
-    cameraShape: CameraShape;
-    splitRatio: number;
-    pipPosition: { x: number; y: number };
-    pipSize: { width: number; height: number };
-  }>[]>([]);
-  const htmlOverlayTracksRef = useRef<Map<string, Keyframe<GeneratedOverlay>[]>>(new Map());
-  const fileOverlayTracksRef = useRef<Map<string, Keyframe<FileOverlayState>[]>>(new Map());
-  const browserOverlayTracksRef = useRef<Map<string, Keyframe<BrowserOverlayState>[]>>(new Map());
+  const layoutTrackRef = useRef<
+    Keyframe<{
+      mode: LayoutMode;
+      cameraShape: CameraShape;
+      splitRatio: number;
+      pipPosition: { x: number; y: number };
+      pipSize: { width: number; height: number };
+    }>[]
+  >([]);
+  const htmlOverlayTracksRef = useRef<
+    Map<string, Keyframe<GeneratedOverlay>[]>
+  >(new Map());
+  const fileOverlayTracksRef = useRef<
+    Map<string, Keyframe<FileOverlayState>[]>
+  >(new Map());
+  const browserOverlayTracksRef = useRef<
+    Map<string, Keyframe<BrowserOverlayState>[]>
+  >(new Map());
 
   const startRecording = useCallback(async (canvas: HTMLCanvasElement) => {
     try {
@@ -94,6 +104,7 @@ export const useRecordingSession = () => {
         }
 
         mediaRecorder.onstop = () => {
+          mediaRecorder.stream.getTracks().forEach((track) => track.stop());
           const blob = new Blob(recordedChunks, { type: "video/webm" });
           const videoUrl = URL.createObjectURL(blob);
           const duration = Date.now() - startTime;
@@ -127,7 +138,7 @@ export const useRecordingSession = () => {
           });
 
           const session: RecordingSession = {
-            id: uuidv4(),
+            id: generateSessionId(),
             name: `Recording ${new Date().toLocaleString()}`,
             videoMetadata: {
               duration,

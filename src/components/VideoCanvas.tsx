@@ -288,7 +288,7 @@ interface VideoCanvasProps {
     value: any
   ) => void;
   onRemoveOverlay: (id: string) => void;
-  liveCaptionStyle: React.CSSProperties;
+  liveCaptionStyle: CaptionStyle; // Changed from React.CSSProperties
   dynamicStyle: string;
   videoFilter: string;
   isAudioOn: boolean;
@@ -298,8 +298,8 @@ interface VideoCanvasProps {
   isRecording: boolean;
   onRecordingToggle: (
     on: boolean,
-    stream?: MediaStream,
-    size?: { width: number; height: number }
+    stream: MediaStream, // Removed optionality
+    size: { width: number; height: number } // Removed optionality
   ) => void;
   selectedAudioDevice: string | undefined;
   onAudioDeviceSelect: (deviceId: string) => void;
@@ -403,9 +403,10 @@ interface VideoCanvasProps {
     mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
   ) => void;
   isMouseActive: boolean;
-  recording: ReturnType<typeof import("@/hooks/useRecordingSession").useRecordingSession>;
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
-  onRecordingComplete: (session: import("@/types/editor").RecordingSession) => void;
+  onRecordingComplete: (
+    session: import("@/types/editor").RecordingSession
+  ) => void;
 }
 
 const VideoPlayer: React.FC<{
@@ -503,6 +504,7 @@ const DynamicLayoutRenderer: React.FC<{
 const SNAP_THRESHOLD = 5;
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
+  // Destructuring props to avoid repeated 'props.' access and to capture rest
   const {
     generatedOverlays,
     isVideoOn,
@@ -528,7 +530,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onAiModeToggle,
     captionsEnabled,
     onCaptionsToggle,
-    sidebarProps,
+    // FIX: Destructure style/dynamicStyle/videoFilter directly from props,
+    // as they are passed as top-level props from Index.tsx
+    liveCaptionStyle,
+    dynamicStyle,
+    videoFilter,
+
     portalContainer,
     browserOverlays,
     onRemoveBrowser,
@@ -551,6 +558,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   } = props;
 
   const { theme } = useTheme();
+
+  // FIX: This state manages the *local* interaction. It cannot conflict with props.
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [pipContent, setPipContent] = useState<"camera" | "screen">("camera");
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -567,10 +576,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     height: 30,
   });
 
+  // FIX: useVideoStreams is the source of the cameraStream and screenStream variables.
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
     isAudioOn: isAudioOn,
-    isScreenSharing: isScreenSharing,
+    isScreenSharing: isScreenSharing, // Use local state here
     selectedCameraDevice: selectedVideoDevice,
     selectedAudioDevice: selectedAudioDevice,
     onScreenShareEnd: () => setIsScreenSharing(false),
@@ -712,14 +722,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       toast.success("Recording downloaded!");
     };
     mediaRecorderRef.current.start();
-    rest.onRecordingToggle(true);
+    rest.onRecordingToggle(true, cameraStream as MediaStream, containerSize);
     toast.info("Recording started!");
   };
 
   const handleStopRecording = () => {
     if (mediaRecorderRef.current?.state === "recording")
       mediaRecorderRef.current.stop();
-    rest.onRecordingToggle(false);
+    rest.onRecordingToggle(false, cameraStream as MediaStream, containerSize);
   };
 
   const handleScreenShareClick = () => {
@@ -889,8 +899,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   const getVideoFilterStyle = (): string => {
     const filters: string[] = [];
-    if (rest.videoFilter && rest.videoFilter !== "none")
-      filters.push(rest.videoFilter);
+    if (videoFilter && videoFilter !== "none") filters.push(videoFilter);
     if (rest.isBeautifyEnabled)
       filters.push("blur(0.5px) saturate(1.1) brightness(1.05)");
     if (rest.isLowLightEnabled) filters.push("brightness(1.3) contrast(1.15)");
@@ -995,7 +1004,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 theme={theme}
                 fullTranscript={fullTranscript}
                 interimTranscript={interimTranscript}
-                sidebarProps={sidebarProps}
+                sidebarProps={props.sidebarProps} // Use props.sidebarProps here
               />
             </Rnd>
           </div>
@@ -1021,7 +1030,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               theme={theme}
               fullTranscript={fullTranscript}
               interimTranscript={interimTranscript}
-              sidebarProps={sidebarProps}
+              sidebarProps={props.sidebarProps} // Use props.sidebarProps here
             />
           </div>
           <div
@@ -1280,6 +1289,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       onClick={handleCanvasClick}
     >
       {renderContent()}
+      <canvas
+        ref={props.canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{ zIndex: 100 }}
+      />
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ zIndex: 220 }}
@@ -1332,7 +1346,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               " " +
               interimTranscript
             ).trim();
-            const captionStyle = sidebarProps.style;
+            const captionStyle = liveCaptionStyle; // Use destructured prop
             if (
               !captionsEnabled ||
               !captionText ||
@@ -1457,13 +1471,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onSelectLayout={(mode) =>
                       onSetDynamicLayout(
                         { id: "live-caption", type: "caption" },
-                        mode as "split-horizontal" | "split-vertical" | "pip" | "reset"
+                        mode as
+                          | "split-horizontal"
+                          | "split-vertical"
+                          | "pip"
+                          | "reset"
                       )
                     }
                   />
                   <CaptionRenderer
-                    activeStyleId={rest.dynamicStyle}
+                    activeStyleId={dynamicStyle} // Use destructured prop
                     captionStyle={captionStyle}
+                    // The rest of the props need to be handled here
                     text={captionText}
                     fullTranscript={fullTranscript}
                     interimTranscript={interimTranscript}
@@ -1647,9 +1666,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             )}
             onClick={
               rest.isRecording
-                ? () => rest.onRecordingToggle(false)
-                : () =>
-                    rest.onRecordingToggle(true, cameraStream, containerSize)
+                ? () => handleStopRecording()
+                : () => {
+                    // Pass the current recording status, stream (placeholder), and size
+                    handleStartRecording();
+                  }
             }
           >
             {rest.isRecording ? (
