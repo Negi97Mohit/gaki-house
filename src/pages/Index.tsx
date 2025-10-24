@@ -1,6 +1,7 @@
 // src/pages/Index.tsx
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { VideoCanvas } from "@/components/VideoCanvas";
 import { FloatingControls } from "@/components/FloatingControls";
 import { FloatingLogo } from "@/components/FloatingLogo";
@@ -20,13 +21,13 @@ import { toast } from "sonner";
 import { useLog } from "@/context/LogContext";
 import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useRecordingSession } from "@/hooks/useRecordingSession";
 import {
   DraggableBrowser,
   BrowserOverlayState,
 } from "@/components/DraggableBrowser";
 import { cn } from "@/lib/utils";
 import { RecordingSession, ComponentTrack, Keyframe } from "@/types/editor";
-import { useNavigate } from "react-router-dom";
 
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -35,12 +36,9 @@ const generateBrowserId = () => `browser-${Date.now()}`;
 
 const Index = () => {
   const navigate = useNavigate();
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null); // ADDED
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
-  // ... (all your existing state hooks remain the same) ...
-  const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>(
-    []
-  );
+  const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>([]);
 
   const [dynamicLayout, setDynamicLayout] = useState<{
     isActive: boolean;
@@ -361,6 +359,9 @@ const Index = () => {
   const [isMouseActive, setIsMouseActive] = useState(true);
   const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const mainContainerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  
+  const recording = useRecordingSession();
 
   // ... (all your existing handler functions and useEffect hooks remain the same) ...
   const { log } = useLog();
@@ -1038,6 +1039,13 @@ const Index = () => {
         onDeselectAll={handleDeselectAll}
         onSetDynamicLayout={handleSetDynamicLayout}
         dynamicLayout={dynamicLayout}
+        recording={recording}
+        canvasRef={canvasRef}
+        onRecordingComplete={async (session) => {
+          setAllSessions((prev) => [...prev, session]);
+          toast.success("Recording saved! Opening editor...");
+          navigate(`/edit/${session.id}`);
+        }}
       />
     </div>
   );

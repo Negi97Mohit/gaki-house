@@ -361,13 +361,13 @@ interface VideoCanvasProps {
     videoFilter: string;
     onVideoFilterChange: (filter: string) => void;
     isBeautifyEnabled: boolean;
-    onBeautifyChange: (enabled: boolean) => void;
+    onBeautifyToggle: (enabled: boolean) => void;
     isLowLightEnabled: boolean;
-    onLowLightChange: (enabled: boolean) => void;
+    onLowLightToggle: (enabled: boolean) => void;
     isNeonEdgeEnabled: boolean;
     neonIntensity: number;
     neonColor: string;
-    onNeonEdgeChange: (enabled: boolean) => void;
+    onNeonEdgeToggle: (enabled: boolean) => void;
     onNeonIntensityChange: (intensity: number) => void;
     onNeonColorChange: (color: string) => void;
     zoomSensitivity: number;
