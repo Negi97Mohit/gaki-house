@@ -26,8 +26,9 @@ import {
   DraggableBrowser,
   BrowserOverlayState,
 } from "@/components/DraggableBrowser";
-import { cn } from "@/lib/utils";
+import { SavedSessionsPanel } from "@/components/SavedSessionsPanel";
 import { RecordingSession, ComponentTrack, Keyframe } from "@/types/editor";
+import { cn } from "@/lib/utils";
 
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -114,6 +115,8 @@ const Index = () => {
     "gaki-recorded-sessions",
     []
   );
+  const [showSessionsPanel, setShowSessionsPanel] = useState(false);
+  const [showFloatingPanel, setShowFloatingPanel] = useState(false);
   const recordingStartTime = useRef(0);
   const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const keyframeDataRef = useRef<{
@@ -899,21 +902,19 @@ const Index = () => {
     setIsRecording(false);
   }, []);
 
+  const handleDeleteSession = useCallback((id: string) => {
+    setAllSessions((prev) => prev.filter((s) => s.id !== id));
+  }, [setAllSessions]);
+
   // NEW WRAPPER for VideoCanvas prop
-  const handleRecordingToggle = useCallback(
-    (
-      on: boolean,
-      stream?: MediaStream,
-      size?: { width: number; height: number }
-    ) => {
-      if (on && stream && size) {
-        handleStartRecording(stream, size);
-      } else {
-        handleStopRecording();
-      }
-    },
-    [handleStartRecording, handleStopRecording]
-  );
+  const handleRecordingToggle = useCallback(() => {
+    if (!isRecording) {
+      // Will be triggered by VideoCanvas when streams are ready
+      setIsRecording(true);
+    } else {
+      handleStopRecording();
+    }
+  }, [isRecording, handleStopRecording]);
 
   return (
     <div
@@ -929,42 +930,56 @@ const Index = () => {
           !isMouseActive && isFullscreen && "opacity-0 pointer-events-none"
         )}
       >
-        <FloatingLogo />
+        <FloatingLogo isMouseActive={isMouseActive} />
         <FloatingControls
-          captionsEnabled={captionsEnabled}
-          onCaptionsToggle={setCaptionsEnabled}
-          isAiModeEnabled={isAiModeEnabled}
-          onAiModeToggle={setIsAiModeEnabled}
+          onRecord={handleRecordingToggle}
+          isRecording={isRecording}
+          onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
+          onOpenSessions={() => setShowSessionsPanel(true)}
+          sessionsCount={allSessions.length}
         />
-        <FloatingControlsPanel
-          style={captionStyle}
-          onStyleChange={setCaptionStyle}
-          dynamicStyle={dynamicStyle}
-          onDynamicStyleChange={setDynamicStyle}
-          backgroundEffect={backgroundEffect}
-          onBackgroundEffectChange={setBackgroundEffect}
-          isAutoFramingEnabled={isAutoFramingEnabled}
-          onAutoFramingChange={setIsAutoFramingEnabled}
-          isBeautifyEnabled={isBeautifyEnabled}
-          onBeautifyToggle={setIsBeautifyEnabled}
-          isLowLightEnabled={isLowLightEnabled}
-          onLowLightToggle={setIsLowLightEnabled}
-          videoFilter={videoFilter}
-          onVideoFilterChange={setVideoFilter}
-          isNeonEdgeEnabled={isNeonEdgeEnabled}
-          onNeonEdgeToggle={setIsNeonEdgeEnabled}
-          neonIntensity={neonIntensity}
-          onNeonIntensityChange={setNeonIntensity}
-          savedOverlays={savedOverlays}
-          onAddSavedOverlay={handleAddSavedOverlay}
-          onDeleteSavedOverlay={handleDeleteSavedOverlay}
-          zoomSensitivity={zoomSensitivity}
-          onZoomSensitivityChange={setZoomSensitivity}
-          trackingSpeed={trackingSpeed}
-          onTrackingSpeedChange={setTrackingSpeed}
-          isMouseActive={isMouseActive}
-        />
+        {showFloatingPanel && (
+          <FloatingControlsPanel
+            isOpen={showFloatingPanel}
+            onClose={() => setShowFloatingPanel(false)}
+            style={captionStyle}
+            onStyleChange={setCaptionStyle}
+            dynamicStyle={dynamicStyle}
+            onDynamicStyleChange={setDynamicStyle}
+            backgroundEffect={backgroundEffect}
+            onBackgroundEffectChange={setBackgroundEffect}
+            backgroundImageUrl={backgroundImageUrl}
+            onBackgroundImageUrlChange={setBackgroundImageUrl}
+            isAutoFramingEnabled={isAutoFramingEnabled}
+            onAutoFramingChange={setIsAutoFramingEnabled}
+            isBeautifyEnabled={isBeautifyEnabled}
+            onBeautifyToggle={setIsBeautifyEnabled}
+            isLowLightEnabled={isLowLightEnabled}
+            onLowLightToggle={setIsLowLightEnabled}
+            videoFilter={videoFilter}
+            onVideoFilterChange={setVideoFilter}
+            isNeonEdgeEnabled={isNeonEdgeEnabled}
+            onNeonEdgeToggle={setIsNeonEdgeEnabled}
+            neonIntensity={neonIntensity}
+            onNeonIntensityChange={setNeonIntensity}
+            savedOverlays={savedOverlays}
+            onAddSavedOverlay={handleAddSavedOverlay}
+            onDeleteSavedOverlay={handleDeleteSavedOverlay}
+            zoomSensitivity={zoomSensitivity}
+            onZoomSensitivityChange={setZoomSensitivity}
+            trackingSpeed={trackingSpeed}
+            onTrackingSpeedChange={setTrackingSpeed}
+            isMouseActive={isMouseActive}
+          />
+        )}
       </div>
+
+      <SavedSessionsPanel
+        sessions={allSessions}
+        onDeleteSession={handleDeleteSession}
+        isOpen={showSessionsPanel}
+        onClose={() => setShowSessionsPanel(false)}
+      />
 
       <VideoCanvas
         isFullscreen={isFullscreen}

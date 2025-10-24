@@ -1,45 +1,71 @@
 import { Button } from "@/components/ui/button";
 import {
-  Moon,
-  Sun,
-  Eye,
-  EyeOff,
-  Sparkles,
-  BrainCircuit,
-  Info,
+  Circle,
+  SlidersHorizontal,
+  Video,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
-import { InstructionsDialog } from "./InstructionsDialog";
 
 interface FloatingControlsProps {
-  captionsEnabled: boolean;
-  onCaptionsToggle: (enabled: boolean) => void;
-  isAiModeEnabled: boolean;
-  onAiModeToggle: (enabled: boolean) => void;
+  onRecord: () => void;
+  isRecording: boolean;
+  onOpenSettings: () => void;
+  onOpenSessions: () => void;
+  sessionsCount: number;
 }
 
-export const FloatingControls = ({
-  captionsEnabled,
-  onCaptionsToggle,
-  isAiModeEnabled,
-  onAiModeToggle,
-}: FloatingControlsProps) => {
-  const { theme, setTheme } = useTheme();
-
+export const FloatingControls: React.FC<FloatingControlsProps> = ({
+  onRecord,
+  isRecording,
+  onOpenSettings,
+  onOpenSessions,
+  sessionsCount,
+}) => {
   return (
-    <div className="fixed top-4 right-4 z-[1020] flex items-center gap-1.5 bg-card/70 backdrop-blur-xl rounded-full px-3 py-2 border border-border/40 shadow-lg">
-      <InstructionsDialog />
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1020] flex items-center gap-3">
+      <Button
+        onClick={onOpenSessions}
+        size="lg"
+        variant="outline"
+        className="relative rounded-full shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+        title="Your Recordings"
+      >
+        <Video className="w-5 h-5" />
+        {sessionsCount > 0 && (
+          <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-xs font-bold rounded-full flex items-center justify-center text-white">
+            {sessionsCount}
+          </span>
+        )}
+      </Button>
 
       <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-foreground transition-colors rounded-full"
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        onClick={onRecord}
+        size="lg"
+        className={cn(
+          "rounded-full shadow-xl transition-all duration-300",
+          isRecording
+            ? "bg-red-500 hover:bg-red-600 scale-110 animate-pulse"
+            : "bg-primary hover:bg-primary/90"
+        )}
+        title={isRecording ? "Stop Recording" : "Start Recording"}
       >
-        <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        <span className="sr-only">Toggle theme</span>
+        <Circle
+          className={cn(
+            "w-6 h-6 transition-all",
+            isRecording && "fill-white"
+          )}
+        />
+      </Button>
+
+      <Button
+        onClick={onOpenSettings}
+        size="lg"
+        variant="outline"
+        data-floating-trigger
+        className="rounded-full shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+        title="Open Controls"
+      >
+        <SlidersHorizontal className="w-5 h-5" />
       </Button>
     </div>
   );
