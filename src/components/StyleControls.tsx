@@ -12,20 +12,16 @@ import {
 import { Slider } from "./ui/slider";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
+// --- UPDATED IMPORT ---
+import { ALL_FONTS } from "@/lib/fonts";
+// --- END OF UPDATED IMPORT ---
 
 interface StyleControlsProps {
   style: CaptionStyle;
   onStyleChange: (style: CaptionStyle) => void;
 }
 
-const FONTS = [
-  "Inter",
-  "Roboto",
-  "Open Sans",
-  "Montserrat",
-  "Playfair Display",
-  "Bebas Neue",
-];
+// --- REMOVED: FONTS array is now imported from "@/lib/fonts" ---
 
 export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
   // A single, robust handler for all style property updates
@@ -67,7 +63,7 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Font Family Dropdown */}
+      {/* Rotation Slider */}
       <Label htmlFor="rotation">Rotation: {style.rotation}°</Label>
       <Slider
         id="rotation"
@@ -77,6 +73,7 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
         max={180}
         step={1}
       />
+      {/* Font Family Dropdown with Preview */}
       <div className="space-y-2">
         <Label htmlFor="font-family">Font Family</Label>
         <Select
@@ -87,10 +84,15 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
             <SelectValue placeholder="Select a font" />
           </SelectTrigger>
 
-          {/* Add `portalled` or `position="popper"` depending on your UI lib */}
           <SelectContent position="popper" className="z-[2050]">
-            {FONTS.map((font) => (
-              <SelectItem key={font} value={font}>
+            {/* --- MAPPING OVER ALL_FONTS --- */}
+            {ALL_FONTS.map((font) => (
+              <SelectItem
+                key={font}
+                value={font}
+                // Applies the actual font for preview
+                style={{ fontFamily: font, fontSize: "1.1rem" }}
+              >
                 {font}
               </SelectItem>
             ))}
@@ -125,7 +127,6 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="bg-color">Background Color</Label>
-          {/* --- THIS IS THE CHANGED LINE --- */}
           <Input
             id="bg-color"
             type="color"
@@ -189,7 +190,6 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           />
           <Label htmlFor="border-toggle">Border</Label>
         </div>
-        {/* --- ADD THIS ENTIRE SECTION --- */}
         {style.border && (
           <>
             <div className="col-span-2 space-y-2 pt-4 border-t animate-fade-in">
