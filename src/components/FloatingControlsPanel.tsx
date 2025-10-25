@@ -10,6 +10,7 @@ import {
   Palette,
   Droplets,
   Sparkles,
+  Square,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
 import { FILTER_PRESETS } from "@/lib/filters";
 import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
+import { Input } from "./ui/input";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;
@@ -63,6 +65,8 @@ interface FloatingControlsPanelProps {
   trackingSpeed: number;
   onTrackingSpeedChange: (value: number) => void;
   isMouseActive: boolean;
+  blankCanvasColor: string;
+  onBlankCanvasColorChange: (color: string) => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -263,6 +267,22 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     </SelectContent>
                   </Select>
                 </div>
+                {/* --- ADD THIS SECTION --- */}
+                <div className="space-y-3 pt-3 border-t">
+                  <Label className="text-xs flex items-center gap-1.5">
+                    <Square className="w-3 h-3" />
+                    Blank Canvas Color
+                  </Label>
+                  <Input
+                    type="color"
+                    className="w-full p-1 h-10"
+                    value={props.blankCanvasColor}
+                    onChange={(e) =>
+                      props.onBlankCanvasColorChange(e.target.value)
+                    }
+                  />
+                </div>
+                {/* --- END OF SECTION --- */}
 
                 {/* Neon Edge */}
                 <div className="space-y-3">

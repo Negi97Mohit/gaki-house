@@ -136,6 +136,7 @@ const Index = () => {
 
   // --- VIDEO EFFECTS STATE ---
   const [videoFilter, setVideoFilter] = useState("none");
+  const [blankCanvasColor, setBlankCanvasColor] = useState("#1A1A1A");
   const [backgroundEffect, setBackgroundEffect] = useState<
     "none" | "blur" | "image"
   >("none");
@@ -682,6 +683,8 @@ const Index = () => {
     onStyleChange: setCaptionStyle,
     dynamicStyle: dynamicStyle,
     onDynamicStyleChange: setDynamicStyle,
+    blankCanvasColor: blankCanvasColor,
+    onBlankCanvasColorChange: setBlankCanvasColor,
     backgroundEffect: backgroundEffect,
     onBackgroundEffectChange: setBackgroundEffect,
     backgroundImageUrl: backgroundImageUrl,
@@ -865,6 +868,7 @@ const Index = () => {
         onToggleFullscreen={handleToggleFullscreen}
         isFsSidebarOpen={isFsSidebarOpen}
         onFsSidebarToggle={setIsFsSidebarOpen}
+        blankCanvasColor={blankCanvasColor}
         onOpenSessions={() => setShowSessionsPanel(true)}
         onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
         isMouseActive={isMouseActive}
