@@ -46,15 +46,16 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
   const searchImages = useCallback(
     async (loadMore = false) => {
       // Read necessary state directly inside
-      if (isImagesLoading || (!loadMore && !searchTerm.trim())) return;
+      if (isImagesLoading) return; // Simplified check
       if (loadMore && !hasMoreImages) return;
 
       setIsImagesLoading(true);
       const pageToFetch = loadMore ? imagePage + 1 : 1;
+      const termToSearch = searchTerm; // Capture searchTerm at time of function call
 
       try {
         const result: ApiSearchResult = await apiSearchImages(
-          searchTerm,
+          termToSearch,
           pageToFetch
         );
         if (loadMore) {
@@ -78,15 +79,16 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
   const searchGifs = useCallback(
     async (loadMore = false) => {
       // Read necessary state directly inside
-      if (isGifsLoading || (!loadMore && !searchTerm.trim())) return;
+      if (isGifsLoading) return; // Simplified check
       if (loadMore && !hasMoreGifs) return;
 
       setIsGifsLoading(true);
       const pageToFetch = loadMore ? gifPage + 1 : 1;
+      const termToSearch = searchTerm; // Capture searchTerm at time of function call
 
       try {
         const result: ApiSearchResult = await apiSearchGifs(
-          searchTerm,
+          termToSearch,
           pageToFetch
         );
         if (loadMore) {
@@ -111,7 +113,11 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
   useEffect(() => {
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
 
-    if (!searchTerm.trim()) {
+    // --- MODIFICATION: Removed the `if (!searchTerm.trim())` block that would `return` ---
+    // Now, the debounce will run even with an empty string,
+    // triggering a search for popular/trending images.
+    // We still clear old results if it's a new search.
+    if (searchTerm.trim()) {
       setImageResults([]);
       setGifResults([]);
       setIsImagesLoading(false);
@@ -120,19 +126,13 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
       setGifPage(1);
       setHasMoreImages(true);
       setHasMoreGifs(true);
-      return;
     }
+    // --- END MODIFICATION ---
 
     debounceTimeoutRef.current = setTimeout(() => {
-      setImageResults([]);
-      setGifResults([]);
-      setImagePage(1);
-      setGifPage(1);
-      setHasMoreImages(true);
-      setHasMoreGifs(true);
       // We need to call the functions directly here
       // Use temporary variables from state inside the timeout
-      const currentSearchTerm = searchTerm;
+      const currentSearchTerm = searchTerm; // This will be "" on mount
       const initialImagePage = 1;
       const initialGifPage = 1;
 
@@ -171,7 +171,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
           setIsGifsLoading(false);
         }
       })();
-    }, 500);
+    }, 500); // Wait 500ms before firing
 
     return () => {
       if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
@@ -269,8 +269,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
             </div>
           )}
           {!isImagesLoading &&
-            searchTerm.trim() &&
-            !hasMoreImages &&
+            !hasMoreImages && // Removed searchTerm.trim() check
             imageResults?.length > 0 && (
               <div className="w-full text-center p-4 text-xs text-muted-foreground">
                 End of results.
@@ -282,10 +281,18 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
             </div>
           )}
           {!isImagesLoading &&
-            searchTerm.trim() &&
+            searchTerm.trim() && // Keep this check for "No images found"
             imageResults?.length === 0 && (
               <div className="w-full text-center p-4 text-muted-foreground">
                 No images found.
+              </div>
+            )}
+          {/* ADDED: Initial state message */}
+          {!isImagesLoading &&
+            !searchTerm.trim() &&
+            imageResults?.length === 0 && (
+              <div className="w-full text-center p-4 text-muted-foreground">
+                Popular images will load here.
               </div>
             )}
         </TabsContent>
@@ -319,8 +326,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
             </div>
           )}
           {!isGifsLoading &&
-            searchTerm.trim() &&
-            !hasMoreGifs &&
+            !hasMoreGifs && // Removed searchTerm.trim() check
             gifResults?.length > 0 && (
               <div className="w-full text-center p-4 text-xs text-muted-foreground">
                 End of results.
@@ -331,9 +337,17 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
               Loading GIFs...
             </div>
           )}
-          {!isGifsLoading && searchTerm.trim() && gifResults?.length === 0 && (
+          {!isGifsLoading &&
+            searchTerm.trim() && // Keep this check for "No GIFs found"
+            gifResults?.length === 0 && (
+              <div className="w-full text-center p-4 text-muted-foreground">
+                No GIFs found.
+              </div>
+            )}
+          {/* ADDED: Initial state message */}
+          {!isGifsLoading && !searchTerm.trim() && gifResults?.length === 0 && (
             <div className="w-full text-center p-4 text-muted-foreground">
-              No GIFs found.
+              Trending GIFs will load here.
             </div>
           )}
         </TabsContent>

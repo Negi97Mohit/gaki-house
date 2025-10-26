@@ -20,12 +20,17 @@ async function searchPexels(
 ): Promise<ApiSearchResult> {
   if (!PEXELS_KEY) return { assets: [], hasMore: false };
   try {
-    const response = await fetch(
-      `https://api.pexels.com/v1/search?query=${query}&per_page=${PER_PAGE}&page=${page}`,
-      {
-        headers: { Authorization: PEXELS_KEY },
-      }
-    );
+    // --- MODIFIED: Choose endpoint based on query ---
+    const isSearching = query.trim().length > 0;
+    const url = isSearching
+      ? `https://api.pexels.com/v1/search?query=${query}&per_page=${PER_PAGE}&page=${page}`
+      : `https://api.pexels.com/v1/curated?per_page=${PER_PAGE}&page=${page}`;
+    // --- END MODIFICATION ---
+
+    const response = await fetch(url, {
+      // Use dynamic URL
+      headers: { Authorization: PEXELS_KEY },
+    });
     if (!response.ok)
       throw new Error(`Pexels API error: ${response.statusText}`);
     const data = await response.json();
@@ -59,6 +64,7 @@ async function searchPixabay(
 ): Promise<ApiSearchResult> {
   if (!PIXABAY_KEY) return { assets: [], hasMore: false };
   try {
+    // This API handles empty `q` parameter by returning popular images. No change needed.
     const response = await fetch(
       `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${query}&per_page=${PER_PAGE}&page=${page}&image_type=photo`
     );
@@ -96,9 +102,15 @@ export async function searchGifs(
   try {
     // GIPHY uses offset instead of page number
     const offset = (page - 1) * PER_PAGE;
-    const response = await fetch(
-      `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${query}&limit=${PER_PAGE}&offset=${offset}&rating=g`
-    );
+
+    // --- MODIFIED: Choose endpoint based on query ---
+    const isSearching = query.trim().length > 0;
+    const url = isSearching
+      ? `https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_KEY}&q=${query}&limit=${PER_PAGE}&offset=${offset}&rating=g`
+      : `https://api.giphy.com/v1/gifs/trending?api_key=${GIPHY_KEY}&limit=${PER_PAGE}&offset=${offset}&rating=g`;
+    // --- END MODIFICATION ---
+
+    const response = await fetch(url); // Use dynamic URL
     if (!response.ok)
       throw new Error(`GIPHY API error: ${response.statusText}`);
     const data = await response.json();
