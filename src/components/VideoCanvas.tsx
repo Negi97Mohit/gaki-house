@@ -1965,7 +1965,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 </Rnd>
               );
             })()}
-            // Around line 1970-2000 in VideoCanvas.tsx, replace the
             textOverlays mapping with:
             {textOverlays
               .filter(
