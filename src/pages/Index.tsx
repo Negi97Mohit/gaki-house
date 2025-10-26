@@ -6,6 +6,9 @@ import { VideoCanvas } from "@/components/VideoCanvas";
 import { FloatingLogo } from "@/components/FloatingLogo";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { InstructionsDialog } from "@/components/InstructionsDialog";
+import { DraggableTextOverlay } from "@/components/DraggableTextOverlay"; // <-- ADD
+import { Type } from "lucide-react";
+
 import {
   CaptionStyle,
   GeneratedOverlay,
@@ -13,6 +16,7 @@ import {
   CameraShape,
   DEFAULT_LAYOUT_STATE,
   GeneratedLayout,
+  TextOverlayState,
   FileOverlayState,
   FileType,
 } from "@/types/caption";
@@ -35,6 +39,9 @@ import { Button } from "@/components/ui/button"; // FIXED: Missing Button import
 import { DEFAULT_LAYOUT_STATE as DLAYOUT } from "@/types/caption";
 import { FloatingAssetSearch } from "@/components/FloatingAssetSearch"; // <-- ADD
 import { AssetResult } from "@/components/AssetLibrary"; // <-- ADD
+
+const generateTextOverlayId = () =>
+  `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Helper
 
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -69,6 +76,9 @@ const Index = () => {
   const recording = useRecordingSession();
   const { log } = useLog(); // HOOK CALL
   const { setDebugInfo } = useDebug(); // HOOK CALL
+
+  const [textOverlays, setTextOverlays] = useState<TextOverlayState[]>([]);
+  const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
 
   // --- DEVICE/CONNECTION STATE ---
   const [selectedVideoDevice, setSelectedVideoDevice] = useState<
@@ -172,7 +182,10 @@ const Index = () => {
   // --- HANDLERS (useCallback and helpers) ---
 
   const handleSetDynamicLayout = (
-    target: { id: string; type: "html" | "file" | "browser" | "caption" },
+    target: {
+      id: string;
+      type: "html" | "file" | "browser" | "caption" | "text";
+    },
     mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
   ) => {
     let targetOverlay: any = null;
@@ -191,7 +204,9 @@ const Index = () => {
         layout: captionStyle,
       };
     }
-
+    if (target.type === "text") {
+      targetOverlay = textOverlays.find((o) => o.id === target.id);
+    }
     if (mode === "reset") {
       setDynamicLayout({
         isActive: false,
@@ -388,10 +403,69 @@ const Index = () => {
     }
   };
 
+  // ... inside Index component, after handleDeselectAll ...
+
+  const handleAddTextOverlay = () => {
+    const newTextOverlay: TextOverlayState = {
+      id: generateTextOverlayId(),
+      content: "Edit Text...",
+      // Use a copy of the current live caption style as a starting point
+      style: { ...captionStyle, position: { x: 50, y: 50 } }, // Reset position
+      layout: {
+        position: { x: 50, y: 50 },
+        size: { width: 30, height: 10 }, // Start reasonably small, height might adjust
+        zIndex: 100,
+        rotation: 0,
+      },
+    };
+    setTextOverlays((prev) => [...prev, newTextOverlay]);
+    handleDeselectAll(); // Deselect others first
+    setSelectedTextId(newTextOverlay.id); // Select the new one
+    toast.info("Text element added. Click to edit!");
+  };
+
+  const handleRemoveTextOverlay = (id: string) => {
+    setTextOverlays((prev) => prev.filter((o) => o.id !== id));
+    if (selectedTextId === id) setSelectedTextId(null);
+  };
+
+  const handleTextLayoutChange = (
+    id: string,
+    layout: Partial<TextOverlayState["layout"]>
+  ) => {
+    setTextOverlays((prev) =>
+      prev.map((o) =>
+        o.id === id ? { ...o, layout: { ...o.layout, ...layout } } : o
+      )
+    );
+  };
+
+  // Need this handler for style changes (like from a future style editor panel)
+  const handleTextStyleChange = (
+    id: string,
+    style: Partial<TextOverlayState["style"]>
+  ) => {
+    setTextOverlays((prev) =>
+      prev.map((o) =>
+        o.id === id ? { ...o, style: { ...o.style, ...style } } : o
+      )
+    );
+  };
+
+  const handleTextContentChange = (id: string, content: string) => {
+    setTextOverlays((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, content } : o))
+    );
+  };
+
+  // Modify handleDeselectAll (As done previously)
   const handleDeselectAll = () => {
     setSelectedBrowserId(null);
     setSelectedFileId(null);
+    setSelectedTextId(null); // <-- Keep this
   };
+
+  // ... rest of handlers
 
   const handleAssetSelect = async (asset: AssetResult) => {
     // 1. Fetch the asset from its URL
@@ -864,6 +938,15 @@ const Index = () => {
       </div>
       {/* ADDED: Top Right Corner - Theme and Info Buttons ONLY */}
       <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
+        <Button
+          onClick={handleAddTextOverlay}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Add Text"
+        >
+          <Type className="h-5 w-5" />
+        </Button>
         <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
         <Button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -956,6 +1039,13 @@ const Index = () => {
         onPipSizeChange={setPipSize}
         customMaskUrl={customMaskUrl}
         onCustomMaskUpload={handleCustomMaskUpload}
+        textOverlays={textOverlays}
+        onRemoveTextOverlay={handleRemoveTextOverlay}
+        onTextLayoutChange={handleTextLayoutChange}
+        onTextStyleChange={handleTextStyleChange} // Pass this down
+        onTextContentChange={handleTextContentChange}
+        selectedTextId={selectedTextId}
+        setSelectedTextId={setSelectedTextId} // Pass the setter
         // All other effect props
         {...sidebarProps}
       />

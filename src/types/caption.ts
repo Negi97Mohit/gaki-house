@@ -201,3 +201,10 @@ export interface BrowserOverlayState {
   url: string;
   layout: GeneratedLayout;
 }
+
+export interface TextOverlayState {
+  id: string;
+  content: string; // The actual text
+  style: CaptionStyle; // Re-use the existing style definition
+  layout: GeneratedLayout; // Re-use the existing layout definition
+}

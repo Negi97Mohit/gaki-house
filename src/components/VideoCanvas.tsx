@@ -43,6 +43,7 @@ import {
   CaptionStyle,
   FileOverlayState,
   BrowserOverlayState,
+  TextOverlayState,
 } from "@/types/caption";
 import {
   DraggableFileViewer,
@@ -57,6 +58,8 @@ import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 import { DraggableBrowser } from "@/components/DraggableBrowser";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
+import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
+import { TextEditingToolbar } from "@/components/TextEditingToolbar";
 
 // --- UPDATED COMPONENT ---
 export const HtmlOverlayRenderer: React.FC<{
@@ -318,6 +321,19 @@ interface VideoCanvasProps {
   isBeautifyEnabled: boolean;
   isLowLightEnabled: boolean;
   layoutMode: LayoutMode;
+  textOverlays: TextOverlayState[];
+  onRemoveTextOverlay: (id: string) => void;
+  onTextLayoutChange: (
+    id: string,
+    layout: Partial<TextOverlayState["layout"]>
+  ) => void;
+  onTextStyleChange: (
+    id: string,
+    style: Partial<TextOverlayState["style"]>
+  ) => void;
+  onTextContentChange: (id: string, content: string) => void;
+  selectedTextId: string | null;
+  setSelectedTextId: (id: string | null) => void;
   cameraShape: CameraShape;
   splitRatio: number;
   pipPosition: { x: number; y: number };
@@ -561,12 +577,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     dynamicLayout,
     onDeselectAll,
     blankCanvasColor,
+    textOverlays,
+    onRemoveTextOverlay,
+    onTextLayoutChange,
+    onTextStyleChange,
+    onTextContentChange,
+    selectedTextId,
+    setSelectedTextId,
     isMouseActive,
     onOpenSessions,
     onOpenSettings,
     isRecording,
     onRecordingToggle,
-    canvasRef, // <-- ADD THIS
+    canvasRef,
     ...rest
   } = props;
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -1942,6 +1965,40 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 </Rnd>
               );
             })()}
+            // Around line 1970-2000 in VideoCanvas.tsx, replace the
+            textOverlays mapping with:
+            {textOverlays
+              .filter(
+                (o) =>
+                  !dynamicLayout.isActive ||
+                  dynamicLayout.target?.id !== o.id ||
+                  dynamicLayout.target?.type !== "text"
+              )
+              .map((textOverlay) => (
+                <div
+                  key={`text-wrapper-${textOverlay.id}`}
+                  style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
+                >
+                  <DraggableTextOverlay
+                    key={textOverlay.id}
+                    overlay={textOverlay}
+                    onLayoutChange={onTextLayoutChange}
+                    onStyleChange={onTextStyleChange}
+                    onContentChange={onTextContentChange}
+                    onRemove={onRemoveTextOverlay}
+                    containerSize={containerSize}
+                    isSelected={selectedTextId === textOverlay.id}
+                    onSelect={(id) => {
+                      onDeselectAll();
+                      setSelectedTextId(id);
+                    }}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    isSpacePressed={isSpacePressed}
+                    containerRef={canvasContainerRef}
+                  />
+                </div>
+              ))}
           </div>
         </div>
       </div>
