@@ -269,10 +269,10 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         style={{
           zIndex: overlay.layout.zIndex,
           transform: `rotate(${overlay.layout.rotation || 0}deg)`,
-          transformOrigin: "center center",
         }}
         // Add drag handle class to enable dragging from anywhere
         dragHandleClassName="drag-handle"
+        cancel="button, textarea, .rotate-handle"
       >
         <div
           className={cn(
@@ -360,23 +360,13 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                   onRemove(overlay.id);
                 }}
                 title="Remove Text"
-                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all z-50 hover:scale-110"
+                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all z-[10000] hover:scale-110"
                 style={{
                   transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
                 }}
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 pointer-events-none" />
               </button>
-              <div
-                onMouseDown={handleRotationStart}
-                title="Rotate Text"
-                className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all z-50 cursor-alias hover:scale-110"
-                style={{
-                  transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-                }}
-              >
-                <RotateCcw className="w-4 h-4" />
-              </div>
             </>
           )}
         </div>

@@ -1,5 +1,5 @@
 // src/components/TextEditingToolbar.tsx - WITH LIST SUPPORT
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Bold,
@@ -75,7 +75,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (toolbarRef.current && containerRef.current) {
       const toolbarHeight = toolbarRef.current.offsetHeight;
       const toolbarWidth = toolbarRef.current.offsetWidth;
