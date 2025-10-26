@@ -33,6 +33,8 @@ import { SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button"; // FIXED: Missing Button import
 import { DEFAULT_LAYOUT_STATE as DLAYOUT } from "@/types/caption";
+import { FloatingAssetSearch } from "@/components/FloatingAssetSearch"; // <-- ADD
+import { AssetResult } from "@/components/AssetLibrary"; // <-- ADD
 
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -390,6 +392,27 @@ const Index = () => {
     setSelectedBrowserId(null);
     setSelectedFileId(null);
   };
+
+  const handleAssetSelect = async (asset: AssetResult) => {
+    // 1. Fetch the asset from its URL
+    try {
+      const response = await fetch(asset.downloadUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch asset: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+
+      // 2. Create a new File object from the blob
+      const file = new File([blob], asset.fileName, { type: asset.type });
+
+      // 3. Use your *existing* handleAddFile function to add it to the canvas
+      handleAddFile(file); // handleAddFile already exists in your Index.tsx
+    } catch (error) {
+      console.error("Failed to add asset:", error);
+      toast.error(`Failed to add asset: ${(error as Error).message}`);
+    }
+  };
+
   // --- END OF FILE HANDLING SECTION ---
 
   const handleCaptionLayoutChange = useCallback(
@@ -841,6 +864,7 @@ const Index = () => {
       </div>
       {/* ADDED: Top Right Corner - Theme and Info Buttons ONLY */}
       <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
+        <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
         <Button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           size="icon"
