@@ -1965,7 +1965,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 </Rnd>
               );
             })()}
-            textOverlays mapping with:
             {textOverlays
               .filter(
                 (o) =>
