@@ -1,6 +1,6 @@
-// Replace the entire contents of this file with this corrected version
+// src/components/DraggableFileViewer.tsx
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
 import { FileOverlayState, FileType } from "@/types/caption";
@@ -23,8 +23,11 @@ interface DraggableFileViewerProps {
   onSelect: (id: string) => void;
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
+  viewport: { scale: number; x: number; y: number };
+  canvasContainerRef: React.RefObject<HTMLDivElement>;
 }
 
+// FileRenderer Component (remains the same)
 export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
   overlay,
 }) => {
@@ -121,6 +124,41 @@ export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
   }
 };
 
+// Helper function moved outside the component
+const calculatePercentagePosition = (
+  pixelX: number,
+  pixelY: number,
+  elementWidthPx: number,
+  elementHeightPx: number,
+  viewport: { scale: number; x: number; y: number },
+  containerSize: { width: number; height: number }
+): { x: number; y: number } | null => {
+  // Return null if invalid
+  // Safety check (returns null now)
+  if (
+    !viewport ||
+    !containerSize.width ||
+    !containerSize.height ||
+    containerSize.width <= 0 || // Explicit check for zero/negative
+    containerSize.height <= 0
+  ) {
+    console.warn(
+      // Use warn instead of error for this expected initial state
+      "Missing or invalid viewport/containerSize in calculatePercentagePosition",
+      { viewport, containerSize }
+    );
+    return null; // Indicate failure
+  }
+
+  // With the `scale` prop on Rnd, pixelX/pixelY are already unscaled.
+  // We just need to find the center and convert to percentage.
+  const centerXOriginal = pixelX + elementWidthPx / 2;
+  const centerYOriginal = pixelY + elementHeightPx / 2;
+  const percentageX = (centerXOriginal / containerSize.width) * 100;
+  const percentageY = (centerYOriginal / containerSize.height) * 100;
+  return { x: percentageX, y: percentageY };
+};
+
 export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   overlay,
   onLayoutChange,
@@ -131,52 +169,121 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   onSelect,
   onInternalDragStart,
   onInternalDragStop,
+  viewport,
+  canvasContainerRef,
 }) => {
-  const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
-  const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
+  // Calculate initial pixel dimensions safely
+  const widthPx =
+    containerSize.width > 0
+      ? (containerSize.width * overlay.layout.size.width) / 100
+      : 300; // Default width if container size unknown
+  const heightPx =
+    containerSize.height > 0
+      ? (containerSize.height * overlay.layout.size.height) / 100
+      : 200; // Default height
+
+  // Calculate initial pixel position safely (default to center)
+  // Calculate initial pixel position in scene coordinates
   const xPx =
-    (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2;
+    containerSize.width > 0
+      ? (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2
+      : 0;
   const yPx =
-    (containerSize.height * overlay.layout.position.y) / 100 - heightPx / 2;
+    containerSize.height > 0
+      ? (containerSize.height * overlay.layout.position.y) / 100 - heightPx / 2
+      : 0;
+
+  // --- Wrap Rnd callbacks in useCallback ---
+  const handleDragStop = useCallback(
+    (e: any, d: { x: number; y: number }) => {
+      onInternalDragStop();
+      if (containerSize.width <= 0 || containerSize.height <= 0) return;
+
+      const currentWidthPx =
+        (containerSize.width * overlay.layout.size.width) / 100;
+      const currentHeightPx =
+        (containerSize.height * overlay.layout.size.height) / 100;
+
+      const newPositionPercent = calculatePercentagePosition(
+        d.x,
+        d.y,
+        currentWidthPx,
+        currentHeightPx,
+        viewport,
+        containerSize
+      );
+
+      if (newPositionPercent) {
+        onLayoutChange(overlay.id, {
+          position: newPositionPercent,
+        });
+      }
+    },
+    [
+      onInternalDragStop,
+      viewport,
+      containerSize,
+      onLayoutChange,
+      overlay.id,
+      overlay.layout.size,
+    ]
+  );
+
+  const handleResizeStop = useCallback(
+    (
+      e: any,
+      dir: any,
+      ref: HTMLElement,
+      delta: any,
+      pos: { x: number; y: number }
+    ) => {
+      onInternalDragStop();
+      if (containerSize.width <= 0 || containerSize.height <= 0) return;
+
+      const newWidthPx = parseInt(ref.style.width, 10);
+      const newHeightPx = parseInt(ref.style.height, 10);
+
+      const newPositionPercent = calculatePercentagePosition(
+        pos.x,
+        pos.y,
+        newWidthPx,
+        newHeightPx,
+        viewport,
+        containerSize
+      );
+
+      if (newPositionPercent) {
+        onLayoutChange(overlay.id, {
+          position: newPositionPercent,
+          size: {
+            width: (newWidthPx / containerSize.width) * 100,
+            height: (newHeightPx / containerSize.height) * 100,
+          },
+        });
+      }
+    },
+    [onInternalDragStop, viewport, containerSize, onLayoutChange, overlay.id]
+  );
+  // --- End useCallback wrappers ---
 
   return (
     <Rnd
+      scale={1}
       size={{ width: widthPx, height: heightPx }}
       position={{ x: xPx, y: yPx }}
       minWidth={200}
       minHeight={150}
-      bounds="parent"
-      // REMOVED dragHandleClassName and cancel props. We will control dragging via event propagation.
+      // Disable dragging/resizing if container isn't ready
+      disableDragging={containerSize.width <= 0 || containerSize.height <= 0}
+      enableResizing={containerSize.width > 0 && containerSize.height > 0}
+      cancel="input, button:not(.drag-handle), iframe"
       onDragStart={() => {
         onInternalDragStart();
         onSelect(overlay.id);
       }}
-      onDragStop={(e, d) => {
-        onInternalDragStop();
-        onLayoutChange(overlay.id, {
-          position: {
-            x: ((d.x + widthPx / 2) / containerSize.width) * 100,
-            y: ((d.y + heightPx / 2) / containerSize.height) * 100,
-          },
-        });
-      }}
-      onResizeStop={(e, dir, ref, delta, pos) => {
-        onInternalDragStop();
-        const newWidth = parseInt(ref.style.width, 10);
-        const newHeight = parseInt(ref.style.height, 10);
-        onLayoutChange(overlay.id, {
-          position: {
-            x: ((pos.x + newWidth / 2) / containerSize.width) * 100,
-            y: ((pos.y + newHeight / 2) / containerSize.height) * 100,
-          },
-          size: {
-            width: (newWidth / containerSize.width) * 100,
-            height: (newHeight / containerSize.height) * 100,
-          },
-        });
-      }}
+      onDragStop={handleDragStop} // Use useCallback version
+      onResizeStop={handleResizeStop} // Use useCallback version
       onClick={(e) => {
-        // Stop clicks from bubbling up to the canvas and deselecting
         e.stopPropagation();
       }}
       className={cn(
@@ -191,14 +298,13 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         transform: `rotate(${overlay.layout.rotation}deg)`,
       }}
     >
-      {/* The content area will now allow dragging */}
+      {/* Content area allows dragging */}
       <div
         className={cn(
           "flex-grow w-full h-full relative overflow-auto rounded-lg",
           overlay.fileType !== "image" && "bg-background/50"
         )}
         onMouseDown={() => {
-          // We still want to select the item on click, but not stop the drag event.
           onSelect(overlay.id);
         }}
       >
