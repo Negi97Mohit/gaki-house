@@ -88,17 +88,19 @@ export const AICommandPopover = ({
     }
   };
 
+  // --- ADDED THIS HOOK BACK ---
   useEffect(() => {
     // Auto-open only once on initial mount
     if (!hasAutoOpenedRef.current) {
       const openTimer = setTimeout(() => {
         setOpen(true);
         hasAutoOpenedRef.current = true;
-      }, 800);
+      }, 4000); // This delay waits for the button to load
 
       return () => clearTimeout(openTimer);
     }
-  }, []);
+  }, []); // Empty dependency array ensures this runs only once on mount
+  // --- END OF ADDED BLOCK ---
 
   useEffect(() => {
     // Animation logic that runs when popover is open

@@ -8,21 +8,21 @@ import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "next-themes";
 import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
-import { useEffect, useRef } from "react"; // 👈 ADD THIS IMPORT
+import { useEffect, useRef, useState } from "react";
 import EditPage from "./pages/Edit";
+import Loader from "./components/Loader";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  // --- ⬇️ ADD THIS ENTIRE SECTION ⬇️ ---
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
+  const [showLoader, setShowLoader] = useState(true); // ✅ Start visible
 
+  // Cursor inactivity logic (your existing)
   useEffect(() => {
     const handleActivity = () => {
       document.body.classList.remove("cursor-inactive");
-      if (inactivityTimer.current) {
-        clearTimeout(inactivityTimer.current);
-      }
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       inactivityTimer.current = setTimeout(() => {
         document.body.classList.add("cursor-inactive");
       }, 5000);
@@ -30,24 +30,41 @@ const App = () => {
     window.addEventListener("mousemove", handleActivity);
     return () => {
       window.removeEventListener("mousemove", handleActivity);
-      if (inactivityTimer.current) {
-        clearTimeout(inactivityTimer.current);
-      }
+      if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
     };
   }, []);
-  // --- ⬆️ END OF SECTION TO ADD ⬆️ ---
+
+  // ✅ Loader logic (runs after everything fully loads)
+  useEffect(() => {
+    const handleWindowLoad = () => {
+      // keep loader for 2.5s after load
+      setTimeout(() => {
+        setShowLoader(false);
+      }, 2000);
+    };
+
+    // If window already loaded (for hot reloads)
+    if (document.readyState === "complete") {
+      handleWindowLoad();
+    } else {
+      window.addEventListener("load", handleWindowLoad);
+      return () => window.removeEventListener("load", handleWindowLoad);
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <LogProvider>
         <DebugProvider>
-          {/* WRAP with ThemeProvider */}
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
+            {/* ✅ Loader always visible at start */}
+            <Loader visible={showLoader} />
+
             <TooltipProvider>
               <Toaster />
               <Sonner />
