@@ -1,29 +1,31 @@
 // src/pages/Index.tsx
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { VideoCanvas } from "@/components/VideoCanvas";
 import { FloatingLogo } from "@/components/FloatingLogo";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { InstructionsDialog } from "@/components/InstructionsDialog";
-import { DraggableTextOverlay } from "@/components/DraggableTextOverlay"; // <-- ADD
-import { Type } from "lucide-react";
-
+import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
+import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
 import {
   CaptionStyle,
   GeneratedOverlay,
   LayoutMode,
   CameraShape,
-  DEFAULT_LAYOUT_STATE,
   GeneratedLayout,
   TextOverlayState,
   FileOverlayState,
   FileType,
+  SceneState,
+  SceneTransition,
+  TransitionType,
+  DEFAULT_LAYOUT_STATE,
 } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
-import { useLog } from "@/context/LogContext"; // KEEP
-import { useDebug } from "@/context/DebugContext"; // KEEP
+import { useLog } from "@/context/LogContext";
+import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useRecordingSession } from "@/hooks/useRecordingSession";
 import {
@@ -33,22 +35,22 @@ import {
 import { SavedSessionsPanel } from "@/components/SavedSessionsPanel";
 import { RecordingSession } from "@/types/editor";
 import { cn } from "@/lib/utils";
-import { SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button"; // FIXED: Missing Button import
-import { DEFAULT_LAYOUT_STATE as DLAYOUT } from "@/types/caption";
-import { FloatingAssetSearch } from "@/components/FloatingAssetSearch"; // <-- ADD
-import { AssetResult } from "@/components/AssetLibrary"; // <-- ADD
+import { Button } from "@/components/ui/button";
+import { FloatingAssetSearch } from "@/components/FloatingAssetSearch";
+import { AssetResult } from "@/components/AssetLibrary";
+import { SceneTabs } from "@/components/SceneTabs";
+import { TransitionPopover } from "@/components/TransitionPopover";
 
 const generateTextOverlayId = () =>
-  `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`; // Helper
-
+  `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 const generateFileId = () => `file-${Date.now()}`;
 const generateBrowserId = () => `browser-${Date.now()}`;
+const generateSceneId = () => `scene-${Date.now()}`;
+const generateTransitionId = () => `trans-${Date.now()}`;
 
-// --- MISSING DEFAULT DEFINITION ---
 const DEFAULT_CAPTION_STYLE: CaptionStyle = {
   fontFamily: "Inter",
   fontSize: 32,
@@ -69,16 +71,57 @@ const DEFAULT_CAPTION_STYLE: CaptionStyle = {
   width: 60,
 };
 
+// --- NEW DEFAULT SCENE ---
+const createDefaultScene = (name: string): SceneState => ({
+  id: generateSceneId(),
+  name,
+  textOverlays: [],
+  browserOverlays: [],
+  fileOverlays: [],
+  activeOverlays: [],
+  layoutMode: DEFAULT_LAYOUT_STATE.mode,
+  cameraShape: DEFAULT_LAYOUT_STATE.cameraShape,
+  splitRatio: DEFAULT_LAYOUT_STATE.splitRatio,
+  pipPosition: DEFAULT_LAYOUT_STATE.pipPosition,
+  pipSize: DEFAULT_LAYOUT_STATE.pipSize,
+  customMaskUrl: undefined,
+  videoFilter: "none",
+  blankCanvasColor: "#1A1A1A",
+  backgroundEffect: "none",
+  backgroundImageUrl: null,
+  isAutoFramingEnabled: false,
+  zoomSensitivity: 4.0,
+  trackingSpeed: 0.08,
+  isBeautifyEnabled: false,
+  isLowLightEnabled: false,
+  isNeonEdgeEnabled: false,
+  neonIntensity: 20,
+  neonColor: "cyan",
+});
+
 const Index = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  // HOISTED HOOKS: MUST BE CALLED AT THE TOP LEVEL
   const recording = useRecordingSession();
-  const { log } = useLog(); // HOOK CALL
-  const { setDebugInfo } = useDebug(); // HOOK CALL
+  const { log } = useLog();
+  const { setDebugInfo } = useDebug();
 
-  const [textOverlays, setTextOverlays] = useState<TextOverlayState[]>([]);
-  const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
+  // --- SCENE STATE ---
+  const [scenes, setScenes] = useState<SceneState[]>(() => [
+    createDefaultScene("Scene 1"),
+  ]);
+  const [activeSceneId, setActiveSceneId] = useState<string>(scenes[0].id);
+  const [sceneTransitions, setSceneTransitions] = useState<SceneTransition[]>(
+    []
+  );
+  const [activeTransition, setActiveTransition] =
+    useState<SceneTransition | null>(null);
+
+  // Memoized getter for the active scene's state
+  const activeScene = useMemo(
+    () => scenes.find((s) => s.id === activeSceneId)!,
+    [scenes, activeSceneId]
+  );
 
   // --- DEVICE/CONNECTION STATE ---
   const [selectedVideoDevice, setSelectedVideoDevice] = useState<
@@ -93,16 +136,14 @@ const Index = () => {
   // --- UI & WINDOW STATE ---
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
   const [showFloatingPanel, setShowFloatingPanel] = useState(false);
-  const [activeHtmlOverlay, setActiveHtmlOverlay] =
-    useState<GeneratedOverlay | null>(null);
   const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(
     null
   );
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
 
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
@@ -119,51 +160,19 @@ const Index = () => {
   const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- LAYOUT STATE ---
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>(DLAYOUT.mode);
-  const [cameraShape, setCameraShape] = useState<CameraShape>(
-    DLAYOUT.cameraShape
-  );
-  const [splitRatio, setSplitRatio] = useState(DLAYOUT.splitRatio);
-  const [pipPosition, setPipPosition] = useState(DLAYOUT.pipPosition);
-  const [pipSize, setPipSize] = useState(DLAYOUT.pipSize);
-  const [customMaskUrl, setCustomMaskUrl] = useState<string | undefined>(
-    undefined
-  );
   const [aiButtonPosition, setAiButtonPosition] = useState({ x: 90, y: 90 });
 
-  // --- CAPTION/OVERLAY STATE ---
+  // --- CAPTION/OVERLAY STATE (Global) ---
   const [captionStyle, setCaptionStyle] = useState<CaptionStyle>(
     DEFAULT_CAPTION_STYLE
   );
   const [dynamicStyle, setDynamicStyle] = useState("none");
   const [captionsEnabled, setCaptionsEnabled] = useState(true);
-  const [browserOverlays, setBrowserOverlays] = useState<BrowserOverlayState[]>(
-    []
-  );
-  const [fileOverlays, setFileOverlays] = useState<FileOverlayState[]>([]);
-  const [activeOverlays, setActiveOverlays] = useState<GeneratedOverlay[]>([]);
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const [isAiModeEnabled, setIsAiModeEnabled] = useState(true);
-  const [promptHistory, setPromptHistory] = useState<string[]>([]); // Keep this for potential use
+  const [promptHistory, setPromptHistory] = useState<string[]>([]);
 
-  // --- VIDEO EFFECTS STATE ---
-  const [videoFilter, setVideoFilter] = useState("none");
-  const [blankCanvasColor, setBlankCanvasColor] = useState("#1A1A1A");
-  const [backgroundEffect, setBackgroundEffect] = useState<
-    "none" | "blur" | "image"
-  >("none");
-  const [backgroundImageUrl, setBackgroundImageUrl] = useState<string | null>(
-    null
-  );
-  const [isAutoFramingEnabled, setIsAutoFramingEnabled] = useState(false);
-  const [zoomSensitivity, setZoomSensitivity] = useState(4.0);
-  const [trackingSpeed, setTrackingSpeed] = useState(0.08);
-  const [isBeautifyEnabled, setIsBeautifyEnabled] = useState(false);
-  const [isLowLightEnabled, setIsLowLightEnabled] = useState(false);
-  const [isNeonEdgeEnabled, setIsNeonEdgeEnabled] = useState(false);
-  const [neonIntensity, setNeonIntensity] = useState(20);
-  const [neonColor, setNeonColor] = useState("cyan");
-
+  // --- DYNAMIC LAYOUT (Global) ---
   const [dynamicLayout, setDynamicLayout] = useState<{
     isActive: boolean;
     mode: "split-vertical" | "split-horizontal" | "pip";
@@ -179,6 +188,66 @@ const Index = () => {
     target: null,
   });
 
+  // --- SCENE MANAGEMENT ---
+
+  // Helper function to update the active scene
+  const updateActiveScene = useCallback(
+    (updates: (scene: SceneState) => SceneState) => {
+      setScenes((prevScenes) =>
+        prevScenes.map((scene) => {
+          if (scene.id === activeSceneId) {
+            return updates(scene);
+          }
+          return scene;
+        })
+      );
+    },
+    [activeSceneId]
+  );
+
+  const handleAddScene = () => {
+    const newScene = createDefaultScene(`Scene ${scenes.length + 1}`);
+    const newScenes = [...scenes, newScene];
+
+    // Create a default transition for the scene before it
+    if (scenes.length > 0) {
+      const prevSceneId = scenes[scenes.length - 1].id;
+      const newTransition: SceneTransition = {
+        id: generateTransitionId(),
+        fromSceneId: prevSceneId,
+        toSceneId: newScene.id,
+        type: "none",
+        durationMs: 300,
+      };
+      setSceneTransitions((prev) => [...prev, newTransition]);
+    }
+
+    setScenes(newScenes);
+    setActiveSceneId(newScene.id); // Switch to the new scene
+  };
+
+  const handleSceneSelect = (sceneId: string) => {
+    if (sceneId === activeSceneId) return;
+    setActiveSceneId(sceneId);
+    handleDeselectAll(); // Deselect overlays when changing scenes
+  };
+
+  const handleTransitionClick = (transition: SceneTransition) => {
+    setActiveTransition(transition);
+  };
+
+  const handleTransitionChange = (
+    transitionId: string,
+    newType: TransitionType,
+    durationMs: number
+  ) => {
+    setSceneTransitions((prev) =>
+      prev.map((t) =>
+        t.id === transitionId ? { ...t, type: newType, durationMs } : t
+      )
+    );
+  };
+
   // --- HANDLERS (useCallback and helpers) ---
 
   const handleSetDynamicLayout = (
@@ -188,16 +257,20 @@ const Index = () => {
     },
     mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
   ) => {
+    if (!activeScene) return;
     let targetOverlay: any = null;
 
     if (target.type === "html") {
-      targetOverlay = activeOverlays.find((o) => o.id === target.id);
+      targetOverlay = activeScene.activeOverlays.find(
+        (o) => o.id === target.id
+      );
     } else if (target.type === "file") {
-      targetOverlay = fileOverlays.find((o) => o.id === target.id);
+      targetOverlay = activeScene.fileOverlays.find((o) => o.id === target.id);
     } else if (target.type === "browser") {
-      targetOverlay = browserOverlays.find((o) => o.id === target.id);
+      targetOverlay = activeScene.browserOverlays.find(
+        (o) => o.id === target.id
+      );
     } else if (target.type === "caption") {
-      // For captions, we construct a temporary object
       targetOverlay = {
         id: "live-caption",
         type: "caption",
@@ -205,16 +278,14 @@ const Index = () => {
       };
     }
     if (target.type === "text") {
-      targetOverlay = textOverlays.find((o) => o.id === target.id);
+      targetOverlay = activeScene.textOverlays.find((o) => o.id === target.id);
     }
     if (mode === "reset") {
       setDynamicLayout({
         isActive: false,
-        mode: "split-vertical", // Reset to default
+        mode: "split-vertical",
         target: null,
       });
-      // Snapshots the current (reset) state
-      if (recording.isRecording) takeSnapshot();
       return;
     }
 
@@ -229,23 +300,16 @@ const Index = () => {
         layout: targetOverlay.layout,
       },
     });
-    // Snapshots the current (new dynamic) state
-    if (recording.isRecording) takeSnapshot();
   };
 
-  // ... (getFileType function remains the same)
   const getFileType = (file: File): FileType => {
     const fileType = file.type;
     const fileName = file.name.toLowerCase();
-
-    // Prioritize MIME types
     if (fileType.startsWith("image/")) return "image";
     if (fileType.startsWith("video/")) return "video";
     if (fileType.startsWith("audio/")) return "audio";
     if (fileType === "application/pdf") return "pdf";
     if (fileType.startsWith("text/")) return "text";
-
-    // Fallback to file extensions for common code/text files
     const textExtensions = [
       ".js",
       ".jsx",
@@ -267,13 +331,12 @@ const Index = () => {
     if (textExtensions.some((ext) => fileName.endsWith(ext))) {
       return "text";
     }
-
     return "unknown";
   };
 
   const handleAddFile = useCallback(
     (file: File) => {
-      if (!file) return;
+      if (!file || !activeSceneId) return;
       const newOverlay: FileOverlayState = {
         id: generateFileId(),
         file: file,
@@ -287,15 +350,22 @@ const Index = () => {
           rotation: 0,
         },
       };
-      setFileOverlays((prev) => [...prev, newOverlay]);
+
+      updateActiveScene((scene) => {
+        const updatedOverlays = [...scene.fileOverlays, newOverlay];
+        // Record the new overlay
+        if (recording.isRecording) {
+          recording.recordFileOverlay(newOverlay);
+        }
+        return { ...scene, fileOverlays: updatedOverlays };
+      });
+
       toast.info(`Added file: ${file.name}`);
-      if (recording.isRecording) recording.recordFileOverlay(newOverlay);
     },
-    [recording.isRecording]
+    [activeSceneId, recording, updateActiveScene]
   );
 
   useEffect(() => {
-    // ... (event listeners for drag/drop/paste remain the same)
     const handleDragOver = (e: DragEvent) => e.preventDefault();
     const handleDrop = (e: DragEvent) => {
       e.preventDefault();
@@ -311,12 +381,10 @@ const Index = () => {
     const handlePaste = (e: ClipboardEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      // Prioritize pasting files
       if (e.clipboardData?.files?.length > 0) {
         Array.from(e.clipboardData.files).forEach(handleAddFile);
         return;
       }
-      // Fallback to pasting text as a URL
       const pastedText = e.clipboardData?.getData("text/plain");
       if (
         pastedText &&
@@ -332,9 +400,14 @@ const Index = () => {
             rotation: 0,
           },
         };
-        setBrowserOverlays((prev) => [...prev, newBrowser]);
+        updateActiveScene((scene) => {
+          const updatedOverlays = [...scene.browserOverlays, newBrowser];
+          if (recording.isRecording) {
+            recording.recordBrowserOverlay(newBrowser);
+          }
+          return { ...scene, browserOverlays: updatedOverlays };
+        });
         toast.info("Browser window added from URL.");
-        if (recording.isRecording) recording.recordBrowserOverlay(newBrowser);
       }
     };
 
@@ -346,10 +419,11 @@ const Index = () => {
       window.removeEventListener("dragover", handleDragOver);
       window.removeEventListener("drop", handleDrop);
       window.removeEventListener("paste", handlePaste);
-      // Clean up object URLs to prevent memory leaks
-      fileOverlays.forEach((o) => URL.revokeObjectURL(o.fileUrl));
+      scenes.forEach((scene) => {
+        scene.fileOverlays.forEach((o) => URL.revokeObjectURL(o.fileUrl));
+      });
     };
-  }, [handleAddFile, fileOverlays, recording.isRecording]);
+  }, [handleAddFile, scenes]);
 
   const isDraggingInternally = useRef(false);
   const handleInternalDragStart = () => {
@@ -359,22 +433,25 @@ const Index = () => {
     isDraggingInternally.current = false;
   };
   const handleRemoveFile = (id: string) => {
-    setFileOverlays((prev) => {
-      const overlayToRemove = prev.find((o) => o.id === id);
+    updateActiveScene((scene) => {
+      const overlayToRemove = scene.fileOverlays.find((o) => o.id === id);
       if (overlayToRemove) {
         URL.revokeObjectURL(overlayToRemove.fileUrl);
       }
-      return prev.filter((o) => o.id !== id);
+      return {
+        ...scene,
+        fileOverlays: scene.fileOverlays.filter((o) => o.id !== id),
+      };
     });
-    // NOTE: Removal during recording is implicitly handled by the continuous snapshot (it will disappear from the list of active overlays)
   };
 
   const handleFileLayoutChange = (
     id: string,
     layout: Partial<FileOverlayState["layout"]>
   ) => {
-    setFileOverlays((prev) =>
-      prev.map((o) => {
+    updateActiveScene((scene) => ({
+      ...scene,
+      fileOverlays: scene.fileOverlays.map((o) => {
         if (o.id === id) {
           const updatedOverlay = { ...o, layout: { ...o.layout, ...layout } };
           if (recording.isRecording)
@@ -382,50 +459,71 @@ const Index = () => {
           return updatedOverlay;
         }
         return o;
-      })
-    );
+      }),
+    }));
   };
 
-  const handleLayoutModeChange = (mode: LayoutMode) => {
-    // Deactivate any active dynamic layout when a global layout is chosen
-    setDynamicLayout({ isActive: false, mode: "split-vertical", target: null });
-    // Set the global layout mode
-    setLayoutMode(mode);
-    if (recording.isRecording) {
-      // ADDED: Record change
-      recording.recordLayoutChange({
-        mode,
-        cameraShape,
-        splitRatio,
-        pipPosition,
-        pipSize,
+  // --- SCENE-AWARE LAYOUT HANDLERS ---
+  const createScenePropertyHandler = <K extends keyof SceneState>(key: K) => {
+    return (value: SceneState[K]) => {
+      updateActiveScene((scene) => {
+        const updatedScene = { ...scene, [key]: value };
+        // Check if this property is part of the layout group
+        if (
+          [
+            "layoutMode",
+            "cameraShape",
+            "splitRatio",
+            "pipPosition",
+            "pipSize",
+          ].includes(key as string)
+        ) {
+          if (recording.isRecording) {
+            recording.recordLayoutChange({
+              mode: updatedScene.layoutMode,
+              cameraShape: updatedScene.cameraShape,
+              splitRatio: updatedScene.splitRatio,
+              pipPosition: updatedScene.pipPosition,
+              pipSize: updatedScene.pipSize,
+            });
+          }
+        }
+        return updatedScene;
       });
-    }
+    };
   };
-
-  // ... inside Index component, after handleDeselectAll ...
 
   const handleAddTextOverlay = () => {
     const newTextOverlay: TextOverlayState = {
       id: generateTextOverlayId(),
       content: "Edit Text...",
-      // Use a copy of the current live caption style as a starting point
-      style: { ...captionStyle, position: { x: 50, y: 50 } }, // Reset position
+      style: { ...captionStyle, position: { x: 50, y: 50 } }, // Use global caption style
       layout: {
         position: { x: 50, y: 50 },
-        size: { width: 30, height: 10 }, // Start reasonably small, height might adjust
+        size: { width: 30, height: 10 },
         zIndex: 100,
         rotation: 0,
       },
     };
-    setTextOverlays((prev) => [...prev, newTextOverlay]);
-    handleDeselectAll(); // Deselect others first
-    setSelectedTextId(newTextOverlay.id); // Select the new one
+
+    updateActiveScene((scene) => {
+      const updatedOverlays = [...scene.textOverlays, newTextOverlay];
+      if (recording.isRecording) {
+        recording.recordTextOverlay(newTextOverlay);
+      }
+      return { ...scene, textOverlays: updatedOverlays };
+    });
+
+    handleDeselectAll();
+    setSelectedTextId(newTextOverlay.id);
     toast.info("Text element added. Click to edit!");
   };
 
   const handleRemoveTextOverlay = (id: string) => {
-    setTextOverlays((prev) => prev.filter((o) => o.id !== id));
+    updateActiveScene((scene) => ({
+      ...scene,
+      textOverlays: scene.textOverlays.filter((o) => o.id !== id),
+    }));
     if (selectedTextId === id) setSelectedTextId(null);
   };
 
@@ -433,61 +531,70 @@ const Index = () => {
     id: string,
     layout: Partial<TextOverlayState["layout"]>
   ) => {
-    setTextOverlays((prev) =>
-      prev.map((o) =>
-        o.id === id ? { ...o, layout: { ...o.layout, ...layout } } : o
-      )
-    );
+    updateActiveScene((scene) => ({
+      ...scene,
+      textOverlays: scene.textOverlays.map((o) => {
+        if (o.id === id) {
+          const updated = { ...o, layout: { ...o.layout, ...layout } };
+          if (recording.isRecording) recording.recordTextOverlay(updated);
+          return updated;
+        }
+        return o;
+      }),
+    }));
   };
 
-  // Need this handler for style changes (like from a future style editor panel)
   const handleTextStyleChange = (
     id: string,
     style: Partial<TextOverlayState["style"]>
   ) => {
-    setTextOverlays((prev) =>
-      prev.map((o) =>
-        o.id === id ? { ...o, style: { ...o.style, ...style } } : o
-      )
-    );
+    updateActiveScene((scene) => ({
+      ...scene,
+      textOverlays: scene.textOverlays.map((o) => {
+        if (o.id === id) {
+          const updated = { ...o, style: { ...o.style, ...style } };
+          if (recording.isRecording) recording.recordTextOverlay(updated);
+          return updated;
+        }
+        return o;
+      }),
+    }));
   };
 
   const handleTextContentChange = (id: string, content: string) => {
-    setTextOverlays((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, content } : o))
-    );
+    updateActiveScene((scene) => ({
+      ...scene,
+      textOverlays: scene.textOverlays.map((o) => {
+        if (o.id === id) {
+          const updated = { ...o, content };
+          if (recording.isRecording) recording.recordTextOverlay(updated);
+          return updated;
+        }
+        return o;
+      }),
+    }));
   };
 
-  // Modify handleDeselectAll (As done previously)
   const handleDeselectAll = () => {
     setSelectedBrowserId(null);
     setSelectedFileId(null);
-    setSelectedTextId(null); // <-- Keep this
+    setSelectedTextId(null);
   };
 
-  // ... rest of handlers
-
   const handleAssetSelect = async (asset: AssetResult) => {
-    // 1. Fetch the asset from its URL
     try {
       const response = await fetch(asset.downloadUrl);
       if (!response.ok) {
         throw new Error(`Failed to fetch asset: ${response.statusText}`);
       }
       const blob = await response.blob();
-
-      // 2. Create a new File object from the blob
       const file = new File([blob], asset.fileName, { type: asset.type });
-
-      // 3. Use your *existing* handleAddFile function to add it to the canvas
-      handleAddFile(file); // handleAddFile already exists in your Index.tsx
+      handleAddFile(file);
     } catch (error) {
       console.error("Failed to add asset:", error);
       toast.error(`Failed to add asset: ${(error as Error).message}`);
     }
   };
-
-  // --- END OF FILE HANDLING SECTION ---
 
   const handleCaptionLayoutChange = useCallback(
     (newLayout: {
@@ -500,17 +607,17 @@ const Index = () => {
           position: newLayout.position ?? prev.position,
           width: newLayout.size?.width ?? prev.width,
         };
+        // Record the *global* caption style
         if (recording.isRecording) recording.recordCaptionStyle(updatedStyle);
         return updatedStyle;
       });
     },
-    [recording.isRecording, recording.recordCaptionStyle]
+    [recording]
   );
 
   const processTranscript = useCallback(
-    // ... (processTranscript remains the same, but remove `isRecording` check from `handleLayoutChange` below)
     async (transcript: string, targetId: string | null = null) => {
-      if (!isAiModeEnabled || isProcessingAi) return;
+      if (!isAiModeEnabled || isProcessingAi || !activeScene) return;
       setPromptHistory((prev) => [...prev, transcript]);
       log("TRANSCRIPT", "Processing command", { transcript, targetId });
       setDebugInfo((prev) => ({
@@ -525,7 +632,9 @@ const Index = () => {
       setIsProcessingAi(true);
       try {
         if (targetId) {
-          const existingOverlay = activeOverlays.find((o) => o.id === targetId);
+          const existingOverlay = activeScene.activeOverlays.find(
+            (o) => o.id === targetId
+          );
           if (!existingOverlay) {
             throw new Error("Target overlay not found for update.");
           }
@@ -538,19 +647,18 @@ const Index = () => {
             transcript
           );
           log("AI_RESPONSE", `Agent HTML received for update on "${name}"`);
-          setActiveOverlays((prev) =>
-            prev.map((overlay) => {
-              const updatedOverlay =
-                overlay.id === targetId
-                  ? { ...overlay, name, htmlContent, preview: "" }
-                  : overlay;
-              if (overlay.id === targetId && recording.isRecording) {
-                // ADDED: Record the resulting overlay state
-                recording.recordHtmlOverlay(updatedOverlay);
+
+          updateActiveScene((scene) => ({
+            ...scene,
+            activeOverlays: scene.activeOverlays.map((o) => {
+              if (o.id === targetId) {
+                const updated = { ...o, name, htmlContent, preview: "" };
+                if (recording.isRecording) recording.recordHtmlOverlay(updated);
+                return updated;
               }
-              return updatedOverlay;
-            })
-          );
+              return o;
+            }),
+          }));
           toast.success(`Updated overlay "${name}".`);
         } else {
           log("AI_REQUEST", "Requesting new overlay creation", {
@@ -572,10 +680,13 @@ const Index = () => {
             },
             preview: "",
           };
-          setActiveOverlays((prev) => {
-            const newOverlays = [...prev, newOverlay];
-            if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
-            return newOverlays;
+
+          updateActiveScene((scene) => {
+            const updatedOverlays = [...scene.activeOverlays, newOverlay];
+            if (recording.isRecording) {
+              recording.recordHtmlOverlay(newOverlay);
+            }
+            return { ...scene, activeOverlays: updatedOverlays };
           });
           toast.success(`AI generated "${name}".`);
         }
@@ -596,31 +707,28 @@ const Index = () => {
       isProcessingAi,
       log,
       setDebugInfo,
-      activeOverlays,
-      recording.isRecording,
-      recording.recordHtmlOverlay,
+      activeScene,
+      recording,
+      updateActiveScene,
     ]
   );
 
-  const handleLayoutChange = (
+  const handleOverlayLayoutChange = (
     id: string,
     key: "position" | "size" | "rotation",
     value: any
   ) => {
-    setActiveOverlays((prev) =>
-      prev.map((o) => {
+    updateActiveScene((scene) => ({
+      ...scene,
+      activeOverlays: scene.activeOverlays.map((o) => {
         if (o.id === id) {
-          const updatedOverlay = {
-            ...o,
-            layout: { ...o.layout, [key]: value },
-          };
-          if (recording.isRecording)
-            recording.recordHtmlOverlay(updatedOverlay);
-          return updatedOverlay;
+          const updated = { ...o, layout: { ...o.layout, [key]: value } };
+          if (recording.isRecording) recording.recordHtmlOverlay(updated);
+          return updated;
         }
         return o;
-      })
-    );
+      }),
+    }));
   };
 
   useEffect(() => {
@@ -642,9 +750,14 @@ const Index = () => {
             rotation: 0,
           },
         };
-        setBrowserOverlays((prev) => [...prev, newBrowser]);
+        updateActiveScene((scene) => {
+          const updatedOverlays = [...scene.browserOverlays, newBrowser];
+          if (recording.isRecording) {
+            recording.recordBrowserOverlay(newBrowser);
+          }
+          return { ...scene, browserOverlays: updatedOverlays };
+        });
         toast.info("Browser window added.");
-        if (recording.isRecording) recording.recordBrowserOverlay(newBrowser);
       }
 
       if (e.key === "Escape") {
@@ -660,45 +773,47 @@ const Index = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    selectedBrowserId,
-    recording.isRecording,
-    recording.recordBrowserOverlay,
-  ]);
+  }, [selectedBrowserId, recording, updateActiveScene]);
 
   const handleRemoveBrowser = (id: string) => {
-    setBrowserOverlays((prev) => prev.filter((b) => b.id !== id));
-    // NOTE: Removal during recording is implicitly handled by the continuous snapshot
+    updateActiveScene((scene) => ({
+      ...scene,
+      browserOverlays: scene.browserOverlays.filter((b) => b.id !== id),
+    }));
   };
 
   const handleBrowserUrlChange = (id: string, url: string) => {
-    setBrowserOverlays((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, url } : b))
-    );
-    // NOTE: URL change is not keyframed currently, only layout
+    updateActiveScene((scene) => ({
+      ...scene,
+      browserOverlays: scene.browserOverlays.map((b) =>
+        b.id === id ? { ...b, url } : b
+      ),
+    }));
   };
 
   const handleBrowserLayoutChange = (
     id: string,
     layout: Partial<BrowserOverlayState["layout"]>
   ) => {
-    setBrowserOverlays((prev) =>
-      prev.map((b) => {
+    updateActiveScene((scene) => ({
+      ...scene,
+      browserOverlays: scene.browserOverlays.map((b) => {
         if (b.id === id) {
-          const updatedOverlay = { ...b, layout: { ...b.layout, ...layout } };
-          if (recording.isRecording)
-            recording.recordBrowserOverlay(updatedOverlay);
-          return updatedOverlay;
+          const updated = { ...b, layout: { ...b.layout, ...layout } };
+          if (recording.isRecording) recording.recordBrowserOverlay(updated);
+          return updated;
         }
         return b;
-      })
-    );
+      }),
+    }));
   };
 
   const handleRemoveOverlay = (id: string) => {
-    setActiveOverlays((prev) => prev.filter((o) => o.id !== id));
+    updateActiveScene((scene) => ({
+      ...scene,
+      activeOverlays: scene.activeOverlays.filter((o) => o.id !== id),
+    }));
     toast.info("Overlay removed from canvas.");
-    // NOTE: Removal during recording is implicitly handled by the continuous snapshot
   };
 
   const handleCustomMaskUpload = (file: File) => {
@@ -706,7 +821,7 @@ const Index = () => {
     reader.onload = (e) => {
       const result = e.target?.result;
       if (typeof result === "string") {
-        setCustomMaskUrl(result);
+        createScenePropertyHandler("customMaskUrl")(result);
         toast.success("Custom camera mask uploaded!");
       }
     };
@@ -725,8 +840,13 @@ const Index = () => {
       },
       preview: "",
     };
-    setActiveOverlays((prev) => [...prev, newActiveOverlay]);
-    if (recording.isRecording) recording.recordHtmlOverlay(newActiveOverlay);
+    updateActiveScene((scene) => {
+      const updatedOverlays = [...scene.activeOverlays, newActiveOverlay];
+      if (recording.isRecording) {
+        recording.recordHtmlOverlay(newActiveOverlay);
+      }
+      return { ...scene, activeOverlays: updatedOverlays };
+    });
   };
 
   const handleDeleteSavedOverlay = (id: string) => {
@@ -739,12 +859,11 @@ const Index = () => {
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
       } else if ((document.documentElement as any).webkitRequestFullscreen) {
-        (document.documentElement as any).webkitRequestFullscreen(); // Safari
+        (document.documentElement as any).webkitRequestFullscreen();
       } else if ((document.documentElement as any).msRequestFullscreen) {
-        (document.documentElement as any).msRequestFullscreen(); // IE11
+        (document.documentElement as any).msRequestFullscreen();
       }
     } else if (document.fullscreenElement) {
-      // FIX: Only attempt to exit if we are currently in fullscreen mode
       if (document.exitFullscreen) {
         document.exitFullscreen();
       } else if ((document as any).webkitExitFullscreen) {
@@ -764,7 +883,7 @@ const Index = () => {
       }
       mouseTimeoutRef.current = setTimeout(() => {
         setIsMouseActive(false);
-      }, 2500); // Hide cursor after 2.5 seconds
+      }, 2500);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
@@ -775,98 +894,95 @@ const Index = () => {
     };
   }, []);
 
+  // --- Sidebar Props ---
   const sidebarProps = {
+    // --- GLOBAL STYLES ---
     style: captionStyle,
     onStyleChange: setCaptionStyle,
     dynamicStyle: dynamicStyle,
     onDynamicStyleChange: setDynamicStyle,
-    blankCanvasColor: blankCanvasColor,
-    onBlankCanvasColorChange: setBlankCanvasColor,
-    backgroundEffect: backgroundEffect,
-    onBackgroundEffectChange: setBackgroundEffect,
-    backgroundImageUrl: backgroundImageUrl,
-    onBackgroundImageUrlChange: setBackgroundImageUrl,
-    isAutoFramingEnabled: isAutoFramingEnabled,
-    onAutoFramingChange: setIsAutoFramingEnabled,
+
+    // --- SCENE-SPECIFIC STYLES ---
+    blankCanvasColor: activeScene.blankCanvasColor,
+    onBlankCanvasColorChange: createScenePropertyHandler("blankCanvasColor"),
+    backgroundEffect: activeScene.backgroundEffect,
+    onBackgroundEffectChange: createScenePropertyHandler("backgroundEffect"),
+    backgroundImageUrl: activeScene.backgroundImageUrl,
+    onBackgroundImageUrlChange:
+      createScenePropertyHandler("backgroundImageUrl"),
+    isAutoFramingEnabled: activeScene.isAutoFramingEnabled,
+    onAutoFramingChange: createScenePropertyHandler("isAutoFramingEnabled"),
+    zoomSensitivity: activeScene.zoomSensitivity,
+    onZoomSensitivityChange: createScenePropertyHandler("zoomSensitivity"),
+    trackingSpeed: activeScene.trackingSpeed,
+    onTrackingSpeedChange: createScenePropertyHandler("trackingSpeed"),
+    isBeautifyEnabled: activeScene.isBeautifyEnabled,
+    onBeautifyToggle: createScenePropertyHandler("isBeautifyEnabled"),
+    isLowLightEnabled: activeScene.isLowLightEnabled,
+    onLowLightToggle: createScenePropertyHandler("isLowLightEnabled"),
+    videoFilter: activeScene.videoFilter,
+    onVideoFilterChange: createScenePropertyHandler("videoFilter"),
+    isNeonEdgeEnabled: activeScene.isNeonEdgeEnabled,
+    onNeonEdgeToggle: createScenePropertyHandler("isNeonEdgeEnabled"),
+    neonIntensity: activeScene.neonIntensity,
+    onNeonIntensityChange: createScenePropertyHandler("neonIntensity"),
+    neonColor: activeScene.neonColor,
+    onNeonColorChange: createScenePropertyHandler("neonColor"),
+
+    // --- GLOBAL SAVED ASSETS ---
     savedOverlays: savedOverlays,
     onAddSavedOverlay: handleAddSavedOverlay,
     onDeleteSavedOverlay: handleDeleteSavedOverlay,
-    zoomSensitivity: zoomSensitivity,
-    onZoomSensitivityChange: setZoomSensitivity,
-    trackingSpeed: trackingSpeed,
-    onTrackingSpeedChange: setTrackingSpeed,
-    isBeautifyEnabled: isBeautifyEnabled,
-    onBeautifyToggle: setIsBeautifyEnabled,
-    isLowLightEnabled: isLowLightEnabled,
-    onLowLightToggle: setIsLowLightEnabled,
-    videoFilter: videoFilter,
-    onVideoFilterChange: setVideoFilter,
-    isNeonEdgeEnabled: isNeonEdgeEnabled,
-    onNeonEdgeToggle: setIsNeonEdgeEnabled,
-    neonIntensity: neonIntensity,
-    onNeonIntensityChange: setNeonIntensity,
-    neonColor: neonColor,
-    onNeonColorChange: setNeonColor,
   };
 
   // ----------------------------------------------------------------------
   // --- RECORDING SNAPSHOT LOGIC ---
   // ----------------------------------------------------------------------
-
-  // Snapshots the entire screen state (called on interval and user interaction)
   const takeSnapshot = useCallback(() => {
     if (!recording.isRecording) return;
+    if (!activeScene) return; // Guard clause
 
     // 1. HTML Overlays
-    activeOverlays.forEach((overlay) => {
+    activeScene.activeOverlays.forEach((overlay) => {
       recording.recordHtmlOverlay(overlay);
     });
 
     // 2. File Overlays
-    fileOverlays.forEach((overlay) => {
+    activeScene.fileOverlays.forEach((overlay) => {
       recording.recordFileOverlay(overlay);
     });
 
     // 3. Browser Overlays
-    browserOverlays.forEach((overlay) => {
+    activeScene.browserOverlays.forEach((overlay) => {
       recording.recordBrowserOverlay(overlay);
     });
 
-    // 4. Caption Style
+    // 4. Text Overlays
+    activeScene.textOverlays.forEach((overlay) => {
+      recording.recordTextOverlay(overlay);
+    });
+
+    // 5. Global Live Caption Style
     recording.recordCaptionStyle(captionStyle);
 
-    // 5. Global Layout
+    // 6. Scene Layout
     recording.recordLayoutChange({
-      mode: layoutMode,
-      cameraShape,
-      splitRatio,
-      pipPosition,
-      pipSize,
+      mode: activeScene.layoutMode,
+      cameraShape: activeScene.cameraShape,
+      splitRatio: activeScene.splitRatio,
+      pipPosition: activeScene.pipPosition,
+      pipSize: activeScene.pipSize,
     });
-  }, [
-    recording,
-    activeOverlays,
-    fileOverlays,
-    browserOverlays,
-    captionStyle,
-    layoutMode,
-    cameraShape,
-    splitRatio,
-    pipPosition,
-    pipSize,
-  ]);
+  }, [recording, activeScene, captionStyle]);
 
   // Use a separate useEffect for the snapshot interval
   useEffect(() => {
     if (recording.isRecording) {
-      // Set up snapshot interval (e.g., every 250ms)
       frameIntervalRef.current = setInterval(takeSnapshot, 250);
     } else if (frameIntervalRef.current) {
       clearInterval(frameIntervalRef.current);
       frameIntervalRef.current = null;
     }
-
-    // Cleanup on unmount or recording stop
     return () => {
       if (frameIntervalRef.current) {
         clearInterval(frameIntervalRef.current);
@@ -881,7 +997,6 @@ const Index = () => {
     [setAllSessions]
   );
 
-  // NEW WRAPPER for VideoCanvas prop (Simplified)
   const handleRecordingToggle = useCallback(
     async (
       isCurrentlyRecording: boolean,
@@ -898,10 +1013,10 @@ const Index = () => {
           containerSize.width,
           containerSize.height,
           {
-            dynamicStyle,
-            videoFilter,
-            backgroundEffect,
-            backgroundImageUrl,
+            dynamicStyle, // This is global
+            videoFilter: activeScene.videoFilter, // Pass active scene's filter
+            backgroundEffect: activeScene.backgroundEffect,
+            backgroundImageUrl: activeScene.backgroundImageUrl,
           }
         );
         setAllSessions((prev) => [session, ...prev]);
@@ -913,15 +1028,17 @@ const Index = () => {
     },
     [
       recording,
-      canvasRef,
       setAllSessions,
       navigate,
       dynamicStyle,
-      videoFilter,
-      backgroundEffect,
-      backgroundImageUrl,
+      activeScene, // Depends on active scene for settings
     ]
   );
+
+  if (!activeScene) {
+    // This should theoretically never happen if scenes[0] is set
+    return <div>Loading...</div>;
+  }
 
   return (
     <div
@@ -936,6 +1053,17 @@ const Index = () => {
       <div className="fixed top-6 left-6 z-[2015] transition-opacity duration-300">
         <FloatingLogo />
       </div>
+
+      {/* --- SCENE TABS --- */}
+      <SceneTabs
+        scenes={scenes}
+        activeSceneId={activeSceneId}
+        transitions={sceneTransitions}
+        onSceneSelect={handleSceneSelect}
+        onSceneAdd={handleAddScene}
+        onTransitionClick={handleTransitionClick}
+      />
+
       {/* ADDED: Top Right Corner - Theme and Info Buttons ONLY */}
       <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
         <Button
@@ -961,6 +1089,16 @@ const Index = () => {
         <InstructionsDialog />
       </div>
 
+      {/* --- TRANSITION POPOVER --- */}
+      <TransitionPopover
+        transition={activeTransition}
+        onClose={() => setActiveTransition(null)}
+        onTransitionChange={handleTransitionChange}
+      >
+        {/* This is an invisible trigger; the popover is controlled by `activeTransition` state */}
+        <div />
+      </TransitionPopover>
+
       {/* -------------------- SIDEBARS AND PANELS -------------------- */}
       <SavedSessionsPanel
         sessions={allSessions}
@@ -975,7 +1113,7 @@ const Index = () => {
         onToggleFullscreen={handleToggleFullscreen}
         isFsSidebarOpen={isFsSidebarOpen}
         onFsSidebarToggle={setIsFsSidebarOpen}
-        blankCanvasColor={blankCanvasColor}
+        blankCanvasColor={activeScene.blankCanvasColor}
         onOpenSessions={() => setShowSessionsPanel(true)}
         onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
         isMouseActive={isMouseActive}
@@ -990,27 +1128,27 @@ const Index = () => {
         onAudioDeviceSelect={setSelectedAudioDevice}
         // Recording
         isRecording={recording.isRecording}
-        onRecordingToggle={handleRecordingToggle as any}
+        onRecordingToggle={handleRecordingToggle}
         canvasRef={canvasRef}
         onRecordingComplete={() => {}}
-        // AI & Overlays
+        // AI & Overlays (from active scene)
         isAiModeEnabled={isAiModeEnabled}
         onAiModeToggle={setIsAiModeEnabled}
         isProcessingAi={isProcessingAi}
         onProcessTranscript={processTranscript}
-        generatedOverlays={activeOverlays}
-        onOverlayLayoutChange={handleLayoutChange}
+        generatedOverlays={activeScene.activeOverlays}
+        onOverlayLayoutChange={handleOverlayLayoutChange}
         onRemoveOverlay={handleRemoveOverlay}
-        onPreviewGenerated={() => {}} // Placeholder: You'd implement the real preview generation here
+        onPreviewGenerated={() => {}}
         aiButtonPosition={aiButtonPosition}
         onAiButtonPositionChange={setAiButtonPosition}
-        browserOverlays={browserOverlays}
+        browserOverlays={activeScene.browserOverlays}
         onRemoveBrowser={handleRemoveBrowser}
         onBrowserUrlChange={handleBrowserUrlChange}
         onBrowserLayoutChange={handleBrowserLayoutChange}
         selectedBrowserId={selectedBrowserId}
         setSelectedBrowserId={setSelectedBrowserId}
-        fileOverlays={fileOverlays}
+        fileOverlays={activeScene.fileOverlays}
         onRemoveFile={handleRemoveFile}
         onFileLayoutChange={handleFileLayoutChange}
         selectedFileId={selectedFileId}
@@ -1020,34 +1158,47 @@ const Index = () => {
         onDeselectAll={handleDeselectAll}
         onSetDynamicLayout={handleSetDynamicLayout}
         dynamicLayout={dynamicLayout}
-        // Caption Controls
+        // Caption Controls (Global)
         captionsEnabled={captionsEnabled}
         onCaptionsToggle={setCaptionsEnabled}
         liveCaptionStyle={captionStyle}
         dynamicStyle={dynamicStyle}
         onCaptionLayoutChange={handleCaptionLayoutChange}
-        // Layout & Style
-        layoutMode={layoutMode}
-        cameraShape={cameraShape}
-        splitRatio={splitRatio}
-        pipPosition={pipPosition}
-        pipSize={pipSize}
-        onLayoutModeChange={handleLayoutModeChange}
-        onCameraShapeChange={setCameraShape}
-        onSplitRatioChange={setSplitRatio}
-        onPipPositionChange={setPipPosition}
-        onPipSizeChange={setPipSize}
-        customMaskUrl={customMaskUrl}
+        // Layout & Style (from active scene)
+        layoutMode={activeScene.layoutMode}
+        cameraShape={activeScene.cameraShape}
+        splitRatio={activeScene.splitRatio}
+        pipPosition={activeScene.pipPosition}
+        pipSize={activeScene.pipSize}
+        onLayoutModeChange={createScenePropertyHandler("layoutMode")}
+        onCameraShapeChange={createScenePropertyHandler("cameraShape")}
+        onSplitRatioChange={createScenePropertyHandler("splitRatio")}
+        onPipPositionChange={createScenePropertyHandler("pipPosition")}
+        onPipSizeChange={createScenePropertyHandler("pipSize")}
+        customMaskUrl={activeScene.customMaskUrl}
         onCustomMaskUpload={handleCustomMaskUpload}
-        textOverlays={textOverlays}
+        // Text Overlays (from active scene)
+        textOverlays={activeScene.textOverlays}
         onRemoveTextOverlay={handleRemoveTextOverlay}
         onTextLayoutChange={handleTextLayoutChange}
-        onTextStyleChange={handleTextStyleChange} // Pass this down
+        onTextStyleChange={handleTextStyleChange}
         onTextContentChange={handleTextContentChange}
         selectedTextId={selectedTextId}
-        setSelectedTextId={setSelectedTextId} // Pass the setter
-        // All other effect props
-        {...sidebarProps}
+        setSelectedTextId={setSelectedTextId}
+        // All other effect props (from active scene)
+        videoFilter={activeScene.videoFilter}
+        backgroundEffect={activeScene.backgroundEffect}
+        backgroundImageUrl={activeScene.backgroundImageUrl}
+        isAutoFramingEnabled={activeScene.isAutoFramingEnabled}
+        zoomSensitivity={activeScene.zoomSensitivity}
+        trackingSpeed={activeScene.trackingSpeed}
+        isBeautifyEnabled={activeScene.isBeautifyEnabled}
+        isLowLightEnabled={activeScene.isLowLightEnabled}
+        isNeonEdgeEnabled={activeScene.isNeonEdgeEnabled}
+        neonIntensity={activeScene.neonIntensity}
+        neonColor={activeScene.neonColor}
+        // Pass sidebar props object for the floating panel
+        sidebarProps={sidebarProps}
       />
     </div>
   );

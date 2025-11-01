@@ -208,3 +208,53 @@ export interface TextOverlayState {
   style: CaptionStyle; // Re-use the existing style definition
   layout: GeneratedLayout; // Re-use the existing layout definition
 }
+
+export type TransitionType =
+  | "none"
+  | "dissolve"
+  | "slide"
+  | "circle_wipe"
+  | "color_wipe"
+  | "line_wipe";
+
+export interface SceneTransition {
+  id: string; // Unique ID for the transition
+  fromSceneId: string;
+  toSceneId: string;
+  type: TransitionType;
+  durationMs: number;
+}
+
+// --- SCENE STATE ---
+export interface SceneState {
+  id: string;
+  name: string;
+
+  // All canvas-specific state
+  textOverlays: TextOverlayState[];
+  browserOverlays: BrowserOverlayState[];
+  fileOverlays: FileOverlayState[];
+  activeOverlays: GeneratedOverlay[]; // AI-generated overlays
+
+  // Layout & Effects for this scene
+  layoutMode: LayoutMode;
+  cameraShape: CameraShape;
+  splitRatio: number;
+  pipPosition: { x: number; y: number };
+  pipSize: { width: number; height: number };
+  customMaskUrl?: string;
+  videoFilter: string;
+  backgroundEffect: "none" | "blur" | "image";
+  backgroundImageUrl: string | null;
+  blankCanvasColor: string;
+
+  // Other camera effects
+  isAutoFramingEnabled: boolean;
+  zoomSensitivity: number;
+  trackingSpeed: number;
+  isBeautifyEnabled: boolean;
+  isLowLightEnabled: boolean;
+  isNeonEdgeEnabled: boolean;
+  neonIntensity: number;
+  neonColor: string;
+}
