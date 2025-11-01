@@ -167,13 +167,13 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   return (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[1010] flex items-center justify-center pointer-events-none px-4">
       {/* Island Container */}
-      <div className="relative bg-background/95 backdrop-blur-md border border-border rounded-full shadow-lg px-2 py-1 flex items-center gap-1 max-w-[60vw] pointer-events-auto">
+      <div className="relative bg-background/95 backdrop-blur-md border border-border rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2 max-w-[70vw] pointer-events-auto">
         {/* Left Scroll Button */}
         {showLeftScroll && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full flex-shrink-0 hover:bg-muted z-10"
+            className="h-7 w-7 rounded-lg flex-shrink-0 hover:bg-muted"
             onClick={() => scroll("left")}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -183,7 +183,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         {/* Scrollable Tabs Container */}
         <div
           ref={scrollContainerRef}
-          className="flex items-center gap-0 overflow-x-auto overflow-y-hidden scrollbar-hide max-w-[calc(60vw-120px)] scroll-smooth"
+          className="flex items-center gap-1 overflow-x-auto overflow-y-hidden scrollbar-hide max-w-[calc(70vw-180px)] scroll-smooth"
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
@@ -200,7 +200,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
 
             return (
               <React.Fragment key={scene.id}>
-                {/* Chrome-style Tab */}
+                {/* Scene Tab */}
                 <div
                   draggable
                   onDragStart={(e) => handleDragStart(e, index)}
@@ -208,25 +208,21 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
                   className={cn(
-                    "relative flex items-center h-8 min-w-[140px] max-w-[200px] px-3 cursor-pointer group transition-all flex-shrink-0",
-                    "bg-background/60 hover:bg-background/80 rounded-full",
-                    isActive &&
-                      "bg-background border border-primary shadow-sm scale-105",
-                    isDragging && "opacity-50",
-                    isDraggedOver && "ml-4"
+                    "relative flex items-center h-8 min-w-[120px] max-w-[180px] px-3 cursor-pointer group transition-all flex-shrink-0 rounded-lg",
+                    isActive
+                      ? "bg-primary/10 border border-primary/20"
+                      : "bg-muted/50 hover:bg-muted border border-transparent",
+                    isDragging && "opacity-40",
+                    isDraggedOver && "ml-2"
                   )}
-                  style={{
-                    marginLeft: index === 0 ? "0" : "-12px",
-                    zIndex: isActive ? 10 : 1,
-                  }}
                   onClick={() => !editingId && onSceneSelect(scene.id)}
                   onDoubleClick={() => handleDoubleClick(scene)}
                 >
                   {/* Drag Handle */}
                   <GripVertical
                     className={cn(
-                      "w-3 h-3 mr-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0",
-                      isActive && "opacity-100"
+                      "w-3 h-3 mr-2 text-muted-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0",
+                      isActive && "opacity-50"
                     )}
                   />
 
@@ -239,13 +235,13 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       onChange={handleNameChange}
                       onBlur={handleNameSubmit}
                       onKeyDown={handleKeyDown}
-                      className="flex-1 bg-transparent border-b border-primary outline-none text-xs min-w-0"
+                      className="flex-1 bg-transparent border-b border-primary outline-none text-sm min-w-0"
                       onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
                     <span
                       className={cn(
-                        "flex-1 text-xs truncate min-w-0",
+                        "flex-1 text-sm truncate min-w-0",
                         isActive
                           ? "text-foreground font-medium"
                           : "text-muted-foreground"
@@ -263,9 +259,9 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         onSceneClose(scene.id);
                       }}
                       className={cn(
-                        "ml-1 w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0",
-                        "opacity-0 group-hover:opacity-100 hover:bg-muted transition-all",
-                        isActive && "opacity-100"
+                        "ml-2 w-5 h-5 rounded flex items-center justify-center flex-shrink-0",
+                        "opacity-0 group-hover:opacity-100 hover:bg-background/80 transition-all",
+                        isActive && "opacity-70"
                       )}
                     >
                       <X className="w-3 h-3" />
@@ -273,34 +269,13 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   )}
                 </div>
 
-                {/* Transition Button Between Tabs with Visual Connector */}
+                {/* Transition Button - Clearly Separated */}
                 {transition && index < scenes.length - 1 && (
                   <div
-                    className="relative flex items-center justify-center h-8 w-8 -mx-3 z-20 flex-shrink-0"
+                    className="relative flex flex-col items-center justify-center flex-shrink-0 px-1"
                     onMouseEnter={() => setHoveredTransitionIndex(index)}
                     onMouseLeave={() => setHoveredTransitionIndex(null)}
                   >
-                    {/* Visual Connector Line */}
-                    <div 
-                      className="absolute inset-0 flex items-center justify-center"
-                      style={{ 
-                        background: `linear-gradient(90deg, #2596be 0%, #2596be ${transition.type !== 'none' ? '100%' : '0%'})`,
-                        height: '2px',
-                        opacity: transition.type !== 'none' ? 0.6 : 0.2,
-                        transition: 'all 0.3s ease'
-                      }}
-                    />
-                    
-                    {/* Transition Type Indicator */}
-                    {transition.type !== 'none' && (
-                      <div 
-                        className="absolute -bottom-2 text-[9px] font-mono text-[#2596be] bg-background/90 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
-                        style={{ pointerEvents: 'none' }}
-                      >
-                        {transition.durationMs}ms
-                      </div>
-                    )}
-                    
                     <Button
                       ref={(el) => {
                         if (el && transition) {
@@ -309,15 +284,13 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       }}
                       variant="ghost"
                       size="icon"
-                     className={cn(
-                        "h-6 w-6 rounded-full transition-all relative",
-                        hoveredTransitionIndex === index
-                          ? "opacity-100 scale-110 bg-[#2596be]/20 hover:bg-[#2596be]/30"
-                          : "opacity-60 hover:opacity-100 hover:bg-[#2596be]/20"
+                      className={cn(
+                        "h-7 w-7 rounded-lg transition-all",
+                        transition.type !== "none"
+                          ? "text-[#2596be] hover:bg-[#2596be]/10"
+                          : "text-muted-foreground/40 hover:bg-muted",
+                        hoveredTransitionIndex === index && "bg-[#2596be]/10"
                       )}
-                      style={{
-                        color: "#2596be",
-                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         onTransitionClick(transition);
@@ -326,6 +299,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                     >
                       <TransitionIcon />
                     </Button>
+
+                    {/* Duration Indicator */}
+                    {transition.type !== "none" &&
+                      hoveredTransitionIndex === index && (
+                        <div className="absolute -bottom-6 text-[10px] font-mono text-[#2596be] bg-background border border-border px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap">
+                          {transition.durationMs}ms
+                        </div>
+                      )}
                   </div>
                 )}
               </React.Fragment>
@@ -338,7 +319,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full flex-shrink-0 hover:bg-muted z-10"
+            className="h-7 w-7 rounded-lg flex-shrink-0 hover:bg-muted"
             onClick={() => scroll("right")}
           >
             <ChevronRight className="w-4 h-4" />
@@ -346,13 +327,13 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         )}
 
         {/* Divider */}
-        <div className="w-px h-6 bg-border flex-shrink-0 mx-1" />
+        <div className="w-px h-6 bg-border flex-shrink-0" />
 
         {/* Add New Tab Button */}
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 rounded-full hover:bg-muted flex-shrink-0"
+          className="h-7 w-7 rounded-lg hover:bg-muted flex-shrink-0"
           onClick={onSceneAdd}
           title="Add new scene"
         >
