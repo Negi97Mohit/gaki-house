@@ -217,12 +217,18 @@ export type TransitionType =
   | "color_wipe"
   | "line_wipe";
 
+export type TransitionEasing = "ease-in" | "ease-out" | "ease-in-out" | "linear";
+export type TransitionBlendMode = "normal" | "multiply" | "screen" | "overlay";
+
 export interface SceneTransition {
   id: string; // Unique ID for the transition
   fromSceneId: string;
   toSceneId: string;
   type: TransitionType;
   durationMs: number;
+  easing: TransitionEasing;
+  overlayEnabled: boolean;
+  blendMode?: TransitionBlendMode;
 }
 
 // --- SCENE STATE ---

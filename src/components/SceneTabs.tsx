@@ -273,13 +273,34 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   )}
                 </div>
 
-                {/* Transition Button Between Tabs */}
+                {/* Transition Button Between Tabs with Visual Connector */}
                 {transition && index < scenes.length - 1 && (
                   <div
-                    className="relative flex items-center justify-center h-8 w-6 -mx-3 z-20 flex-shrink-0"
+                    className="relative flex items-center justify-center h-8 w-8 -mx-3 z-20 flex-shrink-0"
                     onMouseEnter={() => setHoveredTransitionIndex(index)}
                     onMouseLeave={() => setHoveredTransitionIndex(null)}
                   >
+                    {/* Visual Connector Line */}
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center"
+                      style={{ 
+                        background: `linear-gradient(90deg, #2596be 0%, #2596be ${transition.type !== 'none' ? '100%' : '0%'})`,
+                        height: '2px',
+                        opacity: transition.type !== 'none' ? 0.6 : 0.2,
+                        transition: 'all 0.3s ease'
+                      }}
+                    />
+                    
+                    {/* Transition Type Indicator */}
+                    {transition.type !== 'none' && (
+                      <div 
+                        className="absolute -bottom-2 text-[9px] font-mono text-[#2596be] bg-background/90 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+                        style={{ pointerEvents: 'none' }}
+                      >
+                        {transition.durationMs}ms
+                      </div>
+                    )}
+                    
                     <Button
                       ref={(el) => {
                         if (el && transition) {
@@ -288,17 +309,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       }}
                       variant="ghost"
                       size="icon"
-                      className={cn(
-                        "h-6 w-6 rounded-full transition-all",
+                     className={cn(
+                        "h-6 w-6 rounded-full transition-all relative",
                         hoveredTransitionIndex === index
                           ? "opacity-100 scale-110 bg-[#2596be]/20 hover:bg-[#2596be]/30"
-                          : "opacity-0 hover:opacity-100 hover:bg-[#2596be]/20"
+                          : "opacity-60 hover:opacity-100 hover:bg-[#2596be]/20"
                       )}
                       style={{
-                        color:
-                          hoveredTransitionIndex === index
-                            ? "#2596be"
-                            : "inherit",
+                        color: "#2596be",
                       }}
                       onClick={(e) => {
                         e.stopPropagation();

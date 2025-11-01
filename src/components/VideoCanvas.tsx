@@ -873,14 +873,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       toast.success("Recording downloaded!");
     };
     mediaRecorderRef.current.start();
-    rest.onRecordingToggle(true, cameraStream as MediaStream, containerSize);
+    onRecordingToggle(true, cameraStream as MediaStream, containerSize);
     toast.info("Recording started!");
   };
 
   const handleStopRecording = () => {
     if (mediaRecorderRef.current?.state === "recording")
       mediaRecorderRef.current.stop();
-    rest.onRecordingToggle(false, cameraStream as MediaStream, containerSize);
+    onRecordingToggle(false, cameraStream as MediaStream, containerSize);
   };
 
   // Updated handler
@@ -1527,7 +1527,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 key={`file-wrapper-${file.id}`}
                 style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
               >
-                <DraggableFileViewer
+              <DraggableFileViewer
                   key={file.id}
                   overlay={file}
                   viewport={viewport}
@@ -1539,6 +1539,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onInternalDragStart={onInternalDragStart}
                   onInternalDragStop={onInternalDragStop}
                   onSelect={setSelectedFileId}
+                  canvasContainerRef={canvasContainerRef}
                 />
               </div>
             ))}
@@ -1750,7 +1751,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 key={`browser-wrapper-${browser.id}`}
                 style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
               >
-                <DraggableBrowser
+              <DraggableBrowser
                   key={browser.id}
                   overlay={browser}
                   viewport={viewport}
@@ -1763,6 +1764,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onInternalDragStart={onInternalDragStart}
                   onInternalDragStop={onInternalDragStop}
                   onSelect={setSelectedBrowserId}
+                  canvasContainerRef={canvasContainerRef}
                 />
               </div>
             ))}
@@ -1771,7 +1773,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 key={`file-wrapper-${file.id}`}
                 style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
               >
-                <DraggableFileViewer
+              <DraggableFileViewer
                   key={file.id}
                   overlay={file}
                   viewport={viewport}
@@ -1783,6 +1785,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onInternalDragStart={onInternalDragStart}
                   onInternalDragStop={onInternalDragStop}
                   onSelect={setSelectedFileId}
+                  canvasContainerRef={canvasContainerRef}
                 />
               </div>
             ))}

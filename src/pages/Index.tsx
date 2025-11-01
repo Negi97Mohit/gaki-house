@@ -218,6 +218,8 @@ const Index = () => {
         toSceneId: newScene.id,
         type: "none",
         durationMs: 300,
+        easing: "ease-in-out",
+        overlayEnabled: false,
       };
       setSceneTransitions((prev) => [...prev, newTransition]);
     }
@@ -238,12 +240,47 @@ const Index = () => {
 
   const handleTransitionChange = (
     transitionId: string,
-    newType: TransitionType,
-    durationMs: number
+    updates: Partial<SceneTransition>
   ) => {
     setSceneTransitions((prev) =>
       prev.map((t) =>
-        t.id === transitionId ? { ...t, type: newType, durationMs } : t
+        t.id === transitionId ? { ...t, ...updates } : t
+      )
+    );
+  };
+
+  const handleSceneClose = (sceneId: string) => {
+    if (scenes.length <= 1) {
+      toast.error("Cannot delete the last scene");
+      return;
+    }
+    
+    // Remove the scene
+    const newScenes = scenes.filter(s => s.id !== sceneId);
+    setScenes(newScenes);
+    
+    // Remove transitions related to this scene
+    setSceneTransitions(prev => 
+      prev.filter(t => t.fromSceneId !== sceneId && t.toSceneId !== sceneId)
+    );
+    
+    // Switch to another scene if the active one was deleted
+    if (activeSceneId === sceneId) {
+      setActiveSceneId(newScenes[0].id);
+    }
+  };
+
+  const handleSceneReorder = (fromIndex: number, toIndex: number) => {
+    const newScenes = [...scenes];
+    const [moved] = newScenes.splice(fromIndex, 1);
+    newScenes.splice(toIndex, 0, moved);
+    setScenes(newScenes);
+  };
+
+  const handleSceneRename = (sceneId: string, newName: string) => {
+    setScenes(prev =>
+      prev.map(scene =>
+        scene.id === sceneId ? { ...scene, name: newName } : scene
       )
     );
   };
@@ -508,9 +545,7 @@ const Index = () => {
 
     updateActiveScene((scene) => {
       const updatedOverlays = [...scene.textOverlays, newTextOverlay];
-      if (recording.isRecording) {
-        recording.recordTextOverlay(newTextOverlay);
-      }
+      // Note: Text overlays are static elements, not recorded in session yet
       return { ...scene, textOverlays: updatedOverlays };
     });
 
@@ -535,9 +570,7 @@ const Index = () => {
       ...scene,
       textOverlays: scene.textOverlays.map((o) => {
         if (o.id === id) {
-          const updated = { ...o, layout: { ...o.layout, ...layout } };
-          if (recording.isRecording) recording.recordTextOverlay(updated);
-          return updated;
+          return { ...o, layout: { ...o.layout, ...layout } };
         }
         return o;
       }),
@@ -552,9 +585,7 @@ const Index = () => {
       ...scene,
       textOverlays: scene.textOverlays.map((o) => {
         if (o.id === id) {
-          const updated = { ...o, style: { ...o.style, ...style } };
-          if (recording.isRecording) recording.recordTextOverlay(updated);
-          return updated;
+          return { ...o, style: { ...o.style, ...style } };
         }
         return o;
       }),
@@ -566,9 +597,7 @@ const Index = () => {
       ...scene,
       textOverlays: scene.textOverlays.map((o) => {
         if (o.id === id) {
-          const updated = { ...o, content };
-          if (recording.isRecording) recording.recordTextOverlay(updated);
-          return updated;
+          return { ...o, content };
         }
         return o;
       }),
@@ -957,10 +986,7 @@ const Index = () => {
       recording.recordBrowserOverlay(overlay);
     });
 
-    // 4. Text Overlays
-    activeScene.textOverlays.forEach((overlay) => {
-      recording.recordTextOverlay(overlay);
-    });
+    // Note: Text overlays are static and not recorded in session yet
 
     // 5. Global Live Caption Style
     recording.recordCaptionStyle(captionStyle);
@@ -1062,6 +1088,9 @@ const Index = () => {
         onSceneSelect={handleSceneSelect}
         onSceneAdd={handleAddScene}
         onTransitionClick={handleTransitionClick}
+        onSceneClose={handleSceneClose}
+        onSceneReorder={handleSceneReorder}
+        onSceneRename={handleSceneRename}
       />
 
       {/* ADDED: Top Right Corner - Theme and Info Buttons ONLY */}
@@ -1094,10 +1123,7 @@ const Index = () => {
         transition={activeTransition}
         onClose={() => setActiveTransition(null)}
         onTransitionChange={handleTransitionChange}
-      >
-        {/* This is an invisible trigger; the popover is controlled by `activeTransition` state */}
-        <div />
-      </TransitionPopover>
+      />
 
       {/* -------------------- SIDEBARS AND PANELS -------------------- */}
       <SavedSessionsPanel
@@ -1162,8 +1188,10 @@ const Index = () => {
         captionsEnabled={captionsEnabled}
         onCaptionsToggle={setCaptionsEnabled}
         liveCaptionStyle={captionStyle}
+        onStyleChange={setCaptionStyle}
         dynamicStyle={dynamicStyle}
         onCaptionLayoutChange={handleCaptionLayoutChange}
+        portalContainer={null}
         // Layout & Style (from active scene)
         layoutMode={activeScene.layoutMode}
         cameraShape={activeScene.cameraShape}

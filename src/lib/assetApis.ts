@@ -8,7 +8,7 @@ const GIPHY_KEY = import.meta.env.VITE_GIPHY_API_KEY;
 
 const PER_PAGE = 15; // Number of results per page for all APIs
 
-interface ApiSearchResult {
+export interface ApiSearchResult {
   assets: AssetResult[];
   hasMore: boolean;
 }
