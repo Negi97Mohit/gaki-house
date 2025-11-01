@@ -226,35 +226,12 @@ const Index = () => {
 
     setScenes(newScenes);
     setActiveSceneId(newScene.id); // Switch to the new scene
-    
-    toast.success(`Created ${newScene.name}`, {
-      duration: 1500,
-      style: {
-        background: 'hsl(var(--background))',
-        border: '1px solid hsl(var(--primary))',
-        color: 'hsl(var(--foreground))',
-      }
-    });
   };
 
   const handleSceneSelect = (sceneId: string) => {
     if (sceneId === activeSceneId) return;
-    
-    const scene = scenes.find(s => s.id === sceneId);
-    if (!scene) return;
-    
     setActiveSceneId(sceneId);
     handleDeselectAll(); // Deselect overlays when changing scenes
-    
-    // Show visual feedback
-    toast.success(`Switched to ${scene.name}`, {
-      duration: 1500,
-      style: {
-        background: 'hsl(var(--background))',
-        border: '1px solid hsl(var(--primary))',
-        color: 'hsl(var(--foreground))',
-      }
-    });
   };
 
   const handleTransitionClick = (transition: SceneTransition) => {
