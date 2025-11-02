@@ -230,7 +230,8 @@ export interface SceneTransition {
   toSceneId: string;
   type: TransitionType;
   durationMs: number;
-  easing: TransitionEasing;
+  animationIn: TransitionEasing;
+  animationOut: TransitionEasing;
   overlayEnabled: boolean;
   blendMode?: TransitionBlendMode;
 }

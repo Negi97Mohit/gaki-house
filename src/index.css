@@ -141,3 +141,96 @@ body.cursor-inactive * {
   pointer-events: auto !important;
   z-index: 9999 !important;
 }
+
+/* Add to your index.css file - REPLACE the existing @keyframes section */
+
+@layer base {
+  /* Dissolve Animations */
+  @keyframes dissolve-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes dissolve-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  /* Slide Animations - Left/Right */
+  @keyframes slide-in-from-right {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out-to-left {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide-in-from-left {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slide-out-to-right {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Animation classes */
+  .animate-dissolve-in {
+    animation: dissolve-in forwards;
+  }
+
+  .animate-dissolve-out {
+    animation: dissolve-out forwards;
+  }
+
+  .animate-slide-in-from-right {
+    animation: slide-in-from-right forwards;
+  }
+
+  .animate-slide-out-to-left {
+    animation: slide-out-to-left forwards;
+  }
+
+  .animate-slide-in-from-left {
+    animation: slide-in-from-left forwards;
+  }
+
+  .animate-slide-out-to-right {
+    animation: slide-out-to-right forwards;
+  }
+}

@@ -21,6 +21,7 @@ import {
   SceneState,
   SceneTransition,
   TransitionType,
+  TransitionEasing,
   DEFAULT_LAYOUT_STATE,
 } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
@@ -72,7 +73,6 @@ const DEFAULT_CAPTION_STYLE: CaptionStyle = {
   width: 60,
 };
 
-// --- NEW DEFAULT SCENE ---
 const createDefaultScene = (name: string): SceneState => ({
   id: generateSceneId(),
   name,
@@ -88,10 +88,8 @@ const createDefaultScene = (name: string): SceneState => ({
   screenShareMode: "off",
   isAiModeEnabled: true,
   aiButtonPosition: { x: 90, y: 90 },
-  // Styles
   captionStyle: DEFAULT_CAPTION_STYLE,
   dynamicStyle: "none",
-  // Layout
   layoutMode: DEFAULT_LAYOUT_STATE.mode,
   cameraShape: DEFAULT_LAYOUT_STATE.cameraShape,
   splitRatio: DEFAULT_LAYOUT_STATE.splitRatio,
@@ -127,16 +125,16 @@ const Index = () => {
   const [sceneTransitions, setSceneTransitions] = useState<SceneTransition[]>(
     []
   );
+  const [previousScene, setPreviousScene] = useState<SceneState | null>(null);
   const [activeTransition, setActiveTransition] =
     useState<SceneTransition | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Memoized getter for the active scene's state
   const activeScene = useMemo(
     () => scenes.find((s) => s.id === activeSceneId)!,
     [scenes, activeSceneId]
   );
 
-  // --- DEVICE/CONNECTION STATE ---
   // --- UI & WINDOW STATE ---
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
@@ -163,11 +161,9 @@ const Index = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // --- LAYOUT STATE ---
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
 
-  // --- DYNAMIC LAYOUT (Global) ---
   const [dynamicLayout, setDynamicLayout] = useState<{
     isActive: boolean;
     mode: "split-vertical" | "split-horizontal" | "pip";
@@ -185,7 +181,6 @@ const Index = () => {
 
   // --- SCENE MANAGEMENT ---
 
-  // Helper function to update the active scene
   const updateActiveScene = useCallback(
     (updates: (scene: SceneState) => SceneState) => {
       setScenes((prevScenes) =>
@@ -204,7 +199,6 @@ const Index = () => {
     const newScene = createDefaultScene(`Scene ${scenes.length + 1}`);
     const newScenes = [...scenes, newScene];
 
-    // Create a default transition for the scene before it
     if (scenes.length > 0) {
       const prevSceneId = scenes[scenes.length - 1].id;
       const newTransition: SceneTransition = {
@@ -213,24 +207,78 @@ const Index = () => {
         toSceneId: newScene.id,
         type: "none",
         durationMs: 300,
-        easing: "ease-in-out",
+        animationIn: "ease-in-out",
+        animationOut: "ease-in-out",
         overlayEnabled: false,
       };
       setSceneTransitions((prev) => [...prev, newTransition]);
     }
 
     setScenes(newScenes);
-    setActiveSceneId(newScene.id); // Switch to the new scene
+    handleSceneSelect(newScene.id);
   };
 
   const handleSceneSelect = (sceneId: string) => {
-    if (sceneId === activeSceneId) return;
-    setActiveSceneId(sceneId);
-    handleDeselectAll(); // Deselect overlays when changing scenes
+    if (sceneId === activeSceneId || isTransitioning) {
+      console.log("[Transition] Blocked:", { activeSceneId, isTransitioning });
+      return;
+    }
+
+    const newScene = scenes.find((s) => s.id === sceneId);
+    if (!newScene) return;
+
+    const oldScene = activeScene;
+
+    const transition =
+      sceneTransitions.find(
+        (t) =>
+          (t.fromSceneId === oldScene.id && t.toSceneId === newScene.id) ||
+          (t.fromSceneId === newScene.id && t.toSceneId === oldScene.id)
+      ) || null;
+
+    const effectiveTransition: SceneTransition = transition || {
+      id: "default",
+      fromSceneId: oldScene.id,
+      toSceneId: newScene.id,
+      type: "dissolve",
+      durationMs: 500,
+      animationIn: "ease-in-out",
+      animationOut: "ease-in-out",
+      overlayEnabled: false,
+    };
+
+    if (effectiveTransition.type === "none") {
+      setActiveSceneId(sceneId);
+      setPreviousScene(null);
+      setActiveTransition(null);
+      return;
+    }
+
+    console.log("[Transition] Starting:", {
+      from: oldScene.name,
+      to: newScene.name,
+      type: effectiveTransition.type,
+      duration: effectiveTransition.durationMs,
+    });
+
+    setPreviousScene(oldScene);
+    setActiveTransition(effectiveTransition);
+    setIsTransitioning(true);
+    setActiveSceneId(newScene.id);
+    handleDeselectAll();
+
+    setTimeout(() => {
+      console.log("[Transition] Complete");
+      setIsTransitioning(false);
+      setPreviousScene(null);
+      setActiveTransition(null);
+    }, effectiveTransition.durationMs);
   };
 
   const handleTransitionClick = (transition: SceneTransition) => {
-    setActiveTransition(transition);
+    const popoverTransition =
+      sceneTransitions.find((t) => t.id === transition.id) || null;
+    setActiveTransition(popoverTransition);
   };
 
   const handleTransitionChange = (
@@ -240,6 +288,10 @@ const Index = () => {
     setSceneTransitions((prev) =>
       prev.map((t) => (t.id === transitionId ? { ...t, ...updates } : t))
     );
+
+    if (activeTransition && activeTransition.id === transitionId) {
+      setActiveTransition((prev) => ({ ...prev!, ...updates }));
+    }
   };
 
   const handleSceneClose = (sceneId: string) => {
@@ -248,16 +300,13 @@ const Index = () => {
       return;
     }
 
-    // Remove the scene
     const newScenes = scenes.filter((s) => s.id !== sceneId);
     setScenes(newScenes);
 
-    // Remove transitions related to this scene
     setSceneTransitions((prev) =>
       prev.filter((t) => t.fromSceneId !== sceneId && t.toSceneId !== sceneId)
     );
 
-    // Switch to another scene if the active one was deleted
     if (activeSceneId === sceneId) {
       setActiveSceneId(newScenes[0].id);
     }
@@ -278,7 +327,163 @@ const Index = () => {
     );
   };
 
-  // --- HANDLERS (useCallback and helpers) ---
+  // --- STABLE PROPERTY UPDATER ---
+  const updateSceneProperty = useCallback(
+    <K extends keyof SceneState>(key: K, value: SceneState[K]) => {
+      updateActiveScene((scene) => {
+        const updatedScene = { ...scene, [key]: value };
+        if (
+          [
+            "layoutMode",
+            "cameraShape",
+            "splitRatio",
+            "pipPosition",
+            "pipSize",
+          ].includes(key as string)
+        ) {
+          if (recording.isRecording) {
+            recording.recordLayoutChange({
+              mode: updatedScene.layoutMode,
+              cameraShape: updatedScene.cameraShape,
+              splitRatio: updatedScene.splitRatio,
+              pipPosition: updatedScene.pipPosition,
+              pipSize: updatedScene.pipSize,
+            });
+          }
+        }
+        return updatedScene;
+      });
+    },
+    [updateActiveScene, recording]
+  );
+
+  // --- ALL STABLE HANDLERS DEFINED AT TOP LEVEL ---
+  const handleSetIsAudioOn = useCallback(
+    (value: boolean) => {
+      updateActiveScene((scene) => {
+        return { ...scene, isAudioOn: value };
+      });
+    },
+    [updateActiveScene]
+  );
+
+  const handleSetIsVideoOn = useCallback(
+    (value: boolean) => updateSceneProperty("isVideoOn", value),
+    [updateSceneProperty]
+  );
+  const handleSetSelectedVideoDevice = useCallback(
+    (value: string | undefined) =>
+      updateSceneProperty("selectedVideoDevice", value),
+    [updateSceneProperty]
+  );
+  const handleSetSelectedAudioDevice = useCallback(
+    (value: string | undefined) =>
+      updateSceneProperty("selectedAudioDevice", value),
+    [updateSceneProperty]
+  );
+  const handleSetCaptionStyle = useCallback(
+    (value: CaptionStyle) => updateSceneProperty("captionStyle", value),
+    [updateSceneProperty]
+  );
+  const handleSetDynamicStyle = useCallback(
+    (value: string) => updateSceneProperty("dynamicStyle", value),
+    [updateSceneProperty]
+  );
+  const handleSetCaptionsEnabled = useCallback(
+    (value: boolean) => updateSceneProperty("captionsEnabled", value),
+    [updateSceneProperty]
+  );
+  const handleSetAiButtonPosition = useCallback(
+    (value: { x: number; y: number }) =>
+      updateSceneProperty("aiButtonPosition", value),
+    [updateSceneProperty]
+  );
+  const handleSetScreenShareMode = useCallback(
+    (value: "off" | "screen" | "canvas") =>
+      updateSceneProperty("screenShareMode", value),
+    [updateSceneProperty]
+  );
+  const handleSetIsAiModeEnabled = useCallback(
+    (value: boolean) => updateSceneProperty("isAiModeEnabled", value),
+    [updateSceneProperty]
+  );
+  const handleSetLayoutMode = useCallback(
+    (value: LayoutMode) => updateSceneProperty("layoutMode", value),
+    [updateSceneProperty]
+  );
+  const handleSetCameraShape = useCallback(
+    (value: CameraShape) => updateSceneProperty("cameraShape", value),
+    [updateSceneProperty]
+  );
+  const handleSetSplitRatio = useCallback(
+    (value: number) => updateSceneProperty("splitRatio", value),
+    [updateSceneProperty]
+  );
+  const handleSetPipPosition = useCallback(
+    (value: { x: number; y: number }) =>
+      updateSceneProperty("pipPosition", value),
+    [updateSceneProperty]
+  );
+  const handleSetPipSize = useCallback(
+    (value: { width: number; height: number }) =>
+      updateSceneProperty("pipSize", value),
+    [updateSceneProperty]
+  );
+  const handleSetCustomMaskUrl = useCallback(
+    (value: string | undefined) => updateSceneProperty("customMaskUrl", value),
+    [updateSceneProperty]
+  );
+  const handleSetBlankCanvasColor = useCallback(
+    (value: string) => updateSceneProperty("blankCanvasColor", value),
+    [updateSceneProperty]
+  );
+  const handleSetVideoFilter = useCallback(
+    (value: string) => updateSceneProperty("videoFilter", value),
+    [updateSceneProperty]
+  );
+  const handleSetBackgroundEffect = useCallback(
+    (value: "none" | "blur" | "image") =>
+      updateSceneProperty("backgroundEffect", value),
+    [updateSceneProperty]
+  );
+  const handleSetBackgroundImageUrl = useCallback(
+    (value: string | null) => updateSceneProperty("backgroundImageUrl", value),
+    [updateSceneProperty]
+  );
+  const handleSetIsAutoFramingEnabled = useCallback(
+    (value: boolean) => updateSceneProperty("isAutoFramingEnabled", value),
+    [updateSceneProperty]
+  );
+  const handleSetZoomSensitivity = useCallback(
+    (value: number) => updateSceneProperty("zoomSensitivity", value),
+    [updateSceneProperty]
+  );
+  const handleSetTrackingSpeed = useCallback(
+    (value: number) => updateSceneProperty("trackingSpeed", value),
+    [updateSceneProperty]
+  );
+  const handleSetIsBeautifyEnabled = useCallback(
+    (value: boolean) => updateSceneProperty("isBeautifyEnabled", value),
+    [updateSceneProperty]
+  );
+  const handleSetIsLowLightEnabled = useCallback(
+    (value: boolean) => updateSceneProperty("isLowLightEnabled", value),
+    [updateSceneProperty]
+  );
+  const handleSetIsNeonEdgeEnabled = useCallback(
+    (value: boolean) => updateSceneProperty("isNeonEdgeEnabled", value),
+    [updateSceneProperty]
+  );
+  const handleSetNeonIntensity = useCallback(
+    (value: number) => updateSceneProperty("neonIntensity", value),
+    [updateSceneProperty]
+  );
+  const handleSetNeonColor = useCallback(
+    (value: string) => updateSceneProperty("neonColor", value),
+    [updateSceneProperty]
+  );
+
+  // --- HANDLERS ---
 
   const handleSetDynamicLayout = (
     target: {
@@ -383,7 +588,6 @@ const Index = () => {
 
       updateActiveScene((scene) => {
         const updatedOverlays = [...scene.fileOverlays, newOverlay];
-        // Record the new overlay
         if (recording.isRecording) {
           recording.recordFileOverlay(newOverlay);
         }
@@ -453,7 +657,7 @@ const Index = () => {
         scene.fileOverlays.forEach((o) => URL.revokeObjectURL(o.fileUrl));
       });
     };
-  }, [handleAddFile, scenes]);
+  }, [handleAddFile, scenes, updateActiveScene, recording]);
 
   const isDraggingInternally = useRef(false);
   const handleInternalDragStart = () => {
@@ -493,73 +697,11 @@ const Index = () => {
     }));
   };
 
-  // --- SCENE-AWARE LAYOUT HANDLERS ---
-  const createScenePropertyHandler = <K extends keyof SceneState>(key: K) => {
-    return useCallback(
-      (value: SceneState[K]) => {
-        updateActiveScene((scene) => {
-          const updatedScene = { ...scene, [key]: value };
-          // Check if this property is part of the layout group
-          if (
-            [
-              "layoutMode",
-              "cameraShape",
-              "splitRatio",
-              "pipPosition",
-              "pipSize",
-            ].includes(key as string)
-          ) {
-            if (recording.isRecording) {
-              recording.recordLayoutChange({
-                mode: updatedScene.layoutMode,
-                cameraShape: updatedScene.cameraShape,
-                splitRatio: updatedScene.splitRatio,
-                pipPosition: updatedScene.pipPosition,
-                pipSize: updatedScene.pipSize,
-              });
-            }
-          }
-          return updatedScene;
-        });
-      },
-      [key, updateActiveScene, recording]
-    );
-  };
-
-  // --- SCENE-AWARE HANDLERS ---
-  // FIX: Define handleSetIsAudioOn manually with useCallback for stability
-  // This is the function passed as `onAudioToggle` and it MUST be stable.
-  const handleSetIsAudioOn = useCallback(
-    (value: boolean) => {
-      updateActiveScene((scene) => {
-        return { ...scene, isAudioOn: value };
-      });
-    },
-    [updateActiveScene]
-  ); // `updateActiveScene` is already memoized
-
-  const handleSetIsVideoOn = createScenePropertyHandler("isVideoOn");
-  const handleSetSelectedVideoDevice = createScenePropertyHandler(
-    "selectedVideoDevice"
-  );
-  const handleSetSelectedAudioDevice = createScenePropertyHandler(
-    "selectedAudioDevice"
-  );
-  const handleSetCaptionStyle = createScenePropertyHandler("captionStyle");
-  const handleSetDynamicStyle = createScenePropertyHandler("dynamicStyle");
-  const handleSetCaptionsEnabled =
-    createScenePropertyHandler("captionsEnabled");
-  const handleSetAiButtonPosition =
-    createScenePropertyHandler("aiButtonPosition");
-  const handleSetScreenShareMode =
-    createScenePropertyHandler("screenShareMode");
-  const handleSetIsAiModeEnabled =
-    createScenePropertyHandler("isAiModeEnabled");
   const handleAddTextOverlay = () => {
     const newTextOverlay: TextOverlayState = {
       id: generateTextOverlayId(),
       content: "Edit Text...",
-      style: { ...activeScene.captionStyle, position: { x: 50, y: 50 } }, // Use global caption style
+      style: { ...activeScene.captionStyle, position: { x: 50, y: 50 } },
       layout: {
         position: { x: 50, y: 50 },
         size: { width: 30, height: 10 },
@@ -570,7 +712,6 @@ const Index = () => {
 
     updateActiveScene((scene) => {
       const updatedOverlays = [...scene.textOverlays, newTextOverlay];
-      // Note: Text overlays are static elements, not recorded in session yet
       return { ...scene, textOverlays: updatedOverlays };
     });
 
@@ -661,10 +802,9 @@ const Index = () => {
         width: newLayout.size?.width ?? activeScene.captionStyle.width,
       };
       handleSetCaptionStyle(updatedStyle);
-      // Record the *global* caption style
       if (recording.isRecording) recording.recordCaptionStyle(updatedStyle);
     },
-    [recording, handleSetCaptionStyle]
+    [recording, handleSetCaptionStyle, activeScene.captionStyle]
   );
 
   const processTranscript = useCallback(
@@ -873,7 +1013,7 @@ const Index = () => {
     reader.onload = (e) => {
       const result = e.target?.result;
       if (typeof result === "string") {
-        createScenePropertyHandler("customMaskUrl")(result);
+        handleSetCustomMaskUrl(result);
         toast.success("Custom camera mask uploaded!");
       }
     };
@@ -906,6 +1046,7 @@ const Index = () => {
   };
 
   const handleToggleFullscreen = () => setIsFullscreen((prev) => !prev);
+
   useEffect(() => {
     if (isFullscreen) {
       if (document.documentElement.requestFullscreen) {
@@ -926,7 +1067,6 @@ const Index = () => {
     }
   }, [isFullscreen]);
 
-  // MOUSE ACTIVITY EFFECT
   useEffect(() => {
     const handleMouseMove = () => {
       setIsMouseActive(true);
@@ -948,73 +1088,57 @@ const Index = () => {
 
   // --- Sidebar Props ---
   const sidebarProps = {
-    // --- GLOBAL STYLES ---
     style: activeScene.captionStyle,
     onStyleChange: handleSetCaptionStyle,
     dynamicStyle: activeScene.dynamicStyle,
     onDynamicStyleChange: handleSetDynamicStyle,
-
-    // --- SCENE-SPECIFIC STYLES ---
     blankCanvasColor: activeScene.blankCanvasColor,
-    onBlankCanvasColorChange: createScenePropertyHandler("blankCanvasColor"),
+    onBlankCanvasColorChange: handleSetBlankCanvasColor,
     backgroundEffect: activeScene.backgroundEffect,
-    onBackgroundEffectChange: createScenePropertyHandler("backgroundEffect"),
+    onBackgroundEffectChange: handleSetBackgroundEffect,
     backgroundImageUrl: activeScene.backgroundImageUrl,
-    onBackgroundImageUrlChange:
-      createScenePropertyHandler("backgroundImageUrl"),
+    onBackgroundImageUrlChange: handleSetBackgroundImageUrl,
     isAutoFramingEnabled: activeScene.isAutoFramingEnabled,
-    onAutoFramingChange: createScenePropertyHandler("isAutoFramingEnabled"),
+    onAutoFramingChange: handleSetIsAutoFramingEnabled,
     zoomSensitivity: activeScene.zoomSensitivity,
-    onZoomSensitivityChange: createScenePropertyHandler("zoomSensitivity"),
+    onZoomSensitivityChange: handleSetZoomSensitivity,
     trackingSpeed: activeScene.trackingSpeed,
-    onTrackingSpeedChange: createScenePropertyHandler("trackingSpeed"),
+    onTrackingSpeedChange: handleSetTrackingSpeed,
     isBeautifyEnabled: activeScene.isBeautifyEnabled,
-    onBeautifyToggle: createScenePropertyHandler("isBeautifyEnabled"),
+    onBeautifyToggle: handleSetIsBeautifyEnabled,
     isLowLightEnabled: activeScene.isLowLightEnabled,
-    onLowLightToggle: createScenePropertyHandler("isLowLightEnabled"),
+    onLowLightToggle: handleSetIsLowLightEnabled,
     videoFilter: activeScene.videoFilter,
-    onVideoFilterChange: createScenePropertyHandler("videoFilter"),
+    onVideoFilterChange: handleSetVideoFilter,
     isNeonEdgeEnabled: activeScene.isNeonEdgeEnabled,
-    onNeonEdgeToggle: createScenePropertyHandler("isNeonEdgeEnabled"),
+    onNeonEdgeToggle: handleSetIsNeonEdgeEnabled,
     neonIntensity: activeScene.neonIntensity,
-    onNeonIntensityChange: createScenePropertyHandler("neonIntensity"),
+    onNeonIntensityChange: handleSetNeonIntensity,
     neonColor: activeScene.neonColor,
-    onNeonColorChange: createScenePropertyHandler("neonColor"),
-
-    // --- GLOBAL SAVED ASSETS ---
+    onNeonColorChange: handleSetNeonColor,
     savedOverlays: savedOverlays,
     onAddSavedOverlay: handleAddSavedOverlay,
     onDeleteSavedOverlay: handleDeleteSavedOverlay,
   };
 
-  // ----------------------------------------------------------------------
-  // --- RECORDING SNAPSHOT LOGIC ---
-  // ----------------------------------------------------------------------
   const takeSnapshot = useCallback(() => {
     if (!recording.isRecording) return;
-    if (!activeScene) return; // Guard clause
+    if (!activeScene) return;
 
-    // 1. HTML Overlays
     activeScene.activeOverlays.forEach((overlay) => {
       recording.recordHtmlOverlay(overlay);
     });
 
-    // 2. File Overlays
     activeScene.fileOverlays.forEach((overlay) => {
       recording.recordFileOverlay(overlay);
     });
 
-    // 3. Browser Overlays
     activeScene.browserOverlays.forEach((overlay) => {
       recording.recordBrowserOverlay(overlay);
     });
 
-    // Note: Text overlays are static and not recorded in session yet
-
-    // 5. Global Live Caption Style
     recording.recordCaptionStyle(activeScene.captionStyle);
 
-    // 6. Scene Layout
     recording.recordLayoutChange({
       mode: activeScene.layoutMode,
       cameraShape: activeScene.cameraShape,
@@ -1024,7 +1148,6 @@ const Index = () => {
     });
   }, [recording, activeScene]);
 
-  // Use a separate useEffect for the snapshot interval
   useEffect(() => {
     if (recording.isRecording) {
       frameIntervalRef.current = setInterval(takeSnapshot, 250);
@@ -1053,17 +1176,15 @@ const Index = () => {
       containerSize: { width: number; height: number }
     ) => {
       if (!isCurrentlyRecording) {
-        // 1. Start the recording session
         await recording.startRecording(canvasRef.current as HTMLCanvasElement);
         toast.info("Recording started!");
       } else {
-        // 2. Stop the recording session
         const session = await recording.stopRecording(
           containerSize.width,
           containerSize.height,
           {
             dynamicStyle: activeScene.dynamicStyle,
-            videoFilter: activeScene.videoFilter, // Pass active scene's filter
+            videoFilter: activeScene.videoFilter,
             backgroundEffect: activeScene.backgroundEffect,
             backgroundImageUrl: activeScene.backgroundImageUrl,
           }
@@ -1075,34 +1196,155 @@ const Index = () => {
         }, 50);
       }
     },
-    [
-      recording,
-      setAllSessions,
-      navigate,
-      activeScene, // Depends on active scene for settings
-    ]
+    [recording, setAllSessions, navigate, activeScene]
   );
 
   if (!activeScene) {
-    // This should theoretically never happen if scenes[0] is set
     return <div>Loading...</div>;
   }
+
+  const globalCanvasProps = {
+    isFullscreen: isFullscreen,
+    onToggleFullscreen: handleToggleFullscreen,
+    isFsSidebarOpen: isFsSidebarOpen,
+    onFsSidebarToggle: setIsFsSidebarOpen,
+    dynamicLayout: dynamicLayout,
+    onOpenSessions: () => setShowSessionsPanel(true),
+    onOpenSettings: () => setShowFloatingPanel(!showFloatingPanel),
+    isMouseActive: isMouseActive,
+    isProcessingAi: isProcessingAi,
+    onProcessTranscript: processTranscript,
+    onOverlayLayoutChange: handleOverlayLayoutChange,
+    onRemoveOverlay: handleRemoveOverlay,
+    onPreviewGenerated: () => {},
+    onRemoveBrowser: handleRemoveBrowser,
+    onBrowserUrlChange: handleBrowserUrlChange,
+    onBrowserLayoutChange: handleBrowserLayoutChange,
+    selectedBrowserId: selectedBrowserId,
+    setSelectedBrowserId: setSelectedBrowserId,
+    onRemoveFile: handleRemoveFile,
+    onFileLayoutChange: handleFileLayoutChange,
+    selectedFileId: selectedFileId,
+    setSelectedFileId: setSelectedFileId,
+    onInternalDragStart: handleInternalDragStart,
+    onInternalDragStop: handleInternalDragStop,
+    onDeselectAll: handleDeselectAll,
+    onSetDynamicLayout: handleSetDynamicLayout,
+    onRemoveTextOverlay: handleRemoveTextOverlay,
+    onTextLayoutChange: handleTextLayoutChange,
+    onTextStyleChange: handleTextStyleChange,
+    onTextContentChange: handleTextContentChange,
+    selectedTextId: selectedTextId,
+    setSelectedTextId: setSelectedTextId,
+    isRecording: recording.isRecording,
+    onRecordingToggle: handleRecordingToggle,
+    canvasRef: canvasRef,
+    onRecordingComplete: () => {},
+    portalContainer: null,
+  };
+
+  const getAllPropsForScene = (scene: SceneState) => {
+    return {
+      sceneId: scene.id,
+      isAudioOn: scene.isAudioOn,
+      onAudioToggle: handleSetIsAudioOn,
+      isVideoOn: scene.isVideoOn,
+      onVideoToggle: handleSetIsVideoOn,
+      selectedVideoDevice: scene.selectedVideoDevice,
+      onVideoDeviceSelect: handleSetSelectedVideoDevice,
+      selectedAudioDevice: scene.selectedAudioDevice,
+      onAudioDeviceSelect: handleSetSelectedAudioDevice,
+      isAiModeEnabled: scene.isAiModeEnabled,
+      onAiModeToggle: handleSetIsAiModeEnabled,
+      aiButtonPosition: scene.aiButtonPosition,
+      onAiButtonPositionChange: handleSetAiButtonPosition,
+      generatedOverlays: scene.activeOverlays,
+      browserOverlays: scene.browserOverlays,
+      fileOverlays: scene.fileOverlays,
+      textOverlays: scene.textOverlays,
+      captionsEnabled: scene.captionsEnabled,
+      onCaptionsToggle: handleSetCaptionsEnabled,
+      liveCaptionStyle: scene.captionStyle,
+      onStyleChange: handleSetCaptionStyle,
+      dynamicStyle: scene.dynamicStyle,
+      onCaptionLayoutChange: handleCaptionLayoutChange,
+      layoutMode: scene.layoutMode,
+      cameraShape: scene.cameraShape,
+      splitRatio: scene.splitRatio,
+      pipPosition: scene.pipPosition,
+      pipSize: scene.pipSize,
+      onLayoutModeChange: handleSetLayoutMode,
+      onCameraShapeChange: handleSetCameraShape,
+      onSplitRatioChange: handleSetSplitRatio,
+      onPipPositionChange: handleSetPipPosition,
+      onPipSizeChange: handleSetPipSize,
+      customMaskUrl: scene.customMaskUrl,
+      onCustomMaskUpload: handleCustomMaskUpload,
+      blankCanvasColor: scene.blankCanvasColor,
+      videoFilter: scene.videoFilter,
+      backgroundEffect: scene.backgroundEffect,
+      backgroundImageUrl: scene.backgroundImageUrl,
+      isAutoFramingEnabled: scene.isAutoFramingEnabled,
+      zoomSensitivity: scene.zoomSensitivity,
+      trackingSpeed: scene.trackingSpeed,
+      isBeautifyEnabled: scene.isBeautifyEnabled,
+      isLowLightEnabled: scene.isLowLightEnabled,
+      isNeonEdgeEnabled: scene.isNeonEdgeEnabled,
+      neonIntensity: scene.neonIntensity,
+      neonColor: scene.neonColor,
+      screenShareMode: scene.screenShareMode,
+      onScreenShareModeChange: handleSetScreenShareMode,
+      sidebarProps: {
+        style: scene.captionStyle,
+        dynamicStyle: scene.dynamicStyle,
+        blankCanvasColor: scene.blankCanvasColor,
+        backgroundEffect: scene.backgroundEffect,
+        backgroundImageUrl: scene.backgroundImageUrl,
+        isAutoFramingEnabled: scene.isAutoFramingEnabled,
+        zoomSensitivity: scene.zoomSensitivity,
+        trackingSpeed: scene.trackingSpeed,
+        isBeautifyEnabled: scene.isBeautifyEnabled,
+        isLowLightEnabled: scene.isLowLightEnabled,
+        videoFilter: scene.videoFilter,
+        isNeonEdgeEnabled: scene.isNeonEdgeEnabled,
+        neonIntensity: scene.neonIntensity,
+        neonColor: scene.neonColor,
+        onStyleChange: handleSetCaptionStyle,
+        onDynamicStyleChange: handleSetDynamicStyle,
+        onBlankCanvasColorChange: handleSetBlankCanvasColor,
+        onBackgroundEffectChange: handleSetBackgroundEffect,
+        onBackgroundImageUrlChange: handleSetBackgroundImageUrl,
+        onAutoFramingChange: handleSetIsAutoFramingEnabled,
+        onZoomSensitivityChange: handleSetZoomSensitivity,
+        onTrackingSpeedChange: handleSetTrackingSpeed,
+        onBeautifyToggle: handleSetIsBeautifyEnabled,
+        onLowLightToggle: handleSetIsLowLightEnabled,
+        onVideoFilterChange: handleSetVideoFilter,
+        onNeonEdgeToggle: handleSetIsNeonEdgeEnabled,
+        onNeonIntensityChange: handleSetNeonIntensity,
+        onNeonColorChange: handleSetNeonColor,
+        savedOverlays: savedOverlays,
+        onAddSavedOverlay: handleAddSavedOverlay,
+        onDeleteSavedOverlay: handleDeleteSavedOverlay,
+      },
+    };
+  };
 
   return (
     <div
       ref={mainContainerRef}
       className={cn(
         "h-screen flex bg-background overflow-hidden relative",
-        !isMouseActive && "cursor-none"
+        !isMouseActive && "cursor-none",
+        "w-full"
       )}
     >
       <FloatingControlsPanel isMouseActive={isMouseActive} {...sidebarProps} />
-      {/* -------------------- TOP UI LAYER (Logo and Floating Panel Trigger) -------------------- */}
+
       <div className="fixed top-6 left-6 z-[2015] transition-opacity duration-300">
         <FloatingLogo />
       </div>
 
-      {/* --- SCENE TABS --- */}
       <SceneTabs
         scenes={scenes}
         activeSceneId={activeSceneId}
@@ -1115,7 +1357,6 @@ const Index = () => {
         onSceneRename={handleSceneRename}
       />
 
-      {/* ADDED: Top Right Corner - Theme and Info Buttons ONLY */}
       <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
         <Button
           onClick={handleAddTextOverlay}
@@ -1140,14 +1381,12 @@ const Index = () => {
         <InstructionsDialog />
       </div>
 
-      {/* --- TRANSITION POPOVER --- */}
       <TransitionPopover
         transition={activeTransition}
         onClose={() => setActiveTransition(null)}
-        onTransitionChange={handleTransitionChange}
+        onTransitionChange={handleTransitionChange as any}
       />
 
-      {/* -------------------- SIDEBARS AND PANELS -------------------- */}
       <SavedSessionsPanel
         sessions={allSessions}
         onDeleteSession={handleDeleteSession}
@@ -1155,105 +1394,29 @@ const Index = () => {
         onClose={() => setShowSessionsPanel(false)}
       />
 
-      {/* -------------------- MAIN CANVAS -------------------- */}
-      <VideoCanvas
-        key={activeScene.id} // <-- ADD: Force a full remount of VideoCanvas
-        sceneId={activeScene.id} // <-- ADD: Pass sceneId as a prop
-        isFullscreen={isFullscreen}
-        onToggleFullscreen={handleToggleFullscreen}
-        isFsSidebarOpen={isFsSidebarOpen}
-        onFsSidebarToggle={setIsFsSidebarOpen}
-        dynamicLayout={dynamicLayout}
-        blankCanvasColor={activeScene.blankCanvasColor}
-        onOpenSessions={() => setShowSessionsPanel(true)}
-        onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
-        isMouseActive={isMouseActive}
-        // Media/Audio/Video Controls
-        isAudioOn={activeScene.isAudioOn}
-        onAudioToggle={handleSetIsAudioOn}
-        isVideoOn={activeScene.isVideoOn}
-        onVideoToggle={handleSetIsVideoOn}
-        selectedVideoDevice={activeScene.selectedVideoDevice}
-        onVideoDeviceSelect={handleSetSelectedVideoDevice}
-        selectedAudioDevice={activeScene.selectedAudioDevice}
-        onAudioDeviceSelect={handleSetSelectedAudioDevice}
-        // Recording
-        isRecording={recording.isRecording}
-        onRecordingToggle={handleRecordingToggle}
-        canvasRef={canvasRef}
-        onRecordingComplete={() => {}}
-        // AI & Overlays (from active scene)
-        isAiModeEnabled={activeScene.isAiModeEnabled}
-        onAiModeToggle={handleSetIsAiModeEnabled}
-        isProcessingAi={isProcessingAi}
-        onProcessTranscript={processTranscript}
-        generatedOverlays={activeScene.activeOverlays}
-        onOverlayLayoutChange={handleOverlayLayoutChange}
-        onRemoveOverlay={handleRemoveOverlay}
-        onPreviewGenerated={() => {}}
-        aiButtonPosition={activeScene.aiButtonPosition}
-        onAiButtonPositionChange={handleSetAiButtonPosition}
-        browserOverlays={activeScene.browserOverlays}
-        onRemoveBrowser={handleRemoveBrowser}
-        onBrowserUrlChange={handleBrowserUrlChange}
-        onBrowserLayoutChange={handleBrowserLayoutChange}
-        selectedBrowserId={selectedBrowserId}
-        setSelectedBrowserId={setSelectedBrowserId}
-        fileOverlays={activeScene.fileOverlays}
-        onRemoveFile={handleRemoveFile}
-        onFileLayoutChange={handleFileLayoutChange}
-        selectedFileId={selectedFileId}
-        setSelectedFileId={setSelectedFileId}
-        onInternalDragStart={handleInternalDragStart}
-        onInternalDragStop={handleInternalDragStop}
-        onDeselectAll={handleDeselectAll}
-        onSetDynamicLayout={handleSetDynamicLayout}
-        screenShareMode={activeScene.screenShareMode}
-        onScreenShareModeChange={handleSetScreenShareMode}
-        // Caption Controls (Global)
-        captionsEnabled={activeScene.captionsEnabled}
-        onCaptionsToggle={handleSetCaptionsEnabled}
-        liveCaptionStyle={activeScene.captionStyle}
-        onStyleChange={handleSetCaptionStyle}
-        dynamicStyle={activeScene.dynamicStyle}
-        onCaptionLayoutChange={handleCaptionLayoutChange}
-        portalContainer={null}
-        // Layout & Style (from active scene)
-        layoutMode={activeScene.layoutMode}
-        cameraShape={activeScene.cameraShape}
-        splitRatio={activeScene.splitRatio}
-        pipPosition={activeScene.pipPosition}
-        pipSize={activeScene.pipSize}
-        onLayoutModeChange={createScenePropertyHandler("layoutMode")}
-        onCameraShapeChange={createScenePropertyHandler("cameraShape")}
-        onSplitRatioChange={createScenePropertyHandler("splitRatio")}
-        onPipPositionChange={createScenePropertyHandler("pipPosition")}
-        onPipSizeChange={createScenePropertyHandler("pipSize")}
-        customMaskUrl={activeScene.customMaskUrl}
-        onCustomMaskUpload={handleCustomMaskUpload}
-        // Text Overlays (from active scene)
-        textOverlays={activeScene.textOverlays}
-        onRemoveTextOverlay={handleRemoveTextOverlay}
-        onTextLayoutChange={handleTextLayoutChange}
-        onTextStyleChange={handleTextStyleChange}
-        onTextContentChange={handleTextContentChange}
-        selectedTextId={selectedTextId}
-        setSelectedTextId={setSelectedTextId}
-        // All other effect props (from active scene)
-        videoFilter={activeScene.videoFilter}
-        backgroundEffect={activeScene.backgroundEffect}
-        backgroundImageUrl={activeScene.backgroundImageUrl}
-        isAutoFramingEnabled={activeScene.isAutoFramingEnabled}
-        zoomSensitivity={activeScene.zoomSensitivity}
-        trackingSpeed={activeScene.trackingSpeed}
-        isBeautifyEnabled={activeScene.isBeautifyEnabled}
-        isLowLightEnabled={activeScene.isLowLightEnabled}
-        isNeonEdgeEnabled={activeScene.isNeonEdgeEnabled}
-        neonIntensity={activeScene.neonIntensity}
-        neonColor={activeScene.neonColor}
-        // Pass sidebar props object for the floating panel
-        sidebarProps={sidebarProps}
-      />
+      <div className="flex-1 relative overflow-hidden">
+        {previousScene && (
+          <VideoCanvas
+            key={`scene-${previousScene.id}-transitioning-out`}
+            {...getAllPropsForScene(previousScene)}
+            {...globalCanvasProps}
+            isAudioOn={false}
+            captionsEnabled={false}
+            isTransitioningOut={true}
+            transition={activeTransition}
+          />
+        )}
+
+        <VideoCanvas
+          key={`scene-${activeScene.id}-${
+            isTransitioning ? "transitioning-in" : "active"
+          }`}
+          {...getAllPropsForScene(activeScene)}
+          {...globalCanvasProps}
+          isTransitioningIn={isTransitioning}
+          transition={activeTransition}
+        />
+      </div>
     </div>
   );
 };

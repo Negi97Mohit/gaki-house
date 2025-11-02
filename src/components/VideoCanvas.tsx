@@ -20,8 +20,8 @@ import {
   Shrink,
   Library,
   Frame,
-  Monitor, // <-- Added
-  Paintbrush, // <-- Added
+  Monitor,
+  Paintbrush,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,6 +44,7 @@ import {
   FileOverlayState,
   BrowserOverlayState,
   TextOverlayState,
+  SceneTransition,
 } from "@/types/caption";
 import {
   DraggableFileViewer,
@@ -117,7 +118,7 @@ export const DraggableOverlay: React.FC<{
   ) => void;
   containerSize: { width: number; height: number };
   portalContainer?: HTMLElement | null;
-  isSpacePressed: boolean; // <-- Added
+  isSpacePressed: boolean;
 }> = ({
   overlay,
   onLayoutChange,
@@ -126,7 +127,7 @@ export const DraggableOverlay: React.FC<{
   onSetDynamicLayout,
   containerSize,
   portalContainer,
-  isSpacePressed, // <-- Added
+  isSpacePressed,
 }) => {
   const { theme } = useTheme();
   const elementRef = useRef<HTMLDivElement>(null);
@@ -218,8 +219,8 @@ export const DraggableOverlay: React.FC<{
       bounds="parent"
       minWidth={50}
       minHeight={50}
-      enableResizing={!isSpacePressed} // <-- Updated
-      disableDragging={isFullscreen || isSpacePressed} // <-- Updated
+      enableResizing={!isSpacePressed}
+      disableDragging={isFullscreen || isSpacePressed}
       className="group pointer-events-auto"
       style={{ zIndex: overlay.layout.zIndex }}
     >
@@ -284,6 +285,11 @@ export const DraggableOverlay: React.FC<{
 };
 
 interface VideoCanvasProps {
+  sceneId: string;
+  isTransitioningIn?: boolean;
+  isTransitioningOut?: boolean;
+  transition?: SceneTransition | null;
+
   captionsEnabled: boolean;
   onStyleChange: (style: any) => void;
   onCaptionsToggle: (on: boolean) => void;
@@ -436,7 +442,7 @@ interface VideoCanvasProps {
   ) => void;
   onOpenSessions: () => void;
   onOpenSettings: () => void;
-  blankCanvasColor: string; // <-- Added
+  blankCanvasColor: string;
 }
 
 const VideoPlayer: React.FC<{
@@ -536,6 +542,9 @@ const SNAP_THRESHOLD = 5;
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const {
     sceneId,
+    isTransitioningIn,
+    isTransitioningOut,
+    transition,
     generatedOverlays,
     isVideoOn,
     isAudioOn,
@@ -612,7 +621,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const panStartRef = useRef({ x: 0, y: 0 });
   const sceneRef = useRef<HTMLDivElement>(null);
 
-  const [pipContent, setPipContent] = useState<"camera" | "share">("camera"); // <-- Updated
+  const [pipContent, setPipContent] = useState<"camera" | "share">("camera");
 
   const [dynamicSplitRatio, setDynamicSplitRatio] = useState(0.5);
   const [isDraggingDynamicSplitter, setIsDraggingDynamicSplitter] =
@@ -629,7 +638,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
     isAudioOn: isAudioOn,
-    isScreenSharing: screenShareMode === "screen", // <-- Updated
+    isScreenSharing: screenShareMode === "screen",
     selectedCameraDevice: selectedVideoDevice,
     selectedAudioDevice: selectedAudioDevice,
     onScreenShareEnd: () => onScreenShareModeChange("off"),
@@ -664,7 +673,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       target.tagName !== "INPUT" &&
       target.tagName !== "TEXTAREA"
     ) {
-      e.preventDefault(); // Prevent page scroll
+      e.preventDefault();
       setIsSpacePressed(true);
     }
   }, []);
@@ -672,7 +681,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     if (e.key === " ") {
       setIsSpacePressed(false);
-      setIsPanning(false); // Stop panning when space is released
+      setIsPanning(false);
     }
   }, []);
 
@@ -800,13 +809,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       console.log(`[VideoCanvas] Stopping recognition for Scene ${sceneId}`);
       stopRecognition();
     }
-    // This cleanup function runs when the component unmounts (i.e., scene switch)
     return () => {
       console.log(
         `[VideoCanvas] CLEANUP: Stopping recognition for Scene ${sceneId}`
       );
       stopRecognition();
-      setFullTranscript(""); // <-- ADD: Clear transcripts on cleanup
+      setFullTranscript("");
       setInterimTranscript("");
     };
   }, [
@@ -914,7 +922,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onRecordingToggle(false, cameraStream as MediaStream, containerSize);
   };
 
-  // Updated handler
   const handleShareModeChange = (mode: "off" | "screen" | "canvas") => {
     onScreenShareModeChange(mode);
   };
@@ -1083,7 +1090,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         console.log(
           `[VideoCanvas] Audio is OFF. Cleaning up old stream for Scene ${sceneId}.`
         );
-        // This will be null if it's the first render and audio is off
         if (audioStreamForSpeech) {
           audioStreamForSpeech.getTracks().forEach((track) => track.stop());
           setAudioStreamForSpeech(null);
@@ -1146,7 +1152,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     </div>
   );
 
-  // Updated renderScreen function
   const renderScreen = (className?: string) => {
     if (props.screenShareMode === "screen" && screenStream) {
       return (
@@ -1166,7 +1171,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       );
     }
 
-    // Fallback / 'off' state
     return (
       <div className="w-full h-full flex items-center justify-center text-center text-muted-foreground bg-black">
         <div>
@@ -1315,12 +1319,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       );
     }
 
-    // Updated main content check
     const mainIsCamera =
       (pipContent === "share" && props.screenShareMode !== "off") ||
       props.screenShareMode === "off";
     const mainContent = mainIsCamera ? renderCamera() : renderScreen();
-    // Updated pip content check
     const pipVideo =
       pipContent === "camera"
         ? renderCamera("cursor-move", {}, true)
@@ -1335,7 +1337,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       y: (containerSize.height * rest.pipPosition.y) / 100,
     };
 
-    // Updated pip display check
     const pipContentEl = props.screenShareMode !== "off" &&
       isVideoOn &&
       cameraStream &&
@@ -1359,9 +1360,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               size="icon"
               variant="secondary"
               className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={
-                () =>
-                  setPipContent(pipContent === "camera" ? "share" : "camera") // Updated state name
+              onClick={() =>
+                setPipContent(pipContent === "camera" ? "share" : "camera")
               }
             >
               <RotateCcw className="h-4 w-4" />
@@ -1495,23 +1495,105 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const shouldRenderCaptionOverlay =
     !dynamicLayout.isActive || dynamicLayout.target?.type !== "caption";
 
+  // --- FIXED ANIMATION LOGIC ---
+  const getAnimationClass = () => {
+    if (!transition || transition.type === "none") {
+      console.log("[VideoCanvas Animation] No transition");
+      return "opacity-100";
+    }
+
+    console.log("[VideoCanvas Animation] State:", {
+      sceneId: props.sceneId,
+      transitionType: transition.type,
+      isTransitioningIn,
+      isTransitioningOut,
+      fromScene: transition.fromSceneId,
+      toScene: transition.toSceneId,
+    });
+
+    const isNewScene = transition.toSceneId === props.sceneId;
+
+    if (isTransitioningOut) {
+      console.log(
+        "[VideoCanvas Animation] Scene transitioning OUT:",
+        props.sceneId
+      );
+      switch (transition.type) {
+        case "dissolve":
+          return "animate-dissolve-out";
+        case "slide":
+          return isNewScene
+            ? "animate-slide-out-to-right"
+            : "animate-slide-out-to-left";
+        default:
+          return "animate-dissolve-out";
+      }
+    }
+
+    if (isTransitioningIn) {
+      console.log(
+        "[VideoCanvas Animation] Scene transitioning IN:",
+        props.sceneId
+      );
+      switch (transition.type) {
+        case "dissolve":
+          return "animate-dissolve-in";
+        case "slide":
+          return isNewScene
+            ? "animate-slide-in-from-right"
+            : "animate-slide-in-from-left";
+        default:
+          return "animate-dissolve-in";
+      }
+    }
+
+    console.log(
+      "[VideoCanvas Animation] Scene visible (no animation):",
+      props.sceneId
+    );
+    return "opacity-100";
+  };
+
+  const getAnimationStyles = (): React.CSSProperties => {
+    if (!transition) return {};
+
+    const styles: React.CSSProperties = {
+      animationDuration: `${transition.durationMs}ms`,
+      animationTimingFunction: isTransitioningIn
+        ? transition.animationIn
+        : transition.animationOut,
+      animationFillMode: "forwards",
+    };
+
+    if (isTransitioningIn) {
+      styles.zIndex = 2;
+    } else if (isTransitioningOut) {
+      styles.zIndex = 1;
+    }
+
+    console.log("[VideoCanvas Animation] Styles:", styles);
+
+    return styles;
+  };
+
   return (
     <div
       ref={canvasContainerRef}
       className={cn(
-        "flex-1 relative bg-neutral-900 rounded-lg overflow-hidden border border-border/40",
-        isFullscreen &&
-          "fixed inset-0 w-screen h-screen rounded-none border-none",
+        "absolute inset-0 w-full h-full bg-neutral-900 overflow-hidden",
+        getAnimationClass(),
         isPanning ? "cursor-grabbing" : isSpacePressed ? "cursor-grab" : "",
         !isMouseActive && isFullscreen && "cursor-none"
       )}
+      style={{
+        ...getAnimationStyles(),
+        pointerEvents: isTransitioningOut ? "none" : "auto",
+      }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      style={isFullscreen ? { zIndex: "var(--z-fullscreen-canvas)" } : {}}
     >
-      {/* Scene Wrapper */}
       <div
         ref={sceneRef}
         className="w-full h-full"
@@ -1595,11 +1677,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 " " +
                 interimTranscript
               ).trim();
-              console.log(`[VideoCanvas] Render check:`, {
-                captionsEnabled,
-                captionText,
-                shouldRenderCaptionOverlay,
-              });
               const captionStyle = liveCaptionStyle;
               if (
                 !captionsEnabled ||
@@ -1608,19 +1685,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               )
                 return null;
 
-              // Move this check *after* the initial guard clauses
               if (!captionText) {
-                console.log(
-                  "[VideoCanvas] Render check: No caption text, rendering null."
-                );
                 return null;
               }
-
-              console.log(
-                "%c[VideoCanvas] RENDERING CAPTION RENDERER",
-                "color: #00aaff",
-                { captionText, dynamicStyle }
-              );
 
               const captionRef = React.createRef<HTMLDivElement>();
 
@@ -1717,9 +1784,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
                   style={{ zIndex: "var(--z-caption)" }}
                   minWidth={containerSize.width * 0.2}
-                  disableDragging={isSpacePressed} // <-- Updated
+                  disableDragging={isSpacePressed}
                   enableResizing={
-                    !isSpacePressed // <-- Updated
+                    !isSpacePressed
                       ? {
                           left: true,
                           right: true,
@@ -1790,9 +1857,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           </div>
         </div>
       </div>
-      {/* End Scene Wrapper */}
 
-      {/* AI Button stays outside sceneRef to remain fixed */}
       {containerSize.width > 0 && (
         <Rnd
           style={{ zIndex: "var(--z-ai-popover-trigger)" }}
@@ -1808,7 +1873,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             onAiButtonPositionChange({ x: newX, y: newY });
           }}
           bounds="parent"
-          disableDragging={isSpacePressed} // <-- Updated
+          disableDragging={isSpacePressed}
           enableResizing={false}
           className={cn(
             "pointer-events-auto transition-opacity duration-300",
@@ -1836,7 +1901,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         </Rnd>
       )}
 
-      {/* Bottom Controls - stays outside sceneRef to remain fixed */}
       <div
         className={cn(
           "absolute bottom-6 left-1/2 -translate-x-1/2 transition-opacity duration-300 ease-in-out",
@@ -1845,7 +1909,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         style={{ zIndex: "var(--z-floating-controls)" }}
       >
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
-          {/* Mic Button & Dropdown */}
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -1887,7 +1950,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             </DropdownMenu>
           </div>
           <div className="w-px h-8 bg-border" />
-          {/* Video Button & Dropdown */}
           <div className="flex items-center">
             <Button
               variant="ghost"
@@ -1929,7 +1991,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             </DropdownMenu>
           </div>
           <div className="w-px h-8 bg-border" />
-          {/* --- Updated Share Button --- */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -1972,9 +2033,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
-          {/* --- End Updated Share Button --- */}
           <div className="w-px h-8 bg-border" />
-          {/* Library Button */}
           <Button
             size="icon"
             variant="outline"
@@ -1987,7 +2046,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <Library className="w-5 h-5" />
           </Button>
           <div className="w-px h-8 bg-border" />
-          {/* Record Button */}
           <Button
             size="icon"
             className={cn(
@@ -1997,7 +2055,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 : "bg-primary hover:bg-primary/90"
             )}
             onClick={() => {
-              // Ensure containerSize and cameraStream are valid before calling
               if (
                 containerSize.width > 0 &&
                 containerSize.height > 0 &&
@@ -2023,18 +2080,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             )}
           </Button>
           <div className="w-px h-8 bg-border" />
-          {/* Layout Controls */}
           <LayoutControls {...rest} portalContainer={portalContainer} />
           <Button
             variant="ghost"
             size="icon"
             className="rounded-full h-10 w-10"
-            onClick={handleResetView} // Ensure handleResetView exists or remove onClick if not needed
+            onClick={handleResetView}
             title="Reset View"
           >
             <Frame className="h-5 w-5" />
           </Button>
-          {/* Fullscreen Button */}
           <Button
             variant="ghost"
             size="icon"
