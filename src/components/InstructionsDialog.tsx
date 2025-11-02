@@ -16,10 +16,10 @@ export const InstructionsDialog = () => (
       <Button
         variant="ghost"
         size="icon"
-        className="text-muted-foreground hover:text-foreground transition-colors"
+        className="h-8 w-8 rounded-md hover:bg-muted hover:text-primary transition-colors"
         title="How to use"
       >
-        <Info className="h-5 w-5" />
+        <Info className="h-4 w-4" />
         <span className="sr-only">Show Instructions</span>
       </Button>
     </DialogTrigger>
