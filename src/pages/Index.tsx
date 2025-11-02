@@ -149,7 +149,7 @@ const Index = () => {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-
+  const hasAiPopoverAutoOpenedRef = useRef(false);
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
     []
@@ -1244,6 +1244,7 @@ const Index = () => {
     canvasRef: canvasRef,
     onRecordingComplete: () => {},
     portalContainer: null,
+    hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
   };
 
   const getAllPropsForScene = (scene: SceneState) => {
@@ -1297,6 +1298,7 @@ const Index = () => {
       neonColor: scene.neonColor,
       screenShareMode: scene.screenShareMode,
       onScreenShareModeChange: handleSetScreenShareMode,
+      hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
       sidebarProps: {
         style: scene.captionStyle,
         dynamicStyle: scene.dynamicStyle,

@@ -37,6 +37,7 @@ interface AICommandPopoverProps {
   captionsEnabled?: boolean;
   portalContainer?: HTMLElement | null;
   onCaptionsToggle?: (enabled: boolean) => void;
+  hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
 }
 
 export const AICommandPopover = ({
@@ -50,6 +51,7 @@ export const AICommandPopover = ({
   captionsEnabled,
   portalContainer,
   onCaptionsToggle,
+  hasAiPopoverAutoOpenedRef,
 }: AICommandPopoverProps) => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -57,7 +59,6 @@ export const AICommandPopover = ({
   const [placeholder, setPlaceholder] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
-  const hasAutoOpenedRef = useRef(false);
 
   // Use a ref to store animation state to prevent resets on re-render
   const animationStateRef = useRef({
@@ -91,10 +92,10 @@ export const AICommandPopover = ({
   // --- ADDED THIS HOOK BACK ---
   useEffect(() => {
     // Auto-open only once on initial mount
-    if (!hasAutoOpenedRef.current) {
+    if (!hasAiPopoverAutoOpenedRef.current) {
       const openTimer = setTimeout(() => {
         setOpen(true);
-        hasAutoOpenedRef.current = true;
+        hasAiPopoverAutoOpenedRef.current = true;
       }, 4000); // This delay waits for the button to load
 
       return () => clearTimeout(openTimer);

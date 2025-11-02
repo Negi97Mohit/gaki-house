@@ -443,6 +443,7 @@ interface VideoCanvasProps {
   onOpenSessions: () => void;
   onOpenSettings: () => void;
   blankCanvasColor: string;
+  hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
 }
 
 const VideoPlayer: React.FC<{
@@ -609,6 +610,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isRecording,
     onRecordingToggle,
     canvasRef,
+    hasAiPopoverAutoOpenedRef,
     ...rest
   } = props;
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -1890,6 +1892,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             captionsEnabled={captionsEnabled}
             onCaptionsToggle={onCaptionsToggle}
             portalContainer={canvasContainerRef.current}
+            hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
           >
             <Button
               size="icon"
