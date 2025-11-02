@@ -9,6 +9,7 @@ import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
 import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay"; // <-- 1. Import
+import { ExcalidrawElement } from "@excalidraw/excalidraw";
 import { Pencil } from "lucide-react"; // <-- 2. Import Pencil Icon
 import { zIndex } from "@/lib/zIndex";
 import {
@@ -149,6 +150,9 @@ const Index = () => {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [excalidrawElements, setExcalidrawElements] = useState<
+    readonly ExcalidrawElement[]
+  >([]);
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
@@ -1437,6 +1441,8 @@ const Index = () => {
       <ExcalidrawOverlay
         isVisible={isDrawing}
         onClose={() => setIsDrawing(false)}
+        initialElements={excalidrawElements}
+        onElementsChange={setExcalidrawElements}
       />
     </div>
   );

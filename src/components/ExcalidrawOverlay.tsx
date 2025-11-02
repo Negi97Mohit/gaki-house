@@ -1,4 +1,9 @@
-import { Excalidraw, MainMenu } from "@excalidraw/excalidraw";
+import {
+  Excalidraw,
+  MainMenu,
+  ExcalidrawElement,
+  AppState,
+} from "@excalidraw/excalidraw";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import {
@@ -22,6 +27,8 @@ import {
 interface ExcalidrawOverlayProps {
   isVisible: boolean;
   onClose: () => void;
+  initialElements: readonly ExcalidrawElement[];
+  onElementsChange: (elements: readonly ExcalidrawElement[]) => void;
 }
 
 const BACKGROUND_OPTIONS = [
@@ -43,6 +50,8 @@ const BACKGROUND_OPTIONS = [
 export const ExcalidrawOverlay = ({
   isVisible,
   onClose,
+  initialElements,
+  onElementsChange,
 }: ExcalidrawOverlayProps) => {
   const { theme } = useTheme();
   const [backgroundColor, setBackgroundColor] = useState("transparent");
@@ -282,12 +291,16 @@ export const ExcalidrawOverlay = ({
             }}
             viewModeEnabled={false}
             initialData={{
+              elements: initialElements,
               appState: {
                 viewBackgroundColor:
                   backgroundColor === "transparent"
                     ? "transparent"
                     : backgroundColor,
               },
+            }}
+            onChange={(elements: readonly ExcalidrawElement[]) => {
+              onElementsChange(elements);
             }}
           >
             <MainMenu>
