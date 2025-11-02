@@ -8,6 +8,8 @@ import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
+import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay"; // <-- 1. Import
+import { Pencil } from "lucide-react"; // <-- 2. Import Pencil Icon
 import { zIndex } from "@/lib/zIndex";
 import {
   CaptionStyle,
@@ -146,6 +148,7 @@ const Index = () => {
   );
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
 
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
@@ -1368,6 +1371,17 @@ const Index = () => {
           <Type className="h-5 w-5" />
         </Button>
         <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
+        {/* --- 4. ADDED: Excalidraw Toggle Button --- */}
+        <Button
+          onClick={() => setIsDrawing(true)}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Start Drawing"
+        >
+          <Pencil className="h-5 w-5" />
+        </Button>
+
         <Button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           size="icon"
@@ -1417,6 +1431,11 @@ const Index = () => {
           transition={activeTransition}
         />
       </div>
+      {/* --- 5. ADDED: Excalidraw Overlay --- */}
+      <ExcalidrawOverlay
+        isVisible={isDrawing}
+        onClose={() => setIsDrawing(false)}
+      />
     </div>
   );
 };

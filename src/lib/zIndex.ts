@@ -11,6 +11,7 @@ export const zIndex = {
   floatingControlsDropdown: 2015,
   sceneTabs: 2020,
   floatingLogo: 2020,
+  excalidrawOverlay: 4000,
   floatingPanelTrigger: 2020,
   aiPopoverTrigger: 2020,
   floatingPanel: 2025,

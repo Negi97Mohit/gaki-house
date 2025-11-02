@@ -8,7 +8,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Info } from "lucide-react";
+import {
+  Info,
+  Sparkles,
+  Type,
+  Film,
+  Captions,
+  LayoutGrid,
+  Library,
+  Plus,
+  Globe,
+  Search,
+} from "lucide-react";
 
 export const InstructionsDialog = () => (
   <Dialog>
@@ -31,56 +42,92 @@ export const InstructionsDialog = () => (
         </DialogTitle>
       </DialogHeader>
 
-      <div className="space-y-4 text-[13px] text-muted-foreground leading-snug max-h-[55vh] overflow-y-auto pr-1">
+      <div className="space-y-3 text-[13px] text-muted-foreground leading-snug max-h-[60vh] overflow-y-auto pr-2">
         <section>
-          <h4 className="text-sm font-medium text-foreground mb-1 flex items-center gap-1">
-            ✨ AI Overlays
+          <h4 className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+            <Sparkles className="h-4 w-4 text-primary" />
+            AI Overlays
           </h4>
           <p>
-            Click the purple sparkles button or speak commands when “AI Mode” is on. 
-            The AI can create or update overlays from scratch.
+            Click the ✨ button or speak commands when **AI Mode** is on to
+            create and update overlays.
           </p>
         </section>
 
         <div className="border-t border-border" />
 
         <section>
-          <h4 className="text-sm font-medium text-foreground mb-1">
-            🎨 Video Effects & Layouts
+          <h4 className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+            <Film className="h-4 w-4 text-primary" />
+            Scene Management
           </h4>
           <p>
-            Use “Video Effects” in the sidebar and layout controls (top right of video) 
-            to change your look.
+            Use the **tabs at the top** to switch scenes. Click the icon between
+            tabs to set custom transitions.
           </p>
-          <ul className="mt-1 list-disc list-inside space-y-0.5">
-            <li><strong>Filters:</strong> Apply camera color filters.</li>
-            <li><strong>Layouts:</strong> Switch between PiP and Split Screen modes.</li>
+        </section>
+
+        <div className="border-t border-border" />
+
+        <section>
+          <h4 className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+            <Captions className="h-4 w-4 text-primary" />
+            Live Captions
+          </h4>
+          <p>
+            Toggle audio (🎤) and captions (👁️) from the top toolbar. Customize
+            all styles (font, color, dynamic animations) in the main settings
+            panel (⚙️).
+          </p>
+        </section>
+
+        <div className="border-t border-border" />
+
+        <section>
+          <h4 className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+            <LayoutGrid className="h-4 w-4 text-primary" />
+            Layouts & Effects
+          </h4>
+          <p>
+            Change scene layouts (PiP, Split) and camera shapes from the bottom
+            control bar. All video filters and effects are in the main settings
+            panel (⚙️).
+          </p>
+        </section>
+
+        <div className="border-t border-border" />
+
+        <section>
+          <h4 className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+            <Plus className="h-4 w-4 text-primary" />
+            Adding Elements
+          </h4>
+          <ul className="list-disc list-outside space-y-1 pl-5">
+            <li>
+              Use the **top-right buttons** to add text (
+              <Type className="inline h-3 w-3" />) or search for assets (
+              <Search className="inline h-3 w-3" />
+              ).
+            </li>
+            <li>
+              Press <strong>/ (slash key)</strong> to quickly add a browser
+              window (<Globe className="inline h-3 w-3" />
+              ).
+            </li>
+            <li>**Drag & Drop** files directly onto the canvas.</li>
           </ul>
         </section>
 
         <div className="border-t border-border" />
 
         <section>
-          <h4 className="text-sm font-medium text-foreground mb-1">
-            ✍️ Live Captions
+          <h4 className="text-sm font-medium text-foreground mb-1.5 flex items-center gap-1.5">
+            <Library className="h-4 w-4 text-primary" />
+            Recording & Editing
           </h4>
           <p>
-            Toggle captions from the top toolbar. Customize them in the left sidebar.
-          </p>
-          <ul className="mt-1 list-disc list-inside space-y-0.5">
-            <li><strong>Dynamic Styles:</strong> Word-by-word animations like Karaoke or Pop Up.</li>
-            <li><strong>Static Styles:</strong> Adjust font, color, size, and background.</li>
-          </ul>
-        </section>
-
-        <div className="border-t border-border" />
-
-        <section>
-          <h4 className="text-sm font-medium text-foreground mb-1">
-            🌐 Browser (WIP)
-          </h4>
-          <p>
-            Press <strong>/</strong> to open a draggable browser window in your video.
+            Press the red circle (🔴) to record. Find your saved sessions and
+            open the editor from the **Library** (📚) button.
           </p>
         </section>
       </div>
