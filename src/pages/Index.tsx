@@ -495,32 +495,35 @@ const Index = () => {
 
   // --- SCENE-AWARE LAYOUT HANDLERS ---
   const createScenePropertyHandler = <K extends keyof SceneState>(key: K) => {
-    return (value: SceneState[K]) => {
-      updateActiveScene((scene) => {
-        const updatedScene = { ...scene, [key]: value };
-        // Check if this property is part of the layout group
-        if (
-          [
-            "layoutMode",
-            "cameraShape",
-            "splitRatio",
-            "pipPosition",
-            "pipSize",
-          ].includes(key as string)
-        ) {
-          if (recording.isRecording) {
-            recording.recordLayoutChange({
-              mode: updatedScene.layoutMode,
-              cameraShape: updatedScene.cameraShape,
-              splitRatio: updatedScene.splitRatio,
-              pipPosition: updatedScene.pipPosition,
-              pipSize: updatedScene.pipSize,
-            });
+    return useCallback(
+      (value: SceneState[K]) => {
+        updateActiveScene((scene) => {
+          const updatedScene = { ...scene, [key]: value };
+          // Check if this property is part of the layout group
+          if (
+            [
+              "layoutMode",
+              "cameraShape",
+              "splitRatio",
+              "pipPosition",
+              "pipSize",
+            ].includes(key as string)
+          ) {
+            if (recording.isRecording) {
+              recording.recordLayoutChange({
+                mode: updatedScene.layoutMode,
+                cameraShape: updatedScene.cameraShape,
+                splitRatio: updatedScene.splitRatio,
+                pipPosition: updatedScene.pipPosition,
+                pipSize: updatedScene.pipSize,
+              });
+            }
           }
-        }
-        return updatedScene;
-      });
-    };
+          return updatedScene;
+        });
+      },
+      [key, updateActiveScene, recording]
+    );
   };
 
   // --- SCENE-AWARE HANDLERS ---
@@ -1144,6 +1147,8 @@ const Index = () => {
 
       {/* -------------------- MAIN CANVAS -------------------- */}
       <VideoCanvas
+        key={activeScene.id} // <-- ADD: Force a full remount of VideoCanvas
+        sceneId={activeScene.id} // <-- ADD: Pass sceneId as a prop
         isFullscreen={isFullscreen}
         onToggleFullscreen={handleToggleFullscreen}
         isFsSidebarOpen={isFsSidebarOpen}

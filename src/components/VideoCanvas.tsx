@@ -535,6 +535,7 @@ const SNAP_THRESHOLD = 5;
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const {
+    sceneId,
     generatedOverlays,
     isVideoOn,
     isAudioOn,
@@ -641,8 +642,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
-  const [audioStreamForSpeech, setAudioStreamForSpeech] =
-    useState<MediaStream | null>(null);
+
   const [fullTranscript, setFullTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
@@ -761,6 +761,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   const handleFinalTranscript = useCallback(
     (text: string) => {
+      console.log(`[VideoCanvas] Received Final Transcript: "${text}"`);
       clearTimeout(transcriptTimerRef.current);
 
       setFullTranscript(text);
@@ -775,28 +776,45 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     [rest.onProcessTranscript]
   );
 
+  const handlePartialTranscript = useCallback((text: string) => {
+    console.log(`[VideoCanvas] Received Partial Transcript: "${text}"`);
+    setInterimTranscript(text);
+  }, []);
+
   const { startRecognition, stopRecognition } = useDeepgramSpeech({
     onFinalTranscript: handleFinalTranscript,
-    onPartialTranscript: setInterimTranscript,
-    stream: audioStreamForSpeech,
+    onPartialTranscript: handlePartialTranscript,
+    stream: cameraStream,
   });
 
   useEffect(() => {
-    if (audioStreamForSpeech && captionsEnabled) {
+    console.log(`[VideoCanvas] Caption Effect [Scene: ${sceneId}]`, {
+      isAudioOn,
+      captionsEnabled,
+    });
+    if (cameraStream && captionsEnabled) {
+      console.log(`[VideoCanvas] Starting recognition for Scene ${sceneId}`);
       startRecognition();
     } else {
+      console.log(`[VideoCanvas] Stopping recognition for Scene ${sceneId}`);
       stopRecognition();
-      if (!isAudioOn || !captionsEnabled) {
-        setFullTranscript("");
-        setInterimTranscript("");
-      }
     }
+    // This cleanup function runs when the component unmounts (i.e., scene switch)
+    return () => {
+      console.log(
+        `[VideoCanvas] CLEANUP: Stopping recognition for Scene ${sceneId}`
+      );
+      stopRecognition();
+      setFullTranscript(""); // <-- ADD: Clear transcripts on cleanup
+      setInterimTranscript("");
+    };
   }, [
-    audioStreamForSpeech,
+    cameraStream,
     isAudioOn,
     captionsEnabled,
     startRecognition,
     stopRecognition,
+    sceneId,
   ]);
 
   useEffect(() => {
@@ -951,46 +969,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDraggingDynamicSplitter, dynamicLayout.mode]);
-
-  useEffect(() => {
-    let dedicatedAudioStream: MediaStream | null = null;
-
-    const manageAudioStream = async () => {
-      if (isAudioOn) {
-        try {
-          const constraints: MediaStreamConstraints = {
-            audio: selectedAudioDevice
-              ? { deviceId: { exact: selectedAudioDevice } }
-              : true,
-          };
-          dedicatedAudioStream = await navigator.mediaDevices.getUserMedia(
-            constraints
-          );
-          setAudioStreamForSpeech(dedicatedAudioStream);
-        } catch (err) {
-          console.error(
-            "Failed to get dedicated audio stream for captions:",
-            err
-          );
-          toast.error("Could not access microphone for captions.");
-          onAudioToggle(false);
-        }
-      } else {
-        if (audioStreamForSpeech) {
-          audioStreamForSpeech.getTracks().forEach((track) => track.stop());
-          setAudioStreamForSpeech(null);
-        }
-      }
-    };
-
-    manageAudioStream();
-
-    return () => {
-      if (dedicatedAudioStream) {
-        dedicatedAudioStream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [isAudioOn, selectedAudioDevice, onAudioToggle]);
 
   const handlePipDragStop = (e: any, d: { x: number; y: number }) => {
     const container = canvasContainerRef.current;
@@ -1562,14 +1540,32 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 " " +
                 interimTranscript
               ).trim();
+              console.log(`[VideoCanvas] Render check:`, {
+                captionsEnabled,
+                captionText,
+                shouldRenderCaptionOverlay,
+              });
               const captionStyle = liveCaptionStyle;
               if (
                 !captionsEnabled ||
-                !captionText ||
                 containerSize.width === 0 ||
                 !shouldRenderCaptionOverlay
               )
                 return null;
+
+              // Move this check *after* the initial guard clauses
+              if (!captionText) {
+                console.log(
+                  "[VideoCanvas] Render check: No caption text, rendering null."
+                );
+                return null;
+              }
+
+              console.log(
+                "%c[VideoCanvas] RENDERING CAPTION RENDERER",
+                "color: #00aaff",
+                { captionText, dynamicStyle }
+              );
 
               const captionRef = React.createRef<HTMLDivElement>();
 
@@ -1736,285 +1732,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 </Rnd>
               );
             })()}
-          </div>
-        </div>
-        {/*
-         Container for all draggable overlays.
-         This MUST be INSIDE sceneRef to pan and zoom with the canvas.
-        */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: "var(--z-draggable-element)" }}
-        >
-          <div className="w-full h-full relative">
-            {filteredHtmlOverlays.map((overlay) => (
-              <DraggableOverlay
-                key={overlay.id}
-                overlay={overlay}
-                onSetDynamicLayout={onSetDynamicLayout}
-                onLayoutChange={rest.onOverlayLayoutChange}
-                onRemoveOverlay={rest.onRemoveOverlay}
-                onPreviewGenerated={onPreviewGenerated}
-                containerSize={containerSize}
-                portalContainer={portalContainer}
-                isSpacePressed={isSpacePressed}
-              />
-            ))}
-            {filteredBrowserOverlays.map((browser) => (
-              <div
-                key={`browser-wrapper-${browser.id}`}
-                style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
-              >
-                <DraggableBrowser
-                  key={browser.id}
-                  overlay={browser}
-                  viewport={viewport}
-                  onSetDynamicLayout={onSetDynamicLayout}
-                  onRemove={onRemoveBrowser}
-                  onUrlChange={onBrowserUrlChange}
-                  onLayoutChange={onBrowserLayoutChange}
-                  containerSize={containerSize}
-                  isSelected={selectedBrowserId === browser.id}
-                  onInternalDragStart={onInternalDragStart}
-                  onInternalDragStop={onInternalDragStop}
-                  onSelect={setSelectedBrowserId}
-                  canvasContainerRef={canvasContainerRef}
-                />
-              </div>
-            ))}
-            {filteredFileOverlays.map((file) => (
-              <div
-                key={`file-wrapper-${file.id}`}
-                style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
-              >
-                <DraggableFileViewer
-                  key={file.id}
-                  overlay={file}
-                  viewport={viewport}
-                  onSetDynamicLayout={onSetDynamicLayout}
-                  onRemove={onRemoveFile}
-                  onLayoutChange={onFileLayoutChange}
-                  containerSize={containerSize}
-                  isSelected={selectedFileId === file.id}
-                  onInternalDragStart={onInternalDragStart}
-                  onInternalDragStop={onInternalDragStop}
-                  onSelect={setSelectedFileId}
-                  canvasContainerRef={canvasContainerRef}
-                />
-              </div>
-            ))}
-            {(() => {
-              const captionText = (
-                fullTranscript +
-                " " +
-                interimTranscript
-              ).trim();
-              const captionStyle = liveCaptionStyle;
-              if (
-                !captionsEnabled ||
-                !captionText ||
-                containerSize.width === 0 ||
-                !shouldRenderCaptionOverlay
-              )
-                return null;
-
-              const captionRef = React.createRef<HTMLDivElement>();
-
-              const handleCaptionRotationStart = (
-                e: React.MouseEvent<HTMLDivElement>
-              ) => {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (!captionRef.current) return;
-                const box = captionRef.current.getBoundingClientRect();
-                const centerX = box.left + box.width / 2;
-                const centerY = box.top + box.height / 2;
-                const startAngle =
-                  Math.atan2(e.clientY - centerY, e.clientX - centerX) *
-                  (180 / Math.PI);
-                const initialRotation = captionStyle.rotation || 0;
-
-                const handleMouseMove = (moveEvent: MouseEvent) => {
-                  const currentAngle =
-                    Math.atan2(
-                      moveEvent.clientY - centerY,
-                      moveEvent.clientX - centerX
-                    ) *
-                    (180 / Math.PI);
-                  const angleDiff = currentAngle - startAngle;
-                  props.onStyleChange({
-                    ...captionStyle,
-                    rotation: initialRotation + angleDiff,
-                  });
-                };
-
-                const handleMouseUp = () => {
-                  document.removeEventListener("mousemove", handleMouseMove);
-                  document.removeEventListener("mouseup", handleMouseUp);
-                };
-
-                document.addEventListener("mousemove", handleMouseMove);
-                document.addEventListener("mouseup", handleMouseUp);
-              };
-
-              const currentWidthPercent = captionStyle.width || 80;
-              const widthPx = (containerSize.width * currentWidthPercent) / 100;
-              const xPx =
-                (containerSize.width * captionStyle.position.x) / 100 -
-                widthPx / 2;
-              const yPx =
-                (containerSize.height * captionStyle.position.y) / 100;
-
-              return (
-                <Rnd
-                  size={{
-                    width: widthPx,
-                    height: "auto",
-                  }}
-                  position={{
-                    x: xPx,
-                    y: yPx,
-                  }}
-                  onDragStop={(e, d) => {
-                    const newCenterX =
-                      ((d.x + widthPx / 2) / containerSize.width) * 100;
-                    const newCenterY = (d.y / containerSize.height) * 100;
-
-                    onCaptionLayoutChange({
-                      position: {
-                        x: newCenterX,
-                        y: newCenterY,
-                      },
-                    });
-                  }}
-                  onResizeStop={(e, direction, ref, delta, pos) => {
-                    const newWidthPx = parseInt(ref.style.width, 10);
-                    const newHeightPx = parseInt(ref.style.height, 10);
-                    const newWidthPercent =
-                      (newWidthPx / containerSize.width) * 100;
-
-                    const newCenterX =
-                      ((pos.x + newWidthPx / 2) / containerSize.width) * 100;
-                    const newCenterY = (pos.y / containerSize.height) * 100;
-
-                    onCaptionLayoutChange({
-                      position: {
-                        x: newCenterX,
-                        y: newCenterY,
-                      },
-                      size: {
-                        width: newWidthPercent,
-                        height: (newHeightPx / containerSize.height) * 100,
-                      },
-                    });
-                  }}
-                  bounds="parent"
-                  className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
-                  style={{ zIndex: 999 }}
-                  minWidth={containerSize.width * 0.2}
-                  disableDragging={isSpacePressed} // <-- Updated
-                  enableResizing={
-                    !isSpacePressed // <-- Updated
-                      ? {
-                          left: true,
-                          right: true,
-                          top: false,
-                          bottom: false,
-                          topLeft: false,
-                          topRight: false,
-                          bottomLeft: false,
-                          bottomRight: false,
-                        }
-                      : false
-                  }
-                >
-                  <div
-                    ref={captionRef}
-                    className="w-full h-full relative"
-                    style={{
-                      transform: `rotate(${captionStyle.rotation || 0}deg)`,
-                    }}
-                  >
-                    <DynamicLayoutPicker
-                      onSelectLayout={(mode) =>
-                        onSetDynamicLayout(
-                          { id: "live-caption", type: "caption" },
-                          mode as
-                            | "split-horizontal"
-                            | "split-vertical"
-                            | "pip"
-                            | "reset"
-                        )
-                      }
-                    />
-                    <CaptionRenderer
-                      activeStyleId={dynamicStyle}
-                      captionStyle={captionStyle}
-                      text={captionText}
-                      fullTranscript={fullTranscript}
-                      interimTranscript={interimTranscript}
-                      baseStyle={{
-                        fontFamily: captionStyle.fontFamily,
-                        fontSize: `${captionStyle.fontSize}px`,
-                        color: captionStyle.color,
-                        textShadow: captionStyle.shadow
-                          ? "2px 2px 4px rgba(0,0,0,0.5)"
-                          : "none",
-                        backgroundColor: captionStyle.backgroundColor,
-                        border: captionStyle.border
-                          ? `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`
-                          : "none",
-                        fontWeight: captionStyle.bold ? "bold" : "normal",
-                        fontStyle: captionStyle.italic ? "italic" : "normal",
-                        textDecoration: captionStyle.underline
-                          ? "underline"
-                          : "none",
-                      }}
-                    />
-                    <div
-                      onMouseDown={handleCaptionRotationStart}
-                      className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-alias"
-                      style={{ zIndex: "var(--z-draggable-element-active)" }}
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                    </div>
-                  </div>
-                </Rnd>
-              );
-            })()}
-            {textOverlays
-              .filter(
-                (o) =>
-                  !dynamicLayout.isActive ||
-                  dynamicLayout.target?.id !== o.id ||
-                  dynamicLayout.target?.type !== "text"
-              )
-              .map((textOverlay) => (
-                <div
-                  key={`text-wrapper-${textOverlay.id}`}
-                  style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
-                >
-                  <DraggableTextOverlay
-                    key={textOverlay.id}
-                    overlay={textOverlay}
-                    onLayoutChange={onTextLayoutChange}
-                    onStyleChange={onTextStyleChange}
-                    onContentChange={onTextContentChange}
-                    onRemove={onRemoveTextOverlay}
-                    containerSize={containerSize}
-                    isSelected={selectedTextId === textOverlay.id}
-                    onSelect={(id) => {
-                      onDeselectAll();
-                      setSelectedTextId(id);
-                    }}
-                    onInternalDragStart={onInternalDragStart}
-                    onInternalDragStop={onInternalDragStop}
-                    isSpacePressed={isSpacePressed}
-                    containerRef={canvasContainerRef}
-                  />
-                </div>
-              ))}
           </div>
         </div>
       </div>

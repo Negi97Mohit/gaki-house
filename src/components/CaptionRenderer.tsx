@@ -30,8 +30,12 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
         return "rounded-xl";
     }
   };
-
   const text = (props.fullTranscript + " " + props.interimTranscript).trim();
+  console.log(`[CaptionRenderer] Rendering with text: "${text}"`, {
+    activeStyleId,
+    text,
+  });
+
   if (!text) return null;
 
   const styleEntry = DYNAMIC_STYLES[activeStyleId] || DYNAMIC_STYLES["none"];
