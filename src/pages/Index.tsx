@@ -527,7 +527,17 @@ const Index = () => {
   };
 
   // --- SCENE-AWARE HANDLERS ---
-  const handleSetIsAudioOn = createScenePropertyHandler("isAudioOn");
+  // FIX: Define handleSetIsAudioOn manually with useCallback for stability
+  // This is the function passed as `onAudioToggle` and it MUST be stable.
+  const handleSetIsAudioOn = useCallback(
+    (value: boolean) => {
+      updateActiveScene((scene) => {
+        return { ...scene, isAudioOn: value };
+      });
+    },
+    [updateActiveScene]
+  ); // `updateActiveScene` is already memoized
+
   const handleSetIsVideoOn = createScenePropertyHandler("isVideoOn");
   const handleSetSelectedVideoDevice = createScenePropertyHandler(
     "selectedVideoDevice"

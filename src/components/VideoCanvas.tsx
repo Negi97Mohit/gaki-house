@@ -642,7 +642,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
-
+  const [audioStreamForSpeech, setAudioStreamForSpeech] =
+    useState<MediaStream | null>(null);
   const [fullTranscript, setFullTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
@@ -784,7 +785,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const { startRecognition, stopRecognition } = useDeepgramSpeech({
     onFinalTranscript: handleFinalTranscript,
     onPartialTranscript: handlePartialTranscript,
-    stream: cameraStream,
+    stream: audioStreamForSpeech,
   });
 
   useEffect(() => {
@@ -792,7 +793,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       isAudioOn,
       captionsEnabled,
     });
-    if (cameraStream && captionsEnabled) {
+    if (audioStreamForSpeech && captionsEnabled) {
       console.log(`[VideoCanvas] Starting recognition for Scene ${sceneId}`);
       startRecognition();
     } else {
@@ -809,7 +810,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       setInterimTranscript("");
     };
   }, [
-    cameraStream,
+    audioStreamForSpeech,
     isAudioOn,
     captionsEnabled,
     startRecognition,
@@ -1047,6 +1048,60 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     if (rest.isLowLightEnabled) filters.push("brightness(1.3) contrast(1.15)");
     return filters.length > 0 ? filters.join(" ") : "none";
   };
+
+  useEffect(() => {
+    let dedicatedAudioStream: MediaStream | null = null;
+
+    const manageAudioStream = async () => {
+      console.log(`[VideoCanvas] Managing audio stream for Scene ${sceneId}`, {
+        isAudioOn,
+      });
+      if (isAudioOn) {
+        try {
+          const constraints: MediaStreamConstraints = {
+            audio: selectedAudioDevice
+              ? { deviceId: { exact: selectedAudioDevice } }
+              : true,
+          };
+          console.log(`[VideoCanvas] Requesting dedicated audio stream...`);
+          dedicatedAudioStream = await navigator.mediaDevices.getUserMedia(
+            constraints
+          );
+          console.log(
+            `[VideoCanvas] Dedicated audio stream aquired for Scene ${sceneId}`
+          );
+          setAudioStreamForSpeech(dedicatedAudioStream);
+        } catch (err) {
+          console.error(
+            "Failed to get dedicated audio stream for captions:",
+            err
+          );
+          toast.error("Could not access microphone for captions.");
+          onAudioToggle(false);
+        }
+      } else {
+        console.log(
+          `[VideoCanvas] Audio is OFF. Cleaning up old stream for Scene ${sceneId}.`
+        );
+        // This will be null if it's the first render and audio is off
+        if (audioStreamForSpeech) {
+          audioStreamForSpeech.getTracks().forEach((track) => track.stop());
+          setAudioStreamForSpeech(null);
+        }
+      }
+    };
+
+    manageAudioStream();
+
+    return () => {
+      console.log(
+        `[VideoCanvas] CLEANUP: Stopping dedicated audio stream for Scene ${sceneId}`
+      );
+      if (dedicatedAudioStream) {
+        dedicatedAudioStream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [isAudioOn, selectedAudioDevice, onAudioToggle, sceneId]);
 
   const videoFilterString = getVideoFilterStyle();
 
