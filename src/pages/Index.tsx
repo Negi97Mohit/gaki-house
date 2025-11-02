@@ -922,7 +922,7 @@ const Index = () => {
       }
       mouseTimeoutRef.current = setTimeout(() => {
         setIsMouseActive(false);
-      }, 2500);
+      }, 5000);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
