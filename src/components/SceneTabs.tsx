@@ -170,13 +170,13 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
       style={{ zIndex: "var(--z-scene-tabs)" }}
     >
       {/* Island Container */}
-      <div className="relative bg-background/95 backdrop-blur-md border border-border rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2 max-w-[70vw] pointer-events-auto">
+      <div className="relative bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg px-3 py-2 flex items-center gap-2 max-w-[70vw] pointer-events-auto">
         {/* Left Scroll Button */}
         {showLeftScroll && (
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 rounded-lg flex-shrink-0 hover:bg-muted"
+            className="h-7 w-7 rounded-md flex-shrink-0 hover:bg-muted transition-colors"
             onClick={() => scroll("left")}
           >
             <ChevronLeft className="w-4 h-4" />
@@ -211,21 +211,25 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   onDrop={(e) => handleDrop(e, index)}
                   onDragEnd={handleDragEnd}
                   className={cn(
-                    "relative flex items-center h-8 min-w-[120px] max-w-[180px] px-3 cursor-pointer group transition-all flex-shrink-0 rounded-lg",
+                    "relative flex items-center h-9 min-w-[120px] max-w-[180px] px-3 cursor-pointer group transition-all duration-200 flex-shrink-0 rounded-t-lg",
                     isActive
-                      ? "bg-primary/10 border border-primary/20"
-                      : "bg-muted/50 hover:bg-muted border border-transparent",
+                      ? "bg-transparent"
+                      : "bg-transparent hover:bg-muted/30",
                     isDragging && "opacity-40",
                     isDraggedOver && "ml-2"
                   )}
                   onClick={() => !editingId && onSceneSelect(scene.id)}
                   onDoubleClick={() => handleDoubleClick(scene)}
                 >
+                  {/* Active Tab Indicator - Bottom Border */}
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full animate-fade-in" />
+                  )}
                   {/* Drag Handle */}
                   <GripVertical
                     className={cn(
-                      "w-3 h-3 mr-2 text-muted-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0",
-                      isActive && "opacity-50"
+                      "w-3 h-3 mr-2 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-all duration-200 flex-shrink-0",
+                      isActive && "text-primary/50 opacity-60"
                     )}
                   />
 
@@ -238,16 +242,16 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       onChange={handleNameChange}
                       onBlur={handleNameSubmit}
                       onKeyDown={handleKeyDown}
-                      className="flex-1 bg-transparent border-b border-primary outline-none text-sm min-w-0"
+                      className="flex-1 bg-transparent border-b border-primary outline-none text-sm min-w-0 transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
                     <span
                       className={cn(
-                        "flex-1 text-sm truncate min-w-0",
+                        "flex-1 text-sm truncate min-w-0 transition-colors duration-200",
                         isActive
-                          ? "text-foreground font-medium"
-                          : "text-muted-foreground"
+                          ? "text-foreground font-semibold"
+                          : "text-muted-foreground group-hover:text-foreground"
                       )}
                     >
                       {scene.name}
@@ -262,12 +266,12 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         onSceneClose(scene.id);
                       }}
                       className={cn(
-                        "ml-2 w-5 h-5 rounded flex items-center justify-center flex-shrink-0",
-                        "opacity-0 group-hover:opacity-100 hover:bg-background/80 transition-all",
-                        isActive && "opacity-70"
+                        "ml-2 w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-all duration-200",
+                        "opacity-0 group-hover:opacity-100 hover:bg-muted hover:text-destructive",
+                        isActive && "opacity-60 hover:opacity-100"
                       )}
                     >
-                      <X className="w-3 h-3" />
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -288,11 +292,11 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       variant="ghost"
                       size="icon"
                       className={cn(
-                        "h-7 w-7 rounded-lg transition-all",
+                        "h-7 w-7 rounded-md transition-all duration-200",
                         transition.type !== "none"
-                          ? "text-[#2596be] hover:bg-[#2596be]/10"
+                          ? "text-primary hover:bg-primary/10 hover:text-primary"
                           : "text-muted-foreground/40 hover:bg-muted",
-                        hoveredTransitionIndex === index && "bg-[#2596be]/10"
+                        hoveredTransitionIndex === index && "bg-primary/10 scale-110"
                       )}
                       onClick={(e) => {
                         e.stopPropagation();
@@ -306,7 +310,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                     {/* Duration Indicator */}
                     {transition.type !== "none" &&
                       hoveredTransitionIndex === index && (
-                        <div className="absolute -bottom-6 text-[10px] font-mono text-[#2596be] bg-background border border-border px-1.5 py-0.5 rounded shadow-sm whitespace-nowrap">
+                        <div className="absolute -bottom-6 text-[10px] font-mono text-primary bg-background/95 backdrop-blur-sm border border-primary/20 px-2 py-0.5 rounded-md shadow-sm whitespace-nowrap animate-fade-in">
                           {transition.durationMs}ms
                         </div>
                       )}
@@ -322,7 +326,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 rounded-lg flex-shrink-0 hover:bg-muted"
+            className="h-7 w-7 rounded-md flex-shrink-0 hover:bg-muted transition-colors"
             onClick={() => scroll("right")}
           >
             <ChevronRight className="w-4 h-4" />
@@ -336,7 +340,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 rounded-lg hover:bg-muted flex-shrink-0"
+          className="h-7 w-7 rounded-md hover:bg-primary/10 hover:text-primary transition-colors flex-shrink-0"
           onClick={onSceneAdd}
           title="Add new scene"
         >
