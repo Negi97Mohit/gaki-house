@@ -1102,36 +1102,29 @@ const Index = () => {
         onSceneRename={handleSceneRename}
       />
 
-      {/* ADDED: Top Right Corner - Action Buttons in Island */}
-      <div className="fixed top-6 right-6 z-[2015]">
-        <div className="bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg px-2 py-2 flex items-center gap-1.5 transition-all duration-200">
-          <Button
-            onClick={handleAddTextOverlay}
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8 rounded-md hover:bg-muted hover:text-primary transition-colors"
-            title="Add Text"
-          >
-            <Type className="h-4 w-4" />
-          </Button>
-          
-          <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
-          
-          <div className="w-px h-5 bg-border" />
-          
-          <Button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8 rounded-md hover:bg-muted transition-colors"
-            title="Toggle Theme"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          </Button>
-          
-          <InstructionsDialog />
-        </div>
+      {/* ADDED: Top Right Corner - Theme and Info Buttons ONLY */}
+      <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
+        <Button
+          onClick={handleAddTextOverlay}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Add Text"
+        >
+          <Type className="h-5 w-5" />
+        </Button>
+        <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
+        <Button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Toggle Theme"
+        >
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        </Button>
+        <InstructionsDialog />
       </div>
 
       {/* --- TRANSITION POPOVER --- */}
