@@ -276,7 +276,7 @@ export const AmbientEffectsOverlay: React.FC<AmbientEffectsOverlayProps> = ({
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none z-10"
-      tyle={{ zIndex: "var(--z-canvas-overlay)" }}
+      style={{ zIndex: "var(--z-canvas-overlay)" }}
     />
   );
 };

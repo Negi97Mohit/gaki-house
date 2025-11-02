@@ -427,6 +427,7 @@ const Index = () => {
             position: { x: 50, y: 50 },
             size: { width: 40, height: 50 },
             zIndex: zIndex.draggableElement,
+            rotation: 0,
           },
         };
         updateActiveScene((scene) => {
@@ -550,6 +551,7 @@ const Index = () => {
         position: { x: 50, y: 50 },
         size: { width: 30, height: 10 },
         zIndex: zIndex.draggableElement,
+        rotation: 0,
       },
     };
 
@@ -640,16 +642,14 @@ const Index = () => {
       position?: { x: number; y: number };
       size?: { width: number; height: number };
     }) => {
-      handleSetCaptionStyle((prev) => {
-        const updatedStyle = {
-          ...prev,
-          position: newLayout.position ?? prev.position,
-          width: newLayout.size?.width ?? prev.width,
-        };
-        // Record the *global* caption style
-        if (recording.isRecording) recording.recordCaptionStyle(updatedStyle);
-        return updatedStyle;
-      });
+      const updatedStyle = {
+        ...activeScene.captionStyle,
+        position: newLayout.position ?? activeScene.captionStyle.position,
+        width: newLayout.size?.width ?? activeScene.captionStyle.width,
+      };
+      handleSetCaptionStyle(updatedStyle);
+      // Record the *global* caption style
+      if (recording.isRecording) recording.recordCaptionStyle(updatedStyle);
     },
     [recording, handleSetCaptionStyle]
   );
@@ -1148,6 +1148,7 @@ const Index = () => {
         onToggleFullscreen={handleToggleFullscreen}
         isFsSidebarOpen={isFsSidebarOpen}
         onFsSidebarToggle={setIsFsSidebarOpen}
+        dynamicLayout={dynamicLayout}
         blankCanvasColor={activeScene.blankCanvasColor}
         onOpenSessions={() => setShowSessionsPanel(true)}
         onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
