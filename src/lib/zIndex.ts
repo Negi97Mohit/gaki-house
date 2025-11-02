@@ -22,4 +22,5 @@ export const zIndex = {
   sessionsPanel: 5050,
   textToolbar: 9990,
   loader: 9999,
+  transitionPopoverDropdown: 2050,
 };
