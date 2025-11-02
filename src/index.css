@@ -95,6 +95,79 @@
 }
 
 @layer components {
+  /* Resize handles for Excalidraw overlay */
+  .resize-handle {
+    position: absolute;
+    user-select: none;
+    z-index: 10;
+  }
+
+  .resize-handle-top,
+  .resize-handle-bottom {
+    width: 100%;
+    height: 10px;
+  }
+
+  .resize-handle-left,
+  .resize-handle-right {
+    width: 10px;
+    height: 100%;
+  }
+
+  .resize-handle-corner {
+    width: 20px;
+    height: 20px;
+    z-index: 11;
+  }
+
+  /* Visual feedback on hover */
+  .group:hover .resize-handle::after {
+    content: "";
+    position: absolute;
+    background: hsl(var(--primary) / 0.3);
+    transition: background 0.2s;
+  }
+
+  .group:hover .resize-handle-top::after,
+  .group:hover .resize-handle-bottom::after {
+    width: 100%;
+    height: 3px;
+    left: 0;
+  }
+
+  .group:hover .resize-handle-top::after {
+    top: 3px;
+  }
+
+  .group:hover .resize-handle-bottom::after {
+    bottom: 3px;
+  }
+
+  .group:hover .resize-handle-left::after,
+  .group:hover .resize-handle-right::after {
+    width: 3px;
+    height: 100%;
+    top: 0;
+  }
+
+  .group:hover .resize-handle-left::after {
+    left: 3px;
+  }
+
+  .group:hover .resize-handle-right::after {
+    right: 3px;
+  }
+
+  .group:hover .resize-handle-corner::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: hsl(var(--primary) / 0.5);
+  }
+
   /* Minimalistic & Modern Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
