@@ -49,6 +49,32 @@
     --input: 217 33% 17%;
     --ring: 217 91% 60%;
   }
+  /* Add z-index stack to both :root and .dark */
+  :root,
+  .dark {
+    --z-base: 1;
+    --z-canvas-overlay: 10;
+    --z-draggable-element: 100;
+    --z-draggable-element-hover: 150;
+    --z-draggable-element-active: 200;
+    --z-caption: 999;
+    --z-fullscreen-canvas: 2000;
+    --z-floating-controls: 2010;
+    --z-floating-controls-dropdown: 2015;
+    --z-scene-tabs: 2020;
+    --z-floating-logo: 2020;
+    --z-floating-panel-trigger: 2020;
+    --z-ai-popover-trigger: 2020;
+    --z-floating-panel: 2025;
+    --z-floating-panel-dropdown: 2030;
+    --z-ai-popover-content: 2030;
+    --z-asset-popover: 2030;
+    --z-transition-popover: 2040;
+    --z-dialog: 5000;
+    --z-sessions-panel: 5050;
+    --z-text-toolbar: 9990;
+    --z-loader: 9999;
+  }
 }
 
 @layer base {

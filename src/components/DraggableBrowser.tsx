@@ -301,7 +301,8 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
           e.stopPropagation();
           onRemove(overlay.id);
         }}
-        className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all z-50 hover:scale-110"
+        className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+        style={{ zIndex: "var(--z-draggable-element-active)" }}
       >
         <X className="w-4 h-4" />
       </button>

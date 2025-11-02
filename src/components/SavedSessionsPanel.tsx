@@ -43,7 +43,7 @@ const formatDate = (timestamp: number) => {
   if (diffMins < 60) return `${diffMins}m ago`;
   if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays < 7) return `${diffDays}d ago`;
-  
+
   return date.toLocaleDateString();
 };
 
@@ -80,13 +80,18 @@ export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+      style={{ zIndex: "var(--z-sessions-panel)" }}
+    >
       <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-neutral-900 shadow-2xl animate-in slide-in-from-right duration-300">
         {/* Header */}
         <div className="h-16 border-b border-neutral-800 flex items-center justify-between px-6">
           <div className="flex items-center gap-3">
             <Video className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold text-white">Your Recordings</h2>
+            <h2 className="text-lg font-semibold text-white">
+              Your Recordings
+            </h2>
           </div>
           <Button
             variant="ghost"
@@ -142,7 +147,7 @@ export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
                       <h3 className="text-sm font-medium text-white truncate mb-1">
                         {session.name}
                       </h3>
-                      
+
                       <div className="flex items-center gap-4 text-xs text-neutral-400 mb-2">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />

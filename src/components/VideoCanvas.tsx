@@ -268,9 +268,10 @@ export const DraggableOverlay: React.FC<{
             </button>
             <div
               onMouseDown={handleRotationStart}
-              className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50 cursor-alias"
+              className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto cursor-alias"
               style={{
                 transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+                zIndex: "var(--z-draggable-element-active)",
               }}
             >
               <RotateCcw className="w-4 h-4" />
@@ -362,6 +363,8 @@ interface VideoCanvasProps {
   onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void;
   portalContainer: HTMLElement | null;
   browserOverlays: BrowserOverlayState[];
+  screenShareMode: "off" | "screen" | "canvas";
+  onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
   onRemoveBrowser: (id: string) => void;
   onBrowserUrlChange: (id: string, url: string) => void;
   onBrowserLayoutChange: (
@@ -574,10 +577,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onSetDynamicLayout,
     onInternalDragStart,
     onInternalDragStop,
-    dynamicLayout,
+    dynamicLayout = {
+      isActive: false,
+      mode: "split-vertical",
+      target: null,
+    },
     onDeselectAll,
     blankCanvasColor,
     textOverlays,
+    screenShareMode,
+    onScreenShareModeChange,
     onRemoveTextOverlay,
     onTextLayoutChange,
     onTextStyleChange,
@@ -602,9 +611,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const panStartRef = useRef({ x: 0, y: 0 });
   const sceneRef = useRef<HTMLDivElement>(null);
 
-  const [screenShareMode, setScreenShareMode] = useState<
-    "off" | "screen" | "canvas"
-  >("off"); // <-- Updated
   const [pipContent, setPipContent] = useState<"camera" | "share">("camera"); // <-- Updated
 
   const [dynamicSplitRatio, setDynamicSplitRatio] = useState(0.5);
@@ -625,7 +631,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isScreenSharing: screenShareMode === "screen", // <-- Updated
     selectedCameraDevice: selectedVideoDevice,
     selectedAudioDevice: selectedAudioDevice,
-    onScreenShareEnd: () => setScreenShareMode("off"), // <-- Updated
+    onScreenShareEnd: () => onScreenShareModeChange("off"),
   });
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -776,16 +782,22 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   });
 
   useEffect(() => {
-    if (audioStreamForSpeech) {
+    if (audioStreamForSpeech && captionsEnabled) {
       startRecognition();
     } else {
       stopRecognition();
-      if (!isAudioOn) {
+      if (!isAudioOn || !captionsEnabled) {
         setFullTranscript("");
         setInterimTranscript("");
       }
     }
-  }, [audioStreamForSpeech, isAudioOn, startRecognition, stopRecognition]);
+  }, [
+    audioStreamForSpeech,
+    isAudioOn,
+    captionsEnabled,
+    startRecognition,
+    stopRecognition,
+  ]);
 
   useEffect(() => {
     const getDevices = async () => {
@@ -827,7 +839,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const handleStartRecording = () => {
     const outputStream = new MediaStream();
 
-    if (screenShareMode === "screen" && screenStream) {
+    if (props.screenShareMode === "screen" && screenStream) {
       const screenVideoTrack = screenStream.getVideoTracks()[0];
       if (screenVideoTrack) outputStream.addTrack(screenVideoTrack.clone());
     }
@@ -839,7 +851,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     if (isAudioOn) {
       if (
-        screenShareMode === "screen" &&
+        props.screenShareMode === "screen" &&
         screenStream?.getAudioTracks().length > 0
       ) {
         const screenAudioTrack = screenStream.getAudioTracks()[0];
@@ -885,7 +897,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   // Updated handler
   const handleShareModeChange = (mode: "off" | "screen" | "canvas") => {
-    setScreenShareMode(mode);
+    onScreenShareModeChange(mode);
   };
 
   const handleSplitterMouseDown = (e: React.MouseEvent) => {
@@ -1103,7 +1115,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   // Updated renderScreen function
   const renderScreen = (className?: string) => {
-    if (screenShareMode === "screen" && screenStream) {
+    if (props.screenShareMode === "screen" && screenStream) {
       return (
         <VideoPlayer
           stream={screenStream}
@@ -1112,7 +1124,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       );
     }
 
-    if (screenShareMode === "canvas") {
+    if (props.screenShareMode === "canvas") {
       return (
         <div
           className="w-full h-full"
@@ -1272,8 +1284,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     // Updated main content check
     const mainIsCamera =
-      (pipContent === "share" && screenShareMode !== "off") ||
-      screenShareMode === "off";
+      (pipContent === "share" && props.screenShareMode !== "off") ||
+      props.screenShareMode === "off";
     const mainContent = mainIsCamera ? renderCamera() : renderScreen();
     // Updated pip content check
     const pipVideo =
@@ -1291,7 +1303,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     };
 
     // Updated pip display check
-    const pipContentEl = screenShareMode !== "off" &&
+    const pipContentEl = props.screenShareMode !== "off" &&
       isVideoOn &&
       cameraStream &&
       containerSize.width > 0 && (
@@ -1306,7 +1318,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onDragStop={handlePipDragStop}
           onResizeStop={handlePipResizeStop}
           className="pointer-events-auto"
-          style={{ zIndex: 210 }}
+          style={{ zIndex: "var(--z-draggable-element-active)" }}
         >
           <div className="w-full h-full relative group">
             {pipVideo}
@@ -1456,14 +1468,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       className={cn(
         "flex-1 relative bg-neutral-900 rounded-lg overflow-hidden border border-border/40",
         isFullscreen &&
-          "fixed inset-0 w-screen h-screen z-[2000] rounded-none border-none",
-        !isMouseActive && isFullscreen && "cursor-none",
-        isPanning ? "cursor-grabbing" : isSpacePressed ? "cursor-grab" : ""
+          "fixed inset-0 w-screen h-screen rounded-none border-none",
+        isPanning ? "cursor-grabbing" : isSpacePressed ? "cursor-grab" : "",
+        !isMouseActive && isFullscreen && "cursor-none"
       )}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
+      style={isFullscreen ? { zIndex: "var(--z-fullscreen-canvas)" } : {}}
     >
       {/* Scene Wrapper */}
       <div
@@ -1484,7 +1497,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         />
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 220 }}
+          style={{ zIndex: "var(--z-draggable-element)" }}
         >
           <div className="w-full h-full relative">
             {filteredHtmlOverlays.map((overlay) => (
@@ -1527,7 +1540,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 key={`file-wrapper-${file.id}`}
                 style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
               >
-              <DraggableFileViewer
+                <DraggableFileViewer
                   key={file.id}
                   overlay={file}
                   viewport={viewport}
@@ -1651,7 +1664,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   }}
                   bounds="parent"
                   className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
-                  style={{ zIndex: 999 }}
+                  style={{ zIndex: "var(--z-caption)" }}
                   minWidth={containerSize.width * 0.2}
                   disableDragging={isSpacePressed} // <-- Updated
                   enableResizing={
@@ -1714,7 +1727,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     />
                     <div
                       onMouseDown={handleCaptionRotationStart}
-                      className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50 cursor-alias"
+                      className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-alias"
+                      style={{ zIndex: "var(--z-draggable-element-active)" }}
                     >
                       <RotateCcw className="w-4 h-4" />
                     </div>
@@ -1730,7 +1744,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 220 }}
+          style={{ zIndex: "var(--z-draggable-element)" }}
         >
           <div className="w-full h-full relative">
             {filteredHtmlOverlays.map((overlay) => (
@@ -1751,7 +1765,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 key={`browser-wrapper-${browser.id}`}
                 style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
               >
-              <DraggableBrowser
+                <DraggableBrowser
                   key={browser.id}
                   overlay={browser}
                   viewport={viewport}
@@ -1773,7 +1787,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 key={`file-wrapper-${file.id}`}
                 style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
               >
-              <DraggableFileViewer
+                <DraggableFileViewer
                   key={file.id}
                   overlay={file}
                   viewport={viewport}
@@ -1960,7 +1974,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     />
                     <div
                       onMouseDown={handleCaptionRotationStart}
-                      className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto z-50 cursor-alias"
+                      className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-alias"
+                      style={{ zIndex: "var(--z-draggable-element-active)" }}
                     >
                       <RotateCcw className="w-4 h-4" />
                     </div>
@@ -2008,7 +2023,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       {/* AI Button stays outside sceneRef to remain fixed */}
       {containerSize.width > 0 && (
         <Rnd
-          style={{ zIndex: 1000 }}
+          style={{ zIndex: "var(--z-ai-popover-trigger)" }}
           cancel=".aicp-content"
           size={{ width: 64, height: 64 }}
           position={{
@@ -2024,7 +2039,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           disableDragging={isSpacePressed} // <-- Updated
           enableResizing={false}
           className={cn(
-            "pointer-events-auto z-[1010] transition-opacity duration-300",
+            "pointer-events-auto transition-opacity duration-300",
             isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
           )}
         >
@@ -2052,9 +2067,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       {/* Bottom Controls - stays outside sceneRef to remain fixed */}
       <div
         className={cn(
-          "absolute bottom-6 left-1/2 -translate-x-1/2 z-[1010] transition-opacity duration-300 ease-in-out",
+          "absolute bottom-6 left-1/2 -translate-x-1/2 transition-opacity duration-300 ease-in-out",
           isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
+        style={{ zIndex: "var(--z-floating-controls)" }}
       >
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
           {/* Mic Button & Dropdown */}
@@ -2081,7 +2097,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   <ChevronUp className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent
+                style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
+              >
                 {audioDevices.map((device, i) => (
                   <DropdownMenuItem
                     key={device.deviceId}
@@ -2121,7 +2139,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   <ChevronUp className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
+              <DropdownMenuContent
+                style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
+              >
                 {videoDevices.map((device, i) => (
                   <DropdownMenuItem
                     key={device.deviceId}
@@ -2152,7 +2172,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 <ScreenShare className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent
+              style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
+            >
               <DropdownMenuItem onClick={() => handleShareModeChange("screen")}>
                 <Monitor className="w-4 h-4 mr-2" />
                 Share Screen

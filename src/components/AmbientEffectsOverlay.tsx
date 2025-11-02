@@ -206,11 +206,21 @@ export const AmbientEffectsOverlay: React.FC<AmbientEffectsOverlayProps> = ({
           ctx.strokeStyle = "rgba(180,200,255,0.4)";
           ctx.stroke();
           if (p.y > height) p.y = -10;
-        } else if ((effect === "fire" || effect === "fire-border") && p.radius) {
+        } else if (
+          (effect === "fire" || effect === "fire-border") &&
+          p.radius
+        ) {
           const lifeRatio = (p.life || 0) / (p.maxLife || 1);
           p.life = (p.life || 0) + 1;
           p.radius *= 0.98;
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+          const grad = ctx.createRadialGradient(
+            p.x,
+            p.y,
+            0,
+            p.x,
+            p.y,
+            p.radius
+          );
           grad.addColorStop(0, `rgba(255,200,0,${1 - lifeRatio})`);
           grad.addColorStop(1, "rgba(255,0,0,0)");
           ctx.beginPath();
@@ -266,6 +276,7 @@ export const AmbientEffectsOverlay: React.FC<AmbientEffectsOverlayProps> = ({
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none z-10"
+      tyle={{ zIndex: "var(--z-canvas-overlay)" }}
     />
   );
 };
@@ -281,6 +292,12 @@ export const mapPromptToEffect = (prompt: string): AmbientEffect => {
   if (text.includes("neon")) return "neon-pulse";
   if (text.includes("bokeh")) return "bokeh";
   if (text.includes("dust") || text.includes("fog")) return "dust";
-  if (text.includes("none") || text.includes("remove") || text.includes("stop") || text.includes("clear")) return "none";
+  if (
+    text.includes("none") ||
+    text.includes("remove") ||
+    text.includes("stop") ||
+    text.includes("clear")
+  )
+    return "none";
   return "none";
 };

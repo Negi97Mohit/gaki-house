@@ -164,8 +164,9 @@ export const AICommandPopover = ({
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent
         container={portalContainer}
-        className="w-96 p-4 z-[1100] aicp-content"
         align="end"
+        className="w-96 p-4 aicp-content"
+        style={{ zIndex: "var(--z-ai-popover-content)" }}
       >
         <div className="grid gap-4">
           <div className="space-y-2">

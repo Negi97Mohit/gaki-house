@@ -261,7 +261,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         }}
         onDoubleClick={handleDoubleClick}
         className={cn(
-          "group pointer-events-auto transition-colors duration-200 z-[220]",
+          "group pointer-events-auto transition-colors duration-200",
           isSelected
             ? "border-2 border-primary border-dashed"
             : "border-2 border-transparent hover:border-primary/50 border-dashed"
@@ -286,7 +286,11 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         >
           {/* Drag indicator - visible when selected and not editing */}
           {isSelected && !isEditing && (
-            <div className="absolute top-1 left-1/2 -translate-x-1/2 text-primary/60 pointer-events-none z-[60]">
+            <div
+              className="absolute top-1 left-1/2 -translate-x-1/2 text-primary/60 pointer-events-none"
+              style={{ zIndex: "var(--z-draggable-element-hover)" }}
+            >
+              {" "}
               <GripVertical className="w-4 h-4" />
             </div>
           )}
@@ -360,9 +364,10 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                   onRemove(overlay.id);
                 }}
                 title="Remove Text"
-                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all z-[10000] hover:scale-110"
+                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110"
                 style={{
                   transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+                  zIndex: "var(--z-draggable-element-active)",
                 }}
               >
                 <X className="w-4 h-4 pointer-events-none" />

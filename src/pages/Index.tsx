@@ -8,6 +8,7 @@ import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
+import { zIndex } from "@/lib/zIndex";
 import {
   CaptionStyle,
   GeneratedOverlay,
@@ -79,6 +80,18 @@ const createDefaultScene = (name: string): SceneState => ({
   browserOverlays: [],
   fileOverlays: [],
   activeOverlays: [],
+  selectedVideoDevice: undefined,
+  selectedAudioDevice: undefined,
+  isAudioOn: false,
+  isVideoOn: false,
+  captionsEnabled: true,
+  screenShareMode: "off",
+  isAiModeEnabled: true,
+  aiButtonPosition: { x: 90, y: 90 },
+  // Styles
+  captionStyle: DEFAULT_CAPTION_STYLE,
+  dynamicStyle: "none",
+  // Layout
   layoutMode: DEFAULT_LAYOUT_STATE.mode,
   cameraShape: DEFAULT_LAYOUT_STATE.cameraShape,
   splitRatio: DEFAULT_LAYOUT_STATE.splitRatio,
@@ -124,15 +137,6 @@ const Index = () => {
   );
 
   // --- DEVICE/CONNECTION STATE ---
-  const [selectedVideoDevice, setSelectedVideoDevice] = useState<
-    string | undefined
-  >(undefined);
-  const [selectedAudioDevice, setSelectedAudioDevice] = useState<
-    string | undefined
-  >(undefined);
-  const [isAudioOn, setIsAudioOn] = useState(false);
-  const [isVideoOn, setIsVideoOn] = useState(false);
-
   // --- UI & WINDOW STATE ---
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
@@ -160,16 +164,7 @@ const Index = () => {
   const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- LAYOUT STATE ---
-  const [aiButtonPosition, setAiButtonPosition] = useState({ x: 90, y: 90 });
-
-  // --- CAPTION/OVERLAY STATE (Global) ---
-  const [captionStyle, setCaptionStyle] = useState<CaptionStyle>(
-    DEFAULT_CAPTION_STYLE
-  );
-  const [dynamicStyle, setDynamicStyle] = useState("none");
-  const [captionsEnabled, setCaptionsEnabled] = useState(true);
   const [isProcessingAi, setIsProcessingAi] = useState(false);
-  const [isAiModeEnabled, setIsAiModeEnabled] = useState(true);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
 
   // --- DYNAMIC LAYOUT (Global) ---
@@ -243,9 +238,7 @@ const Index = () => {
     updates: Partial<SceneTransition>
   ) => {
     setSceneTransitions((prev) =>
-      prev.map((t) =>
-        t.id === transitionId ? { ...t, ...updates } : t
-      )
+      prev.map((t) => (t.id === transitionId ? { ...t, ...updates } : t))
     );
   };
 
@@ -254,16 +247,16 @@ const Index = () => {
       toast.error("Cannot delete the last scene");
       return;
     }
-    
+
     // Remove the scene
-    const newScenes = scenes.filter(s => s.id !== sceneId);
+    const newScenes = scenes.filter((s) => s.id !== sceneId);
     setScenes(newScenes);
-    
+
     // Remove transitions related to this scene
-    setSceneTransitions(prev => 
-      prev.filter(t => t.fromSceneId !== sceneId && t.toSceneId !== sceneId)
+    setSceneTransitions((prev) =>
+      prev.filter((t) => t.fromSceneId !== sceneId && t.toSceneId !== sceneId)
     );
-    
+
     // Switch to another scene if the active one was deleted
     if (activeSceneId === sceneId) {
       setActiveSceneId(newScenes[0].id);
@@ -278,8 +271,8 @@ const Index = () => {
   };
 
   const handleSceneRename = (sceneId: string, newName: string) => {
-    setScenes(prev =>
-      prev.map(scene =>
+    setScenes((prev) =>
+      prev.map((scene) =>
         scene.id === sceneId ? { ...scene, name: newName } : scene
       )
     );
@@ -311,7 +304,7 @@ const Index = () => {
       targetOverlay = {
         id: "live-caption",
         type: "caption",
-        layout: captionStyle,
+        layout: activeScene.captionStyle,
       };
     }
     if (target.type === "text") {
@@ -383,7 +376,7 @@ const Index = () => {
         layout: {
           position: { x: 50, y: 50 },
           size: { width: 35, height: 45 },
-          zIndex: 100,
+          zIndex: zIndex.draggableElement,
           rotation: 0,
         },
       };
@@ -433,8 +426,7 @@ const Index = () => {
           layout: {
             position: { x: 50, y: 50 },
             size: { width: 40, height: 50 },
-            zIndex: 100,
-            rotation: 0,
+            zIndex: zIndex.draggableElement,
           },
         };
         updateActiveScene((scene) => {
@@ -530,16 +522,34 @@ const Index = () => {
     };
   };
 
+  // --- SCENE-AWARE HANDLERS ---
+  const handleSetIsAudioOn = createScenePropertyHandler("isAudioOn");
+  const handleSetIsVideoOn = createScenePropertyHandler("isVideoOn");
+  const handleSetSelectedVideoDevice = createScenePropertyHandler(
+    "selectedVideoDevice"
+  );
+  const handleSetSelectedAudioDevice = createScenePropertyHandler(
+    "selectedAudioDevice"
+  );
+  const handleSetCaptionStyle = createScenePropertyHandler("captionStyle");
+  const handleSetDynamicStyle = createScenePropertyHandler("dynamicStyle");
+  const handleSetCaptionsEnabled =
+    createScenePropertyHandler("captionsEnabled");
+  const handleSetAiButtonPosition =
+    createScenePropertyHandler("aiButtonPosition");
+  const handleSetScreenShareMode =
+    createScenePropertyHandler("screenShareMode");
+  const handleSetIsAiModeEnabled =
+    createScenePropertyHandler("isAiModeEnabled");
   const handleAddTextOverlay = () => {
     const newTextOverlay: TextOverlayState = {
       id: generateTextOverlayId(),
       content: "Edit Text...",
-      style: { ...captionStyle, position: { x: 50, y: 50 } }, // Use global caption style
+      style: { ...activeScene.captionStyle, position: { x: 50, y: 50 } }, // Use global caption style
       layout: {
         position: { x: 50, y: 50 },
         size: { width: 30, height: 10 },
-        zIndex: 100,
-        rotation: 0,
+        zIndex: zIndex.draggableElement,
       },
     };
 
@@ -630,7 +640,7 @@ const Index = () => {
       position?: { x: number; y: number };
       size?: { width: number; height: number };
     }) => {
-      setCaptionStyle((prev) => {
+      handleSetCaptionStyle((prev) => {
         const updatedStyle = {
           ...prev,
           position: newLayout.position ?? prev.position,
@@ -641,12 +651,13 @@ const Index = () => {
         return updatedStyle;
       });
     },
-    [recording]
+    [recording, handleSetCaptionStyle]
   );
 
   const processTranscript = useCallback(
     async (transcript: string, targetId: string | null = null) => {
-      if (!isAiModeEnabled || isProcessingAi || !activeScene) return;
+      if (!activeScene.isAiModeEnabled || isProcessingAi || !activeScene)
+        return;
       setPromptHistory((prev) => [...prev, transcript]);
       log("TRANSCRIPT", "Processing command", { transcript, targetId });
       setDebugInfo((prev) => ({
@@ -732,7 +743,6 @@ const Index = () => {
       }
     },
     [
-      isAiModeEnabled,
       isProcessingAi,
       log,
       setDebugInfo,
@@ -775,7 +785,7 @@ const Index = () => {
           layout: {
             position: { x: 50, y: 50 },
             size: { width: 40, height: 50 },
-            zIndex: 100,
+            zIndex: zIndex.draggableElement,
             rotation: 0,
           },
         };
@@ -864,7 +874,7 @@ const Index = () => {
       layout: {
         position: { x: 50, y: 50 },
         size: { width: 40, height: 40 },
-        zIndex: 10,
+        zIndex: zIndex.draggableElement,
         rotation: 0,
       },
       preview: "",
@@ -926,10 +936,10 @@ const Index = () => {
   // --- Sidebar Props ---
   const sidebarProps = {
     // --- GLOBAL STYLES ---
-    style: captionStyle,
-    onStyleChange: setCaptionStyle,
-    dynamicStyle: dynamicStyle,
-    onDynamicStyleChange: setDynamicStyle,
+    style: activeScene.captionStyle,
+    onStyleChange: handleSetCaptionStyle,
+    dynamicStyle: activeScene.dynamicStyle,
+    onDynamicStyleChange: handleSetDynamicStyle,
 
     // --- SCENE-SPECIFIC STYLES ---
     blankCanvasColor: activeScene.blankCanvasColor,
@@ -989,7 +999,7 @@ const Index = () => {
     // Note: Text overlays are static and not recorded in session yet
 
     // 5. Global Live Caption Style
-    recording.recordCaptionStyle(captionStyle);
+    recording.recordCaptionStyle(activeScene.captionStyle);
 
     // 6. Scene Layout
     recording.recordLayoutChange({
@@ -999,7 +1009,7 @@ const Index = () => {
       pipPosition: activeScene.pipPosition,
       pipSize: activeScene.pipSize,
     });
-  }, [recording, activeScene, captionStyle]);
+  }, [recording, activeScene]);
 
   // Use a separate useEffect for the snapshot interval
   useEffect(() => {
@@ -1039,7 +1049,7 @@ const Index = () => {
           containerSize.width,
           containerSize.height,
           {
-            dynamicStyle, // This is global
+            dynamicStyle: activeScene.dynamicStyle,
             videoFilter: activeScene.videoFilter, // Pass active scene's filter
             backgroundEffect: activeScene.backgroundEffect,
             backgroundImageUrl: activeScene.backgroundImageUrl,
@@ -1056,7 +1066,6 @@ const Index = () => {
       recording,
       setAllSessions,
       navigate,
-      dynamicStyle,
       activeScene, // Depends on active scene for settings
     ]
   );
@@ -1144,30 +1153,30 @@ const Index = () => {
         onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
         isMouseActive={isMouseActive}
         // Media/Audio/Video Controls
-        isAudioOn={isAudioOn}
-        onAudioToggle={setIsAudioOn}
-        isVideoOn={isVideoOn}
-        onVideoToggle={setIsVideoOn}
-        selectedVideoDevice={selectedVideoDevice}
-        onVideoDeviceSelect={setSelectedVideoDevice}
-        selectedAudioDevice={selectedAudioDevice}
-        onAudioDeviceSelect={setSelectedAudioDevice}
+        isAudioOn={activeScene.isAudioOn}
+        onAudioToggle={handleSetIsAudioOn}
+        isVideoOn={activeScene.isVideoOn}
+        onVideoToggle={handleSetIsVideoOn}
+        selectedVideoDevice={activeScene.selectedVideoDevice}
+        onVideoDeviceSelect={handleSetSelectedVideoDevice}
+        selectedAudioDevice={activeScene.selectedAudioDevice}
+        onAudioDeviceSelect={handleSetSelectedAudioDevice}
         // Recording
         isRecording={recording.isRecording}
         onRecordingToggle={handleRecordingToggle}
         canvasRef={canvasRef}
         onRecordingComplete={() => {}}
         // AI & Overlays (from active scene)
-        isAiModeEnabled={isAiModeEnabled}
-        onAiModeToggle={setIsAiModeEnabled}
+        isAiModeEnabled={activeScene.isAiModeEnabled}
+        onAiModeToggle={handleSetIsAiModeEnabled}
         isProcessingAi={isProcessingAi}
         onProcessTranscript={processTranscript}
         generatedOverlays={activeScene.activeOverlays}
         onOverlayLayoutChange={handleOverlayLayoutChange}
         onRemoveOverlay={handleRemoveOverlay}
         onPreviewGenerated={() => {}}
-        aiButtonPosition={aiButtonPosition}
-        onAiButtonPositionChange={setAiButtonPosition}
+        aiButtonPosition={activeScene.aiButtonPosition}
+        onAiButtonPositionChange={handleSetAiButtonPosition}
         browserOverlays={activeScene.browserOverlays}
         onRemoveBrowser={handleRemoveBrowser}
         onBrowserUrlChange={handleBrowserUrlChange}
@@ -1183,13 +1192,14 @@ const Index = () => {
         onInternalDragStop={handleInternalDragStop}
         onDeselectAll={handleDeselectAll}
         onSetDynamicLayout={handleSetDynamicLayout}
-        dynamicLayout={dynamicLayout}
+        screenShareMode={activeScene.screenShareMode}
+        onScreenShareModeChange={handleSetScreenShareMode}
         // Caption Controls (Global)
-        captionsEnabled={captionsEnabled}
-        onCaptionsToggle={setCaptionsEnabled}
-        liveCaptionStyle={captionStyle}
-        onStyleChange={setCaptionStyle}
-        dynamicStyle={dynamicStyle}
+        captionsEnabled={activeScene.captionsEnabled}
+        onCaptionsToggle={handleSetCaptionsEnabled}
+        liveCaptionStyle={activeScene.captionStyle}
+        onStyleChange={handleSetCaptionStyle}
+        dynamicStyle={activeScene.dynamicStyle}
         onCaptionLayoutChange={handleCaptionLayoutChange}
         portalContainer={null}
         // Layout & Style (from active scene)

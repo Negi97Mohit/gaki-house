@@ -165,7 +165,10 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   };
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[1010] flex items-center justify-center pointer-events-none px-4">
+    <div
+      className="fixed top-4 left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none px-4"
+      style={{ zIndex: "var(--z-scene-tabs)" }}
+    >
       {/* Island Container */}
       <div className="relative bg-background/95 backdrop-blur-md border border-border rounded-2xl shadow-lg px-3 py-2 flex items-center gap-2 max-w-[70vw] pointer-events-auto">
         {/* Left Scroll Button */}

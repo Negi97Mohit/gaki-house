@@ -59,7 +59,8 @@ export const LayoutControls = ({
       <DropdownMenuContent
         container={portalContainer}
         align="end"
-        className="w-56 z-[1100]"
+        className="w-56"
+        style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
       >
         {" "}
         <DropdownMenuLabel>Layout Mode</DropdownMenuLabel>

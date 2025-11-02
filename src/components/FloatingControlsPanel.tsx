@@ -119,7 +119,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         <Button
           variant="secondary"
           size="icon"
-          className="fixed bottom-6 left-6 z-[1000] rounded-full h-14 w-14 shadow-lg"
+          className="fixed bottom-6 left-6 rounded-full h-14 w-14 shadow-lg"
+          style={{ zIndex: "var(--z-floating-panel-trigger)" }}
           onClick={() => setIsOpen(!isOpen)}
           data-floating-trigger
         >
@@ -135,13 +136,14 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       <div
         ref={panelRef}
         className={cn(
-          "fixed bottom-24 left-6 z-[1015] w-[380px] max-h-[70vh] rounded-2xl",
+          "fixed bottom-24 left-6 w-[380px] max-h-[70vh] rounded-2xl",
           "bg-white text-neutral-800 border border-border shadow-2xl dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700",
           "transition-all duration-300 ease-out flex flex-col",
           isOpen && props.isMouseActive
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-8 pointer-events-none"
         )}
+        style={{ zIndex: "var(--z-floating-panel)" }}
       >
         <div className="overflow-y-auto p-4 flex-1">
           <Accordion
@@ -257,7 +259,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     <SelectTrigger>
                       <SelectValue /> {/* remove placeholder */}
                     </SelectTrigger>
-                    <SelectContent className="z-[2000]">
+                    <SelectContent
+                      className="z-[2000]"
+                      style={{ zIndex: "var(--z-floating-panel-dropdown)" }}
+                    >
                       <SelectItem value="None">None</SelectItem>
                       {FILTER_PRESETS.map((filter) => (
                         <SelectItem key={filter.id} value={filter.style}>

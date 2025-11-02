@@ -18,7 +18,10 @@ export const FloatingControls: React.FC<FloatingControlsProps> = ({
   sessionsCount,
 }) => {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1020] flex items-center gap-3">
+    <div
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3"
+      style={{ zIndex: "var(--z-floating-controls)" }}
+    >
       <Button
         onClick={onOpenSessions}
         size="lg"

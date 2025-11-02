@@ -217,7 +217,11 @@ export type TransitionType =
   | "color_wipe"
   | "line_wipe";
 
-export type TransitionEasing = "ease-in" | "ease-out" | "ease-in-out" | "linear";
+export type TransitionEasing =
+  | "ease-in"
+  | "ease-out"
+  | "ease-in-out"
+  | "linear";
 export type TransitionBlendMode = "normal" | "multiply" | "screen" | "overlay";
 
 export interface SceneTransition {
@@ -241,6 +245,15 @@ export interface SceneState {
   browserOverlays: BrowserOverlayState[];
   fileOverlays: FileOverlayState[];
   activeOverlays: GeneratedOverlay[]; // AI-generated overlays
+  // Device & Media State
+  selectedVideoDevice: string | undefined;
+  selectedAudioDevice: string | undefined;
+  isAudioOn: boolean;
+  isVideoOn: boolean;
+  captionsEnabled: boolean;
+  screenShareMode: "off" | "screen" | "canvas";
+  isAiModeEnabled: boolean;
+  aiButtonPosition: { x: number; y: number };
 
   // Layout & Effects for this scene
   layoutMode: LayoutMode;
@@ -253,6 +266,9 @@ export interface SceneState {
   backgroundEffect: "none" | "blur" | "image";
   backgroundImageUrl: string | null;
   blankCanvasColor: string;
+  // Caption Style for this scene
+  captionStyle: CaptionStyle;
+  dynamicStyle: string;
 
   // Other camera effects
   isAutoFramingEnabled: boolean;

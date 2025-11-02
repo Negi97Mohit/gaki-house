@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { 
-  SceneTransition, 
-  TransitionType, 
+import {
+  SceneTransition,
+  TransitionType,
   TransitionEasing,
-  TransitionBlendMode 
+  TransitionBlendMode,
 } from "@/types/caption";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -50,7 +50,10 @@ const TRANSITION_OPTIONS = [
 
 interface TransitionPopoverProps {
   transition: SceneTransition | null;
-  onTransitionChange: (transitionId: string, updates: Partial<SceneTransition>) => void;
+  onTransitionChange: (
+    transitionId: string,
+    updates: Partial<SceneTransition>
+  ) => void;
   onClose: () => void;
 }
 
@@ -83,14 +86,18 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
       onOpenChange={(open) => !open && onClose()}
     >
       <PopoverPrimitive.Anchor asChild>
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 w-0 h-0 z-[1030]" />
+        <div
+          className="fixed top-16 left-1/2 -translate-x-1/2 w-0 h-0"
+          style={{ zIndex: "var(--z-transition-popover)" }}
+        />
       </PopoverPrimitive.Anchor>
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
-          className="w-96 z-[1030] p-5 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-2xl"
+          className="w-96 p-5 bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-2xl"
           align="center"
           side="bottom"
           sideOffset={8}
+          style={{ zIndex: "var(--z-transition-popover)" }}
         >
           <div className="grid gap-5">
             {/* Header */}
@@ -108,7 +115,9 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
 
             {/* Transition Type Grid */}
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">Transition Type</Label>
+              <Label className="text-xs font-medium text-muted-foreground">
+                Transition Type
+              </Label>
               <div className="grid grid-cols-3 gap-2">
                 {TRANSITION_OPTIONS.map((opt) => (
                   <Button
@@ -128,7 +137,9 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
                         : undefined
                     }
                     onClick={() =>
-                      onTransitionChange(transition.id, { type: opt.type as TransitionType })
+                      onTransitionChange(transition.id, {
+                        type: opt.type as TransitionType,
+                      })
                     }
                   >
                     <div
@@ -138,7 +149,11 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
                           "brightness(0) saturate(100%) invert(48%) sepia(79%) saturate(489%) hue-rotate(155deg) brightness(95%) contrast(88%)",
                       }}
                     >
-                      <img src={opt.icon} alt={opt.name} className="w-10 h-10" />
+                      <img
+                        src={opt.icon}
+                        alt={opt.name}
+                        className="w-10 h-10"
+                      />
                     </div>
                     <span className="text-xs">{opt.name}</span>
                   </Button>
@@ -149,13 +164,17 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
             {/* Duration Slider */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-xs font-medium text-muted-foreground">Duration</Label>
-                <span className="text-xs font-mono text-[#2596be]">{localDuration}ms</span>
+                <Label className="text-xs font-medium text-muted-foreground">
+                  Duration
+                </Label>
+                <span className="text-xs font-mono text-[#2596be]">
+                  {localDuration}ms
+                </span>
               </div>
               <Slider
                 value={[localDuration]}
                 onValueChange={(value) => setLocalDuration(value[0])}
-                onValueCommit={(value) => 
+                onValueCommit={(value) =>
                   onTransitionChange(transition.id, { durationMs: value[0] })
                 }
                 min={100}
@@ -167,7 +186,9 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
 
             {/* Easing Options */}
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">Easing</Label>
+              <Label className="text-xs font-medium text-muted-foreground">
+                Easing
+              </Label>
               <div className="grid grid-cols-2 gap-2">
                 {EASING_OPTIONS.map((easing) => (
                   <Button
@@ -180,7 +201,9 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
                         "bg-[#2596be]/10 ring-1 ring-[#2596be]"
                     )}
                     onClick={() =>
-                      onTransitionChange(transition.id, { easing: easing.value })
+                      onTransitionChange(transition.id, {
+                        easing: easing.value,
+                      })
                     }
                   >
                     {easing.label}
@@ -208,7 +231,9 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
             {/* Blend Mode (only when overlay is enabled) */}
             {transition.overlayEnabled && (
               <div className="space-y-2">
-                <Label className="text-xs font-medium text-muted-foreground">Blend Mode</Label>
+                <Label className="text-xs font-medium text-muted-foreground">
+                  Blend Mode
+                </Label>
                 <div className="grid grid-cols-2 gap-2">
                   {BLEND_MODES.map((mode) => (
                     <Button
@@ -221,7 +246,9 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
                           "bg-[#2596be]/10 ring-1 ring-[#2596be]"
                       )}
                       onClick={() =>
-                        onTransitionChange(transition.id, { blendMode: mode.value })
+                        onTransitionChange(transition.id, {
+                          blendMode: mode.value,
+                        })
                       }
                     >
                       {mode.label}
@@ -233,12 +260,14 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
 
             {/* Preview Timeline */}
             <div className="space-y-2 p-3 bg-secondary/30 rounded-lg">
-              <Label className="text-xs font-medium text-muted-foreground">Preview</Label>
+              <Label className="text-xs font-medium text-muted-foreground">
+                Preview
+              </Label>
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-8 bg-background/50 rounded flex items-center justify-center text-xs">
                   Scene A
                 </div>
-                <div 
+                <div
                   className="h-8 bg-[#2596be]/20 rounded flex items-center justify-center text-xs px-2 border border-[#2596be]/50"
                   style={{ width: `${Math.min(localDuration / 50, 100)}px` }}
                 >

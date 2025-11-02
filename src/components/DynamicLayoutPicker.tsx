@@ -30,8 +30,9 @@ export const DynamicLayoutPicker: React.FC<DynamicLayoutPickerProps> = ({
         <Button
           variant="secondary"
           size="icon"
-          className="absolute top-2 left-2 h-7 w-7 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-auto"
+          className="absolute top-2 left-2 h-7 w-7 rounded-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto"
           title="Change Layout"
+          style={{ zIndex: "var(--z-draggable-element-active)" }}
           onClick={(e) => e.stopPropagation()} // Prevent selection when clicking the button
         >
           <LayoutGrid className="w-4 h-4" />

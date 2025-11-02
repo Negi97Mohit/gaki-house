@@ -167,11 +167,11 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   return (
     <div
       ref={toolbarRef}
-      className="absolute z-[9999] bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-2"
+      className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-2"
       style={{
         left: `${toolbarPosition.x}px`,
         top: `${toolbarPosition.y}px`,
-        pointerEvents: "auto",
+        zIndex: "var(--z-text-toolbar)",
       }}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
