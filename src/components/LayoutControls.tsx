@@ -71,7 +71,7 @@ export const LayoutControls = ({
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => onLayoutModeChange("split-vertical")}>
           <SplitSquareVertical className="w-4 h-4 mr-2" />
-          Split Vertical
+          Split Horizontal
           {layoutMode === "split-vertical" && (
             <span className="ml-auto">✓</span>
           )}
@@ -80,7 +80,7 @@ export const LayoutControls = ({
           onClick={() => onLayoutModeChange("split-horizontal")}
         >
           <SplitSquareHorizontal className="w-4 h-4 mr-2" />
-          Split Horizontal
+          Split Vertical
           {layoutMode === "split-horizontal" && (
             <span className="ml-auto">✓</span>
           )}

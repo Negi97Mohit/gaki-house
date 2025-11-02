@@ -44,11 +44,11 @@ export const DynamicLayoutPicker: React.FC<DynamicLayoutPickerProps> = ({
       >
         <DropdownMenuItem onClick={() => onSelectLayout("split-vertical")}>
           <SplitSquareVertical className="w-4 h-4 mr-2" />
-          Split Vertically
+          Split Horizontal
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => onSelectLayout("split-horizontal")}>
           <SplitSquareHorizontal className="w-4 h-4 mr-2" />
-          Split Horizontally
+          Split Vertical
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => onSelectLayout("pip")}>
           <ImageIcon className="w-4 h-4 mr-2" />
