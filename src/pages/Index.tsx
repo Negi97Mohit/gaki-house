@@ -528,6 +528,100 @@ const Index = () => {
   );
 
   // --- HANDLERS ---
+  // --- MOVED FUNCTION UP ---
+  // This function must be defined *before* it is used in the useMemo hooks below.
+  const getAllPropsForScene = (scene: SceneState) => {
+    return {
+      sceneId: scene.id,
+      isAudioOn: scene.isAudioOn,
+      onAudioToggle: handleSetIsAudioOn,
+      isVideoOn: scene.isVideoOn,
+      onVideoToggle: handleSetIsVideoOn,
+      selectedVideoDevice: scene.selectedVideoDevice,
+      onVideoDeviceSelect: handleSetSelectedVideoDevice,
+      selectedAudioDevice: scene.selectedAudioDevice,
+      onAudioDeviceSelect: handleSetSelectedAudioDevice,
+      isAiModeEnabled: scene.isAiModeEnabled,
+      onAiModeToggle: handleSetIsAiModeEnabled,
+      aiButtonPosition: scene.aiButtonPosition,
+      onAiButtonPositionChange: handleSetAiButtonPosition,
+      generatedOverlays: scene.activeOverlays,
+      browserOverlays: scene.browserOverlays,
+      fileOverlays: scene.fileOverlays,
+      textOverlays: scene.textOverlays,
+      captionsEnabled: scene.captionsEnabled,
+      onCaptionsToggle: handleSetCaptionsEnabled,
+      liveCaptionStyle: scene.captionStyle,
+      onStyleChange: handleSetCaptionStyle,
+      dynamicStyle: scene.dynamicStyle,
+      onCaptionLayoutChange: handleCaptionLayoutChange,
+      layoutMode: scene.layoutMode,
+      cameraShape: scene.cameraShape,
+      splitRatio: scene.splitRatio,
+      pipPosition: scene.pipPosition,
+      pipSize: scene.pipSize,
+      onLayoutModeChange: handleSetLayoutMode,
+      onCameraShapeChange: handleSetCameraShape,
+      onSplitRatioChange: handleSetSplitRatio,
+      onPipPositionChange: handleSetPipPosition,
+      onPipSizeChange: handleSetPipSize,
+      customMaskUrl: scene.customMaskUrl,
+      onCustomMaskUpload: handleCustomMaskUpload,
+      blankCanvasColor: scene.blankCanvasColor,
+      videoFilter: scene.videoFilter,
+      backgroundEffect: scene.backgroundEffect,
+      backgroundImageUrl: scene.backgroundImageUrl,
+      isAutoFramingEnabled: scene.isAutoFramingEnabled,
+      zoomSensitivity: scene.zoomSensitivity,
+      trackingSpeed: scene.trackingSpeed,
+      isBeautifyEnabled: scene.isBeautifyEnabled,
+      isLowLightEnabled: scene.isLowLightEnabled,
+      isNeonEdgeEnabled: scene.isNeonEdgeEnabled,
+      neonIntensity: scene.neonIntensity,
+      neonColor: scene.neonColor,
+      screenShareMode: scene.screenShareMode,
+      onScreenShareModeChange: handleSetScreenShareMode,
+      hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
+      // --- MODIFIED: Pass device lists to canvas ---
+      audioDevices: audioDevices,
+      videoDevices: videoDevices,
+      // --- END MODIFICATION ---
+      sidebarProps: {
+        style: scene.captionStyle,
+        dynamicStyle: scene.dynamicStyle,
+        blankCanvasColor: scene.blankCanvasColor,
+        backgroundEffect: scene.backgroundEffect,
+        backgroundImageUrl: scene.backgroundImageUrl,
+        isAutoFramingEnabled: scene.isAutoFramingEnabled,
+        zoomSensitivity: scene.zoomSensitivity,
+        trackingSpeed: scene.trackingSpeed,
+        isBeautifyEnabled: scene.isBeautifyEnabled,
+        isLowLightEnabled: scene.isLowLightEnabled,
+        videoFilter: scene.videoFilter,
+        isNeonEdgeEnabled: scene.isNeonEdgeEnabled,
+        neonIntensity: scene.neonIntensity,
+        neonColor: scene.neonColor,
+        onStyleChange: handleSetCaptionStyle,
+        onDynamicStyleChange: handleSetDynamicStyle,
+        onBlankCanvasColorChange: handleSetBlankCanvasColor,
+        onBackgroundEffectChange: handleSetBackgroundEffect,
+        onBackgroundImageUrlChange: handleSetBackgroundImageUrl,
+        onAutoFramingChange: handleSetIsAutoFramingEnabled,
+        onZoomSensitivityChange: handleSetZoomSensitivity,
+        onTrackingSpeedChange: handleSetTrackingSpeed,
+        onBeautifyToggle: handleSetIsBeautifyEnabled,
+        onLowLightToggle: handleSetIsLowLightEnabled,
+        onVideoFilterChange: handleSetVideoFilter,
+        onNeonEdgeToggle: handleSetIsNeonEdgeEnabled,
+        onNeonIntensityChange: handleSetNeonIntensity,
+        onNeonColorChange: handleSetNeonColor,
+        savedOverlays: savedOverlays,
+        onAddSavedOverlay: handleAddSavedOverlay,
+        onDeleteSavedOverlay: handleDeleteSavedOverlay,
+      },
+    };
+  };
+  // --- END MOVED FUNCTION ---
 
   const handleSetDynamicLayout = (
     target: {
@@ -1212,6 +1306,9 @@ const Index = () => {
     },
     [setAllSessions]
   );
+
+  // --- MODIFIED: Wrap canvas props in a memoized object ---
+  // MOVED: These hooks are now BEFORE the early return.
   const activeSceneProps = useMemo(
     () => (activeScene ? getAllPropsForScene(activeScene) : null),
     [activeScene, savedOverlays]
@@ -1221,6 +1318,7 @@ const Index = () => {
     () => (previousScene ? getAllPropsForScene(previousScene) : null),
     [previousScene, savedOverlays]
   );
+
   const handleRecordingToggle = useCallback(
     async (
       isCurrentlyRecording: boolean,
@@ -1294,98 +1392,6 @@ const Index = () => {
     onRecordingComplete: () => {},
     portalContainer: null,
     hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
-  };
-
-  const getAllPropsForScene = (scene: SceneState) => {
-    return {
-      sceneId: scene.id,
-      isAudioOn: scene.isAudioOn,
-      onAudioToggle: handleSetIsAudioOn,
-      isVideoOn: scene.isVideoOn,
-      onVideoToggle: handleSetIsVideoOn,
-      selectedVideoDevice: scene.selectedVideoDevice,
-      onVideoDeviceSelect: handleSetSelectedVideoDevice,
-      selectedAudioDevice: scene.selectedAudioDevice,
-      onAudioDeviceSelect: handleSetSelectedAudioDevice,
-      isAiModeEnabled: scene.isAiModeEnabled,
-      onAiModeToggle: handleSetIsAiModeEnabled,
-      aiButtonPosition: scene.aiButtonPosition,
-      onAiButtonPositionChange: handleSetAiButtonPosition,
-      generatedOverlays: scene.activeOverlays,
-      browserOverlays: scene.browserOverlays,
-      fileOverlays: scene.fileOverlays,
-      textOverlays: scene.textOverlays,
-      captionsEnabled: scene.captionsEnabled,
-      onCaptionsToggle: handleSetCaptionsEnabled,
-      liveCaptionStyle: scene.captionStyle,
-      onStyleChange: handleSetCaptionStyle,
-      dynamicStyle: scene.dynamicStyle,
-      onCaptionLayoutChange: handleCaptionLayoutChange,
-      layoutMode: scene.layoutMode,
-      cameraShape: scene.cameraShape,
-      splitRatio: scene.splitRatio,
-      pipPosition: scene.pipPosition,
-      pipSize: scene.pipSize,
-      onLayoutModeChange: handleSetLayoutMode,
-      onCameraShapeChange: handleSetCameraShape,
-      onSplitRatioChange: handleSetSplitRatio,
-      onPipPositionChange: handleSetPipPosition,
-      onPipSizeChange: handleSetPipSize,
-      customMaskUrl: scene.customMaskUrl,
-      onCustomMaskUpload: handleCustomMaskUpload,
-      blankCanvasColor: scene.blankCanvasColor,
-      videoFilter: scene.videoFilter,
-      backgroundEffect: scene.backgroundEffect,
-      backgroundImageUrl: scene.backgroundImageUrl,
-      isAutoFramingEnabled: scene.isAutoFramingEnabled,
-      zoomSensitivity: scene.zoomSensitivity,
-      trackingSpeed: scene.trackingSpeed,
-      isBeautifyEnabled: scene.isBeautifyEnabled,
-      isLowLightEnabled: scene.isLowLightEnabled,
-      isNeonEdgeEnabled: scene.isNeonEdgeEnabled,
-      neonIntensity: scene.neonIntensity,
-      neonColor: scene.neonColor,
-      screenShareMode: scene.screenShareMode,
-      onScreenShareModeChange: handleSetScreenShareMode,
-      hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
-      // --- MODIFIED: Pass device lists to canvas ---
-      audioDevices: audioDevices,
-      videoDevices: videoDevices,
-      // --- END MODIFICATION ---
-      sidebarProps: {
-        style: scene.captionStyle,
-        dynamicStyle: scene.dynamicStyle,
-        blankCanvasColor: scene.blankCanvasColor,
-        backgroundEffect: scene.backgroundEffect,
-        backgroundImageUrl: scene.backgroundImageUrl,
-        isAutoFramingEnabled: scene.isAutoFramingEnabled,
-        zoomSensitivity: scene.zoomSensitivity,
-        trackingSpeed: scene.trackingSpeed,
-        isBeautifyEnabled: scene.isBeautifyEnabled,
-        isLowLightEnabled: scene.isLowLightEnabled,
-        videoFilter: scene.videoFilter,
-        isNeonEdgeEnabled: scene.isNeonEdgeEnabled,
-        neonIntensity: scene.neonIntensity,
-        neonColor: scene.neonColor,
-        onStyleChange: handleSetCaptionStyle,
-        onDynamicStyleChange: handleSetDynamicStyle,
-        onBlankCanvasColorChange: handleSetBlankCanvasColor,
-        onBackgroundEffectChange: handleSetBackgroundEffect,
-        onBackgroundImageUrlChange: handleSetBackgroundImageUrl,
-        onAutoFramingChange: handleSetIsAutoFramingEnabled,
-        onZoomSensitivityChange: handleSetZoomSensitivity,
-        onTrackingSpeedChange: handleSetTrackingSpeed,
-        onBeautifyToggle: handleSetIsBeautifyEnabled,
-        onLowLightToggle: handleSetIsLowLightEnabled,
-        onVideoFilterChange: handleSetVideoFilter,
-        onNeonEdgeToggle: handleSetIsNeonEdgeEnabled,
-        onNeonIntensityChange: handleSetNeonIntensity,
-        onNeonColorChange: handleSetNeonColor,
-        savedOverlays: savedOverlays,
-        onAddSavedOverlay: handleAddSavedOverlay,
-        onDeleteSavedOverlay: handleDeleteSavedOverlay,
-      },
-    };
   };
 
   return (
