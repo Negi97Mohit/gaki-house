@@ -295,6 +295,16 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           )}
         </Button>
 
+        {/* === NEW TOOLS POPOVER === */}
+        <ToolsPopover
+          onAddTextOverlay={onAddTextOverlay}
+          onAssetSelect={onAssetSelect}
+          setIsDrawing={setIsDrawing}
+          setTheme={setTheme}
+          theme={theme}
+          portalContainer={layoutProps.portalContainer}
+        />
+
         {/* === MOVED FROM RIGHT GROUP === */}
         <LayoutControls {...layoutProps} />
         <Button
@@ -310,16 +320,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             <Expand className="h-5 w-5" />
           )}
         </Button>
-
-        {/* === NEW TOOLS POPOVER === */}
-        <ToolsPopover
-          onAddTextOverlay={onAddTextOverlay}
-          onAssetSelect={onAssetSelect}
-          setIsDrawing={setIsDrawing}
-          setTheme={setTheme}
-          theme={theme}
-          portalContainer={layoutProps.portalContainer}
-        />
       </div>
     </div>
   );
