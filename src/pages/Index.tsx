@@ -1,6 +1,13 @@
 // src/pages/Index.tsx
 
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo,
+  ChangeEvent,
+} from "react"; // ADDED ChangeEvent
 import { FloatingLogo } from "@/components/FloatingLogo";
 import { useNavigate } from "react-router-dom";
 import { VideoCanvas } from "@/components/VideoCanvas";
@@ -49,6 +56,8 @@ import { SceneTabs } from "@/components/SceneTabs";
 import { TransitionPopover } from "@/components/TransitionPopover";
 // --- ADDED: Import new BottomNavigation ---
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
 const generateTextOverlayId = () =>
   `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -144,6 +153,7 @@ const Index = () => {
   // --- UI & WINDOW STATE ---
   const [isFullscreen, setIsFullscreen] = useState(false);
   // --- MODIFIED: This is no longer used by TopToolbar ---
+  const [isSceneTabsHidden, setIsSceneTabsHidden] = useState(false);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
@@ -1410,6 +1420,8 @@ const Index = () => {
         onSceneClose={handleSceneClose}
         onSceneReorder={handleSceneReorder}
         onSceneRename={handleSceneRename}
+        isHidden={isSceneTabsHidden} // ADDED
+        onHide={() => setIsSceneTabsHidden(true)} // ADDED
       />
 
       {/* --- DELETED: Top-right button group --- */}
@@ -1427,6 +1439,19 @@ const Index = () => {
         onClose={() => setShowSessionsPanel(false)}
       />
 
+      {/* --- ADDED: Show Scenes Button --- */}
+      {isSceneTabsHidden && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="fixed top-1/2 right-2 -translate-y-1/2 z-[2025] cybr-scroll-btn"
+          onClick={() => setIsSceneTabsHidden(false)}
+          title="Show Scenes"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </Button>
+      )}
+      {/* --- END ADDED --- */}
       <div className="flex-1 relative overflow-hidden">
         {previousScene && previousSceneProps && (
           <VideoCanvas

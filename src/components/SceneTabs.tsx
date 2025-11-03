@@ -1,7 +1,14 @@
 // src/components/SceneTabs.tsx
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, X, GripVertical, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  Plus,
+  X,
+  GripVertical,
+  ChevronUp,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 import { SceneState, SceneTransition } from "@/types/caption";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +53,8 @@ interface SceneTabsProps {
   onSceneClose: (id: string) => void;
   onSceneReorder: (fromIndex: number, toIndex: number) => void;
   onSceneRename: (id: string, newName: string) => void;
+  isHidden: boolean; // ADDED
+  onHide: () => void; // ADDED
 }
 
 export const SceneTabs: React.FC<SceneTabsProps> = ({
@@ -58,6 +67,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   onSceneClose,
   onSceneReorder,
   onSceneRename,
+  isHidden,
+  onHide,
 }) => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -315,40 +326,29 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
           filter: drop-shadow(0 0 8px hsl(60, 100%, 50%));
           background: hsl(60, 100%, 30%) !important;
         }
-
-        @media (prefers-color-scheme: light) {
-          .cybr-transition-btn {
-            background: hsl(60, 100%, 85%) !important;
-            color: hsl(60, 100%, 25%) !important;
-            border: 2px solid hsl(60, 100%, 40%) !important;
-          }
-          
-          .cybr-transition-btn:hover {
-            background: hsl(60, 100%, 75%) !important;
-            filter: drop-shadow(0 0 8px hsl(60, 100%, 40%));
-          }
-          /* --- ADDED: Light mode background overrides --- */
-          .cybr-container,
-          .cybr-glitch-layer::before {
-            background: hsl(50, 70%, 85%); /* Tinted Yellow */
-          }
-
-          .cybr-scene-tab::after {
-            background: hsl(50, 70%, 90%); /* Lighter Tinted Yellow for inactive tabs */
-          }
-
-          .cybr-scene-tab.active::after {
-            background: transparent; /* Keep active tab transparent */
-          }            
-        }
       `}</style>
 
       <div
-        className="fixed top-1/2 right-6 -translate-y-1/2 flex items-center justify-center pointer-events-none"
+        className={cn(
+          "fixed top-1/2 right-6 -translate-y-1/2",
+          "transition-all duration-300 ease-in-out",
+          isHidden
+            ? "translate-x-full opacity-0 pointer-events-none"
+            : "opacity-100"
+        )}
         style={{ zIndex: "var(--z-scene-tabs)" }}
       >
         {/* Island Container */}
-        <div className="cybr-container px-3 py-4 flex flex-col items-center gap-2 max-h-[70vh] w-56 pointer-events-auto shadow-[0_0_30px_rgba(255,235,59,0.2)]">
+        <div className="cybr-container relative px-3 pt-10 pb-4 flex flex-col items-center gap-2 max-h-[70vh] w-56 pointer-events-auto shadow-[0_0_30px_rgba(255,235,59,0.2)]">
+          {/* Hide Button */}
+          <button
+            className="cybr-scroll-btn h-7 w-7 rounded-md flex items-center justify-center flex-shrink-0 absolute top-2 left-2"
+            onClick={onHide}
+            title="Hide Scenes"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+
           {/* Top Scroll Button */}
           {showTopScroll && (
             <button
