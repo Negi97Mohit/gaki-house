@@ -36,6 +36,7 @@ import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { AssetResult } from "@/components/AssetLibrary";
 import { LayoutMode, CameraShape } from "@/types/caption";
 import { useTheme } from "next-themes";
+import { ToolsPopover } from "@/components/ToolsPopover";
 
 // Props interface combining all props needed from Index, VideoCanvas, etc.
 interface BottomNavigationProps {
@@ -121,236 +122,204 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     <div
       className={cn(
         "fixed bottom-0 left-0 right-0 h-20 bg-background/80 backdrop-blur-md border-t border-border transition-opacity duration-300 ease-in-out",
+        "shadow-[0_-10px_25px_-15px_rgba(77,203,194,0.6)]", // ADDED: This adds the hue at the top
         isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
       )}
       style={{ zIndex: "var(--z-floating-controls)" }}
     >
-      <div className="flex items-center justify-between h-full px-4 md:px-6">
-        {/* === LEFT GROUP === */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-10 w-10"
-            onClick={onOpenSettings}
-            title="Open Controls Panel"
-          >
-            <SlidersHorizontal className="w-5 h-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-10 w-10"
-            onClick={onOpenSessions}
-            title="Your Recordings"
-          >
-            <Library className="w-5 h-5" />
-          </Button>
-        </div>
-
+      {/* === CONSOLIDATED CENTER GROUP === */}
+      <div className="flex items-center justify-center h-full px-4 md:px-6 gap-2">
+        {/* === MOVED FROM LEFT GROUP === */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full h-10 w-10"
+          onClick={onOpenSettings}
+          title="Open Controls Panel"
+        >
+          <SlidersHorizontal className="w-5 h-5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full h-10 w-10"
+          onClick={onOpenSessions}
+          title="Your Recordings"
+        >
+          <Library className="w-5 h-5" />
+        </Button>
         {/* === CENTER GROUP === */}
-        <div className="flex items-center gap-2">
-          {/* Audio Controls */}
-          <div className="flex items-center bg-muted/50 rounded-full">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-10 w-10"
-              onClick={() => onAudioToggle(!isAudioOn)}
-            >
-              {isAudioOn ? (
-                <Mic className="h-5 w-5" />
-              ) : (
-                <MicOff className="h-5 w-5 text-red-500" />
-              )}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full h-8 w-8 mr-1"
-                >
-                  <ChevronUp className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
-              >
-                {audioDevices.map((device, i) => (
-                  <DropdownMenuItem
-                    key={device.deviceId}
-                    onClick={() => onAudioDeviceSelect(device.deviceId)}
-                  >
-                    {device.deviceId === selectedAudioDevice && (
-                      <Check className="w-4 h-4 mr-2" />
-                    )}
-                    {device.label || `Microphone ${i + 1}`}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Video Controls */}
-          <div className="flex items-center bg-muted/50 rounded-full">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-10 w-10"
-              onClick={() => onVideoToggle(!isVideoOn)}
-            >
-              {isVideoOn ? (
-                <Webcam className="h-5 w-5" />
-              ) : (
-                <VideoOff className="h-5 w-5 text-red-500" />
-              )}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full h-8 w-8 mr-1"
-                >
-                  <ChevronUp className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
-              >
-                {videoDevices.map((device, i) => (
-                  <DropdownMenuItem
-                    key={device.deviceId}
-                    onClick={() => onVideoDeviceSelect(device.deviceId)}
-                  >
-                    {device.deviceId === selectedVideoDevice && (
-                      <Check className="w-4 h-4 mr-2" />
-                    )}
-                    {device.label || `Camera ${i + 1}`}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          {/* Screen Share */}
+        <div className="flex items-center bg-muted/50 rounded-full">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10"
+            onClick={() => onAudioToggle(!isAudioOn)}
+          >
+            {isAudioOn ? (
+              <Mic className="h-5 w-5" />
+            ) : (
+              <MicOff className="h-5 w-5 text-red-500" />
+            )}
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className={cn(
-                  "rounded-full h-10 w-10 transition-colors bg-muted/50",
-                  screenShareMode !== "off" && "bg-primary/20 text-primary"
-                )}
-                title="Share Content"
+                className="rounded-full h-8 w-8 mr-1"
               >
-                <ScreenShare className="h-5 w-5" />
+                <ChevronUp className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
             >
-              <DropdownMenuItem
-                onClick={() => onScreenShareModeChange("screen")}
-              >
-                <Monitor className="w-4 h-4 mr-2" />
-                Share Screen
-                {screenShareMode === "screen" && (
-                  <Check className="w-4 h-4 ml-auto" />
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => onScreenShareModeChange("canvas")}
-              >
-                <Paintbrush className="w-4 h-4 mr-2" />
-                Blank Canvas
-                {screenShareMode === "canvas" && (
-                  <Check className="w-4 h-4 ml-auto" />
-                )}
-              </DropdownMenuItem>
-              {screenShareMode !== "off" && (
+              {audioDevices.map((device, i) => (
                 <DropdownMenuItem
-                  className="text-red-500"
-                  onClick={() => onScreenShareModeChange("off")}
+                  key={device.deviceId}
+                  onClick={() => onAudioDeviceSelect(device.deviceId)}
                 >
-                  <X className="w-4 h-4 mr-2" />
-                  Stop Sharing
+                  {device.deviceId === selectedAudioDevice && (
+                    <Check className="w-4 h-4 mr-2" />
+                  )}
+                  {device.label || `Microphone ${i + 1}`}
                 </DropdownMenuItem>
-              )}
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* Record Button */}
-          <Button
-            size="icon"
-            className={cn(
-              "rounded-full h-12 w-12 transition-colors",
-              isRecording
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-primary hover:bg-primary/90"
-            )}
-            onClick={onRecordingToggle}
-            title={isRecording ? "Stop Recording" : "Start Recording"}
-          >
-            {isRecording ? (
-              <Square className="h-6 w-6" />
-            ) : (
-              <Circle className="h-6 w-6 fill-current" />
-            )}
-          </Button>
         </div>
 
-        {/* === RIGHT GROUP === */}
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={onAddTextOverlay}
-            size="icon"
-            variant="ghost"
-            className="rounded-full h-10 w-10"
-            title="Add Text"
-          >
-            <Type className="h-5 w-5" />
-          </Button>
-          <FloatingAssetSearch onAssetSelect={onAssetSelect} />
-          <Button
-            onClick={() => setIsDrawing(true)}
-            size="icon"
-            variant="ghost"
-            className="rounded-full h-10 w-10"
-            title="Start Drawing"
-          >
-            <Pencil className="h-5 w-5" />
-          </Button>
-
-          <LayoutControls {...layoutProps} />
-
-          <Button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            size="icon"
-            variant="ghost"
-            className="rounded-full h-10 w-10"
-            title="Toggle Theme"
-          >
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          </Button>
-          <InstructionsDialog />
+        {/* Video Controls */}
+        <div className="flex items-center bg-muted/50 rounded-full">
           <Button
             variant="ghost"
             size="icon"
             className="rounded-full h-10 w-10"
-            onClick={onToggleFullscreen}
-            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+            onClick={() => onVideoToggle(!isVideoOn)}
           >
-            {isFullscreen ? (
-              <Shrink className="h-5 w-5" />
+            {isVideoOn ? (
+              <Webcam className="h-5 w-5" />
             ) : (
-              <Expand className="h-5 w-5" />
+              <VideoOff className="h-5 w-5 text-red-500" />
             )}
           </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-8 w-8 mr-1"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
+            >
+              {videoDevices.map((device, i) => (
+                <DropdownMenuItem
+                  key={device.deviceId}
+                  onClick={() => onVideoDeviceSelect(device.deviceId)}
+                >
+                  {device.deviceId === selectedVideoDevice && (
+                    <Check className="w-4 h-4 mr-2" />
+                  )}
+                  {device.label || `Camera ${i + 1}`}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
+        {/* Screen Share */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "rounded-full h-10 w-10 transition-colors bg-muted/50",
+                screenShareMode !== "off" && "bg-primary/20 text-primary"
+              )}
+              title="Share Content"
+            >
+              <ScreenShare className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
+          >
+            <DropdownMenuItem onClick={() => onScreenShareModeChange("screen")}>
+              <Monitor className="w-4 h-4 mr-2" />
+              Share Screen
+              {screenShareMode === "screen" && (
+                <Check className="w-4 h-4 ml-auto" />
+              )}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onScreenShareModeChange("canvas")}>
+              <Paintbrush className="w-4 h-4 mr-2" />
+              Blank Canvas
+              {screenShareMode === "canvas" && (
+                <Check className="w-4 h-4 ml-auto" />
+              )}
+            </DropdownMenuItem>
+            {screenShareMode !== "off" && (
+              <DropdownMenuItem
+                className="text-red-500"
+                onClick={() => onScreenShareModeChange("off")}
+              >
+                <X className="w-4 h-4 mr-2" />
+                Stop Sharing
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Record Button */}
+        <Button
+          size="icon"
+          className={cn(
+            "rounded-full h-12 w-12 transition-colors",
+            isRecording
+              ? "bg-red-600 hover:bg-red-700"
+              : "bg-primary hover:bg-primary/90"
+          )}
+          onClick={onRecordingToggle}
+          title={isRecording ? "Stop Recording" : "Start Recording"}
+        >
+          {isRecording ? (
+            <Square className="h-6 w-6" />
+          ) : (
+            <Circle className="h-6 w-6 fill-current" />
+          )}
+        </Button>
+
+        {/* === MOVED FROM RIGHT GROUP === */}
+        <LayoutControls {...layoutProps} />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full h-10 w-10"
+          onClick={onToggleFullscreen}
+          title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+        >
+          {isFullscreen ? (
+            <Shrink className="h-5 w-5" />
+          ) : (
+            <Expand className="h-5 w-5" />
+          )}
+        </Button>
+
+        {/* === NEW TOOLS POPOVER === */}
+        <ToolsPopover
+          onAddTextOverlay={onAddTextOverlay}
+          onAssetSelect={onAssetSelect}
+          setIsDrawing={setIsDrawing}
+          setTheme={setTheme}
+          theme={theme}
+          portalContainer={layoutProps.portalContainer}
+        />
       </div>
     </div>
   );

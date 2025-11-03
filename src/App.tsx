@@ -58,8 +58,7 @@ const App = () => {
         <DebugProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
-            enableSystem
+            forcedTheme="dark"
             disableTransitionOnChange
           >
             {/* ✅ Loader always visible at start */}

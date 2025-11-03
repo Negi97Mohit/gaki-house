@@ -327,6 +327,19 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
             background: hsl(60, 100%, 75%) !important;
             filter: drop-shadow(0 0 8px hsl(60, 100%, 40%));
           }
+          /* --- ADDED: Light mode background overrides --- */
+          .cybr-container,
+          .cybr-glitch-layer::before {
+            background: hsl(50, 70%, 85%); /* Tinted Yellow */
+          }
+
+          .cybr-scene-tab::after {
+            background: hsl(50, 70%, 90%); /* Lighter Tinted Yellow for inactive tabs */
+          }
+
+          .cybr-scene-tab.active::after {
+            background: transparent; /* Keep active tab transparent */
+          }            
         }
       `}</style>
 

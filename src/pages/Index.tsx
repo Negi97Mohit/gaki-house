@@ -118,7 +118,7 @@ const createDefaultScene = (name: string): SceneState => ({
 
 const Index = () => {
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
+
   const recording = useRecordingSession();
   const { log } = useLog();
   const { setDebugInfo } = useDebug();
