@@ -10,14 +10,15 @@ function useWords(fullTranscript: string, interimTranscript: string) {
 }
 
 // --- BASE STATIC STYLE ---
-const StaticComponent: React.FC<DynamicStyleProps> = ({ text }) => (
-  <span>{text}</span>
+const StaticComponent: React.FC<DynamicStyleProps> = ({ text, baseStyle }) => (
+  <span style={baseStyle}>{text}</span>
 );
 
 // --- KARAOKE STYLE ---
 const KaraokeComponent: React.FC<DynamicStyleProps> = ({
   fullTranscript,
   interimTranscript,
+  baseStyle, // <-- Accept baseStyle
 }) => {
   const fullWords = fullTranscript.trim().split(/\s+/);
   const interimWords = interimTranscript.trim().split(/\s+/);
@@ -34,9 +35,10 @@ const KaraokeComponent: React.FC<DynamicStyleProps> = ({
               position: "relative",
               display: "inline-block",
               marginRight: "6px",
-              fontWeight: 600,
-              color: isSpoken ? "#fff" : "rgba(255,255,255,0.4)",
-              transition: "color 0.3s ease",
+              // fontWeight: 600, // REMOVED: Should be inherited from baseStyle
+              color: "currentColor", // MODIFIED: Inherit color
+              opacity: isSpoken ? 1 : 0.4, // MODIFIED: Use opacity for unspoken words
+              transition: "color 0.3s ease, opacity 0.3s ease",
             }}
           >
             <span
@@ -205,10 +207,6 @@ const BooComponent: React.FC<DynamicStyleProps> = ({
           style={{
             display: "inline-block",
             marginRight: "8px",
-            color: "#ff8800",
-            fontFamily: "'Creepster', cursive",
-            fontSize: "72px",
-            fontWeight: "bold",
             textShadow: "0 0 18px rgba(150, 80, 255, 0.8)",
             animationDelay: `${i * 150}ms`,
           }}
@@ -246,9 +244,6 @@ const SpookyComponent: React.FC<DynamicStyleProps> = ({
           style={{
             display: "inline-block",
             marginRight: "8px",
-            color: "#ff4000",
-            fontFamily: "'Nosifer', cursive",
-            fontSize: "68px",
             textShadow: `
               0 0 8px #ccff00,
               0 0 20px #bfff00,
@@ -282,7 +277,7 @@ const BoldMovesComponent: React.FC<DynamicStyleProps> = ({
 }) => {
   const words = useWords(fullTranscript, interimTranscript);
   return (
-    <div style={{ fontFamily: "'Anton', sans-serif", fontWeight: 900 }}>
+    <div>
       {words.map((word, i) => (
         <span
           key={`${word}-${i}`}
@@ -290,7 +285,6 @@ const BoldMovesComponent: React.FC<DynamicStyleProps> = ({
           style={{
             display: "inline-block",
             marginRight: "8px",
-            fontSize: "64px",
             textTransform: "uppercase",
             color: i % 2 === 0 ? "#ff4d00" : "#007b9e",
             animationDelay: `${i * 100}ms`,
@@ -325,7 +319,7 @@ const TypewriterGlowComponent: React.FC<DynamicStyleProps> = ({ text }) => (
     {text}
     <style>{`
       .typewriter-glow {
-        color: #fff;
+        color: currentColor; /* MODIFIED: Inherit color */
         text-shadow: 0 0 8px #00f0ff;
         overflow: hidden;
         border-right: 3px solid #00f0ff;
@@ -348,7 +342,7 @@ const NeonPopComponent: React.FC<DynamicStyleProps> = ({ text }) => (
         0%, 100% { text-shadow: 0 0 4px #ff00ff, 0 0 10px #ff00ff; }
         50% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff; }
       }
-      .neon-pop { color: #fff; animation: neon 1.5s ease-in-out infinite alternate; }
+      .neon-pop { color: currentColor; animation: neon 1.5s ease-in-out infinite alternate; } /* MODIFIED: Inherit color */
     `}</style>
   </span>
 );
@@ -377,10 +371,10 @@ const PulseGlowBeatComponent: React.FC<DynamicStyleProps> = ({ text }) => (
     <style>{`
       @keyframes pulse {
         0%, 100% { transform: scale(1); text-shadow: 0 0 8px #ff00aa; }
-        50% { transform: scale(1.1); text-shadow: 0 0 20px #ff66cc; }
+        50% { transform: scale(1.05); text-shadow: 0 0 20px #ff66cc; }
       }
       .pulse-glow-beat {
-        color: #fff;
+        color: currentColor; /* MODIFIED: Inherit color */
         display: inline-block;
         animation: pulse 1s ease-in-out infinite;
       }
@@ -433,7 +427,7 @@ const WindSwipeComponent: React.FC<DynamicStyleProps> = ({ text }) => (
         background:linear-gradient(90deg, #00ffff, #ff00ff);
         -webkit-background-clip:text;
         color:transparent;
-        font-weight:800;
+        /* fontWeight is inherited */
         animation: wind 1s ease forwards;
       }
     `}</style>
@@ -465,7 +459,7 @@ const PopRotateComponent: React.FC<DynamicStyleProps> = ({
           display:inline-block;
           margin-right:10px;
           animation: rotatePop 0.8s cubic-bezier(0.22,1,0.36,1);
-          font-weight:800;
+          /* fontWeight is inherited */
         }
       `}</style>
     </div>
@@ -498,8 +492,8 @@ const FloatGlowComponent: React.FC<DynamicStyleProps> = ({
           display:inline-block;
           margin-right:8px;
           animation: floatGlow 1s ease forwards;
-          color:#fff;
-          font-weight:700;
+          color: currentColor; /* MODIFIED: Inherit color */
+          /* fontWeight is inherited */
         }
       `}</style>
     </div>
@@ -527,7 +521,7 @@ const SlideFadeComponent: React.FC<DynamicStyleProps> = ({
         .slide-fade {
           display:inline-block;
           margin-right:8px;
-          font-weight:700;
+          /* fontWeight is inherited */
         }
         .slide-fade.from-left { animation: slideLeft 0.6s ease-out forwards; }
         .slide-fade.from-right { animation: slideRight 0.6s ease-out forwards; }
@@ -544,9 +538,9 @@ const HeatGlowComponent: React.FC<DynamicStyleProps> = ({ text }) => (
         50% { text-shadow: 0 0 20px #ffaa33, 0 0 35px #ff6600; }
       }
       .heat-glow {
-        color: #fff3e0;
+        color: currentColor; /* MODIFIED: Inherit color (will be tinted by shadow) */
         animation: heat 1.4s ease-in-out infinite;
-        font-weight: 800;
+        /* fontWeight is inherited */
       }
     `}</style>
   </span>
@@ -578,8 +572,8 @@ const AudioWaveComponent: React.FC<DynamicStyleProps> = ({
           display: inline-block;
           margin-right: 10px;
           animation: wave 1.2s ease-in-out infinite;
-          color: #00e0ff;
-          font-weight: 700;
+          color: #00e0ff; /* This style is *about* the color, so we keep it */
+          /* fontWeight is inherited */
         }
       `}</style>
     </div>
@@ -612,7 +606,7 @@ const FlashZoomComponent: React.FC<DynamicStyleProps> = ({
           display: inline-block;
           margin-right: 8px;
           animation: flashZoom 0.6s ease-in-out;
-          font-weight: 900;
+          /* fontWeight is inherited */
         }
       `}</style>
     </div>
@@ -632,7 +626,7 @@ const GradientPulseComponent: React.FC<DynamicStyleProps> = ({ text }) => (
         background-size: 300% 300%;
         -webkit-background-clip: text;
         color: transparent;
-        font-weight: 800;
+        /* fontWeight is inherited */
         animation: gradientPulse 2s ease-in-out infinite;
       }
     `}</style>
@@ -666,7 +660,7 @@ const BounceDropComponent: React.FC<DynamicStyleProps> = ({
           display: inline-block;
           margin-right: 8px;
           animation: bounceDrop 0.8s cubic-bezier(0.34,1.56,0.64,1);
-          font-weight: 700;
+          /* fontWeight is inherited */
         }
       `}</style>
     </div>
