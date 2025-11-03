@@ -4,6 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { PopoverClose } from "@radix-ui/react-popover";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid as Apps, Type, Pencil, Sun, Moon } from "lucide-react";
 import { FloatingAssetSearch } from "@/components/FloatingAssetSearch";
@@ -48,32 +49,37 @@ export const ToolsPopover: React.FC<ToolsPopoverProps> = ({
       >
         <div className="flex items-center gap-1">
           {/* Add Text Button */}
-          <Button
-            onClick={onAddTextOverlay}
-            size="icon"
-            variant="ghost"
-            className="rounded-full h-10 w-10"
-            title="Add Text"
-          >
-            <Type className="h-5 w-5" />
-          </Button>
+          <PopoverClose asChild>
+            <Button
+              onClick={onAddTextOverlay}
+              size="icon"
+              variant="ghost"
+              className="rounded-full h-10 w-10"
+              title="Add Text"
+            >
+              <Type className="h-5 w-5" />
+            </Button>
+          </PopoverClose>
 
           {/* Asset Search (which is already a Popover) */}
           <FloatingAssetSearch onAssetSelect={onAssetSelect} />
 
           {/* Draw Button */}
-          <Button
-            onClick={() => setIsDrawing(true)}
-            size="icon"
-            variant="ghost"
-            className="rounded-full h-10 w-10"
-            title="Start Drawing"
-          >
-            <Pencil className="h-5 w-5" />
-          </Button>
-
+          <PopoverClose asChild>
+            <Button
+              onClick={() => setIsDrawing(true)}
+              size="icon"
+              variant="ghost"
+              className="rounded-full h-10 w-10"
+              title="Start Drawing"
+            >
+              <Pencil className="h-5 w-5" />
+            </Button>
+          </PopoverClose>
           {/* Instructions (which is already a Dialog) */}
-          <InstructionsDialog />
+          <PopoverClose asChild>
+            <InstructionsDialog />
+          </PopoverClose>
         </div>
       </PopoverContent>
     </Popover>
