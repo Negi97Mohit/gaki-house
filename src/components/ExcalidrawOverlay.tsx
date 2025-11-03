@@ -1,6 +1,8 @@
 import {
   Excalidraw,
   MainMenu,
+  ExcalidrawElement,
+  AppState,
 } from "@excalidraw/excalidraw";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
@@ -25,8 +27,8 @@ import {
 interface ExcalidrawOverlayProps {
   isVisible: boolean;
   onClose: () => void;
-  initialElements: readonly any[];
-  onElementsChange: (elements: readonly any[]) => void;
+  initialElements: readonly ExcalidrawElement[];
+  onElementsChange: (elements: readonly ExcalidrawElement[]) => void;
 }
 
 const BACKGROUND_OPTIONS = [
@@ -280,6 +282,7 @@ export const ExcalidrawOverlay = ({
           <Excalidraw
             key={backgroundColor}
             theme={theme === "dark" ? "dark" : "light"}
+            isMobile={false}
             UIOptions={{
               canvasActions: {
                 loadScene: false,
@@ -296,7 +299,7 @@ export const ExcalidrawOverlay = ({
                     : backgroundColor,
               },
             }}
-            onChange={(elements: readonly any[]) => {
+            onChange={(elements: readonly ExcalidrawElement[]) => {
               onElementsChange(elements);
             }}
           >

@@ -92,13 +92,10 @@ export const AICommandPopover = ({
   // --- ADDED THIS HOOK BACK ---
   useEffect(() => {
     // Auto-open only once on initial mount
-    if (hasAiPopoverAutoOpenedRef.current && !hasAiPopoverAutoOpenedRef.current) {
+    if (!hasAiPopoverAutoOpenedRef.current) {
       const openTimer = setTimeout(() => {
         setOpen(true);
-        if (hasAiPopoverAutoOpenedRef.current) {
-          // Type guard to satisfy TypeScript
-          (hasAiPopoverAutoOpenedRef as any).current = true;
-        }
+        hasAiPopoverAutoOpenedRef.current = true;
       }, 4000); // This delay waits for the button to load
 
       return () => clearTimeout(openTimer);

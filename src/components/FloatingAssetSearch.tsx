@@ -20,19 +20,18 @@ export const FloatingAssetSearch: React.FC<FloatingAssetSearchProps> = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="ghost"
-          size="sm"
-          className="h-9 px-3 hover:bg-muted transition-colors"
+          variant="outline"
+          size="icon"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
           title="Search Assets"
         >
-          <Search className="h-4 w-4 mr-2" />
-          Assets
+          <Search className="h-5 w-5" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
         className="w-80 h-[400px] p-0"
         style={{ zIndex: "var(--z-asset-popover)" }}
-        align="center"
+        align="end"
       >
         <AssetLibrary onAssetSelect={onAssetSelect} />
       </PopoverContent>

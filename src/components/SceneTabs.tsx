@@ -166,123 +166,186 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
 
   return (
     <div
-      className={cn(
-        "fixed right-6 top-1/2 -translate-y-1/2 z-[2020]",
-        "transition-all duration-200"
-      )}
+      className="fixed top-4 left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none px-4"
+      style={{ zIndex: "var(--z-scene-tabs)" }}
     >
-      <div className="flex flex-col gap-3">
-        {scenes.map((scene, index) => {
-          const isActive = scene.id === activeSceneId;
-          const transition = transitions.find((t) => t.fromSceneId === scene.id);
+      {/* Island Container */}
+      <div className="relative bg-background/95 backdrop-blur-md border border-border rounded-xl shadow-lg px-3 py-2 flex items-center gap-2 max-w-[70vw] pointer-events-auto">
+        {/* Left Scroll Button */}
+        {showLeftScroll && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 rounded-md flex-shrink-0 hover:bg-muted transition-colors"
+            onClick={() => scroll("left")}
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+        )}
 
-          return (
-            <div key={scene.id} className="relative">
-              <button
-                draggable
-                onDragStart={(e) => handleDragStart(e, index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDrop={(e) => handleDrop(e, index)}
-                onDragEnd={handleDragEnd}
-                className={cn(
-                  "cybr-btn relative",
-                  isActive && "scale-105"
-                )}
-                style={{
-                  '--primary-hue': '45',
-                  '--primary-lightness': isActive ? '55' : '50',
-                } as React.CSSProperties}
-                onClick={() => !editingId && onSceneSelect(scene.id)}
-                onDoubleClick={() => handleDoubleClick(scene)}
-              >
-                {editingId === scene.id ? (
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={editingName}
-                    onChange={handleNameChange}
-                    onBlur={handleNameSubmit}
-                    onKeyDown={handleKeyDown}
-                    className="absolute inset-0 bg-black/50 border border-yellow-500 rounded px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                ) : (
-                  <>
-                    <span className="relative z-10">
-                      {scene.name}
-                      <span aria-hidden className="text-yellow-400">_</span>
-                    </span>
-                    <span aria-hidden className="cybr-btn__glitch">
-                      {scene.name}_
-                    </span>
-                    <span aria-hidden className="cybr-btn__tag">
-                      S{index + 1}
-                    </span>
-                  </>
-                )}
-
-                {scenes.length > 1 && !editingId && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSceneClose(scene.id);
-                    }}
-                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white z-20 transition-transform hover:scale-110"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                )}
-              </button>
-
-              {/* Transition button */}
-              {index < scenes.length - 1 && (
-                <button
-                  ref={(el) => {
-                    if (el && transition) {
-                      transitionButtonRefs.current.set(transition.id, el);
-                    }
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (transition) onTransitionClick(transition);
-                  }}
-                  onMouseEnter={() => setHoveredTransitionIndex(index)}
-                  onMouseLeave={() => setHoveredTransitionIndex(null)}
-                  className={cn(
-                    "absolute left-1/2 -translate-x-1/2 -bottom-5 h-8 w-8 rounded-full border-2 bg-background flex items-center justify-center transition-all duration-200 z-10",
-                    transition
-                      ? "border-yellow-500 text-yellow-500 hover:scale-110 hover:bg-yellow-500/10"
-                      : "border-border hover:bg-muted hover:scale-110",
-                    hoveredTransitionIndex === index && "scale-110"
-                  )}
-                  title={transition ? `Edit transition: ${transition.type}` : "Add transition"}
-                >
-                  <TransitionIcon />
-                </button>
-              )}
-            </div>
-          );
-        })}
-
-        {/* Add Scene button */}
-        <button
-          onClick={onSceneAdd}
-          className="cybr-btn"
+        {/* Scrollable Tabs Container */}
+        <div
+          ref={scrollContainerRef}
+          className="flex items-center gap-1 overflow-x-auto overflow-y-hidden scrollbar-hide max-w-[calc(70vw-180px)] scroll-smooth"
           style={{
-            '--primary-hue': '45',
-            '--primary-lightness': '45',
-          } as React.CSSProperties}
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
         >
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            <Plus className="h-4 w-4" />
-            Add
-            <span aria-hidden className="text-yellow-400">_</span>
-          </span>
-          <span aria-hidden className="cybr-btn__glitch">
-            Add_
-          </span>
-          <span aria-hidden className="cybr-btn__tag">NEW</span>
-        </button>
+          {scenes.map((scene, index) => {
+            const isActive = scene.id === activeSceneId;
+            const isDragging = draggedIndex === index;
+            const isDraggedOver = dragOverIndex === index;
+            const transition =
+              index < scenes.length - 1
+                ? transitions.find((t) => t.fromSceneId === scene.id)
+                : null;
+
+            return (
+              <React.Fragment key={scene.id}>
+                {/* Scene Tab */}
+                <div
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  className={cn(
+                    "relative flex items-center h-9 min-w-[120px] max-w-[180px] px-3 cursor-pointer group transition-all duration-200 flex-shrink-0 rounded-t-lg",
+                    isActive
+                      ? "bg-transparent"
+                      : "bg-transparent hover:bg-muted/30",
+                    isDragging && "opacity-40",
+                    isDraggedOver && "ml-2"
+                  )}
+                  onClick={() => !editingId && onSceneSelect(scene.id)}
+                  onDoubleClick={() => handleDoubleClick(scene)}
+                >
+                  {/* Active Tab Indicator - Bottom Border */}
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full animate-fade-in" />
+                  )}
+                  {/* Drag Handle */}
+                  <GripVertical
+                    className={cn(
+                      "w-3 h-3 mr-2 text-muted-foreground/30 opacity-0 group-hover:opacity-100 transition-all duration-200 flex-shrink-0",
+                      isActive && "text-primary/50 opacity-60"
+                    )}
+                  />
+
+                  {/* Tab Name or Input */}
+                  {editingId === scene.id ? (
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={editingName}
+                      onChange={handleNameChange}
+                      onBlur={handleNameSubmit}
+                      onKeyDown={handleKeyDown}
+                      className="flex-1 bg-transparent border-b border-primary outline-none text-sm min-w-0 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <span
+                      className={cn(
+                        "flex-1 text-sm truncate min-w-0 transition-colors duration-200",
+                        isActive
+                          ? "text-foreground font-semibold"
+                          : "text-muted-foreground group-hover:text-foreground"
+                      )}
+                    >
+                      {scene.name}
+                    </span>
+                  )}
+
+                  {/* Close Button */}
+                  {scenes.length > 1 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSceneClose(scene.id);
+                      }}
+                      className={cn(
+                        "ml-2 w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-all duration-200",
+                        "opacity-0 group-hover:opacity-100 hover:bg-muted hover:text-destructive",
+                        isActive && "opacity-60 hover:opacity-100"
+                      )}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Transition Button - Clearly Separated */}
+                {transition && index < scenes.length - 1 && (
+                  <div
+                    className="relative flex flex-col items-center justify-center flex-shrink-0 px-1"
+                    onMouseEnter={() => setHoveredTransitionIndex(index)}
+                    onMouseLeave={() => setHoveredTransitionIndex(null)}
+                  >
+                    <Button
+                      ref={(el) => {
+                        if (el && transition) {
+                          transitionButtonRefs.current.set(transition.id, el);
+                        }
+                      }}
+                      variant="ghost"
+                      size="icon"
+                      className={cn(
+                        "h-7 w-7 rounded-md transition-all duration-200",
+                        transition.type !== "none"
+                          ? "text-primary hover:bg-primary/10 hover:text-primary"
+                          : "text-muted-foreground/40 hover:bg-muted",
+                        hoveredTransitionIndex === index && "bg-primary/10 scale-110"
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onTransitionClick(transition);
+                      }}
+                      title={`Transition: ${transition.type}`}
+                    >
+                      <TransitionIcon />
+                    </Button>
+
+                    {/* Duration Indicator */}
+                    {transition.type !== "none" &&
+                      hoveredTransitionIndex === index && (
+                        <div className="absolute -bottom-6 text-[10px] font-mono text-primary bg-background/95 backdrop-blur-sm border border-primary/20 px-2 py-0.5 rounded-md shadow-sm whitespace-nowrap animate-fade-in">
+                          {transition.durationMs}ms
+                        </div>
+                      )}
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+
+        {/* Right Scroll Button */}
+        {showRightScroll && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 rounded-md flex-shrink-0 hover:bg-muted transition-colors"
+            onClick={() => scroll("right")}
+          >
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        )}
+
+        {/* Divider */}
+        <div className="w-px h-6 bg-border flex-shrink-0" />
+
+        {/* Add New Tab Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7 rounded-md hover:bg-primary/10 hover:text-primary transition-colors flex-shrink-0"
+          onClick={onSceneAdd}
+          title="Add new scene"
+        >
+          <Plus className="w-4 h-4" />
+        </Button>
       </div>
     </div>
   );

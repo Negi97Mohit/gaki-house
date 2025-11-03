@@ -7,8 +7,9 @@ import { FloatingLogo } from "@/components/FloatingLogo";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
-import { Type, SlidersHorizontal, Info, Sun, Moon, Video, Circle } from "lucide-react";
+import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
 import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay"; // <-- 1. Import
+import { ExcalidrawElement } from "@excalidraw/excalidraw";
 import { Pencil } from "lucide-react"; // <-- 2. Import Pencil Icon
 import { zIndex } from "@/lib/zIndex";
 import {
@@ -149,9 +150,9 @@ const Index = () => {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [excalidrawElements, setExcalidrawElements] = useState<readonly any[]>(
-    []
-  );
+  const [excalidrawElements, setExcalidrawElements] = useState<
+    readonly ExcalidrawElement[]
+  >([]);
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
@@ -1365,117 +1366,39 @@ const Index = () => {
         onSceneRename={handleSceneRename}
       />
 
-      {/* Unified Bottom Navigation Bar */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[2015]">
-        <div className="bg-background/95 backdrop-blur-md border-2 border-border rounded-lg shadow-2xl px-4 py-3 flex items-center gap-4">
-          {/* Left Side: Settings Panel Trigger */}
-          <Button
-            onClick={() => setShowFloatingPanel(!showFloatingPanel)}
-            size="sm"
-            variant="ghost"
-            data-floating-trigger
-            className="h-9 px-3 hover:bg-muted transition-colors"
-            title="Open Settings"
-          >
-            <SlidersHorizontal className="h-4 w-4 mr-2" />
-            Settings
-          </Button>
-          
-          <div className="w-px h-6 bg-border" />
+      <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
+        <Button
+          onClick={handleAddTextOverlay}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Add Text"
+        >
+          <Type className="h-5 w-5" />
+        </Button>
+        <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
+        {/* --- 4. ADDED: Excalidraw Toggle Button --- */}
+        <Button
+          onClick={() => setIsDrawing(true)}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Start Drawing"
+        >
+          <Pencil className="h-5 w-5" />
+        </Button>
 
-          {/* Center: Video Controls */}
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={() => setShowSessionsPanel(true)}
-              size="sm"
-              variant="ghost"
-              className="h-9 px-3 hover:bg-muted transition-colors relative"
-              title="Your Recordings"
-            >
-              <Video className="h-4 w-4 mr-2" />
-              Sessions
-              {allSessions.length > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-primary text-[10px] font-bold rounded-full flex items-center justify-center text-white">
-                  {allSessions.length}
-                </span>
-              )}
-            </Button>
-
-            <Button
-              onClick={() => {
-                if (!recording.isRecording) {
-                  recording.startRecording(canvasRef.current as HTMLCanvasElement);
-                  toast.info("Recording started!");
-                } else {
-                  const containerSize = { width: 1920, height: 1080 };
-                  recording.stopRecording(containerSize.width, containerSize.height, {
-                    dynamicStyle: activeScene.dynamicStyle,
-                    videoFilter: activeScene.videoFilter,
-                    backgroundEffect: activeScene.backgroundEffect,
-                    backgroundImageUrl: activeScene.backgroundImageUrl || '',
-                  }).then((session) => {
-                    if (session) {
-                      setAllSessions((prev) => [...prev, session]);
-                      toast.success("Recording saved!");
-                    }
-                  });
-                }
-              }}
-              size="lg"
-              className={cn(
-                "rounded-full shadow-xl transition-all duration-300 h-11 w-11",
-                recording.isRecording
-                  ? "bg-red-500 hover:bg-red-600 scale-110 animate-pulse"
-                  : "bg-primary hover:bg-primary/90"
-              )}
-              title={recording.isRecording ? "Stop Recording" : "Start Recording"}
-            >
-              <Circle
-                className={cn("w-5 h-5 transition-all", recording.isRecording && "fill-white")}
-              />
-            </Button>
-          </div>
-
-          <div className="w-px h-6 bg-border" />
-
-          {/* Right Side: Utility Buttons */}
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={handleAddTextOverlay}
-              size="sm"
-              variant="ghost"
-              className="h-9 px-3 hover:bg-muted transition-colors"
-              title="Add Text"
-            >
-              <Type className="h-4 w-4 mr-2" />
-              Text
-            </Button>
-            <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
-            <Button
-              onClick={() => setIsDrawing(true)}
-              size="sm"
-              variant="ghost"
-              className="h-9 px-3 hover:bg-muted transition-colors"
-              title="Start Drawing"
-            >
-              <Pencil className="h-4 w-4 mr-2" />
-              Draw
-            </Button>
-            <Button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              size="sm"
-              variant="ghost"
-              className="h-9 px-3 hover:bg-muted transition-colors"
-              title="Toggle Theme"
-            >
-              <Sun className="h-4 w-4 mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="dark:hidden">Light</span>
-              <span className="hidden dark:inline">Dark</span>
-            </Button>
-            <InstructionsDialog />
-          </div>
-        </div>
+        <Button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          size="icon"
+          variant="outline"
+          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
+          title="Toggle Theme"
+        >
+          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        </Button>
+        <InstructionsDialog />
       </div>
 
       <TransitionPopover
