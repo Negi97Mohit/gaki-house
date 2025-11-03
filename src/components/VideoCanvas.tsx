@@ -1414,6 +1414,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const filteredFileOverlays = dynamicLayout.isActive
     ? fileOverlays.filter((o) => o.id !== dynamicLayout.target?.id)
     : fileOverlays;
+
+  const filteredTextOverlays = dynamicLayout.isActive
+    ? textOverlays.filter((o) => o.id !== dynamicLayout.target?.id)
+    : textOverlays;
+
   const filteredBrowserOverlays = dynamicLayout.isActive
     ? browserOverlays.filter((o) => o.id !== dynamicLayout.target?.id)
     : browserOverlays;
@@ -1596,6 +1601,32 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 />
               </div>
             ))}
+
+            {/* --- ADD THIS ENTIRE BLOCK --- */}
+            {filteredTextOverlays.map((text) => (
+              <div
+                key={`text-wrapper-${text.id}`}
+                style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
+              >
+                <DraggableTextOverlay
+                  key={text.id}
+                  overlay={text}
+                  onLayoutChange={onTextLayoutChange}
+                  onStyleChange={onTextStyleChange}
+                  onContentChange={onTextContentChange}
+                  onRemove={onRemoveTextOverlay}
+                  containerSize={containerSize}
+                  isSelected={selectedTextId === text.id}
+                  onSelect={setSelectedTextId}
+                  onInternalDragStart={onInternalDragStart}
+                  onInternalDragStop={onInternalDragStop}
+                  isSpacePressed={isSpacePressed}
+                  containerRef={canvasContainerRef}
+                />
+              </div>
+            ))}
+            {/* --- END OF ADDED BLOCK --- */}
+
             {(() => {
               const captionText = (
                 fullTranscript +

@@ -1,4 +1,4 @@
-// src/components/TextEditingToolbar.tsx - WITH LIST SUPPORT
+// src/components/TextEditingToolbar.tsx
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +13,7 @@ import {
   Plus,
   List,
   ListOrdered,
-  CheckSquare,
+  RemoveFormatting, // ADDED
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
@@ -29,8 +29,7 @@ interface TextEditingToolbarProps {
   onStyleChange: (
     id: string,
     style: Partial<TextOverlayState["style"]>
-  ) => void;
-  onContentChange: (id: string, content: string) => void;
+  ) => void; // removed onContentChange
   position: { x: number; y: number };
   containerRef: React.RefObject<HTMLElement>;
 }
@@ -68,7 +67,6 @@ const PRESET_COLORS = [
 export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   overlay,
   onStyleChange,
-  onContentChange,
   position,
   containerRef,
 }) => {
@@ -94,74 +92,37 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
     }
   }, [position, containerRef]);
 
+  // --- MODIFIED: All handlers now use document.execCommand ---
+
   const handleFontSizeChange = (delta: number) => {
     const newSize = Math.max(12, Math.min(300, overlay.style.fontSize + delta));
     onStyleChange(overlay.id, { fontSize: newSize });
+    // Note: execCommand for font size is unreliable (uses 1-7). We'll keep using style prop.
   };
 
   const handleColorChange = (color: string, isBackground: boolean = false) => {
     if (isBackground) {
       onStyleChange(overlay.id, { backgroundColor: color });
     } else {
+      document.execCommand("foreColor", false, color);
       onStyleChange(overlay.id, { color });
     }
   };
 
+  const handleFontFamilyChange = (font: string) => {
+    document.execCommand("fontName", false, font);
+    onStyleChange(overlay.id, { fontFamily: font });
+  };
+
   const handleAlignmentChange = (alignment: "left" | "center" | "right") => {
+    const command =
+      alignment === "left"
+        ? "justifyLeft"
+        : alignment === "center"
+        ? "justifyCenter"
+        : "justifyRight";
+    document.execCommand(command);
     onStyleChange(overlay.id, { textAlign: alignment } as any);
-  };
-
-  const convertToList = (type: "bullet" | "numbered" | "checkbox") => {
-    const lines = overlay.content.split("\n").filter((line) => line.trim());
-
-    let newContent = "";
-
-    if (type === "bullet") {
-      newContent = lines
-        .map((line) => {
-          const cleaned = line
-            .replace(/^[•\-\*]\s*/, "")
-            .replace(/^\d+\.\s*/, "")
-            .replace(/^☐\s*/, "");
-          return `• ${cleaned}`;
-        })
-        .join("\n");
-    } else if (type === "numbered") {
-      newContent = lines
-        .map((line, index) => {
-          const cleaned = line
-            .replace(/^[•\-\*]\s*/, "")
-            .replace(/^\d+\.\s*/, "")
-            .replace(/^☐\s*/, "");
-          return `${index + 1}. ${cleaned}`;
-        })
-        .join("\n");
-    } else if (type === "checkbox") {
-      newContent = lines
-        .map((line) => {
-          const cleaned = line
-            .replace(/^[•\-\*]\s*/, "")
-            .replace(/^\d+\.\s*/, "")
-            .replace(/^[☐☑]\s*/, "");
-          return `☐ ${cleaned}`;
-        })
-        .join("\n");
-    }
-
-    onContentChange(overlay.id, newContent);
-  };
-
-  const removeListFormatting = () => {
-    const lines = overlay.content.split("\n");
-    const newContent = lines
-      .map((line) =>
-        line
-          .replace(/^[•\-\*]\s*/, "")
-          .replace(/^\d+\.\s*/, "")
-          .replace(/^[☐☑]\s*/, "")
-      )
-      .join("\n");
-    onContentChange(overlay.id, newContent);
   };
 
   return (
@@ -196,7 +157,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
             {FONT_FAMILIES.map((font) => (
               <DropdownMenuItem
                 key={font}
-                onClick={() => onStyleChange(overlay.id, { fontFamily: font })}
+                onClick={() => handleFontFamilyChange(font)}
                 className={cn(overlay.style.fontFamily === font && "bg-accent")}
                 style={{ fontFamily: font }}
               >
@@ -317,9 +278,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           variant="ghost"
           size="icon"
           className={cn("h-8 w-8", overlay.style.bold && "bg-accent")}
-          onClick={() =>
-            onStyleChange(overlay.id, { bold: !overlay.style.bold })
-          }
+          onClick={() => document.execCommand("bold")}
         >
           <Bold className="w-4 h-4" />
         </Button>
@@ -328,9 +287,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           variant="ghost"
           size="icon"
           className={cn("h-8 w-8", overlay.style.italic && "bg-accent")}
-          onClick={() =>
-            onStyleChange(overlay.id, { italic: !overlay.style.italic })
-          }
+          onClick={() => document.execCommand("italic")}
         >
           <Italic className="w-4 h-4" />
         </Button>
@@ -339,9 +296,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           variant="ghost"
           size="icon"
           className={cn("h-8 w-8", overlay.style.underline && "bg-accent")}
-          onClick={() =>
-            onStyleChange(overlay.id, { underline: !overlay.style.underline })
-          }
+          onClick={() => document.execCommand("underline")}
         >
           <Underline className="w-4 h-4" />
         </Button>
@@ -400,20 +355,22 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => convertToList("bullet")}>
+            <DropdownMenuItem
+              onClick={() => document.execCommand("insertUnorderedList")}
+            >
               <List className="w-4 h-4 mr-2" />
               Bullet List
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => convertToList("numbered")}>
+            <DropdownMenuItem
+              onClick={() => document.execCommand("insertOrderedList")}
+            >
               <ListOrdered className="w-4 h-4 mr-2" />
               Numbered List
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => convertToList("checkbox")}>
-              <CheckSquare className="w-4 h-4 mr-2" />
-              Checklist
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={removeListFormatting}>
-              <Type className="w-4 h-4 mr-2" />
+            <DropdownMenuItem
+              onClick={() => document.execCommand("removeFormat")}
+            >
+              <RemoveFormatting className="w-4 h-4 mr-2" />
               Remove Formatting
             </DropdownMenuItem>
           </DropdownMenuContent>

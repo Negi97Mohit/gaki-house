@@ -1,4 +1,4 @@
-// src/components/DraggableTextOverlay.tsx - ENHANCED VERSION
+// src/components/DraggableTextOverlay.tsx - ENHANCED VERSION (UPDATED)
 import React, { useState, useRef, useCallback } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
@@ -66,7 +66,8 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // MODIFIED: This is now a div, not a textarea
+  const editorRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);
 
   const widthPx =
@@ -183,16 +184,26 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isSpacePressed) return; // Prevent editing when panning
     setIsEditing(true);
-    setTimeout(() => textareaRef.current?.focus(), 0);
+    setTimeout(() => editorRef.current?.focus(), 0);
   };
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onContentChange(overlay.id, e.target.value);
-  };
-
-  const handleBlur = () => {
+  // MODIFIED: This now reads innerHTML from the contentEditable div
+  const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     setIsEditing(false);
+    const newContent = e.currentTarget.innerHTML;
+    if (newContent !== overlay.content) {
+      onContentChange(overlay.id, newContent);
+    }
+  };
+
+  // ADDED: Handle placeholder “Edit Text...”
+  const handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (e.currentTarget.textContent === "Edit Text...") {
+      e.currentTarget.innerHTML = "";
+      onContentChange(overlay.id, ""); // Clear the content
+    }
   };
 
   const getToolbarPosition = () => {
@@ -205,7 +216,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
     const rect = selfElement.getBoundingClientRect();
     const containerRect = containerRef.current.getBoundingClientRect();
 
-    // Calculate position relative to the container
     const x = rect.left - containerRect.left + rect.width / 2;
     const y = rect.top - containerRect.top;
 
@@ -270,43 +280,42 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           zIndex: overlay.layout.zIndex,
           transform: `rotate(${overlay.layout.rotation || 0}deg)`,
         }}
-        // Add drag handle class to enable dragging from anywhere
         dragHandleClassName="drag-handle"
         cancel="button, textarea, .rotate-handle"
       >
         <div
           className={cn(
-            "w-full h-full relative drag-handle", // Make entire area draggable
+            "w-full h-full relative drag-handle",
             (isDragging || isResizing) && "opacity-50"
           )}
           style={{
             transformOrigin: "center center",
-            cursor: isEditing ? "text" : "move", // Show move cursor when not editing
+            cursor: isEditing ? "text" : "move",
           }}
         >
-          {/* Drag indicator - visible when selected and not editing */}
           {isSelected && !isEditing && (
             <div
               className="absolute top-1 left-1/2 -translate-x-1/2 text-primary/60 pointer-events-none"
               style={{ zIndex: "var(--z-draggable-element-hover)" }}
             >
-              {" "}
               <GripVertical className="w-4 h-4" />
             </div>
           )}
 
           {isEditing ? (
-            <textarea
-              ref={textareaRef}
-              value={overlay.content}
-              onChange={handleTextChange}
+            // --- MODIFIED: Replaced <textarea> with contentEditable <div> ---
+            <div
+              ref={editorRef}
+              contentEditable={true}
+              suppressContentEditableWarning={true}
               onBlur={handleBlur}
-              className="w-full h-full resize-none outline-none focus:ring-2 focus:ring-primary/50 rounded"
+              onFocus={handleFocus}
+              className="w-full h-full overflow-y-auto outline-none focus:ring-2 focus:ring-primary/50 rounded"
               style={{
                 fontFamily: overlay.style.fontFamily,
                 fontSize: `${overlay.style.fontSize}px`,
                 color: overlay.style.color,
-                backgroundColor: overlay.style.backgroundColor,
+                backgroundColor: "transparent",
                 fontWeight: overlay.style.bold ? "bold" : "normal",
                 fontStyle: overlay.style.italic ? "italic" : "normal",
                 textDecoration: overlay.style.underline ? "underline" : "none",
@@ -320,59 +329,57 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                 textAlign: (overlay.style as any).textAlign || "left",
                 listStylePosition: "inside",
               }}
-              onKeyDown={(e) => {
-                e.stopPropagation();
-              }}
-              onMouseDown={(e) => {
-                e.stopPropagation(); // Prevent drag when clicking in textarea
-              }}
+              onKeyDown={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
           ) : (
-            <div
-              className="w-full h-full whitespace-pre-wrap break-words cursor-move"
-              style={{
-                fontFamily: overlay.style.fontFamily,
-                fontSize: `${overlay.style.fontSize}px`,
-                color: overlay.style.color,
-                backgroundColor: overlay.style.backgroundColor,
-                fontWeight: overlay.style.bold ? "bold" : "normal",
-                fontStyle: overlay.style.italic ? "italic" : "normal",
-                textDecoration: overlay.style.underline ? "underline" : "none",
-                border: overlay.style.border
-                  ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
-                  : "none",
-                textShadow: overlay.style.shadow
-                  ? "0 2px 4px rgba(0,0,0,0.5)"
-                  : "none",
-                padding: "0.5em",
-                borderRadius: "4px",
-                minWidth: "50px",
-                textAlign: (overlay.style as any).textAlign || "left",
-                listStylePosition: "inside",
-              }}
-              dangerouslySetInnerHTML={{
-                __html: overlay.content || "Double-click to edit",
-              }}
-            />
+            // --- MODIFIED: This div now renders inside a styled container ---
+            <div className="w-full h-full p-2 rounded">
+              <div
+                className="w-full h-full whitespace-pre-wrap break-words cursor-move"
+                style={{
+                  fontFamily: overlay.style.fontFamily,
+                  fontSize: `${overlay.style.fontSize}px`,
+                  color: overlay.style.color,
+                  backgroundColor: overlay.style.backgroundColor,
+                  fontWeight: overlay.style.bold ? "bold" : "normal",
+                  fontStyle: overlay.style.italic ? "italic" : "normal",
+                  textDecoration: overlay.style.underline
+                    ? "underline"
+                    : "none",
+                  border: overlay.style.border
+                    ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
+                    : "none",
+                  textShadow: overlay.style.shadow
+                    ? "0 2px 4px rgba(0,0,0,0.5)"
+                    : "none",
+                  minWidth: "50px",
+                  textAlign: (overlay.style as any).textAlign || "left",
+                  listStylePosition: "inside",
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: overlay.content || "Double-click to edit",
+                }}
+              />
+            </div>
           )}
 
           {isSelected && !isEditing && (
-            <>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRemove(overlay.id);
-                }}
-                title="Remove Text"
-                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110"
-                style={{
-                  transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-                  zIndex: "var(--z-draggable-element-active)",
-                }}
-              >
-                <X className="w-4 h-4 pointer-events-none" />
-              </button>
-            </>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(overlay.id);
+              }}
+              title="Remove Text"
+              className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110"
+              style={{
+                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+                zIndex: "var(--z-draggable-element-active)",
+              }}
+            >
+              <X className="w-4 h-4 pointer-events-none" />
+            </button>
           )}
         </div>
       </Rnd>
