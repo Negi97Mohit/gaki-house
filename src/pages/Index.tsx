@@ -9,7 +9,6 @@ import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
 import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay"; // <-- 1. Import
-import { ExcalidrawElement } from "@excalidraw/excalidraw";
 import { Pencil } from "lucide-react"; // <-- 2. Import Pencil Icon
 import { zIndex } from "@/lib/zIndex";
 import {
@@ -150,9 +149,9 @@ const Index = () => {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [excalidrawElements, setExcalidrawElements] = useState<
-    readonly ExcalidrawElement[]
-  >([]);
+  const [excalidrawElements, setExcalidrawElements] = useState<readonly any[]>(
+    []
+  );
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
@@ -1366,39 +1365,48 @@ const Index = () => {
         onSceneRename={handleSceneRename}
       />
 
-      <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
-        <Button
-          onClick={handleAddTextOverlay}
-          size="icon"
-          variant="outline"
-          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
-          title="Add Text"
-        >
-          <Type className="h-5 w-5" />
-        </Button>
-        <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
-        {/* --- 4. ADDED: Excalidraw Toggle Button --- */}
-        <Button
-          onClick={() => setIsDrawing(true)}
-          size="icon"
-          variant="outline"
-          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
-          title="Start Drawing"
-        >
-          <Pencil className="h-5 w-5" />
-        </Button>
-
-        <Button
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          size="icon"
-          variant="outline"
-          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
-          title="Toggle Theme"
-        >
-          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        </Button>
-        <InstructionsDialog />
+      {/* Bottom Island Menu */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[2015]">
+        <div className="bg-background/95 backdrop-blur-md border-2 border-border rounded-lg shadow-2xl px-4 py-3 flex items-center gap-3">
+          <Button
+            onClick={handleAddTextOverlay}
+            size="sm"
+            variant="ghost"
+            className="h-9 px-3 hover:bg-muted transition-colors"
+            title="Add Text"
+          >
+            <Type className="h-4 w-4 mr-2" />
+            Add Text
+          </Button>
+          <div className="w-px h-6 bg-border" />
+          <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
+          <div className="w-px h-6 bg-border" />
+          <Button
+            onClick={() => setIsDrawing(true)}
+            size="sm"
+            variant="ghost"
+            className="h-9 px-3 hover:bg-muted transition-colors"
+            title="Start Drawing"
+          >
+            <Pencil className="h-4 w-4 mr-2" />
+            Draw
+          </Button>
+          <div className="w-px h-6 bg-border" />
+          <Button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            size="sm"
+            variant="ghost"
+            className="h-9 px-3 hover:bg-muted transition-colors"
+            title="Toggle Theme"
+          >
+            <Sun className="h-4 w-4 mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="dark:hidden">Light</span>
+            <span className="hidden dark:inline">Dark</span>
+          </Button>
+          <div className="w-px h-6 bg-border" />
+          <InstructionsDialog />
+        </div>
       </div>
 
       <TransitionPopover

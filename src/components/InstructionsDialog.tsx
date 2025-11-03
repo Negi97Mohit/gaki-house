@@ -26,12 +26,12 @@ export const InstructionsDialog = () => (
     <DialogTrigger asChild>
       <Button
         variant="ghost"
-        size="icon"
-        className="text-muted-foreground hover:text-foreground transition-colors"
+        size="sm"
+        className="h-9 px-3 hover:bg-muted transition-colors"
         title="How to use"
       >
-        <Info className="h-5 w-5" />
-        <span className="sr-only">Show Instructions</span>
+        <Info className="h-4 w-4 mr-2" />
+        Help
       </Button>
     </DialogTrigger>
 
