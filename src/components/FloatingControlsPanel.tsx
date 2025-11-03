@@ -67,10 +67,12 @@ interface FloatingControlsPanelProps {
   isMouseActive: boolean;
   blankCanvasColor: string;
   onBlankCanvasColorChange: (color: string) => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = [props.isOpen, props.onClose];
   const [openSections, setOpenSections] = useState<string[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -95,7 +97,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         const target = e.target as HTMLElement;
         // Don't close if clicking the trigger button
         if (!target.closest("[data-floating-trigger]")) {
-          setIsOpen(false);
+          setIsOpen();
         }
       }
     };
@@ -105,33 +107,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [isOpen]);
+  }, [isOpen, setIsOpen]);
 
   return (
     <>
-      {/* Trigger Button */}
-      <div
-        className={cn(
-          "transition-opacity duration-300",
-          !props.isMouseActive && "opacity-0 pointer-events-none"
-        )}
-      >
-        <Button
-          variant="secondary"
-          size="icon"
-          className="fixed bottom-6 left-6 rounded-full h-14 w-14 shadow-lg"
-          style={{ zIndex: "var(--z-floating-panel-trigger)" }}
-          onClick={() => setIsOpen(!isOpen)}
-          data-floating-trigger
-        >
-          {isOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <SlidersHorizontal className="w-6 h-6" />
-          )}
-        </Button>
-      </div>
-
       {/* Floating Panel */}
       <div
         ref={panelRef}

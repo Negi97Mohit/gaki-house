@@ -323,6 +323,8 @@ interface VideoCanvasProps {
   onAudioDeviceSelect: (deviceId: string) => void;
   selectedVideoDevice: string | undefined;
   onVideoDeviceSelect: (deviceId: string) => void;
+  audioDevices: MediaDeviceInfo[];
+  videoDevices: MediaDeviceInfo[];
   zoomSensitivity: number;
   trackingSpeed: number;
   isBeautifyEnabled: boolean;
@@ -660,8 +662,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const transcriptTimerRef = useRef<NodeJS.Timeout>();
   const fsSidebarContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(fsSidebarContainerRef, () => {
-    if (isFsSidebarOpen) {
-      onFsSidebarToggle(false);
+    if (props.isFsSidebarOpen) {
+      props.onFsSidebarToggle(false);
     }
   });
 
@@ -829,22 +831,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   ]);
 
   useEffect(() => {
-    const getDevices = async () => {
-      try {
-        await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        setAudioDevices(devices.filter((d) => d.kind === "audioinput"));
-        setVideoDevices(devices.filter((d) => d.kind === "videoinput"));
-      } catch (err) {
-        toast.error(
-          "Could not access camera or microphone. Please check permissions."
-        );
-      }
-    };
-    getDevices();
-  }, []);
-
-  useEffect(() => {
     const container = canvasContainerRef.current;
     if (!container) return;
 
@@ -864,69 +850,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     return () => resizeObserver.disconnect();
   }, [isFullscreen]);
-
-  const handleStartRecording = () => {
-    const outputStream = new MediaStream();
-
-    if (props.screenShareMode === "screen" && screenStream) {
-      const screenVideoTrack = screenStream.getVideoTracks()[0];
-      if (screenVideoTrack) outputStream.addTrack(screenVideoTrack.clone());
-    }
-
-    if (isVideoOn && cameraStream) {
-      const cameraVideoTrack = cameraStream.getVideoTracks()[0];
-      if (cameraVideoTrack) outputStream.addTrack(cameraVideoTrack.clone());
-    }
-
-    if (isAudioOn) {
-      if (
-        props.screenShareMode === "screen" &&
-        screenStream?.getAudioTracks().length > 0
-      ) {
-        const screenAudioTrack = screenStream.getAudioTracks()[0];
-        if (screenAudioTrack) outputStream.addTrack(screenAudioTrack.clone());
-      } else if (cameraStream?.getAudioTracks().length > 0) {
-        const cameraAudioTrack = cameraStream.getAudioTracks()[0];
-        if (cameraAudioTrack) outputStream.addTrack(cameraAudioTrack.clone());
-      }
-    }
-
-    if (outputStream.getTracks().length === 0) {
-      toast.error("No stream available to record.");
-      return;
-    }
-
-    recordedChunksRef.current = [];
-    mediaRecorderRef.current = new MediaRecorder(outputStream, {
-      mimeType: "video/webm; codecs=vp9",
-    });
-    mediaRecorderRef.current.ondataavailable = (e) => {
-      if (e.data.size > 0) recordedChunksRef.current.push(e.data);
-    };
-    mediaRecorderRef.current.onstop = () => {
-      const blob = new Blob(recordedChunksRef.current, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `gaki-recording-${Date.now()}.webm`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success("Recording downloaded!");
-    };
-    mediaRecorderRef.current.start();
-    onRecordingToggle(true, cameraStream as MediaStream, containerSize);
-    toast.info("Recording started!");
-  };
-
-  const handleStopRecording = () => {
-    if (mediaRecorderRef.current?.state === "recording")
-      mediaRecorderRef.current.stop();
-    onRecordingToggle(false, cameraStream as MediaStream, containerSize);
-  };
-
-  const handleShareModeChange = (mode: "off" | "screen" | "canvas") => {
-    onScreenShareModeChange(mode);
-  };
 
   const handleSplitterMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -1063,9 +986,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     const manageAudioStream = async () => {
       console.log(`[VideoCanvas] Managing audio stream for Scene ${sceneId}`, {
-        isAudioOn,
+        isAudioOn: props.isAudioOn,
       });
-      if (isAudioOn) {
+      if (props.isAudioOn) {
         try {
           const constraints: MediaStreamConstraints = {
             audio: selectedAudioDevice
@@ -1086,7 +1009,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             err
           );
           toast.error("Could not access microphone for captions.");
-          onAudioToggle(false);
+          props.onAudioToggle(false);
         }
       } else {
         console.log(
@@ -1109,7 +1032,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         dedicatedAudioStream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [isAudioOn, selectedAudioDevice, onAudioToggle, sceneId]);
+  }, [props.isAudioOn, selectedAudioDevice, props.onAudioToggle, sceneId]);
 
   const videoFilterString = getVideoFilterStyle();
 
@@ -1879,7 +1802,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           enableResizing={false}
           className={cn(
             "pointer-events-auto transition-opacity duration-300",
-            isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
+            props.isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
           )}
         >
           <AICommandPopover
@@ -1903,211 +1826,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           </AICommandPopover>
         </Rnd>
       )}
-
-      <div
-        className={cn(
-          "absolute bottom-6 left-1/2 -translate-x-1/2 transition-opacity duration-300 ease-in-out",
-          isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}
-        style={{ zIndex: "var(--z-floating-controls)" }}
-      >
-        <div className="flex items-center gap-2 bg-background/80 backdrop-blur-md border rounded-full px-4 py-2 shadow-lg">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-10 w-10"
-              onClick={() => onAudioToggle(!isAudioOn)}
-            >
-              {isAudioOn ? (
-                <Mic className="h-5 w-5" />
-              ) : (
-                <MicOff className="h-5 w-5 text-red-500" />
-              )}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                >
-                  <ChevronUp className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
-              >
-                {audioDevices.map((device, i) => (
-                  <DropdownMenuItem
-                    key={device.deviceId}
-                    onClick={() => onAudioDeviceSelect(device.deviceId)}
-                  >
-                    {device.deviceId === selectedAudioDevice && (
-                      <Check className="w-4 h-4 mr-2" />
-                    )}
-                    {device.label || `Microphone ${i + 1}`}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <div className="w-px h-8 bg-border" />
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-10 w-10"
-              onClick={() => onVideoToggle(!isVideoOn)}
-            >
-              {isVideoOn ? (
-                <Webcam className="h-5 w-5" />
-              ) : (
-                <VideoOff className="h-5 w-5 text-red-500" />
-              )}
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full h-8 w-8"
-                >
-                  <ChevronUp className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
-              >
-                {videoDevices.map((device, i) => (
-                  <DropdownMenuItem
-                    key={device.deviceId}
-                    onClick={() => onVideoDeviceSelect(device.deviceId)}
-                  >
-                    {device.deviceId === selectedVideoDevice && (
-                      <Check className="w-4 h-4 mr-2" />
-                    )}
-                    {device.label || `Camera ${i + 1}`}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <div className="w-px h-8 bg-border" />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  "rounded-full h-10 w-10 transition-colors",
-                  screenShareMode !== "off" && "bg-primary/20 text-primary"
-                )}
-                title="Share Content"
-              >
-                <ScreenShare className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
-            >
-              <DropdownMenuItem onClick={() => handleShareModeChange("screen")}>
-                <Monitor className="w-4 h-4 mr-2" />
-                Share Screen
-                {screenShareMode === "screen" && (
-                  <Check className="w-4 h-4 ml-auto" />
-                )}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleShareModeChange("canvas")}>
-                <Paintbrush className="w-4 h-4 mr-2" />
-                Blank Canvas
-                {screenShareMode === "canvas" && (
-                  <Check className="w-4 h-4 ml-auto" />
-                )}
-              </DropdownMenuItem>
-              {screenShareMode !== "off" && (
-                <DropdownMenuItem
-                  className="text-red-500"
-                  onClick={() => handleShareModeChange("off")}
-                >
-                  <X className="w-4 h-4 mr-2" />
-                  Stop Sharing
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <div className="w-px h-8 bg-border" />
-          <Button
-            size="icon"
-            variant="outline"
-            className={cn(
-              "relative rounded-full shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200 h-10 w-10"
-            )}
-            onClick={onOpenSessions}
-            title="Your Recordings"
-          >
-            <Library className="w-5 h-5" />
-          </Button>
-          <div className="w-px h-8 bg-border" />
-          <Button
-            size="icon"
-            className={cn(
-              "rounded-full h-12 w-12 transition-colors",
-              isRecording
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-primary hover:bg-primary/90"
-            )}
-            onClick={() => {
-              if (
-                containerSize.width > 0 &&
-                containerSize.height > 0 &&
-                cameraStream
-              ) {
-                onRecordingToggle(
-                  isRecording,
-                  cameraStream as MediaStream,
-                  containerSize
-                );
-              } else {
-                toast.error(
-                  "Cannot start recording: stream or dimensions not ready."
-                );
-              }
-            }}
-            title={isRecording ? "Stop Recording" : "Start Recording"}
-          >
-            {isRecording ? (
-              <Square className="h-6 w-6" />
-            ) : (
-              <Circle className="h-6 w-6 fill-current" />
-            )}
-          </Button>
-          <div className="w-px h-8 bg-border" />
-          <LayoutControls {...rest} portalContainer={portalContainer} />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-10 w-10"
-            onClick={handleResetView}
-            title="Reset View"
-          >
-            <Frame className="h-5 w-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-10 w-10"
-            onClick={onToggleFullscreen}
-            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-          >
-            {isFullscreen ? (
-              <Shrink className="h-5 w-5" />
-            ) : (
-              <Expand className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };

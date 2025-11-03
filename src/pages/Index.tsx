@@ -1,16 +1,17 @@
 // src/pages/Index.tsx
 
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { FloatingLogo } from "@/components/FloatingLogo";
 import { useNavigate } from "react-router-dom";
 import { VideoCanvas } from "@/components/VideoCanvas";
-import { FloatingLogo } from "@/components/FloatingLogo";
+// --- DELETED: FloatingLogo ---
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
-import { InstructionsDialog } from "@/components/InstructionsDialog";
+// --- DELETED: InstructionsDialog (now in BottomNav) ---
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
-import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
-import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay"; // <-- 1. Import
+// --- DELETED: Unused icons ---
+import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay";
 import { ExcalidrawElement } from "@excalidraw/excalidraw";
-import { Pencil } from "lucide-react"; // <-- 2. Import Pencil Icon
+import { Pencil } from "lucide-react";
 import { zIndex } from "@/lib/zIndex";
 import {
   CaptionStyle,
@@ -41,11 +42,13 @@ import { SavedSessionsPanel } from "@/components/SavedSessionsPanel";
 import { RecordingSession } from "@/types/editor";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { FloatingAssetSearch } from "@/components/FloatingAssetSearch";
+// --- DELETED: Button (no longer used here) ---
+// --- DELETED: FloatingAssetSearch (now in BottomNav) ---
 import { AssetResult } from "@/components/AssetLibrary";
 import { SceneTabs } from "@/components/SceneTabs";
 import { TransitionPopover } from "@/components/TransitionPopover";
+// --- ADDED: Import new BottomNavigation ---
+import { BottomNavigation } from "@/components/BottomNavigation";
 
 const generateTextOverlayId = () =>
   `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -140,6 +143,7 @@ const Index = () => {
 
   // --- UI & WINDOW STATE ---
   const [isFullscreen, setIsFullscreen] = useState(false);
+  // --- MODIFIED: This is no longer used by TopToolbar ---
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
@@ -378,6 +382,25 @@ const Index = () => {
     (value: boolean) => updateSceneProperty("isVideoOn", value),
     [updateSceneProperty]
   );
+  // --- MODIFIED: Need to get devices for BottomNav ---
+  const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
+  const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
+
+  useEffect(() => {
+    const getDevices = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        setAudioDevices(devices.filter((d) => d.kind === "audioinput"));
+        setVideoDevices(devices.filter((d) => d.kind === "videoinput"));
+      } catch (err) {
+        console.warn("Could not enumerate devices:", err);
+      }
+    };
+    getDevices();
+  }, []);
+  // --- END MODIFICATION ---
+
   const handleSetSelectedVideoDevice = useCallback(
     (value: string | undefined) =>
       updateSceneProperty("selectedVideoDevice", value),
@@ -1303,6 +1326,10 @@ const Index = () => {
       screenShareMode: scene.screenShareMode,
       onScreenShareModeChange: handleSetScreenShareMode,
       hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
+      // --- MODIFIED: Pass device lists to canvas ---
+      audioDevices: audioDevices,
+      videoDevices: videoDevices,
+      // --- END MODIFICATION ---
       sidebarProps: {
         style: scene.captionStyle,
         dynamicStyle: scene.dynamicStyle,
@@ -1339,6 +1366,17 @@ const Index = () => {
     };
   };
 
+  // --- MODIFIED: Wrap canvas props in a memoized object ---
+  const activeSceneProps = useMemo(
+    () => getAllPropsForScene(activeScene),
+    [activeScene, savedOverlays]
+  );
+
+  const previousSceneProps = useMemo(
+    () => (previousScene ? getAllPropsForScene(previousScene) : null),
+    [previousScene, savedOverlays]
+  );
+
   return (
     <div
       ref={mainContainerRef}
@@ -1348,11 +1386,19 @@ const Index = () => {
         "w-full"
       )}
     >
-      <FloatingControlsPanel isMouseActive={isMouseActive} {...sidebarProps} />
+      <FloatingControlsPanel
+        isOpen={showFloatingPanel} // --- MODIFIED: Pass open state ---
+        onClose={() => setShowFloatingPanel(false)} // --- MODIFIED: Pass close handler ---
+        isMouseActive={isMouseActive}
+        {...sidebarProps}
+      />
 
+      {/* --- DELETED: FloatingLogo --- */}
+      {/* --- ADDED: FloatingLogo restored --- */}
       <div className="fixed top-6 left-6 z-[2015] transition-opacity duration-300">
         <FloatingLogo />
       </div>
+      {/* --- END ADDED --- */}
 
       <SceneTabs
         scenes={scenes}
@@ -1366,40 +1412,7 @@ const Index = () => {
         onSceneRename={handleSceneRename}
       />
 
-      <div className="fixed top-6 right-6 z-[2015] flex items-center gap-2 transition-opacity duration-300">
-        <Button
-          onClick={handleAddTextOverlay}
-          size="icon"
-          variant="outline"
-          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
-          title="Add Text"
-        >
-          <Type className="h-5 w-5" />
-        </Button>
-        <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
-        {/* --- 4. ADDED: Excalidraw Toggle Button --- */}
-        <Button
-          onClick={() => setIsDrawing(true)}
-          size="icon"
-          variant="outline"
-          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
-          title="Start Drawing"
-        >
-          <Pencil className="h-5 w-5" />
-        </Button>
-
-        <Button
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          size="icon"
-          variant="outline"
-          className="rounded-full h-10 w-10 shadow-lg backdrop-blur-sm border-2 hover:scale-105 transition-transform duration-200"
-          title="Toggle Theme"
-        >
-          <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        </Button>
-        <InstructionsDialog />
-      </div>
+      {/* --- DELETED: Top-right button group --- */}
 
       <TransitionPopover
         transition={activeTransition}
@@ -1415,10 +1428,10 @@ const Index = () => {
       />
 
       <div className="flex-1 relative overflow-hidden">
-        {previousScene && (
+        {previousScene && previousSceneProps && (
           <VideoCanvas
             key={`scene-${previousScene.id}-transitioning-out`}
-            {...getAllPropsForScene(previousScene)}
+            {...previousSceneProps}
             {...globalCanvasProps}
             isAudioOn={false}
             captionsEnabled={false}
@@ -1431,18 +1444,67 @@ const Index = () => {
           key={`scene-${activeScene.id}-${
             isTransitioning ? "transitioning-in" : "active"
           }`}
-          {...getAllPropsForScene(activeScene)}
+          {...activeSceneProps}
           {...globalCanvasProps}
           isTransitioningIn={isTransitioning}
           transition={activeTransition}
         />
       </div>
-      {/* --- 5. ADDED: Excalidraw Overlay --- */}
+
       <ExcalidrawOverlay
         isVisible={isDrawing}
         onClose={() => setIsDrawing(false)}
         initialElements={excalidrawElements}
         onElementsChange={setExcalidrawElements}
+      />
+
+      {/* --- ADDED: Render new BottomNavigation --- */}
+      <BottomNavigation
+        isMouseActive={isMouseActive}
+        onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
+        onOpenSessions={() => setShowSessionsPanel(true)}
+        isAudioOn={activeScene.isAudioOn}
+        onAudioToggle={handleSetIsAudioOn}
+        audioDevices={audioDevices}
+        onAudioDeviceSelect={handleSetSelectedAudioDevice}
+        selectedAudioDevice={activeScene.selectedAudioDevice}
+        isVideoOn={activeScene.isVideoOn}
+        onVideoToggle={handleSetIsVideoOn}
+        videoDevices={videoDevices}
+        onVideoDeviceSelect={handleSetSelectedVideoDevice}
+        selectedVideoDevice={activeScene.selectedVideoDevice}
+        screenShareMode={activeScene.screenShareMode}
+        onScreenShareModeChange={handleSetScreenShareMode}
+        isRecording={recording.isRecording}
+        onRecordingToggle={() =>
+          handleRecordingToggle(
+            recording.isRecording,
+            canvasRef.current?.captureStream() as MediaStream,
+            {
+              width: canvasRef.current?.width || 1280,
+              height: canvasRef.current?.height || 720,
+            }
+          )
+        }
+        onAddTextOverlay={handleAddTextOverlay}
+        onAssetSelect={handleAssetSelect}
+        setIsDrawing={setIsDrawing}
+        onToggleFullscreen={handleToggleFullscreen}
+        isFullscreen={isFullscreen}
+        // Pass Layout props
+        layoutMode={activeScene.layoutMode}
+        cameraShape={activeScene.cameraShape}
+        onLayoutModeChange={handleSetLayoutMode}
+        onCameraShapeChange={handleSetCameraShape}
+        onCustomMaskUpload={handleCustomMaskUpload}
+        portalContainer={mainContainerRef.current}
+        splitRatio={activeScene.splitRatio}
+        pipPosition={activeScene.pipPosition}
+        pipSize={activeScene.pipSize}
+        onSplitRatioChange={handleSetSplitRatio}
+        onPipPositionChange={handleSetPipPosition}
+        onPipSizeChange={handleSetPipSize}
+        customMaskUrl={activeScene.customMaskUrl}
       />
     </div>
   );
