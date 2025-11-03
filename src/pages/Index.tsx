@@ -1212,7 +1212,15 @@ const Index = () => {
     },
     [setAllSessions]
   );
+  const activeSceneProps = useMemo(
+    () => (activeScene ? getAllPropsForScene(activeScene) : null),
+    [activeScene, savedOverlays]
+  );
 
+  const previousSceneProps = useMemo(
+    () => (previousScene ? getAllPropsForScene(previousScene) : null),
+    [previousScene, savedOverlays]
+  );
   const handleRecordingToggle = useCallback(
     async (
       isCurrentlyRecording: boolean,
@@ -1243,7 +1251,7 @@ const Index = () => {
     [recording, setAllSessions, navigate, activeScene]
   );
 
-  if (!activeScene) {
+  if (!activeScene || !activeSceneProps) {
     return <div>Loading...</div>;
   }
 
@@ -1379,17 +1387,6 @@ const Index = () => {
       },
     };
   };
-
-  // --- MODIFIED: Wrap canvas props in a memoized object ---
-  const activeSceneProps = useMemo(
-    () => getAllPropsForScene(activeScene),
-    [activeScene, savedOverlays]
-  );
-
-  const previousSceneProps = useMemo(
-    () => (previousScene ? getAllPropsForScene(previousScene) : null),
-    [previousScene, savedOverlays]
-  );
 
   return (
     <div
