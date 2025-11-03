@@ -917,7 +917,7 @@ const Index = () => {
             },
             preview: "",
           };
-
+          setSavedOverlays((prev) => [newOverlay, ...prev]);
           updateActiveScene((scene) => {
             const updatedOverlays = [...scene.activeOverlays, newOverlay];
             if (recording.isRecording) {

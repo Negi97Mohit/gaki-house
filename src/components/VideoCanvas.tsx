@@ -214,7 +214,7 @@ export const DraggableOverlay: React.FC<{
       bounds="parent"
       minWidth={50}
       minHeight={50}
-      enableResizing={!true}
+      enableResizing={!isFullscreen}
       disableDragging={isFullscreen}
       className="group pointer-events-auto"
       style={{ zIndex: overlay.layout.zIndex }}
