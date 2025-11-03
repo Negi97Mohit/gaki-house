@@ -7,7 +7,7 @@ import { FloatingLogo } from "@/components/FloatingLogo";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
-import { Type, SlidersHorizontal, Info, Sun, Moon } from "lucide-react";
+import { Type, SlidersHorizontal, Info, Sun, Moon, Video, Circle } from "lucide-react";
 import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay"; // <-- 1. Import
 import { Pencil } from "lucide-react"; // <-- 2. Import Pencil Icon
 import { zIndex } from "@/lib/zIndex";
@@ -1365,47 +1365,116 @@ const Index = () => {
         onSceneRename={handleSceneRename}
       />
 
-      {/* Bottom Island Menu */}
+      {/* Unified Bottom Navigation Bar */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[2015]">
-        <div className="bg-background/95 backdrop-blur-md border-2 border-border rounded-lg shadow-2xl px-4 py-3 flex items-center gap-3">
+        <div className="bg-background/95 backdrop-blur-md border-2 border-border rounded-lg shadow-2xl px-4 py-3 flex items-center gap-4">
+          {/* Left Side: Settings Panel Trigger */}
           <Button
-            onClick={handleAddTextOverlay}
+            onClick={() => setShowFloatingPanel(!showFloatingPanel)}
             size="sm"
             variant="ghost"
+            data-floating-trigger
             className="h-9 px-3 hover:bg-muted transition-colors"
-            title="Add Text"
+            title="Open Settings"
           >
-            <Type className="h-4 w-4 mr-2" />
-            Add Text
+            <SlidersHorizontal className="h-4 w-4 mr-2" />
+            Settings
           </Button>
+          
           <div className="w-px h-6 bg-border" />
-          <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
+
+          {/* Center: Video Controls */}
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={() => setShowSessionsPanel(true)}
+              size="sm"
+              variant="ghost"
+              className="h-9 px-3 hover:bg-muted transition-colors relative"
+              title="Your Recordings"
+            >
+              <Video className="h-4 w-4 mr-2" />
+              Sessions
+              {allSessions.length > 0 && (
+                <span className="absolute -top-1 -right-1 h-4 w-4 bg-primary text-[10px] font-bold rounded-full flex items-center justify-center text-white">
+                  {allSessions.length}
+                </span>
+              )}
+            </Button>
+
+            <Button
+              onClick={() => {
+                if (!recording.isRecording) {
+                  recording.startRecording(canvasRef.current as HTMLCanvasElement);
+                  toast.info("Recording started!");
+                } else {
+                  const containerSize = { width: 1920, height: 1080 };
+                  recording.stopRecording(containerSize.width, containerSize.height, {
+                    dynamicStyle: activeScene.dynamicStyle,
+                    videoFilter: activeScene.videoFilter,
+                    backgroundEffect: activeScene.backgroundEffect,
+                    backgroundImageUrl: activeScene.backgroundImageUrl || '',
+                  }).then((session) => {
+                    if (session) {
+                      setAllSessions((prev) => [...prev, session]);
+                      toast.success("Recording saved!");
+                    }
+                  });
+                }
+              }}
+              size="lg"
+              className={cn(
+                "rounded-full shadow-xl transition-all duration-300 h-11 w-11",
+                recording.isRecording
+                  ? "bg-red-500 hover:bg-red-600 scale-110 animate-pulse"
+                  : "bg-primary hover:bg-primary/90"
+              )}
+              title={recording.isRecording ? "Stop Recording" : "Start Recording"}
+            >
+              <Circle
+                className={cn("w-5 h-5 transition-all", recording.isRecording && "fill-white")}
+              />
+            </Button>
+          </div>
+
           <div className="w-px h-6 bg-border" />
-          <Button
-            onClick={() => setIsDrawing(true)}
-            size="sm"
-            variant="ghost"
-            className="h-9 px-3 hover:bg-muted transition-colors"
-            title="Start Drawing"
-          >
-            <Pencil className="h-4 w-4 mr-2" />
-            Draw
-          </Button>
-          <div className="w-px h-6 bg-border" />
-          <Button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            size="sm"
-            variant="ghost"
-            className="h-9 px-3 hover:bg-muted transition-colors"
-            title="Toggle Theme"
-          >
-            <Sun className="h-4 w-4 mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="dark:hidden">Light</span>
-            <span className="hidden dark:inline">Dark</span>
-          </Button>
-          <div className="w-px h-6 bg-border" />
-          <InstructionsDialog />
+
+          {/* Right Side: Utility Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={handleAddTextOverlay}
+              size="sm"
+              variant="ghost"
+              className="h-9 px-3 hover:bg-muted transition-colors"
+              title="Add Text"
+            >
+              <Type className="h-4 w-4 mr-2" />
+              Text
+            </Button>
+            <FloatingAssetSearch onAssetSelect={handleAssetSelect} />
+            <Button
+              onClick={() => setIsDrawing(true)}
+              size="sm"
+              variant="ghost"
+              className="h-9 px-3 hover:bg-muted transition-colors"
+              title="Start Drawing"
+            >
+              <Pencil className="h-4 w-4 mr-2" />
+              Draw
+            </Button>
+            <Button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              size="sm"
+              variant="ghost"
+              className="h-9 px-3 hover:bg-muted transition-colors"
+              title="Toggle Theme"
+            >
+              <Sun className="h-4 w-4 mr-2 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 mr-2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="dark:hidden">Light</span>
+              <span className="hidden dark:inline">Dark</span>
+            </Button>
+            <InstructionsDialog />
+          </div>
         </div>
       </div>
 

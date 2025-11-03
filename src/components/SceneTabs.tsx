@@ -178,29 +178,23 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
 
           return (
             <div key={scene.id} className="relative">
-              <div
+              <button
                 draggable
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDrop={(e) => handleDrop(e, index)}
                 onDragEnd={handleDragEnd}
                 className={cn(
-                  "group relative flex items-center gap-2 px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 min-w-[180px]",
-                  isActive
-                    ? "bg-yellow-500/90 text-black font-semibold shadow-lg scale-105 border-2 border-yellow-400"
-                    : "bg-background/95 backdrop-blur-md border-2 border-yellow-500/30 hover:border-yellow-500 hover:bg-yellow-500/10"
+                  "cybr-btn relative",
+                  isActive && "scale-105"
                 )}
+                style={{
+                  '--primary-hue': '45',
+                  '--primary-lightness': isActive ? '55' : '50',
+                } as React.CSSProperties}
                 onClick={() => !editingId && onSceneSelect(scene.id)}
                 onDoubleClick={() => handleDoubleClick(scene)}
               >
-                {/* Drag Handle */}
-                <GripVertical
-                  className={cn(
-                    "w-4 h-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity",
-                    isActive ? "text-black/50" : "text-muted-foreground/50"
-                  )}
-                />
-
                 {editingId === scene.id ? (
                   <input
                     ref={inputRef}
@@ -209,30 +203,38 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                     onChange={handleNameChange}
                     onBlur={handleNameSubmit}
                     onKeyDown={handleKeyDown}
-                    className="bg-background border border-border rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-2 focus:ring-yellow-500 text-foreground"
+                    className="absolute inset-0 bg-black/50 border border-yellow-500 rounded px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
                     onClick={(e) => e.stopPropagation()}
                   />
                 ) : (
-                  <span className="text-sm select-none flex-1">{scene.name}</span>
+                  <>
+                    <span className="relative z-10">
+                      {scene.name}
+                      <span aria-hidden className="text-yellow-400">_</span>
+                    </span>
+                    <span aria-hidden className="cybr-btn__glitch">
+                      {scene.name}_
+                    </span>
+                    <span aria-hidden className="cybr-btn__tag">
+                      S{index + 1}
+                    </span>
+                  </>
                 )}
 
-                {scenes.length > 1 && (
+                {scenes.length > 1 && !editingId && (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onSceneClose(scene.id);
                     }}
-                    className={cn(
-                      "opacity-0 group-hover:opacity-100 h-5 w-5 rounded-sm flex items-center justify-center transition-opacity",
-                      isActive ? "hover:bg-black/20" : "hover:bg-destructive/20"
-                    )}
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white z-20 transition-transform hover:scale-110"
                   >
                     <X className="h-3 w-3" />
                   </button>
                 )}
-              </div>
+              </button>
 
-              {/* Transition button - positioned to the right */}
+              {/* Transition button */}
               {index < scenes.length - 1 && (
                 <button
                   ref={(el) => {
@@ -247,7 +249,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   onMouseEnter={() => setHoveredTransitionIndex(index)}
                   onMouseLeave={() => setHoveredTransitionIndex(null)}
                   className={cn(
-                    "absolute -right-9 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full border-2 bg-background flex items-center justify-center transition-all duration-200 z-10",
+                    "absolute left-1/2 -translate-x-1/2 -bottom-5 h-8 w-8 rounded-full border-2 bg-background flex items-center justify-center transition-all duration-200 z-10",
                     transition
                       ? "border-yellow-500 text-yellow-500 hover:scale-110 hover:bg-yellow-500/10"
                       : "border-border hover:bg-muted hover:scale-110",
@@ -265,10 +267,21 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         {/* Add Scene button */}
         <button
           onClick={onSceneAdd}
-          className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 border-dashed border-yellow-500/30 hover:border-yellow-500 hover:bg-yellow-500/10 transition-all duration-200 min-w-[180px]"
+          className="cybr-btn"
+          style={{
+            '--primary-hue': '45',
+            '--primary-lightness': '45',
+          } as React.CSSProperties}
         >
-          <Plus className="h-4 w-4" />
-          <span className="text-sm">Add Scene</span>
+          <span className="relative z-10 flex items-center justify-center gap-2">
+            <Plus className="h-4 w-4" />
+            Add
+            <span aria-hidden className="text-yellow-400">_</span>
+          </span>
+          <span aria-hidden className="cybr-btn__glitch">
+            Add_
+          </span>
+          <span aria-hidden className="cybr-btn__tag">NEW</span>
         </button>
       </div>
     </div>
