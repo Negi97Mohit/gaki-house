@@ -1461,21 +1461,25 @@ const Index = () => {
       {/* --- END ADDED --- */}
       <div className="flex-1 relative overflow-hidden">
         {previousScene && previousSceneProps && (
-          <VideoCanvas
-            key={`scene-${previousScene.id}-transitioning-out`}
-            {...previousSceneProps}
-            {...globalCanvasProps}
-            isAudioOn={false}
-            captionsEnabled={false}
-            isTransitioningOut={true}
-            transition={activeTransition}
-          />
+          <div
+            className="absolute inset-0 w-full h-full"
+            style={{ display: isTransitioning ? "block" : "none" }}
+          >
+            {" "}
+            <VideoCanvas
+              key="previous-scene-canvas" // Static key
+              {...(previousSceneProps || activeSceneProps)} // Give valid props
+              {...globalCanvasProps}
+              isAudioOn={false}
+              captionsEnabled={false}
+              isTransitioningOut={isTransitioning}
+              transition={activeTransition}
+            />
+          </div>
         )}
 
         <VideoCanvas
-          key={`scene-${activeScene.id}-${
-            isTransitioning ? "transitioning-in" : "active"
-          }`}
+          key="active-scene-canvas"
           {...activeSceneProps}
           {...globalCanvasProps}
           isTransitioningIn={isTransitioning}
