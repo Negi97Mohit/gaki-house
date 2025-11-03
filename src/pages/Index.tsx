@@ -439,9 +439,13 @@ const Index = () => {
     [updateSceneProperty]
   );
   const handleSetScreenShareMode = useCallback(
-    (value: "off" | "screen" | "canvas") =>
-      updateSceneProperty("screenShareMode", value),
-    [updateSceneProperty]
+    (value: "off" | "screen" | "canvas") => {
+      updateActiveScene((scene) => {
+        const newLayoutMode = value !== "off" ? "pip" : "solo";
+        return { ...scene, screenShareMode: value, layoutMode: newLayoutMode };
+      });
+    },
+    [updateActiveScene]
   );
   const handleSetIsAiModeEnabled = useCallback(
     (value: boolean) => updateSceneProperty("isAiModeEnabled", value),

@@ -112,13 +112,9 @@ export const DraggableOverlay: React.FC<{
   ) => void;
   onRemoveOverlay: (id: string) => void;
   onPreviewGenerated: (id: string, dataUrl: string) => void;
-  onSetDynamicLayout: (
-    target: { id: string; type: "html" },
-    mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
-  ) => void;
+  onSetDynamicLayout: (target: { id: string; type: "html" }) => void;
   containerSize: { width: number; height: number };
   portalContainer?: HTMLElement | null;
-  isSpacePressed: boolean;
 }> = ({
   overlay,
   onLayoutChange,
@@ -127,7 +123,6 @@ export const DraggableOverlay: React.FC<{
   onSetDynamicLayout,
   containerSize,
   portalContainer,
-  isSpacePressed,
 }) => {
   const { theme } = useTheme();
   const elementRef = useRef<HTMLDivElement>(null);
@@ -219,8 +214,8 @@ export const DraggableOverlay: React.FC<{
       bounds="parent"
       minWidth={50}
       minHeight={50}
-      enableResizing={!isSpacePressed}
-      disableDragging={isFullscreen || isSpacePressed}
+      enableResizing={!true}
+      disableDragging={isFullscreen}
       className="group pointer-events-auto"
       style={{ zIndex: overlay.layout.zIndex }}
     >
@@ -622,7 +617,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [viewport, setViewport] = useState({ scale: 1, x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
-  const panStartRef = useRef({ x: 0, y: 0 });
   const sceneRef = useRef<HTMLDivElement>(null);
 
   const [pipContent, setPipContent] = useState<"camera" | "share">("camera");
@@ -667,111 +661,65 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     }
   });
 
-  // --- Key Handlers ---
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    const target = e.target as HTMLElement;
-    if (
-      e.key === " " &&
-      !e.ctrlKey &&
-      !e.metaKey &&
-      target.tagName !== "INPUT" &&
-      target.tagName !== "TEXTAREA"
-    ) {
-      e.preventDefault();
-      setIsSpacePressed(true);
-    }
-  }, []);
-
-  const handleKeyUp = useCallback((e: KeyboardEvent) => {
-    if (e.key === " ") {
-      setIsSpacePressed(false);
-      setIsPanning(false);
-    }
-  }, []);
-
   // --- Wheel Handler ---
-  const handleWheel = useCallback((e: WheelEvent) => {
-    const container = canvasContainerRef.current;
-    if (!container) return;
+  const handleWheel = useCallback(
+    (e: WheelEvent) => {
+      const container = canvasContainerRef.current;
+      if (!container) return;
+      // Only trigger this new logic if we're in solo mode
+      if (props.layoutMode !== "solo") {
+        // Optional: you could put the old zoom logic here if you want
+        // it to work in other modes, but for now we'll do nothing.
+        return;
+      }
 
-    e.preventDefault();
-    e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
 
-    const rect = container.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+      const rect = container.getBoundingClientRect();
+      // Get PiP size to offset the cursor (so cursor is at center of PiP)
+      const pipWidthPx = (containerSize.width * props.pipSize.width) / 100;
+      const pipHeightPx = (containerSize.height * props.pipSize.height) / 100;
+      const mouseX = e.clientX - rect.left - pipWidthPx / 2;
+      const mouseY = e.clientY - rect.top - pipHeightPx / 2;
+      // 2. Convert to percentages
+      const newXPercent = (mouseX / containerSize.width) * 100;
+      const newYPercent = (mouseY / containerSize.height) * 100;
 
-    setViewport((prev) => {
-      const delta = e.deltaY * -0.005;
-      const newScale = Math.max(0.1, Math.min(5, prev.scale + delta));
+      // 3. Set the PiP position
+      // We use the 'solo' layout's pip position store, as it will be used
+      // once we switch to pip mode.
+      props.onPipPositionChange({
+        x: Math.max(2, Math.min(98 - props.pipSize.width, newXPercent)),
+        y: Math.max(2, Math.min(98 - props.pipSize.height, newYPercent)),
+      });
 
-      const mouseSceneX = mouseX / prev.scale - prev.x;
-      const mouseSceneY = mouseY / prev.scale - prev.y;
-
-      const newX = mouseX / newScale - mouseSceneX;
-      const newY = mouseY / newScale - mouseSceneY;
-      console.log("[Viewport Wheel]", { scale: newScale, x: newX, y: newY });
-      return { scale: newScale, x: newX, y: newY };
-    });
-  }, []);
-
-  // --- Reset View Handler ---
-  const handleResetView = useCallback(() => {
-    setViewport({ scale: 1, x: 0, y: 0 });
-    console.log("[Viewport Reset]", { scale: 1, x: 0, y: 0 });
-  }, []);
+      // 4. If not already sharing, switch to blank canvas (which triggers PiP)
+      if (props.screenShareMode === "off") {
+        props.onScreenShareModeChange("canvas");
+      }
+    },
+    [
+      props.onPipPositionChange,
+      props.pipSize,
+      props.screenShareMode,
+      props.onScreenShareModeChange,
+      props.layoutMode,
+      containerSize,
+    ]
+  );
 
   // --- Attach Listeners ---
   useEffect(() => {
     const container = canvasContainerRef.current;
     if (!container) return;
 
-    window.addEventListener("keydown", handleKeyDown, { passive: false });
-    window.addEventListener("keyup", handleKeyUp);
     container.addEventListener("wheel", handleWheel, { passive: false });
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
       container.removeEventListener("wheel", handleWheel);
     };
-  }, [handleKeyDown, handleKeyUp, handleWheel]);
-
-  // --- Pan Mouse Handlers ---
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (isSpacePressed) {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsPanning(true);
-      panStartRef.current = { x: e.clientX, y: e.clientY };
-      return;
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isPanning) return;
-    e.preventDefault();
-    e.stopPropagation();
-
-    const dx = (e.clientX - panStartRef.current.x) / viewport.scale;
-    const dy = (e.clientY - panStartRef.current.y) / viewport.scale;
-
-    setViewport((prev) => ({
-      scale: prev.scale,
-      x: prev.x + dx,
-      y: prev.y + dy,
-    }));
-    console.log("[Viewport Pan]", { x: viewport.x + dx, y: viewport.y + dy });
-    panStartRef.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (isPanning) {
-      setIsPanning(false);
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
+  }, [handleWheel]);
 
   const handleFinalTranscript = useCallback(
     (text: string) => {
@@ -1403,9 +1351,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   };
 
   const handleCanvasClick = () => {
-    if (!isSpacePressed) {
-      onDeselectAll();
-    }
+    onDeselectAll();
   };
 
   const filteredHtmlOverlays = dynamicLayout.isActive
@@ -1512,27 +1458,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       className={cn(
         "absolute inset-0 w-full h-full bg-neutral-900 overflow-hidden",
         getAnimationClass(),
-        isPanning ? "cursor-grabbing" : isSpacePressed ? "cursor-grab" : "",
         !isMouseActive && isFullscreen && "cursor-none"
       )}
       style={{
         ...getAnimationStyles(),
         pointerEvents: isTransitioningOut ? "none" : "auto",
       }}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
     >
       <div
         ref={sceneRef}
         className="w-full h-full"
-        style={{
-          transform: `scale(${viewport.scale}) translate(${viewport.x}px, ${viewport.y}px)`,
-          transformOrigin: "0 0",
-          willChange: "transform",
-        }}
-        onClick={isSpacePressed ? undefined : handleCanvasClick}
+        style={{ willChange: "transform" }}
+        onClick={handleCanvasClick}
       >
         {renderContent()}
         <canvas
@@ -1555,13 +1492,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onPreviewGenerated={onPreviewGenerated}
                 containerSize={containerSize}
                 portalContainer={portalContainer}
-                isSpacePressed={isSpacePressed}
               />
             ))}
             {filteredBrowserOverlays.map((browser) => (
               <div
                 key={`browser-wrapper-${browser.id}`}
-                style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
+                style={{ pointerEvents: "auto" }}
               >
                 <DraggableBrowser
                   key={browser.id}
@@ -1583,7 +1519,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {filteredFileOverlays.map((file) => (
               <div
                 key={`file-wrapper-${file.id}`}
-                style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
+                style={{ pointerEvents: "auto" }}
               >
                 <DraggableFileViewer
                   key={file.id}
@@ -1606,7 +1542,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {filteredTextOverlays.map((text) => (
               <div
                 key={`text-wrapper-${text.id}`}
-                style={{ pointerEvents: isSpacePressed ? "none" : "auto" }}
+                style={{ pointerEvents: "auto" }}
               >
                 <DraggableTextOverlay
                   key={text.id}
@@ -1620,7 +1556,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onSelect={setSelectedTextId}
                   onInternalDragStart={onInternalDragStart}
                   onInternalDragStop={onInternalDragStop}
-                  isSpacePressed={isSpacePressed}
                   containerRef={canvasContainerRef}
                 />
               </div>
@@ -1740,21 +1675,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
                   style={{ zIndex: "var(--z-caption)" }}
                   minWidth={containerSize.width * 0.2}
-                  disableDragging={isSpacePressed}
-                  enableResizing={
-                    !isSpacePressed
-                      ? {
-                          left: true,
-                          right: true,
-                          top: false,
-                          bottom: false,
-                          topLeft: false,
-                          topRight: false,
-                          bottomLeft: false,
-                          bottomRight: false,
-                        }
-                      : false
-                  }
+                  disableDragging={false}
+                  enableResizing={{
+                    left: true,
+                    right: true,
+                    top: false,
+                    bottom: false,
+                    topLeft: false,
+                    topRight: false,
+                    bottomLeft: false,
+                    bottomRight: false,
+                  }}
                 >
                   <div
                     ref={captionRef}
@@ -1829,7 +1760,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             onAiButtonPositionChange({ x: newX, y: newY });
           }}
           bounds="parent"
-          disableDragging={isSpacePressed}
+          disableDragging={false}
           enableResizing={false}
           className={cn(
             "pointer-events-auto transition-opacity duration-300",
