@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
+import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";
 import { FILTER_PRESETS } from "@/lib/filters";
 import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
@@ -69,7 +69,9 @@ interface FloatingControlsPanelProps {
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const [isOpen, setIsOpen] = [props.isOpen, props.onClose];
-  const [activeSection, setActiveSection] = useState<string | null>("dynamic-styles");
+  const [activeSection, setActiveSection] = useState<string | null>(
+    "dynamic-styles"
+  );
   const panelRef = useRef<HTMLDivElement>(null);
 
   const handlePresetSelect = (preset: (typeof CAPTION_PRESETS)[0]) => {
@@ -80,6 +82,28 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       backgroundColor: preset.style.backgroundColor,
     };
     props.onStyleChange({ ...props.style, ...updates });
+  };
+
+  // --- ADDED: State and Effect for looping previews ---
+  const [previewKey, setPreviewKey] = useState(0);
+
+  useEffect(() => {
+    // Only run the animation interval when this section is visible
+    if (activeSection === "dynamic-styles") {
+      const interval = setInterval(() => {
+        setPreviewKey((prevKey) => prevKey + 1);
+      }, 3000); // Loop every 3 seconds
+      return () => clearInterval(interval);
+    }
+  }, [activeSection]);
+  // --- END ADDED ---
+
+  // --- ADDED: Base style for animated previews ---
+  const previewBaseStyle: React.CSSProperties = {
+    fontSize: "18px",
+    fontFamily: "Inter, sans-serif",
+    color: "hsl(var(--foreground))",
+    fontWeight: "600",
   };
 
   // Click outside to close
@@ -151,7 +175,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-8 pointer-events-none"
         )}
-        style={{ 
+        style={{
           zIndex: "var(--z-floating-panel)",
           maxHeight: "70vh",
         }}
@@ -165,21 +189,29 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               className={cn(
                 "w-14 h-14 rounded-lg flex flex-col items-center justify-center gap-1 transition-all duration-200 group relative",
                 activeSection === section.id
-                  ? "bg-gradient-to-br " + section.color + " shadow-[0_0_20px_rgba(234,179,8,0.4)] scale-110"
+                  ? "bg-gradient-to-br " +
+                      section.color +
+                      " shadow-[0_0_20px_rgba(234,179,8,0.4)] scale-110"
                   : "bg-background/50 hover:bg-background border-2 border-yellow-500/20 hover:border-yellow-500/50"
               )}
               title={section.title}
             >
-              <section.icon 
+              <section.icon
                 className={cn(
                   "w-5 h-5 transition-colors",
-                  activeSection === section.id ? "text-black" : "text-yellow-500"
-                )} 
+                  activeSection === section.id
+                    ? "text-black"
+                    : "text-yellow-500"
+                )}
               />
-              <span className={cn(
-                "text-[9px] font-bold uppercase tracking-wider font-cyber",
-                activeSection === section.id ? "text-black" : "text-yellow-500/70"
-              )}>
+              <span
+                className={cn(
+                  "text-[9px] font-bold uppercase tracking-wider font-cyber",
+                  activeSection === section.id
+                    ? "text-black"
+                    : "text-yellow-500/70"
+                )}
+              >
                 {section.title.split(" ")[0]}
               </span>
               {activeSection === section.id && (
@@ -195,51 +227,84 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-yellow-500/30">
                 <Zap className="w-5 h-5 text-yellow-500" />
-                <h3 className="text-lg font-bold font-cyber text-yellow-500 tracking-wider">DYNAMIC STYLES</h3>
+                <h3 className="text-lg font-bold font-cyber text-yellow-500 tracking-wider">
+                  DYNAMIC STYLES
+                </h3>
               </div>
               <RadioGroup
                 value={props.dynamicStyle}
                 onValueChange={props.onDynamicStyleChange}
                 className="grid grid-cols-2 gap-3"
               >
-                {DYNAMIC_STYLE_OPTIONS.map((option) => (
-                  <div
-                    key={option.id}
-                    className={cn(
-                      "relative rounded-lg border-2 overflow-hidden transition-all duration-200 cursor-pointer group",
-                      props.dynamicStyle === option.id
-                        ? "border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]"
-                        : "border-yellow-500/20 hover:border-yellow-500/60"
-                    )}
-                    onClick={() => props.onDynamicStyleChange(option.id)}
-                  >
-                    <RadioGroupItem value={option.id} id={option.id} className="sr-only" />
-                    <Label
-                      htmlFor={option.id}
-                      className="block cursor-pointer"
+                {/* --- MODIFIED: Iterate over DYNAMIC_STYLES to get components --- */}
+                {Object.values(DYNAMIC_STYLES).map((styleDef) => {
+                  const isSelected = props.dynamicStyle === styleDef.id;
+                  const Component = styleDef.component;
+
+                  return (
+                    <div
+                      key={styleDef.id}
+                      className={cn(
+                        "relative rounded-lg border-2 overflow-hidden transition-all duration-200 cursor-pointer group",
+                        isSelected
+                          ? "border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]"
+                          : "border-yellow-500/20 hover:border-yellow-500/60"
+                      )}
+                      onClick={() => props.onDynamicStyleChange(styleDef.id)}
                     >
-                      <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center p-4 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-grid-yellow-500/10" />
-                        <span className={cn(
-                          "text-2xl font-bold relative z-10 transition-all duration-200",
-                          props.dynamicStyle === option.id 
-                            ? "text-yellow-500 scale-110" 
-                            : "text-foreground group-hover:text-yellow-500"
-                        )}>
-                          {option.name.slice(0, 2).toUpperCase()}
-                        </span>
-                      </div>
-                      <div className={cn(
-                        "p-2 text-center text-xs font-semibold font-cyber transition-colors",
-                        props.dynamicStyle === option.id
-                          ? "bg-yellow-500 text-black"
-                          : "bg-background/80 text-foreground"
-                      )}>
-                        {option.name}
-                      </div>
-                    </Label>
-                  </div>
-                ))}
+                      <RadioGroupItem
+                        value={styleDef.id}
+                        id={styleDef.id}
+                        className="sr-only"
+                      />
+                      <Label
+                        htmlFor={styleDef.id}
+                        className="block cursor-pointer"
+                      >
+                        <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center p-4 relative overflow-hidden">
+                          <div className="absolute inset-0 bg-grid-yellow-500/10" />
+                          {/* --- REPLACED: Static text with live component preview --- */}
+                          <div
+                            key={`${styleDef.id}-${previewKey}`}
+                            className="relative z-10 w-full text-center"
+                            style={
+                              isSelected
+                                ? {
+                                    ...previewBaseStyle,
+                                    color: "hsl(var(--primary))",
+                                  }
+                                : previewBaseStyle
+                            }
+                          >
+                            <Component
+                              text="This is a preview"
+                              fullTranscript="This is a preview"
+                              interimTranscript=""
+                              baseStyle={
+                                isSelected
+                                  ? {
+                                      ...previewBaseStyle,
+                                      color: "hsl(var(--primary))",
+                                    }
+                                  : previewBaseStyle
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div
+                          className={cn(
+                            "p-2 text-center text-xs font-semibold font-cyber transition-colors",
+                            isSelected
+                              ? "bg-yellow-500 text-black"
+                              : "bg-background/80 text-foreground"
+                          )}
+                        >
+                          {styleDef.name}
+                        </div>
+                      </Label>
+                    </div>
+                  );
+                })}
               </RadioGroup>
             </div>
           )}
@@ -248,7 +313,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-pink-500/30">
                 <Paintbrush className="w-5 h-5 text-pink-500" />
-                <h3 className="text-lg font-bold font-cyber text-pink-500 tracking-wider">STYLE PRESETS</h3>
+                <h3 className="text-lg font-bold font-cyber text-pink-500 tracking-wider">
+                  STYLE PRESETS
+                </h3>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {CAPTION_PRESETS.map((preset) => (
@@ -278,7 +345,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-blue-500/30">
                 <Palette className="w-5 h-5 text-blue-500" />
-                <h3 className="text-lg font-bold font-cyber text-blue-500 tracking-wider">TEXT STYLE</h3>
+                <h3 className="text-lg font-bold font-cyber text-blue-500 tracking-wider">
+                  TEXT STYLE
+                </h3>
               </div>
               <StyleControls
                 style={props.style}
@@ -291,34 +360,45 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-cyan-500/30">
                 <Droplets className="w-5 h-5 text-cyan-500" />
-                <h3 className="text-lg font-bold font-cyber text-cyan-500 tracking-wider">VIDEO EFFECTS</h3>
+                <h3 className="text-lg font-bold font-cyber text-cyan-500 tracking-wider">
+                  VIDEO EFFECTS
+                </h3>
               </div>
 
               {/* Filters */}
               <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">FILTER</Label>
+                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
+                  FILTER
+                </Label>
                 <div className="grid grid-cols-3 gap-2">
-                  {[{ id: "None", name: "None" }, ...FILTER_PRESETS].map((filter) => (
-                    <button
-                      key={filter.id}
-                      onClick={() => props.onVideoFilterChange(filter.id === "None" ? "None" : (filter as any).style)}
-                      className={cn(
-                        "aspect-square rounded-lg border-2 transition-all duration-200 relative overflow-hidden",
-                        props.videoFilter === (filter.id === "None" ? "None" : (filter as any).style)
-                          ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                          : "border-cyan-500/20 hover:border-cyan-500/60"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-full h-full flex items-center justify-center text-xs font-bold font-cyber",
-                        props.videoFilter === (filter.id === "None" ? "None" : (filter as any).style)
-                          ? "bg-gradient-to-br from-cyan-500/20 to-cyan-500/40 text-cyan-500"
-                          : "bg-background/50 text-foreground"
-                      )}>
-                        {filter.name.slice(0, 4).toUpperCase()}
-                      </div>
-                    </button>
-                  ))}
+                  {FILTER_PRESETS.map((filter) => {
+                    const isSelected = props.videoFilter === filter.style;
+                    return (
+                      <button
+                        key={filter.id}
+                        onClick={() => props.onVideoFilterChange(filter.style)}
+                        className={cn(
+                          "aspect-video rounded-lg border-2 transition-all duration-200 relative overflow-hidden group",
+                          isSelected
+                            ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                            : "border-cyan-500/20 hover:border-cyan-500/60"
+                        )}
+                        title={filter.name}
+                      >
+                        <img
+                          src="/placeholder.jpeg"
+                          alt={filter.name}
+                          className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                          style={{ filter: filter.style }}
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-1">
+                          <span className="text-white text-[10px] font-bold font-cyber truncate block text-center">
+                            {filter.name.toUpperCase()}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -333,13 +413,17 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     type="color"
                     className="w-20 h-10 p-1 cursor-pointer border-2 border-cyan-500/30"
                     value={props.blankCanvasColor}
-                    onChange={(e) => props.onBlankCanvasColorChange(e.target.value)}
+                    onChange={(e) =>
+                      props.onBlankCanvasColorChange(e.target.value)
+                    }
                   />
                   <Input
                     type="text"
                     className="flex-1 font-mono text-sm border-2 border-cyan-500/30"
                     value={props.blankCanvasColor}
-                    onChange={(e) => props.onBlankCanvasColorChange(e.target.value)}
+                    onChange={(e) =>
+                      props.onBlankCanvasColorChange(e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -347,7 +431,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               {/* Neon Edge */}
               <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">NEON EDGE</Label>
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
+                    NEON EDGE
+                  </Label>
                   <Switch
                     checked={props.isNeonEdgeEnabled}
                     onCheckedChange={props.onNeonEdgeToggle}
@@ -373,7 +459,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               {/* Auto Framing */}
               <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">AUTO FRAMING</Label>
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
+                    AUTO FRAMING
+                  </Label>
                   <Switch
                     checked={props.isAutoFramingEnabled}
                     onCheckedChange={props.onAutoFramingChange}
@@ -387,7 +475,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                       </Label>
                       <Slider
                         value={[props.zoomSensitivity]}
-                        onValueChange={([v]) => props.onZoomSensitivityChange(v)}
+                        onValueChange={([v]) =>
+                          props.onZoomSensitivityChange(v)
+                        }
                         min={1}
                         max={10}
                         step={0.1}
@@ -414,14 +504,18 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               {/* Other Toggles */}
               <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">BEAUTIFY</Label>
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
+                    BEAUTIFY
+                  </Label>
                   <Switch
                     checked={props.isBeautifyEnabled}
                     onCheckedChange={props.onBeautifyToggle}
                   />
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">LOW LIGHT ENHANCE</Label>
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
+                    LOW LIGHT ENHANCE
+                  </Label>
                   <Switch
                     checked={props.isLowLightEnabled}
                     onCheckedChange={props.onLowLightToggle}
@@ -435,7 +529,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-purple-500/30">
                 <Sparkles className="w-5 h-5 text-purple-500" />
-                <h3 className="text-lg font-bold font-cyber text-purple-500 tracking-wider">SAVED OVERLAYS</h3>
+                <h3 className="text-lg font-bold font-cyber text-purple-500 tracking-wider">
+                  SAVED OVERLAYS
+                </h3>
               </div>
               {props.savedOverlays.length === 0 ? (
                 <div className="text-center p-8 rounded-lg bg-background/50 border-2 border-purple-500/20">
