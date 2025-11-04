@@ -136,6 +136,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           className="rounded-full h-10 w-10"
           onClick={onOpenSettings}
           title="Open Controls Panel"
+          data-floating-trigger="true"
         >
           <SlidersHorizontal className="w-5 h-5" />
         </Button>

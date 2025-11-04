@@ -44,133 +44,63 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
 
   // --- Updated Search Functions ---
   const searchImages = useCallback(
-    async (loadMore = false) => {
-      // Read necessary state directly inside
-      if (isImagesLoading) return; // Simplified check
-      if (loadMore && !hasMoreImages) return;
-
+    async (term: string, page: number) => {
+      if (isImagesLoading) return;
       setIsImagesLoading(true);
-      const pageToFetch = loadMore ? imagePage + 1 : 1;
-      const termToSearch = searchTerm; // Capture searchTerm at time of function call
 
       try {
-        const result: ApiSearchResult = await apiSearchImages(
-          termToSearch,
-          pageToFetch
-        );
-        if (loadMore) {
+        const result: ApiSearchResult = await apiSearchImages(term, page);
+        if (page > 1) {
           setImageResults((prev) => [...prev, ...result.assets]);
         } else {
           setImageResults(result.assets);
         }
-        setImagePage(pageToFetch);
+        setImagePage(page);
         setHasMoreImages(result.hasMore);
       } catch (error) {
         console.error("Failed to search images:", error);
         toast.error("Failed to search images.");
-        if (!loadMore) setImageResults([]);
+        if (page === 1) setImageResults([]);
       } finally {
         setIsImagesLoading(false);
       }
     },
-    [isImagesLoading, imagePage, hasMoreImages, searchTerm]
+    [isImagesLoading]
   ); // Minimal dependencies
 
   const searchGifs = useCallback(
-    async (loadMore = false) => {
-      // Read necessary state directly inside
-      if (isGifsLoading) return; // Simplified check
-      if (loadMore && !hasMoreGifs) return;
-
+    async (term: string, page: number) => {
+      if (isGifsLoading) return;
       setIsGifsLoading(true);
-      const pageToFetch = loadMore ? gifPage + 1 : 1;
-      const termToSearch = searchTerm; // Capture searchTerm at time of function call
 
       try {
-        const result: ApiSearchResult = await apiSearchGifs(
-          termToSearch,
-          pageToFetch
-        );
-        if (loadMore) {
+        const result: ApiSearchResult = await apiSearchGifs(term, page);
+        if (page > 1) {
           setGifResults((prev) => [...prev, ...result.assets]);
         } else {
           setGifResults(result.assets);
         }
-        setGifPage(pageToFetch);
+        setGifPage(page);
         setHasMoreGifs(result.hasMore);
       } catch (error) {
         console.error("Failed to search GIFs:", error);
         toast.error("Failed to search GIFs.");
-        if (!loadMore) setGifResults([]);
+        if (page === 1) setGifResults([]);
       } finally {
         setIsGifsLoading(false);
       }
     },
-    [isGifsLoading, gifPage, hasMoreGifs, searchTerm]
+    [isGifsLoading]
   ); // Minimal dependencies
 
   // --- useEffect for Automatic Debounced Search (Initial Search) ---
   useEffect(() => {
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
 
-    // --- MODIFICATION: Removed the `if (!searchTerm.trim())` block that would `return` ---
-    // Now, the debounce will run even with an empty string,
-    // triggering a search for popular/trending images.
-    // We still clear old results if it's a new search.
-    if (searchTerm.trim()) {
-      setImageResults([]);
-      setGifResults([]);
-      setIsImagesLoading(false);
-      setIsGifsLoading(false);
-      setImagePage(1);
-      setGifPage(1);
-      setHasMoreImages(true);
-      setHasMoreGifs(true);
-    }
-    // --- END MODIFICATION ---
-
     debounceTimeoutRef.current = setTimeout(() => {
-      // We need to call the functions directly here
-      // Use temporary variables from state inside the timeout
-      const currentSearchTerm = searchTerm; // This will be "" on mount
-      const initialImagePage = 1;
-      const initialGifPage = 1;
-
-      (async () => {
-        setIsImagesLoading(true);
-        try {
-          const imgResult = await apiSearchImages(
-            currentSearchTerm,
-            initialImagePage
-          );
-          setImageResults(imgResult.assets);
-          setHasMoreImages(imgResult.hasMore);
-          setImagePage(initialImagePage);
-        } catch (e) {
-          toast.error("Image search failed");
-          setImageResults([]);
-        } finally {
-          setIsImagesLoading(false);
-        }
-      })();
-
-      (async () => {
-        setIsGifsLoading(true);
-        try {
-          const gifResult = await apiSearchGifs(
-            currentSearchTerm,
-            initialGifPage
-          );
-          setGifResults(gifResult.assets);
-          setHasMoreGifs(gifResult.hasMore);
-          setGifPage(initialGifPage);
-        } catch (e) {
-          toast.error("GIF search failed");
-          setGifResults([]);
-        } finally {
-          setIsGifsLoading(false);
-        }
-      })();
+      // This is now the *only* place a new search is triggered
+      searchImages(searchTerm, 1);
+      searchGifs(searchTerm, 1);
     }, 500); // Wait 500ms before firing
 
     return () => {
@@ -191,10 +121,10 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
       if (nearBottom) {
         if (type === "images" && !isImagesLoading && hasMoreImages) {
           console.log("Loading more images...");
-          searchImages(true); // Call the memoized search function
+          searchImages(searchTerm, imagePage + 1);
         } else if (type === "gifs" && !isGifsLoading && hasMoreGifs) {
           console.log("Loading more gifs...");
-          searchGifs(true); // Call the memoized search function
+          searchGifs(searchTerm, gifPage + 1);
         }
       }
     },
@@ -205,6 +135,9 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
       isGifsLoading,
       hasMoreGifs,
       searchGifs,
+      searchTerm, // Need current search term
+      imagePage, // Need current page
+      gifPage, // Need current page
     ]
   ); // Include search functions here now
 

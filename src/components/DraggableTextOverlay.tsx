@@ -316,9 +316,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                 fontSize: `${overlay.style.fontSize}px`,
                 color: overlay.style.color,
                 backgroundColor: "transparent",
-                fontWeight: overlay.style.bold ? "bold" : "normal",
-                fontStyle: overlay.style.italic ? "italic" : "normal",
-                textDecoration: overlay.style.underline ? "underline" : "none",
                 border: overlay.style.border
                   ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
                   : "none",
@@ -343,11 +340,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                   fontSize: `${overlay.style.fontSize}px`,
                   color: overlay.style.color,
                   backgroundColor: overlay.style.backgroundColor,
-                  fontWeight: overlay.style.bold ? "bold" : "normal",
-                  fontStyle: overlay.style.italic ? "italic" : "normal",
-                  textDecoration: overlay.style.underline
-                    ? "underline"
-                    : "none",
                   border: overlay.style.border
                     ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
                     : "none",

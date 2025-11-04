@@ -34,9 +34,20 @@ export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
   const [textContent, setTextContent] = useState("");
 
   useEffect(() => {
+    let isMounted = true;
     if (overlay.fileType === "text") {
-      overlay.file.text().then(setTextContent).catch(console.error);
+      overlay.file
+        .text()
+        .then((text) => {
+          if (isMounted) {
+            setTextContent(text);
+          }
+        })
+        .catch(console.error);
     }
+    return () => {
+      isMounted = false;
+    };
   }, [overlay.file, overlay.fileType]);
 
   switch (overlay.fileType) {

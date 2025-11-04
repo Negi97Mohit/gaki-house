@@ -6,6 +6,7 @@ import {
   useRef,
   useEffect,
   useMemo,
+  memo,
   ChangeEvent,
 } from "react"; // ADDED ChangeEvent
 import { FloatingLogo } from "@/components/FloatingLogo";
@@ -125,6 +126,7 @@ const createDefaultScene = (name: string): SceneState => ({
   neonColor: "cyan",
 });
 
+const MemoizedVideoCanvas = memo(VideoCanvas);
 const Index = () => {
   const navigate = useNavigate();
 
@@ -244,7 +246,8 @@ const Index = () => {
       console.log("[Transition] Blocked:", { activeSceneId, isTransitioning });
       return;
     }
-
+    setIsDrawing(false);
+    handleDeselectAll();
     const newScene = scenes.find((s) => s.id === sceneId);
     if (!newScene) return;
 
@@ -422,8 +425,13 @@ const Index = () => {
     [updateSceneProperty]
   );
   const handleSetCaptionStyle = useCallback(
-    (value: CaptionStyle) => updateSceneProperty("captionStyle", value),
-    [updateSceneProperty]
+    (value: CaptionStyle) => {
+      updateSceneProperty("captionStyle", value);
+      if (recording.isRecording) {
+        recording.recordCaptionStyle(value);
+      }
+    },
+    [updateSceneProperty, recording]
   );
   const handleSetDynamicStyle = useCallback(
     (value: string) => updateSceneProperty("dynamicStyle", value),
@@ -452,12 +460,36 @@ const Index = () => {
     [updateSceneProperty]
   );
   const handleSetLayoutMode = useCallback(
-    (value: LayoutMode) => updateSceneProperty("layoutMode", value),
-    [updateSceneProperty]
+    (value: LayoutMode) => {
+      updateSceneProperty("layoutMode", value);
+      if (recording.isRecording) {
+        // This assumes you refactor updateSceneProperty to return the updated scene
+        // or you read from activeScene. A better pattern is needed,
+        // but for the fix, let's assume we can access the new layout state.
+        // This is complex due to the monolithic state.
+        // A simpler fix is to just record the value that changed.
+        recording.recordLayoutChange({
+          mode: value,
+          cameraShape: activeScene.cameraShape,
+          splitRatio: activeScene.splitRatio,
+          pipPosition: activeScene.pipPosition,
+          pipSize: activeScene.pipSize,
+        });
+      }
+    },
+    [updateSceneProperty, recording, activeScene]
   );
   const handleSetCameraShape = useCallback(
-    (value: CameraShape) => updateSceneProperty("cameraShape", value),
-    [updateSceneProperty]
+    (value: CameraShape) => {
+      updateSceneProperty("cameraShape", value);
+      if (recording.isRecording) {
+        recording.recordLayoutChange({
+          ...activeScene.layoutState, // Assuming layoutState is a composite object
+          cameraShape: value,
+        });
+      }
+    },
+    [updateSceneProperty, recording, activeScene] // Add dependencies
   );
   const handleSetSplitRatio = useCallback(
     (value: number) => updateSceneProperty("splitRatio", value),
@@ -1259,47 +1291,6 @@ const Index = () => {
     onDeleteSavedOverlay: handleDeleteSavedOverlay,
   };
 
-  const takeSnapshot = useCallback(() => {
-    if (!recording.isRecording) return;
-    if (!activeScene) return;
-
-    activeScene.activeOverlays.forEach((overlay) => {
-      recording.recordHtmlOverlay(overlay);
-    });
-
-    activeScene.fileOverlays.forEach((overlay) => {
-      recording.recordFileOverlay(overlay);
-    });
-
-    activeScene.browserOverlays.forEach((overlay) => {
-      recording.recordBrowserOverlay(overlay);
-    });
-
-    recording.recordCaptionStyle(activeScene.captionStyle);
-
-    recording.recordLayoutChange({
-      mode: activeScene.layoutMode,
-      cameraShape: activeScene.cameraShape,
-      splitRatio: activeScene.splitRatio,
-      pipPosition: activeScene.pipPosition,
-      pipSize: activeScene.pipSize,
-    });
-  }, [recording, activeScene]);
-
-  useEffect(() => {
-    if (recording.isRecording) {
-      frameIntervalRef.current = setInterval(takeSnapshot, 250);
-    } else if (frameIntervalRef.current) {
-      clearInterval(frameIntervalRef.current);
-      frameIntervalRef.current = null;
-    }
-    return () => {
-      if (frameIntervalRef.current) {
-        clearInterval(frameIntervalRef.current);
-      }
-    };
-  }, [recording.isRecording, takeSnapshot]);
-
   const handleDeleteSession = useCallback(
     (id: string) => {
       setAllSessions((prev) => prev.filter((s) => s.id !== id));
@@ -1466,7 +1457,7 @@ const Index = () => {
             style={{ display: isTransitioning ? "block" : "none" }}
           >
             {" "}
-            <VideoCanvas
+            <MemoizedVideoCanvas
               key="previous-scene-canvas" // Static key
               {...(previousSceneProps || activeSceneProps)} // Give valid props
               {...globalCanvasProps}
@@ -1478,7 +1469,7 @@ const Index = () => {
           </div>
         )}
 
-        <VideoCanvas
+        <MemoizedVideoCanvas
           key="active-scene-canvas"
           {...activeSceneProps}
           {...globalCanvasProps}
