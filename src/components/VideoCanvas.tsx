@@ -112,7 +112,10 @@ export const DraggableOverlay: React.FC<{
   ) => void;
   onRemoveOverlay: (id: string) => void;
   onPreviewGenerated: (id: string, dataUrl: string) => void;
-  onSetDynamicLayout: (target: { id: string; type: "html" }) => void;
+  onSetDynamicLayout: (
+    target: { id: string; type: string },
+    mode: "pip" | "reset" | "split-horizontal" | "split-vertical"
+  ) => void;
   containerSize: { width: number; height: number };
   portalContainer?: HTMLElement | null;
 }> = ({
@@ -1556,6 +1559,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onSelect={setSelectedTextId}
                   onInternalDragStart={onInternalDragStart}
                   onInternalDragStop={onInternalDragStop}
+                  isSpacePressed={false}
                   containerRef={canvasContainerRef}
                 />
               </div>

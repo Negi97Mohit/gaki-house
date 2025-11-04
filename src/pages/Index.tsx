@@ -18,7 +18,7 @@ import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 // --- DELETED: Unused icons ---
 import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay";
-import { ExcalidrawElement } from "@excalidraw/excalidraw";
+// ExcalidrawElement type removed - using any for excalidraw data
 import { Pencil } from "lucide-react";
 import { zIndex } from "@/lib/zIndex";
 import {
@@ -167,7 +167,7 @@ const Index = () => {
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [excalidrawElements, setExcalidrawElements] = useState<
-    readonly ExcalidrawElement[]
+    readonly any[]
   >([]);
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
@@ -484,12 +484,15 @@ const Index = () => {
       updateSceneProperty("cameraShape", value);
       if (recording.isRecording) {
         recording.recordLayoutChange({
-          ...activeScene.layoutState, // Assuming layoutState is a composite object
+          mode: activeScene.layoutMode,
           cameraShape: value,
+          splitRatio: activeScene.splitRatio,
+          pipPosition: activeScene.pipPosition,
+          pipSize: activeScene.pipSize,
         });
       }
     },
-    [updateSceneProperty, recording, activeScene] // Add dependencies
+    [updateSceneProperty, recording, activeScene]
   );
   const handleSetSplitRatio = useCallback(
     (value: number) => updateSceneProperty("splitRatio", value),

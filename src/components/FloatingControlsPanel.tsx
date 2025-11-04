@@ -11,18 +11,14 @@ import {
   Droplets,
   Sparkles,
   Square,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { StyleControls } from "./StyleControls";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion";
 import { Slider } from "./ui/slider";
 import {
   Select,
@@ -73,7 +69,7 @@ interface FloatingControlsPanelProps {
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const [isOpen, setIsOpen] = [props.isOpen, props.onClose];
-  const [openSections, setOpenSections] = useState<string[]>([]);
+  const [activeSection, setActiveSection] = useState<string | null>("dynamic-styles");
   const panelRef = useRef<HTMLDivElement>(null);
 
   const handlePresetSelect = (preset: (typeof CAPTION_PRESETS)[0]) => {
@@ -109,309 +105,384 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     }
   }, [isOpen, setIsOpen]);
 
+  const sections = [
+    {
+      id: "dynamic-styles",
+      icon: Zap,
+      title: "Dynamic Styles",
+      color: "from-yellow-500 to-amber-500",
+    },
+    {
+      id: "static-presets",
+      icon: Paintbrush,
+      title: "Style Presets",
+      color: "from-pink-500 to-rose-500",
+    },
+    {
+      id: "base-text",
+      icon: Palette,
+      title: "Text Style",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      id: "video-effects",
+      icon: Droplets,
+      title: "Effects",
+      color: "from-cyan-500 to-teal-500",
+    },
+    {
+      id: "saved-overlays",
+      icon: Sparkles,
+      title: "Overlays",
+      color: "from-purple-500 to-violet-500",
+    },
+  ];
+
   return (
     <>
       {/* Floating Panel */}
       <div
         ref={panelRef}
         className={cn(
-          "fixed bottom-24 left-6 w-[380px] max-h-[70vh] rounded-2xl",
-          "bg-white text-neutral-800 border border-border shadow-2xl dark:bg-neutral-900 dark:text-neutral-100 dark:border-neutral-700",
-          "transition-all duration-300 ease-out flex flex-col",
+          "fixed bottom-24 left-6 rounded-xl overflow-hidden",
+          "bg-background border-2 border-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]",
+          "transition-all duration-300 ease-out flex",
           isOpen && props.isMouseActive
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-8 pointer-events-none"
         )}
-        style={{ zIndex: "var(--z-floating-panel)" }}
+        style={{ 
+          zIndex: "var(--z-floating-panel)",
+          maxHeight: "70vh",
+        }}
       >
-        <div className="overflow-y-auto p-4 flex-1">
-          <Accordion
-            type="multiple"
-            value={openSections}
-            onValueChange={setOpenSections}
-            className="space-y-2"
-          >
-            {/* Dynamic Styles */}
-            <AccordionItem
-              value="dynamic-styles"
-              className="border rounded-lg px-3"
+        {/* Sidebar Navigation */}
+        <div className="w-20 bg-gradient-to-b from-background to-background/95 border-r-2 border-yellow-500/30 flex flex-col items-center py-4 gap-2">
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              onClick={() => setActiveSection(section.id)}
+              className={cn(
+                "w-14 h-14 rounded-lg flex flex-col items-center justify-center gap-1 transition-all duration-200 group relative",
+                activeSection === section.id
+                  ? "bg-gradient-to-br " + section.color + " shadow-[0_0_20px_rgba(234,179,8,0.4)] scale-110"
+                  : "bg-background/50 hover:bg-background border-2 border-yellow-500/20 hover:border-yellow-500/50"
+              )}
+              title={section.title}
             >
-              <AccordionTrigger className="hover:no-underline py-3">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-yellow-500" />
-                  <span className="text-sm font-semibold">Dynamic Styles</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-3">
-                <RadioGroup
-                  value={props.dynamicStyle}
-                  onValueChange={props.onDynamicStyleChange}
-                >
-                  <div className="space-y-2">
-                    {DYNAMIC_STYLE_OPTIONS.map((option) => (
-                      <div
-                        key={option.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <RadioGroupItem value={option.id} id={option.id} />
-                        <Label
-                          htmlFor={option.id}
-                          className="text-sm cursor-pointer"
-                        >
-                          {option.name}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </RadioGroup>
-              </AccordionContent>
-            </AccordionItem>
+              <section.icon 
+                className={cn(
+                  "w-5 h-5 transition-colors",
+                  activeSection === section.id ? "text-black" : "text-yellow-500"
+                )} 
+              />
+              <span className={cn(
+                "text-[9px] font-bold uppercase tracking-wider font-cyber",
+                activeSection === section.id ? "text-black" : "text-yellow-500/70"
+              )}>
+                {section.title.split(" ")[0]}
+              </span>
+              {activeSection === section.id && (
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-yellow-500 rounded-l-full" />
+              )}
+            </button>
+          ))}
+        </div>
 
-            {/* Static Style Presets */}
-            <AccordionItem
-              value="static-presets"
-              className="border rounded-lg px-3"
-            >
-              <AccordionTrigger className="hover:no-underline py-3">
-                <div className="flex items-center gap-2">
-                  <Paintbrush className="w-4 h-4 text-pink-500" />
-                  <span className="text-sm font-semibold">
-                    Static Style Presets
-                  </span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-3">
-                <div className="grid grid-cols-2 gap-3">
-                  {CAPTION_PRESETS.map((preset) => (
-                    <button
-                      key={preset.id}
-                      onClick={() => handlePresetSelect(preset)}
-                      title={preset.name}
-                      className="block w-full rounded-md overflow-hidden border-2 border-transparent hover:border-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+        {/* Content Area */}
+        <div className="w-[420px] max-h-[70vh] overflow-y-auto p-6 bg-gradient-to-br from-background via-background to-background/95">
+          {activeSection === "dynamic-styles" && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-yellow-500/30">
+                <Zap className="w-5 h-5 text-yellow-500" />
+                <h3 className="text-lg font-bold font-cyber text-yellow-500 tracking-wider">DYNAMIC STYLES</h3>
+              </div>
+              <RadioGroup
+                value={props.dynamicStyle}
+                onValueChange={props.onDynamicStyleChange}
+                className="grid grid-cols-2 gap-3"
+              >
+                {DYNAMIC_STYLE_OPTIONS.map((option) => (
+                  <div
+                    key={option.id}
+                    className={cn(
+                      "relative rounded-lg border-2 overflow-hidden transition-all duration-200 cursor-pointer group",
+                      props.dynamicStyle === option.id
+                        ? "border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]"
+                        : "border-yellow-500/20 hover:border-yellow-500/60"
+                    )}
+                    onClick={() => props.onDynamicStyleChange(option.id)}
+                  >
+                    <RadioGroupItem value={option.id} id={option.id} className="sr-only" />
+                    <Label
+                      htmlFor={option.id}
+                      className="block cursor-pointer"
                     >
-                      <img
-                        src={preset.preview}
-                        alt={preset.name}
-                        className="w-full aspect-video object-cover"
-                      />
+                      <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center p-4 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-grid-yellow-500/10" />
+                        <span className={cn(
+                          "text-2xl font-bold relative z-10 transition-all duration-200",
+                          props.dynamicStyle === option.id 
+                            ? "text-yellow-500 scale-110" 
+                            : "text-foreground group-hover:text-yellow-500"
+                        )}>
+                          {option.name.slice(0, 2).toUpperCase()}
+                        </span>
+                      </div>
+                      <div className={cn(
+                        "p-2 text-center text-xs font-semibold font-cyber transition-colors",
+                        props.dynamicStyle === option.id
+                          ? "bg-yellow-500 text-black"
+                          : "bg-background/80 text-foreground"
+                      )}>
+                        {option.name}
+                      </div>
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+          )}
+
+          {activeSection === "static-presets" && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-pink-500/30">
+                <Paintbrush className="w-5 h-5 text-pink-500" />
+                <h3 className="text-lg font-bold font-cyber text-pink-500 tracking-wider">STYLE PRESETS</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {CAPTION_PRESETS.map((preset) => (
+                  <button
+                    key={preset.id}
+                    onClick={() => handlePresetSelect(preset)}
+                    title={preset.name}
+                    className="group relative rounded-lg overflow-hidden border-2 border-pink-500/20 hover:border-pink-500 hover:shadow-[0_0_20px_rgba(236,72,153,0.4)] transition-all duration-200"
+                  >
+                    <img
+                      src={preset.preview}
+                      alt={preset.name}
+                      className="w-full aspect-video object-cover transition-transform duration-200 group-hover:scale-105"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
+                      <span className="text-xs font-semibold font-cyber text-white">
+                        {preset.name}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activeSection === "base-text" && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-blue-500/30">
+                <Palette className="w-5 h-5 text-blue-500" />
+                <h3 className="text-lg font-bold font-cyber text-blue-500 tracking-wider">TEXT STYLE</h3>
+              </div>
+              <StyleControls
+                style={props.style}
+                onStyleChange={props.onStyleChange}
+              />
+            </div>
+          )}
+
+          {activeSection === "video-effects" && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-cyan-500/30">
+                <Droplets className="w-5 h-5 text-cyan-500" />
+                <h3 className="text-lg font-bold font-cyber text-cyan-500 tracking-wider">VIDEO EFFECTS</h3>
+              </div>
+
+              {/* Filters */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
+                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">FILTER</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[{ id: "None", name: "None" }, ...FILTER_PRESETS].map((filter) => (
+                    <button
+                      key={filter.id}
+                      onClick={() => props.onVideoFilterChange(filter.id === "None" ? "None" : (filter as any).style)}
+                      className={cn(
+                        "aspect-square rounded-lg border-2 transition-all duration-200 relative overflow-hidden",
+                        props.videoFilter === (filter.id === "None" ? "None" : (filter as any).style)
+                          ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                          : "border-cyan-500/20 hover:border-cyan-500/60"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-full h-full flex items-center justify-center text-xs font-bold font-cyber",
+                        props.videoFilter === (filter.id === "None" ? "None" : (filter as any).style)
+                          ? "bg-gradient-to-br from-cyan-500/20 to-cyan-500/40 text-cyan-500"
+                          : "bg-background/50 text-foreground"
+                      )}>
+                        {filter.name.slice(0, 4).toUpperCase()}
+                      </div>
                     </button>
                   ))}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
+              </div>
 
-            {/* Base Text Style */}
-            <AccordionItem value="base-text" className="border rounded-lg px-3">
-              <AccordionTrigger className="hover:no-underline py-3">
-                <div className="flex items-center gap-2">
-                  <Palette className="w-4 h-4 text-blue-500" />
-                  <span className="text-sm font-semibold">Base Text Style</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-3">
-                <StyleControls
-                  style={props.style}
-                  onStyleChange={props.onStyleChange}
-                />
-              </AccordionContent>
-            </AccordionItem>
-
-            {/* Video Effects */}
-            <AccordionItem
-              value="video-effects"
-              className="border rounded-lg px-3"
-            >
-              <AccordionTrigger className="hover:no-underline py-3">
-                <div className="flex items-center gap-2">
-                  <Droplets className="w-4 h-4 text-cyan-500" />
-                  <span className="text-sm font-semibold">Video Effects</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-3 space-y-4">
-                {/* Filter */}
-                <div className="space-y-2">
-                  <Label className="text-xs">Filter</Label>
-                  <Select
-                    value={props.videoFilter}
-                    onValueChange={props.onVideoFilterChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue /> {/* remove placeholder */}
-                    </SelectTrigger>
-                    <SelectContent
-                      className="z-[2000]"
-                      style={{ zIndex: "var(--z-floating-panel-dropdown)" }}
-                    >
-                      <SelectItem value="None">None</SelectItem>
-                      {FILTER_PRESETS.map((filter) => (
-                        <SelectItem key={filter.id} value={filter.style}>
-                          {filter.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {/* --- ADD THIS SECTION --- */}
-                <div className="space-y-3 pt-3 border-t">
-                  <Label className="text-xs flex items-center gap-1.5">
-                    <Square className="w-3 h-3" />
-                    Blank Canvas Color
-                  </Label>
+              {/* Canvas Color */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
+                <Label className="text-xs font-cyber text-cyan-500 tracking-wider flex items-center gap-1.5">
+                  <Square className="w-3 h-3" />
+                  CANVAS COLOR
+                </Label>
+                <div className="flex gap-2">
                   <Input
                     type="color"
-                    className="w-full p-1 h-10"
+                    className="w-20 h-10 p-1 cursor-pointer border-2 border-cyan-500/30"
                     value={props.blankCanvasColor}
-                    onChange={(e) =>
-                      props.onBlankCanvasColorChange(e.target.value)
-                    }
+                    onChange={(e) => props.onBlankCanvasColorChange(e.target.value)}
+                  />
+                  <Input
+                    type="text"
+                    className="flex-1 font-mono text-sm border-2 border-cyan-500/30"
+                    value={props.blankCanvasColor}
+                    onChange={(e) => props.onBlankCanvasColorChange(e.target.value)}
                   />
                 </div>
-                {/* --- END OF SECTION --- */}
+              </div>
 
-                {/* Neon Edge */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs">Neon Edge</Label>
-                    <Switch
-                      checked={props.isNeonEdgeEnabled}
-                      onCheckedChange={props.onNeonEdgeToggle}
-                    />
-                  </div>
-                  {props.isNeonEdgeEnabled && (
-                    <div className="space-y-1">
-                      <Label className="text-xs">
-                        Intensity: {props.neonIntensity}%
-                      </Label>
-                      <Slider
-                        value={[props.neonIntensity]}
-                        onValueChange={([v]) => props.onNeonIntensityChange(v)}
-                        min={0}
-                        max={100}
-                        step={1}
-                      />
-                    </div>
-                  )}
+              {/* Neon Edge */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">NEON EDGE</Label>
+                  <Switch
+                    checked={props.isNeonEdgeEnabled}
+                    onCheckedChange={props.onNeonEdgeToggle}
+                  />
                 </div>
-
-                {/* Auto Framing Controls */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs">Auto Framing</Label>
-                    <Switch
-                      checked={props.isAutoFramingEnabled}
-                      onCheckedChange={props.onAutoFramingChange}
+                {props.isNeonEdgeEnabled && (
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">
+                      Intensity: {props.neonIntensity}%
+                    </Label>
+                    <Slider
+                      value={[props.neonIntensity]}
+                      onValueChange={([v]) => props.onNeonIntensityChange(v)}
+                      min={0}
+                      max={100}
+                      step={1}
+                      className="[&_[role=slider]]:border-cyan-500"
                     />
-                  </div>
-                  {props.isAutoFramingEnabled && (
-                    <>
-                      <div className="space-y-1">
-                        <Label className="text-xs">
-                          Zoom Sensitivity: {props.zoomSensitivity.toFixed(1)}
-                        </Label>
-                        <Slider
-                          value={[props.zoomSensitivity]}
-                          onValueChange={([v]) =>
-                            props.onZoomSensitivityChange(v)
-                          }
-                          min={1}
-                          max={10}
-                          step={0.1}
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <Label className="text-xs">
-                          Tracking Speed: {props.trackingSpeed.toFixed(2)}
-                        </Label>
-                        <Slider
-                          value={[props.trackingSpeed]}
-                          onValueChange={([v]) =>
-                            props.onTrackingSpeedChange(v)
-                          }
-                          min={0.01}
-                          max={0.5}
-                          step={0.01}
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Other Toggles */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs">Beautify</Label>
-                    <Switch
-                      checked={props.isBeautifyEnabled}
-                      onCheckedChange={props.onBeautifyToggle}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label className="text-xs">Low Light Enhance</Label>
-                    <Switch
-                      checked={props.isLowLightEnabled}
-                      onCheckedChange={props.onLowLightToggle}
-                    />
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-
-            {/* Saved Overlays */}
-            <AccordionItem
-              value="saved-overlays"
-              className="border rounded-lg px-3"
-            >
-              <AccordionTrigger className="hover:no-underline py-3">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-500" />
-                  <span className="text-sm font-semibold">Saved Overlays</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pb-3">
-                {props.savedOverlays.length === 0 ? (
-                  <p className="text-xs text-muted-foreground text-center p-4">
-                    Generated overlays will be saved here for reuse.
-                  </p>
-                ) : (
-                  <div className="grid grid-cols-3 gap-2">
-                    {props.savedOverlays.map((overlay) => (
-                      <div
-                        key={overlay.id}
-                        className="group relative aspect-square rounded-md bg-secondary/50 flex items-center justify-center overflow-hidden border"
-                      >
-                        <button
-                          className="w-full h-full"
-                          onClick={() => props.onAddSavedOverlay(overlay)}
-                          title="Add overlay to canvas"
-                        >
-                          {overlay.preview ? (
-                            <img
-                              src={overlay.preview}
-                              alt="Overlay preview"
-                              className="absolute inset-0 w-full h-full object-contain p-1"
-                            />
-                          ) : (
-                            <span className="text-xs text-muted-foreground">
-                              No Preview
-                            </span>
-                          )}
-                        </button>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                          onClick={() => props.onDeleteSavedOverlay(overlay.id)}
-                          title="Delete saved overlay"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    ))}
                   </div>
                 )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+              </div>
+
+              {/* Auto Framing */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">AUTO FRAMING</Label>
+                  <Switch
+                    checked={props.isAutoFramingEnabled}
+                    onCheckedChange={props.onAutoFramingChange}
+                  />
+                </div>
+                {props.isAutoFramingEnabled && (
+                  <>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">
+                        Zoom Sensitivity: {props.zoomSensitivity.toFixed(1)}
+                      </Label>
+                      <Slider
+                        value={[props.zoomSensitivity]}
+                        onValueChange={([v]) => props.onZoomSensitivityChange(v)}
+                        min={1}
+                        max={10}
+                        step={0.1}
+                        className="[&_[role=slider]]:border-cyan-500"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">
+                        Tracking Speed: {props.trackingSpeed.toFixed(2)}
+                      </Label>
+                      <Slider
+                        value={[props.trackingSpeed]}
+                        onValueChange={([v]) => props.onTrackingSpeedChange(v)}
+                        min={0.01}
+                        max={0.5}
+                        step={0.01}
+                        className="[&_[role=slider]]:border-cyan-500"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Other Toggles */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">BEAUTIFY</Label>
+                  <Switch
+                    checked={props.isBeautifyEnabled}
+                    onCheckedChange={props.onBeautifyToggle}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">LOW LIGHT ENHANCE</Label>
+                  <Switch
+                    checked={props.isLowLightEnabled}
+                    onCheckedChange={props.onLowLightToggle}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeSection === "saved-overlays" && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-purple-500/30">
+                <Sparkles className="w-5 h-5 text-purple-500" />
+                <h3 className="text-lg font-bold font-cyber text-purple-500 tracking-wider">SAVED OVERLAYS</h3>
+              </div>
+              {props.savedOverlays.length === 0 ? (
+                <div className="text-center p-8 rounded-lg bg-background/50 border-2 border-purple-500/20">
+                  <Sparkles className="w-12 h-12 mx-auto mb-3 text-purple-500/50" />
+                  <p className="text-sm text-muted-foreground font-cyber">
+                    Generated overlays will be saved here for reuse.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-3">
+                  {props.savedOverlays.map((overlay) => (
+                    <div
+                      key={overlay.id}
+                      className="group relative aspect-square rounded-lg bg-background/50 border-2 border-purple-500/20 hover:border-purple-500 flex items-center justify-center overflow-hidden transition-all duration-200 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+                    >
+                      <button
+                        className="w-full h-full"
+                        onClick={() => props.onAddSavedOverlay(overlay)}
+                        title="Add overlay to canvas"
+                      >
+                        {overlay.preview ? (
+                          <img
+                            src={overlay.preview}
+                            alt="Overlay preview"
+                            className="w-full h-full object-contain p-1"
+                          />
+                        ) : (
+                          <span className="text-xs text-muted-foreground font-cyber">
+                            NO PREVIEW
+                          </span>
+                        )}
+                      </button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => props.onDeleteSavedOverlay(overlay.id)}
+                        title="Delete saved overlay"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>

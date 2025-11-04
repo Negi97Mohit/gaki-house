@@ -60,10 +60,9 @@ export default {
       transitionProperty: {
         'smooth': 'var(--transition-smooth)',
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      fontFamily: {
+        sans: ["geist-sans"],
+        cyber: ["Cyber", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {

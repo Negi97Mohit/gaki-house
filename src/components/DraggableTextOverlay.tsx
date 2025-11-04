@@ -380,7 +380,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         <TextEditingToolbar
           overlay={overlay}
           onStyleChange={onStyleChange}
-          onContentChange={onContentChange}
           position={getToolbarPosition()}
           containerRef={containerRef}
         />

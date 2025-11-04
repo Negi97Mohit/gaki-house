@@ -95,7 +95,9 @@ export const AICommandPopover = ({
     if (!hasAiPopoverAutoOpenedRef.current) {
       const openTimer = setTimeout(() => {
         setOpen(true);
-        hasAiPopoverAutoOpenedRef.current = true;
+        if (hasAiPopoverAutoOpenedRef.current !== null) {
+          (hasAiPopoverAutoOpenedRef as any).current = true;
+        }
       }, 4000); // This delay waits for the button to load
 
       return () => clearTimeout(openTimer);
