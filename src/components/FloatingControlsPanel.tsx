@@ -297,63 +297,28 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               {/* Filters */}
               <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
                 <Label className="text-xs font-cyber text-cyan-500 tracking-wider">FILTER</Label>
-                <div className="grid grid-cols-3 gap-2 max-h-[400px] overflow-y-auto">
-                  {[{ id: "None", name: "None" }, ...FILTER_PRESETS].map((filter) => {
-                    const filterStyle = filter.id === "None" ? "none" : (filter as any).style;
-                    const isActive = props.videoFilter === filterStyle;
-                    
-                    return (
-                      <button
-                        key={filter.id}
-                        onClick={() => props.onVideoFilterChange(filterStyle)}
-                        className={cn(
-                          "group relative rounded-lg border-2 transition-all duration-200 overflow-hidden",
-                          isActive
-                            ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] scale-105"
-                            : "border-cyan-500/20 hover:border-cyan-500/60 hover:scale-102"
-                        )}
-                      >
-                        {/* Preview Image with Filter */}
-                        <div className="aspect-square relative overflow-hidden">
-                          <div
-                            className="w-full h-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500"
-                            style={{ filter: filterStyle }}
-                          />
-                          {/* Checkered pattern overlay for better filter visibility */}
-                          <div
-                            className="absolute inset-0 opacity-30"
-                            style={{
-                              backgroundImage: `
-                                linear-gradient(45deg, hsl(var(--muted)) 25%, transparent 25%),
-                                linear-gradient(-45deg, hsl(var(--muted)) 25%, transparent 25%),
-                                linear-gradient(45deg, transparent 75%, hsl(var(--muted)) 75%),
-                                linear-gradient(-45deg, transparent 75%, hsl(var(--muted)) 75%)
-                              `,
-                              backgroundSize: '20px 20px',
-                              backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
-                              filter: filterStyle,
-                              pointerEvents: 'none'
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Filter Name Overlay */}
-                        <div className={cn(
-                          "absolute bottom-0 left-0 right-0 px-2 py-1 text-[10px] font-bold font-cyber text-center transition-all",
-                          isActive
-                            ? "bg-cyan-500 text-black"
-                            : "bg-black/80 text-white group-hover:bg-cyan-500/80 group-hover:text-black"
-                        )}>
-                          {filter.name.toUpperCase()}
-                        </div>
-                        
-                        {/* Active Indicator */}
-                        {isActive && (
-                          <div className="absolute top-1 right-1 w-3 h-3 bg-cyan-500 rounded-full border-2 border-black shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
-                        )}
-                      </button>
-                    );
-                  })}
+                <div className="grid grid-cols-3 gap-2">
+                  {[{ id: "None", name: "None" }, ...FILTER_PRESETS].map((filter) => (
+                    <button
+                      key={filter.id}
+                      onClick={() => props.onVideoFilterChange(filter.id === "None" ? "None" : (filter as any).style)}
+                      className={cn(
+                        "aspect-square rounded-lg border-2 transition-all duration-200 relative overflow-hidden",
+                        props.videoFilter === (filter.id === "None" ? "None" : (filter as any).style)
+                          ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+                          : "border-cyan-500/20 hover:border-cyan-500/60"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-full h-full flex items-center justify-center text-xs font-bold font-cyber",
+                        props.videoFilter === (filter.id === "None" ? "None" : (filter as any).style)
+                          ? "bg-gradient-to-br from-cyan-500/20 to-cyan-500/40 text-cyan-500"
+                          : "bg-background/50 text-foreground"
+                      )}>
+                        {filter.name.slice(0, 4).toUpperCase()}
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
 
