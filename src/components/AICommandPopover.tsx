@@ -167,7 +167,7 @@ export const AICommandPopover = ({
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent
         container={portalContainer}
-        align="end"
+        align="start"
         className="w-96 p-4 aicp-content"
         style={{ zIndex: "var(--z-ai-popover-content)" }}
       >
