@@ -42,6 +42,7 @@ import { useLog } from "@/context/LogContext";
 import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useRecordingSession } from "@/hooks/useRecordingSession";
+import { useCompositeStream } from "@/hooks/useCompositeStream";
 import {
   DraggableBrowser,
   BrowserOverlayState,
@@ -183,6 +184,36 @@ const Index = () => {
   const mainContainerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Virtual camera: Enable composite stream for broadcasting
+  // This captures the final composed canvas output for streaming to viewers
+  const [isVirtualCameraEnabled, setIsVirtualCameraEnabled] = useState(true);
+  const { compositeStream, isReady: isCompositeReady } = useCompositeStream({
+    canvasRef,
+    isEnabled: isVirtualCameraEnabled,
+    frameRate: 30,
+  });
+
+  // Notify when composite stream is ready
+  useEffect(() => {
+    if (isCompositeReady && compositeStream) {
+      toast.success(
+        "Virtual Camera Active! Your composite scene is ready for streaming.",
+        {
+          description: "The canvas output is now available as a MediaStream",
+          duration: 5000,
+        }
+      );
+      console.log('[GAKI Virtual Camera] Composite stream ready:', {
+        streamId: compositeStream.id,
+        tracks: compositeStream.getTracks().map(t => ({
+          kind: t.kind,
+          label: t.label,
+          enabled: t.enabled,
+        })),
+      });
+    }
+  }, [isCompositeReady, compositeStream]);
 
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
