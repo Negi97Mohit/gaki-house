@@ -21,6 +21,7 @@ import {
   X,
   Monitor,
   Paintbrush,
+  Radio,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,6 +65,10 @@ interface BottomNavigationProps {
   // Recording
   isRecording: boolean;
   onRecordingToggle: () => void;
+
+  // Broadcasting
+  isBroadcasting: boolean;
+  onBroadcastToggle: () => void;
 
   // Right-side Controls
   onAddTextOverlay: () => void;
@@ -109,6 +114,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onScreenShareModeChange,
   isRecording,
   onRecordingToggle,
+  isBroadcasting,
+  onBroadcastToggle,
   onAddTextOverlay,
   onAssetSelect,
   setIsDrawing,
@@ -294,6 +301,21 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           ) : (
             <Circle className="h-6 w-6 fill-current" />
           )}
+        </Button>
+
+        {/* Broadcast Button */}
+        <Button
+          size="icon"
+          className={cn(
+            "rounded-full h-12 w-12 transition-colors",
+            isBroadcasting
+              ? "bg-green-600 hover:bg-green-700 shadow-[0_0_20px_rgba(34,197,94,0.6)]"
+              : "bg-secondary hover:bg-secondary/80"
+          )}
+          onClick={onBroadcastToggle}
+          title={isBroadcasting ? "Stop Broadcasting" : "Start Broadcasting"}
+        >
+          <Radio className={cn("h-6 w-6", isBroadcasting && "animate-pulse")} />
         </Button>
 
         {/* === NEW TOOLS POPOVER === */}

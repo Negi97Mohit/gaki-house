@@ -52,8 +52,6 @@ export const useSceneCompositor = ({
     updateCanvasSize();
 
     const renderFrame = (timestamp: number) => {
-      if (!isEnabled) return;
-
       // Throttle to target FPS
       if (timestamp - lastRenderTime.current < frameInterval) {
         animationFrameRef.current = requestAnimationFrame(renderFrame);
@@ -66,13 +64,8 @@ export const useSceneCompositor = ({
         // Update canvas size if container changed
         updateCanvasSize();
 
-        // Use OffscreenCanvas for better performance if available
-        // For now, we'll rely on the fact that canvas.captureStream()
-        // automatically captures whatever is drawn to the canvas
-        
-        // The actual rendering should be done by the video components
-        // drawing to this canvas. This hook just ensures the canvas
-        // is ready and properly sized.
+        // Keep rendering even when tab is not visible
+        // This ensures OBS and screen capture continue to work
         
       } catch (error) {
         console.error('[SceneCompositor] Render error:', error);

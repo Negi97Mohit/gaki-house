@@ -187,7 +187,7 @@ const Index = () => {
   
   // Virtual camera: Enable composite stream for broadcasting
   // This captures the final composed canvas output for streaming to viewers
-  const [isVirtualCameraEnabled, setIsVirtualCameraEnabled] = useState(true);
+  const [isVirtualCameraEnabled, setIsVirtualCameraEnabled] = useState(false);
   const { compositeStream, isReady: isCompositeReady } = useCompositeStream({
     canvasRef,
     isEnabled: isVirtualCameraEnabled,
@@ -198,9 +198,9 @@ const Index = () => {
   useEffect(() => {
     if (isCompositeReady && compositeStream) {
       toast.success(
-        "Virtual Camera Active! Your composite scene is ready for streaming.",
+        "🎥 Broadcasting Active! Your composite scene is live.",
         {
-          description: "The canvas output is now available as a MediaStream",
+          description: "Virtual camera stream is ready for OBS/streaming platforms",
           duration: 5000,
         }
       );
@@ -212,8 +212,10 @@ const Index = () => {
           enabled: t.enabled,
         })),
       });
+    } else if (!isVirtualCameraEnabled && !isCompositeReady) {
+      console.log('[GAKI Virtual Camera] Broadcasting stopped');
     }
-  }, [isCompositeReady, compositeStream]);
+  }, [isCompositeReady, compositeStream, isVirtualCameraEnabled]);
 
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
@@ -1547,6 +1549,8 @@ const Index = () => {
             }
           )
         }
+        isBroadcasting={isVirtualCameraEnabled}
+        onBroadcastToggle={() => setIsVirtualCameraEnabled((prev) => !prev)}
         onAddTextOverlay={handleAddTextOverlay}
         onAssetSelect={handleAssetSelect}
         setIsDrawing={setIsDrawing}
