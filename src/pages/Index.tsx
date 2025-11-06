@@ -125,6 +125,12 @@ const createDefaultScene = (name: string): SceneState => ({
   isNeonEdgeEnabled: false,
   neonIntensity: 20,
   neonColor: "cyan",
+  cameraBackground: "none",
+  customBackgroundUrl: null,
+  cameraAspectRatio: "16:9",
+  canvasAspectRatio: "16:9",
+  customAspectRatio: "",
+  isFaceTrackingEnabled: false,
 });
 
 const MemoizedVideoCanvas = memo(VideoCanvas);
@@ -594,6 +600,50 @@ const Index = () => {
     (value: string) => updateSceneProperty("neonColor", value),
     [updateSceneProperty]
   );
+  
+  // Camera controls
+  const handleSetCameraBackground = useCallback(
+    (value: string) => updateSceneProperty("cameraBackground", value),
+    [updateSceneProperty]
+  );
+  
+  const handleCustomBackgroundUpload = useCallback(
+    (file: File) => {
+      const url = URL.createObjectURL(file);
+      updateActiveScene((scene) => ({
+        ...scene,
+        cameraBackground: "custom",
+        customBackgroundUrl: url,
+      }));
+      toast.success("Custom background uploaded");
+    },
+    [updateActiveScene]
+  );
+  
+  const handleSetCameraAspectRatio = useCallback(
+    (value: string) => updateSceneProperty("cameraAspectRatio", value),
+    [updateSceneProperty]
+  );
+  
+  const handleSetCanvasAspectRatio = useCallback(
+    (value: string) => updateSceneProperty("canvasAspectRatio", value),
+    [updateSceneProperty]
+  );
+  
+  const handleSetCustomAspectRatio = useCallback(
+    (value: string) => updateSceneProperty("customAspectRatio", value),
+    [updateSceneProperty]
+  );
+  
+  const handleSetIsFaceTrackingEnabled = useCallback(
+    (value: boolean) => {
+      updateSceneProperty("isFaceTrackingEnabled", value);
+      if (value) {
+        toast.success("Face tracking enabled - AI will follow your face");
+      }
+    },
+    [updateSceneProperty]
+  );
 
   // --- HANDLERS ---
   // --- MOVED FUNCTION UP ---
@@ -686,6 +736,17 @@ const Index = () => {
         savedOverlays: savedOverlays,
         onAddSavedOverlay: handleAddSavedOverlay,
         onDeleteSavedOverlay: handleDeleteSavedOverlay,
+        cameraBackground: scene.cameraBackground,
+        onCameraBackgroundChange: handleSetCameraBackground,
+        onCustomBackgroundUpload: handleCustomBackgroundUpload,
+        cameraAspectRatio: scene.cameraAspectRatio,
+        onCameraAspectRatioChange: handleSetCameraAspectRatio,
+        canvasAspectRatio: scene.canvasAspectRatio,
+        onCanvasAspectRatioChange: handleSetCanvasAspectRatio,
+        customAspectRatio: scene.customAspectRatio,
+        onCustomAspectRatioChange: handleSetCustomAspectRatio,
+        isFaceTrackingEnabled: scene.isFaceTrackingEnabled,
+        onFaceTrackingToggle: handleSetIsFaceTrackingEnabled,
       },
     };
   };
@@ -1325,6 +1386,17 @@ const Index = () => {
     savedOverlays: savedOverlays,
     onAddSavedOverlay: handleAddSavedOverlay,
     onDeleteSavedOverlay: handleDeleteSavedOverlay,
+    cameraBackground: activeScene.cameraBackground,
+    onCameraBackgroundChange: handleSetCameraBackground,
+    onCustomBackgroundUpload: handleCustomBackgroundUpload,
+    cameraAspectRatio: activeScene.cameraAspectRatio,
+    onCameraAspectRatioChange: handleSetCameraAspectRatio,
+    canvasAspectRatio: activeScene.canvasAspectRatio,
+    onCanvasAspectRatioChange: handleSetCanvasAspectRatio,
+    customAspectRatio: activeScene.customAspectRatio,
+    onCustomAspectRatioChange: handleSetCustomAspectRatio,
+    isFaceTrackingEnabled: activeScene.isFaceTrackingEnabled,
+    onFaceTrackingToggle: handleSetIsFaceTrackingEnabled,
   };
 
   const handleDeleteSession = useCallback(

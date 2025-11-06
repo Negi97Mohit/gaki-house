@@ -280,4 +280,12 @@ export interface SceneState {
   isNeonEdgeEnabled: boolean;
   neonIntensity: number;
   neonColor: string;
+  
+  // Camera Background Controls
+  cameraBackground: string;
+  customBackgroundUrl: string | null;
+  cameraAspectRatio: string;
+  canvasAspectRatio: string;
+  customAspectRatio: string;
+  isFaceTrackingEnabled: boolean;
 }

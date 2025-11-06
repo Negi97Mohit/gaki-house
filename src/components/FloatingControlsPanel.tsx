@@ -13,6 +13,8 @@ import {
   Square,
   ChevronRight,
   ChevronLeft,
+  Camera,
+  Upload,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -33,6 +35,7 @@ import { FILTER_PRESETS } from "@/lib/filters";
 import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { Input } from "./ui/input";
+import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;
@@ -65,6 +68,19 @@ interface FloatingControlsPanelProps {
   onBlankCanvasColorChange: (color: string) => void;
   isOpen: boolean;
   onClose: () => void;
+  
+  // Camera Controls
+  cameraBackground: string;
+  onCameraBackgroundChange: (bgId: string) => void;
+  onCustomBackgroundUpload: (file: File) => void;
+  cameraAspectRatio: string;
+  onCameraAspectRatioChange: (ratio: string) => void;
+  canvasAspectRatio: string;
+  onCanvasAspectRatioChange: (ratio: string) => void;
+  customAspectRatio: string;
+  onCustomAspectRatioChange: (ratio: string) => void;
+  isFaceTrackingEnabled: boolean;
+  onFaceTrackingToggle: (enabled: boolean) => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -129,7 +145,15 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     }
   }, [isOpen, setIsOpen]);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const sections = [
+    {
+      id: "camera",
+      icon: Camera,
+      title: "Camera",
+      color: "from-green-500 to-emerald-500",
+    },
     {
       id: "dynamic-styles",
       icon: Zap,
@@ -223,6 +247,156 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
         {/* Content Area */}
         <div className="w-[420px] max-h-[70vh] overflow-y-auto p-6 bg-gradient-to-br from-background via-background to-background/95">
+          {activeSection === "camera" && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-green-500/30">
+                <Camera className="w-5 h-5 text-green-500" />
+                <h3 className="text-lg font-bold font-cyber text-green-500 tracking-wider">
+                  CAMERA CONTROLS
+                </h3>
+              </div>
+
+              {/* Background Controls */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
+                <Label className="text-xs font-cyber text-green-500 tracking-wider">
+                  BACKGROUND
+                </Label>
+                <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
+                  {BACKGROUND_PRESETS.map((bg) => {
+                    const isSelected = props.cameraBackground === bg.id;
+                    return (
+                      <button
+                        key={bg.id}
+                        onClick={() => props.onCameraBackgroundChange(bg.id)}
+                        className={cn(
+                          "aspect-video rounded-lg border-2 transition-all duration-200 relative overflow-hidden group",
+                          isSelected
+                            ? "border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.4)]"
+                            : "border-green-500/20 hover:border-green-500/60"
+                        )}
+                        title={bg.name}
+                      >
+                        <img
+                          src={bg.thumbnailUrl}
+                          alt={bg.name}
+                          className="w-full h-full object-cover"
+                        />
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+                            <div className="w-3 h-3 rounded-full bg-green-500" />
+                          </div>
+                        )}
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-1">
+                          <span className="text-white text-[9px] font-bold font-cyber truncate block text-center">
+                            {bg.name.toUpperCase()}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                
+                {/* Custom Background Upload */}
+                <div className="pt-2 border-t border-green-500/20">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/jpg"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        props.onCustomBackgroundUpload(file);
+                      }
+                    }}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full border-green-500/30 hover:border-green-500 text-green-500"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload Custom Background
+                  </Button>
+                </div>
+              </div>
+
+              {/* Aspect Ratio - Camera */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
+                <Label className="text-xs font-cyber text-green-500 tracking-wider">
+                  CAMERA ASPECT RATIO
+                </Label>
+                <Select
+                  value={props.cameraAspectRatio}
+                  onValueChange={props.onCameraAspectRatioChange}
+                >
+                  <SelectTrigger className="border-green-500/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ASPECT_RATIOS.map((ratio) => (
+                      <SelectItem key={ratio.id} value={ratio.id}>
+                        {ratio.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {props.cameraAspectRatio === "custom" && (
+                  <div className="pt-2">
+                    <Input
+                      type="text"
+                      placeholder="e.g., 21:9"
+                      value={props.customAspectRatio}
+                      onChange={(e) => props.onCustomAspectRatioChange(e.target.value)}
+                      className="border-green-500/30 font-mono text-sm"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Aspect Ratio - Canvas */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
+                <Label className="text-xs font-cyber text-green-500 tracking-wider">
+                  CANVAS ASPECT RATIO
+                </Label>
+                <Select
+                  value={props.canvasAspectRatio}
+                  onValueChange={props.onCanvasAspectRatioChange}
+                >
+                  <SelectTrigger className="border-green-500/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ASPECT_RATIOS.map((ratio) => (
+                      <SelectItem key={ratio.id} value={ratio.id}>
+                        {ratio.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Face Tracking */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-xs font-cyber text-green-500 tracking-wider">
+                      AUTO CAMERA TRACKING
+                    </Label>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      AI follows your face movement
+                    </p>
+                  </div>
+                  <Switch
+                    checked={props.isFaceTrackingEnabled}
+                    onCheckedChange={props.onFaceTrackingToggle}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeSection === "dynamic-styles" && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-yellow-500/30">
