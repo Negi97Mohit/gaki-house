@@ -70,8 +70,8 @@ interface FloatingControlsPanelProps {
   onClose: () => void;
   
   // Camera Controls
-  cameraBackground: string;
-  onCameraBackgroundChange: (bgId: string) => void;
+  cameraBackground: "none" | "blur" | "image";
+  onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
   onCustomBackgroundUpload: (file: File) => void;
   cameraAspectRatio: string;
   onCameraAspectRatioChange: (ratio: string) => void;
@@ -263,11 +263,24 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 </Label>
                 <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
                   {BACKGROUND_PRESETS.map((bg) => {
-                    const isSelected = props.cameraBackground === bg.id;
+                    const isSelected = 
+                      (bg.id === "none" && props.cameraBackground === "none") ||
+                      (bg.id === "blur" && props.cameraBackground === "blur") ||
+                      (bg.type === "image" && bg.id !== "none" && props.cameraBackground === "image");
                     return (
                       <button
                         key={bg.id}
-                        onClick={() => props.onCameraBackgroundChange(bg.id)}
+                        onClick={() => {
+                          if (bg.id === "none") {
+                            props.onCameraBackgroundChange("none");
+                          } else if (bg.id === "blur") {
+                            props.onCameraBackgroundChange("blur");
+                          } else {
+                            props.onCameraBackgroundChange("image");
+                            // Store the image URL in the scene state
+                            // You might want to add this to the handler
+                          }
+                        }}
                         className={cn(
                           "aspect-video rounded-lg border-2 transition-all duration-200 relative overflow-hidden group",
                           isSelected
@@ -334,7 +347,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                   <SelectTrigger className="border-green-500/30">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[var(--z-floating-panel-dropdown)] bg-background">
                     {ASPECT_RATIOS.map((ratio) => (
                       <SelectItem key={ratio.id} value={ratio.id}>
                         {ratio.name}

@@ -1,6 +1,7 @@
 // src/components/CameraRenderer.tsx
 
 import React, { useEffect, useRef } from "react";
+import { useCameraEffects } from "@/hooks/useCameraEffects";
 
 // --- HELPER FUNCTIONS (No changes) ---
 function hslToRgb(h: number, s: number, l: number): [number, number, number] {
@@ -88,7 +89,7 @@ function detectEdges(
   return output;
 }
 
-// --- PROPS INTERFACE (No changes) ---
+// --- PROPS INTERFACE ---
 interface CameraRendererProps {
   stream: MediaStream | null;
   backgroundEffect: "none" | "blur" | "image";
@@ -102,6 +103,10 @@ interface CameraRendererProps {
   neonIntensity: number;
   neonColor: string;
   videoFilter: string;
+  cameraBackground?: "none" | "blur" | "image";
+  customBackgroundUrl?: string | null;
+  isFaceTrackingEnabled?: boolean;
+  cameraAspectRatio?: string;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = ({
@@ -112,11 +117,24 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   videoFilter,
   className,
   style,
+  cameraBackground = "none",
+  customBackgroundUrl,
+  isFaceTrackingEnabled = false,
+  cameraAspectRatio = "16:9",
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>();
   const tempCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Initialize useCameraEffects hook
+  const { processedCanvas, facePosition, isReady } = useCameraEffects({
+    videoElement: videoRef.current,
+    isBackgroundRemovalEnabled: cameraBackground !== "none",
+    backgroundType: cameraBackground,
+    backgroundImageUrl: customBackgroundUrl || undefined,
+    isFaceTrackingEnabled,
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -164,6 +182,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Use processed canvas if background removal is active
+      const sourceElement = processedCanvas || video;
+
       // Calculate aspect ratio to maintain video proportions
       const videoAspect = video.videoWidth / video.videoHeight;
       const canvasAspect = canvas.width / canvas.height;
@@ -173,19 +194,27 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       let drawX = 0;
       let drawY = 0;
 
+      // Apply face tracking offset if enabled
+      if (isFaceTrackingEnabled && facePosition) {
+        const offsetX = (50 - facePosition.x) * 0.1;
+        const offsetY = (50 - facePosition.y) * 0.1;
+        drawX += offsetX * canvas.width;
+        drawY += offsetY * canvas.height;
+      }
+
       // Cover the canvas while maintaining aspect ratio (like object-fit: cover)
       if (canvasAspect > videoAspect) {
         // Canvas is wider than video
         drawHeight = canvas.width / videoAspect;
-        drawY = (canvas.height - drawHeight) / 2;
+        drawY += (canvas.height - drawHeight) / 2;
       } else {
         // Canvas is taller than video
         drawWidth = canvas.height * videoAspect;
-        drawX = (canvas.width - drawWidth) / 2;
+        drawX += (canvas.width - drawWidth) / 2;
       }
 
       ctx.filter = videoFilter;
-      ctx.drawImage(video, drawX, drawY, drawWidth, drawHeight);
+      ctx.drawImage(sourceElement, drawX, drawY, drawWidth, drawHeight);
       ctx.filter = "none";
 
       if (isNeonEdgeEnabled) {
@@ -226,7 +255,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [stream, isNeonEdgeEnabled, neonIntensity, neonColor, videoFilter]);
+  }, [stream, isNeonEdgeEnabled, neonIntensity, neonColor, videoFilter, processedCanvas, facePosition, isFaceTrackingEnabled]);
 
   return (
     <div className={className} style={style}>

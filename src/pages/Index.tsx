@@ -603,7 +603,7 @@ const Index = () => {
   
   // Camera controls
   const handleSetCameraBackground = useCallback(
-    (value: string) => updateSceneProperty("cameraBackground", value),
+    (value: "none" | "blur" | "image") => updateSceneProperty("cameraBackground", value),
     [updateSceneProperty]
   );
   
@@ -612,7 +612,7 @@ const Index = () => {
       const url = URL.createObjectURL(file);
       updateActiveScene((scene) => ({
         ...scene,
-        cameraBackground: "custom",
+        cameraBackground: "image",
         customBackgroundUrl: url,
       }));
       toast.success("Custom background uploaded");

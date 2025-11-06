@@ -282,7 +282,7 @@ export interface SceneState {
   neonColor: string;
   
   // Camera Background Controls
-  cameraBackground: string;
+  cameraBackground: "none" | "blur" | "image";
   customBackgroundUrl: string | null;
   cameraAspectRatio: string;
   canvasAspectRatio: string;

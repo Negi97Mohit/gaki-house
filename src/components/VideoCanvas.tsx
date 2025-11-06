@@ -407,6 +407,17 @@ interface VideoCanvasProps {
     onZoomSensitivityChange: (value: number) => void;
     trackingSpeed: number;
     onTrackingSpeedChange: (value: number) => void;
+    cameraBackground: "none" | "blur" | "image";
+    onCameraBackgroundChange: (background: "none" | "blur" | "image") => void;
+    onCustomBackgroundUpload: (file: File) => void;
+    cameraAspectRatio: string;
+    onCameraAspectRatioChange: (ratio: string) => void;
+    canvasAspectRatio: string;
+    onCanvasAspectRatioChange: (ratio: string) => void;
+    customAspectRatio: string;
+    onCustomAspectRatioChange: (ratio: string) => void;
+    isFaceTrackingEnabled: boolean;
+    onFaceTrackingToggle: (enabled: boolean) => void;
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
@@ -1003,7 +1014,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       {rest.backgroundEffect !== "none" ||
       rest.isAutoFramingEnabled ||
       isNeonEdgeEnabled ||
-      videoFilterString !== "none" ? (
+      videoFilterString !== "none" ||
+      props.sidebarProps.cameraBackground !== "none" ||
+      props.sidebarProps.isFaceTrackingEnabled ? (
         <CameraRenderer
           stream={cameraStream}
           backgroundEffect={rest.backgroundEffect}
@@ -1017,6 +1030,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           isNeonEdgeEnabled={isNeonEdgeEnabled}
           neonIntensity={neonIntensity}
           neonColor={neonColor}
+          cameraBackground={props.sidebarProps.cameraBackground}
+          customBackgroundUrl={rest.backgroundImageUrl}
+          isFaceTrackingEnabled={props.sidebarProps.isFaceTrackingEnabled}
+          cameraAspectRatio={props.sidebarProps.cameraAspectRatio}
         />
       ) : (
         <VideoPlayer
