@@ -14,40 +14,71 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       layoutMode: "pip",
       cameraShape: "rectangle",
       pipPosition: { x: 50, y: 50 },
-      pipSize: { width: 35, height: 60 },
+      pipSize: { width: 30, height: 75 },
       pipBorder: { color: "#D4AF37", width: 3 },
       pipShadow: { blur: 25, color: "rgba(212, 175, 55, 0.4)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 55 },
-          pipSize: { width: 70, height: 75 },
+          pipPosition: { x: 50, y: 50 },
+          pipSize: { width: 70, height: 85 },
         },
       },
     },
     textOverlays: [
       {
         id: "preset-text-title",
-        content: "EDITORIAL",
+        content: "VOGUE",
         style: {
           fontFamily: "Playfair Display",
-          fontSize: 64,
-          color: "#FFFFFF",
+          fontSize: 72,
+          color: "#D4AF37",
           backgroundColor: "transparent",
-          textShadow: "0px 4px 12px rgba(0,0,0,0.6)",
+          textShadow: "0px 4px 12px rgba(0,0,0,0.8)",
           textAlign: "center",
+          fontWeight: "700",
         },
         layout: {
-          position: { x: 50, y: 12 },
-          size: { width: 80, height: 8 },
-          zIndex: 15,
+          position: { x: 50, y: 18 },
+          size: { width: 28, height: 10 },
+          zIndex: 20,
           rotation: 0,
+          layerOrder: "above-video",
         },
         responsive: {
           mobile: {
-            style: { fontSize: 48 },
+            style: { fontSize: 56 },
             layout: {
-              position: { x: 50, y: 8 },
-              size: { width: 90, height: 10 },
+              position: { x: 50, y: 15 },
+              size: { width: 65, height: 10 },
+            },
+          },
+        },
+      },
+      {
+        id: "preset-text-subtitle",
+        content: "EDITORIAL",
+        style: {
+          fontFamily: "Montserrat",
+          fontSize: 18,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "300",
+          textShadow: "0px 2px 8px rgba(0,0,0,0.6)",
+        },
+        layout: {
+          position: { x: 50, y: 26 },
+          size: { width: 28, height: 4 },
+          zIndex: 20,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        responsive: {
+          mobile: {
+            style: { fontSize: 14 },
+            layout: {
+              position: { x: 50, y: 23 },
+              size: { width: 65, height: 4 },
             },
           },
         },
@@ -57,6 +88,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "brightness(1.05) contrast(1.1)",
       isBeautifyEnabled: true,
     },
+    canvasAspectRatio: "9:16",
   },
   {
     id: "cinematic-gradient-split",
@@ -173,74 +205,106 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
   },
   {
     id: "editorial-left-bar",
-    name: "Editorial Left Bar",
-    styleTags: ["editorial", "modern", "asymmetric", "bold"],
+    name: "Editorial Magazine",
+    styleTags: ["editorial", "modern", "magazine", "bold"],
     background: {
       blankCanvasColor: "#F8F8F8",
       backgroundEffect: "none",
     },
     pip: {
-      layoutMode: "split-vertical",
+      layoutMode: "pip",
       cameraShape: "rectangle",
-      splitRatio: 0.35,
-      pipBorder: { color: "#000000", width: 1 },
+      pipPosition: { x: 35, y: 50 },
+      pipSize: { width: 28, height: 70 },
+      pipBorder: { color: "#000000", width: 2 },
+      pipShadow: { blur: 20, color: "rgba(0, 0, 0, 0.15)" },
       responsive: {
         mobile: {
-          layoutMode: "pip",
-          pipPosition: { x: 50, y: 65 },
-          pipSize: { width: 90, height: 55 },
+          pipPosition: { x: 50, y: 50 },
+          pipSize: { width: 75, height: 85 },
         },
       },
     },
     textOverlays: [
       {
         id: "preset-text-title",
-        content: "MODERN\nDESIGN",
+        content: "EDITORIAL",
         style: {
           fontFamily: "Helvetica",
-          fontSize: 52,
+          fontSize: 58,
           color: "#000000",
           backgroundColor: "transparent",
           textAlign: "left",
           fontWeight: "900",
         },
         layout: {
-          position: { x: 68, y: 30 },
-          size: { width: 50, height: 15 },
-          zIndex: 15,
+          position: { x: 35, y: 20 },
+          size: { width: 26, height: 10 },
+          zIndex: 20,
           rotation: 0,
+          layerOrder: "above-video",
         },
         responsive: {
           mobile: {
-            style: { fontSize: 38, textAlign: "center" },
+            style: { fontSize: 42, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 12 },
-              size: { width: 85, height: 12 },
+              position: { x: 50, y: 15 },
+              size: { width: 70, height: 10 },
             },
           },
         },
       },
       {
         id: "preset-text-subtitle",
-        content: "Minimalist aesthetics for modern storytelling",
+        content: "THE NEW\nAESTHETIC",
         style: {
           fontFamily: "Helvetica",
-          fontSize: 18,
+          fontSize: 22,
           color: "#666666",
           backgroundColor: "transparent",
           textAlign: "left",
+          fontWeight: "300",
         },
         layout: {
-          position: { x: 68, y: 42 },
-          size: { width: 45, height: 6 },
+          position: { x: 35, y: 75 },
+          size: { width: 26, height: 8 },
+          zIndex: 20,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        responsive: {
+          mobile: {
+            style: { textAlign: "center" },
+            layout: {
+              position: { x: 50, y: 75 },
+              size: { width: 70, height: 8 },
+            },
+          },
+        },
+      },
+      {
+        id: "preset-text-side",
+        content: "Vol. 2024",
+        style: {
+          fontFamily: "Helvetica",
+          fontSize: 16,
+          color: "#999999",
+          backgroundColor: "transparent",
+          textAlign: "right",
+          fontWeight: "400",
+        },
+        layout: {
+          position: { x: 72, y: 50 },
+          size: { width: 50, height: 5 },
           zIndex: 15,
           rotation: 0,
         },
         responsive: {
           mobile: {
             layout: {
-              position: { x: 50, y: 20 },
+              position: { x: 50, y: 88 },
               size: { width: 80, height: 5 },
+              rotation: 0,
             },
           },
         },
@@ -249,11 +313,12 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     effects: {
       videoFilter: "none",
     },
+    canvasAspectRatio: "9:16",
   },
   {
     id: "tech-blue-circuit",
-    name: "Tech Blue Circuit",
-    styleTags: ["tech", "futuristic", "neon", "cyberpunk"],
+    name: "Tech Magazine Cover",
+    styleTags: ["tech", "futuristic", "magazine", "cyberpunk"],
     background: {
       blankCanvasColor: "#0A0E27",
       backgroundEffect: "none",
@@ -261,43 +326,75 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 70, y: 50 },
-      pipSize: { width: 38, height: 55 },
+      pipPosition: { x: 50, y: 50 },
+      pipSize: { width: 34, height: 72 },
       pipBorder: { color: "#00D9FF", width: 3 },
       pipShadow: { blur: 35, color: "rgba(0, 217, 255, 0.6)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 55 },
-          pipSize: { width: 80, height: 65 },
+          pipPosition: { x: 50, y: 50 },
+          pipSize: { width: 78, height: 86 },
         },
       },
     },
     textOverlays: [
       {
         id: "preset-text-title",
-        content: "TECH\nVISION",
+        content: "TECH",
         style: {
           fontFamily: "Orbitron",
-          fontSize: 58,
+          fontSize: 66,
           color: "#00D9FF",
-          backgroundColor: "rgba(0, 217, 255, 0.05)",
+          backgroundColor: "rgba(0, 217, 255, 0.08)",
           border: "2px solid #00D9FF",
-          backdropFilter: "blur(5px)",
-          textAlign: "left",
+          backdropFilter: "blur(8px)",
+          textAlign: "center",
+          fontWeight: "700",
           textShadow: "0px 0px 20px rgba(0, 217, 255, 0.8)",
         },
         layout: {
-          position: { x: 25, y: 50 },
-          size: { width: 35, height: 18 },
-          zIndex: 15,
+          position: { x: 50, y: 18 },
+          size: { width: 32, height: 11 },
+          zIndex: 20,
           rotation: 0,
+          layerOrder: "above-video",
         },
         responsive: {
           mobile: {
-            style: { fontSize: 44, textAlign: "center" },
+            style: { fontSize: 52 },
             layout: {
-              position: { x: 50, y: 15 },
-              size: { width: 85, height: 15 },
+              position: { x: 50, y: 14 },
+              size: { width: 74, height: 11 },
+            },
+          },
+        },
+      },
+      {
+        id: "preset-text-subtitle",
+        content: "THE FUTURE",
+        style: {
+          fontFamily: "Rajdhani",
+          fontSize: 24,
+          color: "#FFFFFF",
+          backgroundColor: "rgba(0, 217, 255, 0.1)",
+          backdropFilter: "blur(5px)",
+          textAlign: "center",
+          fontWeight: "500",
+          textShadow: "0px 2px 10px rgba(0, 217, 255, 0.5)",
+        },
+        layout: {
+          position: { x: 50, y: 27 },
+          size: { width: 32, height: 5 },
+          zIndex: 20,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        responsive: {
+          mobile: {
+            style: { fontSize: 20 },
+            layout: {
+              position: { x: 50, y: 23 },
+              size: { width: 74, height: 5 },
             },
           },
         },
@@ -309,6 +406,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       neonColor: "cyan",
       neonIntensity: 35,
     },
+    canvasAspectRatio: "9:16",
   },
   {
     id: "lifestyle-glow-center",
@@ -365,7 +463,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
   },
   {
     id: "luxury-gold-accent",
-    name: "Luxury Gold Accent",
+    name: "Luxury Magazine",
     styleTags: ["luxury", "premium", "elegant", "gold"],
     background: {
       blankCanvasColor: "#1A1A1A",
@@ -374,41 +472,101 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 65, y: 50 },
-      pipSize: { width: 42, height: 58 },
-      pipBorder: { color: "#FFD700", width: 5 },
+      pipPosition: { x: 50, y: 50 },
+      pipSize: { width: 32, height: 78 },
+      pipBorder: { color: "#FFD700", width: 4 },
       pipShadow: { blur: 30, color: "rgba(255, 215, 0, 0.5)" },
       responsive: {
         mobile: {
           pipPosition: { x: 50, y: 50 },
-          pipSize: { width: 80, height: 70 },
+          pipSize: { width: 72, height: 88 },
         },
       },
     },
     textOverlays: [
       {
         id: "preset-text-title",
-        content: "PRESTIGE",
+        content: "LUXURY",
         style: {
           fontFamily: "Playfair Display",
-          fontSize: 68,
+          fontSize: 64,
           color: "#FFD700",
           backgroundColor: "transparent",
-          textAlign: "left",
+          textAlign: "center",
+          fontWeight: "700",
           textShadow: "0px 4px 15px rgba(255, 215, 0, 0.6)",
         },
         layout: {
-          position: { x: 22, y: 35 },
-          size: { width: 40, height: 12 },
-          zIndex: 15,
+          position: { x: 50, y: 15 },
+          size: { width: 30, height: 10 },
+          zIndex: 20,
           rotation: 0,
+          layerOrder: "above-video",
         },
         responsive: {
           mobile: {
-            style: { fontSize: 48, textAlign: "center" },
+            style: { fontSize: 52 },
             layout: {
               position: { x: 50, y: 12 },
-              size: { width: 85, height: 10 },
+              size: { width: 68, height: 10 },
+            },
+          },
+        },
+      },
+      {
+        id: "preset-text-subtitle",
+        content: "COLLECTION",
+        style: {
+          fontFamily: "Montserrat",
+          fontSize: 20,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "300",
+          textShadow: "0px 2px 8px rgba(0,0,0,0.8)",
+        },
+        layout: {
+          position: { x: 50, y: 23 },
+          size: { width: 30, height: 4 },
+          zIndex: 20,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        responsive: {
+          mobile: {
+            style: { fontSize: 16 },
+            layout: {
+              position: { x: 50, y: 20 },
+              size: { width: 68, height: 4 },
+            },
+          },
+        },
+      },
+      {
+        id: "preset-text-bottom",
+        content: "PRESTIGE EDITION",
+        style: {
+          fontFamily: "Montserrat",
+          fontSize: 16,
+          color: "#FFD700",
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backdropFilter: "blur(5px)",
+          textAlign: "center",
+          fontWeight: "500",
+        },
+        layout: {
+          position: { x: 50, y: 82 },
+          size: { width: 30, height: 5 },
+          zIndex: 20,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        responsive: {
+          mobile: {
+            style: { fontSize: 14 },
+            layout: {
+              position: { x: 50, y: 85 },
+              size: { width: 68, height: 5 },
             },
           },
         },
@@ -418,6 +576,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "brightness(1.05) contrast(1.1)",
       isBeautifyEnabled: true,
     },
+    canvasAspectRatio: "9:16",
   },
   {
     id: "minimal-white-space",

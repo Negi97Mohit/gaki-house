@@ -56,6 +56,7 @@ export interface CanvasPresetTextOverlay {
     size: { width: number; height: number };
     zIndex: number;
     rotation: number;
+    layerOrder?: "above-video" | "below-video" | "auto";
   };
   responsive?: {
     mobile?: {

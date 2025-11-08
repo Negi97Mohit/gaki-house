@@ -104,9 +104,13 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const currentWidthPx = currentElement.offsetWidth;
       const currentHeightPx = currentElement.offsetHeight;
 
+      // Clamp position to stay within bounds
+      const clampedX = Math.max(0, Math.min(d.x, containerSize.width - currentWidthPx));
+      const clampedY = Math.max(0, Math.min(d.y, containerSize.height - currentHeightPx));
+
       const newPositionPercent = calculatePercentagePosition(
-        d.x,
-        d.y,
+        clampedX,
+        clampedY,
         currentWidthPx,
         currentHeightPx,
         containerSize
