@@ -1,7 +1,9 @@
 // src/components/CameraRenderer.tsx
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
+import { PipControlsToolbar } from "./PipControlsToolbar";
+import { cn } from "@/lib/utils"; // <-- FIX: Added missing import
 
 // --- HELPER FUNCTIONS (No changes) ---
 function hslToRgb(h: number, s: number, l: number): [number, number, number] {
@@ -89,43 +91,98 @@ function detectEdges(
   return output;
 }
 
-// --- PROPS INTERFACE ---
+// --- PROPS INTERFACE (FIX: Fully updated) ---
 interface CameraRendererProps {
   stream: MediaStream | null;
-  backgroundEffect: "none" | "blur" | "image";
-  backgroundImageUrl?: string | null;
-  isAutoFramingEnabled: boolean;
-  zoomSensitivity: number;
-  trackingSpeed: number;
   className?: string;
   style?: React.CSSProperties;
+  videoFilter: string;
   isNeonEdgeEnabled: boolean;
   neonIntensity: number;
   neonColor: string;
-  videoFilter: string;
   cameraBackground?: "none" | "blur" | "image";
   customBackgroundUrl?: string | null;
   isFaceTrackingEnabled?: boolean;
   cameraAspectRatio?: string;
+
+  // --- All Toolbar Props ---
+  pipBorder?: { color: string; width: number };
+  onPipBorderChange: (border: { color: string; width: number }) => void;
+  pipShadow?: { blur: number; color: string };
+  onPipShadowChange: (shadow: { blur: number; color: string }) => void;
+  isAutoFramingEnabled: boolean;
+  onAutoFramingChange: (enabled: boolean) => void;
+  isBeautifyEnabled: boolean;
+  onBeautifyToggle: (enabled: boolean) => void;
+  isLowLightEnabled: boolean;
+  onLowLightToggle: (enabled: boolean) => void;
+  onVideoFilterChange: (filter: string) => void;
+  onNeonEdgeToggle: (enabled: boolean) => void;
+  onNeonIntensityChange: (value: number) => void;
+  zoomSensitivity: number;
+  onZoomSensitivityChange: (value: number) => void;
+  trackingSpeed: number;
+  onTrackingSpeedChange: (value: number) => void;
+  onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
+  onCustomBackgroundUpload: (file: File) => void;
+  onCameraAspectRatioChange: (ratio: string) => void; // <-- FIX: Added
+  customAspectRatio: string;
+  onCustomAspectRatioChange: (ratio: string) => void;
+  onFaceTrackingToggle: (enabled: boolean) => void;
+
+  // --- Original Background Props ---
+  backgroundEffect: "none" | "blur" | "image";
+  backgroundImageUrl?: string | null;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = ({
   stream,
+  className,
+  style,
+  videoFilter,
   isNeonEdgeEnabled,
   neonIntensity,
   neonColor,
-  videoFilter,
-  className,
-  style,
   cameraBackground = "none",
   customBackgroundUrl,
   isFaceTrackingEnabled = false,
   cameraAspectRatio = "16:9",
+
+  // --- FIX: Destructure ALL props ---
+  pipBorder,
+  onPipBorderChange,
+  pipShadow,
+  onPipShadowChange,
+  isAutoFramingEnabled,
+  onAutoFramingChange,
+  isBeautifyEnabled,
+  onBeautifyToggle,
+  isLowLightEnabled,
+  onLowLightToggle,
+  onVideoFilterChange,
+  onNeonEdgeToggle,
+  onNeonIntensityChange,
+  zoomSensitivity,
+  onZoomSensitivityChange,
+  trackingSpeed,
+  onTrackingSpeedChange,
+  onCameraBackgroundChange,
+  onCustomBackgroundUpload,
+  onCameraAspectRatioChange, // <-- FIX: Added
+  customAspectRatio,
+  onCustomAspectRatioChange,
+  onFaceTrackingToggle,
+  backgroundEffect,
+  backgroundImageUrl,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>();
   const tempCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
 
   // Initialize useCameraEffects hook
   const { processedCanvas, facePosition, isReady } = useCameraEffects({
@@ -136,9 +193,25 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     isFaceTrackingEnabled,
   });
 
+  const handleMouseEnter = () => {
+    if (containerRef.current) {
+      setToolbarPosition({
+        x: containerRef.current.offsetWidth / 2,
+        y: 0,
+      });
+    }
+    setIsHovered(true);
+  };
+  const handleMouseLeave = () => setIsHovered(false);
+
+  // --- FIX: Correct useEffect structure ---
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const canvas = canvasRef.current; // Read ref *inside* effect
+    if (!canvas) {
+      // console.log("[CameraRenderer] ResizeObserver effect: Canvas ref not ready.");
+      return;
+    }
+    // console.log("[CameraRenderer] ResizeObserver effect: Attaching observer.");
     const resizeObserver = new ResizeObserver(() => {
       if (canvas) {
         canvas.width = canvas.clientWidth;
@@ -147,16 +220,26 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     });
     resizeObserver.observe(canvas);
     return () => resizeObserver.disconnect();
-  }, []);
+  }, [canvasRef.current]); // <-- FIX: Depend on the ref's *current* value
 
+  // --- FIX: Correct useEffect structure ---
   useEffect(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas) return;
+    const video = videoRef.current; // Read ref *inside* effect
+    const canvas = canvasRef.current; // Read ref *inside* effect
+    if (!video || !canvas) {
+      // console.log("[CameraRenderer] Drawing effect: Refs not ready.");
+      return;
+    }
+
+    // console.log("[CameraRenderer] Drawing effect: Running. Stream:", stream ? "Yes" : "No");
 
     if (stream) {
+      // console.log("[CameraRenderer] Attaching stream.");
       video.srcObject = stream;
       video.play().catch(console.error);
+    } else {
+      // console.log("[CameraRenderer] No stream, clearing video.");
+      video.srcObject = null;
     }
 
     const renderFrame = () => {
@@ -182,10 +265,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Use processed canvas if background removal is active
       const sourceElement = processedCanvas || video;
-
-      // Calculate aspect ratio to maintain video proportions
       const videoAspect = video.videoWidth / video.videoHeight;
       const canvasAspect = canvas.width / canvas.height;
 
@@ -194,7 +274,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       let drawX = 0;
       let drawY = 0;
 
-      // Apply face tracking offset if enabled
       if (isFaceTrackingEnabled && facePosition) {
         const offsetX = (50 - facePosition.x) * 0.1;
         const offsetY = (50 - facePosition.y) * 0.1;
@@ -202,13 +281,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         drawY += offsetY * canvas.height;
       }
 
-      // Cover the canvas while maintaining aspect ratio (like object-fit: cover)
       if (canvasAspect > videoAspect) {
-        // Canvas is wider than video
         drawHeight = canvas.width / videoAspect;
         drawY += (canvas.height - drawHeight) / 2;
       } else {
-        // Canvas is taller than video
         drawWidth = canvas.height * videoAspect;
         drawX += (canvas.width - drawWidth) / 2;
       }
@@ -251,12 +327,15 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     renderFrame();
 
     return () => {
+      // console.log("[CameraRenderer] Cleanup drawing effect.");
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [
     stream,
+    videoRef.current, // <-- FIX: Depend on the ref's *current* value
+    canvasRef.current, // <-- FIX: Depend on the ref's *current* value
     isNeonEdgeEnabled,
     neonIntensity,
     neonColor,
@@ -267,7 +346,13 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   ]);
 
   return (
-    <div className={className} style={style}>
+    <div
+      ref={containerRef}
+      className={cn("relative", className)} // <-- cn is now defined
+      style={style}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <video
         ref={videoRef}
         autoPlay
@@ -276,6 +361,42 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         className="hidden object-cover w-full h-full"
       />
       <canvas ref={canvasRef} className="w-full h-full" />
+
+      {isHovered && (
+        <PipControlsToolbar
+          position={toolbarPosition}
+          containerRef={containerRef}
+          pipBorder={pipBorder}
+          onPipBorderChange={onPipBorderChange}
+          pipShadow={pipShadow}
+          onPipShadowChange={onPipShadowChange}
+          isAutoFramingEnabled={isAutoFramingEnabled}
+          onAutoFramingChange={onAutoFramingChange}
+          isBeautifyEnabled={isBeautifyEnabled}
+          onBeautifyToggle={onBeautifyToggle}
+          isLowLightEnabled={isLowLightEnabled}
+          onLowLightToggle={onLowLightToggle}
+          videoFilter={videoFilter}
+          onVideoFilterChange={onVideoFilterChange}
+          isNeonEdgeEnabled={isNeonEdgeEnabled}
+          onNeonEdgeToggle={onNeonEdgeToggle}
+          neonIntensity={neonIntensity}
+          onNeonIntensityChange={onNeonIntensityChange}
+          zoomSensitivity={zoomSensitivity}
+          onZoomSensitivityChange={onZoomSensitivityChange}
+          trackingSpeed={trackingSpeed}
+          onTrackingSpeedChange={onTrackingSpeedChange}
+          cameraBackground={cameraBackground}
+          onCameraBackgroundChange={onCameraBackgroundChange}
+          onCustomBackgroundUpload={onCustomBackgroundUpload}
+          cameraAspectRatio={cameraAspectRatio}
+          onCameraAspectRatioChange={onCameraAspectRatioChange} // <-- FIX: Prop is now passed
+          customAspectRatio={customAspectRatio}
+          onCustomAspectRatioChange={onCustomAspectRatioChange}
+          isFaceTrackingEnabled={isFaceTrackingEnabled}
+          onFaceTrackingToggle={onFaceTrackingToggle}
+        />
+      )}
     </div>
   );
 };

@@ -419,6 +419,13 @@ interface VideoCanvasProps {
     onCustomAspectRatioChange: (ratio: string) => void;
     isFaceTrackingEnabled: boolean;
     onFaceTrackingToggle: (enabled: boolean) => void;
+
+    // --- ADDED: Missing PiP control props to the sidebar definition ---
+    pipBorder?: { color: string; width: number };
+    onPipBorderChange: (border: { color: string; width: number }) => void;
+    pipShadow?: { blur: number; color: string };
+    onPipShadowChange: (shadow: { blur: number; color: string }) => void;
+    // --- END ADDED ---
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
@@ -456,11 +463,7 @@ interface VideoCanvasProps {
   onOpenSettings: () => void;
   blankCanvasColor: string;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
-  // --- ADDED ---
-  pipBorder?: { color: string; width: number };
-  pipShadow?: { blur: number; color: string };
   canvasAspectRatio: string;
-  // --- END ADDED ---
 }
 
 const VideoPlayer: React.FC<{
@@ -979,14 +982,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       transition: "all 0.3s ease",
     };
 
-    if (rest.pipBorder && rest.pipBorder.width > 0) {
-      baseStyle.border = `${rest.pipBorder.width}px solid ${rest.pipBorder.color}`;
+    if (
+      props.sidebarProps.pipBorder &&
+      props.sidebarProps.pipBorder.width > 0
+    ) {
+      baseStyle.border = `${props.sidebarProps.pipBorder.width}px solid ${props.sidebarProps.pipBorder.color}`;
     }
 
-    if (rest.pipShadow && rest.pipShadow.blur > 0) {
-      baseStyle.boxShadow = `0 0 ${rest.pipShadow.blur}px ${rest.pipShadow.color}`;
+    if (props.sidebarProps.pipShadow && props.sidebarProps.pipShadow.blur > 0) {
+      baseStyle.boxShadow = `0 0 ${props.sidebarProps.pipShadow.blur}px ${props.sidebarProps.pipShadow.color}`;
     }
-
+    // --- END MODIFICATION ---
     if (rest.customMaskUrl) {
       return {
         ...baseStyle,
@@ -1014,9 +1020,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const getVideoFilterStyle = (): string => {
     const filters: string[] = [];
     if (videoFilter && videoFilter !== "none") filters.push(videoFilter);
-    if (rest.isBeautifyEnabled)
+    // --- MODIFIED: Read from sidebarProps ---
+    if (props.sidebarProps.isBeautifyEnabled)
       filters.push("blur(0.5px) saturate(1.1) brightness(1.05)");
-    if (rest.isLowLightEnabled) filters.push("brightness(1.3) contrast(1.15)");
+    if (props.sidebarProps.isLowLightEnabled)
+      filters.push("brightness(1.3) contrast(1.15)");
+    // --- END MODIFICATION ---
     return filters.length > 0 ? filters.join(" ") : "none";
   };
 
@@ -1086,44 +1095,54 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     <div
       className={cn(
         "w-full h-full",
-        className, // <-- PASS THE VARIABLE
-        // --- CORRECTED LOGIC ---
+        className,
         isPip && cameraShape === "circle" && "aspect-square"
         // --- END CORRECTION ---
       )}
       style={{ ...getCameraShapeStyle(), ...style }} // <-- Apply shape styles here
     >
-      {rest.backgroundEffect !== "none" ||
-      rest.isAutoFramingEnabled ||
-      isNeonEdgeEnabled ||
-      videoFilterString !== "none" ||
-      props.sidebarProps.cameraBackground !== "none" ||
-      props.sidebarProps.isFaceTrackingEnabled ? (
-        <CameraRenderer
-          stream={cameraStream}
-          backgroundEffect={rest.backgroundEffect}
-          backgroundImageUrl={rest.backgroundImageUrl}
-          isAutoFramingEnabled={rest.isAutoFramingEnabled}
-          zoomSensitivity={rest.zoomSensitivity}
-          trackingSpeed={rest.trackingSpeed}
-          className="w-full h-full"
-          style={{ ...style }}
-          videoFilter={videoFilterString}
-          isNeonEdgeEnabled={isNeonEdgeEnabled}
-          neonIntensity={neonIntensity}
-          neonColor={neonColor}
-          cameraBackground={props.sidebarProps.cameraBackground}
-          customBackgroundUrl={rest.backgroundImageUrl}
-          isFaceTrackingEnabled={props.sidebarProps.isFaceTrackingEnabled}
-          cameraAspectRatio={props.sidebarProps.cameraAspectRatio}
-        />
-      ) : (
-        <VideoPlayer
-          stream={cameraStream}
-          className="w-full h-full object-cover" // Style is now on the parent
-          style={{ filter: videoFilterString }}
-        />
-      )}
+      <CameraRenderer
+        stream={cameraStream}
+        className="w-full h-full"
+        style={{ ...style }}
+        // --- Video/Stream Props ---
+        videoFilter={videoFilterString}
+        customBackgroundUrl={rest.backgroundImageUrl} // Note: This might be sidebarProps.backgroundImageUrl
+        // --- Toolbar Props: State ---
+        pipBorder={props.sidebarProps.pipBorder}
+        pipShadow={props.sidebarProps.pipShadow}
+        isAutoFramingEnabled={rest.isAutoFramingEnabled} // This seems to be from root props
+        isBeautifyEnabled={props.sidebarProps.isBeautifyEnabled}
+        isLowLightEnabled={props.sidebarProps.isLowLightEnabled}
+        isNeonEdgeEnabled={isNeonEdgeEnabled} // From root props
+        neonIntensity={neonIntensity} // From root props
+        neonColor={neonColor} // From root props
+        zoomSensitivity={rest.zoomSensitivity} // From root props
+        trackingSpeed={rest.trackingSpeed} // From root props
+        cameraBackground={props.sidebarProps.cameraBackground}
+        cameraAspectRatio={props.sidebarProps.cameraAspectRatio}
+        customAspectRatio={props.sidebarProps.customAspectRatio}
+        isFaceTrackingEnabled={props.sidebarProps.isFaceTrackingEnabled}
+        // --- Toolbar Props: Handlers ---
+        onPipBorderChange={props.sidebarProps.onPipBorderChange}
+        onPipShadowChange={props.sidebarProps.onPipShadowChange}
+        onAutoFramingChange={props.sidebarProps.onAutoFramingChange}
+        onBeautifyToggle={props.sidebarProps.onBeautifyToggle}
+        onLowLightToggle={props.sidebarProps.onLowLightToggle}
+        onVideoFilterChange={props.sidebarProps.onVideoFilterChange}
+        onNeonEdgeToggle={props.sidebarProps.onNeonEdgeToggle}
+        onNeonIntensityChange={props.sidebarProps.onNeonIntensityChange}
+        onZoomSensitivityChange={props.sidebarProps.onZoomSensitivityChange}
+        onTrackingSpeedChange={props.sidebarProps.onTrackingSpeedChange}
+        onCameraBackgroundChange={props.sidebarProps.onCameraBackgroundChange}
+        onCustomBackgroundUpload={props.sidebarProps.onCustomBackgroundUpload}
+        onCameraAspectRatioChange={props.sidebarProps.onCameraAspectRatioChange}
+        onCustomAspectRatioChange={props.sidebarProps.onCustomAspectRatioChange}
+        onFaceTrackingToggle={props.sidebarProps.onFaceTrackingToggle}
+        // --- Original Props (for background effect) ---
+        backgroundEffect={rest.backgroundEffect}
+        backgroundImageUrl={rest.backgroundImageUrl}
+      />
     </div>
   );
 

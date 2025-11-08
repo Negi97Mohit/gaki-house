@@ -1,9 +1,5 @@
-// src/components/FloatingControlsPanel.tsx
-
 import React, { useState, useRef, useEffect } from "react";
 import {
-  SlidersHorizontal,
-  X,
   Trash2,
   Paintbrush,
   Zap,
@@ -11,17 +7,10 @@ import {
   Droplets,
   Sparkles,
   Square,
-  ChevronRight,
-  ChevronLeft,
-  Camera,
-  Upload,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { StyleControls } from "./StyleControls";
-import { Switch } from "./ui/switch";
-import { Label } from "./ui/label";
-import { Slider } from "./ui/slider";
 import {
   Select,
   SelectContent,
@@ -31,7 +20,6 @@ import {
 } from "./ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";
-import { FILTER_PRESETS } from "@/lib/filters";
 import { CAPTION_PRESETS, PRESET_CATEGORIES } from "@/lib/captionPresets";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
@@ -48,7 +36,9 @@ import {
   Clock,
 } from "lucide-react";
 import { Input } from "./ui/input";
-import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
+import { ASPECT_RATIOS } from "@/lib/backgrounds";
+import { Label } from "./ui/label";
+import { FILTER_PRESETS } from "@/lib/filters";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;
@@ -57,49 +47,21 @@ interface FloatingControlsPanelProps {
   onDynamicStyleChange: (styleId: string) => void;
   backgroundEffect: "none" | "blur" | "image";
   onBackgroundEffectChange: (effect: "none" | "blur" | "image") => void;
-  // --- ADDED ---
-  pipBorder?: { color: string; width: number };
-  onPipBorderChange: (border: { color: string; width: number }) => void;
-  pipShadow?: { blur: number; color: string };
-  onPipShadowChange: (shadow: { blur: number; color: string }) => void;
-  // --- END ADDED ---
-  isAutoFramingEnabled: boolean;
-  onAutoFramingChange: (enabled: boolean) => void;
-  isBeautifyEnabled: boolean;
-  onBeautifyToggle: (enabled: boolean) => void;
-  isLowLightEnabled: boolean;
-  onLowLightToggle: (enabled: boolean) => void;
-  videoFilter: string;
-  onVideoFilterChange: (filter: string) => void;
-  isNeonEdgeEnabled: boolean;
-  onNeonEdgeToggle: (enabled: boolean) => void;
-  neonIntensity: number;
-  onNeonIntensityChange: (value: number) => void;
+
+  // --- All PiP/Camera controls removed ---
+
   savedOverlays: GeneratedOverlay[];
   onAddSavedOverlay: (overlay: GeneratedOverlay) => void;
   onDeleteSavedOverlay: (id: string) => void;
-  zoomSensitivity: number;
-  onZoomSensitivityChange: (value: number) => void;
-  trackingSpeed: number;
-  onTrackingSpeedChange: (value: number) => void;
   isMouseActive: boolean;
   blankCanvasColor: string;
   onBlankCanvasColorChange: (color: string) => void;
   isOpen: boolean;
   onClose: () => void;
 
-  // Camera Controls
-  cameraBackground: "none" | "blur" | "image";
-  onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
-  onCustomBackgroundUpload: (file: File) => void;
-  cameraAspectRatio: string;
-  onCameraAspectRatioChange: (ratio: string) => void;
+  // --- Canvas Aspect Ratio (Kept) ---
   canvasAspectRatio: string;
   onCanvasAspectRatioChange: (ratio: string) => void;
-  customAspectRatio: string;
-  onCustomAspectRatioChange: (ratio: string) => void;
-  isFaceTrackingEnabled: boolean;
-  onFaceTrackingToggle: (enabled: boolean) => void;
 
   // Canvas Preset
   onCanvasPresetSelect?: (preset: CanvasPreset) => void;
@@ -114,10 +76,6 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const [selectedPresetCategory, setSelectedPresetCategory] =
     useState<string>("all");
   const panelRef = useRef<HTMLDivElement>(null);
-  // --- ADDED: Handlers for new controls ---
-  const pipBorder = props.pipBorder ?? { color: "#FFFFFF", width: 0 };
-  const pipShadow = props.pipShadow ?? { blur: 0, color: "rgba(0,0,0,0.5)" };
-  // --- END ADDED ---
 
   const categoryIcons = {
     LayoutGrid,
@@ -188,14 +146,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, setIsOpen]);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const sections = [
     {
@@ -204,12 +157,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       title: "Designs",
       color: "from-violet-500 to-purple-500",
     },
-    {
-      id: "camera",
-      icon: Camera,
-      title: "Camera",
-      color: "from-green-500 to-emerald-500",
-    },
+    // --- REMOVED: "camera" section ---
     {
       id: "dynamic-styles",
       icon: Zap,
@@ -449,172 +397,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             </div>
           )}
 
-          {activeSection === "camera" && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-green-500/30">
-                <Camera className="w-5 h-5 text-green-500" />
-                <h3 className="text-lg font-bold font-cyber text-green-500 tracking-wider">
-                  CAMERA CONTROLS
-                </h3>
-              </div>
-
-              {/* Background Controls */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
-                <Label className="text-xs font-cyber text-green-500 tracking-wider">
-                  BACKGROUND
-                </Label>
-                <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
-                  {BACKGROUND_PRESETS.map((bg) => {
-                    const isSelected =
-                      (bg.id === "none" && props.cameraBackground === "none") ||
-                      (bg.id === "blur" && props.cameraBackground === "blur") ||
-                      (bg.type === "image" &&
-                        bg.id !== "none" &&
-                        props.cameraBackground === "image");
-                    return (
-                      <button
-                        key={bg.id}
-                        onClick={() => {
-                          if (bg.id === "none") {
-                            props.onCameraBackgroundChange("none");
-                          } else if (bg.id === "blur") {
-                            props.onCameraBackgroundChange("blur");
-                          } else {
-                            props.onCameraBackgroundChange("image");
-                            // Store the image URL in the scene state
-                            // You might want to add this to the handler
-                          }
-                        }}
-                        className={cn(
-                          "aspect-video rounded-lg border-2 transition-all duration-200 relative overflow-hidden group",
-                          isSelected
-                            ? "border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.4)]"
-                            : "border-green-500/20 hover:border-green-500/60"
-                        )}
-                        title={bg.name}
-                      >
-                        <img
-                          src={bg.thumbnailUrl}
-                          alt={bg.name}
-                          className="w-full h-full object-cover"
-                        />
-                        {isSelected && (
-                          <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
-                            <div className="w-3 h-3 rounded-full bg-green-500" />
-                          </div>
-                        )}
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-1">
-                          <span className="text-white text-[9px] font-bold font-cyber truncate block text-center">
-                            {bg.name.toUpperCase()}
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Custom Background Upload */}
-                <div className="pt-2 border-t border-green-500/20">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/jpg"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        props.onCustomBackgroundUpload(file);
-                      }
-                    }}
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full border-green-500/30 hover:border-green-500 text-green-500"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Upload Custom Background
-                  </Button>
-                </div>
-              </div>
-
-              {/* Aspect Ratio - Camera */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
-                <Label className="text-xs font-cyber text-green-500 tracking-wider">
-                  CAMERA ASPECT RATIO
-                </Label>
-                <Select
-                  value={props.cameraAspectRatio}
-                  onValueChange={props.onCameraAspectRatioChange}
-                >
-                  <SelectTrigger className="border-green-500/30">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="z-[var(--z-floating-panel-dropdown)] bg-background">
-                    {ASPECT_RATIOS.map((ratio) => (
-                      <SelectItem key={ratio.id} value={ratio.id}>
-                        {ratio.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {props.cameraAspectRatio === "custom" && (
-                  <div className="pt-2">
-                    <Input
-                      type="text"
-                      placeholder="e.g., 21:9"
-                      value={props.customAspectRatio}
-                      onChange={(e) =>
-                        props.onCustomAspectRatioChange(e.target.value)
-                      }
-                      className="border-green-500/30 font-mono text-sm"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Aspect Ratio - Canvas */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
-                <Label className="text-xs font-cyber text-green-500 tracking-wider">
-                  CANVAS ASPECT RATIO
-                </Label>
-                <Select
-                  value={props.canvasAspectRatio}
-                  onValueChange={props.onCanvasAspectRatioChange}
-                >
-                  <SelectTrigger className="border-green-500/30">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ASPECT_RATIOS.map((ratio) => (
-                      <SelectItem key={ratio.id} value={ratio.id}>
-                        {ratio.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Face Tracking */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label className="text-xs font-cyber text-green-500 tracking-wider">
-                      AUTO CAMERA TRACKING
-                    </Label>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      AI follows your face movement
-                    </p>
-                  </div>
-                  <Switch
-                    checked={props.isFaceTrackingEnabled}
-                    onCheckedChange={props.onFaceTrackingToggle}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+          {/* --- REMOVED: activeSection === "camera" block --- */}
 
           {activeSection === "dynamic-styles" && (
             <div className="space-y-4">
@@ -788,117 +571,37 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-cyan-500/30">
                 <Droplets className="w-5 h-5 text-cyan-500" />
                 <h3 className="text-lg font-bold font-cyber text-cyan-500 tracking-wider">
-                  VIDEO EFFECTS
+                  CANVAS EFFECTS
                 </h3>
               </div>
 
-              {/* Filters */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
-                  FILTER
+              {/* --- KEPT: Canvas Aspect Ratio --- */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
+                <Label className="text-xs font-cyber text-green-500 tracking-wider">
+                  CANVAS ASPECT RATIO
                 </Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {FILTER_PRESETS.map((filter) => {
-                    const isSelected = props.videoFilter === filter.style;
-                    return (
-                      <button
-                        key={filter.id}
-                        onClick={() => props.onVideoFilterChange(filter.style)}
-                        className={cn(
-                          "aspect-video rounded-lg border-2 transition-all duration-200 relative overflow-hidden group",
-                          isSelected
-                            ? "border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                            : "border-cyan-500/20 hover:border-cyan-500/60"
-                        )}
-                        title={filter.name}
-                      >
-                        <img
-                          src="/placeholder.jpeg"
-                          alt={filter.name}
-                          className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
-                          style={{ filter: filter.style }}
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-1">
-                          <span className="text-white text-[10px] font-bold font-cyber truncate block text-center">
-                            {filter.name.toUpperCase()}
-                          </span>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              {/* --- ADDED: PiP Border Controls --- */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
-                  CAMERA BORDER
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="color"
-                    className="w-20 h-10 p-1 cursor-pointer border-2 border-cyan-500/30"
-                    value={pipBorder.color}
-                    onChange={(e) =>
-                      props.onPipBorderChange({
-                        ...pipBorder,
-                        color: e.target.value,
-                      })
-                    }
-                  />
-                  <div className="flex-1 space-y-1">
-                    <Label className="text-xs text-muted-foreground">
-                      Width: {pipBorder.width}px
-                    </Label>
-                    <Slider
-                      value={[pipBorder.width]}
-                      onValueChange={([v]) =>
-                        props.onPipBorderChange({ ...pipBorder, width: v })
-                      }
-                      min={0}
-                      max={20}
-                      step={1}
-                      className="[&_[role=slider]]:border-cyan-500"
-                    />
-                  </div>
-                </div>
+                <Select
+                  value={props.canvasAspectRatio}
+                  onValueChange={props.onCanvasAspectRatioChange}
+                >
+                  <SelectTrigger className="border-green-500/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ASPECT_RATIOS.map((ratio) => (
+                      <SelectItem key={ratio.id} value={ratio.id}>
+                        {ratio.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              {/* --- ADDED: PiP Shadow Controls --- */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
-                  CAMERA SHADOW
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="color"
-                    className="w-20 h-10 p-1 cursor-pointer border-2 border-cyan-500/30"
-                    value={pipShadow.color}
-                    onChange={(e) =>
-                      props.onPipShadowChange({
-                        ...pipShadow,
-                        color: e.target.value,
-                      })
-                    }
-                  />
-                  <div className="flex-1 space-y-1">
-                    <Label className="text-xs text-muted-foreground">
-                      Blur: {pipShadow.blur}px
-                    </Label>
-                    <Slider
-                      value={[pipShadow.blur]}
-                      onValueChange={([v]) =>
-                        props.onPipShadowChange({ ...pipShadow, blur: v })
-                      }
-                      min={0}
-                      max={50}
-                      step={1}
-                      className="[&_[role=slider]]:border-cyan-500"
-                    />
-                  </div>
-                </div>
-              </div>
+              {/* --- REMOVED: PiP Filters --- */}
+              {/* --- REMOVED: PiP Border Controls --- */}
+              {/* --- REMOVED: PiP Shadow Controls --- */}
 
-              {/* Canvas Color */}
+              {/* --- KEPT: Canvas Color --- */}
               <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
                 <Label className="text-xs font-cyber text-cyan-500 tracking-wider flex items-center gap-1.5">
                   <Square className="w-3 h-3" />
@@ -924,100 +627,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 </div>
               </div>
 
-              {/* Neon Edge */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
-                    NEON EDGE
-                  </Label>
-                  <Switch
-                    checked={props.isNeonEdgeEnabled}
-                    onCheckedChange={props.onNeonEdgeToggle}
-                  />
-                </div>
-                {props.isNeonEdgeEnabled && (
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">
-                      Intensity: {props.neonIntensity}%
-                    </Label>
-                    <Slider
-                      value={[props.neonIntensity]}
-                      onValueChange={([v]) => props.onNeonIntensityChange(v)}
-                      min={0}
-                      max={100}
-                      step={1}
-                      className="[&_[role=slider]]:border-cyan-500"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Auto Framing */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
-                    AUTO FRAMING
-                  </Label>
-                  <Switch
-                    checked={props.isAutoFramingEnabled}
-                    onCheckedChange={props.onAutoFramingChange}
-                  />
-                </div>
-                {props.isAutoFramingEnabled && (
-                  <>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">
-                        Zoom Sensitivity: {props.zoomSensitivity.toFixed(1)}
-                      </Label>
-                      <Slider
-                        value={[props.zoomSensitivity]}
-                        onValueChange={([v]) =>
-                          props.onZoomSensitivityChange(v)
-                        }
-                        min={1}
-                        max={10}
-                        step={0.1}
-                        className="[&_[role=slider]]:border-cyan-500"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-muted-foreground">
-                        Tracking Speed: {props.trackingSpeed.toFixed(2)}
-                      </Label>
-                      <Slider
-                        value={[props.trackingSpeed]}
-                        onValueChange={([v]) => props.onTrackingSpeedChange(v)}
-                        min={0.01}
-                        max={0.5}
-                        step={0.01}
-                        className="[&_[role=slider]]:border-cyan-500"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Other Toggles */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
-                    BEAUTIFY
-                  </Label>
-                  <Switch
-                    checked={props.isBeautifyEnabled}
-                    onCheckedChange={props.onBeautifyToggle}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
-                    LOW LIGHT ENHANCE
-                  </Label>
-                  <Switch
-                    checked={props.isLowLightEnabled}
-                    onCheckedChange={props.onLowLightToggle}
-                  />
-                </div>
-              </div>
+              {/* --- REMOVED: Neon Edge --- */}
+              {/* --- REMOVED: Auto Framing --- */}
+              {/* --- REMOVED: Other Toggles (Beautify, Low Light) --- */}
             </div>
           )}
 
