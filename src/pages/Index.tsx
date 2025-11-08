@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { VideoCanvas } from "@/components/VideoCanvas";
 // --- DELETED: FloatingLogo ---
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
+import { CanvasPreset } from "@/types/canvasPreset";
 // --- DELETED: InstructionsDialog (now in BottomNav) ---
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 // --- DELETED: Unused icons ---
@@ -35,6 +36,8 @@ import {
   TransitionType,
   TransitionEasing,
   DEFAULT_LAYOUT_STATE,
+  CaptionShape as CaptionShapeType,
+  CaptionAnimation as CaptionAnimationType,
 } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
@@ -1308,9 +1311,103 @@ const Index = () => {
     });
   };
 
-  const handleDeleteSavedOverlay = (id: string) => {
+  const handleDeleteSavedOverlay = useCallback((id: string) => {
     setSavedOverlays((prev) => prev.filter((o) => o.id !== id));
-  };
+  }, [setSavedOverlays]);
+
+  // --- CANVAS PRESET HANDLER ---
+  const handleCanvasPresetSelect = useCallback((preset: CanvasPreset) => {
+    console.log('[Canvas Preset] Applying preset:', preset.name);
+    
+    updateActiveScene((scene) => {
+      // Apply background
+      const newScene = {
+        ...scene,
+        blankCanvasColor: preset.background.blankCanvasColor,
+        backgroundEffect: preset.background.backgroundEffect,
+      };
+
+      // Apply layout and PiP settings
+      if (preset.pip.layoutMode === 'pip' || preset.pip.layoutMode === 'split-vertical' || preset.pip.layoutMode === 'split-horizontal') {
+        newScene.layoutMode = preset.pip.layoutMode as LayoutMode;
+      }
+      
+      // Map camera shape
+      const shapeMap: Record<string, CameraShape> = {
+        'rectangle': 'rectangle',
+        'circle': 'circle',
+        'rounded': 'rounded',
+      };
+      newScene.cameraShape = shapeMap[preset.pip.cameraShape] || 'rectangle';
+      
+      if (preset.pip.splitRatio !== undefined) {
+        newScene.splitRatio = preset.pip.splitRatio;
+      }
+      if (preset.pip.pipPosition) {
+        newScene.pipPosition = { ...preset.pip.pipPosition };
+      }
+      if (preset.pip.pipSize) {
+        newScene.pipSize = { ...preset.pip.pipSize };
+      }
+
+      // Apply effects
+      if (preset.effects.videoFilter) {
+        newScene.videoFilter = preset.effects.videoFilter;
+      }
+      if (preset.effects.isBeautifyEnabled !== undefined) {
+        newScene.isBeautifyEnabled = preset.effects.isBeautifyEnabled;
+      }
+      if (preset.effects.isNeonEdgeEnabled !== undefined) {
+        newScene.isNeonEdgeEnabled = preset.effects.isNeonEdgeEnabled;
+      }
+      if (preset.effects.neonColor) {
+        newScene.neonColor = preset.effects.neonColor;
+      }
+      if (preset.effects.neonIntensity !== undefined) {
+        newScene.neonIntensity = preset.effects.neonIntensity;
+      }
+
+      // Convert preset text overlays to draggable text overlays with full CaptionStyle
+      const newTextOverlays: TextOverlayState[] = preset.textOverlays.map((textOverlay) => ({
+        id: generateTextOverlayId(),
+        content: textOverlay.content.replace(/<[^>]+>/g, ''), // Strip HTML tags
+        style: {
+          fontFamily: textOverlay.style.fontFamily,
+          fontSize: textOverlay.style.fontSize,
+          color: textOverlay.style.color,
+          backgroundColor: textOverlay.style.backgroundColor,
+          position: { ...textOverlay.layout.position },
+          shape: 'rounded' as CaptionShapeType,
+          animation: 'fade' as CaptionAnimationType,
+          outline: false,
+          shadow: true,
+          bold: false,
+          italic: false,
+          underline: false,
+          textShadow: textOverlay.style.textShadow,
+          rotation: textOverlay.layout.rotation || 0,
+          border: !!textOverlay.style.border,
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+        },
+        layout: {
+          position: { ...textOverlay.layout.position },
+          size: { ...textOverlay.layout.size },
+          zIndex: textOverlay.layout.zIndex || 15,
+          rotation: textOverlay.layout.rotation || 0,
+        },
+      }));
+
+      // Add new text overlays to scene
+      newScene.textOverlays = [...newScene.textOverlays, ...newTextOverlays];
+
+      return newScene;
+    });
+
+    toast.success(`"${preset.name}" preset applied! Text overlays are now editable.`, {
+      description: 'Drag and resize text overlays to customize your design.'
+    });
+  }, [updateActiveScene]);
 
   const handleToggleFullscreen = () => setIsFullscreen((prev) => !prev);
 
@@ -1397,6 +1494,7 @@ const Index = () => {
     onCustomAspectRatioChange: handleSetCustomAspectRatio,
     isFaceTrackingEnabled: activeScene.isFaceTrackingEnabled,
     onFaceTrackingToggle: handleSetIsFaceTrackingEnabled,
+    onCanvasPresetSelect: handleCanvasPresetSelect,
   };
 
   const handleDeleteSession = useCallback(
