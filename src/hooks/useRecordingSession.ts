@@ -37,6 +37,10 @@ export const useRecordingSession = () => {
       splitRatio: number;
       pipPosition: { x: number; y: number };
       pipSize: { width: number; height: number };
+      // --- ADDED ---
+      pipBorder?: { color: string; width: number };
+      pipShadow?: { blur: number; color: string };
+      // --- END ADDED ---
     }>[]
   >([]);
   const htmlOverlayTracksRef = useRef<
@@ -197,6 +201,10 @@ export const useRecordingSession = () => {
       splitRatio: number;
       pipPosition: { x: number; y: number };
       pipSize: { width: number; height: number };
+      // --- ADDED ---
+      pipBorder?: { color: string; width: number };
+      pipShadow?: { blur: number; color: string };
+      // --- END ADDED ---
     }) => {
       if (!recordingState.isRecording || !recordingState.startTime) return;
 

@@ -270,6 +270,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           onSelect(overlay.id);
         }}
         onDoubleClick={handleDoubleClick}
+        bounds="parent" // <-- ADD THIS
         className={cn(
           "group pointer-events-auto transition-colors duration-200",
           isSelected

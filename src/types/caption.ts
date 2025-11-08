@@ -263,6 +263,10 @@ export interface SceneState {
   pipPosition: { x: number; y: number };
   pipSize: { width: number; height: number };
   customMaskUrl?: string;
+  // --- ADDED ---
+  pipBorder?: { color: string; width: number };
+  pipShadow?: { blur: number; color: string };
+  // --- END ADDED ---
   videoFilter: string;
   backgroundEffect: "none" | "blur" | "image";
   backgroundImageUrl: string | null;
@@ -280,7 +284,7 @@ export interface SceneState {
   isNeonEdgeEnabled: boolean;
   neonIntensity: number;
   neonColor: string;
-  
+
   // Camera Background Controls
   cameraBackground: "none" | "blur" | "image";
   customBackgroundUrl: string | null;

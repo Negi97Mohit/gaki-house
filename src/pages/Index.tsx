@@ -115,6 +115,10 @@ const createDefaultScene = (name: string): SceneState => ({
   splitRatio: DEFAULT_LAYOUT_STATE.splitRatio,
   pipPosition: DEFAULT_LAYOUT_STATE.pipPosition,
   pipSize: DEFAULT_LAYOUT_STATE.pipSize,
+  // --- ADDED ---
+  pipBorder: DEFAULT_LAYOUT_STATE.pipBorder,
+  pipShadow: DEFAULT_LAYOUT_STATE.pipShadow,
+  // --- END ADDED ---
   customMaskUrl: undefined,
   videoFilter: "none",
   blankCanvasColor: "#1A1A1A",
@@ -176,9 +180,9 @@ const Index = () => {
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [excalidrawElements, setExcalidrawElements] = useState<
-    readonly any[]
-  >([]);
+  const [excalidrawElements, setExcalidrawElements] = useState<readonly any[]>(
+    []
+  );
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
@@ -193,7 +197,7 @@ const Index = () => {
   const mainContainerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Virtual camera: Enable composite stream for broadcasting
   // This captures the final composed canvas output for streaming to viewers
   const [isVirtualCameraEnabled, setIsVirtualCameraEnabled] = useState(false);
@@ -206,23 +210,21 @@ const Index = () => {
   // Notify when composite stream is ready
   useEffect(() => {
     if (isCompositeReady && compositeStream) {
-      toast.success(
-        "🎥 Broadcasting Active! Your composite scene is live.",
-        {
-          description: "Virtual camera stream is ready for OBS/streaming platforms",
-          duration: 5000,
-        }
-      );
-      console.log('[GAKI Virtual Camera] Composite stream ready:', {
+      toast.success("🎥 Broadcasting Active! Your composite scene is live.", {
+        description:
+          "Virtual camera stream is ready for OBS/streaming platforms",
+        duration: 5000,
+      });
+      console.log("[GAKI Virtual Camera] Composite stream ready:", {
         streamId: compositeStream.id,
-        tracks: compositeStream.getTracks().map(t => ({
+        tracks: compositeStream.getTracks().map((t) => ({
           kind: t.kind,
           label: t.label,
           enabled: t.enabled,
         })),
       });
     } else if (!isVirtualCameraEnabled && !isCompositeReady) {
-      console.log('[GAKI Virtual Camera] Broadcasting stopped');
+      console.log("[GAKI Virtual Camera] Broadcasting stopped");
     }
   }, [isCompositeReady, compositeStream, isVirtualCameraEnabled]);
 
@@ -550,6 +552,20 @@ const Index = () => {
       updateSceneProperty("pipSize", value),
     [updateSceneProperty]
   );
+
+  // --- ADDED: Handlers for new layout properties ---
+  const handleSetPipBorder = useCallback(
+    (value: { color: string; width: number } | undefined) =>
+      updateSceneProperty("pipBorder", value),
+    [updateSceneProperty]
+  );
+  const handleSetPipShadow = useCallback(
+    (value: { blur: number; color: string } | undefined) =>
+      updateSceneProperty("pipShadow", value),
+    [updateSceneProperty]
+  );
+  // --- END ADDED ---
+
   const handleSetCustomMaskUrl = useCallback(
     (value: string | undefined) => updateSceneProperty("customMaskUrl", value),
     [updateSceneProperty]
@@ -603,13 +619,14 @@ const Index = () => {
     (value: string) => updateSceneProperty("neonColor", value),
     [updateSceneProperty]
   );
-  
+
   // Camera controls
   const handleSetCameraBackground = useCallback(
-    (value: "none" | "blur" | "image") => updateSceneProperty("cameraBackground", value),
+    (value: "none" | "blur" | "image") =>
+      updateSceneProperty("cameraBackground", value),
     [updateSceneProperty]
   );
-  
+
   const handleCustomBackgroundUpload = useCallback(
     (file: File) => {
       const url = URL.createObjectURL(file);
@@ -622,22 +639,22 @@ const Index = () => {
     },
     [updateActiveScene]
   );
-  
+
   const handleSetCameraAspectRatio = useCallback(
     (value: string) => updateSceneProperty("cameraAspectRatio", value),
     [updateSceneProperty]
   );
-  
+
   const handleSetCanvasAspectRatio = useCallback(
     (value: string) => updateSceneProperty("canvasAspectRatio", value),
     [updateSceneProperty]
   );
-  
+
   const handleSetCustomAspectRatio = useCallback(
     (value: string) => updateSceneProperty("customAspectRatio", value),
     [updateSceneProperty]
   );
-  
+
   const handleSetIsFaceTrackingEnabled = useCallback(
     (value: boolean) => {
       updateSceneProperty("isFaceTrackingEnabled", value);
@@ -686,6 +703,10 @@ const Index = () => {
       onSplitRatioChange: handleSetSplitRatio,
       onPipPositionChange: handleSetPipPosition,
       onPipSizeChange: handleSetPipSize,
+      // --- ADDED ---
+      pipBorder: scene.pipBorder,
+      pipShadow: scene.pipShadow,
+      // --- END ADDED ---
       customMaskUrl: scene.customMaskUrl,
       onCustomMaskUpload: handleCustomMaskUpload,
       blankCanvasColor: scene.blankCanvasColor,
@@ -727,6 +748,12 @@ const Index = () => {
         onBlankCanvasColorChange: handleSetBlankCanvasColor,
         onBackgroundEffectChange: handleSetBackgroundEffect,
         onBackgroundImageUrlChange: handleSetBackgroundImageUrl,
+        // --- ADDED ---
+        pipBorder: scene.pipBorder,
+        onPipBorderChange: handleSetPipBorder,
+        pipShadow: scene.pipShadow,
+        onPipShadowChange: handleSetPipShadow,
+        // --- END ADDED ---
         onAutoFramingChange: handleSetIsAutoFramingEnabled,
         onZoomSensitivityChange: handleSetZoomSensitivity,
         onTrackingSpeedChange: handleSetTrackingSpeed,
@@ -1311,116 +1338,128 @@ const Index = () => {
     });
   };
 
-  const handleDeleteSavedOverlay = useCallback((id: string) => {
-    setSavedOverlays((prev) => prev.filter((o) => o.id !== id));
-  }, [setSavedOverlays]);
+  const handleDeleteSavedOverlay = useCallback(
+    (id: string) => {
+      setSavedOverlays((prev) => prev.filter((o) => o.id !== id));
+    },
+    [setSavedOverlays]
+  );
 
   // --- CANVAS PRESET HANDLER ---
-  const handleCanvasPresetSelect = useCallback((preset: CanvasPreset) => {
-    console.log('[Canvas Preset] Applying preset:', preset.name);
-    
-    updateActiveScene((scene) => {
-      // CLEAR ALL EXISTING STYLES (only one style at a time)
-      const newScene = {
-        ...scene,
-        textOverlays: [],
-        activeOverlays: [],
-        browserOverlays: [],
-        fileOverlays: [],
-        blankCanvasColor: preset.background.blankCanvasColor,
-        backgroundEffect: preset.background.backgroundEffect,
-        videoFilter: 'none',
-        isBeautifyEnabled: false,
-        isNeonEdgeEnabled: false,
-        screenShareMode: 'off' as const, // Ensure screen share doesn't interfere
-      };
+  const handleCanvasPresetSelect = useCallback(
+    (preset: CanvasPreset) => {
+      console.log("[Canvas Preset] Applying preset:", preset.name);
 
-      // FORCE layout mode change - explicitly set the layout mode from preset
-      newScene.layoutMode = preset.pip.layoutMode as LayoutMode;
-      
-      // Map camera shape
-      const shapeMap: Record<string, CameraShape> = {
-        'rectangle': 'rectangle',
-        'circle': 'circle',
-        'rounded': 'rounded',
-      };
-      newScene.cameraShape = shapeMap[preset.pip.cameraShape] || 'rectangle';
-      
-      // Always set splitRatio, pipPosition, and pipSize with defaults if missing
-      newScene.splitRatio = preset.pip.splitRatio ?? 0.5;
-      newScene.pipPosition = preset.pip.pipPosition ? { ...preset.pip.pipPosition } : { x: 50, y: 50 };
-      newScene.pipSize = preset.pip.pipSize ? { ...preset.pip.pipSize } : { width: 30, height: 40 };
+      updateActiveScene((scene) => {
+        // CLEAR ALL EXISTING STYLES (only one style at a time)
+        const newScene = {
+          ...scene,
+          textOverlays: [],
+          activeOverlays: [],
+          browserOverlays: [],
+          fileOverlays: [],
+          blankCanvasColor: preset.background.blankCanvasColor,
+          backgroundEffect: preset.background.backgroundEffect,
+          videoFilter: "none",
+          isBeautifyEnabled: false,
+          isNeonEdgeEnabled: false,
+          // --- THIS IS THE FIX ---
+          // Set screen share to 'canvas' if the layout isn't 'solo'
+          screenShareMode: preset.pip.layoutMode === "solo" ? "off" : "canvas",
+          // --- END OF FIX ---
 
-      // Apply effects
-      if (preset.effects.videoFilter) {
-        newScene.videoFilter = preset.effects.videoFilter;
+          // --- THIS IS THE FIX ---
+          // 2. Apply all layout properties from the preset
+          layoutMode: preset.pip.layoutMode as LayoutMode,
+          cameraShape: preset.pip.cameraShape as CameraShape,
+          splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
+          pipPosition:
+            preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition,
+          pipSize: preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize,
+          pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
+          pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
+          // --- END OF FIX ---
+        };
+
+        if (preset.effects.videoFilter) {
+          newScene.videoFilter = preset.effects.videoFilter;
+        }
+        if (preset.effects.isBeautifyEnabled !== undefined) {
+          newScene.isBeautifyEnabled = preset.effects.isBeautifyEnabled;
+        }
+        if (preset.effects.isNeonEdgeEnabled !== undefined) {
+          newScene.isNeonEdgeEnabled = preset.effects.isNeonEdgeEnabled;
+        }
+        if (preset.effects.neonColor) {
+          newScene.neonColor = preset.effects.neonColor;
+        }
+        if (preset.effects.neonIntensity !== undefined) {
+          newScene.neonIntensity = preset.effects.neonIntensity;
+        }
+
+        // Convert preset text overlays to draggable text overlays with full CaptionStyle
+        const newTextOverlays: TextOverlayState[] = preset.textOverlays.map(
+          (textOverlay) => ({
+            id: generateTextOverlayId(),
+            content: textOverlay.content.replace(/<[^>]+>/g, ""), // Strip HTML tags
+            style: {
+              fontFamily: textOverlay.style.fontFamily,
+              fontSize: textOverlay.style.fontSize,
+              color: textOverlay.style.color,
+              backgroundColor: textOverlay.style.backgroundColor,
+              position: { ...textOverlay.layout.position },
+              shape: "rounded" as CaptionShapeType,
+              animation: "fade" as CaptionAnimationType,
+              outline: false,
+              shadow: true,
+              bold: false,
+              italic: false,
+              underline: false,
+              textShadow: textOverlay.style.textShadow,
+              rotation: textOverlay.layout.rotation || 0,
+              border: !!textOverlay.style.border,
+              borderColor: "#FFFFFF",
+              borderWidth: 2,
+            },
+            layout: {
+              position: { ...textOverlay.layout.position },
+              size: { ...textOverlay.layout.size },
+              zIndex: textOverlay.layout.zIndex || 15,
+              rotation: textOverlay.layout.rotation || 0,
+            },
+          })
+        );
+
+        // Replace text overlays (only new preset overlays)
+        newScene.textOverlays = newTextOverlays;
+
+        return newScene;
+      });
+
+      // Record layout change if recording
+      if (recording.isRecording) {
+        // --- MODIFIED: Record all new properties ---
+        recording.recordLayoutChange({
+          mode: preset.pip.layoutMode as LayoutMode,
+          cameraShape: preset.pip.cameraShape as CameraShape,
+          splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
+          pipPosition:
+            preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition,
+          pipSize: preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize,
+          // --- ADDED: Ensure border/shadow are recorded ---
+          pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
+          pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
+          // (Note: You may need to update recordLayoutChange to accept border/shadow if you want them to be editable in the editor)
+        });
       }
-      if (preset.effects.isBeautifyEnabled !== undefined) {
-        newScene.isBeautifyEnabled = preset.effects.isBeautifyEnabled;
-      }
-      if (preset.effects.isNeonEdgeEnabled !== undefined) {
-        newScene.isNeonEdgeEnabled = preset.effects.isNeonEdgeEnabled;
-      }
-      if (preset.effects.neonColor) {
-        newScene.neonColor = preset.effects.neonColor;
-      }
-      if (preset.effects.neonIntensity !== undefined) {
-        newScene.neonIntensity = preset.effects.neonIntensity;
-      }
 
-      // Convert preset text overlays to draggable text overlays with full CaptionStyle
-      const newTextOverlays: TextOverlayState[] = preset.textOverlays.map((textOverlay) => ({
-        id: generateTextOverlayId(),
-        content: textOverlay.content.replace(/<[^>]+>/g, ''), // Strip HTML tags
-        style: {
-          fontFamily: textOverlay.style.fontFamily,
-          fontSize: textOverlay.style.fontSize,
-          color: textOverlay.style.color,
-          backgroundColor: textOverlay.style.backgroundColor,
-          position: { ...textOverlay.layout.position },
-          shape: 'rounded' as CaptionShapeType,
-          animation: 'fade' as CaptionAnimationType,
-          outline: false,
-          shadow: true,
-          bold: false,
-          italic: false,
-          underline: false,
-          textShadow: textOverlay.style.textShadow,
-          rotation: textOverlay.layout.rotation || 0,
-          border: !!textOverlay.style.border,
-          borderColor: '#FFFFFF',
-          borderWidth: 2,
-        },
-        layout: {
-          position: { ...textOverlay.layout.position },
-          size: { ...textOverlay.layout.size },
-          zIndex: textOverlay.layout.zIndex || 15,
-          rotation: textOverlay.layout.rotation || 0,
-        },
-      }));
-
-      // Replace text overlays (only new preset overlays)
-      newScene.textOverlays = newTextOverlays;
-
-      return newScene;
-    });
-
-    // Record layout change if recording
-    if (recording.isRecording) {
-      const layoutState = {
-        mode: preset.pip.layoutMode as LayoutMode,
-        cameraShape: preset.pip.cameraShape as CameraShape,
-        splitRatio: preset.pip.splitRatio || 0.5,
-        pipPosition: preset.pip.pipPosition || { x: 50, y: 50 },
-        pipSize: preset.pip.pipSize || { width: 20, height: 20 },
-      };
-      recording.recordLayoutChange(layoutState);
-    }
-
-    toast.success(`"${preset.name}" preset applied!`, {
-      description: 'All previous styles cleared. Text overlays are now editable.'
-    });
-  }, [updateActiveScene, recording]);
+      toast.success(`"${preset.name}" preset applied!`, {
+        description:
+          "All previous styles cleared. Text overlays are now editable.",
+      });
+    },
+    [updateActiveScene, recording]
+  );
 
   const handleToggleFullscreen = () => setIsFullscreen((prev) => !prev);
 
@@ -1475,6 +1514,12 @@ const Index = () => {
     onBackgroundEffectChange: handleSetBackgroundEffect,
     backgroundImageUrl: activeScene.backgroundImageUrl,
     onBackgroundImageUrlChange: handleSetBackgroundImageUrl,
+    // --- ADDED ---
+    pipBorder: activeScene.pipBorder,
+    onPipBorderChange: handleSetPipBorder,
+    pipShadow: activeScene.pipShadow,
+    onPipShadowChange: handleSetPipShadow,
+    // --- END ADDED ---
     isAutoFramingEnabled: activeScene.isAutoFramingEnabled,
     onAutoFramingChange: handleSetIsAutoFramingEnabled,
     zoomSensitivity: activeScene.zoomSensitivity,

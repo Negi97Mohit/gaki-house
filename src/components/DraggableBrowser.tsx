@@ -224,6 +224,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       minWidth={250}
       minHeight={200}
       onResizeStop={handleResizeStop} // Use useCallback version
+      bounds="parent" // <-- ADD THIS
       className={cn(
         "group pointer-events-auto bg-card rounded-lg flex flex-col transition-all duration-200",
         isSelected

@@ -75,6 +75,9 @@ export const DraggableGraph = ({
     const elementRect = dragRef.current.getBoundingClientRect();
     const newCenterX = newLeft + elementRect.width / 2;
     const newCenterY = newTop + elementRect.height / 2;
+    // Calculate half-width and half-height in percentages
+    const halfWidthPercent = (elementRect.width / parentRect.width) * 50;
+    const halfHeightPercent = (elementRect.height / parentRect.height) * 50;
 
     // Convert the center coordinates to percentages
     const x = (newCenterX / parentRect.width) * 100;
@@ -82,8 +85,8 @@ export const DraggableGraph = ({
 
     // Apply bounds to keep the graph from going too far off-screen
     onPositionChange(graph.id, {
-      x: Math.max(0, Math.min(100, x)),
-      y: Math.max(0, Math.min(100, y)),
+      x: Math.max(halfWidthPercent, Math.min(100 - halfWidthPercent, x)),
+      y: Math.max(halfHeightPercent, Math.min(100 - halfHeightPercent, y)),
     });
   };
   const onMouseUp = () => {

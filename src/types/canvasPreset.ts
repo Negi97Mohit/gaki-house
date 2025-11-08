@@ -6,26 +6,23 @@ export interface CanvasPresetBackground {
 }
 
 export interface CanvasPresetPip {
-  layoutMode: 
-    | "pip" 
-    | "split-vertical" 
-    | "split-horizontal" 
-    | "grid-3x3" 
-    | "overlay-full" 
-    | "corner-floating" 
+  layoutMode:
+    | "pip"
+    | "split-vertical"
+    | "split-horizontal"
+    | "solo" // <-- ADDED solo
+    | "grid-3x3"
+    | "overlay-full"
+    | "corner-floating"
     | "diagonal-split";
-  cameraShape: 
-    | "rectangle" 
-    | "circle" 
-    | "rounded" 
-    | "hexagon" 
-    | "organic-blob";
+  cameraShape: "rectangle" | "circle" | "rounded" | "hexagon" | "organic-blob";
   pipPosition?: { x: number; y: number };
   pipSize?: { width: number; height: number };
   splitRatio?: number;
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
   responsive?: {
+    // (No functional change, just formatting)
     mobile?: {
       layoutMode?: string;
       pipPosition?: { x: number; y: number };

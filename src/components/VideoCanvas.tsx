@@ -61,6 +61,7 @@ import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { TextEditingToolbar } from "@/components/TextEditingToolbar";
+import { ASPECT_RATIOS } from "@/lib/backgrounds"; // <-- ADD THIS IMPORT
 
 // --- UPDATED COMPONENT ---
 export const HtmlOverlayRenderer: React.FC<{
@@ -455,6 +456,11 @@ interface VideoCanvasProps {
   onOpenSettings: () => void;
   blankCanvasColor: string;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
+  // --- ADDED ---
+  pipBorder?: { color: string; width: number };
+  pipShadow?: { blur: number; color: string };
+  canvasAspectRatio: string;
+  // --- END ADDED ---
 }
 
 const VideoPlayer: React.FC<{
@@ -551,6 +557,32 @@ const DynamicLayoutRenderer: React.FC<{
 
 const SNAP_THRESHOLD = 5;
 
+// --- ADDED: Aspect Ratio Helper ---
+const getCanvasAspectRatioStyle = (
+  aspectRatio: string,
+  customAspectRatio: string
+): React.CSSProperties => {
+  let ratioValue: string | number = "auto";
+
+  if (aspectRatio === "custom") {
+    ratioValue = customAspectRatio || "auto";
+  } else {
+    const option = ASPECT_RATIOS.find((r) => r.id === aspectRatio);
+    if (option && option.value > 0) {
+      ratioValue = option.value;
+    }
+  }
+
+  return {
+    aspectRatio: String(ratioValue),
+    width: "100%",
+    height: "100%",
+    margin: "auto",
+    // If ratio is auto, it fills. If it's set, it will letterbox.
+    objectFit: "contain",
+  };
+};
+
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const {
     sceneId,
@@ -622,6 +654,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onRecordingToggle,
     canvasRef,
     hasAiPopoverAutoOpenedRef,
+    canvasAspectRatio,
     ...rest
   } = props;
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -896,8 +929,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
-    const newWidth = (parseInt(ref.style.width, 10) / rect.width) * 100;
-    const newHeight = (parseInt(ref.style.height, 10) / rect.height) * 100;
+
+    // --- MODIFIED: Correctly calculate height % for 1:1 ratio ---
+    const newWidthPx = parseInt(ref.style.width, 10);
+    const newHeightPx = parseInt(ref.style.height, 10);
+
+    const newWidth = (newWidthPx / rect.width) * 100;
+    // Recalculate height percentage based on *pixel* height,
+    // which `lockAspectRatio` will have kept square.
+    const newHeight = (newHeightPx / rect.height) * 100;
+    // --- END MODIFICATION ---
+
     const newX = (position.x / rect.width) * 100;
     const newY = (position.y / rect.height) * 100;
 
@@ -909,7 +951,20 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   };
 
   const getCameraShapeStyle = () => {
-    const baseStyle: React.CSSProperties = { overflow: "hidden" };
+    // --- MODIFIED: This function now adds border and shadow ---
+    const baseStyle: React.CSSProperties = {
+      overflow: "hidden",
+      transition: "all 0.3s ease",
+    };
+
+    if (rest.pipBorder && rest.pipBorder.width > 0) {
+      baseStyle.border = `${rest.pipBorder.width}px solid ${rest.pipBorder.color}`;
+    }
+
+    if (rest.pipShadow && rest.pipShadow.blur > 0) {
+      baseStyle.boxShadow = `0 0 ${rest.pipShadow.blur}px ${rest.pipShadow.color}`;
+    }
+
     if (rest.customMaskUrl) {
       return {
         ...baseStyle,
@@ -1004,12 +1059,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isPip: boolean = false
   ) => (
     <div
-      className={cn(
-        "w-full h-full",
-        className,
-        isPip && rest.cameraShape === "circle" && "aspect-square"
-      )}
-      style={getCameraShapeStyle()}
+      className={cn("w-full h-full", className)}
+      style={{ ...getCameraShapeStyle(), ...style }} // <-- Apply shape styles here
     >
       {rest.backgroundEffect !== "none" ||
       rest.isAutoFramingEnabled ||
@@ -1038,8 +1089,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       ) : (
         <VideoPlayer
           stream={cameraStream}
-          className="w-full h-full object-cover"
-          style={{ ...style, filter: videoFilterString }}
+          className="w-full h-full object-cover" // Style is now on the parent
+          style={{ filter: videoFilterString }}
         />
       )}
     </div>
@@ -1216,14 +1267,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       (pipContent === "share" && props.screenShareMode !== "off") ||
       props.screenShareMode === "off";
     const mainContent = mainIsCamera ? renderCamera() : renderScreen();
+    // --- MODIFIED: Pass style to renderCamera ---
+    const pipVideoStyle = getCameraShapeStyle();
     const pipVideo =
       pipContent === "camera"
-        ? renderCamera("cursor-move", {}, true)
+        ? renderCamera("cursor-move", pipVideoStyle, true)
         : renderScreen("cursor-move");
-
     const pipSizePx = {
+      // --- MODIFIED: Force 1:1 pixel aspect ratio for circles ---
       width: (containerSize.width * rest.pipSize.width) / 100,
-      height: (containerSize.height * rest.pipSize.height) / 100,
+      height:
+        rest.cameraShape === "circle"
+          ? (containerSize.width * rest.pipSize.width) / 100 // Use widthPx for height
+          : (containerSize.height * rest.pipSize.height) / 100,
     };
     const pipPositionPx = {
       x: (containerSize.width * rest.pipPosition.x) / 100,
@@ -1241,14 +1297,25 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           minHeight={containerSize.height * 0.1}
           maxWidth={containerSize.width * 0.5}
           maxHeight={containerSize.height * 0.5}
+          lockAspectRatio={rest.cameraShape === "circle"} // <-- ADD THIS
           bounds="parent"
           onDragStop={handlePipDragStop}
           onResizeStop={handlePipResizeStop}
           className="pointer-events-auto"
-          style={{ zIndex: "var(--z-draggable-element-active)" }}
+          // --- MODIFIED: Apply border/shadow directly to Rnd wrapper ---
+          style={{
+            zIndex: "var(--z-draggable-element-active)",
+            ...pipVideoStyle,
+          }}
         >
-          <div className="w-full h-full relative group">
-            {pipVideo}
+          <div
+            className="w-full h-full relative group"
+            style={{ overflow: "hidden" }}
+          >
+            {/* This inner div is no longer responsible for border/shape */}
+            {pipContent === "camera"
+              ? renderCamera("cursor-move", {}, true)
+              : renderScreen("cursor-move")}
             <Button
               size="icon"
               variant="secondary"
@@ -1340,8 +1407,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             >
               {isVideoOn && cameraStream ? (
                 <div
+                  // --- MODIFIED: Apply shape/border/shadow here ---
                   className="w-full h-full relative"
-                  style={getBackgroundStyle()}
+                  style={{ ...getBackgroundStyle(), ...getCameraShapeStyle() }}
                 >
                   {rest.backgroundEffect === "image" &&
                     rest.backgroundImageUrl && (
@@ -1475,8 +1543,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   return (
     <div
       ref={canvasContainerRef}
+      // --- MODIFIED: Added flex wrapper for aspect ratio ---
       className={cn(
-        "absolute inset-0 w-full h-full bg-neutral-900 overflow-hidden",
+        "absolute inset-0 w-full h-full bg-neutral-900 overflow-hidden flex items-center justify-center", // Added flex
         getAnimationClass(),
         !isMouseActive && isFullscreen && "cursor-none"
       )}
@@ -1487,8 +1556,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     >
       <div
         ref={sceneRef}
-        className="w-full h-full"
-        style={{ willChange: "transform" }}
+        className="relative overflow-hidden" // Removed w-full h-full
+        style={{
+          ...getCanvasAspectRatioStyle(
+            props.sidebarProps.canvasAspectRatio,
+            props.sidebarProps.customAspectRatio
+          ),
+          willChange: "transform",
+        }}
         onClick={handleCanvasClick}
       >
         {renderContent()}

@@ -37,7 +37,16 @@ import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
 import { CanvasPreset } from "@/types/canvasPreset";
 import { ScrollArea } from "./ui/scroll-area";
-import { LayoutGrid, Crown, Zap as ZapIcon, Minus, Cpu, Film, Shirt, Clock } from "lucide-react";
+import {
+  LayoutGrid,
+  Crown,
+  Zap as ZapIcon,
+  Minus,
+  Cpu,
+  Film,
+  Shirt,
+  Clock,
+} from "lucide-react";
 import { Input } from "./ui/input";
 import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
 
@@ -48,6 +57,12 @@ interface FloatingControlsPanelProps {
   onDynamicStyleChange: (styleId: string) => void;
   backgroundEffect: "none" | "blur" | "image";
   onBackgroundEffectChange: (effect: "none" | "blur" | "image") => void;
+  // --- ADDED ---
+  pipBorder?: { color: string; width: number };
+  onPipBorderChange: (border: { color: string; width: number }) => void;
+  pipShadow?: { blur: number; color: string };
+  onPipShadowChange: (shadow: { blur: number; color: string }) => void;
+  // --- END ADDED ---
   isAutoFramingEnabled: boolean;
   onAutoFramingChange: (enabled: boolean) => void;
   isBeautifyEnabled: boolean;
@@ -72,7 +87,7 @@ interface FloatingControlsPanelProps {
   onBlankCanvasColorChange: (color: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  
+
   // Camera Controls
   cameraBackground: "none" | "blur" | "image";
   onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
@@ -85,7 +100,7 @@ interface FloatingControlsPanelProps {
   onCustomAspectRatioChange: (ratio: string) => void;
   isFaceTrackingEnabled: boolean;
   onFaceTrackingToggle: (enabled: boolean) => void;
-  
+
   // Canvas Preset
   onCanvasPresetSelect?: (preset: CanvasPreset) => void;
 }
@@ -96,12 +111,34 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     "canvas-designs"
   );
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedPresetCategory, setSelectedPresetCategory] = useState<string>("all");
+  const [selectedPresetCategory, setSelectedPresetCategory] =
+    useState<string>("all");
   const panelRef = useRef<HTMLDivElement>(null);
-  
-  const categoryIcons = { LayoutGrid, Crown, Zap: ZapIcon, Minus, Cpu, Film, Shirt, Clock };
-  const filteredCanvasPresets = selectedCategory === "all" ? CANVAS_PRESETS : CANVAS_PRESETS.filter(p => p.styleTags.includes(selectedCategory));
-  const filteredCaptionPresets = selectedPresetCategory === "all" ? CAPTION_PRESETS : CAPTION_PRESETS.filter((p: any) => p.category === selectedPresetCategory);
+  // --- ADDED: Handlers for new controls ---
+  const pipBorder = props.pipBorder ?? { color: "#FFFFFF", width: 0 };
+  const pipShadow = props.pipShadow ?? { blur: 0, color: "rgba(0,0,0,0.5)" };
+  // --- END ADDED ---
+
+  const categoryIcons = {
+    LayoutGrid,
+    Crown,
+    Zap: ZapIcon,
+    Minus,
+    Cpu,
+    Film,
+    Shirt,
+    Clock,
+  };
+  const filteredCanvasPresets =
+    selectedCategory === "all"
+      ? CANVAS_PRESETS
+      : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+  const filteredCaptionPresets =
+    selectedPresetCategory === "all"
+      ? CAPTION_PRESETS
+      : CAPTION_PRESETS.filter(
+          (p: any) => p.category === selectedPresetCategory
+        );
 
   const handlePresetSelect = (preset: (typeof CAPTION_PRESETS)[0]) => {
     const updates: Partial<CaptionStyle> = {
@@ -161,6 +198,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const sections = [
+    {
+      id: "canvas-designs",
+      icon: LayoutGrid,
+      title: "Designs",
+      color: "from-violet-500 to-purple-500",
+    },
     {
       id: "camera",
       icon: Camera,
@@ -268,16 +311,19 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                   CANVAS DESIGNS
                 </h3>
               </div>
-              
+
               {/* Category Navigation */}
               <ScrollArea className="w-full">
                 <div className="flex gap-2 pb-3 min-w-max">
                   {CANVAS_PRESET_CATEGORIES.map((cat) => {
-                    const IconComponent = categoryIcons[cat.icon as keyof typeof categoryIcons];
+                    const IconComponent =
+                      categoryIcons[cat.icon as keyof typeof categoryIcons];
                     return (
                       <Button
                         key={cat.id}
-                        variant={selectedCategory === cat.id ? "default" : "outline"}
+                        variant={
+                          selectedCategory === cat.id ? "default" : "outline"
+                        }
                         size="sm"
                         onClick={() => setSelectedCategory(cat.id)}
                         className={cn(
@@ -287,14 +333,16 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                             : "border-violet-500/30 hover:border-violet-500 text-violet-500"
                         )}
                       >
-                        {IconComponent && <IconComponent className="w-3 h-3 mr-1.5" />}
+                        {IconComponent && (
+                          <IconComponent className="w-3 h-3 mr-1.5" />
+                        )}
                         {cat.name.toUpperCase()}
                       </Button>
                     );
                   })}
                 </div>
               </ScrollArea>
-              
+
               {/* Canvas Preset Grid */}
               <div className="grid grid-cols-2 gap-3 max-h-[calc(70vh-200px)] overflow-y-auto pr-2">
                 {filteredCanvasPresets.map((preset) => (
@@ -304,30 +352,38 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     className="group relative rounded-lg overflow-hidden border-2 border-violet-500/20 hover:border-violet-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-200 bg-background"
                   >
                     {/* Preview */}
-                    <div 
+                    <div
                       className="w-full aspect-video relative overflow-hidden transition-transform duration-200 group-hover:scale-105"
                       style={{
                         background: preset.background.blankCanvasColor,
                       }}
                     >
                       {/* Mock camera */}
-                      <div 
+                      <div
                         className="absolute"
                         style={{
                           left: `${preset.pip.pipPosition?.x || 50}%`,
                           top: `${preset.pip.pipPosition?.y || 50}%`,
                           width: `${preset.pip.pipSize?.width || 40}%`,
                           height: `${preset.pip.pipSize?.height || 40}%`,
-                          transform: 'translate(-50%, -50%)',
-                          borderRadius: preset.pip.cameraShape === 'circle' ? '50%' : 
-                                       preset.pip.cameraShape === 'rounded' ? '12px' : '0',
-                          border: `${preset.pip.pipBorder?.width || 2}px solid ${preset.pip.pipBorder?.color || '#fff'}`,
-                          boxShadow: preset.pip.pipShadow ? 
-                            `0 0 ${preset.pip.pipShadow.blur}px ${preset.pip.pipShadow.color}` : 'none',
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          transform: "translate(-50%, -50%)",
+                          borderRadius:
+                            preset.pip.cameraShape === "circle"
+                              ? "50%"
+                              : preset.pip.cameraShape === "rounded"
+                              ? "12px"
+                              : "0",
+                          border: `${
+                            preset.pip.pipBorder?.width || 2
+                          }px solid ${preset.pip.pipBorder?.color || "#fff"}`,
+                          boxShadow: preset.pip.pipShadow
+                            ? `0 0 ${preset.pip.pipShadow.blur}px ${preset.pip.pipShadow.color}`
+                            : "none",
+                          background:
+                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                         }}
                       />
-                      
+
                       {/* Text overlays */}
                       {preset.textOverlays.slice(0, 1).map((text) => (
                         <div
@@ -340,25 +396,31 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                             height: `${text.layout.size.height}%`,
                             transform: `translate(-50%, -50%) rotate(${text.layout.rotation}deg)`,
                             fontFamily: text.style.fontFamily,
-                            fontSize: `${Math.min(text.style.fontSize * 0.15, 12)}px`,
+                            fontSize: `${Math.min(
+                              text.style.fontSize * 0.15,
+                              12
+                            )}px`,
                             color: text.style.color,
                             backgroundColor: text.style.backgroundColor,
                             border: text.style.border,
                             backdropFilter: text.style.backdropFilter,
                             textShadow: text.style.textShadow,
                             fontWeight: text.style.fontWeight,
-                            display: 'flex',
-                            alignItems: 'center',
+                            display: "flex",
+                            alignItems: "center",
                             justifyContent: text.style.textAlign,
-                            padding: '2px 4px',
+                            padding: "2px 4px",
                             lineHeight: 1.2,
                           }}
                         >
-                          {text.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()}
+                          {text.content
+                            .replace(/<[^>]+>/g, " ")
+                            .replace(/\s+/g, " ")
+                            .trim()}
                         </div>
                       ))}
                     </div>
-                    
+
                     {/* Info */}
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-2 pt-6">
                       <span className="text-xs font-semibold font-cyber text-white block truncate">
@@ -366,8 +428,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                       </span>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {preset.styleTags.slice(0, 2).map((tag) => (
-                          <span 
-                            key={tag} 
+                          <span
+                            key={tag}
                             className="text-[9px] px-1.5 py-0.5 rounded-full bg-violet-500/30 text-violet-200 font-cyber"
                           >
                             {tag.toUpperCase()}
@@ -378,7 +440,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                   </button>
                 ))}
               </div>
-              
+
               {filteredCanvasPresets.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground text-sm">
                   No designs found in this category
@@ -386,7 +448,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               )}
             </div>
           )}
-          
+
           {activeSection === "camera" && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-green-500/30">
@@ -403,10 +465,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 </Label>
                 <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
                   {BACKGROUND_PRESETS.map((bg) => {
-                    const isSelected = 
+                    const isSelected =
                       (bg.id === "none" && props.cameraBackground === "none") ||
                       (bg.id === "blur" && props.cameraBackground === "blur") ||
-                      (bg.type === "image" && bg.id !== "none" && props.cameraBackground === "image");
+                      (bg.type === "image" &&
+                        bg.id !== "none" &&
+                        props.cameraBackground === "image");
                     return (
                       <button
                         key={bg.id}
@@ -448,7 +512,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                     );
                   })}
                 </div>
-                
+
                 {/* Custom Background Upload */}
                 <div className="pt-2 border-t border-green-500/20">
                   <input
@@ -501,7 +565,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                       type="text"
                       placeholder="e.g., 21:9"
                       value={props.customAspectRatio}
-                      onChange={(e) => props.onCustomAspectRatioChange(e.target.value)}
+                      onChange={(e) =>
+                        props.onCustomAspectRatioChange(e.target.value)
+                      }
                       className="border-green-500/30 font-mono text-sm"
                     />
                   </div>
@@ -644,16 +710,21 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                   CAPTION PRESETS
                 </h3>
               </div>
-              
+
               {/* Category Navigation */}
               <ScrollArea className="w-full">
                 <div className="flex gap-2 pb-3 min-w-max">
                   {PRESET_CATEGORIES.map((cat) => {
-                    const IconComponent = categoryIcons[cat.icon as keyof typeof categoryIcons];
+                    const IconComponent =
+                      categoryIcons[cat.icon as keyof typeof categoryIcons];
                     return (
                       <Button
                         key={cat.id}
-                        variant={selectedPresetCategory === cat.id ? "default" : "outline"}
+                        variant={
+                          selectedPresetCategory === cat.id
+                            ? "default"
+                            : "outline"
+                        }
                         size="sm"
                         onClick={() => setSelectedPresetCategory(cat.id)}
                         className={cn(
@@ -663,14 +734,16 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                             : "border-pink-500/30 hover:border-pink-500 text-pink-500"
                         )}
                       >
-                        {IconComponent && <IconComponent className="w-3 h-3 mr-1.5" />}
+                        {IconComponent && (
+                          <IconComponent className="w-3 h-3 mr-1.5" />
+                        )}
                         {cat.name.toUpperCase()}
                       </Button>
                     );
                   })}
                 </div>
               </ScrollArea>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 {filteredCaptionPresets.map((preset) => (
                   <button
@@ -753,6 +826,75 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                       </button>
                     );
                   })}
+                </div>
+              </div>
+              {/* --- ADDED: PiP Border Controls --- */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
+                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
+                  CAMERA BORDER
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    type="color"
+                    className="w-20 h-10 p-1 cursor-pointer border-2 border-cyan-500/30"
+                    value={pipBorder.color}
+                    onChange={(e) =>
+                      props.onPipBorderChange({
+                        ...pipBorder,
+                        color: e.target.value,
+                      })
+                    }
+                  />
+                  <div className="flex-1 space-y-1">
+                    <Label className="text-xs text-muted-foreground">
+                      Width: {pipBorder.width}px
+                    </Label>
+                    <Slider
+                      value={[pipBorder.width]}
+                      onValueChange={([v]) =>
+                        props.onPipBorderChange({ ...pipBorder, width: v })
+                      }
+                      min={0}
+                      max={20}
+                      step={1}
+                      className="[&_[role=slider]]:border-cyan-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* --- ADDED: PiP Shadow Controls --- */}
+              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
+                <Label className="text-xs font-cyber text-cyan-500 tracking-wider">
+                  CAMERA SHADOW
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    type="color"
+                    className="w-20 h-10 p-1 cursor-pointer border-2 border-cyan-500/30"
+                    value={pipShadow.color}
+                    onChange={(e) =>
+                      props.onPipShadowChange({
+                        ...pipShadow,
+                        color: e.target.value,
+                      })
+                    }
+                  />
+                  <div className="flex-1 space-y-1">
+                    <Label className="text-xs text-muted-foreground">
+                      Blur: {pipShadow.blur}px
+                    </Label>
+                    <Slider
+                      value={[pipShadow.blur]}
+                      onValueChange={([v]) =>
+                        props.onPipShadowChange({ ...pipShadow, blur: v })
+                      }
+                      min={0}
+                      max={50}
+                      step={1}
+                      className="[&_[role=slider]]:border-cyan-500"
+                    />
+                  </div>
                 </div>
               </div>
 
