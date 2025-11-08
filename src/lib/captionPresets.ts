@@ -1,6 +1,13 @@
 // src/lib/captionPresets.ts
 import { CaptionTemplate } from "@/types/caption";
 
+export const PRESET_CATEGORIES = [
+  { id: "all", name: "All", icon: "LayoutGrid" },
+  { id: "luxury", name: "Luxury", icon: "Crown" },
+  { id: "modern", name: "Modern", icon: "Zap" },
+  { id: "minimal", name: "Minimal", icon: "Minus" },
+];
+
 export const CAPTION_PRESETS: CaptionTemplate[] = [
   // --- EXISTING PRESETS ---
   {
