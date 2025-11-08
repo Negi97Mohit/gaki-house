@@ -903,18 +903,37 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
-    let newX = (d.x / rect.width) * 100;
-    let newY = (d.y / rect.height) * 100;
 
+    // --- MODIFIED: Calculate CENTER position, not top-left ---
     const pipWidthPercent = rest.pipSize.width;
-    const pipHeightPercent = rest.pipSize.height;
-    if (newX < SNAP_THRESHOLD) newX = 2;
-    if (newX > 100 - pipWidthPercent - SNAP_THRESHOLD)
-      newX = 98 - pipWidthPercent;
-    if (newY < SNAP_THRESHOLD) newY = 2;
-    if (newY > 100 - pipHeightPercent - SNAP_THRESHOLD)
-      newY = 98 - pipHeightPercent;
+    const pipHeightPercent =
+      rest.cameraShape === "circle"
+        ? (rest.pipSize.width * containerSize.width) / containerSize.height // Recalculate % height for circle
+        : rest.pipSize.height;
 
+    // Get the pixel size of the Rnd component
+    const pipWidthPx = (rect.width * pipWidthPercent) / 100;
+    const pipHeightPx = (rect.height * pipHeightPercent) / 100;
+
+    // Calculate the new center in pixels (top-left + half-size)
+    const newCenterXpx = d.x + pipWidthPx / 2;
+    const newCenterYpx = d.y + pipHeightPx / 2;
+
+    // Convert center to percentage
+    let newX = (newCenterXpx / rect.width) * 100;
+    let newY = (newCenterYpx / rect.height) * 100;
+    // --- END MODIFICATION ---
+
+    // --- MODIFIED: Snapping logic now works with center position ---
+    if (newX < SNAP_THRESHOLD + pipWidthPercent / 2)
+      newX = 2 + pipWidthPercent / 2;
+    if (newX > 100 - pipWidthPercent / 2 - SNAP_THRESHOLD)
+      newX = 98 - pipWidthPercent / 2;
+    if (newY < SNAP_THRESHOLD + pipHeightPercent / 2)
+      newY = 2 + pipHeightPercent / 2;
+    if (newY > 100 - pipHeightPercent / 2 - SNAP_THRESHOLD)
+      newY = 98 - pipHeightPercent / 2;
+    // --- END MODIFICATION ---
     rest.onPipPositionChange({ x: newX, y: newY });
   };
 
@@ -940,14 +959,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     const newHeight = (newHeightPx / rect.height) * 100;
     // --- END MODIFICATION ---
 
-    const newX = (position.x / rect.width) * 100;
-    const newY = (position.y / rect.height) * 100;
+    // --- MODIFIED: Calculate CENTER position from top-left and new size ---
+    const newCenterX = ((position.x + newWidthPx / 2) / rect.width) * 100;
+    const newCenterY = ((position.y + newHeightPx / 2) / rect.height) * 100;
+    // --- END MODIFICATION ---
 
     rest.onPipSizeChange({
       width: Math.max(10, Math.min(50, newWidth)),
       height: Math.max(10, Math.min(50, newHeight)),
     });
-    rest.onPipPositionChange({ x: newX, y: newY });
+    // --- MODIFIED: Save the new CENTER position ---
+    rest.onPipPositionChange({ x: newCenterX, y: newCenterY });
   };
 
   const getCameraShapeStyle = () => {
@@ -1056,10 +1078,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const renderCamera = (
     className?: string,
     style?: React.CSSProperties,
-    isPip: boolean = false
+    isPip: boolean = false,
+    // --- ADDED ---
+    cameraShape?: CameraShape
+    // --- END ADDED ---
   ) => (
     <div
-      className={cn("w-full h-full", className)}
+      className={cn(
+        "w-full h-full",
+        className, // <-- PASS THE VARIABLE
+        // --- CORRECTED LOGIC ---
+        isPip && cameraShape === "circle" && "aspect-square"
+        // --- END CORRECTION ---
+      )}
       style={{ ...getCameraShapeStyle(), ...style }} // <-- Apply shape styles here
     >
       {rest.backgroundEffect !== "none" ||
@@ -1258,7 +1289,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               }}
             />
           )}
-          <div className="relative w-full h-full">{renderCamera()}</div>
+          {/* --- MODIFIED: Pass cameraShape --- */}
+          <div className="relative w-full h-full">
+            {renderCamera(undefined, undefined, false, rest.cameraShape)}
+          </div>
         </div>
       );
     }
@@ -1266,12 +1300,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     const mainIsCamera =
       (pipContent === "share" && props.screenShareMode !== "off") ||
       props.screenShareMode === "off";
-    const mainContent = mainIsCamera ? renderCamera() : renderScreen();
-    // --- MODIFIED: Pass style to renderCamera ---
+    // --- MODIFIED: Pass cameraShape ---
+    const mainContent = mainIsCamera
+      ? renderCamera(undefined, undefined, false, rest.cameraShape)
+      : renderScreen();
     const pipVideoStyle = getCameraShapeStyle();
     const pipVideo =
       pipContent === "camera"
-        ? renderCamera("cursor-move", pipVideoStyle, true)
+        ? // --- MODIFIED: Pass cameraShape ---
+          renderCamera("cursor-move", {}, true, rest.cameraShape)
         : renderScreen("cursor-move");
     const pipSizePx = {
       // --- MODIFIED: Force 1:1 pixel aspect ratio for circles ---
@@ -1282,8 +1319,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           : (containerSize.height * rest.pipSize.height) / 100,
     };
     const pipPositionPx = {
-      x: (containerSize.width * rest.pipPosition.x) / 100,
-      y: (containerSize.height * rest.pipPosition.y) / 100,
+      x: (containerSize.width * rest.pipPosition.x) / 100 - pipSizePx.width / 2,
+      y:
+        (containerSize.height * rest.pipPosition.y) / 100 -
+        pipSizePx.height / 2,
     };
 
     const pipContentEl = props.screenShareMode !== "off" &&
@@ -1314,7 +1353,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           >
             {/* This inner div is no longer responsible for border/shape */}
             {pipContent === "camera"
-              ? renderCamera("cursor-move", {}, true)
+              ? // --- MODIFIED: Pass cameraShape ---
+                renderCamera("cursor-move", {}, true, rest.cameraShape)
               : renderScreen("cursor-move")}
             <Button
               size="icon"
@@ -1409,7 +1449,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 <div
                   // --- MODIFIED: Apply shape/border/shadow here ---
                   className="w-full h-full relative"
-                  style={{ ...getBackgroundStyle(), ...getCameraShapeStyle() }}
+                  // --- MODIFIED: Pass cameraShape to renderCamera, not style div ---
+                  style={getBackgroundStyle()}
                 >
                   {rest.backgroundEffect === "image" &&
                     rest.backgroundImageUrl && (
@@ -1422,7 +1463,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                         }}
                       />
                     )}
-                  <div className="relative w-full h-full">{renderCamera()}</div>
+                  {/* --- MODIFIED: Pass cameraShape --- */}
+                  <div className="relative w-full h-full">
+                    {renderCamera(
+                      undefined,
+                      undefined,
+                      false,
+                      rest.cameraShape
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="text-center text-muted-foreground">
@@ -1577,266 +1626,273 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           style={{ zIndex: "var(--z-draggable-element)" }}
         >
           <div className="w-full h-full relative">
-            {filteredHtmlOverlays.map((overlay) => (
-              <DraggableOverlay
-                key={overlay.id}
-                overlay={overlay}
-                onSetDynamicLayout={onSetDynamicLayout}
-                onLayoutChange={rest.onOverlayLayoutChange}
-                onRemoveOverlay={rest.onRemoveOverlay}
-                onPreviewGenerated={onPreviewGenerated}
-                containerSize={containerSize}
-                portalContainer={portalContainer}
-              />
-            ))}
-            {filteredBrowserOverlays.map((browser) => (
-              <div
-                key={`browser-wrapper-${browser.id}`}
-                style={{ pointerEvents: "auto" }}
-              >
-                <DraggableBrowser
-                  key={browser.id}
-                  overlay={browser}
-                  viewport={viewport}
-                  canvasContainerRef={canvasContainerRef}
+            {containerSize.width > 0 &&
+              filteredHtmlOverlays.map((overlay) => (
+                <DraggableOverlay
+                  key={overlay.id}
+                  overlay={overlay}
                   onSetDynamicLayout={onSetDynamicLayout}
-                  onRemove={onRemoveBrowser}
-                  onUrlChange={onBrowserUrlChange}
-                  onLayoutChange={onBrowserLayoutChange}
+                  onLayoutChange={rest.onOverlayLayoutChange}
+                  onRemoveOverlay={rest.onRemoveOverlay}
+                  onPreviewGenerated={onPreviewGenerated}
                   containerSize={containerSize}
-                  isSelected={selectedBrowserId === browser.id}
-                  onInternalDragStart={onInternalDragStart}
-                  onInternalDragStop={onInternalDragStop}
-                  onSelect={setSelectedBrowserId}
+                  portalContainer={portalContainer}
                 />
-              </div>
-            ))}
-            {filteredFileOverlays.map((file) => (
-              <div
-                key={`file-wrapper-${file.id}`}
-                style={{ pointerEvents: "auto" }}
-              >
-                <DraggableFileViewer
-                  key={file.id}
-                  overlay={file}
-                  viewport={viewport}
-                  onSetDynamicLayout={onSetDynamicLayout}
-                  onRemove={onRemoveFile}
-                  onLayoutChange={onFileLayoutChange}
-                  containerSize={containerSize}
-                  isSelected={selectedFileId === file.id}
-                  onInternalDragStart={onInternalDragStart}
-                  onInternalDragStop={onInternalDragStop}
-                  onSelect={setSelectedFileId}
-                  canvasContainerRef={canvasContainerRef}
-                />
-              </div>
-            ))}
+              ))}
+            {containerSize.width > 0 &&
+              filteredBrowserOverlays.map((browser) => (
+                <div
+                  key={`browser-wrapper-${browser.id}`}
+                  style={{ pointerEvents: "auto" }}
+                >
+                  <DraggableBrowser
+                    key={browser.id}
+                    overlay={browser}
+                    viewport={viewport}
+                    canvasContainerRef={canvasContainerRef}
+                    onSetDynamicLayout={onSetDynamicLayout}
+                    onRemove={onRemoveBrowser}
+                    onUrlChange={onBrowserUrlChange}
+                    onLayoutChange={onBrowserLayoutChange}
+                    containerSize={containerSize}
+                    isSelected={selectedBrowserId === browser.id}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    onSelect={setSelectedBrowserId}
+                  />
+                </div>
+              ))}
+            {containerSize.width > 0 &&
+              filteredFileOverlays.map((file) => (
+                <div
+                  key={`file-wrapper-${file.id}`}
+                  style={{ pointerEvents: "auto" }}
+                >
+                  <DraggableFileViewer
+                    key={file.id}
+                    overlay={file}
+                    viewport={viewport}
+                    onSetDynamicLayout={onSetDynamicLayout}
+                    onRemove={onRemoveFile}
+                    onLayoutChange={onFileLayoutChange}
+                    containerSize={containerSize}
+                    isSelected={selectedFileId === file.id}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    onSelect={setSelectedFileId}
+                    canvasContainerRef={canvasContainerRef}
+                  />
+                </div>
+              ))}
 
-            {/* --- ADD THIS ENTIRE BLOCK --- */}
-            {filteredTextOverlays.map((text) => (
-              <div
-                key={`text-wrapper-${text.id}`}
-                style={{ pointerEvents: "auto" }}
-              >
-                <DraggableTextOverlay
-                  key={text.id}
-                  overlay={text}
-                  onLayoutChange={onTextLayoutChange}
-                  onStyleChange={onTextStyleChange}
-                  onContentChange={onTextContentChange}
-                  onRemove={onRemoveTextOverlay}
-                  containerSize={containerSize}
-                  isSelected={selectedTextId === text.id}
-                  onSelect={setSelectedTextId}
-                  onInternalDragStart={onInternalDragStart}
-                  onInternalDragStop={onInternalDragStop}
-                  isSpacePressed={false}
-                  containerRef={canvasContainerRef}
-                />
-              </div>
-            ))}
+            {/* --- MODIFIED: Add containerSize check --- */}
+            {containerSize.width > 0 &&
+              filteredTextOverlays.map((text) => (
+                <div
+                  key={`text-wrapper-${text.id}`}
+                  style={{ pointerEvents: "auto" }}
+                >
+                  <DraggableTextOverlay
+                    key={text.id}
+                    overlay={text}
+                    onLayoutChange={onTextLayoutChange}
+                    onStyleChange={onTextStyleChange}
+                    onContentChange={onTextContentChange}
+                    onRemove={onRemoveTextOverlay}
+                    containerSize={containerSize}
+                    isSelected={selectedTextId === text.id}
+                    onSelect={setSelectedTextId}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    isSpacePressed={false}
+                    containerRef={canvasContainerRef}
+                  />
+                </div>
+              ))}
             {/* --- END OF ADDED BLOCK --- */}
 
-            {(() => {
-              const captionText = (
-                fullTranscript +
-                " " +
-                interimTranscript
-              ).trim();
-              const captionStyle = liveCaptionStyle;
-              if (
-                !captionsEnabled ||
-                containerSize.width === 0 ||
-                !shouldRenderCaptionOverlay
-              )
-                return null;
+            {/* --- MODIFIED: Add containerSize check --- */}
+            {containerSize.width > 0 &&
+              (() => {
+                const captionText = (
+                  fullTranscript +
+                  " " +
+                  interimTranscript
+                ).trim();
+                const captionStyle = liveCaptionStyle;
+                if (
+                  !captionsEnabled ||
+                  containerSize.width === 0 ||
+                  !shouldRenderCaptionOverlay
+                )
+                  return null;
 
-              if (!captionText) {
-                return null;
-              }
+                if (!captionText) {
+                  return null;
+                }
 
-              const captionRef = React.createRef<HTMLDivElement>();
+                const captionRef = React.createRef<HTMLDivElement>();
 
-              const handleCaptionRotationStart = (
-                e: React.MouseEvent<HTMLDivElement>
-              ) => {
-                e.preventDefault();
-                e.stopPropagation();
+                const handleCaptionRotationStart = (
+                  e: React.MouseEvent<HTMLDivElement>
+                ) => {
+                  e.preventDefault();
+                  e.stopPropagation();
 
-                if (!captionRef.current) return;
-                const box = captionRef.current.getBoundingClientRect();
-                const centerX = box.left + box.width / 2;
-                const centerY = box.top + box.height / 2;
-                const startAngle =
-                  Math.atan2(e.clientY - centerY, e.clientX - centerX) *
-                  (180 / Math.PI);
-                const initialRotation = captionStyle.rotation || 0;
-
-                const handleMouseMove = (moveEvent: MouseEvent) => {
-                  const currentAngle =
-                    Math.atan2(
-                      moveEvent.clientY - centerY,
-                      moveEvent.clientX - centerX
-                    ) *
+                  if (!captionRef.current) return;
+                  const box = captionRef.current.getBoundingClientRect();
+                  const centerX = box.left + box.width / 2;
+                  const centerY = box.top + box.height / 2;
+                  const startAngle =
+                    Math.atan2(e.clientY - centerY, e.clientX - centerX) *
                     (180 / Math.PI);
-                  const angleDiff = currentAngle - startAngle;
-                  props.onStyleChange({
-                    ...captionStyle,
-                    rotation: initialRotation + angleDiff,
-                  });
+                  const initialRotation = captionStyle.rotation || 0;
+
+                  const handleMouseMove = (moveEvent: MouseEvent) => {
+                    const currentAngle =
+                      Math.atan2(
+                        moveEvent.clientY - centerY,
+                        moveEvent.clientX - centerX
+                      ) *
+                      (180 / Math.PI);
+                    const angleDiff = currentAngle - startAngle;
+                    props.onStyleChange({
+                      ...captionStyle,
+                      rotation: initialRotation + angleDiff,
+                    });
+                  };
+
+                  const handleMouseUp = () => {
+                    document.removeEventListener("mousemove", handleMouseMove);
+                    document.removeEventListener("mouseup", handleMouseUp);
+                  };
+
+                  document.addEventListener("mousemove", handleMouseMove);
+                  document.addEventListener("mouseup", handleMouseUp);
                 };
 
-                const handleMouseUp = () => {
-                  document.removeEventListener("mousemove", handleMouseMove);
-                  document.removeEventListener("mouseup", handleMouseUp);
-                };
+                const currentWidthPercent = captionStyle.width || 80;
+                const widthPx =
+                  (containerSize.width * currentWidthPercent) / 100;
+                const xPx =
+                  (containerSize.width * captionStyle.position.x) / 100 -
+                  widthPx / 2;
+                const yPx =
+                  (containerSize.height * captionStyle.position.y) / 100;
 
-                document.addEventListener("mousemove", handleMouseMove);
-                document.addEventListener("mouseup", handleMouseUp);
-              };
+                return (
+                  <Rnd
+                    size={{
+                      width: widthPx,
+                      height: "auto",
+                    }}
+                    position={{
+                      x: xPx,
+                      y: yPx,
+                    }}
+                    onDragStop={(e, d) => {
+                      const newCenterX =
+                        ((d.x + widthPx / 2) / containerSize.width) * 100;
+                      const newCenterY = (d.y / containerSize.height) * 100;
 
-              const currentWidthPercent = captionStyle.width || 80;
-              const widthPx = (containerSize.width * currentWidthPercent) / 100;
-              const xPx =
-                (containerSize.width * captionStyle.position.x) / 100 -
-                widthPx / 2;
-              const yPx =
-                (containerSize.height * captionStyle.position.y) / 100;
+                      onCaptionLayoutChange({
+                        position: {
+                          x: newCenterX,
+                          y: newCenterY,
+                        },
+                      });
+                    }}
+                    onResizeStop={(e, direction, ref, delta, pos) => {
+                      const newWidthPx = parseInt(ref.style.width, 10);
+                      const newHeightPx = parseInt(ref.style.height, 10);
+                      const newWidthPercent =
+                        (newWidthPx / containerSize.width) * 100;
 
-              return (
-                <Rnd
-                  size={{
-                    width: widthPx,
-                    height: "auto",
-                  }}
-                  position={{
-                    x: xPx,
-                    y: yPx,
-                  }}
-                  onDragStop={(e, d) => {
-                    const newCenterX =
-                      ((d.x + widthPx / 2) / containerSize.width) * 100;
-                    const newCenterY = (d.y / containerSize.height) * 100;
+                      const newCenterX =
+                        ((pos.x + newWidthPx / 2) / containerSize.width) * 100;
+                      const newCenterY = (pos.y / containerSize.height) * 100;
 
-                    onCaptionLayoutChange({
-                      position: {
-                        x: newCenterX,
-                        y: newCenterY,
-                      },
-                    });
-                  }}
-                  onResizeStop={(e, direction, ref, delta, pos) => {
-                    const newWidthPx = parseInt(ref.style.width, 10);
-                    const newHeightPx = parseInt(ref.style.height, 10);
-                    const newWidthPercent =
-                      (newWidthPx / containerSize.width) * 100;
-
-                    const newCenterX =
-                      ((pos.x + newWidthPx / 2) / containerSize.width) * 100;
-                    const newCenterY = (pos.y / containerSize.height) * 100;
-
-                    onCaptionLayoutChange({
-                      position: {
-                        x: newCenterX,
-                        y: newCenterY,
-                      },
-                      size: {
-                        width: newWidthPercent,
-                        height: (newHeightPx / containerSize.height) * 100,
-                      },
-                    });
-                  }}
-                  bounds="parent"
-                  className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
-                  style={{ zIndex: "var(--z-caption)" }}
-                  minWidth={containerSize.width * 0.2}
-                  disableDragging={false}
-                  enableResizing={{
-                    left: true,
-                    right: true,
-                    top: false,
-                    bottom: false,
-                    topLeft: false,
-                    topRight: false,
-                    bottomLeft: false,
-                    bottomRight: false,
-                  }}
-                >
-                  <div
-                    ref={captionRef}
-                    className="w-full h-full relative"
-                    style={{
-                      transform: `rotate(${captionStyle.rotation || 0}deg)`,
+                      onCaptionLayoutChange({
+                        position: {
+                          x: newCenterX,
+                          y: newCenterY,
+                        },
+                        size: {
+                          width: newWidthPercent,
+                          height: (newHeightPx / containerSize.height) * 100,
+                        },
+                      });
+                    }}
+                    bounds="parent"
+                    className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
+                    style={{ zIndex: "var(--z-caption)" }}
+                    minWidth={containerSize.width * 0.2}
+                    disableDragging={false}
+                    enableResizing={{
+                      left: true,
+                      right: true,
+                      top: false,
+                      bottom: false,
+                      topLeft: false,
+                      topRight: false,
+                      bottomLeft: false,
+                      bottomRight: false,
                     }}
                   >
-                    <DynamicLayoutPicker
-                      onSelectLayout={(mode) =>
-                        onSetDynamicLayout(
-                          { id: "live-caption", type: "caption" },
-                          mode as
-                            | "split-horizontal"
-                            | "split-vertical"
-                            | "pip"
-                            | "reset"
-                        )
-                      }
-                    />
-                    <CaptionRenderer
-                      activeStyleId={dynamicStyle}
-                      captionStyle={captionStyle}
-                      text={captionText}
-                      fullTranscript={fullTranscript}
-                      interimTranscript={interimTranscript}
-                      baseStyle={{
-                        fontFamily: captionStyle.fontFamily,
-                        fontSize: `${captionStyle.fontSize}px`,
-                        color: captionStyle.color,
-                        textShadow: captionStyle.shadow
-                          ? "2px 2px 4px rgba(0,0,0,0.5)"
-                          : "none",
-                        backgroundColor: captionStyle.backgroundColor,
-                        border: captionStyle.border
-                          ? `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`
-                          : "none",
-                        fontWeight: captionStyle.bold ? "bold" : "normal",
-                        fontStyle: captionStyle.italic ? "italic" : "normal",
-                        textDecoration: captionStyle.underline
-                          ? "underline"
-                          : "none",
-                      }}
-                    />
                     <div
-                      onMouseDown={handleCaptionRotationStart}
-                      className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-alias"
-                      style={{ zIndex: "var(--z-draggable-element-active)" }}
+                      ref={captionRef}
+                      className="w-full h-full relative"
+                      style={{
+                        transform: `rotate(${captionStyle.rotation || 0}deg)`,
+                      }}
                     >
-                      <RotateCcw className="w-4 h-4" />
+                      <DynamicLayoutPicker
+                        onSelectLayout={(mode) =>
+                          onSetDynamicLayout(
+                            { id: "live-caption", type: "caption" },
+                            mode as
+                              | "split-horizontal"
+                              | "split-vertical"
+                              | "pip"
+                              | "reset"
+                          )
+                        }
+                      />
+                      <CaptionRenderer
+                        activeStyleId={dynamicStyle}
+                        captionStyle={captionStyle}
+                        text={captionText}
+                        fullTranscript={fullTranscript}
+                        interimTranscript={interimTranscript}
+                        baseStyle={{
+                          fontFamily: captionStyle.fontFamily,
+                          fontSize: `${captionStyle.fontSize}px`,
+                          color: captionStyle.color,
+                          textShadow: captionStyle.shadow
+                            ? "2px 2px 4px rgba(0,0,0,0.5)"
+                            : "none",
+                          backgroundColor: captionStyle.backgroundColor,
+                          border: captionStyle.border
+                            ? `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`
+                            : "none",
+                          fontWeight: captionStyle.bold ? "bold" : "normal",
+                          fontStyle: captionStyle.italic ? "italic" : "normal",
+                          textDecoration: captionStyle.underline
+                            ? "underline"
+                            : "none",
+                        }}
+                      />
+                      <div
+                        onMouseDown={handleCaptionRotationStart}
+                        className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto cursor-alias"
+                        style={{ zIndex: "var(--z-draggable-element-active)" }}
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                      </div>
                     </div>
-                  </div>
-                </Rnd>
-              );
-            })()}
+                  </Rnd>
+                );
+              })()}
           </div>
         </div>
       </div>
