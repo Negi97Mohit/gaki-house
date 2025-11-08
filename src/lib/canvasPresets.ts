@@ -3231,6 +3231,902 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     ],
     effects: {},
   },
+
+  // 2. Fashionist (Soft Elegant)
+  {
+    id: "fashionist-cover",
+    name: "Fashionist",
+    styleTags: ["magazine", "soft", "elegant", "minimal"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#F5F5F5",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 45 },
+      pipSize: { width: 88, height: 65 },
+    },
+    textOverlays: [
+      {
+        id: "fashionist-date",
+        content: "PHOTOGRAPHER 2025",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 10,
+          color: "#999999",
+          backgroundColor: "transparent",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 50, y: 8 },
+          size: { width: 85, height: 3 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fashionist-title",
+        content: "FASHIONIST",
+        style: {
+          fontFamily: "Cormorant Garamond",
+          fontSize: 68,
+          color: "#666666",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "500",
+        },
+        layout: {
+          position: { x: 50, y: 82 },
+          size: { width: 85, height: 10 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fashionist-subtitle",
+        content: "FASHION MAGAZINE",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 11,
+          color: "#999999",
+          backgroundColor: "transparent",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 50, y: 89 },
+          size: { width: 85, height: 3 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "brightness(1.08) saturate(0.95)",
+      isBeautifyEnabled: true,
+    },
+  },
+
+  // 3. Fashion Trends Frame
+  {
+    id: "fashion-trends-frame",
+    name: "Fashion Trends Frame",
+    styleTags: ["magazine", "frame", "minimal", "modern"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#D8D8D8",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 55 },
+      pipSize: { width: 70, height: 78 },
+      pipBorder: { color: "#FFFFFF", width: 6 },
+    },
+    textOverlays: [
+      {
+        id: "ftt-title",
+        content: "FASHION",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 88,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "700",
+        },
+        layout: {
+          position: { x: 50, y: 14 },
+          size: { width: 85, height: 12 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "ftt-trends",
+        content: "TRENDS",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 24,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "300",
+        },
+        layout: {
+          position: { x: 50, y: 22 },
+          size: { width: 85, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "ftt-site",
+        content: "realityofonsite.com",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 12,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 50, y: 92 },
+          size: { width: 85, height: 3 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "brightness(1.05)",
+    },
+  },
+
+  // 4. Fashion Mix & Match (Grid Layout)
+  {
+    id: "fashion-mix-match",
+    name: "Fashion Mix & Match",
+    styleTags: ["magazine", "grid", "modern", "editorial"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#B8C5D0",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 35 },
+      pipSize: { width: 45, height: 32 },
+    },
+    textOverlays: [
+      {
+        id: "fmm-issue",
+        content: "ISSUE 2<br>FEB 2029",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 11,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+        },
+        layout: {
+          position: { x: 18, y: 12 },
+          size: { width: 30, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fmm-logo",
+        content: "fashion<br>magazine.",
+        style: {
+          fontFamily: "Anton",
+          fontSize: 42,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "right",
+        },
+        layout: {
+          position: { x: 70, y: 26 },
+          size: { width: 50, height: 12 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fmm-feature",
+        content: "FEATURING<br>OLIVIA WILSON ON THE ART OF",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 9,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+        },
+        layout: {
+          position: { x: 22, y: 58 },
+          size: { width: 50, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fmm-title",
+        content: "MIX&",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 56,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+          fontWeight: "700",
+        },
+        layout: {
+          position: { x: 28, y: 65 },
+          size: { width: 40, height: 10 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fmm-matching",
+        content: "Matching",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 48,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+          fontWeight: "400",
+          fontStyle: "italic",
+        },
+        layout: {
+          position: { x: 28, y: 72 },
+          size: { width: 50, height: 8 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "saturate(0.95)",
+    },
+  },
+
+  // 5. Fashion Red Edition (Bold Statement)
+  {
+    id: "fashion-red-edition",
+    name: "Fashion Red Edition",
+    styleTags: ["magazine", "bold", "red", "dramatic"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#3A3A3A",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 55 },
+      pipSize: { width: 88, height: 88 },
+    },
+    textOverlays: [
+      {
+        id: "fre-classic",
+        content: "CLASSIC COLLECTION",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 11,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "left",
+        },
+        layout: {
+          position: { x: 15, y: 9 },
+          size: { width: 40, height: 3 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fre-title",
+        content: "FASHION",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 96,
+          color: "#E63946",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "700",
+        },
+        layout: {
+          position: { x: 50, y: 13 },
+          size: { width: 85, height: 12 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fre-edition",
+        content: "NOVEMBER EDITION",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 11,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "right",
+        },
+        layout: {
+          position: { x: 72, y: 9 },
+          size: { width: 25, height: 3 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fre-ny",
+        content: "New York",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 14,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "left",
+        },
+        layout: {
+          position: { x: 15, y: 21 },
+          size: { width: 30, height: 4 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fre-magazine",
+        content: "Magazine",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 14,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "right",
+        },
+        layout: {
+          position: { x: 72, y: 21 },
+          size: { width: 25, height: 4 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fre-looks",
+        content: "10 Must Have<br>Looks for the<br>Season Ahead",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 13,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "left",
+        },
+        layout: {
+          position: { x: 15, y: 27 },
+          size: { width: 40, height: 8 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fre-voucher",
+        content: "Free Gift<br>Voucher",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 24,
+          color: "#FFFFFF",
+          backgroundColor: "#E63946",
+          textAlign: "center",
+          padding: "12px",
+        },
+        layout: {
+          position: { x: 22, y: 78 },
+          size: { width: 28, height: 10 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fre-interview",
+        content: "Exclusive Interview<br>Marceline<br>Anderson",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 28,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "left",
+          fontWeight: "400",
+        },
+        layout: {
+          position: { x: 15, y: 85 },
+          size: { width: 55, height: 10 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "contrast(1.15)",
+    },
+  },
+
+  // 6. RV Me Business (Professional Bold)
+  {
+    id: "rv-me-business",
+    name: "RV Me Business",
+    styleTags: ["magazine", "business", "professional", "bold"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#E8E8E8",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 55 },
+      pipSize: { width: 88, height: 88 },
+    },
+    textOverlays: [
+      {
+        id: "rvme-barcode",
+        content: "|||||||||||||||||||",
+        style: {
+          fontFamily: "Courier New",
+          fontSize: 28,
+          color: "#000000",
+          backgroundColor: "#FFFFFF",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 18, y: 10 },
+          size: { width: 22, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "rvme-logo",
+        content: "RV ME<br>MAGAZINE",
+        style: {
+          fontFamily: "Anton",
+          fontSize: 18,
+          color: "#000000",
+          backgroundColor: "#FFCC00",
+          textAlign: "center",
+          padding: "8px",
+        },
+        layout: {
+          position: { x: 75, y: 10 },
+          size: { width: 22, height: 8 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "rvme-tips",
+        content: "SUCCESS TIPS<br>IN 2022",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 13,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+          fontWeight: "700",
+        },
+        layout: {
+          position: { x: 18, y: 20 },
+          size: { width: 40, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "rvme-tips-desc",
+        content:
+          "With our fast paced way<br>how to become tips, you'll<br>become business tips<br>NOW not tomorrow...<br>and that is very much<br>necessary.",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 10,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+        },
+        layout: {
+          position: { x: 18, y: 26 },
+          size: { width: 40, height: 12 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "rvme-start",
+        content: "START YOUR<br>BUSINESS",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 13,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+          fontWeight: "700",
+        },
+        layout: {
+          position: { x: 18, y: 42 },
+          size: { width: 40, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "rvme-start-desc",
+        content:
+          "We shall in build<br>your business in a<br>way that is very good<br>and it very much<br>counts.",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 10,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "left",
+        },
+        layout: {
+          position: { x: 18, y: 48 },
+          size: { width: 40, height: 10 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "rvme-business",
+        content: "BUSINESS",
+        style: {
+          fontFamily: "Anton",
+          fontSize: 88,
+          color: "#000000",
+          backgroundColor: "#FFCC00",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 50, y: 82 },
+          size: { width: 85, height: 12 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "rvme-year",
+        content: "MAGAZINE 2022",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 16,
+          color: "#000000",
+          backgroundColor: "#FFFFFF",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 50, y: 90 },
+          size: { width: 85, height: 4 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "grayscale(1) contrast(1.1)",
+    },
+  },
+
+  // 7. Fashion Style Volume (Minimalist Side Text)
+  {
+    id: "fashion-style-volume",
+    name: "Fashion Style Volume",
+    styleTags: ["magazine", "minimal", "modern", "editorial"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#F0F0F0",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 55 },
+      pipSize: { width: 75, height: 85 },
+    },
+    textOverlays: [
+      {
+        id: "fsv-fashion",
+        content: "FASHION",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 68,
+          color: "#2A2A2A",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "400",
+        },
+        layout: {
+          position: { x: 50, y: 12 },
+          size: { width: 85, height: 10 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fsv-cover",
+        content: "MAGAZINE COVER",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 12,
+          color: "#666666",
+          backgroundColor: "transparent",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 50, y: 19 },
+          size: { width: 85, height: 3 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fsv-volume",
+        content: "VOLUME<br>30",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 48,
+          color: "#2A2A2A",
+          backgroundColor: "transparent",
+          textAlign: "left",
+          fontWeight: "300",
+        },
+        layout: {
+          position: { x: 18, y: 25 },
+          size: { width: 25, height: 12 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "fsv-style",
+        content: "STYLE",
+        style: {
+          fontFamily: "Anton",
+          fontSize: 86,
+          color: "#2A2A2A",
+          backgroundColor: "transparent",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 15, y: 55 },
+          size: { width: 22, height: 35 },
+          zIndex: 15,
+          rotation: -90,
+        },
+      },
+      {
+        id: "fsv-edition",
+        content: "HIS UNLIMITED<br>FROM MARCH MENS EDITION",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 9,
+          color: "#666666",
+          backgroundColor: "transparent",
+          textAlign: "right",
+        },
+        layout: {
+          position: { x: 75, y: 25 },
+          size: { width: 22, height: 6 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "grayscale(1) contrast(1.05)",
+    },
+  },
+
+  // 8. Business Quarterly (Premium Layout)
+  {
+    id: "business-quarterly",
+    name: "Business Quarterly",
+    styleTags: ["magazine", "business", "premium", "professional"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#1A1A1A",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 55 },
+      pipSize: { width: 88, height: 88 },
+    },
+    textOverlays: [
+      {
+        id: "bq-quarterly",
+        content: "QUARTERLY<br>EDITION",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 12,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+        },
+        layout: {
+          position: { x: 50, y: 8 },
+          size: { width: 85, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "bq-business",
+        content: "BUSINESS",
+        style: {
+          fontFamily: "Anton",
+          fontSize: 96,
+          color: "#D4AF37",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "900",
+        },
+        layout: {
+          position: { x: 50, y: 16 },
+          size: { width: 85, height: 12 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "bq-insight",
+        content: "Insight & Strategy",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 28,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontStyle: "italic",
+        },
+        layout: {
+          position: { x: 50, y: 25 },
+          size: { width: 85, height: 6 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "contrast(1.15)",
+    },
+  },
+
+  // 9. Vogue Monochrome (Classic High Fashion)
+  {
+    id: "vogue-monochrome",
+    name: "Vogue Monochrome",
+    styleTags: ["magazine", "vogue", "monochrome", "luxury"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#FFFFFF",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 55 },
+      pipSize: { width: 88, height: 88 },
+    },
+    textOverlays: [
+      {
+        id: "vm-vogue",
+        content: "VOGUE",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 112,
+          color: "#000000",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "700",
+        },
+        layout: {
+          position: { x: 50, y: 12 },
+          size: { width: 85, height: 14 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "vm-spring",
+        content: "SPRING COLLECTIONS",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 13,
+          color: "#666666",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "300",
+        },
+        layout: {
+          position: { x: 50, y: 23 },
+          size: { width: 85, height: 3 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "grayscale(1) contrast(1.2)",
+      isBeautifyEnabled: true,
+    },
+  },
+
+  // 10. Editorial Noir (Dark Sophisticated)
+  {
+    id: "editorial-noir",
+    name: "Editorial Noir",
+    styleTags: ["magazine", "dark", "editorial", "sophisticated"],
+    canvasAspectRatio: "9:16",
+    background: {
+      blankCanvasColor: "#0A0A0A",
+      backgroundEffect: "none",
+    },
+    pip: {
+      layoutMode: "pip",
+      cameraShape: "rectangle",
+      pipPosition: { x: 50, y: 55 },
+      pipSize: { width: 88, height: 88 },
+      pipBorder: { color: "#FFFFFF", width: 1 },
+    },
+    textOverlays: [
+      {
+        id: "en-editorial",
+        content: "EDITORIAL",
+        style: {
+          fontFamily: "Playfair Display",
+          fontSize: 78,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          fontWeight: "400",
+        },
+        layout: {
+          position: { x: 50, y: 14 },
+          size: { width: 85, height: 10 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+      {
+        id: "en-noir",
+        content: "N O I R",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 24,
+          color: "#FFFFFF",
+          backgroundColor: "transparent",
+          textAlign: "center",
+          letterSpacing: "8px",
+        },
+        layout: {
+          position: { x: 50, y: 21 },
+          size: { width: 85, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+      },
+    ],
+    effects: {
+      videoFilter: "contrast(1.25)",
+    },
+  },
 ];
 
 export const CANVAS_PRESET_CATEGORIES = [
