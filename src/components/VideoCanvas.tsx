@@ -1332,24 +1332,23 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       isVideoOn &&
       cameraStream &&
       containerSize.width > 0 ? (
-        <Rnd
-          size={pipSizePx}
-          position={pipPositionPx}
-          minWidth={containerSize.width * 0.1}
-          minHeight={containerSize.height * 0.1}
-          maxWidth={containerSize.width * 0.5}
-          maxHeight={containerSize.height * 0.5}
-          lockAspectRatio={rest.cameraShape === "circle"} // <-- ADD THIS
-          bounds="parent"
-          onDragStop={handlePipDragStop}
-          onResizeStop={handlePipResizeStop}
-          className="pointer-events-auto"
-          // --- MODIFIED: Apply border/shadow directly to Rnd wrapper ---
-          style={{
-            zIndex: "var(--z-draggable-element-active)",
-            ...pipVideoStyle,
-          }}
-        >
+          <Rnd
+            size={pipSizePx}
+            position={pipPositionPx}
+            minWidth={containerSize.width * 0.1}
+            minHeight={containerSize.height * 0.1}
+            maxWidth={containerSize.width * 0.5}
+            maxHeight={containerSize.height * 0.5}
+            lockAspectRatio={rest.cameraShape === "circle" ? 1 : false}
+            bounds="parent"
+            onDragStop={handlePipDragStop}
+            onResizeStop={handlePipResizeStop}
+            className="pointer-events-auto"
+            style={{
+              zIndex: "var(--z-video-pip)",
+              ...pipVideoStyle,
+            }}
+          >
           <div
             className="w-full h-full relative group"
             style={{ overflow: "hidden" }}
@@ -1624,69 +1623,189 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           className="absolute inset-0 w-full h-full pointer-events-none"
           style={{ zIndex: 100 }}
         />
+        {/* Overlays Below Video Layer */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: "var(--z-draggable-element)" }}
+          style={{ zIndex: "var(--z-overlays-below-video)" }}
         >
           <div className="w-full h-full relative">
             {containerSize.width > 0 &&
-              filteredHtmlOverlays.map((overlay) => (
-                <DraggableOverlay
-                  key={overlay.id}
-                  overlay={overlay}
-                  onSetDynamicLayout={onSetDynamicLayout}
-                  onLayoutChange={rest.onOverlayLayoutChange}
-                  onRemoveOverlay={rest.onRemoveOverlay}
-                  onPreviewGenerated={onPreviewGenerated}
-                  containerSize={containerSize}
-                  portalContainer={portalContainer}
-                />
-              ))}
-            {containerSize.width > 0 &&
-              filteredBrowserOverlays.map((browser) => (
-                <div
-                  key={`browser-wrapper-${browser.id}`}
-                  style={{ pointerEvents: "auto" }}
-                >
-                  <DraggableBrowser
-                    key={browser.id}
-                    overlay={browser}
-                    viewport={viewport}
-                    canvasContainerRef={canvasContainerRef}
+              filteredHtmlOverlays
+                .filter((o) => o.layout.layerOrder === "below-video")
+                .map((overlay) => (
+                  <DraggableOverlay
+                    key={overlay.id}
+                    overlay={overlay}
                     onSetDynamicLayout={onSetDynamicLayout}
-                    onRemove={onRemoveBrowser}
-                    onUrlChange={onBrowserUrlChange}
-                    onLayoutChange={onBrowserLayoutChange}
+                    onLayoutChange={rest.onOverlayLayoutChange}
+                    onRemoveOverlay={rest.onRemoveOverlay}
+                    onPreviewGenerated={onPreviewGenerated}
                     containerSize={containerSize}
-                    isSelected={selectedBrowserId === browser.id}
+                    portalContainer={portalContainer}
+                  />
+                ))}
+            {containerSize.width > 0 &&
+              filteredBrowserOverlays
+                .filter((o) => o.layout.layerOrder === "below-video")
+                .map((browser) => (
+                  <div
+                    key={`browser-wrapper-${browser.id}`}
+                    style={{ pointerEvents: "auto" }}
+                  >
+                    <DraggableBrowser
+                      key={browser.id}
+                      overlay={browser}
+                      viewport={viewport}
+                      canvasContainerRef={canvasContainerRef}
+                      onSetDynamicLayout={onSetDynamicLayout}
+                      onRemove={onRemoveBrowser}
+                      onUrlChange={onBrowserUrlChange}
+                      onLayoutChange={onBrowserLayoutChange}
+                      containerSize={containerSize}
+                      isSelected={selectedBrowserId === browser.id}
+                      onInternalDragStart={onInternalDragStart}
+                      onInternalDragStop={onInternalDragStop}
+                      onSelect={setSelectedBrowserId}
+                    />
+                  </div>
+                ))}
+            {containerSize.width > 0 &&
+              filteredFileOverlays
+                .filter((o) => o.layout.layerOrder === "below-video")
+                .map((file) => (
+                  <div
+                    key={`file-wrapper-${file.id}`}
+                    style={{ pointerEvents: "auto" }}
+                  >
+                    <DraggableFileViewer
+                      key={file.id}
+                      overlay={file}
+                      viewport={viewport}
+                      onSetDynamicLayout={onSetDynamicLayout}
+                      onRemove={onRemoveFile}
+                      onLayoutChange={onFileLayoutChange}
+                      containerSize={containerSize}
+                      isSelected={selectedFileId === file.id}
+                      onInternalDragStart={onInternalDragStart}
+                      onInternalDragStop={onInternalDragStop}
+                      onSelect={setSelectedFileId}
+                      canvasContainerRef={canvasContainerRef}
+                    />
+                  </div>
+                ))}
+            {containerSize.width > 0 &&
+              filteredTextOverlays
+                .filter((o) => o.layout.layerOrder === "below-video")
+                .map((textOverlay) => (
+                  <DraggableTextOverlay
+                    key={textOverlay.id}
+                    overlay={textOverlay}
+                    onLayoutChange={onTextLayoutChange}
+                    onStyleChange={onTextStyleChange}
+                    onContentChange={onTextContentChange}
+                    onRemove={onRemoveTextOverlay}
+                    containerSize={containerSize}
+                    isSelected={selectedTextId === textOverlay.id}
+                    onSelect={setSelectedTextId}
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
-                    onSelect={setSelectedBrowserId}
+                    isSpacePressed={isSpacePressed}
+                    containerRef={sceneRef}
                   />
-                </div>
-              ))}
+                ))}
+          </div>
+        </div>
+
+        {/* Overlays Above Video Layer (Default) */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ zIndex: "var(--z-overlays-above-video)" }}
+        >
+          <div className="w-full h-full relative">
             {containerSize.width > 0 &&
-              filteredFileOverlays.map((file) => (
-                <div
-                  key={`file-wrapper-${file.id}`}
-                  style={{ pointerEvents: "auto" }}
-                >
-                  <DraggableFileViewer
-                    key={file.id}
-                    overlay={file}
-                    viewport={viewport}
+              filteredHtmlOverlays
+                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .map((overlay) => (
+                  <DraggableOverlay
+                    key={overlay.id}
+                    overlay={overlay}
                     onSetDynamicLayout={onSetDynamicLayout}
-                    onRemove={onRemoveFile}
-                    onLayoutChange={onFileLayoutChange}
+                    onLayoutChange={rest.onOverlayLayoutChange}
+                    onRemoveOverlay={rest.onRemoveOverlay}
+                    onPreviewGenerated={onPreviewGenerated}
                     containerSize={containerSize}
-                    isSelected={selectedFileId === file.id}
+                    portalContainer={portalContainer}
+                  />
+                ))}
+            {containerSize.width > 0 &&
+              filteredBrowserOverlays
+                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .map((browser) => (
+                  <div
+                    key={`browser-wrapper-${browser.id}`}
+                    style={{ pointerEvents: "auto" }}
+                  >
+                    <DraggableBrowser
+                      key={browser.id}
+                      overlay={browser}
+                      viewport={viewport}
+                      canvasContainerRef={canvasContainerRef}
+                      onSetDynamicLayout={onSetDynamicLayout}
+                      onRemove={onRemoveBrowser}
+                      onUrlChange={onBrowserUrlChange}
+                      onLayoutChange={onBrowserLayoutChange}
+                      containerSize={containerSize}
+                      isSelected={selectedBrowserId === browser.id}
+                      onInternalDragStart={onInternalDragStart}
+                      onInternalDragStop={onInternalDragStop}
+                      onSelect={setSelectedBrowserId}
+                    />
+                  </div>
+                ))}
+            {containerSize.width > 0 &&
+              filteredFileOverlays
+                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .map((file) => (
+                  <div
+                    key={`file-wrapper-${file.id}`}
+                    style={{ pointerEvents: "auto" }}
+                  >
+                    <DraggableFileViewer
+                      key={file.id}
+                      overlay={file}
+                      viewport={viewport}
+                      onSetDynamicLayout={onSetDynamicLayout}
+                      onRemove={onRemoveFile}
+                      onLayoutChange={onFileLayoutChange}
+                      containerSize={containerSize}
+                      isSelected={selectedFileId === file.id}
+                      onInternalDragStart={onInternalDragStart}
+                      onInternalDragStop={onInternalDragStop}
+                      onSelect={setSelectedFileId}
+                      canvasContainerRef={canvasContainerRef}
+                    />
+                  </div>
+                ))}
+            {containerSize.width > 0 &&
+              filteredTextOverlays
+                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .map((textOverlay) => (
+                  <DraggableTextOverlay
+                    key={textOverlay.id}
+                    overlay={textOverlay}
+                    onLayoutChange={onTextLayoutChange}
+                    onStyleChange={onTextStyleChange}
+                    onContentChange={onTextContentChange}
+                    onRemove={onRemoveTextOverlay}
+                    containerSize={containerSize}
+                    isSelected={selectedTextId === textOverlay.id}
+                    onSelect={setSelectedTextId}
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
-                    onSelect={setSelectedFileId}
-                    canvasContainerRef={canvasContainerRef}
+                    isSpacePressed={isSpacePressed}
+                    containerRef={sceneRef}
                   />
-                </div>
-              ))}
+                ))}
 
             {/* --- MODIFIED: Add containerSize check --- */}
             {containerSize.width > 0 &&

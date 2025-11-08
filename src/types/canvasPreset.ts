@@ -85,4 +85,5 @@ export interface CanvasPreset {
   pip: CanvasPresetPip;
   textOverlays: CanvasPresetTextOverlay[];
   effects: CanvasPresetEffects;
+  canvasAspectRatio?: string;
 }

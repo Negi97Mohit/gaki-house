@@ -2,6 +2,10 @@
 export const zIndex = {
   base: 1,
   canvasOverlay: 10,
+  videoBackground: 50,
+  videoPip: 100,
+  overlaysBelowVideo: 75,
+  overlaysAboveVideo: 150,
   draggableElement: 100,
   draggableElementHover: 150,
   draggableElementActive: 200,

@@ -38,6 +38,8 @@ export type GeneratedLayout = {
   size: { width: number; height: number };
   zIndex: number;
   rotation: number;
+  // Control whether overlay should render above or below video elements
+  layerOrder?: "above-video" | "below-video" | "auto";
 };
 export interface GeneratedOverlay {
   id: string;
@@ -113,6 +115,8 @@ export interface LayoutState {
   pipPosition: { x: number; y: number };
   pipSize: { width: number; height: number };
   customMaskUrl?: string;
+  pipBorder?: { color: string; width: number };
+  pipShadow?: { blur: number; color: string };
 }
 
 export const DEFAULT_LAYOUT_STATE: LayoutState = {
@@ -121,6 +125,8 @@ export const DEFAULT_LAYOUT_STATE: LayoutState = {
   splitRatio: 0.5,
   pipPosition: { x: 75, y: 75 },
   pipSize: { width: 20, height: 20 },
+  pipBorder: { color: "#FFFFFF", width: 0 },
+  pipShadow: { blur: 0, color: "rgba(0,0,0,0.5)" },
 };
 
 export type AIDecisionType = "live" | "static";

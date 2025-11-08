@@ -703,10 +703,8 @@ const Index = () => {
       onSplitRatioChange: handleSetSplitRatio,
       onPipPositionChange: handleSetPipPosition,
       onPipSizeChange: handleSetPipSize,
-      // --- ADDED ---
       pipBorder: scene.pipBorder,
       pipShadow: scene.pipShadow,
-      // --- END ADDED ---
       customMaskUrl: scene.customMaskUrl,
       onCustomMaskUpload: handleCustomMaskUpload,
       blankCanvasColor: scene.blankCanvasColor,
@@ -721,13 +719,12 @@ const Index = () => {
       isNeonEdgeEnabled: scene.isNeonEdgeEnabled,
       neonIntensity: scene.neonIntensity,
       neonColor: scene.neonColor,
-      screenShareMode: scene.screenShareMode,
+      screenShareMode: scene.screenShareMode as "off" | "screen" | "canvas",
       onScreenShareModeChange: handleSetScreenShareMode,
       hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
-      // --- MODIFIED: Pass device lists to canvas ---
       audioDevices: audioDevices,
       videoDevices: videoDevices,
-      // --- END MODIFICATION ---
+      canvasAspectRatio: scene.canvasAspectRatio,
       sidebarProps: {
         style: scene.captionStyle,
         dynamicStyle: scene.dynamicStyle,
@@ -748,12 +745,10 @@ const Index = () => {
         onBlankCanvasColorChange: handleSetBlankCanvasColor,
         onBackgroundEffectChange: handleSetBackgroundEffect,
         onBackgroundImageUrlChange: handleSetBackgroundImageUrl,
-        // --- ADDED ---
         pipBorder: scene.pipBorder,
         onPipBorderChange: handleSetPipBorder,
         pipShadow: scene.pipShadow,
         onPipShadowChange: handleSetPipShadow,
-        // --- END ADDED ---
         onAutoFramingChange: handleSetIsAutoFramingEnabled,
         onZoomSensitivityChange: handleSetZoomSensitivity,
         onTrackingSpeedChange: handleSetTrackingSpeed,
@@ -1352,7 +1347,7 @@ const Index = () => {
 
       updateActiveScene((scene) => {
         // CLEAR ALL EXISTING STYLES (only one style at a time)
-        const newScene = {
+        const newScene: SceneState = {
           ...scene,
           textOverlays: [],
           activeOverlays: [],
@@ -1364,7 +1359,7 @@ const Index = () => {
           isBeautifyEnabled: false,
           isNeonEdgeEnabled: false,
           // FIX: Always set to 'canvas' for non-solo layouts to show blank canvas
-          screenShareMode: preset.pip.layoutMode === "solo" ? "off" : "canvas",
+          screenShareMode: (preset.pip.layoutMode === "solo" ? "off" : "canvas") as "off" | "screen" | "canvas",
 
           // FIX: Apply all layout properties from preset
           layoutMode: preset.pip.layoutMode as LayoutMode,

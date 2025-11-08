@@ -65,6 +65,10 @@
   .dark {
     --z-base: 1;
     --z-canvas-overlay: 10;
+    --z-video-background: 50;
+    --z-overlays-below-video: 75;
+    --z-video-pip: 100;
+    --z-overlays-above-video: 150;
     --z-draggable-element: 100;
     --z-draggable-element-hover: 150;
     --z-draggable-element-active: 200;
