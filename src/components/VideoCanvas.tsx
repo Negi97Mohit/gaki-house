@@ -711,7 +711,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   // --- Wheel Handler ---
   const handleWheel = useCallback(
     (e: WheelEvent) => {
-      const container = canvasContainerRef.current;
+      const container = sceneRef.current;
       if (!container) return;
       // Only trigger this new logic if we're in solo mode
       if (props.layoutMode !== "solo") {
@@ -1128,15 +1128,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   );
 
   const renderScreen = (className?: string) => {
-    if (props.screenShareMode === "screen" && screenStream) {
-      return (
-        <VideoPlayer
-          stream={screenStream}
-          className={cn("w-full h-full object-cover", className)}
-        />
-      );
-    }
-
+    // FIX: Show blank canvas when in 'canvas' mode
     if (props.screenShareMode === "canvas") {
       return (
         <div
@@ -1146,6 +1138,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       );
     }
 
+    if (props.screenShareMode === "screen" && screenStream) {
+      return (
+        <VideoPlayer
+          stream={screenStream}
+          className={cn("w-full h-full object-cover", className)}
+        />
+      );
+    }
+
+    // Only show "Select share source" when explicitly off
     return (
       <div className="w-full h-full flex items-center justify-center text-center text-muted-foreground bg-black">
         <div>
@@ -1325,10 +1327,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         pipSizePx.height / 2,
     };
 
-    const pipContentEl = props.screenShareMode !== "off" &&
+    const pipContentEl =
+      props.screenShareMode !== "off" &&
       isVideoOn &&
       cameraStream &&
-      containerSize.width > 0 && (
+      containerSize.width > 0 ? (
         <Rnd
           size={pipSizePx}
           position={pipPositionPx}
@@ -1368,7 +1371,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             </Button>
           </div>
         </Rnd>
-      );
+      ) : null;
 
     const contentWithBackground = (
       <div className="w-full h-full relative" style={getBackgroundStyle()}>

@@ -1363,13 +1363,10 @@ const Index = () => {
           videoFilter: "none",
           isBeautifyEnabled: false,
           isNeonEdgeEnabled: false,
-          // --- THIS IS THE FIX ---
-          // Set screen share to 'canvas' if the layout isn't 'solo'
+          // FIX: Always set to 'canvas' for non-solo layouts to show blank canvas
           screenShareMode: preset.pip.layoutMode === "solo" ? "off" : "canvas",
-          // --- END OF FIX ---
 
-          // --- THIS IS THE FIX ---
-          // 2. Apply all layout properties from the preset
+          // FIX: Apply all layout properties from preset
           layoutMode: preset.pip.layoutMode as LayoutMode,
           cameraShape: preset.pip.cameraShape as CameraShape,
           splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
@@ -1378,7 +1375,7 @@ const Index = () => {
           pipSize: preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize,
           pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
           pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
-          // --- END OF FIX ---
+          canvasAspectRatio: preset.canvasAspectRatio ?? "16:9",
         };
 
         if (preset.effects.videoFilter) {

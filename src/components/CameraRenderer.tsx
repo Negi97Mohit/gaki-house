@@ -255,7 +255,16 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [stream, isNeonEdgeEnabled, neonIntensity, neonColor, videoFilter, processedCanvas, facePosition, isFaceTrackingEnabled]);
+  }, [
+    stream,
+    isNeonEdgeEnabled,
+    neonIntensity,
+    neonColor,
+    videoFilter,
+    processedCanvas,
+    facePosition,
+    isFaceTrackingEnabled,
+  ]);
 
   return (
     <div className={className} style={style}>
@@ -266,7 +275,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         playsInline
         className="hidden object-cover w-full h-full"
       />
-      <canvas ref={canvasRef} className="w-full h-full aspect-auto" />
+      <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
 };
