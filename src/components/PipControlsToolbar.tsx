@@ -154,7 +154,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)]"
+            className="z-[var(--z-text-toolbar)] max-h-[50vh] overflow-y-auto"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <DropdownMenuLabel>Camera Background</DropdownMenuLabel>
@@ -315,16 +315,46 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 Video Filter
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
-                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)]">
-                  {FILTER_PRESETS.map((filter) => (
-                    <DropdownMenuCheckboxItem
-                      key={filter.id}
-                      checked={props.videoFilter === filter.style}
-                      onClick={() => props.onVideoFilterChange(filter.style)}
-                    >
-                      {filter.name}
-                    </DropdownMenuCheckboxItem>
-                  ))}
+                {/* --- MODIFIED: Replaced text list with visual grid --- */}
+                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] p-2">
+                  <div className="grid grid-cols-3 gap-2 w-[240px] max-h-[200px] overflow-y-auto pr-2">
+                    {" "}
+                    {FILTER_PRESETS.map((filter) => {
+                      const isSelected = props.videoFilter === filter.style;
+                      return (
+                        <button
+                          key={filter.id}
+                          onClick={() =>
+                            props.onVideoFilterChange(filter.style)
+                          }
+                          className={cn(
+                            "aspect-video rounded-md border-2 transition-all duration-200 relative overflow-hidden group",
+                            isSelected
+                              ? "border-primary shadow-lg"
+                              : "border-border hover:border-primary/60"
+                          )}
+                          title={filter.name}
+                        >
+                          <img
+                            src="/placeholder.jpeg"
+                            alt={filter.name}
+                            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                            style={{ filter: filter.style }}
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-1">
+                            <span className="text-white text-[9px] font-bold font-cyber truncate block text-center">
+                              {filter.name.toUpperCase()}
+                            </span>
+                          </div>
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-primary/30 flex items-center justify-center">
+                              <div className="w-2 h-2 rounded-full bg-primary-foreground" />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
