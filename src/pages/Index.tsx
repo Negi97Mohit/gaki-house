@@ -1332,12 +1332,11 @@ const Index = () => {
         videoFilter: 'none',
         isBeautifyEnabled: false,
         isNeonEdgeEnabled: false,
+        screenShareMode: 'off' as const, // Ensure screen share doesn't interfere
       };
 
-      // FORCE layout mode change
-      if (preset.pip.layoutMode === 'pip' || preset.pip.layoutMode === 'split-vertical' || preset.pip.layoutMode === 'split-horizontal') {
-        newScene.layoutMode = preset.pip.layoutMode as LayoutMode;
-      }
+      // FORCE layout mode change - explicitly set the layout mode from preset
+      newScene.layoutMode = preset.pip.layoutMode as LayoutMode;
       
       // Map camera shape
       const shapeMap: Record<string, CameraShape> = {
@@ -1347,15 +1346,10 @@ const Index = () => {
       };
       newScene.cameraShape = shapeMap[preset.pip.cameraShape] || 'rectangle';
       
-      if (preset.pip.splitRatio !== undefined) {
-        newScene.splitRatio = preset.pip.splitRatio;
-      }
-      if (preset.pip.pipPosition) {
-        newScene.pipPosition = { ...preset.pip.pipPosition };
-      }
-      if (preset.pip.pipSize) {
-        newScene.pipSize = { ...preset.pip.pipSize };
-      }
+      // Always set splitRatio, pipPosition, and pipSize with defaults if missing
+      newScene.splitRatio = preset.pip.splitRatio ?? 0.5;
+      newScene.pipPosition = preset.pip.pipPosition ? { ...preset.pip.pipPosition } : { x: 50, y: 50 };
+      newScene.pipSize = preset.pip.pipSize ? { ...preset.pip.pipSize } : { width: 30, height: 40 };
 
       // Apply effects
       if (preset.effects.videoFilter) {
