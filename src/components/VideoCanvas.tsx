@@ -1332,23 +1332,23 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       isVideoOn &&
       cameraStream &&
       containerSize.width > 0 ? (
-          <Rnd
-            size={pipSizePx}
-            position={pipPositionPx}
-            minWidth={containerSize.width * 0.1}
-            minHeight={containerSize.height * 0.1}
-            maxWidth={containerSize.width * 0.5}
-            maxHeight={containerSize.height * 0.5}
-            lockAspectRatio={rest.cameraShape === "circle" ? 1 : false}
-            bounds="parent"
-            onDragStop={handlePipDragStop}
-            onResizeStop={handlePipResizeStop}
-            className="pointer-events-auto"
-            style={{
-              zIndex: "var(--z-video-pip)",
-              ...pipVideoStyle,
-            }}
-          >
+        <Rnd
+          size={pipSizePx}
+          position={pipPositionPx}
+          minWidth={containerSize.width * 0.1}
+          minHeight={containerSize.height * 0.1}
+          maxWidth={containerSize.width * 0.5}
+          maxHeight={containerSize.height * 0.5}
+          lockAspectRatio={rest.cameraShape === "circle" ? 1 : false}
+          bounds="parent"
+          onDragStop={handlePipDragStop}
+          onResizeStop={handlePipResizeStop}
+          className="pointer-events-auto"
+          style={{
+            zIndex: "var(--z-video-pip)",
+            ...pipVideoStyle,
+          }}
+        >
           <div
             className="w-full h-full relative group"
             style={{ overflow: "hidden" }}
@@ -1704,7 +1704,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onStyleChange={onTextStyleChange}
                     onContentChange={onTextContentChange}
                     onRemove={onRemoveTextOverlay}
-                    containerSize={containerSize}
+                    // containerSize={containerSize}
                     isSelected={selectedTextId === textOverlay.id}
                     onSelect={setSelectedTextId}
                     onInternalDragStart={onInternalDragStart}
@@ -1724,7 +1724,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           <div className="w-full h-full relative">
             {containerSize.width > 0 &&
               filteredHtmlOverlays
-                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .filter(
+                  (o) =>
+                    !o.layout.layerOrder ||
+                    o.layout.layerOrder === "above-video" ||
+                    o.layout.layerOrder === "auto"
+                )
                 .map((overlay) => (
                   <DraggableOverlay
                     key={overlay.id}
@@ -1739,7 +1744,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 ))}
             {containerSize.width > 0 &&
               filteredBrowserOverlays
-                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .filter(
+                  (o) =>
+                    !o.layout.layerOrder ||
+                    o.layout.layerOrder === "above-video" ||
+                    o.layout.layerOrder === "auto"
+                )
                 .map((browser) => (
                   <div
                     key={`browser-wrapper-${browser.id}`}
@@ -1764,7 +1774,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 ))}
             {containerSize.width > 0 &&
               filteredFileOverlays
-                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .filter(
+                  (o) =>
+                    !o.layout.layerOrder ||
+                    o.layout.layerOrder === "above-video" ||
+                    o.layout.layerOrder === "auto"
+                )
                 .map((file) => (
                   <div
                     key={`file-wrapper-${file.id}`}
@@ -1788,7 +1803,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 ))}
             {containerSize.width > 0 &&
               filteredTextOverlays
-                .filter((o) => !o.layout.layerOrder || o.layout.layerOrder === "above-video" || o.layout.layerOrder === "auto")
+                .filter(
+                  (o) =>
+                    !o.layout.layerOrder ||
+                    o.layout.layerOrder === "above-video" ||
+                    o.layout.layerOrder === "auto"
+                )
                 .map((textOverlay) => (
                   <DraggableTextOverlay
                     key={textOverlay.id}
@@ -1797,7 +1817,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onStyleChange={onTextStyleChange}
                     onContentChange={onTextContentChange}
                     onRemove={onRemoveTextOverlay}
-                    containerSize={containerSize}
+                    // containerSize={containerSize}
                     isSelected={selectedTextId === textOverlay.id}
                     onSelect={setSelectedTextId}
                     onInternalDragStart={onInternalDragStart}
@@ -1806,32 +1826,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     containerRef={sceneRef}
                   />
                 ))}
-
-            {/* --- MODIFIED: Add containerSize check --- */}
-            {containerSize.width > 0 &&
-              filteredTextOverlays.map((text) => (
-                <div
-                  key={`text-wrapper-${text.id}`}
-                  style={{ pointerEvents: "auto" }}
-                >
-                  <DraggableTextOverlay
-                    key={text.id}
-                    overlay={text}
-                    onLayoutChange={onTextLayoutChange}
-                    onStyleChange={onTextStyleChange}
-                    onContentChange={onTextContentChange}
-                    onRemove={onRemoveTextOverlay}
-                    containerSize={containerSize}
-                    isSelected={selectedTextId === text.id}
-                    onSelect={setSelectedTextId}
-                    onInternalDragStart={onInternalDragStart}
-                    onInternalDragStop={onInternalDragStop}
-                    isSpacePressed={false}
-                    containerRef={canvasContainerRef}
-                  />
-                </div>
-              ))}
-            {/* --- END OF ADDED BLOCK --- */}
 
             {/* --- MODIFIED: Add containerSize check --- */}
             {containerSize.width > 0 &&

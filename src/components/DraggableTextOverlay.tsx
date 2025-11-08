@@ -1,5 +1,5 @@
 // src/components/DraggableTextOverlay.tsx - ENHANCED VERSION (UPDATED)
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
@@ -40,7 +40,7 @@ interface DraggableTextOverlayProps {
   ) => void;
   onContentChange: (id: string, content: string) => void;
   onRemove: (id: string) => void;
-  containerSize: { width: number; height: number };
+  // containerSize: { width: number; height: number };
   isSelected: boolean;
   onSelect: (id: string) => void;
   onInternalDragStart: () => void;
@@ -55,7 +55,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   onStyleChange,
   onContentChange,
   onRemove,
-  containerSize,
+  // containerSize,
   isSelected,
   onSelect,
   onInternalDragStart,
@@ -69,6 +69,30 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   // MODIFIED: This is now a div, not a textarea
   const editorRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);
+
+  // --- MODIFIED: ADD THIS STATE AND EFFECT ---
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const container = containerRef?.current;
+    if (!container) return;
+
+    const updateSize = () => {
+      if (container) {
+        setContainerSize({
+          width: container.clientWidth,
+          height: container.clientHeight,
+        });
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(updateSize);
+    resizeObserver.observe(container);
+    updateSize(); // Initial size update
+
+    return () => resizeObserver.disconnect();
+  }, [containerRef]);
+  // --- END OF MODIFIED BLOCK ---
 
   const widthPx =
     containerSize.width > 0
@@ -105,8 +129,14 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const currentHeightPx = currentElement.offsetHeight;
 
       // Clamp position to stay within bounds
-      const clampedX = Math.max(0, Math.min(d.x, containerSize.width - currentWidthPx));
-      const clampedY = Math.max(0, Math.min(d.y, containerSize.height - currentHeightPx));
+      const clampedX = Math.max(
+        0,
+        Math.min(d.x, containerSize.width - currentWidthPx)
+      );
+      const clampedY = Math.max(
+        0,
+        Math.min(d.y, containerSize.height - currentHeightPx)
+      );
 
       const newPositionPercent = calculatePercentagePosition(
         clampedX,
