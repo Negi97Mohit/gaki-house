@@ -1320,14 +1320,21 @@ const Index = () => {
     console.log('[Canvas Preset] Applying preset:', preset.name);
     
     updateActiveScene((scene) => {
-      // Apply background
+      // CLEAR ALL EXISTING STYLES (only one style at a time)
       const newScene = {
         ...scene,
+        textOverlays: [],
+        activeOverlays: [],
+        browserOverlays: [],
+        fileOverlays: [],
         blankCanvasColor: preset.background.blankCanvasColor,
         backgroundEffect: preset.background.backgroundEffect,
+        videoFilter: 'none',
+        isBeautifyEnabled: false,
+        isNeonEdgeEnabled: false,
       };
 
-      // Apply layout and PiP settings
+      // FORCE layout mode change
       if (preset.pip.layoutMode === 'pip' || preset.pip.layoutMode === 'split-vertical' || preset.pip.layoutMode === 'split-horizontal') {
         newScene.layoutMode = preset.pip.layoutMode as LayoutMode;
       }
@@ -1398,16 +1405,28 @@ const Index = () => {
         },
       }));
 
-      // Add new text overlays to scene
-      newScene.textOverlays = [...newScene.textOverlays, ...newTextOverlays];
+      // Replace text overlays (only new preset overlays)
+      newScene.textOverlays = newTextOverlays;
 
       return newScene;
     });
 
-    toast.success(`"${preset.name}" preset applied! Text overlays are now editable.`, {
-      description: 'Drag and resize text overlays to customize your design.'
+    // Record layout change if recording
+    if (recording.isRecording) {
+      const layoutState = {
+        mode: preset.pip.layoutMode as LayoutMode,
+        cameraShape: preset.pip.cameraShape as CameraShape,
+        splitRatio: preset.pip.splitRatio || 0.5,
+        pipPosition: preset.pip.pipPosition || { x: 50, y: 50 },
+        pipSize: preset.pip.pipSize || { width: 20, height: 20 },
+      };
+      recording.recordLayoutChange(layoutState);
+    }
+
+    toast.success(`"${preset.name}" preset applied!`, {
+      description: 'All previous styles cleared. Text overlays are now editable.'
     });
-  }, [updateActiveScene]);
+  }, [updateActiveScene, recording]);
 
   const handleToggleFullscreen = () => setIsFullscreen((prev) => !prev);
 
