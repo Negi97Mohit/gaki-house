@@ -410,14 +410,25 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           )}
         </div>
       </Rnd>
-
       {isSelected && !isEditing && containerRef && (
-        <TextEditingToolbar
-          overlay={overlay}
-          onStyleChange={onStyleChange}
-          position={getToolbarPosition()}
-          containerRef={containerRef}
-        />
+        <div
+          className="pointer-events-auto"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            // Use a CSS var or a high number to ensure it's on top
+            zIndex: "var(--z-text-toolbar, 9999)",
+          }}
+        >
+          <TextEditingToolbar
+            overlay={overlay}
+            onStyleChange={onStyleChange}
+            position={getToolbarPosition()}
+            containerRef={containerRef}
+          />
+        </div>
+        // --- END MODIFICATION ---
       )}
     </>
   );
