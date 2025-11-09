@@ -99,7 +99,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   const heightPx =
     containerSize.height > 0
       ? (containerSize.height * overlay.layout.size.height) / 100
-      : "auto";
+      : 100;
 
   // --- REFACTOR: Removed center-point logic ---
   const xPx =

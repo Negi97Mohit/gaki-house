@@ -986,9 +986,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       props.sidebarProps.customAspectRatio
     );
 
-    let newHeight = currentAspectRatio && typeof currentAspectRatio === 'number'
-      ? (newWidthPx / currentAspectRatio / rect.height) * 100
-      : (parseInt(ref.style.height, 10) / rect.height) * 100;
+    let newHeight =
+      currentAspectRatio && typeof currentAspectRatio === "number"
+        ? (newWidthPx / currentAspectRatio / rect.height) * 100
+        : (parseInt(ref.style.height, 10) / rect.height) * 100;
 
     // --- REFACTOR: Calculate TOP-LEFT position from top-left and new size ---
     let newX = (position.x / rect.width) * 100;
@@ -1131,6 +1132,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <CameraRenderer
           stream={cameraStream}
           className="w-full h-full"
+          portalContainer={portalContainer}
           style={{ ...style }}
           // --- Video/Stream Props ---
           videoFilter={videoFilterString}
@@ -1369,9 +1371,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     );
 
     const pipWidthPx = (containerSize.width * rest.pipSize.width) / 100;
-    const pipHeightPx = currentAspectRatio && typeof currentAspectRatio === 'number'
-      ? pipWidthPx / currentAspectRatio // Derive height from width
-      : (containerSize.height * rest.pipSize.height) / 100; // Fallback to state height
+    const pipHeightPx =
+      currentAspectRatio && typeof currentAspectRatio === "number"
+        ? pipWidthPx / currentAspectRatio // Derive height from width
+        : (containerSize.height * rest.pipSize.height) / 100; // Fallback to state height
 
     const pipSizePx = {
       width: pipWidthPx,
@@ -1398,7 +1401,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           minWidth={containerSize.width * 0.1}
           // --- MODIFIED: Set minHeight based on aspect ratio ---
           minHeight={
-            currentAspectRatio && typeof currentAspectRatio === 'number'
+            currentAspectRatio && typeof currentAspectRatio === "number"
               ? (containerSize.width * 0.1) / currentAspectRatio
               : containerSize.height * 0.1
           }

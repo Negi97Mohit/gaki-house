@@ -1,5 +1,5 @@
 // src/components/CameraRenderer.tsx
-
+import { createPortal } from "react-dom";
 import React, { useEffect, useRef, useState } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { PipControlsToolbar } from "./PipControlsToolbar";
@@ -133,6 +133,7 @@ interface CameraRendererProps {
   // --- Original Background Props ---
   backgroundEffect: "none" | "blur" | "image";
   backgroundImageUrl?: string | null;
+  portalContainer?: HTMLElement | null;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = ({
@@ -174,6 +175,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   onFaceTrackingToggle,
   backgroundEffect,
   backgroundImageUrl,
+  portalContainer,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -362,41 +364,78 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       />
       <canvas ref={canvasRef} className="w-full h-full" />
 
-      {isHovered && (
-        <PipControlsToolbar
-          position={toolbarPosition}
-          containerRef={containerRef}
-          pipBorder={pipBorder}
-          onPipBorderChange={onPipBorderChange}
-          pipShadow={pipShadow}
-          onPipShadowChange={onPipShadowChange}
-          isAutoFramingEnabled={isAutoFramingEnabled}
-          onAutoFramingChange={onAutoFramingChange}
-          isBeautifyEnabled={isBeautifyEnabled}
-          onBeautifyToggle={onBeautifyToggle}
-          isLowLightEnabled={isLowLightEnabled}
-          onLowLightToggle={onLowLightToggle}
-          videoFilter={videoFilter}
-          onVideoFilterChange={onVideoFilterChange}
-          isNeonEdgeEnabled={isNeonEdgeEnabled}
-          onNeonEdgeToggle={onNeonEdgeToggle}
-          neonIntensity={neonIntensity}
-          onNeonIntensityChange={onNeonIntensityChange}
-          zoomSensitivity={zoomSensitivity}
-          onZoomSensitivityChange={onZoomSensitivityChange}
-          trackingSpeed={trackingSpeed}
-          onTrackingSpeedChange={onTrackingSpeedChange}
-          cameraBackground={cameraBackground}
-          onCameraBackgroundChange={onCameraBackgroundChange}
-          onCustomBackgroundUpload={onCustomBackgroundUpload}
-          cameraAspectRatio={cameraAspectRatio}
-          onCameraAspectRatioChange={onCameraAspectRatioChange} // <-- FIX: Prop is now passed
-          customAspectRatio={customAspectRatio}
-          onCustomAspectRatioChange={onCustomAspectRatioChange}
-          isFaceTrackingEnabled={isFaceTrackingEnabled}
-          onFaceTrackingToggle={onFaceTrackingToggle}
-        />
-      )}
+      {isHovered && portalContainer instanceof HTMLElement
+        ? createPortal(
+            <PipControlsToolbar
+              position={toolbarPosition}
+              containerRef={containerRef}
+              pipBorder={pipBorder}
+              onPipBorderChange={onPipBorderChange}
+              pipShadow={pipShadow}
+              onPipShadowChange={onPipShadowChange}
+              isAutoFramingEnabled={isAutoFramingEnabled}
+              onAutoFramingChange={onAutoFramingChange}
+              isBeautifyEnabled={isBeautifyEnabled}
+              onBeautifyToggle={onBeautifyToggle}
+              isLowLightEnabled={isLowLightEnabled}
+              onLowLightToggle={onLowLightToggle}
+              videoFilter={videoFilter}
+              onVideoFilterChange={onVideoFilterChange}
+              isNeonEdgeEnabled={isNeonEdgeEnabled}
+              onNeonEdgeToggle={onNeonEdgeToggle}
+              neonIntensity={neonIntensity}
+              onNeonIntensityChange={onNeonIntensityChange}
+              zoomSensitivity={zoomSensitivity}
+              onZoomSensitivityChange={onZoomSensitivityChange}
+              trackingSpeed={trackingSpeed}
+              onTrackingSpeedChange={onTrackingSpeedChange}
+              cameraBackground={cameraBackground}
+              onCameraBackgroundChange={onCameraBackgroundChange}
+              onCustomBackgroundUpload={onCustomBackgroundUpload}
+              cameraAspectRatio={cameraAspectRatio}
+              onCameraAspectRatioChange={onCameraAspectRatioChange} // <-- FIX: Prop is now passed
+              customAspectRatio={customAspectRatio}
+              onCustomAspectRatioChange={onCustomAspectRatioChange}
+              isFaceTrackingEnabled={isFaceTrackingEnabled}
+              onFaceTrackingToggle={onFaceTrackingToggle}
+            />,
+            portalContainer
+          )
+        : isHovered && (
+            <PipControlsToolbar
+              position={toolbarPosition}
+              containerRef={containerRef}
+              pipBorder={pipBorder}
+              onPipBorderChange={onPipBorderChange}
+              pipShadow={pipShadow}
+              onPipShadowChange={onPipShadowChange}
+              isAutoFramingEnabled={isAutoFramingEnabled}
+              onAutoFramingChange={onAutoFramingChange}
+              isBeautifyEnabled={isBeautifyEnabled}
+              onBeautifyToggle={onBeautifyToggle}
+              isLowLightEnabled={isLowLightEnabled}
+              onLowLightToggle={onLowLightToggle}
+              videoFilter={videoFilter}
+              onVideoFilterChange={onVideoFilterChange}
+              isNeonEdgeEnabled={isNeonEdgeEnabled}
+              onNeonEdgeToggle={onNeonEdgeToggle}
+              neonIntensity={neonIntensity}
+              onNeonIntensityChange={onNeonIntensityChange}
+              zoomSensitivity={zoomSensitivity}
+              onZoomSensitivityChange={onZoomSensitivityChange}
+              trackingSpeed={trackingSpeed}
+              onTrackingSpeedChange={onTrackingSpeedChange}
+              cameraBackground={cameraBackground}
+              onCameraBackgroundChange={onCameraBackgroundChange}
+              onCustomBackgroundUpload={onCustomBackgroundUpload}
+              cameraAspectRatio={cameraAspectRatio}
+              onCameraAspectRatioChange={onCameraAspectRatioChange}
+              customAspectRatio={customAspectRatio}
+              onCustomAspectRatioChange={onCustomAspectRatioChange}
+              isFaceTrackingEnabled={isFaceTrackingEnabled}
+              onFaceTrackingToggle={onFaceTrackingToggle}
+            />
+          )}
     </div>
   );
 };
