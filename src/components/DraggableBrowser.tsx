@@ -38,40 +38,30 @@ interface DraggableBrowserProps {
   canvasContainerRef: React.RefObject<HTMLDivElement>;
 }
 
-// Helper function moved outside the component
+// --- REFACTOR: Helper now converts top-left pixel to top-left percentage ---
 const calculatePercentagePosition = (
   pixelX: number,
   pixelY: number,
-  elementWidthPx: number,
-  elementHeightPx: number,
-  viewport: { scale: number; x: number; y: number },
   containerSize: { width: number; height: number }
 ): { x: number; y: number } | null => {
-  // Return null if invalid
-  // Safety check (returns null now)
   if (
-    !viewport ||
     !containerSize.width ||
     !containerSize.height ||
-    containerSize.width <= 0 || // Explicit check for zero/negative
+    containerSize.width <= 0 ||
     containerSize.height <= 0
   ) {
     console.warn(
-      // Use warn instead of error
-      "Missing or invalid viewport/containerSize in calculatePercentagePosition",
-      { viewport, containerSize }
+      "Missing or invalid containerSize in calculatePercentagePosition",
+      { containerSize }
     );
-    return null; // Indicate failure
+    return null;
   }
 
-  // With the `scale` prop on Rnd, pixelX/pixelY are already unscaled.
-  // We just need to find the center and convert to percentage.
-  const centerXOriginal = pixelX + elementWidthPx / 2;
-  const centerYOriginal = pixelY + elementHeightPx / 2;
-  const percentageX = (centerXOriginal / containerSize.width) * 100;
-  const percentageY = (centerYOriginal / containerSize.height) * 100;
+  const percentageX = (pixelX / containerSize.width) * 100;
+  const percentageY = (pixelY / containerSize.height) * 100;
   return { x: percentageX, y: percentageY };
 };
+// --- END REFACTOR ---
 
 export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   overlay,
@@ -107,49 +97,51 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     iframeRef.current?.contentWindow?.location.reload();
   };
 
-  // Calculate initial pixel dimensions safely
   const widthPx =
     containerSize.width > 0
       ? (containerSize.width * overlay.layout.size.width) / 100
-      : 400; // Default width
+      : 400;
   const heightPx =
     containerSize.height > 0
       ? (containerSize.height * overlay.layout.size.height) / 100
-      : 300; // Default height
+      : 300;
 
-  // Calculate initial pixel position safely (default to center)
-  // Calculate initial pixel position in scene coordinates
+  // --- REFACTOR: Calculate top-left pixel position ---
   const xPx =
     containerSize.width > 0
-      ? (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2
+      ? (containerSize.width * overlay.layout.position.x) / 100
       : 0;
   const yPx =
     containerSize.height > 0
-      ? (containerSize.height * overlay.layout.position.y) / 100 - heightPx / 2
+      ? (containerSize.height * overlay.layout.position.y) / 100
       : 0;
+  // --- END REFACTOR ---
 
-  // --- Wrap Rnd callbacks in useCallback ---
   const handleDragStop = useCallback(
     (e: any, d: { x: number; y: number }) => {
       onInternalDragStop();
       setIsDragging(false);
       if (containerSize.width <= 0 || containerSize.height <= 0) return;
 
-      const currentWidthPx =
-        (containerSize.width * overlay.layout.size.width) / 100;
-      const currentHeightPx =
-        (containerSize.height * overlay.layout.size.height) / 100;
-
+      // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         d.x,
         d.y,
-        currentWidthPx,
-        currentHeightPx,
-        viewport,
         containerSize
       );
+      // --- END REFACTOR ---
 
       if (newPositionPercent) {
+        // Boundary Enforcement
+        newPositionPercent.x = Math.max(
+          0,
+          Math.min(newPositionPercent.x, 100 - overlay.layout.size.width)
+        );
+        newPositionPercent.y = Math.max(
+          0,
+          Math.min(newPositionPercent.y, 100 - overlay.layout.size.height)
+        );
+
         onLayoutChange(overlay.id, {
           position: newPositionPercent,
         });
@@ -157,7 +149,6 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     },
     [
       onInternalDragStop,
-      viewport,
       containerSize,
       onLayoutChange,
       overlay.id,
@@ -179,26 +170,36 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       const newWidthPx = parseInt(ref.style.width, 10);
       const newHeightPx = parseInt(ref.style.height, 10);
 
+      // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         pos.x,
         pos.y,
-        newWidthPx,
-        newHeightPx,
-        viewport,
         containerSize
       );
+      let newWidthPercent = (newWidthPx / containerSize.width) * 100;
+      let newHeightPercent = (newHeightPx / containerSize.height) * 100;
+
+      if (newPositionPercent) {
+        // Boundary Enforcement
+        newWidthPercent = Math.min(newWidthPercent, 100 - newPositionPercent.x);
+        newHeightPercent = Math.min(
+          newHeightPercent,
+          100 - newPositionPercent.y
+        );
+      }
+      // --- END REFACTOR ---
 
       if (newPositionPercent) {
         onLayoutChange(overlay.id, {
           position: newPositionPercent,
           size: {
-            width: (newWidthPx / containerSize.width) * 100,
-            height: (newHeightPx / containerSize.height) * 100,
+            width: newWidthPercent,
+            height: newHeightPercent,
           },
         });
       }
     },
-    [onInternalDragStop, viewport, containerSize, onLayoutChange, overlay.id]
+    [onInternalDragStop, containerSize, onLayoutChange, overlay.id]
   );
   // --- End useCallback wrappers ---
 
@@ -207,7 +208,6 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       scale={1}
       size={{ width: widthPx, height: heightPx }}
       position={{ x: xPx, y: yPx }}
-      // Disable if container isn't ready
       disableDragging={containerSize.width <= 0 || containerSize.height <= 0}
       enableResizing={containerSize.width > 0 && containerSize.height > 0}
       cancel="input, button:not(.drag-handle), iframe"
@@ -220,11 +220,11 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
           setIsDragging(true);
         }
       }}
-      onDragStop={handleDragStop} // Use useCallback version
+      onDragStop={handleDragStop}
       minWidth={250}
       minHeight={200}
-      onResizeStop={handleResizeStop} // Use useCallback version
-      bounds="parent" // <-- ADD THIS
+      onResizeStop={handleResizeStop}
+      bounds="parent"
       className={cn(
         "group pointer-events-auto bg-card rounded-lg flex flex-col transition-all duration-200",
         isSelected
@@ -271,7 +271,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
             onChange={(e) => setInputUrl(e.target.value)}
             className="w-full bg-background rounded-sm px-2 py-0.5 text-[clamp(0.7rem,1.5vw,0.9rem)]"
             onMouseDown={(e) => {
-              e.stopPropagation(); // Prevent drag start when clicking input
+              e.stopPropagation();
               onSelect(overlay.id);
             }}
             placeholder="Enter URL..."
@@ -291,10 +291,8 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
           className="w-full h-full"
           sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts"
           title={`browser-overlay-${overlay.id}`}
-          // Use style to disable pointer events on iframe during drag
           style={{ pointerEvents: isDragging ? "none" : "auto" }}
         />
-        {/* Overlay during drag is no longer strictly needed but kept as fallback */}
         {isDragging && <div className="absolute inset-0 z-10 bg-transparent" />}
       </div>
       <button

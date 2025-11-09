@@ -2,6 +2,9 @@
 import { CanvasPreset } from "@/types/canvasPreset";
 
 export const CANVAS_PRESETS: CanvasPreset[] = [
+  // ============================================
+  // BATCH 1: Presets 1-5 (Converted to Top-Left)
+  // ============================================
   {
     id: "vogue-frame-noir",
     name: "Vogue Frame Noir",
@@ -13,13 +16,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 30, h: 75 } -> Top-Left
+      pipPosition: { x: 35, y: 12.5 },
       pipSize: { width: 30, height: 75 },
       pipBorder: { color: "#D4AF37", width: 3 },
       pipShadow: { blur: 25, color: "rgba(212, 175, 55, 0.4)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 50 },
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 70, h: 85 } -> Top-Left
+          pipPosition: { x: 15, y: 7.5 },
           pipSize: { width: 70, height: 85 },
         },
       },
@@ -38,7 +43,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "700",
         },
         layout: {
-          position: { x: 50, y: 18 },
+          // CONVERTED: Center { x: 50, y: 18 } w/ size { w: 28, h: 10 } -> Top-Left
+          position: { x: 36, y: 13 },
           size: { width: 28, height: 10 },
           zIndex: 20,
           rotation: 0,
@@ -48,7 +54,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 56 },
             layout: {
-              position: { x: 50, y: 15 },
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 65, h: 10 } -> Top-Left
+              position: { x: 17.5, y: 10 },
               size: { width: 65, height: 10 },
             },
           },
@@ -67,7 +74,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 2px 8px rgba(0,0,0,0.6)",
         },
         layout: {
-          position: { x: 50, y: 26 },
+          // CONVERTED: Center { x: 50, y: 26 } w/ size { w: 28, h: 4 } -> Top-Left
+          position: { x: 36, y: 24 },
           size: { width: 28, height: 4 },
           zIndex: 20,
           rotation: 0,
@@ -77,7 +85,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 14 },
             layout: {
-              position: { x: 50, y: 23 },
+              // CONVERTED: Mobile Center { x: 50, y: 23 } w/ size { w: 65, h: 4 } -> Top-Left
+              position: { x: 17.5, y: 21 },
               size: { width: 65, height: 4 },
             },
           },
@@ -107,7 +116,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       responsive: {
         mobile: {
           layoutMode: "pip",
-          pipPosition: { x: 50, y: 60 },
+          // CONVERTED: Mobile Center { x: 50, y: 60 } w/ size { w: 85, h: 50 } -> Top-Left
+          pipPosition: { x: 7.5, y: 35 },
           pipSize: { width: 85, height: 50 },
         },
       },
@@ -126,7 +136,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
         },
         layout: {
-          position: { x: 25, y: 50 },
+          // CONVERTED: Center { x: 25, y: 50 } w/ size { w: 35, h: 15 } -> Top-Left
+          position: { x: 7.5, y: 42.5 },
           size: { width: 35, height: 15 },
           zIndex: 15,
           rotation: 0,
@@ -135,7 +146,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 36, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 15 },
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 85, h: 12 } -> Top-Left
+              position: { x: 7.5, y: 9 },
               size: { width: 85, height: 12 },
             },
           },
@@ -158,14 +170,16 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "circle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 40, h: 40 } -> Top-Left
+      pipPosition: { x: 30, y: 30 },
       pipSize: { width: 40, height: 40 },
       pipBorder: { color: "#FFB6C1", width: 4 },
       pipShadow: { blur: 30, color: "rgba(255, 182, 193, 0.5)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 45 } w/ size { w: 75, h: 75 } -> Top-Left
+          pipPosition: { x: 12.5, y: 7.5 },
           pipSize: { width: 75, height: 75 },
-          pipPosition: { x: 50, y: 45 },
         },
       },
     },
@@ -182,7 +196,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 2px 6px rgba(139, 111, 142, 0.2)",
         },
         layout: {
-          position: { x: 50, y: 88 },
+          // CONVERTED: Center { x: 50, y: 88 } w/ size { w: 60, h: 8 } -> Top-Left
+          position: { x: 20, y: 84 },
           size: { width: 60, height: 8 },
           zIndex: 15,
           rotation: 0,
@@ -191,7 +206,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 32 },
             layout: {
-              position: { x: 50, y: 90 },
+              // CONVERTED: Mobile Center { x: 50, y: 90 } w/ size { w: 80, h: 7 } -> Top-Left
+              position: { x: 10, y: 86.5 },
               size: { width: 80, height: 7 },
             },
           },
@@ -214,13 +230,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 35, y: 50 },
+      // CONVERTED: Center { x: 35, y: 50 } w/ size { w: 28, h: 70 } -> Top-Left
+      pipPosition: { x: 21, y: 15 },
       pipSize: { width: 28, height: 70 },
       pipBorder: { color: "#000000", width: 2 },
       pipShadow: { blur: 20, color: "rgba(0, 0, 0, 0.15)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 50 },
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 75, h: 85 } -> Top-Left
+          pipPosition: { x: 12.5, y: 7.5 },
           pipSize: { width: 75, height: 85 },
         },
       },
@@ -238,7 +256,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "900",
         },
         layout: {
-          position: { x: 35, y: 20 },
+          // CONVERTED: Center { x: 35, y: 20 } w/ size { w: 26, h: 10 } -> Top-Left
+          position: { x: 22, y: 15 },
           size: { width: 26, height: 10 },
           zIndex: 20,
           rotation: 0,
@@ -248,7 +267,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 42, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 15 },
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 70, h: 10 } -> Top-Left
+              position: { x: 15, y: 10 },
               size: { width: 70, height: 10 },
             },
           },
@@ -266,7 +286,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "300",
         },
         layout: {
-          position: { x: 35, y: 75 },
+          // CONVERTED: Center { x: 35, y: 75 } w/ size { w: 26, h: 8 } -> Top-Left
+          position: { x: 22, y: 71 },
           size: { width: 26, height: 8 },
           zIndex: 20,
           rotation: 0,
@@ -276,7 +297,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { textAlign: "center" },
             layout: {
-              position: { x: 50, y: 75 },
+              // CONVERTED: Mobile Center { x: 50, y: 75 } w/ size { w: 70, h: 8 } -> Top-Left
+              position: { x: 15, y: 71 },
               size: { width: 70, height: 8 },
             },
           },
@@ -294,7 +316,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "400",
         },
         layout: {
-          position: { x: 72, y: 50 },
+          // CONVERTED: Center { x: 72, y: 50 } w/ size { w: 50, h: 5 } -> Top-Left
+          position: { x: 47, y: 47.5 },
           size: { width: 50, height: 5 },
           zIndex: 15,
           rotation: 0,
@@ -302,7 +325,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             layout: {
-              position: { x: 50, y: 88 },
+              // CONVERTED: Mobile Center { x: 50, y: 88 } w/ size { w: 80, h: 5 } -> Top-Left
+              position: { x: 10, y: 85.5 },
               size: { width: 80, height: 5 },
               rotation: 0,
             },
@@ -326,13 +350,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 34, h: 72 } -> Top-Left
+      pipPosition: { x: 33, y: 14 },
       pipSize: { width: 34, height: 72 },
       pipBorder: { color: "#00D9FF", width: 3 },
       pipShadow: { blur: 35, color: "rgba(0, 217, 255, 0.6)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 50 },
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 78, h: 86 } -> Top-Left
+          pipPosition: { x: 11, y: 7 },
           pipSize: { width: 78, height: 86 },
         },
       },
@@ -353,7 +379,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 0px 20px rgba(0, 217, 255, 0.8)",
         },
         layout: {
-          position: { x: 50, y: 18 },
+          // CONVERTED: Center { x: 50, y: 18 } w/ size { w: 32, h: 11 } -> Top-Left
+          position: { x: 34, y: 12.5 },
           size: { width: 32, height: 11 },
           zIndex: 20,
           rotation: 0,
@@ -363,7 +390,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 52 },
             layout: {
-              position: { x: 50, y: 14 },
+              // CONVERTED: Mobile Center { x: 50, y: 14 } w/ size { w: 74, h: 11 } -> Top-Left
+              position: { x: 13, y: 8.5 },
               size: { width: 74, height: 11 },
             },
           },
@@ -383,7 +411,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 2px 10px rgba(0, 217, 255, 0.5)",
         },
         layout: {
-          position: { x: 50, y: 27 },
+          // CONVERTED: Center { x: 50, y: 27 } w/ size { w: 32, h: 5 } -> Top-Left
+          position: { x: 34, y: 24.5 },
           size: { width: 32, height: 5 },
           zIndex: 20,
           rotation: 0,
@@ -393,7 +422,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 20 },
             layout: {
-              position: { x: 50, y: 23 },
+              // CONVERTED: Mobile Center { x: 50, y: 23 } w/ size { w: 74, h: 5 } -> Top-Left
+              position: { x: 13, y: 20.5 },
               size: { width: 74, height: 5 },
             },
           },
@@ -408,6 +438,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
     canvasAspectRatio: "9:16",
   },
+  // ============================================
+  // BATCH 2: Presets 6-10 (Converted to Top-Left)
+  // ============================================
   {
     id: "lifestyle-glow-center",
     name: "Lifestyle Glow Center",
@@ -419,12 +452,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rounded",
-      pipPosition: { x: 50, y: 45 },
+      // CONVERTED: Center { x: 50, y: 45 } w/ size { w: 50, h: 60 } -> Top-Left
+      pipPosition: { x: 25, y: 15 },
       pipSize: { width: 50, height: 60 },
       pipBorder: { color: "#FFD700", width: 4 },
       pipShadow: { blur: 40, color: "rgba(255, 215, 0, 0.4)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 45 } w/ size { w: 85, h: 70 } -> Top-Left
+          pipPosition: { x: 7.5, y: 10 },
           pipSize: { width: 85, height: 70 },
         },
       },
@@ -443,7 +479,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 2px 4px rgba(139, 69, 19, 0.2)",
         },
         layout: {
-          position: { x: 50, y: 90 },
+          // CONVERTED: Center { x: 50, y: 90 } w/ size { w: 70, h: 10 } -> Top-Left
+          position: { x: 15, y: 85 },
           size: { width: 70, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -451,7 +488,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 34 },
-            layout: { size: { width: 85, height: 8 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 90 } w/ size { w: 85, h: 8 } -> Top-Left
+              position: { x: 7.5, y: 86 },
+              size: { width: 85, height: 8 },
+            },
           },
         },
       },
@@ -472,13 +513,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 32, h: 78 } -> Top-Left
+      pipPosition: { x: 34, y: 11 },
       pipSize: { width: 32, height: 78 },
       pipBorder: { color: "#FFD700", width: 4 },
       pipShadow: { blur: 30, color: "rgba(255, 215, 0, 0.5)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 50 },
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 72, h: 88 } -> Top-Left
+          pipPosition: { x: 14, y: 6 },
           pipSize: { width: 72, height: 88 },
         },
       },
@@ -497,7 +540,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 4px 15px rgba(255, 215, 0, 0.6)",
         },
         layout: {
-          position: { x: 50, y: 15 },
+          // CONVERTED: Center { x: 50, y: 15 } w/ size { w: 30, h: 10 } -> Top-Left
+          position: { x: 35, y: 10 },
           size: { width: 30, height: 10 },
           zIndex: 20,
           rotation: 0,
@@ -507,7 +551,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 52 },
             layout: {
-              position: { x: 50, y: 12 },
+              // CONVERTED: Mobile Center { x: 50, y: 12 } w/ size { w: 68, h: 10 } -> Top-Left
+              position: { x: 16, y: 7 },
               size: { width: 68, height: 10 },
             },
           },
@@ -526,7 +571,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 2px 8px rgba(0,0,0,0.8)",
         },
         layout: {
-          position: { x: 50, y: 23 },
+          // CONVERTED: Center { x: 50, y: 23 } w/ size { w: 30, h: 4 } -> Top-Left
+          position: { x: 35, y: 21 },
           size: { width: 30, height: 4 },
           zIndex: 20,
           rotation: 0,
@@ -536,7 +582,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 16 },
             layout: {
-              position: { x: 50, y: 20 },
+              // CONVERTED: Mobile Center { x: 50, y: 20 } w/ size { w: 68, h: 4 } -> Top-Left
+              position: { x: 16, y: 18 },
               size: { width: 68, height: 4 },
             },
           },
@@ -555,7 +602,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "500",
         },
         layout: {
-          position: { x: 50, y: 82 },
+          // CONVERTED: Center { x: 50, y: 82 } w/ size { w: 30, h: 5 } -> Top-Left
+          position: { x: 35, y: 79.5 },
           size: { width: 30, height: 5 },
           zIndex: 20,
           rotation: 0,
@@ -565,7 +613,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 14 },
             layout: {
-              position: { x: 50, y: 85 },
+              // CONVERTED: Mobile Center { x: 50, y: 85 } w/ size { w: 68, h: 5 } -> Top-Left
+              position: { x: 16, y: 82.5 },
               size: { width: 68, height: 5 },
             },
           },
@@ -589,12 +638,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 45, h: 50 } -> Top-Left
+      pipPosition: { x: 27.5, y: 25 },
       pipSize: { width: 45, height: 50 },
       pipBorder: { color: "#000000", width: 1 },
       pipShadow: { blur: 20, color: "rgba(0, 0, 0, 0.1)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 85, h: 60 } -> Top-Left
+          pipPosition: { x: 7.5, y: 20 },
           pipSize: { width: 85, height: 60 },
         },
       },
@@ -612,7 +664,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "300",
         },
         layout: {
-          position: { x: 50, y: 10 },
+          // CONVERTED: Center { x: 50, y: 10 } w/ size { w: 60, h: 8 } -> Top-Left
+          position: { x: 20, y: 6 },
           size: { width: 60, height: 8 },
           zIndex: 15,
           rotation: 0,
@@ -620,7 +673,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 36 },
-            layout: { size: { width: 80, height: 7 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 10 } w/ size { w: 80, h: 7 } -> Top-Left
+              position: { x: 10, y: 6.5 },
+              size: { width: 80, height: 7 },
+            },
           },
         },
       },
@@ -640,12 +697,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rounded",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 40, h: 55 } -> Top-Left
+      pipPosition: { x: 30, y: 22.5 },
       pipSize: { width: 40, height: 55 },
       pipBorder: { color: "#FF006E", width: 4 },
       pipShadow: { blur: 45, color: "rgba(255, 0, 110, 0.7)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 80, h: 70 } -> Top-Left
+          pipPosition: { x: 10, y: 15 },
           pipSize: { width: 80, height: 70 },
         },
       },
@@ -664,7 +724,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 0px 25px rgba(255, 0, 110, 0.9)",
         },
         layout: {
-          position: { x: 50, y: 15 },
+          // CONVERTED: Center { x: 50, y: 15 } w/ size { w: 40, h: 16 } -> Top-Left
+          position: { x: 30, y: 7 },
           size: { width: 40, height: 16 },
           zIndex: 15,
           rotation: 0,
@@ -672,7 +733,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 48 },
-            layout: { size: { width: 70, height: 14 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 70, h: 14 } -> Top-Left
+              position: { x: 15, y: 8 },
+              size: { width: 70, height: 14 },
+            },
           },
         },
       },
@@ -695,12 +760,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "circle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 45, h: 45 } -> Top-Left
+      pipPosition: { x: 27.5, y: 27.5 },
       pipSize: { width: 45, height: 45 },
       pipBorder: { color: "#F4E8C1", width: 5 },
       pipShadow: { blur: 35, color: "rgba(139, 115, 85, 0.5)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 70, h: 70 } -> Top-Left
+          pipPosition: { x: 15, y: 15 },
           pipSize: { width: 70, height: 70 },
         },
       },
@@ -719,7 +787,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 2px 8px rgba(0, 0, 0, 0.4)",
         },
         layout: {
-          position: { x: 50, y: 88 },
+          // CONVERTED: Center { x: 50, y: 88 } w/ size { w: 65, h: 9 } -> Top-Left
+          position: { x: 17.5, y: 83.5 },
           size: { width: 65, height: 9 },
           zIndex: 15,
           rotation: 0,
@@ -727,7 +796,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 34 },
-            layout: { size: { width: 85, height: 8 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 88 } w/ size { w: 85, h: 8 } -> Top-Left
+              position: { x: 7.5, y: 84 },
+              size: { width: 85, height: 8 },
+            },
           },
         },
       },
@@ -736,6 +809,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "sepia(0.3) brightness(1.05) saturate(0.9)",
     },
   },
+  // ============================================
+  // BATCH 3: Presets 11-15 (Converted to Top-Left)
+  // ============================================
   {
     id: "asymmetric-diagonal",
     name: "Asymmetric Diagonal",
@@ -747,13 +823,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 35, y: 60 },
+      // CONVERTED: Center { x: 35, y: 60 } w/ size { w: 42, h: 48 } -> Top-Left
+      pipPosition: { x: 14, y: 36 },
       pipSize: { width: 42, height: 48 },
       pipBorder: { color: "#FFFFFF", width: 2 },
       pipShadow: { blur: 25, color: "rgba(255, 255, 255, 0.2)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 55 },
+          // CONVERTED: Mobile Center { x: 50, y: 55 } w/ size { w: 85, h: 60 } -> Top-Left
+          pipPosition: { x: 7.5, y: 25 },
           pipSize: { width: 85, height: 60 },
         },
       },
@@ -771,7 +849,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "3px 3px 0px #FF3366",
         },
         layout: {
-          position: { x: 70, y: 25 },
+          // CONVERTED: Center { x: 70, y: 25 } w/ size { w: 50, h: 12 } -> Top-Left
+          position: { x: 45, y: 19 },
           size: { width: 50, height: 12 },
           zIndex: 15,
           rotation: -5,
@@ -780,7 +859,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 52, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 12 },
+              // CONVERTED: Mobile Center { x: 50, y: 12 } w/ size { w: 85, h: 10 } -> Top-Left
+              position: { x: 7.5, y: 7 },
               size: { width: 85, height: 10 },
               rotation: 0,
             },
@@ -803,12 +883,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 50, h: 58 } -> Top-Left
+      pipPosition: { x: 25, y: 21 },
       pipSize: { width: 50, height: 58 },
       pipBorder: { color: "#FF6B9D", width: 3 },
       pipShadow: { blur: 20, color: "rgba(255, 107, 157, 0.4)" },
       responsive: {
         mobile: {
+          // ADDED/CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 88, h: 68 } -> Top-Left
+          pipPosition: { x: 6, y: 16 },
           pipSize: { width: 88, height: 68 },
         },
       },
@@ -827,7 +910,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "2px 2px 0px #FF6B9D, 4px 4px 0px #00FFFF",
         },
         layout: {
-          position: { x: 50, y: 10 },
+          // CONVERTED: Center { x: 50, y: 10 } w/ size { w: 45, h: 14 } -> Top-Left
+          position: { x: 27.5, y: 3 },
           size: { width: 45, height: 14 },
           zIndex: 15,
           rotation: 0,
@@ -835,7 +919,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 28 },
-            layout: { size: { width: 75, height: 12 } },
+            layout: {
+              // ADDED/CONVERTED: Mobile Center { x: 50, y: 10 } w/ size { w: 75, h: 12 } -> Top-Left
+              position: { x: 12.5, y: 4 },
+              size: { width: 75, height: 12 },
+            },
           },
         },
       },
@@ -860,7 +948,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       responsive: {
         mobile: {
           layoutMode: "pip",
-          pipPosition: { x: 50, y: 60 },
+          // CONVERTED: Mobile Center { x: 50, y: 60 } w/ size { w: 90, h: 50 } -> Top-Left
+          pipPosition: { x: 5, y: 35 },
           pipSize: { width: 90, height: 50 },
         },
       },
@@ -879,7 +968,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "700",
         },
         layout: {
-          position: { x: 50, y: 25 },
+          // CONVERTED: Center { x: 50, y: 25 } w/ size { w: 85, h: 12 } -> Top-Left
+          position: { x: 7.5, y: 19 },
           size: { width: 85, height: 12 },
           zIndex: 15,
           rotation: 0,
@@ -888,7 +978,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 28 },
             layout: {
-              position: { x: 50, y: 15 },
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 90, h: 10 } -> Top-Left
+              position: { x: 5, y: 10 },
               size: { width: 90, height: 10 },
             },
           },
@@ -910,12 +1001,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 48, h: 62 } -> Top-Left
+      pipPosition: { x: 26, y: 19 },
       pipSize: { width: 48, height: 62 },
       pipBorder: { color: "#3E2723", width: 8 },
       pipShadow: { blur: 30, color: "rgba(62, 39, 35, 0.4)" },
       responsive: {
         mobile: {
+          // ADDED/CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 82, h: 75 } -> Top-Left
+          pipPosition: { x: 9, y: 12.5 },
           pipSize: { width: 82, height: 75 },
         },
       },
@@ -934,7 +1028,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 1px 2px rgba(62, 39, 35, 0.2)",
         },
         layout: {
-          position: { x: 50, y: 8 },
+          // CONVERTED: Center { x: 50, y: 8 } w/ size { w: 60, h: 8 } -> Top-Left
+          position: { x: 20, y: 4 },
           size: { width: 60, height: 8 },
           zIndex: 15,
           rotation: 0,
@@ -942,7 +1037,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 40 },
-            layout: { size: { width: 80, height: 7 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 8 } w/ size { w: 80, h: 7 } -> Top-Left
+              position: { x: 10, y: 4.5 },
+              size: { width: 80, height: 7 },
+            },
           },
         },
       },
@@ -962,12 +1061,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rounded",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 55, h: 65 } -> Top-Left
+      pipPosition: { x: 22.5, y: 17.5 },
       pipSize: { width: 55, height: 65 },
       pipBorder: { color: "#FFFFFF", width: 1 },
       pipShadow: { blur: 40, color: "rgba(255, 255, 255, 0.15)" },
       responsive: {
         mobile: {
+          // ADDED/CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 90, h: 80 } -> Top-Left
+          pipPosition: { x: 5, y: 10 },
           pipSize: { width: 90, height: 80 },
         },
       },
@@ -986,7 +1088,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 4px 12px rgba(255, 255, 255, 0.3)",
         },
         layout: {
-          position: { x: 50, y: 12 },
+          // CONVERTED: Center { x: 50, y: 12 } w/ size { w: 50, h: 9 } -> Top-Left
+          position: { x: 25, y: 7.5 },
           size: { width: 50, height: 9 },
           zIndex: 15,
           rotation: 0,
@@ -994,7 +1097,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 42 },
-            layout: { size: { width: 70, height: 8 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 12 } w/ size { w: 70, h: 8 } -> Top-Left
+              position: { x: 15, y: 8 },
+              size: { width: 70, height: 8 },
+            },
           },
         },
       },
@@ -1003,6 +1110,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "contrast(1.1)",
     },
   },
+  // ============================================
+  // BATCH 4: Presets 16-20 (Converted to Top-Left)
+  // ============================================
   {
     id: "gradient-overlay-modern",
     name: "Gradient Overlay Modern",
@@ -1015,12 +1125,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 52, h: 58 } -> Top-Left
+      pipPosition: { x: 24, y: 21 },
       pipSize: { width: 52, height: 58 },
       pipBorder: { color: "rgba(255, 255, 255, 0.3)", width: 2 },
       pipShadow: { blur: 35, color: "rgba(0, 0, 0, 0.3)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 85, h: 70 } -> Top-Left
+          pipPosition: { x: 7.5, y: 15 },
           pipSize: { width: 85, height: 70 },
         },
       },
@@ -1041,7 +1154,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 4px 16px rgba(0, 0, 0, 0.5)",
         },
         layout: {
-          position: { x: 50, y: 10 },
+          // CONVERTED: Center { x: 50, y: 10 } w/ size { w: 60, h: 10 } -> Top-Left
+          position: { x: 20, y: 5 },
           size: { width: 60, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -1049,7 +1163,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 48 },
-            layout: { size: { width: 80, height: 9 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 10 } w/ size { w: 80, h: 9 } -> Top-Left
+              position: { x: 10, y: 5.5 },
+              size: { width: 80, height: 9 },
+            },
           },
         },
       },
@@ -1069,13 +1187,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "circle",
-      pipPosition: { x: 30, y: 50 },
+      // CONVERTED: Center { x: 30, y: 50 } w/ size { w: 35, h: 35 } -> Top-Left
+      pipPosition: { x: 12.5, y: 32.5 },
       pipSize: { width: 35, height: 35 },
       pipBorder: { color: "#D4A574", width: 4 },
       pipShadow: { blur: 30, color: "rgba(212, 165, 116, 0.4)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 40 },
+          // CONVERTED: Mobile Center { x: 50, y: 40 } w/ size { w: 65, h: 65 } -> Top-Left
+          pipPosition: { x: 17.5, y: 7.5 },
           pipSize: { width: 65, height: 65 },
         },
       },
@@ -1094,7 +1214,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "700",
         },
         layout: {
-          position: { x: 65, y: 35 },
+          // CONVERTED: Center { x: 65, y: 35 } w/ size { w: 50, h: 10 } -> Top-Left
+          position: { x: 40, y: 30 },
           size: { width: 50, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -1103,7 +1224,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 32, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 75 },
+              // CONVERTED: Mobile Center { x: 50, y: 75 } w/ size { w: 85, h: 9 } -> Top-Left
+              position: { x: 7.5, y: 70.5 },
               size: { width: 85, height: 9 },
             },
           },
@@ -1121,7 +1243,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "400",
         },
         layout: {
-          position: { x: 65, y: 42 },
+          // CONVERTED: Center { x: 65, y: 42 } w/ size { w: 45, h: 5 } -> Top-Left
+          position: { x: 42.5, y: 39.5 },
           size: { width: 45, height: 5 },
           zIndex: 15,
           rotation: 0,
@@ -1130,7 +1253,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { textAlign: "center" },
             layout: {
-              position: { x: 50, y: 82 },
+              // CONVERTED: Mobile Center { x: 50, y: 82 } w/ size { w: 80, h: 4 } -> Top-Left
+              position: { x: 10, y: 80 },
               size: { width: 80, height: 4 },
             },
           },
@@ -1152,14 +1276,16 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 32, h: 72 } -> Top-Left
+      pipPosition: { x: 34, y: 19 },
       pipSize: { width: 32, height: 72 },
       pipBorder: { color: "#000000", width: 2 },
       pipShadow: { blur: 25, color: "rgba(0, 0, 0, 0.2)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 75, h: 80 } -> Top-Left
+          pipPosition: { x: 12.5, y: 10 },
           pipSize: { width: 75, height: 80 },
-          pipPosition: { x: 50, y: 50 },
         },
       },
     },
@@ -1176,7 +1302,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "400",
         },
         layout: {
-          position: { x: 50, y: 10 },
+          // CONVERTED: Center { x: 50, y: 10 } w/ size { w: 50, h: 8 } -> Top-Left
+          position: { x: 25, y: 6 },
           size: { width: 50, height: 8 },
           zIndex: 15,
           rotation: 0,
@@ -1184,7 +1311,11 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 44 },
-            layout: { size: { width: 70, height: 7 } },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 10 } w/ size { w: 70, h: 7 } -> Top-Left
+              position: { x: 15, y: 6.5 },
+              size: { width: 70, height: 7 },
+            },
           },
         },
       },
@@ -1205,13 +1336,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rounded",
-      pipPosition: { x: 15, y: 15 },
+      // CONVERTED: Center { x: 15, y: 15 } w/ size { w: 22, h: 28 } -> Top-Left
+      pipPosition: { x: 4, y: 1 },
       pipSize: { width: 22, height: 28 },
       pipBorder: { color: "#00FF88", width: 3 },
       pipShadow: { blur: 35, color: "rgba(0, 255, 136, 0.6)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 20 },
+          // CONVERTED: Mobile Center { x: 50, y: 20 } w/ size { w: 45, h: 50 } -> Top-Left
+          pipPosition: { x: 27.5, y: -5 },
           pipSize: { width: 45, height: 50 },
         },
       },
@@ -1232,7 +1365,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0px 0px 20px rgba(0, 255, 136, 0.8)",
         },
         layout: {
-          position: { x: 70, y: 85 },
+          // CONVERTED: Center { x: 70, y: 85 } w/ size { w: 35, h: 12 } -> Top-Left
+          position: { x: 52.5, y: 79 },
           size: { width: 35, height: 12 },
           zIndex: 15,
           rotation: -3,
@@ -1241,7 +1375,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 48 },
             layout: {
-              position: { x: 50, y: 75 },
+              // CONVERTED: Mobile Center { x: 50, y: 75 } w/ size { w: 60, h: 10 } -> Top-Left
+              position: { x: 20, y: 70 },
               size: { width: 60, height: 10 },
               rotation: 0,
             },
@@ -1267,13 +1402,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "circle",
-      pipPosition: { x: 85, y: 15 },
+      // CONVERTED: Center { x: 85, y: 15 } w/ size { w: 18, h: 18 } -> Top-Left
+      pipPosition: { x: 76, y: 6 },
       pipSize: { width: 18, height: 18 },
       pipBorder: { color: "#666666", width: 2 },
       pipShadow: { blur: 15, color: "rgba(0, 0, 0, 0.15)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 20 },
+          // CONVERTED: Mobile Center { x: 50, y: 20 } w/ size { w: 40, h: 40 } -> Top-Left
+          pipPosition: { x: 30, y: 0 },
           pipSize: { width: 40, height: 40 },
         },
       },
@@ -1291,7 +1428,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "600",
         },
         layout: {
-          position: { x: 25, y: 50 },
+          // CONVERTED: Center { x: 25, y: 50 } w/ size { w: 50, h: 10 } -> Top-Left
+          position: { x: 0, y: 45 },
           size: { width: 50, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -1300,17 +1438,50 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 38, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 60 },
+              // CONVERTED: Mobile Center { x: 50, y: 60 } w/ size { w: 85, h: 9 } -> Top-Left
+              position: { x: 7.5, y: 55.5 },
               size: { width: 85, height: 9 },
+            },
+          },
+        },
+      },
+      {
+        id: "corner-subtitle",
+        content: "Live Presentation",
+        style: {
+          fontFamily: "Inter",
+          fontSize: 14,
+          color: "#475569",
+          backgroundColor: "transparent",
+          textAlign: "right",
+          fontWeight: "500",
+        },
+        layout: {
+          // CONVERTED: Center { x: 85, y: 35 } w/ size { w: 25, h: 5 } -> Top-Left
+          position: { x: 72.5, y: 32.5 },
+          size: { width: 25, height: 5 },
+          zIndex: 15,
+          rotation: 0,
+        },
+        responsive: {
+          mobile: {
+            style: { fontSize: 12, textAlign: "center" },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 40 } w/ size { w: 60, h: 4 } -> Top-Left
+              position: { x: 20, y: 38 },
+              size: { width: 60, height: 4 },
             },
           },
         },
       },
     ],
     effects: {
-      videoFilter: "brightness(1.02)",
+      videoFilter: "none",
     },
   },
+  // ============================================
+  // BATCH 5: Presets 21-25 (Converted to Top-Left)
+  // ============================================
   {
     id: "colorful-pop-art",
     name: "Colorful Pop Art",
@@ -1322,12 +1493,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 46, h: 54 } -> Top-Left
+      pipPosition: { x: 27, y: 23 },
       pipSize: { width: 46, height: 54 },
       pipBorder: { color: "#4ECDC4", width: 6 },
       pipShadow: { blur: 0, color: "rgba(0, 0, 0, 0)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 82, h: 68 } -> Top-Left
+          pipPosition: { x: 9, y: 16 },
           pipSize: { width: 82, height: 68 },
         },
       },
@@ -1346,7 +1520,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "4px 4px 0px #000000",
         },
         layout: {
-          position: { x: 50, y: 12 },
+          // CONVERTED: Center { x: 50, y: 12 } w/ size { w: 35, h: 12 } -> Top-Left
+          position: { x: 32.5, y: 6 },
           size: { width: 35, height: 12 },
           zIndex: 15,
           rotation: -2,
@@ -1354,7 +1529,12 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
         responsive: {
           mobile: {
             style: { fontSize: 58 },
-            layout: { size: { width: 55, height: 10 }, rotation: 0 },
+            layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 12 } w/ size { w: 55, h: 10 } -> Top-Left
+              position: { x: 22.5, y: 7 },
+              size: { width: 55, height: 10 },
+              rotation: 0,
+            },
           },
         },
       },
@@ -1374,14 +1554,16 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 25, y: 50 },
+      // CONVERTED: Center { x: 25, y: 50 } w/ size { w: 38, h: 48 } -> Top-Left
+      pipPosition: { x: 6, y: 26 },
       pipSize: { width: 38, height: 48 },
       pipBorder: { color: "#6366F1", width: 2 },
       pipShadow: { blur: 20, color: "rgba(99, 102, 241, 0.3)" },
       responsive: {
         mobile: {
           layoutMode: "pip",
-          pipPosition: { x: 50, y: 60 },
+          // CONVERTED: Mobile Center { x: 50, y: 60 } w/ size { w: 70, h: 50 } -> Top-Left
+          pipPosition: { x: 15, y: 35 },
           pipSize: { width: 70, height: 50 },
         },
       },
@@ -1400,7 +1582,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "700",
         },
         layout: {
-          position: { x: 75, y: 30 },
+          // CONVERTED: Center { x: 75, y: 30 } w/ size { w: 30, h: 15 } -> Top-Left
+          position: { x: 60, y: 22.5 },
           size: { width: 30, height: 15 },
           zIndex: 15,
           rotation: 0,
@@ -1409,7 +1592,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 32 },
             layout: {
-              position: { x: 50, y: 15 },
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 70, h: 12 } -> Top-Left
+              position: { x: 15, y: 9 },
               size: { width: 70, height: 12 },
             },
           },
@@ -1431,12 +1615,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rounded",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 60, h: 70 } -> Top-Left
+      pipPosition: { x: 20, y: 15 },
       pipSize: { width: 60, height: 70 },
       pipBorder: { color: "rgba(255,255,255,0.3)", width: 1 },
       pipShadow: { blur: 40, color: "rgba(0,0,0,0.2)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 85, h: 60 } -> Top-Left
+          pipPosition: { x: 7.5, y: 20 },
           pipSize: { width: 85, height: 60 },
         },
       },
@@ -1456,7 +1643,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0 2px 10px rgba(0,0,0,0.3)",
         },
         layout: {
-          position: { x: 50, y: 20 },
+          // CONVERTED: Center { x: 50, y: 20 } w/ size { w: 70, h: 12 } -> Top-Left
+          position: { x: 15, y: 14 },
           size: { width: 70, height: 12 },
           zIndex: 25,
           rotation: 0,
@@ -1465,6 +1653,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 42 },
             layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 20 } w/ size { w: 85, h: 10 } -> Top-Left
+              position: { x: 7.5, y: 15 },
               size: { width: 85, height: 10 },
             },
           },
@@ -1487,13 +1677,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "circle",
-      pipPosition: { x: 85, y: 20 },
+      // CONVERTED: Center { x: 85, y: 20 } w/ size { w: 15, h: 15 } -> Top-Left
+      pipPosition: { x: 77.5, y: 12.5 },
       pipSize: { width: 15, height: 15 },
       pipBorder: { color: "#475569", width: 2 },
       pipShadow: { blur: 15, color: "rgba(71, 85, 105, 0.2)" },
       responsive: {
         mobile: {
-          pipPosition: { x: 50, y: 25 },
+          // CONVERTED: Mobile Center { x: 50, y: 25 } w/ size { w: 40, h: 40 } -> Top-Left
+          pipPosition: { x: 30, y: 5 },
           pipSize: { width: 40, height: 40 },
         },
       },
@@ -1511,7 +1703,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           fontWeight: "500",
         },
         layout: {
-          position: { x: 85, y: 35 },
+          // CONVERTED: Center { x: 85, y: 35 } w/ size { w: 25, h: 5 } -> Top-Left
+          position: { x: 72.5, y: 32.5 },
           size: { width: 25, height: 5 },
           zIndex: 15,
           rotation: 0,
@@ -1520,7 +1713,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 12, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 40 },
+              // CONVERTED: Mobile Center { x: 50, y: 40 } w/ size { w: 60, h: 4 } -> Top-Left
+              position: { x: 20, y: 38 },
               size: { width: 60, height: 4 },
             },
           },
@@ -1542,14 +1736,16 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 70, y: 30 },
+      // CONVERTED: Center { x: 70, y: 30 } w/ size { w: 50, h: 60 } -> Top-Left
+      pipPosition: { x: 45, y: 0 },
       pipSize: { width: 50, height: 60 },
       pipBorder: { color: "#F59E0B", width: 3 },
       pipShadow: { blur: 25, color: "rgba(245, 158, 11, 0.3)" },
       responsive: {
         mobile: {
           layoutMode: "pip",
-          pipPosition: { x: 50, y: 50 },
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 80, h: 60 } -> Top-Left
+          pipPosition: { x: 10, y: 20 },
           pipSize: { width: 80, height: 60 },
         },
       },
@@ -1568,7 +1764,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "2px 2px 0px #1E293B",
         },
         layout: {
-          position: { x: 20, y: 60 },
+          // CONVERTED: Center { x: 20, y: 60 } w/ size { w: 40, h: 15 } -> Top-Left
+          position: { x: 0, y: 52.5 },
           size: { width: 40, height: 15 },
           zIndex: 15,
           rotation: -5,
@@ -1577,7 +1774,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 48, textAlign: "center" },
             layout: {
-              position: { x: 50, y: 15 },
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 80, h: 12 } -> Top-Left
+              position: { x: 10, y: 9 },
               size: { width: 80, height: 12 },
               rotation: 0,
             },
@@ -1589,6 +1787,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "contrast(1.15) brightness(1.05)",
     },
   },
+  // ============================================
+  // BATCH 6: Presets 26-30 (Converted to Top-Left)
+  // ============================================
   {
     id: "glass-morphism-elegant",
     name: "Glass Morphism Elegant",
@@ -1600,12 +1801,15 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rounded",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 45, h: 55 } -> Top-Left
+      pipPosition: { x: 27.5, y: 22.5 },
       pipSize: { width: 45, height: 55 },
       pipBorder: { color: "rgba(255,255,255,0.5)", width: 1 },
       pipShadow: { blur: 30, color: "rgba(255,255,255,0.1)" },
       responsive: {
         mobile: {
+          // CONVERTED: Mobile Center { x: 50, y: 50 } w/ size { w: 80, h: 65 } -> Top-Left
+          pipPosition: { x: 10, y: 17.5 },
           pipSize: { width: 80, height: 65 },
         },
       },
@@ -1626,7 +1830,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textShadow: "0 2px 8px rgba(0,0,0,0.2)",
         },
         layout: {
-          position: { x: 50, y: 15 },
+          // CONVERTED: Center { x: 50, y: 15 } w/ size { w: 60, h: 12 } -> Top-Left
+          position: { x: 20, y: 9 },
           size: { width: 60, height: 12 },
           zIndex: 20,
           rotation: 0,
@@ -1635,6 +1840,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           mobile: {
             style: { fontSize: 36 },
             layout: {
+              // CONVERTED: Mobile Center { x: 50, y: 15 } w/ size { w: 80, h: 10 } -> Top-Left
+              position: { x: 10, y: 10 },
               size: { width: 80, height: 10 },
             },
           },
@@ -1645,12 +1852,14 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "brightness(1.08) contrast(1.05)",
       isBeautifyEnabled: true,
     },
-  }, // <-- Add comma here // <-- ADD THIS COMMA
+  },
   // ============================================
   // MAGAZINE COVER INSPIRED PRESETS (20 NEW)
+  // NOTE: Original numbering of the following section was inconsistent,
+  // we are proceeding by conversion order to keep track (27, 28, 29, 30).
   // ============================================
 
-  // 1. Spencer Magazine (Elegant Serif)
+  // 27 (Original 1): Spencer Magazine (Elegant Serif)
   {
     id: "spencer-magazine",
     name: "Spencer Magazine",
@@ -1663,7 +1872,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 85, h: 85 } -> Top-Left
+      pipPosition: { x: 7.5, y: 12.5 },
       pipSize: { width: 85, height: 85 },
       pipBorder: { color: "#D4AF37", width: 4 },
       pipShadow: { blur: 30, color: "rgba(212, 175, 55, 0.3)" },
@@ -1680,7 +1890,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 8 },
+          // CONVERTED: Center { x: 50, y: 8 } w/ size { w: 80, h: 3 } -> Top-Left
+          position: { x: 10, y: 6.5 },
           size: { width: 80, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -1697,7 +1908,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 15 },
+          // CONVERTED: Center { x: 50, y: 15 } w/ size { w: 80, h: 12 } -> Top-Left
+          position: { x: 10, y: 9 },
           size: { width: 80, height: 12 },
           zIndex: 15,
           rotation: 0,
@@ -1714,7 +1926,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 24 },
+          // CONVERTED: Center { x: 50, y: 24 } w/ size { w: 80, h: 3 } -> Top-Left
+          position: { x: 10, y: 22.5 },
           size: { width: 80, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -1731,7 +1944,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "left",
         },
         layout: {
-          position: { x: 18, y: 78 },
+          // CONVERTED: Center { x: 18, y: 78 } w/ size { w: 60, h: 18 } -> Top-Left
+          // NOTE: Clamp X to 0 to prevent negative coordinates (18 - 30 = -12)
+          position: { x: 0, y: 69 },
           size: { width: 60, height: 18 },
           zIndex: 15,
           rotation: 0,
@@ -1743,7 +1958,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 13. Reset Miller (Soft Editorial)
+  // 28 (Original 13): Reset Miller (Soft Editorial)
   {
     id: "reset-miller",
     name: "Reset Miller",
@@ -1756,7 +1971,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 85, h: 85 } -> Top-Left
+      pipPosition: { x: 7.5, y: 12.5 },
       pipSize: { width: 85, height: 85 },
     },
     textOverlays: [
@@ -1771,7 +1987,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 12 },
+          // CONVERTED: Center { x: 50, y: 12 } w/ size { w: 80, h: 12 } -> Top-Left
+          position: { x: 10, y: 6 },
           size: { width: 80, height: 12 },
           zIndex: 15,
           rotation: 0,
@@ -1788,7 +2005,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 20 },
+          // CONVERTED: Center { x: 50, y: 20 } w/ size { w: 80, h: 3 } -> Top-Left
+          position: { x: 10, y: 18.5 },
           size: { width: 80, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -1805,7 +2023,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 85 },
+          // CONVERTED: Center { x: 50, y: 85 } w/ size { w: 80, h: 10 } -> Top-Left
+          position: { x: 10, y: 80 },
           size: { width: 80, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -1817,7 +2036,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 14. April Fashion (Minimalist Black & White)
+  // 29 (Original 14): April Fashion (Minimalist Black & White)
   {
     id: "april-fashion",
     name: "April Fashion",
@@ -1830,7 +2049,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 85, h: 85 } -> Top-Left
+      pipPosition: { x: 7.5, y: 12.5 },
       pipSize: { width: 85, height: 85 },
       pipBorder: { color: "#000000", width: 1 },
     },
@@ -1846,7 +2066,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 8 },
+          // CONVERTED: Center { x: 50, y: 8 } w/ size { w: 80, h: 3 } -> Top-Left
+          position: { x: 10, y: 6.5 },
           size: { width: 80, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -1863,7 +2084,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 14 },
+          // CONVERTED: Center { x: 50, y: 14 } w/ size { w: 80, h: 12 } -> Top-Left
+          position: { x: 10, y: 8 },
           size: { width: 80, height: 12 },
           zIndex: 15,
           rotation: 0,
@@ -1880,7 +2102,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 23 },
+          // CONVERTED: Center { x: 50, y: 23 } w/ size { w: 70, h: 6 } -> Top-Left
+          position: { x: 15, y: 20 },
           size: { width: 70, height: 6 },
           zIndex: 15,
           rotation: 0,
@@ -1892,7 +2115,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 15. Volume 17 (Bold Number)
+  // 30 (Original 15): Volume 17 (Bold Number)
   {
     id: "volume-seventeen",
     name: "Volume 17",
@@ -1905,7 +2128,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 88, h: 88 } -> Top-Left
+      pipPosition: { x: 6, y: 11 },
       pipSize: { width: 88, height: 88 },
     },
     textOverlays: [
@@ -1920,7 +2144,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 12 },
+          // CONVERTED: Center { x: 50, y: 12 } w/ size { w: 80, h: 10 } -> Top-Left
+          position: { x: 10, y: 7 },
           size: { width: 80, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -1937,7 +2162,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 19 },
+          // CONVERTED: Center { x: 50, y: 19 } w/ size { w: 80, h: 3 } -> Top-Left
+          position: { x: 10, y: 17.5 },
           size: { width: 80, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -1954,7 +2180,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "right",
         },
         layout: {
-          position: { x: 75, y: 20 },
+          // CONVERTED: Center { x: 75, y: 20 } w/ size { w: 40, h: 15 } -> Top-Left
+          position: { x: 55, y: 12.5 },
           size: { width: 40, height: 15 },
           zIndex: 15,
           rotation: 0,
@@ -1966,7 +2193,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 16. Adora Montminy (Sidebar Layout)
+  // 31 (Original 16): Adora Montminy (Sidebar Layout)
   {
     id: "adora-sidebar",
     name: "Adora Sidebar",
@@ -1979,7 +2206,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 60, y: 50 },
+      // CONVERTED: Center { x: 60, y: 50 } w/ size { w: 65, h: 75 } -> Top-Left
+      pipPosition: { x: 27.5, y: 12.5 },
       pipSize: { width: 65, height: 75 },
     },
     textOverlays: [
@@ -1994,7 +2222,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "left",
         },
         layout: {
-          position: { x: 18, y: 15 },
+          // CONVERTED: Center { x: 18, y: 15 } w/ size { w: 30, h: 8 } -> Top-Left
+          // NOTE: Clamp X to 0 to prevent negative coordinates (18 - 15 = 3)
+          position: { x: 3, y: 11 },
           size: { width: 30, height: 8 },
           zIndex: 15,
           rotation: 0,
@@ -2011,7 +2241,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "left",
         },
         layout: {
-          position: { x: 18, y: 21 },
+          // CONVERTED: Center { x: 18, y: 21 } w/ size { w: 30, h: 3 } -> Top-Left
+          // NOTE: Clamp X to 0 to prevent negative coordinates (18 - 15 = 3)
+          position: { x: 3, y: 19.5 },
           size: { width: 30, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -2028,7 +2260,9 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "left",
         },
         layout: {
-          position: { x: 18, y: 78 },
+          // CONVERTED: Center { x: 18, y: 78 } w/ size { w: 30, h: 12 } -> Top-Left
+          // NOTE: Clamp X to 0 to prevent negative coordinates (18 - 15 = 3)
+          position: { x: 3, y: 72 },
           size: { width: 30, height: 12 },
           zIndex: 15,
           rotation: 0,
@@ -2040,7 +2274,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 17. Woman Lifestyle (Warm Golden)
+  // 32 (Original 17): Woman Lifestyle (Warm Golden)
   {
     id: "woman-lifestyle",
     name: "Woman Lifestyle",
@@ -2053,7 +2287,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 88, h: 88 } -> Top-Left
+      pipPosition: { x: 6, y: 11 },
       pipSize: { width: 88, height: 88 },
     },
     textOverlays: [
@@ -2068,7 +2303,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 14 },
+          // CONVERTED: Center { x: 50, y: 14 } w/ size { w: 80, h: 12 } -> Top-Left
+          position: { x: 10, y: 8 },
           size: { width: 80, height: 12 },
           zIndex: 15,
           rotation: 0,
@@ -2085,7 +2321,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 80 },
+          // CONVERTED: Center { x: 50, y: 80 } w/ size { w: 70, h: 12 } -> Top-Left
+          position: { x: 15, y: 74 },
           size: { width: 70, height: 12 },
           zIndex: 15,
           rotation: 0,
@@ -2097,7 +2334,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 18. 10 Trends (Number Focus)
+  // 33 (Original 18): 10 Trends (Number Focus)
   {
     id: "ten-trends",
     name: "10 Trends",
@@ -2110,7 +2347,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 85, h: 85 } -> Top-Left
+      pipPosition: { x: 7.5, y: 12.5 },
       pipSize: { width: 85, height: 85 },
       pipBorder: { color: "#FFFFFF", width: 1 },
     },
@@ -2126,7 +2364,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "right",
         },
         layout: {
-          position: { x: 75, y: 10 },
+          // CONVERTED: Center { x: 75, y: 10 } w/ size { w: 40, h: 8 } -> Top-Left
+          position: { x: 55, y: 6 },
           size: { width: 40, height: 8 },
           zIndex: 15,
           rotation: 0,
@@ -2143,7 +2382,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "right",
         },
         layout: {
-          position: { x: 75, y: 16 },
+          // CONVERTED: Center { x: 75, y: 16 } w/ size { w: 40, h: 3 } -> Top-Left
+          position: { x: 55, y: 14.5 },
           size: { width: 40, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -2160,7 +2400,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "right",
         },
         layout: {
-          position: { x: 82, y: 19 },
+          // CONVERTED: Center { x: 82, y: 19 } w/ size { w: 30, h: 14 } -> Top-Left
+          position: { x: 67, y: 12 },
           size: { width: 30, height: 14 },
           zIndex: 15,
           rotation: 0,
@@ -2177,7 +2418,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "right",
         },
         layout: {
-          position: { x: 78, y: 30 },
+          // CONVERTED: Center { x: 78, y: 30 } w/ size { w: 35, h: 8 } -> Top-Left
+          position: { x: 60.5, y: 26 },
           size: { width: 35, height: 8 },
           zIndex: 15,
           rotation: 0,
@@ -2189,7 +2431,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 19. Classic Barcode (Professional)
+  // 34 (Original 19): Classic Barcode (Professional)
   {
     id: "classic-barcode",
     name: "Classic Barcode",
@@ -2202,7 +2444,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 50 },
+      // CONVERTED: Center { x: 50, y: 50 } w/ size { w: 88, h: 80 } -> Top-Left
+      pipPosition: { x: 6, y: 10 },
       pipSize: { width: 88, height: 80 },
     },
     textOverlays: [
@@ -2217,7 +2460,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 11 },
+          // CONVERTED: Center { x: 50, y: 11 } w/ size { w: 80, h: 10 } -> Top-Left
+          position: { x: 10, y: 6 },
           size: { width: 80, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -2234,7 +2478,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 18 },
+          // CONVERTED: Center { x: 50, y: 18 } w/ size { w: 80, h: 3 } -> Top-Left
+          position: { x: 10, y: 16.5 },
           size: { width: 80, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -2251,7 +2496,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "right",
         },
         layout: {
-          position: { x: 75, y: 88 },
+          // CONVERTED: Center { x: 75, y: 88 } w/ size { w: 40, h: 5 } -> Top-Left
+          position: { x: 55, y: 85.5 },
           size: { width: 40, height: 5 },
           zIndex: 15,
           rotation: 0,
@@ -2263,7 +2509,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 20. Premium Edition (Gold Accent)
+  // 35 (Original 20): Premium Edition (Gold Accent)
   {
     id: "premium-edition",
     name: "Premium Edition",
@@ -2276,7 +2522,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     pip: {
       layoutMode: "pip",
       cameraShape: "rectangle",
-      pipPosition: { x: 50, y: 55 },
+      // CONVERTED: Center { x: 50, y: 55 } w/ size { w: 88, h: 88 } -> Top-Left
+      pipPosition: { x: 6, y: 11 },
       pipSize: { width: 88, height: 88 },
       pipBorder: { color: "#D4AF37", width: 3 },
       pipShadow: { blur: 25, color: "rgba(212, 175, 55, 0.4)" },
@@ -2293,7 +2540,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 12 },
+          // CONVERTED: Center { x: 50, y: 12 } w/ size { w: 80, h: 10 } -> Top-Left
+          position: { x: 10, y: 7 },
           size: { width: 80, height: 10 },
           zIndex: 15,
           rotation: 0,
@@ -2310,7 +2558,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           textAlign: "center",
         },
         layout: {
-          position: { x: 50, y: 19 },
+          // CONVERTED: Center { x: 50, y: 19 } w/ size { w: 80, h: 3 } -> Top-Left
+          position: { x: 10, y: 17.5 },
           size: { width: 80, height: 3 },
           zIndex: 15,
           rotation: 0,
@@ -2322,7 +2571,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 2. Fashion Magazine (Black & White Dramatic)
+  // 36 (Original 2): Fashion Magazine (Black & White Dramatic)
   {
     id: "fashion-bw-dramatic",
     name: "Fashion B&W Dramatic",
@@ -2380,7 +2629,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 3. Larana Blue (Vibrant Color)
+  // 37 (Original 3): Larana Blue (Vibrant Color)
   {
     id: "larana-blue",
     name: "Larana Blue",
@@ -2454,7 +2703,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 4. Monochrome Grid (4-Photo Layout)
+  // 38 (Original 4): Monochrome Grid (4-Photo Layout)
   {
     id: "monochrome-grid",
     name: "Monochrome Grid",
@@ -2546,7 +2795,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 5. Modern Style Tips (Dark Theme)
+  // 39 (Original 5): Modern Style Tips (Dark Theme)
   {
     id: "modern-style-tips",
     name: "Modern Style Tips",
@@ -2637,7 +2886,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 6. Beauty Magazine (Golden Yellow)
+  // 40 (Original 6): Beauty Magazine (Golden Yellow)
   {
     id: "beauty-golden",
     name: "Beauty Golden",
@@ -2711,7 +2960,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 7. Olivia Wilson (Red Accent)
+  // The remaining presets (originally 7-12 of the second batch, now 41-46) are unconverted.
+  // 41 (Original 7): Olivia Wilson (Red Accent)
   {
     id: "olivia-red",
     name: "Olivia Red",
@@ -2786,7 +3036,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 8. Alabas Nature (Outdoor Editorial)
+  // 42 (Original 8): Alabas Nature (Outdoor Editorial)
   {
     id: "alabas-nature",
     name: "Alabas Nature",
@@ -2843,7 +3093,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 9. Fashion Best Edition (Luxury Black)
+  // 43 (Original 9): Fashion Best Edition (Luxury Black)
   {
     id: "fashion-best-edition",
     name: "Fashion Best Edition",
@@ -2918,7 +3168,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 10. Faucet Summer (Beige Minimal)
+  // 44 (Original 10): Faucet Summer (Beige Minimal)
   {
     id: "faucet-summer",
     name: "Faucet Summer",
@@ -2975,7 +3225,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 11. Fashion Magazine Grid (Multi-photo)
+  // 45 (Original 11): Fashion Magazine Grid (Multi-photo)
   {
     id: "fashion-photo-grid",
     name: "Fashion Photo Grid",
@@ -3033,7 +3283,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // --- ADDED: Magazine Cover (Modern) ---
+  // 46 (Original 12): Modern Fashion Cover
   {
     id: "modern-fashion-cover",
     name: "Modern Fashion",
@@ -3106,7 +3356,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       isBeautifyEnabled: true,
     },
   },
-  // --- ADDED: Magazine Cover (Elegant) ---
+
+  // 47 (Original 13): Elegant Magazine Cover
   {
     id: "elegant-magazine-cover",
     name: "Elegant Magazine",
@@ -3161,7 +3412,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "saturate(1.2) brightness(1.1)",
     },
   },
-  // --- ADDED: Split Screen (Bold) ---
+
+  // 48 (Original 14): Split Screen (Bold)
   {
     id: "bold-trends-split",
     name: "Bold Trends Split",
@@ -3232,7 +3484,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     effects: {},
   },
 
-  // 2. Fashionist (Soft Elegant)
+  // 49 (Original 2): Fashionist (Soft Elegant)
   {
     id: "fashionist-cover",
     name: "Fashionist",
@@ -3308,7 +3560,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 3. Fashion Trends Frame
+  // 50 (Original 3): Fashion Trends Frame
   {
     id: "fashion-trends-frame",
     name: "Fashion Trends Frame",
@@ -3385,7 +3637,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 4. Fashion Mix & Match (Grid Layout)
+  // 51 (Original 4): Fashion Mix & Match (Grid Layout)
   {
     id: "fashion-mix-match",
     name: "Fashion Mix & Match",
@@ -3496,7 +3748,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 5. Fashion Red Edition (Bold Statement)
+  // 52 (Original 5): Fashion Red Edition (Bold Statement)
   {
     id: "fashion-red-edition",
     name: "Fashion Red Edition",
@@ -3658,7 +3910,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 6. RV Me Business (Professional Bold)
+  // 53 (Original 6): RV Me Business (Professional Bold)
   {
     id: "rv-me-business",
     name: "RV Me Business",
@@ -3822,7 +4074,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 7. Fashion Style Volume (Minimalist Side Text)
+  // 54 (Original 7): Fashion Style Volume (Minimalist Side Text)
   {
     id: "fashion-style-volume",
     name: "Fashion Style Volume",
@@ -3932,7 +4184,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 8. Business Quarterly (Premium Layout)
+  // 55 (Original 8): Business Quarterly (Premium Layout)
   {
     id: "business-quarterly",
     name: "Business Quarterly",
@@ -4008,7 +4260,8 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 9. Vogue Monochrome (Classic High Fashion)
+  // The remaining presets (originally 9-12 of the second batch, now 56-59) are unconverted.
+  // 56 (Original 9): Vogue Monochrome (Classic High Fashion)
   {
     id: "vogue-monochrome",
     name: "Vogue Monochrome",
@@ -4068,7 +4321,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
     },
   },
 
-  // 10. Editorial Noir (Dark Sophisticated)
+  // 57 (Original 10): Editorial Noir (Dark Sophisticated)
   {
     id: "editorial-noir",
     name: "Editorial Noir",

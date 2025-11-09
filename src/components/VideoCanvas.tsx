@@ -180,10 +180,10 @@ export const DraggableOverlay: React.FC<{
 
   const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
   const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
-  const xPx =
-    (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2;
-  const yPx =
-    (containerSize.height * overlay.layout.position.y) / 100 - heightPx / 2;
+  // --- REFACTOR: Removed center-point logic ---
+  const xPx = (containerSize.width * overlay.layout.position.x) / 100;
+  const yPx = (containerSize.height * overlay.layout.position.y) / 100;
+  // --- END REFACTOR ---
 
   const [isResizing, setIsResizing] = useState(false);
   return (
@@ -191,24 +191,32 @@ export const DraggableOverlay: React.FC<{
       size={{ width: widthPx, height: heightPx }}
       position={{ x: xPx, y: yPx }}
       onDragStop={(e, d) => {
-        const newX = ((d.x + widthPx / 2) / containerSize.width) * 100;
-        const newY = ((d.y + heightPx / 2) / containerSize.height) * 100;
+        // --- REFACTOR: Convert from top-left pixel to top-left percentage ---
+        let newX = (d.x / containerSize.width) * 100;
+        let newY = (d.y / containerSize.height) * 100;
+
+        // Boundary Enforcement
+        newX = Math.max(0, Math.min(newX, 100 - overlay.layout.size.width));
+        newY = Math.max(0, Math.min(newY, 100 - overlay.layout.size.height));
+        // --- END REFACTOR ---
         onLayoutChange(overlay.id, "position", { x: newX, y: newY });
       }}
       onResizeStart={() => setIsResizing(true)}
       onResizeStop={(e, direction, ref, delta, pos) => {
         setIsResizing(false);
-        const newWidthPercent =
+        // --- REFACTOR: Convert from top-left pixel to top-left percentage ---
+        let newWidthPercent =
           (parseInt(ref.style.width, 10) / containerSize.width) * 100;
-        const newHeightPercent =
+        let newHeightPercent =
           (parseInt(ref.style.height, 10) / containerSize.height) * 100;
-        const newX =
-          ((pos.x + parseInt(ref.style.width, 10) / 2) / containerSize.width) *
-          100;
-        const newY =
-          ((pos.y + parseInt(ref.style.height, 10) / 2) /
-            containerSize.height) *
-          100;
+        let newX = (pos.x / containerSize.width) * 100;
+        let newY = (pos.y / containerSize.height) * 100;
+
+        // Boundary Enforcement
+        newWidthPercent = Math.min(newWidthPercent, 100 - newX);
+        newHeightPercent = Math.min(newHeightPercent, 100 - newY);
+        // --- END REFACTOR ---
+
         onLayoutChange(overlay.id, "position", { x: newX, y: newY });
         onLayoutChange(overlay.id, "size", {
           width: newWidthPercent,
@@ -752,19 +760,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       // Get PiP size to offset the cursor (so cursor is at center of PiP)
       const pipWidthPx = (containerSize.width * props.pipSize.width) / 100;
       const pipHeightPx = (containerSize.height * props.pipSize.height) / 100;
-      const mouseX = e.clientX - rect.left - pipWidthPx / 2;
-      const mouseY = e.clientY - rect.top - pipHeightPx / 2;
+      // --- REFACTOR: Use top-left logic ---
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
       // 2. Convert to percentages
       const newXPercent = (mouseX / containerSize.width) * 100;
       const newYPercent = (mouseY / containerSize.height) * 100;
 
       // 3. Set the PiP position
-      // We use the 'solo' layout's pip position store, as it will be used
-      // once we switch to pip mode.
       props.onPipPositionChange({
-        x: Math.max(2, Math.min(98 - props.pipSize.width, newXPercent)),
-        y: Math.max(2, Math.min(98 - props.pipSize.height, newYPercent)),
+        x: Math.max(0, Math.min(newXPercent, 100 - props.pipSize.width)),
+        y: Math.max(0, Math.min(newYPercent, 100 - props.pipSize.height)),
       });
+      // --- END REFACTOR ---
 
       // 4. If not already sharing, switch to blank canvas (which triggers PiP)
       if (props.screenShareMode === "off") {
@@ -929,36 +937,31 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     const rect = container.getBoundingClientRect();
 
-    // --- MODIFIED: Calculate CENTER position, not top-left ---
+    // --- REFACTOR: Calculate TOP-LEFT position, not center ---
     const pipWidthPercent = rest.pipSize.width;
     const pipHeightPercent =
       rest.cameraShape === "circle"
-        ? (rest.pipSize.width * containerSize.width) / containerSize.height // Recalculate % height for circle
+        ? (rest.pipSize.width * containerSize.width) / containerSize.height
         : rest.pipSize.height;
 
-    // Get the pixel size of the Rnd component
-    const pipWidthPx = (rect.width * pipWidthPercent) / 100;
-    const pipHeightPx = (rect.height * pipHeightPercent) / 100;
+    // Convert top-left pixel to top-left percentage
+    let newX = (d.x / rect.width) * 100;
+    let newY = (d.y / rect.height) * 100;
+    // --- END REFACTOR ---
 
-    // Calculate the new center in pixels (top-left + half-size)
-    const newCenterXpx = d.x + pipWidthPx / 2;
-    const newCenterYpx = d.y + pipHeightPx / 2;
+    // --- REFACTOR: Snapping logic now works with top-left position ---
+    if (newX < SNAP_THRESHOLD) newX = 2;
+    if (newX > 100 - pipWidthPercent - SNAP_THRESHOLD)
+      newX = 98 - pipWidthPercent;
+    if (newY < SNAP_THRESHOLD) newY = 2;
+    if (newY > 100 - pipHeightPercent - SNAP_THRESHOLD)
+      newY = 98 - pipHeightPercent;
 
-    // Convert center to percentage
-    let newX = (newCenterXpx / rect.width) * 100;
-    let newY = (newCenterYpx / rect.height) * 100;
-    // --- END MODIFICATION ---
+    // Boundary Enforcement
+    newX = Math.max(0, Math.min(newX, 100 - pipWidthPercent));
+    newY = Math.max(0, Math.min(newY, 100 - pipHeightPercent));
+    // --- END REFACTOR ---
 
-    // --- MODIFIED: Snapping logic now works with center position ---
-    if (newX < SNAP_THRESHOLD + pipWidthPercent / 2)
-      newX = 2 + pipWidthPercent / 2;
-    if (newX > 100 - pipWidthPercent / 2 - SNAP_THRESHOLD)
-      newX = 98 - pipWidthPercent / 2;
-    if (newY < SNAP_THRESHOLD + pipHeightPercent / 2)
-      newY = 2 + pipHeightPercent / 2;
-    if (newY > 100 - pipHeightPercent / 2 - SNAP_THRESHOLD)
-      newY = 98 - pipHeightPercent / 2;
-    // --- END MODIFICATION ---
     rest.onPipPositionChange({ x: newX, y: newY });
   };
 
@@ -967,16 +970,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     direction: any,
     ref: HTMLElement,
     delta: any,
-    position: any
+    position: any // position is top-left (x, y)
   ) => {
     const container = canvasContainerRef.current;
     if (!container) return;
 
     const rect = container.getBoundingClientRect();
 
-    // --- MODIFIED: Correctly calculate height % for 1:1 ratio ---
     const newWidthPx = parseInt(ref.style.width, 10);
-    const newWidth = (newWidthPx / rect.width) * 100;
+    let newWidth = (newWidthPx / rect.width) * 100;
 
     const currentAspectRatio = getNumericAspectRatio(
       rest.cameraShape,
@@ -984,24 +986,28 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       props.sidebarProps.customAspectRatio
     );
 
-    const newHeight = currentAspectRatio
-      ? (newWidthPx / currentAspectRatio / rect.height) * 100 // Calculate % height based on new width and ratio
-      : (parseInt(ref.style.height, 10) / rect.height) * 100; // Fallback to free resize
+    let newHeight = currentAspectRatio
+      ? (newWidthPx / currentAspectRatio / rect.height) * 100
+      : (parseInt(ref.style.height, 10) / rect.height) * 100;
 
-    const newHeightPx = (newHeight * rect.height) / 100;
-    // --- END MODIFICATION ---
+    // --- REFACTOR: Calculate TOP-LEFT position from top-left and new size ---
+    let newX = (position.x / rect.width) * 100;
+    let newY = (position.y / rect.height) * 100;
+    // --- END REFACTOR ---
 
-    // --- MODIFIED: Calculate CENTER position from top-left and new size ---
-    const newCenterX = ((position.x + newWidthPx / 2) / rect.width) * 100;
-    const newCenterY = ((position.y + newHeightPx / 2) / rect.height) * 100;
-    // --- END MODIFICATION ---
+    // Boundary Enforcement
+    newX = Math.max(0, Math.min(newX, 100 - newWidth));
+    newY = Math.max(0, Math.min(newY, 100 - newHeight));
+    newWidth = Math.min(newWidth, 100 - newX);
+    newHeight = Math.min(newHeight, 100 - newY);
+    // --- END REFACTOR ---
 
     rest.onPipSizeChange({
-      width: Math.max(10, Math.min(50, newWidth)),
-      height: Math.max(10, Math.min(50, newHeight)),
+      width: Math.max(10, Math.min(100, newWidth)),
+      height: Math.max(10, Math.min(100, newHeight)),
     });
-    // --- MODIFIED: Save the new CENTER position ---
-    rest.onPipPositionChange({ x: newCenterX, y: newCenterY });
+    // --- REFACTOR: Save the new TOP-LEFT position ---
+    rest.onPipPositionChange({ x: newX, y: newY });
   };
 
   const getCameraShapeStyle = () => {
@@ -1373,12 +1379,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     };
     // --- END MODIFICATION ---
 
+    // --- REFACTOR: Calculate TOP-LEFT pixel position ---
     const pipPositionPx = {
-      x: (containerSize.width * rest.pipPosition.x) / 100 - pipSizePx.width / 2,
-      y:
-        (containerSize.height * rest.pipPosition.y) / 100 -
-        pipSizePx.height / 2,
+      x: (containerSize.width * rest.pipPosition.x) / 100,
+      y: (containerSize.height * rest.pipPosition.y) / 100,
     };
+    // --- END REFACTOR ---
 
     const pipContentEl =
       props.screenShareMode !== "off" &&
@@ -1396,8 +1402,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               : containerSize.height * 0.1
           }
           // --- END MODIFICATION ---
-          maxWidth={containerSize.width * 0.5}
-          maxHeight={containerSize.height * 0.5}
+          maxWidth={containerSize.width * (100 - rest.pipPosition.x)}
+          maxHeight={containerSize.height * (100 - rest.pipPosition.y)}
           // --- MODIFIED: Lock aspect ratio based on helper function ---
           lockAspectRatio={currentAspectRatio ? currentAspectRatio : false}
           // --- END MODIFICATION ---
@@ -1951,11 +1957,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 const currentWidthPercent = captionStyle.width || 80;
                 const widthPx =
                   (containerSize.width * currentWidthPercent) / 100;
+                // --- REFACTOR: Use top-left logic ---
                 const xPx =
-                  (containerSize.width * captionStyle.position.x) / 100 -
-                  widthPx / 2;
+                  (containerSize.width * captionStyle.position.x) / 100;
                 const yPx =
                   (containerSize.height * captionStyle.position.y) / 100;
+                // --- END REFACTOR ---
 
                 return (
                   <Rnd
@@ -1968,35 +1975,53 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                       y: yPx,
                     }}
                     onDragStop={(e, d) => {
-                      const newCenterX =
-                        ((d.x + widthPx / 2) / containerSize.width) * 100;
-                      const newCenterY = (d.y / containerSize.height) * 100;
+                      // --- REFACTOR: Use top-left logic ---
+                      let newX = (d.x / containerSize.width) * 100;
+                      let newY = (d.y / containerSize.height) * 100;
+
+                      // Boundary Enforcement
+                      newX = Math.max(
+                        0,
+                        Math.min(newX, 100 - currentWidthPercent)
+                      );
+                      newY = Math.max(0, Math.min(newY, 100 - 10)); // Assuming min height
+                      // --- END REFACTOR ---
 
                       onCaptionLayoutChange({
                         position: {
-                          x: newCenterX,
-                          y: newCenterY,
+                          x: newX,
+                          y: newY,
                         },
                       });
                     }}
                     onResizeStop={(e, direction, ref, delta, pos) => {
+                      // --- REFACTOR: Use top-left logic ---
                       const newWidthPx = parseInt(ref.style.width, 10);
                       const newHeightPx = parseInt(ref.style.height, 10);
-                      const newWidthPercent =
+                      let newWidthPercent =
                         (newWidthPx / containerSize.width) * 100;
 
-                      const newCenterX =
-                        ((pos.x + newWidthPx / 2) / containerSize.width) * 100;
-                      const newCenterY = (pos.y / containerSize.height) * 100;
+                      let newX = (pos.x / containerSize.width) * 100;
+                      let newY = (pos.y / containerSize.height) * 100;
+                      let newHeightPercent =
+                        (newHeightPx / containerSize.height) * 100;
+
+                      // Boundary Enforcement
+                      newX = Math.max(0, Math.min(newX, 100 - newWidthPercent));
+                      newY = Math.max(
+                        0,
+                        Math.min(newY, 100 - newHeightPercent)
+                      );
+                      // --- END REFACTOR ---
 
                       onCaptionLayoutChange({
                         position: {
-                          x: newCenterX,
-                          y: newCenterY,
+                          x: newX,
+                          y: newY,
                         },
                         size: {
                           width: newWidthPercent,
-                          height: (newHeightPx / containerSize.height) * 100,
+                          height: newHeightPercent,
                         },
                       });
                     }}

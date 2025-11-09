@@ -1,4 +1,4 @@
-// src/components/DraggableTextOverlay.tsx - ENHANCED VERSION (UPDATED)
+// src/components/DraggableTextOverlay.tsx
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
@@ -6,11 +6,10 @@ import { TextOverlayState } from "@/types/caption";
 import { X, RotateCcw, GripVertical } from "lucide-react";
 import { TextEditingToolbar } from "./TextEditingToolbar";
 
+// --- REFACTOR: This helper now converts top-left pixel to top-left percentage ---
 const calculatePercentagePosition = (
   pixelX: number,
   pixelY: number,
-  elementWidthPx: number,
-  elementHeightPx: number,
   containerSize: { width: number; height: number }
 ): { x: number; y: number } | null => {
   if (
@@ -21,12 +20,11 @@ const calculatePercentagePosition = (
   ) {
     return null;
   }
-  const centerXOriginal = pixelX + elementWidthPx / 2;
-  const centerYOriginal = pixelY + elementHeightPx / 2;
-  const percentageX = (centerXOriginal / containerSize.width) * 100;
-  const percentageY = (centerYOriginal / containerSize.height) * 100;
+  const percentageX = (pixelX / containerSize.width) * 100;
+  const percentageY = (pixelY / containerSize.height) * 100;
   return { x: percentageX, y: percentageY };
 };
+// --- END REFACTOR ---
 
 interface DraggableTextOverlayProps {
   overlay: TextOverlayState;
@@ -102,15 +100,17 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
     containerSize.height > 0
       ? (containerSize.height * overlay.layout.size.height) / 100
       : "auto";
+
+  // --- REFACTOR: Removed center-point logic ---
   const xPx =
     containerSize.width > 0
-      ? (containerSize.width * overlay.layout.position.x) / 100 - widthPx / 2
+      ? (containerSize.width * overlay.layout.position.x) / 100
       : 0;
   const yPx =
     containerSize.height > 0
-      ? (containerSize.height * overlay.layout.position.y) / 100 -
-        (typeof heightPx === "number" ? heightPx / 2 : 50)
+      ? (containerSize.height * overlay.layout.position.y) / 100
       : 0;
+  // --- END REFACTOR ---
 
   const handleDragStop = useCallback(
     (e: any, d: { x: number; y: number }) => {
@@ -127,6 +127,9 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       if (!currentElement) return;
       const currentWidthPx = currentElement.offsetWidth;
       const currentHeightPx = currentElement.offsetHeight;
+      const currentWidthPercent = (currentWidthPx / containerSize.width) * 100;
+      const currentHeightPercent =
+        (currentHeightPx / containerSize.height) * 100;
 
       // Clamp position to stay within bounds
       const clampedX = Math.max(
@@ -138,13 +141,14 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         Math.min(d.y, containerSize.height - currentHeightPx)
       );
 
+      // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         clampedX,
         clampedY,
-        currentWidthPx,
-        currentHeightPx,
         containerSize
       );
+      // --- END REFACTOR ---
+
       if (newPositionPercent) {
         onLayoutChange(overlay.id, { position: newPositionPercent });
       }
@@ -168,19 +172,31 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const newWidthPx = parseInt(ref.style.width, 10);
       const newHeightPx = parseInt(ref.style.height, 10);
 
+      // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         pos.x,
         pos.y,
-        newWidthPx,
-        newHeightPx,
         containerSize
       );
+      let newWidthPercent = (newWidthPx / containerSize.width) * 100;
+      let newHeightPercent = (newHeightPx / containerSize.height) * 100;
+
+      // Boundary Enforcement
+      if (newPositionPercent) {
+        newWidthPercent = Math.min(newWidthPercent, 100 - newPositionPercent.x);
+        newHeightPercent = Math.min(
+          newHeightPercent,
+          100 - newPositionPercent.y
+        );
+      }
+      // --- END REFACTOR ---
+
       if (newPositionPercent) {
         onLayoutChange(overlay.id, {
           position: newPositionPercent,
           size: {
-            width: (newWidthPx / containerSize.width) * 100,
-            height: (newHeightPx / containerSize.height) * 100,
+            width: newWidthPercent,
+            height: newHeightPercent,
           },
         });
       }
