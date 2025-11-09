@@ -419,13 +419,10 @@ interface VideoCanvasProps {
     onCustomAspectRatioChange: (ratio: string) => void;
     isFaceTrackingEnabled: boolean;
     onFaceTrackingToggle: (enabled: boolean) => void;
-
-    // --- ADDED: Missing PiP control props to the sidebar definition ---
     pipBorder?: { color: string; width: number };
     onPipBorderChange: (border: { color: string; width: number }) => void;
     pipShadow?: { blur: number; color: string };
     onPipShadowChange: (shadow: { blur: number; color: string }) => void;
-    // --- END ADDED ---
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
@@ -463,7 +460,11 @@ interface VideoCanvasProps {
   onOpenSettings: () => void;
   blankCanvasColor: string;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
+  // --- ADDED ---
+  pipBorder?: { color: string; width: number };
+  pipShadow?: { blur: number; color: string };
   canvasAspectRatio: string;
+  // --- END ADDED ---
 }
 
 const VideoPlayer: React.FC<{
@@ -559,6 +560,27 @@ const DynamicLayoutRenderer: React.FC<{
 };
 
 const SNAP_THRESHOLD = 5;
+
+// --- ADDED: Helper function ---
+const getNumericAspectRatio = (
+  shape: CameraShape,
+  ratioId: string,
+  customRatio: string
+): number | boolean => {
+  if (shape === "circle") return 1;
+  if (ratioId === "custom") {
+    const [w, h] = customRatio.split(":").map(Number);
+    return w && h ? w / h : false;
+  }
+  if (ratioId && ratioId !== "auto") {
+    const option = ASPECT_RATIOS.find((r) => r.id === ratioId);
+    if (option && option.value > 0) {
+      return option.value;
+    }
+  }
+  return false; // Return false for "auto" or default
+};
+// --- END ADDED ---
 
 // --- ADDED: Aspect Ratio Helper ---
 const getCanvasAspectRatioStyle = (
@@ -954,12 +976,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     // --- MODIFIED: Correctly calculate height % for 1:1 ratio ---
     const newWidthPx = parseInt(ref.style.width, 10);
-    const newHeightPx = parseInt(ref.style.height, 10);
-
     const newWidth = (newWidthPx / rect.width) * 100;
-    // Recalculate height percentage based on *pixel* height,
-    // which `lockAspectRatio` will have kept square.
-    const newHeight = (newHeightPx / rect.height) * 100;
+
+    const currentAspectRatio = getNumericAspectRatio(
+      rest.cameraShape,
+      props.sidebarProps.cameraAspectRatio,
+      props.sidebarProps.customAspectRatio
+    );
+
+    const newHeight = currentAspectRatio
+      ? (newWidthPx / currentAspectRatio / rect.height) * 100 // Calculate % height based on new width and ratio
+      : (parseInt(ref.style.height, 10) / rect.height) * 100; // Fallback to free resize
+
+    const newHeightPx = (newHeight * rect.height) / 100;
     // --- END MODIFICATION ---
 
     // --- MODIFIED: Calculate CENTER position from top-left and new size ---
@@ -982,17 +1011,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       transition: "all 0.3s ease",
     };
 
-    if (
-      props.sidebarProps.pipBorder &&
-      props.sidebarProps.pipBorder.width > 0
-    ) {
-      baseStyle.border = `${props.sidebarProps.pipBorder.width}px solid ${props.sidebarProps.pipBorder.color}`;
+    if (rest.pipBorder && rest.pipBorder.width > 0) {
+      baseStyle.border = `${rest.pipBorder.width}px solid ${rest.pipBorder.color}`;
     }
 
-    if (props.sidebarProps.pipShadow && props.sidebarProps.pipShadow.blur > 0) {
-      baseStyle.boxShadow = `0 0 ${props.sidebarProps.pipShadow.blur}px ${props.sidebarProps.pipShadow.color}`;
+    if (rest.pipShadow && rest.pipShadow.blur > 0) {
+      baseStyle.boxShadow = `0 0 ${rest.pipShadow.blur}px ${rest.pipShadow.color}`;
     }
-    // --- END MODIFICATION ---
+
     if (rest.customMaskUrl) {
       return {
         ...baseStyle,
@@ -1020,12 +1046,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const getVideoFilterStyle = (): string => {
     const filters: string[] = [];
     if (videoFilter && videoFilter !== "none") filters.push(videoFilter);
-    // --- MODIFIED: Read from sidebarProps ---
-    if (props.sidebarProps.isBeautifyEnabled)
+    if (rest.isBeautifyEnabled)
       filters.push("blur(0.5px) saturate(1.1) brightness(1.05)");
-    if (props.sidebarProps.isLowLightEnabled)
-      filters.push("brightness(1.3) contrast(1.15)");
-    // --- END MODIFICATION ---
+    if (rest.isLowLightEnabled) filters.push("brightness(1.3) contrast(1.15)");
     return filters.length > 0 ? filters.join(" ") : "none";
   };
 
@@ -1088,63 +1111,68 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     className?: string,
     style?: React.CSSProperties,
     isPip: boolean = false,
-    // --- ADDED ---
     cameraShape?: CameraShape
-    // --- END ADDED ---
-  ) => (
-    <div
-      className={cn(
-        "w-full h-full",
-        className,
-        isPip && cameraShape === "circle" && "aspect-square"
-        // --- END CORRECTION ---
-      )}
-      style={{ ...getCameraShapeStyle(), ...style }} // <-- Apply shape styles here
-    >
-      <CameraRenderer
-        stream={cameraStream}
-        className="w-full h-full"
-        style={{ ...style }}
-        // --- Video/Stream Props ---
-        videoFilter={videoFilterString}
-        customBackgroundUrl={rest.backgroundImageUrl} // Note: This might be sidebarProps.backgroundImageUrl
-        // --- Toolbar Props: State ---
-        pipBorder={props.sidebarProps.pipBorder}
-        pipShadow={props.sidebarProps.pipShadow}
-        isAutoFramingEnabled={rest.isAutoFramingEnabled} // This seems to be from root props
-        isBeautifyEnabled={props.sidebarProps.isBeautifyEnabled}
-        isLowLightEnabled={props.sidebarProps.isLowLightEnabled}
-        isNeonEdgeEnabled={isNeonEdgeEnabled} // From root props
-        neonIntensity={neonIntensity} // From root props
-        neonColor={neonColor} // From root props
-        zoomSensitivity={rest.zoomSensitivity} // From root props
-        trackingSpeed={rest.trackingSpeed} // From root props
-        cameraBackground={props.sidebarProps.cameraBackground}
-        cameraAspectRatio={props.sidebarProps.cameraAspectRatio}
-        customAspectRatio={props.sidebarProps.customAspectRatio}
-        isFaceTrackingEnabled={props.sidebarProps.isFaceTrackingEnabled}
-        // --- Toolbar Props: Handlers ---
-        onPipBorderChange={props.sidebarProps.onPipBorderChange}
-        onPipShadowChange={props.sidebarProps.onPipShadowChange}
-        onAutoFramingChange={props.sidebarProps.onAutoFramingChange}
-        onBeautifyToggle={props.sidebarProps.onBeautifyToggle}
-        onLowLightToggle={props.sidebarProps.onLowLightToggle}
-        onVideoFilterChange={props.sidebarProps.onVideoFilterChange}
-        onNeonEdgeToggle={props.sidebarProps.onNeonEdgeToggle}
-        onNeonIntensityChange={props.sidebarProps.onNeonIntensityChange}
-        onZoomSensitivityChange={props.sidebarProps.onZoomSensitivityChange}
-        onTrackingSpeedChange={props.sidebarProps.onTrackingSpeedChange}
-        onCameraBackgroundChange={props.sidebarProps.onCameraBackgroundChange}
-        onCustomBackgroundUpload={props.sidebarProps.onCustomBackgroundUpload}
-        onCameraAspectRatioChange={props.sidebarProps.onCameraAspectRatioChange}
-        onCustomAspectRatioChange={props.sidebarProps.onCustomAspectRatioChange}
-        onFaceTrackingToggle={props.sidebarProps.onFaceTrackingToggle}
-        // --- Original Props (for background effect) ---
-        backgroundEffect={rest.backgroundEffect}
-        backgroundImageUrl={rest.backgroundImageUrl}
-      />
-    </div>
-  );
+  ) => {
+    return (
+      <div
+        className={cn(
+          "w-full h-full",
+          className
+          // --- REMOVED: aspect-square logic ---
+        )}
+        style={{ ...getCameraShapeStyle(), ...style }} // <-- Only shape/border/shadow style
+      >
+        <CameraRenderer
+          stream={cameraStream}
+          className="w-full h-full"
+          style={{ ...style }}
+          // --- Video/Stream Props ---
+          videoFilter={videoFilterString}
+          customBackgroundUrl={rest.backgroundImageUrl} // Note: This might be sidebarProps.backgroundImageUrl
+          // --- Toolbar Props: State ---
+          pipBorder={props.sidebarProps.pipBorder}
+          pipShadow={props.sidebarProps.pipShadow}
+          isAutoFramingEnabled={rest.isAutoFramingEnabled} // This seems to be from root props
+          isBeautifyEnabled={props.sidebarProps.isBeautifyEnabled}
+          isLowLightEnabled={props.sidebarProps.isLowLightEnabled}
+          isNeonEdgeEnabled={isNeonEdgeEnabled} // From root props
+          neonIntensity={neonIntensity} // From root props
+          neonColor={neonColor} // From root props
+          zoomSensitivity={rest.zoomSensitivity} // From root props
+          trackingSpeed={rest.trackingSpeed} // From root props
+          cameraBackground={props.sidebarProps.cameraBackground}
+          // --- MODIFIED: Pass the sidebar props directly ---
+          cameraAspectRatio={props.sidebarProps.cameraAspectRatio}
+          customAspectRatio={props.sidebarProps.customAspectRatio}
+          // --- END MODIFIED ---
+          isFaceTrackingEnabled={props.sidebarProps.isFaceTrackingEnabled}
+          // --- Toolbar Props: Handlers ---
+          onPipBorderChange={props.sidebarProps.onPipBorderChange}
+          onPipShadowChange={props.sidebarProps.onPipShadowChange}
+          onAutoFramingChange={props.sidebarProps.onAutoFramingChange}
+          onBeautifyToggle={props.sidebarProps.onBeautifyToggle}
+          onLowLightToggle={props.sidebarProps.onLowLightToggle}
+          onVideoFilterChange={props.sidebarProps.onVideoFilterChange}
+          onNeonEdgeToggle={props.sidebarProps.onNeonEdgeToggle}
+          onNeonIntensityChange={props.sidebarProps.onNeonIntensityChange}
+          onZoomSensitivityChange={props.sidebarProps.onZoomSensitivityChange}
+          onTrackingSpeedChange={props.sidebarProps.onTrackingSpeedChange}
+          onCameraBackgroundChange={props.sidebarProps.onCameraBackgroundChange}
+          onCustomBackgroundUpload={props.sidebarProps.onCustomBackgroundUpload}
+          onCameraAspectRatioChange={
+            props.sidebarProps.onCameraAspectRatioChange
+          }
+          onCustomAspectRatioChange={
+            props.sidebarProps.onCustomAspectRatioChange
+          }
+          onFaceTrackingToggle={props.sidebarProps.onFaceTrackingToggle}
+          // --- Original Props (for background effect) ---
+          backgroundEffect={rest.backgroundEffect}
+          backgroundImageUrl={rest.backgroundImageUrl}
+        />
+      </div>
+    );
+  };
 
   const renderScreen = (className?: string) => {
     // FIX: Show blank canvas when in 'canvas' mode
@@ -1191,7 +1219,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
         return (
           <div className="w-full h-full relative bg-black">
-            {renderCamera()}
+            {renderCamera(undefined, undefined, false, rest.cameraShape)}
             <Rnd
               size={pipSizePx}
               position={pipPositionPx}
@@ -1277,7 +1305,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               }%`,
             }}
           >
-            {renderCamera()}
+            {renderCamera(undefined, undefined, false, rest.cameraShape)}
           </div>
         </div>
       );
@@ -1326,19 +1354,25 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       ? renderCamera(undefined, undefined, false, rest.cameraShape)
       : renderScreen();
     const pipVideoStyle = getCameraShapeStyle();
-    const pipVideo =
-      pipContent === "camera"
-        ? // --- MODIFIED: Pass cameraShape ---
-          renderCamera("cursor-move", {}, true, rest.cameraShape)
-        : renderScreen("cursor-move");
+
+    // --- MODIFIED: This is where the core fix is ---
+    const currentAspectRatio = getNumericAspectRatio(
+      rest.cameraShape,
+      props.sidebarProps.cameraAspectRatio,
+      props.sidebarProps.customAspectRatio
+    );
+
+    const pipWidthPx = (containerSize.width * rest.pipSize.width) / 100;
+    const pipHeightPx = currentAspectRatio
+      ? pipWidthPx / currentAspectRatio // Derive height from width
+      : (containerSize.height * rest.pipSize.height) / 100; // Fallback to state height
+
     const pipSizePx = {
-      // --- MODIFIED: Force 1:1 pixel aspect ratio for circles ---
-      width: (containerSize.width * rest.pipSize.width) / 100,
-      height:
-        rest.cameraShape === "circle"
-          ? (containerSize.width * rest.pipSize.width) / 100 // Use widthPx for height
-          : (containerSize.height * rest.pipSize.height) / 100,
+      width: pipWidthPx,
+      height: pipHeightPx,
     };
+    // --- END MODIFICATION ---
+
     const pipPositionPx = {
       x: (containerSize.width * rest.pipPosition.x) / 100 - pipSizePx.width / 2,
       y:
@@ -1355,10 +1389,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           size={pipSizePx}
           position={pipPositionPx}
           minWidth={containerSize.width * 0.1}
-          minHeight={containerSize.height * 0.1}
+          // --- MODIFIED: Set minHeight based on aspect ratio ---
+          minHeight={
+            currentAspectRatio
+              ? (containerSize.width * 0.1) / currentAspectRatio
+              : containerSize.height * 0.1
+          }
+          // --- END MODIFICATION ---
           maxWidth={containerSize.width * 0.5}
           maxHeight={containerSize.height * 0.5}
-          lockAspectRatio={rest.cameraShape === "circle" ? 1 : false}
+          // --- MODIFIED: Lock aspect ratio based on helper function ---
+          lockAspectRatio={currentAspectRatio ? currentAspectRatio : false}
+          // --- END MODIFICATION ---
           bounds="parent"
           onDragStop={handlePipDragStop}
           onResizeStop={handlePipResizeStop}
