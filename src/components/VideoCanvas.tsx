@@ -1392,6 +1392,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       cameraStream &&
       containerSize.width > 0 ? (
         <Rnd
+          key={`pip-${sceneId}-${rest.pipPosition.x}-${rest.pipPosition.y}-${rest.pipSize.width}-${rest.pipSize.height}`}
           size={pipSizePx}
           position={pipPositionPx}
           minWidth={containerSize.width * 0.1}
@@ -1799,7 +1800,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 )
                 .map((overlay) => (
                   <DraggableOverlay
-                    key={overlay.id}
+                    key={`${sceneId}-${overlay.id}`}
                     overlay={overlay}
                     onSetDynamicLayout={onSetDynamicLayout}
                     onLayoutChange={rest.onOverlayLayoutChange}
@@ -1823,7 +1824,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     style={{ pointerEvents: "auto" }}
                   >
                     <DraggableBrowser
-                      key={browser.id}
+                      key={`${sceneId}-${browser.id}`}
                       overlay={browser}
                       viewport={viewport}
                       canvasContainerRef={canvasContainerRef}
@@ -1853,7 +1854,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     style={{ pointerEvents: "auto" }}
                   >
                     <DraggableFileViewer
-                      key={file.id}
+                      key={`${sceneId}-${file.id}`}
                       overlay={file}
                       viewport={viewport}
                       onSetDynamicLayout={onSetDynamicLayout}
@@ -1878,7 +1879,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 )
                 .map((textOverlay) => (
                   <DraggableTextOverlay
-                    key={textOverlay.id}
+                    key={`${sceneId}-${textOverlay.id}`}
                     overlay={textOverlay}
                     onLayoutChange={onTextLayoutChange}
                     onStyleChange={onTextStyleChange}

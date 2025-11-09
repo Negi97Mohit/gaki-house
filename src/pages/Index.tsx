@@ -1478,37 +1478,45 @@ const Index = () => {
         return newScene;
       });
 
-      // Record layout change if recording
-      if (recording.isRecording) {
-        const responsivePipPosition = isMobile && preset.pip.responsive?.mobile?.pipPosition
-          ? preset.pip.responsive.mobile.pipPosition
-          : isTablet && preset.pip.responsive?.tablet?.pipPosition
-          ? preset.pip.responsive.tablet.pipPosition
-          : preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition;
+      // Force re-render by briefly deselecting all elements
+      setSelectedTextId(null);
+      setSelectedFileId(null);
+      setSelectedBrowserId(null);
 
-        const responsivePipSize = isMobile && preset.pip.responsive?.mobile?.pipSize
-          ? preset.pip.responsive.mobile.pipSize
-          : isTablet && preset.pip.responsive?.tablet?.pipSize
-          ? preset.pip.responsive.tablet.pipSize
-          : preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize;
+      // Small delay to ensure state has updated before recording
+      setTimeout(() => {
+        // Record layout change if recording
+        if (recording.isRecording) {
+          const responsivePipPosition = isMobile && preset.pip.responsive?.mobile?.pipPosition
+            ? preset.pip.responsive.mobile.pipPosition
+            : isTablet && preset.pip.responsive?.tablet?.pipPosition
+            ? preset.pip.responsive.tablet.pipPosition
+            : preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition;
 
-        recording.recordLayoutChange({
-          mode: preset.pip.layoutMode as LayoutMode,
-          cameraShape: preset.pip.cameraShape as CameraShape,
-          splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
-          pipPosition: responsivePipPosition,
-          pipSize: responsivePipSize,
-          pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
-          pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
-        });
-      }
+          const responsivePipSize = isMobile && preset.pip.responsive?.mobile?.pipSize
+            ? preset.pip.responsive.mobile.pipSize
+            : isTablet && preset.pip.responsive?.tablet?.pipSize
+            ? preset.pip.responsive.tablet.pipSize
+            : preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize;
+
+          recording.recordLayoutChange({
+            mode: preset.pip.layoutMode as LayoutMode,
+            cameraShape: preset.pip.cameraShape as CameraShape,
+            splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
+            pipPosition: responsivePipPosition,
+            pipSize: responsivePipSize,
+            pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
+            pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
+          });
+        }
+      }, 50);
 
       toast.success(`"${preset.name}" preset applied!`, {
         description:
           "All previous styles cleared. Text overlays are now editable.",
       });
     },
-    [updateActiveScene, recording]
+    [updateActiveScene, recording, setSelectedTextId, setSelectedFileId, setSelectedBrowserId]
   );
 
   const handleToggleFullscreen = () => setIsFullscreen((prev) => !prev);
