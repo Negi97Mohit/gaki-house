@@ -986,7 +986,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       props.sidebarProps.customAspectRatio
     );
 
-    let newHeight = currentAspectRatio
+    let newHeight = currentAspectRatio && typeof currentAspectRatio === 'number'
       ? (newWidthPx / currentAspectRatio / rect.height) * 100
       : (parseInt(ref.style.height, 10) / rect.height) * 100;
 
@@ -1369,7 +1369,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     );
 
     const pipWidthPx = (containerSize.width * rest.pipSize.width) / 100;
-    const pipHeightPx = currentAspectRatio
+    const pipHeightPx = currentAspectRatio && typeof currentAspectRatio === 'number'
       ? pipWidthPx / currentAspectRatio // Derive height from width
       : (containerSize.height * rest.pipSize.height) / 100; // Fallback to state height
 
@@ -1397,7 +1397,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           minWidth={containerSize.width * 0.1}
           // --- MODIFIED: Set minHeight based on aspect ratio ---
           minHeight={
-            currentAspectRatio
+            currentAspectRatio && typeof currentAspectRatio === 'number'
               ? (containerSize.width * 0.1) / currentAspectRatio
               : containerSize.height * 0.1
           }

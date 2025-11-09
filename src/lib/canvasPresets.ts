@@ -3733,7 +3733,6 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           backgroundColor: "transparent",
           textAlign: "left",
           fontWeight: "400",
-          fontStyle: "italic",
         },
         layout: {
           position: { x: 28, y: 72 },
@@ -3877,7 +3876,6 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           color: "#FFFFFF",
           backgroundColor: "#E63946",
           textAlign: "center",
-          padding: "12px",
         },
         layout: {
           position: { x: 22, y: 78 },
@@ -3953,7 +3951,6 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           color: "#000000",
           backgroundColor: "#FFCC00",
           textAlign: "center",
-          padding: "8px",
         },
         layout: {
           position: { x: 75, y: 10 },
@@ -4245,7 +4242,6 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           color: "#FFFFFF",
           backgroundColor: "transparent",
           textAlign: "center",
-          fontStyle: "italic",
         },
         layout: {
           position: { x: 50, y: 25 },
@@ -4366,7 +4362,6 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
           color: "#FFFFFF",
           backgroundColor: "transparent",
           textAlign: "center",
-          letterSpacing: "8px",
         },
         layout: {
           position: { x: 50, y: 21 },

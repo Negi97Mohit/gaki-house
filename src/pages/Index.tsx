@@ -1345,6 +1345,11 @@ const Index = () => {
     (preset: CanvasPreset) => {
       console.log("[Canvas Preset] Applying preset:", preset.name);
 
+      // Detect screen size for responsive application
+      const width = window.innerWidth;
+      const isMobile = width < 768;
+      const isTablet = width >= 768 && width < 1024;
+
       updateActiveScene((scene) => {
         // CLEAR ALL EXISTING STYLES (only one style at a time)
         const newScene: SceneState = {
@@ -1361,13 +1366,20 @@ const Index = () => {
           // FIX: Always set to 'canvas' for non-solo layouts to show blank canvas
           screenShareMode: (preset.pip.layoutMode === "solo" ? "off" : "canvas") as "off" | "screen" | "canvas",
 
-          // FIX: Apply all layout properties from preset
+          // FIX: Apply responsive layout properties from preset
           layoutMode: preset.pip.layoutMode as LayoutMode,
           cameraShape: preset.pip.cameraShape as CameraShape,
           splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
-          pipPosition:
-            preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition,
-          pipSize: preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize,
+          pipPosition: isMobile && preset.pip.responsive?.mobile?.pipPosition
+            ? preset.pip.responsive.mobile.pipPosition
+            : isTablet && preset.pip.responsive?.tablet?.pipPosition
+            ? preset.pip.responsive.tablet.pipPosition
+            : preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition,
+          pipSize: isMobile && preset.pip.responsive?.mobile?.pipSize
+            ? preset.pip.responsive.mobile.pipSize
+            : isTablet && preset.pip.responsive?.tablet?.pipSize
+            ? preset.pip.responsive.tablet.pipSize
+            : preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize,
           pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
           pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
           canvasAspectRatio: preset.canvasAspectRatio ?? "16:9",
@@ -1389,37 +1401,75 @@ const Index = () => {
           newScene.neonIntensity = preset.effects.neonIntensity;
         }
 
-        // Convert preset text overlays to draggable text overlays with full CaptionStyle
+        // Convert preset text overlays to draggable text overlays with responsive layout
         const newTextOverlays: TextOverlayState[] = preset.textOverlays.map(
-          (textOverlay) => ({
-            id: generateTextOverlayId(),
-            content: textOverlay.content.replace(/<[^>]+>/g, ""), // Strip HTML tags
-            style: {
-              fontFamily: textOverlay.style.fontFamily,
-              fontSize: textOverlay.style.fontSize,
-              color: textOverlay.style.color,
-              backgroundColor: textOverlay.style.backgroundColor,
-              position: { ...textOverlay.layout.position },
-              shape: "rounded" as CaptionShapeType,
-              animation: "fade" as CaptionAnimationType,
-              outline: false,
-              shadow: true,
-              bold: false,
-              italic: false,
-              underline: false,
-              textShadow: textOverlay.style.textShadow,
-              rotation: textOverlay.layout.rotation || 0,
-              border: !!textOverlay.style.border,
-              borderColor: "#FFFFFF",
-              borderWidth: 2,
-            },
-            layout: {
-              position: { ...textOverlay.layout.position },
-              size: { ...textOverlay.layout.size },
-              zIndex: textOverlay.layout.zIndex || 15,
-              rotation: textOverlay.layout.rotation || 0,
-            },
-          })
+          (textOverlay) => {
+            // Apply responsive layout if available
+            const responsiveLayout = isMobile && textOverlay.responsive?.mobile?.layout
+              ? textOverlay.responsive.mobile.layout
+              : isTablet && textOverlay.responsive?.tablet?.layout
+              ? textOverlay.responsive.tablet.layout
+              : null;
+
+            const responsiveStyle = isMobile && textOverlay.responsive?.mobile?.style
+              ? textOverlay.responsive.mobile.style
+              : isTablet && textOverlay.responsive?.tablet?.style
+              ? textOverlay.responsive.tablet.style
+              : null;
+
+            const finalLayout = {
+              position: responsiveLayout?.position ?? textOverlay.layout.position,
+              size: responsiveLayout?.size ?? textOverlay.layout.size,
+              zIndex: responsiveLayout?.zIndex ?? textOverlay.layout.zIndex,
+              rotation: (responsiveLayout?.rotation ?? textOverlay.layout.rotation) || 0,
+            };
+
+            const finalStyle = {
+              fontFamily: responsiveStyle?.fontFamily ?? textOverlay.style.fontFamily,
+              fontSize: responsiveStyle?.fontSize ?? textOverlay.style.fontSize,
+              color: responsiveStyle?.color ?? textOverlay.style.color,
+              backgroundColor: responsiveStyle?.backgroundColor ?? textOverlay.style.backgroundColor,
+              textShadow: responsiveStyle?.textShadow ?? textOverlay.style.textShadow,
+              textAlign: (responsiveStyle?.textAlign ?? textOverlay.style.textAlign) as "left" | "center" | "right",
+              fontWeight: responsiveStyle?.fontWeight ?? textOverlay.style.fontWeight,
+            };
+
+            // Ensure positions stay within bounds (0-100%)
+            const boundedPosition = {
+              x: Math.max(0, Math.min(100 - finalLayout.size.width, finalLayout.position.x)),
+              y: Math.max(0, Math.min(100 - finalLayout.size.height, finalLayout.position.y)),
+            };
+
+            return {
+              id: generateTextOverlayId(),
+              content: textOverlay.content.replace(/<[^>]+>/g, ""), // Strip HTML tags
+              style: {
+                fontFamily: finalStyle.fontFamily,
+                fontSize: finalStyle.fontSize,
+                color: finalStyle.color,
+                backgroundColor: finalStyle.backgroundColor,
+                position: boundedPosition,
+                shape: "rounded" as CaptionShapeType,
+                animation: "fade" as CaptionAnimationType,
+                outline: false,
+                shadow: true,
+                bold: false,
+                italic: false,
+                underline: false,
+                textShadow: finalStyle.textShadow,
+                rotation: finalLayout.rotation,
+                border: !!textOverlay.style.border,
+                borderColor: "#FFFFFF",
+                borderWidth: 2,
+              },
+              layout: {
+                position: boundedPosition,
+                size: finalLayout.size,
+                zIndex: finalLayout.zIndex,
+                rotation: finalLayout.rotation,
+              },
+            };
+          }
         );
 
         // Replace text overlays (only new preset overlays)
@@ -1430,18 +1480,26 @@ const Index = () => {
 
       // Record layout change if recording
       if (recording.isRecording) {
-        // --- MODIFIED: Record all new properties ---
+        const responsivePipPosition = isMobile && preset.pip.responsive?.mobile?.pipPosition
+          ? preset.pip.responsive.mobile.pipPosition
+          : isTablet && preset.pip.responsive?.tablet?.pipPosition
+          ? preset.pip.responsive.tablet.pipPosition
+          : preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition;
+
+        const responsivePipSize = isMobile && preset.pip.responsive?.mobile?.pipSize
+          ? preset.pip.responsive.mobile.pipSize
+          : isTablet && preset.pip.responsive?.tablet?.pipSize
+          ? preset.pip.responsive.tablet.pipSize
+          : preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize;
+
         recording.recordLayoutChange({
           mode: preset.pip.layoutMode as LayoutMode,
           cameraShape: preset.pip.cameraShape as CameraShape,
           splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
-          pipPosition:
-            preset.pip.pipPosition ?? DEFAULT_LAYOUT_STATE.pipPosition,
-          pipSize: preset.pip.pipSize ?? DEFAULT_LAYOUT_STATE.pipSize,
-          // --- ADDED: Ensure border/shadow are recorded ---
+          pipPosition: responsivePipPosition,
+          pipSize: responsivePipSize,
           pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
           pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
-          // (Note: You may need to update recordLayoutChange to accept border/shadow if you want them to be editable in the editor)
         });
       }
 
@@ -1493,6 +1551,55 @@ const Index = () => {
       }
     };
   }, []);
+
+  // Handle window resize to reapply responsive presets
+  useEffect(() => {
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      // Debounce resize events
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        // Ensure all text overlays stay within bounds
+        updateActiveScene((scene) => {
+          const updatedTextOverlays = scene.textOverlays.map((overlay) => {
+            const boundedPosition = {
+              x: Math.max(0, Math.min(100 - overlay.layout.size.width, overlay.layout.position.x)),
+              y: Math.max(0, Math.min(100 - overlay.layout.size.height, overlay.layout.position.y)),
+            };
+            return {
+              ...overlay,
+              layout: {
+                ...overlay.layout,
+                position: boundedPosition,
+              },
+              style: {
+                ...overlay.style,
+                position: boundedPosition,
+              },
+            };
+          });
+
+          // Ensure PIP stays within bounds
+          const boundedPipPosition = {
+            x: Math.max(0, Math.min(100 - scene.pipSize.width, scene.pipPosition.x)),
+            y: Math.max(0, Math.min(100 - scene.pipSize.height, scene.pipPosition.y)),
+          };
+
+          return {
+            ...scene,
+            textOverlays: updatedTextOverlays,
+            pipPosition: boundedPipPosition,
+          };
+        });
+      }, 300);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, [updateActiveScene]);
 
   // --- Sidebar Props ---
   const sidebarProps = {
