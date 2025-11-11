@@ -29,9 +29,9 @@ interface TextEditingToolbarProps {
   onStyleChange: (
     id: string,
     style: Partial<TextOverlayState["style"]>
-  ) => void; // removed onContentChange
+  ) => void;
   position: { x: number; y: number };
-  containerRef: React.RefObject<HTMLElement>;
+  containerRef?: React.RefObject<HTMLElement>;
 }
 
 const FONT_FAMILIES = [

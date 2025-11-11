@@ -25,7 +25,7 @@ interface DraggableBrowserProps {
   ) => void;
   onUrlChange: (id: string, url: string) => void;
   onRemove: (id: string) => void;
-  containerSize: { width: number; height: number };
+  sceneSize: { width: number; height: number };
   onSetDynamicLayout: (
     target: { id: string; type: "browser" },
     mode: "split-vertical" | "split-horizontal"
@@ -35,30 +35,29 @@ interface DraggableBrowserProps {
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
   viewport: { scale: number; x: number; y: number };
-  canvasContainerRef: React.RefObject<HTMLDivElement>;
 }
 
 // --- REFACTOR: Helper now converts top-left pixel to top-left percentage ---
 const calculatePercentagePosition = (
   pixelX: number,
   pixelY: number,
-  containerSize: { width: number; height: number }
+  sceneSize: { width: number; height: number }
 ): { x: number; y: number } | null => {
   if (
-    !containerSize.width ||
-    !containerSize.height ||
-    containerSize.width <= 0 ||
-    containerSize.height <= 0
+    !sceneSize.width ||
+    !sceneSize.height ||
+    sceneSize.width <= 0 ||
+    sceneSize.height <= 0
   ) {
     console.warn(
-      "Missing or invalid containerSize in calculatePercentagePosition",
-      { containerSize }
+      "Missing or invalid sceneSize in calculatePercentagePosition",
+      { sceneSize }
     );
     return null;
   }
 
-  const percentageX = (pixelX / containerSize.width) * 100;
-  const percentageY = (pixelY / containerSize.height) * 100;
+  const percentageX = (pixelX / sceneSize.width) * 100;
+  const percentageY = (pixelY / sceneSize.height) * 100;
   return { x: percentageX, y: percentageY };
 };
 // --- END REFACTOR ---
@@ -68,14 +67,13 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   onLayoutChange,
   onUrlChange,
   onRemove,
-  containerSize,
+  sceneSize,
   onSetDynamicLayout,
   isSelected,
   onSelect,
   onInternalDragStart,
   onInternalDragStop,
   viewport,
-  canvasContainerRef,
 }) => {
   const [inputUrl, setInputUrl] = useState(overlay.url);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -98,22 +96,22 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   };
 
   const widthPx =
-    containerSize.width > 0
-      ? (containerSize.width * overlay.layout.size.width) / 100
+    sceneSize.width > 0
+      ? (sceneSize.width * overlay.layout.size.width) / 100
       : 400;
   const heightPx =
-    containerSize.height > 0
-      ? (containerSize.height * overlay.layout.size.height) / 100
+    sceneSize.height > 0
+      ? (sceneSize.height * overlay.layout.size.height) / 100
       : 300;
 
   // --- REFACTOR: Calculate top-left pixel position ---
   const xPx =
-    containerSize.width > 0
-      ? (containerSize.width * overlay.layout.position.x) / 100
+    sceneSize.width > 0
+      ? (sceneSize.width * overlay.layout.position.x) / 100
       : 0;
   const yPx =
-    containerSize.height > 0
-      ? (containerSize.height * overlay.layout.position.y) / 100
+    sceneSize.height > 0
+      ? (sceneSize.height * overlay.layout.position.y) / 100
       : 0;
   // --- END REFACTOR ---
 
@@ -121,13 +119,13 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     (e: any, d: { x: number; y: number }) => {
       onInternalDragStop();
       setIsDragging(false);
-      if (containerSize.width <= 0 || containerSize.height <= 0) return;
+      if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
 
       // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         d.x,
         d.y,
-        containerSize
+        sceneSize
       );
       // --- END REFACTOR ---
 
@@ -149,7 +147,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     },
     [
       onInternalDragStop,
-      containerSize,
+      sceneSize,
       onLayoutChange,
       overlay.id,
       overlay.layout.size,
@@ -165,7 +163,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       pos: { x: number; y: number }
     ) => {
       onInternalDragStop();
-      if (containerSize.width <= 0 || containerSize.height <= 0) return;
+      if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
 
       const newWidthPx = parseInt(ref.style.width, 10);
       const newHeightPx = parseInt(ref.style.height, 10);
@@ -174,10 +172,10 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       const newPositionPercent = calculatePercentagePosition(
         pos.x,
         pos.y,
-        containerSize
+        sceneSize
       );
-      let newWidthPercent = (newWidthPx / containerSize.width) * 100;
-      let newHeightPercent = (newHeightPx / containerSize.height) * 100;
+      let newWidthPercent = (newWidthPx / sceneSize.width) * 100;
+      let newHeightPercent = (newHeightPx / sceneSize.height) * 100;
 
       if (newPositionPercent) {
         // Boundary Enforcement
@@ -199,7 +197,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
         });
       }
     },
-    [onInternalDragStop, containerSize, onLayoutChange, overlay.id]
+    [onInternalDragStop, sceneSize, onLayoutChange, overlay.id]
   );
   // --- End useCallback wrappers ---
 
@@ -208,8 +206,8 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       scale={1}
       size={{ width: widthPx, height: heightPx }}
       position={{ x: xPx, y: yPx }}
-      disableDragging={containerSize.width <= 0 || containerSize.height <= 0}
-      enableResizing={containerSize.width > 0 && containerSize.height > 0}
+      disableDragging={sceneSize.width <= 0 || sceneSize.height <= 0}
+      enableResizing={sceneSize.width > 0 && sceneSize.height > 0}
       cancel="input, button:not(.drag-handle), iframe"
       onDragStart={(e) => {
         if (

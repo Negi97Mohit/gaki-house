@@ -38,13 +38,12 @@ interface DraggableTextOverlayProps {
   ) => void;
   onContentChange: (id: string, content: string) => void;
   onRemove: (id: string) => void;
-  // containerSize: { width: number; height: number };
+  sceneSize: { width: number; height: number };
   isSelected: boolean;
   onSelect: (id: string) => void;
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
   isSpacePressed: boolean;
-  containerRef?: React.RefObject<HTMLElement>;
 }
 
 export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
@@ -53,13 +52,12 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   onStyleChange,
   onContentChange,
   onRemove,
-  // containerSize,
+  sceneSize,
   isSelected,
   onSelect,
   onInternalDragStart,
   onInternalDragStop,
   isSpacePressed,
-  containerRef,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -68,47 +66,23 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);
 
-  // --- MODIFIED: ADD THIS STATE AND EFFECT ---
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const container = containerRef?.current;
-    if (!container) return;
-
-    const updateSize = () => {
-      if (container) {
-        setContainerSize({
-          width: container.clientWidth,
-          height: container.clientHeight,
-        });
-      }
-    };
-
-    const resizeObserver = new ResizeObserver(updateSize);
-    resizeObserver.observe(container);
-    updateSize(); // Initial size update
-
-    return () => resizeObserver.disconnect();
-  }, [containerRef]);
-  // --- END OF MODIFIED BLOCK ---
-
   const widthPx =
-    containerSize.width > 0
-      ? (containerSize.width * overlay.layout.size.width) / 100
+    sceneSize.width > 0
+      ? (sceneSize.width * overlay.layout.size.width) / 100
       : 200;
   const heightPx =
-    containerSize.height > 0
-      ? (containerSize.height * overlay.layout.size.height) / 100
+    sceneSize.height > 0
+      ? (sceneSize.height * overlay.layout.size.height) / 100
       : 100;
 
   // --- REFACTOR: Removed center-point logic ---
   const xPx =
-    containerSize.width > 0
-      ? (containerSize.width * overlay.layout.position.x) / 100
+    sceneSize.width > 0
+      ? (sceneSize.width * overlay.layout.position.x) / 100
       : 0;
   const yPx =
-    containerSize.height > 0
-      ? (containerSize.height * overlay.layout.position.y) / 100
+    sceneSize.height > 0
+      ? (sceneSize.height * overlay.layout.position.y) / 100
       : 0;
   // --- END REFACTOR ---
 
@@ -117,8 +91,8 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       onInternalDragStop();
       setIsDragging(false);
       if (
-        containerSize.width <= 0 ||
-        containerSize.height <= 0 ||
+        sceneSize.width <= 0 ||
+        sceneSize.height <= 0 ||
         !rndRef.current
       )
         return;
@@ -127,25 +101,25 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       if (!currentElement) return;
       const currentWidthPx = currentElement.offsetWidth;
       const currentHeightPx = currentElement.offsetHeight;
-      const currentWidthPercent = (currentWidthPx / containerSize.width) * 100;
+      const currentWidthPercent = (currentWidthPx / sceneSize.width) * 100;
       const currentHeightPercent =
-        (currentHeightPx / containerSize.height) * 100;
+        (currentHeightPx / sceneSize.height) * 100;
 
       // Clamp position to stay within bounds
       const clampedX = Math.max(
         0,
-        Math.min(d.x, containerSize.width - currentWidthPx)
+        Math.min(d.x, sceneSize.width - currentWidthPx)
       );
       const clampedY = Math.max(
         0,
-        Math.min(d.y, containerSize.height - currentHeightPx)
+        Math.min(d.y, sceneSize.height - currentHeightPx)
       );
 
       // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         clampedX,
         clampedY,
-        containerSize
+        sceneSize
       );
       // --- END REFACTOR ---
 
@@ -153,7 +127,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         onLayoutChange(overlay.id, { position: newPositionPercent });
       }
     },
-    [onInternalDragStop, containerSize, onLayoutChange, overlay.id]
+    [onInternalDragStop, sceneSize, onLayoutChange, overlay.id]
   );
 
   const handleResizeStop = useCallback(
@@ -167,7 +141,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       onInternalDragStop();
       setIsDragging(false);
       setIsResizing(false);
-      if (containerSize.width <= 0 || containerSize.height <= 0) return;
+      if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
 
       const newWidthPx = parseInt(ref.style.width, 10);
       const newHeightPx = parseInt(ref.style.height, 10);
@@ -176,10 +150,10 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const newPositionPercent = calculatePercentagePosition(
         pos.x,
         pos.y,
-        containerSize
+        sceneSize
       );
-      let newWidthPercent = (newWidthPx / containerSize.width) * 100;
-      let newHeightPercent = (newHeightPx / containerSize.height) * 100;
+      let newWidthPercent = (newWidthPx / sceneSize.width) * 100;
+      let newHeightPercent = (newHeightPx / sceneSize.height) * 100;
 
       // Boundary Enforcement
       if (newPositionPercent) {
@@ -201,7 +175,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         });
       }
     },
-    [onInternalDragStop, containerSize, onLayoutChange, overlay.id]
+    [onInternalDragStop, sceneSize, onLayoutChange, overlay.id]
   );
 
   const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -257,17 +231,16 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   };
 
   const getToolbarPosition = () => {
-    if (!rndRef.current || !containerSize.width || !containerRef?.current) {
+    if (!rndRef.current || !sceneSize.width) {
       return { x: 0, y: 0 };
     }
     const selfElement = rndRef.current.getSelfElement();
     if (!selfElement) return { x: 0, y: 0 };
 
     const rect = selfElement.getBoundingClientRect();
-    const containerRect = containerRef.current.getBoundingClientRect();
 
-    const x = rect.left - containerRect.left + rect.width / 2;
-    const y = rect.top - containerRect.top;
+    const x = rect.left + rect.width / 2;
+    const y = rect.top;
 
     return { x, y };
   };
@@ -284,14 +257,14 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         disableDragging={
           isSpacePressed ||
           isEditing ||
-          containerSize.width <= 0 ||
-          containerSize.height <= 0
+          sceneSize.width <= 0 ||
+          sceneSize.height <= 0
         }
         enableResizing={
           !isSpacePressed &&
           !isEditing &&
-          containerSize.width > 0 &&
-          containerSize.height > 0
+          sceneSize.width > 0 &&
+          sceneSize.height > 0
             ? {
                 top: true,
                 right: true,
@@ -426,7 +399,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           )}
         </div>
       </Rnd>
-      {isSelected && !isEditing && containerRef && (
+      {isSelected && !isEditing && (
         <div
           className="pointer-events-auto"
           style={{
@@ -441,7 +414,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             overlay={overlay}
             onStyleChange={onStyleChange}
             position={getToolbarPosition()}
-            containerRef={containerRef}
           />
         </div>
         // --- END MODIFICATION ---

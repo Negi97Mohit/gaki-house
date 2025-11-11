@@ -1,5 +1,5 @@
 // src/types/layout.ts
-export type LayoutMode = "split-vertical" | "split-horizontal" | "pip";
+export type LayoutMode = "split-vertical" | "split-horizontal" | "pip" | "solo" | "corner-floating" | "diagonal-split" | "grid-3x3" | "overlay-full";
 export type CameraShape = "rectangle" | "circle" | "rounded";
 
 export interface LayoutState {

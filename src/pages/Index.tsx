@@ -1378,6 +1378,7 @@ const Index = () => {
 
           // +++ NEW: Use responsive layout helper for PiP
           ...getResponsivePipLayout(preset, screenSize),
+          layoutMode: preset.pip.layoutMode as LayoutMode,
           cameraShape: preset.pip.cameraShape as CameraShape,
           splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
           pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
@@ -1917,7 +1918,7 @@ const Index = () => {
         onLayoutModeChange={handleSetLayoutMode}
         onCameraShapeChange={handleSetCameraShape}
         onCustomMaskUpload={handleCustomMaskUpload}
-        portalContainer={mainContainerRef.current}
+        portalContainer={typeof mainContainerRef === 'function' ? undefined : mainContainerRef?.current || undefined}
         splitRatio={activeScene.splitRatio}
         pipPosition={activeScene.pipPosition}
         pipSize={activeScene.pipSize}
