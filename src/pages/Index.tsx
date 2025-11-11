@@ -174,8 +174,25 @@ const Index = () => {
   // --- UI & WINDOW STATE ---
   const [isFullscreen, setIsFullscreen] = useState(false);
   // --- MODIFIED: This is no longer used by TopToolbar ---
-  const [isSceneTabsHidden, setIsSceneTabsHidden] = useState(false);
+  const [isSceneTabsHidden, setIsSceneTabsHidden] = useState(true);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
+
+  // Auto-show/hide SceneTabs based on mouse position
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const threshold = 50; // pixels from right edge
+      const distanceFromRight = window.innerWidth - e.clientX;
+      
+      if (distanceFromRight <= threshold) {
+        setIsSceneTabsHidden(false);
+      } else if (distanceFromRight > 300) { // hide when mouse is far from panel
+        setIsSceneTabsHidden(true);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
   const [showFloatingPanel, setShowFloatingPanel] = useState(false);
@@ -1829,19 +1846,6 @@ const Index = () => {
         onClose={() => setShowSessionsPanel(false)}
       />
 
-      {/* --- ADDED: Show Scenes Button --- */}
-      {isSceneTabsHidden && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="fixed top-1/2 right-2 -translate-y-1/2 z-[2025] cybr-scroll-btn"
-          onClick={() => setIsSceneTabsHidden(false)}
-          title="Show Scenes"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </Button>
-      )}
-      {/* --- END ADDED --- */}
       <div className="flex-1 relative overflow-hidden">
         {previousScene && previousSceneProps && (
           <div
