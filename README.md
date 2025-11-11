@@ -1,13 +1,13 @@
-# gaki がき
+# gaki 小子
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![React](https://img.shields.io/badge/React-18-blue)
 ![Vite](https://img.shields.io/badge/Vite-latest-purple)
 
-# 🎥 GAKI がき
+# 🎥 GAKI 小子
 
-**GAKI (がき)** is an **AI-powered, multi-scene streaming and recording studio** built with React.  
+**GAKI (小子)** is an **AI-powered, multi-scene streaming and recording studio** built with React.  
 It provides a **WYSIWYG (What You See Is What You Get)** canvas for building dynamic video scenes — complete with AI-generated overlays, live speech-to-text captions, and a full-fledged recording and post-production editor.
 
 ---

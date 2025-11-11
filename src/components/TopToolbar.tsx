@@ -40,7 +40,7 @@ export const TopToolbar = ({
       {/* Logo */}
       <div className="flex items-center gap-2">
         <img src="/icon.png" alt="gaki logo" className="w-7 h-7 rounded-md" />
-        <span className="font-semibold text-lg">GAKI がき</span>
+        <span className="font-semibold text-lg">GAKI 小子</span>
       </div>
 
       <div className="w-px h-6 bg-border/40" />
