@@ -129,7 +129,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   return (
     <div
       ref={toolbarRef}
-      className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-2 flex items-center gap-1"
+      className="absolute bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl shadow-2xl p-1.5 flex items-center gap-0.5"
       style={{
         left: `${toolbarPosition.x}px`,
         top: `${toolbarPosition.y}px`,
@@ -138,60 +138,56 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      {/* --- Group 1: Camera Background & Aspect Ratio --- */}
+      {/* --- Group 1: Background & Aspect --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
-            title="Camera Settings"
+            className="h-9 w-9 rounded-xl hover:bg-background/60"
+            title="Background"
           >
-            <Camera className="w-4 h-4" />
+            <Image className="w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)] max-h-[50vh] overflow-y-auto"
+            className="z-[var(--z-text-toolbar)] w-56 bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            <DropdownMenuLabel>Camera Background</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs font-semibold">Background</DropdownMenuLabel>
             {BACKGROUND_PRESETS.map((bg) => (
               <DropdownMenuCheckboxItem
                 key={bg.id}
                 checked={
                   (bg.id === "none" && props.cameraBackground === "none") ||
                   (bg.id === "blur" && props.cameraBackground === "blur") ||
-                  (bg.type === "image" && props.cameraBackground === "image") // Simplified check
+                  (bg.type === "image" && props.cameraBackground === "image")
                 }
                 onClick={() =>
                   props.onCameraBackgroundChange(
                     bg.id as "none" | "blur" | "image"
                   )
                 }
+                className="text-sm"
               >
-                {bg.id === "none" ? (
-                  <Image className="w-4 h-4 mr-2" />
-                ) : (
-                  <Sparkles className="w-4 h-4 mr-2" />
-                )}
                 {bg.name}
               </DropdownMenuCheckboxItem>
             ))}
-            <DropdownMenuItem onClick={() => fileInputRef.current?.click()}>
-              <Upload className="w-4 h-4 mr-2" />
-              Upload Background
+            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="text-sm">
+              <Upload className="w-3.5 h-3.5 mr-2" />
+              Upload
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuLabel>Aspect Ratio</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs font-semibold">Aspect Ratio</DropdownMenuLabel>
             {ASPECT_RATIOS.map((ratio) => (
               <DropdownMenuCheckboxItem
                 key={ratio.id}
                 checked={props.cameraAspectRatio === ratio.id}
                 onClick={() => props.onCameraAspectRatioChange(ratio.id)}
+                className="text-sm"
               >
-                <RectangleHorizontal className="w-4 h-4 mr-2" />
                 {ratio.name}
               </DropdownMenuCheckboxItem>
             ))}
@@ -204,7 +200,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                   onChange={(e) =>
                     props.onCustomAspectRatioChange(e.target.value)
                   }
-                  className="border-primary/30 font-mono text-sm h-8"
+                  className="h-8 text-sm"
                 />
               </div>
             )}
@@ -212,14 +208,14 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* --- Group 2: Tracking & Framing --- */}
+      {/* --- Group 2: AI Tracking --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
-            title="Tracking & Framing"
+            className="h-9 w-9 rounded-xl hover:bg-background/60"
+            title="AI Tracking"
           >
             <Minimize2 className="w-4 h-4" />
           </Button>
@@ -227,47 +223,51 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)] w-56"
+            className="z-[var(--z-text-toolbar)] w-56 bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <DropdownMenuCheckboxItem
               checked={props.isFaceTrackingEnabled}
               onCheckedChange={props.onFaceTrackingToggle}
+              className="text-sm"
             >
-              AI Face Tracking
+              Face Tracking
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={props.isAutoFramingEnabled}
               onCheckedChange={props.onAutoFramingChange}
+              className="text-sm"
             >
               Auto Framing
             </DropdownMenuCheckboxItem>
             {props.isAutoFramingEnabled && (
               <>
                 <DropdownMenuSeparator />
-                <div className="p-2 space-y-2">
-                  <Label className="text-xs">
-                    Zoom: {props.zoomSensitivity.toFixed(1)}
-                  </Label>
-                  <Slider
-                    value={[props.zoomSensitivity]}
-                    onValueChange={([v]) => props.onZoomSensitivityChange(v)}
-                    min={1}
-                    max={10}
-                    step={0.1}
-                  />
-                </div>
-                <div className="p-2 space-y-2">
-                  <Label className="text-xs">
-                    Speed: {props.trackingSpeed.toFixed(2)}
-                  </Label>
-                  <Slider
-                    value={[props.trackingSpeed]}
-                    onValueChange={([v]) => props.onTrackingSpeedChange(v)}
-                    min={0.01}
-                    max={0.5}
-                    step={0.01}
-                  />
+                <div className="p-3 space-y-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">
+                      Zoom {props.zoomSensitivity.toFixed(1)}x
+                    </Label>
+                    <Slider
+                      value={[props.zoomSensitivity]}
+                      onValueChange={([v]) => props.onZoomSensitivityChange(v)}
+                      min={1}
+                      max={10}
+                      step={0.1}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium">
+                      Speed {(props.trackingSpeed * 100).toFixed(0)}%
+                    </Label>
+                    <Slider
+                      value={[props.trackingSpeed]}
+                      onValueChange={([v]) => props.onTrackingSpeedChange(v)}
+                      min={0.01}
+                      max={0.5}
+                      step={0.01}
+                    />
+                  </div>
                 </div>
               </>
             )}
@@ -281,8 +281,8 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
-            title="Effects & Filters"
+            className="h-9 w-9 rounded-xl hover:bg-background/60"
+            title="Effects"
           >
             <Wand2 className="w-4 h-4" />
           </Button>
@@ -290,34 +290,34 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)]"
+            className="z-[var(--z-text-toolbar)] bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <DropdownMenuCheckboxItem
               checked={props.isBeautifyEnabled}
               onCheckedChange={props.onBeautifyToggle}
+              className="text-sm"
             >
-              <Sparkles className="w-4 h-4 mr-2" />
+              <Sparkles className="w-3.5 h-3.5 mr-2" />
               Beautify
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={props.isLowLightEnabled}
               onCheckedChange={props.onLowLightToggle}
+              className="text-sm"
             >
-              <Sun className="w-4 h-4 mr-2" />
-              Low Light Enhance
+              <Sun className="w-3.5 h-3.5 mr-2" />
+              Enhance Lighting
             </DropdownMenuCheckboxItem>
             <DropdownMenuSeparator />
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <Droplet className="w-4 h-4 mr-2" />
-                Video Filter
+              <DropdownMenuSubTrigger className="text-sm">
+                <Droplet className="w-3.5 h-3.5 mr-2" />
+                Filters
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
-                {/* --- MODIFIED: Replaced text list with visual grid --- */}
-                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] p-2">
-                  <div className="grid grid-cols-3 gap-2 w-[240px] max-h-[200px] overflow-y-auto pr-2">
-                    {" "}
+                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] p-2 bg-background/95 backdrop-blur-xl border-border/40">
+                  <div className="grid grid-cols-3 gap-2 w-[260px] max-h-[240px] overflow-y-auto pr-1">
                     {FILTER_PRESETS.map((filter) => {
                       const isSelected = props.videoFilter === filter.style;
                       return (
@@ -327,28 +327,26 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                             props.onVideoFilterChange(filter.style)
                           }
                           className={cn(
-                            "aspect-video rounded-md border-2 transition-all duration-200 relative overflow-hidden group",
+                            "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
                             isSelected
-                              ? "border-primary shadow-lg"
-                              : "border-border hover:border-primary/60"
+                              ? "border-primary shadow-md ring-2 ring-primary/30"
+                              : "border-border/40 hover:border-border"
                           )}
                           title={filter.name}
                         >
                           <img
                             src="/placeholder.jpeg"
                             alt={filter.name}
-                            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+                            className="w-full h-full object-cover"
                             style={{ filter: filter.style }}
                           />
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-1">
-                            <span className="text-white text-[9px] font-bold font-cyber truncate block text-center">
-                              {filter.name.toUpperCase()}
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
+                            <span className="text-white text-[8px] font-semibold truncate block text-center">
+                              {filter.name}
                             </span>
                           </div>
                           {isSelected && (
-                            <div className="absolute inset-0 bg-primary/30 flex items-center justify-center">
-                              <div className="w-2 h-2 rounded-full bg-primary-foreground" />
-                            </div>
+                            <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
                           )}
                         </button>
                       );
@@ -361,14 +359,14 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* --- Group 4: Style & Appearance --- */}
+      {/* --- Group 4: Style --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
-            title="Appearance"
+            className="h-9 w-9 rounded-xl hover:bg-background/60"
+            title="Style"
           >
             <Paintbrush className="w-4 h-4" />
           </Button>
@@ -376,59 +374,66 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)] w-56"
+            className="z-[var(--z-text-toolbar)] w-64 bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            <DropdownMenuLabel>Camera Border</DropdownMenuLabel>
-            <div className="p-2 flex gap-2 items-center">
-              <Input
-                type="color"
-                className="w-10 h-10 p-1"
-                value={pipBorder.color}
-                onChange={handlePipBorderColor}
-              />
-              <div className="flex-1 space-y-1">
-                <Label className="text-xs">Width: {pipBorder.width}px</Label>
-                <Slider
-                  value={[pipBorder.width]}
-                  onValueChange={([v]) => handlePipBorderWidth(v)}
-                  min={0}
-                  max={20}
-                  step={1}
-                />
+            <div className="p-3 space-y-3">
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold">Border</Label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    type="color"
+                    className="w-12 h-9 p-1 rounded-lg cursor-pointer"
+                    value={pipBorder.color}
+                    onChange={handlePipBorderColor}
+                  />
+                  <div className="flex-1 space-y-1">
+                    <Label className="text-[10px] text-muted-foreground">Width {pipBorder.width}px</Label>
+                    <Slider
+                      value={[pipBorder.width]}
+                      onValueChange={([v]) => handlePipBorderWidth(v)}
+                      min={0}
+                      max={20}
+                      step={1}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <DropdownMenuLabel>Camera Shadow</DropdownMenuLabel>
-            <div className="p-2 flex gap-2 items-center">
-              <Input
-                type="color"
-                className="w-10 h-10 p-1"
-                value={pipShadow.color}
-                onChange={handlePipShadowColor}
-              />
-              <div className="flex-1 space-y-1">
-                <Label className="text-xs">Blur: {pipShadow.blur}px</Label>
-                <Slider
-                  value={[pipShadow.blur]}
-                  onValueChange={([v]) => handlePipShadowBlur(v)}
-                  min={0}
-                  max={50}
-                  step={1}
-                />
+              <div className="space-y-2">
+                <Label className="text-xs font-semibold">Shadow</Label>
+                <div className="flex gap-2 items-center">
+                  <Input
+                    type="color"
+                    className="w-12 h-9 p-1 rounded-lg cursor-pointer"
+                    value={pipShadow.color}
+                    onChange={handlePipShadowColor}
+                  />
+                  <div className="flex-1 space-y-1">
+                    <Label className="text-[10px] text-muted-foreground">Blur {pipShadow.blur}px</Label>
+                    <Slider
+                      value={[pipShadow.blur]}
+                      onValueChange={([v]) => handlePipShadowBlur(v)}
+                      min={0}
+                      max={50}
+                      step={1}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               checked={props.isNeonEdgeEnabled}
               onCheckedChange={props.onNeonEdgeToggle}
+              className="text-sm"
             >
-              <Settings2 className="w-4 h-4 mr-2" />
+              <Settings2 className="w-3.5 h-3.5 mr-2" />
               Neon Edge
             </DropdownMenuCheckboxItem>
             {props.isNeonEdgeEnabled && (
-              <div className="p-2 space-y-2">
-                <Label className="text-xs">
-                  Intensity: {props.neonIntensity}%
+              <div className="p-3 space-y-2">
+                <Label className="text-xs font-medium">
+                  Intensity {props.neonIntensity}%
                 </Label>
                 <Slider
                   value={[props.neonIntensity]}

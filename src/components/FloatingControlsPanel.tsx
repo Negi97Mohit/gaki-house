@@ -196,8 +196,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       <div
         ref={panelRef}
         className={cn(
-          "fixed bottom-24 left-6 rounded-xl overflow-hidden",
-          "bg-background border-2 border-yellow-500/50 shadow-[0_0_30px_rgba(234,179,8,0.3)]",
+          "fixed bottom-24 left-6 rounded-2xl overflow-hidden",
+          "bg-background/40 backdrop-blur-xl border border-border/40 shadow-2xl",
           "transition-all duration-300 ease-out flex",
           isOpen && props.isMouseActive
             ? "opacity-100 translate-y-0 pointer-events-auto"
@@ -209,54 +209,35 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         }}
       >
         {/* Sidebar Navigation */}
-        <div className="w-20 bg-gradient-to-b from-background to-background/95 border-r-2 border-yellow-500/30 flex flex-col items-center py-4 gap-2">
+        <div className="w-16 bg-background/20 backdrop-blur-sm border-r border-border/30 flex flex-col items-center py-3 gap-1.5">
           {sections.map((section) => (
             <button
               key={section.id}
               onClick={() => setActiveSection(section.id)}
               className={cn(
-                "w-14 h-14 rounded-lg flex flex-col items-center justify-center gap-1 transition-all duration-200 group relative",
+                "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 group relative",
                 activeSection === section.id
-                  ? "bg-gradient-to-br " +
-                      section.color +
-                      " shadow-[0_0_20px_rgba(234,179,8,0.4)] scale-110"
-                  : "bg-background/50 hover:bg-background border-2 border-yellow-500/20 hover:border-yellow-500/50"
+                  ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                  : "hover:bg-background/40 text-muted-foreground hover:text-foreground"
               )}
               title={section.title}
             >
-              <section.icon
-                className={cn(
-                  "w-5 h-5 transition-colors",
-                  activeSection === section.id
-                    ? "text-black"
-                    : "text-yellow-500"
-                )}
-              />
-              <span
-                className={cn(
-                  "text-[9px] font-bold uppercase tracking-wider font-cyber",
-                  activeSection === section.id
-                    ? "text-black"
-                    : "text-yellow-500/70"
-                )}
-              >
-                {section.title.split(" ")[0]}
-              </span>
+              <section.icon className="w-5 h-5" />
               {activeSection === section.id && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-yellow-500 rounded-l-full" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-primary rounded-l-full" />
               )}
             </button>
           ))}
         </div>
 
         {/* Content Area */}
-        <div className="w-[420px] max-h-[70vh] overflow-y-auto p-6 bg-gradient-to-br from-background via-background to-background/95">
+        <div className="w-[420px] max-h-[70vh] overflow-y-auto p-5 bg-background/10 backdrop-blur-sm">
           {activeSection === "canvas-designs" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-violet-500/30">
-                <LayoutGrid className="w-5 h-5 text-violet-500" />
-                <h3 className="text-lg font-bold font-cyber text-violet-500 tracking-wider">
-                  CANVAS DESIGNS
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
+                <LayoutGrid className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold tracking-wide">
+                  Canvas Designs
                 </h3>
               </div>
 
@@ -401,10 +382,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
           {activeSection === "dynamic-styles" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-yellow-500/30">
-                <Zap className="w-5 h-5 text-yellow-500" />
-                <h3 className="text-lg font-bold font-cyber text-yellow-500 tracking-wider">
-                  DYNAMIC STYLES
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
+                <Zap className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold tracking-wide">
+                  Dynamic Styles
                 </h3>
               </div>
               <RadioGroup
@@ -487,10 +468,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
           {activeSection === "static-presets" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-pink-500/30">
-                <Paintbrush className="w-5 h-5 text-pink-500" />
-                <h3 className="text-lg font-bold font-cyber text-pink-500 tracking-wider">
-                  CAPTION PRESETS
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
+                <Paintbrush className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold tracking-wide">
+                  Caption Presets
                 </h3>
               </div>
 
@@ -553,10 +534,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
           {activeSection === "base-text" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-blue-500/30">
-                <Palette className="w-5 h-5 text-blue-500" />
-                <h3 className="text-lg font-bold font-cyber text-blue-500 tracking-wider">
-                  TEXT STYLE
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
+                <Palette className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold tracking-wide">
+                  Text Style
                 </h3>
               </div>
               <StyleControls
@@ -568,10 +549,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
           {activeSection === "video-effects" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-cyan-500/30">
-                <Droplets className="w-5 h-5 text-cyan-500" />
-                <h3 className="text-lg font-bold font-cyber text-cyan-500 tracking-wider">
-                  CANVAS EFFECTS
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
+                <Droplets className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold tracking-wide">
+                  Canvas Effects
                 </h3>
               </div>
 
@@ -635,10 +616,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
           {activeSection === "saved-overlays" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-purple-500/30">
-                <Sparkles className="w-5 h-5 text-purple-500" />
-                <h3 className="text-lg font-bold font-cyber text-purple-500 tracking-wider">
-                  SAVED OVERLAYS
+              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
+                <Sparkles className="w-5 h-5 text-primary" />
+                <h3 className="text-base font-semibold tracking-wide">
+                  Saved Overlays
                 </h3>
               </div>
               {props.savedOverlays.length === 0 ? (

@@ -128,46 +128,45 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   return (
     <div
       className={cn(
-        "fixed bottom-0 left-0 right-0 h-20 bg-background/80 backdrop-blur-md border-t border-border transition-opacity duration-300 ease-in-out",
-        "shadow-[0_-10px_25px_-15px_rgba(77,203,194,0.6)]", // ADDED: This adds the hue at the top
-        isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
+        "fixed bottom-4 left-1/2 -translate-x-1/2 bg-background/40 backdrop-blur-xl border border-border/40 rounded-full transition-all duration-300 ease-out shadow-2xl",
+        isMouseActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
       )}
       style={{ zIndex: "var(--z-floating-controls)" }}
     >
-      {/* === CONSOLIDATED CENTER GROUP === */}
-      <div className="flex items-center justify-center h-full px-4 md:px-6 gap-2">
-        {/* === MOVED FROM LEFT GROUP === */}
+      <div className="flex items-center gap-1 px-2 py-2">
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full h-10 w-10"
+          className="rounded-full h-10 w-10 hover:bg-background/60"
           onClick={onOpenSettings}
-          title="Open Controls Panel"
+          title="Settings"
           data-floating-trigger="true"
         >
-          <SlidersHorizontal className="w-5 h-5" />
+          <SlidersHorizontal className="w-4 h-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full h-10 w-10"
+          className="rounded-full h-10 w-10 hover:bg-background/60"
           onClick={onOpenSessions}
-          title="Your Recordings"
+          title="Library"
         >
-          <Library className="w-5 h-5" />
+          <Library className="w-4 h-4" />
         </Button>
-        {/* === CENTER GROUP === */}
-        <div className="flex items-center bg-muted/50 rounded-full">
+        
+        <div className="w-px h-6 bg-border/40 mx-1" />
+        
+        <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10"
+            className="rounded-full h-10 w-10 hover:bg-background/60"
             onClick={() => onAudioToggle(!isAudioOn)}
           >
             {isAudioOn ? (
-              <Mic className="h-5 w-5" />
+              <Mic className="h-4 h-4" />
             ) : (
-              <MicOff className="h-5 w-5 text-red-500" />
+              <MicOff className="h-4 h-4 text-red-500" />
             )}
           </Button>
           <DropdownMenu>
@@ -175,21 +174,23 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-8 w-8 mr-1"
+                className="rounded-full h-7 w-7 hover:bg-background/60"
               >
-                <ChevronUp className="w-4 h-4" />
+                <ChevronUp className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
+              className="bg-background/95 backdrop-blur-xl border-border/40"
               style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
             >
               {audioDevices.map((device, i) => (
                 <DropdownMenuItem
                   key={device.deviceId}
                   onClick={() => onAudioDeviceSelect(device.deviceId)}
+                  className="text-sm"
                 >
                   {device.deviceId === selectedAudioDevice && (
-                    <Check className="w-4 h-4 mr-2" />
+                    <Check className="w-3.5 h-3.5 mr-2" />
                   )}
                   {device.label || `Microphone ${i + 1}`}
                 </DropdownMenuItem>
@@ -198,18 +199,17 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           </DropdownMenu>
         </div>
 
-        {/* Video Controls */}
-        <div className="flex items-center bg-muted/50 rounded-full">
+        <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10"
+            className="rounded-full h-10 w-10 hover:bg-background/60"
             onClick={() => onVideoToggle(!isVideoOn)}
           >
             {isVideoOn ? (
-              <Webcam className="h-5 w-5" />
+              <Webcam className="h-4 h-4" />
             ) : (
-              <VideoOff className="h-5 w-5 text-red-500" />
+              <VideoOff className="h-4 h-4 text-red-500" />
             )}
           </Button>
           <DropdownMenu>
@@ -217,21 +217,23 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-8 w-8 mr-1"
+                className="rounded-full h-7 w-7 hover:bg-background/60"
               >
-                <ChevronUp className="w-4 h-4" />
+                <ChevronUp className="w-3 h-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
+              className="bg-background/95 backdrop-blur-xl border-border/40"
               style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
             >
               {videoDevices.map((device, i) => (
                 <DropdownMenuItem
                   key={device.deviceId}
                   onClick={() => onVideoDeviceSelect(device.deviceId)}
+                  className="text-sm"
                 >
                   {device.deviceId === selectedVideoDevice && (
-                    <Check className="w-4 h-4 mr-2" />
+                    <Check className="w-3.5 h-3.5 mr-2" />
                   )}
                   {device.label || `Camera ${i + 1}`}
                 </DropdownMenuItem>
@@ -240,85 +242,87 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           </DropdownMenu>
         </div>
 
-        {/* Screen Share */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
               className={cn(
-                "rounded-full h-10 w-10 transition-colors bg-muted/50",
+                "rounded-full h-10 w-10 hover:bg-background/60",
                 screenShareMode !== "off" && "bg-primary/20 text-primary"
               )}
-              title="Share Content"
+              title="Share"
             >
-              <ScreenShare className="h-5 w-5" />
+              <ScreenShare className="h-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            className="bg-background/95 backdrop-blur-xl border-border/40"
             style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
           >
-            <DropdownMenuItem onClick={() => onScreenShareModeChange("screen")}>
-              <Monitor className="w-4 h-4 mr-2" />
-              Share Screen
+            <DropdownMenuItem onClick={() => onScreenShareModeChange("screen")} className="text-sm">
+              <Monitor className="w-3.5 h-3.5 mr-2" />
+              Screen
               {screenShareMode === "screen" && (
-                <Check className="w-4 h-4 ml-auto" />
+                <Check className="w-3.5 h-3.5 ml-auto" />
               )}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onScreenShareModeChange("canvas")}>
-              <Paintbrush className="w-4 h-4 mr-2" />
-              Blank Canvas
+            <DropdownMenuItem onClick={() => onScreenShareModeChange("canvas")} className="text-sm">
+              <Paintbrush className="w-3.5 h-3.5 mr-2" />
+              Canvas
               {screenShareMode === "canvas" && (
-                <Check className="w-4 h-4 ml-auto" />
+                <Check className="w-3.5 h-3.5 ml-auto" />
               )}
             </DropdownMenuItem>
             {screenShareMode !== "off" && (
               <DropdownMenuItem
-                className="text-red-500"
+                className="text-red-500 text-sm"
                 onClick={() => onScreenShareModeChange("off")}
               >
-                <X className="w-4 h-4 mr-2" />
-                Stop Sharing
+                <X className="w-3.5 h-3.5 mr-2" />
+                Stop
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Record Button */}
+        <div className="w-px h-6 bg-border/40 mx-1" />
+
         <Button
           size="icon"
           className={cn(
-            "rounded-full h-12 w-12 transition-colors",
+            "rounded-full h-12 w-12 transition-all shadow-lg",
             isRecording
-              ? "bg-red-600 hover:bg-red-700"
-              : "bg-primary hover:bg-primary/90"
+              ? "bg-red-500 hover:bg-red-600 shadow-red-500/50"
+              : "bg-primary hover:bg-primary/90 shadow-primary/30"
           )}
           onClick={onRecordingToggle}
-          title={isRecording ? "Stop Recording" : "Start Recording"}
+          title={isRecording ? "Stop" : "Record"}
         >
           {isRecording ? (
-            <Square className="h-6 w-6" />
+            <Square className="h-5 w-5" />
           ) : (
-            <Circle className="h-6 w-6 fill-current" />
+            <Circle className="h-5 w-5 fill-current" />
           )}
         </Button>
 
-        {/* Broadcast Button */}
         <Button
           size="icon"
           className={cn(
-            "rounded-full h-12 w-12 transition-colors",
+            "rounded-full h-11 w-11 transition-all",
             isBroadcasting
-              ? "bg-green-600 hover:bg-green-700 shadow-[0_0_20px_rgba(34,197,94,0.6)]"
-              : "bg-secondary hover:bg-secondary/80"
+              ? "bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/50"
+              : "hover:bg-background/60"
           )}
+          variant={isBroadcasting ? "default" : "ghost"}
           onClick={onBroadcastToggle}
-          title={isBroadcasting ? "Stop Broadcasting" : "Start Broadcasting"}
+          title={isBroadcasting ? "Stop Broadcast" : "Broadcast"}
         >
-          <Radio className={cn("h-6 w-6", isBroadcasting && "animate-pulse")} />
+          <Radio className={cn("h-4 w-4", isBroadcasting && "animate-pulse")} />
         </Button>
+        
+        <div className="w-px h-6 bg-border/40 mx-1" />
 
-        {/* === NEW TOOLS POPOVER === */}
         <ToolsPopover
           onAddTextOverlay={onAddTextOverlay}
           onAssetSelect={onAssetSelect}
@@ -327,20 +331,18 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           theme={theme}
           portalContainer={layoutProps.portalContainer}
         />
-
-        {/* === MOVED FROM RIGHT GROUP === */}
         <LayoutControls {...layoutProps} />
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full h-10 w-10"
+          className="rounded-full h-10 w-10 hover:bg-background/60"
           onClick={onToggleFullscreen}
-          title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+          title={isFullscreen ? "Exit" : "Fullscreen"}
         >
           {isFullscreen ? (
-            <Shrink className="h-5 w-5" />
+            <Shrink className="h-4 h-4" />
           ) : (
-            <Expand className="h-5 w-5" />
+            <Expand className="h-4 h-4" />
           )}
         </Button>
       </div>
