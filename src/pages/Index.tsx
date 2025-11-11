@@ -1918,7 +1918,7 @@ const Index = () => {
         onLayoutModeChange={handleSetLayoutMode}
         onCameraShapeChange={handleSetCameraShape}
         onCustomMaskUpload={handleCustomMaskUpload}
-        portalContainer={typeof mainContainerRef === 'function' ? undefined : mainContainerRef?.current || undefined}
+        portalContainer={mainContainer || undefined}
         splitRatio={activeScene.splitRatio}
         pipPosition={activeScene.pipPosition}
         pipSize={activeScene.pipSize}

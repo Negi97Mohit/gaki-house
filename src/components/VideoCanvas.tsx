@@ -118,7 +118,7 @@ export const DraggableOverlay: React.FC<{
     mode: "pip" | "reset" | "split-horizontal" | "split-vertical"
   ) => void;
   containerSize: { width: number; height: number };
-  portalContainer?: HTMLElement | null | ((node: HTMLDivElement) => void);
+  portalContainer?: HTMLElement | null;
 }> = ({
   overlay,
   onLayoutChange,
@@ -261,7 +261,7 @@ export const DraggableOverlay: React.FC<{
           onSelectLayout={(mode) =>
             onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
           }
-          portalContainer={portalContainer}
+          portalContainer={typeof portalContainer === 'function' ? undefined : portalContainer}
         />
         {!isFullscreen && (
           <>
@@ -1158,7 +1158,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <CameraRenderer
           stream={cameraStream}
           className="w-full h-full"
-          portalContainer={portalContainer}
+          portalContainer={typeof portalContainer === 'function' ? undefined : portalContainer}
           style={{ ...style }}
           // --- Video/Stream Props ---
           videoFilter={videoFilterString}
@@ -1745,48 +1745,38 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               filteredBrowserOverlays
                 .filter((o) => o.layout.layerOrder === "below-video")
                 .map((browser) => (
-                  <div
-                    key={`browser-wrapper-${browser.id}`}
-                    style={{ pointerEvents: "auto" }}
-                  >
-                    <DraggableBrowser
-                      key={browser.id}
-                      overlay={browser}
-                      viewport={viewport}
-                      onSetDynamicLayout={onSetDynamicLayout}
-                      onRemove={onRemoveBrowser}
-                      onUrlChange={onBrowserUrlChange}
-                      onLayoutChange={onBrowserLayoutChange}
-                      sceneSize={sceneSize}
-                      isSelected={selectedBrowserId === browser.id}
-                      onInternalDragStart={onInternalDragStart}
-                      onInternalDragStop={onInternalDragStop}
-                      onSelect={setSelectedBrowserId}
-                    />
-                  </div>
+                  <DraggableBrowser
+                    key={browser.id}
+                    overlay={browser}
+                    viewport={viewport}
+                    onSetDynamicLayout={onSetDynamicLayout}
+                    onRemove={onRemoveBrowser}
+                    onUrlChange={onBrowserUrlChange}
+                    onLayoutChange={onBrowserLayoutChange}
+                    sceneSize={sceneSize}
+                    isSelected={selectedBrowserId === browser.id}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    onSelect={setSelectedBrowserId}
+                  />
                 ))}
             {sceneSize.width > 0 && sceneSize.height > 0 &&
               filteredFileOverlays
                 .filter((o) => o.layout.layerOrder === "below-video")
                 .map((file) => (
-                  <div
-                    key={`file-wrapper-${file.id}`}
-                    style={{ pointerEvents: "auto" }}
-                  >
-                    <DraggableFileViewer
-                      key={file.id}
-                      overlay={file}
-                      viewport={viewport}
-                      onSetDynamicLayout={onSetDynamicLayout}
-                      onRemove={onRemoveFile}
-                      onLayoutChange={onFileLayoutChange}
-                      sceneSize={sceneSize}
-                      isSelected={selectedFileId === file.id}
-                      onInternalDragStart={onInternalDragStart}
-                      onInternalDragStop={onInternalDragStop}
-                      onSelect={setSelectedFileId}
-                    />
-                  </div>
+                  <DraggableFileViewer
+                    key={file.id}
+                    overlay={file}
+                    viewport={viewport}
+                    onSetDynamicLayout={onSetDynamicLayout}
+                    onRemove={onRemoveFile}
+                    onLayoutChange={onFileLayoutChange}
+                    sceneSize={sceneSize}
+                    isSelected={selectedFileId === file.id}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    onSelect={setSelectedFileId}
+                  />
                 ))}
             {sceneSize.width > 0 && sceneSize.height > 0 &&
               filteredTextOverlays
@@ -1845,25 +1835,20 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     o.layout.layerOrder === "auto"
                 )
                 .map((browser) => (
-                  <div
-                    key={`browser-wrapper-${browser.id}`}
-                    style={{ pointerEvents: "auto" }}
-                  >
-                    <DraggableBrowser
-                      key={`${sceneId}-${browser.id}`}
-                      overlay={browser}
-                      viewport={viewport}
-                      onSetDynamicLayout={onSetDynamicLayout}
-                      onRemove={onRemoveBrowser}
-                      onUrlChange={onBrowserUrlChange}
-                      onLayoutChange={onBrowserLayoutChange}
-                      sceneSize={sceneSize}
-                      isSelected={selectedBrowserId === browser.id}
-                      onInternalDragStart={onInternalDragStart}
-                      onInternalDragStop={onInternalDragStop}
-                      onSelect={setSelectedBrowserId}
-                    />
-                  </div>
+                  <DraggableBrowser
+                    key={`${sceneId}-${browser.id}`}
+                    overlay={browser}
+                    viewport={viewport}
+                    onSetDynamicLayout={onSetDynamicLayout}
+                    onRemove={onRemoveBrowser}
+                    onUrlChange={onBrowserUrlChange}
+                    onLayoutChange={onBrowserLayoutChange}
+                    sceneSize={sceneSize}
+                    isSelected={selectedBrowserId === browser.id}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    onSelect={setSelectedBrowserId}
+                  />
                 ))}
             {sceneSize.width > 0 && sceneSize.height > 0 &&
               filteredFileOverlays
@@ -1874,24 +1859,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     o.layout.layerOrder === "auto"
                 )
                 .map((file) => (
-                  <div
-                    key={`file-wrapper-${file.id}`}
-                    style={{ pointerEvents: "auto" }}
-                  >
-                    <DraggableFileViewer
-                      key={`${sceneId}-${file.id}`}
-                      overlay={file}
-                      viewport={viewport}
-                      onSetDynamicLayout={onSetDynamicLayout}
-                      onRemove={onRemoveFile}
-                      onLayoutChange={onFileLayoutChange}
-                      sceneSize={sceneSize}
-                      isSelected={selectedFileId === file.id}
-                      onInternalDragStart={onInternalDragStart}
-                      onInternalDragStop={onInternalDragStop}
-                      onSelect={setSelectedFileId}
-                    />
-                  </div>
+                  <DraggableFileViewer
+                    key={`${sceneId}-${file.id}`}
+                    overlay={file}
+                    viewport={viewport}
+                    onSetDynamicLayout={onSetDynamicLayout}
+                    onRemove={onRemoveFile}
+                    onLayoutChange={onFileLayoutChange}
+                    sceneSize={sceneSize}
+                    isSelected={selectedFileId === file.id}
+                    onInternalDragStart={onInternalDragStart}
+                    onInternalDragStop={onInternalDragStop}
+                    onSelect={setSelectedFileId}
+                  />
                 ))}
             {sceneSize.width > 0 && sceneSize.height > 0 &&
               filteredTextOverlays
