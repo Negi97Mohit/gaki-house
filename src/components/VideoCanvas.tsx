@@ -812,13 +812,13 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       setFullTranscript(text);
       setInterimTranscript("");
 
-      rest.onProcessTranscript(text, null);
+      // Captions now work independently - AI processing only via manual commands
 
       transcriptTimerRef.current = setTimeout(() => {
         setFullTranscript("");
       }, 4000);
     },
-    [rest.onProcessTranscript]
+    []
   );
 
   const handlePartialTranscript = useCallback((text: string) => {
