@@ -55,6 +55,8 @@ interface PipControlsToolbarProps {
   onNeonEdgeToggle: (enabled: boolean) => void;
   neonIntensity: number;
   onNeonIntensityChange: (value: number) => void;
+  neonEdgeColor?: string;
+  onNeonEdgeColorChange: (color: string) => void;
   zoomSensitivity: number;
   onZoomSensitivityChange: (value: number) => void;
   trackingSpeed: number;
@@ -124,6 +126,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
 
   const pipBorder = props.pipBorder ?? { color: "#FFFFFF", width: 0 };
   const pipShadow = props.pipShadow ?? { blur: 0, color: "rgba(0,0,0,0.5)" };
+  const neonEdgeColor = props.neonEdgeColor ?? "#00FF00";
 
   // 4. Render the toolbar UI
   return (
@@ -145,7 +148,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             variant="ghost"
             size="icon"
             className="h-9 w-9 rounded-xl hover:bg-background/60"
-            title="Background"
+            title="Background & Aspect"
           >
             <Image className="w-4 h-4" />
           </Button>
@@ -153,33 +156,9 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)] w-56 bg-background/95 backdrop-blur-xl border-border/40"
+            className="z-[var(--z-text-toolbar)] w-56 max-h-[400px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            <DropdownMenuLabel className="text-xs font-semibold">Background</DropdownMenuLabel>
-            {BACKGROUND_PRESETS.map((bg) => (
-              <DropdownMenuCheckboxItem
-                key={bg.id}
-                checked={
-                  (bg.id === "none" && props.cameraBackground === "none") ||
-                  (bg.id === "blur" && props.cameraBackground === "blur") ||
-                  (bg.type === "image" && props.cameraBackground === "image")
-                }
-                onClick={() =>
-                  props.onCameraBackgroundChange(
-                    bg.id as "none" | "blur" | "image"
-                  )
-                }
-                className="text-sm"
-              >
-                {bg.name}
-              </DropdownMenuCheckboxItem>
-            ))}
-            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="text-sm">
-              <Upload className="w-3.5 h-3.5 mr-2" />
-              Upload
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-xs font-semibold">Aspect Ratio</DropdownMenuLabel>
             {ASPECT_RATIOS.map((ratio) => (
               <DropdownMenuCheckboxItem
@@ -204,78 +183,36 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 />
               </div>
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="text-xs font-semibold">Background</DropdownMenuLabel>
+            {BACKGROUND_PRESETS.map((bg) => (
+              <DropdownMenuCheckboxItem
+                key={bg.id}
+                checked={
+                  (bg.id === "none" && props.cameraBackground === "none") ||
+                  (bg.id === "blur" && props.cameraBackground === "blur") ||
+                  (bg.type === "image" && props.cameraBackground === "image")
+                }
+                onClick={() =>
+                  props.onCameraBackgroundChange(
+                    bg.id as "none" | "blur" | "image"
+                  )
+                }
+                className="text-sm"
+              >
+                {bg.name}
+              </DropdownMenuCheckboxItem>
+            ))}
+            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="text-sm">
+              <Upload className="w-3.5 h-3.5 mr-2" />
+              Upload
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* --- Group 2: AI Tracking --- */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-xl hover:bg-background/60"
-            title="AI Tracking"
-          >
-            <Minimize2 className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuContent
-            align="start"
-            className="z-[var(--z-text-toolbar)] w-56 bg-background/95 backdrop-blur-xl border-border/40"
-            onCloseAutoFocus={(e) => e.preventDefault()}
-          >
-            <DropdownMenuCheckboxItem
-              checked={props.isFaceTrackingEnabled}
-              onCheckedChange={props.onFaceTrackingToggle}
-              className="text-sm"
-            >
-              Face Tracking
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={props.isAutoFramingEnabled}
-              onCheckedChange={props.onAutoFramingChange}
-              className="text-sm"
-            >
-              Auto Framing
-            </DropdownMenuCheckboxItem>
-            {props.isAutoFramingEnabled && (
-              <>
-                <DropdownMenuSeparator />
-                <div className="p-3 space-y-3">
-                  <div className="space-y-1.5">
-                    <Label className="text-xs font-medium">
-                      Zoom {props.zoomSensitivity.toFixed(1)}x
-                    </Label>
-                    <Slider
-                      value={[props.zoomSensitivity]}
-                      onValueChange={([v]) => props.onZoomSensitivityChange(v)}
-                      min={1}
-                      max={10}
-                      step={0.1}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label className="text-xs font-medium">
-                      Speed {(props.trackingSpeed * 100).toFixed(0)}%
-                    </Label>
-                    <Slider
-                      value={[props.trackingSpeed]}
-                      onValueChange={([v]) => props.onTrackingSpeedChange(v)}
-                      min={0.01}
-                      max={0.5}
-                      step={0.01}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
-      </DropdownMenu>
 
-      {/* --- Group 3: Effects & Filters --- */}
+      {/* --- Group 2: Effects & Filters --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -290,7 +227,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)] bg-background/95 backdrop-blur-xl border-border/40"
+            className="z-[var(--z-text-toolbar)] w-56 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <DropdownMenuCheckboxItem
@@ -309,6 +246,51 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
               <Sun className="w-3.5 h-3.5 mr-2" />
               Enhance Lighting
             </DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={props.isFaceTrackingEnabled}
+              onCheckedChange={props.onFaceTrackingToggle}
+              className="text-sm"
+            >
+              <Camera className="w-3.5 h-3.5 mr-2" />
+              Face Tracking
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={props.isAutoFramingEnabled}
+              onCheckedChange={props.onAutoFramingChange}
+              className="text-sm"
+            >
+              <Minimize2 className="w-3.5 h-3.5 mr-2" />
+              Auto Framing
+            </DropdownMenuCheckboxItem>
+            {props.isAutoFramingEnabled && (
+              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-medium">
+                    Zoom {props.zoomSensitivity.toFixed(1)}x
+                  </Label>
+                  <Slider
+                    value={[props.zoomSensitivity]}
+                    onValueChange={([v]) => props.onZoomSensitivityChange(v)}
+                    min={1}
+                    max={10}
+                    step={0.1}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-medium">
+                    Speed {(props.trackingSpeed * 100).toFixed(0)}%
+                  </Label>
+                  <Slider
+                    value={[props.trackingSpeed]}
+                    onValueChange={([v]) => props.onTrackingSpeedChange(v)}
+                    min={0.01}
+                    max={0.5}
+                    step={0.01}
+                  />
+                </div>
+              </div>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="text-sm">
@@ -359,7 +341,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* --- Group 4: Style --- */}
+      {/* --- Group 3: Style --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -374,7 +356,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)] w-64 bg-background/95 backdrop-blur-xl border-border/40"
+            className="z-[var(--z-text-toolbar)] w-64 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
             <div className="p-3 space-y-3">
@@ -431,17 +413,28 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
               Neon Edge
             </DropdownMenuCheckboxItem>
             {props.isNeonEdgeEnabled && (
-              <div className="p-3 space-y-2">
-                <Label className="text-xs font-medium">
-                  Intensity {props.neonIntensity}%
-                </Label>
-                <Slider
-                  value={[props.neonIntensity]}
-                  onValueChange={([v]) => props.onNeonIntensityChange(v)}
-                  min={0}
-                  max={100}
-                  step={1}
-                />
+              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Color</Label>
+                  <Input
+                    type="color"
+                    className="w-full h-9 p-1 rounded-lg cursor-pointer"
+                    value={neonEdgeColor}
+                    onChange={(e) => props.onNeonEdgeColorChange(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium">
+                    Intensity {props.neonIntensity}%
+                  </Label>
+                  <Slider
+                    value={[props.neonIntensity]}
+                    onValueChange={([v]) => props.onNeonIntensityChange(v)}
+                    min={0}
+                    max={100}
+                    step={1}
+                  />
+                </div>
               </div>
             )}
           </DropdownMenuContent>

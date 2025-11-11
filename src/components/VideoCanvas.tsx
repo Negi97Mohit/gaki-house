@@ -1189,6 +1189,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onVideoFilterChange={props.sidebarProps.onVideoFilterChange}
           onNeonEdgeToggle={props.sidebarProps.onNeonEdgeToggle}
           onNeonIntensityChange={props.sidebarProps.onNeonIntensityChange}
+          onNeonEdgeColorChange={props.sidebarProps.onNeonColorChange}
           onZoomSensitivityChange={props.sidebarProps.onZoomSensitivityChange}
           onTrackingSpeedChange={props.sidebarProps.onTrackingSpeedChange}
           onCameraBackgroundChange={props.sidebarProps.onCameraBackgroundChange}

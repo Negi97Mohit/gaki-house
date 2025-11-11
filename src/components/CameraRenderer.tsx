@@ -119,6 +119,7 @@ interface CameraRendererProps {
   onVideoFilterChange: (filter: string) => void;
   onNeonEdgeToggle: (enabled: boolean) => void;
   onNeonIntensityChange: (value: number) => void;
+  onNeonEdgeColorChange: (color: string) => void;
   zoomSensitivity: number;
   onZoomSensitivityChange: (value: number) => void;
   trackingSpeed: number;
@@ -163,6 +164,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   onVideoFilterChange,
   onNeonEdgeToggle,
   onNeonIntensityChange,
+  onNeonEdgeColorChange,
   zoomSensitivity,
   onZoomSensitivityChange,
   trackingSpeed,
@@ -385,6 +387,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onNeonEdgeToggle={onNeonEdgeToggle}
               neonIntensity={neonIntensity}
               onNeonIntensityChange={onNeonIntensityChange}
+              neonEdgeColor={neonColor}
+              onNeonEdgeColorChange={onNeonEdgeColorChange}
               zoomSensitivity={zoomSensitivity}
               onZoomSensitivityChange={onZoomSensitivityChange}
               trackingSpeed={trackingSpeed}
@@ -421,6 +425,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onNeonEdgeToggle={onNeonEdgeToggle}
               neonIntensity={neonIntensity}
               onNeonIntensityChange={onNeonIntensityChange}
+              neonEdgeColor={neonColor}
+              onNeonEdgeColorChange={onNeonEdgeColorChange}
               zoomSensitivity={zoomSensitivity}
               onZoomSensitivityChange={onZoomSensitivityChange}
               trackingSpeed={trackingSpeed}
