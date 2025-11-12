@@ -39,6 +39,7 @@ interface DraggableTextOverlayProps {
   onContentChange: (id: string, content: string) => void;
   onRemove: (id: string) => void;
   sceneSize: { width: number; height: number };
+  containerRef: React.RefObject<HTMLElement>;
   isSelected: boolean;
   onSelect: (id: string) => void;
   onInternalDragStart: () => void;
@@ -53,6 +54,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   onContentChange,
   onRemove,
   sceneSize,
+  containerRef,
   isSelected,
   onSelect,
   onInternalDragStart,
@@ -90,11 +92,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
     (e: any, d: { x: number; y: number }) => {
       onInternalDragStop();
       setIsDragging(false);
-      if (
-        sceneSize.width <= 0 ||
-        sceneSize.height <= 0 ||
-        !rndRef.current
-      )
+      if (sceneSize.width <= 0 || sceneSize.height <= 0 || !rndRef.current)
         return;
 
       const currentElement = rndRef.current.getSelfElement();
@@ -102,8 +100,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const currentWidthPx = currentElement.offsetWidth;
       const currentHeightPx = currentElement.offsetHeight;
       const currentWidthPercent = (currentWidthPx / sceneSize.width) * 100;
-      const currentHeightPercent =
-        (currentHeightPx / sceneSize.height) * 100;
+      const currentHeightPercent = (currentHeightPx / sceneSize.height) * 100;
 
       // Clamp position to stay within bounds
       const clampedX = Math.max(
@@ -414,6 +411,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             overlay={overlay}
             onStyleChange={onStyleChange}
             position={getToolbarPosition()}
+            containerRef={containerRef}
           />
         </div>
         // --- END MODIFICATION ---

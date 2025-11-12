@@ -261,7 +261,9 @@ export const DraggableOverlay: React.FC<{
           onSelectLayout={(mode) =>
             onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
           }
-          portalContainer={typeof portalContainer === 'function' ? undefined : portalContainer}
+          portalContainer={
+            typeof portalContainer === "function" ? undefined : portalContainer
+          }
         />
         {!isFullscreen && (
           <>
@@ -699,7 +701,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isPanning, setIsPanning] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
-  
+
   // --- NEW: Scene size state for stable positioning ---
   const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
 
@@ -805,22 +807,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     };
   }, [handleWheel]);
 
-  const handleFinalTranscript = useCallback(
-    (text: string) => {
-      console.log(`[VideoCanvas] Received Final Transcript: "${text}"`);
-      clearTimeout(transcriptTimerRef.current);
+  const handleFinalTranscript = useCallback((text: string) => {
+    console.log(`[VideoCanvas] Received Final Transcript: "${text}"`);
+    clearTimeout(transcriptTimerRef.current);
 
-      setFullTranscript(text);
-      setInterimTranscript("");
+    setFullTranscript(text);
+    setInterimTranscript("");
 
-      // Captions now work independently - AI processing only via manual commands
+    // Captions now work independently - AI processing only via manual commands
 
-      transcriptTimerRef.current = setTimeout(() => {
-        setFullTranscript("");
-      }, 4000);
-    },
-    []
-  );
+    transcriptTimerRef.current = setTimeout(() => {
+      setFullTranscript("");
+    }, 4000);
+  }, []);
 
   const handlePartialTranscript = useCallback((text: string) => {
     console.log(`[VideoCanvas] Received Partial Transcript: "${text}"`);
@@ -1159,7 +1158,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <CameraRenderer
           stream={cameraStream}
           className="w-full h-full"
-          portalContainer={typeof portalContainer === 'function' ? undefined : portalContainer}
+          portalContainer={
+            typeof portalContainer === "function" ? undefined : portalContainer
+          }
           style={{ ...style }}
           // --- Video/Stream Props ---
           videoFilter={videoFilterString}
@@ -1740,10 +1741,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onRemoveOverlay={rest.onRemoveOverlay}
                     onPreviewGenerated={onPreviewGenerated}
                     containerSize={containerSize}
-                    portalContainer={typeof portalContainer === 'function' ? null : portalContainer}
+                    portalContainer={
+                      typeof portalContainer === "function"
+                        ? null
+                        : portalContainer
+                    }
                   />
                 ))}
-            {sceneSize.width > 0 && sceneSize.height > 0 &&
+            {sceneSize.width > 0 &&
+              sceneSize.height > 0 &&
               filteredBrowserOverlays
                 .filter((o) => o.layout.layerOrder === "below-video")
                 .map((browser) => (
@@ -1762,7 +1768,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onSelect={setSelectedBrowserId}
                   />
                 ))}
-            {sceneSize.width > 0 && sceneSize.height > 0 &&
+            {sceneSize.width > 0 &&
+              sceneSize.height > 0 &&
               filteredFileOverlays
                 .filter((o) => o.layout.layerOrder === "below-video")
                 .map((file) => (
@@ -1780,7 +1787,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onSelect={setSelectedFileId}
                   />
                 ))}
-            {sceneSize.width > 0 && sceneSize.height > 0 &&
+            {sceneSize.width > 0 &&
+              sceneSize.height > 0 &&
               filteredTextOverlays
                 .filter((o) => o.layout.layerOrder === "below-video")
                 .map((textOverlay) => (
@@ -1792,6 +1800,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onContentChange={onTextContentChange}
                     onRemove={onRemoveTextOverlay}
                     sceneSize={sceneSize}
+                    containerRef={sceneRef}
                     isSelected={selectedTextId === textOverlay.id}
                     onSelect={setSelectedTextId}
                     onInternalDragStart={onInternalDragStart}
@@ -1824,11 +1833,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onLayoutChange={rest.onOverlayLayoutChange}
                     onRemoveOverlay={rest.onRemoveOverlay}
                     onPreviewGenerated={onPreviewGenerated}
-                  containerSize={containerSize}
-                  portalContainer={typeof portalContainer === 'function' ? null : portalContainer}
-                />
+                    containerSize={containerSize}
+                    portalContainer={
+                      typeof portalContainer === "function"
+                        ? null
+                        : portalContainer
+                    }
+                  />
                 ))}
-            {sceneSize.width > 0 && sceneSize.height > 0 &&
+            {sceneSize.width > 0 &&
+              sceneSize.height > 0 &&
               filteredBrowserOverlays
                 .filter(
                   (o) =>
@@ -1852,7 +1866,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onSelect={setSelectedBrowserId}
                   />
                 ))}
-            {sceneSize.width > 0 && sceneSize.height > 0 &&
+            {sceneSize.width > 0 &&
+              sceneSize.height > 0 &&
               filteredFileOverlays
                 .filter(
                   (o) =>
@@ -1875,7 +1890,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onSelect={setSelectedFileId}
                   />
                 ))}
-            {sceneSize.width > 0 && sceneSize.height > 0 &&
+            {sceneSize.width > 0 &&
+              sceneSize.height > 0 &&
               filteredTextOverlays
                 .filter(
                   (o) =>
@@ -1892,6 +1908,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onContentChange={onTextContentChange}
                     onRemove={onRemoveTextOverlay}
                     sceneSize={sceneSize}
+                    containerRef={sceneRef}
                     isSelected={selectedTextId === textOverlay.id}
                     onSelect={setSelectedTextId}
                     onInternalDragStart={onInternalDragStart}
