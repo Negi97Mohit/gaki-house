@@ -38,6 +38,7 @@ interface AICommandPopoverProps {
   portalContainer?: HTMLElement | null;
   onCaptionsToggle?: (enabled: boolean) => void;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
+  onAutoClose?: () => void;
 }
 
 export const AICommandPopover = ({
@@ -52,6 +53,7 @@ export const AICommandPopover = ({
   portalContainer,
   onCaptionsToggle,
   hasAiPopoverAutoOpenedRef,
+  onAutoClose,
 }: AICommandPopoverProps) => {
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
@@ -89,21 +91,30 @@ export const AICommandPopover = ({
     }
   };
 
-  // --- ADDED THIS HOOK BACK ---
+  // Auto-open sequence on first load
   useEffect(() => {
-    // Auto-open only once on initial mount
     if (!hasAiPopoverAutoOpenedRef.current) {
+      // Open after 2 seconds
       const openTimer = setTimeout(() => {
         setOpen(true);
+      }, 2000);
+
+      // Close after 5 seconds total (3s visible)
+      const closeTimer = setTimeout(() => {
+        setOpen(false);
         if (hasAiPopoverAutoOpenedRef.current !== null) {
           (hasAiPopoverAutoOpenedRef as any).current = true;
         }
-      }, 4000); // This delay waits for the button to load
+        // Trigger callback when auto-closed
+        onAutoClose?.();
+      }, 5000);
 
-      return () => clearTimeout(openTimer);
+      return () => {
+        clearTimeout(openTimer);
+        clearTimeout(closeTimer);
+      };
     }
-  }, []); // Empty dependency array ensures this runs only once on mount
-  // --- END OF ADDED BLOCK ---
+  }, [onAutoClose]);
 
   useEffect(() => {
     // Animation logic that runs when popover is open

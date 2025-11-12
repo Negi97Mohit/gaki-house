@@ -468,6 +468,7 @@ interface VideoCanvasProps {
   onOpenSettings: () => void;
   blankCanvasColor: string;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
+  onAiPopoverAutoClose?: () => void;
   // --- ADDED ---
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
@@ -2137,6 +2138,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             onCaptionsToggle={onCaptionsToggle}
             portalContainer={canvasContainerRef.current}
             hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
+            onAutoClose={props.onAiPopoverAutoClose}
           >
             <Button
               size="icon"

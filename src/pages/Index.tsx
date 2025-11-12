@@ -206,6 +206,17 @@ const Index = () => {
     []
   );
   const hasAiPopoverAutoOpenedRef = useRef(false);
+  
+  // Handle auto-opening FloatingControlsPanel after AI popover closes
+  const handleAiPopoverAutoClose = useCallback(() => {
+    setTimeout(() => {
+      setShowFloatingPanel(true);
+      // Auto-close after 4 seconds
+      setTimeout(() => {
+        setShowFloatingPanel(false);
+      }, 4000);
+    }, 500);
+  }, []);
   const [allSessions, setAllSessions] = useLocalStorage<RecordingSession[]>(
     "gaki-recorded-sessions",
     []
@@ -1792,6 +1803,7 @@ const Index = () => {
     onRecordingComplete: () => {},
     portalContainer: mainContainerRef,
     hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
+    onAiPopoverAutoClose: handleAiPopoverAutoClose,
   };
 
   return (
