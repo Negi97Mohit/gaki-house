@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import React, { useEffect, useRef, useState } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { PipControlsToolbar } from "./PipControlsToolbar";
+import { VideoOff } from "lucide-react"; // <-- ADDED
 import { cn } from "@/lib/utils"; // <-- FIX: Added missing import
 
 // --- HELPER FUNCTIONS (No changes) ---
@@ -381,6 +382,19 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         playsInline
         className="hidden object-cover w-full h-full"
       />
+      {/* --- ADDED: Placeholder when stream is off --- */}
+      {!stream && (
+        <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/30 text-muted-foreground/50 pointer-events-none">
+          <VideoOff
+            className="w-1/4 h-1/4"
+            style={{
+              maxWidth: "100px",
+              maxHeight: "100px",
+            }}
+          />
+        </div>
+      )}
+      {/* --- END ADDED --- */}
       <canvas ref={canvasRef} className="w-full h-full" />
 
       {isHovered && portalContainer instanceof HTMLElement

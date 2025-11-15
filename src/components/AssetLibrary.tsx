@@ -32,6 +32,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
   const [gifResults, setGifResults] = useState<AssetResult[]>([]);
   const [isImagesLoading, setIsImagesLoading] = useState(false);
   const [isGifsLoading, setIsGifsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("images"); // <-- ADDED
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [imagePage, setImagePage] = useState(1);
@@ -93,20 +94,32 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
     [isGifsLoading]
   ); // Minimal dependencies
 
-  // --- useEffect for Automatic Debounced Search (Initial Search) ---
+  // --- ADDED: useEffect for Initial Data Load ---
+  useEffect(() => {
+    // Fetch initial content for both tabs on component mount
+    // This populates the library before the user searches.
+    searchImages("", 1);
+    searchGifs("", 1);
+    // We only want this to run once, so we pass the stable useCallback functions.
+  }, [searchImages, searchGifs]);
+
+  // --- MODIFIED: useEffect for Automatic Debounced Search ---
   useEffect(() => {
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
 
     debounceTimeoutRef.current = setTimeout(() => {
-      // This is now the *only* place a new search is triggered
-      searchImages(searchTerm, 1);
-      searchGifs(searchTerm, 1);
+      // --- MODIFICATION: Only search the active tab ---
+      if (activeTab === "images") {
+        searchImages(searchTerm, 1);
+      } else if (activeTab === "gifs") {
+        searchGifs(searchTerm, 1);
+      }
     }, 500); // Wait 500ms before firing
 
     return () => {
       if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
     };
-  }, [searchTerm]); // Only depends on searchTerm
+  }, [searchTerm, activeTab, searchImages, searchGifs]); // Only depends on searchTerm
 
   // --- Scroll Handler ---
   const handleScroll = useCallback(
@@ -166,6 +179,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
       {/* 2. TABS & CONTENT */}
       <Tabs
         defaultValue="images"
+        onValueChange={setActiveTab} // <-- ADDED: Track active tab
         className="flex-1 flex flex-col overflow-hidden"
       >
         <TabsList className="shrink-0 w-full justify-start rounded-none border-b bg-transparent px-2">
@@ -220,12 +234,12 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
                 No images found.
               </div>
             )}
-          {/* ADDED: Initial state message */}
-          {!isImagesLoading &&
-            !searchTerm.trim() &&
+          {/* MODIFIED: Initial state message */}
+          {isImagesLoading &&
+            !searchTerm.trim() && // Show loading only if it's the initial load
             imageResults?.length === 0 && (
               <div className="w-full text-center p-4 text-muted-foreground">
-                Popular images will load here.
+                Loading popular images...
               </div>
             )}
         </TabsContent>
@@ -277,12 +291,14 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
                 No GIFs found.
               </div>
             )}
-          {/* ADDED: Initial state message */}
-          {!isGifsLoading && !searchTerm.trim() && gifResults?.length === 0 && (
-            <div className="w-full text-center p-4 text-muted-foreground">
-              Trending GIFs will load here.
-            </div>
-          )}
+          {/* MODIFIED: Initial state message */}
+          {isGifsLoading &&
+            !searchTerm.trim() && // Show loading only if it's the initial load
+            gifResults?.length === 0 && (
+              <div className="w-full text-center p-4 text-muted-foreground">
+                Loading trending GIFs...
+              </div>
+            )}
         </TabsContent>
       </Tabs>
     </div>

@@ -1368,6 +1368,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   };
 
   const renderContent = () => {
+    // --- MOVED UP: Define mainContent first ---
+    const mainIsCamera =
+      (pipContent === "share" && props.screenShareMode !== "off") ||
+      props.screenShareMode === "off";
+    const mainContent = mainIsCamera
+      ? renderCamera(undefined, undefined, false, rest.cameraShape)
+      : renderScreen();
+    // --- END MOVED UP ---
+
     if (dynamicLayout.isActive && dynamicLayout.target) {
       if (dynamicLayout.mode === "pip") {
         const pipSizePx = {
@@ -1381,7 +1390,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
         return (
           <div className="w-full h-full relative bg-black">
-            {renderCamera(undefined, undefined, false, rest.cameraShape)}
+            {mainContent}
             <Rnd
               size={pipSizePx}
               position={pipPositionPx}
@@ -1467,7 +1476,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               }%`,
             }}
           >
-            {renderCamera(undefined, undefined, false, rest.cameraShape)}
+            {mainContent}
           </div>
         </div>
       );
@@ -1501,13 +1510,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       );
     }
 
-    const mainIsCamera =
-      (pipContent === "share" && props.screenShareMode !== "off") ||
-      props.screenShareMode === "off";
-    // --- MODIFIED: Pass cameraShape ---
-    const mainContent = mainIsCamera
-      ? renderCamera(undefined, undefined, false, rest.cameraShape)
-      : renderScreen();
     const pipVideoStyle = getCameraShapeStyle();
 
     // --- MODIFIED: This is where the core fix is ---
@@ -1537,10 +1539,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     // --- END REFACTOR ---
 
     const pipContentEl =
-      props.screenShareMode !== "off" &&
-      isVideoOn &&
-      cameraStream &&
-      containerSize.width > 0 ? (
+      props.screenShareMode !== "off" && containerSize.width > 0 ? (
         <Rnd
           ref={pipRndRef}
           key={`pip-${sceneId}-${rest.pipPosition.x}-${rest.pipPosition.y}-${rest.pipSize.width}-${rest.pipSize.height}`}
@@ -1677,40 +1676,25 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 }%`,
               }}
             >
-              {isVideoOn && cameraStream ? (
-                <div
-                  // --- MODIFIED: Apply shape/border/shadow here ---
-                  className="w-full h-full relative"
-                  // --- MODIFIED: Pass cameraShape to renderCamera, not style div ---
-                  style={getBackgroundStyle()}
-                >
-                  {rest.backgroundEffect === "image" &&
-                    rest.backgroundImageUrl && (
-                      <div
-                        className="absolute inset-0 opacity-30"
-                        style={{
-                          backgroundImage: `url(${rest.backgroundImageUrl})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                      />
-                    )}
-                  {/* --- MODIFIED: Pass cameraShape --- */}
-                  <div className="relative w-full h-full">
-                    {renderCamera(
-                      undefined,
-                      undefined,
-                      false,
-                      rest.cameraShape
-                    )}
-                  </div>
+              <div
+                className="w-full h-full relative"
+                style={getBackgroundStyle()}
+              >
+                {rest.backgroundEffect === "image" &&
+                  rest.backgroundImageUrl && (
+                    <div
+                      className="absolute inset-0 opacity-30"
+                      style={{
+                        backgroundImage: `url(${rest.backgroundImageUrl})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    />
+                  )}
+                <div className="relative w-full h-full">
+                  {renderCamera(undefined, undefined, false, rest.cameraShape)}
                 </div>
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  <Webcam className="w-16 h-16 mx-auto mb-2" />
-                  <p className="text-sm">Camera Off</p>
-                </div>
-              )}
+              </div>
             </div>
           </div>
         );

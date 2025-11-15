@@ -791,7 +791,13 @@ const Index = () => {
       onScreenShareModeChange: handleSetScreenShareMode,
       canvasLayout: scene.canvasLayout,
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
-        updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
+        updateActiveScene((s) => ({
+          ...s,
+          canvasLayout: layout,
+          // If a layout is selected, switch to canvas mode. If cleared, switch off.
+          screenShareMode: layout ? "canvas" : "off",
+          layoutMode: layout ? "pip" : "solo", // Match screen share logic
+        }));
       },
       hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
       audioDevices: audioDevices,
