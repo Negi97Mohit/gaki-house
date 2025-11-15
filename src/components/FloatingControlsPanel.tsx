@@ -175,12 +175,6 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       color: "from-blue-500 to-cyan-500",
     },
     {
-      id: "video-effects",
-      icon: Droplets,
-      title: "Effects",
-      color: "from-cyan-500 to-teal-500",
-    },
-    {
       id: "saved-overlays",
       icon: Sparkles,
       title: "Overlays",
@@ -542,49 +536,6 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 style={props.style}
                 onStyleChange={props.onStyleChange}
               />
-            </div>
-          )}
-
-          {activeSection === "video-effects" && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
-                <Droplets className="w-5 h-5 text-primary" />
-                <h3 className="text-base font-semibold tracking-wide">
-                  Canvas Effects
-                </h3>
-              </div>
-
-              {/* --- KEPT: Canvas Aspect Ratio --- */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-green-500/20">
-                <Label className="text-xs font-cyber text-green-500 tracking-wider">
-                  CANVAS ASPECT RATIO
-                </Label>
-                <Select
-                  value={props.canvasAspectRatio}
-                  onValueChange={props.onCanvasAspectRatioChange}
-                >
-                  <SelectTrigger className="border-green-500/30">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ASPECT_RATIOS.map((ratio) => (
-                      <SelectItem key={ratio.id} value={ratio.id}>
-                        {ratio.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* --- REMOVED: PiP Filters --- */}
-              {/* --- REMOVED: PiP Border Controls --- */}
-              {/* --- REMOVED: PiP Shadow Controls --- */}
-
-              {/* --- Canvas Color Section Removed - Now in Canvas Hover Toolbar --- */}
-
-              {/* --- REMOVED: Neon Edge --- */}
-              {/* --- REMOVED: Auto Framing --- */}
-              {/* --- REMOVED: Other Toggles (Beautify, Low Light) --- */}
             </div>
           )}
 
