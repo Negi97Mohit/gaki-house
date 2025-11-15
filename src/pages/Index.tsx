@@ -478,6 +478,47 @@ const Index = () => {
     [updateActiveScene]
   );
 
+  // --- MOVED HANDLERS ---
+  // These need to be defined before they are used by other handlers below
+  const handleSetBackgroundEffect = useCallback(
+    (value: "none" | "blur" | "image") =>
+      updateSceneProperty("backgroundEffect", value),
+    [updateSceneProperty]
+  );
+
+  const handleSetBackgroundImageUrl = useCallback(
+    (value: string | null) => updateSceneProperty("backgroundImageUrl", value),
+    [updateSceneProperty]
+  );
+  // --- END MOVED HANDLERS ---
+
+  const handleCanvasBackgroundAssetSelect = useCallback(
+    (asset: AssetResult) => {
+      handleSetBackgroundImageUrl(asset.downloadUrl);
+      handleSetBackgroundEffect("image");
+      toast.success("Canvas background set!");
+    },
+    [handleSetBackgroundImageUrl, handleSetBackgroundEffect]
+  );
+
+  const handleCanvasBackgroundUpload = useCallback(
+    (file: File) => {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Invalid file type. Please upload an image.");
+        return;
+      }
+
+      const url = URL.createObjectURL(file);
+      updateActiveScene((scene) => ({
+        ...scene,
+        backgroundEffect: "image",
+        backgroundImageUrl: url,
+      }));
+      toast.success("Custom canvas background uploaded!");
+    },
+    [updateActiveScene]
+  );
+
   const handleSetIsVideoOn = useCallback(
     (value: boolean) => updateSceneProperty("isVideoOn", value),
     [updateSceneProperty]
@@ -626,15 +667,6 @@ const Index = () => {
     (value: string) => updateSceneProperty("videoFilter", value),
     [updateSceneProperty]
   );
-  const handleSetBackgroundEffect = useCallback(
-    (value: "none" | "blur" | "image") =>
-      updateSceneProperty("backgroundEffect", value),
-    [updateSceneProperty]
-  );
-  const handleSetBackgroundImageUrl = useCallback(
-    (value: string | null) => updateSceneProperty("backgroundImageUrl", value),
-    [updateSceneProperty]
-  );
   const handleSetIsAutoFramingEnabled = useCallback(
     (value: boolean) => updateSceneProperty("isAutoFramingEnabled", value),
     [updateSceneProperty]
@@ -713,24 +745,6 @@ const Index = () => {
     [updateSceneProperty]
   );
 
-  const handleCanvasBackgroundUpload = useCallback(
-    (file: File) => {
-      if (!file.type.startsWith("image/")) {
-        toast.error("Invalid file type. Please upload an image.");
-        return;
-      }
-
-      const url = URL.createObjectURL(file);
-      updateActiveScene((scene) => ({
-        ...scene,
-        backgroundEffect: "image",
-        backgroundImageUrl: url,
-      }));
-      toast.success("Custom canvas background uploaded!");
-    },
-    [updateActiveScene]
-  );
-
   // --- HANDLERS ---
   // --- MOVED FUNCTION UP ---
   // This function must be defined *before* it is used in the useMemo hooks below.
@@ -799,6 +813,8 @@ const Index = () => {
           layoutMode: layout ? "pip" : "solo", // Match screen share logic
         }));
       },
+      onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
+      onCanvasBackgroundAssetSelect: handleCanvasBackgroundAssetSelect,
       hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
       audioDevices: audioDevices,
       videoDevices: videoDevices,

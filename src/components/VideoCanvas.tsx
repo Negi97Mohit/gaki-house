@@ -389,6 +389,7 @@ interface VideoCanvasProps {
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
   onRemoveBrowser: (id: string) => void;
   onBrowserUrlChange: (id: string, url: string) => void;
+  onCanvasBackgroundUpload: (file: File) => void;
   onBrowserLayoutChange: (
     id: string,
     layout: Partial<BrowserOverlayState["layout"]>
@@ -477,6 +478,7 @@ interface VideoCanvasProps {
   onOpenSettings: () => void;
   blankCanvasColor: string;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
+  onCanvasBackgroundAssetSelect: (asset: AssetResult) => void;
   onAiPopoverAutoClose?: () => void;
   // --- ADDED ---
   pipBorder?: { color: string; width: number };
@@ -714,6 +716,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onOpenSettings,
     isRecording,
     onRecordingToggle,
+    onCanvasBackgroundUpload,
     canvasRef,
     hasAiPopoverAutoOpenedRef,
     canvasAspectRatio,
@@ -1836,7 +1839,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <CanvasHoverToolbar
           blankCanvasColor={blankCanvasColor}
           onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
-          onCanvasBackgroundUpload={props.sidebarProps.onCustomBackgroundUpload}
+          onCanvasBackgroundUpload={onCanvasBackgroundUpload}
+          onCanvasBackgroundAssetSelect={props.onCanvasBackgroundAssetSelect}
           isVisible={isCanvasHovered}
           canvasLayout={props.canvasLayout}
           onCanvasLayoutChange={props.onCanvasLayoutChange}

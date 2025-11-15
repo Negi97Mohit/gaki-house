@@ -1,4 +1,4 @@
-import { Paintbrush, Upload, Grid3x3 } from "lucide-react";
+import { Paintbrush, Upload, Grid3x3, Search } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -11,6 +11,12 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { LAYOUT_TEMPLATES } from "@/lib/canvasLayouts";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { CanvasLayoutState } from "@/types/caption";
 
 interface CanvasHoverToolbarProps {
@@ -20,6 +26,7 @@ interface CanvasHoverToolbarProps {
   onCanvasBackgroundUpload: (file: File) => void;
   canvasLayout: CanvasLayoutState | null;
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
+  onCanvasBackgroundAssetSelect: (asset: AssetResult) => void;
 }
 
 export const CanvasHoverToolbar = ({
@@ -28,6 +35,7 @@ export const CanvasHoverToolbar = ({
   isVisible,
   onCanvasBackgroundUpload,
   canvasLayout,
+  onCanvasBackgroundAssetSelect,
   onCanvasLayoutChange,
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -41,13 +49,13 @@ export const CanvasHoverToolbar = ({
 
   const handleLayoutSelect = (templateId: string) => {
     if (!onCanvasLayoutChange) return;
-    
+
     const template = LAYOUT_TEMPLATES[templateId];
     const newLayout: CanvasLayoutState = {
       templateId,
-      sections: template.sections.map(s => ({
+      sections: template.sections.map((s) => ({
         id: s.id,
-        content: { type: 'empty' as const },
+        content: { type: "empty" as const },
       })),
     };
     onCanvasLayoutChange(newLayout);
@@ -87,20 +95,39 @@ export const CanvasHoverToolbar = ({
         Upload
       </Button>
       <DropdownMenu>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="sm" className="text-xs">
+              <Search className="h-4 w-4 mr-2" />
+              Search
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-80 h-[400px] p-0"
+            style={{ zIndex: "var(--z-asset-popover)" }}
+            align="center"
+            side="bottom"
+          >
+            <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
+          </PopoverContent>
+        </Popover>
+
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" className="text-xs">
             <Grid3x3 className="h-4 w-4 mr-2" />
-            {canvasLayout ? LAYOUT_TEMPLATES[canvasLayout.templateId]?.name || 'Layout' : 'Grid'}
+            {canvasLayout
+              ? LAYOUT_TEMPLATES[canvasLayout.templateId]?.name || "Layout"
+              : "Grid"}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[999] bg-background">
-          {Object.values(LAYOUT_TEMPLATES).map(template => (
+          {Object.values(LAYOUT_TEMPLATES).map((template) => (
             <DropdownMenuItem
               key={template.id}
               onClick={() => handleLayoutSelect(template.id)}
             >
               {template.name}
-              {canvasLayout?.templateId === template.id && ' ✓'}
+              {canvasLayout?.templateId === template.id && " ✓"}
             </DropdownMenuItem>
           ))}
           {canvasLayout && (
