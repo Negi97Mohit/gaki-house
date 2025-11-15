@@ -711,6 +711,24 @@ const Index = () => {
     [updateSceneProperty]
   );
 
+  const handleCanvasBackgroundUpload = useCallback(
+    (file: File) => {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Invalid file type. Please upload an image.");
+        return;
+      }
+
+      const url = URL.createObjectURL(file);
+      updateActiveScene((scene) => ({
+        ...scene,
+        backgroundEffect: "image",
+        backgroundImageUrl: url,
+      }));
+      toast.success("Custom canvas background uploaded!");
+    },
+    [updateActiveScene]
+  );
+
   // --- HANDLERS ---
   // --- MOVED FUNCTION UP ---
   // This function must be defined *before* it is used in the useMemo hooks below.
@@ -807,6 +825,7 @@ const Index = () => {
         onNeonIntensityChange: handleSetNeonIntensity,
         onNeonColorChange: handleSetNeonColor,
         savedOverlays: savedOverlays,
+        onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
         onAddSavedOverlay: handleAddSavedOverlay,
         onDeleteSavedOverlay: handleDeleteSavedOverlay,
         cameraBackground: scene.cameraBackground,
@@ -1704,6 +1723,7 @@ const Index = () => {
     neonColor: activeScene.neonColor,
     onNeonColorChange: handleSetNeonColor,
     savedOverlays: savedOverlays,
+    onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
     onAddSavedOverlay: handleAddSavedOverlay,
     onDeleteSavedOverlay: handleDeleteSavedOverlay,
     cameraBackground: activeScene.cameraBackground,
@@ -1713,6 +1733,7 @@ const Index = () => {
     onCameraAspectRatioChange: handleSetCameraAspectRatio,
     canvasAspectRatio: activeScene.canvasAspectRatio,
     onCanvasAspectRatioChange: handleSetCanvasAspectRatio,
+    onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
     customAspectRatio: activeScene.customAspectRatio,
     onCustomAspectRatioChange: handleSetCustomAspectRatio,
     isFaceTrackingEnabled: activeScene.isFaceTrackingEnabled,

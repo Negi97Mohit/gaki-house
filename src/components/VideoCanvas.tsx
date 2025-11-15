@@ -1277,7 +1277,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   const renderScreen = (className?: string) => {
     // FIX: Show blank canvas when in 'canvas' mode
+
     if (props.screenShareMode === "canvas") {
+      if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
+        return (
+          <div
+            className="w-full h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${rest.backgroundImageUrl})` }}
+          />
+        );
+      }
       return (
         <div
           className="w-full h-full"
@@ -1422,6 +1431,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         style.backgroundImage = `url(${rest.backgroundImageUrl})`;
         style.backgroundSize = "cover";
         style.backgroundPosition = "center";
+      } else if (rest.backgroundEffect !== "image") {
+        // Don't set solid color if image is intended
+        style.backgroundColor = blankCanvasColor;
       }
       return style;
     };
@@ -1429,16 +1441,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     if (rest.layoutMode === "solo") {
       return (
         <div className="w-full h-full relative" style={getBackgroundStyle()}>
-          {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
-            <div
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: `url(${rest.backgroundImageUrl})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-          )}
           {/* --- MODIFIED: Pass cameraShape --- */}
           <div className="relative w-full h-full">
             {renderCamera(undefined, undefined, false, rest.cameraShape)}
@@ -1562,16 +1564,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     const contentWithBackground = (
       <div className="w-full h-full relative" style={getBackgroundStyle()}>
-        {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
-          <div
-            className="absolute inset-0 opacity-30"
-            style={{
-              backgroundImage: `url(${rest.backgroundImageUrl})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-        )}
         <div
           className="relative w-full h-full"
           style={
@@ -1810,6 +1802,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <CanvasHoverToolbar
           blankCanvasColor={blankCanvasColor}
           onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
+          onCanvasBackgroundUpload={props.sidebarProps.onCanvasBackgroundUpload}
           isVisible={isCanvasHovered}
         />
         {renderContent()}
