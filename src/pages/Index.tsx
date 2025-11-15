@@ -30,7 +30,6 @@ import {
   GeneratedLayout,
   TextOverlayState,
   FileOverlayState,
-  BrowserOverlayState,
   FileType,
   SceneState,
   SceneTransition,
