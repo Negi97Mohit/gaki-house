@@ -20,7 +20,7 @@ import {
 } from "./ui/select";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";
-import { CAPTION_PRESETS, PRESET_CATEGORIES } from "@/lib/captionPresets";
+import { CAPTION_PRESETS } from "@/lib/captionPresets";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
 import { CanvasPreset } from "@/types/canvasPreset";
@@ -159,7 +159,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     {
       id: "dynamic-styles",
       icon: Zap,
-      title: "Dynamic Styles",
+      title: "Caption Dynamic Styles",
       color: "from-yellow-500 to-amber-500",
     },
     {
@@ -171,7 +171,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     {
       id: "base-text",
       icon: Palette,
-      title: "Text Style",
+      title: "Caption Text Style",
       color: "from-blue-500 to-cyan-500",
     },
     {
@@ -377,7 +377,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
                 <Zap className="w-5 h-5 text-primary" />
                 <h3 className="text-base font-semibold tracking-wide">
-                  Dynamic Styles
+                  Caption Dynamic Styles
                 </h3>
               </div>
               <RadioGroup
@@ -463,42 +463,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
                 <Paintbrush className="w-5 h-5 text-primary" />
                 <h3 className="text-base font-semibold tracking-wide">
-                  Caption Presets
+                  Caption Static Styles
                 </h3>
               </div>
-
-              {/* Category Navigation */}
-              <ScrollArea className="w-full">
-                <div className="flex gap-2 pb-3 min-w-max">
-                  {PRESET_CATEGORIES.map((cat) => {
-                    const IconComponent =
-                      categoryIcons[cat.icon as keyof typeof categoryIcons];
-                    return (
-                      <Button
-                        key={cat.id}
-                        variant={
-                          selectedPresetCategory === cat.id
-                            ? "default"
-                            : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setSelectedPresetCategory(cat.id)}
-                        className={cn(
-                          "text-xs font-cyber whitespace-nowrap transition-all duration-200",
-                          selectedPresetCategory === cat.id
-                            ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] border-none"
-                            : "border-pink-500/30 hover:border-pink-500 text-pink-500"
-                        )}
-                      >
-                        {IconComponent && (
-                          <IconComponent className="w-3 h-3 mr-1.5" />
-                        )}
-                        {cat.name.toUpperCase()}
-                      </Button>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
 
               <div className="grid grid-cols-2 gap-3">
                 {filteredCaptionPresets.map((preset) => (
@@ -529,7 +496,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
                 <Palette className="w-5 h-5 text-primary" />
                 <h3 className="text-base font-semibold tracking-wide">
-                  Text Style
+                  Caption Text Style
                 </h3>
               </div>
               <StyleControls
