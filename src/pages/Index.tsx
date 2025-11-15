@@ -1711,6 +1711,22 @@ const Index = () => {
     onCanvasPresetSelect: handleCanvasPresetSelect,
   };
 
+  // Floating panel props (subset without canvas color)
+  const floatingPanelProps = {
+    style: activeScene.captionStyle,
+    onStyleChange: handleSetCaptionStyle,
+    dynamicStyle: activeScene.dynamicStyle,
+    onDynamicStyleChange: handleSetDynamicStyle,
+    backgroundEffect: activeScene.backgroundEffect,
+    onBackgroundEffectChange: handleSetBackgroundEffect,
+    savedOverlays: savedOverlays,
+    onAddSavedOverlay: handleAddSavedOverlay,
+    onDeleteSavedOverlay: handleDeleteSavedOverlay,
+    canvasAspectRatio: activeScene.canvasAspectRatio,
+    onCanvasAspectRatioChange: handleSetCanvasAspectRatio,
+    onCanvasPresetSelect: handleCanvasPresetSelect,
+  };
+
   const handleDeleteSession = useCallback(
     (id: string) => {
       setAllSessions((prev) => prev.filter((s) => s.id !== id));
@@ -1816,10 +1832,10 @@ const Index = () => {
       )}
     >
       <FloatingControlsPanel
-        isOpen={showFloatingPanel} // --- MODIFIED: Pass open state ---
-        onClose={() => setShowFloatingPanel(false)} // --- MODIFIED: Pass close handler ---
+        isOpen={showFloatingPanel}
+        onClose={() => setShowFloatingPanel(false)}
         isMouseActive={isMouseActive}
-        {...sidebarProps}
+        {...floatingPanelProps}
       />
 
       {/* --- DELETED: FloatingLogo --- */}

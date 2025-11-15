@@ -61,7 +61,8 @@ import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { TextEditingToolbar } from "@/components/TextEditingToolbar";
-import { ASPECT_RATIOS } from "@/lib/backgrounds"; // <-- ADD THIS IMPORT
+import { ASPECT_RATIOS } from "@/lib/backgrounds";
+import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
 
 // --- UPDATED COMPONENT ---
 export const HtmlOverlayRenderer: React.FC<{
@@ -397,6 +398,8 @@ interface VideoCanvasProps {
     onBackgroundEffectChange: (effect: "none" | "blur" | "image") => void;
     backgroundImageUrl: string | null;
     onBackgroundImageUrlChange: (url: string | null) => void;
+    blankCanvasColor: string;
+    onBlankCanvasColorChange: (color: string) => void;
     isAutoFramingEnabled: boolean;
     onAutoFramingChange: (enabled: boolean) => void;
     savedOverlays: GeneratedOverlay[];
@@ -698,6 +701,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   // Pan and Zoom State
   const [viewport, setViewport] = useState({ scale: 1, x: 0, y: 0 });
+  
+  // Canvas hover state
+  const [isCanvasHovered, setIsCanvasHovered] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -1707,7 +1713,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     >
       <div
         ref={sceneRef}
-        className="relative overflow-hidden" // Removed w-full h-full
+        className="relative overflow-hidden"
         style={{
           ...getCanvasAspectRatioStyle(
             props.sidebarProps.canvasAspectRatio,
@@ -1716,7 +1722,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           willChange: "transform",
         }}
         onClick={handleCanvasClick}
+        onMouseEnter={() => setIsCanvasHovered(true)}
+        onMouseLeave={() => setIsCanvasHovered(false)}
       >
+        <CanvasHoverToolbar
+          blankCanvasColor={blankCanvasColor}
+          onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
+          isVisible={isCanvasHovered}
+        />
         {renderContent()}
         <canvas
           ref={props.canvasRef}

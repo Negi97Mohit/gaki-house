@@ -54,8 +54,6 @@ interface FloatingControlsPanelProps {
   onAddSavedOverlay: (overlay: GeneratedOverlay) => void;
   onDeleteSavedOverlay: (id: string) => void;
   isMouseActive: boolean;
-  blankCanvasColor: string;
-  onBlankCanvasColorChange: (color: string) => void;
   isOpen: boolean;
   onClose: () => void;
 
@@ -582,31 +580,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               {/* --- REMOVED: PiP Border Controls --- */}
               {/* --- REMOVED: PiP Shadow Controls --- */}
 
-              {/* --- KEPT: Canvas Color --- */}
-              <div className="space-y-3 p-4 rounded-lg bg-background/50 border border-cyan-500/20">
-                <Label className="text-xs font-cyber text-cyan-500 tracking-wider flex items-center gap-1.5">
-                  <Square className="w-3 h-3" />
-                  CANVAS COLOR
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="color"
-                    className="w-20 h-10 p-1 cursor-pointer border-2 border-cyan-500/30"
-                    value={props.blankCanvasColor}
-                    onChange={(e) =>
-                      props.onBlankCanvasColorChange(e.target.value)
-                    }
-                  />
-                  <Input
-                    type="text"
-                    className="flex-1 font-mono text-sm border-2 border-cyan-500/30"
-                    value={props.blankCanvasColor}
-                    onChange={(e) =>
-                      props.onBlankCanvasColorChange(e.target.value)
-                    }
-                  />
-                </div>
-              </div>
+              {/* --- Canvas Color Section Removed - Now in Canvas Hover Toolbar --- */}
 
               {/* --- REMOVED: Neon Edge --- */}
               {/* --- REMOVED: Auto Framing --- */}
