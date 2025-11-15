@@ -1302,6 +1302,21 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               });
             }
           }}
+          onSectionDelete={(sectionId) => {
+            if (props.onCanvasLayoutChange && props.canvasLayout) {
+              // Remove the section from the layout
+              const remainingSections = props.canvasLayout.sections.filter(s => s.id !== sectionId);
+              props.onCanvasLayoutChange({
+                ...props.canvasLayout,
+                sections: remainingSections,
+              });
+              toast.success("Section deleted - remaining sections will expand");
+            }
+          }}
+          onSectionResize={(sectionId, newStyle) => {
+            // Store the resized style - this could be expanded to update the layout template
+            console.log(`Section ${sectionId} resized:`, newStyle);
+          }}
           layoutMode={rest.layoutMode}
           cameraShape={rest.cameraShape}
           pipSize={rest.pipSize}
