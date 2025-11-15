@@ -1293,7 +1293,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           backgroundImageUrl={rest.backgroundImageUrl}
           onSectionContentChange={(sectionId, content) => {
             if (props.onCanvasLayoutChange) {
-              const updatedSections = props.canvasLayout!.sections.map(s =>
+              const updatedSections = props.canvasLayout!.sections.map((s) =>
                 s.id === sectionId ? { ...s, content } : s
               );
               props.onCanvasLayoutChange({
@@ -1305,7 +1305,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onSectionDelete={(sectionId) => {
             if (props.onCanvasLayoutChange && props.canvasLayout) {
               // Remove the section from the layout
-              const remainingSections = props.canvasLayout.sections.filter(s => s.id !== sectionId);
+              const remainingSections = props.canvasLayout.sections.filter(
+                (s) => s.id !== sectionId
+              );
               props.onCanvasLayoutChange({
                 ...props.canvasLayout,
                 sections: remainingSections,
@@ -2067,7 +2069,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 if (
                   !captionsEnabled ||
                   containerSize.width === 0 ||
-                  !shouldRenderCaptionOverlay
+                  !shouldRenderCaptionOverlay ||
+                  !captionText // <-- ADD THIS CHECK
                 )
                   return null;
 
