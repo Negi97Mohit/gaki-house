@@ -45,6 +45,7 @@ import {
   BrowserOverlayState,
   TextOverlayState,
   SceneTransition,
+  CanvasLayoutState,
 } from "@/types/caption";
 import {
   DraggableFileViewer,
@@ -63,6 +64,7 @@ import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { TextEditingToolbar } from "@/components/TextEditingToolbar";
 import { ASPECT_RATIOS } from "@/lib/backgrounds";
 import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
+import { CanvasGridLayout } from "@/components/CanvasGridLayout";
 
 // --- UPDATED COMPONENT ---
 export const HtmlOverlayRenderer: React.FC<{
@@ -383,6 +385,8 @@ interface VideoCanvasProps {
   browserOverlays: BrowserOverlayState[];
   screenShareMode: "off" | "screen" | "canvas";
   onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
+  canvasLayout: CanvasLayoutState | null;
+  onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
   onRemoveBrowser: (id: string) => void;
   onBrowserUrlChange: (id: string, url: string) => void;
   onBrowserLayoutChange: (
@@ -1032,7 +1036,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     const centerY = box.top + box.height / 2;
     const startAngle =
       Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-    const initialRotation = rest.pipRotation || 0;
+    // const initialRotation = props.pipRotation || 0;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       console.log(`[VideoCanvas PiP] handleMouseMove`); // DEBUG
@@ -1040,7 +1044,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
         (180 / Math.PI);
       const angleDiff = currentAngle - startAngle;
-      rest.onPipRotationChange(initialRotation + angleDiff);
+      // rest.onPipRotationChange(initialRotation + angleDiff);
     };
 
     const handleMouseUp = () => {
@@ -1276,8 +1280,39 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   };
 
   const renderScreen = (className?: string) => {
-    // FIX: Show blank canvas when in 'canvas' mode
+    // --- NEW: Canvas Grid Layout Logic ---
+    if (props.screenShareMode === "canvas" && props.canvasLayout) {
+      return (
+        <CanvasGridLayout
+          layout={props.canvasLayout}
+          cameraStream={cameraStream}
+          screenStream={screenStream}
+          fileOverlays={fileOverlays}
+          textOverlays={textOverlays}
+          blankCanvasColor={blankCanvasColor}
+          backgroundImageUrl={rest.backgroundImageUrl}
+          onSectionContentChange={(sectionId, content) => {
+            if (props.onCanvasLayoutChange) {
+              const updatedSections = props.canvasLayout!.sections.map(s =>
+                s.id === sectionId ? { ...s, content } : s
+              );
+              props.onCanvasLayoutChange({
+                ...props.canvasLayout!,
+                sections: updatedSections,
+              });
+            }
+          }}
+          layoutMode={rest.layoutMode}
+          cameraShape={rest.cameraShape}
+          pipSize={rest.pipSize}
+          pipBorder={rest.pipBorder}
+          pipShadow={rest.pipShadow}
+        />
+      );
+    }
+    // --- END NEW ---
 
+    // FIX: Show blank canvas when in 'canvas' mode
     if (props.screenShareMode === "canvas") {
       if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
         return (
@@ -1522,7 +1557,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             className="w-full h-full relative group"
             style={{
               overflow: "hidden",
-              transform: `rotate(${rest.pipRotation || 0}deg)`,
+              // transform: `rotate(${props.pipRotation || 0}deg)`,
               transformOrigin: "center center",
               borderRadius: "inherit",
             }}
@@ -1535,9 +1570,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <Button
               size="icon"
               variant="secondary"
-              style={{
-                transform: `rotate(-${rest.pipRotation || 0}deg)`, // Counter-rotate
-              }}
+              // style={{ transform: `rotate(-${props.pipRotation || 0}deg)` }}
               onClick={() =>
                 setPipContent(pipContent === "camera" ? "share" : "camera")
               }
@@ -1552,7 +1585,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 "opacity-0 group-hover:opacity-100"
               )}
               style={{
-                transform: `rotate(-${rest.pipRotation || 0}deg)`,
+                // transform: `rotate(-${props.pipRotation || 0}deg)`,
                 zIndex: "var(--z-draggable-element-active)",
               }}
             >
@@ -1802,8 +1835,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <CanvasHoverToolbar
           blankCanvasColor={blankCanvasColor}
           onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
-          onCanvasBackgroundUpload={props.sidebarProps.onCanvasBackgroundUpload}
+          onCanvasBackgroundUpload={props.sidebarProps.onCustomBackgroundUpload}
           isVisible={isCanvasHovered}
+          canvasLayout={props.canvasLayout}
+          onCanvasLayoutChange={props.onCanvasLayoutChange}
         />
         {renderContent()}
         <canvas

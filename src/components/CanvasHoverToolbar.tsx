@@ -1,15 +1,25 @@
-import { Paintbrush, Upload } from "lucide-react";
-import React, { useRef } from "react";
+import { Paintbrush, Upload, Grid3x3 } from "lucide-react";
+import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { LAYOUT_TEMPLATES } from "@/lib/canvasLayouts";
+import { CanvasLayoutState } from "@/types/caption";
 
 interface CanvasHoverToolbarProps {
   blankCanvasColor: string;
   onBlankCanvasColorChange: (color: string) => void;
   isVisible: boolean;
   onCanvasBackgroundUpload: (file: File) => void;
+  canvasLayout: CanvasLayoutState | null;
+  onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
 }
 
 export const CanvasHoverToolbar = ({
@@ -17,6 +27,8 @@ export const CanvasHoverToolbar = ({
   onBlankCanvasColorChange,
   isVisible,
   onCanvasBackgroundUpload,
+  canvasLayout,
+  onCanvasLayoutChange,
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,6 +37,20 @@ export const CanvasHoverToolbar = ({
     if (file) {
       onCanvasBackgroundUpload(file);
     }
+  };
+
+  const handleLayoutSelect = (templateId: string) => {
+    if (!onCanvasLayoutChange) return;
+    
+    const template = LAYOUT_TEMPLATES[templateId];
+    const newLayout: CanvasLayoutState = {
+      templateId,
+      sections: template.sections.map(s => ({
+        id: s.id,
+        content: { type: 'empty' as const },
+      })),
+    };
+    onCanvasLayoutChange(newLayout);
   };
 
   return (
@@ -60,6 +86,33 @@ export const CanvasHoverToolbar = ({
         <Upload className="h-4 w-4 mr-2" />
         Upload
       </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="text-xs">
+            <Grid3x3 className="h-4 w-4 mr-2" />
+            {canvasLayout ? LAYOUT_TEMPLATES[canvasLayout.templateId]?.name || 'Layout' : 'Grid'}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="z-[999] bg-background">
+          {Object.values(LAYOUT_TEMPLATES).map(template => (
+            <DropdownMenuItem
+              key={template.id}
+              onClick={() => handleLayoutSelect(template.id)}
+            >
+              {template.name}
+              {canvasLayout?.templateId === template.id && ' ✓'}
+            </DropdownMenuItem>
+          ))}
+          {canvasLayout && (
+            <DropdownMenuItem
+              onClick={() => onCanvasLayoutChange?.(null as any)}
+              className="text-destructive"
+            >
+              Clear Grid
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
       <input
         ref={fileInputRef}
         type="file"

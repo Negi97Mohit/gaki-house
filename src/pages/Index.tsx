@@ -30,6 +30,7 @@ import {
   GeneratedLayout,
   TextOverlayState,
   FileOverlayState,
+  BrowserOverlayState,
   FileType,
   SceneState,
   SceneTransition,
@@ -38,6 +39,7 @@ import {
   DEFAULT_LAYOUT_STATE,
   CaptionShape as CaptionShapeType,
   CaptionAnimation as CaptionAnimationType,
+  CanvasLayoutState,
 } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
@@ -101,6 +103,7 @@ const DEFAULT_CAPTION_STYLE: CaptionStyle = {
 const createDefaultScene = (name: string): SceneState => ({
   id: generateSceneId(),
   name,
+  canvasLayout: null, // Default: no grid layout
   textOverlays: [],
   browserOverlays: [],
   fileOverlays: [],
@@ -787,6 +790,10 @@ const Index = () => {
       neonColor: scene.neonColor,
       screenShareMode: scene.screenShareMode as "off" | "screen" | "canvas",
       onScreenShareModeChange: handleSetScreenShareMode,
+      canvasLayout: scene.canvasLayout,
+      onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
+        updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
+      },
       hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
       audioDevices: audioDevices,
       videoDevices: videoDevices,
@@ -1733,7 +1740,6 @@ const Index = () => {
     onCameraAspectRatioChange: handleSetCameraAspectRatio,
     canvasAspectRatio: activeScene.canvasAspectRatio,
     onCanvasAspectRatioChange: handleSetCanvasAspectRatio,
-    onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
     customAspectRatio: activeScene.customAspectRatio,
     onCustomAspectRatioChange: handleSetCustomAspectRatio,
     isFaceTrackingEnabled: activeScene.isFaceTrackingEnabled,

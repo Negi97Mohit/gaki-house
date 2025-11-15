@@ -244,10 +244,36 @@ export interface SceneTransition {
   blendMode?: TransitionBlendMode;
 }
 
+// --- CANVAS LAYOUT TYPES ---
+
+// The content for a single grid section
+export type CanvasSectionContent = {
+  type: 'color' | 'image' | 'file' | 'text' | 'screen' | 'camera' | 'empty';
+  color?: string; // For color type
+  src?: string; // For image URL
+  fileId?: string; // For existing FileOverlays
+  textId?: string; // For existing TextOverlays
+};
+
+// The state for a single grid section
+export interface CanvasSectionState {
+  id: string; // e.g., 'main', 'sidebar', 'corner'
+  content: CanvasSectionContent;
+}
+
+// The overall layout state for the canvas
+export interface CanvasLayoutState {
+  templateId: string; // e.g., 'two-halves', 'main-and-corner'
+  sections: CanvasSectionState[];
+}
+
 // --- SCENE STATE ---
 export interface SceneState {
   id: string;
   name: string;
+
+  // Canvas layout grid (null = traditional single canvas)
+  canvasLayout: CanvasLayoutState | null;
 
   // All canvas-specific state
   textOverlays: TextOverlayState[];
