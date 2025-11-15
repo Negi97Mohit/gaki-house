@@ -1,5 +1,6 @@
 // src/lib/canvasPresets.ts
 import { CanvasPreset } from "@/types/canvasPreset";
+import { NEW_CANVAS_PRESETS } from "./newCanvasPresets";
 
 export const CANVAS_PRESETS: CanvasPreset[] = [
   // ============================================
@@ -4375,6 +4376,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
       videoFilter: "contrast(1.25)",
     },
   },
+  ...NEW_CANVAS_PRESETS,
 ];
 
 export const CANVAS_PRESET_CATEGORIES = [
