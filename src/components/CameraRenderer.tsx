@@ -41,6 +41,17 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   ];
 }
 
+function hexToRgb(hex: string): [number, number, number] {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16),
+      ]
+    : [0, 255, 255]; // fallback to cyan
+}
+
 function detectEdges(
   ctx: CanvasRenderingContext2D,
   imageData: ImageData,
@@ -77,10 +88,16 @@ function detectEdges(
       const magnitude = Math.sqrt(gx * gx + gy * gy) * intensity;
       const outIdx = (y * w + x) * 4;
       if (magnitude > 20) {
-        let rgb =
-          color === "rainbow"
-            ? hslToRgb((x / w + y / h) * 360, 100, 50)
-            : colors[color] || colors["cyan"];
+        let rgb: [number, number, number];
+        if (color === "rainbow") {
+          rgb = hslToRgb((x / w + y / h) * 360, 100, 50);
+        } else if (color.startsWith("#")) {
+          // Support hex colors
+          rgb = hexToRgb(color);
+        } else {
+          // Support preset color names
+          rgb = colors[color] || colors["cyan"];
+        }
         output.data[outIdx] = rgb[0];
         output.data[outIdx + 1] = rgb[1];
         output.data[outIdx + 2] = rgb[2];
