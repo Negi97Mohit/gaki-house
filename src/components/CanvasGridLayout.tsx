@@ -1,7 +1,7 @@
 // src/components/CanvasGridLayout.tsx
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, X } from "lucide-react";
+import { Plus, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   CanvasLayoutState,
@@ -10,7 +10,6 @@ import {
   TextOverlayState,
 } from "@/types/caption";
 import { LAYOUT_TEMPLATES } from "@/lib/canvasLayouts";
-import { CameraRenderer } from "@/components/CameraRenderer";
 import { FileRenderer } from "@/components/DraggableFileViewer";
 import {
   DropdownMenu,
@@ -18,6 +17,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { GridSectionToolbar } from "@/components/GridSectionToolbar";
+import { Rnd } from "react-rnd";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -28,6 +29,8 @@ interface CanvasGridLayoutProps {
   blankCanvasColor: string;
   backgroundImageUrl?: string;
   onSectionContentChange: (sectionId: string, content: CanvasSectionState["content"]) => void;
+  onSectionDelete?: (sectionId: string) => void;
+  onSectionResize?: (sectionId: string, newStyle: React.CSSProperties) => void;
   layoutMode: string;
   cameraShape: "rectangle" | "circle" | "rounded";
   pipSize: { width: number; height: number };
@@ -44,6 +47,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   blankCanvasColor,
   backgroundImageUrl,
   onSectionContentChange,
+  onSectionDelete,
+  onSectionResize,
   layoutMode,
   cameraShape,
   pipSize,
@@ -51,6 +56,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipShadow,
 }) => {
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
+  const [resizingSections, setResizingSections] = useState<Record<string, React.CSSProperties>>({});
 
   const template = LAYOUT_TEMPLATES[layout.templateId] || LAYOUT_TEMPLATES.default;
 
@@ -219,8 +225,17 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
     }
   };
 
+  const handleSectionDelete = (sectionId: string) => {
+    if (onSectionDelete) {
+      onSectionDelete(sectionId);
+    } else {
+      // Fallback: just clear the content
+      onSectionContentChange(sectionId, { type: "empty" });
+    }
+  };
+
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full overflow-hidden">
       {template.sections.map((templateSection) => {
         const section =
           layout.sections.find((s) => s.id === templateSection.id) ||
@@ -229,31 +244,111 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             content: { type: "empty" },
           } as CanvasSectionState);
 
+        const currentStyle = resizingSections[section.id] || templateSection.style;
+
         return (
-          <div
+          <Rnd
             key={templateSection.id}
+            default={{
+              x: 0,
+              y: 0,
+              width: currentStyle.width as string || "100%",
+              height: currentStyle.height as string || "100%",
+            }}
+            position={{
+              x: parseInt(currentStyle.left as string || "0"),
+              y: parseInt(currentStyle.top as string || "0"),
+            }}
+            size={{
+              width: currentStyle.width as string || "100%",
+              height: currentStyle.height as string || "100%",
+            }}
+            onResizeStop={(e, direction, ref, delta, position) => {
+              const newStyle: React.CSSProperties = {
+                ...currentStyle,
+                width: ref.style.width,
+                height: ref.style.height,
+                left: `${position.x}px`,
+                top: `${position.y}px`,
+              };
+              setResizingSections((prev) => ({ ...prev, [section.id]: newStyle }));
+              if (onSectionResize) {
+                onSectionResize(section.id, newStyle);
+              }
+            }}
+            onDragStop={(e, data) => {
+              const newStyle: React.CSSProperties = {
+                ...currentStyle,
+                left: `${data.x}px`,
+                top: `${data.y}px`,
+              };
+              setResizingSections((prev) => ({ ...prev, [section.id]: newStyle }));
+              if (onSectionResize) {
+                onSectionResize(section.id, newStyle);
+              }
+            }}
             className={cn(
-              "transition-all duration-200",
+              "border border-border/20 transition-all duration-200",
               hoveredSection === section.id && "ring-2 ring-primary"
             )}
-            style={templateSection.style}
-            onMouseEnter={() => setHoveredSection(section.id)}
-            onMouseLeave={() => setHoveredSection(null)}
+            style={{
+              ...currentStyle,
+              overflow: "hidden",
+            }}
+            enableResizing={{
+              top: true,
+              right: true,
+              bottom: true,
+              left: true,
+              topRight: true,
+              bottomRight: true,
+              bottomLeft: true,
+              topLeft: true,
+            }}
+            bounds="parent"
+            dragHandleClassName="grid-drag-handle"
           >
-            {renderSectionContent(section)}
-            {section.content.type !== "empty" && hoveredSection === section.id && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 opacity-70 hover:opacity-100 z-10"
-                onClick={() =>
-                  onSectionContentChange(section.id, { type: "empty" })
-                }
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
+            <div
+              className="relative w-full h-full"
+              onMouseEnter={() => setHoveredSection(section.id)}
+              onMouseLeave={() => setHoveredSection(null)}
+            >
+              {renderSectionContent(section)}
+              
+              {/* Drag handle - only show on hover */}
+              {hoveredSection === section.id && (
+                <div className="grid-drag-handle absolute top-0 left-0 w-full p-2 cursor-move bg-gradient-to-b from-black/50 to-transparent z-[90]">
+                  <GripVertical className="h-4 w-4 text-white" />
+                </div>
+              )}
+
+              {/* Section toolbar */}
+              {hoveredSection === section.id && section.content.type !== "empty" && (
+                <GridSectionToolbar
+                  section={section}
+                  onDelete={() => handleSectionDelete(section.id)}
+                  onColorChange={
+                    section.content.type === "color"
+                      ? (color) => onSectionContentChange(section.id, { type: "color", color })
+                      : undefined
+                  }
+                  onImageChange={
+                    section.content.type === "image"
+                      ? (url) => onSectionContentChange(section.id, { type: "image", src: url })
+                      : undefined
+                  }
+                  availableFiles={fileOverlays.map((f) => ({ id: f.id, name: f.fileName }))}
+                  availableTexts={textOverlays.map((t) => ({ id: t.id, content: t.content }))}
+                  onFileSelect={(fileId) =>
+                    onSectionContentChange(section.id, { type: "file", fileId })
+                  }
+                  onTextSelect={(textId) =>
+                    onSectionContentChange(section.id, { type: "text", textId })
+                  }
+                />
+              )}
+            </div>
+          </Rnd>
         );
       })}
     </div>
