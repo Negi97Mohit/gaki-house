@@ -701,7 +701,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   // Pan and Zoom State
   const [viewport, setViewport] = useState({ scale: 1, x: 0, y: 0 });
-  
+
   // Canvas hover state
   const [isCanvasHovered, setIsCanvasHovered] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
@@ -724,7 +724,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     width: 30,
     height: 30,
   });
-
+  const pipRndRef = useRef<Rnd | null>(null); // ADDED
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
     isAudioOn: isAudioOn,
@@ -996,6 +996,44 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     rest.onPipPositionChange({ x: newX, y: newY });
   };
+
+  // --- ADDED: PiP Rotation Handler ---
+  const handlePipRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    console.log(`[VideoCanvas PiP] handleRotationStart FIRED`); // DEBUG
+    e.stopPropagation();
+    onInternalDragStart();
+
+    const selfElement = pipRndRef.current?.getSelfElement();
+    if (!selfElement) return;
+
+    const box = selfElement.getBoundingClientRect();
+    const centerX = box.left + box.width / 2;
+    const centerY = box.top + box.height / 2;
+    const startAngle =
+      Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+    const initialRotation = rest.pipRotation || 0;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      console.log(`[VideoCanvas PiP] handleMouseMove`); // DEBUG
+      const currentAngle =
+        Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
+        (180 / Math.PI);
+      const angleDiff = currentAngle - startAngle;
+      rest.onPipRotationChange(initialRotation + angleDiff);
+    };
+
+    const handleMouseUp = () => {
+      console.log(`[VideoCanvas PiP] handleMouseUp`); // DEBUG
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      onInternalDragStop();
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+  // --- END ADDED ---
 
   const handlePipResizeStop = (
     e: any,
@@ -1430,6 +1468,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       cameraStream &&
       containerSize.width > 0 ? (
         <Rnd
+          ref={pipRndRef}
           key={`pip-${sceneId}-${rest.pipPosition.x}-${rest.pipPosition.y}-${rest.pipSize.width}-${rest.pipSize.height}`}
           size={pipSizePx}
           position={pipPositionPx}
@@ -1440,6 +1479,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               ? (containerSize.width * 0.1) / currentAspectRatio
               : containerSize.height * 0.1
           }
+          cancel=".rotate-handle"
           // --- END MODIFICATION ---
           maxWidth={containerSize.width * (100 - rest.pipPosition.x)}
           maxHeight={containerSize.height * (100 - rest.pipPosition.y)}
@@ -1453,11 +1493,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           style={{
             zIndex: "var(--z-video-pip)",
             ...pipVideoStyle,
+            // transform: `rotate(${rest.pipRotation || 0}deg)`,
           }}
         >
           <div
             className="w-full h-full relative group"
-            style={{ overflow: "hidden" }}
+            style={{
+              overflow: "hidden",
+              transform: `rotate(${rest.pipRotation || 0}deg)`,
+              transformOrigin: "center center",
+              borderRadius: "inherit",
+            }}
           >
             {/* This inner div is no longer responsible for border/shape */}
             {pipContent === "camera"
@@ -1467,13 +1513,29 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <Button
               size="icon"
               variant="secondary"
-              className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{
+                transform: `rotate(-${rest.pipRotation || 0}deg)`, // Counter-rotate
+              }}
               onClick={() =>
                 setPipContent(pipContent === "camera" ? "share" : "camera")
               }
             >
               <RotateCcw className="h-4 w-4" />
             </Button>
+            {/* --- ADDED: PiP Rotation Handle --- */}
+            <div
+              onMouseDown={handlePipRotationStart}
+              className={cn(
+                "rotate-handle absolute -bottom-3 -left-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 cursor-alias",
+                "opacity-0 group-hover:opacity-100"
+              )}
+              style={{
+                transform: `rotate(-${rest.pipRotation || 0}deg)`,
+                zIndex: "var(--z-draggable-element-active)",
+              }}
+            >
+              <RotateCcw className="w-4 h-4 pointer-events-none" />
+            </div>
           </div>
         </Rnd>
       ) : null;

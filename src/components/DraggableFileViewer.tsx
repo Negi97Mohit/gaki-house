@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
 import { FileOverlayState, FileType } from "@/types/caption";
-import { X, File as FileIcon, Loader2 } from "lucide-react";
+import { X, File as FileIcon, Loader2, RotateCcw } from "lucide-react";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 
 interface DraggableFileViewerProps {
@@ -171,6 +171,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   onInternalDragStop,
   viewport,
 }) => {
+  const rndRef = useRef<Rnd | null>(null); // ADDED: Ref for Rnd
   const widthPx =
     sceneSize.width > 0
       ? (sceneSize.width * overlay.layout.size.width) / 100
@@ -275,8 +276,48 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
     [onInternalDragStop, sceneSize, onLayoutChange, overlay.id]
   );
 
+  // --- ADDED: Rotation handler ---
+  const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(
+      `[DraggableFileViewer ${overlay.id}] handleRotationStart FIRED`
+    ); // DEBUG
+    const selfElement = rndRef.current?.getSelfElement();
+    if (!selfElement) return;
+
+    const box = selfElement.getBoundingClientRect();
+    const centerX = box.left + box.width / 2;
+    const centerY = box.top + box.height / 2;
+    const startAngle =
+      Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+    const initialRotation = overlay.layout.rotation || 0;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      console.log(`[DraggableFileViewer ${overlay.id}] handleMouseMove`); // DEBUG
+      const currentAngle =
+        Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
+        (180 / Math.PI);
+      const angleDiff = currentAngle - startAngle;
+      onLayoutChange(overlay.id, { rotation: initialRotation + angleDiff });
+    };
+
+    const handleMouseUp = () => {
+      console.log(`[DraggableFileViewer ${overlay.id}] handleMouseUp`); // DEBUG
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      onInternalDragStop();
+    };
+
+    onInternalDragStart();
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+  // --- END ADDED ---
+
   return (
     <Rnd
+      ref={rndRef}
       scale={1}
       size={{ width: widthPx, height: heightPx }}
       position={{ x: xPx, y: yPx }}
@@ -284,7 +325,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       minHeight={150}
       disableDragging={sceneSize.width <= 0 || sceneSize.height <= 0}
       enableResizing={sceneSize.width > 0 && sceneSize.height > 0}
-      cancel="input, button:not(.drag-handle), iframe"
+      cancel="input, button:not(.drag-handle), iframe, .rotate-handle"
       onDragStart={() => {
         onInternalDragStart();
         onSelect(overlay.id);
@@ -304,35 +345,63 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       )}
       style={{
         zIndex: overlay.layout.zIndex,
-        transform: `rotate(${overlay.layout.rotation}deg)`,
+        // transform: `rotate(${overlay.layout.rotation || 0}deg)`, // MODIFIED
       }}
     >
-      {/* Content area allows dragging */}
+      {/* ADDED: Inner wrapper for rotation */}
       <div
-        className={cn(
-          "flex-grow w-full h-full relative overflow-auto rounded-lg",
-          overlay.fileType !== "image" && "bg-background/50"
-        )}
-        onMouseDown={() => {
-          onSelect(overlay.id);
+        className="w-full h-full flex flex-col rounded-lg relative" // Added flex/rounded/relative
+        style={{
+          transform: `rotate(${overlay.layout.rotation || 0}deg)`,
+          transformOrigin: "center center",
         }}
       >
-        <FileRenderer overlay={overlay} />
-      </div>
-      <DynamicLayoutPicker
-        onSelectLayout={(mode) =>
-          onSetDynamicLayout({ id: overlay.id, type: "file" }, mode)
-        }
-      />
+        {/* Content area allows dragging */}
+        <div
+          className={cn(
+            "flex-grow w-full h-full relative overflow-auto rounded-lg",
+            overlay.fileType !== "image" && "bg-background/50"
+          )}
+          onMouseDown={() => {
+            onSelect(overlay.id);
+          }}
+        >
+          <FileRenderer overlay={overlay} />
+        </div>
+        <DynamicLayoutPicker
+          onSelectLayout={(mode) =>
+            onSetDynamicLayout({ id: overlay.id, type: "file" }, mode)
+          }
+        />
 
-      <button
-        onClick={() => onRemove(overlay.id)}
-        title="Remove file"
-        className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
-        style={{ zIndex: "var(--z-draggable-element-active)" }}
+        <button
+          onClick={() => onRemove(overlay.id)}
+          title="Remove file"
+          className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+          style={{
+            zIndex: "var(--z-draggable-element-active)",
+            transform: `rotate(-${overlay.layout.rotation || 0}deg)`, // Counter-rotate
+          }}
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* --- ADDED: Rotation Handle --- */}
+      <div
+        onMouseDown={handleRotationStart}
+        className={cn(
+          "rotate-handle absolute -bottom-3 -left-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 cursor-alias",
+          "opacity-0 group-hover:opacity-100",
+          !isSelected && "hidden" // Only show on selected
+        )}
+        style={{
+          transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+          zIndex: "var(--z-draggable-element-active)",
+        }}
       >
-        <X className="w-4 h-4" />
-      </button>
+        <RotateCcw className="w-4 h-4 pointer-events-none" />
+      </div>
     </Rnd>
   );
 };

@@ -114,6 +114,7 @@ export interface LayoutState {
   splitRatio: number;
   pipPosition: { x: number; y: number };
   pipSize: { width: number; height: number };
+  pipRotation: number; // ADDED
   customMaskUrl?: string;
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
@@ -125,6 +126,7 @@ export const DEFAULT_LAYOUT_STATE: LayoutState = {
   splitRatio: 0.5,
   pipPosition: { x: 75, y: 75 },
   pipSize: { width: 20, height: 20 },
+  pipRotation: 0,
   pipBorder: { color: "#FFFFFF", width: 0 },
   pipShadow: { blur: 0, color: "rgba(0,0,0,0.5)" },
 };
@@ -268,6 +270,7 @@ export interface SceneState {
   splitRatio: number;
   pipPosition: { x: number; y: number };
   pipSize: { width: number; height: number };
+  pipRotation: number; // ADDED
   customMaskUrl?: string;
   // --- ADDED ---
   pipBorder?: { color: string; width: number };

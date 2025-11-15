@@ -120,6 +120,7 @@ const createDefaultScene = (name: string): SceneState => ({
   splitRatio: DEFAULT_LAYOUT_STATE.splitRatio,
   pipPosition: DEFAULT_LAYOUT_STATE.pipPosition,
   pipSize: DEFAULT_LAYOUT_STATE.pipSize,
+  pipRotation: DEFAULT_LAYOUT_STATE.pipRotation, // ADDED
   // --- ADDED ---
   pipBorder: DEFAULT_LAYOUT_STATE.pipBorder,
   pipShadow: DEFAULT_LAYOUT_STATE.pipShadow,
@@ -182,16 +183,17 @@ const Index = () => {
     const handleMouseMove = (e: MouseEvent) => {
       const threshold = 50; // pixels from right edge
       const distanceFromRight = window.innerWidth - e.clientX;
-      
+
       if (distanceFromRight <= threshold) {
         setIsSceneTabsHidden(false);
-      } else if (distanceFromRight > 300) { // hide when mouse is far from panel
+      } else if (distanceFromRight > 300) {
+        // hide when mouse is far from panel
         setIsSceneTabsHidden(true);
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
@@ -206,7 +208,7 @@ const Index = () => {
     []
   );
   const hasAiPopoverAutoOpenedRef = useRef(false);
-  
+
   // Handle auto-opening FloatingControlsPanel after AI popover closes
   const handleAiPopoverAutoClose = useCallback(() => {
     setTimeout(() => {
@@ -591,6 +593,11 @@ const Index = () => {
       updateSceneProperty("pipSize", value),
     [updateSceneProperty]
   );
+  // --- ADDED: Handler for new PiP rotation property ---
+  const handleSetPipRotation = useCallback(
+    (value: number) => updateSceneProperty("pipRotation", value),
+    [updateSceneProperty]
+  );
 
   // --- ADDED: Handlers for new layout properties ---
   const handleSetPipBorder = useCallback(
@@ -742,6 +749,8 @@ const Index = () => {
       onSplitRatioChange: handleSetSplitRatio,
       onPipPositionChange: handleSetPipPosition,
       onPipSizeChange: handleSetPipSize,
+      pipRotation: scene.pipRotation, // ADDED
+      onPipRotationChange: handleSetPipRotation, // ADDED
       pipBorder: scene.pipBorder,
       pipShadow: scene.pipShadow,
       customMaskUrl: scene.customMaskUrl,
