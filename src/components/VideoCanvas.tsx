@@ -574,6 +574,25 @@ const DynamicLayoutRenderer: React.FC<{
 };
 
 const SNAP_THRESHOLD = 5;
+// --- REFACTOR: Helper now converts top-left pixel to top-left percentage ---
+const calculatePercentagePosition = (
+  pixelX: number,
+  pixelY: number,
+  containerSize: { width: number; height: number }
+): { x: number; y: number } | null => {
+  if (
+    !containerSize.width ||
+    !containerSize.height ||
+    containerSize.width <= 0 ||
+    containerSize.height <= 0
+  ) {
+    return null;
+  }
+  const percentageX = (pixelX / containerSize.width) * 100;
+  const percentageY = (pixelY / containerSize.height) * 100;
+  return { x: percentageX, y: percentageY };
+};
+// --- END REFACTOR ---
 
 // --- ADDED: Helper function ---
 const getNumericAspectRatio = (
@@ -707,7 +726,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isPanning, setIsPanning] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   const sceneRef = useRef<HTMLDivElement>(null);
-
+  const captionRndRef = useRef<Rnd | null>(null); // <-- ADD THIS REF
   // --- NEW: Scene size state for stable positioning ---
   const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
 
@@ -740,6 +759,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isDraggingSplitter, setIsDraggingSplitter] = useState(false);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
+  const captionRef = React.createRef<HTMLDivElement>(); // This ref is for the caption rotation
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
   const [audioStreamForSpeech, setAudioStreamForSpeech] =
     useState<MediaStream | null>(null);
@@ -2008,12 +2028,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 )
                   return null;
 
-                if (!captionText) {
-                  return null;
-                }
-
-                const captionRef = React.createRef<HTMLDivElement>();
-
                 const handleCaptionRotationStart = (
                   e: React.MouseEvent<HTMLDivElement>
                 ) => {
@@ -2064,6 +2078,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
                 return (
                   <Rnd
+                    ref={captionRndRef}
                     size={{
                       width: widthPx,
                       height: "auto",
@@ -2073,55 +2088,82 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                       y: yPx,
                     }}
                     onDragStop={(e, d) => {
-                      // --- REFACTOR: Use top-left logic ---
-                      let newX = (d.x / containerSize.width) * 100;
-                      let newY = (d.y / containerSize.height) * 100;
+                      // --- FIX: Use the ref to get real dimensions for boundary checking ---
+                      if (
+                        !captionRndRef.current ||
+                        !containerSize.width ||
+                        !containerSize.height
+                      )
+                        return;
 
-                      // Boundary Enforcement
-                      newX = Math.max(
+                      const selfElement =
+                        captionRndRef.current.getSelfElement();
+                      if (!selfElement) return;
+
+                      const currentWidthPx = selfElement.offsetWidth;
+                      const currentHeightPx = selfElement.offsetHeight;
+
+                      // Clamp pixel values
+                      const clampedX = Math.max(
                         0,
-                        Math.min(newX, 100 - currentWidthPercent)
+                        Math.min(d.x, containerSize.width - currentWidthPx)
                       );
-                      newY = Math.max(0, Math.min(newY, 100 - 10)); // Assuming min height
-                      // --- END REFACTOR ---
+                      const clampedY = Math.max(
+                        0,
+                        Math.min(d.y, containerSize.height - currentHeightPx)
+                      );
 
-                      onCaptionLayoutChange({
-                        position: {
-                          x: newX,
-                          y: newY,
-                        },
-                      });
+                      // Convert clamped pixel values to percentages
+                      const newPositionPercent = calculatePercentagePosition(
+                        clampedX,
+                        clampedY,
+                        containerSize
+                      );
+                      if (newPositionPercent) {
+                        onCaptionLayoutChange({
+                          position: newPositionPercent,
+                        });
+                      }
+                      // --- END FIX ---
                     }}
                     onResizeStop={(e, direction, ref, delta, pos) => {
-                      // --- REFACTOR: Use top-left logic ---
+                      // --- FIX: Use correct boundary logic, only update width ---
+                      if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
+
                       const newWidthPx = parseInt(ref.style.width, 10);
-                      const newHeightPx = parseInt(ref.style.height, 10);
+
+                      const newPositionPercent = calculatePercentagePosition(
+                        pos.x,
+                        pos.y,
+                        sceneSize
+                      );
                       let newWidthPercent =
                         (newWidthPx / containerSize.width) * 100;
 
-                      let newX = (pos.x / containerSize.width) * 100;
-                      let newY = (pos.y / containerSize.height) * 100;
-                      let newHeightPercent =
-                        (newHeightPx / containerSize.height) * 100;
+                      if (newPositionPercent) {
+                        // Boundary Enforcement
+                        newWidthPercent = Math.min(
+                          newWidthPercent,
+                          100 - newPositionPercent.x
+                        );
+                      }
 
-                      // Boundary Enforcement
-                      newX = Math.max(0, Math.min(newX, 100 - newWidthPercent));
-                      newY = Math.max(
-                        0,
-                        Math.min(newY, 100 - newHeightPercent)
-                      );
-                      // --- END REFACTOR ---
-
-                      onCaptionLayoutChange({
-                        position: {
-                          x: newX,
-                          y: newY,
-                        },
-                        size: {
+                      if (newPositionPercent) {
+                        // Update position
+                        onCaptionLayoutChange({
+                          position: newPositionPercent,
+                          size: {
+                            width: newWidthPercent,
+                            height: 0, // Height is auto, send 0 or undefined
+                          },
+                        });
+                        // Update the style's width property which controls the Rnd size
+                        props.onStyleChange({
+                          ...props.liveCaptionStyle,
                           width: newWidthPercent,
-                          height: newHeightPercent,
-                        },
-                      });
+                        });
+                      }
+                      // --- END FIX ---
                     }}
                     bounds="parent"
                     className="group pointer-events-auto border-2 border-transparent hover:border-primary border-dashed"
@@ -2141,6 +2183,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   >
                     <div
                       ref={captionRef}
+                      // ref={captionRef} // This ref was for the inner div, but we need the Rnd ref
                       className="w-full h-full relative"
                       style={{
                         transform: `rotate(${captionStyle.rotation || 0}deg)`,
