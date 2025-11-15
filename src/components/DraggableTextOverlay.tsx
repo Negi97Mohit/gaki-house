@@ -6,7 +6,7 @@ import { TextOverlayState } from "@/types/caption";
 import { X, RotateCcw, GripVertical } from "lucide-react";
 import { TextEditingToolbar } from "./TextEditingToolbar";
 
-// --- REFACTOR: This helper now converts top-left pixel to top-left percentage ---
+// Helper: Convert top-left pixel to top-left percentage
 const calculatePercentagePosition = (
   pixelX: number,
   pixelY: number,
@@ -24,7 +24,6 @@ const calculatePercentagePosition = (
   const percentageY = (pixelY / containerSize.height) * 100;
   return { x: percentageX, y: percentageY };
 };
-// --- END REFACTOR ---
 
 interface DraggableTextOverlayProps {
   overlay: TextOverlayState;
@@ -64,7 +63,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  // MODIFIED: This is now a div, not a textarea
   const editorRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);
 
@@ -77,7 +75,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       ? (sceneSize.height * overlay.layout.size.height) / 100
       : 100;
 
-  // --- REFACTOR: Removed center-point logic ---
   const xPx =
     sceneSize.width > 0
       ? (sceneSize.width * overlay.layout.position.x) / 100
@@ -86,7 +83,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
     sceneSize.height > 0
       ? (sceneSize.height * overlay.layout.position.y) / 100
       : 0;
-  // --- END REFACTOR ---
 
   const handleDragStop = useCallback(
     (e: any, d: { x: number; y: number }) => {
@@ -99,8 +95,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       if (!currentElement) return;
       const currentWidthPx = currentElement.offsetWidth;
       const currentHeightPx = currentElement.offsetHeight;
-      const currentWidthPercent = (currentWidthPx / sceneSize.width) * 100;
-      const currentHeightPercent = (currentHeightPx / sceneSize.height) * 100;
 
       // Clamp position to stay within bounds
       const clampedX = Math.max(
@@ -112,13 +106,11 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         Math.min(d.y, sceneSize.height - currentHeightPx)
       );
 
-      // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         clampedX,
         clampedY,
         sceneSize
       );
-      // --- END REFACTOR ---
 
       if (newPositionPercent) {
         onLayoutChange(overlay.id, { position: newPositionPercent });
@@ -143,7 +135,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const newWidthPx = parseInt(ref.style.width, 10);
       const newHeightPx = parseInt(ref.style.height, 10);
 
-      // --- REFACTOR: Use new top-left helper ---
       const newPositionPercent = calculatePercentagePosition(
         pos.x,
         pos.y,
@@ -160,7 +151,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           100 - newPositionPercent.y
         );
       }
-      // --- END REFACTOR ---
 
       if (newPositionPercent) {
         onLayoutChange(overlay.id, {
@@ -195,22 +185,23 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const angleDiff = currentAngle - startAngle;
       onLayoutChange(overlay.id, { rotation: initialRotation + angleDiff });
     };
+
     const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
+
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isSpacePressed) return; // Prevent editing when panning
+    if (isSpacePressed) return;
     setIsEditing(true);
     setTimeout(() => editorRef.current?.focus(), 0);
   };
 
-  // MODIFIED: This now reads innerHTML from the contentEditable div
   const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     setIsEditing(false);
     const newContent = e.currentTarget.innerHTML;
@@ -219,11 +210,10 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
     }
   };
 
-  // ADDED: Handle placeholder “Edit Text...”
   const handleFocus = (e: React.FocusEvent<HTMLDivElement>) => {
     if (e.currentTarget.textContent === "Edit Text...") {
       e.currentTarget.innerHTML = "";
-      onContentChange(overlay.id, ""); // Clear the content
+      onContentChange(overlay.id, "");
     }
   };
 
@@ -235,7 +225,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
     if (!selfElement) return { x: 0, y: 0 };
 
     const rect = selfElement.getBoundingClientRect();
-
     const x = rect.left + rect.width / 2;
     const y = rect.top;
 
@@ -290,16 +279,12 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           onSelect(overlay.id);
         }}
         onDoubleClick={handleDoubleClick}
-        bounds="parent" // <-- ADD THIS
+        bounds="parent"
         className={cn(
-          "group pointer-events-auto transition-colors duration-200",
-          isSelected
-            ? "border-2 border-primary border-dashed"
-            : "border-2 border-transparent hover:border-primary/50 border-dashed"
+          "group pointer-events-auto transition-colors duration-200"
         )}
         style={{
           zIndex: overlay.layout.zIndex,
-          transform: `rotate(${overlay.layout.rotation || 0}deg)`,
         }}
         dragHandleClassName="drag-handle"
         cancel="button, textarea, .rotate-handle"
@@ -307,9 +292,13 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         <div
           className={cn(
             "w-full h-full relative drag-handle",
-            (isDragging || isResizing) && "opacity-50"
+            (isDragging || isResizing) && "opacity-50",
+            isSelected
+              ? "border-2 border-primary border-dashed"
+              : "border-2 border-transparent hover:border-primary/50 border-dashed"
           )}
           style={{
+            transform: `rotate(${overlay.layout.rotation || 0}deg)`,
             transformOrigin: "center center",
             cursor: isEditing ? "text" : "move",
           }}
@@ -324,7 +313,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           )}
 
           {isEditing ? (
-            // --- MODIFIED: Replaced <textarea> with contentEditable <div> ---
             <div
               ref={editorRef}
               contentEditable={true}
@@ -352,7 +340,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
               dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
           ) : (
-            // --- MODIFIED: This div now renders inside a styled container ---
             <div className="w-full h-full p-2 rounded">
               <div
                 className="w-full h-full whitespace-pre-wrap break-words cursor-move"
@@ -379,23 +366,49 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           )}
 
           {isSelected && !isEditing && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemove(overlay.id);
-              }}
-              title="Remove Text"
-              className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110"
-              style={{
-                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-                zIndex: "var(--z-draggable-element-active)",
-              }}
-            >
-              <X className="w-4 h-4 pointer-events-none" />
-            </button>
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemove(overlay.id);
+                }}
+                title="Remove Text"
+                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110"
+                style={{
+                  transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+                  zIndex: "var(--z-draggable-element-active)",
+                }}
+              >
+                <X className="w-4 h-4 pointer-events-none" />
+              </button>
+
+              {/* Rotation Handle */}
+              <div
+                onMouseDown={handleRotationStart}
+                className="rotate-handle absolute -bottom-3 -left-3 flex items-center justify-center cursor-alias"
+                style={{
+                  width: "40px", // 🔥 Bigger hit-area
+                  height: "40px",
+                  transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+                  zIndex: "var(--z-draggable-element-active)",
+                  backgroundColor: "transparent", // Keep it invisible
+                }}
+              >
+                <div
+                  className="bg-primary text-primary-foreground rounded-full flex items-center justify-center"
+                  style={{
+                    width: "24px", // Visible icon size stays the same
+                    height: "24px",
+                  }}
+                >
+                  <RotateCcw className="w-4 h-4 pointer-events-none" />
+                </div>
+              </div>
+            </>
           )}
         </div>
       </Rnd>
+
       {isSelected && !isEditing && (
         <div
           className="pointer-events-auto"
@@ -403,7 +416,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             position: "absolute",
             top: 0,
             left: 0,
-            // Use a CSS var or a high number to ensure it's on top
             zIndex: "var(--z-text-toolbar, 9999)",
           }}
         >
@@ -414,7 +426,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             containerRef={containerRef}
           />
         </div>
-        // --- END MODIFICATION ---
       )}
     </>
   );
