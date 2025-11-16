@@ -146,7 +146,7 @@ export const CanvasHoverToolbar = ({
               : "Grid"}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-[999] bg-background">
+        <DropdownMenuContent className="z-[999] bg-background max-h-[400px] overflow-y-auto">
           {templatesLoading && (
             <DropdownMenuItem disabled>Loading layouts...</DropdownMenuItem>
           )}

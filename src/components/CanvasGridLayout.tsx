@@ -305,8 +305,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       case "empty":
       default:
         return (
-          <div className="w-full h-full bg-muted/20 flex items-center justify-center">
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="w-full h-full bg-muted/20 flex items-center justify-center p-4">
+            <div className="flex flex-col items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button

@@ -50,6 +50,37 @@
     ]
   },
   {
+    "id": "two-halves-horizontal",
+    "name": "Two Halves Horizontal",
+    "description": "Two equal horizontal sections",
+    "sections": [
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "bottom",
+        "name": "Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "100%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
     "id": "trio",
     "name": "Trio",
     "description": "Three equal vertical columns",
@@ -88,6 +119,197 @@
           "width": "33.334%",
           "height": "100%",
           "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "quad",
+    "name": "Quad",
+    "description": "Four equal quadrants",
+    "sections": [
+      {
+        "id": "top-left",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "50%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "50%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "sidebar-left",
+    "name": "Sidebar Left",
+    "description": "Narrow left sidebar with main content",
+    "sections": [
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "25%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "25%",
+          "width": "75%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "sidebar-right",
+    "name": "Sidebar Right",
+    "description": "Main content with narrow right sidebar",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "75%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      },
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "75%",
+          "width": "25%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "header-content",
+    "name": "Header & Content",
+    "description": "Top header with main content below",
+    "sections": [
+      {
+        "id": "header",
+        "name": "Header",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "20%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "content",
+        "name": "Content",
+        "style": {
+          "position": "absolute",
+          "top": "20%",
+          "left": "0%",
+          "width": "100%",
+          "height": "80%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "header-sidebar-content",
+    "name": "Header, Sidebar & Content",
+    "description": "Header with sidebar and main content",
+    "sections": [
+      {
+        "id": "header",
+        "name": "Header",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "15%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "15%",
+          "left": "0%",
+          "width": "20%",
+          "height": "85%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "content",
+        "name": "Content",
+        "style": {
+          "position": "absolute",
+          "top": "15%",
+          "left": "20%",
+          "width": "80%",
+          "height": "85%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
         }
       }
     ]
@@ -159,397 +381,9 @@
     ]
   },
   {
-    "id": "wave-split-vertical",
-    "name": "Wave Split (Vertical)",
-    "description": "Two sections split by a vertical wave",
-    "sections": [
-      {
-        "id": "left",
-        "name": "Left",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "65%",
-          "height": "100%",
-          "clipPath": "path('M 0 0 H 92.3 Q 115.4 50, 92.3 100 H 0 Z')",
-          "backgroundColor": "rgba(129, 140, 248, 0.9)"
-        }
-      },
-      {
-        "id": "right",
-        "name": "Right",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "65%",
-          "width": "35%",
-          "height": "100%",
-          "clipPath": "path('M -10.7 0 Q 12.3 50, -10.7 100 H 100 V 0 Z')",
-          "backgroundColor": "rgba(244, 114, 182, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "wave-split-horizontal",
-    "name": "Wave Split (Horizontal)",
-    "description": "Two sections split by a horizontal wave",
-    "sections": [
-      {
-        "id": "top",
-        "name": "Top",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "100%",
-          "height": "65%",
-          "clipPath": "path('M 0 0 H 100 V 92.3 Q 50 115.4, 0 92.3 Z')",
-          "backgroundColor": "rgba(52, 211, 153, 0.9)"
-        }
-      },
-      {
-        "id": "bottom",
-        "name": "Bottom",
-        "style": {
-          "position": "absolute",
-          "top": "65%",
-          "left": "0%",
-          "width": "100%",
-          "height": "35%",
-          "clipPath": "path('M 0 -10.7 Q 50 12.3, 100 -10.7 V 100 H 0 Z')",
-          "backgroundColor": "rgba(251, 191, 36, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "hero-curved",
-    "name": "Curved Hero",
-    "description": "A large hero section with two smaller sections below a curve",
-    "sections": [
-      {
-        "id": "top",
-        "name": "Top",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "100%",
-          "height": "75%",
-          "clipPath": "path('M 0 0 H 100 V 93.3 Q 50 106.7, 0 93.3 Z')",
-          "backgroundColor": "rgba(96, 165, 250, 0.9)"
-        }
-      },
-      {
-        "id": "bottom-left",
-        "name": "Bottom Left",
-        "style": {
-          "position": "absolute",
-          "top": "75%",
-          "left": "0%",
-          "width": "50%",
-          "height": "25%",
-          "clipPath": "path('M 0 -8 Q 50 5.3, 100 -8 V 100 H 0 Z')",
-          "backgroundColor": "rgba(167, 139, 250, 0.9)"
-        }
-      },
-      {
-        "id": "bottom-right",
-        "name": "Bottom Right",
-        "style": {
-          "position": "absolute",
-          "top": "75%",
-          "left": "50%",
-          "width": "50%",
-          "height": "25%",
-          "clipPath": "path('M 0 -8 Q 50 5.3, 100 -8 V 100 H 0 Z')",
-          "backgroundColor": "rgba(129, 140, 248, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "side-arc-main",
-    "name": "Side Arc",
-    "description": "Main content area with a curved side panel",
-    "sections": [
-      {
-        "id": "main",
-        "name": "Main",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "80%",
-          "height": "100%",
-          "clipPath": "path('M 0 0 H 100 Q 125 50, 100 100 H 0 Z')",
-          "backgroundColor": "rgba(244, 114, 182, 0.9)"
-        }
-      },
-      {
-        "id": "sidebar",
-        "name": "Sidebar",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "80%",
-          "width": "20%",
-          "height": "100%",
-          "clipPath": "path('M 0 0 Q 25 50, 0 100 H 100 V 0 Z')",
-          "backgroundColor": "rgba(52, 211, 153, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "bottom-bar-curved",
-    "name": "Curved Bottom Bar",
-    "description": "Main content with a curved bottom banner area",
-    "sections": [
-      {
-        "id": "main",
-        "name": "Main",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "100%",
-          "height": "85%",
-          "clipPath": "path('M 0 0 H 100 V 100 Q 50 88.2, 0 100 Z')",
-          "backgroundColor": "rgba(251, 191, 36, 0.9)"
-        }
-      },
-      {
-        "id": "bottom-bar",
-        "name": "Bottom Bar",
-        "style": {
-          "position": "absolute",
-          "top": "85%",
-          "left": "0%",
-          "width": "100%",
-          "height": "15%",
-          "clipPath": "path('M 0 0 Q 50 -11.8, 100 0 V 100 H 0 Z')",
-          "backgroundColor": "rgba(96, 165, 250, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "pod-split",
-    "name": "Pod Split",
-    "description": "Two vertical 'pod' or 'leaf' shapes splitting the screen",
-    "sections": [
-      {
-        "id": "left-pod",
-        "name": "Left Pod",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "50%",
-          "height": "100%",
-          "clipPath": "path('M 0 0 Q 120 50, 0 100 Z')",
-          "backgroundColor": "rgba(167, 139, 250, 0.9)"
-        }
-      },
-      {
-        "id": "right-pod",
-        "name": "Right Pod",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "50%",
-          "width": "50%",
-          "height": "100%",
-          "clipPath": "path('M 100 0 Q -20 50, 100 100 Z')",
-          "backgroundColor": "rgba(129, 140, 248, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "corner-circle-main",
-    "name": "Corner Circle",
-    "description": "Main section with a circle in the top-right corner",
-    "sections": [
-      {
-        "id": "main",
-        "name": "Main",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "100%",
-          "height": "100%",
-          "backgroundColor": "rgba(244, 114, 182, 0.9)"
-        }
-      },
-      {
-        "id": "corner-circle",
-        "name": "Corner Circle",
-        "style": {
-          "position": "absolute",
-          "top": "5%",
-          "right": "5%",
-          "width": "30%",
-          "height": "30%",
-          "clipPath": "circle(50% at 50% 50%)",
-          "backgroundColor": "rgba(52, 211, 153, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "center-circle-cutout",
-    "name": "Center Circle Cutout",
-    "description": "Full-screen section with a circular cutout in the center",
-    "sections": [
-      {
-        "id": "background",
-        "name": "Background",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "100%",
-          "height": "100%",
-          "clipPath": "path('M 0 0 H 100 V 100 H 0 Z M 65 50 A 15 15 0 1 0 35 50 A 15 15 0 1 0 65 50 Z')",
-          "backgroundColor": "rgba(251, 191, 36, 0.9)"
-        }
-      },
-      {
-        "id": "center-circle",
-        "name": "Center Circle",
-        "style": {
-          "position": "absolute",
-          "top": "35%",
-          "left": "35%",
-          "width": "30%",
-          "height": "30%",
-          "clipPath": "circle(50% at 50% 50%)",
-          "backgroundColor": "rgba(96, 165, 250, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "diagonal-slice-trio",
-    "name": "Diagonal Slice Trio",
-    "description": "Three sections split by diagonal lines",
-    "sections": [
-      {
-        "id": "left",
-        "name": "Left",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "50%",
-          "height": "100%",
-          "clipPath": "polygon(0 0, 80% 0, 100% 100%, 0 100%)",
-          "backgroundColor": "rgba(167, 139, 250, 0.9)"
-        }
-      },
-      {
-        "id": "middle",
-        "name": "Middle",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "40%",
-          "width": "30%",
-          "height": "100%",
-          "clipPath": "polygon(0 0, 100% 0, 66.7% 100%, -33.3% 100%)",
-          "backgroundColor": "rgba(129, 140, 248, 0.9)"
-        }
-      },
-      {
-        "id": "right",
-        "name": "Right",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "70%",
-          "width": "30%",
-          "height": "100%",
-          "clipPath": "polygon(0 0, 100% 0, 100% 100%, -50% 100%)",
-          "backgroundColor": "rgba(244, 114, 182, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "corner-arc-tr",
-    "name": "Corner Arc (Top-Right)",
-    "description": "Main section with a rounded arc in the top-right",
-    "sections": [
-      {
-        "id": "main",
-        "name": "Main",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "100%",
-          "height": "100%",
-          "clipPath": "path('M 0 0 H 70 Q 100 0, 100 30 V 100 H 0 Z')",
-          "backgroundColor": "rgba(52, 211, 153, 0.9)"
-        }
-      },
-      {
-        "id": "corner",
-        "name": "Corner",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "70%",
-          "width": "30%",
-          "height": "30%",
-          "clipPath": "path('M 0 0 Q 100 0, 100 100 V 0 Z')",
-          "backgroundColor": "rgba(251, 191, 36, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "inset-pill-main",
-    "name": "Inset Pill",
-    "description": "Main section with a pill-shaped inset area",
-    "sections": [
-      {
-        "id": "background",
-        "name": "Background",
-        "style": {
-          "position": "absolute",
-          "top": "0%",
-          "left": "0%",
-          "width": "1G0%",
-          "height": "100%",
-          "clipPath": "path('M 0 0 H 100 V 100 H 0 Z M 80 40 C 80 34.477 75.523 30 70 30 H 30 C 24.477 30 20 34.477 20 40 V 60 C 20 65.523 24.477 70 30 70 H 70 C 75.523 70 80 65.523 80 60 Z')",
-          "backgroundColor": "rgba(96, 165, 250, 0.9)"
-        }
-      },
-      {
-        "id": "inset-pill",
-        "name": "Inset Pill",
-        "style": {
-          "position": "absolute",
-          "top": "30%",
-          "left": "20%",
-          "width": "60%",
-          "height": "40%",
-          "borderRadius": "9999px",
-          "backgroundColor": "rgba(167, 139, 250, 0.9)"
-        }
-      }
-    ]
-  },
-  {
-    "id": "quad-split-curved",
-    "name": "Curved Quad Split",
-    "description": "Four sections split by a curved cross",
+    "id": "diagonal-split",
+    "name": "Diagonal Split",
+    "description": "Two sections split diagonally from corner to corner",
     "sections": [
       {
         "id": "top-left",
@@ -558,10 +392,192 @@
           "position": "absolute",
           "top": "0%",
           "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "clipPath": "polygon(0 0, 100% 0, 0 100%)",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "clipPath": "polygon(100% 0, 100% 100%, 0 100%)",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "center-focus",
+    "name": "Center Focus",
+    "description": "Small center square with surrounding border",
+    "sections": [
+      {
+        "id": "border",
+        "name": "Border",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "center",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "25%",
           "width": "50%",
           "height": "50%",
-          "clipPath": "path('M 0 0 H 100 Q 80 100, 100 100 V 0 Z')",
-          "backgroundColor": "rgba(129, 140, 248, 0.9)"
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "l-shape",
+    "name": "L-Shape",
+    "description": "L-shaped section with complementary fill",
+    "sections": [
+      {
+        "id": "l-section",
+        "name": "L Section",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "clipPath": "polygon(0 0, 40% 0, 40% 60%, 100% 60%, 100% 100%, 0 100%)",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "fill",
+        "name": "Fill",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "clipPath": "polygon(40% 0, 100% 0, 100% 60%, 40% 60%)",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "picture-in-picture",
+    "name": "Picture in Picture",
+    "description": "Small overlay in bottom-right corner",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      },
+      {
+        "id": "pip",
+        "name": "PIP",
+        "style": {
+          "position": "absolute",
+          "top": "70%",
+          "left": "70%",
+          "width": "25%",
+          "height": "25%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "triple-horizontal",
+    "name": "Triple Horizontal",
+    "description": "Three equal horizontal rows",
+    "sections": [
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "middle",
+        "name": "Middle",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom",
+        "name": "Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "66.666%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.334%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "grid-six",
+    "name": "Six Grid",
+    "description": "2x3 grid layout",
+    "sections": [
+      {
+        "id": "top-left",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "top-center",
+        "name": "Top Center",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
         }
       },
       {
@@ -570,11 +586,10 @@
         "style": {
           "position": "absolute",
           "top": "0%",
-          "left": "50%",
-          "width": "50%",
+          "left": "66.666%",
+          "width": "33.334%",
           "height": "50%",
-          "clipPath": "path('M 0 0 H 100 V 100 Q 20 100, 0 100 Z')",
-          "backgroundColor": "rgba(244, 114, 182, 0.9)"
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
         }
       },
       {
@@ -584,10 +599,21 @@
           "position": "absolute",
           "top": "50%",
           "left": "0%",
-          "width": "50%",
+          "width": "33.333%",
           "height": "50%",
-          "clipPath": "path('M 0 0 V 100 H 100 Q 80 0, 100 0 Z')",
-          "backgroundColor": "rgba(52, 211, 153, 0.9)"
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-center",
+        "name": "Bottom Center",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
         }
       },
       {
@@ -596,11 +622,117 @@
         "style": {
           "position": "absolute",
           "top": "50%",
-          "left": "50%",
-          "width": "50%",
+          "left": "66.666%",
+          "width": "33.334%",
           "height": "50%",
-          "clipPath": "path('M 0 0 V 100 H 100 V 0 Q 20 0, 0 0 Z')",
-          "backgroundColor": "rgba(251, 191, 36, 0.9)"
+          "backgroundColor": "rgba(217, 70, 239, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "asymmetric-columns",
+    "name": "Asymmetric Columns",
+    "description": "Three columns with varying widths",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "20%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "center",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "20%",
+          "width": "60%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "80%",
+          "width": "20%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "split-screen-vertical",
+    "name": "Split Screen Vertical",
+    "description": "70/30 vertical split",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "70%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "secondary",
+        "name": "Secondary",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "70%",
+          "width": "30%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "chevron",
+    "name": "Chevron",
+    "description": "Chevron or arrow-shaped split",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "clipPath": "polygon(0 0, 60% 0, 40% 50%, 60% 100%, 0 100%)",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "clipPath": "polygon(40% 50%, 60% 0, 100% 0, 100% 100%, 60% 100%)",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
         }
       }
     ]
