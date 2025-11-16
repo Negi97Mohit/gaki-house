@@ -63,6 +63,9 @@ interface FloatingControlsPanelProps {
 
   // Canvas Preset
   onCanvasPresetSelect?: (preset: CanvasPreset) => void;
+  customCanvasPresets?: CanvasPreset[];
+  onSaveCanvasPreset?: (name: string) => void;
+  onDeleteCanvasPreset?: (id: string) => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -73,6 +76,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedPresetCategory, setSelectedPresetCategory] =
     useState<string>("all");
+  const [savePresetName, setSavePresetName] = useState("");
+  const [showSaveInput, setShowSaveInput] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const categoryIcons = {
@@ -226,14 +231,122 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         <div className="w-[420px] max-h-[70vh] overflow-y-auto p-5 bg-background/10 backdrop-blur-sm">
           {activeSection === "canvas-designs" && (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
-                <LayoutGrid className="w-5 h-5 text-primary" />
-                <h3 className="text-base font-semibold tracking-wide">
-                  Canvas Designs
-                </h3>
+              <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-2">
+                  <LayoutGrid className="w-5 h-5 text-primary" />
+                  <h3 className="text-base font-semibold tracking-wide">
+                    Canvas Designs
+                  </h3>
+                </div>
+                {props.onSaveCanvasPreset && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShowSaveInput(!showSaveInput)}
+                    className="text-xs"
+                  >
+                    {showSaveInput ? "Cancel" : "Save Current"}
+                  </Button>
+                )}
               </div>
 
+              {/* Save Preset Input */}
+              {showSaveInput && props.onSaveCanvasPreset && (
+                <div className="flex gap-2 mb-4">
+                  <Input
+                    placeholder="Preset name..."
+                    value={savePresetName}
+                    onChange={(e) => setSavePresetName(e.target.value)}
+                    className="flex-1"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && savePresetName.trim()) {
+                        props.onSaveCanvasPreset!(savePresetName.trim());
+                        setSavePresetName("");
+                        setShowSaveInput(false);
+                      }
+                    }}
+                  />
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if (savePresetName.trim()) {
+                        props.onSaveCanvasPreset!(savePresetName.trim());
+                        setSavePresetName("");
+                        setShowSaveInput(false);
+                      }
+                    }}
+                    disabled={!savePresetName.trim()}
+                  >
+                    Save
+                  </Button>
+                </div>
+              )}
+
+              {/* Custom Presets Section */}
+              {props.customCanvasPresets && props.customCanvasPresets.length > 0 && (
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium mb-3 text-muted-foreground">Your Saved Presets</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    {props.customCanvasPresets.map((preset) => (
+                      <div key={preset.id} className="relative group">
+                        <button
+                          onClick={() => props.onCanvasPresetSelect?.(preset)}
+                          className="w-full rounded-lg overflow-hidden border-2 border-primary/40 hover:border-primary hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-200 bg-background"
+                        >
+                          <div
+                            className="w-full aspect-video relative overflow-hidden transition-transform duration-200 group-hover:scale-105"
+                            style={{
+                              background: preset.background.blankCanvasColor,
+                            }}
+                          >
+                            <div
+                              className="absolute"
+                              style={{
+                                left: `${preset.pip.pipPosition?.x || 50}%`,
+                                top: `${preset.pip.pipPosition?.y || 50}%`,
+                                width: `${preset.pip.pipSize?.width || 40}%`,
+                                height: `${preset.pip.pipSize?.height || 40}%`,
+                                transform: "translate(-50%, -50%)",
+                                borderRadius:
+                                  preset.pip.cameraShape === "circle"
+                                    ? "50%"
+                                    : preset.pip.cameraShape === "rounded"
+                                    ? "12px"
+                                    : "0",
+                                border: `${
+                                  preset.pip.pipBorder?.width || 2
+                                }px solid ${preset.pip.pipBorder?.color || "#fff"}`,
+                                background: "rgba(100, 100, 100, 0.3)",
+                              }}
+                            />
+                          </div>
+                          <div className="px-3 py-2 bg-background/80 backdrop-blur-sm border-t border-border/20">
+                            <p className="text-xs font-medium text-foreground truncate">
+                              {preset.name}
+                            </p>
+                          </div>
+                        </button>
+                        {props.onDeleteCanvasPreset && (
+                          <Button
+                            size="icon"
+                            variant="destructive"
+                            className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              props.onDeleteCanvasPreset!(preset.id);
+                            }}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Category Navigation */}
+              <h4 className="text-sm font-medium mb-3 text-muted-foreground">Template Presets</h4>
               <ScrollArea className="w-full">
                 <div className="flex gap-2 pb-3 min-w-max">
                   {CANVAS_PRESET_CATEGORIES.map((cat) => {
