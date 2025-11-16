@@ -73,45 +73,49 @@ export const CanvasHoverToolbar = ({
           : "opacity-0 -translate-y-2 pointer-events-none"
       )}
     >
-      <div className="flex items-center gap-2 pr-2 border-r border-border">
-        <Label htmlFor="canvas-color" className="text-xs whitespace-nowrap">
-          BG
-        </Label>
-        <Input
-          id="canvas-color"
-          type="color"
-          value={blankCanvasColor}
-          onChange={(e) => onBlankCanvasColorChange(e.target.value)}
-          className="w-16 h-8 cursor-pointer"
-        />
-      </div>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="text-xs"
-        onClick={() => fileInputRef.current?.click()}
-      >
-        <Upload className="h-4 w-4 mr-2" />
-        Upload
-      </Button>
-      <DropdownMenu>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className="text-xs">
-              <Search className="h-4 w-4 mr-2" />
-              Search
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-80 h-[400px] p-0"
-            style={{ zIndex: "var(--z-asset-popover)" }}
-            align="center"
-            side="bottom"
+      {!canvasLayout && (
+        <>
+          <div className="flex items-center gap-2 pr-2 border-r border-border">
+            <Label htmlFor="canvas-color" className="text-xs whitespace-nowrap">
+              BG
+            </Label>
+            <Input
+              id="canvas-color"
+              type="color"
+              value={blankCanvasColor}
+              onChange={(e) => onBlankCanvasColorChange(e.target.value)}
+              className="w-16 h-8 cursor-pointer"
+            />
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs"
+            onClick={() => fileInputRef.current?.click()}
           >
-            <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
-          </PopoverContent>
-        </Popover>
-
+            <Upload className="h-4 w-4 mr-2" />
+            Upload
+          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" className="text-xs">
+                <Search className="h-4 w-4 mr-2" />
+                Search
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-80 h-[400px] p-0"
+              style={{ zIndex: "var(--z-asset-popover)" }}
+              align="center"
+              side="bottom"
+            >
+              <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
+            </PopoverContent>
+          </Popover>
+        </>
+      )}
+      
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" className="text-xs">
             <Grid3x3 className="h-4 w-4 mr-2" />

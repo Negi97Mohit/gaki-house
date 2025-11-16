@@ -79,7 +79,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
 
-  // 2. Positioning logic copied from TextEditingToolbar
+  // 2. Positioning logic with smart collision avoidance
   useLayoutEffect(() => {
     if (toolbarRef.current && props.containerRef.current) {
       const toolbarHeight = toolbarRef.current.offsetHeight;
@@ -88,16 +88,22 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       const parentRect =
         props.containerRef.current.parentElement!.getBoundingClientRect();
 
-      // Position top-center of the PiP element
-      const x = props.position.x - toolbarWidth / 2;
-      const y = props.position.y - toolbarHeight - 8; // 8px offset above
+      // Check if positioning above would overlap with top toolbar area (60px reserved for CanvasHoverToolbar)
+      const yAbove = props.position.y - toolbarHeight - 8;
+      const wouldOverlapTopToolbar = yAbove < 60;
 
-      // Clamp X relative to the main container (e.g., the video canvas)
+      // Position either above or below the PiP to avoid overlap
+      const x = props.position.x - toolbarWidth / 2;
+      const y = wouldOverlapTopToolbar 
+        ? props.position.y + 8 // Position below if it would overlap
+        : yAbove; // Position above otherwise
+
+      // Clamp X relative to the main container
       const clampedX = Math.max(
         parentRect.left - containerRect.left + 8,
         Math.min(x, parentRect.right - containerRect.left - toolbarWidth - 8)
       );
-      // Clamp Y
+      // Clamp Y within bounds
       const clampedY = Math.max(8, y);
 
       setToolbarPosition({ x: clampedX, y: clampedY });
