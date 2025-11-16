@@ -1,8 +1,10 @@
 // src/components/SavedSessionsPanel.tsx
 import React, { useState } from "react";
 import { RecordingSession } from "@/types/editor";
+import { LayoutPreset } from "@/types/layoutPreset";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Video,
   Edit,
@@ -12,6 +14,8 @@ import {
   Play,
   Clock,
   Calendar,
+  Layers,
+  CheckCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +24,9 @@ import { toast } from "sonner";
 interface SavedSessionsPanelProps {
   sessions: RecordingSession[];
   onDeleteSession: (id: string) => void;
+  presets: LayoutPreset[];
+  onDeletePreset: (id: string) => void;
+  onLoadPreset: (preset: LayoutPreset) => void;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -50,11 +57,15 @@ const formatDate = (timestamp: number) => {
 export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
   sessions,
   onDeleteSession,
+  presets,
+  onDeletePreset,
+  onLoadPreset,
   isOpen,
   onClose,
 }) => {
   const navigate = useNavigate();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"recordings" | "presets">("presets");
 
   const handleDownload = (session: RecordingSession, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -77,6 +88,20 @@ export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
     navigate(`/edit/${id}`);
   };
 
+  const handleLoadPreset = (preset: LayoutPreset, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onLoadPreset(preset);
+    toast.success(`"${preset.name}" preset loaded!`);
+  };
+
+  const handleDeletePreset = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (confirm("Delete this preset?")) {
+      onDeletePreset(id);
+      toast.success("Preset deleted");
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -88,9 +113,13 @@ export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
         {/* Header */}
         <div className="h-16 border-b border-neutral-800 flex items-center justify-between px-6">
           <div className="flex items-center gap-3">
-            <Video className="w-5 h-5 text-primary" />
+            {activeTab === "recordings" ? (
+              <Video className="w-5 h-5 text-primary" />
+            ) : (
+              <Layers className="w-5 h-5 text-primary" />
+            )}
             <h2 className="text-lg font-semibold text-white">
-              Your Recordings
+              {activeTab === "recordings" ? "Your Recordings" : "Saved Layouts"}
             </h2>
           </div>
           <Button
@@ -104,7 +133,19 @@ export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
         </div>
 
         {/* Content */}
-        <div className="h-[calc(100vh-4rem)] overflow-y-auto p-6">
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="h-[calc(100vh-4rem)]">
+          <TabsList className="w-full justify-start border-b border-neutral-800 rounded-none bg-transparent px-6 h-12">
+            <TabsTrigger value="presets" className="data-[state=active]:bg-neutral-800">
+              <Layers className="w-4 h-4 mr-2" />
+              Layouts
+            </TabsTrigger>
+            <TabsTrigger value="recordings" className="data-[state=active]:bg-neutral-800">
+              <Video className="w-4 h-4 mr-2" />
+              Recordings
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="presets" className="h-[calc(100%-3rem)] overflow-y-auto p-6 mt-0">
           {sessions.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center">
               <Video className="w-16 h-16 text-neutral-700 mb-4" />
@@ -213,7 +254,8 @@ export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
               ))}
             </div>
           )}
-        </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

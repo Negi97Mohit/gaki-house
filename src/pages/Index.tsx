@@ -47,6 +47,8 @@ import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useRecordingSession } from "@/hooks/useRecordingSession";
 import { useCompositeStream } from "@/hooks/useCompositeStream";
+import { useLayoutPresets } from "@/hooks/useLayoutPresets";
+import { LayoutPreset } from "@/types/layoutPreset";
 import {
   getScreenSize,
   getResponsivePipLayout,
@@ -229,6 +231,9 @@ const Index = () => {
     "gaki-saved-overlays",
     []
   );
+  
+  // Layout presets
+  const { presets, savePreset, deletePreset } = useLayoutPresets();
 
   const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   // --- MODIFIED: Convert mainContainerRef to a stateful ref ---
@@ -1825,6 +1830,65 @@ const Index = () => {
     [setAllSessions]
   );
 
+  // --- LAYOUT PRESET HANDLERS ---
+  const handleSaveLayout = useCallback(() => {
+    const presetName = prompt("Name this layout preset:");
+    if (!presetName) return;
+
+    const preset: Omit<LayoutPreset, "id" | "createdAt"> = {
+      name: presetName,
+      captionStyle: activeScene.captionStyle,
+      dynamicStyle: activeScene.dynamicStyle,
+      layoutState: {
+        mode: activeScene.layoutMode,
+        cameraShape: activeScene.cameraShape,
+        splitRatio: activeScene.splitRatio,
+        pipPosition: activeScene.pipPosition,
+        pipSize: activeScene.pipSize,
+        pipRotation: activeScene.pipRotation,
+        customMaskUrl: activeScene.customMaskUrl,
+        pipBorder: activeScene.pipBorder,
+        pipShadow: activeScene.pipShadow,
+      },
+      videoFilter: activeScene.videoFilter,
+      backgroundEffect: activeScene.backgroundEffect,
+      backgroundImageUrl: activeScene.backgroundImageUrl,
+      htmlOverlays: activeScene.activeOverlays,
+      fileOverlays: activeScene.fileOverlays,
+      browserOverlays: activeScene.browserOverlays,
+    };
+
+    savePreset(preset);
+    toast.success(`Layout "${presetName}" saved!`);
+  }, [activeScene, savePreset]);
+
+  const handleLoadPreset = useCallback((preset: LayoutPreset) => {
+    updateActiveScene((scene) => ({
+      ...scene,
+      captionStyle: preset.captionStyle,
+      dynamicStyle: preset.dynamicStyle,
+      layoutMode: preset.layoutState.mode,
+      cameraShape: preset.layoutState.cameraShape,
+      splitRatio: preset.layoutState.splitRatio,
+      pipPosition: preset.layoutState.pipPosition,
+      pipSize: preset.layoutState.pipSize,
+      pipRotation: preset.layoutState.pipRotation,
+      customMaskUrl: preset.layoutState.customMaskUrl,
+      pipBorder: preset.layoutState.pipBorder,
+      pipShadow: preset.layoutState.pipShadow,
+      videoFilter: preset.videoFilter,
+      backgroundEffect: preset.backgroundEffect,
+      backgroundImageUrl: preset.backgroundImageUrl,
+      activeOverlays: preset.htmlOverlays,
+      fileOverlays: preset.fileOverlays,
+      browserOverlays: preset.browserOverlays,
+    }));
+  }, [updateActiveScene]);
+
+  const handleDeletePreset = useCallback((id: string) => {
+    deletePreset(id);
+  }, [deletePreset]);
+
   // --- MODIFIED: Wrap canvas props in a memoized object ---
   // MOVED: These hooks are now BEFORE the early return.
   const activeSceneProps = useMemo(
@@ -1962,6 +2026,9 @@ const Index = () => {
       <SavedSessionsPanel
         sessions={allSessions}
         onDeleteSession={handleDeleteSession}
+        presets={presets}
+        onDeletePreset={handleDeletePreset}
+        onLoadPreset={handleLoadPreset}
         isOpen={showSessionsPanel}
         onClose={() => setShowSessionsPanel(false)}
       />
@@ -2006,6 +2073,7 @@ const Index = () => {
         isMouseActive={isMouseActive}
         onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
         onOpenSessions={() => setShowSessionsPanel(true)}
+        onSaveLayout={handleSaveLayout}
         isAudioOn={activeScene.isAudioOn}
         onAudioToggle={handleSetIsAudioOn}
         audioDevices={audioDevices}

@@ -44,6 +44,7 @@ interface BottomNavigationProps {
   // Scene & Settings Toggles
   onOpenSettings: () => void;
   onOpenSessions: () => void;
+  onSaveLayout: () => void;
 
   // Media Controls
   isAudioOn: boolean;
@@ -100,6 +101,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   isMouseActive,
   onOpenSettings,
   onOpenSessions,
+  onSaveLayout,
   isAudioOn,
   onAudioToggle,
   audioDevices,
@@ -331,6 +333,17 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           theme={theme}
           portalContainer={layoutProps.portalContainer}
         />
+        
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full h-10 w-10 hover:bg-background/60"
+          onClick={onSaveLayout}
+          title="Save Layout Preset"
+        >
+          <Library className="h-4 h-4" />
+        </Button>
+        
         <LayoutControls {...layoutProps} />
         <Button
           variant="ghost"
