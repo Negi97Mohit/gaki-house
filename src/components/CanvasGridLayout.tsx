@@ -1,5 +1,5 @@
 // src/components/CanvasGridLayout.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import {
   FileOverlayState,
   TextOverlayState,
 } from "@/types/caption";
-import { LAYOUT_TEMPLATES } from "@/lib/canvasLayouts";
+import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { FileRenderer } from "@/components/DraggableFileViewer";
 import {
   DropdownMenu,
@@ -24,7 +24,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
-
+import { Loader2 } from "lucide-react";
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
   cameraStream: MediaStream | null;
@@ -64,10 +64,30 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipShadow,
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
+  const [templates, setTemplates] = useState<Record<
+    string,
+    CanvasLayoutTemplate
+  > | null>(null);
 
+  useEffect(() => {
+    getLayoutTemplates()
+      .then(({ record }) => {
+        setTemplates(record);
+      })
+      .catch((err) => {
+        console.error("Failed to load layout templates", err);
+      });
+  }, []);
   const template =
-    LAYOUT_TEMPLATES[layout.templateId] || LAYOUT_TEMPLATES.default;
+    templates && (templates[layout.templateId] || templates.default);
 
+  if (!templates || !template) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-muted/20">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
   const renderSectionContent = (section: CanvasSectionState) => {
     const { content } = section;
 
@@ -76,7 +96,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
         return (
           <div
             className="w-full h-full"
-            style={{ backgroundColor: content.color || blankCanvasColor }}
+            style={{
+              backgroundColor: content.color || blankCanvasColor,
+            }}
           />
         );
 

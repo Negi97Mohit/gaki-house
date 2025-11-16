@@ -1,5 +1,5 @@
 import { Paintbrush, Upload, Grid3x3, Search } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { LAYOUT_TEMPLATES } from "@/lib/canvasLayouts";
+import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import {
   Popover,
   PopoverContent,
@@ -39,7 +39,23 @@ export const CanvasHoverToolbar = ({
   onCanvasLayoutChange,
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [layoutTemplates, setLayoutTemplates] = useState<
+    CanvasLayoutTemplate[]
+  >([]);
+  const [templatesLoading, setTemplatesLoading] = useState(true);
 
+  useEffect(() => {
+    getLayoutTemplates()
+      .then(({ list }) => {
+        setLayoutTemplates(list);
+      })
+      .catch((err) => {
+        console.error("Failed to load layout templates", err);
+      })
+      .finally(() => {
+        setTemplatesLoading(false);
+      });
+  }, []);
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -50,7 +66,12 @@ export const CanvasHoverToolbar = ({
   const handleLayoutSelect = (templateId: string) => {
     if (!onCanvasLayoutChange) return;
 
-    const template = LAYOUT_TEMPLATES[templateId];
+    const template = layoutTemplates.find((t) => t.id === templateId);
+    if (!template) {
+      console.error(`Layout template with id ${templateId} not found.`);
+      return;
+    }
+
     const newLayout: CanvasLayoutState = {
       templateId,
       sections: template.sections.map((s) => ({
@@ -114,18 +135,22 @@ export const CanvasHoverToolbar = ({
           </Popover>
         </>
       )}
-      
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="sm" className="text-xs">
             <Grid3x3 className="h-4 w-4 mr-2" />
             {canvasLayout
-              ? LAYOUT_TEMPLATES[canvasLayout.templateId]?.name || "Layout"
+              ? layoutTemplates.find((t) => t.id === canvasLayout.templateId)
+                  ?.name || "Layout"
               : "Grid"}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-[999] bg-background">
-          {Object.values(LAYOUT_TEMPLATES).map((template) => (
+          {templatesLoading && (
+            <DropdownMenuItem disabled>Loading layouts...</DropdownMenuItem>
+          )}
+          {layoutTemplates.map((template) => (
             <DropdownMenuItem
               key={template.id}
               onClick={() => handleLayoutSelect(template.id)}
