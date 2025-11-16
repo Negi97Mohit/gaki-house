@@ -1,7 +1,7 @@
 // src/components/CanvasGridLayout.tsx
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, GripVertical } from "lucide-react";
+import { Plus, GripVertical, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   CanvasLayoutState,
@@ -18,6 +18,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { GridSectionToolbar } from "@/components/GridSectionToolbar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { Rnd } from "react-rnd";
 
 interface CanvasGridLayoutProps {
@@ -28,8 +34,12 @@ interface CanvasGridLayoutProps {
   textOverlays: TextOverlayState[];
   blankCanvasColor: string;
   backgroundImageUrl?: string;
-  onSectionContentChange: (sectionId: string, content: CanvasSectionState["content"]) => void;
+  onSectionContentChange: (
+    sectionId: string,
+    content: CanvasSectionState["content"]
+  ) => void;
   onSectionDelete?: (sectionId: string) => void;
+  onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
   onSectionResize?: (sectionId: string, newStyle: React.CSSProperties) => void;
   layoutMode: string;
   cameraShape: "rectangle" | "circle" | "rounded";
@@ -48,6 +58,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   backgroundImageUrl,
   onSectionContentChange,
   onSectionDelete,
+  onGridAssetSelect,
   onSectionResize,
   layoutMode,
   cameraShape,
@@ -55,10 +66,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipBorder,
   pipShadow,
 }) => {
-  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
-  const [resizingSections, setResizingSections] = useState<Record<string, React.CSSProperties>>({});
+  const [resizingSections, setResizingSections] = useState<
+    Record<string, React.CSSProperties>
+  >({});
 
-  const template = LAYOUT_TEMPLATES[layout.templateId] || LAYOUT_TEMPLATES.default;
+  const template =
+    LAYOUT_TEMPLATES[layout.templateId] || LAYOUT_TEMPLATES.default;
 
   const renderSectionContent = (section: CanvasSectionState) => {
     const { content } = section;
@@ -76,7 +89,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
         return (
           <div
             className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${content.src || backgroundImageUrl})` }}
+            style={{
+              backgroundImage: `url(${content.src || backgroundImageUrl})`,
+            }}
           />
         );
 
@@ -92,9 +107,18 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             }}
             className="w-full h-full object-cover"
             style={{
-              borderRadius: cameraShape === "circle" ? "50%" : cameraShape === "rounded" ? "12px" : "0",
-              border: pipBorder?.width ? `${pipBorder.width}px solid ${pipBorder.color}` : undefined,
-              boxShadow: pipShadow?.blur ? `0 0 ${pipShadow.blur}px ${pipShadow.color}` : undefined,
+              borderRadius:
+                cameraShape === "circle"
+                  ? "50%"
+                  : cameraShape === "rounded"
+                  ? "12px"
+                  : "0",
+              border: pipBorder?.width
+                ? `${pipBorder.width}px solid ${pipBorder.color}`
+                : undefined,
+              boxShadow: pipShadow?.blur
+                ? `0 0 ${pipShadow.blur}px ${pipShadow.color}`
+                : undefined,
             }}
           />
         );
@@ -135,7 +159,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               backgroundColor: textOverlay.style.backgroundColor,
               fontWeight: textOverlay.style.bold ? "bold" : "normal",
               fontStyle: textOverlay.style.italic ? "italic" : "normal",
-              textDecoration: textOverlay.style.underline ? "underline" : "none",
+              textDecoration: textOverlay.style.underline
+                ? "underline"
+                : "none",
             }}
           >
             {textOverlay.content}
@@ -146,7 +172,31 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       default:
         return (
           <div className="w-full h-full bg-muted/20 flex items-center justify-center">
-            {hoveredSection === section.id && (
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="opacity-90 hover:opacity-100 h-9 w-9"
+                    title="Search Image"
+                  >
+                    <Search className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-80 h-[400px] p-0"
+                  style={{ zIndex: 9999 }}
+                  onOpenAutoFocus={(e) => e.preventDefault()}
+                >
+                  <AssetLibrary
+                    onAssetSelect={(asset) =>
+                      onGridAssetSelect(section.id, asset)
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -155,10 +205,13 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     className="opacity-90 hover:opacity-100"
                   >
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Content
+                    Add
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="z-[999] bg-background">
+                <DropdownMenuContent
+                  className="z-[999] bg-background"
+                  onOpenAutoFocus={(e) => e.preventDefault()}
+                >
                   <DropdownMenuItem
                     onClick={() =>
                       onSectionContentChange(section.id, {
@@ -219,7 +272,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   )}
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
+            </div>
           </div>
         );
     }
@@ -244,7 +297,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             content: { type: "empty" },
           } as CanvasSectionState);
 
-        const currentStyle = resizingSections[section.id] || templateSection.style;
+        const currentStyle =
+          resizingSections[section.id] || templateSection.style;
 
         return (
           <Rnd
@@ -252,16 +306,16 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             default={{
               x: 0,
               y: 0,
-              width: currentStyle.width as string || "100%",
-              height: currentStyle.height as string || "100%",
+              width: (currentStyle.width as string) || "100%",
+              height: (currentStyle.height as string) || "100%",
             }}
             position={{
-              x: parseInt(currentStyle.left as string || "0"),
-              y: parseInt(currentStyle.top as string || "0"),
+              x: parseInt((currentStyle.left as string) || "0"),
+              y: parseInt((currentStyle.top as string) || "0"),
             }}
             size={{
-              width: currentStyle.width as string || "100%",
-              height: currentStyle.height as string || "100%",
+              width: (currentStyle.width as string) || "100%",
+              height: (currentStyle.height as string) || "100%",
             }}
             onResizeStop={(e, direction, ref, delta, position) => {
               const newStyle: React.CSSProperties = {
@@ -271,7 +325,10 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 left: `${position.x}px`,
                 top: `${position.y}px`,
               };
-              setResizingSections((prev) => ({ ...prev, [section.id]: newStyle }));
+              setResizingSections((prev) => ({
+                ...prev,
+                [section.id]: newStyle,
+              }));
               if (onSectionResize) {
                 onSectionResize(section.id, newStyle);
               }
@@ -282,14 +339,17 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 left: `${data.x}px`,
                 top: `${data.y}px`,
               };
-              setResizingSections((prev) => ({ ...prev, [section.id]: newStyle }));
+              setResizingSections((prev) => ({
+                ...prev,
+                [section.id]: newStyle,
+              }));
               if (onSectionResize) {
                 onSectionResize(section.id, newStyle);
               }
             }}
             className={cn(
               "border border-border/20 transition-all duration-200",
-              hoveredSection === section.id && "ring-2 ring-primary"
+              "group" // Add group here
             )}
             style={{
               ...currentStyle,
@@ -308,37 +368,46 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             bounds="parent"
             dragHandleClassName="grid-drag-handle"
           >
-            <div
-              className="relative w-full h-full"
-              onMouseEnter={() => setHoveredSection(section.id)}
-              onMouseLeave={() => setHoveredSection(null)}
-            >
+            <div className="relative w-full h-full">
               {renderSectionContent(section)}
-              
+
               {/* Drag handle - only show on hover */}
-              {hoveredSection === section.id && (
-                <div className="grid-drag-handle absolute top-0 left-0 w-full p-2 cursor-move bg-gradient-to-b from-black/50 to-transparent z-[90]">
-                  <GripVertical className="h-4 w-4 text-white" />
-                </div>
-              )}
+              <div className="grid-drag-handle absolute top-0 left-0 w-full p-2 cursor-move bg-gradient-to-b from-black/50 to-transparent z-[90] opacity-0 group-hover:opacity-100 transition-opacity">
+                <GripVertical className="h-4 w-4 text-white" />
+              </div>
 
               {/* Section toolbar */}
-              {hoveredSection === section.id && section.content.type !== "empty" && (
+              {section.content.type !== "empty" && (
                 <GridSectionToolbar
                   section={section}
                   onDelete={() => handleSectionDelete(section.id)}
+                  onGridAssetSelect={onGridAssetSelect}
                   onColorChange={
                     section.content.type === "color"
-                      ? (color) => onSectionContentChange(section.id, { type: "color", color })
+                      ? (color) =>
+                          onSectionContentChange(section.id, {
+                            type: "color",
+                            color,
+                          })
                       : undefined
                   }
                   onImageChange={
                     section.content.type === "image"
-                      ? (url) => onSectionContentChange(section.id, { type: "image", src: url })
+                      ? (url) =>
+                          onSectionContentChange(section.id, {
+                            type: "image",
+                            src: url,
+                          })
                       : undefined
                   }
-                  availableFiles={fileOverlays.map((f) => ({ id: f.id, name: f.fileName }))}
-                  availableTexts={textOverlays.map((t) => ({ id: t.id, content: t.content }))}
+                  availableFiles={fileOverlays.map((f) => ({
+                    id: f.id,
+                    name: f.fileName,
+                  }))}
+                  availableTexts={textOverlays.map((t) => ({
+                    id: t.id,
+                    content: t.content,
+                  }))}
                   onFileSelect={(fileId) =>
                     onSectionContentChange(section.id, { type: "file", fileId })
                   }

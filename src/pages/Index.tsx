@@ -518,6 +518,75 @@ const Index = () => {
     },
     [updateActiveScene]
   );
+  const handleGridAssetSelect = useCallback(
+    async (sectionId: string, asset: AssetResult) => {
+      let fileId = "";
+      let newOverlay: FileOverlayState | null = null;
+
+      try {
+        // 1. Fetch asset and create File object
+        const response = await fetch(asset.downloadUrl);
+        if (!response.ok)
+          throw new Error(`Failed to fetch asset: ${response.statusText}`);
+        const blob = await response.blob();
+        const file = new File([blob], asset.fileName, { type: asset.type });
+
+        // 2. Create new FileOverlayState
+        newOverlay = {
+          id: generateFileId(),
+          file: file,
+          fileName: file.name,
+          fileType: getFileType(file), // getFileType is already defined
+          fileUrl: URL.createObjectURL(file),
+          layout: {
+            // Default layout, won't be used by grid but good to have
+            position: { x: 50, y: 50 },
+            size: { width: 35, height: 45 },
+            zIndex: zIndex.draggableElement,
+            rotation: 0,
+          },
+        };
+        fileId = newOverlay.id;
+
+        // 3. Update scene state
+        updateActiveScene((scene) => {
+          const updatedFileOverlays = [...scene.fileOverlays, newOverlay!];
+          const updatedCanvasLayout = scene.canvasLayout
+            ? {
+                ...scene.canvasLayout,
+                sections: scene.canvasLayout.sections.map((s) =>
+                  s.id === sectionId
+                    ? {
+                        ...s,
+                        content: { type: "file" as const, fileId: fileId },
+                      }
+                    : s
+                ),
+              }
+            : scene.canvasLayout;
+
+          if (recording.isRecording) {
+            recording.recordFileOverlay(newOverlay!);
+          }
+
+          return {
+            ...scene,
+            fileOverlays: updatedFileOverlays,
+            canvasLayout: updatedCanvasLayout,
+          };
+        });
+
+        toast.success(`Added '${asset.alt}' to grid`);
+      } catch (error) {
+        console.error("Failed to add asset to grid:", error);
+        toast.error(`Failed to add asset: ${(error as Error).message}`);
+        if (newOverlay) {
+          URL.revokeObjectURL(newOverlay.fileUrl);
+        }
+      }
+    },
+    [activeSceneId, recording, updateActiveScene]
+  );
 
   const handleSetIsVideoOn = useCallback(
     (value: boolean) => updateSceneProperty("isVideoOn", value),
@@ -814,6 +883,7 @@ const Index = () => {
         }));
       },
       onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
+      onGridAssetSelect: handleGridAssetSelect,
       onCanvasBackgroundAssetSelect: handleCanvasBackgroundAssetSelect,
       hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
       audioDevices: audioDevices,
@@ -1854,6 +1924,7 @@ const Index = () => {
     onRemoveBrowser: handleRemoveBrowser,
     onBrowserUrlChange: handleBrowserUrlChange,
     onBrowserLayoutChange: handleBrowserLayoutChange,
+    onGridAssetSelect: handleGridAssetSelect,
     selectedBrowserId: selectedBrowserId,
     setSelectedBrowserId: setSelectedBrowserId,
     onRemoveFile: handleRemoveFile,

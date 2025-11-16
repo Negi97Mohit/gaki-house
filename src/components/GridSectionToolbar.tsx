@@ -1,7 +1,16 @@
 // src/components/GridSectionToolbar.tsx
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { X, Palette, Image, Camera, Monitor, FileText, Type } from "lucide-react";
+import {
+  X,
+  Palette,
+  Image,
+  Camera,
+  Monitor,
+  FileText,
+  Type,
+  Search,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,12 +18,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CanvasSectionState } from "@/types/caption";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { AssetLibrary, AssetResult } from "./AssetLibrary";
 
 interface GridSectionToolbarProps {
   section: CanvasSectionState;
   onDelete: () => void;
   onColorChange?: (color: string) => void;
   onImageChange?: (url: string) => void;
+  onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
   availableFiles?: Array<{ id: string; name: string }>;
   availableTexts?: Array<{ id: string; content: string }>;
   onFileSelect?: (fileId: string) => void;
@@ -25,6 +41,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   section,
   onDelete,
   onColorChange,
+  onGridAssetSelect,
   onImageChange,
   availableFiles = [],
   availableTexts = [],
@@ -39,7 +56,11 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       {content.type === "color" && onColorChange && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/95 backdrop-blur">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 bg-background/95 backdrop-blur"
+            >
               <Palette className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -57,9 +78,9 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       )}
 
       {content.type === "image" && onImageChange && (
-        <Button 
-          variant="secondary" 
-          size="icon" 
+        <Button
+          variant="secondary"
+          size="icon"
           className="h-8 w-8 bg-background/95 backdrop-blur"
           onClick={() => {
             const url = prompt("Enter image URL:");
@@ -73,7 +94,11 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       {content.type === "file" && availableFiles.length > 0 && onFileSelect && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/95 backdrop-blur">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 bg-background/95 backdrop-blur"
+            >
               <FileText className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -90,10 +115,36 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
         </DropdownMenu>
       )}
 
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-8 w-8 bg-background/95 backdrop-blur"
+            title="Search for image"
+          >
+            <Search className="h-4 w-4" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-80 h-[400px] p-0"
+          style={{ zIndex: 9999 }}
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <AssetLibrary
+            onAssetSelect={(asset) => onGridAssetSelect(section.id, asset)}
+          />
+        </PopoverContent>
+      </Popover>
+
       {content.type === "text" && availableTexts.length > 0 && onTextSelect && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon" className="h-8 w-8 bg-background/95 backdrop-blur">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-8 w-8 bg-background/95 backdrop-blur"
+            >
               <Type className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>

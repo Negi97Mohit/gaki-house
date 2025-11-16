@@ -383,6 +383,7 @@ interface VideoCanvasProps {
   onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void;
   portalContainer?: HTMLElement | null | ((node: HTMLDivElement) => void);
   browserOverlays: BrowserOverlayState[];
+  onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
   screenShareMode: "off" | "screen" | "canvas";
   onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
   canvasLayout: CanvasLayoutState | null;
@@ -703,6 +704,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onDeselectAll,
     blankCanvasColor,
     textOverlays,
+    onGridAssetSelect,
     screenShareMode,
     onScreenShareModeChange,
     onRemoveTextOverlay,
@@ -1327,6 +1329,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           pipSize={rest.pipSize}
           pipBorder={rest.pipBorder}
           pipShadow={rest.pipShadow}
+          onGridAssetSelect={onGridAssetSelect}
         />
       );
     }

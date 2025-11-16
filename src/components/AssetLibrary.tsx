@@ -2,8 +2,9 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { PopoverClose } from "@radix-ui/react-popover"; // Corrected import
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Loader2 } from "lucide-react";
+import { Search, Loader2, X } from "lucide-react"; // Added X
 import { toast } from "sonner";
 import {
   searchImages as apiSearchImages,
@@ -32,9 +33,10 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
   const [gifResults, setGifResults] = useState<AssetResult[]>([]);
   const [isImagesLoading, setIsImagesLoading] = useState(false);
   const [isGifsLoading, setIsGifsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("images"); // <-- ADDED
+  const [activeTab, setActiveTab] = useState("images");
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  const initialLoadDone = useRef(false); // Fix for rate limiting
   const [imagePage, setImagePage] = useState(1);
   const [gifPage, setGifPage] = useState(1);
   const [hasMoreImages, setHasMoreImages] = useState(true);
@@ -94,32 +96,38 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
     [isGifsLoading]
   ); // Minimal dependencies
 
-  // --- ADDED: useEffect for Initial Data Load ---
+  // --- useEffect for Initial Data Load (runs only once) ---
   useEffect(() => {
-    // Fetch initial content for both tabs on component mount
-    // This populates the library before the user searches.
-    searchImages("", 1);
-    searchGifs("", 1);
-    // We only want this to run once, so we pass the stable useCallback functions.
+    if (!initialLoadDone.current) {
+      // This populates the library before the user searches.
+      searchImages("", 1);
+      searchGifs("", 1);
+      initialLoadDone.current = true; // Set flag to prevent re-fetching
+    }
   }, [searchImages, searchGifs]);
 
-  // --- MODIFIED: useEffect for Automatic Debounced Search ---
+  // --- useEffect for Automatic Debounced Search (only on user input) ---
   useEffect(() => {
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
 
     debounceTimeoutRef.current = setTimeout(() => {
-      // --- MODIFICATION: Only search the active tab ---
-      if (activeTab === "images") {
-        searchImages(searchTerm, 1);
-      } else if (activeTab === "gifs") {
-        searchGifs(searchTerm, 1);
+      if (searchTerm.trim().length > 0) {
+        if (activeTab === "images") {
+          searchImages(searchTerm, 1);
+        } else if (activeTab === "gifs") {
+          searchGifs(searchTerm, 1);
+        }
+      } else {
+        // If search is cleared, reload initial data
+        searchImages("", 1);
+        searchGifs("", 1);
       }
     }, 500); // Wait 500ms before firing
 
     return () => {
       if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current);
     };
-  }, [searchTerm, activeTab, searchImages, searchGifs]); // Only depends on searchTerm
+  }, [searchTerm, activeTab, searchImages, searchGifs]);
 
   // --- Scroll Handler ---
   const handleScroll = useCallback(
@@ -152,7 +160,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
       imagePage, // Need current page
       gifPage, // Need current page
     ]
-  ); // Include search functions here now
+  );
 
   const handleAssetClick = (asset: AssetResult) => {
     toast.info(`Adding ${asset.alt} to canvas...`);
@@ -161,13 +169,22 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
 
   return (
     <div className="flex flex-col h-full w-full">
-      {/* 1. SEARCH INPUT */}
+      {/* 1. SEARCH INPUT (with Close button) */}
       <div className="relative flex items-center gap-2 p-3 border-b border-border">
+        <PopoverClose asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground flex-shrink-0"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </PopoverClose>
         <Input
           placeholder="Search for free assets..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pr-8"
+          className="pr-8 h-9"
         />
         {(isImagesLoading || isGifsLoading) && (
           <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
