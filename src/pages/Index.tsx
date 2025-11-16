@@ -232,12 +232,13 @@ const Index = () => {
     "gaki-saved-overlays",
     []
   );
-  
+
   // Layout presets
   const { presets, savePreset, deletePreset } = useLayoutPresets();
-  
+
   // Canvas presets
-  const { customPresets, saveCanvasPreset, deleteCanvasPreset } = useCanvasPresets();
+  const { customPresets, saveCanvasPreset, deleteCanvasPreset } =
+    useCanvasPresets();
 
   const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   // --- MODIFIED: Convert mainContainerRef to a stateful ref ---
@@ -539,7 +540,10 @@ const Index = () => {
                   s.id === sectionId
                     ? {
                         ...s,
-                        content: { type: "image" as const, src: asset.downloadUrl },
+                        content: {
+                          type: "image" as const,
+                          src: asset.downloadUrl,
+                        },
                       }
                     : s
                 ),
@@ -1479,61 +1483,73 @@ const Index = () => {
   );
 
   // --- CANVAS PRESET SAVE/DELETE HANDLERS ---
-  const handleSaveCanvasPreset = useCallback((presetName: string) => {
-    const preset: Omit<CanvasPreset, "id"> = {
-      name: presetName,
-      styleTags: ["custom"],
-      background: {
-        blankCanvasColor: activeScene.blankCanvasColor || "#000000",
-        backgroundEffect: (activeScene.backgroundEffect === "image" ? "none" : activeScene.backgroundEffect) as "none" | "blur",
-      },
-      pip: {
-        layoutMode: activeScene.layoutMode as any,
-        cameraShape: activeScene.cameraShape as any,
-        splitRatio: activeScene.splitRatio,
-        pipPosition: activeScene.pipPosition,
-        pipSize: activeScene.pipSize,
-        pipBorder: activeScene.pipBorder,
-        pipShadow: activeScene.pipShadow,
-      },
-      textOverlays: activeScene.textOverlays.map(overlay => ({
-        id: overlay.id,
-        content: overlay.content,
-        style: {
-          fontFamily: overlay.style.fontFamily,
-          fontSize: overlay.style.fontSize,
-          color: overlay.style.color,
-          backgroundColor: overlay.style.backgroundColor,
-          textShadow: overlay.style.textShadow || "none",
-          textAlign: "center" as any,
-          fontWeight: "400",
+  const handleSaveCanvasPreset = useCallback(
+    (presetName: string) => {
+      const preset: Omit<CanvasPreset, "id"> = {
+        name: presetName,
+        styleTags: ["custom"],
+        background: {
+          blankCanvasColor: activeScene.blankCanvasColor || "#000000",
+          backgroundEffect: (activeScene.backgroundEffect === "image"
+            ? "none"
+            : activeScene.backgroundEffect) as "none" | "blur",
         },
-        layout: {
-          position: overlay.layout.position,
-          size: overlay.layout.size,
-          zIndex: overlay.layout.zIndex,
-          rotation: overlay.layout.rotation,
-          layerOrder: "above-video" as const,
+        pip: {
+          layoutMode: activeScene.layoutMode as any,
+          cameraShape: activeScene.cameraShape as any,
+          splitRatio: activeScene.splitRatio,
+          pipPosition: activeScene.pipPosition,
+          pipSize: activeScene.pipSize,
+          pipBorder: activeScene.pipBorder,
+          pipShadow: activeScene.pipShadow,
         },
-      })),
-      effects: {
-        videoFilter: activeScene.videoFilter,
-        isBeautifyEnabled: activeScene.isBeautifyEnabled,
-        isNeonEdgeEnabled: activeScene.isNeonEdgeEnabled,
-        neonColor: (activeScene.neonColor || "cyan") as "cyan" | "green" | "magenta",
-        neonIntensity: activeScene.neonIntensity,
-      },
-      canvasAspectRatio: activeScene.canvasAspectRatio,
-    };
+        textOverlays: activeScene.textOverlays.map((overlay) => ({
+          id: overlay.id,
+          content: overlay.content,
+          style: {
+            fontFamily: overlay.style.fontFamily,
+            fontSize: overlay.style.fontSize,
+            color: overlay.style.color,
+            backgroundColor: overlay.style.backgroundColor,
+            textShadow: overlay.style.textShadow || "none",
+            textAlign: "center" as any,
+            fontWeight: "400",
+          },
+          layout: {
+            position: overlay.layout.position,
+            size: overlay.layout.size,
+            zIndex: overlay.layout.zIndex,
+            rotation: overlay.layout.rotation,
+            layerOrder: "above-video" as const,
+          },
+        })),
+        effects: {
+          videoFilter: activeScene.videoFilter,
+          isBeautifyEnabled: activeScene.isBeautifyEnabled,
+          isNeonEdgeEnabled: activeScene.isNeonEdgeEnabled,
+          neonColor: (activeScene.neonColor || "cyan") as
+            | "cyan"
+            | "green"
+            | "magenta",
+          neonIntensity: activeScene.neonIntensity,
+        },
+        canvasAspectRatio: activeScene.canvasAspectRatio,
+        canvasLayout: activeScene.canvasLayout,
+      };
 
-    saveCanvasPreset(preset);
-    toast.success(`Canvas preset "${presetName}" saved!`);
-  }, [activeScene, saveCanvasPreset]);
+      saveCanvasPreset(preset);
+      toast.success(`Canvas preset "${presetName}" saved!`);
+    },
+    [activeScene, saveCanvasPreset]
+  );
 
-  const handleDeleteCanvasPreset = useCallback((id: string) => {
-    deleteCanvasPreset(id);
-    toast.success("Canvas preset deleted");
-  }, [deleteCanvasPreset]);
+  const handleDeleteCanvasPreset = useCallback(
+    (id: string) => {
+      deleteCanvasPreset(id);
+      toast.success("Canvas preset deleted");
+    },
+    [deleteCanvasPreset]
+  );
 
   // --- CANVAS PRESET HANDLER ---
   const handleCanvasPresetSelect = useCallback(
@@ -1562,12 +1578,22 @@ const Index = () => {
 
           // +++ NEW: Use responsive layout helper for PiP
           ...getResponsivePipLayout(preset, screenSize),
-          layoutMode: preset.pip.layoutMode as LayoutMode,
+          layoutMode: (preset.canvasLayout
+            ? "pip"
+            : preset.pip.layoutMode) as LayoutMode,
           cameraShape: preset.pip.cameraShape as CameraShape,
           splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
           pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
           pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
           canvasAspectRatio: preset.canvasAspectRatio ?? "16:9",
+          // +++ ADDED: Load canvasLayout +++
+          canvasLayout: preset.canvasLayout,
+          // +++ MODIFIED: screenShareMode logic +++
+          screenShareMode: (preset.canvasLayout
+            ? "canvas"
+            : preset.pip.layoutMode === "solo"
+            ? "off"
+            : "canvas") as "off" | "screen" | "canvas",
         };
 
         if (preset.effects.videoFilter) {
@@ -1926,32 +1952,38 @@ const Index = () => {
     toast.success(`Layout "${presetName}" saved!`);
   }, [activeScene, savePreset]);
 
-  const handleLoadPreset = useCallback((preset: LayoutPreset) => {
-    updateActiveScene((scene) => ({
-      ...scene,
-      captionStyle: preset.captionStyle,
-      dynamicStyle: preset.dynamicStyle,
-      layoutMode: preset.layoutState.mode,
-      cameraShape: preset.layoutState.cameraShape,
-      splitRatio: preset.layoutState.splitRatio,
-      pipPosition: preset.layoutState.pipPosition,
-      pipSize: preset.layoutState.pipSize,
-      pipRotation: preset.layoutState.pipRotation,
-      customMaskUrl: preset.layoutState.customMaskUrl,
-      pipBorder: preset.layoutState.pipBorder,
-      pipShadow: preset.layoutState.pipShadow,
-      videoFilter: preset.videoFilter,
-      backgroundEffect: preset.backgroundEffect,
-      backgroundImageUrl: preset.backgroundImageUrl,
-      activeOverlays: preset.htmlOverlays,
-      fileOverlays: preset.fileOverlays,
-      browserOverlays: preset.browserOverlays,
-    }));
-  }, [updateActiveScene]);
+  const handleLoadPreset = useCallback(
+    (preset: LayoutPreset) => {
+      updateActiveScene((scene) => ({
+        ...scene,
+        captionStyle: preset.captionStyle,
+        dynamicStyle: preset.dynamicStyle,
+        layoutMode: preset.layoutState.mode,
+        cameraShape: preset.layoutState.cameraShape,
+        splitRatio: preset.layoutState.splitRatio,
+        pipPosition: preset.layoutState.pipPosition,
+        pipSize: preset.layoutState.pipSize,
+        pipRotation: preset.layoutState.pipRotation,
+        customMaskUrl: preset.layoutState.customMaskUrl,
+        pipBorder: preset.layoutState.pipBorder,
+        pipShadow: preset.layoutState.pipShadow,
+        videoFilter: preset.videoFilter,
+        backgroundEffect: preset.backgroundEffect,
+        backgroundImageUrl: preset.backgroundImageUrl,
+        activeOverlays: preset.htmlOverlays,
+        fileOverlays: preset.fileOverlays,
+        browserOverlays: preset.browserOverlays,
+      }));
+    },
+    [updateActiveScene]
+  );
 
-  const handleDeletePreset = useCallback((id: string) => {
-    deletePreset(id);
-  }, [deletePreset]);
+  const handleDeletePreset = useCallback(
+    (id: string) => {
+      deletePreset(id);
+    },
+    [deletePreset]
+  );
 
   // --- MODIFIED: Wrap canvas props in a memoized object ---
   // MOVED: These hooks are now BEFORE the early return.

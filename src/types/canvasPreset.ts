@@ -1,4 +1,5 @@
 // src/types/canvasPreset.ts
+import { CanvasLayoutState } from "../types/caption";
 
 export interface CanvasPresetBackground {
   blankCanvasColor: string; // Can be solid color or gradient
@@ -87,4 +88,5 @@ export interface CanvasPreset {
   textOverlays: CanvasPresetTextOverlay[];
   effects: CanvasPresetEffects;
   canvasAspectRatio?: string;
+  canvasLayout: CanvasLayoutState | null;
 }

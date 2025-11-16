@@ -131,7 +131,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     <div
       className={cn(
         "fixed bottom-4 left-1/2 -translate-x-1/2 bg-background/40 backdrop-blur-xl border border-border/40 rounded-full transition-all duration-300 ease-out shadow-2xl",
-        isMouseActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8 pointer-events-none"
+        isMouseActive
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 translate-y-8 pointer-events-none"
       )}
       style={{ zIndex: "var(--z-floating-controls)" }}
     >
@@ -155,9 +157,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         >
           <Library className="w-4 h-4" />
         </Button>
-        
+
         <div className="w-px h-6 bg-border/40 mx-1" />
-        
+
         <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
@@ -262,14 +264,20 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             className="bg-background/95 backdrop-blur-xl border-border/40"
             style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
           >
-            <DropdownMenuItem onClick={() => onScreenShareModeChange("screen")} className="text-sm">
+            <DropdownMenuItem
+              onClick={() => onScreenShareModeChange("screen")}
+              className="text-sm"
+            >
               <Monitor className="w-3.5 h-3.5 mr-2" />
               Screen
               {screenShareMode === "screen" && (
                 <Check className="w-3.5 h-3.5 ml-auto" />
               )}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onScreenShareModeChange("canvas")} className="text-sm">
+            <DropdownMenuItem
+              onClick={() => onScreenShareModeChange("canvas")}
+              className="text-sm"
+            >
               <Paintbrush className="w-3.5 h-3.5 mr-2" />
               Canvas
               {screenShareMode === "canvas" && (
@@ -322,7 +330,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         >
           <Radio className={cn("h-4 w-4", isBroadcasting && "animate-pulse")} />
         </Button>
-        
+
         <div className="w-px h-6 bg-border/40 mx-1" />
 
         <ToolsPopover
@@ -333,17 +341,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           theme={theme}
           portalContainer={layoutProps.portalContainer}
         />
-        
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full h-10 w-10 hover:bg-background/60"
-          onClick={onSaveLayout}
-          title="Save Layout Preset"
-        >
-          <Library className="h-4 h-4" />
-        </Button>
-        
+
         <LayoutControls {...layoutProps} />
         <Button
           variant="ghost"
