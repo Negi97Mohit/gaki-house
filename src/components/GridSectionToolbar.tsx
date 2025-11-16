@@ -36,6 +36,7 @@ interface GridSectionToolbarProps {
   onFileSelect?: (fileId: string) => void;
   onTextSelect?: (textId: string) => void;
   isVisible?: boolean;
+  toolbarPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 }
 
 export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
@@ -49,12 +50,20 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   onFileSelect,
   onTextSelect,
   isVisible = true,
+  toolbarPosition = 'top-right',
 }) => {
   const { content } = section;
 
+  const positionClasses = {
+    'top-right': 'top-2 right-2',
+    'top-left': 'top-2 left-2',
+    'bottom-right': 'bottom-2 right-2',
+    'bottom-left': 'bottom-2 left-2',
+  };
+
   return (
     <div 
-      className={`absolute top-2 right-2 flex gap-1 z-[100] transition-all duration-200 ${
+      className={`absolute ${positionClasses[toolbarPosition]} flex gap-1 z-[100] transition-all duration-200 ${
         isVisible 
           ? 'opacity-90 hover:opacity-100 translate-y-0' 
           : 'opacity-0 -translate-y-2 pointer-events-none'
