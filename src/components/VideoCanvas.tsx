@@ -42,7 +42,6 @@ import {
   CameraShape,
   CaptionStyle,
   FileOverlayState,
-  BrowserOverlayState,
   TextOverlayState,
   SceneTransition,
   CanvasLayoutState,
@@ -57,7 +56,11 @@ import { AICommandPopover } from "@/components/AICommandPopover";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { generatePreview } from "@/lib/preview";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
-import { DraggableBrowser } from "@/components/DraggableBrowser";
+import {
+  DraggableBrowser,
+  BrowserOverlayState,
+} from "@/components/DraggableBrowser";
+import { AssetResult } from "@/components/AssetLibrary";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { useTheme } from "next-themes";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
@@ -1320,10 +1323,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               toast.success("Section deleted - remaining sections will expand");
             }
           }}
-          onSectionResize={(sectionId, newStyle) => {
-            // Store the resized style - this could be expanded to update the layout template
-            console.log(`Section ${sectionId} resized:`, newStyle);
-          }}
           layoutMode={rest.layoutMode}
           cameraShape={rest.cameraShape}
           pipSize={rest.pipSize}
@@ -1882,7 +1881,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {sceneSize.width > 0 &&
               sceneSize.height > 0 &&
               filteredBrowserOverlays
-                .filter((o) => o.layout.layerOrder === "below-video")
+                .filter((o) => (o.layout as GeneratedLayout).layerOrder === "below-video")
                 .map((browser) => (
                   <DraggableBrowser
                     key={browser.id}
@@ -1902,7 +1901,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {sceneSize.width > 0 &&
               sceneSize.height > 0 &&
               filteredFileOverlays
-                .filter((o) => o.layout.layerOrder === "below-video")
+                .filter((o) => (o.layout as GeneratedLayout).layerOrder === "below-video")
                 .map((file) => (
                   <DraggableFileViewer
                     key={file.id}
@@ -1921,7 +1920,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {sceneSize.width > 0 &&
               sceneSize.height > 0 &&
               filteredTextOverlays
-                .filter((o) => o.layout.layerOrder === "below-video")
+                .filter((o) => (o.layout as GeneratedLayout).layerOrder === "below-video")
                 .map((textOverlay) => (
                   <DraggableTextOverlay
                     key={textOverlay.id}
@@ -1977,9 +1976,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               filteredBrowserOverlays
                 .filter(
                   (o) =>
-                    !o.layout.layerOrder ||
-                    o.layout.layerOrder === "above-video" ||
-                    o.layout.layerOrder === "auto"
+                    !(o.layout as GeneratedLayout).layerOrder ||
+                    (o.layout as GeneratedLayout).layerOrder === "above-video" ||
+                    (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((browser) => (
                   <DraggableBrowser
@@ -2002,9 +2001,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               filteredFileOverlays
                 .filter(
                   (o) =>
-                    !o.layout.layerOrder ||
-                    o.layout.layerOrder === "above-video" ||
-                    o.layout.layerOrder === "auto"
+                    !(o.layout as GeneratedLayout).layerOrder ||
+                    (o.layout as GeneratedLayout).layerOrder === "above-video" ||
+                    (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((file) => (
                   <DraggableFileViewer
@@ -2026,9 +2025,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               filteredTextOverlays
                 .filter(
                   (o) =>
-                    !o.layout.layerOrder ||
-                    o.layout.layerOrder === "above-video" ||
-                    o.layout.layerOrder === "auto"
+                    !(o.layout as GeneratedLayout).layerOrder ||
+                    (o.layout as GeneratedLayout).layerOrder === "above-video" ||
+                    (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((textOverlay) => (
                   <DraggableTextOverlay
