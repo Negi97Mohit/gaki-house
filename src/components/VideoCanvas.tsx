@@ -362,11 +362,13 @@ interface VideoCanvasProps {
   splitRatio: number;
   pipPosition: { x: number; y: number };
   pipSize: { width: number; height: number };
+  pipRotation?: number;
   onLayoutModeChange: (mode: LayoutMode) => void;
   onCameraShapeChange: (shape: CameraShape) => void;
   onSplitRatioChange: (ratio: number) => void;
   onPipPositionChange: (position: { x: number; y: number }) => void;
   onPipSizeChange: (size: { width: number; height: number }) => void;
+  onPipRotationChange?: (rotation: number) => void;
   customMaskUrl?: string;
   onCustomMaskUpload?: (file: File) => void;
   aiButtonPosition: { x: number; y: number };
@@ -1032,7 +1034,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   // --- ADDED: PiP Rotation Handler ---
   const handlePipRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(`[VideoCanvas PiP] handleRotationStart FIRED`); // DEBUG
     e.stopPropagation();
     onInternalDragStart();
 
@@ -1044,19 +1045,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     const centerY = box.top + box.height / 2;
     const startAngle =
       Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-    // const initialRotation = props.pipRotation || 0;
+    const initialRotation = rest.pipRotation || 0;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      console.log(`[VideoCanvas PiP] handleMouseMove`); // DEBUG
       const currentAngle =
         Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
         (180 / Math.PI);
       const angleDiff = currentAngle - startAngle;
-      // rest.onPipRotationChange(initialRotation + angleDiff);
+      rest.onPipRotationChange?.(initialRotation + angleDiff);
     };
 
     const handleMouseUp = () => {
-      console.log(`[VideoCanvas PiP] handleMouseUp`); // DEBUG
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
       onInternalDragStop();
@@ -1571,14 +1570,13 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           style={{
             zIndex: "var(--z-video-pip)",
             ...pipVideoStyle,
-            // transform: `rotate(${rest.pipRotation || 0}deg)`,
+            transform: `rotate(${rest.pipRotation || 0}deg)`,
           }}
         >
           <div
             className="w-full h-full relative group"
             style={{
               overflow: "hidden",
-              // transform: `rotate(${props.pipRotation || 0}deg)`,
               transformOrigin: "center center",
               borderRadius: "inherit",
             }}
@@ -1591,7 +1589,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <Button
               size="icon"
               variant="secondary"
-              // style={{ transform: `rotate(-${props.pipRotation || 0}deg)` }}
+              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{ transform: `rotate(-${rest.pipRotation || 0}deg)` }}
               onClick={() =>
                 setPipContent(pipContent === "camera" ? "share" : "camera")
               }
@@ -1602,15 +1601,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <div
               onMouseDown={handlePipRotationStart}
               className={cn(
-                "rotate-handle absolute -bottom-3 -left-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 cursor-alias",
+                "rotate-handle absolute -bottom-4 -right-4 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center transition-all hover:scale-110 cursor-alias",
                 "opacity-0 group-hover:opacity-100"
               )}
               style={{
-                // transform: `rotate(-${props.pipRotation || 0}deg)`,
+                transform: `rotate(-${rest.pipRotation || 0}deg)`,
                 zIndex: "var(--z-draggable-element-active)",
               }}
             >
-              <RotateCcw className="w-4 h-4 pointer-events-none" />
+              <RotateCcw className="w-3.5 h-3.5 pointer-events-none" />
             </div>
           </div>
         </Rnd>
