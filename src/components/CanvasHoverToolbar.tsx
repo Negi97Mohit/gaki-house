@@ -1,4 +1,5 @@
-import { Paintbrush, Upload, Grid3x3, Search } from "lucide-react";
+// src/components/CanvasHoverToolbar.tsx
+import { Paintbrush, Upload, Grid3x3, Search, Check } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { CanvasLayoutState } from "@/types/caption";
+import { GridLayoutPreview } from "./GridLayoutPreview";
 
 interface CanvasHoverToolbarProps {
   blankCanvasColor: string;
@@ -146,27 +148,37 @@ export const CanvasHoverToolbar = ({
               : "Grid"}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-[999] bg-background max-h-[400px] overflow-y-auto">
+        <DropdownMenuContent className="z-[999] bg-background max-h-[400px] overflow-y-auto w-64 p-2">
           {templatesLoading && (
             <DropdownMenuItem disabled>Loading layouts...</DropdownMenuItem>
           )}
-          {layoutTemplates.map((template) => (
-            <DropdownMenuItem
-              key={template.id}
-              onClick={() => handleLayoutSelect(template.id)}
-            >
-              {template.name}
-              {canvasLayout?.templateId === template.id && " ✓"}
-            </DropdownMenuItem>
-          ))}
+
+          {/* --- MOVED --- */}
           {canvasLayout && (
             <DropdownMenuItem
               onClick={() => onCanvasLayoutChange?.(null as any)}
-              className="text-destructive"
+              className="text-destructive mb-1" // --- MODIFIED: Changed mt-1 to mb-1
             >
               Clear Grid
             </DropdownMenuItem>
           )}
+          {/* --- END MOVED --- */}
+
+          {layoutTemplates.map((template) => (
+            <DropdownMenuItem
+              key={template.id}
+              onClick={() => handleLayoutSelect(template.id)}
+              className="flex flex-col items-start gap-2 p-2 cursor-pointer"
+            >
+              <GridLayoutPreview sections={template.sections} />
+              <div className="flex items-center justify-between w-full">
+                <span className="text-xs font-medium">{template.name}</span>
+                {canvasLayout?.templateId === template.id && (
+                  <Check className="w-4 h-4 text-primary" />
+                )}
+              </div>
+            </DropdownMenuItem>
+          ))}
         </DropdownMenuContent>
       </DropdownMenu>
       <input

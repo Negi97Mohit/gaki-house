@@ -5,7 +5,7 @@ export interface CanvasLayoutTemplate {
   id: string;
   name: string;
   description: string;
-  icon: React.ReactNode;
+  // icon: React.ReactNode; // --- DELETE THIS LINE ---
   sections: Array<{
     id: string;
     name: string;
