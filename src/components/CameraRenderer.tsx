@@ -256,12 +256,18 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     // console.log("[CameraRenderer] Drawing effect: Running. Stream:", stream ? "Yes" : "No");
 
     if (stream) {
-      // console.log("[CameraRenderer] Attaching stream.");
-      video.srcObject = stream;
-      video.play().catch(console.error);
+      // +++ FIX for AbortError: Only set srcObject if it's a new stream +++
+      if (video.srcObject !== stream) {
+        console.log("[CameraRenderer] Attaching new stream.");
+        video.srcObject = stream;
+        video.play().catch(console.error);
+      }
     } else {
-      // console.log("[CameraRenderer] No stream, clearing video.");
-      video.srcObject = null;
+      // +++ FIX for AbortError: Only clear if it's not already null +++
+      if (video.srcObject) {
+        console.log("[CameraRenderer] No stream, clearing video.");
+        video.srcObject = null;
+      }
     }
 
     const renderFrame = () => {

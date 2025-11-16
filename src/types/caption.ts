@@ -244,17 +244,41 @@ export interface SceneTransition {
   blendMode?: TransitionBlendMode;
 }
 
+// --- ADDED: State for a camera in a grid section ---
+export interface CanvasSectionCameraState {
+  videoFilter: string;
+  isNeonEdgeEnabled: boolean;
+  neonIntensity: number;
+  neonColor: string;
+  cameraBackground: "none" | "blur" | "image";
+  customBackgroundUrl?: string | null;
+  isFaceTrackingEnabled: boolean;
+  cameraAspectRatio: string;
+  pipBorder?: { color: string; width: number };
+  pipShadow?: { blur: number; color: string };
+  isAutoFramingEnabled: boolean;
+  isBeautifyEnabled: boolean;
+  isLowLightEnabled: boolean;
+  zoomSensitivity: number;
+  trackingSpeed: number;
+  customAspectRatio: string;
+}
+
 // --- CANVAS LAYOUT TYPES ---
 
 // The content for a single grid section
-export type CanvasSectionContent = {
-  type: 'color' | 'image' | 'file' | 'text' | 'screen' | 'camera' | 'empty';
-  color?: string; // For color type
-  src?: string; // For image URL
-  fileId?: string; // For existing FileOverlays
-  textId?: string; // For existing TextOverlays
-};
-
+export type CanvasSectionContent =
+  | { type: "color"; color?: string }
+  | { type: "image"; src?: string }
+  | { type: "file"; fileId?: string }
+  | { type: "text"; textId?: string }
+  | { type: "screen" }
+  | { type: "empty" }
+  // +++ MODIFIED: Camera type now holds its own settings +++
+  | {
+      type: "camera";
+      settings: CanvasSectionCameraState;
+    };
 // The state for a single grid section
 export interface CanvasSectionState {
   id: string; // e.g., 'main', 'sidebar', 'corner'
@@ -328,3 +352,23 @@ export interface SceneState {
   customAspectRatio: string;
   isFaceTrackingEnabled: boolean;
 }
+
+// +++ ADDED: Default state for a new grid camera section +++
+export const DEFAULT_CAMERA_STATE: CanvasSectionCameraState = {
+  videoFilter: "none",
+  isNeonEdgeEnabled: false,
+  neonIntensity: 20,
+  neonColor: "#00FFFF", // Default to cyan hex
+  cameraBackground: "none",
+  customBackgroundUrl: null,
+  isFaceTrackingEnabled: false,
+  cameraAspectRatio: "16:9",
+  pipBorder: { color: "#FFFFFF", width: 0 },
+  pipShadow: { blur: 0, color: "rgba(0,0,0,0.5)" },
+  isAutoFramingEnabled: false,
+  isBeautifyEnabled: false,
+  isLowLightEnabled: false,
+  zoomSensitivity: 4.0,
+  trackingSpeed: 0.08,
+  customAspectRatio: "",
+};

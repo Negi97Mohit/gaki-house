@@ -45,6 +45,7 @@ import {
   TextOverlayState,
   SceneTransition,
   CanvasLayoutState,
+  CanvasSectionCameraState,
 } from "@/types/caption";
 import {
   DraggableFileViewer,
@@ -389,6 +390,10 @@ interface VideoCanvasProps {
   onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
   screenShareMode: "off" | "screen" | "canvas";
   onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
+  onSectionCameraSettingsChange: (
+    sectionId: string,
+    settings: Partial<CanvasSectionCameraState>
+  ) => void;
   canvasLayout: CanvasLayoutState | null;
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
   onRemoveBrowser: (id: string) => void;
@@ -1329,6 +1334,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           pipBorder={rest.pipBorder}
           pipShadow={rest.pipShadow}
           onGridAssetSelect={onGridAssetSelect}
+          onSectionCameraSettingsChange={props.onSectionCameraSettingsChange} // Pass background props from VideoCanvas
+          backgroundEffect={props.backgroundEffect}
+          backgroundImageUrl={props.backgroundImageUrl}
         />
       );
     }

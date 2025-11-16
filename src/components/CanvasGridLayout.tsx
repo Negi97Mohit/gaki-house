@@ -8,6 +8,8 @@ import {
   CanvasSectionState,
   FileOverlayState,
   TextOverlayState,
+  CanvasSectionCameraState, // +++ ADDED +++
+  DEFAULT_CAMERA_STATE, // +++ ADDED +++
 } from "@/types/caption";
 import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { FileRenderer } from "@/components/DraggableFileViewer";
@@ -25,6 +27,8 @@ import {
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { Loader2 } from "lucide-react";
+import { CameraRenderer } from "@/components/CameraRenderer"; // +++ ADDED IMPORT +++
+
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
   cameraStream: MediaStream | null;
@@ -44,6 +48,12 @@ interface CanvasGridLayoutProps {
   pipSize: { width: number; height: number };
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
+  // +++ ADDED: Handler for grid camera settings +++
+  onSectionCameraSettingsChange: (
+    sectionId: string,
+    settings: Partial<CanvasSectionCameraState>
+  ) => void;
+  // +++ END ADDED +++
 }
 
 export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
@@ -62,6 +72,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipSize,
   pipBorder,
   pipShadow,
+  // +++ ADDED: Destructure new handler +++
+  onSectionCameraSettingsChange,
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [templates, setTemplates] = useState<Record<
@@ -114,14 +126,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 
       case "camera":
         if (!cameraStream) return <div className="w-full h-full bg-muted" />;
+
+        // --- MODIFIED: Use CameraRenderer instead of <video> ---
+        const settings = content.settings;
         return (
-          <video
-            autoPlay
-            playsInline
-            muted
-            ref={(video) => {
-              if (video && cameraStream) video.srcObject = cameraStream;
-            }}
+          <CameraRenderer
+            stream={cameraStream}
             className="w-full h-full object-cover"
             style={{
               borderRadius:
@@ -130,13 +140,120 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   : cameraShape === "rounded"
                   ? "12px"
                   : "0",
-              border: pipBorder?.width
-                ? `${pipBorder.width}px solid ${pipBorder.color}`
-                : undefined,
-              boxShadow: pipShadow?.blur
-                ? `0 0 ${pipShadow.blur}px ${pipShadow.color}`
-                : undefined,
             }}
+            portalContainer={null} // Toolbars will render locally
+            // Pass all the props from this section's settings
+            pipBorder={settings.pipBorder}
+            onPipBorderChange={(border) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                pipBorder: border,
+              })
+            }
+            pipShadow={settings.pipShadow}
+            onPipShadowChange={(shadow) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                pipShadow: shadow,
+              })
+            }
+            isAutoFramingEnabled={settings.isAutoFramingEnabled}
+            onAutoFramingChange={(enabled) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                isAutoFramingEnabled: enabled,
+              })
+            }
+            isBeautifyEnabled={settings.isBeautifyEnabled}
+            onBeautifyToggle={(enabled) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                isBeautifyEnabled: enabled,
+              })
+            }
+            isLowLightEnabled={settings.isLowLightEnabled}
+            onLowLightToggle={(enabled) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                isLowLightEnabled: enabled,
+              })
+            }
+            videoFilter={settings.videoFilter}
+            onVideoFilterChange={(filter) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                videoFilter: filter,
+              })
+            }
+            isNeonEdgeEnabled={settings.isNeonEdgeEnabled}
+            onNeonEdgeToggle={(enabled) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                isNeonEdgeEnabled: enabled,
+              })
+            }
+            neonIntensity={settings.neonIntensity}
+            onNeonIntensityChange={(value) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                neonIntensity: value,
+              })
+            }
+            neonColor={settings.neonColor}
+            onNeonEdgeColorChange={(color) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                neonColor: color,
+              })
+            }
+            zoomSensitivity={settings.zoomSensitivity}
+            onZoomSensitivityChange={(value) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                zoomSensitivity: value,
+              })
+            }
+            trackingSpeed={settings.trackingSpeed}
+            onTrackingSpeedChange={(value) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                trackingSpeed: value,
+              })
+            }
+            cameraBackground={settings.cameraBackground}
+            onCameraBackgroundChange={(bgId) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                cameraBackground: bgId,
+              })
+            }
+            onCustomBackgroundUpload={(file) => {
+              /* TODO: Implement upload -> URL for grid */
+            }}
+            cameraAspectRatio={settings.cameraAspectRatio}
+            onCameraAspectRatioChange={(ratio) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                cameraAspectRatio: ratio,
+              })
+            }
+            customAspectRatio={settings.customAspectRatio}
+            onCustomAspectRatioChange={(ratio) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                customAspectRatio: ratio,
+              })
+            }
+            isFaceTrackingEnabled={settings.isFaceTrackingEnabled}
+            onFaceTrackingToggle={(enabled) =>
+              onSectionCameraSettingsChange(section.id, {
+                ...settings,
+                isFaceTrackingEnabled: enabled,
+              })
+            }
+            // Pass background props
+            backgroundEffect={"none"}
+            backgroundImageUrl={null}
           />
         );
 
@@ -248,7 +365,10 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() =>
-                      onSectionContentChange(section.id, { type: "camera" })
+                      onSectionContentChange(section.id, {
+                        type: "camera",
+                        settings: DEFAULT_CAMERA_STATE, // +++ Use default state +++
+                      })
                     }
                   >
                     Camera

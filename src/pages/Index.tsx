@@ -37,6 +37,7 @@ import {
   TransitionEasing,
   DEFAULT_LAYOUT_STATE,
   CaptionShape as CaptionShapeType,
+  DEFAULT_CAMERA_STATE,
   CaptionAnimation as CaptionAnimationType,
   CanvasLayoutState,
 } from "@/types/caption";
@@ -509,6 +510,33 @@ const Index = () => {
       toast.success("Canvas background set!");
     },
     [handleSetBackgroundImageUrl, handleSetBackgroundEffect]
+  );
+
+  // +++ ADDED: Handler for grid camera settings +++
+  const handleSectionCameraSettingsChange = useCallback(
+    (sectionId: string, settings: Partial<CanvasSectionCameraState>) => {
+      updateActiveScene((scene) => {
+        if (!scene.canvasLayout) return scene;
+
+        const newLayout = {
+          ...scene.canvasLayout,
+          sections: scene.canvasLayout.sections.map((s) => {
+            if (s.id === sectionId && s.content.type === "camera") {
+              return {
+                ...s,
+                content: {
+                  ...s.content,
+                  settings: { ...s.content.settings, ...settings },
+                },
+              };
+            }
+            return s;
+          }),
+        };
+        return { ...scene, canvasLayout: newLayout };
+      });
+    },
+    [updateActiveScene]
   );
 
   const handleCanvasBackgroundUpload = useCallback(
@@ -2060,6 +2088,7 @@ const Index = () => {
     onDeselectAll: handleDeselectAll,
     onSetDynamicLayout: handleSetDynamicLayout,
     onRemoveTextOverlay: handleRemoveTextOverlay,
+    onSectionCameraSettingsChange: handleSectionCameraSettingsChange,
     onTextLayoutChange: handleTextLayoutChange,
     onTextStyleChange: handleTextStyleChange,
     onTextContentChange: handleTextContentChange,
