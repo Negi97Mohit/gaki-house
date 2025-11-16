@@ -385,11 +385,13 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       {/* --- ADDED: Placeholder when stream is off --- */}
       {!stream && (
         <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/30 text-muted-foreground/50 pointer-events-none">
-          <VideoOff
-            className="w-1/4 h-1/4"
+          <img
+            src="/icon.png"
+            alt="Camera Off"
+            className="w-1/2 h-1/2 object-cover" // Made it circular and larger
             style={{
-              maxWidth: "100px",
-              maxHeight: "100px",
+              maxWidth: "50px",
+              maxHeight: "50px",
             }}
           />
         </div>
