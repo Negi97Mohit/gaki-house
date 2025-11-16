@@ -1572,7 +1572,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     // --- END ADDED ---
 
     const pipContentEl =
-      props.screenShareMode !== "off" && containerSize.width > 0 ? (
+      props.screenShareMode !== "off" &&
+      containerSize.width > 0 &&
+      !props.canvasLayout ? (
         <Rnd
           ref={pipRndRef}
           key={`pip-${sceneId}-${rest.pipPosition.x}-${rest.pipPosition.y}-${rest.pipSize.width}-${rest.pipSize.height}`}
