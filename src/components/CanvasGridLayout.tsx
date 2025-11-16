@@ -68,19 +68,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   const template =
     LAYOUT_TEMPLATES[layout.templateId] || LAYOUT_TEMPLATES.default;
 
-  // Helper to determine toolbar position based on layout and section
-  const getToolbarPosition = (templateId: string, sectionId: string): 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' => {
-    // Special positioning for layouts with clipPaths
-    if (templateId === 'zigzag') {
-      return sectionId === 'top' ? 'top-left' : 'bottom-right';
-    }
-    if (templateId === 'main-and-corner') {
-      return sectionId === 'corner' ? 'top-right' : 'top-left';
-    }
-    // Default: top-right for most layouts
-    return 'top-right';
-  };
-
   const renderSectionContent = (section: CanvasSectionState) => {
     const { content } = section;
 
@@ -327,7 +314,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   onDelete={() => handleSectionDelete(section.id)}
                   onGridAssetSelect={onGridAssetSelect}
                   isVisible={hoveredSectionId === templateSection.id}
-                  toolbarPosition={getToolbarPosition(layout.templateId, templateSection.id)}
                   onColorChange={
                     section.content.type === "color"
                       ? (color) =>
