@@ -1543,6 +1543,26 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     };
     // --- END REFACTOR ---
 
+    // --- ADDED: Conditional resize handles for circle shape ---
+    const circleResizeHandles = {
+      top: true,
+      right: true,
+      bottom: true,
+      left: true,
+      topRight: false,
+      bottomRight: false,
+      bottomLeft: false,
+      topLeft: false,
+    };
+    const defaultResizeHandles = {
+      ...circleResizeHandles,
+      topRight: true,
+      bottomRight: true,
+      bottomLeft: true,
+      topLeft: true,
+    };
+    // --- END ADDED ---
+
     const pipContentEl =
       props.screenShareMode !== "off" && containerSize.width > 0 ? (
         <Rnd
@@ -1564,6 +1584,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           // --- MODIFIED: Lock aspect ratio based on helper function ---
           lockAspectRatio={currentAspectRatio ? currentAspectRatio : false}
           // --- END MODIFICATION ---
+          enableResizing={
+            rest.cameraShape === "circle"
+              ? circleResizeHandles
+              : defaultResizeHandles
+          }
           bounds="parent"
           onDragStop={handlePipDragStop}
           onResizeStop={handlePipResizeStop}
@@ -1588,6 +1613,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               ? // --- MODIFIED: Pass cameraShape ---
                 renderCamera("cursor-move", {}, true, rest.cameraShape)
               : renderScreen("cursor-move")}
+            <div className="absolute inset-0 w-full h-full border-2 border-primary border-dashed rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
             <Button
               size="icon"
               variant="secondary"
@@ -1881,7 +1907,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {sceneSize.width > 0 &&
               sceneSize.height > 0 &&
               filteredBrowserOverlays
-                .filter((o) => (o.layout as GeneratedLayout).layerOrder === "below-video")
+                .filter(
+                  (o) =>
+                    (o.layout as GeneratedLayout).layerOrder === "below-video"
+                )
                 .map((browser) => (
                   <DraggableBrowser
                     key={browser.id}
@@ -1901,7 +1930,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {sceneSize.width > 0 &&
               sceneSize.height > 0 &&
               filteredFileOverlays
-                .filter((o) => (o.layout as GeneratedLayout).layerOrder === "below-video")
+                .filter(
+                  (o) =>
+                    (o.layout as GeneratedLayout).layerOrder === "below-video"
+                )
                 .map((file) => (
                   <DraggableFileViewer
                     key={file.id}
@@ -1920,7 +1952,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {sceneSize.width > 0 &&
               sceneSize.height > 0 &&
               filteredTextOverlays
-                .filter((o) => (o.layout as GeneratedLayout).layerOrder === "below-video")
+                .filter(
+                  (o) =>
+                    (o.layout as GeneratedLayout).layerOrder === "below-video"
+                )
                 .map((textOverlay) => (
                   <DraggableTextOverlay
                     key={textOverlay.id}
@@ -1977,7 +2012,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 .filter(
                   (o) =>
                     !(o.layout as GeneratedLayout).layerOrder ||
-                    (o.layout as GeneratedLayout).layerOrder === "above-video" ||
+                    (o.layout as GeneratedLayout).layerOrder ===
+                      "above-video" ||
                     (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((browser) => (
@@ -2002,7 +2038,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 .filter(
                   (o) =>
                     !(o.layout as GeneratedLayout).layerOrder ||
-                    (o.layout as GeneratedLayout).layerOrder === "above-video" ||
+                    (o.layout as GeneratedLayout).layerOrder ===
+                      "above-video" ||
                     (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((file) => (
@@ -2026,7 +2063,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 .filter(
                   (o) =>
                     !(o.layout as GeneratedLayout).layerOrder ||
-                    (o.layout as GeneratedLayout).layerOrder === "above-video" ||
+                    (o.layout as GeneratedLayout).layerOrder ===
+                      "above-video" ||
                     (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((textOverlay) => (
