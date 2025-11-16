@@ -1,7 +1,7 @@
 // src/components/CanvasGridLayout.tsx
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
-import { Plus, GripVertical, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   CanvasLayoutState,
@@ -24,7 +24,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
-import { Rnd } from "react-rnd";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -40,7 +39,6 @@ interface CanvasGridLayoutProps {
   ) => void;
   onSectionDelete?: (sectionId: string) => void;
   onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
-  onSectionResize?: (sectionId: string, newStyle: React.CSSProperties) => void;
   layoutMode: string;
   cameraShape: "rectangle" | "circle" | "rounded";
   pipSize: { width: number; height: number };
@@ -59,16 +57,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   onSectionContentChange,
   onSectionDelete,
   onGridAssetSelect,
-  onSectionResize,
   layoutMode,
   cameraShape,
   pipSize,
   pipBorder,
   pipShadow,
 }) => {
-  const [resizingSections, setResizingSections] = useState<
-    Record<string, React.CSSProperties>
-  >({});
 
   const template =
     LAYOUT_TEMPLATES[layout.templateId] || LAYOUT_TEMPLATES.default;
@@ -208,10 +202,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     Add
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="z-[999] bg-background"
-                  onOpenAutoFocus={(e) => e.preventDefault()}
-                >
+                <DropdownMenuContent className="z-[999] bg-background">
                   <DropdownMenuItem
                     onClick={() =>
                       onSectionContentChange(section.id, {
@@ -297,84 +288,20 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             content: { type: "empty" },
           } as CanvasSectionState);
 
-        const currentStyle =
-          resizingSections[section.id] || templateSection.style;
-
         return (
-          <Rnd
+          <div
             key={templateSection.id}
-            default={{
-              x: 0,
-              y: 0,
-              width: (currentStyle.width as string) || "100%",
-              height: (currentStyle.height as string) || "100%",
-            }}
-            position={{
-              x: parseInt((currentStyle.left as string) || "0"),
-              y: parseInt((currentStyle.top as string) || "0"),
-            }}
-            size={{
-              width: (currentStyle.width as string) || "100%",
-              height: (currentStyle.height as string) || "100%",
-            }}
-            onResizeStop={(e, direction, ref, delta, position) => {
-              const newStyle: React.CSSProperties = {
-                ...currentStyle,
-                width: ref.style.width,
-                height: ref.style.height,
-                left: `${position.x}px`,
-                top: `${position.y}px`,
-              };
-              setResizingSections((prev) => ({
-                ...prev,
-                [section.id]: newStyle,
-              }));
-              if (onSectionResize) {
-                onSectionResize(section.id, newStyle);
-              }
-            }}
-            onDragStop={(e, data) => {
-              const newStyle: React.CSSProperties = {
-                ...currentStyle,
-                left: `${data.x}px`,
-                top: `${data.y}px`,
-              };
-              setResizingSections((prev) => ({
-                ...prev,
-                [section.id]: newStyle,
-              }));
-              if (onSectionResize) {
-                onSectionResize(section.id, newStyle);
-              }
-            }}
             className={cn(
-              "border border-border/20 transition-all duration-200",
-              "group" // Add group here
+              "absolute border border-border/20 transition-all duration-200",
+              "group"
             )}
             style={{
-              ...currentStyle,
+              ...templateSection.style,
               overflow: "hidden",
             }}
-            enableResizing={{
-              top: true,
-              right: true,
-              bottom: true,
-              left: true,
-              topRight: true,
-              bottomRight: true,
-              bottomLeft: true,
-              topLeft: true,
-            }}
-            bounds="parent"
-            dragHandleClassName="grid-drag-handle"
           >
             <div className="relative w-full h-full">
               {renderSectionContent(section)}
-
-              {/* Drag handle - only show on hover */}
-              <div className="grid-drag-handle absolute top-0 left-0 w-full p-2 cursor-move bg-gradient-to-b from-black/50 to-transparent z-[90] opacity-0 group-hover:opacity-100 transition-opacity">
-                <GripVertical className="h-4 w-4 text-white" />
-              </div>
 
               {/* Section toolbar */}
               {section.content.type !== "empty" && (
@@ -417,7 +344,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 />
               )}
             </div>
-          </Rnd>
+          </div>
         );
       })}
     </div>

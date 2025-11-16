@@ -520,37 +520,9 @@ const Index = () => {
   );
   const handleGridAssetSelect = useCallback(
     async (sectionId: string, asset: AssetResult) => {
-      let fileId = "";
-      let newOverlay: FileOverlayState | null = null;
-
       try {
-        // 1. Fetch asset and create File object
-        const response = await fetch(asset.downloadUrl);
-        if (!response.ok)
-          throw new Error(`Failed to fetch asset: ${response.statusText}`);
-        const blob = await response.blob();
-        const file = new File([blob], asset.fileName, { type: asset.type });
-
-        // 2. Create new FileOverlayState
-        newOverlay = {
-          id: generateFileId(),
-          file: file,
-          fileName: file.name,
-          fileType: getFileType(file), // getFileType is already defined
-          fileUrl: URL.createObjectURL(file),
-          layout: {
-            // Default layout, won't be used by grid but good to have
-            position: { x: 50, y: 50 },
-            size: { width: 35, height: 45 },
-            zIndex: zIndex.draggableElement,
-            rotation: 0,
-          },
-        };
-        fileId = newOverlay.id;
-
-        // 3. Update scene state
+        // Simply set the image URL as the grid section background
         updateActiveScene((scene) => {
-          const updatedFileOverlays = [...scene.fileOverlays, newOverlay!];
           const updatedCanvasLayout = scene.canvasLayout
             ? {
                 ...scene.canvasLayout,
@@ -558,20 +530,15 @@ const Index = () => {
                   s.id === sectionId
                     ? {
                         ...s,
-                        content: { type: "file" as const, fileId: fileId },
+                        content: { type: "image" as const, src: asset.downloadUrl },
                       }
                     : s
                 ),
               }
             : scene.canvasLayout;
 
-          if (recording.isRecording) {
-            recording.recordFileOverlay(newOverlay!);
-          }
-
           return {
             ...scene,
-            fileOverlays: updatedFileOverlays,
             canvasLayout: updatedCanvasLayout,
           };
         });
@@ -580,12 +547,9 @@ const Index = () => {
       } catch (error) {
         console.error("Failed to add asset to grid:", error);
         toast.error(`Failed to add asset: ${(error as Error).message}`);
-        if (newOverlay) {
-          URL.revokeObjectURL(newOverlay.fileUrl);
-        }
       }
     },
-    [activeSceneId, recording, updateActiveScene]
+    [activeSceneId, updateActiveScene]
   );
 
   const handleSetIsVideoOn = useCallback(
