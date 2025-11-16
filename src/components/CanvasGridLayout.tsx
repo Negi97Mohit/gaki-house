@@ -293,6 +293,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             key={templateSection.id}
             className={cn(
               "absolute border border-border/20 transition-all duration-200",
+              "hover:border-primary/60 hover:shadow-lg hover:shadow-primary/20",
               "group"
             )}
             style={{
