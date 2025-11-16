@@ -1,5 +1,5 @@
 // src/components/CanvasGridLayout.tsx
-import React from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -63,6 +63,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipBorder,
   pipShadow,
 }) => {
+  const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
 
   const template =
     LAYOUT_TEMPLATES[layout.templateId] || LAYOUT_TEMPLATES.default;
@@ -300,6 +301,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               ...templateSection.style,
               overflow: "hidden",
             }}
+            onMouseEnter={() => setHoveredSectionId(templateSection.id)}
+            onMouseLeave={() => setHoveredSectionId(null)}
           >
             <div className="relative w-full h-full">
               {renderSectionContent(section)}
@@ -310,6 +313,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   section={section}
                   onDelete={() => handleSectionDelete(section.id)}
                   onGridAssetSelect={onGridAssetSelect}
+                  isVisible={hoveredSectionId === templateSection.id}
                   onColorChange={
                     section.content.type === "color"
                       ? (color) =>

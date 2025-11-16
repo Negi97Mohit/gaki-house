@@ -35,6 +35,7 @@ interface GridSectionToolbarProps {
   availableTexts?: Array<{ id: string; content: string }>;
   onFileSelect?: (fileId: string) => void;
   onTextSelect?: (textId: string) => void;
+  isVisible?: boolean;
 }
 
 export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
@@ -47,11 +48,18 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   availableTexts = [],
   onFileSelect,
   onTextSelect,
+  isVisible = true,
 }) => {
   const { content } = section;
 
   return (
-    <div className="absolute top-2 right-2 flex gap-1 z-[100] opacity-90 hover:opacity-100 transition-opacity">
+    <div 
+      className={`absolute top-2 right-2 flex gap-1 z-[100] transition-all duration-200 ${
+        isVisible 
+          ? 'opacity-90 hover:opacity-100 translate-y-0' 
+          : 'opacity-0 -translate-y-2 pointer-events-none'
+      }`}
+    >
       {/* Type-specific controls */}
       {content.type === "color" && onColorChange && (
         <DropdownMenu>
