@@ -7,6 +7,9 @@ import {
   Droplets,
   Sparkles,
   Square,
+  Share2, // --- 1. ADD Share2
+  Users, // --- 2. ADD Users
+  Loader2, // --- 3. ADD Loader2
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -66,6 +69,9 @@ interface FloatingControlsPanelProps {
   customCanvasPresets?: CanvasPreset[];
   onSaveCanvasPreset?: (name: string) => void;
   onDeleteCanvasPreset?: (id: string) => void;
+  publicPresets?: CanvasPreset[];
+  isLoadingPublic?: boolean;
+  onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -89,11 +95,15 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     Film,
     Shirt,
     Clock,
+    Users,
   };
   const filteredCanvasPresets =
     selectedCategory === "all"
       ? CANVAS_PRESETS
+      : selectedCategory === "community"
+      ? props.publicPresets || []
       : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+
   const filteredCaptionPresets =
     selectedPresetCategory === "all"
       ? CAPTION_PRESETS
@@ -283,70 +293,101 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               )}
 
               {/* Custom Presets Section */}
-              {props.customCanvasPresets && props.customCanvasPresets.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium mb-3 text-muted-foreground">Your Saved Presets</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    {props.customCanvasPresets.map((preset) => (
-                      <div key={preset.id} className="relative group">
-                        <button
-                          onClick={() => props.onCanvasPresetSelect?.(preset)}
-                          className="w-full rounded-lg overflow-hidden border-2 border-primary/40 hover:border-primary hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-200 bg-background"
-                        >
-                          <div
-                            className="w-full aspect-video relative overflow-hidden transition-transform duration-200 group-hover:scale-105"
-                            style={{
-                              background: preset.background.blankCanvasColor,
-                            }}
+              {props.customCanvasPresets &&
+                props.customCanvasPresets.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="text-sm font-medium mb-3 text-muted-foreground">
+                      Your Saved Presets
+                    </h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      {props.customCanvasPresets.map((preset) => (
+                        <div key={preset.id} className="relative group">
+                          <button
+                            onClick={() => props.onCanvasPresetSelect?.(preset)}
+                            className="w-full rounded-lg overflow-hidden border-2 border-primary/40 hover:border-primary hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-200 bg-background"
                           >
                             <div
-                              className="absolute"
+                              className="w-full aspect-video relative overflow-hidden transition-transform duration-200 group-hover:scale-105"
                               style={{
-                                left: `${preset.pip.pipPosition?.x || 50}%`,
-                                top: `${preset.pip.pipPosition?.y || 50}%`,
-                                width: `${preset.pip.pipSize?.width || 40}%`,
-                                height: `${preset.pip.pipSize?.height || 40}%`,
-                                transform: "translate(-50%, -50%)",
-                                borderRadius:
-                                  preset.pip.cameraShape === "circle"
-                                    ? "50%"
-                                    : preset.pip.cameraShape === "rounded"
-                                    ? "12px"
-                                    : "0",
-                                border: `${
-                                  preset.pip.pipBorder?.width || 2
-                                }px solid ${preset.pip.pipBorder?.color || "#fff"}`,
-                                background: "rgba(100, 100, 100, 0.3)",
+                                background: preset.background.blankCanvasColor,
                               }}
-                            />
-                          </div>
-                          <div className="px-3 py-2 bg-background/80 backdrop-blur-sm border-t border-border/20">
-                            <p className="text-xs font-medium text-foreground truncate">
-                              {preset.name}
-                            </p>
-                          </div>
-                        </button>
-                        {props.onDeleteCanvasPreset && (
-                          <Button
-                            size="icon"
-                            variant="destructive"
-                            className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              props.onDeleteCanvasPreset!(preset.id);
-                            }}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
+                            >
+                              <div
+                                className="absolute"
+                                style={{
+                                  left: `${preset.pip.pipPosition?.x || 50}%`,
+                                  top: `${preset.pip.pipPosition?.y || 50}%`,
+                                  width: `${preset.pip.pipSize?.width || 40}%`,
+                                  height: `${
+                                    preset.pip.pipSize?.height || 40
+                                  }%`,
+                                  transform: "translate(-50%, -50%)",
+                                  borderRadius:
+                                    preset.pip.cameraShape === "circle"
+                                      ? "50%"
+                                      : preset.pip.cameraShape === "rounded"
+                                      ? "12px"
+                                      : "0",
+                                  border: `${
+                                    preset.pip.pipBorder?.width || 2
+                                  }px solid ${
+                                    preset.pip.pipBorder?.color || "#fff"
+                                  }`,
+                                  background: "rgba(100, 100, 100, 0.3)",
+                                }}
+                              />
+                            </div>
+                            <div className="px-3 py-2 bg-background/80 backdrop-blur-sm border-t border-border/20">
+                              <p className="text-xs font-medium text-foreground truncate">
+                                {preset.name}
+                              </p>
+                            </div>
+                          </button>
+                          {/* --- 7. ADD THE SHARE BUTTON --- */}
+                          {props.onShareCanvasPreset && (
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="absolute top-1 left-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const authorName =
+                                  prompt("Enter your name (optional):") ||
+                                  "Anonymous";
+                                props.onShareCanvasPreset!(preset, authorName);
+                              }}
+                              title="Share to Community"
+                            >
+                              <Share2 className="h-3 w-3" />
+                            </Button>
+                          )}
+                          {/* --- END SHARE BUTTON --- */}
+
+                          {/* --- 10. MODIFY DELETE BUTTON CONDITION --- */}
+                          {props.onDeleteCanvasPreset &&
+                            selectedCategory !== "community" && (
+                              <Button
+                                size="icon"
+                                variant="destructive"
+                                className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  props.onDeleteCanvasPreset!(preset.id);
+                                }}
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Category Navigation */}
-              <h4 className="text-sm font-medium mb-3 text-muted-foreground">Template Presets</h4>
+              <h4 className="text-sm font-medium mb-3 text-muted-foreground">
+                Template Presets
+              </h4>
               <ScrollArea className="w-full">
                 <div className="flex gap-2 pb-3 min-w-max">
                   {CANVAS_PRESET_CATEGORIES.map((cat) => {
@@ -376,103 +417,119 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                   })}
                 </div>
               </ScrollArea>
+              {/* --- 8. ADD LOADING STATE FOR COMMUNITY TAB --- */}
+              {selectedCategory === "community" && props.isLoadingPublic && (
+                <div className="flex items-center justify-center h-40">
+                  <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                </div>
+              )}
+              {/* --- END LOADING STATE --- */}
 
               {/* Canvas Preset Grid */}
               <div className="grid grid-cols-2 gap-3 max-h-[calc(70vh-200px)] overflow-y-auto pr-2">
-                {filteredCanvasPresets.map((preset) => (
-                  <button
-                    key={preset.id}
-                    onClick={() => props.onCanvasPresetSelect?.(preset)}
-                    className="group relative rounded-lg overflow-hidden border-2 border-violet-500/20 hover:border-violet-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-200 bg-background"
-                  >
-                    {/* Preview */}
-                    <div
-                      className="w-full aspect-video relative overflow-hidden transition-transform duration-200 group-hover:scale-105"
-                      style={{
-                        background: preset.background.blankCanvasColor,
-                      }}
+                {/* --- 9. HIDE PRESETS WHILE COMMUNITY IS LOADING --- */}
+                {!(selectedCategory === "community" && props.isLoadingPublic) &&
+                  filteredCanvasPresets.map((preset) => (
+                    <button
+                      key={preset.id}
+                      onClick={() => props.onCanvasPresetSelect?.(preset)}
+                      className="group relative rounded-lg overflow-hidden border-2 border-violet-500/20 hover:border-violet-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-200 bg-background"
                     >
-                      {/* Mock camera */}
+                      {/* Preview */}
                       <div
-                        className="absolute"
+                        className="w-full aspect-video relative overflow-hidden transition-transform duration-200 group-hover:scale-105"
                         style={{
-                          left: `${preset.pip.pipPosition?.x || 50}%`,
-                          top: `${preset.pip.pipPosition?.y || 50}%`,
-                          width: `${preset.pip.pipSize?.width || 40}%`,
-                          height: `${preset.pip.pipSize?.height || 40}%`,
-                          transform: "translate(-50%, -50%)",
-                          borderRadius:
-                            preset.pip.cameraShape === "circle"
-                              ? "50%"
-                              : preset.pip.cameraShape === "rounded"
-                              ? "12px"
-                              : "0",
-                          border: `${
-                            preset.pip.pipBorder?.width || 2
-                          }px solid ${preset.pip.pipBorder?.color || "#fff"}`,
-                          boxShadow: preset.pip.pipShadow
-                            ? `0 0 ${preset.pip.pipShadow.blur}px ${preset.pip.pipShadow.color}`
-                            : "none",
-                          background:
-                            "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                          background: preset.background.blankCanvasColor,
                         }}
-                      />
-
-                      {/* Text overlays */}
-                      {preset.textOverlays.slice(0, 1).map((text) => (
+                      >
+                        {/* Mock camera */}
                         <div
-                          key={text.id}
-                          className="absolute text-center overflow-hidden"
+                          className="absolute"
                           style={{
-                            left: `${text.layout.position.x}%`,
-                            top: `${text.layout.position.y}%`,
-                            width: `${text.layout.size.width}%`,
-                            height: `${text.layout.size.height}%`,
-                            transform: `translate(-50%, -50%) rotate(${text.layout.rotation}deg)`,
-                            fontFamily: text.style.fontFamily,
-                            fontSize: `${Math.min(
-                              text.style.fontSize * 0.15,
-                              12
-                            )}px`,
-                            color: text.style.color,
-                            backgroundColor: text.style.backgroundColor,
-                            border: text.style.border,
-                            backdropFilter: text.style.backdropFilter,
-                            textShadow: text.style.textShadow,
-                            fontWeight: text.style.fontWeight,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: text.style.textAlign,
-                            padding: "2px 4px",
-                            lineHeight: 1.2,
+                            left: `${preset.pip.pipPosition?.x || 50}%`,
+                            top: `${preset.pip.pipPosition?.y || 50}%`,
+                            width: `${preset.pip.pipSize?.width || 40}%`,
+                            height: `${preset.pip.pipSize?.height || 40}%`,
+                            transform: "translate(-50%, -50%)",
+                            borderRadius:
+                              preset.pip.cameraShape === "circle"
+                                ? "50%"
+                                : preset.pip.cameraShape === "rounded"
+                                ? "12px"
+                                : "0",
+                            border: `${
+                              preset.pip.pipBorder?.width || 2
+                            }px solid ${preset.pip.pipBorder?.color || "#fff"}`,
+                            boxShadow: preset.pip.pipShadow
+                              ? `0 0 ${preset.pip.pipShadow.blur}px ${preset.pip.pipShadow.color}`
+                              : "none",
+                            background:
+                              "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                           }}
-                        >
-                          {text.content
-                            .replace(/<[^>]+>/g, " ")
-                            .replace(/\s+/g, " ")
-                            .trim()}
-                        </div>
-                      ))}
-                    </div>
+                        />
 
-                    {/* Info */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-2 pt-6">
-                      <span className="text-xs font-semibold font-cyber text-white block truncate">
-                        {preset.name}
-                      </span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {preset.styleTags.slice(0, 2).map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-[9px] px-1.5 py-0.5 rounded-full bg-violet-500/30 text-violet-200 font-cyber"
+                        {/* Text overlays */}
+                        {preset.textOverlays.slice(0, 1).map((text) => (
+                          <div
+                            key={text.id}
+                            className="absolute text-center overflow-hidden"
+                            style={{
+                              left: `${text.layout.position.x}%`,
+                              top: `${text.layout.position.y}%`,
+                              width: `${text.layout.size.width}%`,
+                              height: `${text.layout.size.height}%`,
+                              transform: `translate(-50%, -50%) rotate(${text.layout.rotation}deg)`,
+                              fontFamily: text.style.fontFamily,
+                              fontSize: `${Math.min(
+                                text.style.fontSize * 0.15,
+                                12
+                              )}px`,
+                              color: text.style.color,
+                              backgroundColor: text.style.backgroundColor,
+                              border: text.style.border,
+                              backdropFilter: text.style.backdropFilter,
+                              textShadow: text.style.textShadow,
+                              fontWeight: text.style.fontWeight,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: text.style.textAlign,
+                              padding: "2px 4px",
+                              lineHeight: 1.2,
+                            }}
                           >
-                            {tag.toUpperCase()}
-                          </span>
+                            {text.content
+                              .replace(/<[^>]+>/g, " ")
+                              .replace(/\s+/g, " ")
+                              .trim()}
+                          </div>
                         ))}
                       </div>
-                    </div>
-                  </button>
-                ))}
+
+                      {/* Info */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-2 pt-6">
+                        <span className="text-xs font-semibold font-cyber text-white block truncate">
+                          {preset.name}
+                        </span>
+                        {/* --- 10. ADD AUTHOR NAME FOR COMMUNITY PRESETS --- */}
+                        {selectedCategory === "community" &&
+                          (preset as any).authorName && (
+                            <span className="text-[9px] text-violet-300 block">
+                              by {(preset as any).authorName}
+                            </span>
+                          )}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {preset.styleTags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-[9px] px-1.5 py-0.5 rounded-full bg-violet-500/30 text-violet-200 font-cyber"
+                            >
+                              {tag.toUpperCase()}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
               </div>
 
               {filteredCanvasPresets.length === 0 && (

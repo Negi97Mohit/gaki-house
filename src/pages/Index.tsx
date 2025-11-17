@@ -15,6 +15,7 @@ import { VideoCanvas } from "@/components/VideoCanvas";
 // --- DELETED: FloatingLogo ---
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { CanvasPreset } from "@/types/canvasPreset";
+import { usePublicPresets } from "@/hooks/usePublicPresets";
 // --- DELETED: InstructionsDialog (now in BottomNav) ---
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 // --- DELETED: Unused icons ---
@@ -238,9 +239,14 @@ const Index = () => {
   const { presets, savePreset, deletePreset } = useLayoutPresets();
 
   // Canvas presets
-  const { customPresets, saveCanvasPreset, deleteCanvasPreset } =
-    useCanvasPresets();
+  const {
+    customPresets,
+    saveCanvasPreset,
+    deleteCanvasPreset,
+    shareCanvasPreset,
+  } = useCanvasPresets();
 
+  const { publicPresets, isLoading: isLoadingPublic } = usePublicPresets();
   const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   // --- MODIFIED: Convert mainContainerRef to a stateful ref ---
   const [mainContainer, setMainContainer] = useState<HTMLDivElement | null>(
@@ -1939,6 +1945,9 @@ const Index = () => {
     customCanvasPresets: customPresets,
     onSaveCanvasPreset: handleSaveCanvasPreset,
     onDeleteCanvasPreset: handleDeleteCanvasPreset,
+    publicPresets: publicPresets,
+    isLoadingPublic: isLoadingPublic,
+    onShareCanvasPreset: shareCanvasPreset,
   };
 
   const handleDeleteSession = useCallback(

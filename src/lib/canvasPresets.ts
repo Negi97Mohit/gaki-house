@@ -4381,6 +4381,7 @@ export const CANVAS_PRESETS: CanvasPreset[] = [
 
 export const CANVAS_PRESET_CATEGORIES = [
   { id: "all", name: "All Designs", icon: "LayoutGrid" },
+  { id: "community", name: "Community", icon: "Users" },
   { id: "luxury", name: "Luxury", icon: "Crown" },
   { id: "modern", name: "Modern", icon: "Zap" },
   { id: "minimal", name: "Minimal", icon: "Minus" },
