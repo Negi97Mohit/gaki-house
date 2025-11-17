@@ -9,6 +9,7 @@ import {
   Square,
   Share2, // --- 1. ADD Share2
   Users, // --- 2. ADD Users
+  CloudOff, // --- 2. ADD Users
   Loader2, // --- 3. ADD Loader2
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -72,6 +73,7 @@ interface FloatingControlsPanelProps {
   publicPresets?: CanvasPreset[];
   isLoadingPublic?: boolean;
   onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
+  onUnshareCanvasPreset?: (preset: CanvasPreset) => void; // <-- 2. Add prop
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -343,8 +345,29 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                               </p>
                             </div>
                           </button>
-                          {/* --- 7. ADD THE SHARE BUTTON --- */}
-                          {props.onShareCanvasPreset && (
+                          {/* --- 3. MAKE BUTTONS CONDITIONAL --- */}
+                          {preset.publicId ? (
+                            // ALREADY SHARED: Show Unshare Button
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="absolute top-1 left-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (
+                                  confirm(
+                                    "Are you sure you want to unshare this preset?"
+                                  )
+                                ) {
+                                  props.onUnshareCanvasPreset?.(preset);
+                                }
+                              }}
+                              title="Remove from Community"
+                            >
+                              <CloudOff className="h-3 w-3" />
+                            </Button>
+                          ) : (
+                            // NOT SHARED: Show Share Button
                             <Button
                               size="icon"
                               variant="outline"
@@ -354,7 +377,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                                 const authorName =
                                   prompt("Enter your name (optional):") ||
                                   "Anonymous";
-                                props.onShareCanvasPreset!(preset, authorName);
+                                props.onShareCanvasPreset?.(preset, authorName);
                               }}
                               title="Share to Community"
                             >
@@ -364,20 +387,19 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                           {/* --- END SHARE BUTTON --- */}
 
                           {/* --- 10. MODIFY DELETE BUTTON CONDITION --- */}
-                          {props.onDeleteCanvasPreset &&
-                            selectedCategory !== "community" && (
-                              <Button
-                                size="icon"
-                                variant="destructive"
-                                className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  props.onDeleteCanvasPreset!(preset.id);
-                                }}
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            )}
+                          {props.onDeleteCanvasPreset && (
+                            <Button
+                              size="icon"
+                              variant="destructive"
+                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                props.onDeleteCanvasPreset!(preset.id);
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          )}
                         </div>
                       ))}
                     </div>

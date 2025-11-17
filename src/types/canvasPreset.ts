@@ -89,4 +89,5 @@ export interface CanvasPreset {
   effects: CanvasPresetEffects;
   canvasAspectRatio?: string;
   canvasLayout: CanvasLayoutState | null;
+  publicId?: string;
 }

@@ -244,6 +244,7 @@ const Index = () => {
     saveCanvasPreset,
     deleteCanvasPreset,
     shareCanvasPreset,
+    unshareCanvasPreset,
   } = useCanvasPresets();
 
   const { publicPresets, isLoading: isLoadingPublic } = usePublicPresets();
@@ -1584,6 +1585,14 @@ const Index = () => {
     },
     [deleteCanvasPreset]
   );
+  // --- 2. CREATE HANDLER FOR UNSHARING ---
+  const handleUnshareCanvasPreset = useCallback(
+    (preset: CanvasPreset) => {
+      if (!unshareCanvasPreset) return;
+      unshareCanvasPreset(preset);
+    },
+    [unshareCanvasPreset]
+  );
 
   // --- CANVAS PRESET HANDLER ---
   const handleCanvasPresetSelect = useCallback(
@@ -1947,7 +1956,8 @@ const Index = () => {
     onDeleteCanvasPreset: handleDeleteCanvasPreset,
     publicPresets: publicPresets,
     isLoadingPublic: isLoadingPublic,
-    onShareCanvasPreset: shareCanvasPreset,
+    onShareCanvasPreset: (preset, name) => shareCanvasPreset(preset, name), // Ensure full preset is passed
+    onUnshareCanvasPreset: handleUnshareCanvasPreset, // <-- 3. Pass new handler
   };
 
   const handleDeleteSession = useCallback(
