@@ -14,6 +14,8 @@ export interface TextDesignPreset {
     italic: boolean;
     underline: boolean;
     textShadow?: string;
+    letterSpacing?: string;
+    padding?: string;
     outline: boolean;
     shadow: boolean;
     gradient?: string;

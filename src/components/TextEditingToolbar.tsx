@@ -479,21 +479,33 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                       <button
                         key={design.id}
                         onClick={() => handleApplyDesign(design)}
-                        className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105 bg-background"
+                        className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105"
+                        style={{
+                          background: design.thumbnail,
+                        }}
                       >
                         <div
                           className="w-full h-28 flex items-center justify-center p-3"
-                          style={{
-                            background: design.thumbnail,
-                          }}
                         >
                           <span
-                            className="text-2xl font-bold select-none"
+                            className="text-2xl font-bold select-none inline-block"
                             style={{
                               fontFamily: design.style.fontFamily,
+                              fontSize: '32px',
                               color: design.style.color,
+                              backgroundColor: design.style.backgroundColor || 'transparent',
+                              padding: design.style.padding || '0',
                               textShadow: design.style.textShadow || 'none',
+                              fontWeight: design.style.bold ? 'bold' : 'normal',
+                              fontStyle: design.style.italic ? 'italic' : 'normal',
+                              textDecoration: design.style.underline ? 'underline' : 'none',
+                              letterSpacing: design.style.letterSpacing || 'normal',
                               WebkitTextStroke: design.style.outline ? '1px currentColor' : 'none',
+                              border: design.style.border ? `${design.style.borderWidth}px solid ${design.style.borderColor}` : 'none',
+                              backgroundImage: design.style.gradient || 'none',
+                              WebkitBackgroundClip: design.style.gradient ? 'text' : 'border-box',
+                              WebkitTextFillColor: design.style.gradient ? 'transparent' : design.style.color,
+                              backgroundClip: design.style.gradient ? 'text' : 'border-box',
                             }}
                           >
                             Aa
