@@ -8,8 +8,8 @@ import {
   CanvasSectionState,
   FileOverlayState,
   TextOverlayState,
-  CanvasSectionCameraState, // +++ ADDED +++
-  DEFAULT_CAMERA_STATE, // +++ ADDED +++
+  CanvasSectionCameraState,
+  DEFAULT_CAMERA_STATE,
 } from "@/types/caption";
 import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { FileRenderer } from "@/components/DraggableFileViewer";
@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GridSectionToolbar } from "@/components/GridSectionToolbar";
+import { GridSectionToolbar } from "./GridSectionToolbar";
 import {
   Popover,
   PopoverContent,
@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { Loader2 } from "lucide-react";
-import { CameraRenderer } from "@/components/CameraRenderer"; // +++ ADDED IMPORT +++
+import { CameraRenderer } from "@/components/CameraRenderer";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -48,12 +48,12 @@ interface CanvasGridLayoutProps {
   pipSize: { width: number; height: number };
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
-  // +++ ADDED: Handler for grid camera settings +++
   onSectionCameraSettingsChange: (
     sectionId: string,
     settings: Partial<CanvasSectionCameraState>
   ) => void;
-  // +++ END ADDED +++
+  // --- ADDED: Pass these props down ---
+  backgroundEffect: "none" | "blur" | "image";
 }
 
 export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
@@ -72,8 +72,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipSize,
   pipBorder,
   pipShadow,
-  // +++ ADDED: Destructure new handler +++
   onSectionCameraSettingsChange,
+  // --- ADDED: Destructure new props ---
+  backgroundEffect,
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [templates, setTemplates] = useState<Record<
@@ -125,13 +126,13 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
         );
 
       case "camera":
-        if (!cameraStream) return <div className="w-full h-full bg-muted" />;
-
-        // --- MODIFIED: Use CameraRenderer instead of <video> ---
+        // --- MODIFICATION: REMOVED the "if (!cameraStream)" check ---
+        // We now *always* render CameraRenderer and let it decide
+        // whether to show the video or the placeholder icon.
         const settings = content.settings;
         return (
           <CameraRenderer
-            stream={cameraStream}
+            stream={cameraStream} // Pass the null stream
             className="w-full h-full object-cover"
             style={{
               borderRadius:
@@ -146,116 +147,106 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             pipBorder={settings.pipBorder}
             onPipBorderChange={(border) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 pipBorder: border,
               })
             }
             pipShadow={settings.pipShadow}
             onPipShadowChange={(shadow) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 pipShadow: shadow,
               })
             }
             isAutoFramingEnabled={settings.isAutoFramingEnabled}
             onAutoFramingChange={(enabled) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 isAutoFramingEnabled: enabled,
               })
             }
             isBeautifyEnabled={settings.isBeautifyEnabled}
             onBeautifyToggle={(enabled) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 isBeautifyEnabled: enabled,
               })
             }
             isLowLightEnabled={settings.isLowLightEnabled}
             onLowLightToggle={(enabled) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 isLowLightEnabled: enabled,
               })
             }
             videoFilter={settings.videoFilter}
             onVideoFilterChange={(filter) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 videoFilter: filter,
               })
             }
             isNeonEdgeEnabled={settings.isNeonEdgeEnabled}
             onNeonEdgeToggle={(enabled) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 isNeonEdgeEnabled: enabled,
               })
             }
             neonIntensity={settings.neonIntensity}
             onNeonIntensityChange={(value) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 neonIntensity: value,
               })
             }
             neonColor={settings.neonColor}
             onNeonEdgeColorChange={(color) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 neonColor: color,
               })
             }
             zoomSensitivity={settings.zoomSensitivity}
             onZoomSensitivityChange={(value) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 zoomSensitivity: value,
               })
             }
             trackingSpeed={settings.trackingSpeed}
             onTrackingSpeedChange={(value) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 trackingSpeed: value,
               })
             }
             cameraBackground={settings.cameraBackground}
             onCameraBackgroundChange={(bgId) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 cameraBackground: bgId,
               })
             }
             onCustomBackgroundUpload={(file) => {
-              /* TODO: Implement upload -> URL for grid */
+              const url = URL.createObjectURL(file);
+              onSectionCameraSettingsChange(section.id, {
+                cameraBackground: "image",
+                customBackgroundUrl: url,
+              });
             }}
             cameraAspectRatio={settings.cameraAspectRatio}
             onCameraAspectRatioChange={(ratio) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 cameraAspectRatio: ratio,
               })
             }
             customAspectRatio={settings.customAspectRatio}
             onCustomAspectRatioChange={(ratio) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 customAspectRatio: ratio,
               })
             }
             isFaceTrackingEnabled={settings.isFaceTrackingEnabled}
             onFaceTrackingToggle={(enabled) =>
               onSectionCameraSettingsChange(section.id, {
-                ...settings,
                 isFaceTrackingEnabled: enabled,
               })
             }
-            // Pass background props
-            backgroundEffect={"none"}
-            backgroundImageUrl={null}
+            // --- MODIFIED: Pass main background props ---
+            backgroundEffect={backgroundEffect}
+            backgroundImageUrl={backgroundImageUrl}
           />
         );
+      // --- END MODIFICATION ---
 
       case "screen":
         if (!screenStream) return <div className="w-full h-full bg-muted" />;
@@ -367,7 +358,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     onClick={() =>
                       onSectionContentChange(section.id, {
                         type: "camera",
-                        settings: DEFAULT_CAMERA_STATE, // +++ Use default state +++
+                        settings: DEFAULT_CAMERA_STATE,
                       })
                     }
                   >
