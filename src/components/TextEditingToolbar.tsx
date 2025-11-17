@@ -28,7 +28,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { loadTextDesigns } from "@/lib/textDesigns";
-import { TextDesignPreset } from "@/types/textDesign";
+import { TextDesignPreset, TextLayer } from "@/types/textDesign"; // IMPORT TextLayer
 
 interface TextEditingToolbarProps {
   overlay: TextOverlayState;
@@ -138,24 +138,83 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   };
 
   const handleApplyDesign = (design: TextDesignPreset) => {
-    onStyleChange(overlay.id, {
-      fontFamily: design.style.fontFamily,
-      fontSize: design.style.fontSize,
-      color: design.style.color,
-      backgroundColor: design.style.backgroundColor,
-      bold: design.style.bold,
-      italic: design.style.italic,
-      underline: design.style.underline,
-      textShadow: design.style.textShadow,
-      outline: design.style.outline,
-      shadow: design.style.shadow,
-      gradient: design.style.gradient,
-      border: design.style.border,
-      borderColor: design.style.borderColor,
-      borderWidth: design.style.borderWidth,
-      letterSpacing: design.style.letterSpacing,
-      padding: design.style.padding,
-    });
+    // --- FIX: Check if design.layers exists. If not, it's an old preset. ---
+    if (design.layers && design.layers.length > 0) {
+      // --- NEW Multi-Layer Logic ---
+      const baseTextLayer = design.layers.find((l) => l.type === "text") as
+        | TextLayer
+        | undefined;
+      // --- NEW: Check thumbnail to apply background color ---
+      let appliedBackgroundColor = "transparent";
+      if (
+        design.thumbnail &&
+        (design.thumbnail.startsWith("#") || design.thumbnail.startsWith("rgb"))
+      ) {
+        appliedBackgroundColor = design.thumbnail;
+      }
+      // --- END NEW ---
+
+      onStyleChange(overlay.id, {
+        layers: design.layers, // Apply the full layer stack
+        fontFamily: baseTextLayer?.fontFamily || "Inter",
+        fontSize: baseTextLayer?.fontSize || 32,
+        color: baseTextLayer?.color || "#FFFFFF",
+        gradient: baseTextLayer?.gradient || undefined,
+        letterSpacing: baseTextLayer?.letterSpacing || "normal",
+        backgroundColor: "appliedBackgroundColor",
+        bold: false,
+        italic: false,
+        underline: false,
+        textShadow: "none",
+        outline: false,
+        shadow: false,
+        border: false,
+        borderColor: "#FFFFFF",
+        borderWidth: 2,
+        padding: "0",
+        textAlign: "center",
+      });
+    } else if ((design as any).style) {
+      // --- FALLBACK: Convert OLD flat preset to a NEW flat style ---
+      const oldStyle = (design as any).style;
+
+      // --- NEW: Also apply thumbnail logic to fallback ---
+      let appliedBackgroundColor = oldStyle.backgroundColor; // Default to old style's BG
+      if (
+        (!appliedBackgroundColor || appliedBackgroundColor === "transparent") &&
+        design.thumbnail &&
+        (design.thumbnail.startsWith("#") || design.thumbnail.startsWith("rgb"))
+      ) {
+        appliedBackgroundColor = design.thumbnail;
+      }
+      // --- END NEW ---
+
+      onStyleChange(overlay.id, {
+        layers: null, // <-- Explicitly set layers to null to exit multi-layer mode
+        fontFamily: oldStyle.fontFamily,
+        fontSize: oldStyle.fontSize,
+        color: oldStyle.color,
+        backgroundColor: appliedBackgroundColor,
+        bold: oldStyle.bold,
+        italic: oldStyle.italic,
+        underline: oldStyle.underline,
+        textShadow: oldStyle.textShadow,
+        outline: oldStyle.outline,
+        shadow: oldStyle.shadow,
+        gradient: oldStyle.gradient,
+        border: oldStyle.border,
+        borderColor: oldStyle.borderColor,
+        borderWidth: oldStyle.borderWidth,
+        letterSpacing: oldStyle.letterSpacing,
+        padding: oldStyle.padding,
+      });
+    } else {
+      console.error(
+        "Clicked design preset has no 'layers' or 'style' property:",
+        design
+      );
+    }
+
     setShowDesigns(false);
   };
 
@@ -193,340 +252,378 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
             Designs
           </Button>
 
-          <div className="w-px h-6 bg-border" />
-        {/* Font Family Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-3 text-xs font-medium"
-            >
-              <Type className="w-3 h-3 mr-1" />
-              {overlay.style.fontFamily.split(",")[0]}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="start"
-            className="max-h-64 overflow-y-auto"
-          >
-            {FONT_FAMILIES.map((font) => (
-              <DropdownMenuItem
-                key={font}
-                onClick={() => handleFontFamilyChange(font)}
-                className={cn(overlay.style.fontFamily === font && "bg-accent")}
-                style={{ fontFamily: font }}
+          {/* --- START CONDITIONAL BLOCK --- */}
+          {overlay.style.layers ? (
+            // --- NEW: Show when a design is applied ---
+            <div className="flex items-center gap-2 p-2">
+              <span className="text-xs text-muted-foreground">
+                Design applied
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                title="Remove Design / Edit Manually"
+                onClick={() => onStyleChange(overlay.id, { layers: null })}
               >
-                {font}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        <div className="w-px h-6 bg-border" />
-
-        {/* Font Size Controls */}
-        <div className="flex items-center gap-1 bg-muted/50 rounded-md px-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => handleFontSizeChange(-4)}
-          >
-            <Minus className="w-3 h-3" />
-          </Button>
-          <span className="text-xs font-medium w-10 text-center">
-            {overlay.style.fontSize}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={() => handleFontSizeChange(4)}
-          >
-            <Plus className="w-3 h-3" />
-          </Button>
-        </div>
-
-        <div className="w-px h-6 bg-border" />
-
-        {/* Text Color */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 relative">
-              <Type className="w-4 h-4" />
-              <div
-                className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded"
-                style={{ backgroundColor: overlay.style.color }}
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <div className="grid grid-cols-5 gap-2 p-2">
-              {PRESET_COLORS.map((color) => (
-                <button
-                  key={color}
-                  className="w-8 h-8 rounded-md border-2 border-border hover:scale-110 transition-transform"
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleColorChange(color)}
-                />
-              ))}
+                <RemoveFormatting className="w-4 h-4" />
+              </Button>
             </div>
-            <div className="p-2 pt-0">
-              <input
-                type="color"
-                value={overlay.style.color}
-                onChange={(e) => handleColorChange(e.target.value)}
-                className="w-full h-8 rounded cursor-pointer"
-              />
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          ) : (
+            // --- OLD: Show all flat editors ---
+            <>
+              <div className="w-px h-6 bg-border" />
+              {/* Font Family Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-3 text-xs font-medium"
+                  >
+                    <Type className="w-3 h-3 mr-1" />
+                    {overlay.style.fontFamily.split(",")[0]}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="start"
+                  className="max-h-64 overflow-y-auto"
+                >
+                  {FONT_FAMILIES.map((font) => (
+                    <DropdownMenuItem
+                      key={font}
+                      onClick={() => handleFontFamilyChange(font)}
+                      className={cn(
+                        overlay.style.fontFamily === font && "bg-accent"
+                      )}
+                      style={{ fontFamily: font }}
+                    >
+                      {font}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-        {/* Background Color */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              title="Background Color"
-            >
-              <div
-                className="w-5 h-5 rounded border-2 border-border"
-                style={{ backgroundColor: overlay.style.backgroundColor }}
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <div className="grid grid-cols-5 gap-2 p-2">
-              {PRESET_COLORS.map((color) => (
-                <button
-                  key={color}
-                  className="w-8 h-8 rounded-md border-2 border-border hover:scale-110 transition-transform"
-                  style={{ backgroundColor: color }}
-                  onClick={() => handleColorChange(color, true)}
-                />
-              ))}
-              <button
-                className="w-8 h-8 rounded-md border-2 border-border hover:scale-110 transition-transform bg-transparent"
-                onClick={() => handleColorChange("transparent", true)}
-                title="Transparent"
-              >
-                <div className="w-full h-full bg-gradient-to-br from-red-500 via-transparent to-red-500 opacity-30" />
-              </button>
-            </div>
-            <div className="p-2 pt-0">
-              <input
-                type="color"
-                value={overlay.style.backgroundColor}
-                onChange={(e) => handleColorChange(e.target.value, true)}
-                className="w-full h-8 rounded cursor-pointer"
-              />
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <div className="w-px h-6 bg-border" />
 
-        <div className="w-px h-6 bg-border" />
+              {/* Font Size Controls */}
+              <div className="flex items-center gap-1 bg-muted/50 rounded-md px-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => handleFontSizeChange(-4)}
+                >
+                  <Minus className="w-3 h-3" />
+                </Button>
+                <span className="text-xs font-medium w-10 text-center">
+                  {overlay.style.fontSize}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => handleFontSizeChange(4)}
+                >
+                  <Plus className="w-3 h-3" />
+                </Button>
+              </div>
 
-        {/* Text Formatting */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn("h-8 w-8", overlay.style.bold && "bg-accent")}
-          onClick={() => document.execCommand("bold")}
-        >
-          <Bold className="w-4 h-4" />
-        </Button>
+              <div className="w-px h-6 bg-border" />
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn("h-8 w-8", overlay.style.italic && "bg-accent")}
-          onClick={() => document.execCommand("italic")}
-        >
-          <Italic className="w-4 h-4" />
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn("h-8 w-8", overlay.style.underline && "bg-accent")}
-          onClick={() => document.execCommand("underline")}
-        >
-          <Underline className="w-4 h-4" />
-        </Button>
-
-        <div className="w-px h-6 bg-border" />
-
-        {/* Text Alignment */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "h-8 w-8",
-            (overlay.style as any).textAlign === "left" && "bg-accent"
-          )}
-          onClick={() => handleAlignmentChange("left")}
-        >
-          <AlignLeft className="w-4 h-4" />
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "h-8 w-8",
-            (overlay.style as any).textAlign === "center" && "bg-accent"
-          )}
-          onClick={() => handleAlignmentChange("center")}
-        >
-          <AlignCenter className="w-4 h-4" />
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "h-8 w-8",
-            (overlay.style as any).textAlign === "right" && "bg-accent"
-          )}
-          onClick={() => handleAlignmentChange("right")}
-        >
-          <AlignRight className="w-4 h-4" />
-        </Button>
-
-        <div className="w-px h-6 bg-border" />
-
-        {/* List Types */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              title="Lists"
-            >
-              <List className="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() => document.execCommand("insertUnorderedList")}
-            >
-              <List className="w-4 h-4 mr-2" />
-              Bullet List
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => document.execCommand("insertOrderedList")}
-            >
-              <ListOrdered className="w-4 h-4 mr-2" />
-              Numbered List
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => document.execCommand("removeFormat")}
-            >
-              <RemoveFormatting className="w-4 h-4 mr-2" />
-              Remove Formatting
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
-
-    {/* Design Library Panel */}
-    {showDesigns && (
-      <div
-        className="absolute bg-background border-2 border-border rounded-xl shadow-2xl p-4"
-        style={{
-          left: `${toolbarPosition.x}px`,
-          top: `${toolbarPosition.y + 60}px`,
-          zIndex: "calc(var(--z-text-toolbar) + 1)",
-          width: "600px",
-          maxHeight: "450px",
-        }}
-        onClick={(e) => e.stopPropagation()}
-        onMouseDown={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-foreground">Text Designs</h3>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            onClick={() => setShowDesigns(false)}
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid grid-cols-6 w-full mb-3 bg-muted">
-            {categories.map((cat) => (
-              <TabsTrigger 
-                key={cat.value} 
-                value={cat.value} 
-                className="text-xs data-[state=active]:bg-background data-[state=active]:text-foreground"
-              >
-                {cat.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {categories.map((cat) => (
-            <TabsContent key={cat.value} value={cat.value} className="mt-0">
-              <ScrollArea className="h-[320px] w-full pr-4">
-                <div className="grid grid-cols-3 gap-3">
-                  {textDesigns
-                    .filter((d) => cat.value === "all" || d.category === cat.value)
-                    .map((design) => (
+              {/* Text Color */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 relative"
+                  >
+                    <Type className="w-4 h-4" />
+                    <div
+                      className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-1 rounded"
+                      style={{ backgroundColor: overlay.style.color }}
+                    />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <div className="grid grid-cols-5 gap-2 p-2">
+                    {PRESET_COLORS.map((color) => (
                       <button
-                        key={design.id}
-                        onClick={() => handleApplyDesign(design)}
-                        className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105"
-                        style={{
-                          background: design.thumbnail,
-                        }}
-                      >
-                        <div
-                          className="w-full h-28 flex items-center justify-center p-3"
-                        >
-                          <span
-                            className="text-2xl font-bold select-none inline-block"
+                        key={color}
+                        className="w-8 h-8 rounded-md border-2 border-border hover:scale-110 transition-transform"
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleColorChange(color)}
+                      />
+                    ))}
+                  </div>
+                  <div className="p-2 pt-0">
+                    <input
+                      type="color"
+                      value={overlay.style.color}
+                      onChange={(e) => handleColorChange(e.target.value)}
+                      className="w-full h-8 rounded cursor-pointer"
+                    />
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Background Color */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    title="Background Color"
+                  >
+                    <div
+                      className="w-5 h-5 rounded border-2 border-border"
+                      style={{ backgroundColor: overlay.style.backgroundColor }}
+                    />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <div className="grid grid-cols-5 gap-2 p-2">
+                    {PRESET_COLORS.map((color) => (
+                      <button
+                        key={color}
+                        className="w-8 h-8 rounded-md border-2 border-border hover:scale-110 transition-transform"
+                        style={{ backgroundColor: color }}
+                        onClick={() => handleColorChange(color, true)}
+                      />
+                    ))}
+                    <button
+                      className="w-8 h-8 rounded-md border-2 border-border hover:scale-110 transition-transform bg-transparent"
+                      onClick={() => handleColorChange("transparent", true)}
+                      title="Transparent"
+                    >
+                      <div className="w-full h-full bg-gradient-to-br from-red-500 via-transparent to-red-500 opacity-30" />
+                    </button>
+                  </div>
+                  <div className="p-2 pt-0">
+                    <input
+                      type="color"
+                      value={overlay.style.backgroundColor}
+                      onChange={(e) => handleColorChange(e.target.value, true)}
+                      className="w-full h-8 rounded cursor-pointer"
+                    />
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="w-px h-6 bg-border" />
+
+              {/* Text Formatting */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn("h-8 w-8", overlay.style.bold && "bg-accent")}
+                onClick={() => document.execCommand("bold")}
+              >
+                <Bold className="w-4 h-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn("h-8 w-8", overlay.style.italic && "bg-accent")}
+                onClick={() => document.execCommand("italic")}
+              >
+                <Italic className="w-4 h-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "h-8 w-8",
+                  overlay.style.underline && "bg-accent"
+                )}
+                onClick={() => document.execCommand("underline")}
+              >
+                <Underline className="w-4 h-4" />
+              </Button>
+
+              <div className="w-px h-6 bg-border" />
+
+              {/* Text Alignment */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "h-8 w-8",
+                  (overlay.style as any).textAlign === "left" && "bg-accent"
+                )}
+                onClick={() => handleAlignmentChange("left")}
+              >
+                <AlignLeft className="w-4 h-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "h-8 w-8",
+                  (overlay.style as any).textAlign === "center" && "bg-accent"
+                )}
+                onClick={() => handleAlignmentChange("center")}
+              >
+                <AlignCenter className="w-4 h-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "h-8 w-8",
+                  (overlay.style as any).textAlign === "right" && "bg-accent"
+                )}
+                onClick={() => handleAlignmentChange("right")}
+              >
+                <AlignRight className="w-4 h-4" />
+              </Button>
+
+              <div className="w-px h-6 bg-border" />
+
+              {/* List Types */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    title="Lists"
+                  >
+                    <List className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={() => document.execCommand("insertUnorderedList")}
+                  >
+                    <List className="w-4 h-4 mr-2" />
+                    Bullet List
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => document.execCommand("insertOrderedList")}
+                  >
+                    <ListOrdered className="w-4 h-4 mr-2" />
+                    Numbered List
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => document.execCommand("removeFormat")}
+                  >
+                    <RemoveFormatting className="w-4 h-4 mr-2" />
+                    Remove Formatting
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          )}
+          {/* --- END CONDITIONAL BLOCK --- */}
+        </div>
+      </div>
+
+      {/* Design Library Panel */}
+      {showDesigns && (
+        <div
+          className="absolute bg-background border-2 border-border rounded-xl shadow-2xl p-4"
+          style={{
+            left: `${toolbarPosition.x}px`,
+            top: `${toolbarPosition.y + 60}px`,
+            zIndex: "calc(var(--z-text-toolbar) + 1)",
+            width: "600px",
+            maxHeight: "450px",
+          }}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-foreground">
+              Text Designs
+            </h3>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={() => setShowDesigns(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="grid grid-cols-6 w-full mb-3 bg-muted">
+              {categories.map((cat) => (
+                <TabsTrigger
+                  key={cat.value}
+                  value={cat.value}
+                  className="text-xs data-[state=active]:bg-background data-[state=active]:text-foreground"
+                >
+                  {cat.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {categories.map((cat) => (
+              <TabsContent key={cat.value} value={cat.value} className="mt-0">
+                <ScrollArea className="h-[320px] w-full pr-4">
+                  <div className="grid grid-cols-3 gap-3">
+                    {textDesigns
+                      .filter(
+                        (d) => cat.value === "all" || d.category === cat.value
+                      )
+                      .map((design) => {
+                        // --- FIX: Safely find the base text layer or fallback to old style ---
+                        const oldStyle = (design as any).style;
+                        const baseTextLayer = design.layers?.find(
+                          (l): l is TextLayer => l.type === "text"
+                        ) as TextLayer | undefined;
+
+                        // --- Determine preview style ---
+                        const previewStyle: React.CSSProperties = {
+                          fontFamily:
+                            baseTextLayer?.fontFamily ||
+                            oldStyle?.fontFamily ||
+                            "Inter",
+                          fontSize: "32px",
+                          color:
+                            baseTextLayer?.color ||
+                            oldStyle?.color ||
+                            "#FFFFFF",
+                        };
+
+                        return (
+                          <button
+                            key={design.id}
+                            onClick={() => handleApplyDesign(design)}
+                            className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105"
                             style={{
-                              fontFamily: design.style.fontFamily,
-                              fontSize: '32px',
-                              color: design.style.color,
-                              backgroundColor: design.style.backgroundColor || 'transparent',
-                              padding: design.style.padding || '0',
-                              textShadow: design.style.textShadow || 'none',
-                              fontWeight: design.style.bold ? 'bold' : 'normal',
-                              fontStyle: design.style.italic ? 'italic' : 'normal',
-                              textDecoration: design.style.underline ? 'underline' : 'none',
-                              letterSpacing: design.style.letterSpacing || 'normal',
-                              WebkitTextStroke: design.style.outline ? '1px currentColor' : 'none',
-                              border: design.style.border ? `${design.style.borderWidth}px solid ${design.style.borderColor}` : 'none',
-                              backgroundImage: design.style.gradient || 'none',
-                              WebkitBackgroundClip: design.style.gradient ? 'text' : 'border-box',
-                              WebkitTextFillColor: design.style.gradient ? 'transparent' : design.style.color,
-                              backgroundClip: design.style.gradient ? 'text' : 'border-box',
+                              background: design.thumbnail,
                             }}
                           >
-                            Aa
-                          </span>
-                        </div>
-                        <div className="bg-background border-t border-border p-2">
-                          <p className="text-xs font-medium text-center truncate text-foreground">
-                            {design.name}
-                          </p>
-                        </div>
-                      </button>
-                    ))}
-                </div>
-              </ScrollArea>
-            </TabsContent>
-          ))}
-        </Tabs>
-      </div>
-    )}
-  </>
+                            <div className="w-full h-28 flex items-center justify-center p-3">
+                              <span
+                                className="text-2xl font-bold select-none inline-block"
+                                style={previewStyle} // Use the safe preview style
+                              >
+                                Aa
+                              </span>
+                            </div>
+                            <div className="bg-background border-t border-border p-2">
+                              <p className="text-xs font-medium text-center truncate text-foreground">
+                                {design.name}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </div>
+      )}
+    </>
   );
 };

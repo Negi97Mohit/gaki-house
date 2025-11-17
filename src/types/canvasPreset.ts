@@ -1,5 +1,6 @@
 // src/types/canvasPreset.ts
 import { CanvasLayoutState } from "../types/caption";
+import { TextDesignLayer } from "./textDesign";
 
 export interface CanvasPresetBackground {
   blankCanvasColor: string; // Can be solid color or gradient
@@ -51,7 +52,9 @@ export interface CanvasPresetTextOverlay {
     border?: string;
     backdropFilter?: string;
     borderRadius?: string;
+    layers?: TextDesignLayer[] | null;
   };
+
   layout: {
     position: { x: number; y: number };
     size: { width: number; height: number };

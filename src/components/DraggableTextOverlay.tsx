@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import { X, RotateCcw, GripVertical } from "lucide-react";
 import { TextEditingToolbar } from "./TextEditingToolbar";
+import { MultiLayerTextRenderer } from "./MultiLayerTextRenderer";
 
 // Helper: Convert top-left pixel to top-left percentage
 const calculatePercentagePosition = (
@@ -319,7 +320,10 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
               suppressContentEditableWarning={true}
               onBlur={handleBlur}
               onFocus={handleFocus}
-              className="w-full h-full overflow-y-auto outline-none focus:ring-2 focus:ring-primary/50 rounded"
+              className={cn(
+                "w-full h-full overflow-y-auto outline-none focus:ring-2 focus:ring-primary/50 rounded",
+                overlay.style.layers && "opacity-50" // Dim if editing a complex style
+              )}
               style={{
                 fontFamily: overlay.style.fontFamily,
                 fontSize: `${overlay.style.fontSize}px`,
@@ -331,8 +335,12 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                 border: overlay.style.border
                   ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
                   : "none",
-                textShadow: overlay.style.textShadow || (overlay.style.shadow ? "0 2px 4px rgba(0,0,0,0.5)" : "none"),
-                WebkitTextStroke: overlay.style.outline ? "1px currentColor" : "none",
+                textShadow:
+                  overlay.style.textShadow ||
+                  (overlay.style.shadow ? "0 2px 4px rgba(0,0,0,0.5)" : "none"),
+                WebkitTextStroke: overlay.style.outline
+                  ? "1px currentColor"
+                  : "none",
                 letterSpacing: overlay.style.letterSpacing || "normal",
                 padding: overlay.style.padding || "0.5em",
                 textAlign: (overlay.style as any).textAlign || "left",
@@ -349,38 +357,57 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
               dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
           ) : (
-            <div className="w-full h-full p-2 rounded">
-              <div
-                className="w-full h-full whitespace-pre-wrap break-words cursor-move"
-                style={{
-                  fontFamily: overlay.style.fontFamily,
-                  fontSize: `${overlay.style.fontSize}px`,
-                  color: overlay.style.color,
-                  backgroundColor: overlay.style.backgroundColor || "transparent",
-                  fontWeight: overlay.style.bold ? "bold" : "normal",
-                  fontStyle: overlay.style.italic ? "italic" : "normal",
-                  textDecoration: overlay.style.underline ? "underline" : "none",
-                  border: overlay.style.border
-                    ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
-                    : "none",
-                  textShadow: overlay.style.textShadow || (overlay.style.shadow ? "0 2px 4px rgba(0,0,0,0.5)" : "none"),
-                  WebkitTextStroke: overlay.style.outline ? "1px currentColor" : "none",
-                  letterSpacing: overlay.style.letterSpacing || "normal",
-                  padding: overlay.style.padding || "0",
-                  minWidth: "50px",
-                  textAlign: (overlay.style as any).textAlign || "left",
-                  listStylePosition: "inside",
-                  ...(overlay.style.gradient && {
-                    background: overlay.style.gradient,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                  }),
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: overlay.content || "Double-click to edit",
-                }}
-              />
+            // --- NON-EDITING MODE (conditionally render new or old) ---
+            <div className="w-full h-full rounded cursor-move">
+              {overlay.style.layers ? (
+                // --- 2. USE NEW RENDERER ---
+                <MultiLayerTextRenderer
+                  text={overlay.content || "Double-click to edit"}
+                  layers={overlay.style.layers}
+                />
+              ) : (
+                // --- 3. FALLBACK TO OLD RENDERER ---
+                <div
+                  className="w-full h-full whitespace-pre-wrap break-words p-2"
+                  style={{
+                    fontFamily: overlay.style.fontFamily,
+                    fontSize: `${overlay.style.fontSize}px`,
+                    color: overlay.style.color,
+                    backgroundColor:
+                      overlay.style.backgroundColor || "transparent",
+                    fontWeight: overlay.style.bold ? "bold" : "normal",
+                    fontStyle: overlay.style.italic ? "italic" : "normal",
+                    textDecoration: overlay.style.underline
+                      ? "underline"
+                      : "none",
+                    border: overlay.style.border
+                      ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
+                      : "none",
+                    textShadow:
+                      overlay.style.textShadow ||
+                      (overlay.style.shadow
+                        ? "0 2px 4px rgba(0,0,0,0.5)"
+                        : "none"),
+                    WebkitTextStroke: overlay.style.outline
+                      ? "1px currentColor"
+                      : "none",
+                    letterSpacing: overlay.style.letterSpacing || "normal",
+                    padding: overlay.style.padding || "0",
+                    minWidth: "50px",
+                    textAlign: (overlay.style as any).textAlign || "left",
+                    listStylePosition: "inside",
+                    ...(overlay.style.gradient && {
+                      background: overlay.style.gradient,
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                    }),
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: overlay.content || "Double-click to edit",
+                  }}
+                />
+              )}
             </div>
           )}
 

@@ -1,4 +1,7 @@
 // src/types/caption.ts
+
+import type { TextDesignLayer } from "./textDesign";
+
 export type CaptionShape =
   | "rectangular"
   | "rounded"
@@ -34,7 +37,9 @@ export interface CaptionStyle {
   borderWidth: number;
   letterSpacing?: string;
   padding?: string;
+  layers?: TextDesignLayer[] | null;
 }
+
 export type GeneratedLayout = {
   position: { x: number; y: number };
   size: { width: number; height: number };

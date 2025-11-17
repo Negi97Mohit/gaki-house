@@ -669,5 +669,718 @@
       "borderColor": "#000000",
       "borderWidth": 0
     }
+  },
+  {
+    "id": "neon-glow-pro",
+    "name": "Neon Glow Pro",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00eaff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Bungee",
+        "fontSize": 96,
+        "color": "#ffffff"
+      },
+      { "type": "stroke", "color": "#ff00ff", "width": 8 },
+      { "type": "glow", "color": "#ff00ff", "blur": 40 },
+      { "type": "glow", "color": "#00eaff", "blur": 80 },
+      {
+        "type": "inner-shadow",
+        "color": "rgba(0,0,0,0.4)",
+        "blur": 12,
+        "offsetX": 0,
+        "offsetY": 4
+      }
+    ]
+  },
+  {
+    "id": "gold-metal-3d",
+    "name": "Gold Metal 3D",
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Playfair Display",
+        "fontSize": 110,
+        "color": "#ffffff"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/gold_foil.jpg",
+        "blendMode": "overlay",
+        "opacity": 1
+      },
+      {
+        "type": "inner-shadow",
+        "color": "rgba(0,0,0,0.5)",
+        "blur": 15,
+        "offsetX": 0,
+        "offsetY": 6
+      },
+      { "type": "extrude", "depth": 30, "angle": 140, "color": "#8b6f23" },
+      { "type": "glow", "color": "rgba(255,215,0,0.6)", "blur": 25 }
+    ]
+  },
+  {
+    "id": "retro-vhs",
+    "name": "Retro VHS",
+    "category": "retro",
+    "thumbnail": "linear-gradient(135deg, #ff0000 0%, #00ffff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Press Start 2P",
+        "fontSize": 64,
+        "color": "#ffffff"
+      },
+      {
+        "type": "offset-layer",
+        "color": "#ff0000",
+        "offsetX": 3,
+        "offsetY": -2
+      },
+      {
+        "type": "offset-layer",
+        "color": "#00ffff",
+        "offsetX": -3,
+        "offsetY": 2
+      },
+      {
+        "type": "texture",
+        "src": "/textures/scanlines.png",
+        "opacity": 0.4,
+        "blendMode": "multiply"
+      }
+    ]
+  },
+  {
+    "id": "chrome-gradient",
+    "name": "Chrome Gradient",
+    "category": "modern",
+    "thumbnail": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Anton",
+        "fontSize": 120,
+        "gradient": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)"
+      },
+      {
+        "type": "inner-shadow",
+        "color": "rgba(0,0,0,0.6)",
+        "blur": 25,
+        "offsetX": 0,
+        "offsetY": 4
+      },
+      { "type": "gloss", "strength": 0.8 }
+    ]
+  },
+  {
+    "id": "paintbrush-script",
+    "name": "Paint Brush Script",
+    "category": "casual",
+    "thumbnail": "#4CAF50",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Brush Script MT",
+        "fontSize": 96,
+        "color": "#ffffff"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/brush_texture.png",
+        "blendMode": "multiply",
+        "opacity": 1
+      },
+      {
+        "type": "shadow",
+        "offsetX": 4,
+        "offsetY": 4,
+        "blur": 10,
+        "color": "rgba(0,0,0,0.4)"
+      }
+    ]
+  },
+  {
+    "id": "graffiti-pro",
+    "name": "Graffiti Pro",
+    "category": "urban",
+    "thumbnail": "linear-gradient(135deg, #ff0099 0%, #00ff88 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Bungee",
+        "fontSize": 92,
+        "color": "#ffffff"
+      },
+      { "type": "spray", "color": "#ff0099", "blur": 45, "spread": 12 },
+      {
+        "type": "spray",
+        "color": "#00ff88",
+        "blur": 45,
+        "spread": 12,
+        "offsetX": 10
+      }
+    ]
+  },
+  {
+    "id": "neon-glow-pro",
+    "name": "Neon Glow Pro",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00eaff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Bungee",
+        "fontSize": 96,
+        "color": "#ffffff"
+      },
+      { "type": "stroke", "color": "#ff00ff", "width": 8 },
+      { "type": "glow", "color": "#ff00ff", "blur": 40 },
+      { "type": "glow", "color": "#00eaff", "blur": 80 },
+      {
+        "type": "inner-shadow",
+        "color": "rgba(0,0,0,0.4)",
+        "blur": 12,
+        "offsetX": 0,
+        "offsetY": 4
+      }
+    ]
+  },
+  {
+    "id": "gold-metal-3d",
+    "name": "Gold Metal 3D",
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Playfair Display",
+        "fontSize": 110,
+        "color": "#ffffff"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/gold_foil.jpg",
+        "blendMode": "overlay",
+        "opacity": 1
+      },
+      {
+        "type": "inner-shadow",
+        "color": "rgba(0,0,0,0.5)",
+        "blur": 15,
+        "offsetX": 0,
+        "offsetY": 6
+      },
+      { "type": "extrude", "depth": 30, "angle": 140, "color": "#8b6f23" },
+      { "type": "glow", "color": "rgba(255,215,0,0.6)", "blur": 25 }
+    ]
+  },
+  {
+    "id": "retro-vhs",
+    "name": "Retro VHS",
+    "category": "retro",
+    "thumbnail": "linear-gradient(135deg, #ff0000 0%, #00ffff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Press Start 2P",
+        "fontSize": 64,
+        "color": "#ffffff"
+      },
+      {
+        "type": "offset-layer",
+        "color": "#ff0000",
+        "offsetX": 3,
+        "offsetY": -2
+      },
+      {
+        "type": "offset-layer",
+        "color": "#00ffff",
+        "offsetX": -3,
+        "offsetY": 2
+      },
+      {
+        "type": "texture",
+        "src": "/textures/scanlines.png",
+        "opacity": 0.4,
+        "blendMode": "multiply"
+      }
+    ]
+  },
+  {
+    "id": "chrome-gradient",
+    "name": "Chrome Gradient",
+    "category": "modern",
+    "thumbnail": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Anton",
+        "fontSize": 120,
+        "gradient": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)"
+      },
+      {
+        "type": "inner-shadow",
+        "color": "rgba(0,0,0,0.6)",
+        "blur": 25,
+        "offsetX": 0,
+        "offsetY": 4
+      },
+      { "type": "gloss", "strength": 0.8 }
+    ]
+  },
+  {
+    "id": "paintbrush-script",
+    "name": "Paint Brush Script",
+    "category": "casual",
+    "thumbnail": "#4CAF50",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Brush Script MT",
+        "fontSize": 96,
+        "color": "#ffffff"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/brush_texture.png",
+        "blendMode": "multiply",
+        "opacity": 1
+      },
+      {
+        "type": "shadow",
+        "offsetX": 4,
+        "offsetY": 4,
+        "blur": 10,
+        "color": "rgba(0,0,0,0.4)"
+      }
+    ]
+  },
+  {
+    "id": "graffiti-pro",
+    "name": "Graffiti Pro",
+    "category": "urban",
+    "thumbnail": "linear-gradient(135deg, #ff0099 0%, #00ff88 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Bungee",
+        "fontSize": 92,
+        "color": "#ffffff"
+      },
+      { "type": "spray", "color": "#ff0099", "blur": 45, "spread": 12 },
+      {
+        "type": "spray",
+        "color": "#00ff88",
+        "blur": 45,
+        "spread": 12,
+        "offsetX": 10
+      }
+    ]
+  },
+  {
+    "id": "neon-tube-glow-2",
+    "name": "Neon Tube Glow 2.0",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00eaff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Bungee",
+        "fontSize": 96,
+        "color": "#ffffff"
+      },
+      { "type": "inner-core", "color": "#ffffff", "intensity": 1 },
+      { "type": "glow", "color": "#ff00ff", "blur": 40, "strength": 1 },
+      { "type": "glow", "color": "#00eaff", "blur": 80, "strength": 0.8 },
+      { "type": "ambient-bloom", "color": "#ff00ff", "opacity": 0.25 }
+    ]
+  },
+  {
+    "id": "chrome-liquid-metal",
+    "name": "Chrome Liquid Metal",
+    "category": "modern",
+    "thumbnail": "linear-gradient(90deg, #ffffff, #a6a6a6, #1c1c1c, #bfbfbf)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Anton",
+        "fontSize": 110,
+        "gradient": "linear-gradient(90deg, #ffffff, #a6a6a6, #1c1c1c, #bfbfbf)"
+      },
+      { "type": "specular-highlight", "strength": 0.9 },
+      {
+        "type": "inner-shadow",
+        "blur": 25,
+        "color": "rgba(0,0,0,0.7)",
+        "offsetX": 0,
+        "offsetY": 4
+      },
+      { "type": "gloss", "strength": 0.8 }
+    ]
+  },
+  {
+    "id": "ice-glass-frost",
+    "name": "Ice Glass Frost",
+    "category": "effects",
+    "thumbnail": "linear-gradient(135deg, #b4e4ff 0%, #ffffff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Saira",
+        "fontSize": 100,
+        "color": "rgba(255,255,255,0.75)"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/frost.png",
+        "blendMode": "screen",
+        "opacity": 0.8
+      },
+      { "type": "refraction", "intensity": 0.6 },
+      { "type": "outer-glow", "color": "#b4e4ff", "blur": 60 }
+    ]
+  },
+  {
+    "id": "anime-manga-stroke",
+    "name": "Anime Manga Stroke",
+    "category": "fun",
+    "thumbnail": "linear-gradient(135deg, #ffffff 0%, #000000 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Noto Sans JP",
+        "fontSize": 92,
+        "color": "#ffffff"
+      },
+      { "type": "stroke", "color": "#000000", "width": 10 },
+      { "type": "speedlines", "opacity": 0.5 },
+      { "type": "halftone", "opacity": 0.3 }
+    ]
+  },
+  {
+    "id": "cinematic-blockbuster",
+    "name": "Cinematic Blockbuster Title",
+    "category": "elegant",
+    "thumbnail": "#d9c29c",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Trajan Pro",
+        "fontSize": 120,
+        "color": "#d9c29c"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/bronze.jpg",
+        "blendMode": "overlay",
+        "opacity": 1
+      },
+      {
+        "type": "shadow",
+        "blur": 45,
+        "offsetY": 20,
+        "offsetX": 0,
+        "color": "rgba(0,0,0,0.6)"
+      },
+      { "type": "fog", "opacity": 0.3 }
+    ]
+  },
+  {
+    "id": "soft-bubble-pop",
+    "name": "Soft Bubble Pop 3D",
+    "category": "fun",
+    "thumbnail": "#ffb3d9",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Poppins",
+        "fontSize": 110,
+        "color": "#ffb3d9"
+      },
+      { "type": "3d-puff", "depth": 25 },
+      { "type": "gloss", "strength": 1 },
+      {
+        "type": "shadow",
+        "blur": 25,
+        "offsetY": 12,
+        "offsetX": 0,
+        "color": "rgba(0,0,0,0.3)"
+      }
+    ]
+  },
+  {
+    "id": "hologram-rainbow",
+    "name": "Hologram Rainbow Shift",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(120deg, #ff00cc, #00f2ff, #fffd37)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Montserrat",
+        "fontSize": 100,
+        "gradient": "linear-gradient(120deg, #ff00cc, #00f2ff, #fffd37)"
+      },
+      { "type": "grain", "opacity": 0.3 },
+      { "type": "prism-shift", "strength": 0.5 },
+      { "type": "glow", "color": "#ffffff", "blur": 20 }
+    ]
+  },
+  {
+    "id": "retro-vaporwave",
+    "name": "Retro Vaporwave Chrome",
+    "category": "retro",
+    "thumbnail": "linear-gradient(90deg,#ff00ff,#00ccff)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "VCR OSD Mono",
+        "fontSize": 105,
+        "gradient": "linear-gradient(90deg,#ff00ff,#00ccff)"
+      },
+      { "type": "chrome", "strength": 0.8 },
+      { "type": "grain", "opacity": 0.4 },
+      { "type": "scanlines", "opacity": 0.4 }
+    ]
+  },
+  {
+    "id": "led-dot-matrix",
+    "name": "LED Dot Matrix",
+    "category": "tech",
+    "thumbnail": "#333333",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Roboto Mono",
+        "fontSize": 95,
+        "color": "#ffffff"
+      },
+      { "type": "dot-grid", "size": 6 },
+      { "type": "bloom", "strength": 0.6 },
+      { "type": "rgb-shift", "strength": 0.2 }
+    ]
+  },
+  {
+    "id": "candy-jelly",
+    "name": "Glossy Candy Jelly",
+    "category": "fun",
+    "thumbnail": "#ff467e",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Baloo",
+        "fontSize": 110,
+        "color": "#ff467e"
+      },
+      { "type": "jelly-3d", "depth": 25 },
+      { "type": "gloss", "strength": 1 },
+      {
+        "type": "inner-shadow",
+        "blur": 20,
+        "color": "rgba(0,0,0,0.4)",
+        "offsetX": 0,
+        "offsetY": 4
+      }
+    ]
+  },
+  {
+    "id": "burnt-paper-grunge",
+    "name": "Burnt Paper Grunge",
+    "category": "retro",
+    "thumbnail": "#f7e7c5",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "IM Fell English",
+        "fontSize": 90,
+        "color": "#f7e7c5"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/burnt-edges.png",
+        "blendMode": "multiply",
+        "opacity": 1
+      },
+      { "type": "dust", "opacity": 0.4 },
+      { "type": "grain", "opacity": 0.25 }
+    ]
+  },
+  {
+    "id": "golden-royal-serif",
+    "name": "Golden Royal Serif",
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Cormorant",
+        "fontSize": 115,
+        "color": "#ffffff"
+      },
+      { "type": "gold-foil", "texture": "/textures/gold_foil.jpg" },
+      { "type": "emboss", "strength": 0.7 },
+      {
+        "type": "shadow",
+        "blur": 30,
+        "offsetY": 16,
+        "offsetX": 0,
+        "color": "rgba(0,0,0,0.5)"
+      }
+    ]
+  },
+  {
+    "id": "cyberpunk-hard-glow",
+    "name": "Cyberpunk Hard Glow",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00ffff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Orbitron",
+        "fontSize": 100,
+        "color": "#ffffff"
+      },
+      { "type": "glow", "color": "#ff00ff", "blur": 25, "strength": 1 },
+      { "type": "glow", "color": "#00ffff", "blur": 45, "strength": 0.7 },
+      { "type": "scanlines", "opacity": 0.3 }
+    ]
+  },
+  {
+    "id": "cloud-puff",
+    "name": "Cloud Puff Soft Text",
+    "category": "fun",
+    "thumbnail": "#dbeafe",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Fredoka",
+        "fontSize": 110,
+        "color": "#ffffff"
+      },
+      { "type": "puff", "strength": 0.9 },
+      { "type": "fog", "opacity": 0.4 },
+      { "type": "bloom", "strength": 0.6 }
+    ]
+  },
+  {
+    "id": "graffiti-drip",
+    "name": "Graffiti Spray Drip",
+    "category": "urban",
+    "thumbnail": "linear-gradient(135deg, #ff3ea5 0%, #00ff88 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Bungee",
+        "fontSize": 105,
+        "color": "#ffffff"
+      },
+      { "type": "spray", "color": "#ff3ea5", "spread": 25 },
+      { "type": "drip", "length": 20 },
+      {
+        "type": "shadow",
+        "blur": 20,
+        "offsetX": 10,
+        "color": "rgba(0,0,0,0.6)"
+      }
+    ]
+  },
+  {
+    "id": "minimal-swiss",
+    "name": "Minimal Swiss Clean",
+    "category": "minimal",
+    "thumbnail": "#f0f0f0",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Helvetica Neue",
+        "fontSize": 95,
+        "color": "#000000"
+      }
+    ]
+  },
+  {
+    "id": "rainbow-outline-neon",
+    "name": "Rainbow Outline Neon",
+    "category": "effects",
+    "thumbnail": "linear-gradient(90deg,#ff0088,#ff6600,#ffee00,#0aff69,#0099ff,#a200ff)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Poppins",
+        "fontSize": 100,
+        "color": "#ffffff"
+      },
+      {
+        "type": "stroke",
+        "width": 8,
+        "gradient": "linear-gradient(90deg,#ff0088,#ff6600,#ffee00,#0aff69,#0099ff,#a200ff)"
+      },
+      { "type": "glow", "color": "#ffffff", "blur": 35 }
+    ]
+  },
+  {
+    "id": "cinematic-fog-title",
+    "name": "Cinematic Fog Title",
+    "category": "elegant",
+    "thumbnail": "#333333",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Garamond",
+        "fontSize": 120,
+        "color": "#e4d8c4"
+      },
+      { "type": "fog", "opacity": 0.45 },
+      { "type": "rimlight", "color": "#ffdca8", "strength": 0.8 },
+      {
+        "type": "shadow",
+        "blur": 40,
+        "offsetY": 18,
+        "offsetX": 0,
+        "color": "rgba(0,0,0,0.6)"
+      }
+    ]
+  },
+  {
+    "id": "ink-brush-calligraphy",
+    "name": "Ink Brush Calligraphy",
+    "category": "casual",
+    "thumbnail": "#f5f5f5",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Great Vibes",
+        "fontSize": 100,
+        "color": "#000000"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/ink-brush.png",
+        "opacity": 1,
+        "blendMode": "multiply"
+      },
+      { "type": "splatter", "opacity": 0.4 }
+    ]
+  },
+  {
+    "id": "crystal-diamond",
+    "name": "Crystal Diamond Shine",
+    "category": "effects",
+    "thumbnail": "linear-gradient(135deg, #b7e8ff 0%, #ffffff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Bodoni",
+        "fontSize": 110,
+        "color": "#ffffff"
+      },
+      { "type": "diamond-facets", "strength": 1 },
+      { "type": "sparkle", "density": 0.6 },
+      { "type": "glow", "color": "#b7e8ff", "blur": 30 }
+    ]
   }
 ]
