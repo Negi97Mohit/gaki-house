@@ -53,6 +53,8 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
       break;
 
     case "inner-shadow":
+      // This is trickier and often requires a pseudo-element,
+      // but a simple text-shadow can fake it.
       style.textShadow = `${layer.offsetX}px ${layer.offsetY}px ${layer.blur}px ${layer.color}`;
       style.color = "transparent";
       break;
@@ -85,6 +87,7 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
       style.transform = `translate(${layer.offsetX}px, ${layer.offsetY}px)`;
       style.mixBlendMode = "screen"; // Common for chromatic aberration
       break;
+
     case "specular-highlight":
     case "gloss":
       // This is a complex effect, often faked with a gradient overlay
@@ -199,6 +202,7 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
       >
         {text}
       </span>
+
       {/* Render all layers, absolutely positioned */}
       {layers.map((layer, index) => (
         <div key={index} style={getLayerStyle(layer)}>

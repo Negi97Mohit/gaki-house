@@ -13,9 +13,21 @@ export async function loadTextDesigns(): Promise<TextDesignPreset[]> {
     if (!response.ok) {
       throw new Error("Failed to load text designs");
     }
-    const designs = await response.json();
-    cachedDesigns = designs;
-    return designs;
+    const designs = await response.json(); // This could be an array OR an object
+
+    // --- FIX: Handle both array and object formats ---
+    if (Array.isArray(designs)) {
+      // It's already an array
+      cachedDesigns = designs;
+    } else if (designs && Array.isArray(designs.presets)) {
+      // It's an object { presets: [...] }
+      cachedDesigns = designs.presets;
+    } else {
+      // It's something else, or empty
+      cachedDesigns = [];
+    }
+
+    return cachedDesigns;
   } catch (error) {
     console.error("Error loading text designs:", error);
     return [];

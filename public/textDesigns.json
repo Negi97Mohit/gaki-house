@@ -156,28 +156,6 @@
     }
   },
   {
-    "id": "minimal-helvetica",
-    "name": "Minimal Helvetica",
-    "category": "minimal",
-    "thumbnail": "linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%)",
-    "style": {
-      "fontFamily": "Inter",
-      "fontSize": 52,
-      "color": "#1a1a1a",
-      "backgroundColor": "transparent",
-      "bold": false,
-      "italic": false,
-      "underline": false,
-      "textShadow": "none",
-      "letterSpacing": "-0.02em",
-      "outline": false,
-      "shadow": false,
-      "border": false,
-      "borderColor": "#000000",
-      "borderWidth": 0
-    }
-  },
-  {
     "id": "gradient-sunset",
     "name": "Gradient Sunset",
     "category": "colorful",
@@ -672,7 +650,7 @@
   },
   {
     "id": "neon-glow-pro",
-    "name": "Neon Glow Pro",
+    "name": "Neon Glow Pro ",
     "category": "futuristic",
     "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00eaff 100%)",
     "layers": [
@@ -696,163 +674,7 @@
   },
   {
     "id": "gold-metal-3d",
-    "name": "Gold Metal 3D",
-    "category": "elegant",
-    "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
-    "layers": [
-      {
-        "type": "text",
-        "fontFamily": "Playfair Display",
-        "fontSize": 110,
-        "color": "#ffffff"
-      },
-      {
-        "type": "texture",
-        "src": "/textures/gold_foil.jpg",
-        "blendMode": "overlay",
-        "opacity": 1
-      },
-      {
-        "type": "inner-shadow",
-        "color": "rgba(0,0,0,0.5)",
-        "blur": 15,
-        "offsetX": 0,
-        "offsetY": 6
-      },
-      { "type": "extrude", "depth": 30, "angle": 140, "color": "#8b6f23" },
-      { "type": "glow", "color": "rgba(255,215,0,0.6)", "blur": 25 }
-    ]
-  },
-  {
-    "id": "retro-vhs",
-    "name": "Retro VHS",
-    "category": "retro",
-    "thumbnail": "linear-gradient(135deg, #ff0000 0%, #00ffff 100%)",
-    "layers": [
-      {
-        "type": "text",
-        "fontFamily": "Press Start 2P",
-        "fontSize": 64,
-        "color": "#ffffff"
-      },
-      {
-        "type": "offset-layer",
-        "color": "#ff0000",
-        "offsetX": 3,
-        "offsetY": -2
-      },
-      {
-        "type": "offset-layer",
-        "color": "#00ffff",
-        "offsetX": -3,
-        "offsetY": 2
-      },
-      {
-        "type": "texture",
-        "src": "/textures/scanlines.png",
-        "opacity": 0.4,
-        "blendMode": "multiply"
-      }
-    ]
-  },
-  {
-    "id": "chrome-gradient",
-    "name": "Chrome Gradient",
-    "category": "modern",
-    "thumbnail": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)",
-    "layers": [
-      {
-        "type": "text",
-        "fontFamily": "Anton",
-        "fontSize": 120,
-        "gradient": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)"
-      },
-      {
-        "type": "inner-shadow",
-        "color": "rgba(0,0,0,0.6)",
-        "blur": 25,
-        "offsetX": 0,
-        "offsetY": 4
-      },
-      { "type": "gloss", "strength": 0.8 }
-    ]
-  },
-  {
-    "id": "paintbrush-script",
-    "name": "Paint Brush Script",
-    "category": "casual",
-    "thumbnail": "#4CAF50",
-    "layers": [
-      {
-        "type": "text",
-        "fontFamily": "Brush Script MT",
-        "fontSize": 96,
-        "color": "#ffffff"
-      },
-      {
-        "type": "texture",
-        "src": "/textures/brush_texture.png",
-        "blendMode": "multiply",
-        "opacity": 1
-      },
-      {
-        "type": "shadow",
-        "offsetX": 4,
-        "offsetY": 4,
-        "blur": 10,
-        "color": "rgba(0,0,0,0.4)"
-      }
-    ]
-  },
-  {
-    "id": "graffiti-pro",
-    "name": "Graffiti Pro",
-    "category": "urban",
-    "thumbnail": "linear-gradient(135deg, #ff0099 0%, #00ff88 100%)",
-    "layers": [
-      {
-        "type": "text",
-        "fontFamily": "Bungee",
-        "fontSize": 92,
-        "color": "#ffffff"
-      },
-      { "type": "spray", "color": "#ff0099", "blur": 45, "spread": 12 },
-      {
-        "type": "spray",
-        "color": "#00ff88",
-        "blur": 45,
-        "spread": 12,
-        "offsetX": 10
-      }
-    ]
-  },
-  {
-    "id": "neon-glow-pro",
-    "name": "Neon Glow Pro",
-    "category": "futuristic",
-    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00eaff 100%)",
-    "layers": [
-      {
-        "type": "text",
-        "fontFamily": "Bungee",
-        "fontSize": 96,
-        "color": "#ffffff"
-      },
-      { "type": "stroke", "color": "#ff00ff", "width": 8 },
-      { "type": "glow", "color": "#ff00ff", "blur": 40 },
-      { "type": "glow", "color": "#00eaff", "blur": 80 },
-      {
-        "type": "inner-shadow",
-        "color": "rgba(0,0,0,0.4)",
-        "blur": 12,
-        "offsetX": 0,
-        "offsetY": 4
-      }
-    ]
-  },
-  {
-    "id": "gold-metal-3d",
-    "name": "Gold Metal 3D",
+    "name": "Gold Metal 3D ",
     "category": "elegant",
     "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
     "layers": [

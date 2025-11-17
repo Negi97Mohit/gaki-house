@@ -161,7 +161,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
         color: baseTextLayer?.color || "#FFFFFF",
         gradient: baseTextLayer?.gradient || undefined,
         letterSpacing: baseTextLayer?.letterSpacing || "normal",
-        backgroundColor: "appliedBackgroundColor",
+        backgroundColor: appliedBackgroundColor, // <-- FIX: Use variable
         bold: false,
         italic: false,
         underline: false,
@@ -194,7 +194,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
         fontFamily: oldStyle.fontFamily,
         fontSize: oldStyle.fontSize,
         color: oldStyle.color,
-        backgroundColor: appliedBackgroundColor,
+        backgroundColor: appliedBackgroundColor, // <-- USE THE CHECKED VALUE
         bold: oldStyle.bold,
         italic: oldStyle.italic,
         underline: oldStyle.underline,
@@ -568,55 +568,82 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
               <TabsContent key={cat.value} value={cat.value} className="mt-0">
                 <ScrollArea className="h-[320px] w-full pr-4">
                   <div className="grid grid-cols-3 gap-3">
-                    {textDesigns
-                      .filter(
-                        (d) => cat.value === "all" || d.category === cat.value
-                      )
-                      .map((design) => {
-                        // --- FIX: Safely find the base text layer or fallback to old style ---
-                        const oldStyle = (design as any).style;
-                        const baseTextLayer = design.layers?.find(
-                          (l): l is TextLayer => l.type === "text"
-                        ) as TextLayer | undefined;
+                    {/* --- FIX: Ensure textDesigns is an array before mapping --- */}
+                    {Array.isArray(textDesigns) &&
+                      textDesigns
+                        .filter(
+                          (d) => cat.value === "all" || d.category === cat.value
+                        )
+                        .map((design) => {
+                          // --- FIX: Safely find the base text layer or fallback to old style ---
+                          const oldStyle = (design as any).style;
+                          const baseTextLayer = design.layers?.find(
+                            (l): l is TextLayer => l.type === "text"
+                          ) as TextLayer | undefined;
 
-                        // --- Determine preview style ---
-                        const previewStyle: React.CSSProperties = {
-                          fontFamily:
-                            baseTextLayer?.fontFamily ||
-                            oldStyle?.fontFamily ||
-                            "Inter",
-                          fontSize: "32px",
-                          color:
-                            baseTextLayer?.color ||
-                            oldStyle?.color ||
-                            "#FFFFFF",
-                        };
+                          // --- Determine preview style ---
+                          const previewStyle: React.CSSProperties = {
+                            fontFamily:
+                              baseTextLayer?.fontFamily ||
+                              oldStyle?.fontFamily ||
+                              "Inter",
+                            fontSize: "32px",
+                            color:
+                              baseTextLayer?.color ||
+                              oldStyle?.color ||
+                              "#FFFFFF",
+                            // --- FIX: Add missing style properties for accurate preview ---
+                            textShadow:
+                              baseTextLayer?.textShadow ||
+                              oldStyle?.textShadow ||
+                              "none",
+                            letterSpacing:
+                              baseTextLayer?.letterSpacing ||
+                              oldStyle?.letterSpacing ||
+                              "normal",
+                            WebkitTextStroke:
+                              (baseTextLayer as any)?.["-webkit-text-stroke"] ||
+                              (oldStyle as any)?.["-webkit-text-stroke"] ||
+                              "unset",
+                          };
+                          // --- FIX: Logic for preview background ---
+                          let previewBackground = design.thumbnail;
+                          // If thumbnail is a gradient (like Neon), use a dark background
+                          // for the preview instead so the text effect is visible.
+                          if (design.thumbnail?.startsWith("linear-gradient")) {
+                            previewBackground = "#1A1A1A"; // Use a dark background
+                          } else if (
+                            design.category === "effects" &&
+                            !design.thumbnail?.startsWith("#")
+                          ) {
+                            previewBackground = "#1A1A1A"; // Default dark for effects
+                          }
 
-                        return (
-                          <button
-                            key={design.id}
-                            onClick={() => handleApplyDesign(design)}
-                            className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105"
-                            style={{
-                              background: design.thumbnail,
-                            }}
-                          >
-                            <div className="w-full h-28 flex items-center justify-center p-3">
-                              <span
-                                className="text-2xl font-bold select-none inline-block"
-                                style={previewStyle} // Use the safe preview style
-                              >
-                                Aa
-                              </span>
-                            </div>
-                            <div className="bg-background border-t border-border p-2">
-                              <p className="text-xs font-medium text-center truncate text-foreground">
-                                {design.name}
-                              </p>
-                            </div>
-                          </button>
-                        );
-                      })}
+                          return (
+                            <button
+                              key={design.id}
+                              onClick={() => handleApplyDesign(design)}
+                              className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105"
+                              style={{
+                                background: previewBackground,
+                              }}
+                            >
+                              <div className="w-full h-28 flex items-center justify-center p-3">
+                                <span
+                                  className="text-2xl font-bold select-none inline-block"
+                                  style={previewStyle} // Use the safe preview style
+                                >
+                                  Aa
+                                </span>
+                              </div>
+                              <div className="bg-background border-t border-border p-2">
+                                <p className="text-xs font-medium text-center truncate text-foreground">
+                                  {design.name}
+                                </p>
+                              </div>
+                            </button>
+                          );
+                        })}
                   </div>
                 </ScrollArea>
               </TabsContent>
