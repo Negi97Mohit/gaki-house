@@ -1,0 +1,381 @@
+[
+  {
+    "id": "bold-headline",
+    "name": "Bold Headline",
+    "category": "headlines",
+    "thumbnail": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    "style": {
+      "fontFamily": "Bebas Neue",
+      "fontSize": 72,
+      "color": "#FFFFFF",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "4px 4px 8px rgba(0,0,0,0.8)",
+      "outline": true,
+      "shadow": false,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "neon-glow",
+    "name": "Neon Glow",
+    "category": "effects",
+    "thumbnail": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    "style": {
+      "fontFamily": "Montserrat",
+      "fontSize": 64,
+      "color": "#FF00FF",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "0 0 10px #FF00FF, 0 0 20px #FF00FF, 0 0 30px #FF00FF, 0 0 40px #FF00FF",
+      "outline": false,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "elegant-serif",
+    "name": "Elegant Serif",
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+    "style": {
+      "fontFamily": "Playfair Display",
+      "fontSize": 56,
+      "color": "#2c3e50",
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": true,
+      "underline": false,
+      "textShadow": "2px 2px 4px rgba(0,0,0,0.1)",
+      "outline": false,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "comic-pop",
+    "name": "Comic Pop",
+    "category": "fun",
+    "thumbnail": "linear-gradient(135deg, #ffd89b 0%, #19547b 100%)",
+    "style": {
+      "fontFamily": "Impact",
+      "fontSize": 68,
+      "color": "#FFD700",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "3px 3px 0px #000000",
+      "outline": true,
+      "shadow": false,
+      "border": true,
+      "borderColor": "#000000",
+      "borderWidth": 4
+    }
+  },
+  {
+    "id": "minimal-modern",
+    "name": "Minimal Modern",
+    "category": "modern",
+    "thumbnail": "linear-gradient(135deg, #e0e0e0 0%, #ffffff 100%)",
+    "style": {
+      "fontFamily": "Inter",
+      "fontSize": 48,
+      "color": "#000000",
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false,
+      "underline": false,
+      "textShadow": "none",
+      "outline": false,
+      "shadow": false,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "gradient-modern",
+    "name": "Gradient Modern",
+    "category": "modern",
+    "thumbnail": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    "style": {
+      "fontFamily": "Montserrat",
+      "fontSize": 60,
+      "color": "#667eea",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "2px 2px 4px rgba(0,0,0,0.3)",
+      "outline": false,
+      "shadow": true,
+      "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "retro-outline",
+    "name": "Retro Outline",
+    "category": "retro",
+    "thumbnail": "linear-gradient(135deg, #fa8bff 0%, #2bd2ff 90%)",
+    "style": {
+      "fontFamily": "Bebas Neue",
+      "fontSize": 70,
+      "color": "transparent",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "none",
+      "outline": true,
+      "shadow": false,
+      "border": true,
+      "borderColor": "#FF1493",
+      "borderWidth": 3
+    }
+  },
+  {
+    "id": "soft-shadow",
+    "name": "Soft Shadow",
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%)",
+    "style": {
+      "fontFamily": "Open Sans",
+      "fontSize": 52,
+      "color": "#34495e",
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false,
+      "underline": false,
+      "textShadow": "5px 5px 15px rgba(0,0,0,0.2)",
+      "outline": false,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "fire-text",
+    "name": "Fire Text",
+    "category": "effects",
+    "thumbnail": "linear-gradient(135deg, #ff9a56 0%, #ff124f 100%)",
+    "style": {
+      "fontFamily": "Impact",
+      "fontSize": 66,
+      "color": "#FF4500",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "0 0 5px #FF4500, 0 0 10px #FF6347, 0 0 15px #FF7F50, 0 0 20px #FFA500",
+      "outline": false,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "ice-cold",
+    "name": "Ice Cold",
+    "category": "effects",
+    "thumbnail": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    "style": {
+      "fontFamily": "Montserrat",
+      "fontSize": 62,
+      "color": "#00CED1",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "0 0 10px #00CED1, 0 0 20px #48D1CC, 0 0 30px #AFEEEE",
+      "outline": false,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "gold-luxury",
+    "name": "Gold Luxury",
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #f7971e 0%, #ffd200 100%)",
+    "style": {
+      "fontFamily": "Playfair Display",
+      "fontSize": 58,
+      "color": "#FFD700",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "2px 2px 4px rgba(0,0,0,0.5), 0 0 10px rgba(255,215,0,0.5)",
+      "outline": true,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "typewriter",
+    "name": "Typewriter",
+    "category": "vintage",
+    "thumbnail": "linear-gradient(135deg, #525252 0%, #3d3d3d 100%)",
+    "style": {
+      "fontFamily": "Courier New",
+      "fontSize": 46,
+      "color": "#2c2c2c",
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false,
+      "underline": false,
+      "textShadow": "1px 1px 0px rgba(0,0,0,0.2)",
+      "outline": false,
+      "shadow": false,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "boxed-white",
+    "name": "Boxed White",
+    "category": "modern",
+    "thumbnail": "linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%)",
+    "style": {
+      "fontFamily": "Inter",
+      "fontSize": 50,
+      "color": "#000000",
+      "backgroundColor": "#FFFFFF",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "none",
+      "outline": false,
+      "shadow": true,
+      "border": true,
+      "borderColor": "#000000",
+      "borderWidth": 2
+    }
+  },
+  {
+    "id": "rainbow-fun",
+    "name": "Rainbow Fun",
+    "category": "fun",
+    "thumbnail": "linear-gradient(135deg, #ff0000 0%, #ffff00 25%, #00ff00 50%, #0000ff 75%, #ff00ff 100%)",
+    "style": {
+      "fontFamily": "Comic Sans MS",
+      "fontSize": 64,
+      "color": "#FF1493",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "2px 2px 0px #FFD700, 4px 4px 0px #00CED1",
+      "outline": true,
+      "shadow": false,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "cyber-tech",
+    "name": "Cyber Tech",
+    "category": "tech",
+    "thumbnail": "linear-gradient(135deg, #00d2ff 0%, #3a47d5 100%)",
+    "style": {
+      "fontFamily": "Roboto",
+      "fontSize": 54,
+      "color": "#00FFFF",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "0 0 5px #00FFFF, 0 0 10px #00FFFF, 2px 2px 2px rgba(0,0,0,0.5)",
+      "outline": false,
+      "shadow": true,
+      "border": true,
+      "borderColor": "#00FFFF",
+      "borderWidth": 2
+    }
+  },
+  {
+    "id": "classic-bold",
+    "name": "Classic Bold",
+    "category": "headlines",
+    "thumbnail": "linear-gradient(135deg, #434343 0%, #000000 100%)",
+    "style": {
+      "fontFamily": "Arial",
+      "fontSize": 68,
+      "color": "#000000",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "3px 3px 6px rgba(0,0,0,0.3)",
+      "outline": false,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "pastel-dream",
+    "name": "Pastel Dream",
+    "category": "soft",
+    "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #a8edea 100%)",
+    "style": {
+      "fontFamily": "Open Sans",
+      "fontSize": 56,
+      "color": "#FF69B4",
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false,
+      "underline": false,
+      "textShadow": "2px 2px 8px rgba(255,182,193,0.6)",
+      "outline": false,
+      "shadow": true,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  },
+  {
+    "id": "sharp-edge",
+    "name": "Sharp Edge",
+    "category": "modern",
+    "thumbnail": "linear-gradient(135deg, #ff0844 0%, #ffb199 100%)",
+    "style": {
+      "fontFamily": "Impact",
+      "fontSize": 70,
+      "color": "#FFFFFF",
+      "backgroundColor": "#FF0844",
+      "bold": true,
+      "italic": false,
+      "underline": false,
+      "textShadow": "none",
+      "outline": false,
+      "shadow": false,
+      "border": false,
+      "borderColor": "#000000",
+      "borderWidth": 0
+    }
+  }
+]
