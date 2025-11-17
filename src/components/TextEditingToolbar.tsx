@@ -1,5 +1,5 @@
 // src/components/TextEditingToolbar.tsx
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Bold,
@@ -13,7 +13,8 @@ import {
   Plus,
   List,
   ListOrdered,
-  RemoveFormatting, // ADDED
+  RemoveFormatting,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
@@ -23,6 +24,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { loadTextDesigns } from "@/lib/textDesigns";
+import { TextDesignPreset } from "@/types/textDesign";
 
 interface TextEditingToolbarProps {
   overlay: TextOverlayState;
@@ -72,6 +77,12 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
 }) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
+  const [textDesigns, setTextDesigns] = useState<TextDesignPreset[]>([]);
+  const [showDesigns, setShowDesigns] = useState(false);
+
+  useEffect(() => {
+    loadTextDesigns().then(setTextDesigns);
+  }, []);
 
   useLayoutEffect(() => {
     if (toolbarRef.current && containerRef.current) {
@@ -125,19 +136,61 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
     onStyleChange(overlay.id, { textAlign: alignment } as any);
   };
 
+  const handleApplyDesign = (design: TextDesignPreset) => {
+    onStyleChange(overlay.id, {
+      fontFamily: design.style.fontFamily,
+      fontSize: design.style.fontSize,
+      color: design.style.color,
+      backgroundColor: design.style.backgroundColor,
+      bold: design.style.bold,
+      italic: design.style.italic,
+      underline: design.style.underline,
+      textShadow: design.style.textShadow,
+      outline: design.style.outline,
+      shadow: design.style.shadow,
+      gradient: design.style.gradient,
+      border: design.style.border,
+      borderColor: design.style.borderColor,
+      borderWidth: design.style.borderWidth,
+    });
+    setShowDesigns(false);
+  };
+
+  const categories = [
+    { value: "all", label: "All" },
+    { value: "headlines", label: "Headlines" },
+    { value: "modern", label: "Modern" },
+    { value: "elegant", label: "Elegant" },
+    { value: "fun", label: "Fun" },
+    { value: "effects", label: "Effects" },
+  ];
+
   return (
-    <div
-      ref={toolbarRef}
-      className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-2"
-      style={{
-        left: `${toolbarPosition.x}px`,
-        top: `${toolbarPosition.y}px`,
-        zIndex: "var(--z-text-toolbar)",
-      }}
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-    >
-      <div className="flex items-center gap-1 flex-wrap max-w-[600px]">
+    <>
+      <div
+        ref={toolbarRef}
+        className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-2"
+        style={{
+          left: `${toolbarPosition.x}px`,
+          top: `${toolbarPosition.y}px`,
+          zIndex: "var(--z-text-toolbar)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center gap-1 flex-wrap max-w-[600px]">
+          {/* Design Presets Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 px-3 text-xs font-medium"
+            onClick={() => setShowDesigns(!showDesigns)}
+          >
+            <Sparkles className="w-3 h-3 mr-1" />
+            Designs
+          </Button>
+
+          <div className="w-px h-6 bg-border" />
         {/* Font Family Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -377,5 +430,72 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
         </DropdownMenu>
       </div>
     </div>
+
+    {/* Design Library Panel */}
+    {showDesigns && (
+      <div
+        className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-4"
+        style={{
+          left: `${toolbarPosition.x}px`,
+          top: `${toolbarPosition.y + 60}px`,
+          zIndex: "var(--z-text-toolbar)",
+          maxWidth: "600px",
+          maxHeight: "400px",
+        }}
+        onClick={(e) => e.stopPropagation()}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="grid grid-cols-6 w-full mb-3">
+            {categories.map((cat) => (
+              <TabsTrigger key={cat.value} value={cat.value} className="text-xs">
+                {cat.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {categories.map((cat) => (
+            <TabsContent key={cat.value} value={cat.value}>
+              <ScrollArea className="h-[300px] w-full">
+                <div className="grid grid-cols-3 gap-3 pr-4">
+                  {textDesigns
+                    .filter((d) => cat.value === "all" || d.category === cat.value)
+                    .map((design) => (
+                      <button
+                        key={design.id}
+                        onClick={() => handleApplyDesign(design)}
+                        className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105"
+                      >
+                        <div
+                          className="w-full h-24 flex items-center justify-center p-2"
+                          style={{
+                            background: design.thumbnail,
+                          }}
+                        >
+                          <span
+                            className="text-sm font-bold"
+                            style={{
+                              fontFamily: design.style.fontFamily,
+                              color: design.style.color,
+                              textShadow: design.style.textShadow,
+                            }}
+                          >
+                            Aa
+                          </span>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 bg-background/90 backdrop-blur-sm p-1.5">
+                          <p className="text-xs font-medium text-center truncate">
+                            {design.name}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+          ))}
+        </Tabs>
+      </div>
+    )}
+  </>
   );
 };
