@@ -15,6 +15,7 @@ import {
   ListOrdered,
   RemoveFormatting,
   Sparkles,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
@@ -434,56 +435,72 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
     {/* Design Library Panel */}
     {showDesigns && (
       <div
-        className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-4"
+        className="absolute bg-background border-2 border-border rounded-xl shadow-2xl p-4"
         style={{
           left: `${toolbarPosition.x}px`,
           top: `${toolbarPosition.y + 60}px`,
-          zIndex: "var(--z-text-toolbar)",
-          maxWidth: "600px",
-          maxHeight: "400px",
+          zIndex: "calc(var(--z-text-toolbar) + 1)",
+          width: "600px",
+          maxHeight: "450px",
         }}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-foreground">Text Designs</h3>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={() => setShowDesigns(false)}
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid grid-cols-6 w-full mb-3">
+          <TabsList className="grid grid-cols-6 w-full mb-3 bg-muted">
             {categories.map((cat) => (
-              <TabsTrigger key={cat.value} value={cat.value} className="text-xs">
+              <TabsTrigger 
+                key={cat.value} 
+                value={cat.value} 
+                className="text-xs data-[state=active]:bg-background data-[state=active]:text-foreground"
+              >
                 {cat.label}
               </TabsTrigger>
             ))}
           </TabsList>
           {categories.map((cat) => (
-            <TabsContent key={cat.value} value={cat.value}>
-              <ScrollArea className="h-[300px] w-full">
-                <div className="grid grid-cols-3 gap-3 pr-4">
+            <TabsContent key={cat.value} value={cat.value} className="mt-0">
+              <ScrollArea className="h-[320px] w-full pr-4">
+                <div className="grid grid-cols-3 gap-3">
                   {textDesigns
                     .filter((d) => cat.value === "all" || d.category === cat.value)
                     .map((design) => (
                       <button
                         key={design.id}
                         onClick={() => handleApplyDesign(design)}
-                        className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105"
+                        className="group relative overflow-hidden rounded-lg border-2 border-border hover:border-primary transition-all hover:scale-105 bg-background"
                       >
                         <div
-                          className="w-full h-24 flex items-center justify-center p-2"
+                          className="w-full h-28 flex items-center justify-center p-3"
                           style={{
                             background: design.thumbnail,
                           }}
                         >
                           <span
-                            className="text-sm font-bold"
+                            className="text-2xl font-bold select-none"
                             style={{
                               fontFamily: design.style.fontFamily,
                               color: design.style.color,
-                              textShadow: design.style.textShadow,
+                              textShadow: design.style.textShadow || 'none',
+                              WebkitTextStroke: design.style.outline ? '1px currentColor' : 'none',
                             }}
                           >
                             Aa
                           </span>
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-background/90 backdrop-blur-sm p-1.5">
-                          <p className="text-xs font-medium text-center truncate">
+                        <div className="bg-background border-t border-border p-2">
+                          <p className="text-xs font-medium text-center truncate text-foreground">
                             {design.name}
                           </p>
                         </div>

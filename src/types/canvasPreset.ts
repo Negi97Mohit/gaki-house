@@ -88,6 +88,6 @@ export interface CanvasPreset {
   textOverlays: CanvasPresetTextOverlay[];
   effects: CanvasPresetEffects;
   canvasAspectRatio?: string;
-  canvasLayout: CanvasLayoutState | null;
+  canvasLayout?: CanvasLayoutState | null;
   publicId?: string;
 }
