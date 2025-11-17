@@ -32,6 +32,8 @@ export interface CaptionStyle {
   border: boolean;
   borderColor: string;
   borderWidth: number;
+  letterSpacing?: string;
+  padding?: string;
 }
 export type GeneratedLayout = {
   position: { x: number; y: number };

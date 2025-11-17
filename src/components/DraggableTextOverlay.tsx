@@ -324,16 +324,25 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                 fontFamily: overlay.style.fontFamily,
                 fontSize: `${overlay.style.fontSize}px`,
                 color: overlay.style.color,
-                backgroundColor: "transparent",
+                backgroundColor: overlay.style.backgroundColor || "transparent",
+                fontWeight: overlay.style.bold ? "bold" : "normal",
+                fontStyle: overlay.style.italic ? "italic" : "normal",
+                textDecoration: overlay.style.underline ? "underline" : "none",
                 border: overlay.style.border
                   ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
                   : "none",
-                textShadow: overlay.style.shadow
-                  ? "0 2px 4px rgba(0,0,0,0.5)"
-                  : "none",
-                padding: "0.5em",
+                textShadow: overlay.style.textShadow || (overlay.style.shadow ? "0 2px 4px rgba(0,0,0,0.5)" : "none"),
+                WebkitTextStroke: overlay.style.outline ? "1px currentColor" : "none",
+                letterSpacing: overlay.style.letterSpacing || "normal",
+                padding: overlay.style.padding || "0.5em",
                 textAlign: (overlay.style as any).textAlign || "left",
                 listStylePosition: "inside",
+                ...(overlay.style.gradient && {
+                  background: overlay.style.gradient,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }),
               }}
               onKeyDown={(e) => e.stopPropagation()}
               onMouseDown={(e) => e.stopPropagation()}
@@ -347,16 +356,26 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                   fontFamily: overlay.style.fontFamily,
                   fontSize: `${overlay.style.fontSize}px`,
                   color: overlay.style.color,
-                  backgroundColor: overlay.style.backgroundColor,
+                  backgroundColor: overlay.style.backgroundColor || "transparent",
+                  fontWeight: overlay.style.bold ? "bold" : "normal",
+                  fontStyle: overlay.style.italic ? "italic" : "normal",
+                  textDecoration: overlay.style.underline ? "underline" : "none",
                   border: overlay.style.border
                     ? `${overlay.style.borderWidth}px solid ${overlay.style.borderColor}`
                     : "none",
-                  textShadow: overlay.style.shadow
-                    ? "0 2px 4px rgba(0,0,0,0.5)"
-                    : "none",
+                  textShadow: overlay.style.textShadow || (overlay.style.shadow ? "0 2px 4px rgba(0,0,0,0.5)" : "none"),
+                  WebkitTextStroke: overlay.style.outline ? "1px currentColor" : "none",
+                  letterSpacing: overlay.style.letterSpacing || "normal",
+                  padding: overlay.style.padding || "0",
                   minWidth: "50px",
                   textAlign: (overlay.style as any).textAlign || "left",
                   listStylePosition: "inside",
+                  ...(overlay.style.gradient && {
+                    background: overlay.style.gradient,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                  }),
                 }}
                 dangerouslySetInnerHTML={{
                   __html: overlay.content || "Double-click to edit",
