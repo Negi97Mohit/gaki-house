@@ -23,9 +23,10 @@ export const usePublicPresets = () => {
         const presets: CanvasPreset[] = [];
         querySnapshot.forEach((doc) => {
           // We combine the document ID and its data to re-create the CanvasPreset object
+          const data = doc.data();
           presets.push({
             id: doc.id,
-            ...doc.data(),
+            ...data,
           } as CanvasPreset);
         });
 
