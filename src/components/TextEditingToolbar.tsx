@@ -153,6 +153,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       border: design.style.border,
       borderColor: design.style.borderColor,
       borderWidth: design.style.borderWidth,
+      letterSpacing: design.style.letterSpacing,
+      padding: design.style.padding,
     });
     setShowDesigns(false);
   };
