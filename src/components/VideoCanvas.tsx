@@ -1303,7 +1303,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           fileOverlays={fileOverlays}
           textOverlays={textOverlays}
           blankCanvasColor={blankCanvasColor}
-          backgroundImageUrl={rest.backgroundImageUrl}
+          backgroundImageUrl={props.backgroundImageUrl}
           onSectionContentChange={(sectionId, content) => {
             if (props.onCanvasLayoutChange) {
               const updatedSections = props.canvasLayout!.sections.map((s) =>
@@ -1321,9 +1321,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           pipBorder={rest.pipBorder}
           pipShadow={rest.pipShadow}
           onGridAssetSelect={onGridAssetSelect}
-          onSectionCameraSettingsChange={props.onSectionCameraSettingsChange} // Pass background props from VideoCanvas
+          onSectionCameraSettingsChange={props.onSectionCameraSettingsChange}
           backgroundEffect={props.backgroundEffect}
-          backgroundImageUrl={props.backgroundImageUrl}
         />
       );
     }

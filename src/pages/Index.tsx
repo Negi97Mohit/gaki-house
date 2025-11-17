@@ -41,6 +41,7 @@ import {
   DEFAULT_CAMERA_STATE,
   CaptionAnimation as CaptionAnimationType,
   CanvasLayoutState,
+  CanvasSectionCameraState,
 } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { toast } from "sonner";
@@ -1614,10 +1615,6 @@ const Index = () => {
           videoFilter: "none",
           isBeautifyEnabled: false,
           isNeonEdgeEnabled: false,
-          // FIX: Always set to 'canvas' for non-solo layouts to show blank canvas
-          screenShareMode: (preset.pip.layoutMode === "solo"
-            ? "off"
-            : "canvas") as "off" | "screen" | "canvas",
 
           // +++ NEW: Use responsive layout helper for PiP
           ...getResponsivePipLayout(preset, screenSize),
