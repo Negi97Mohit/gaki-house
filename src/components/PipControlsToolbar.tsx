@@ -94,7 +94,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
 
       // Position either above or below the PiP to avoid overlap
       const x = props.position.x - toolbarWidth / 2;
-      const y = wouldOverlapTopToolbar 
+      const y = wouldOverlapTopToolbar
         ? props.position.y + 8 // Position below if it would overlap
         : yAbove; // Position above otherwise
 
@@ -165,7 +165,9 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             className="z-[var(--z-text-toolbar)] w-56 max-h-[400px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            <DropdownMenuLabel className="text-xs font-semibold">Aspect Ratio</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs font-semibold">
+              Aspect Ratio
+            </DropdownMenuLabel>
             {ASPECT_RATIOS.map((ratio) => (
               <DropdownMenuCheckboxItem
                 key={ratio.id}
@@ -190,7 +192,9 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
               </div>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs font-semibold">Background</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs font-semibold">
+              Background
+            </DropdownMenuLabel>
             {BACKGROUND_PRESETS.map((bg) => (
               <DropdownMenuCheckboxItem
                 key={bg.id}
@@ -209,14 +213,16 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 {bg.name}
               </DropdownMenuCheckboxItem>
             ))}
-            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="text-sm">
+            <DropdownMenuItem
+              onClick={() => fileInputRef.current?.click()}
+              className="text-sm"
+            >
               <Upload className="w-3.5 h-3.5 mr-2" />
               Upload
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
-
 
       {/* --- Group 2: Effects & Filters --- */}
       <DropdownMenu>
@@ -253,14 +259,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
               Enhance Lighting
             </DropdownMenuCheckboxItem>
             <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={props.isFaceTrackingEnabled}
-              onCheckedChange={props.onFaceTrackingToggle}
-              className="text-sm"
-            >
-              <Camera className="w-3.5 h-3.5 mr-2" />
-              Face Tracking
-            </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={props.isAutoFramingEnabled}
               onCheckedChange={props.onAutoFramingChange}
@@ -376,7 +374,9 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                     onChange={handlePipBorderColor}
                   />
                   <div className="flex-1 space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">Width {pipBorder.width}px</Label>
+                    <Label className="text-[10px] text-muted-foreground">
+                      Width {pipBorder.width}px
+                    </Label>
                     <Slider
                       value={[pipBorder.width]}
                       onValueChange={([v]) => handlePipBorderWidth(v)}
@@ -397,7 +397,9 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                     onChange={handlePipShadowColor}
                   />
                   <div className="flex-1 space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">Blur {pipShadow.blur}px</Label>
+                    <Label className="text-[10px] text-muted-foreground">
+                      Blur {pipShadow.blur}px
+                    </Label>
                     <Slider
                       value={[pipShadow.blur]}
                       onValueChange={([v]) => handlePipShadowBlur(v)}
@@ -426,7 +428,9 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                     type="color"
                     className="w-full h-9 p-1 rounded-lg cursor-pointer"
                     value={neonEdgeColor}
-                    onChange={(e) => props.onNeonEdgeColorChange(e.target.value)}
+                    onChange={(e) =>
+                      props.onNeonEdgeColorChange(e.target.value)
+                    }
                   />
                 </div>
                 <div className="space-y-2">

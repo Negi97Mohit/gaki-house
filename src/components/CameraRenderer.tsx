@@ -3,8 +3,8 @@ import { createPortal } from "react-dom";
 import React, { useEffect, useRef, useState } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { PipControlsToolbar } from "./PipControlsToolbar";
-import { VideoOff } from "lucide-react"; // <-- ADDED
-import { cn } from "@/lib/utils"; // <-- FIX: Added missing import
+import { VideoOff } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // --- HELPER FUNCTIONS (No changes) ---
 function hslToRgb(h: number, s: number, l: number): [number, number, number] {
@@ -109,7 +109,7 @@ function detectEdges(
   return output;
 }
 
-// --- PROPS INTERFACE (FIX: Fully updated) ---
+// --- PROPS INTERFACE (Fully updated) ---
 interface CameraRendererProps {
   stream: MediaStream | null;
   className?: string;
@@ -120,7 +120,7 @@ interface CameraRendererProps {
   neonColor: string;
   cameraBackground?: "none" | "blur" | "image";
   customBackgroundUrl?: string | null;
-  isFaceTrackingEnabled?: boolean;
+  isFaceTrackingEnabled?: boolean; // This prop is now overridden by isAutoFramingEnabled
   cameraAspectRatio?: string;
 
   // --- All Toolbar Props ---
@@ -144,10 +144,10 @@ interface CameraRendererProps {
   onTrackingSpeedChange: (value: number) => void;
   onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
   onCustomBackgroundUpload: (file: File) => void;
-  onCameraAspectRatioChange: (ratio: string) => void; // <-- FIX: Added
+  onCameraAspectRatioChange: (ratio: string) => void;
   customAspectRatio: string;
   onCustomAspectRatioChange: (ratio: string) => void;
-  onFaceTrackingToggle: (enabled: boolean) => void;
+  onFaceTrackingToggle: (enabled: boolean) => void; // Kept for the UI
 
   // --- Original Background Props ---
   backgroundEffect: "none" | "blur" | "image";
@@ -165,15 +165,13 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   neonColor,
   cameraBackground = "none",
   customBackgroundUrl,
-  isFaceTrackingEnabled = false,
+  isFaceTrackingEnabled = false, // We still accept this prop
   cameraAspectRatio = "16:9",
-
-  // --- FIX: Destructure ALL props ---
   pipBorder,
   onPipBorderChange,
   pipShadow,
   onPipShadowChange,
-  isAutoFramingEnabled,
+  isAutoFramingEnabled, // This is the main prop for the new logic
   onAutoFramingChange,
   isBeautifyEnabled,
   onBeautifyToggle,
@@ -183,13 +181,13 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   onNeonEdgeToggle,
   onNeonIntensityChange,
   onNeonEdgeColorChange,
-  zoomSensitivity,
+  zoomSensitivity, // Prop for zoom level
   onZoomSensitivityChange,
-  trackingSpeed,
+  trackingSpeed, // Prop for pan speed
   onTrackingSpeedChange,
   onCameraBackgroundChange,
   onCustomBackgroundUpload,
-  onCameraAspectRatioChange, // <-- FIX: Added
+  onCameraAspectRatioChange,
   customAspectRatio,
   onCustomAspectRatioChange,
   onFaceTrackingToggle,
@@ -206,13 +204,18 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
 
+  // --- Refs for smoothed auto-frame state ---
+  const currentScale = useRef(1);
+  const currentXOffset = useRef(0);
+  const currentYOffset = useRef(0);
+
   // Initialize useCameraEffects hook
   const { processedCanvas, facePosition, isReady } = useCameraEffects({
     videoElement: videoRef.current,
     isBackgroundRemovalEnabled: cameraBackground !== "none",
     backgroundType: cameraBackground,
     backgroundImageUrl: customBackgroundUrl || undefined,
-    isFaceTrackingEnabled,
+    isFaceTrackingEnabled: isFaceTrackingEnabled || isAutoFramingEnabled,
   });
 
   const handleMouseEnter = () => {
@@ -226,14 +229,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   };
   const handleMouseLeave = () => setIsHovered(false);
 
-  // --- FIX: Correct useEffect structure ---
   useEffect(() => {
-    const canvas = canvasRef.current; // Read ref *inside* effect
-    if (!canvas) {
-      // console.log("[CameraRenderer] ResizeObserver effect: Canvas ref not ready.");
-      return;
-    }
-    // console.log("[CameraRenderer] ResizeObserver effect: Attaching observer.");
+    const canvas = canvasRef.current;
+    if (!canvas) return;
     const resizeObserver = new ResizeObserver(() => {
       if (canvas) {
         canvas.width = canvas.clientWidth;
@@ -242,30 +240,20 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     });
     resizeObserver.observe(canvas);
     return () => resizeObserver.disconnect();
-  }, [canvasRef.current]); // <-- FIX: Depend on the ref's *current* value
+  }, [canvasRef.current]);
 
-  // --- FIX: Correct useEffect structure ---
   useEffect(() => {
-    const video = videoRef.current; // Read ref *inside* effect
-    const canvas = canvasRef.current; // Read ref *inside* effect
-    if (!video || !canvas) {
-      // console.log("[CameraRenderer] Drawing effect: Refs not ready.");
-      return;
-    }
-
-    // console.log("[CameraRenderer] Drawing effect: Running. Stream:", stream ? "Yes" : "No");
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
 
     if (stream) {
-      // +++ FIX for AbortError: Only set srcObject if it's a new stream +++
       if (video.srcObject !== stream) {
-        console.log("[CameraRenderer] Attaching new stream.");
         video.srcObject = stream;
         video.play().catch(console.error);
       }
     } else {
-      // +++ FIX for AbortError: Only clear if it's not already null +++
       if (video.srcObject) {
-        console.log("[CameraRenderer] No stream, clearing video.");
         video.srcObject = null;
       }
     }
@@ -277,6 +265,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         video.ended ||
         video.videoWidth === 0
       ) {
+        // Reset zoom/pan when video stops
+        currentScale.current = 1;
+        currentXOffset.current = 0;
+        currentYOffset.current = 0;
         animationFrameRef.current = requestAnimationFrame(renderFrame);
         return;
       }
@@ -294,49 +286,119 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const sourceElement = processedCanvas || video;
-      const videoAspect = video.videoWidth / video.videoHeight;
+      const sourceWidth = video.videoWidth;
+      const sourceHeight = video.videoHeight;
+      const sourceAspect = sourceWidth / sourceHeight;
       const canvasAspect = canvas.width / canvas.height;
 
-      let drawWidth = canvas.width;
-      let drawHeight = canvas.height;
-      let drawX = 0;
-      let drawY = 0;
+      // --- START: NEW ROBUST PAN/ZOOM LOGIC ---
 
-      if (isFaceTrackingEnabled && facePosition) {
-        const offsetX = (50 - facePosition.x) * 0.1;
-        const offsetY = (50 - facePosition.y) * 0.1;
-        drawX += offsetX * canvas.width;
-        drawY += offsetY * canvas.height;
+      // 1. Calculate base 'cover' scale
+      const baseScale =
+        canvasAspect > sourceAspect
+          ? canvas.width / sourceWidth // Canvas is wider, fit to width
+          : canvas.height / sourceHeight; // Canvas is taller, fit to height
+
+      // 2. Determine target auto-frame scale & pan
+      let targetScale = 1.0; // This is the *additional* zoom
+      let targetXOffset = 0.0; // -0.5 to 0.5 (percentage of video width)
+      let targetYOffset = 0.0; // -0.5 to 0.5 (percentage of video height)
+
+      if (isAutoFramingEnabled && facePosition) {
+        // Calculate target scale
+        const faceWidthPx = (facePosition.width / 100) * sourceWidth;
+        const faceHeightPx = (facePosition.height / 100) * sourceHeight;
+        const faceSizePx = Math.max(faceWidthPx, faceHeightPx);
+
+        const faceScreenPercentage = 0.1 + (zoomSensitivity / 10) * 0.2; // 15% to 50%
+
+        // Calculate how much we need to scale the face to reach target size
+        const targetFaceSizePx =
+          Math.min(canvas.width, canvas.height) * faceScreenPercentage;
+
+        targetScale = Math.min(5, Math.max(1, targetFaceSizePx / faceSizePx));
+        // Calculate target pan (face center % (0-100) -> pan % (-0.5 to 0.5))
+
+        targetXOffset = (50 - facePosition.x) / 100;
+        targetYOffset = (50 - facePosition.y) / 100;
+      } else if (isFaceTrackingEnabled && facePosition) {
+        // Fallback to simple face tracking (pan only)
+        targetScale = 1.0;
+        targetXOffset = (50 - facePosition.x) / 100;
+        targetYOffset = (50 - facePosition.y) / 100;
       }
 
-      if (canvasAspect > videoAspect) {
-        drawHeight = canvas.width / videoAspect;
-        drawY += (canvas.height - drawHeight) / 2;
-      } else {
-        drawWidth = canvas.height * videoAspect;
-        drawX += (canvas.width - drawWidth) / 2;
-      }
+      // 3. Apply Smoothing (Lerp)
+      const zoomSpeed = 0.05; // Slower, smoother zoom
+      currentScale.current += (targetScale - currentScale.current) * zoomSpeed;
 
+      // Use the user's trackingSpeed prop (0.01 to 0.5)
+      currentXOffset.current +=
+        (targetXOffset - currentXOffset.current) * trackingSpeed;
+      currentYOffset.current +=
+        (targetYOffset - currentYOffset.current) * trackingSpeed;
+
+      // 4. Calculate Final Draw Parameters
+      const finalScale = baseScale * currentScale.current;
+      const finalWidth = sourceWidth * finalScale;
+      const finalHeight = sourceHeight * finalScale;
+
+      // Base position (centered)
+      let finalDrawX = (canvas.width - finalWidth) / 2;
+      let finalDrawY = (canvas.height - finalHeight) / 2;
+
+      // Calculate pan in pixels
+      const panAmountX = currentXOffset.current * finalWidth;
+      const panAmountY = currentYOffset.current * finalHeight;
+
+      // Calculate *maximum* allowed pan (the "padding")
+      const maxPanX = Math.max(0, (finalWidth - canvas.width) / 2);
+      const maxPanY = Math.max(0, (finalHeight - canvas.height) / 2);
+
+      // Clamp the pan amount to stay within the padding
+      const clampedPanX = Math.max(-maxPanX, Math.min(maxPanX, panAmountX));
+      const clampedPanY = Math.max(-maxPanY, Math.min(maxPanY, panAmountY));
+
+      // Apply the clamped pan
+      finalDrawX += clampedPanX;
+      finalDrawY += clampedPanY;
+
+      // 5. Draw the image
       ctx.filter = videoFilter;
-      ctx.drawImage(sourceElement, drawX, drawY, drawWidth, drawHeight);
+      ctx.drawImage(
+        sourceElement,
+        finalDrawX,
+        finalDrawY,
+        finalWidth,
+        finalHeight
+      );
       ctx.filter = "none";
+      // --- END: NEW ROBUST PAN/ZOOM LOGIC ---
 
       if (isNeonEdgeEnabled) {
         if (
           !tempCanvasRef.current ||
-          tempCanvasRef.current.width !== drawWidth ||
-          tempCanvasRef.current.height !== drawHeight
+          tempCanvasRef.current.width !== Math.round(finalWidth) ||
+          tempCanvasRef.current.height !== Math.round(finalHeight)
         ) {
           tempCanvasRef.current = document.createElement("canvas");
-          tempCanvasRef.current.width = Math.round(drawWidth);
-          tempCanvasRef.current.height = Math.round(drawHeight);
+          tempCanvasRef.current.width = Math.round(finalWidth);
+          tempCanvasRef.current.height = Math.round(finalHeight);
         }
         const tempCanvas = tempCanvasRef.current;
         const tempCtx = tempCanvas.getContext("2d", {
           willReadFrequently: true,
         });
         if (!tempCtx) return;
-        tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+
+        // Draw the source video, scaled up to match the new size
+        tempCtx.drawImage(
+          video, // Use the raw video for edge detection
+          0,
+          0,
+          tempCanvas.width,
+          tempCanvas.height
+        );
         const frame = tempCtx.getImageData(
           0,
           0,
@@ -345,7 +407,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         );
         const edges = detectEdges(tempCtx, frame, neonIntensity, neonColor);
         ctx.globalCompositeOperation = "lighter";
-        ctx.putImageData(edges, Math.round(drawX), Math.round(drawY));
+        // Put the scaled edge data at the correct panned/zoomed coordinate
+        ctx.putImageData(edges, Math.round(finalDrawX), Math.round(finalDrawY));
         ctx.globalCompositeOperation = "source-over";
       }
 
@@ -355,15 +418,14 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     renderFrame();
 
     return () => {
-      // console.log("[CameraRenderer] Cleanup drawing effect.");
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
   }, [
     stream,
-    videoRef.current, // <-- FIX: Depend on the ref's *current* value
-    canvasRef.current, // <-- FIX: Depend on the ref's *current* value
+    videoRef.current,
+    canvasRef.current,
     isNeonEdgeEnabled,
     neonIntensity,
     neonColor,
@@ -371,12 +433,15 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     processedCanvas,
     facePosition,
     isFaceTrackingEnabled,
+    isAutoFramingEnabled,
+    zoomSensitivity,
+    trackingSpeed,
   ]);
 
   return (
     <div
       ref={containerRef}
-      className={cn("relative", className)} // <-- cn is now defined
+      className={cn("relative w-full h-full", className)} // Added w-full h-full
       style={style}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -388,13 +453,12 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         playsInline
         className="hidden object-cover w-full h-full"
       />
-      {/* --- ADDED: Placeholder when stream is off --- */}
       {!stream && (
         <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/30 text-muted-foreground/50 pointer-events-none">
           <img
             src="/icon.png"
             alt="Camera Off"
-            className="w-1/2 h-1/2 object-cover" // Made it circular and larger
+            className="w-1/2 h-1/2 object-contain"
             style={{
               maxWidth: "50px",
               maxHeight: "50px",
@@ -402,7 +466,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
           />
         </div>
       )}
-      {/* --- END ADDED --- */}
       <canvas ref={canvasRef} className="w-full h-full" />
 
       {isHovered && portalContainer instanceof HTMLElement
@@ -436,7 +499,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onCameraBackgroundChange={onCameraBackgroundChange}
               onCustomBackgroundUpload={onCustomBackgroundUpload}
               cameraAspectRatio={cameraAspectRatio}
-              onCameraAspectRatioChange={onCameraAspectRatioChange} // <-- FIX: Prop is now passed
+              onCameraAspectRatioChange={onCameraAspectRatioChange}
               customAspectRatio={customAspectRatio}
               onCustomAspectRatioChange={onCustomAspectRatioChange}
               isFaceTrackingEnabled={isFaceTrackingEnabled}
