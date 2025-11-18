@@ -76,6 +76,8 @@ interface PipControlsToolbarProps {
   onFilterIntensityChange?: (intensity: number) => void;
   filterColor?: string;
   onFilterColorChange?: (color: string) => void;
+  filterTarget?: 'both' | 'background' | 'person';
+  onFilterTargetChange?: (target: 'both' | 'background' | 'person') => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -583,10 +585,42 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             
             {/* Filter Controls */}
             {props.activeInteractiveFilter !== 'none' && (
-              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
+              <div className="p-3 space-y-3 bg-background/95 backdrop-blur-xl rounded-lg m-2 border border-border/40">
                 <DropdownMenuLabel className="text-xs font-semibold">
                   Filter Controls
                 </DropdownMenuLabel>
+                
+                {/* Filter Target Selector */}
+                <div className="space-y-2">
+                  <Label className="text-xs font-semibold">Apply To</Label>
+                  <div className="grid grid-cols-3 gap-1">
+                    <Button
+                      size="sm"
+                      variant={props.filterTarget === 'both' ? 'default' : 'outline'}
+                      onClick={() => props.onFilterTargetChange?.('both')}
+                      className="text-xs h-8"
+                    >
+                      Both
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={props.filterTarget === 'person' ? 'default' : 'outline'}
+                      onClick={() => props.onFilterTargetChange?.('person')}
+                      className="text-xs h-8"
+                    >
+                      Person
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant={props.filterTarget === 'background' ? 'default' : 'outline'}
+                      onClick={() => props.onFilterTargetChange?.('background')}
+                      className="text-xs h-8"
+                    >
+                      Background
+                    </Button>
+                  </div>
+                </div>
+                
                 <div className="space-y-2">
                   <Label className="text-xs font-medium">
                     Intensity {Math.round((props.filterIntensity || 1.0) * 100)}%
