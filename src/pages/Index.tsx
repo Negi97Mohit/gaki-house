@@ -152,6 +152,7 @@ const createDefaultScene = (name: string): SceneState => ({
   canvasAspectRatio: "16:9",
   customAspectRatio: "",
   isFaceTrackingEnabled: false,
+  activeInteractiveFilter: 'none',
 });
 
 const MemoizedVideoCanvas = memo(VideoCanvas);
@@ -781,6 +782,12 @@ const Index = () => {
     (value: string) => updateSceneProperty("neonColor", value),
     [updateSceneProperty]
   );
+  
+  const handleSetActiveInteractiveFilter = useCallback(
+    (value: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => 
+      updateSceneProperty("activeInteractiveFilter", value),
+    [updateSceneProperty]
+  );
 
   // Camera controls
   const handleSetCameraBackground = useCallback(
@@ -935,6 +942,8 @@ const Index = () => {
         onNeonEdgeToggle: handleSetIsNeonEdgeEnabled,
         onNeonIntensityChange: handleSetNeonIntensity,
         onNeonColorChange: handleSetNeonColor,
+        activeInteractiveFilter: scene.activeInteractiveFilter,
+        onInteractiveFilterChange: handleSetActiveInteractiveFilter,
         savedOverlays: savedOverlays,
         onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
         onAddSavedOverlay: handleAddSavedOverlay,
@@ -1916,6 +1925,8 @@ const Index = () => {
     onNeonIntensityChange: handleSetNeonIntensity,
     neonColor: activeScene.neonColor,
     onNeonColorChange: handleSetNeonColor,
+    activeInteractiveFilter: activeScene.activeInteractiveFilter,
+    onInteractiveFilterChange: handleSetActiveInteractiveFilter,
     savedOverlays: savedOverlays,
     onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
     onAddSavedOverlay: handleAddSavedOverlay,
