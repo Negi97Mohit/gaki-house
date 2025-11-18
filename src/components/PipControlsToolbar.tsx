@@ -34,6 +34,7 @@ import { Input } from "./ui/input";
 import { Label } from "@/components/ui/label";
 import { FILTER_PRESETS } from "@/lib/filters";
 import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
+import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 
 // 1. Define the extensive props interface for all PiP controls
 interface PipControlsToolbarProps {
@@ -498,152 +499,44 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 Interactive Filters
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
-                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] w-56 bg-background/95 backdrop-blur-xl border-border/40">
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "none"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("none")
-                    }
-                    className="text-sm"
-                  >
-                    None
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "neon-edge"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("neon-edge")
-                    }
-                    className="text-sm"
-                  >
-                    Neon Edge
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "hologram"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("hologram")
-                    }
-                    className="text-sm"
-                  >
-                    Hologram Glitch
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "pixel"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("pixel")
-                    }
-                    className="text-sm"
-                  >
-                    Pixelated
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "comic"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("comic")
-                    }
-                    className="text-sm"
-                  >
-                    Comic Book
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "ascii"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("ascii")
-                    }
-                    className="text-sm"
-                  >
-                    ASCII Art
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "thermal"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("thermal")
-                    }
-                    className="text-sm"
-                  >
-                    Thermal Vision
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "mirror"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("mirror")
-                    }
-                    className="text-sm"
-                  >
-                    Mirror
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "kaleidoscope"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("kaleidoscope")
-                    }
-                    className="text-sm"
-                  >
-                    Kaleidoscope
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "oil-paint"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("oil-paint")
-                    }
-                    className="text-sm"
-                  >
-                    Oil Paint
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "sketch"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("sketch")
-                    }
-                    className="text-sm"
-                  >
-                    Sketch
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "prism"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("prism")
-                    }
-                    className="text-sm"
-                  >
-                    Prism
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "vhs"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("vhs")
-                    }
-                    className="text-sm"
-                  >
-                    VHS Glitch
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "infrared"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("infrared")
-                    }
-                    className="text-sm"
-                  >
-                    Infrared
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "xray"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("xray")
-                    }
-                    className="text-sm"
-                  >
-                    X-Ray
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === "cyberpunk"}
-                    onCheckedChange={() =>
-                      props.onInteractiveFilterChange?.("cyberpunk")
-                    }
-                    className="text-sm"
-                  >
-                    Cyberpunk Cyberpunk
-                  </DropdownMenuCheckboxItem>
+                {/* --- 3. APPLY STYLES FROM FILTER PRESETS --- */}
+                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] p-2 bg-background/95 backdrop-blur-xl border-border/40">
+                  <div className="grid grid-cols-3 gap-2 w-[260px] max-h-[240px] overflow-y-auto pr-1">
+                    {/* --- 4. MAP OVER NEW PRESET LIST --- */}
+                    {INTERACTIVE_FILTER_PRESETS.map((filter) => {
+                      const isSelected =
+                        props.activeInteractiveFilter === filter.id;
+                      return (
+                        <button
+                          key={filter.id}
+                          onClick={() =>
+                            props.onInteractiveFilterChange?.(filter.id)
+                          }
+                          className={cn(
+                            "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
+                            isSelected
+                              ? "border-primary shadow-md ring-2 ring-primary/30"
+                              : "border-border/40 hover:border-border"
+                          )}
+                          title={filter.name}
+                        >
+                          <img
+                            src={filter.thumbnailUrl} // <-- Use new thumbnail URL
+                            alt={filter.name}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
+                            <span className="text-white text-[8px] font-semibold truncate block text-center">
+                              {filter.name}
+                            </span>
+                          </div>
+                          {isSelected && (
+                            <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
