@@ -325,6 +325,320 @@ function applyThermalEffect(
   return output;
 }
 
+// 6. Mirror - Flip video horizontally with kaleidoscope effect
+function applyMirrorEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  const halfW = Math.floor(w / 2);
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const sourceX = x < halfW ? x : w - 1 - x;
+      const srcIdx = (y * w + sourceX) * 4;
+      const dstIdx = (y * w + x) * 4;
+      
+      output.data[dstIdx] = data[srcIdx];
+      output.data[dstIdx + 1] = data[srcIdx + 1];
+      output.data[dstIdx + 2] = data[srcIdx + 2];
+      output.data[dstIdx + 3] = data[srcIdx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 7. Kaleidoscope - 4-way mirror symmetry
+function applyKaleidoscopeEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  const halfW = Math.floor(w / 2);
+  const halfH = Math.floor(h / 2);
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let sourceX = x < halfW ? x : w - 1 - x;
+      let sourceY = y < halfH ? y : h - 1 - y;
+      
+      const srcIdx = (sourceY * w + sourceX) * 4;
+      const dstIdx = (y * w + x) * 4;
+      
+      output.data[dstIdx] = data[srcIdx];
+      output.data[dstIdx + 1] = data[srcIdx + 1];
+      output.data[dstIdx + 2] = data[srcIdx + 2];
+      output.data[dstIdx + 3] = data[srcIdx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 8. Oil Paint - Artistic oil painting effect
+function applyOilPaintEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  const radius = Math.max(1, Math.floor(3 * intensity));
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const intensityLevels = 20;
+      const intensityCount = new Array(intensityLevels).fill(0);
+      const avgR = new Array(intensityLevels).fill(0);
+      const avgG = new Array(intensityLevels).fill(0);
+      const avgB = new Array(intensityLevels).fill(0);
+      
+      for (let dy = -radius; dy <= radius; dy++) {
+        for (let dx = -radius; dx <= radius; dx++) {
+          const nx = Math.min(w - 1, Math.max(0, x + dx));
+          const ny = Math.min(h - 1, Math.max(0, y + dy));
+          const idx = (ny * w + nx) * 4;
+          
+          const curIntensity = Math.floor(
+            ((data[idx] + data[idx + 1] + data[idx + 2]) / 3 / 255) *
+              (intensityLevels - 1)
+          );
+          
+          intensityCount[curIntensity]++;
+          avgR[curIntensity] += data[idx];
+          avgG[curIntensity] += data[idx + 1];
+          avgB[curIntensity] += data[idx + 2];
+        }
+      }
+      
+      let maxIndex = 0;
+      for (let i = 0; i < intensityLevels; i++) {
+        if (intensityCount[i] > intensityCount[maxIndex]) maxIndex = i;
+      }
+      
+      const idx = (y * w + x) * 4;
+      output.data[idx] = avgR[maxIndex] / intensityCount[maxIndex];
+      output.data[idx + 1] = avgG[maxIndex] / intensityCount[maxIndex];
+      output.data[idx + 2] = avgB[maxIndex] / intensityCount[maxIndex];
+      output.data[idx + 3] = data[idx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 9. Sketch - Pencil sketch effect
+function applySketchEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  
+  // Invert colors and detect edges
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      let gx = 0, gy = 0;
+      
+      for (let ky = -1; ky <= 1; ky++) {
+        for (let kx = -1; kx <= 1; kx++) {
+          const idx = ((y + ky) * w + (x + kx)) * 4;
+          const gray = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+          const kernelIdx = (ky + 1) * 3 + (kx + 1);
+          gx += gray * [-1, 0, 1, -2, 0, 2, -1, 0, 1][kernelIdx];
+          gy += gray * [-1, -2, -1, 0, 0, 0, 1, 2, 1][kernelIdx];
+        }
+      }
+      
+      const magnitude = Math.sqrt(gx * gx + gy * gy) * intensity;
+      const outIdx = (y * w + x) * 4;
+      const val = 255 - Math.min(255, magnitude);
+      
+      output.data[outIdx] = val;
+      output.data[outIdx + 1] = val;
+      output.data[outIdx + 2] = val;
+      output.data[outIdx + 3] = data[outIdx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 10. Prism - Rainbow chromatic aberration
+function applyPrismEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0,
+  color: string = '#ff00ff'
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  const offset = Math.floor(5 * intensity);
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      
+      // Red channel - shift right
+      const rIdx = (y * w + Math.min(w - 1, x + offset)) * 4;
+      output.data[idx] = data[rIdx];
+      
+      // Green channel - no shift
+      output.data[idx + 1] = data[idx + 1];
+      
+      // Blue channel - shift left
+      const bIdx = (y * w + Math.max(0, x - offset)) * 4;
+      output.data[idx + 2] = data[bIdx + 2];
+      
+      output.data[idx + 3] = data[idx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 11. VHS - Retro VHS tape glitch
+function applyVHSEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  
+  for (let y = 0; y < h; y++) {
+    // Random line offset for glitch effect
+    const offset = Math.random() < 0.1 * intensity ? Math.floor((Math.random() - 0.5) * 20 * intensity) : 0;
+    
+    for (let x = 0; x < w; x++) {
+      const sourceX = Math.max(0, Math.min(w - 1, x + offset));
+      const srcIdx = (y * w + sourceX) * 4;
+      const dstIdx = (y * w + x) * 4;
+      
+      // Add color bleeding and reduce saturation
+      output.data[dstIdx] = data[srcIdx] * 0.9 + 20;
+      output.data[dstIdx + 1] = data[srcIdx + 1] * 0.8 + 10;
+      output.data[dstIdx + 2] = data[srcIdx + 2] * 0.9 + 15;
+      output.data[dstIdx + 3] = data[srcIdx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 12. Infrared - Night vision/heat signature
+function applyInfraredEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  color: string = '#00ff00'
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  const rgb = hexToRgb(color);
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3 / 255;
+      
+      output.data[idx] = rgb[0] * brightness;
+      output.data[idx + 1] = rgb[1] * brightness;
+      output.data[idx + 2] = rgb[2] * brightness;
+      output.data[idx + 3] = data[idx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 13. X-Ray - Medical X-ray visualization
+function applyXRayEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      
+      // Invert and boost contrast
+      const r = 255 - data[idx];
+      const g = 255 - data[idx + 1];
+      const b = 255 - data[idx + 2];
+      const avg = (r + g + b) / 3;
+      
+      // Apply blue tint
+      output.data[idx] = avg * 0.7;
+      output.data[idx + 1] = avg * 0.9;
+      output.data[idx + 2] = avg * intensity;
+      output.data[idx + 3] = data[idx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 14. Cyberpunk - Neon grid with scan lines
+function applyCyberpunkEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  intensity: number = 1.0,
+  color: string = '#ff00ff'
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  const rgb = hexToRgb(color);
+  
+  for (let y = 0; y < h; y++) {
+    // Scan line effect
+    const scanLine = y % 3 === 0 ? 0.8 : 1.0;
+    
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      
+      // Boost colors and add neon tint
+      const r = Math.min(255, data[idx] * 1.2 + rgb[0] * 0.1 * intensity);
+      const g = Math.min(255, data[idx + 1] * 1.1 + rgb[1] * 0.1 * intensity);
+      const b = Math.min(255, data[idx + 2] * 1.3 + rgb[2] * 0.2 * intensity);
+      
+      output.data[idx] = r * scanLine;
+      output.data[idx + 1] = g * scanLine;
+      output.data[idx + 2] = b * scanLine;
+      output.data[idx + 3] = data[idx + 3];
+    }
+  }
+  
+  return output;
+}
+
+
 // --- PROPS INTERFACE (Fully updated) ---
 interface CameraRendererProps {
   stream: MediaStream | null;
@@ -359,8 +673,12 @@ interface CameraRendererProps {
   trackingSpeed: number;
   onTrackingSpeedChange: (value: number) => void;
   // New interactive filters
-  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
-  onInteractiveFilterChange?: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => void;
+  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
+  onInteractiveFilterChange?: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk') => void;
+  filterIntensity?: number;
+  onFilterIntensityChange?: (intensity: number) => void;
+  filterColor?: string;
+  onFilterColorChange?: (color: string) => void;
   onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
   onCustomBackgroundUpload: (file: File) => void;
   onCameraAspectRatioChange: (ratio: string) => void;
@@ -415,6 +733,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   portalContainer,
   activeInteractiveFilter = 'none',
   onInteractiveFilterChange,
+  filterIntensity = 1.0,
+  onFilterIntensityChange,
+  filterColor = '#00ffff',
+  onFilterColorChange,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -669,6 +991,60 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
             ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
             break;
           }
+          case 'mirror': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyMirrorEffect(tempCtx, frame, filterIntensity);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'kaleidoscope': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyKaleidoscopeEffect(tempCtx, frame, filterIntensity);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'oil-paint': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyOilPaintEffect(tempCtx, frame, filterIntensity);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'sketch': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applySketchEffect(tempCtx, frame, filterIntensity);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'prism': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyPrismEffect(tempCtx, frame, filterIntensity, filterColor);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'vhs': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyVHSEffect(tempCtx, frame, filterIntensity);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'infrared': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyInfraredEffect(tempCtx, frame, filterColor);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'xray': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyXRayEffect(tempCtx, frame, filterIntensity);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'cyberpunk': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyCyberpunkEffect(tempCtx, frame, filterIntensity, filterColor);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
         }
       }
 
@@ -733,6 +1109,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     zoomSensitivity,
     trackingSpeed,
     activeInteractiveFilter,
+    filterIntensity,
+    filterColor,
   ]);
 
   return (
@@ -803,6 +1181,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onFaceTrackingToggle={onFaceTrackingToggle}
               activeInteractiveFilter={activeInteractiveFilter}
               onInteractiveFilterChange={onInteractiveFilterChange}
+              filterIntensity={filterIntensity}
+              onFilterIntensityChange={onFilterIntensityChange}
+              filterColor={filterColor}
+              onFilterColorChange={onFilterColorChange}
             />,
             portalContainer
           )

@@ -269,7 +269,9 @@ export interface CanvasSectionCameraState {
   zoomSensitivity: number;
   trackingSpeed: number;
   customAspectRatio: string;
-  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
+  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
+  filterIntensity?: number;
+  filterColor?: string;
 }
 
 // --- CANVAS LAYOUT TYPES ---
@@ -361,7 +363,9 @@ export interface SceneState {
   isFaceTrackingEnabled: boolean;
   
   // Interactive Filters
-  activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
+  activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
+  filterIntensity: number;
+  filterColor: string;
 }
 
 // +++ ADDED: Default state for a new grid camera section +++

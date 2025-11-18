@@ -450,8 +450,12 @@ interface VideoCanvasProps {
     onPipBorderChange: (border: { color: string; width: number }) => void;
     pipShadow?: { blur: number; color: string };
     onPipShadowChange: (shadow: { blur: number; color: string }) => void;
-    activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
-    onInteractiveFilterChange: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => void;
+    activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
+    onInteractiveFilterChange: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk') => void;
+    filterIntensity: number;
+    onFilterIntensityChange: (intensity: number) => void;
+    filterColor: string;
+    onFilterColorChange: (color: string) => void;
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
