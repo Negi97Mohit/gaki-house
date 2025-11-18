@@ -172,7 +172,6 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
         borderColor: "#FFFFFF",
         borderWidth: 2,
         padding: "0",
-        textAlign: "center",
       });
     } else if ((design as any).style) {
       // --- FALLBACK: Convert OLD flat preset to a NEW flat style ---
@@ -593,10 +592,6 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                               oldStyle?.color ||
                               "#FFFFFF",
                             // --- FIX: Add missing style properties for accurate preview ---
-                            textShadow:
-                              baseTextLayer?.textShadow ||
-                              oldStyle?.textShadow ||
-                              "none",
                             letterSpacing:
                               baseTextLayer?.letterSpacing ||
                               oldStyle?.letterSpacing ||

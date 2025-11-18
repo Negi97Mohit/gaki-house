@@ -56,7 +56,7 @@ export function useAutoFraming(
       try {
         // Dynamically import MediaPipe
         const { FaceDetector, FilesetResolver } = await import(
-          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0"
+          "@mediapipe/tasks-vision"
         );
 
         if (!mounted) return;

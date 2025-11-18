@@ -20,7 +20,7 @@ export interface TextDesignPreset {
 // 1. DEFINE THE LAYER TYPES
 // (Based on your examples)
 
-type TextLayer = {
+export type TextLayer = {
   type: "text";
   fontFamily: string;
   fontSize: number;
