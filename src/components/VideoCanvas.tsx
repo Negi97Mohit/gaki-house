@@ -450,6 +450,8 @@ interface VideoCanvasProps {
     onPipBorderChange: (border: { color: string; width: number }) => void;
     pipShadow?: { blur: number; color: string };
     onPipShadowChange: (shadow: { blur: number; color: string }) => void;
+    activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
+    onInteractiveFilterChange: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => void;
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
@@ -1255,6 +1257,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           isNeonEdgeEnabled={isNeonEdgeEnabled} // From root props
           neonIntensity={neonIntensity} // From root props
           neonColor={neonColor} // From root props
+          activeInteractiveFilter={props.sidebarProps.activeInteractiveFilter}
+          onInteractiveFilterChange={props.sidebarProps.onInteractiveFilterChange}
           zoomSensitivity={rest.zoomSensitivity} // From root props
           trackingSpeed={rest.trackingSpeed} // From root props
           cameraBackground={props.sidebarProps.cameraBackground}

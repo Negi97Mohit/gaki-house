@@ -449,6 +449,69 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 </div>
               </div>
             )}
+            
+            {/* Interactive Filters */}
+            <DropdownMenuSeparator />
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="text-sm">
+                <Sparkles className="w-3.5 h-3.5 mr-2" />
+                Interactive Filters
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] w-56 bg-background/95 backdrop-blur-xl border-border/40">
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'none'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('none')}
+                    className="text-sm"
+                  >
+                    None
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'neon-edge'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('neon-edge')}
+                    className="text-sm"
+                  >
+                    Neon Edge
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'hologram'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('hologram')}
+                    className="text-sm"
+                  >
+                    Hologram Glitch
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'pixel'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('pixel')}
+                    className="text-sm"
+                  >
+                    Pixelated
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'comic'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('comic')}
+                    className="text-sm"
+                  >
+                    Comic Book
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'ascii'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('ascii')}
+                    className="text-sm"
+                  >
+                    ASCII Art
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'thermal'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('thermal')}
+                    className="text-sm"
+                  >
+                    Thermal Vision
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>

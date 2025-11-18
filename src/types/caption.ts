@@ -269,6 +269,7 @@ export interface CanvasSectionCameraState {
   zoomSensitivity: number;
   trackingSpeed: number;
   customAspectRatio: string;
+  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
 }
 
 // --- CANVAS LAYOUT TYPES ---
@@ -358,6 +359,9 @@ export interface SceneState {
   canvasAspectRatio: string;
   customAspectRatio: string;
   isFaceTrackingEnabled: boolean;
+  
+  // Interactive Filters
+  activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
 }
 
 // +++ ADDED: Default state for a new grid camera section +++
