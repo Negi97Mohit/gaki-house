@@ -241,6 +241,31 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 isFaceTrackingEnabled: enabled,
               })
             }
+            // --- ADDED: Pass interactive filter props from settings ---
+            activeInteractiveFilter={settings.activeInteractiveFilter}
+            onInteractiveFilterChange={(filter) =>
+              onSectionCameraSettingsChange(section.id, {
+                activeInteractiveFilter: filter,
+              })
+            }
+            filterIntensity={settings.filterIntensity}
+            onFilterIntensityChange={(value) =>
+              onSectionCameraSettingsChange(section.id, {
+                filterIntensity: value,
+              })
+            }
+            filterColor={settings.filterColor}
+            onFilterColorChange={(color) =>
+              onSectionCameraSettingsChange(section.id, {
+                filterColor: color,
+              })
+            }
+            filterTarget={settings.filterTarget}
+            onFilterTargetChange={(target) =>
+              onSectionCameraSettingsChange(section.id, {
+                filterTarget: target,
+              })
+            }
             // --- MODIFIED: Pass main background props ---
             backgroundEffect={backgroundEffect}
             backgroundImageUrl={backgroundImageUrl}

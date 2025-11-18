@@ -70,14 +70,48 @@ interface PipControlsToolbarProps {
   onCustomAspectRatioChange: (ratio: string) => void;
   isFaceTrackingEnabled: boolean;
   onFaceTrackingToggle: (enabled: boolean) => void;
-  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
-  onInteractiveFilterChange?: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk') => void;
+  activeInteractiveFilter?:
+    | "none"
+    | "neon-edge"
+    | "hologram"
+    | "pixel"
+    | "comic"
+    | "ascii"
+    | "thermal"
+    | "mirror"
+    | "kaleidoscope"
+    | "oil-paint"
+    | "sketch"
+    | "prism"
+    | "vhs"
+    | "infrared"
+    | "xray"
+    | "cyberpunk";
+  onInteractiveFilterChange?: (
+    filter:
+      | "none"
+      | "neon-edge"
+      | "hologram"
+      | "pixel"
+      | "comic"
+      | "ascii"
+      | "thermal"
+      | "mirror"
+      | "kaleidoscope"
+      | "oil-paint"
+      | "sketch"
+      | "prism"
+      | "vhs"
+      | "infrared"
+      | "xray"
+      | "cyberpunk"
+  ) => void;
   filterIntensity?: number;
   onFilterIntensityChange?: (intensity: number) => void;
   filterColor?: string;
   onFilterColorChange?: (color: string) => void;
-  filterTarget?: 'both' | 'background' | 'person';
-  onFilterTargetChange?: (target: 'both' | 'background' | 'person') => void;
+  filterTarget?: "both" | "background" | "person";
+  onFilterTargetChange?: (target: "both" | "background" | "person") => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -455,7 +489,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 </div>
               </div>
             )}
-            
+
             {/* Interactive Filters */}
             <DropdownMenuSeparator />
             <DropdownMenuSub>
@@ -466,187 +500,153 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
               <DropdownMenuPortal>
                 <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] w-56 bg-background/95 backdrop-blur-xl border-border/40">
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'none'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('none')}
+                    checked={props.activeInteractiveFilter === "none"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("none")
+                    }
                     className="text-sm"
                   >
                     None
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'neon-edge'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('neon-edge')}
+                    checked={props.activeInteractiveFilter === "neon-edge"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("neon-edge")
+                    }
                     className="text-sm"
                   >
                     Neon Edge
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'hologram'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('hologram')}
+                    checked={props.activeInteractiveFilter === "hologram"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("hologram")
+                    }
                     className="text-sm"
                   >
                     Hologram Glitch
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'pixel'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('pixel')}
+                    checked={props.activeInteractiveFilter === "pixel"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("pixel")
+                    }
                     className="text-sm"
                   >
                     Pixelated
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'comic'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('comic')}
+                    checked={props.activeInteractiveFilter === "comic"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("comic")
+                    }
                     className="text-sm"
                   >
                     Comic Book
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'ascii'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('ascii')}
+                    checked={props.activeInteractiveFilter === "ascii"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("ascii")
+                    }
                     className="text-sm"
                   >
                     ASCII Art
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'thermal'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('thermal')}
+                    checked={props.activeInteractiveFilter === "thermal"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("thermal")
+                    }
                     className="text-sm"
                   >
                     Thermal Vision
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'mirror'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('mirror')}
+                    checked={props.activeInteractiveFilter === "mirror"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("mirror")
+                    }
                     className="text-sm"
                   >
                     Mirror
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'kaleidoscope'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('kaleidoscope')}
+                    checked={props.activeInteractiveFilter === "kaleidoscope"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("kaleidoscope")
+                    }
                     className="text-sm"
                   >
                     Kaleidoscope
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'oil-paint'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('oil-paint')}
+                    checked={props.activeInteractiveFilter === "oil-paint"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("oil-paint")
+                    }
                     className="text-sm"
                   >
                     Oil Paint
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'sketch'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('sketch')}
+                    checked={props.activeInteractiveFilter === "sketch"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("sketch")
+                    }
                     className="text-sm"
                   >
                     Sketch
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'prism'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('prism')}
+                    checked={props.activeInteractiveFilter === "prism"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("prism")
+                    }
                     className="text-sm"
                   >
                     Prism
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'vhs'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('vhs')}
+                    checked={props.activeInteractiveFilter === "vhs"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("vhs")
+                    }
                     className="text-sm"
                   >
                     VHS Glitch
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'infrared'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('infrared')}
+                    checked={props.activeInteractiveFilter === "infrared"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("infrared")
+                    }
                     className="text-sm"
                   >
                     Infrared
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'xray'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('xray')}
+                    checked={props.activeInteractiveFilter === "xray"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("xray")
+                    }
                     className="text-sm"
                   >
                     X-Ray
                   </DropdownMenuCheckboxItem>
                   <DropdownMenuCheckboxItem
-                    checked={props.activeInteractiveFilter === 'cyberpunk'}
-                    onCheckedChange={() => props.onInteractiveFilterChange?.('cyberpunk')}
+                    checked={props.activeInteractiveFilter === "cyberpunk"}
+                    onCheckedChange={() =>
+                      props.onInteractiveFilterChange?.("cyberpunk")
+                    }
                     className="text-sm"
                   >
-                    Cyberpunk
-                    Cyberpunk
+                    Cyberpunk Cyberpunk
                   </DropdownMenuCheckboxItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
-            
-            {/* Filter Controls */}
-            {props.activeInteractiveFilter !== 'none' && (
-              <div className="p-3 space-y-3 bg-background/95 backdrop-blur-xl rounded-lg m-2 border border-border/40">
-                <DropdownMenuLabel className="text-xs font-semibold">
-                  Filter Controls
-                </DropdownMenuLabel>
-                
-                {/* Filter Target Selector */}
-                <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Apply To</Label>
-                  <div className="grid grid-cols-3 gap-1">
-                    <Button
-                      size="sm"
-                      variant={props.filterTarget === 'both' ? 'default' : 'outline'}
-                      onClick={() => props.onFilterTargetChange?.('both')}
-                      className="text-xs h-8"
-                    >
-                      Both
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={props.filterTarget === 'person' ? 'default' : 'outline'}
-                      onClick={() => props.onFilterTargetChange?.('person')}
-                      className="text-xs h-8"
-                    >
-                      Person
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={props.filterTarget === 'background' ? 'default' : 'outline'}
-                      onClick={() => props.onFilterTargetChange?.('background')}
-                      className="text-xs h-8"
-                    >
-                      Background
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-xs font-medium">
-                    Intensity {Math.round((props.filterIntensity || 1.0) * 100)}%
-                  </Label>
-                  <Slider
-                    value={[(props.filterIntensity || 1.0) * 100]}
-                    onValueChange={([v]) => props.onFilterIntensityChange?.(v / 100)}
-                    min={0}
-                    max={200}
-                    step={5}
-                  />
-                </div>
-                {/* Color picker for filters that use color */}
-                {['prism', 'infrared', 'cyberpunk'].includes(props.activeInteractiveFilter || '') && (
-                  <div className="space-y-2">
-                    <Label className="text-xs font-semibold">Filter Color</Label>
-                    <Input
-                      type="color"
-                      className="w-full h-9 p-1 rounded-lg cursor-pointer"
-                      value={props.filterColor}
-                      onChange={(e) => props.onFilterColorChange?.(e.target.value)}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
