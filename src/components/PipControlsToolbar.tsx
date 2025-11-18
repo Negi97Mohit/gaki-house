@@ -31,9 +31,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Slider } from "./ui/slider";
 import { Input } from "./ui/input";
-import { Label } from "@/components/ui/label";
+import { Label } from "./ui/label";
 import { FILTER_PRESETS } from "@/lib/filters";
 import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
+// --- 1. IMPORT THE NEW PRESETS ---
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 
 // 1. Define the extensive props interface for all PiP controls
@@ -282,108 +283,98 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         <DropdownMenuPortal>
           <DropdownMenuContent
             align="start"
-            className="z-[var(--z-text-toolbar)] w-56 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
+            className="z-[var(--z-text-toolbar)] w-72 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            <DropdownMenuCheckboxItem
-              checked={props.isBeautifyEnabled}
-              onCheckedChange={props.onBeautifyToggle}
-              className="text-sm"
-            >
-              <Sparkles className="w-3.5 h-3.5 mr-2" />
-              Beautify
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={props.isLowLightEnabled}
-              onCheckedChange={props.onLowLightToggle}
-              className="text-sm"
-            >
-              <Sun className="w-3.5 h-3.5 mr-2" />
-              Enhance Lighting
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={props.isAutoFramingEnabled}
-              onCheckedChange={props.onAutoFramingChange}
-              className="text-sm"
-            >
-              <Minimize2 className="w-3.5 h-3.5 mr-2" />
-              Auto Framing
-            </DropdownMenuCheckboxItem>
-            {props.isAutoFramingEnabled && (
-              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">
-                    Zoom {props.zoomSensitivity.toFixed(1)}x
-                  </Label>
-                  <Slider
-                    value={[props.zoomSensitivity]}
-                    onValueChange={([v]) => props.onZoomSensitivityChange(v)}
-                    min={1}
-                    max={10}
-                    step={0.1}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">
-                    Speed {(props.trackingSpeed * 100).toFixed(0)}%
-                  </Label>
-                  <Slider
-                    value={[props.trackingSpeed]}
-                    onValueChange={([v]) => props.onTrackingSpeedChange(v)}
-                    min={0.01}
-                    max={0.5}
-                    step={0.01}
-                  />
-                </div>
+            {/* --- REMOVED: Beautify, Low Light, Auto Framing from here --- */}
+
+            {/* --- MODIFIED: Replaced Sub-Menu with Label --- */}
+            <DropdownMenuLabel className="text-xs font-semibold px-3 py-1.5 flex items-center">
+              <Droplet className="w-3.5 h-3.5 mr-2" />
+              Color Filters
+            </DropdownMenuLabel>
+            {/* --- MODIFIED: Inlined the grid content --- */}
+            <div className="p-2">
+              <div className="grid grid-cols-3 gap-2 w-full max-h-[240px] overflow-y-auto pr-1">
+                {FILTER_PRESETS.map((filter) => {
+                  const isSelected = props.videoFilter === filter.style;
+                  return (
+                    <button
+                      key={filter.id}
+                      onClick={() => props.onVideoFilterChange(filter.style)}
+                      className={cn(
+                        "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
+                        isSelected
+                          ? "border-primary shadow-md ring-2 ring-primary/30"
+                          : "border-border/40 hover:border-border"
+                      )}
+                      title={filter.name}
+                    >
+                      <img
+                        src="/placeholder.jpeg"
+                        alt={filter.name}
+                        className="w-full h-full object-cover"
+                        style={{ filter: filter.style }}
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
+                        <span className="text-white text-[8px] font-semibold truncate block text-center">
+                          {filter.name}
+                        </span>
+                      </div>
+                      {isSelected && (
+                        <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
-            )}
+            </div>
+            {/* --- END MODIFICATION --- */}
+
+            {/* --- MOVED & FLATTENED: Interactive Filters --- */}
             <DropdownMenuSeparator />
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="text-sm">
-                <Droplet className="w-3.5 h-3.5 mr-2" />
-                Filters
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] p-2 bg-background/95 backdrop-blur-xl border-border/40">
-                  <div className="grid grid-cols-3 gap-2 w-[260px] max-h-[240px] overflow-y-auto pr-1">
-                    {FILTER_PRESETS.map((filter) => {
-                      const isSelected = props.videoFilter === filter.style;
-                      return (
-                        <button
-                          key={filter.id}
-                          onClick={() =>
-                            props.onVideoFilterChange(filter.style)
-                          }
-                          className={cn(
-                            "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
-                            isSelected
-                              ? "border-primary shadow-md ring-2 ring-primary/30"
-                              : "border-border/40 hover:border-border"
-                          )}
-                          title={filter.name}
-                        >
-                          <img
-                            src="/placeholder.jpeg"
-                            alt={filter.name}
-                            className="w-full h-full object-cover"
-                            style={{ filter: filter.style }}
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
-                            <span className="text-white text-[8px] font-semibold truncate block text-center">
-                              {filter.name}
-                            </span>
-                          </div>
-                          {isSelected && (
-                            <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
+            <DropdownMenuLabel className="text-xs font-semibold px-3 py-1.5 flex items-center">
+              <Sparkles className="w-3.5 h-3.5 mr-2" />
+              Interactive Filters
+            </DropdownMenuLabel>
+            <div className="p-2">
+              <div className="grid grid-cols-3 gap-2 w-full max-h-[240px] overflow-y-auto pr-1">
+                {INTERACTIVE_FILTER_PRESETS.map((filter) => {
+                  const isSelected =
+                    props.activeInteractiveFilter === filter.id;
+                  return (
+                    <button
+                      key={filter.id}
+                      onClick={() =>
+                        props.onInteractiveFilterChange?.(filter.id)
+                      }
+                      className={cn(
+                        "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
+                        isSelected
+                          ? "border-primary shadow-md ring-2 ring-primary/30"
+                          : "border-border/40 hover:border-border"
+                      )}
+                      title={filter.name}
+                    >
+                      <img
+                        src={filter.thumbnailUrl} // <-- Use new thumbnail URL
+                        alt={filter.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
+                        <span className="text-white text-[8px] font-semibold truncate block text-center">
+                          {filter.name}
+                        </span>
+                      </div>
+                      {isSelected && (
+                        <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            {/* --- END MOVED SECTION --- */}
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
@@ -454,6 +445,62 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 </div>
               </div>
             </div>
+            {/* --- MOVED: Beautify, Low Light, Auto Framing moved here --- */}
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={props.isBeautifyEnabled}
+              onCheckedChange={props.onBeautifyToggle}
+              className="text-sm"
+            >
+              <Sparkles className="w-3.5 h-3.5 mr-2" />
+              Beautify
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={props.isLowLightEnabled}
+              onCheckedChange={props.onLowLightToggle}
+              className="text-sm"
+            >
+              <Sun className="w-3.5 h-3.5 mr-2" />
+              Enhance Lighting
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={props.isAutoFramingEnabled}
+              onCheckedChange={props.onAutoFramingChange}
+              className="text-sm"
+            >
+              <Minimize2 className="w-3.5 h-3.5 mr-2" />
+              Auto Framing
+            </DropdownMenuCheckboxItem>
+            {props.isAutoFramingEnabled && (
+              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-medium">
+                    Zoom {props.zoomSensitivity.toFixed(1)}x
+                  </Label>
+                  <Slider
+                    value={[props.zoomSensitivity]}
+                    onValueChange={([v]) => props.onZoomSensitivityChange(v)}
+                    min={1}
+                    max={10}
+                    step={0.1}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-medium">
+                    Speed {(props.trackingSpeed * 100).toFixed(0)}%
+                  </Label>
+                  <Slider
+                    value={[props.trackingSpeed]}
+                    onValueChange={([v]) => props.onTrackingSpeedChange(v)}
+                    min={0.01}
+                    max={0.5}
+                    step={0.01}
+                  />
+                </div>
+              </div>
+            )}
+            {/* --- END MOVED SECTION --- */}
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               checked={props.isNeonEdgeEnabled}
@@ -461,7 +508,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
               className="text-sm"
             >
               <Settings2 className="w-3.5 h-3.5 mr-2" />
-              Neon Edge
+              Neon Edge (Legacy)
             </DropdownMenuCheckboxItem>
             {props.isNeonEdgeEnabled && (
               <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
@@ -491,55 +538,8 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
               </div>
             )}
 
-            {/* Interactive Filters */}
+            {/* --- REMOVED: Interactive filters are now in 'Effects' --- */}
             <DropdownMenuSeparator />
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="text-sm">
-                <Sparkles className="w-3.5 h-3.5 mr-2" />
-                Interactive Filters
-              </DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                {/* --- 3. APPLY STYLES FROM FILTER PRESETS --- */}
-                <DropdownMenuSubContent className="z-[var(--z-text-toolbar)] p-2 bg-background/95 backdrop-blur-xl border-border/40">
-                  <div className="grid grid-cols-3 gap-2 w-[260px] max-h-[240px] overflow-y-auto pr-1">
-                    {/* --- 4. MAP OVER NEW PRESET LIST --- */}
-                    {INTERACTIVE_FILTER_PRESETS.map((filter) => {
-                      const isSelected =
-                        props.activeInteractiveFilter === filter.id;
-                      return (
-                        <button
-                          key={filter.id}
-                          onClick={() =>
-                            props.onInteractiveFilterChange?.(filter.id)
-                          }
-                          className={cn(
-                            "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
-                            isSelected
-                              ? "border-primary shadow-md ring-2 ring-primary/30"
-                              : "border-border/40 hover:border-border"
-                          )}
-                          title={filter.name}
-                        >
-                          <img
-                            src={filter.thumbnailUrl} // <-- Use new thumbnail URL
-                            alt={filter.name}
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
-                            <span className="text-white text-[8px] font-semibold truncate block text-center">
-                              {filter.name}
-                            </span>
-                          </div>
-                          {isSelected && (
-                            <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
