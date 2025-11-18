@@ -786,8 +786,18 @@ const Index = () => {
   );
   
   const handleSetActiveInteractiveFilter = useCallback(
-    (value: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => 
+    (value: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk') => 
       updateSceneProperty("activeInteractiveFilter", value),
+    [updateSceneProperty]
+  );
+
+  const handleSetFilterIntensity = useCallback(
+    (value: number) => updateSceneProperty("filterIntensity", value),
+    [updateSceneProperty]
+  );
+
+  const handleSetFilterColor = useCallback(
+    (value: string) => updateSceneProperty("filterColor", value),
     [updateSceneProperty]
   );
 
