@@ -16,7 +16,7 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
     alignItems: "center",
     justifyContent: "center",
     whiteSpace: "pre-wrap",
-    breakWord: "break-word",
+    wordBreak: "break-word",
     pointerEvents: "none",
   };
 
@@ -99,14 +99,29 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
 
     // --- PLACEHOLDERS FOR NEW ADVANCED EFFECTS ---
     case "inner-core":
-      style.textShadow = `0 0 2px ${layer.color}, 0 0 5px ${layer.color}`;
+      if ('color' in layer) {
+        style.textShadow = `0 0 2px ${layer.color}, 0 0 5px ${layer.color}`;
+      }
       style.color = "transparent";
       break;
     case "ambient-bloom":
+      if ('color' in layer && 'opacity' in layer) {
+        style.textShadow = `0 0 45px ${layer.color}`;
+        style.opacity = layer.opacity;
+      }
+      style.color = "transparent";
+      break;
     case "bloom":
+      if ('color' in layer) {
+        style.textShadow = `0 0 45px ${layer.color || "rgba(255,255,255,0.5)"}`;
+      }
+      style.color = "transparent";
+      break;
     case "fog":
-      style.textShadow = `0 0 45px ${layer.color || "rgba(255,255,255,0.5)"}`;
-      style.opacity = layer.opacity;
+      if ('opacity' in layer) {
+        style.textShadow = `0 0 45px rgba(255,255,255,0.5)`;
+        style.opacity = layer.opacity;
+      }
       style.color = "transparent";
       break;
     case "refraction":

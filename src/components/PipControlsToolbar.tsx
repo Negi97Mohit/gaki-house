@@ -70,6 +70,8 @@ interface PipControlsToolbarProps {
   onCustomAspectRatioChange: (ratio: string) => void;
   isFaceTrackingEnabled: boolean;
   onFaceTrackingToggle: (enabled: boolean) => void;
+  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
+  onInteractiveFilterChange?: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
