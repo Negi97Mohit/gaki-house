@@ -152,7 +152,9 @@ const createDefaultScene = (name: string): SceneState => ({
   canvasAspectRatio: "16:9",
   customAspectRatio: "",
   isFaceTrackingEnabled: false,
-  activeInteractiveFilter: 'none',
+  activeInteractiveFilter: 'none' as const,
+  filterIntensity: 1.0,
+  filterColor: '#00ffff',
 });
 
 const MemoizedVideoCanvas = memo(VideoCanvas);
@@ -944,6 +946,10 @@ const Index = () => {
         onNeonColorChange: handleSetNeonColor,
         activeInteractiveFilter: scene.activeInteractiveFilter,
         onInteractiveFilterChange: handleSetActiveInteractiveFilter,
+        filterIntensity: scene.filterIntensity || 1.0,
+        onFilterIntensityChange: handleSetFilterIntensity,
+        filterColor: scene.filterColor || '#00ffff',
+        onFilterColorChange: handleSetFilterColor,
         savedOverlays: savedOverlays,
         onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
         onAddSavedOverlay: handleAddSavedOverlay,

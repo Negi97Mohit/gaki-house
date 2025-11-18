@@ -70,8 +70,12 @@ interface PipControlsToolbarProps {
   onCustomAspectRatioChange: (ratio: string) => void;
   isFaceTrackingEnabled: boolean;
   onFaceTrackingToggle: (enabled: boolean) => void;
-  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
-  onInteractiveFilterChange?: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => void;
+  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
+  onInteractiveFilterChange?: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk') => void;
+  filterIntensity?: number;
+  onFilterIntensityChange?: (intensity: number) => void;
+  filterColor?: string;
+  onFilterColorChange?: (color: string) => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -509,9 +513,106 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                   >
                     Thermal Vision
                   </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'mirror'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('mirror')}
+                    className="text-sm"
+                  >
+                    Mirror
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'kaleidoscope'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('kaleidoscope')}
+                    className="text-sm"
+                  >
+                    Kaleidoscope
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'oil-paint'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('oil-paint')}
+                    className="text-sm"
+                  >
+                    Oil Paint
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'sketch'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('sketch')}
+                    className="text-sm"
+                  >
+                    Sketch
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'prism'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('prism')}
+                    className="text-sm"
+                  >
+                    Prism
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'vhs'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('vhs')}
+                    className="text-sm"
+                  >
+                    VHS Glitch
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'infrared'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('infrared')}
+                    className="text-sm"
+                  >
+                    Infrared
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'xray'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('xray')}
+                    className="text-sm"
+                  >
+                    X-Ray
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={props.activeInteractiveFilter === 'cyberpunk'}
+                    onCheckedChange={() => props.onInteractiveFilterChange?.('cyberpunk')}
+                    className="text-sm"
+                  >
+                    Cyberpunk
+                    Cyberpunk
+                  </DropdownMenuCheckboxItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            
+            {/* Filter Controls */}
+            {props.activeInteractiveFilter !== 'none' && (
+              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
+                <DropdownMenuLabel className="text-xs font-semibold">
+                  Filter Controls
+                </DropdownMenuLabel>
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium">
+                    Intensity {Math.round((props.filterIntensity || 1.0) * 100)}%
+                  </Label>
+                  <Slider
+                    value={[(props.filterIntensity || 1.0) * 100]}
+                    onValueChange={([v]) => props.onFilterIntensityChange?.(v / 100)}
+                    min={0}
+                    max={200}
+                    step={5}
+                  />
+                </div>
+                {/* Color picker for filters that use color */}
+                {['prism', 'infrared', 'cyberpunk'].includes(props.activeInteractiveFilter || '') && (
+                  <div className="space-y-2">
+                    <Label className="text-xs font-semibold">Filter Color</Label>
+                    <Input
+                      type="color"
+                      className="w-full h-9 p-1 rounded-lg cursor-pointer"
+                      value={props.filterColor}
+                      onChange={(e) => props.onFilterColorChange?.(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
