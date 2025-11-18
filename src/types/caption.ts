@@ -272,6 +272,7 @@ export interface CanvasSectionCameraState {
   activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
   filterIntensity?: number;
   filterColor?: string;
+  filterTarget?: 'both' | 'background' | 'person';
 }
 
 // --- CANVAS LAYOUT TYPES ---
@@ -366,6 +367,7 @@ export interface SceneState {
   activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
   filterIntensity: number;
   filterColor: string;
+  filterTarget: 'both' | 'background' | 'person';
 }
 
 // +++ ADDED: Default state for a new grid camera section +++

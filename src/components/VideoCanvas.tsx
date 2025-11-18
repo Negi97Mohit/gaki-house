@@ -456,6 +456,8 @@ interface VideoCanvasProps {
     onFilterIntensityChange: (intensity: number) => void;
     filterColor: string;
     onFilterColorChange: (color: string) => void;
+    filterTarget: 'both' | 'background' | 'person';
+    onFilterTargetChange: (target: 'both' | 'background' | 'person') => void;
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
@@ -1263,6 +1265,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           neonColor={neonColor} // From root props
           activeInteractiveFilter={props.sidebarProps.activeInteractiveFilter}
           onInteractiveFilterChange={props.sidebarProps.onInteractiveFilterChange}
+          filterIntensity={props.sidebarProps.filterIntensity}
+          onFilterIntensityChange={props.sidebarProps.onFilterIntensityChange}
+          filterColor={props.sidebarProps.filterColor}
+          onFilterColorChange={props.sidebarProps.onFilterColorChange}
+          filterTarget={props.sidebarProps.filterTarget}
+          onFilterTargetChange={props.sidebarProps.onFilterTargetChange}
           zoomSensitivity={rest.zoomSensitivity} // From root props
           trackingSpeed={rest.trackingSpeed} // From root props
           cameraBackground={props.sidebarProps.cameraBackground}

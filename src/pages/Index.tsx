@@ -155,6 +155,7 @@ const createDefaultScene = (name: string): SceneState => ({
   activeInteractiveFilter: 'none' as const,
   filterIntensity: 1.0,
   filterColor: '#00ffff',
+  filterTarget: 'both' as const,
 });
 
 const MemoizedVideoCanvas = memo(VideoCanvas);
@@ -801,6 +802,11 @@ const Index = () => {
     [updateSceneProperty]
   );
 
+  const handleSetFilterTarget = useCallback(
+    (value: 'both' | 'background' | 'person') => updateSceneProperty("filterTarget", value),
+    [updateSceneProperty]
+  );
+
   // Camera controls
   const handleSetCameraBackground = useCallback(
     (value: "none" | "blur" | "image") =>
@@ -960,6 +966,8 @@ const Index = () => {
         onFilterIntensityChange: handleSetFilterIntensity,
         filterColor: scene.filterColor || '#00ffff',
         onFilterColorChange: handleSetFilterColor,
+        filterTarget: scene.filterTarget || 'both',
+        onFilterTargetChange: handleSetFilterTarget,
         savedOverlays: savedOverlays,
         onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
         onAddSavedOverlay: handleAddSavedOverlay,

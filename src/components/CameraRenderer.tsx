@@ -679,6 +679,8 @@ interface CameraRendererProps {
   onFilterIntensityChange?: (intensity: number) => void;
   filterColor?: string;
   onFilterColorChange?: (color: string) => void;
+  filterTarget?: 'both' | 'background' | 'person';
+  onFilterTargetChange?: (target: 'both' | 'background' | 'person') => void;
   onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
   onCustomBackgroundUpload: (file: File) => void;
   onCameraAspectRatioChange: (ratio: string) => void;
@@ -737,6 +739,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   onFilterIntensityChange,
   filterColor = '#00ffff',
   onFilterColorChange,
+  filterTarget = 'both',
+  onFilterTargetChange,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -946,104 +950,110 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
           tempCanvas.height
         );
         
+        // Get segmentation mask if filtering person or background separately
+        let segmentationMask: ImageData | null = null;
+        if (filterTarget !== 'both' && processedCanvas) {
+          const processCtx = processedCanvas.getContext('2d', { willReadFrequently: true });
+          if (processCtx) {
+            segmentationMask = processCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+          }
+        }
+        
         // Apply the selected interactive filter
+        const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        let processed: ImageData | null = null;
+        
         switch (activeInteractiveFilter) {
           case 'neon-edge': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
             const edges = detectEdges(tempCtx, frame, neonIntensity, neonColor);
             ctx.globalCompositeOperation = "lighter";
             ctx.putImageData(edges, Math.round(finalDrawX), Math.round(finalDrawY));
             ctx.globalCompositeOperation = "source-over";
-            break;
+            return; // Skip selective application for edge detection
           }
-          case 'hologram': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyHologramEffect(tempCtx, frame, currentTime);
-            ctx.globalCompositeOperation = "lighter";
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
-            ctx.globalCompositeOperation = "source-over";
+          case 'hologram':
+            processed = applyHologramEffect(tempCtx, frame, currentTime);
             break;
-          }
-          case 'pixel': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyPixelEffect(tempCtx, frame, 8);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'pixel':
+            processed = applyPixelEffect(tempCtx, frame, 8);
             break;
-          }
-          case 'comic': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyComicEffect(tempCtx, frame);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'comic':
+            processed = applyComicEffect(tempCtx, frame);
             break;
-          }
           case 'ascii': {
-            // ASCII needs canvas reference
+            // ASCII needs canvas reference - handle separately
             ctx.save();
             ctx.translate(Math.round(finalDrawX), Math.round(finalDrawY));
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
             applyASCIIEffect(ctx, frame, tempCanvas);
             ctx.restore();
-            break;
+            return; // Skip selective application for ASCII
           }
-          case 'thermal': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyThermalEffect(tempCtx, frame);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'thermal':
+            processed = applyThermalEffect(tempCtx, frame);
             break;
-          }
-          case 'mirror': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyMirrorEffect(tempCtx, frame, filterIntensity);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'mirror':
+            processed = applyMirrorEffect(tempCtx, frame, filterIntensity);
             break;
-          }
-          case 'kaleidoscope': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyKaleidoscopeEffect(tempCtx, frame, filterIntensity);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'kaleidoscope':
+            processed = applyKaleidoscopeEffect(tempCtx, frame, filterIntensity);
             break;
-          }
-          case 'oil-paint': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyOilPaintEffect(tempCtx, frame, filterIntensity);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'oil-paint':
+            processed = applyOilPaintEffect(tempCtx, frame, filterIntensity);
             break;
-          }
-          case 'sketch': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applySketchEffect(tempCtx, frame, filterIntensity);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'sketch':
+            processed = applySketchEffect(tempCtx, frame, filterIntensity);
             break;
-          }
-          case 'prism': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyPrismEffect(tempCtx, frame, filterIntensity, filterColor);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'prism':
+            processed = applyPrismEffect(tempCtx, frame, filterIntensity, filterColor);
             break;
-          }
-          case 'vhs': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyVHSEffect(tempCtx, frame, filterIntensity);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'vhs':
+            processed = applyVHSEffect(tempCtx, frame, filterIntensity);
             break;
-          }
-          case 'infrared': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyInfraredEffect(tempCtx, frame, filterColor);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'infrared':
+            processed = applyInfraredEffect(tempCtx, frame, filterColor);
             break;
-          }
-          case 'xray': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyXRayEffect(tempCtx, frame, filterIntensity);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'xray':
+            processed = applyXRayEffect(tempCtx, frame, filterIntensity);
             break;
-          }
-          case 'cyberpunk': {
-            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-            const processed = applyCyberpunkEffect(tempCtx, frame, filterIntensity, filterColor);
-            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          case 'cyberpunk':
+            processed = applyCyberpunkEffect(tempCtx, frame, filterIntensity, filterColor);
             break;
+        }
+
+        // Apply filter selectively based on target
+        if (processed) {
+          if (filterTarget === 'both') {
+            // Apply to entire frame
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+          } else if (segmentationMask) {
+            // Blend original and processed based on segmentation mask
+            const output = ctx.createImageData(frame.width, frame.height);
+            const frameData = frame.data;
+            const processedData = processed.data;
+            const maskData = segmentationMask.data;
+            
+            for (let i = 0; i < frameData.length; i += 4) {
+              // Mask alpha channel indicates if pixel is person (255) or background (0)
+              const isPerson = maskData[i + 3] > 128;
+              const useProcessed = filterTarget === 'person' ? isPerson : !isPerson;
+              
+              if (useProcessed) {
+                output.data[i] = processedData[i];
+                output.data[i + 1] = processedData[i + 1];
+                output.data[i + 2] = processedData[i + 2];
+                output.data[i + 3] = processedData[i + 3];
+              } else {
+                output.data[i] = frameData[i];
+                output.data[i + 1] = frameData[i + 1];
+                output.data[i + 2] = frameData[i + 2];
+                output.data[i + 3] = frameData[i + 3];
+              }
+            }
+            
+            ctx.putImageData(output, Math.round(finalDrawX), Math.round(finalDrawY));
+          } else {
+            // No segmentation available, fall back to applying to entire frame
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
           }
         }
       }
@@ -1111,6 +1121,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     activeInteractiveFilter,
     filterIntensity,
     filterColor,
+    filterTarget,
   ]);
 
   return (
@@ -1185,6 +1196,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onFilterIntensityChange={onFilterIntensityChange}
               filterColor={filterColor}
               onFilterColorChange={onFilterColorChange}
+              filterTarget={filterTarget}
+              onFilterTargetChange={onFilterTargetChange}
             />,
             portalContainer
           )
