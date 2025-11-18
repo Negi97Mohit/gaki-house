@@ -109,6 +109,222 @@ function detectEdges(
   return output;
 }
 
+// 1. Hologram Glitch - RGB split with scan lines and digital glitches
+function applyHologramEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  time: number
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  
+  // RGB channel shift amount (animated)
+  const shift = Math.sin(time * 0.003) * 5;
+  const glitchIntensity = Math.random() > 0.95 ? Math.random() * 10 : 0;
+  
+  for (let y = 0; y < h; y++) {
+    // Scan line effect
+    const scanLine = Math.sin(y * 0.5 + time * 0.01) * 0.3 + 0.7;
+    
+    // Random glitch lines
+    const isGlitchLine = Math.random() > 0.98;
+    const lineOffset = isGlitchLine ? Math.random() * 20 - 10 : 0;
+    
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      
+      // RGB split effect
+      const rIdx = (y * w + Math.min(w - 1, Math.max(0, x + shift + glitchIntensity))) * 4;
+      const gIdx = idx;
+      const bIdx = (y * w + Math.min(w - 1, Math.max(0, x - shift - glitchIntensity))) * 4;
+      
+      output.data[idx] = data[rIdx] * scanLine;
+      output.data[idx + 1] = data[gIdx + 1] * scanLine;
+      output.data[idx + 2] = data[bIdx + 2] * scanLine;
+      output.data[idx + 3] = data[idx + 3] * 0.8; // Semi-transparent
+    }
+  }
+  
+  return output;
+}
+
+// 2. Pixelated - Retro pixel art effect
+function applyPixelEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  pixelSize: number = 8
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  
+  for (let y = 0; y < h; y += pixelSize) {
+    for (let x = 0; x < w; x += pixelSize) {
+      // Get average color of pixel block
+      let r = 0, g = 0, b = 0, count = 0;
+      
+      for (let py = 0; py < pixelSize && y + py < h; py++) {
+        for (let px = 0; px < pixelSize && x + px < w; px++) {
+          const idx = ((y + py) * w + (x + px)) * 4;
+          r += data[idx];
+          g += data[idx + 1];
+          b += data[idx + 2];
+          count++;
+        }
+      }
+      
+      r = Math.floor(r / count / 64) * 64; // Posterize
+      g = Math.floor(g / count / 64) * 64;
+      b = Math.floor(b / count / 64) * 64;
+      
+      // Fill the block
+      for (let py = 0; py < pixelSize && y + py < h; py++) {
+        for (let px = 0; px < pixelSize && x + px < w; px++) {
+          const idx = ((y + py) * w + (x + px)) * 4;
+          output.data[idx] = r;
+          output.data[idx + 1] = g;
+          output.data[idx + 2] = b;
+          output.data[idx + 3] = data[idx + 3];
+        }
+      }
+    }
+  }
+  
+  return output;
+}
+
+// 3. Comic Book - Halftone dots and posterization
+function applyComicEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      const gray = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+      
+      // Posterize colors
+      const r = Math.floor(data[idx] / 85) * 85;
+      const g = Math.floor(data[idx + 1] / 85) * 85;
+      const b = Math.floor(data[idx + 2] / 85) * 85;
+      
+      // Halftone dot pattern
+      const dotSize = 4;
+      const dotX = x % dotSize;
+      const dotY = y % dotSize;
+      const dist = Math.sqrt((dotX - dotSize/2) ** 2 + (dotY - dotSize/2) ** 2);
+      const threshold = (gray / 255) * (dotSize / 2);
+      
+      const isDot = dist < threshold;
+      
+      output.data[idx] = isDot ? r : 255;
+      output.data[idx + 1] = isDot ? g : 255;
+      output.data[idx + 2] = isDot ? b : 255;
+      output.data[idx + 3] = data[idx + 3];
+    }
+  }
+  
+  return output;
+}
+
+// 4. ASCII Art - Convert to ASCII characters
+function applyASCIIEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  canvas: HTMLCanvasElement
+): void {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const chars = ['@', '#', '$', '%', '?', '*', '+', ';', ':', ',', '.', ' '];
+  const charSize = 8;
+  
+  // Clear canvas
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#00FF00';
+  ctx.font = `${charSize}px monospace`;
+  
+  for (let y = 0; y < h; y += charSize) {
+    for (let x = 0; x < w; x += charSize) {
+      // Get average brightness
+      let brightness = 0, count = 0;
+      
+      for (let py = 0; py < charSize && y + py < h; py++) {
+        for (let px = 0; px < charSize && x + px < w; px++) {
+          const idx = ((y + py) * w + (x + px)) * 4;
+          brightness += (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+          count++;
+        }
+      }
+      
+      brightness = brightness / count / 255;
+      const charIdx = Math.floor(brightness * (chars.length - 1));
+      ctx.fillText(chars[charIdx], x, y + charSize);
+    }
+  }
+}
+
+// 5. Thermal Vision - Heat map based on brightness
+function applyThermalEffect(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData
+): ImageData {
+  const data = imageData.data;
+  const w = imageData.width;
+  const h = imageData.height;
+  const output = ctx.createImageData(w, h);
+  
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3 / 255;
+      
+      // Thermal color mapping
+      let r, g, b;
+      if (brightness < 0.25) {
+        // Cold - Blue to Cyan
+        r = 0;
+        g = brightness * 4 * 100;
+        b = 150 + brightness * 4 * 105;
+      } else if (brightness < 0.5) {
+        // Cool - Cyan to Green
+        const t = (brightness - 0.25) * 4;
+        r = 0;
+        g = 100 + t * 155;
+        b = 255 - t * 255;
+      } else if (brightness < 0.75) {
+        // Warm - Green to Yellow
+        const t = (brightness - 0.5) * 4;
+        r = t * 255;
+        g = 255;
+        b = 0;
+      } else {
+        // Hot - Yellow to White
+        const t = (brightness - 0.75) * 4;
+        r = 255;
+        g = 255;
+        b = t * 255;
+      }
+      
+      output.data[idx] = r;
+      output.data[idx + 1] = g;
+      output.data[idx + 2] = b;
+      output.data[idx + 3] = data[idx + 3];
+    }
+  }
+  
+  return output;
+}
+
 // --- PROPS INTERFACE (Fully updated) ---
 interface CameraRendererProps {
   stream: MediaStream | null;
@@ -142,6 +358,9 @@ interface CameraRendererProps {
   onZoomSensitivityChange: (value: number) => void;
   trackingSpeed: number;
   onTrackingSpeedChange: (value: number) => void;
+  // New interactive filters
+  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal';
+  onInteractiveFilterChange?: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal') => void;
   onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
   onCustomBackgroundUpload: (file: File) => void;
   onCameraAspectRatioChange: (ratio: string) => void;
@@ -194,6 +413,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   backgroundEffect,
   backgroundImageUrl,
   portalContainer,
+  activeInteractiveFilter = 'none',
+  onInteractiveFilterChange,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -375,7 +596,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       ctx.filter = "none";
       // --- END: NEW ROBUST PAN/ZOOM LOGIC ---
 
-      if (isNeonEdgeEnabled) {
+      // Apply interactive filters
+      const currentTime = Date.now();
+      
+      if (activeInteractiveFilter !== 'none') {
         if (
           !tempCanvasRef.current ||
           tempCanvasRef.current.width !== Math.round(finalWidth) ||
@@ -391,9 +615,82 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         });
         if (!tempCtx) return;
 
-        // Draw the source video, scaled up to match the new size
+        // Draw the source video for processing
         tempCtx.drawImage(
-          video, // Use the raw video for edge detection
+          video,
+          0,
+          0,
+          tempCanvas.width,
+          tempCanvas.height
+        );
+        
+        // Apply the selected interactive filter
+        switch (activeInteractiveFilter) {
+          case 'neon-edge': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const edges = detectEdges(tempCtx, frame, neonIntensity, neonColor);
+            ctx.globalCompositeOperation = "lighter";
+            ctx.putImageData(edges, Math.round(finalDrawX), Math.round(finalDrawY));
+            ctx.globalCompositeOperation = "source-over";
+            break;
+          }
+          case 'hologram': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyHologramEffect(tempCtx, frame, currentTime);
+            ctx.globalCompositeOperation = "lighter";
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            ctx.globalCompositeOperation = "source-over";
+            break;
+          }
+          case 'pixel': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyPixelEffect(tempCtx, frame, 8);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'comic': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyComicEffect(tempCtx, frame);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+          case 'ascii': {
+            // ASCII needs canvas reference
+            ctx.save();
+            ctx.translate(Math.round(finalDrawX), Math.round(finalDrawY));
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            applyASCIIEffect(ctx, frame, tempCanvas);
+            ctx.restore();
+            break;
+          }
+          case 'thermal': {
+            const frame = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const processed = applyThermalEffect(tempCtx, frame);
+            ctx.putImageData(processed, Math.round(finalDrawX), Math.round(finalDrawY));
+            break;
+          }
+        }
+      }
+
+      // Legacy neon edge support (when using old toggle)
+      if (isNeonEdgeEnabled && activeInteractiveFilter === 'none') {
+        if (
+          !tempCanvasRef.current ||
+          tempCanvasRef.current.width !== Math.round(finalWidth) ||
+          tempCanvasRef.current.height !== Math.round(finalHeight)
+        ) {
+          tempCanvasRef.current = document.createElement("canvas");
+          tempCanvasRef.current.width = Math.round(finalWidth);
+          tempCanvasRef.current.height = Math.round(finalHeight);
+        }
+        const tempCanvas = tempCanvasRef.current;
+        const tempCtx = tempCanvas.getContext("2d", {
+          willReadFrequently: true,
+        });
+        if (!tempCtx) return;
+
+        tempCtx.drawImage(
+          video,
           0,
           0,
           tempCanvas.width,
@@ -407,7 +704,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         );
         const edges = detectEdges(tempCtx, frame, neonIntensity, neonColor);
         ctx.globalCompositeOperation = "lighter";
-        // Put the scaled edge data at the correct panned/zoomed coordinate
         ctx.putImageData(edges, Math.round(finalDrawX), Math.round(finalDrawY));
         ctx.globalCompositeOperation = "source-over";
       }
@@ -436,6 +732,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     isAutoFramingEnabled,
     zoomSensitivity,
     trackingSpeed,
+    activeInteractiveFilter,
   ]);
 
   return (
@@ -504,6 +801,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onCustomAspectRatioChange={onCustomAspectRatioChange}
               isFaceTrackingEnabled={isFaceTrackingEnabled}
               onFaceTrackingToggle={onFaceTrackingToggle}
+              activeInteractiveFilter={activeInteractiveFilter}
+              onInteractiveFilterChange={onInteractiveFilterChange}
             />,
             portalContainer
           )
@@ -542,6 +841,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onCustomAspectRatioChange={onCustomAspectRatioChange}
               isFaceTrackingEnabled={isFaceTrackingEnabled}
               onFaceTrackingToggle={onFaceTrackingToggle}
+              activeInteractiveFilter={activeInteractiveFilter}
+              onInteractiveFilterChange={onInteractiveFilterChange}
             />
           )}
     </div>
