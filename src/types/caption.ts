@@ -269,10 +269,38 @@ export interface CanvasSectionCameraState {
   zoomSensitivity: number;
   trackingSpeed: number;
   customAspectRatio: string;
-  activeInteractiveFilter?: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
+  activeInteractiveFilter?:
+    | "none"
+    | "neon-edge"
+    | "hologram"
+    | "pixel"
+    | "comic"
+    | "ascii"
+    | "thermal"
+    | "mirror"
+    | "kaleidoscope"
+    | "oil-paint"
+    | "sketch"
+    | "prism"
+    | "vhs"
+    | "infrared"
+    | "xray"
+    | "cyberpunk"
+    | "dominator"
+    | "inspector"
+    | "manga"
+    | "phantom"
+    | "matrix"
+    | "sepia"
+    | "ocean"
+    | "sunset"
+    | "gothic"
+    | "mint"
+    | "golden"
+    | "lavender";
   filterIntensity?: number;
   filterColor?: string;
-  filterTarget?: 'both' | 'background' | 'person';
+  filterTarget?: "both" | "background" | "person";
 }
 
 // --- CANVAS LAYOUT TYPES ---
@@ -362,12 +390,41 @@ export interface SceneState {
   canvasAspectRatio: string;
   customAspectRatio: string;
   isFaceTrackingEnabled: boolean;
-  
+
   // Interactive Filters
-  activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
+  activeInteractiveFilter:
+    | "none"
+    | "neon-edge"
+    | "hologram"
+    | "pixel"
+    | "comic"
+    | "ascii"
+    | "thermal"
+    | "mirror"
+    | "kaleidoscope"
+    | "oil-paint"
+    | "sketch"
+    | "prism"
+    | "vhs"
+    | "infrared"
+    | "xray"
+    | "dominator"
+    | "inspector"
+    | "classic"
+    | "cyberpunk"
+    | "manga"
+    | "phantom"
+    | "matrix"
+    | "sepia"
+    | "ocean"
+    | "sunset"
+    | "gothic"
+    | "mint"
+    | "golden"
+    | "lavender";
   filterIntensity: number;
   filterColor: string;
-  filterTarget: 'both' | 'background' | 'person';
+  filterTarget: "both" | "background" | "person";
 }
 
 // +++ ADDED: Default state for a new grid camera section +++

@@ -17,7 +17,19 @@ export interface InteractiveFilterPreset {
     | "vhs"
     | "infrared"
     | "xray"
-    | "cyberpunk";
+    | "cyberpunk"
+    | "dominator"
+    | "inspector"
+    | "manga"
+    | "phantom"
+    | "matrix"
+    | "sepia"
+    | "ocean"
+    | "sunset"
+    | "gothic"
+    | "mint"
+    | "golden"
+    | "lavender";
   name: string;
   thumbnailUrl: string; // URL to a preview image
 }
@@ -119,5 +131,67 @@ export const INTERACTIVE_FILTER_PRESETS: InteractiveFilterPreset[] = [
     name: "Cyberpunk",
     thumbnailUrl:
       "https://placehold.co/100x60/1a1a1a/ff00ff/png?text=Cyber&font=inter",
+  },
+  {
+    id: "dominator",
+    name: "Dominator",
+    thumbnailUrl:
+      "https://placehold.co/100x60/00ffff/000000/png?text=Dominator&font=inter",
+  },
+  {
+    id: "inspector",
+    name: "Inspector",
+    thumbnailUrl:
+      "https://placehold.co/100x60/ff00ff/000000/png?text=Inspector&font=inter",
+  },
+  {
+    id: "manga",
+    name: "Manga",
+    thumbnailUrl: "https://placehold.co/100x60/000000/ffffff/png?text=Manga",
+  },
+  {
+    id: "phantom",
+    name: "Phantom",
+    thumbnailUrl: "https://placehold.co/100x60/1a0000/ff0000/png?text=Phantom",
+  },
+  {
+    id: "matrix",
+    name: "Matrix",
+    thumbnailUrl: "https://placehold.co/100x60/001a00/00ff00/png?text=Matrix",
+  },
+  {
+    id: "sepia",
+    name: "Sepia",
+    thumbnailUrl: "https://placehold.co/100x60/2e2115/a68a6d/png?text=Sepia",
+  },
+  {
+    id: "ocean",
+    name: "Ocean",
+    thumbnailUrl: "https://placehold.co/100x60/000033/0066cc/png?text=Ocean",
+  },
+  {
+    id: "sunset",
+    name: "Sunset",
+    thumbnailUrl: "https://placehold.co/100x60/2d1b4e/ffbe0b/png?text=Sunset",
+  },
+  {
+    id: "gothic",
+    name: "Gothic",
+    thumbnailUrl: "https://placehold.co/100x60/0f0f0f/8a0303/png?text=Gothic",
+  },
+  {
+    id: "mint",
+    name: "Mint",
+    thumbnailUrl: "https://placehold.co/100x60/1c3d35/4fffa3/png?text=Mint",
+  },
+  {
+    id: "golden",
+    name: "Golden",
+    thumbnailUrl: "https://placehold.co/100x60/2a2200/ffd700/png?text=Golden",
+  },
+  {
+    id: "lavender",
+    name: "Lavender",
+    thumbnailUrl: "https://placehold.co/100x60/1a0b2e/9d4edd/png?text=Lavender",
   },
 ];
