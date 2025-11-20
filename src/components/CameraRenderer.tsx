@@ -361,6 +361,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               case "hologram":
                 processed = applyHologramEffect(tempCtx, frame, currentTime);
                 break;
+              case "hologram-fx":
+                processed = applyHologramEffect(tempCtx, frame, currentTime);
+                break;
               case "pixel":
                 processed = applyPixelEffect(tempCtx, frame, 8);
                 break;
@@ -409,6 +412,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
                 processed = applyVHSEffect(tempCtx, frame, filterIntensity);
                 break;
               case "infrared":
+                processed = applyInfraredEffect(tempCtx, frame, filterColor);
+                break;
+              case "infrared-fx":
                 processed = applyInfraredEffect(tempCtx, frame, filterColor);
                 break;
               case "xray":

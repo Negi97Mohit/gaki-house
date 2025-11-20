@@ -22,7 +22,7 @@ export const INTERACTIVE_FILTER_PRESETS: InteractiveFilterPreset[] = [
       "https://placehold.co/100x60/1a1a1a/00ffff/png?text=Neon&font=inter",
   },
   {
-    id: "hologram",
+    id: "hologram-fx",
     name: "Hologram",
     thumbnailUrl:
       "https://placehold.co/100x60/1a1a1a/ff00ff/png?text=Hologram&font=inter",
@@ -88,7 +88,7 @@ export const INTERACTIVE_FILTER_PRESETS: InteractiveFilterPreset[] = [
       "https://placehold.co/100x60/1a1a1a/ffffff/png?text=VHS&font=inter",
   },
   {
-    id: "infrared",
+    id: "infrared-fx",
     name: "Infrared",
     thumbnailUrl:
       "https://placehold.co/100x60/1a1a1a/ff0000/png?text=Infrared&font=inter",
