@@ -5,6 +5,8 @@ import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { PipControlsToolbar } from "./PipControlsToolbar";
 import { VideoOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+// --- NEW ANIME STYLES ---
+import { applyStyle, AnimeStyles } from "@/lib/animeStyles";
 
 // --- EXISTING FILTERS ---
 import {
@@ -24,9 +26,6 @@ import {
   applyXRayEffect,
   applyCyberpunkEffect,
 } from "@/lib/effects";
-
-// --- NEW ANIME STYLES ---
-import { applyStyle, AnimeStyles } from "@/lib/animeStyles";
 
 // --- PROPS INTERFACE ---
 interface CameraRendererProps {
@@ -62,73 +61,6 @@ interface CameraRendererProps {
   trackingSpeed: number;
   onTrackingSpeedChange: (value: number) => void;
 
-  // --- Interactive Filters (Updated with Anime Styles) ---
-  activeInteractiveFilter?:
-    | "none"
-    // Standard
-    | "neon-edge"
-    | "hologram"
-    | "pixel"
-    | "comic"
-    | "ascii"
-    | "thermal"
-    | "mirror"
-    | "kaleidoscope"
-    | "oil-paint"
-    | "sketch"
-    | "prism"
-    | "vhs"
-    | "infrared"
-    | "xray"
-    | "cyberpunk"
-    // Anime Styles
-    | "dominator"
-    | "inspector"
-    | "classic"
-    | "manga"
-    | "phantom"
-    | "matrix"
-    | "sepia"
-    | "ocean"
-    | "sunset"
-    | "gothic"
-    | "mint"
-    | "golden"
-    | "lavender";
-
-  onInteractiveFilterChange?: (
-    filter:
-      | "none"
-      | "neon-edge"
-      | "hologram"
-      | "pixel"
-      | "comic"
-      | "ascii"
-      | "thermal"
-      | "mirror"
-      | "kaleidoscope"
-      | "oil-paint"
-      | "sketch"
-      | "prism"
-      | "vhs"
-      | "infrared"
-      | "xray"
-      | "cyberpunk"
-      | "dominator"
-      | "inspector"
-      | "classic"
-      | "manga"
-      | "phantom"
-      | "matrix"
-      | "sepia"
-      | "ocean"
-      | "sunset"
-      | "gothic"
-      | "mint"
-      | "golden"
-      | "lavender"
-  ) => void;
-
   filterIntensity?: number;
   onFilterIntensityChange?: (intensity: number) => void;
   filterColor?: string;
@@ -147,6 +79,8 @@ interface CameraRendererProps {
   backgroundEffect: "none" | "blur" | "image";
   backgroundImageUrl?: string | null;
   portalContainer?: HTMLElement | null;
+  activeInteractiveFilter?: string;
+  onInteractiveFilterChange?: (filter: string) => void;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = ({

@@ -445,6 +445,509 @@ export const AnimeStyles = {
     edgeThreshold: 55,
     skinDetectionStrength: 1.1,
   } as TriToneConfig,
+
+  ghibliSoft: {
+    shadowColor: "#3b4a3f",
+    midColor: "#9fc9a3",
+    highlightColor: "#f6f2d4",
+    skinColor: "#ffd7b5",
+    lowThreshold: 75,
+    highThreshold: 205,
+    detailSensitivity: 8,
+    edgeThreshold: 35,
+    skinDetectionStrength: 1.2,
+  } as TriToneConfig,
+
+  ghibliWarm: {
+    shadowColor: "#5c2d1f",
+    midColor: "#e39e6d",
+    highlightColor: "#ffe7c4",
+    skinColor: "#ffd3b6",
+    lowThreshold: 80,
+    highThreshold: 210,
+    detailSensitivity: 10,
+    edgeThreshold: 40,
+    skinDetectionStrength: 1.1,
+  } as TriToneConfig,
+
+  arcane: {
+    shadowColor: "#1e1a24",
+    midColor: "#654d7a",
+    highlightColor: "#d7c6ff",
+    skinColor: "#e8c1b5",
+    lowThreshold: 65,
+    highThreshold: 200,
+    detailSensitivity: 20,
+    edgeThreshold: 60,
+    skinDetectionStrength: 1.0,
+  } as TriToneConfig,
+
+  watercolor: {
+    shadowColor: "#4a6572",
+    midColor: "#aed6dc",
+    highlightColor: "#f6f5f5",
+    skinColor: "#ffe9d6",
+    lowThreshold: 70,
+    highThreshold: 190,
+    detailSensitivity: 8,
+    edgeThreshold: 30,
+    skinDetectionStrength: 1.0,
+  } as TriToneConfig,
+
+  oilPaint: {
+    shadowColor: "#2d1f1f",
+    midColor: "#b37a5e",
+    highlightColor: "#f3dfc1",
+    skinColor: "#ffcfb6",
+    lowThreshold: 75,
+    highThreshold: 200,
+    detailSensitivity: 22,
+    edgeThreshold: 65,
+    skinDetectionStrength: 1.4,
+  } as TriToneConfig,
+
+  samuraiInk: {
+    shadowColor: "#000000",
+    midColor: "#5b5b5b",
+    highlightColor: "#ffffff",
+    skinColor: "#f2f2f2",
+    lowThreshold: 85,
+    highThreshold: 210,
+    detailSensitivity: 5,
+    edgeThreshold: 25,
+    skinDetectionStrength: 0.0,
+  } as TriToneConfig,
+
+  ukiyoe: {
+    shadowColor: "#0d1b2a",
+    midColor: "#1e6091",
+    highlightColor: "#eff7ff",
+    skinColor: "#ffdbb3",
+    lowThreshold: 75,
+    highThreshold: 190,
+    detailSensitivity: 12,
+    edgeThreshold: 40,
+    skinDetectionStrength: 1.2,
+  } as TriToneConfig,
+
+  comicBold: {
+    shadowColor: "#000000",
+    midColor: "#2d2d2d",
+    highlightColor: "#ffffff",
+    skinColor: "#ffe2cc",
+    lowThreshold: 90,
+    highThreshold: 210,
+    detailSensitivity: 25,
+    edgeThreshold: 20,
+    skinDetectionStrength: 1.0,
+  } as TriToneConfig,
+
+  pixarSoft: {
+    shadowColor: "#2e4057",
+    midColor: "#7db9e8",
+    highlightColor: "#e4f1fe",
+    skinColor: "#ffd7c0",
+    lowThreshold: 60,
+    highThreshold: 210,
+    detailSensitivity: 14,
+    edgeThreshold: 50,
+    skinDetectionStrength: 1.25,
+  } as TriToneConfig,
+
+  neonHorror: {
+    shadowColor: "#0f0010",
+    midColor: "#ff005c",
+    highlightColor: "#fffae3",
+    skinColor: "#ffd2d2",
+    lowThreshold: 55,
+    highThreshold: 190,
+    detailSensitivity: 18,
+    edgeThreshold: 55,
+    skinDetectionStrength: 0.9,
+  } as TriToneConfig,
+
+  infrared: {
+    shadowColor: "#2b0000",
+    midColor: "#ff4500",
+    highlightColor: "#ffe6d5",
+    skinColor: "#ffc6b5",
+    lowThreshold: 60,
+    highThreshold: 205,
+    detailSensitivity: 15,
+    edgeThreshold: 45,
+    skinDetectionStrength: 0.8,
+  } as TriToneConfig,
+
+  frostBlue: {
+    shadowColor: "#001f3f",
+    midColor: "#4da6ff",
+    highlightColor: "#e6f7ff",
+    skinColor: "#ffecec",
+    lowThreshold: 70,
+    highThreshold: 210,
+    detailSensitivity: 12,
+    edgeThreshold: 35,
+    skinDetectionStrength: 1.1,
+  } as TriToneConfig,
+
+  emerald: {
+    shadowColor: "#002b26",
+    midColor: "#00a884",
+    highlightColor: "#c8fff0",
+    skinColor: "#ffe4d0",
+    lowThreshold: 65,
+    highThreshold: 195,
+    detailSensitivity: 14,
+    edgeThreshold: 40,
+    skinDetectionStrength: 1.0,
+  } as TriToneConfig,
+
+  demonSlayer: {
+    shadowColor: "#1a0b0b",
+    midColor: "#50b37a",
+    highlightColor: "#f6f6f2",
+    skinColor: "#ffd5c3",
+    lowThreshold: 75,
+    highThreshold: 205,
+    detailSensitivity: 18,
+    edgeThreshold: 45,
+    skinDetectionStrength: 1.5,
+  } as TriToneConfig,
+
+  bleach: {
+    shadowColor: "#0a0a0a",
+    midColor: "#cccccc",
+    highlightColor: "#ffffff",
+    skinColor: "#ffe7d5",
+    lowThreshold: 85,
+    highThreshold: 210,
+    detailSensitivity: 5,
+    edgeThreshold: 30,
+    skinDetectionStrength: 0.5,
+  } as TriToneConfig,
+
+  mechaBlue: {
+    shadowColor: "#000019",
+    midColor: "#0033cc",
+    highlightColor: "#d5e5ff",
+    skinColor: "#ffd6cc",
+    lowThreshold: 70,
+    highThreshold: 210,
+    detailSensitivity: 15,
+    edgeThreshold: 55,
+    skinDetectionStrength: 1.0,
+  } as TriToneConfig,
+
+  toxicGreen: {
+    shadowColor: "#003300",
+    midColor: "#39ff14",
+    highlightColor: "#e2ffdc",
+    skinColor: "#ffd8cc",
+    lowThreshold: 55,
+    highThreshold: 185,
+    detailSensitivity: 20,
+    edgeThreshold: 45,
+    skinDetectionStrength: 0.8,
+  } as TriToneConfig,
+
+  roseGold: {
+    shadowColor: "#4b2e2e",
+    midColor: "#e9a6a6",
+    highlightColor: "#ffe8e8",
+    skinColor: "#ffd3c2",
+    lowThreshold: 75,
+    highThreshold: 210,
+    detailSensitivity: 12,
+    edgeThreshold: 40,
+    skinDetectionStrength: 1.2,
+  } as TriToneConfig,
+
+  dreamscape: {
+    shadowColor: "#2d1f47",
+    midColor: "#9b5de5",
+    highlightColor: "#f8edff",
+    skinColor: "#ffd6e7",
+    lowThreshold: 70,
+    highThreshold: 205,
+    detailSensitivity: 10,
+    edgeThreshold: 35,
+    skinDetectionStrength: 1.0,
+  } as TriToneConfig,
+
+  hologram: {
+    shadowColor: "#1f003f",
+    midColor: "#5de5ff",
+    highlightColor: "#e6fcff",
+    skinColor: "#ffd6e0",
+    lowThreshold: 65,
+    highThreshold: 200,
+    detailSensitivity: 14,
+    edgeThreshold: 45,
+    skinDetectionStrength: 1.1,
+  } as TriToneConfig,
+
+  bloodMoon: {
+    shadowColor: "#1a0000",
+    midColor: "#a30000",
+    highlightColor: "#ffcccc",
+    skinColor: "#ffdddd",
+    lowThreshold: 70,
+    highThreshold: 205,
+    detailSensitivity: 15,
+    edgeThreshold: 50,
+    skinDetectionStrength: 0.8,
+  } as TriToneConfig,
+
+  noirBlue: {
+    shadowColor: "#000014",
+    midColor: "#4d4d7a",
+    highlightColor: "#dfe4ff",
+    skinColor: "#ffe2cc",
+    lowThreshold: 80,
+    highThreshold: 210,
+    detailSensitivity: 10,
+    edgeThreshold: 40,
+    skinDetectionStrength: 1.0,
+  } as TriToneConfig,
+
+  pastelCute: {
+    shadowColor: "#6b4f7f",
+    midColor: "#ffb3d9",
+    highlightColor: "#fff0f8",
+    skinColor: "#ffd6e1",
+    lowThreshold: 80,
+    highThreshold: 205,
+    detailSensitivity: 10,
+    edgeThreshold: 35,
+    skinDetectionStrength: 1.3,
+  } as TriToneConfig,
+
+  glitchPurple: {
+    shadowColor: "#1a0020",
+    midColor: "#aa00ff",
+    highlightColor: "#f2d6ff",
+    skinColor: "#ffcce6",
+    lowThreshold: 60,
+    highThreshold: 195,
+    detailSensitivity: 20,
+    edgeThreshold: 55,
+    skinDetectionStrength: 0.9,
+  } as TriToneConfig,
+
+  fireDragon: {
+    shadowColor: "#260000",
+    midColor: "#ff4500",
+    highlightColor: "#ffd1a1",
+    skinColor: "#ffccb8",
+    lowThreshold: 75,
+    highThreshold: 210,
+    detailSensitivity: 18,
+    edgeThreshold: 50,
+    skinDetectionStrength: 1.1,
+  } as TriToneConfig,
+  victorianDaguerreotype: {
+    shadowColor: "#1a1410",
+    midColor: "#8b7355",
+    highlightColor: "#f5e6d3",
+    skinColor: "#e8d4c0",
+    lowThreshold: 65, // was 85
+    highThreshold: 210, // was 195
+    detailSensitivity: 8, // was 25
+    edgeThreshold: 32, // was 70
+    skinDetectionStrength: 2.0, // was 1.5
+  } as TriToneConfig,
+
+  romanFreco: {
+    shadowColor: "#3d2817",
+    midColor: "#c85a54",
+    highlightColor: "#f4e4c1",
+    skinColor: "#d4a574",
+    lowThreshold: 65, // was 70
+    highThreshold: 215, // was 200
+    detailSensitivity: 10, // was 30
+    edgeThreshold: 30, // was 45
+    skinDetectionStrength: 2.2, // was 1.8
+  } as TriToneConfig,
+
+  spartanBronze: {
+    shadowColor: "#1f1408",
+    midColor: "#b87333",
+    highlightColor: "#ffd7a8",
+    skinColor: "#cd9575",
+    lowThreshold: 65, // was 75
+    highThreshold: 215, // was 205
+    detailSensitivity: 8, // was 20
+    edgeThreshold: 35, // was 60
+    skinDetectionStrength: 2.0, // was 1.6
+  } as TriToneConfig,
+
+  egyptianPapyrus: {
+    shadowColor: "#2b1f0a",
+    midColor: "#d4a76a",
+    highlightColor: "#faf4e8",
+    skinColor: "#c19a6b",
+    lowThreshold: 68, // was 80
+    highThreshold: 218, // was 210
+    detailSensitivity: 10, // was 35
+    edgeThreshold: 28, // was 25
+    skinDetectionStrength: 2.0, // was 1.4
+  } as TriToneConfig,
+
+  medievalIllumination: {
+    shadowColor: "#1a0f26",
+    midColor: "#8b4513",
+    highlightColor: "#daa520",
+    skinColor: "#f5deb3",
+    lowThreshold: 65, // was 70
+    highThreshold: 210, // was 195
+    detailSensitivity: 12, // was 40
+    edgeThreshold: 40, // was 80
+    skinDetectionStrength: 2.2, // was 1.7
+  } as TriToneConfig,
+
+  renaissanceOil: {
+    shadowColor: "#2d1810",
+    midColor: "#8b6f47",
+    highlightColor: "#f0e68c",
+    skinColor: "#deb887",
+    lowThreshold: 65, // was 75
+    highThreshold: 215, // was 200
+    detailSensitivity: 10, // was 35
+    edgeThreshold: 38, // was 75
+    skinDetectionStrength: 2.5, // was 2.0
+  } as TriToneConfig,
+
+  byzantineMosaic: {
+    shadowColor: "#1f1410",
+    midColor: "#b8860b",
+    highlightColor: "#ffd700",
+    skinColor: "#daa520",
+    lowThreshold: 70, // was 85
+    highThreshold: 215, // was 210
+    detailSensitivity: 15, // was 45
+    edgeThreshold: 25, // was 20
+    skinDetectionStrength: 1.8, // was 1.3
+  } as TriToneConfig,
+
+  artDeco: {
+    shadowColor: "#1a1a1a",
+    midColor: "#c0c0c0",
+    highlightColor: "#ffd700",
+    skinColor: "#f5deb3",
+    lowThreshold: 68, // was 80
+    highThreshold: 215, // was 205
+    detailSensitivity: 9, // was 28
+    edgeThreshold: 35, // was 65
+    skinDetectionStrength: 2.0, // was 1.5
+  } as TriToneConfig,
+
+  steampunkBrass: {
+    shadowColor: "#1f1108",
+    midColor: "#cd7f32",
+    highlightColor: "#ffd9a0",
+    skinColor: "#e0c4a8",
+    lowThreshold: 65, // was 70
+    highThreshold: 212, // was 200
+    detailSensitivity: 9, // was 25
+    edgeThreshold: 32, // was 55
+    skinDetectionStrength: 2.0, // was 1.4
+  } as TriToneConfig,
+
+  thermalImaging: {
+    shadowColor: "#000033",
+    midColor: "#ff6600",
+    highlightColor: "#ffff00",
+    skinColor: "#ff9933",
+    lowThreshold: 60,
+    highThreshold: 210, // was 200
+    detailSensitivity: 10, // was 20
+    edgeThreshold: 30, // was 50
+    skinDetectionStrength: 2.0, // was 1.5
+  } as TriToneConfig,
+
+  noirDetective: {
+    shadowColor: "#000000",
+    midColor: "#4a4a4a",
+    highlightColor: "#ffffff",
+    skinColor: "#d3d3d3",
+    lowThreshold: 75, // was 90
+    highThreshold: 220,
+    detailSensitivity: 6, // was 8
+    edgeThreshold: 30, // was 45
+    skinDetectionStrength: 1.2, // was 0.6
+  } as TriToneConfig,
+
+  sovietPropaganda: {
+    shadowColor: "#1a0000",
+    midColor: "#cc0000",
+    highlightColor: "#ffd700",
+    skinColor: "#ffccaa",
+    lowThreshold: 68, // was 75
+    highThreshold: 215, // was 205
+    detailSensitivity: 12, // was 35
+    edgeThreshold: 28, // was 30
+    skinDetectionStrength: 1.8, // was 1.2
+  } as TriToneConfig,
+
+  aztecSun: {
+    shadowColor: "#1f0f00",
+    midColor: "#ff8c00",
+    highlightColor: "#ffd700",
+    skinColor: "#d2691e",
+    lowThreshold: 65, // was 70
+    highThreshold: 210, // was 200
+    detailSensitivity: 15, // was 40
+    edgeThreshold: 30, // was 35
+    skinDetectionStrength: 2.0, // was 1.5
+  } as TriToneConfig,
+
+  norseIce: {
+    shadowColor: "#0a1f2e",
+    midColor: "#5c8a9e",
+    highlightColor: "#d5e9f2",
+    skinColor: "#c7e0ed",
+    lowThreshold: 62, // was 65
+    highThreshold: 210, // was 195
+    detailSensitivity: 8, // was 20
+    edgeThreshold: 32, // was 55
+    skinDetectionStrength: 1.8, // was 1.1
+  } as TriToneConfig,
+
+  jadeDynasty: {
+    shadowColor: "#0d1f0d",
+    midColor: "#00a36c",
+    highlightColor: "#c9f0dd",
+    skinColor: "#f5e8d0",
+    lowThreshold: 65, // was 70
+    highThreshold: 212, // was 200
+    detailSensitivity: 9, // was 22
+    edgeThreshold: 32, // was 50
+    skinDetectionStrength: 2.2, // was 1.6
+  } as TriToneConfig,
+
+  edoPeriod: {
+    shadowColor: "#1a1410",
+    midColor: "#8b4513",
+    highlightColor: "#f5deb3",
+    skinColor: "#deb887",
+    lowThreshold: 68, // was 80
+    highThreshold: 215, // was 205
+    detailSensitivity: 10, // was 30
+    edgeThreshold: 32, // was 50
+    skinDetectionStrength: 2.3, // was 1.8
+  } as TriToneConfig,
+
+  desertMirage: {
+    shadowColor: "#3d2817",
+    midColor: "#f4a460",
+    highlightColor: "#fff8dc",
+    skinColor: "#deb887",
+    lowThreshold: 68, // was 75
+    highThreshold: 218, // was 210
+    detailSensitivity: 7, // was 15
+    edgeThreshold: 30, // was 40
+    skinDetectionStrength: 1.8, // was 1.3
+  } as TriToneConfig,
 } as const;
 
 // Preset application functions (backward compatibility)
