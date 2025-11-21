@@ -1,5 +1,15 @@
 // src/components/CanvasHoverToolbar.tsx
-import { Paintbrush, Upload, Grid3x3, Search, Check } from "lucide-react";
+import {
+  Paintbrush,
+  Upload,
+  Grid3x3,
+  Search,
+  Check,
+  ListOrdered,
+  ArrowUp,
+  ArrowDown,
+  X,
+} from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -80,8 +90,37 @@ export const CanvasHoverToolbar = ({
         id: s.id,
         content: { type: "empty" as const },
       })),
+      sectionOrder: [],
     };
     onCanvasLayoutChange(newLayout);
+  };
+
+  // Helper to move items in the order array
+  const moveItem = (index: number, direction: "up" | "down") => {
+    if (!canvasLayout?.sectionOrder || !onCanvasLayoutChange) return;
+
+    const newOrder = [...canvasLayout.sectionOrder];
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+
+    if (targetIndex < 0 || targetIndex >= newOrder.length) return;
+
+    [newOrder[index], newOrder[targetIndex]] = [
+      newOrder[targetIndex],
+      newOrder[index],
+    ];
+
+    onCanvasLayoutChange({
+      ...canvasLayout,
+      sectionOrder: newOrder,
+    });
+  };
+
+  const removeFromOrder = (id: string) => {
+    if (!canvasLayout?.sectionOrder || !onCanvasLayoutChange) return;
+    onCanvasLayoutChange({
+      ...canvasLayout,
+      sectionOrder: canvasLayout.sectionOrder.filter((x) => x !== id),
+    });
   };
 
   return (
@@ -181,6 +220,75 @@ export const CanvasHoverToolbar = ({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Sequence Reorder Popup */}
+      {canvasLayout &&
+        canvasLayout.sectionOrder &&
+        canvasLayout.sectionOrder.length > 0 && (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" className="text-xs">
+                <ListOrdered className="h-4 w-4 mr-2" />
+                Sequence
+                <span className="ml-1.5 bg-primary text-primary-foreground text-[10px] rounded-full px-1.5 h-4 flex items-center">
+                  {canvasLayout.sectionOrder.length}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-2" align="center" side="bottom">
+              <div className="space-y-2">
+                <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
+                  Screen Order
+                </h4>
+                {canvasLayout.sectionOrder.map((sectionId, idx) => (
+                  <div
+                    key={sectionId}
+                    className="flex items-center justify-between bg-muted/30 p-2 rounded-md text-sm group"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold w-4 text-center text-primary">
+                        {idx + 1}
+                      </span>
+                      <span className="truncate max-w-[100px]">
+                        {/* Try to find a name or just show ID */}
+                        {sectionId}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6"
+                        disabled={idx === 0}
+                        onClick={() => moveItem(idx, "up")}
+                      >
+                        <ArrowUp className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6"
+                        disabled={idx === canvasLayout.sectionOrder!.length - 1}
+                        onClick={() => moveItem(idx, "down")}
+                      >
+                        <ArrowDown className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6 text-destructive hover:text-destructive"
+                        onClick={() => removeFromOrder(sectionId)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
+
       <input
         ref={fileInputRef}
         type="file"

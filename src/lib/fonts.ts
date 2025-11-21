@@ -18,7 +18,6 @@ export const ALL_FONTS: string[] = [
   "Exo 2",
   "Prompt",
   "Ultra",
-  "Monoton",
   "Abril Fatface",
   "Squada One",
   "Righteous",

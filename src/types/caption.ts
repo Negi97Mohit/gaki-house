@@ -381,6 +381,7 @@ export interface CanvasSectionState {
 export interface CanvasLayoutState {
   templateId: string; // e.g., 'two-halves', 'main-and-corner'
   sections: CanvasSectionState[];
+  sectionOrder?: string[];
 }
 
 // --- SCENE STATE ---

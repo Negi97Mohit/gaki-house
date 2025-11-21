@@ -450,14 +450,48 @@ interface VideoCanvasProps {
     onPipBorderChange: (border: { color: string; width: number }) => void;
     pipShadow?: { blur: number; color: string };
     onPipShadowChange: (shadow: { blur: number; color: string }) => void;
-    activeInteractiveFilter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk';
-    onInteractiveFilterChange: (filter: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk') => void;
+    activeInteractiveFilter:
+      | "none"
+      | "neon-edge"
+      | "hologram"
+      | "pixel"
+      | "comic"
+      | "ascii"
+      | "thermal"
+      | "mirror"
+      | "kaleidoscope"
+      | "oil-paint"
+      | "sketch"
+      | "prism"
+      | "vhs"
+      | "infrared"
+      | "xray"
+      | "cyberpunk";
+    onInteractiveFilterChange: (
+      filter:
+        | "none"
+        | "neon-edge"
+        | "hologram"
+        | "pixel"
+        | "comic"
+        | "ascii"
+        | "thermal"
+        | "mirror"
+        | "kaleidoscope"
+        | "oil-paint"
+        | "sketch"
+        | "prism"
+        | "vhs"
+        | "infrared"
+        | "xray"
+        | "cyberpunk"
+    ) => void;
     filterIntensity: number;
     onFilterIntensityChange: (intensity: number) => void;
     filterColor: string;
     onFilterColorChange: (color: string) => void;
-    filterTarget: 'both' | 'background' | 'person';
-    onFilterTargetChange: (target: 'both' | 'background' | 'person') => void;
+    filterTarget: "both" | "background" | "person";
+    onFilterTargetChange: (target: "both" | "background" | "person") => void;
   };
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
@@ -1264,7 +1298,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           neonIntensity={neonIntensity} // From root props
           neonColor={neonColor} // From root props
           activeInteractiveFilter={props.sidebarProps.activeInteractiveFilter}
-          onInteractiveFilterChange={props.sidebarProps.onInteractiveFilterChange}
+          onInteractiveFilterChange={
+            props.sidebarProps.onInteractiveFilterChange
+          }
           filterIntensity={props.sidebarProps.filterIntensity}
           onFilterIntensityChange={props.sidebarProps.onFilterIntensityChange}
           filterColor={props.sidebarProps.filterColor}
@@ -1339,6 +1375,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onGridAssetSelect={onGridAssetSelect}
           onSectionCameraSettingsChange={props.onSectionCameraSettingsChange}
           backgroundEffect={props.backgroundEffect}
+          onLayoutUpdate={props.onCanvasLayoutChange}
         />
       );
     }

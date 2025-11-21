@@ -1,4 +1,5 @@
 // src/components/CanvasGridLayout.tsx
+
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Plus, Search } from "lucide-react";
@@ -52,8 +53,9 @@ interface CanvasGridLayoutProps {
     sectionId: string,
     settings: Partial<CanvasSectionCameraState>
   ) => void;
-  // --- ADDED: Pass these props down ---
   backgroundEffect: "none" | "blur" | "image";
+  // ADDED: Explicitly define this prop
+  onLayoutUpdate?: (layout: CanvasLayoutState) => void;
 }
 
 export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
@@ -73,8 +75,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipBorder,
   pipShadow,
   onSectionCameraSettingsChange,
-  // --- ADDED: Destructure new props ---
   backgroundEffect,
+  // ADDED: Destructure here
+  onLayoutUpdate,
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [templates, setTemplates] = useState<Record<
@@ -101,6 +104,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       </div>
     );
   }
+
   const renderSectionContent = (section: CanvasSectionState) => {
     const { content } = section;
 
@@ -126,13 +130,10 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
         );
 
       case "camera":
-        // --- MODIFICATION: REMOVED the "if (!cameraStream)" check ---
-        // We now *always* render CameraRenderer and let it decide
-        // whether to show the video or the placeholder icon.
         const settings = content.settings;
         return (
           <CameraRenderer
-            stream={cameraStream} // Pass the null stream
+            stream={cameraStream}
             className="w-full h-full object-cover"
             style={{
               borderRadius:
@@ -142,8 +143,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   ? "12px"
                   : "0",
             }}
-            portalContainer={null} // Toolbars will render locally
-            // Pass all the props from this section's settings
+            portalContainer={null}
             pipBorder={settings.pipBorder}
             onPipBorderChange={(border) =>
               onSectionCameraSettingsChange(section.id, {
@@ -241,7 +241,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 isFaceTrackingEnabled: enabled,
               })
             }
-            // --- ADDED: Pass interactive filter props from settings ---
             activeInteractiveFilter={settings.activeInteractiveFilter}
             onInteractiveFilterChange={(filter) =>
               onSectionCameraSettingsChange(section.id, {
@@ -266,12 +265,10 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 filterTarget: target,
               })
             }
-            // --- MODIFIED: Pass main background props ---
             backgroundEffect={backgroundEffect}
             backgroundImageUrl={backgroundImageUrl}
           />
         );
-      // --- END MODIFICATION ---
 
       case "screen":
         if (!screenStream) return <div className="w-full h-full bg-muted" />;
@@ -432,7 +429,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
     if (onSectionDelete) {
       onSectionDelete(sectionId);
     } else {
-      // Fallback: just clear the content
       onSectionContentChange(sectionId, { type: "empty" });
     }
   };
@@ -446,6 +442,13 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             id: templateSection.id,
             content: { type: "empty" },
           } as CanvasSectionState);
+
+        // Determine current order index
+        const orderIndex = layout.sectionOrder?.indexOf(section.id);
+        const displayOrder =
+          orderIndex !== undefined && orderIndex > -1
+            ? orderIndex + 1
+            : undefined;
 
         return (
           <div
@@ -504,6 +507,21 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   onTextSelect={(textId) =>
                     onSectionContentChange(section.id, { type: "text", textId })
                   }
+                  // UPDATED: Pass order prop and handler using onLayoutUpdate
+                  orderIndex={displayOrder}
+                  onToggleOrder={() => {
+                    if (onLayoutUpdate) {
+                      const currentOrder = layout.sectionOrder || [];
+                      const isIncluded = currentOrder.includes(section.id);
+
+                      onLayoutUpdate({
+                        ...layout,
+                        sectionOrder: isIncluded
+                          ? currentOrder.filter((id) => id !== section.id)
+                          : [...currentOrder, section.id],
+                      });
+                    }
+                  }}
                 />
               )}
             </div>

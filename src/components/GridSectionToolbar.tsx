@@ -10,6 +10,8 @@ import {
   FileText,
   Type,
   Search,
+  Link as LinkIcon,
+  Unlink,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -24,6 +26,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
+import { cn } from "@/lib/utils";
 
 interface GridSectionToolbarProps {
   section: CanvasSectionState;
@@ -36,6 +39,8 @@ interface GridSectionToolbarProps {
   onFileSelect?: (fileId: string) => void;
   onTextSelect?: (textId: string) => void;
   isVisible?: boolean;
+  orderIndex?: number; // 1-based index, undefined if not in order
+  onToggleOrder?: () => void;
 }
 
 export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
@@ -49,15 +54,17 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   onFileSelect,
   onTextSelect,
   isVisible = true,
+  orderIndex,
+  onToggleOrder,
 }) => {
   const { content } = section;
 
   return (
-    <div 
-      className={`absolute top-2 right-2 flex gap-1 z-[100] transition-all duration-200 ${
-        isVisible 
-          ? 'opacity-90 hover:opacity-100 translate-y-0' 
-          : 'opacity-0 -translate-y-2 pointer-events-none'
+    <div
+      className={`absolute top-2 right-2 flex items-center gap-1 z-[100] transition-all duration-200 ${
+        isVisible
+          ? "opacity-90 hover:opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-2 pointer-events-none"
       }`}
     >
       {/* Type-specific controls */}
@@ -144,6 +151,32 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
           />
         </PopoverContent>
       </Popover>
+
+      {/* Order Toggle */}
+      {onToggleOrder && (
+        <Button
+          variant={orderIndex !== undefined ? "default" : "secondary"}
+          size="icon"
+          className={cn(
+            "h-8 w-8 backdrop-blur",
+            orderIndex !== undefined
+              ? "bg-primary text-primary-foreground"
+              : "bg-background/95"
+          )}
+          onClick={onToggleOrder}
+          title={
+            orderIndex !== undefined
+              ? "Remove from sequence"
+              : "Add to sequence"
+          }
+        >
+          {orderIndex !== undefined ? (
+            <span className="font-bold text-xs">{orderIndex}</span>
+          ) : (
+            <LinkIcon className="h-4 w-4" />
+          )}
+        </Button>
+      )}
 
       {content.type === "text" && availableTexts.length > 0 && onTextSelect && (
         <DropdownMenu>
