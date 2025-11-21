@@ -394,6 +394,7 @@ interface VideoCanvasProps {
     sectionId: string,
     settings: Partial<CanvasSectionCameraState>
   ) => void;
+  onSetSectionDefault?: (sectionId: string) => void;
   canvasLayout: CanvasLayoutState | null;
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
   onRemoveBrowser: (id: string) => void;
@@ -1376,6 +1377,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onSectionCameraSettingsChange={props.onSectionCameraSettingsChange}
           backgroundEffect={props.backgroundEffect}
           onLayoutUpdate={props.onCanvasLayoutChange}
+          onSetSectionDefault={props.onSetSectionDefault}
         />
       );
     }

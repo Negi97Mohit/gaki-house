@@ -54,6 +54,7 @@ interface CanvasGridLayoutProps {
     settings: Partial<CanvasSectionCameraState>
   ) => void;
   backgroundEffect: "none" | "blur" | "image";
+  onSetSectionDefault?: (sectionId: string) => void;
   // ADDED: Explicitly define this prop
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
 }
@@ -78,6 +79,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   backgroundEffect,
   // ADDED: Destructure here
   onLayoutUpdate,
+  onSetSectionDefault,
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [templates, setTemplates] = useState<Record<
@@ -522,6 +524,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                       });
                     }
                   }}
+                  onSetDefault={() => onSetSectionDefault?.(section.id)}
                 />
               )}
             </div>

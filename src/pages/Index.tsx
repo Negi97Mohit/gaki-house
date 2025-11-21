@@ -152,10 +152,10 @@ const createDefaultScene = (name: string): SceneState => ({
   canvasAspectRatio: "16:9",
   customAspectRatio: "",
   isFaceTrackingEnabled: false,
-  activeInteractiveFilter: 'none' as const,
+  activeInteractiveFilter: "none" as const,
   filterIntensity: 1.0,
-  filterColor: '#00ffff',
-  filterTarget: 'both' as const,
+  filterColor: "#00ffff",
+  filterTarget: "both" as const,
 });
 
 const MemoizedVideoCanvas = memo(VideoCanvas);
@@ -550,6 +550,23 @@ const Index = () => {
     },
     [updateActiveScene]
   );
+  const handleSetSectionDefault = useCallback(
+    (sectionId: string) => {
+      updateActiveScene((scene) => {
+        if (!scene.canvasLayout) return scene;
+        const sections = scene.canvasLayout.sections.map((s) => {
+          if (s.id === sectionId) {
+            // Copy current content to defaultContent
+            return { ...s, defaultContent: s.content };
+          }
+          return s;
+        });
+        toast.success("Current view saved as Idle state");
+        return { ...scene, canvasLayout: { ...scene.canvasLayout, sections } };
+      });
+    },
+    [updateActiveScene]
+  );
 
   const handleCanvasBackgroundUpload = useCallback(
     (file: File) => {
@@ -785,10 +802,27 @@ const Index = () => {
     (value: string) => updateSceneProperty("neonColor", value),
     [updateSceneProperty]
   );
-  
+
   const handleSetActiveInteractiveFilter = useCallback(
-    (value: 'none' | 'neon-edge' | 'hologram' | 'pixel' | 'comic' | 'ascii' | 'thermal' | 'mirror' | 'kaleidoscope' | 'oil-paint' | 'sketch' | 'prism' | 'vhs' | 'infrared' | 'xray' | 'cyberpunk') => 
-      updateSceneProperty("activeInteractiveFilter", value),
+    (
+      value:
+        | "none"
+        | "neon-edge"
+        | "hologram"
+        | "pixel"
+        | "comic"
+        | "ascii"
+        | "thermal"
+        | "mirror"
+        | "kaleidoscope"
+        | "oil-paint"
+        | "sketch"
+        | "prism"
+        | "vhs"
+        | "infrared"
+        | "xray"
+        | "cyberpunk"
+    ) => updateSceneProperty("activeInteractiveFilter", value),
     [updateSceneProperty]
   );
 
@@ -803,7 +837,8 @@ const Index = () => {
   );
 
   const handleSetFilterTarget = useCallback(
-    (value: 'both' | 'background' | 'person') => updateSceneProperty("filterTarget", value),
+    (value: "both" | "background" | "person") =>
+      updateSceneProperty("filterTarget", value),
     [updateSceneProperty]
   );
 
@@ -911,6 +946,7 @@ const Index = () => {
       screenShareMode: scene.screenShareMode as "off" | "screen" | "canvas",
       onScreenShareModeChange: handleSetScreenShareMode,
       canvasLayout: scene.canvasLayout,
+      onSetSectionDefault: handleSetSectionDefault,
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
         updateActiveScene((s) => ({
           ...s,
@@ -964,9 +1000,9 @@ const Index = () => {
         onInteractiveFilterChange: handleSetActiveInteractiveFilter,
         filterIntensity: scene.filterIntensity || 1.0,
         onFilterIntensityChange: handleSetFilterIntensity,
-        filterColor: scene.filterColor || '#00ffff',
+        filterColor: scene.filterColor || "#00ffff",
         onFilterColorChange: handleSetFilterColor,
-        filterTarget: scene.filterTarget || 'both',
+        filterTarget: scene.filterTarget || "both",
         onFilterTargetChange: handleSetFilterTarget,
         savedOverlays: savedOverlays,
         onCanvasBackgroundUpload: handleCanvasBackgroundUpload,

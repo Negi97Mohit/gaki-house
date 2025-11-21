@@ -375,6 +375,7 @@ export type CanvasSectionContent =
 export interface CanvasSectionState {
   id: string; // e.g., 'main', 'sidebar', 'corner'
   content: CanvasSectionContent;
+  defaultContent?: CanvasSectionContent;
 }
 
 // The overall layout state for the canvas
@@ -440,6 +441,7 @@ export interface SceneState {
   // Camera Background Controls
   cameraBackground: "none" | "blur" | "image";
   customBackgroundUrl: string | null;
+  activeSequenceId?: string | null;
   cameraAspectRatio: string;
   canvasAspectRatio: string;
   customAspectRatio: string;

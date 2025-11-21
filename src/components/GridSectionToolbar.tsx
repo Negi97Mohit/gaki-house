@@ -12,6 +12,7 @@ import {
   Search,
   Link as LinkIcon,
   Unlink,
+  Save,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -41,6 +42,7 @@ interface GridSectionToolbarProps {
   isVisible?: boolean;
   orderIndex?: number; // 1-based index, undefined if not in order
   onToggleOrder?: () => void;
+  onSetDefault?: () => void;
 }
 
 export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
@@ -56,6 +58,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   isVisible = true,
   orderIndex,
   onToggleOrder,
+  onSetDefault,
 }) => {
   const { content } = section;
 
@@ -175,6 +178,18 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
           ) : (
             <LinkIcon className="h-4 w-4" />
           )}
+        </Button>
+      )}
+      {/* Set Idle Default */}
+      {onSetDefault && (
+        <Button
+          variant="secondary"
+          size="icon"
+          className="h-8 w-8 bg-background/95 backdrop-blur"
+          onClick={onSetDefault}
+          title="Save current view as Idle state"
+        >
+          <Save className="h-4 w-4" />
         </Button>
       )}
 
