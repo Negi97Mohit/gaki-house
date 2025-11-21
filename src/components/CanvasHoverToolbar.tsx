@@ -39,6 +39,7 @@ interface CanvasHoverToolbarProps {
   canvasLayout: CanvasLayoutState | null;
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
   onCanvasBackgroundAssetSelect: (asset: AssetResult) => void;
+  activeSequenceId?: string | null;
 }
 
 export const CanvasHoverToolbar = ({
@@ -49,6 +50,7 @@ export const CanvasHoverToolbar = ({
   canvasLayout,
   onCanvasBackgroundAssetSelect,
   onCanvasLayoutChange,
+  activeSequenceId,
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [layoutTemplates, setLayoutTemplates] = useState<
@@ -240,50 +242,69 @@ export const CanvasHoverToolbar = ({
                 <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
                   Screen Order
                 </h4>
-                {canvasLayout.sectionOrder.map((sectionId, idx) => (
-                  <div
-                    key={sectionId}
-                    className="flex items-center justify-between bg-muted/30 p-2 rounded-md text-sm group"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold w-4 text-center text-primary">
-                        {idx + 1}
-                      </span>
-                      <span className="truncate max-w-[100px]">
-                        {/* Try to find a name or just show ID */}
-                        {sectionId}
-                      </span>
+                {canvasLayout.sectionOrder.map((sectionId, idx) => {
+                  const isActive = sectionId === activeSequenceId;
+                  return (
+                    <div
+                      key={sectionId}
+                      className={cn(
+                        "flex items-center justify-between p-2 rounded-md text-sm group transition-colors",
+                        isActive
+                          ? "bg-primary/10 border border-primary/20"
+                          : "bg-muted/30"
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            "font-bold w-4 text-center",
+                            isActive ? "text-primary" : "text-muted-foreground"
+                          )}
+                        >
+                          {idx + 1}
+                        </span>
+                        <span className="truncate max-w-[100px]">
+                          {sectionId}
+                        </span>
+                        {isActive && (
+                          <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-[9px] font-bold text-white animate-pulse">
+                            LIVE
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-6 w-6"
+                          disabled={idx === 0}
+                          onClick={() => moveItem(idx, "up")}
+                        >
+                          <ArrowUp className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-6 w-6"
+                          disabled={
+                            idx === canvasLayout.sectionOrder!.length - 1
+                          }
+                          onClick={() => moveItem(idx, "down")}
+                        >
+                          <ArrowDown className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-6 w-6 text-destructive hover:text-destructive"
+                          onClick={() => removeFromOrder(sectionId)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-6 w-6"
-                        disabled={idx === 0}
-                        onClick={() => moveItem(idx, "up")}
-                      >
-                        <ArrowUp className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-6 w-6"
-                        disabled={idx === canvasLayout.sectionOrder!.length - 1}
-                        onClick={() => moveItem(idx, "down")}
-                      >
-                        <ArrowDown className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-6 w-6 text-destructive hover:text-destructive"
-                        onClick={() => removeFromOrder(sectionId)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </PopoverContent>
           </Popover>

@@ -55,6 +55,8 @@ interface CanvasGridLayoutProps {
   ) => void;
   backgroundEffect: "none" | "blur" | "image";
   onSetSectionDefault?: (sectionId: string) => void;
+  activeSequenceId?: string | null; // NEW
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void; // NEW
   // ADDED: Explicitly define this prop
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
 }
@@ -80,6 +82,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   // ADDED: Destructure here
   onLayoutUpdate,
   onSetSectionDefault,
+  activeSequenceId,
+  onUserPositionChange,
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [templates, setTemplates] = useState<Record<
@@ -269,6 +273,11 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             }
             backgroundEffect={backgroundEffect}
             backgroundImageUrl={backgroundImageUrl}
+            // --- NEW: Only pass tracking callback if this is the active screen in the sequence ---
+            // If no sequence is active, we don't track position to save performance
+            onUserPositionChange={
+              section.id === activeSequenceId ? onUserPositionChange : undefined
+            }
           />
         );
 
@@ -458,7 +467,10 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             className={cn(
               "absolute border border-border/20 transition-all duration-200",
               "hover:border-primary/60 hover:shadow-lg hover:shadow-primary/20",
-              "group"
+              "group", // <--- ADD COMMA HERE
+              // Ensure this line is active
+              section.id === activeSequenceId &&
+                "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
             )}
             style={{
               ...templateSection.style,

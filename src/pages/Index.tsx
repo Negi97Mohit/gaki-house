@@ -8,20 +8,16 @@ import {
   useMemo,
   memo,
   ChangeEvent,
-} from "react"; // ADDED ChangeEvent
+} from "react";
 import { FloatingLogo } from "@/components/FloatingLogo";
 import { useNavigate } from "react-router-dom";
 import { VideoCanvas } from "@/components/VideoCanvas";
-// --- DELETED: FloatingLogo ---
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { CanvasPreset } from "@/types/canvasPreset";
 import { usePublicPresets } from "@/hooks/usePublicPresets";
-// --- DELETED: InstructionsDialog (now in BottomNav) ---
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
-// --- DELETED: Unused icons ---
 import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay";
-// ExcalidrawElement type removed - using any for excalidraw data
-import { Pencil } from "lucide-react";
+import { Pencil, ChevronLeft } from "lucide-react";
 import { zIndex } from "@/lib/zIndex";
 import {
   CaptionStyle,
@@ -66,15 +62,12 @@ import { SavedSessionsPanel } from "@/components/SavedSessionsPanel";
 import { RecordingSession } from "@/types/editor";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
-// --- DELETED: Button (no longer used here) ---
-// --- DELETED: FloatingAssetSearch (now in BottomNav) ---
 import { AssetResult } from "@/components/AssetLibrary";
 import { SceneTabs } from "@/components/SceneTabs";
 import { TransitionPopover } from "@/components/TransitionPopover";
-// --- ADDED: Import new BottomNavigation ---
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { useGridSequencer } from "@/hooks/useGridSequencer"; // Import hook
 
 const generateTextOverlayId = () =>
   `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -186,7 +179,6 @@ const Index = () => {
 
   // --- UI & WINDOW STATE ---
   const [isFullscreen, setIsFullscreen] = useState(false);
-  // --- MODIFIED: This is no longer used by TopToolbar ---
   const [isSceneTabsHidden, setIsSceneTabsHidden] = useState(true);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
 
@@ -327,6 +319,25 @@ const Index = () => {
     },
     [activeSceneId]
   );
+
+  // --- SEQUENCER INTEGRATION ---
+  const handleSequenceTransition = useCallback(
+    (newLayout: CanvasLayoutState, newActiveId: string) => {
+      updateActiveScene((scene) => ({
+        ...scene,
+        canvasLayout: newLayout,
+        activeSequenceId: newActiveId,
+      }));
+    },
+    [updateActiveScene]
+  );
+
+  const { handleUserPositionChange } = useGridSequencer({
+    layout: activeScene?.canvasLayout || null,
+    activeSequenceId: activeScene?.activeSequenceId,
+    onTransition: handleSequenceTransition,
+  });
+  // -----------------------------
 
   const handleAddScene = () => {
     const newScene = createDefaultScene(`Scene ${scenes.length + 1}`);
@@ -545,11 +556,31 @@ const Index = () => {
             return s;
           }),
         };
-        return { ...scene, canvasLayout: newLayout };
+
+        // FIX: Check for isAutoFramingEnabled OR isFaceTrackingEnabled
+        const isTrackingOn =
+          settings.isFaceTrackingEnabled ||
+          settings.isAutoFramingEnabled ||
+          (
+            scene.canvasLayout.sections.find((s) => s.id === sectionId)
+              ?.content as any
+          )?.settings?.isAutoFramingEnabled;
+
+        return {
+          ...scene,
+          // Automatically activate this section if tracking is On and it's linked
+          activeSequenceId:
+            isTrackingOn &&
+            scene.canvasLayout?.sectionOrder?.includes(sectionId)
+              ? sectionId
+              : scene.activeSequenceId,
+          canvasLayout: newLayout,
+        };
       });
     },
     [updateActiveScene]
   );
+
   const handleSetSectionDefault = useCallback(
     (sectionId: string) => {
       updateActiveScene((scene) => {
@@ -946,15 +977,34 @@ const Index = () => {
       screenShareMode: scene.screenShareMode as "off" | "screen" | "canvas",
       onScreenShareModeChange: handleSetScreenShareMode,
       canvasLayout: scene.canvasLayout,
+      activeSequenceId: scene.activeSequenceId, // Pass State
       onSetSectionDefault: handleSetSectionDefault,
+      onUserPositionChange: handleUserPositionChange, // Pass Sequencer Handler
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
-        updateActiveScene((s) => ({
-          ...s,
-          canvasLayout: layout,
-          // If a layout is selected, switch to canvas mode. If cleared, switch off.
-          screenShareMode: layout ? "canvas" : "off",
-          layoutMode: layout ? "pip" : "solo", // Match screen share logic
-        }));
+        updateActiveScene((s) => {
+          // FIX: When layout changes (e.g. linking screens), check if we should activate a camera
+          let newActiveId = s.activeSequenceId;
+
+          if (layout && layout.sectionOrder && layout.sectionOrder.length > 0) {
+            // Look for a camera in the sequence that has tracking enabled
+            const activeCam = layout.sections.find(
+              (sec) =>
+                layout.sectionOrder?.includes(sec.id) &&
+                sec.content.type === "camera" &&
+                (sec.content.settings.isFaceTrackingEnabled ||
+                  sec.content.settings.isAutoFramingEnabled)
+            );
+            if (activeCam) newActiveId = activeCam.id;
+          }
+
+          return {
+            ...s,
+            canvasLayout: layout,
+            activeSequenceId: newActiveId,
+            screenShareMode: layout ? "canvas" : "off",
+            layoutMode: layout ? "pip" : "solo",
+          };
+        });
       },
       onCanvasBackgroundUpload: handleCanvasBackgroundUpload,
       onGridAssetSelect: handleGridAssetSelect,
@@ -1019,6 +1069,7 @@ const Index = () => {
         onCustomAspectRatioChange: handleSetCustomAspectRatio,
         isFaceTrackingEnabled: scene.isFaceTrackingEnabled,
         onFaceTrackingToggle: handleSetIsFaceTrackingEnabled,
+        onCanvasPresetSelect: handleCanvasPresetSelect,
       },
     };
   };
@@ -2003,6 +2054,12 @@ const Index = () => {
     isFaceTrackingEnabled: activeScene.isFaceTrackingEnabled,
     onFaceTrackingToggle: handleSetIsFaceTrackingEnabled,
     onCanvasPresetSelect: handleCanvasPresetSelect,
+    filterIntensity: activeScene.filterIntensity,
+    onFilterIntensityChange: handleSetFilterIntensity,
+    filterColor: activeScene.filterColor,
+    onFilterColorChange: handleSetFilterColor,
+    filterTarget: activeScene.filterTarget,
+    onFilterTargetChange: handleSetFilterTarget,
   };
 
   // Floating panel props (subset without canvas color)
@@ -2024,7 +2081,8 @@ const Index = () => {
     onDeleteCanvasPreset: handleDeleteCanvasPreset,
     publicPresets: publicPresets,
     isLoadingPublic: isLoadingPublic,
-    onShareCanvasPreset: (preset, name) => shareCanvasPreset(preset, name), // Ensure full preset is passed
+    onShareCanvasPreset: (preset: CanvasPreset, name: string) =>
+      shareCanvasPreset(preset, name), // Ensure full preset is passed
     onUnshareCanvasPreset: handleUnshareCanvasPreset, // <-- 3. Pass new handler
   };
 

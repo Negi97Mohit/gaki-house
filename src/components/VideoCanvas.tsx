@@ -395,6 +395,8 @@ interface VideoCanvasProps {
     settings: Partial<CanvasSectionCameraState>
   ) => void;
   onSetSectionDefault?: (sectionId: string) => void;
+  activeSequenceId?: string | null;
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
   canvasLayout: CanvasLayoutState | null;
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
   onRemoveBrowser: (id: string) => void;
@@ -1378,6 +1380,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           backgroundEffect={props.backgroundEffect}
           onLayoutUpdate={props.onCanvasLayoutChange}
           onSetSectionDefault={props.onSetSectionDefault}
+          activeSequenceId={props.activeSequenceId}
+          onUserPositionChange={props.onUserPositionChange}
         />
       );
     }
@@ -1923,6 +1927,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           isVisible={isCanvasHovered}
           canvasLayout={props.canvasLayout}
           onCanvasLayoutChange={props.onCanvasLayoutChange}
+          activeSequenceId={props.activeSequenceId}
         />
         {renderContent()}
         <canvas

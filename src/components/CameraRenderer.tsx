@@ -81,6 +81,7 @@ interface CameraRendererProps {
   portalContainer?: HTMLElement | null;
   activeInteractiveFilter?: string;
   onInteractiveFilterChange?: (filter: string) => void;
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = ({
@@ -130,6 +131,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   onFilterColorChange,
   filterTarget = "both",
   onFilterTargetChange,
+  onUserPositionChange,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -152,6 +154,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     backgroundType: cameraBackground,
     backgroundImageUrl: customBackgroundUrl || undefined,
     isFaceTrackingEnabled: isFaceTrackingEnabled || isAutoFramingEnabled,
+    onUserPositionChange,
   });
 
   const handleMouseEnter = () => {

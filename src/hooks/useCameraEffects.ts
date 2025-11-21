@@ -1,16 +1,15 @@
 // src/hooks/useCameraEffects.ts
 import { useEffect, useRef, useState } from "react";
 import { SelfieSegmentation } from "@mediapipe/selfie_segmentation";
-// --- ADDED: Imports for new FaceDetector ---
 import { FaceDetector, FilesetResolver } from "@mediapipe/tasks-vision";
-// --- REMOVED: Old FaceDetection ---
 
 interface UseCameraEffectsProps {
   videoElement: HTMLVideoElement | null;
   isBackgroundRemovalEnabled: boolean;
   backgroundType: "none" | "blur" | "image";
   backgroundImageUrl?: string;
-  isFaceTrackingEnabled: boolean; // This prop will now enable *both* detection types
+  isFaceTrackingEnabled: boolean;
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
 }
 
 interface FacePosition {
@@ -22,7 +21,7 @@ interface FacePosition {
 
 // --- Helper to initialize the new detector ---
 let faceDetector: FaceDetector | null = null;
-// --- THIS IS THE CORRECTED LINE ---
+
 const initializeFaceDetector = async () => {
   if (faceDetector) return faceDetector;
   try {
@@ -46,26 +45,26 @@ const initializeFaceDetector = async () => {
     return null;
   }
 };
-// --- End Helper ---
 
 export const useCameraEffects = ({
   videoElement,
   isBackgroundRemovalEnabled,
   backgroundType,
   backgroundImageUrl,
-  isFaceTrackingEnabled, // This will enable detection
+  isFaceTrackingEnabled,
+  onUserPositionChange,
 }: UseCameraEffectsProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const segmentationRef = useRef<SelfieSegmentation | null>(null);
-  // --- MODIFIED: Ref for new detector type ---
   const faceDetectorRef = useRef<FaceDetector | null>(null);
-  // --- END MODIFIED ---
+
   const [facePosition, setFacePosition] = useState<FacePosition | null>(null);
   const [isSegmentationReady, setIsSegmentationReady] = useState(false);
   const [isFaceDetectionReady, setIsFaceDetectionReady] = useState(false);
   const animationFrameRef = useRef<number>();
+  const analysisCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Initialize MediaPipe Selfie Segmentation (No changes)
+  // Initialize MediaPipe Selfie Segmentation
   useEffect(() => {
     if (!isBackgroundRemovalEnabled || backgroundType === "none") {
       setIsSegmentationReady(false);
@@ -78,7 +77,7 @@ export const useCameraEffects = ({
     });
 
     selfieSegmentation.setOptions({
-      modelSelection: 1, // 0 for general, 1 for landscape
+      modelSelection: 1,
       selfieMode: true,
     });
 
@@ -122,6 +121,47 @@ export const useCameraEffects = ({
       ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
       ctx.restore();
+
+      // --- Calculate User Centroid (Segment Fallback) ---
+      // Only run this if Face Tracking is OFF (to avoid double reporting)
+      if (onUserPositionChange && !isFaceTrackingEnabled) {
+        if (!analysisCanvasRef.current) {
+          analysisCanvasRef.current = document.createElement("canvas");
+          analysisCanvasRef.current.width = 64;
+          analysisCanvasRef.current.height = 48;
+        }
+        const ac = analysisCanvasRef.current;
+        const actx = ac.getContext("2d", { willReadFrequently: true });
+
+        if (actx) {
+          actx.clearRect(0, 0, ac.width, ac.height);
+          actx.drawImage(results.segmentationMask, 0, 0, ac.width, ac.height);
+
+          const frame = actx.getImageData(0, 0, ac.width, ac.height);
+          const data = frame.data;
+          let sumX = 0;
+          let sumY = 0;
+          let count = 0;
+
+          for (let i = 3; i < data.length; i += 4) {
+            const alpha = data[i];
+            if (alpha > 100) {
+              const pixelIdx = (i - 3) / 4;
+              const x = pixelIdx % ac.width;
+              const y = Math.floor(pixelIdx / ac.width);
+              sumX += x;
+              sumY += y;
+              count++;
+            }
+          }
+
+          if (count > 20) {
+            const centerX = (sumX / count / ac.width) * 100;
+            const centerY = (sumY / count / ac.height) * 100;
+            onUserPositionChange({ x: centerX, y: centerY });
+          }
+        }
+      }
     });
 
     segmentationRef.current = selfieSegmentation;
@@ -137,13 +177,15 @@ export const useCameraEffects = ({
     backgroundType,
     backgroundImageUrl,
     videoElement,
-  ]); // Added videoElement
+    isFaceTrackingEnabled, // Added dependency
+  ]);
 
-  // --- MODIFIED: Initialize MediaPipe Face Detector (new API) ---
+  // Initialize MediaPipe Face Detector
   useEffect(() => {
     if (!isFaceTrackingEnabled) {
       if (faceDetectorRef.current) {
-        faceDetectorRef.current.close();
+        // We don't close shared detector, just stop using it locally
+        // faceDetectorRef.current.close();
         faceDetectorRef.current = null;
       }
       setIsFaceDetectionReady(false);
@@ -163,13 +205,10 @@ export const useCameraEffects = ({
 
     return () => {
       isMounted = false;
-      // Note: We don't close the shared detector here,
-      // it will be closed if isFaceTrackingEnabled becomes false.
     };
   }, [isFaceTrackingEnabled]);
-  // --- END MODIFIED ---
 
-  // --- MODIFIED: Process video frames with new FaceDetector ---
+  // Process video frames
   useEffect(() => {
     if (!videoElement) return;
 
@@ -179,7 +218,7 @@ export const useCameraEffects = ({
       if (videoElement.readyState >= 2) {
         const currentTime = videoElement.currentTime;
 
-        // Run segmentation
+        // Run segmentation (only if enabled)
         if (isSegmentationReady && segmentationRef.current) {
           await segmentationRef.current.send({ image: videoElement });
         }
@@ -201,19 +240,26 @@ export const useCameraEffects = ({
             const bbox = detection.boundingBox;
 
             if (bbox && videoElement.videoWidth > 0) {
-              // --- CONVERT PIXELS TO 0-100 PERCENTAGE ---
-              // This is what CameraRenderer expects
+              // Calculate Center Percentage
+              const centerX =
+                ((bbox.originX + bbox.width / 2) / videoElement.videoWidth) *
+                100;
+              const centerY =
+                ((bbox.originY + bbox.height / 2) / videoElement.videoHeight) *
+                100;
+
               setFacePosition({
-                x:
-                  ((bbox.originX + bbox.width / 2) / videoElement.videoWidth) *
-                  100,
-                y:
-                  ((bbox.originY + bbox.height / 2) /
-                    videoElement.videoHeight) *
-                  100,
+                x: centerX,
+                y: centerY,
                 width: (bbox.width / videoElement.videoWidth) * 100,
                 height: (bbox.height / videoElement.videoHeight) * 100,
               });
+
+              // --- FIX: Broadcast Position for Sequencer ---
+              if (onUserPositionChange) {
+                onUserPositionChange({ x: centerX, y: centerY });
+              }
+              // ---------------------------------------------
             } else {
               setFacePosition(null);
             }
@@ -235,7 +281,12 @@ export const useCameraEffects = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [videoElement, isSegmentationReady, isFaceDetectionReady]); // Removed dependencies, they are handled by their own useEffects
+  }, [
+    videoElement,
+    isSegmentationReady,
+    isFaceDetectionReady,
+    onUserPositionChange,
+  ]);
 
   return {
     processedCanvas: canvasRef.current,
