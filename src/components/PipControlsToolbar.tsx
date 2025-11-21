@@ -114,6 +114,10 @@ interface PipControlsToolbarProps {
   onFilterColorChange?: (color: string) => void;
   filterTarget?: "both" | "background" | "person";
   onFilterTargetChange?: (target: "both" | "background" | "person") => void;
+  // NEW PROPS
+  videoDevices: MediaDeviceInfo[];
+  selectedDeviceId?: string;
+  onCameraDeviceChange: (deviceId: string) => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -191,6 +195,39 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
+      {/* --- NEW: Camera Source Selector --- */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 rounded-xl hover:bg-background/60"
+            title="Select Camera"
+          >
+            <Camera className="w-4 h-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          className="z-[var(--z-text-toolbar)] bg-background/95 backdrop-blur-xl border-border/40"
+        >
+          <DropdownMenuLabel className="text-xs">
+            Camera Source
+          </DropdownMenuLabel>
+          {props.videoDevices.map((device, i) => (
+            <DropdownMenuCheckboxItem
+              key={device.deviceId}
+              checked={props.selectedDeviceId === device.deviceId}
+              onCheckedChange={() =>
+                props.onCameraDeviceChange(device.deviceId)
+              }
+            >
+              {device.label || `Camera ${i + 1}`}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       {/* --- Group 1: Background & Aspect --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

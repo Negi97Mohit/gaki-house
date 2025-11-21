@@ -1382,6 +1382,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onSetSectionDefault={props.onSetSectionDefault}
           activeSequenceId={props.activeSequenceId}
           onUserPositionChange={props.onUserPositionChange}
+          videoDevices={props.videoDevices}
         />
       );
     }

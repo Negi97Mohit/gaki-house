@@ -83,11 +83,13 @@ export const useGridSequencer = ({
           }
           // 2. New Screen -> Become Camera (Active)
           if (section.id === targetId) {
+            const settingsToUse =
+              section.savedCameraSettings || preservedSettings;
             return {
               ...section,
               content: {
                 type: "camera" as const,
-                settings: preservedSettings,
+                settings: settingsToUse,
               },
             };
           }

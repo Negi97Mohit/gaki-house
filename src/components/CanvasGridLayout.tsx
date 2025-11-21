@@ -59,6 +59,7 @@ interface CanvasGridLayoutProps {
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void; // NEW
   // ADDED: Explicitly define this prop
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
+  videoDevices?: MediaDeviceInfo[];
 }
 
 export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
@@ -84,6 +85,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   onSetSectionDefault,
   activeSequenceId,
   onUserPositionChange,
+  videoDevices = [],
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [templates, setTemplates] = useState<Record<
@@ -150,6 +152,16 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   : "0",
             }}
             portalContainer={null}
+            // --- NEW: Device Selection ---
+            videoDevices={videoDevices}
+            selectedDeviceId={settings.selectedDeviceId}
+            onCameraDeviceChange={(deviceId) =>
+              onSectionCameraSettingsChange(section.id, {
+                selectedDeviceId: deviceId,
+              })
+            }
+            // -----------------------------
+
             pipBorder={settings.pipBorder}
             onPipBorderChange={(border) =>
               onSectionCameraSettingsChange(section.id, {

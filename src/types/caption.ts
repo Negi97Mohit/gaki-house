@@ -375,6 +375,7 @@ export type CanvasSectionContent =
 export interface CanvasSectionState {
   id: string; // e.g., 'main', 'sidebar', 'corner'
   content: CanvasSectionContent;
+  savedCameraSettings?: CanvasSectionCameraState;
   defaultContent?: CanvasSectionContent;
 }
 
@@ -443,6 +444,7 @@ export interface SceneState {
   customBackgroundUrl: string | null;
   activeSequenceId?: string | null;
   cameraAspectRatio: string;
+  selectedDeviceId?: string;
   canvasAspectRatio: string;
   customAspectRatio: string;
   isFaceTrackingEnabled: boolean;
@@ -542,6 +544,7 @@ export const DEFAULT_CAMERA_STATE: CanvasSectionCameraState = {
   isNeonEdgeEnabled: false,
   neonIntensity: 20,
   neonColor: "#00FFFF", // Default to cyan hex
+  selectedDeviceId: undefined,
   cameraBackground: "none",
   customBackgroundUrl: null,
   isFaceTrackingEnabled: false,

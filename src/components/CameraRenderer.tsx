@@ -7,6 +7,7 @@ import { VideoOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 // --- NEW ANIME STYLES ---
 import { applyStyle, AnimeStyles } from "@/lib/animeStyles";
+import { toast } from "sonner";
 
 // --- EXISTING FILTERS ---
 import {
@@ -82,6 +83,10 @@ interface CameraRendererProps {
   activeInteractiveFilter?: string;
   onInteractiveFilterChange?: (filter: string) => void;
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
+  // NEW: Device Props
+  videoDevices?: MediaDeviceInfo[];
+  selectedDeviceId?: string;
+  onCameraDeviceChange?: (deviceId: string) => void;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = ({
@@ -132,6 +137,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   filterTarget = "both",
   onFilterTargetChange,
   onUserPositionChange,
+  videoDevices = [],
+  selectedDeviceId,
+  onCameraDeviceChange,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -146,6 +154,40 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
   const currentScale = useRef(1);
   const currentXOffset = useRef(0);
   const currentYOffset = useRef(0);
+
+  // --- NEW: Handle Local Device Stream ---
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+
+  useEffect(() => {
+    // If a specific device ID is selected for THIS camera, fetch that stream
+    if (selectedDeviceId) {
+      const getStream = async () => {
+        try {
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              deviceId: { exact: selectedDeviceId },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            },
+          });
+          setLocalStream(newStream);
+        } catch (e) {
+          console.error("Failed to get local camera stream", e);
+          toast.error("Could not access selected camera");
+        }
+      };
+      getStream();
+      return () => {
+        // Cleanup local stream on unmount or change
+        if (localStream) localStream.getTracks().forEach((t) => t.stop());
+      };
+    } else {
+      setLocalStream(null); // Revert to global stream
+    }
+  }, [selectedDeviceId]);
+
+  // Determine which stream to use
+  const activeStream = localStream || stream;
 
   // Initialize MediaPipe effects
   const { processedCanvas, facePosition, isReady } = useCameraEffects({
@@ -188,9 +230,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
 
-    if (stream) {
-      if (video.srcObject !== stream) {
-        video.srcObject = stream;
+    if (activeStream) {
+      if (video.srcObject !== activeStream) {
+        video.srcObject = activeStream;
         video.play().catch(console.error);
       }
     } else {
@@ -230,8 +272,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
 
       // Source: either MediaPipe processed canvas or raw video
       const sourceElement = processedCanvas || video;
-      const sourceWidth = video.videoWidth;
-      const sourceHeight = video.videoHeight;
+      const sourceWidth = video.videoWidth || 1280;
+      const sourceHeight = video.videoHeight || 720;
       const sourceAspect = sourceWidth / sourceHeight;
       const canvasAspect = canvas.width / canvas.height;
 
@@ -538,7 +580,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
       }
     };
   }, [
-    stream,
+    activeStream,
     videoRef.current,
     canvasRef.current,
     isNeonEdgeEnabled,
@@ -572,7 +614,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
         playsInline
         className="hidden object-cover w-full h-full"
       />
-      {!stream && (
+      {!activeStream && (
         <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-black/30 text-muted-foreground/50 pointer-events-none">
           <img
             src="/icon.png"
@@ -631,6 +673,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onFilterColorChange={onFilterColorChange}
               filterTarget={filterTarget}
               onFilterTargetChange={onFilterTargetChange}
+              // Pass device props
+              videoDevices={videoDevices}
+              selectedDeviceId={selectedDeviceId}
+              onCameraDeviceChange={onCameraDeviceChange || (() => {})}
             />,
             portalContainer
           )
@@ -671,6 +717,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = ({
               onFaceTrackingToggle={onFaceTrackingToggle}
               activeInteractiveFilter={activeInteractiveFilter}
               onInteractiveFilterChange={onInteractiveFilterChange}
+              videoDevices={videoDevices}
+              selectedDeviceId={selectedDeviceId}
+              onCameraDeviceChange={onCameraDeviceChange || (() => {})}
             />
           )}
     </div>

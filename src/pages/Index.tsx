@@ -540,31 +540,44 @@ const Index = () => {
     (sectionId: string, settings: Partial<CanvasSectionCameraState>) => {
       updateActiveScene((scene) => {
         if (!scene.canvasLayout) return scene;
+        const newSections = scene.canvasLayout.sections.map((s) => {
+          if (s.id === sectionId) {
+            // 1. Update active content if it's a camera
+            let newContent = s.content;
+            let currentSettings = DEFAULT_CAMERA_STATE;
+
+            if (s.content.type === "camera") {
+              currentSettings = { ...s.content.settings, ...settings };
+              newContent = {
+                ...s.content,
+                settings: currentSettings,
+              };
+            } else if (s.savedCameraSettings) {
+              // If not currently a camera, update the saved settings anyway
+              currentSettings = { ...s.savedCameraSettings, ...settings };
+            }
+
+            return {
+              ...s,
+              content: newContent,
+              // 2. Persist settings to the section state
+              savedCameraSettings: currentSettings,
+            };
+          }
+          return s;
+        });
 
         const newLayout = {
           ...scene.canvasLayout,
-          sections: scene.canvasLayout.sections.map((s) => {
-            if (s.id === sectionId && s.content.type === "camera") {
-              return {
-                ...s,
-                content: {
-                  ...s.content,
-                  settings: { ...s.content.settings, ...settings },
-                },
-              };
-            }
-            return s;
-          }),
+          sections: newSections,
         };
 
         // FIX: Check for isAutoFramingEnabled OR isFaceTrackingEnabled
         const isTrackingOn =
           settings.isFaceTrackingEnabled ||
           settings.isAutoFramingEnabled ||
-          (
-            scene.canvasLayout.sections.find((s) => s.id === sectionId)
-              ?.content as any
-          )?.settings?.isAutoFramingEnabled;
+          (newSections.find((s) => s.id === sectionId)?.content as any)
+            ?.settings?.isAutoFramingEnabled;
 
         return {
           ...scene,
