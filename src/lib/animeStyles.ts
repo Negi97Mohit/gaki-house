@@ -23,12 +23,10 @@ class ColorUtils {
   private static hexCache = new Map<string, [number, number, number]>();
 
   static hexToRgb(hex: string): [number, number, number] {
-    // Check cache first
     if (this.hexCache.has(hex)) {
       return this.hexCache.get(hex)!;
     }
 
-    // Handle both 3-digit and 6-digit hex
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     const fullHex = hex.replace(
       shorthandRegex,
@@ -44,7 +42,6 @@ class ColorUtils {
         ]
       : [0, 0, 0];
 
-    // Cache the result
     this.hexCache.set(hex, rgb as [number, number, number]);
     return rgb as [number, number, number];
   }
@@ -59,12 +56,15 @@ class ColorUtils {
     b: number,
     strength: number = 1.0
   ): boolean {
-    // Enhanced skin detection with configurable strength
+    // Enhanced skin detection
+    // increased green requirement slightly to avoid picking up reddish walls/clothes as skin
     const redDominance = r > g && r > b;
     const redGreenDiff = r - g > 15 * strength;
     const minRed = r > 40;
-    const colorBalance = r > 100 && g > 50 && b > 30; // Avoid dark shadows
-    const saturation = Math.max(r, g, b) - Math.min(r, g, b) > 20; // Some color variation
+
+    // Stricter balance to prevent dark noise being seen as skin
+    const colorBalance = r > 60 && g > 40 && b > 20;
+    const saturation = Math.max(r, g, b) - Math.min(r, g, b) > 15;
 
     return redDominance && redGreenDiff && minRed && colorBalance && saturation;
   }
@@ -78,14 +78,12 @@ class ImageProcessor {
     height: number
   ): Uint8Array {
     const luminance = new Uint8Array(width * height);
-
     for (let i = 0; i < width * height; i++) {
       const r = data[i * 4];
       const g = data[i * 4 + 1];
       const b = data[i * 4 + 2];
       luminance[i] = ColorUtils.calculateLuminance(r, g, b);
     }
-
     return luminance;
   }
 
@@ -96,17 +94,14 @@ class ImageProcessor {
     passes: number = 1
   ): Uint8Array {
     let output = new Uint8Array(input);
-
+    // Increased blur weight slightly to flatten skin areas better
     for (let pass = 0; pass < passes; pass++) {
       const temp = new Uint8Array(output);
-
       for (let y = 1; y < height - 1; y++) {
         for (let x = 1; x < width - 1; x++) {
           const idx = y * width + x;
-
-          // 3x3 box blur with center weight
           const sum =
-            temp[idx] * 4 + // Center weight
+            temp[idx] * 4 +
             temp[idx - 1] +
             temp[idx + 1] +
             temp[idx - width] +
@@ -115,12 +110,10 @@ class ImageProcessor {
             temp[idx - width + 1] +
             temp[idx + width - 1] +
             temp[idx + width + 1];
-
           output[idx] = Math.round(sum / 12);
         }
       }
     }
-
     return output;
   }
 
@@ -130,12 +123,9 @@ class ImageProcessor {
     height: number
   ): Uint8Array {
     const edgeMap = new Uint8Array(width * height);
-
     for (let y = 1; y < height - 1; y++) {
       for (let x = 1; x < width - 1; x++) {
         const idx = y * width + x;
-
-        // Sobel operator for edge detection
         const gx =
           -1 * luminance[idx - width - 1] +
           1 * luminance[idx - width + 1] +
@@ -143,7 +133,6 @@ class ImageProcessor {
           2 * luminance[idx + 1] +
           -1 * luminance[idx + width - 1] +
           1 * luminance[idx + width + 1];
-
         const gy =
           -1 * luminance[idx - width - 1] +
           -2 * luminance[idx - width] +
@@ -151,11 +140,9 @@ class ImageProcessor {
           1 * luminance[idx + width - 1] +
           2 * luminance[idx + width] +
           1 * luminance[idx + width + 1];
-
         edgeMap[idx] = Math.min(255, Math.abs(gx) + Math.abs(gy));
       }
     }
-
     return edgeMap;
   }
 }
@@ -171,7 +158,6 @@ export function applyTriTone(
   const output = ctx.createImageData(width, height);
   const outputData = output.data;
 
-  // Parse configuration with defaults
   const {
     shadowColor,
     midColor,
@@ -184,22 +170,20 @@ export function applyTriTone(
     skinDetectionStrength = 1.0,
   } = config;
 
-  // Pre-calculate colors
   const shadowRGB = ColorUtils.hexToRgb(shadowColor);
   const midRGB = ColorUtils.hexToRgb(midColor);
   const highlightRGB = ColorUtils.hexToRgb(highlightColor);
   const skinRGB = ColorUtils.hexToRgb(skinColor);
 
-  // Pre-process luminance maps
   const rawLuma = ImageProcessor.createLuminanceMap(data, width, height);
-  const smoothLuma = ImageProcessor.applyBoxBlur(rawLuma, width, height, 1);
+  // Increased blur pass to 2 to reduce noise before edge detection
+  const smoothLuma = ImageProcessor.applyBoxBlur(rawLuma, width, height, 2);
   const edgeMap = ImageProcessor.calculateEdgeMagnitude(
     smoothLuma,
     width,
     height
   );
 
-  // Main processing loop
   for (let y = 1; y < height - 1; y++) {
     for (let x = 1; x < width - 1; x++) {
       const pixelIndex = y * width + x;
@@ -209,41 +193,56 @@ export function applyTriTone(
       const rawVal = rawLuma[pixelIndex];
       const edgeMag = edgeMap[pixelIndex];
 
-      // Calculate local contrast for detail detection
-      const localContrast = smoothVal - rawVal;
-      const isDetail = localContrast > detailSensitivity;
+      // 1. Detect Skin FIRST
+      const r = data[dataIndex];
+      const g = data[dataIndex + 1];
+      const b = data[dataIndex + 2];
+      const isSkin = ColorUtils.isSkinTone(r, g, b, skinDetectionStrength);
+
+      // 2. Adaptive Thresholding
+      // If it is skin, we want to suppress "marks" (details) and weak edges.
+      // We multiply the thresholds if skin is detected.
+
+      // Skin needs edges to be 2x stronger to register as a line
+      const adaptiveEdgeThreshold = isSkin
+        ? edgeThreshold * 2.0
+        : edgeThreshold;
+
+      // Skin needs details to be 3x stronger (pores/acne ignored, deep wrinkles kept)
+      const adaptiveDetailSens = isSkin
+        ? detailSensitivity * 3.0
+        : detailSensitivity;
+
+      const localContrast = Math.abs(smoothVal - rawVal);
+      const isDetail = localContrast > adaptiveDetailSens;
 
       let targetRGB: [number, number, number];
 
-      // Decision pipeline
-      if (edgeMag > edgeThreshold) {
-        // Strong edges -> shadow color
+      // 3. Decision Pipeline
+      if (edgeMag > adaptiveEdgeThreshold) {
+        // Strong structural edges -> Shadow
         targetRGB = shadowRGB;
       } else if (isDetail && smoothVal < 230) {
-        // Fine details in non-highlight areas -> shadow color
+        // Textured details
+        // Because we increased adaptiveDetailSens for skin,
+        // this block will essentially be skipped for the face area
+        // unless the mark is very dark/deep.
         targetRGB = shadowRGB;
       } else {
-        // Color zone logic
+        // Zoning
         if (smoothVal < lowThreshold) {
           targetRGB = shadowRGB;
         } else if (smoothVal > highThreshold) {
           targetRGB = highlightRGB;
         } else {
-          // Midtone with skin detection
-          const r = data[dataIndex];
-          const g = data[dataIndex + 1];
-          const b = data[dataIndex + 2];
-
-          const isSkin = ColorUtils.isSkinTone(r, g, b, skinDetectionStrength);
           targetRGB = isSkin ? skinRGB : midRGB;
         }
       }
 
-      // Write output
       outputData[dataIndex] = targetRGB[0];
       outputData[dataIndex + 1] = targetRGB[1];
       outputData[dataIndex + 2] = targetRGB[2];
-      outputData[dataIndex + 3] = 255; // Full opacity
+      outputData[dataIndex + 3] = 255;
     }
   }
 
@@ -257,9 +256,6 @@ export function applyTriTone(
 
 // ===== PRESET STYLES =====
 export const AnimeStyles = {
-  /**
-   * Psycho-Pass Dominator Style
-   */
   dominator: {
     shadowColor: "#000000",
     midColor: "#00ced1",
@@ -272,9 +268,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.0,
   } as TriToneConfig,
 
-  /**
-   * Inspector Style - Pink/Red variant
-   */
   inspector: {
     shadowColor: "#1a0505",
     midColor: "#ff1493",
@@ -286,20 +279,19 @@ export const AnimeStyles = {
     edgeThreshold: 45,
     skinDetectionStrength: 1.2,
   } as TriToneConfig,
-  /** 1. Manga / Noir (High Contrast B&W) */
+
   manga: {
     shadowColor: "#000000",
     midColor: "#808080",
     highlightColor: "#FFFFFF",
-    skinColor: "#FFFFFF", // Skin matches highlight for clean manga look
+    skinColor: "#FFFFFF",
     lowThreshold: 80,
     highThreshold: 200,
-    detailSensitivity: 10, // Sensitive to lines
-    edgeThreshold: 30, // Strong outlines
-    skinDetectionStrength: 0.0, // Disable skin detection for pure B&W
+    detailSensitivity: 10,
+    edgeThreshold: 30,
+    skinDetectionStrength: 0.0,
   } as TriToneConfig,
 
-  /** 2. Phantom (Red/Black - Persona Style) */
   phantom: {
     shadowColor: "#1a0000",
     midColor: "#ff0000",
@@ -312,7 +304,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.0,
   } as TriToneConfig,
 
-  /** 3. Matrix (Digital Green) */
   matrix: {
     shadowColor: "#001a00",
     midColor: "#00ff00",
@@ -325,7 +316,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 0.5,
   } as TriToneConfig,
 
-  /** 4. Sepia (Vintage Memory) */
   sepia: {
     shadowColor: "#2e2115",
     midColor: "#a68a6d",
@@ -338,7 +328,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.0,
   } as TriToneConfig,
 
-  /** 5. Ocean (Deep Blue/Cyan) */
   ocean: {
     shadowColor: "#000033",
     midColor: "#0066cc",
@@ -351,12 +340,11 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.0,
   } as TriToneConfig,
 
-  /** 6. Sunset (Vaporwave Purple/Gold) */
   sunset: {
     shadowColor: "#2d1b4e",
     midColor: "#d65db1",
     highlightColor: "#ffbe0b",
-    skinColor: "#ffcc80", // Warm golden skin
+    skinColor: "#ffcc80",
     lowThreshold: 70,
     highThreshold: 210,
     detailSensitivity: 15,
@@ -364,12 +352,11 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.2,
   } as TriToneConfig,
 
-  /** 7. Gothic (Dark Grey/Crimson) */
   gothic: {
     shadowColor: "#0f0f0f",
     midColor: "#8a0303",
     highlightColor: "#e0e0e0",
-    skinColor: "#f0f0f0", // Pale skin
+    skinColor: "#f0f0f0",
     lowThreshold: 60,
     highThreshold: 180,
     detailSensitivity: 10,
@@ -377,12 +364,11 @@ export const AnimeStyles = {
     skinDetectionStrength: 0.8,
   } as TriToneConfig,
 
-  /** 8. Mint (Soft Green) */
   mint: {
     shadowColor: "#1c3d35",
     midColor: "#4fffa3",
     highlightColor: "#e0fff4",
-    skinColor: "#ffe0e6", // Pinkish skin contrast
+    skinColor: "#ffe0e6",
     lowThreshold: 70,
     highThreshold: 200,
     detailSensitivity: 15,
@@ -390,7 +376,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.1,
   } as TriToneConfig,
 
-  /** 9. Golden (Royal Yellow) */
   golden: {
     shadowColor: "#2a2200",
     midColor: "#ffd700",
@@ -403,7 +388,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.0,
   } as TriToneConfig,
 
-  /** 10. Lavender (Dreamy Purple) */
   lavender: {
     shadowColor: "#1a0b2e",
     midColor: "#9d4edd",
@@ -416,9 +400,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 1.0,
   } as TriToneConfig,
 
-  /**
-   * Classic Anime Style
-   */
   classic: {
     shadowColor: "#2c1b47",
     midColor: "#e84a5f",
@@ -431,9 +412,6 @@ export const AnimeStyles = {
     skinDetectionStrength: 0.8,
   } as TriToneConfig,
 
-  /**
-   * Cyberpunk Style
-   */
   cyberpunk: {
     shadowColor: "#0a0a2a",
     midColor: "#00fff0",
@@ -745,16 +723,17 @@ export const AnimeStyles = {
     edgeThreshold: 50,
     skinDetectionStrength: 1.1,
   } as TriToneConfig,
+
   victorianDaguerreotype: {
     shadowColor: "#1a1410",
     midColor: "#8b7355",
     highlightColor: "#f5e6d3",
     skinColor: "#e8d4c0",
-    lowThreshold: 65, // was 85
-    highThreshold: 210, // was 195
-    detailSensitivity: 8, // was 25
-    edgeThreshold: 32, // was 70
-    skinDetectionStrength: 2.0, // was 1.5
+    lowThreshold: 65,
+    highThreshold: 210,
+    detailSensitivity: 8,
+    edgeThreshold: 32,
+    skinDetectionStrength: 2.0,
   } as TriToneConfig,
 
   romanFreco: {
@@ -762,11 +741,11 @@ export const AnimeStyles = {
     midColor: "#c85a54",
     highlightColor: "#f4e4c1",
     skinColor: "#d4a574",
-    lowThreshold: 65, // was 70
-    highThreshold: 215, // was 200
-    detailSensitivity: 10, // was 30
-    edgeThreshold: 30, // was 45
-    skinDetectionStrength: 2.2, // was 1.8
+    lowThreshold: 65,
+    highThreshold: 215,
+    detailSensitivity: 10,
+    edgeThreshold: 30,
+    skinDetectionStrength: 2.2,
   } as TriToneConfig,
 
   spartanBronze: {
@@ -774,11 +753,11 @@ export const AnimeStyles = {
     midColor: "#b87333",
     highlightColor: "#ffd7a8",
     skinColor: "#cd9575",
-    lowThreshold: 65, // was 75
-    highThreshold: 215, // was 205
-    detailSensitivity: 8, // was 20
-    edgeThreshold: 35, // was 60
-    skinDetectionStrength: 2.0, // was 1.6
+    lowThreshold: 65,
+    highThreshold: 215,
+    detailSensitivity: 8,
+    edgeThreshold: 35,
+    skinDetectionStrength: 2.0,
   } as TriToneConfig,
 
   egyptianPapyrus: {
@@ -786,11 +765,11 @@ export const AnimeStyles = {
     midColor: "#d4a76a",
     highlightColor: "#faf4e8",
     skinColor: "#c19a6b",
-    lowThreshold: 68, // was 80
-    highThreshold: 218, // was 210
-    detailSensitivity: 10, // was 35
-    edgeThreshold: 28, // was 25
-    skinDetectionStrength: 2.0, // was 1.4
+    lowThreshold: 68,
+    highThreshold: 218,
+    detailSensitivity: 10,
+    edgeThreshold: 28,
+    skinDetectionStrength: 2.0,
   } as TriToneConfig,
 
   medievalIllumination: {
@@ -798,11 +777,11 @@ export const AnimeStyles = {
     midColor: "#8b4513",
     highlightColor: "#daa520",
     skinColor: "#f5deb3",
-    lowThreshold: 65, // was 70
-    highThreshold: 210, // was 195
-    detailSensitivity: 12, // was 40
-    edgeThreshold: 40, // was 80
-    skinDetectionStrength: 2.2, // was 1.7
+    lowThreshold: 65,
+    highThreshold: 210,
+    detailSensitivity: 12,
+    edgeThreshold: 40,
+    skinDetectionStrength: 2.2,
   } as TriToneConfig,
 
   renaissanceOil: {
@@ -810,11 +789,11 @@ export const AnimeStyles = {
     midColor: "#8b6f47",
     highlightColor: "#f0e68c",
     skinColor: "#deb887",
-    lowThreshold: 65, // was 75
-    highThreshold: 215, // was 200
-    detailSensitivity: 10, // was 35
-    edgeThreshold: 38, // was 75
-    skinDetectionStrength: 2.5, // was 2.0
+    lowThreshold: 65,
+    highThreshold: 215,
+    detailSensitivity: 10,
+    edgeThreshold: 38,
+    skinDetectionStrength: 2.5,
   } as TriToneConfig,
 
   byzantineMosaic: {
@@ -822,11 +801,11 @@ export const AnimeStyles = {
     midColor: "#b8860b",
     highlightColor: "#ffd700",
     skinColor: "#daa520",
-    lowThreshold: 70, // was 85
-    highThreshold: 215, // was 210
-    detailSensitivity: 15, // was 45
-    edgeThreshold: 25, // was 20
-    skinDetectionStrength: 1.8, // was 1.3
+    lowThreshold: 70,
+    highThreshold: 215,
+    detailSensitivity: 15,
+    edgeThreshold: 25,
+    skinDetectionStrength: 1.8,
   } as TriToneConfig,
 
   artDeco: {
@@ -834,11 +813,11 @@ export const AnimeStyles = {
     midColor: "#c0c0c0",
     highlightColor: "#ffd700",
     skinColor: "#f5deb3",
-    lowThreshold: 68, // was 80
-    highThreshold: 215, // was 205
-    detailSensitivity: 9, // was 28
-    edgeThreshold: 35, // was 65
-    skinDetectionStrength: 2.0, // was 1.5
+    lowThreshold: 68,
+    highThreshold: 215,
+    detailSensitivity: 9,
+    edgeThreshold: 35,
+    skinDetectionStrength: 2.0,
   } as TriToneConfig,
 
   steampunkBrass: {
@@ -846,11 +825,11 @@ export const AnimeStyles = {
     midColor: "#cd7f32",
     highlightColor: "#ffd9a0",
     skinColor: "#e0c4a8",
-    lowThreshold: 65, // was 70
-    highThreshold: 212, // was 200
-    detailSensitivity: 9, // was 25
-    edgeThreshold: 32, // was 55
-    skinDetectionStrength: 2.0, // was 1.4
+    lowThreshold: 65,
+    highThreshold: 212,
+    detailSensitivity: 9,
+    edgeThreshold: 32,
+    skinDetectionStrength: 2.0,
   } as TriToneConfig,
 
   noirDetective: {
@@ -858,11 +837,11 @@ export const AnimeStyles = {
     midColor: "#4a4a4a",
     highlightColor: "#ffffff",
     skinColor: "#d3d3d3",
-    lowThreshold: 75, // was 90
+    lowThreshold: 75,
     highThreshold: 220,
-    detailSensitivity: 6, // was 8
-    edgeThreshold: 30, // was 45
-    skinDetectionStrength: 1.2, // was 0.6
+    detailSensitivity: 6,
+    edgeThreshold: 30,
+    skinDetectionStrength: 1.2,
   } as TriToneConfig,
 
   sovietPropaganda: {
@@ -870,11 +849,11 @@ export const AnimeStyles = {
     midColor: "#cc0000",
     highlightColor: "#ffd700",
     skinColor: "#ffccaa",
-    lowThreshold: 68, // was 75
-    highThreshold: 215, // was 205
-    detailSensitivity: 12, // was 35
-    edgeThreshold: 28, // was 30
-    skinDetectionStrength: 1.8, // was 1.2
+    lowThreshold: 68,
+    highThreshold: 215,
+    detailSensitivity: 12,
+    edgeThreshold: 28,
+    skinDetectionStrength: 1.8,
   } as TriToneConfig,
 
   aztecSun: {
@@ -882,11 +861,11 @@ export const AnimeStyles = {
     midColor: "#ff8c00",
     highlightColor: "#ffd700",
     skinColor: "#d2691e",
-    lowThreshold: 65, // was 70
-    highThreshold: 210, // was 200
-    detailSensitivity: 15, // was 40
-    edgeThreshold: 30, // was 35
-    skinDetectionStrength: 2.0, // was 1.5
+    lowThreshold: 65,
+    highThreshold: 210,
+    detailSensitivity: 15,
+    edgeThreshold: 30,
+    skinDetectionStrength: 2.0,
   } as TriToneConfig,
 
   norseIce: {
@@ -894,11 +873,11 @@ export const AnimeStyles = {
     midColor: "#5c8a9e",
     highlightColor: "#d5e9f2",
     skinColor: "#c7e0ed",
-    lowThreshold: 62, // was 65
-    highThreshold: 210, // was 195
-    detailSensitivity: 8, // was 20
-    edgeThreshold: 32, // was 55
-    skinDetectionStrength: 1.8, // was 1.1
+    lowThreshold: 62,
+    highThreshold: 210,
+    detailSensitivity: 8,
+    edgeThreshold: 32,
+    skinDetectionStrength: 1.8,
   } as TriToneConfig,
 
   jadeDynasty: {
@@ -906,11 +885,11 @@ export const AnimeStyles = {
     midColor: "#00a36c",
     highlightColor: "#c9f0dd",
     skinColor: "#f5e8d0",
-    lowThreshold: 65, // was 70
-    highThreshold: 212, // was 200
-    detailSensitivity: 9, // was 22
-    edgeThreshold: 32, // was 50
-    skinDetectionStrength: 2.2, // was 1.6
+    lowThreshold: 65,
+    highThreshold: 212,
+    detailSensitivity: 9,
+    edgeThreshold: 32,
+    skinDetectionStrength: 2.2,
   } as TriToneConfig,
 
   edoPeriod: {
@@ -918,11 +897,11 @@ export const AnimeStyles = {
     midColor: "#8b4513",
     highlightColor: "#f5deb3",
     skinColor: "#deb887",
-    lowThreshold: 68, // was 80
-    highThreshold: 215, // was 205
-    detailSensitivity: 10, // was 30
-    edgeThreshold: 32, // was 50
-    skinDetectionStrength: 2.3, // was 1.8
+    lowThreshold: 68,
+    highThreshold: 215,
+    detailSensitivity: 10,
+    edgeThreshold: 32,
+    skinDetectionStrength: 2.3,
   } as TriToneConfig,
 
   desertMirage: {
@@ -936,8 +915,6 @@ export const AnimeStyles = {
     edgeThreshold: 30,
     skinDetectionStrength: 1.8,
   } as TriToneConfig,
-
-  // --- NEWLY ADDED MISSING STYLES ---
 
   volcanicMagma: {
     shadowColor: "#1a0000",
@@ -1108,7 +1085,6 @@ export const AnimeStyles = {
   } as TriToneConfig,
 } as const;
 
-// Preset application functions (backward compatibility)
 export function applyDominatorStyle(
   ctx: CanvasRenderingContext2D,
   imageData: ImageData
@@ -1123,7 +1099,6 @@ export function applyInspectorStyle(
   return applyTriTone(ctx, imageData, AnimeStyles.inspector);
 }
 
-// Utility function to apply any preset style
 export function applyStyle(
   style: keyof typeof AnimeStyles,
   ctx: CanvasRenderingContext2D,
@@ -1132,7 +1107,6 @@ export function applyStyle(
   return applyTriTone(ctx, imageData, AnimeStyles[style]);
 }
 
-// Performance monitoring utility
 export class PerformanceMonitor {
   private static measurements: Map<string, number[]> = new Map();
 
