@@ -9,6 +9,9 @@ import {
   ArrowUp,
   ArrowDown,
   X,
+  ChevronLeft,
+  ChevronRight,
+  RotateCw,
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import { Button } from "./ui/button";
@@ -125,6 +128,46 @@ export const CanvasHoverToolbar = ({
     });
   };
 
+  // Check if current layout is a carousel type
+  const isCarouselLayout = canvasLayout?.templateId?.includes('carousel');
+
+  // Rotate carousel content (shift section content assignments)
+  const rotateCarousel = (direction: 'left' | 'right') => {
+    if (!canvasLayout || !onCanvasLayoutChange) return;
+
+    // Get the current template
+    const template = layoutTemplates.find(t => t.id === canvasLayout.templateId);
+    if (!template) return;
+
+    const sectionIds = template.sections.map(s => s.id);
+    const currentSections = [...canvasLayout.sections];
+
+    // Create a mapping of section ID to content
+    const contentMap = new Map(currentSections.map(s => [s.id, s.content]));
+
+    // Rotate the content assignments
+    const rotatedSections = sectionIds.map((id, index) => {
+      let sourceIndex = direction === 'right'
+        ? (index - 1 + sectionIds.length) % sectionIds.length
+        : (index + 1) % sectionIds.length;
+
+      const sourceId = sectionIds[sourceIndex];
+      const content = contentMap.get(sourceId) || { type: 'empty' as const };
+
+      return {
+        id,
+        content,
+        savedCameraSettings: currentSections.find(s => s.id === sourceId)?.savedCameraSettings,
+        defaultContent: currentSections.find(s => s.id === sourceId)?.defaultContent,
+      };
+    });
+
+    onCanvasLayoutChange({
+      ...canvasLayout,
+      sections: rotatedSections,
+    });
+  };
+
   return (
     <div
       className={cn(
@@ -185,7 +228,7 @@ export const CanvasHoverToolbar = ({
             <Grid3x3 className="h-4 w-4 mr-2" />
             {canvasLayout
               ? layoutTemplates.find((t) => t.id === canvasLayout.templateId)
-                  ?.name || "Layout"
+                ?.name || "Layout"
               : "Grid"}
           </Button>
         </DropdownMenuTrigger>
@@ -222,6 +265,30 @@ export const CanvasHoverToolbar = ({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* Carousel Rotation Controls */}
+      {isCarouselLayout && canvasLayout && (
+        <div className="flex items-center gap-1 border-l pl-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs h-8 px-2"
+            onClick={() => rotateCarousel('left')}
+            title="Rotate carousel left"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs h-8 px-2"
+            onClick={() => rotateCarousel('right')}
+            title="Rotate carousel right"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
 
       {/* Sequence Reorder Popup */}
       {canvasLayout &&
