@@ -249,19 +249,19 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         }
         enableResizing={
           !isSpacePressed &&
-          !isEditing &&
-          sceneSize.width > 0 &&
-          sceneSize.height > 0
+            !isEditing &&
+            sceneSize.width > 0 &&
+            sceneSize.height > 0
             ? {
-                top: true,
-                right: true,
-                bottom: true,
-                left: true,
-                topRight: true,
-                bottomRight: true,
-                bottomLeft: true,
-                topLeft: true,
-              }
+              top: true,
+              right: true,
+              bottom: true,
+              left: true,
+              topRight: false, // Disabled to prevent overlap with close button
+              bottomRight: true,
+              bottomLeft: true,
+              topLeft: true,
+            }
             : false
         }
         onDragStart={() => {
@@ -288,7 +288,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           zIndex: overlay.layout.zIndex,
         }}
         dragHandleClassName="drag-handle"
-        cancel="button, textarea, .rotate-handle"
+        cancel="button, textarea, .rotate-handle, .close-button"
       >
         <div
           className={cn(
@@ -419,10 +419,10 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                   onRemove(overlay.id);
                 }}
                 title="Remove Text"
-                className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110"
+                className="close-button absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 pointer-events-auto cursor-pointer"
                 style={{
                   transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-                  zIndex: "var(--z-draggable-element-active)",
+                  zIndex: 99999,
                 }}
               >
                 <X className="w-4 h-4 pointer-events-none" />
@@ -453,7 +453,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             </>
           )}
         </div>
-      </Rnd>
+      </Rnd >
 
       {isSelected && !isEditing && (
         <div
@@ -472,7 +472,8 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             containerRef={containerRef}
           />
         </div>
-      )}
+      )
+      }
     </>
   );
 };

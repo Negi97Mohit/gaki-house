@@ -29,6 +29,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { loadTextDesigns } from "@/lib/textDesigns";
 import { TextDesignPreset, TextLayer } from "@/types/textDesign"; // IMPORT TextLayer
+import { ALL_FONTS } from "@/lib/fonts"; // Import expanded font library
 
 interface TextEditingToolbarProps {
   overlay: TextOverlayState;
@@ -40,22 +41,8 @@ interface TextEditingToolbarProps {
   containerRef?: React.RefObject<HTMLElement>;
 }
 
-const FONT_FAMILIES = [
-  "Inter",
-  "Arial",
-  "Helvetica",
-  "Times New Roman",
-  "Courier New",
-  "Georgia",
-  "Verdana",
-  "Comic Sans MS",
-  "Impact",
-  "Roboto",
-  "Open Sans",
-  "Montserrat",
-  "Playfair Display",
-  "Bebas Neue",
-];
+// Use the expanded font library from fonts.ts
+const FONT_FAMILIES = ALL_FONTS;
 
 const PRESET_COLORS = [
   "#FFFFFF",
@@ -131,8 +118,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       alignment === "left"
         ? "justifyLeft"
         : alignment === "center"
-        ? "justifyCenter"
-        : "justifyRight";
+          ? "justifyCenter"
+          : "justifyRight";
     document.execCommand(command);
     onStyleChange(overlay.id, { textAlign: alignment } as any);
   };
