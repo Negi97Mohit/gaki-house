@@ -89,6 +89,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
   const [resizing, setResizing] = useState<{ sectionId: string; edge: string } | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeDataRef = useRef<{ startX: number; startY: number; startStyles: Record<string, React.CSSProperties> } | null>(null);
 
@@ -106,6 +107,32 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
         console.error("Failed to load layout templates", err);
       });
   }, []);
+
+  // Detect layout changes for carousel animation - ONLY on rotation
+  const prevLayoutRef = useRef(layout);
+  useEffect(() => {
+    const isCarousel = layout.templateId?.includes('carousel');
+    if (isCarousel && prevLayoutRef.current && prevLayoutRef.current.templateId === layout.templateId) {
+      // Check if ALL sections changed content simultaneously (rotation)
+      // This means the number of changed sections equals total sections
+      let changedCount = 0;
+      layout.sections.forEach((sec, idx) => {
+        const prevSec = prevLayoutRef.current.sections[idx];
+        if (prevSec && JSON.stringify(sec.content) !== JSON.stringify(prevSec.content)) {
+          changedCount++;
+        }
+      });
+
+      // Only trigger animation if ALL or MOST sections changed (rotation)
+      // If only 1 section changed, it's a content update, not rotation
+      if (changedCount >= layout.sections.length - 1 && changedCount > 0) {
+        setIsTransitioning(true);
+        setTimeout(() => setIsTransitioning(false), 500);
+      }
+    }
+    prevLayoutRef.current = layout;
+  }, [layout]);
+
   const template =
     templates && (templates[layout.templateId] || templates.default);
 
@@ -637,13 +664,19 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             ? orderIndex + 1
             : undefined;
 
+        const isCarousel = layout.templateId?.includes('carousel');
+
         return (
           <div
             key={templateSection.id}
             className={cn(
-              "absolute border border-border/20 transition-all duration-200",
+              "absolute border border-border/20",
               "hover:border-primary/60 hover:shadow-lg hover:shadow-primary/20",
-              "group", // <--- ADD COMMA HERE
+              "group",
+              // Carousel animation - subtle cross-fade
+              isCarousel && "transition-all duration-500 ease-in-out",
+              isCarousel && isTransitioning && "opacity-70 scale-[0.98]",
+              isCarousel && !isTransitioning && "opacity-100 scale-100",
               // Ensure this line is active
               section.id === activeSequenceId &&
               "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"

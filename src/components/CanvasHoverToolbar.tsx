@@ -168,6 +168,105 @@ export const CanvasHoverToolbar = ({
     });
   };
 
+  // Check if layout has dynamic transformations
+  const layoutId = canvasLayout?.templateId || '';
+  const hasTransformations =
+    isCarouselLayout ||
+    layoutId.includes('magazine') ||
+    layoutId.includes('bento') ||
+    layoutId.includes('staircase') ||
+    layoutId.includes('diagonal') ||
+    layoutId.includes('spotlight') ||
+    layoutId.includes('pip-creative');
+
+  // Generic transformation function
+  const transformLayout = (type: 'rotate' | 'flip' | 'swap' | 'reverse') => {
+    if (!canvasLayout || !onCanvasLayoutChange) return;
+
+    const template = layoutTemplates.find(t => t.id === canvasLayout.templateId);
+    if (!template) return;
+
+    const sectionIds = template.sections.map(s => s.id);
+    const currentSections = [...canvasLayout.sections];
+    const contentMap = new Map(currentSections.map(s => [s.id, s.content]));
+
+    let transformedSections = [...currentSections];
+
+    // Magazine Hero: Swap hero with first sidebar
+    if (layoutId === 'magazine-hero' && type === 'swap') {
+      const heroContent = contentMap.get('hero');
+      const sidebar1Content = contentMap.get('sidebar-1');
+      transformedSections = currentSections.map(s => {
+        if (s.id === 'hero') return { ...s, content: sidebar1Content || { type: 'empty' as const } };
+        if (s.id === 'sidebar-1') return { ...s, content: heroContent || { type: 'empty' as const } };
+        return s;
+      });
+    }
+
+    // Bento Box / Staircase / Diagonal: Rotate all
+    else if ((layoutId.includes('bento') || layoutId.includes('staircase') || layoutId.includes('diagonal')) && type === 'rotate') {
+      transformedSections = sectionIds.map((id, index) => {
+        const sourceIndex = (index + 1) % sectionIds.length;
+        const sourceId = sectionIds[sourceIndex];
+        const content = contentMap.get(sourceId) || { type: 'empty' as const };
+        return {
+          id,
+          content,
+          savedCameraSettings: currentSections.find(s => s.id === sourceId)?.savedCameraSettings,
+          defaultContent: currentSections.find(s => s.id === sourceId)?.defaultContent,
+        };
+      });
+    }
+
+    // Spotlight Frame: Rotate frame positions
+    else if (layoutId === 'spotlight-frame' && type === 'rotate') {
+      const frameIds = ['top', 'right', 'bottom', 'left'];
+      const frameContents = frameIds.map(id => contentMap.get(id));
+      transformedSections = currentSections.map(s => {
+        const frameIndex = frameIds.indexOf(s.id);
+        if (frameIndex !== -1) {
+          const nextIndex = (frameIndex + 1) % frameIds.length;
+          return { ...s, content: frameContents[nextIndex] || { type: 'empty' as const } };
+        }
+        return s;
+      });
+    }
+
+    // PiP Creative: Cycle PiP positions
+    else if (layoutId === 'pip-creative' && type === 'rotate') {
+      const pipIds = ['pip-1', 'pip-2', 'pip-3'];
+      const pipContents = pipIds.map(id => contentMap.get(id));
+      transformedSections = currentSections.map(s => {
+        const pipIndex = pipIds.indexOf(s.id);
+        if (pipIndex !== -1) {
+          const nextIndex = (pipIndex + 1) % pipIds.length;
+          return { ...s, content: pipContents[nextIndex] || { type: 'empty' as const } };
+        }
+        return s;
+      });
+    }
+
+    // Staircase: Reverse order
+    else if (layoutId.includes('staircase') && type === 'reverse') {
+      const reversedIds = [...sectionIds].reverse();
+      transformedSections = sectionIds.map((id, index) => {
+        const sourceId = reversedIds[index];
+        const content = contentMap.get(sourceId) || { type: 'empty' as const };
+        return {
+          id,
+          content,
+          savedCameraSettings: currentSections.find(s => s.id === sourceId)?.savedCameraSettings,
+          defaultContent: currentSections.find(s => s.id === sourceId)?.defaultContent,
+        };
+      });
+    }
+
+    onCanvasLayoutChange({
+      ...canvasLayout,
+      sections: transformedSections,
+    });
+  };
+
   return (
     <div
       className={cn(
@@ -266,27 +365,83 @@ export const CanvasHoverToolbar = ({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Carousel Rotation Controls */}
-      {isCarouselLayout && canvasLayout && (
+      {/* Dynamic Layout Transformation Controls */}
+      {hasTransformations && canvasLayout && (
         <div className="flex items-center gap-1 border-l pl-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs h-8 px-2"
-            onClick={() => rotateCarousel('left')}
-            title="Rotate carousel left"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs h-8 px-2"
-            onClick={() => rotateCarousel('right')}
-            title="Rotate carousel right"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+          {isCarouselLayout && (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs h-8 px-2"
+                onClick={() => rotateCarousel('left')}
+                title="Rotate carousel left"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs h-8 px-2"
+                onClick={() => rotateCarousel('right')}
+                title="Rotate carousel right"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </>
+          )}
+
+          {layoutId === 'magazine-hero' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs h-8 px-2"
+              onClick={() => transformLayout('swap')}
+              title="Swap hero and sidebar"
+            >
+              <RotateCw className="h-4 w-4 mr-1" />
+              Swap
+            </Button>
+          )}
+
+          {(layoutId.includes('bento') || layoutId.includes('staircase') || layoutId.includes('diagonal')) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs h-8 px-2"
+              onClick={() => transformLayout('rotate')}
+              title="Rotate sections"
+            >
+              <RotateCw className="h-4 w-4 mr-1" />
+              Rotate
+            </Button>
+          )}
+
+          {layoutId.includes('staircase') && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs h-8 px-2"
+              onClick={() => transformLayout('reverse')}
+              title="Reverse order"
+            >
+              <ChevronLeft className="h-3 w-3" />
+              <ChevronRight className="h-3 w-3" />
+            </Button>
+          )}
+
+          {(layoutId === 'spotlight-frame' || layoutId === 'pip-creative') && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs h-8 px-2"
+              onClick={() => transformLayout('rotate')}
+              title={layoutId === 'spotlight-frame' ? "Rotate frame" : "Cycle PiP"}
+            >
+              <RotateCw className="h-4 w-4 mr-1" />
+              {layoutId === 'spotlight-frame' ? 'Frame' : 'Cycle'}
+            </Button>
+          )}
         </div>
       )}
 
