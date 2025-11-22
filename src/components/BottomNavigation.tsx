@@ -148,6 +148,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         >
           <SlidersHorizontal className="w-4 h-4" />
         </Button>
+        {/* TODO: Commented out Library button - will work on this later
         <Button
           variant="ghost"
           size="icon"
@@ -159,6 +160,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         </Button>
 
         <div className="w-px h-6 bg-border/40 mx-1" />
+        */}
 
         <div className="flex items-center gap-0.5">
           <Button
@@ -298,6 +300,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
+        {/* TODO: Commented out Record button - will work on this later
         <Button
           size="icon"
           className={cn(
@@ -315,7 +318,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             <Circle className="h-5 w-5 fill-current" />
           )}
         </Button>
+        */}
 
+        {/* TODO: Commented out Broadcast button - will work on this later
         <Button
           size="icon"
           className={cn(
@@ -330,6 +335,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         >
           <Radio className={cn("h-4 w-4", isBroadcasting && "animate-pulse")} />
         </Button>
+        */}
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
