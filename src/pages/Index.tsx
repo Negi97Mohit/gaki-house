@@ -213,7 +213,19 @@ const Index = () => {
   );
   const hasAiPopoverAutoOpenedRef = useRef(false);
 
-  // Handle auto-opening FloatingControlsPanel after AI popover closes
+  // Auto-open FloatingControlsPanel on app launch - once, no auto-close
+  useEffect(() => {
+    // Open after 0.5 seconds
+    const openTimer = setTimeout(() => {
+      setShowFloatingPanel(true);
+    }, 500);
+
+    return () => {
+      clearTimeout(openTimer);
+    };
+  }, []); // Empty dependency array - only runs once on mount
+
+  // Handle auto-opening FloatingControlsPanel after AI popover closes (legacy)
   const handleAiPopoverAutoClose = useCallback(() => {
     setTimeout(() => {
       setShowFloatingPanel(true);
@@ -584,7 +596,7 @@ const Index = () => {
           // Automatically activate this section if tracking is On and it's linked
           activeSequenceId:
             isTrackingOn &&
-            scene.canvasLayout?.sectionOrder?.includes(sectionId)
+              scene.canvasLayout?.sectionOrder?.includes(sectionId)
               ? sectionId
               : scene.activeSequenceId,
           canvasLayout: newLayout,
@@ -636,19 +648,19 @@ const Index = () => {
         updateActiveScene((scene) => {
           const updatedCanvasLayout = scene.canvasLayout
             ? {
-                ...scene.canvasLayout,
-                sections: scene.canvasLayout.sections.map((s) =>
-                  s.id === sectionId
-                    ? {
-                        ...s,
-                        content: {
-                          type: "image" as const,
-                          src: asset.downloadUrl,
-                        },
-                      }
-                    : s
-                ),
-              }
+              ...scene.canvasLayout,
+              sections: scene.canvasLayout.sections.map((s) =>
+                s.id === sectionId
+                  ? {
+                    ...s,
+                    content: {
+                      type: "image" as const,
+                      src: asset.downloadUrl,
+                    },
+                  }
+                  : s
+              ),
+            }
             : scene.canvasLayout;
 
           return {
@@ -1765,8 +1777,8 @@ const Index = () => {
           screenShareMode: (preset.canvasLayout
             ? "canvas"
             : preset.pip.layoutMode === "solo"
-            ? "off"
-            : "canvas") as "off" | "screen" | "canvas",
+              ? "off"
+              : "canvas") as "off" | "screen" | "canvas",
         };
 
         if (preset.effects.videoFilter) {
@@ -1795,12 +1807,12 @@ const Index = () => {
 
             const responsiveStyle =
               screenSize.type === "mobile" &&
-              textOverlay.responsive?.mobile?.style
+                textOverlay.responsive?.mobile?.style
                 ? textOverlay.responsive.mobile.style
                 : screenSize.type === "tablet" &&
                   textOverlay.responsive?.tablet?.style
-                ? textOverlay.responsive.tablet.style
-                : null;
+                  ? textOverlay.responsive.tablet.style
+                  : null;
 
             const finalLayout = {
               position: responsivePosition,
@@ -2230,7 +2242,7 @@ const Index = () => {
     onProcessTranscript: processTranscript,
     onOverlayLayoutChange: handleOverlayLayoutChange,
     onRemoveOverlay: handleRemoveOverlay,
-    onPreviewGenerated: () => {},
+    onPreviewGenerated: () => { },
     onRemoveBrowser: handleRemoveBrowser,
     onBrowserUrlChange: handleBrowserUrlChange,
     onBrowserLayoutChange: handleBrowserLayoutChange,
@@ -2255,7 +2267,7 @@ const Index = () => {
     isRecording: recording.isRecording,
     onRecordingToggle: handleRecordingToggle,
     canvasRef: canvasRef,
-    onRecordingComplete: () => {},
+    onRecordingComplete: () => { },
     portalContainer: mainContainerRef,
     hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
     onAiPopoverAutoClose: handleAiPopoverAutoClose,

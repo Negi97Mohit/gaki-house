@@ -91,30 +91,30 @@ export const AICommandPopover = ({
     }
   };
 
-  // Auto-open sequence on first load
-  useEffect(() => {
-    if (!hasAiPopoverAutoOpenedRef.current) {
-      // Open after 2 seconds
-      const openTimer = setTimeout(() => {
-        setOpen(true);
-      }, 2000);
+  // Auto-open sequence disabled - user can manually open when needed
+  // useEffect(() => {
+  //   if (!hasAiPopoverAutoOpenedRef.current) {
+  //     // Open after 2 seconds
+  //     const openTimer = setTimeout(() => {
+  //       setOpen(true);
+  //     }, 2000);
 
-      // Close after 5 seconds total (3s visible)
-      const closeTimer = setTimeout(() => {
-        setOpen(false);
-        if (hasAiPopoverAutoOpenedRef.current !== null) {
-          (hasAiPopoverAutoOpenedRef as any).current = true;
-        }
-        // Trigger callback when auto-closed
-        onAutoClose?.();
-      }, 5000);
+  //     // Close after 5 seconds total (3s visible)
+  //     const closeTimer = setTimeout(() => {
+  //       setOpen(false);
+  //       if (hasAiPopoverAutoOpenedRef.current !== null) {
+  //         (hasAiPopoverAutoOpenedRef as any).current = true;
+  //       }
+  //       // Trigger callback when auto-closed
+  //       onAutoClose?.();
+  //     }, 5000);
 
-      return () => {
-        clearTimeout(openTimer);
-        clearTimeout(closeTimer);
-      };
-    }
-  }, [onAutoClose]);
+  //     return () => {
+  //       clearTimeout(openTimer);
+  //       clearTimeout(closeTimer);
+  //     };
+  //   }
+  // }, [onAutoClose]);
 
   useEffect(() => {
     // Animation logic that runs when popover is open
