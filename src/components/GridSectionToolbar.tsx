@@ -13,14 +13,19 @@ import {
   Link as LinkIcon,
   Unlink,
   Save,
+  LayoutTemplate,
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
-import { CanvasSectionState } from "@/types/caption";
+import { CanvasSectionState, DEFAULT_CAMERA_STATE } from "@/types/caption";
+import { CANVAS_PRESETS } from "@/lib/canvasPresets";
 import {
   Popover,
   PopoverContent,
@@ -43,6 +48,10 @@ interface GridSectionToolbarProps {
   orderIndex?: number; // 1-based index, undefined if not in order
   onToggleOrder?: () => void;
   onSetDefault?: () => void;
+  onSectionContentChange?: (
+    sectionId: string,
+    content: CanvasSectionState["content"]
+  ) => void;
 }
 
 export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
@@ -59,16 +68,16 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   orderIndex,
   onToggleOrder,
   onSetDefault,
+  onSectionContentChange,
 }) => {
   const { content } = section;
 
   return (
     <div
-      className={`absolute top-2 right-2 flex items-center gap-1 z-[100] transition-all duration-200 ${
-        isVisible
+      className={`absolute top-2 right-2 flex items-center gap-1 z-[100] transition-all duration-200 ${isVisible
           ? "opacity-90 hover:opacity-100 translate-y-0"
           : "opacity-0 -translate-y-2 pointer-events-none"
-      }`}
+        }`}
     >
       {/* Type-specific controls */}
       {content.type === "color" && onColorChange && (
@@ -216,6 +225,74 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
           </DropdownMenuContent>
         </DropdownMenu>
       )}
+
+      {/* Canvas Design Picker (Only for Camera/Empty) */}
+      {(content.type === "camera" || content.type === "empty") &&
+        onSectionContentChange && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="h-8 w-8 bg-background/95 backdrop-blur"
+                title="Apply Canvas Design"
+              >
+                <LayoutTemplate className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="z-[999] bg-background w-56">
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <LayoutTemplate className="h-4 w-4 mr-2" />
+                  Canvas Designs
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-[300px] overflow-y-auto">
+                  {CANVAS_PRESETS.map((preset) => (
+                    <DropdownMenuItem
+                      key={preset.id}
+                      onClick={() => {
+                        onSectionContentChange(section.id, {
+                          type: "camera",
+                          settings: {
+                            ...DEFAULT_CAMERA_STATE,
+                            canvasDesignId: preset.id,
+                            layoutMode: "pip",
+                            pipPosition: preset.pip.pipPosition,
+                            pipSize: preset.pip.pipSize,
+                            sectionBackgroundColor:
+                              preset.background.blankCanvasColor,
+                            // Convert preset text overlays to section text overlays
+                            textOverlays: preset.textOverlays.map((t) => ({
+                              id: t.id,
+                              content: t.content,
+                              style: t.style,
+                              layout: {
+                                position: t.layout.position,
+                                size: t.layout.size,
+                                zIndex: t.layout.zIndex,
+                                rotation: t.layout.rotation,
+                                layerOrder: t.layout.layerOrder,
+                              },
+                            })),
+                            videoFilter: preset.effects.videoFilter || "none",
+                            isBeautifyEnabled:
+                              preset.effects.isBeautifyEnabled || false,
+                            isNeonEdgeEnabled:
+                              preset.effects.isNeonEdgeEnabled || false,
+                            neonColor: preset.effects.neonColor || "#00FFFF",
+                            neonIntensity: preset.effects.neonIntensity || 20,
+                          },
+                        });
+                      }}
+                    >
+                      {preset.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
       {/* Delete button */}
       <Button

@@ -13,12 +13,16 @@ import {
   DEFAULT_CAMERA_STATE,
 } from "@/types/caption";
 import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CANVAS_PRESETS } from "@/lib/canvasPresets";
 import { FileRenderer } from "@/components/DraggableFileViewer";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import { GridSectionToolbar } from "./GridSectionToolbar";
 import {
@@ -327,6 +331,222 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 
       case "camera":
         const settings = content.settings;
+        // Check if this is a "Canvas Design" section (PiP mode)
+        if (settings.layoutMode === "pip") {
+          return (
+            <div
+              className="relative w-full h-full overflow-hidden"
+              style={{
+                backgroundColor: settings.sectionBackgroundColor || "#000000",
+                backgroundImage: settings.sectionBackgroundImage
+                  ? `url(${settings.sectionBackgroundImage})`
+                  : undefined,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              {/* 1. Render Camera as PiP */}
+              <div
+                className="absolute z-10"
+                style={{
+                  left: `${settings.pipPosition?.x || 0}%`,
+                  top: `${settings.pipPosition?.y || 0}%`,
+                  width: `${settings.pipSize?.width || 100}%`,
+                  height: `${settings.pipSize?.height || 100}%`,
+                }}
+              >
+                <CameraRenderer
+                  stream={cameraStream}
+                  className="w-full h-full object-cover"
+                  style={{
+                    borderRadius:
+                      cameraShape === "circle"
+                        ? "50%"
+                        : cameraShape === "rounded"
+                          ? "12px"
+                          : "0",
+                  }}
+                  portalContainer={null}
+                  videoDevices={videoDevices}
+                  selectedDeviceId={settings.selectedDeviceId}
+                  onCameraDeviceChange={(deviceId) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      selectedDeviceId: deviceId,
+                    })
+                  }
+                  pipBorder={settings.pipBorder}
+                  onPipBorderChange={(border) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      pipBorder: border,
+                    })
+                  }
+                  pipShadow={settings.pipShadow}
+                  onPipShadowChange={(shadow) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      pipShadow: shadow,
+                    })
+                  }
+                  isAutoFramingEnabled={settings.isAutoFramingEnabled}
+                  onAutoFramingChange={(enabled) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      isAutoFramingEnabled: enabled,
+                    })
+                  }
+                  isBeautifyEnabled={settings.isBeautifyEnabled}
+                  onBeautifyToggle={(enabled) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      isBeautifyEnabled: enabled,
+                    })
+                  }
+                  isLowLightEnabled={settings.isLowLightEnabled}
+                  onLowLightToggle={(enabled) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      isLowLightEnabled: enabled,
+                    })
+                  }
+                  videoFilter={settings.videoFilter}
+                  onVideoFilterChange={(filter) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      videoFilter: filter,
+                    })
+                  }
+                  isNeonEdgeEnabled={settings.isNeonEdgeEnabled}
+                  onNeonEdgeToggle={(enabled) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      isNeonEdgeEnabled: enabled,
+                    })
+                  }
+                  neonIntensity={settings.neonIntensity}
+                  onNeonIntensityChange={(value) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      neonIntensity: value,
+                    })
+                  }
+                  neonColor={settings.neonColor}
+                  onNeonEdgeColorChange={(color) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      neonColor: color,
+                    })
+                  }
+                  zoomSensitivity={settings.zoomSensitivity}
+                  onZoomSensitivityChange={(value) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      zoomSensitivity: value,
+                    })
+                  }
+                  trackingSpeed={settings.trackingSpeed}
+                  onTrackingSpeedChange={(value) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      trackingSpeed: value,
+                    })
+                  }
+                  cameraBackground={settings.cameraBackground}
+                  onCameraBackgroundChange={(bgId) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      cameraBackground: bgId,
+                    })
+                  }
+                  onCustomBackgroundUpload={(file) => {
+                    const url = URL.createObjectURL(file);
+                    onSectionCameraSettingsChange(section.id, {
+                      cameraBackground: "image",
+                      customBackgroundUrl: url,
+                    });
+                  }}
+                  cameraAspectRatio={settings.cameraAspectRatio}
+                  onCameraAspectRatioChange={(ratio) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      cameraAspectRatio: ratio,
+                    })
+                  }
+                  customAspectRatio={settings.customAspectRatio}
+                  onCustomAspectRatioChange={(ratio) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      customAspectRatio: ratio,
+                    })
+                  }
+                  isFaceTrackingEnabled={settings.isFaceTrackingEnabled}
+                  onFaceTrackingToggle={(enabled) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      isFaceTrackingEnabled: enabled,
+                    })
+                  }
+                  activeInteractiveFilter={settings.activeInteractiveFilter}
+                  onInteractiveFilterChange={(filter) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      activeInteractiveFilter: filter,
+                    })
+                  }
+                  filterIntensity={settings.filterIntensity}
+                  onFilterIntensityChange={(value) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      filterIntensity: value,
+                    })
+                  }
+                  filterColor={settings.filterColor}
+                  onFilterColorChange={(color) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      filterColor: color,
+                    })
+                  }
+                  filterTarget={settings.filterTarget}
+                  onFilterTargetChange={(target) =>
+                    onSectionCameraSettingsChange(section.id, {
+                      filterTarget: target,
+                    })
+                  }
+                  backgroundEffect={backgroundEffect}
+                  backgroundImageUrl={backgroundImageUrl}
+                  onUserPositionChange={
+                    section.id === activeSequenceId
+                      ? onUserPositionChange
+                      : undefined
+                  }
+                />
+              </div>
+
+              {/* 2. Render Text Overlays */}
+              {settings.textOverlays?.map((textOverlay) => (
+                <div
+                  key={textOverlay.id}
+                  className="absolute flex items-center justify-center pointer-events-none"
+                  style={{
+                    left: `${textOverlay.layout.position.x}%`,
+                    top: `${textOverlay.layout.position.y}%`,
+                    width: `${textOverlay.layout.size.width}%`,
+                    height: `${textOverlay.layout.size.height}%`,
+                    zIndex: textOverlay.layout.zIndex || 20,
+                    transform: `rotate(${textOverlay.layout.rotation}deg)`,
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: textOverlay.style.fontFamily,
+                      fontSize: `${textOverlay.style.fontSize}px`, // Note: This might need scaling logic
+                      color: textOverlay.style.color,
+                      backgroundColor: textOverlay.style.backgroundColor,
+                      fontWeight: textOverlay.style.bold ? "bold" : "normal",
+                      fontStyle: textOverlay.style.italic
+                        ? "italic"
+                        : "normal",
+                      textDecoration: textOverlay.style.underline
+                        ? "underline"
+                        : "none",
+                      textAlign: (textOverlay.style as any).textAlign,
+                      textShadow: textOverlay.style.textShadow,
+                      whiteSpace: "pre-wrap",
+                      width: "100%",
+                    }}
+                  >
+                    {textOverlay.content}
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        }
+
+        // Default: Full Camera
         return (
           <CameraRenderer
             stream={cameraStream}
@@ -476,7 +696,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             // --- NEW: Only pass tracking callback if this is the active screen in the sequence ---
             // If no sequence is active, we don't track position to save performance
             onUserPositionChange={
-              section.id === activeSequenceId ? onUserPositionChange : undefined
+              section.id === activeSequenceId
+                ? onUserPositionChange
+                : undefined
             }
           />
         );
@@ -597,6 +819,58 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   >
                     Camera
                   </DropdownMenuItem>
+
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      Canvas Designs
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent className="max-h-[300px] overflow-y-auto">
+                      {CANVAS_PRESETS.map((preset) => (
+                        <DropdownMenuItem
+                          key={preset.id}
+                          onClick={() =>
+                            onSectionContentChange(section.id, {
+                              type: "camera",
+                              settings: {
+                                ...DEFAULT_CAMERA_STATE,
+                                canvasDesignId: preset.id,
+                                layoutMode: "pip",
+                                pipPosition: preset.pip.pipPosition,
+                                pipSize: preset.pip.pipSize,
+                                sectionBackgroundColor:
+                                  preset.background.blankCanvasColor,
+                                textOverlays: preset.textOverlays.map((t) => ({
+                                  id: t.id,
+                                  content: t.content,
+                                  style: t.style,
+                                  layout: {
+                                    position: t.layout.position,
+                                    size: t.layout.size,
+                                    zIndex: t.layout.zIndex,
+                                    rotation: t.layout.rotation,
+                                    layerOrder: t.layout.layerOrder,
+                                  },
+                                })),
+                                videoFilter:
+                                  preset.effects.videoFilter || "none",
+                                isBeautifyEnabled:
+                                  preset.effects.isBeautifyEnabled || false,
+                                isNeonEdgeEnabled:
+                                  preset.effects.isNeonEdgeEnabled || false,
+                                neonColor:
+                                  preset.effects.neonColor || "#00FFFF",
+                                neonIntensity:
+                                  preset.effects.neonIntensity || 20,
+                              },
+                            })
+                          }
+                        >
+                          {preset.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+
                   <DropdownMenuItem
                     onClick={() =>
                       onSectionContentChange(section.id, { type: "screen" })
@@ -788,6 +1062,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     }
                   }}
                   onSetDefault={() => onSetSectionDefault?.(section.id)}
+                  onSectionContentChange={onSectionContentChange}
                 />
               )}
             </div>

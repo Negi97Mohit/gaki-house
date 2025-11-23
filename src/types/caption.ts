@@ -354,6 +354,14 @@ export interface CanvasSectionCameraState {
   filterIntensity?: number;
   filterColor?: string;
   filterTarget?: "both" | "background" | "person";
+  // --- NEW: Canvas Design Support ---
+  canvasDesignId?: string;
+  layoutMode?: "solo" | "pip";
+  pipPosition?: { x: number; y: number };
+  pipSize?: { width: number; height: number };
+  sectionBackgroundColor?: string;
+  sectionBackgroundImage?: string;
+  textOverlays?: TextOverlayState[];
 }
 
 // --- CANVAS LAYOUT TYPES ---
