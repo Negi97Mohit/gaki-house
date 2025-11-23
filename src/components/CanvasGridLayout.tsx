@@ -94,10 +94,17 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   videoDevices = [],
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
-  const [resizing, setResizing] = useState<{ sectionId: string; edge: string } | null>(null);
+  const [resizing, setResizing] = useState<{
+    sectionId: string;
+    edge: string;
+  } | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const resizeDataRef = useRef<{ startX: number; startY: number; startStyles: Record<string, React.CSSProperties> } | null>(null);
+  const resizeDataRef = useRef<{
+    startX: number;
+    startY: number;
+    startStyles: Record<string, React.CSSProperties>;
+  } | null>(null);
 
   const [templates, setTemplates] = useState<Record<
     string,
@@ -117,14 +124,21 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   // Detect layout changes for carousel animation - ONLY on rotation
   const prevLayoutRef = useRef(layout);
   useEffect(() => {
-    const isCarousel = layout.templateId?.includes('carousel');
-    if (isCarousel && prevLayoutRef.current && prevLayoutRef.current.templateId === layout.templateId) {
+    const isCarousel = layout.templateId?.includes("carousel");
+    if (
+      isCarousel &&
+      prevLayoutRef.current &&
+      prevLayoutRef.current.templateId === layout.templateId
+    ) {
       // Check if ALL sections changed content simultaneously (rotation)
       // This means the number of changed sections equals total sections
       let changedCount = 0;
       layout.sections.forEach((sec, idx) => {
         const prevSec = prevLayoutRef.current.sections[idx];
-        if (prevSec && JSON.stringify(sec.content) !== JSON.stringify(prevSec.content)) {
+        if (
+          prevSec &&
+          JSON.stringify(sec.content) !== JSON.stringify(prevSec.content)
+        ) {
           changedCount++;
         }
       });
@@ -143,46 +157,55 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
     templates && (templates[layout.templateId] || templates.default);
 
   // Get resize edges
-  const getResizeEdges = useCallback((sectionId: string) => {
-    if (!template) return { right: false, bottom: false, left: false, top: false };
+  const getResizeEdges = useCallback(
+    (sectionId: string) => {
+      if (!template)
+        return { right: false, bottom: false, left: false, top: false };
 
-    const sections = template.sections.map(s => ({
-      ...s,
-      style: layout.customSectionStyles?.[s.id] || s.style
-    }));
+      const sections = template.sections.map((s) => ({
+        ...s,
+        style: layout.customSectionStyles?.[s.id] || s.style,
+      }));
 
-    const section = sections.find(s => s.id === sectionId);
-    if (!section) return { right: false, bottom: false, left: false, top: false };
+      const section = sections.find((s) => s.id === sectionId);
+      if (!section)
+        return { right: false, bottom: false, left: false, top: false };
 
-    const left = parseFloat(section.style.left as string);
-    const top = parseFloat(section.style.top as string);
-    const width = parseFloat(section.style.width as string);
-    const height = parseFloat(section.style.height as string);
+      const left = parseFloat(section.style.left as string);
+      const top = parseFloat(section.style.top as string);
+      const width = parseFloat(section.style.width as string);
+      const height = parseFloat(section.style.height as string);
 
-    return {
-      right: left + width < 99.5,
-      bottom: top + height < 99.5,
-      left: left > 0.5,
-      top: top > 0.5,
-    };
-  }, [template, layout.customSectionStyles]);
+      return {
+        right: left + width < 99.5,
+        bottom: top + height < 99.5,
+        left: left > 0.5,
+        top: top > 0.5,
+      };
+    },
+    [template, layout.customSectionStyles]
+  );
 
   // Handle resize start
-  const handleResizeStart = (sectionId: string, edge: string, e: React.MouseEvent) => {
+  const handleResizeStart = (
+    sectionId: string,
+    edge: string,
+    e: React.MouseEvent
+  ) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!template) return;
 
     const startStyles: Record<string, React.CSSProperties> = {};
-    template.sections.forEach(s => {
+    template.sections.forEach((s) => {
       startStyles[s.id] = layout.customSectionStyles?.[s.id] || s.style;
     });
 
     resizeDataRef.current = {
       startX: e.clientX,
       startY: e.clientY,
-      startStyles
+      startStyles,
     };
 
     setResizing({ sectionId, edge });
@@ -190,7 +213,14 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 
   // Handle resize move
   useEffect(() => {
-    if (!resizing || !containerRef.current || !resizeDataRef.current || !onLayoutUpdate || !template) return;
+    if (
+      !resizing ||
+      !containerRef.current ||
+      !resizeDataRef.current ||
+      !onLayoutUpdate ||
+      !template
+    )
+      return;
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current || !resizeDataRef.current) return;
@@ -211,12 +241,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       const width = parseFloat(style.width as string);
       const height = parseFloat(style.height as string);
 
-      if (edge === 'right') {
+      if (edge === "right") {
         const newWidth = Math.max(10, Math.min(100 - left, width + deltaX));
         newStyles[sectionId] = { ...style, width: `${newWidth}%` };
 
         // Adjust right neighbor
-        template.sections.forEach(s => {
+        template.sections.forEach((s) => {
           if (s.id === sectionId) return;
           const sStyle = startStyles[s.id];
           const sLeft = parseFloat(sStyle.left as string);
@@ -224,15 +254,19 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 
           if (Math.abs(sLeft - (left + width)) < 2) {
             const newSWidth = Math.max(10, sWidth - deltaX);
-            newStyles[s.id] = { ...sStyle, left: `${left + newWidth}%`, width: `${newSWidth}%` };
+            newStyles[s.id] = {
+              ...sStyle,
+              left: `${left + newWidth}%`,
+              width: `${newSWidth}%`,
+            };
           }
         });
-      } else if (edge === 'bottom') {
+      } else if (edge === "bottom") {
         const newHeight = Math.max(10, Math.min(100 - top, height + deltaY));
         newStyles[sectionId] = { ...style, height: `${newHeight}%` };
 
         // Adjust bottom neighbor
-        template.sections.forEach(s => {
+        template.sections.forEach((s) => {
           if (s.id === sectionId) return;
           const sStyle = startStyles[s.id];
           const sTop = parseFloat(sStyle.top as string);
@@ -240,39 +274,51 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 
           if (Math.abs(sTop - (top + height)) < 2) {
             const newSHeight = Math.max(10, sHeight - deltaY);
-            newStyles[s.id] = { ...sStyle, top: `${top + newHeight}%`, height: `${newSHeight}%` };
+            newStyles[s.id] = {
+              ...sStyle,
+              top: `${top + newHeight}%`,
+              height: `${newSHeight}%`,
+            };
           }
         });
-      } else if (edge === 'left') {
+      } else if (edge === "left") {
         const newLeft = Math.max(0, Math.min(left + width - 10, left + deltaX));
         const newWidth = Math.max(10, width - (newLeft - left));
-        newStyles[sectionId] = { ...style, left: `${newLeft}%`, width: `${newWidth}%` };
+        newStyles[sectionId] = {
+          ...style,
+          left: `${newLeft}%`,
+          width: `${newWidth}%`,
+        };
 
         // Adjust left neighbor
-        template.sections.forEach(s => {
+        template.sections.forEach((s) => {
           if (s.id === sectionId) return;
           const sStyle = startStyles[s.id];
           const sLeft = parseFloat(sStyle.left as string);
           const sWidth = parseFloat(sStyle.width as string);
 
-          if (Math.abs((sLeft + sWidth) - left) < 2) {
+          if (Math.abs(sLeft + sWidth - left) < 2) {
             const newSWidth = Math.max(10, sWidth + (newLeft - left));
             newStyles[s.id] = { ...sStyle, width: `${newSWidth}%` };
           }
         });
-      } else if (edge === 'top') {
+      } else if (edge === "top") {
         const newTop = Math.max(0, Math.min(top + height - 10, top + deltaY));
         const newHeight = Math.max(10, height - (newTop - top));
-        newStyles[sectionId] = { ...style, top: `${newTop}%`, height: `${newHeight}%` };
+        newStyles[sectionId] = {
+          ...style,
+          top: `${newTop}%`,
+          height: `${newHeight}%`,
+        };
 
         // Adjust top neighbor
-        template.sections.forEach(s => {
+        template.sections.forEach((s) => {
           if (s.id === sectionId) return;
           const sStyle = startStyles[s.id];
           const sTop = parseFloat(sStyle.top as string);
           const sHeight = parseFloat(sStyle.height as string);
 
-          if (Math.abs((sTop + sHeight) - top) < 2) {
+          if (Math.abs(sTop + sHeight - top) < 2) {
             const newSHeight = Math.max(10, sHeight + (newTop - top));
             newStyles[s.id] = { ...sStyle, height: `${newSHeight}%` };
           }
@@ -281,7 +327,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 
       onLayoutUpdate({
         ...layout,
-        customSectionStyles: newStyles
+        customSectionStyles: newStyles,
       });
     };
 
@@ -290,12 +336,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       resizeDataRef.current = null;
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [resizing, layout, onLayoutUpdate, template]);
 
@@ -345,7 +391,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               cameraStream={cameraStream}
               videoDevices={videoDevices}
               isActive={true} // Or manage active state if needed
-              onSelect={() => { }} // Can be used for global selection
+              onSelect={() => {}} // Can be used for global selection
             />
           );
         }
@@ -360,8 +406,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 cameraShape === "circle"
                   ? "50%"
                   : cameraShape === "rounded"
-                    ? "12px"
-                    : "0",
+                  ? "12px"
+                  : "0",
             }}
             portalContainer={null}
             // --- NEW: Device Selection ---
@@ -500,9 +546,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             // --- NEW: Only pass tracking callback if this is the active screen in the sequence ---
             // If no sequence is active, we don't track position to save performance
             onUserPositionChange={
-              section.id === activeSequenceId
-                ? onUserPositionChange
-                : undefined
+              section.id === activeSequenceId ? onUserPositionChange : undefined
             }
           />
         );
@@ -635,7 +679,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                         {CANVAS_PRESETS.map((preset) => (
                           <button
                             key={preset.id}
-                            className="flex flex-col gap-2 p-2 rounded-lg border border-border hover:border-primary hover:bg-accent transition-colors text-left group"
+                            className="flex flex-col gap-2 p-2 rounded-lg border border-border hover:border-primary hover:bg-accent transition-colors text-left group h-full"
                             onClick={() =>
                               onSectionContentChange(section.id, {
                                 type: "camera",
@@ -644,58 +688,116 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                                   canvasDesignId: preset.id,
                                   layoutMode: "pip",
                                   sectionBackgroundColor:
-                                    preset.sectionBackgroundColor,
-                                  sectionBackgroundImage:
-                                    preset.sectionBackgroundImage,
-                                  pipPosition: preset.pipPosition,
-                                  pipSize: preset.pipSize,
-                                  textOverlays: preset.textOverlays?.map((t) => ({
-                                    ...t,
-                                    id: uuidv4(),
-                                  })),
-                                  pipBorder: preset.pipBorder,
-                                  pipShadow: preset.pipShadow,
-                                  videoFilter: preset.videoFilter,
-                                  isNeonEdgeEnabled: preset.isNeonEdgeEnabled,
-                                  neonColor: preset.neonColor,
-                                  neonIntensity: preset.neonIntensity,
+                                    preset.background.blankCanvasColor,
+                                  pipPosition: preset.pip.pipPosition,
+                                  pipSize: preset.pip.pipSize,
+                                  textOverlays: preset.textOverlays.map(
+                                    (t) => ({
+                                      id: t.id,
+                                      content: t.content,
+                                      style: t.style,
+                                      layout: {
+                                        position: t.layout.position,
+                                        size: t.layout.size,
+                                        zIndex: t.layout.zIndex,
+                                        rotation: t.layout.rotation,
+                                        layerOrder: t.layout.layerOrder,
+                                      },
+                                    })
+                                  ),
+                                  pipBorder: preset.pip.pipBorder,
+                                  pipShadow: preset.pip.pipShadow,
+                                  videoFilter:
+                                    preset.effects.videoFilter || "none",
+                                  isBeautifyEnabled:
+                                    preset.effects.isBeautifyEnabled || false,
+                                  isNeonEdgeEnabled:
+                                    preset.effects.isNeonEdgeEnabled || false,
+                                  neonColor:
+                                    preset.effects.neonColor || "#00FFFF",
+                                  neonIntensity:
+                                    preset.effects.neonIntensity || 20,
                                 },
                               })
                             }
                           >
-                            <div
-                              className="w-full aspect-video rounded-md bg-muted relative overflow-hidden border border-border/50"
-                              style={{
-                                backgroundColor:
-                                  preset.sectionBackgroundColor || "#000000",
-                                backgroundImage: preset.sectionBackgroundImage
-                                  ? `url(${preset.sectionBackgroundImage})`
-                                  : undefined,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                              }}
-                            >
+                            <div className="w-full aspect-video rounded-md bg-muted/20 flex items-center justify-center overflow-hidden border border-border/50 relative">
                               <div
-                                className="absolute bg-primary/20 border border-primary/50 rounded-sm"
+                                className="relative overflow-hidden shadow-sm"
                                 style={{
-                                  left: `${preset.pip?.pipPosition?.x || 0}%`,
-                                  top: `${preset.pip?.pipPosition?.y || 0}%`,
-                                  width: `${preset.pip?.pipSize?.width || 30}%`,
-                                  height: `${preset.pip?.pipSize?.height || 30}%`,
+                                  aspectRatio: preset.canvasAspectRatio
+                                    ? preset.canvasAspectRatio.replace(":", "/")
+                                    : "16/9",
+                                  height:
+                                    preset.canvasAspectRatio === "21:9"
+                                      ? "auto"
+                                      : "100%",
+                                  width:
+                                    preset.canvasAspectRatio === "21:9"
+                                      ? "100%"
+                                      : "auto",
+                                  background:
+                                    preset.background.blankCanvasColor ||
+                                    "#000000",
+                                  backgroundSize: "cover",
+                                  backgroundPosition: "center",
                                 }}
-                              />
-                              {preset.textOverlays?.map((t, i) => (
+                              >
                                 <div
-                                  key={i}
-                                  className="absolute bg-white/20 rounded-sm"
+                                  className="absolute bg-primary/20 border border-primary/50"
                                   style={{
-                                    left: `${t.layout.position.x}%`,
-                                    top: `${t.layout.position.y}%`,
-                                    width: `${t.layout.size.width}%`,
-                                    height: `${t.layout.size.height}%`,
+                                    left: `${preset.pip?.pipPosition?.x || 0}%`,
+                                    top: `${preset.pip?.pipPosition?.y || 0}%`,
+                                    width: `${
+                                      preset.pip?.pipSize?.width || 30
+                                    }%`,
+                                    height: `${
+                                      preset.pip?.pipSize?.height || 30
+                                    }%`,
+                                    borderRadius:
+                                      preset.pip.cameraShape === "circle"
+                                        ? "50%"
+                                        : preset.pip.cameraShape === "rounded"
+                                        ? "4px"
+                                        : "0px",
+                                    border: preset.pip.pipBorder
+                                      ? `${Math.max(
+                                          1,
+                                          preset.pip.pipBorder.width / 6
+                                        )}px solid ${
+                                          preset.pip.pipBorder.color
+                                        }`
+                                      : undefined,
                                   }}
                                 />
-                              ))}
+                                {preset.textOverlays?.map((t, i) => (
+                                  <div
+                                    key={i}
+                                    className="absolute flex items-center justify-center overflow-hidden"
+                                    style={{
+                                      left: `${t.layout.position.x}%`,
+                                      top: `${t.layout.position.y}%`,
+                                      width: `${t.layout.size.width}%`,
+                                      height: `${t.layout.size.height}%`,
+                                      transform: `rotate(${t.layout.rotation}deg)`,
+                                      fontFamily: t.style.fontFamily,
+                                      fontSize: `${Math.max(
+                                        3,
+                                        t.style.fontSize / 8
+                                      )}px`,
+                                      color: t.style.color,
+                                      backgroundColor: t.style.backgroundColor,
+                                      textAlign: t.style.textAlign as any,
+                                      fontWeight: t.style.fontWeight,
+                                      whiteSpace: "nowrap",
+                                      lineHeight: 1,
+                                      zIndex: 10,
+                                    }}
+                                  >
+                                    {t.content.replace(/<[^>]+>/g, "")}
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                             <span className="text-xs font-medium truncate w-full">
                               {preset.name}
@@ -763,7 +865,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             content: { type: "empty" },
           } as CanvasSectionState);
 
-        const sectionStyle = layout.customSectionStyles?.[templateSection.id] || templateSection.style;
+        const sectionStyle =
+          layout.customSectionStyles?.[templateSection.id] ||
+          templateSection.style;
         const edges = getResizeEdges(templateSection.id);
 
         // Determine current order index
@@ -773,7 +877,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             ? orderIndex + 1
             : undefined;
 
-        const isCarousel = layout.templateId?.includes('carousel');
+        const isCarousel = layout.templateId?.includes("carousel");
 
         return (
           <div
@@ -788,7 +892,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               isCarousel && !isTransitioning && "opacity-100 scale-100",
               // Ensure this line is active
               section.id === activeSequenceId &&
-              "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
+                "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
             )}
             style={{
               ...sectionStyle,
@@ -806,9 +910,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   className={cn(
                     "absolute top-0 right-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
-                    resizing?.sectionId === templateSection.id && "bg-primary/60 w-2"
+                    resizing?.sectionId === templateSection.id &&
+                      "bg-primary/60 w-2"
                   )}
-                  onMouseDown={(e) => handleResizeStart(templateSection.id, 'right', e)}
+                  onMouseDown={(e) =>
+                    handleResizeStart(templateSection.id, "right", e)
+                  }
                 />
               )}
               {edges.bottom && (
@@ -816,9 +923,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   className={cn(
                     "absolute bottom-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
-                    resizing?.sectionId === templateSection.id && "bg-primary/60 h-2"
+                    resizing?.sectionId === templateSection.id &&
+                      "bg-primary/60 h-2"
                   )}
-                  onMouseDown={(e) => handleResizeStart(templateSection.id, 'bottom', e)}
+                  onMouseDown={(e) =>
+                    handleResizeStart(templateSection.id, "bottom", e)
+                  }
                 />
               )}
               {edges.left && (
@@ -826,9 +936,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   className={cn(
                     "absolute top-0 left-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
-                    resizing?.sectionId === templateSection.id && "bg-primary/60 w-2"
+                    resizing?.sectionId === templateSection.id &&
+                      "bg-primary/60 w-2"
                   )}
-                  onMouseDown={(e) => handleResizeStart(templateSection.id, 'left', e)}
+                  onMouseDown={(e) =>
+                    handleResizeStart(templateSection.id, "left", e)
+                  }
                 />
               )}
               {edges.top && (
@@ -836,9 +949,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   className={cn(
                     "absolute top-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
-                    resizing?.sectionId === templateSection.id && "bg-primary/60 h-2"
+                    resizing?.sectionId === templateSection.id &&
+                      "bg-primary/60 h-2"
                   )}
-                  onMouseDown={(e) => handleResizeStart(templateSection.id, 'top', e)}
+                  onMouseDown={(e) =>
+                    handleResizeStart(templateSection.id, "top", e)
+                  }
                 />
               )}
 
@@ -852,19 +968,19 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   onColorChange={
                     section.content.type === "color"
                       ? (color) =>
-                        onSectionContentChange(section.id, {
-                          type: "color",
-                          color,
-                        })
+                          onSectionContentChange(section.id, {
+                            type: "color",
+                            color,
+                          })
                       : undefined
                   }
                   onImageChange={
                     section.content.type === "image"
                       ? (url) =>
-                        onSectionContentChange(section.id, {
-                          type: "image",
-                          src: url,
-                        })
+                          onSectionContentChange(section.id, {
+                            type: "image",
+                            src: url,
+                          })
                       : undefined
                   }
                   availableFiles={fileOverlays.map((f) => ({
