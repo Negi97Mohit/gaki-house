@@ -38,6 +38,7 @@ export interface CaptionStyle {
   letterSpacing?: string;
   padding?: string;
   layers?: TextDesignLayer[] | null;
+  textAlign?: "left" | "center" | "right" | "justify";
 }
 
 export type GeneratedLayout = {
@@ -354,6 +355,7 @@ export interface CanvasSectionCameraState {
   filterIntensity?: number;
   filterColor?: string;
   filterTarget?: "both" | "background" | "person";
+  selectedDeviceId?: string;
   // --- NEW: Canvas Design Support ---
   canvasDesignId?: string;
   layoutMode?: "solo" | "pip";
