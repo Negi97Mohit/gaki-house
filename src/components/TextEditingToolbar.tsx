@@ -94,7 +94,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   // --- MODIFIED: All handlers now use document.execCommand ---
 
   const handleFontSizeChange = (delta: number) => {
-    const newSize = Math.max(12, Math.min(300, overlay.style.fontSize + delta));
+    const currentSize = overlay.style.fontSize || 16;
+    const newSize = Math.max(12, Math.min(300, currentSize + delta));
     onStyleChange(overlay.id, { fontSize: newSize });
     // Note: execCommand for font size is unreliable (uses 1-7). We'll keep using style prop.
   };
@@ -118,8 +119,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       alignment === "left"
         ? "justifyLeft"
         : alignment === "center"
-          ? "justifyCenter"
-          : "justifyRight";
+        ? "justifyCenter"
+        : "justifyRight";
     document.execCommand(command);
     onStyleChange(overlay.id, { textAlign: alignment } as any);
   };
@@ -268,7 +269,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                     className="h-8 px-3 text-xs font-medium"
                   >
                     <Type className="w-3 h-3 mr-1" />
-                    {overlay.style.fontFamily.split(",")[0]}
+                    {(overlay.style.fontFamily || "Inter").split(",")[0]}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -280,7 +281,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                       key={font}
                       onClick={() => handleFontFamilyChange(font)}
                       className={cn(
-                        overlay.style.fontFamily === font && "bg-accent"
+                        (overlay.style.fontFamily || "Inter") === font &&
+                          "bg-accent"
                       )}
                       style={{ fontFamily: font }}
                     >
@@ -303,7 +305,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                   <Minus className="w-3 h-3" />
                 </Button>
                 <span className="text-xs font-medium w-10 text-center">
-                  {overlay.style.fontSize}
+                  {overlay.style.fontSize || 16}
                 </span>
                 <Button
                   variant="ghost"
@@ -314,7 +316,6 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                   <Plus className="w-3 h-3" />
                 </Button>
               </div>
-
               <div className="w-px h-6 bg-border" />
 
               {/* Text Color */}
