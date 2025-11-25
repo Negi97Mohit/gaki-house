@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { FileOverlayState, FileType } from "@/types/caption";
 import { X, File as FileIcon, Loader2, RotateCcw } from "lucide-react";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
+import { useSnapGuides, OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
 interface DraggableFileViewerProps {
   overlay: FileOverlayState;
@@ -24,6 +25,8 @@ interface DraggableFileViewerProps {
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
   viewport: { scale: number; x: number; y: number };
+  allOverlays?: OverlayElement[];
+  onSnapGuidesChange?: (guides: GuideLine[]) => void;
 }
 
 // FileRenderer Component (remains the same)
@@ -170,8 +173,17 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   onInternalDragStart,
   onInternalDragStop,
   viewport,
+  allOverlays,
+  onSnapGuidesChange,
 }) => {
-  const rndRef = useRef<Rnd | null>(null); // ADDED: Ref for Rnd
+  const rndRef = useRef<Rnd | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const { calculateSnap } = useSnapGuides({
+    containerSize: sceneSize,
+    allElements: allOverlays?.filter(o => o.id !== overlay.id) || [],
+    currentElementId: overlay.id,
+  });
   const widthPx =
     sceneSize.width > 0
       ? (sceneSize.width * overlay.layout.size.width) / 100
@@ -195,39 +207,24 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   const handleDragStop = useCallback(
     (e: any, d: { x: number; y: number }) => {
       onInternalDragStop();
+      setIsDragging(false);
+      onSnapGuidesChange?.([]); // Clear guides
       if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
 
-      // --- REFACTOR: Use new top-left helper ---
-      const newPositionPercent = calculatePercentagePosition(
-        d.x,
-        d.y,
-        sceneSize
-      );
-      // --- END REFACTOR ---
+      const newPositionPercent = calculatePercentagePosition(d.x, d.y, sceneSize);
 
       if (newPositionPercent) {
-        // Boundary Enforcement
-        newPositionPercent.x = Math.max(
-          0,
-          Math.min(newPositionPercent.x, 100 - overlay.layout.size.width)
-        );
-        newPositionPercent.y = Math.max(
-          0,
-          Math.min(newPositionPercent.y, 100 - overlay.layout.size.height)
-        );
+        // Apply snapping
+        const { snappedPosition } = calculateSnap(newPositionPercent, overlay.layout.size);
 
-        onLayoutChange(overlay.id, {
-          position: newPositionPercent,
-        });
+        // Boundary Enforcement
+        snappedPosition.x = Math.max(0, Math.min(snappedPosition.x, 100 - overlay.layout.size.width));
+        snappedPosition.y = Math.max(0, Math.min(snappedPosition.y, 100 - overlay.layout.size.height));
+
+        onLayoutChange(overlay.id, { position: snappedPosition });
       }
     },
-    [
-      onInternalDragStop,
-      sceneSize,
-      onLayoutChange,
-      overlay.id,
-      overlay.layout.size,
-    ]
+    [onInternalDragStop, onSnapGuidesChange, calculateSnap, sceneSize, onLayoutChange, overlay.id, overlay.layout.size]
   );
 
   const handleResizeStop = useCallback(
@@ -329,6 +326,14 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       onDragStart={() => {
         onInternalDragStart();
         onSelect(overlay.id);
+        setIsDragging(true);
+      }}
+      onDrag={(e, d) => {
+        if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
+        const percentPos = calculatePercentagePosition(d.x, d.y, sceneSize);
+        if (!percentPos) return;
+        const { guides } = calculateSnap(percentPos, overlay.layout.size);
+        onSnapGuidesChange?.(guides);
       }}
       onDragStop={handleDragStop}
       onResizeStop={handleResizeStop}

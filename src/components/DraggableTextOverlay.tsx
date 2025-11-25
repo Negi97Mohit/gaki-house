@@ -6,6 +6,7 @@ import { TextOverlayState } from "@/types/caption";
 import { X, RotateCcw, GripVertical } from "lucide-react";
 import { TextEditingToolbar } from "./TextEditingToolbar";
 import { MultiLayerTextRenderer } from "./MultiLayerTextRenderer";
+import { useSnapGuides, OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
 // Helper: Convert top-left pixel to top-left percentage
 const calculatePercentagePosition = (
@@ -45,6 +46,8 @@ interface DraggableTextOverlayProps {
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
   isSpacePressed: boolean;
+  allOverlays?: OverlayElement[]; // NEW: For snapping
+  onSnapGuidesChange?: (guides: GuideLine[]) => void; // NEW: Update active guides
 }
 
 export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
@@ -60,12 +63,22 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   onInternalDragStart,
   onInternalDragStop,
   isSpacePressed,
+  allOverlays = [],
+  onSnapGuidesChange,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);
+
+  // Initialize snap guides hook
+  const { calculateSnap } = useSnapGuides({
+    containerSize: sceneSize,
+    allElements: allOverlays,
+    currentElementId: overlay.id,
+    snapThreshold: 3, // 3% threshold (~15-30px) - more forgiving
+  });
 
   const widthPx =
     sceneSize.width > 0
@@ -85,10 +98,44 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       ? (sceneSize.height * overlay.layout.position.y) / 100
       : 0;
 
+  const handleDrag = useCallback(
+    (e: any, d: { x: number; y: number }) => {
+      // Calculate snapping during drag for visual feedback
+      if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
+
+      const currentWidthPercent = overlay.layout.size.width;
+      const currentHeightPercent = overlay.layout.size.height;
+
+      // Convert pixel position to percentage
+      const positionPercent = {
+        x: (d.x / sceneSize.width) * 100,
+        y: (d.y / sceneSize.height) * 100,
+      };
+
+      // Calculate snap
+      const snapResult = calculateSnap(positionPercent, {
+        width: currentWidthPercent,
+        height: currentHeightPercent,
+      });
+
+      // Update guide lines
+      if (onSnapGuidesChange) {
+        onSnapGuidesChange(snapResult.guides);
+      }
+    },
+    [sceneSize, overlay.layout.size, calculateSnap, onSnapGuidesChange]
+  );
+
   const handleDragStop = useCallback(
     (e: any, d: { x: number; y: number }) => {
       onInternalDragStop();
       setIsDragging(false);
+
+      // Clear guide lines when drag stops
+      if (onSnapGuidesChange) {
+        onSnapGuidesChange([]);
+      }
+
       if (sceneSize.width <= 0 || sceneSize.height <= 0 || !rndRef.current)
         return;
 
@@ -97,27 +144,35 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
       const currentWidthPx = currentElement.offsetWidth;
       const currentHeightPx = currentElement.offsetHeight;
 
+      // Convert pixel position to percentage
+      const positionPercent = {
+        x: (d.x / sceneSize.width) * 100,
+        y: (d.y / sceneSize.height) * 100,
+      };
+
+      const currentSizePercent = {
+        width: (currentWidthPx / sceneSize.width) * 100,
+        height: (currentHeightPx / sceneSize.height) * 100,
+      };
+
+      // Apply snapping
+      const snapResult = calculateSnap(positionPercent, currentSizePercent);
+
       // Clamp position to stay within bounds
       const clampedX = Math.max(
         0,
-        Math.min(d.x, sceneSize.width - currentWidthPx)
+        Math.min(snapResult.snappedPosition.x, 100 - currentSizePercent.width)
       );
       const clampedY = Math.max(
         0,
-        Math.min(d.y, sceneSize.height - currentHeightPx)
+        Math.min(snapResult.snappedPosition.y, 100 - currentSizePercent.height)
       );
 
-      const newPositionPercent = calculatePercentagePosition(
-        clampedX,
-        clampedY,
-        sceneSize
-      );
-
-      if (newPositionPercent) {
-        onLayoutChange(overlay.id, { position: newPositionPercent });
-      }
+      onLayoutChange(overlay.id, {
+        position: { x: clampedX, y: clampedY }
+      });
     },
-    [onInternalDragStop, sceneSize, onLayoutChange, overlay.id]
+    [onInternalDragStop, sceneSize, onLayoutChange, overlay.id, calculateSnap, onSnapGuidesChange]
   );
 
   const handleResizeStop = useCallback(
@@ -269,6 +324,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
           onSelect(overlay.id);
           setIsDragging(true);
         }}
+        onDrag={handleDrag}
         onDragStop={handleDragStop}
         onResizeStart={() => {
           setIsDragging(true);

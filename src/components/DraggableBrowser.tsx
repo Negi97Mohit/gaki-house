@@ -12,6 +12,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
+import { useSnapGuides, OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
 export interface BrowserOverlayState {
   id: string;
@@ -42,6 +43,8 @@ interface DraggableBrowserProps {
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
   viewport: { scale: number; x: number; y: number };
+  allOverlays?: OverlayElement[];
+  onSnapGuidesChange?: (guides: GuideLine[]) => void;
 }
 
 // --- REFACTOR: Helper now converts top-left pixel to top-left percentage ---
@@ -81,11 +84,20 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   onInternalDragStart,
   onInternalDragStop,
   viewport,
+  allOverlays,
+  onSnapGuidesChange,
 }) => {
   const [inputUrl, setInputUrl] = useState(overlay.url);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const rndRef = useRef<Rnd | null>(null); // ADDED: Ref for Rnd
+  const rndRef = useRef<Rnd | null>(null);
+
+  const { calculateSnap } = useSnapGuides({
+    containerSize: sceneSize,
+    allElements: allOverlays?.filter(o => o.id !== overlay.id) || [],
+    currentElementId: overlay.id,
+    snapThreshold: 3, // 3% threshold for easier snapping
+  });
 
   const handleSubmitUrl = (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,39 +140,23 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     (e: any, d: { x: number; y: number }) => {
       onInternalDragStop();
       setIsDragging(false);
+      onSnapGuidesChange?.([]); // Clear guides
       if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
 
-      // --- REFACTOR: Use new top-left helper ---
-      const newPositionPercent = calculatePercentagePosition(
-        d.x,
-        d.y,
-        sceneSize
-      );
-      // --- END REFACTOR ---
+      const newPositionPercent = calculatePercentagePosition(d.x, d.y, sceneSize);
 
       if (newPositionPercent) {
-        // Boundary Enforcement
-        newPositionPercent.x = Math.max(
-          0,
-          Math.min(newPositionPercent.x, 100 - overlay.layout.size.width)
-        );
-        newPositionPercent.y = Math.max(
-          0,
-          Math.min(newPositionPercent.y, 100 - overlay.layout.size.height)
-        );
+        // Apply snapping
+        const { snappedPosition } = calculateSnap(newPositionPercent, overlay.layout.size);
 
-        onLayoutChange(overlay.id, {
-          position: newPositionPercent,
-        });
+        // Boundary Enforcement
+        snappedPosition.x = Math.max(0, Math.min(snappedPosition.x, 100 - overlay.layout.size.width));
+        snappedPosition.y = Math.max(0, Math.min(snappedPosition.y, 100 - overlay.layout.size.height));
+
+        onLayoutChange(overlay.id, { position: snappedPosition });
       }
     },
-    [
-      onInternalDragStop,
-      sceneSize,
-      onLayoutChange,
-      overlay.id,
-      overlay.layout.size,
-    ]
+    [onInternalDragStop, onSnapGuidesChange, calculateSnap, sceneSize, onLayoutChange, overlay.id, overlay.layout.size]
   );
 
   const handleResizeStop = useCallback(
@@ -263,6 +259,13 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
           onSelect(overlay.id);
           setIsDragging(true);
         }
+      }}
+      onDrag={(e, d) => {
+        if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
+        const percentPos = calculatePercentagePosition(d.x, d.y, sceneSize);
+        if (!percentPos) return;
+        const { guides } = calculateSnap(percentPos, overlay.layout.size);
+        onSnapGuidesChange?.(guides);
       }}
       onDragStop={handleDragStop}
       minWidth={250}

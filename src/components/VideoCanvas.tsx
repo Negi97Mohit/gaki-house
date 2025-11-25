@@ -1,6 +1,6 @@
 // src/components/VideoCanvas.tsx
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import {
   Mic,
   MicOff,
@@ -69,7 +69,8 @@ import { TextEditingToolbar } from "@/components/TextEditingToolbar";
 import { ASPECT_RATIOS } from "@/lib/backgrounds";
 import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
 import { CanvasGridLayout } from "@/components/CanvasGridLayout";
-
+import { SnapGuideLine } from "@/components/SnapGuideLine";
+import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 // --- UPDATED COMPONENT ---
 export const HtmlOverlayRenderer: React.FC<{
   htmlContent: string;
@@ -135,170 +136,169 @@ export const DraggableOverlay: React.FC<{
   containerSize,
   portalContainer,
 }) => {
-  const { theme } = useTheme();
-  const elementRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (overlay.preview === "" && elementRef.current) {
-      const timer = setTimeout(async () => {
-        if (elementRef.current) {
-          const previewDataUrl = await generatePreview(elementRef.current);
-          if (previewDataUrl) {
-            onPreviewGenerated(overlay.id, previewDataUrl);
+    const { theme } = useTheme();
+    const elementRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+      if (overlay.preview === "" && elementRef.current) {
+        const timer = setTimeout(async () => {
+          if (elementRef.current) {
+            const previewDataUrl = await generatePreview(elementRef.current);
+            if (previewDataUrl) {
+              onPreviewGenerated(overlay.id, previewDataUrl);
+            }
           }
-        }
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [overlay.id, overlay.preview, onPreviewGenerated]);
+        }, 1000);
+        return () => clearTimeout(timer);
+      }
+    }, [overlay.id, overlay.preview, onPreviewGenerated]);
 
-  const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
+    const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    if (!elementRef.current) return;
-    const box = elementRef.current.getBoundingClientRect();
-    const centerX = box.left + box.width / 2;
-    const centerY = box.top + box.height / 2;
-    const startAngle =
-      Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-    const initialRotation = overlay.layout.rotation || 0;
+      if (!elementRef.current) return;
+      const box = elementRef.current.getBoundingClientRect();
+      const centerX = box.left + box.width / 2;
+      const centerY = box.top + box.height / 2;
+      const startAngle =
+        Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+      const initialRotation = overlay.layout.rotation || 0;
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const currentAngle =
-        Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
-        (180 / Math.PI);
-      const angleDiff = currentAngle - startAngle;
-      onLayoutChange(overlay.id, "rotation", initialRotation + angleDiff);
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        const currentAngle =
+          Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
+          (180 / Math.PI);
+        const angleDiff = currentAngle - startAngle;
+        onLayoutChange(overlay.id, "rotation", initialRotation + angleDiff);
+      };
+
+      const handleMouseUp = () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     };
 
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
+    if (!containerSize.width || !containerSize.height) return null;
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
+    const isFullscreen =
+      overlay.layout.size.width >= 99.5 && overlay.layout.size.height >= 99.5;
 
-  if (!containerSize.width || !containerSize.height) return null;
+    const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
+    const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
+    // --- REFACTOR: Removed center-point logic ---
+    const xPx = (containerSize.width * overlay.layout.position.x) / 100;
+    const yPx = (containerSize.height * overlay.layout.position.y) / 100;
+    // --- END REFACTOR ---
 
-  const isFullscreen =
-    overlay.layout.size.width >= 99.5 && overlay.layout.size.height >= 99.5;
+    const [isResizing, setIsResizing] = useState(false);
+    return (
+      <Rnd
+        size={{ width: widthPx, height: heightPx }}
+        position={{ x: xPx, y: yPx }}
+        onDragStop={(e, d) => {
+          // --- REFACTOR: Convert from top-left pixel to top-left percentage ---
+          let newX = (d.x / containerSize.width) * 100;
+          let newY = (d.y / containerSize.height) * 100;
 
-  const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
-  const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
-  // --- REFACTOR: Removed center-point logic ---
-  const xPx = (containerSize.width * overlay.layout.position.x) / 100;
-  const yPx = (containerSize.height * overlay.layout.position.y) / 100;
-  // --- END REFACTOR ---
-
-  const [isResizing, setIsResizing] = useState(false);
-  return (
-    <Rnd
-      size={{ width: widthPx, height: heightPx }}
-      position={{ x: xPx, y: yPx }}
-      onDragStop={(e, d) => {
-        // --- REFACTOR: Convert from top-left pixel to top-left percentage ---
-        let newX = (d.x / containerSize.width) * 100;
-        let newY = (d.y / containerSize.height) * 100;
-
-        // Boundary Enforcement
-        newX = Math.max(0, Math.min(newX, 100 - overlay.layout.size.width));
-        newY = Math.max(0, Math.min(newY, 100 - overlay.layout.size.height));
-        // --- END REFACTOR ---
-        onLayoutChange(overlay.id, "position", { x: newX, y: newY });
-      }}
-      onResizeStart={() => setIsResizing(true)}
-      onResizeStop={(e, direction, ref, delta, pos) => {
-        setIsResizing(false);
-        // --- REFACTOR: Convert from top-left pixel to top-left percentage ---
-        let newWidthPercent =
-          (parseInt(ref.style.width, 10) / containerSize.width) * 100;
-        let newHeightPercent =
-          (parseInt(ref.style.height, 10) / containerSize.height) * 100;
-        let newX = (pos.x / containerSize.width) * 100;
-        let newY = (pos.y / containerSize.height) * 100;
-
-        // Boundary Enforcement
-        newWidthPercent = Math.min(newWidthPercent, 100 - newX);
-        newHeightPercent = Math.min(newHeightPercent, 100 - newY);
-        // --- END REFACTOR ---
-
-        onLayoutChange(overlay.id, "position", { x: newX, y: newY });
-        onLayoutChange(overlay.id, "size", {
-          width: newWidthPercent,
-          height: newHeightPercent,
-        });
-      }}
-      bounds="parent"
-      minWidth={50}
-      minHeight={50}
-      enableResizing={!isFullscreen}
-      disableDragging={isFullscreen}
-      className="group pointer-events-auto"
-      style={{ zIndex: overlay.layout.zIndex }}
-    >
-      <div
-        ref={elementRef}
-        className={cn(
-          "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
-          !isFullscreen && "group-hover:border-primary",
-          isFullscreen && "pointer-events-none"
-        )}
-        style={{
-          transform: `rotate(${
-            isResizing ? 0 : overlay.layout.rotation || 0
-          }deg)`,
-          transition: isResizing ? "none" : "transform 0.1s ease-in-out",
+          // Boundary Enforcement
+          newX = Math.max(0, Math.min(newX, 100 - overlay.layout.size.width));
+          newY = Math.max(0, Math.min(newY, 100 - overlay.layout.size.height));
+          // --- END REFACTOR ---
+          onLayoutChange(overlay.id, "position", { x: newX, y: newY });
         }}
+        onResizeStart={() => setIsResizing(true)}
+        onResizeStop={(e, direction, ref, delta, pos) => {
+          setIsResizing(false);
+          // --- REFACTOR: Convert from top-left pixel to top-left percentage ---
+          let newWidthPercent =
+            (parseInt(ref.style.width, 10) / containerSize.width) * 100;
+          let newHeightPercent =
+            (parseInt(ref.style.height, 10) / containerSize.height) * 100;
+          let newX = (pos.x / containerSize.width) * 100;
+          let newY = (pos.y / containerSize.height) * 100;
+
+          // Boundary Enforcement
+          newWidthPercent = Math.min(newWidthPercent, 100 - newX);
+          newHeightPercent = Math.min(newHeightPercent, 100 - newY);
+          // --- END REFACTOR ---
+
+          onLayoutChange(overlay.id, "position", { x: newX, y: newY });
+          onLayoutChange(overlay.id, "size", {
+            width: newWidthPercent,
+            height: newHeightPercent,
+          });
+        }}
+        bounds="parent"
+        minWidth={50}
+        minHeight={50}
+        enableResizing={!isFullscreen}
+        disableDragging={isFullscreen}
+        className="group pointer-events-auto"
+        style={{ zIndex: overlay.layout.zIndex }}
       >
         <div
+          ref={elementRef}
           className={cn(
-            "w-full h-full overflow-hidden",
+            "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
+            !isFullscreen && "group-hover:border-primary",
             isFullscreen && "pointer-events-none"
           )}
+          style={{
+            transform: `rotate(${isResizing ? 0 : overlay.layout.rotation || 0
+              }deg)`,
+            transition: isResizing ? "none" : "transform 0.1s ease-in-out",
+          }}
         >
-          <HtmlOverlayRenderer
-            key={theme}
-            htmlContent={overlay.htmlContent}
-            theme={theme}
+          <div
+            className={cn(
+              "w-full h-full overflow-hidden",
+              isFullscreen && "pointer-events-none"
+            )}
+          >
+            <HtmlOverlayRenderer
+              key={theme}
+              htmlContent={overlay.htmlContent}
+              theme={theme}
+            />
+          </div>
+          <DynamicLayoutPicker
+            onSelectLayout={(mode) =>
+              onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
+            }
+            portalContainer={
+              typeof portalContainer === "function" ? undefined : portalContainer
+            }
           />
+          {!isFullscreen && (
+            <>
+              <button
+                onClick={() => onRemoveOverlay(overlay.id)}
+                className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50"
+                style={{
+                  transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+                }}
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <div
+                onMouseDown={handleRotationStart}
+                className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto cursor-alias"
+                style={{
+                  transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
+                  zIndex: "var(--z-draggable-element-active)",
+                }}
+              >
+                <RotateCcw className="w-4 h-4" />
+              </div>
+            </>
+          )}
         </div>
-        <DynamicLayoutPicker
-          onSelectLayout={(mode) =>
-            onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
-          }
-          portalContainer={
-            typeof portalContainer === "function" ? undefined : portalContainer
-          }
-        />
-        {!isFullscreen && (
-          <>
-            <button
-              onClick={() => onRemoveOverlay(overlay.id)}
-              className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto z-50"
-              style={{
-                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-              }}
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <div
-              onMouseDown={handleRotationStart}
-              className="absolute bottom-2 right-2 bg-primary text-primary-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all pointer-events-auto cursor-alias"
-              style={{
-                transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-                zIndex: "var(--z-draggable-element-active)",
-              }}
-            >
-              <RotateCcw className="w-4 h-4" />
-            </div>
-          </>
-        )}
-      </div>
-    </Rnd>
-  );
-};
+      </Rnd>
+    );
+  };
 
 interface VideoCanvasProps {
   sceneId: string;
@@ -454,22 +454,22 @@ interface VideoCanvasProps {
     pipShadow?: { blur: number; color: string };
     onPipShadowChange: (shadow: { blur: number; color: string }) => void;
     activeInteractiveFilter:
-      | "none"
-      | "neon-edge"
-      | "hologram"
-      | "pixel"
-      | "comic"
-      | "ascii"
-      | "thermal"
-      | "mirror"
-      | "kaleidoscope"
-      | "oil-paint"
-      | "sketch"
-      | "prism"
-      | "vhs"
-      | "infrared"
-      | "xray"
-      | "cyberpunk";
+    | "none"
+    | "neon-edge"
+    | "hologram"
+    | "pixel"
+    | "comic"
+    | "ascii"
+    | "thermal"
+    | "mirror"
+    | "kaleidoscope"
+    | "oil-paint"
+    | "sketch"
+    | "prism"
+    | "vhs"
+    | "infrared"
+    | "xray"
+    | "cyberpunk";
     onInteractiveFilterChange: (
       filter:
         | "none"
@@ -791,7 +791,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const captionRndRef = useRef<Rnd | null>(null); // <-- ADD THIS REF
   // --- NEW: Scene size state for stable positioning ---
   const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
-
+  const [activeSnapGuides, setActiveSnapGuides] = useState<GuideLine[]>([]);
   const [pipContent, setPipContent] = useState<"camera" | "share">("camera");
 
   const [dynamicSplitRatio, setDynamicSplitRatio] = useState(0.5);
@@ -1530,9 +1530,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           <div
             className="relative flex items-center justify-center overflow-hidden"
             style={{
-              [isVertical ? "height" : "width"]: `${
-                (1 - dynamicSplitRatio) * 100
-              }%`,
+              [isVertical ? "height" : "width"]: `${(1 - dynamicSplitRatio) * 100
+                }%`,
             }}
           >
             {mainContent}
@@ -1619,8 +1618,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
     const pipContentEl =
       props.screenShareMode !== "off" &&
-      containerSize.width > 0 &&
-      !props.canvasLayout ? (
+        containerSize.width > 0 &&
+        !props.canvasLayout ? (
         <Rnd
           ref={pipRndRef}
           key={`pip-${sceneId}-${rest.pipPosition.x}-${rest.pipPosition.y}-${rest.pipSize.width}-${rest.pipSize.height}`}
@@ -1667,7 +1666,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             {/* This inner div is no longer responsible for border/shape */}
             {pipContent === "camera"
               ? // --- MODIFIED: Pass cameraShape ---
-                renderCamera("cursor-move", {}, true, rest.cameraShape)
+              renderCamera("cursor-move", {}, true, rest.cameraShape)
               : renderScreen("cursor-move")}
             <div className="absolute inset-0 w-full h-full border-2 border-primary border-dashed rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
             <Button
@@ -1705,9 +1704,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           style={
             rest.backgroundEffect === "blur"
               ? {
-                  backdropFilter: "blur(20px)",
-                  WebkitBackdropFilter: "blur(20px)",
-                }
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+              }
               : {}
           }
         >
@@ -1758,9 +1757,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             <div
               className="relative bg-black flex items-center justify-center overflow-hidden"
               style={{
-                [isVertical ? "height" : "width"]: `${
-                  (1 - rest.splitRatio) * 100
-                }%`,
+                [isVertical ? "height" : "width"]: `${(1 - rest.splitRatio) * 100
+                  }%`,
               }}
             >
               <div
@@ -1793,6 +1791,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const handleCanvasClick = () => {
     onDeselectAll();
   };
+  const allOverlays = useMemo((): OverlayElement[] => {
+    const overlays: OverlayElement[] = [];
+    textOverlays.forEach(o => overlays.push({ id: o.id, layout: o.layout, type: 'text' }));
+    browserOverlays.forEach(o => overlays.push({ id: o.id, layout: o.layout, type: 'browser' }));
+    fileOverlays.forEach(o => overlays.push({ id: o.id, layout: o.layout, type: 'file' }));
+    generatedOverlays.forEach(o => overlays.push({ id: o.id, layout: o.layout, type: 'generated' }));
+    return overlays;
+  }, [textOverlays, browserOverlays, fileOverlays, generatedOverlays]);
 
   const filteredHtmlOverlays = dynamicLayout.isActive
     ? generatedOverlays.filter((o) => o.id !== dynamicLayout.target?.id)
@@ -1959,6 +1965,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                         ? null
                         : portalContainer
                     }
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
             {sceneSize.width > 0 &&
@@ -1970,7 +1978,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 )
                 .map((browser) => (
                   <DraggableBrowser
-                    key={browser.id}
+                    key={`${sceneId}-${browser.id}`}
                     overlay={browser}
                     viewport={viewport}
                     onSetDynamicLayout={onSetDynamicLayout}
@@ -1982,6 +1990,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
                     onSelect={setSelectedBrowserId}
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
             {sceneSize.width > 0 &&
@@ -1993,7 +2003,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 )
                 .map((file) => (
                   <DraggableFileViewer
-                    key={file.id}
+                    key={`${sceneId}-${file.id}`}
                     overlay={file}
                     viewport={viewport}
                     onSetDynamicLayout={onSetDynamicLayout}
@@ -2004,6 +2014,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
                     onSelect={setSelectedFileId}
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
             {sceneSize.width > 0 &&
@@ -2015,7 +2027,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 )
                 .map((textOverlay) => (
                   <DraggableTextOverlay
-                    key={textOverlay.id}
+                    key={`${sceneId}-${textOverlay.id}`}
                     overlay={textOverlay}
                     onLayoutChange={onTextLayoutChange}
                     onStyleChange={onTextStyleChange}
@@ -2028,6 +2040,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
                     isSpacePressed={isSpacePressed}
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
           </div>
@@ -2049,7 +2063,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 )
                 .map((overlay) => (
                   <DraggableOverlay
-                    key={`${sceneId}-${overlay.id}`}
+                    key={overlay.id}
                     overlay={overlay}
                     onSetDynamicLayout={onSetDynamicLayout}
                     onLayoutChange={rest.onOverlayLayoutChange}
@@ -2061,6 +2075,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                         ? null
                         : portalContainer
                     }
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
             {sceneSize.width > 0 &&
@@ -2070,7 +2086,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   (o) =>
                     !(o.layout as GeneratedLayout).layerOrder ||
                     (o.layout as GeneratedLayout).layerOrder ===
-                      "above-video" ||
+                    "above-video" ||
                     (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((browser) => (
@@ -2087,6 +2103,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
                     onSelect={setSelectedBrowserId}
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
             {sceneSize.width > 0 &&
@@ -2096,7 +2114,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   (o) =>
                     !(o.layout as GeneratedLayout).layerOrder ||
                     (o.layout as GeneratedLayout).layerOrder ===
-                      "above-video" ||
+                    "above-video" ||
                     (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((file) => (
@@ -2112,6 +2130,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
                     onSelect={setSelectedFileId}
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
             {sceneSize.width > 0 &&
@@ -2121,7 +2141,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   (o) =>
                     !(o.layout as GeneratedLayout).layerOrder ||
                     (o.layout as GeneratedLayout).layerOrder ===
-                      "above-video" ||
+                    "above-video" ||
                     (o.layout as GeneratedLayout).layerOrder === "auto"
                 )
                 .map((textOverlay) => (
@@ -2139,6 +2159,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     onInternalDragStart={onInternalDragStart}
                     onInternalDragStop={onInternalDragStop}
                     isSpacePressed={isSpacePressed}
+                    allOverlays={allOverlays}
+                    onSnapGuidesChange={setActiveSnapGuides}
                   />
                 ))}
 
@@ -2325,10 +2347,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                           onSetDynamicLayout(
                             { id: "live-caption", type: "caption" },
                             mode as
-                              | "split-horizontal"
-                              | "split-vertical"
-                              | "pip"
-                              | "reset"
+                            | "split-horizontal"
+                            | "split-vertical"
+                            | "pip"
+                            | "reset"
                           )
                         }
                       />
@@ -2414,7 +2436,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             </Button>
           </AICommandPopover>
         </Rnd>
-      )}
+      )
+      }
+      {/* Snap Guide Lines - Always Rendered */}
+      {activeSnapGuides.map((guide, index) => (
+        <SnapGuideLine
+          key={index}
+          axis={guide.axis}
+          position={guide.position}
+          containerSize={sceneSize}
+          type={guide.type}
+        />
+      ))}
     </div>
   );
 };
