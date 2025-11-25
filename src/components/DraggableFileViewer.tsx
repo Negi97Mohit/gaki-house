@@ -342,7 +342,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       }}
       bounds="parent"
       className={cn(
-        "group pointer-events-auto rounded-lg flex flex-col transition-all duration-200",
+        "group pointer-events-auto will-change-transform rounded-lg flex flex-col transition-all duration-200",
         overlay.fileType === "image" ? "bg-transparent" : "bg-card",
         isSelected
           ? "shadow-lg border-2 border-primary"

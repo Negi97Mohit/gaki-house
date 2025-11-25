@@ -273,7 +273,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       onResizeStop={handleResizeStop}
       bounds="parent"
       className={cn(
-        "group pointer-events-auto bg-card rounded-lg flex flex-col transition-all duration-200",
+        "group pointer-events-auto will-change-transform bg-card rounded-lg flex flex-col transition-all duration-200",
         isSelected
           ? "shadow-lg border-2 border-primary"
           : "shadow-none border-2 border-transparent group-hover:border-primary/50"

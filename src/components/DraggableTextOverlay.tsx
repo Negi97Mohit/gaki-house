@@ -338,7 +338,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         onDoubleClick={handleDoubleClick}
         bounds="parent"
         className={cn(
-          "group pointer-events-auto transition-colors duration-200"
+          "group pointer-events-auto will-change-transform transition-colors duration-200"
         )}
         style={{
           zIndex: overlay.layout.zIndex,
@@ -509,7 +509,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             </>
           )}
         </div>
-      </Rnd >
+      </Rnd>
 
       {isSelected && !isEditing && (
         <div
@@ -528,8 +528,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
             containerRef={containerRef}
           />
         </div>
-      )
-      }
+      )}
     </>
   );
 };
