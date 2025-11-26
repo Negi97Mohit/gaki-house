@@ -193,7 +193,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
               dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
           ) : (
-            <div className="w-full h-full rounded cursor-move overflow-hidden">
+            <div className="w-full h-full rounded cursor-move">
               {overlay.style.layers ? (
                 <MultiLayerTextRenderer
                   text={overlay.content || "Double-click to edit"}
