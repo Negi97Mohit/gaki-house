@@ -1,28 +1,23 @@
 // src/components/DraggableBrowser.tsx
-
-import React, { useState, useRef, useCallback } from "react";
-import { Rnd } from "react-rnd";
+import React, { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import {
-  X,
-  Globe,
-  ArrowRight,
   ArrowLeft,
+  ArrowRight,
+  Globe,
   RefreshCw,
   RotateCcw,
+  X,
 } from "lucide-react";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
-import { useSnapGuides, OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
+import { SmartDraggable } from "@/components/video-canvas/SmartDraggable";
+import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
+import { GeneratedLayout } from "@/types/caption";
 
 export interface BrowserOverlayState {
   id: string;
   url: string;
-  layout: {
-    position: { x: number; y: number };
-    size: { width: number; height: number };
-    zIndex: number;
-    rotation: number;
-  };
+  layout: GeneratedLayout;
 }
 
 interface DraggableBrowserProps {
@@ -36,7 +31,7 @@ interface DraggableBrowserProps {
   sceneSize: { width: number; height: number };
   onSetDynamicLayout: (
     target: { id: string; type: "browser" },
-    mode: "split-vertical" | "split-horizontal"
+    mode: any
   ) => void;
   isSelected: boolean;
   onSelect: (id: string) => void;
@@ -46,31 +41,6 @@ interface DraggableBrowserProps {
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
 }
-
-// --- REFACTOR: Helper now converts top-left pixel to top-left percentage ---
-const calculatePercentagePosition = (
-  pixelX: number,
-  pixelY: number,
-  sceneSize: { width: number; height: number }
-): { x: number; y: number } | null => {
-  if (
-    !sceneSize.width ||
-    !sceneSize.height ||
-    sceneSize.width <= 0 ||
-    sceneSize.height <= 0
-  ) {
-    console.warn(
-      "Missing or invalid sceneSize in calculatePercentagePosition",
-      { sceneSize }
-    );
-    return null;
-  }
-
-  const percentageX = (pixelX / sceneSize.width) * 100;
-  const percentageY = (pixelY / sceneSize.height) * 100;
-  return { x: percentageX, y: percentageY };
-};
-// --- END REFACTOR ---
 
 export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   overlay,
@@ -83,138 +53,26 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   onSelect,
   onInternalDragStart,
   onInternalDragStop,
-  viewport,
   allOverlays,
   onSnapGuidesChange,
 }) => {
   const [inputUrl, setInputUrl] = useState(overlay.url);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [rotationAngle, setRotationAngle] = useState<number | null>(null);
-  const rndRef = useRef<Rnd | null>(null);
-
-  const { calculateSnap } = useSnapGuides({
-    containerSize: sceneSize,
-    allElements: allOverlays?.filter(o => o.id !== overlay.id) || [],
-    currentElementId: overlay.id,
-    snapThreshold: 3, // 3% threshold for easier snapping
-  });
 
   const handleSubmitUrl = (e: React.FormEvent) => {
     e.preventDefault();
-
     const formattedUrl = inputUrl.startsWith("http")
       ? inputUrl
       : `https://${inputUrl}`;
     onUrlChange(overlay.id, formattedUrl);
   };
 
-  const handleGoBack = () => {
-    iframeRef.current?.contentWindow?.history.back();
-  };
-
-  const handleRefresh = () => {
-    iframeRef.current?.contentWindow?.location.reload();
-  };
-
-  const widthPx =
-    sceneSize.width > 0
-      ? (sceneSize.width * overlay.layout.size.width) / 100
-      : 400;
-  const heightPx =
-    sceneSize.height > 0
-      ? (sceneSize.height * overlay.layout.size.height) / 100
-      : 300;
-
-  // --- REFACTOR: Calculate top-left pixel position ---
-  const xPx =
-    sceneSize.width > 0
-      ? (sceneSize.width * overlay.layout.position.x) / 100
-      : 0;
-  const yPx =
-    sceneSize.height > 0
-      ? (sceneSize.height * overlay.layout.position.y) / 100
-      : 0;
-  // --- END REFACTOR ---
-
-  const handleDragStop = useCallback(
-    (e: any, d: { x: number; y: number }) => {
-      onInternalDragStop();
-      setIsDragging(false);
-      onSnapGuidesChange?.([]); // Clear guides
-      if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
-
-      const newPositionPercent = calculatePercentagePosition(d.x, d.y, sceneSize);
-
-      if (newPositionPercent) {
-        // Apply snapping
-        const { snappedPosition } = calculateSnap(newPositionPercent, overlay.layout.size);
-
-        // Boundary Enforcement
-        snappedPosition.x = Math.max(0, Math.min(snappedPosition.x, 100 - overlay.layout.size.width));
-        snappedPosition.y = Math.max(0, Math.min(snappedPosition.y, 100 - overlay.layout.size.height));
-
-        onLayoutChange(overlay.id, { position: snappedPosition });
-      }
-    },
-    [onInternalDragStop, onSnapGuidesChange, calculateSnap, sceneSize, onLayoutChange, overlay.id, overlay.layout.size]
-  );
-
-  const handleResizeStop = useCallback(
-    (
-      e: any,
-      dir: any,
-      ref: HTMLElement,
-      delta: any,
-      pos: { x: number; y: number }
-    ) => {
-      onInternalDragStop();
-      if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
-
-      const newWidthPx = parseInt(ref.style.width, 10);
-      const newHeightPx = parseInt(ref.style.height, 10);
-
-      // --- REFACTOR: Use new top-left helper ---
-      const newPositionPercent = calculatePercentagePosition(
-        pos.x,
-        pos.y,
-        sceneSize
-      );
-      let newWidthPercent = (newWidthPx / sceneSize.width) * 100;
-      let newHeightPercent = (newHeightPx / sceneSize.height) * 100;
-
-      if (newPositionPercent) {
-        // Boundary Enforcement
-        newWidthPercent = Math.min(newWidthPercent, 100 - newPositionPercent.x);
-        newHeightPercent = Math.min(
-          newHeightPercent,
-          100 - newPositionPercent.y
-        );
-      }
-      // --- END REFACTOR ---
-
-      if (newPositionPercent) {
-        onLayoutChange(overlay.id, {
-          position: newPositionPercent,
-          size: {
-            width: newWidthPercent,
-            height: newHeightPercent,
-          },
-        });
-      }
-    },
-    [onInternalDragStop, sceneSize, onLayoutChange, overlay.id]
-  );
-  // --- End useCallback wrappers ---
-  // --- ADDED: Rotation handler ---
   const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(`[DraggableBrowser ${overlay.id}] handleRotationStart FIRED`); // DEBUG
     e.stopPropagation();
-    const selfElement = rndRef.current?.getSelfElement();
-    if (!selfElement) return;
-
-    const box = selfElement.getBoundingClientRect();
+    const element = e.currentTarget.closest(".group");
+    if (!element) return;
+    const box = element.getBoundingClientRect();
     const centerX = box.left + box.width / 2;
     const centerY = box.top + box.height / 2;
     const startAngle =
@@ -222,113 +80,73 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     const initialRotation = overlay.layout.rotation || 0;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      console.log(`[DraggableBrowser ${overlay.id}] handleMouseMove`); // DEBUG
       const currentAngle =
         Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
         (180 / Math.PI);
       const angleDiff = currentAngle - startAngle;
-      let newRotation = initialRotation + angleDiff;
-
-      // Snap to 15° increments unless Shift is held
-      if (!moveEvent.shiftKey) {
-        const snapInterval = 15;
-        newRotation = Math.round(newRotation / snapInterval) * snapInterval;
-      }
-
-      // Normalize to 0-360
-      newRotation = ((newRotation % 360) + 360) % 360;
-
-      setRotationAngle(Math.round(newRotation));
-      onLayoutChange(overlay.id, { rotation: newRotation });
+      onLayoutChange(overlay.id, { rotation: initialRotation + angleDiff });
     };
 
     const handleMouseUp = () => {
-      console.log(`[DraggableBrowser ${overlay.id}] handleMouseUp`); // DEBUG
-      setRotationAngle(null);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
-      onInternalDragStop(); // ADDED
     };
 
-    onInternalDragStart(); // ADDED
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
-  // --- END ADDED ---
 
   return (
-    <Rnd
-      ref={rndRef}
-      scale={1}
-      size={{ width: widthPx, height: heightPx }}
-      position={{ x: xPx, y: yPx }}
-      disableDragging={sceneSize.width <= 0 || sceneSize.height <= 0}
-      enableResizing={sceneSize.width > 0 && sceneSize.height > 0}
-      cancel="input, button:not(.drag-handle), iframe, .rotate-handle"
-      onDragStart={(e) => {
-        if (
-          !(e.target as HTMLElement).closest("input, button:not(.drag-handle)")
-        ) {
-          onInternalDragStart();
-          onSelect(overlay.id);
-          setIsDragging(true);
-        }
-      }}
-      onDrag={(e, d) => {
-        if (sceneSize.width <= 0 || sceneSize.height <= 0) return;
-        const percentPos = calculatePercentagePosition(d.x, d.y, sceneSize);
-        if (!percentPos) return;
-        const { guides } = calculateSnap(percentPos, overlay.layout.size);
-        onSnapGuidesChange?.(guides);
-      }}
-      onDragStop={handleDragStop}
+    <SmartDraggable
+      id={overlay.id}
+      position={overlay.layout.position}
+      size={overlay.layout.size}
+      rotation={overlay.layout.rotation}
+      zIndex={overlay.layout.zIndex}
+      containerSize={sceneSize}
+      isSelected={isSelected}
       minWidth={250}
       minHeight={200}
-      onResizeStop={handleResizeStop}
-      bounds="parent"
+      onSelect={onSelect}
+      onDragStart={onInternalDragStart}
+      onDragStop={onInternalDragStop}
+      onChange={(id, layout) => {
+        onLayoutChange(id, {
+          ...(layout.position && { position: layout.position }),
+          ...(layout.size && { size: layout.size }),
+        });
+      }}
+      allOverlays={allOverlays}
+      onSnapGuidesChange={onSnapGuidesChange}
+      cancel="input, button, iframe, .rotate-handle"
       className={cn(
-        "group pointer-events-auto will-change-transform bg-card rounded-lg flex flex-col transition-all duration-200",
+        "group pointer-events-auto bg-card rounded-lg flex flex-col transition-all duration-200",
         isSelected
           ? "shadow-lg border-2 border-primary"
           : "shadow-none border-2 border-transparent group-hover:border-primary/50"
       )}
-      style={{
-        zIndex: overlay.layout.zIndex,
-        // transform: `rotate(${overlay.layout.rotation}deg)`,
-      }}
     >
-      {/* ADDED: Inner wrapper for rotation */}
-      <div
-        className="w-full h-full flex flex-col rounded-lg relative" // Added flex/rounded/relative
-        style={{
-          transform: `rotate(${overlay.layout.rotation || 0}deg)`,
-          transformOrigin: "center center",
-        }}
-      >
+      <div className="w-full h-full flex flex-col rounded-lg relative overflow-hidden">
         <DynamicLayoutPicker
           onSelectLayout={(mode) =>
-            onSetDynamicLayout(
-              { id: overlay.id, type: "browser" },
-              mode as "split-horizontal" | "split-vertical"
-            )
+            onSetDynamicLayout({ id: overlay.id, type: "browser" }, mode as any)
           }
         />
-        {/* Add drag-handle class */}
+
+        {/* Browser Toolbar - Acts as Drag Handle */}
         <div
+          className="flex-shrink-0 h-10 bg-secondary flex items-center p-2 gap-2 cursor-move rounded-t-lg"
           onMouseDown={() => onSelect(overlay.id)}
-          className="drag-handle flex-shrink-0 h-10 bg-secondary flex items-center p-2 gap-2 cursor-move rounded-t-lg"
         >
           <button
-            onClick={handleGoBack}
+            onClick={() => iframeRef.current?.contentWindow?.history.back()}
             className="p-1 hover:bg-primary/20 rounded-sm"
-            title="Back"
           >
             <ArrowLeft className="w-4 h-4 text-muted-foreground" />
           </button>
           <button
-            onClick={handleRefresh}
+            onClick={() => iframeRef.current?.contentWindow?.location.reload()}
             className="p-1 hover:bg-primary/20 rounded-sm"
-            title="Refresh"
           >
             <RefreshCw className="w-4 h-4 text-muted-foreground" />
           </button>
@@ -338,11 +156,8 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
               type="text"
               value={inputUrl}
               onChange={(e) => setInputUrl(e.target.value)}
-              className="w-full bg-background rounded-sm px-2 py-0.5 text-[clamp(0.7rem,1.5vw,0.9rem)]"
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                onSelect(overlay.id);
-              }}
+              className="w-full bg-background rounded-sm px-2 py-0.5 text-xs"
+              onMouseDown={(e) => e.stopPropagation()}
               placeholder="Enter URL..."
             />
           </form>
@@ -353,56 +168,40 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-grow w-full h-full border-none relative">
+
+        <div className="flex-grow w-full h-full relative border-none bg-white">
           <iframe
             ref={iframeRef}
             src={overlay.url}
             className="w-full h-full"
             sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts"
             title={`browser-overlay-${overlay.id}`}
-            style={{ pointerEvents: isDragging ? "none" : "auto" }}
           />
-          {isDragging && (
-            <div className="absolute inset-0 z-10 bg-transparent" />
-          )}
+          {/* Overlay to prevent iframe capturing clicks while dragging */}
+          <div className="absolute inset-0 pointer-events-none" />
         </div>
+
         <button
           onClick={(e) => {
             e.stopPropagation();
             onRemove(overlay.id);
           }}
-          className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
-          style={{
-            zIndex: "var(--z-draggable-element-active)",
-            transform: `rotate(-${overlay.layout.rotation || 0}deg)`, // Counter-rotate
-          }}
+          className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-50"
+          style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
         >
           <X className="w-4 h-4" />
         </button>
-      </div>
 
-      {/* Live Angle Display */}
-      {rotationAngle !== null && (
-        <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-black/90 text-white px-2 py-1 rounded text-xs font-medium pointer-events-none z-50">
-          {rotationAngle}°
-        </div>
-      )}
-
-      {/* --- ADDED: Rotation Handle --- */}
-      <div
-        onMouseDown={handleRotationStart}
-        className={cn(
-          "rotate-handle absolute -bottom-3 -left-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 cursor-alias",
-          "opacity-0 group-hover:opacity-100",
-          !isSelected && "hidden" // Only show on selected
+        {isSelected && (
+          <div
+            onMouseDown={handleRotationStart}
+            className="rotate-handle absolute -bottom-3 -left-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 cursor-alias z-50"
+            style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
+          >
+            <RotateCcw className="w-4 h-4 pointer-events-none" />
+          </div>
         )}
-        style={{
-          transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-          zIndex: "var(--z-draggable-element-active)",
-        }}
-      >
-        <RotateCcw className="w-4 h-4 pointer-events-none" />
       </div>
-    </Rnd>
+    </SmartDraggable>
   );
 };

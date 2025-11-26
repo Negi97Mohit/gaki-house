@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
-import { Rnd } from "react-rnd";
+// src/components/video-canvas/PipWindow.tsx
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CameraShape } from "@/types/caption";
+import { SmartDraggable } from "./SmartDraggable";
 
 interface PipWindowProps {
   sceneId: string;
@@ -35,8 +36,6 @@ interface PipWindowProps {
   currentAspectRatio?: number | boolean;
 }
 
-const SNAP_THRESHOLD = 5;
-
 export const PipWindow: React.FC<PipWindowProps> = ({
   sceneId,
   containerSize,
@@ -55,7 +54,6 @@ export const PipWindow: React.FC<PipWindowProps> = ({
   renderScreen,
   currentAspectRatio,
 }) => {
-  const pipRndRef = useRef<Rnd | null>(null);
   const [pipContent, setPipContent] = useState<"camera" | "share">("camera");
 
   const getCameraShapeStyle = () => {
@@ -96,69 +94,25 @@ export const PipWindow: React.FC<PipWindowProps> = ({
     }
   };
 
-  const handlePipDragStop = (e: any, d: { x: number; y: number }) => {
-    // Convert top-left pixel to top-left percentage
-    let newX = (d.x / containerSize.width) * 100;
-    let newY = (d.y / containerSize.height) * 100;
-
-    const pipWidthPercent = pipSize.width;
-    const pipHeightPercent =
-      cameraShape === "circle"
-        ? (pipSize.width * containerSize.width) / containerSize.height
-        : pipSize.height;
-
-    // Snapping logic
-    if (newX < SNAP_THRESHOLD) newX = 2;
-    if (newX > 100 - pipWidthPercent - SNAP_THRESHOLD)
-      newX = 98 - pipWidthPercent;
-    if (newY < SNAP_THRESHOLD) newY = 2;
-    if (newY > 100 - pipHeightPercent - SNAP_THRESHOLD)
-      newY = 98 - pipHeightPercent;
-
-    // Boundary Enforcement
-    newX = Math.max(0, Math.min(newX, 100 - pipWidthPercent));
-    newY = Math.max(0, Math.min(newY, 100 - pipHeightPercent));
-
-    onPipPositionChange({ x: newX, y: newY });
-  };
-
-  const handlePipResizeStop = (
-    e: any,
-    direction: any,
-    ref: HTMLElement,
-    delta: any,
-    position: any
+  const handleChange = (
+    id: string,
+    layout: {
+      position?: { x: number; y: number };
+      size?: { width: number; height: number };
+    }
   ) => {
-    const newWidthPx = parseInt(ref.style.width, 10);
-    let newWidth = (newWidthPx / containerSize.width) * 100;
-
-    let newHeight =
-      currentAspectRatio && typeof currentAspectRatio === "number"
-        ? (newWidthPx / currentAspectRatio / containerSize.height) * 100
-        : (parseInt(ref.style.height, 10) / containerSize.height) * 100;
-
-    let newX = (position.x / containerSize.width) * 100;
-    let newY = (position.y / containerSize.height) * 100;
-
-    // Boundary Enforcement
-    newX = Math.max(0, Math.min(newX, 100 - newWidth));
-    newY = Math.max(0, Math.min(newY, 100 - newHeight));
-    newWidth = Math.min(newWidth, 100 - newX);
-    newHeight = Math.min(newHeight, 100 - newY);
-
-    onPipSizeChange({
-      width: Math.max(10, Math.min(100, newWidth)),
-      height: Math.max(10, Math.min(100, newHeight)),
-    });
-    onPipPositionChange({ x: newX, y: newY });
+    if (layout.position) {
+      onPipPositionChange(layout.position);
+    }
+    if (layout.size) {
+      onPipSizeChange(layout.size);
+    }
   };
 
   const handlePipRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     onInternalDragStart();
-
-    // Placeholder for rotation logic logic (can be fully implemented if rotation state is passed)
 
     const handleMouseUp = () => {
       document.removeEventListener("mouseup", handleMouseUp);
@@ -167,67 +121,44 @@ export const PipWindow: React.FC<PipWindowProps> = ({
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  const pipSizePx = {
-    width: (containerSize.width * pipSize.width) / 100,
-    height:
-      currentAspectRatio && typeof currentAspectRatio === "number"
-        ? (containerSize.width * pipSize.width) / 100 / currentAspectRatio
-        : (containerSize.height * pipSize.height) / 100,
-  };
-
-  const pipPositionPx = {
-    x: (containerSize.width * pipPosition.x) / 100,
-    y: (containerSize.height * pipPosition.y) / 100,
-  };
-
-  // Resize handles config
-  const circleResizeHandles = {
-    top: true,
-    right: true,
-    bottom: true,
-    left: true,
-    topRight: false,
-    bottomRight: false,
-    bottomLeft: false,
-    topLeft: false,
-  };
-  const defaultResizeHandles = {
-    ...circleResizeHandles,
-    topRight: true,
-    bottomRight: true,
-    bottomLeft: true,
-    topLeft: true,
-  };
-
   if (containerSize.width <= 0) return null;
 
+  // Calculate effective size if aspect ratio is locked
+  // This overrides the potentially stale height in pipSize
+  const effectiveSize = { ...pipSize };
+  if (
+    typeof currentAspectRatio === "number" &&
+    containerSize.width > 0 &&
+    containerSize.height > 0
+  ) {
+    // Calculate height in pixels based on width px and ratio
+    const widthPx = (pipSize.width / 100) * containerSize.width;
+    const heightPx = widthPx / currentAspectRatio;
+    // Convert back to percentage
+    effectiveSize.height = (heightPx / containerSize.height) * 100;
+  }
+
   return (
-    <Rnd
-      ref={pipRndRef}
-      key={`pip-${sceneId}`}
-      size={pipSizePx}
-      position={pipPositionPx}
+    <SmartDraggable
+      id={`pip-${sceneId}`}
+      position={pipPosition}
+      size={effectiveSize} // Pass the ratio-corrected size
+      containerSize={containerSize}
       minWidth={containerSize.width * 0.1}
       minHeight={
-        currentAspectRatio && typeof currentAspectRatio === "number"
+        typeof currentAspectRatio === "number"
           ? (containerSize.width * 0.1) / currentAspectRatio
           : containerSize.height * 0.1
       }
-      cancel=".rotate-handle"
-      maxWidth={containerSize.width * (100 - pipPosition.x)}
-      maxHeight={containerSize.height * (100 - pipPosition.y)}
-      lockAspectRatio={currentAspectRatio ? currentAspectRatio : false}
-      enableResizing={
-        cameraShape === "circle" ? circleResizeHandles : defaultResizeHandles
+      lockAspectRatio={
+        typeof currentAspectRatio === "number" ? currentAspectRatio : false
       }
-      bounds="parent"
-      onDragStop={handlePipDragStop}
-      onResizeStop={handlePipResizeStop}
+      zIndex={100}
+      onChange={handleChange}
+      onDragStart={onInternalDragStart}
+      onDragStop={onInternalDragStop}
+      cancel=".rotate-handle, .pip-toggle-btn"
       className="pointer-events-auto"
-      style={{
-        zIndex: "var(--z-video-pip)",
-        ...getCameraShapeStyle(),
-      }}
     >
       <div
         className="w-full h-full relative group"
@@ -235,6 +166,7 @@ export const PipWindow: React.FC<PipWindowProps> = ({
           overflow: "hidden",
           transformOrigin: "center center",
           borderRadius: "inherit",
+          ...getCameraShapeStyle(),
         }}
       >
         {pipContent === "camera"
@@ -246,10 +178,11 @@ export const PipWindow: React.FC<PipWindowProps> = ({
         <Button
           size="icon"
           variant="secondary"
-          className="absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={() =>
-            setPipContent(pipContent === "camera" ? "share" : "camera")
-          }
+          className="pip-toggle-btn absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={(e) => {
+            e.stopPropagation();
+            setPipContent(pipContent === "camera" ? "share" : "camera");
+          }}
         >
           <RotateCcw className="h-4 w-4" />
         </Button>
@@ -261,12 +194,12 @@ export const PipWindow: React.FC<PipWindowProps> = ({
             "opacity-0 group-hover:opacity-100"
           )}
           style={{
-            zIndex: "var(--z-draggable-element-active)",
+            zIndex: 200,
           }}
         >
           <RotateCcw className="w-4 h-4 pointer-events-none" />
         </div>
       </div>
-    </Rnd>
+    </SmartDraggable>
   );
 };

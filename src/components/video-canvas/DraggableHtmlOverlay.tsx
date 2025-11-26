@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Rnd } from "react-rnd";
+// src/components/video-canvas/DraggableHtmlOverlay.tsx
+import React, { useRef, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { X, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -7,6 +7,7 @@ import { GeneratedOverlay } from "@/types/caption";
 import { generatePreview } from "@/lib/preview";
 import { DynamicLayoutPicker } from "@/components/DynamicLayoutPicker";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
+import { SmartDraggable } from "./SmartDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
 interface DraggableHtmlOverlayProps {
@@ -36,10 +37,11 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
   onSetDynamicLayout,
   containerSize,
   portalContainer,
+  allOverlays,
+  onSnapGuidesChange,
 }) => {
   const { theme } = useTheme();
   const elementRef = useRef<HTMLDivElement>(null);
-  const [isResizing, setIsResizing] = useState(false);
 
   useEffect(() => {
     if (overlay.preview === "" && elementRef.current) {
@@ -89,79 +91,41 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
   const isFullscreen =
     overlay.layout.size.width >= 99.5 && overlay.layout.size.height >= 99.5;
 
-  const widthPx = (containerSize.width * overlay.layout.size.width) / 100;
-  const heightPx = (containerSize.height * overlay.layout.size.height) / 100;
-  const xPx = (containerSize.width * overlay.layout.position.x) / 100;
-  const yPx = (containerSize.height * overlay.layout.position.y) / 100;
-
   return (
-    <Rnd
-      size={{ width: widthPx, height: heightPx }}
-      position={{ x: xPx, y: yPx }}
-      onDragStop={(e, d) => {
-        let newX = (d.x / containerSize.width) * 100;
-        let newY = (d.y / containerSize.height) * 100;
-
-        // Boundary Enforcement
-        newX = Math.max(0, Math.min(newX, 100 - overlay.layout.size.width));
-        newY = Math.max(0, Math.min(newY, 100 - overlay.layout.size.height));
-
-        onLayoutChange(overlay.id, "position", { x: newX, y: newY });
-      }}
-      onResizeStart={() => setIsResizing(true)}
-      onResizeStop={(e, direction, ref, delta, pos) => {
-        setIsResizing(false);
-        let newWidthPercent =
-          (parseInt(ref.style.width, 10) / containerSize.width) * 100;
-        let newHeightPercent =
-          (parseInt(ref.style.height, 10) / containerSize.height) * 100;
-        let newX = (pos.x / containerSize.width) * 100;
-        let newY = (pos.y / containerSize.height) * 100;
-
-        // Boundary Enforcement
-        newWidthPercent = Math.min(newWidthPercent, 100 - newX);
-        newHeightPercent = Math.min(newHeightPercent, 100 - newY);
-
-        onLayoutChange(overlay.id, "position", { x: newX, y: newY });
-        onLayoutChange(overlay.id, "size", {
-          width: newWidthPercent,
-          height: newHeightPercent,
-        });
-      }}
-      bounds="parent"
-      minWidth={50}
-      minHeight={50}
+    <SmartDraggable
+      id={overlay.id}
+      position={overlay.layout.position}
+      size={overlay.layout.size}
+      rotation={overlay.layout.rotation}
+      zIndex={overlay.layout.zIndex}
+      containerSize={containerSize}
+      allOverlays={allOverlays}
+      onSnapGuidesChange={onSnapGuidesChange}
       enableResizing={!isFullscreen}
-      disableDragging={isFullscreen}
-      className="group pointer-events-auto"
-      style={{ zIndex: overlay.layout.zIndex }}
+      className={cn(
+        "group pointer-events-auto",
+        isFullscreen && "pointer-events-none"
+      )}
+      onChange={(id, layout) => {
+        if (layout.position) onLayoutChange(id, "position", layout.position);
+        if (layout.size) onLayoutChange(id, "size", layout.size);
+      }}
     >
       <div
         ref={elementRef}
         className={cn(
           "w-full h-full relative border-2 border-dashed border-transparent transition-colors",
-          !isFullscreen && "group-hover:border-primary",
-          isFullscreen && "pointer-events-none"
+          !isFullscreen && "group-hover:border-primary"
         )}
-        style={{
-          transform: `rotate(${
-            isResizing ? 0 : overlay.layout.rotation || 0
-          }deg)`,
-          transition: isResizing ? "none" : "transform 0.1s ease-in-out",
-        }}
       >
-        <div
-          className={cn(
-            "w-full h-full overflow-hidden",
-            isFullscreen && "pointer-events-none"
-          )}
-        >
+        <div className={cn("w-full h-full overflow-hidden")}>
           <HtmlOverlayRenderer
             key={theme}
             htmlContent={overlay.htmlContent}
             theme={theme}
           />
         </div>
+
         <DynamicLayoutPicker
           onSelectLayout={(mode) =>
             onSetDynamicLayout({ id: overlay.id, type: "html" }, mode)
@@ -170,6 +134,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
             typeof portalContainer === "function" ? undefined : portalContainer
           }
         />
+
         {!isFullscreen && (
           <>
             <button
@@ -194,6 +159,6 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
           </>
         )}
       </div>
-    </Rnd>
+    </SmartDraggable>
   );
 };

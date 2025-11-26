@@ -1,8 +1,10 @@
+// src/components/DraggableAmbientEffect.tsx
 import React from "react";
-import { Rnd } from "react-rnd";
 import { cn } from "@/lib/utils";
 import { GeneratedOverlay } from "@/types/caption";
 import { AmbientEffectsOverlay } from "./AmbientEffectsOverlay";
+import { SmartDraggable } from "@/components/video-canvas/SmartDraggable";
+import { X } from "lucide-react";
 
 interface DraggableAmbientEffectProps {
   overlay: GeneratedOverlay;
@@ -25,64 +27,50 @@ export const DraggableAmbientEffect: React.FC<DraggableAmbientEffectProps> = ({
     return null;
   }
 
-  const position = {
-    x: (overlay.layout.position.x / 100) * containerSize.width,
-    y: (overlay.layout.position.y / 100) * containerSize.height,
-  };
-  const size = {
-    width: (overlay.layout.size.width / 100) * containerSize.width,
-    height: (overlay.layout.size.height / 100) * containerSize.height,
+  const handleChange = (
+    id: string,
+    layout: {
+      position?: { x: number; y: number };
+      size?: { width: number; height: number };
+    }
+  ) => {
+    if (layout.position) onLayoutChange(id, "position", layout.position);
+    if (layout.size) onLayoutChange(id, "size", layout.size);
   };
 
   return (
-    <Rnd
-      size={size}
-      position={position}
+    <SmartDraggable
+      id={overlay.id}
+      position={overlay.layout.position}
+      size={overlay.layout.size}
+      containerSize={containerSize}
+      zIndex={overlay.layout.zIndex}
+      isSelected={isSelected}
+      onSelect={onSelect}
+      onChange={handleChange}
       minWidth={50}
       minHeight={50}
-      bounds="parent"
-      onDragStop={(e, d) =>
-        onLayoutChange(overlay.id, "position", {
-          x: (d.x / containerSize.width) * 100,
-          y: (d.y / containerSize.height) * 100,
-        })
-      }
-      onResizeStop={(e, direction, ref, delta, pos) => {
-        onLayoutChange(overlay.id, "size", {
-          width: (parseInt(ref.style.width, 10) / containerSize.width) * 100,
-          height: (parseInt(ref.style.height, 10) / containerSize.height) * 100,
-        });
-        onLayoutChange(overlay.id, "position", {
-          x: (pos.x / containerSize.width) * 100,
-          y: (pos.y / containerSize.height) * 100,
-        });
-      }}
-      onDragStart={() => onSelect(overlay.id)}
-      style={{ zIndex: overlay.layout.zIndex }}
       className={cn(
-        "border-2 border-dashed group pointer-events-auto transition-colors overflow-hidden", // Added overflow-hidden
+        "border-2 border-dashed group pointer-events-auto transition-colors overflow-hidden",
         isSelected
           ? "border-primary border-solid"
           : "border-transparent hover:border-primary/50"
       )}
     >
-      <div
-        id={overlay.id}
-        onClick={() => onSelect(overlay.id)}
-        className="w-full h-full relative"
-      >
+      <div className="w-full h-full relative cursor-move">
         <AmbientEffectsOverlay effect={overlay.ambientEffect} />
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove(overlay.id);
+          }}
+          className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-50 cursor-pointer"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <X className="w-3 h-3" />
+        </button>
       </div>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove(overlay.id);
-        }}
-        className="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
-        style={{ zIndex: "var(--z-draggable-element-active)" }}
-      >
-        ×
-      </button>
-    </Rnd>
+    </SmartDraggable>
   );
 };

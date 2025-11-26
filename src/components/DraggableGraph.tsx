@@ -1,6 +1,6 @@
 // src/components/DraggableGraph.tsx
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import React, { useRef } from "react";
 import { GraphObject } from "@/types/caption";
 import {
   BarChart,
@@ -17,14 +17,16 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import { Move, X, Maximize2 } from "lucide-react"; // Import Maximize2 for resize icon
+import { Move, X, Maximize2 } from "lucide-react";
+import { SmartDraggable } from "@/components/video-canvas/SmartDraggable";
 
 interface DraggableGraphProps {
   graph: GraphObject;
   onPositionChange: (id: string, position: { x: number; y: number }) => void;
-  onResize: (id: string, size: { width: number; height: number }) => void; // ADDED
+  onResize: (id: string, size: { width: number; height: number }) => void;
   onDelete: (id: string) => void;
   isFocused: boolean;
+  containerSize: { width: number; height: number }; // Added containerSize
 }
 
 const COLORS = [
@@ -42,86 +44,41 @@ export const DraggableGraph = ({
   onResize,
   onDelete,
   isFocused,
+  containerSize,
 }: DraggableGraphProps) => {
-  const dragRef = useRef<HTMLDivElement>(null);
-  const offset = useRef({ x: 0, y: 0 });
+  const [isInteracting, setIsInteracting] = useState(false);
 
-  // --- DRAG LOGIC ---
-  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Prevent dragging when clicking on delete, chart content, or resize handle
-    if (
-      (e.target as HTMLElement).closest(
-        ".delete-btn, .recharts-wrapper, .resize-handle"
-      )
-    )
-      return;
-    if (!dragRef.current) return;
-    const rect = dragRef.current.getBoundingClientRect();
-    offset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
-  };
+  const handleChange = (
+    id: string,
+    layout: {
+      position?: { x: number; y: number };
+      size?: { width: number; height: number };
+    }
+  ) => {
+    if (layout.position) {
+      // SmartDraggable uses top-left, GraphObject expects percentage center?
+      // Wait, looking at original DraggableGraph, it used top/left percents.
+      // So we can pass directly.
+      onPositionChange(id, layout.position);
+    }
+    if (layout.size) {
+      // Original onResize expected pixels, but SmartDraggable returns Percentages.
+      // We need to convert back if the parent expects pixels, OR update parent to expect %.
+      // Assuming we want to stick to the standard % based layout used in other overlays:
 
-  // Find and replace the onMouseMove function in DraggableGraph.tsx
-  const onMouseMove = (e: MouseEvent) => {
-    if (!dragRef.current) return;
-    const parentRect = dragRef.current.parentElement!.getBoundingClientRect();
+      // Note: The original code passed width/height in PIXELS to onResize:
+      // onResize(graph.id, { width: Math.max(newWidth, 200), ... })
+      // But stored it in graph.size (which likely expects pixels based on original usage).
 
-    // Calculate the new top-left position relative to the parent
-    const newLeft = e.clientX - parentRect.left - offset.current.x;
-    const newTop = e.clientY - parentRect.top - offset.current.y;
-
-    // --- FIX: Calculate the new CENTER of the element ---
-    const elementRect = dragRef.current.getBoundingClientRect();
-    const newCenterX = newLeft + elementRect.width / 2;
-    const newCenterY = newTop + elementRect.height / 2;
-    // Calculate half-width and half-height in percentages
-    const halfWidthPercent = (elementRect.width / parentRect.width) * 50;
-    const halfHeightPercent = (elementRect.height / parentRect.height) * 50;
-
-    // Convert the center coordinates to percentages
-    const x = (newCenterX / parentRect.width) * 100;
-    const y = (newCenterY / parentRect.height) * 100;
-
-    // Apply bounds to keep the graph from going too far off-screen
-    onPositionChange(graph.id, {
-      x: Math.max(halfWidthPercent, Math.min(100 - halfWidthPercent, x)),
-      y: Math.max(halfHeightPercent, Math.min(100 - halfHeightPercent, y)),
-    });
-  };
-  const onMouseUp = () => {
-    document.removeEventListener("mousemove", onMouseMove);
-    document.removeEventListener("mouseup", onMouseUp);
-  };
-
-  // --- RESIZE LOGIC (NEW) ---
-  const onResizeMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    if (!dragRef.current) return;
-    const startRect = dragRef.current.getBoundingClientRect();
-    const startX = e.clientX;
-    const startY = e.clientY;
-
-    const onResizeMouseMove = (moveEvent: MouseEvent) => {
-      const newWidth = startRect.width + (moveEvent.clientX - startX);
-      const newHeight = startRect.height + (moveEvent.clientY - startY);
-      onResize(graph.id, {
-        width: Math.max(newWidth, 200),
-        height: Math.max(newHeight, 150),
-      });
-    };
-
-    const onResizeMouseUp = () => {
-      document.removeEventListener("mousemove", onResizeMouseMove);
-      document.removeEventListener("mouseup", onResizeMouseUp);
-    };
-
-    document.addEventListener("mousemove", onResizeMouseMove);
-    document.addEventListener("mouseup", onResizeMouseUp);
+      // However, for consistency, SmartDraggable works best with %.
+      // Let's convert % back to pixels for the graph object if that's what it stores.
+      const widthPx = (layout.size.width / 100) * containerSize.width;
+      const heightPx = (layout.size.height / 100) * containerSize.height;
+      onResize(id, { width: widthPx, height: heightPx });
+    }
   };
 
   const renderChart = () => {
-    // ... (renderChart function remains the same)
     if (!graph.data || graph.data.length === 0) {
       return (
         <div className="w-full h-full flex items-center justify-center text-muted-foreground text-center p-4">
@@ -172,7 +129,7 @@ export const DraggableGraph = ({
               nameKey="label"
               cx="50%"
               cy="50%"
-              outerRadius={80}
+              outerRadius="80%"
               fill="#8884d8"
               label
             >
@@ -192,46 +149,60 @@ export const DraggableGraph = ({
     }
   };
 
+  // Convert pixel size to percentage for SmartDraggable initial state
+  // graph.size is likely in pixels based on previous usage
+  const widthPercent = (graph.size.width / containerSize.width) * 100;
+  const heightPercent = (graph.size.height / containerSize.height) * 100;
+
   return (
-    <div
-      ref={dragRef}
+    <SmartDraggable
+      id={graph.id}
+      position={graph.position} // Assumed % from original file
+      size={{ width: widthPercent, height: heightPercent }}
+      containerSize={containerSize}
+      zIndex={10}
+      isSelected={isFocused}
+      minWidth={200}
+      minHeight={150}
+      onChange={handleChange}
+      onDragStart={() => setIsInteracting(true)}
+      onDragStop={() => setIsInteracting(false)}
+      cancel=".delete-btn"
       className={cn(
-        "group absolute bg-card/80 backdrop-blur-sm border rounded-lg shadow-2xl p-4 cursor-move transition-all duration-300",
-        isFocused && "ring-4 ring-primary ring-offset-2 ring-offset-background"
+        "group bg-card/80 backdrop-blur-sm border rounded-lg shadow-2xl transition-all duration-200",
+        isFocused && "ring-2 ring-primary ring-offset-2"
       )}
-      style={{
-        left: `${graph.position.x}%`,
-        top: `${graph.position.y}%`,
-        width: `${graph.size.width}px`,
-        height: `${graph.size.height}px`,
-        transform: "translate(-50%, -50%)",
-        transition: "all 0.3s ease-in-out",
-      }}
-      onMouseDown={onMouseDown}
     >
-      <Move className="absolute -top-3 left-1/2 -translate-x-1/2 h-5 w-5 text-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity" />
-      <button
-        className="delete-btn absolute -top-3 -right-3 z-10 h-8 w-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg"
-        onClick={() => onDelete(graph.id)}
-        title="Delete graph"
-      >
-        <X className="h-4 w-4 text-white" />
-      </button>
+      <div className="w-full h-full relative p-4 flex flex-col cursor-move">
+        <Move className="absolute top-2 left-1/2 -translate-x-1/2 h-5 w-5 text-foreground/70 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
-      <h3 className="text-lg font-semibold text-center mb-2 text-card-foreground">
-        {graph.config.title}
-      </h3>
-      <ResponsiveContainer width="100%" height="85%">
-        {renderChart()}
-      </ResponsiveContainer>
+        <button
+          className="delete-btn absolute -top-3 -right-3 z-50 h-8 w-8 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(graph.id);
+          }}
+          title="Delete graph"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <X className="h-4 w-4 text-white" />
+        </button>
 
-      {/* NEW: Resize Handle */}
-      <div
-        className="resize-handle absolute -bottom-2 -right-2 h-5 w-5 bg-primary rounded-full cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-        onMouseDown={onResizeMouseDown}
-      >
-        <Maximize2 className="h-3 w-3 text-primary-foreground" />
+        <h3 className="text-lg font-semibold text-center mb-2 text-card-foreground select-none">
+          {graph.config.title}
+        </h3>
+
+        <div className="flex-grow w-full h-full min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            {renderChart() as React.ReactElement}
+          </ResponsiveContainer>
+        </div>
+
+        {/* Resize Handle Visualization (functionality handled by SmartDraggable) */}
+        <div className="absolute -bottom-2 -right-2 h-6 w-6 bg-primary rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          <Maximize2 className="h-3 w-3 text-primary-foreground" />
+        </div>
       </div>
-    </div>
+    </SmartDraggable>
   );
 };
