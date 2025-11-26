@@ -1,5 +1,5 @@
 // src/lib/preview.ts
-import { getFontEmbedCSS, toPng } from "html-to-image";
+import { toPng } from "html-to-image";
 
 /**
  * Generates a PNG data URL preview of a given HTML element.
@@ -14,14 +14,11 @@ export const generatePreview = async (element: HTMLElement): Promise<string> => 
       return "";
     }
 
-    // Fetch and embed the font CSS.
-    const fontEmbedCSS = await getFontEmbedCSS(element);
 
     const dataUrl = await toPng(element, {
       cacheBust: true,
       pixelRatio: 1,
-      // Pass the embedded font styles directly to the renderer.
-      fontEmbedCSS,
+      skipFonts: true, // Skip font embedding to avoid CORS issues with Google Fonts
     });
 
     return dataUrl;
