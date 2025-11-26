@@ -13,7 +13,8 @@ import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay";
 import { SceneTabs } from "@/components/SceneTabs";
 import { TransitionPopover } from "@/components/TransitionPopover";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import { MainCanvasArea } from "./index/components/MainCanvasArea";
+// FIX: Corrected casing from "./index/..." to "./Index/..."
+import { MainCanvasArea } from "./Index/components/MainCanvasArea";
 
 // --- Hooks ---
 import { useRecordingSession } from "@/hooks/useRecordingSession";
@@ -23,9 +24,10 @@ import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 // --- New Refactored Hooks ---
-import { useSceneManager } from "./index/hooks/useSceneManager";
-import { useMediaManager } from "./index/hooks/useMediaManager";
-import { useLayoutManager } from "./index/hooks/useLayoutManager";
+// FIX: Corrected casing from "./index/..." to "./Index/..."
+import { useSceneManager } from "./Index/hooks/useSceneManager";
+import { useMediaManager } from "./Index/hooks/useMediaManager";
+import { useLayoutManager } from "./Index/hooks/useLayoutManager";
 
 // --- Types & Libs ---
 import {
