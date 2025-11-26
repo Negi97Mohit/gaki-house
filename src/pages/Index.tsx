@@ -13,9 +13,10 @@ import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay";
 import { SceneTabs } from "@/components/SceneTabs";
 import { TransitionPopover } from "@/components/TransitionPopover";
 import { BottomNavigation } from "@/components/BottomNavigation";
-// FIX: Corrected casing from "./index/..." to "./Index/..."
-import { MainCanvasArea } from "./Index/components/MainCanvasArea";
-
+import { MainCanvasArea } from "./index/components/MainCanvasArea";
+import { AnimationLibraryPanel } from "@/components/AnimationLibraryPanel";
+import { generateHtmlFromPreset } from "@/lib/animationGenerator"; // ADD THIS
+import { AnimationPreset } from "@/types/animation"; // ADD THIS if not already imported
 // --- Hooks ---
 import { useRecordingSession } from "@/hooks/useRecordingSession";
 import { useCompositeStream } from "@/hooks/useCompositeStream";
@@ -24,10 +25,9 @@ import { useDebug } from "@/context/DebugContext";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 // --- New Refactored Hooks ---
-// FIX: Corrected casing from "./index/..." to "./Index/..."
-import { useSceneManager } from "./Index/hooks/useSceneManager";
-import { useMediaManager } from "./Index/hooks/useMediaManager";
-import { useLayoutManager } from "./Index/hooks/useLayoutManager";
+import { useSceneManager } from "./index/hooks/useSceneManager";
+import { useMediaManager } from "./index/hooks/useMediaManager";
+import { useLayoutManager } from "./index/hooks/useLayoutManager";
 
 // --- Types & Libs ---
 import {
@@ -41,7 +41,7 @@ import {
   CanvasLayoutState,
   CanvasSectionCameraState,
   DEFAULT_CAMERA_STATE,
-  TextOverlayState, // Ensure this is imported
+  TextOverlayState,
 } from "@/types/caption";
 import { RecordingSession } from "@/types/editor";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
@@ -91,6 +91,9 @@ const Index = () => {
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
   const [showFloatingPanel, setShowFloatingPanel] = useState(false);
+
+  // --- ADDED: Animation Library State ---
+  const [showAnimationLibrary, setShowAnimationLibrary] = useState(false);
 
   // Selection State
   const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(
@@ -570,6 +573,45 @@ const Index = () => {
     }
   }, []);
 
+  // --- ADDED: Animation Library Handler ---
+  const handleSelectAnimation = useCallback(
+    (preset: AnimationPreset) => {
+      // 1. Generate the HTML code for the selected animation
+      const htmlContent = generateHtmlFromPreset(preset);
+
+      // 2. Create a new overlay object
+      const newOverlay: GeneratedOverlay = {
+        id: generateOverlayId(),
+        name: preset.name,
+        htmlContent: htmlContent,
+        layout: {
+          // Center it by default
+          position: { x: 30, y: 40 },
+          size: { width: 40, height: 20 },
+          zIndex: zIndex.draggableElement,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        preview: "",
+      };
+
+      // 3. Add it to the active scene
+      updateActiveScene((scene) => ({
+        ...scene,
+        activeOverlays: [...scene.activeOverlays, newOverlay],
+      }));
+
+      // 4. Record if recording is active
+      if (recording.isRecording) {
+        recording.recordHtmlOverlay(newOverlay);
+      }
+
+      toast.success(`Added "${preset.name}" to canvas`);
+      setShowAnimationLibrary(false);
+    },
+    [updateActiveScene, recording]
+  );
+
   // --- Props Construction ---
 
   const getAllPropsForScene = (scene: SceneState) => {
@@ -945,6 +987,13 @@ const Index = () => {
         onTransitionChange={handleTransitionChange}
       />
 
+      {/* --- ADDED: Animation Library Panel --- */}
+      <AnimationLibraryPanel
+        isOpen={showAnimationLibrary}
+        onClose={() => setShowAnimationLibrary(false)}
+        onSelect={handleSelectAnimation}
+      />
+
       <SavedSessionsPanel
         sessions={allSessions}
         onDeleteSession={(id) =>
@@ -979,6 +1028,7 @@ const Index = () => {
         onOpenSettings={() => setShowFloatingPanel(!showFloatingPanel)}
         onOpenSessions={() => setShowSessionsPanel(true)}
         onSaveLayout={handleSaveLayout}
+        onOpenAnimationLibrary={() => setShowAnimationLibrary(true)} // --- ADDED ---
         isAudioOn={activeScene.isAudioOn}
         onAudioToggle={handleSetIsAudioOn}
         audioDevices={audioDevices}

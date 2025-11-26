@@ -45,6 +45,7 @@ interface BottomNavigationProps {
   onOpenSettings: () => void;
   onOpenSessions: () => void;
   onSaveLayout: () => void;
+  onOpenAnimationLibrary: () => void; // --- ADDED ---
 
   // Media Controls
   isAudioOn: boolean;
@@ -102,6 +103,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onOpenSettings,
   onOpenSessions,
   onSaveLayout,
+  onOpenAnimationLibrary, // --- ADDED ---
   isAudioOn,
   onAudioToggle,
   audioDevices,
@@ -148,19 +150,19 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         >
           <SlidersHorizontal className="w-4 h-4" />
         </Button>
-        {/* TODO: Commented out Library button - will work on this later
+
+        {/* --- ADDED: Library Button --- */}
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full h-10 w-10 hover:bg-background/60"
-          onClick={onOpenSessions}
-          title="Library"
+          className="rounded-full h-10 w-10 hover:bg-background/60 text-primary hover:text-primary"
+          onClick={onOpenAnimationLibrary}
+          title="Animation Library"
         >
           <Library className="w-4 h-4" />
         </Button>
 
         <div className="w-px h-6 bg-border/40 mx-1" />
-        */}
 
         <div className="flex items-center gap-0.5">
           <Button
@@ -297,45 +299,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <div className="w-px h-6 bg-border/40 mx-1" />
-
-        {/* TODO: Commented out Record button - will work on this later
-        <Button
-          size="icon"
-          className={cn(
-            "rounded-full h-12 w-12 transition-all shadow-lg",
-            isRecording
-              ? "bg-red-500 hover:bg-red-600 shadow-red-500/50"
-              : "bg-primary hover:bg-primary/90 shadow-primary/30"
-          )}
-          onClick={onRecordingToggle}
-          title={isRecording ? "Stop" : "Record"}
-        >
-          {isRecording ? (
-            <Square className="h-5 w-5" />
-          ) : (
-            <Circle className="h-5 w-5 fill-current" />
-          )}
-        </Button>
-        */}
-
-        {/* TODO: Commented out Broadcast button - will work on this later
-        <Button
-          size="icon"
-          className={cn(
-            "rounded-full h-11 w-11 transition-all",
-            isBroadcasting
-              ? "bg-green-500 hover:bg-green-600 shadow-lg shadow-green-500/50"
-              : "hover:bg-background/60"
-          )}
-          variant={isBroadcasting ? "default" : "ghost"}
-          onClick={onBroadcastToggle}
-          title={isBroadcasting ? "Stop Broadcast" : "Broadcast"}
-        >
-          <Radio className={cn("h-4 w-4", isBroadcasting && "animate-pulse")} />
-        </Button>
-        */}
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
