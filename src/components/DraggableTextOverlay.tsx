@@ -29,9 +29,11 @@ interface DraggableTextOverlayProps {
   isSpacePressed: boolean;
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
+  scale: number;
 }
 
-export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
+// Separate component for Memoization
+const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
   overlay,
   onLayoutChange,
   onStyleChange,
@@ -46,17 +48,17 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   isSpacePressed,
   allOverlays = [],
   onSnapGuidesChange,
+  scale,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  // Track dragging state locally to hide toolbar during movement
+  const [isDragging, setIsDragging] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
-
-  // SmartDraggable handles positioning, we just need to handle text editing specific logic
 
   const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Simple rotation logic - similar to other components
     const element = e.currentTarget.closest(".group");
     if (!element) return;
 
@@ -105,7 +107,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   };
 
   const getToolbarPosition = () => {
-    // Approximate position for toolbar
     const x =
       (overlay.layout.position.x / 100) * sceneSize.width +
       ((overlay.layout.size.width / 100) * sceneSize.width) / 2;
@@ -124,11 +125,15 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         rotation={overlay.layout.rotation}
         isSelected={isSelected}
         onSelect={onSelect}
+        scale={scale}
         onDragStart={() => {
-          // Disable drag if editing
+          setIsDragging(true); // Hide toolbar
           if (!isEditing && !isSpacePressed) onInternalDragStart();
         }}
-        onDragStop={onInternalDragStop}
+        onDragStop={() => {
+          setIsDragging(false); // Show toolbar
+          onInternalDragStop();
+        }}
         onChange={(id, layout) => {
           onLayoutChange(id, {
             ...(layout.position && { position: layout.position }),
@@ -137,13 +142,11 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         }}
         allOverlays={allOverlays}
         onSnapGuidesChange={onSnapGuidesChange}
-        // Disable dragging when editing text
         enableResizing={!isEditing && !isSpacePressed}
         className={cn(
           "group transition-colors duration-200",
-          isEditing && "cursor-text pointer-events-auto" // Allow text selection
+          isEditing && "cursor-text pointer-events-auto"
         )}
-        // If editing, we want to disable the drag functionality of the wrapper
         cancel={isEditing ? "*" : ".close-button, .rotate-handle"}
       >
         <div
@@ -154,7 +157,9 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
               : "border-2 border-transparent hover:border-primary/50 border-dashed"
           )}
           onDoubleClick={handleDoubleClick}
-          style={{ cursor: isEditing ? "text" : "move" }}
+          // CRITICAL FIX: Stop click propagation to prevent deselecting when releasing drag or clicking
+          onClick={(e) => e.stopPropagation()}
+          style={{ cursor: isEditing ? "text" : "grab" }}
         >
           {isSelected && !isEditing && (
             <div
@@ -184,7 +189,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                 fontStyle: overlay.style.italic ? "italic" : "normal",
                 textDecoration: overlay.style.underline ? "underline" : "none",
                 textAlign: (overlay.style as any).textAlign || "left",
-                // Basic text styles for editing view
               }}
               dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
@@ -253,7 +257,8 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         </div>
       </SmartDraggable>
 
-      {isSelected && !isEditing && (
+      {/* Hide toolbar while dragging to prevent visual lag */}
+      {isSelected && !isEditing && !isDragging && (
         <div
           className="pointer-events-auto"
           style={{
@@ -274,3 +279,6 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
     </>
   );
 };
+
+// Memoize to prevent re-renders when other elements update
+export const DraggableTextOverlay = React.memo(DraggableTextOverlayComponent);

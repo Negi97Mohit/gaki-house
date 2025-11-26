@@ -20,6 +20,8 @@ interface PipWindowProps {
 
   onPipPositionChange: (pos: { x: number; y: number }) => void;
   onPipSizeChange: (size: { width: number; height: number }) => void;
+  // Added prop for rotation
+  onPipRotationChange: (rotation: number) => void;
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
 
@@ -44,10 +46,12 @@ export const PipWindow: React.FC<PipWindowProps> = ({
   cameraShape,
   pipBorder,
   pipShadow,
+  pipRotation = 0,
   customMaskUrl,
   screenShareMode,
   onPipPositionChange,
   onPipSizeChange,
+  onPipRotationChange,
   onInternalDragStart,
   onInternalDragStop,
   renderContent,
@@ -114,27 +118,50 @@ export const PipWindow: React.FC<PipWindowProps> = ({
     e.stopPropagation();
     onInternalDragStart();
 
+    // Find the element to rotate (the group container)
+    const element = e.currentTarget.closest(".group");
+    if (!element) return;
+
+    const box = element.getBoundingClientRect();
+    const centerX = box.left + box.width / 2;
+    const centerY = box.top + box.height / 2;
+    // Calculate start angle relative to center
+    const startAngle =
+      Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+    const initialRotation = pipRotation || 0;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const currentAngle =
+        Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
+        (180 / Math.PI);
+      const angleDiff = currentAngle - startAngle;
+      const newRotation = initialRotation + angleDiff;
+
+      // Optional: Snap to 15 degree increments if Shift is held (can add later)
+      onPipRotationChange(newRotation);
+    };
+
     const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
       onInternalDragStop();
     };
+
+    document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
 
   if (containerSize.width <= 0) return null;
 
   // Calculate effective size if aspect ratio is locked
-  // This overrides the potentially stale height in pipSize
   const effectiveSize = { ...pipSize };
   if (
     typeof currentAspectRatio === "number" &&
     containerSize.width > 0 &&
     containerSize.height > 0
   ) {
-    // Calculate height in pixels based on width px and ratio
     const widthPx = (pipSize.width / 100) * containerSize.width;
     const heightPx = widthPx / currentAspectRatio;
-    // Convert back to percentage
     effectiveSize.height = (heightPx / containerSize.height) * 100;
   }
 
@@ -142,7 +169,7 @@ export const PipWindow: React.FC<PipWindowProps> = ({
     <SmartDraggable
       id={`pip-${sceneId}`}
       position={pipPosition}
-      size={effectiveSize} // Pass the ratio-corrected size
+      size={effectiveSize}
       containerSize={containerSize}
       minWidth={containerSize.width * 0.1}
       minHeight={
@@ -154,39 +181,32 @@ export const PipWindow: React.FC<PipWindowProps> = ({
         typeof currentAspectRatio === "number" ? currentAspectRatio : false
       }
       zIndex={100}
+      rotation={pipRotation} // Pass rotation to SmartDraggable wrapper
       onChange={handleChange}
       onDragStart={onInternalDragStart}
       onDragStop={onInternalDragStop}
-      cancel=".rotate-handle, .pip-toggle-btn"
+      cancel=".rotate-handle"
       className="pointer-events-auto"
     >
-      <div
-        className="w-full h-full relative group"
-        style={{
-          overflow: "hidden",
-          transformOrigin: "center center",
-          borderRadius: "inherit",
-          ...getCameraShapeStyle(),
-        }}
-      >
-        {pipContent === "camera"
-          ? renderContent("cursor-move", {}, true, cameraShape)
-          : renderScreen("cursor-move")}
-
-        <div className="absolute inset-0 w-full h-full border-2 border-primary border-dashed rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-
-        <Button
-          size="icon"
-          variant="secondary"
-          className="pip-toggle-btn absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={(e) => {
-            e.stopPropagation();
-            setPipContent(pipContent === "camera" ? "share" : "camera");
+      {/* Outer Container: Handles Group Hover & Layout (No Overflow Hidden) */}
+      <div className="w-full h-full relative group">
+        {/* Inner Container: Handles Shape & Clipping (Overflow Hidden) */}
+        <div
+          className="w-full h-full relative"
+          style={{
+            transformOrigin: "center center",
+            ...getCameraShapeStyle(),
           }}
         >
-          <RotateCcw className="h-4 w-4" />
-        </Button>
+          {pipContent === "camera"
+            ? renderContent("cursor-move", {}, true, cameraShape)
+            : renderScreen("cursor-move")}
 
+          {/* Hover Border - Inside clipped area to match shape */}
+          <div className="absolute inset-0 w-full h-full border-2 border-primary border-dashed rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
+        </div>
+
+        {/* Rotate Handle - Outside clipped area, fully visible */}
         <div
           onMouseDown={handlePipRotationStart}
           className={cn(

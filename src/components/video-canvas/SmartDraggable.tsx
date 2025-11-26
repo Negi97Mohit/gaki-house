@@ -1,5 +1,5 @@
 // src/components/video-canvas/SmartDraggable.tsx
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Rnd, DraggableEventHandler, RndResizeCallback } from "react-rnd";
 import { cn } from "@/lib/utils";
 import {
@@ -22,6 +22,7 @@ interface SmartDraggableProps {
   zIndex: number;
   rotation?: number;
   isSelected?: boolean;
+  scale?: number;
 
   // Callbacks
   onChange: (
@@ -47,6 +48,21 @@ interface SmartDraggableProps {
   cancel?: string;
 }
 
+// Helper to prevent unnecessary updates
+const areGuidesEqual = (a: GuideLine[], b: GuideLine[]) => {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (
+      a[i].axis !== b[i].axis ||
+      a[i].type !== b[i].type ||
+      Math.abs(a[i].position - b[i].position) > 0.01
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
 export const SmartDraggable: React.FC<SmartDraggableProps> = ({
   id,
   position,
@@ -58,6 +74,7 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
   zIndex,
   rotation = 0,
   isSelected = false,
+  scale = 1,
   onChange,
   onSelect,
   onDragStart,
@@ -79,22 +96,27 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     height: 0,
   });
 
-  const isDragging = useRef(false);
-  const isResizing = useRef(false);
+  // Track interaction state
+  const [isInteracting, setIsInteracting] = useState(false);
+  const isDraggingRef = useRef(false);
+  const isResizingRef = useRef(false);
+
+  // Store last emitted guides to prevent render spam
+  const lastGuidesRef = useRef<GuideLine[]>([]);
 
   // Initialize Snap Guides hook
   const { calculateSnap } = useSnapGuides({
     containerSize,
     allElements: allOverlays,
     currentElementId: id,
-    snapThreshold: 3, // 3% threshold
+    snapThreshold: 3,
   });
 
   // Sync local state with props ONLY when not interacting
   useEffect(() => {
     if (
-      !isDragging.current &&
-      !isResizing.current &&
+      !isDraggingRef.current &&
+      !isResizingRef.current &&
       containerSize.width > 0 &&
       containerSize.height > 0
     ) {
@@ -110,7 +132,8 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
   // --- Handlers ---
 
   const handleDragStart: DraggableEventHandler = (e, d) => {
-    isDragging.current = true;
+    isDraggingRef.current = true;
+    setIsInteracting(true);
     onSelect?.(id);
     onDragStart?.();
   };
@@ -128,8 +151,13 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
       { width: widthPercent, height: heightPercent }
     );
 
+    // OPTIMIZATION: Only update parent if guides have visually changed
+    // This prevents 60fps re-renders of the entire App when dragging in empty space
     if (onSnapGuidesChange) {
-      onSnapGuidesChange(snapResult.guides);
+      if (!areGuidesEqual(snapResult.guides, lastGuidesRef.current)) {
+        lastGuidesRef.current = snapResult.guides;
+        onSnapGuidesChange(snapResult.guides);
+      }
     }
 
     // Update local state for smooth dragging
@@ -137,8 +165,15 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
   };
 
   const handleDragStop: DraggableEventHandler = (e, d) => {
-    isDragging.current = false;
-    if (onSnapGuidesChange) onSnapGuidesChange([]); // Clear guides
+    isDraggingRef.current = false;
+    setIsInteracting(false);
+
+    // Clean up guides on stop
+    if (onSnapGuidesChange) {
+      onSnapGuidesChange([]);
+      lastGuidesRef.current = [];
+    }
+
     onDragStop?.();
 
     // Calculate final position percentages
@@ -165,7 +200,8 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
   };
 
   const handleResizeStart: RndResizeCallback = () => {
-    isResizing.current = true;
+    isResizingRef.current = true;
+    setIsInteracting(true);
     onSelect?.(id);
     onDragStart?.();
   };
@@ -186,7 +222,8 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     delta,
     position
   ) => {
-    isResizing.current = false;
+    isResizingRef.current = false;
+    setIsInteracting(false);
     onDragStop?.();
 
     const wPx = parseInt(ref.style.width, 10);
@@ -213,6 +250,7 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     <Rnd
       size={{ width: localState.width, height: localState.height }}
       position={{ x: localState.x, y: localState.y }}
+      scale={scale}
       onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragStop={handleDragStop}
@@ -226,11 +264,14 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
       dragHandleClassName={dragHandleClassName}
       cancel={cancel}
       enableResizing={enableResizing}
-      className={cn("pointer-events-auto group", className)}
+      className={cn(
+        "pointer-events-auto group",
+        className,
+        isInteracting ? "cursor-grabbing" : "cursor-grab"
+      )}
       style={{
-        zIndex,
-        // IMPORTANT: We apply rotation to the wrapper, not Rnd itself,
-        // to keep resize handles axis-aligned and predictable.
+        // Boost Z-Index while dragging so it floats above everything
+        zIndex: isInteracting ? 9999 : zIndex,
       }}
     >
       <div

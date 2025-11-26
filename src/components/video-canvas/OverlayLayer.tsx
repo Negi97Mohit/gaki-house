@@ -1,3 +1,4 @@
+// src/components/video-canvas/OverlayLayer.tsx
 import React from "react";
 import {
   GeneratedOverlay,
@@ -205,6 +206,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
             isSpacePressed={isSpacePressed}
             allOverlays={allOverlays}
             onSnapGuidesChange={onSnapGuidesChange}
+            scale={viewport.scale} // Pass scale prop here!
           />
         ))}
     </div>

@@ -39,6 +39,7 @@ import {
   CanvasLayoutState,
   CanvasSectionCameraState,
   DEFAULT_CAMERA_STATE,
+  TextOverlayState, // Ensure this is imported
 } from "@/types/caption";
 import { RecordingSession } from "@/types/editor";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
@@ -397,7 +398,7 @@ const Index = () => {
   );
 
   // --- Overlay Handlers ---
-  const handleAddTextOverlay = () => {
+  const handleAddTextOverlay = useCallback(() => {
     const newTextOverlay: TextOverlayState = {
       id: generateTextOverlayId(),
       content: "Edit Text...",
@@ -416,48 +417,54 @@ const Index = () => {
     handleDeselectAll();
     setSelectedTextId(newTextOverlay.id);
     toast.info("Text element added. Click to edit!");
-  };
+  }, [activeScene.captionStyle, updateActiveScene]);
 
-  const handleRemoveTextOverlay = (id: string) => {
-    updateActiveScene((scene) => ({
-      ...scene,
-      textOverlays: scene.textOverlays.filter((o) => o.id !== id),
-    }));
-    if (selectedTextId === id) setSelectedTextId(null);
-  };
+  const handleRemoveTextOverlay = useCallback(
+    (id: string) => {
+      updateActiveScene((scene) => ({
+        ...scene,
+        textOverlays: scene.textOverlays.filter((o) => o.id !== id),
+      }));
+      if (selectedTextId === id) setSelectedTextId(null);
+    },
+    [updateActiveScene, selectedTextId]
+  );
 
-  const handleTextLayoutChange = (
-    id: string,
-    layout: Partial<TextOverlayState["layout"]>
-  ) => {
-    updateActiveScene((scene) => ({
-      ...scene,
-      textOverlays: scene.textOverlays.map((o) =>
-        o.id === id ? { ...o, layout: { ...o.layout, ...layout } } : o
-      ),
-    }));
-  };
+  const handleTextLayoutChange = useCallback(
+    (id: string, layout: Partial<TextOverlayState["layout"]>) => {
+      updateActiveScene((scene) => ({
+        ...scene,
+        textOverlays: scene.textOverlays.map((o) =>
+          o.id === id ? { ...o, layout: { ...o.layout, ...layout } } : o
+        ),
+      }));
+    },
+    [updateActiveScene]
+  );
 
-  const handleTextStyleChange = (
-    id: string,
-    style: Partial<TextOverlayState["style"]>
-  ) => {
-    updateActiveScene((scene) => ({
-      ...scene,
-      textOverlays: scene.textOverlays.map((o) =>
-        o.id === id ? { ...o, style: { ...o.style, ...style } } : o
-      ),
-    }));
-  };
+  const handleTextStyleChange = useCallback(
+    (id: string, style: Partial<TextOverlayState["style"]>) => {
+      updateActiveScene((scene) => ({
+        ...scene,
+        textOverlays: scene.textOverlays.map((o) =>
+          o.id === id ? { ...o, style: { ...o.style, ...style } } : o
+        ),
+      }));
+    },
+    [updateActiveScene]
+  );
 
-  const handleTextContentChange = (id: string, content: string) => {
-    updateActiveScene((scene) => ({
-      ...scene,
-      textOverlays: scene.textOverlays.map((o) =>
-        o.id === id ? { ...o, content } : o
-      ),
-    }));
-  };
+  const handleTextContentChange = useCallback(
+    (id: string, content: string) => {
+      updateActiveScene((scene) => ({
+        ...scene,
+        textOverlays: scene.textOverlays.map((o) =>
+          o.id === id ? { ...o, content } : o
+        ),
+      }));
+    },
+    [updateActiveScene]
+  );
 
   // --- AI Processing ---
   const processTranscript = useCallback(
@@ -545,13 +552,13 @@ const Index = () => {
     ]
   );
 
-  const handleDeselectAll = () => {
+  const handleDeselectAll = useCallback(() => {
     setSelectedBrowserId(null);
     setSelectedFileId(null);
     setSelectedTextId(null);
-  };
+  }, []);
 
-  const handleAssetSelect = async (asset: AssetResult) => {
+  const handleAssetSelect = useCallback(async (asset: AssetResult) => {
     // Simplified asset handler from original
     try {
       // Logic to add asset based on type (not fully implemented in snippet but assumed)
@@ -559,7 +566,7 @@ const Index = () => {
     } catch (error) {
       toast.error("Failed to add asset");
     }
-  };
+  }, []);
 
   // --- Props Construction ---
 
@@ -766,7 +773,15 @@ const Index = () => {
 
   const activeSceneProps = useMemo(
     () => (activeScene ? getAllPropsForScene(activeScene) : null),
-    [activeScene, savedOverlays]
+    [
+      activeScene,
+      savedOverlays,
+      handleAddTextOverlay,
+      handleRemoveTextOverlay,
+      handleTextLayoutChange,
+      handleTextStyleChange,
+      handleTextContentChange,
+    ]
   );
   const previousSceneProps = useMemo(
     () => (previousScene ? getAllPropsForScene(previousScene) : null),
@@ -837,11 +852,7 @@ const Index = () => {
     setSelectedFileId,
     onInternalDragStart: () => {},
     onInternalDragStop: () => {},
-    onDeselectAll: () => {
-      setSelectedBrowserId(null);
-      setSelectedFileId(null);
-      setSelectedTextId(null);
-    },
+    onDeselectAll: handleDeselectAll,
     onSetDynamicLayout: (target: any, mode: any) => {
       if (mode === "reset") {
         setDynamicLayout({
@@ -874,7 +885,7 @@ const Index = () => {
     canvasRef,
     onRecordingComplete: () => {},
     portalContainer: mainContainerRef,
-    hasAiPopoverAutoOpenedRef,
+    hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
     onAiPopoverAutoClose: () => {
       // Legacy auto-open logic
       setTimeout(() => {
