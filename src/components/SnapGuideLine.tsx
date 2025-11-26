@@ -21,7 +21,7 @@ export const SnapGuideLine: React.FC<GuideLineProps> = ({
         ? (position / 100) * containerSize.width
         : (position / 100) * containerSize.height;
 
-    // Enhanced colors - all hot pink for maximum visibility
+    // Clean dashed line like Canva
     const color = '#FF1493'; // Hot pink
 
     return (
@@ -35,19 +35,17 @@ export const SnapGuideLine: React.FC<GuideLineProps> = ({
                     ? {
                         left: `${positionPx}px`,
                         top: 0,
-                        width: '3px',
+                        width: '1px',
                         height: '100%',
-                        background: `linear-gradient(to bottom, transparent 0%, ${color} 5%, ${color} 95%, transparent 100%)`,
-                        boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+                        borderLeft: `1px dashed ${color}`,
                     }
                     : {
                         // Horizontal line (y-axis snap)
                         top: `${positionPx}px`,
                         left: 0,
-                        height: '3px',
+                        height: '1px',
                         width: '100%',
-                        background: `linear-gradient(to right, transparent 0%, ${color} 5%, ${color} 95%, transparent 100%)`,
-                        boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+                        borderTop: `1px dashed ${color}`,
                     }),
                 animation: 'snapAppear 0.15s ease-out',
             }}

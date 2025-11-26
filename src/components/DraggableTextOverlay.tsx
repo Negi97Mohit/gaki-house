@@ -71,7 +71,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
   const rndRef = useRef<Rnd | null>(null);
-
+  const [rotationAngle, setRotationAngle] = useState<number | null>(null);
   // Initialize snap guides hook
   const { calculateSnap } = useSnapGuides({
     containerSize: sceneSize,
@@ -239,10 +239,23 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
         Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
         (180 / Math.PI);
       const angleDiff = currentAngle - startAngle;
-      onLayoutChange(overlay.id, { rotation: initialRotation + angleDiff });
+      let newRotation = initialRotation + angleDiff;
+
+      // Snap to 15° increments unless Shift is held
+      if (!moveEvent.shiftKey) {
+        const snapInterval = 15;
+        newRotation = Math.round(newRotation / snapInterval) * snapInterval;
+      }
+
+      // Normalize to 0-360
+      newRotation = ((newRotation % 360) + 360) % 360;
+
+      setRotationAngle(Math.round(newRotation));
+      onLayoutChange(overlay.id, { rotation: newRotation });
     };
 
     const handleMouseUp = () => {
+      setRotationAngle(null);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
@@ -483,7 +496,12 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
               >
                 <X className="w-4 h-4 pointer-events-none" />
               </button>
-
+              {/* Live Angle Display */}
+              {rotationAngle !== null && (
+                <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-black/90 text-white px-2 py-1 rounded text-xs font-medium pointer-events-none">
+                  {rotationAngle}°
+                </div>
+              )}
               {/* Rotation Handle */}
               <div
                 onMouseDown={handleRotationStart}
