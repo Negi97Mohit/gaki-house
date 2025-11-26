@@ -390,7 +390,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
               onBlur={handleBlur}
               onFocus={handleFocus}
               className={cn(
-                "w-full h-full overflow-y-auto outline-none focus:ring-2 focus:ring-primary/50 rounded",
+                "w-full h-full overflow-auto outline-none focus:ring-2 focus:ring-primary/50 rounded",
                 overlay.style.layers && "opacity-50" // Dim if editing a complex style
               )}
               style={{
@@ -414,6 +414,8 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                 padding: overlay.style.padding || "0.5em",
                 textAlign: (overlay.style as any).textAlign || "left",
                 listStylePosition: "inside",
+                overflowWrap: "break-word",
+                wordBreak: "break-word",
                 ...(overlay.style.gradient && {
                   background: overlay.style.gradient,
                   WebkitBackgroundClip: "text",
@@ -437,7 +439,7 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
               ) : (
                 // --- 3. FALLBACK TO OLD RENDERER ---
                 <div
-                  className="w-full h-full whitespace-pre-wrap break-words p-2"
+                  className="w-full h-full whitespace-pre-wrap break-words overflow-hidden p-2"
                   style={{
                     fontFamily: overlay.style.fontFamily,
                     fontSize: `${overlay.style.fontSize}px`,
@@ -465,6 +467,8 @@ export const DraggableTextOverlay: React.FC<DraggableTextOverlayProps> = ({
                     minWidth: "50px",
                     textAlign: (overlay.style as any).textAlign || "left",
                     listStylePosition: "inside",
+                    overflowWrap: "break-word",
+                    wordBreak: "break-word",
                     ...(overlay.style.gradient && {
                       background: overlay.style.gradient,
                       WebkitBackgroundClip: "text",

@@ -17,6 +17,8 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
     justifyContent: "center",
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
+    overflowWrap: "break-word",
+    overflow: "hidden",
     pointerEvents: "none",
   };
 
@@ -152,9 +154,8 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
       style.opacity = layer.opacity;
       break;
     case "gold-foil":
-      style.backgroundImage = `url(${
-        layer.texture || "/textures/gold_foil.jpg"
-      })`;
+      style.backgroundImage = `url(${layer.texture || "/textures/gold_foil.jpg"
+        })`;
       style.backgroundSize = "cover";
       style.backgroundClip = "text";
       style.WebkitBackgroundClip = "text";
@@ -197,6 +198,9 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+    wordWrap: "break-word",
+    overflowWrap: "break-word",
   };
 
   // Find the base text layer to render (it must be part of the stack)

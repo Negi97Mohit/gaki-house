@@ -78,16 +78,35 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       const toolbarWidth = toolbarRef.current.offsetWidth;
       const containerRect = containerRef.current.getBoundingClientRect();
 
-      const x = position.x - toolbarWidth / 2;
-      const y = position.y - toolbarHeight - 16;
+      const gap = 16; // Gap between toolbar and text element
 
-      const clampedX = Math.max(
-        8,
-        Math.min(x, containerRect.width - toolbarWidth - 8)
-      );
-      const clampedY = Math.max(8, y);
+      // Try to center toolbar horizontally relative to the text
+      let x = position.x - toolbarWidth / 2;
 
-      setToolbarPosition({ x: clampedX, y: clampedY });
+      // Clamp horizontally to stay within container
+      x = Math.max(8, Math.min(x, containerRect.width - toolbarWidth - 8));
+
+      // Smart vertical positioning: prefer above, but switch to below if not enough space
+      let y: number;
+      const spaceAbove = position.y;
+      const spaceBelow = containerRect.height - position.y;
+      const requiredSpace = toolbarHeight + gap + 20; // Extra padding for safety
+
+      if (spaceAbove >= requiredSpace) {
+        // Enough space above - position above the text
+        y = position.y - toolbarHeight - gap;
+      } else if (spaceBelow >= requiredSpace) {
+        // Not enough space above, but space below - position below the text
+        y = position.y + gap + 40; // 40px approximate text element height
+      } else {
+        // Not enough space above or below - position at top of container
+        y = 8;
+      }
+
+      // Final clamp to ensure toolbar stays in viewport
+      y = Math.max(8, Math.min(y, containerRect.height - toolbarHeight - 8));
+
+      setToolbarPosition({ x, y });
     }
   }, [position, containerRef]);
 
@@ -119,8 +138,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       alignment === "left"
         ? "justifyLeft"
         : alignment === "center"
-        ? "justifyCenter"
-        : "justifyRight";
+          ? "justifyCenter"
+          : "justifyRight";
     document.execCommand(command);
     onStyleChange(overlay.id, { textAlign: alignment } as any);
   };
@@ -227,7 +246,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-1 flex-wrap max-w-[600px]">
+        <div className="flex items-center gap-1.5 flex-wrap max-w-[700px]">
           {/* Design Presets Button */}
           <Button
             variant="ghost"
@@ -282,7 +301,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                       onClick={() => handleFontFamilyChange(font)}
                       className={cn(
                         (overlay.style.fontFamily || "Inter") === font &&
-                          "bg-accent"
+                        "bg-accent"
                       )}
                       style={{ fontFamily: font }}
                     >

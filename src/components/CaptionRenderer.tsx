@@ -61,15 +61,19 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
   return (
     <div
       className={cn(
-        "w-full p-2 max-w-full transition-all duration-200 flex items-center justify-center text-center",
+        "w-full p-2 max-w-full transition-all duration-200 flex items-center justify-center text-center overflow-hidden",
         getShapeClasses(),
         captionStyle.shape === "banner" && "px-8",
         captionStyle.shape === "speech-bubble" &&
-          `after:border-t-[${captionStyle.backgroundColor.replace(/,/g, "-")}]` // Use the BG color for the speech bubble pointer
+        `after:border-t-[${captionStyle.backgroundColor.replace(/,/g, "-")}]` // Use the BG color for the speech bubble pointer
       )}
       style={combinedStyle}
     >
-      <div style={innerStyle}>
+      <div style={{
+        ...innerStyle,
+        overflowWrap: "break-word",
+        wordBreak: "break-word",
+      }}>
         {" "}
         {/* <-- WRAP StyleComponent IN A DIV WITH TYPOGRAPHY STYLES */}
         <StyleComponent {...props} baseStyle={baseStyle} />
