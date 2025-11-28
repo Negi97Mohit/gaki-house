@@ -28,6 +28,8 @@ import { RecordingSession } from "@/types/editor";
 import { zIndex } from "@/lib/zIndex";
 import { cn } from "@/lib/utils";
 
+import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
+
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 const generateTextOverlayId = () =>
@@ -86,6 +88,7 @@ const Index = () => {
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
   const [showAnimationLibrary, setShowAnimationLibrary] = useState(false);
+  const [showSettings, setShowSettings] = useState(false); // --- ADDED ---
 
   // Selection
   const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(
@@ -310,9 +313,50 @@ const Index = () => {
         onElementsChange={setExcalidrawElements}
       />
 
+      <FloatingControlsPanel
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        isMouseActive={isMouseActive}
+        style={activeScene.captionStyle}
+        onStyleChange={(style) => updateSceneProperty("captionStyle", style)}
+        dynamicStyle={activeScene.dynamicStyle}
+        onDynamicStyleChange={(style) =>
+          updateSceneProperty("dynamicStyle", style)
+        }
+        backgroundEffect={activeScene.backgroundEffect}
+        onBackgroundEffectChange={(effect) =>
+          updateSceneProperty("backgroundEffect", effect)
+        }
+        savedOverlays={savedOverlays}
+        onAddSavedOverlay={(overlay) => {
+          const newOverlay = { ...overlay, id: generateOverlayId() };
+          updateActiveScene((scene) => ({
+            ...scene,
+            activeOverlays: [...scene.activeOverlays, newOverlay],
+          }));
+          toast.success("Overlay added to canvas");
+        }}
+        onDeleteSavedOverlay={(id) => {
+          setSavedOverlays((prev) => prev.filter((o) => o.id !== id));
+          toast.success("Overlay removed from saved");
+        }}
+        canvasAspectRatio={activeScene.canvasAspectRatio || "16:9"}
+        onCanvasAspectRatioChange={(ratio) =>
+          updateSceneProperty("canvasAspectRatio", ratio)
+        }
+        customCanvasPresets={layoutManager.customPresets}
+        onSaveCanvasPreset={layoutManager.handleSaveCanvasPreset}
+        onDeleteCanvasPreset={layoutManager.handleDeleteCanvasPreset}
+        onCanvasPresetSelect={layoutManager.handleCanvasPresetSelect}
+        publicPresets={layoutManager.publicPresets}
+        isLoadingPublic={layoutManager.isLoadingPublic}
+        onShareCanvasPreset={layoutManager.shareCanvasPreset}
+        onUnshareCanvasPreset={layoutManager.unshareCanvasPreset}
+      />
+
       <BottomNavigation
         isMouseActive={isMouseActive}
-        onOpenSettings={() => {}}
+        onOpenSettings={() => setShowSettings((prev) => !prev)}
         onOpenSessions={() => setShowSessionsPanel(true)}
         onSaveLayout={handleSaveLayout}
         onOpenAnimationLibrary={() => setShowAnimationLibrary(true)}
