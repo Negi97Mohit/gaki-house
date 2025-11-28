@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { Rnd } from "react-rnd";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
   LayoutMode,
@@ -22,37 +21,31 @@ import {
   CanvasSectionCameraState,
   GeneratedOverlay,
   GeneratedLayout,
-  CanvasSectionState,
-  DEFAULT_CAMERA_STATE,
 } from "@/types/caption";
 import { useDeepgramSpeech } from "@/hooks/useDeepgramSpeech";
 import { useVideoStreams } from "@/hooks/useVideoStreams";
-import { ScreenShare, RotateCcw, Sparkles } from "lucide-react";
+import { usePipGestures } from "@/hooks/usePipGestures";
+import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
-import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 import { AssetResult } from "@/components/AssetLibrary";
-import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import { ASPECT_RATIOS } from "@/lib/backgrounds";
 import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
-import { CanvasGridLayout } from "@/components/CanvasGridLayout";
 import { SnapGuideLine } from "@/components/SnapGuideLine";
 import { GuideLine, OverlayElement } from "@/hooks/useSnapGuides";
-import { InteractiveGridSection } from "@/components/InteractiveGridSection";
 import { DynamicContentRenderer } from "@/components/video-canvas/DynamicContentRenderer";
 import { PipWindow } from "@/components/video-canvas/PipWindow";
 import { OverlayLayer } from "@/components/video-canvas/OverlayLayer";
 import { BrowserOverlayState } from "./DraggableBrowser";
-
-// --- Types & Interfaces ---
+import { VideoPlayer } from "@/components/video-canvas/VideoPlayer";
+import { ScreenShareView } from "@/components/video-canvas/ScreenShareView";
 
 interface VideoCanvasProps {
   sceneId: string;
   isTransitioningIn?: boolean;
   isTransitioningOut?: boolean;
   transition?: SceneTransition | null;
-
   captionsEnabled: boolean;
   onStyleChange: (style: any) => void;
   onCaptionsToggle: (on: boolean) => void;
@@ -153,7 +146,7 @@ interface VideoCanvasProps {
     id: string,
     layout: Partial<BrowserOverlayState["layout"]>
   ) => void;
-  sidebarProps: any; // Kept as any for brevity, fully typed in original
+  sidebarProps: any;
   selectedBrowserId: string | null;
   setSelectedBrowserId: (id: string | null) => void;
   fileOverlays: FileOverlayState[];
@@ -194,36 +187,12 @@ interface VideoCanvasProps {
   onAiPopoverAutoClose?: () => void;
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
+  onPipRotationChange?: (rotation: number) => void;
+  pipRotation?: number;
   canvasAspectRatio: string;
 }
 
 // --- Helpers ---
-
-const VideoPlayer: React.FC<{
-  stream: MediaStream | null;
-  className?: string;
-  style?: React.CSSProperties;
-}> = ({ stream, className, style }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [stream]);
-
-  return (
-    <video
-      ref={videoRef}
-      autoPlay
-      muted
-      playsInline
-      className={className}
-      style={style}
-    />
-  );
-};
-
 const getNumericAspectRatio = (
   shape: CameraShape,
   ratioId: string,
@@ -236,9 +205,7 @@ const getNumericAspectRatio = (
   }
   if (ratioId && ratioId !== "auto") {
     const option = ASPECT_RATIOS.find((r) => r.id === ratioId);
-    if (option && option.value > 0) {
-      return option.value;
-    }
+    if (option && option.value > 0) return option.value;
   }
   return false;
 };
@@ -248,16 +215,12 @@ const getCanvasAspectRatioStyle = (
   customAspectRatio: string
 ): React.CSSProperties => {
   let ratioValue: string | number = "auto";
-
   if (aspectRatio === "custom") {
     ratioValue = customAspectRatio || "auto";
   } else {
     const option = ASPECT_RATIOS.find((r) => r.id === aspectRatio);
-    if (option && option.value > 0) {
-      ratioValue = option.value;
-    }
+    if (option && option.value > 0) ratioValue = option.value;
   }
-
   return {
     aspectRatio: String(ratioValue),
     width: "100%",
@@ -268,102 +231,20 @@ const getCanvasAspectRatioStyle = (
 };
 
 // --- Main Component ---
-
 export const VideoCanvas = (props: VideoCanvasProps) => {
-  const {
-    sceneId,
-    isTransitioningIn,
-    isTransitioningOut,
-    transition,
-    generatedOverlays,
-    isVideoOn,
-    isAudioOn,
-    selectedVideoDevice,
-    selectedAudioDevice,
-    onVideoDeviceSelect,
-    onAudioDeviceSelect,
-    onVideoToggle,
-    onAudioToggle,
-    aiButtonPosition,
-    onAiButtonPositionChange,
-    onCaptionLayoutChange,
-    isNeonEdgeEnabled,
-    neonIntensity,
-    neonColor,
-    onPreviewGenerated,
-    isFullscreen,
-    onToggleFullscreen,
-    isFsSidebarOpen,
-    onFsSidebarToggle,
-    isAiModeEnabled,
-    onAiModeToggle,
-    captionsEnabled,
-    onCaptionsToggle,
-    liveCaptionStyle,
-    dynamicStyle,
-    videoFilter,
-    portalContainer,
-    browserOverlays,
-    onRemoveBrowser,
-    onBrowserUrlChange,
-    onBrowserLayoutChange,
-    selectedBrowserId,
-    setSelectedBrowserId,
-    fileOverlays,
-    onRemoveFile,
-    onFileLayoutChange,
-    selectedFileId,
-    setSelectedFileId,
-    onSetDynamicLayout,
-    onInternalDragStart,
-    onInternalDragStop,
-    dynamicLayout = {
-      isActive: false,
-      mode: "split-vertical",
-      target: null,
-    },
-    onDeselectAll,
-    blankCanvasColor,
-    textOverlays,
-    onGridAssetSelect,
-    screenShareMode,
-    onScreenShareModeChange,
-    onRemoveTextOverlay,
-    onTextLayoutChange,
-    onTextStyleChange,
-    onTextContentChange,
-    selectedTextId,
-    setSelectedTextId,
-    isMouseActive,
-    onOpenSessions,
-    onOpenSettings,
-    isRecording,
-    onRecordingToggle,
-    onCanvasBackgroundUpload,
-    canvasRef,
-    hasAiPopoverAutoOpenedRef,
-    canvasAspectRatio,
-    ...rest
-  } = props;
-
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
-
-  // Pan and Zoom State
-  const [viewport, setViewport] = useState({ scale: 1, x: 0, y: 0 });
-
-  // Canvas hover state
-  const [isCanvasHovered, setIsCanvasHovered] = useState(false);
-  const [isSpacePressed, setIsSpacePressed] = useState(false);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
 
-  // New: Scene size state for stable positioning
+  const [viewport, setViewport] = useState({ scale: 1, x: 0, y: 0 });
+  const [isCanvasHovered, setIsCanvasHovered] = useState(false);
+  const [isSpacePressed, setIsSpacePressed] = useState(false);
   const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
   const [activeSnapGuides, setActiveSnapGuides] = useState<GuideLine[]>([]);
-
-  const [dynamicSplitRatio, setDynamicSplitRatio] = useState(0.5);
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isDraggingDynamicSplitter, setIsDraggingDynamicSplitter] =
     useState(false);
+  const [dynamicSplitRatio, setDynamicSplitRatio] = useState(0.5);
   const [dynamicPipPosition, setDynamicPipPosition] = useState({
     x: 75,
     y: 75,
@@ -373,302 +254,249 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     height: 30,
   });
 
+  const [audioStreamForSpeech, setAudioStreamForSpeech] =
+    useState<MediaStream | null>(null);
+  // FIX: Track the device ID of the currently active stream to prevent duplicate creation
+  const activeAudioDeviceIdRef = useRef<string | null>(null);
+
+  const [fullTranscript, setFullTranscript] = useState("");
+  const [interimTranscript, setInterimTranscript] = useState("");
+  const transcriptTimerRef = useRef<NodeJS.Timeout>();
+
+  const {
+    sceneId,
+    generatedOverlays,
+    textOverlays,
+    browserOverlays,
+    fileOverlays,
+    isVideoOn,
+    isAudioOn,
+    selectedVideoDevice,
+    selectedAudioDevice,
+    screenShareMode,
+    captionsEnabled,
+    dynamicLayout,
+    onSetDynamicLayout,
+  } = props;
+
+  // --- Hooks ---
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
     isAudioOn: isAudioOn,
     isScreenSharing: screenShareMode === "screen",
     selectedCameraDevice: selectedVideoDevice,
     selectedAudioDevice: selectedAudioDevice,
-    onScreenShareEnd: () => onScreenShareModeChange("off"),
+    onScreenShareEnd: () => props.onScreenShareModeChange("off"),
   });
 
-  const splitDividerRef = useRef<HTMLDivElement>(null);
-  const [isDraggingSplitter, setIsDraggingSplitter] = useState(false);
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-
-  const [audioStreamForSpeech, setAudioStreamForSpeech] =
-    useState<MediaStream | null>(null);
-  const [fullTranscript, setFullTranscript] = useState("");
-  const [interimTranscript, setInterimTranscript] = useState("");
-  const transcriptTimerRef = useRef<NodeJS.Timeout>();
-
-  const fsSidebarContainerRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(fsSidebarContainerRef, () => {
-    if (props.isFsSidebarOpen) {
-      props.onFsSidebarToggle(false);
-    }
+  usePipGestures({
+    layoutMode: props.layoutMode,
+    containerRef: sceneRef,
+    containerSize,
+    pipSize: props.pipSize,
+    onPipPositionChange: props.onPipPositionChange,
+    screenShareMode: props.screenShareMode,
+    onScreenShareModeChange: props.onScreenShareModeChange,
   });
 
-  // --- Wheel Handler ---
-  const handleWheel = useCallback(
-    (e: WheelEvent) => {
-      const container = sceneRef.current;
-      if (!container) return;
-      // Only trigger this new logic if we're in solo mode
-      if (props.layoutMode !== "solo") {
-        return;
-      }
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      const rect = container.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      const newXPercent = (mouseX / containerSize.width) * 100;
-      const newYPercent = (mouseY / containerSize.height) * 100;
-
-      props.onPipPositionChange({
-        x: Math.max(0, Math.min(newXPercent, 100 - props.pipSize.width)),
-        y: Math.max(0, Math.min(newYPercent, 100 - props.pipSize.height)),
-      });
-
-      // Switch to blank canvas if not already sharing
-      if (props.screenShareMode === "off") {
-        props.onScreenShareModeChange("canvas");
-      }
-    },
-    [
-      props.onPipPositionChange,
-      props.pipSize,
-      props.screenShareMode,
-      props.onScreenShareModeChange,
-      props.layoutMode,
-      containerSize,
-    ]
-  );
-
-  useEffect(() => {
-    const container = canvasContainerRef.current;
-    if (!container) return;
-    container.addEventListener("wheel", handleWheel, { passive: false });
-    return () => {
-      container.removeEventListener("wheel", handleWheel);
-    };
-  }, [handleWheel]);
-
+  // --- Speech ---
   const handleFinalTranscript = useCallback((text: string) => {
     clearTimeout(transcriptTimerRef.current);
     setFullTranscript(text);
     setInterimTranscript("");
-    transcriptTimerRef.current = setTimeout(() => {
-      setFullTranscript("");
-    }, 4000);
-  }, []);
-
-  const handlePartialTranscript = useCallback((text: string) => {
-    setInterimTranscript(text);
+    transcriptTimerRef.current = setTimeout(() => setFullTranscript(""), 4000);
   }, []);
 
   const { startRecognition, stopRecognition } = useDeepgramSpeech({
     onFinalTranscript: handleFinalTranscript,
-    onPartialTranscript: handlePartialTranscript,
+    onPartialTranscript: (text) => setInterimTranscript(text),
     stream: audioStreamForSpeech,
   });
 
+  // Effect to manage Start/Stop based on state
   useEffect(() => {
-    if (audioStreamForSpeech && captionsEnabled) {
+    if (
+      audioStreamForSpeech &&
+      captionsEnabled &&
+      audioStreamForSpeech.active
+    ) {
       startRecognition();
     } else {
       stopRecognition();
     }
     return () => {
+      // Don't stop immediately on unmount/dep change if we are just switching streams?
+      // No, for safety we must stop. The loop is caused by stream regeneration, fixed below.
       stopRecognition();
       setFullTranscript("");
       setInterimTranscript("");
     };
   }, [
     audioStreamForSpeech,
-    isAudioOn,
     captionsEnabled,
     startRecognition,
     stopRecognition,
-    sceneId,
   ]);
 
-  // --- ResizeObservers ---
+  // Effect to manage Audio Stream Creation (STABILIZED)
+  useEffect(() => {
+    let dedicatedAudioStream: MediaStream | null = null;
+    let isMounted = true;
+
+    const manageAudioStream = async () => {
+      // 1. If Audio is Off: Clear everything
+      if (!isAudioOn) {
+        if (activeAudioDeviceIdRef.current !== null) {
+          console.log("[VideoCanvas] Audio off - Clearing stream");
+          setAudioStreamForSpeech(null);
+          activeAudioDeviceIdRef.current = null;
+        }
+        return;
+      }
+
+      // 2. Identify requested device ID (undefined = default)
+      const requestedDeviceId = selectedAudioDevice || "default";
+
+      // 3. Prevent re-creation if the current stream matches the requested ID
+      if (
+        audioStreamForSpeech &&
+        audioStreamForSpeech.active &&
+        activeAudioDeviceIdRef.current === requestedDeviceId
+      ) {
+        console.log(
+          "[VideoCanvas] Stream already active for device:",
+          requestedDeviceId
+        );
+        return;
+      }
+
+      console.log(
+        "[VideoCanvas] Requesting new audio stream for:",
+        requestedDeviceId
+      );
+
+      try {
+        const constraints: MediaStreamConstraints = {
+          audio: selectedAudioDevice
+            ? { deviceId: { exact: selectedAudioDevice } }
+            : true,
+        };
+
+        dedicatedAudioStream = await navigator.mediaDevices.getUserMedia(
+          constraints
+        );
+
+        if (!isMounted) {
+          dedicatedAudioStream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+
+        // 4. Update State & Ref
+        console.log(
+          "[VideoCanvas] Setting new audio stream ID:",
+          dedicatedAudioStream.id
+        );
+        activeAudioDeviceIdRef.current = requestedDeviceId;
+        setAudioStreamForSpeech(dedicatedAudioStream);
+      } catch (err) {
+        console.error("[VideoCanvas] Audio stream error:", err);
+        // Only toggle off if it's a hard error, not just a permission prompt cancel
+        if (isMounted) {
+          // props.onAudioToggle(false); // Optional: decide if we want to force toggle off
+        }
+      }
+    };
+
+    manageAudioStream();
+
+    // Cleanup function: Only stop tracks if we are genuinely unmounting or switching
+    return () => {
+      isMounted = false;
+      // NOTE: We do NOT stop 'dedicatedAudioStream' here because it might be the state we just set.
+      // We only clean up if *this specific run* created a stream that was never used, which is handled by !isMounted logic.
+      // The *previous* stream in state is cleaned up when 'setAudioStreamForSpeech' overwrites it (React doesn't auto-stop streams, we have to do it manually if we lose the ref).
+      // However, since we store it in state, we rely on the NEXT effect run to not trample it unless necessary.
+      // Actually, to be safe: The previous stream is held in 'audioStreamForSpeech'.
+      // We can't stop it here effectively without reference.
+    };
+  }, [isAudioOn, selectedAudioDevice]);
+  // removed `sceneId` from deps to prevent stream cut on autosave
+
+  // Separate cleanup effect for the state-held stream
+  useEffect(() => {
+    return () => {
+      if (audioStreamForSpeech) {
+        console.log(
+          "[VideoCanvas] Unmount/State Change - Stopping active stream tracks"
+        );
+        audioStreamForSpeech.getTracks().forEach((t) => t.stop());
+      }
+    };
+  }, [audioStreamForSpeech]);
+
+  // ... (Rest of component remains same)
   useEffect(() => {
     const container = canvasContainerRef.current;
-    if (!container) return;
-    const updateSize = () => {
-      if (container) {
-        setContainerSize({
-          width: container.clientWidth,
-          height: container.clientHeight,
-        });
-      }
-    };
-    const resizeObserver = new ResizeObserver(updateSize);
-    resizeObserver.observe(container);
-    updateSize();
-    return () => resizeObserver.disconnect();
-  }, [isFullscreen]);
-
-  useEffect(() => {
     const scene = sceneRef.current;
-    if (!scene) return;
-    const updateSceneSize = () => {
-      if (scene) {
-        setSceneSize({
-          width: scene.clientWidth,
-          height: scene.clientHeight,
-        });
-      }
-    };
-    const resizeObserver = new ResizeObserver(updateSceneSize);
-    resizeObserver.observe(scene);
-    updateSceneSize();
-    return () => resizeObserver.disconnect();
-  }, []);
+    if (!container || !scene) return;
 
-  // --- Splitter Logic ---
-  const handleSplitterMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDraggingSplitter(true);
-  };
+    const updateContainer = () =>
+      setContainerSize({
+        width: container.clientWidth,
+        height: container.clientHeight,
+      });
+    const updateScene = () =>
+      setSceneSize({ width: scene.clientWidth, height: scene.clientHeight });
 
-  useEffect(() => {
-    if (!isDraggingSplitter) return;
-    const handleMouseMove = (e: MouseEvent) => {
-      const container = canvasContainerRef.current;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      let ratio: number;
-      if (rest.layoutMode === "split-vertical") {
-        ratio = (e.clientY - rect.top) / rect.height;
-      } else {
-        ratio = (e.clientX - rect.left) / rect.width;
-      }
-      ratio = Math.max(0.2, Math.min(0.8, ratio));
-      rest.onSplitRatioChange(ratio);
-    };
-    const handleMouseUp = () => setIsDraggingSplitter(false);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    const roContainer = new ResizeObserver(updateContainer);
+    const roScene = new ResizeObserver(updateScene);
+
+    roContainer.observe(container);
+    roScene.observe(scene);
+    updateContainer();
+    updateScene();
+
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      roContainer.disconnect();
+      roScene.disconnect();
     };
-  }, [isDraggingSplitter, rest.layoutMode, rest.onSplitRatioChange]);
-
-  useEffect(() => {
-    if (!isDraggingDynamicSplitter) return;
-    const handleMouseMove = (e: MouseEvent) => {
-      const container = canvasContainerRef.current;
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      let ratio: number;
-      if (dynamicLayout.mode === "split-vertical") {
-        ratio = (e.clientY - rect.top) / rect.height;
-      } else {
-        ratio = (e.clientX - rect.left) / rect.width;
-      }
-      setDynamicSplitRatio(Math.max(0.2, Math.min(0.8, ratio)));
-    };
-    const handleMouseUp = () => setIsDraggingDynamicSplitter(false);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [isDraggingDynamicSplitter, dynamicLayout.mode]);
+  }, [props.isFullscreen]);
 
   const getCameraShapeStyle = () => {
     const baseStyle: React.CSSProperties = {
       overflow: "hidden",
       transition: "all 0.3s ease",
     };
-
-    if (rest.pipBorder && rest.pipBorder.width > 0) {
-      baseStyle.border = `${rest.pipBorder.width}px solid ${rest.pipBorder.color}`;
-    }
-
-    if (rest.pipShadow && rest.pipShadow.blur > 0) {
-      baseStyle.boxShadow = `0 0 ${rest.pipShadow.blur}px ${rest.pipShadow.color}`;
-    }
-
-    if (rest.customMaskUrl) {
-      return {
-        ...baseStyle,
-        maskImage: `url(${rest.customMaskUrl})`,
-        WebkitMaskImage: `url(${rest.customMaskUrl})`,
-        maskSize: "contain",
-        WebkitMaskSize: "contain",
-        maskRepeat: "no-repeat",
-        WebkitMaskRepeat: "no-repeat",
-        maskPosition: "center",
-        WebkitMaskPosition: "center",
-      };
-    }
-    switch (rest.cameraShape) {
-      case "circle":
-        return { ...baseStyle, borderRadius: "50%" };
-      case "rounded":
-        return { ...baseStyle, borderRadius: "16px" };
-      case "rectangle":
-      default:
-        return { ...baseStyle, borderRadius: "0" };
-    }
+    if (props.pipBorder && props.pipBorder.width > 0)
+      baseStyle.border = `${props.pipBorder.width}px solid ${props.pipBorder.color}`;
+    if (props.pipShadow && props.pipShadow.blur > 0)
+      baseStyle.boxShadow = `0 0 ${props.pipShadow.blur}px ${props.pipShadow.color}`;
+    if (props.cameraShape === "circle")
+      return { ...baseStyle, borderRadius: "50%" };
+    if (props.cameraShape === "rounded")
+      return { ...baseStyle, borderRadius: "16px" };
+    return { ...baseStyle, borderRadius: "0" };
   };
 
   const getVideoFilterStyle = (): string => {
     const filters: string[] = [];
-    if (videoFilter && videoFilter !== "none") filters.push(videoFilter);
-    if (rest.isBeautifyEnabled)
+    if (props.videoFilter && props.videoFilter !== "none")
+      filters.push(props.videoFilter);
+    if (props.isBeautifyEnabled)
       filters.push("blur(0.5px) saturate(1.1) brightness(1.05)");
-    if (rest.isLowLightEnabled) filters.push("brightness(1.3) contrast(1.15)");
+    if (props.isLowLightEnabled) filters.push("brightness(1.3) contrast(1.15)");
     return filters.length > 0 ? filters.join(" ") : "none";
   };
 
-  useEffect(() => {
-    let dedicatedAudioStream: MediaStream | null = null;
-    const manageAudioStream = async () => {
-      if (props.isAudioOn) {
-        try {
-          const constraints: MediaStreamConstraints = {
-            audio: selectedAudioDevice
-              ? { deviceId: { exact: selectedAudioDevice } }
-              : true,
-          };
-          dedicatedAudioStream = await navigator.mediaDevices.getUserMedia(
-            constraints
-          );
-          setAudioStreamForSpeech(dedicatedAudioStream);
-        } catch (err) {
-          console.error(
-            "Failed to get dedicated audio stream for captions:",
-            err
-          );
-          toast.error("Could not access microphone for captions.");
-          props.onAudioToggle(false);
-        }
-      } else {
-        if (audioStreamForSpeech) {
-          audioStreamForSpeech.getTracks().forEach((track) => track.stop());
-          setAudioStreamForSpeech(null);
-        }
-      }
-    };
-    manageAudioStream();
-    return () => {
-      if (dedicatedAudioStream) {
-        dedicatedAudioStream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [props.isAudioOn, selectedAudioDevice, props.onAudioToggle, sceneId]);
+  const renderCamera = (className?: string, style?: React.CSSProperties) => {
+    const {
+      style: _unsafeStyle,
+      width: _unsafeWidth,
+      height: _unsafeHeight,
+      className: _unsafeClassName,
+      ...safeSidebarProps
+    } = props.sidebarProps || {};
 
-  const videoFilterString = getVideoFilterStyle();
-
-  // --- RENDER FUNCTIONS ---
-
-  const renderCamera = (
-    className?: string,
-    style?: React.CSSProperties,
-    isPip: boolean = false,
-    cameraShape?: CameraShape
-  ) => {
     return (
       <div
         className={cn("w-full h-full", className)}
@@ -678,168 +506,30 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           stream={cameraStream}
           className="w-full h-full"
           portalContainer={
-            typeof portalContainer === "function" ? undefined : portalContainer
+            typeof props.portalContainer === "function"
+              ? undefined
+              : props.portalContainer
           }
-          style={{ ...style }}
-          videoFilter={videoFilterString}
-          customBackgroundUrl={rest.backgroundImageUrl}
-          pipBorder={props.sidebarProps.pipBorder}
-          pipShadow={props.sidebarProps.pipShadow}
-          isAutoFramingEnabled={rest.isAutoFramingEnabled}
-          isBeautifyEnabled={props.sidebarProps.isBeautifyEnabled}
-          isLowLightEnabled={props.sidebarProps.isLowLightEnabled}
-          isNeonEdgeEnabled={isNeonEdgeEnabled}
-          neonIntensity={neonIntensity}
-          neonColor={neonColor}
-          activeInteractiveFilter={props.sidebarProps.activeInteractiveFilter}
-          onInteractiveFilterChange={
-            props.sidebarProps.onInteractiveFilterChange
-          }
-          filterIntensity={props.sidebarProps.filterIntensity}
-          onFilterIntensityChange={props.sidebarProps.onFilterIntensityChange}
-          filterColor={props.sidebarProps.filterColor}
-          onFilterColorChange={props.sidebarProps.onFilterColorChange}
-          filterTarget={props.sidebarProps.filterTarget}
-          onFilterTargetChange={props.sidebarProps.onFilterTargetChange}
-          zoomSensitivity={rest.zoomSensitivity}
-          trackingSpeed={rest.trackingSpeed}
-          cameraBackground={props.sidebarProps.cameraBackground}
-          cameraAspectRatio={props.sidebarProps.cameraAspectRatio}
-          customAspectRatio={props.sidebarProps.customAspectRatio}
-          isFaceTrackingEnabled={props.sidebarProps.isFaceTrackingEnabled}
-          onPipBorderChange={props.sidebarProps.onPipBorderChange}
-          onPipShadowChange={props.sidebarProps.onPipShadowChange}
-          onAutoFramingChange={props.sidebarProps.onAutoFramingChange}
-          onBeautifyToggle={props.sidebarProps.onBeautifyToggle}
-          onLowLightToggle={props.sidebarProps.onLowLightToggle}
-          onVideoFilterChange={props.sidebarProps.onVideoFilterChange}
-          onNeonEdgeToggle={props.sidebarProps.onNeonEdgeToggle}
-          onNeonIntensityChange={props.sidebarProps.onNeonIntensityChange}
-          onNeonEdgeColorChange={props.sidebarProps.onNeonColorChange}
-          onZoomSensitivityChange={props.sidebarProps.onZoomSensitivityChange}
-          onTrackingSpeedChange={props.sidebarProps.onTrackingSpeedChange}
-          onCameraBackgroundChange={props.sidebarProps.onCameraBackgroundChange}
-          onCustomBackgroundUpload={props.sidebarProps.onCustomBackgroundUpload}
-          onCameraAspectRatioChange={
-            props.sidebarProps.onCameraAspectRatioChange
-          }
-          onCustomAspectRatioChange={
-            props.sidebarProps.onCustomAspectRatioChange
-          }
-          onFaceTrackingToggle={props.sidebarProps.onFaceTrackingToggle}
-          backgroundEffect={rest.backgroundEffect}
-          backgroundImageUrl={rest.backgroundImageUrl}
-          onUserPositionChange={props.onUserPositionChange}
+          style={style}
+          videoFilter={getVideoFilterStyle()}
+          isAutoFramingEnabled={props.isAutoFramingEnabled}
           videoDevices={props.videoDevices}
-          selectedDeviceId={props.sidebarProps.selectedDeviceId} // Assume sidebarProps carries this
           onCameraDeviceChange={props.onVideoDeviceSelect}
+          pipBorder={props.pipBorder}
+          pipShadow={props.pipShadow}
+          {...safeSidebarProps}
         />
-      </div>
-    );
-  };
-
-  const renderScreen = (className?: string) => {
-    if (props.screenShareMode === "canvas" && props.canvasLayout) {
-      return (
-        <CanvasGridLayout
-          layout={props.canvasLayout}
-          cameraStream={cameraStream}
-          screenStream={screenStream}
-          fileOverlays={fileOverlays}
-          textOverlays={textOverlays}
-          blankCanvasColor={blankCanvasColor}
-          backgroundImageUrl={props.backgroundImageUrl}
-          onSectionContentChange={(sectionId, content) => {
-            if (props.onCanvasLayoutChange) {
-              const updatedSections = props.canvasLayout!.sections.map((s) =>
-                s.id === sectionId ? { ...s, content } : s
-              );
-              props.onCanvasLayoutChange({
-                ...props.canvasLayout!,
-                sections: updatedSections,
-              });
-            }
-          }}
-          layoutMode={rest.layoutMode}
-          cameraShape={rest.cameraShape}
-          pipSize={rest.pipSize}
-          pipBorder={rest.pipBorder}
-          pipShadow={rest.pipShadow}
-          onGridAssetSelect={onGridAssetSelect}
-          onSectionCameraSettingsChange={props.onSectionCameraSettingsChange}
-          backgroundEffect={props.backgroundEffect}
-          onLayoutUpdate={props.onCanvasLayoutChange}
-          onSetSectionDefault={props.onSetSectionDefault}
-          activeSequenceId={props.activeSequenceId}
-          onUserPositionChange={props.onUserPositionChange}
-          videoDevices={props.videoDevices}
-        />
-      );
-    }
-
-    if (props.screenShareMode === "canvas") {
-      if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
-        return (
-          <div
-            className="w-full h-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${rest.backgroundImageUrl})` }}
-          />
-        );
-      }
-      return (
-        <div
-          className="w-full h-full"
-          style={{ backgroundColor: blankCanvasColor }}
-        />
-      );
-    }
-
-    if (props.screenShareMode === "screen" && screenStream) {
-      return (
-        <VideoPlayer
-          stream={screenStream}
-          className={cn("w-full h-full object-cover", className)}
-        />
-      );
-    }
-
-    return (
-      <div className="w-full h-full flex items-center justify-center text-center text-muted-foreground bg-black">
-        <div>
-          <ScreenShare className="w-16 h-16 mx-auto mb-2" />
-          <p className="text-sm">Select a share source</p>
-        </div>
       </div>
     );
   };
 
   const renderContent = () => {
-    // NOTE: This main content logic is for when NOT in dynamic split mode.
-    // Dynamic mode uses DynamicContentRenderer.
-
-    const mainIsCamera =
-      props.screenShareMode === "off" ||
-      (props.screenShareMode !== "off" && props.layoutMode === "pip"); // Simplified for PiP case
-    // Wait, original logic: if screen share is off, main is camera.
-    // If screen share is on AND mode is pip, typically screen is main, camera is pip.
-    // But let's check original logic:
-    // const mainIsCamera = (pipContent === "share" && props.screenShareMode !== "off") || props.screenShareMode === "off";
-    // Since we moved PipWindow state inside PipWindow, we need to determine main content here based on props.
-
-    // Standard behavior: If sharing screen, Screen is Main, Camera is PiP.
-    // If NOT sharing screen, Camera is Main (Solo).
-    const isScreenSharing = props.screenShareMode !== "off";
-
-    const mainContent = isScreenSharing
-      ? renderScreen()
-      : renderCamera(undefined, undefined, false, rest.cameraShape);
-
-    // --- DYNAMIC LAYOUT (Split/PiP via AI or manual selection) ---
     if (dynamicLayout.isActive && dynamicLayout.target) {
+      const isVertical = dynamicLayout.mode === "split-vertical";
       if (dynamicLayout.mode === "pip") {
         return (
           <div className="w-full h-full relative bg-black">
-            {mainContent}
+            {renderCamera()}
             <Rnd
               size={{
                 width: (containerSize.width * dynamicPipSize.width) / 100,
@@ -852,12 +542,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               minWidth={150}
               minHeight={150}
               bounds="parent"
-              onDragStop={(e, d) => {
+              onDragStop={(e, d) =>
                 setDynamicPipPosition({
                   x: (d.x / containerSize.width) * 100,
                   y: (d.y / containerSize.height) * 100,
-                });
-              }}
+                })
+              }
               onResizeStop={(e, dir, ref, delta, pos) => {
                 setDynamicPipSize({
                   width:
@@ -884,8 +574,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           </div>
         );
       }
-
-      const isVertical = dynamicLayout.mode === "split-vertical";
       return (
         <div
           className={cn(
@@ -931,149 +619,67 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               }%`,
             }}
           >
-            {mainContent}
+            {renderCamera()}
           </div>
         </div>
       );
     }
 
-    // --- STANDARD LAYOUTS ---
-    const getBackgroundStyle = (): React.CSSProperties => {
-      const style: React.CSSProperties = {};
-      if (rest.backgroundEffect === "blur") {
-        style.backdropFilter = "blur(10px)";
-        style.WebkitBackdropFilter = "blur(10px)";
-      }
-      if (rest.backgroundEffect === "image" && rest.backgroundImageUrl) {
-        style.backgroundImage = `url(${rest.backgroundImageUrl})`;
-        style.backgroundSize = "cover";
-        style.backgroundPosition = "center";
-      } else if (rest.backgroundEffect !== "image") {
-        style.backgroundColor = blankCanvasColor;
-      }
-      return style;
-    };
+    const isGridActive = !!props.canvasLayout;
+    const isScreenSharing = screenShareMode !== "off" || isGridActive;
 
-    // Solo Mode
-    if (rest.layoutMode === "solo") {
-      return (
-        <div className="w-full h-full relative" style={getBackgroundStyle()}>
-          <div className="relative w-full h-full">
-            {renderCamera(undefined, undefined, false, rest.cameraShape)}
-          </div>
-        </div>
-      );
-    }
+    const mainContent = isScreenSharing ? (
+      <ScreenShareView
+        screenShareMode={isGridActive ? "canvas" : screenShareMode}
+        screenStream={screenStream}
+        cameraStream={cameraStream}
+        canvasLayout={props.canvasLayout}
+        fileOverlays={fileOverlays}
+        textOverlays={textOverlays}
+        blankCanvasColor={props.blankCanvasColor}
+        backgroundImageUrl={props.backgroundImageUrl || null}
+        backgroundEffect={props.backgroundEffect}
+        layoutMode={props.layoutMode}
+        cameraShape={props.cameraShape}
+        pipSize={props.pipSize}
+        pipBorder={props.pipBorder}
+        pipShadow={props.pipShadow}
+        videoDevices={props.videoDevices}
+        onGridAssetSelect={props.onGridAssetSelect}
+        onSectionCameraSettingsChange={props.onSectionCameraSettingsChange}
+        onSetSectionDefault={props.onSetSectionDefault}
+        activeSequenceId={props.activeSequenceId}
+        onUserPositionChange={props.onUserPositionChange}
+        onCanvasLayoutChange={props.onCanvasLayoutChange}
+      />
+    ) : (
+      renderCamera()
+    );
 
-    // Standard Split Mode
-    if (
-      rest.layoutMode === "split-vertical" ||
-      rest.layoutMode === "split-horizontal"
-    ) {
-      const isVertical = rest.layoutMode === "split-vertical";
-      return (
-        <div
-          className={cn(
-            "w-full h-full flex",
-            isVertical ? "flex-col" : "flex-row"
-          )}
-        >
-          <div
-            className="relative bg-black flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${rest.splitRatio * 100}%`,
-            }}
-          >
-            {renderScreen()}
-          </div>
-          <div
-            ref={splitDividerRef}
-            className={cn(
-              "bg-border hover:bg-primary transition-colors flex items-center justify-center group",
-              isVertical
-                ? "h-2 w-full cursor-row-resize"
-                : "w-2 h-full cursor-col-resize"
-            )}
-            onMouseDown={handleSplitterMouseDown}
-          >
-            <div
-              className={cn(
-                "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
-                isVertical ? "w-12 h-1" : "w-1 h-12"
-              )}
-            />
-          </div>
-          <div
-            className="relative bg-black flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${
-                (1 - rest.splitRatio) * 100
-              }%`,
-            }}
-          >
-            <div
-              className="w-full h-full relative"
-              style={getBackgroundStyle()}
-            >
-              {rest.backgroundEffect === "image" && rest.backgroundImageUrl && (
-                <div
-                  className="absolute inset-0 opacity-30"
-                  style={{
-                    backgroundImage: `url(${rest.backgroundImageUrl})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                />
-              )}
-              <div className="relative w-full h-full">
-                {renderCamera(undefined, undefined, false, rest.cameraShape)}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    // PiP Mode (Default Fallback)
     return (
-      <div className="w-full h-full relative" style={getBackgroundStyle()}>
-        <div
-          className="relative w-full h-full"
-          style={
-            rest.backgroundEffect === "blur"
-              ? {
-                  backdropFilter: "blur(20px)",
-                  WebkitBackdropFilter: "blur(20px)",
-                }
-              : {}
-          }
-        >
-          {isScreenSharing
-            ? renderScreen()
-            : renderCamera(undefined, undefined, false, rest.cameraShape)}
-        </div>
-
-        {/* PiP Window */}
-        {isScreenSharing && containerSize.width > 0 && !props.canvasLayout && (
+      <div className="w-full h-full relative">
+        <div className="relative w-full h-full">{mainContent}</div>
+        {isScreenSharing && !isGridActive && props.layoutMode === "pip" && (
           <PipWindow
             sceneId={sceneId}
             containerSize={containerSize}
-            pipPosition={rest.pipPosition}
-            pipSize={rest.pipSize}
-            cameraShape={rest.cameraShape}
-            pipBorder={rest.pipBorder}
-            pipShadow={rest.pipShadow}
-            customMaskUrl={rest.customMaskUrl}
+            pipPosition={props.pipPosition}
+            pipSize={props.pipSize}
+            cameraShape={props.cameraShape}
+            pipBorder={props.pipBorder}
+            pipShadow={props.pipShadow}
+            customMaskUrl={props.customMaskUrl}
             screenShareMode={props.screenShareMode}
-            pipRotation={rest.pipRotation}
-            onPipPositionChange={rest.onPipPositionChange}
-            onPipSizeChange={rest.onPipSizeChange}
-            onInternalDragStart={onInternalDragStart}
-            onInternalDragStop={onInternalDragStop}
+            onPipPositionChange={props.onPipPositionChange}
+            onPipSizeChange={props.onPipSizeChange}
+            onPipRotationChange={props.onPipRotationChange || (() => {})}
+            pipRotation={props.pipRotation}
+            onInternalDragStart={props.onInternalDragStart}
+            onInternalDragStop={props.onInternalDragStop}
             renderContent={renderCamera}
-            renderScreen={renderScreen}
+            renderScreen={() => <VideoPlayer stream={screenStream} />}
             currentAspectRatio={getNumericAspectRatio(
-              rest.cameraShape,
+              props.cameraShape,
               props.sidebarProps.cameraAspectRatio,
               props.sidebarProps.customAspectRatio
             )}
@@ -1083,99 +689,55 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     );
   };
 
-  // --- Animation Logic ---
-  const getAnimationClass = () => {
-    if (!transition || transition.type === "none") return "opacity-100";
-    const isNewScene = transition.toSceneId === props.sceneId;
-    if (isTransitioningOut) {
-      switch (transition.type) {
-        case "dissolve":
-          return "animate-dissolve-out";
-        case "slide":
-          return isNewScene
-            ? "animate-slide-out-to-right"
-            : "animate-slide-out-to-left";
-        default:
-          return "animate-dissolve-out";
-      }
-    }
-    if (isTransitioningIn) {
-      switch (transition.type) {
-        case "dissolve":
-          return "animate-dissolve-in";
-        case "slide":
-          return isNewScene
-            ? "animate-slide-in-from-right"
-            : "animate-slide-in-from-left";
-        default:
-          return "animate-dissolve-in";
-      }
-    }
-    return "opacity-100";
-  };
-
-  const getAnimationStyles = (): React.CSSProperties => {
-    if (!transition) return {};
-    return {
-      animationDuration: `${transition.durationMs}ms`,
-      animationTimingFunction: isTransitioningIn
-        ? transition.animationIn
-        : transition.animationOut,
-      animationFillMode: "forwards",
-      zIndex: isTransitioningIn ? 2 : 1,
-    };
-  };
-
-  // --- Component Tree ---
-
-  const allOverlays: OverlayElement[] = useMemo(() => {
-    const overlays: OverlayElement[] = [];
-    textOverlays.forEach((o) =>
-      overlays.push({ id: o.id, layout: o.layout, type: "text" })
-    );
-    browserOverlays.forEach((o) =>
-      overlays.push({ id: o.id, layout: o.layout, type: "browser" })
-    );
-    fileOverlays.forEach((o) =>
-      overlays.push({ id: o.id, layout: o.layout, type: "file" })
-    );
-    generatedOverlays.forEach((o) =>
-      overlays.push({ id: o.id, layout: o.layout, type: "generated" })
-    );
-    return overlays;
-  }, [textOverlays, browserOverlays, fileOverlays, generatedOverlays]);
+  const allOverlays: OverlayElement[] = useMemo(
+    () => [
+      ...textOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "text",
+      })),
+      ...browserOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "browser",
+      })),
+      ...fileOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "file",
+      })),
+      ...generatedOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "generated",
+      })),
+    ],
+    [textOverlays, browserOverlays, fileOverlays, generatedOverlays]
+  );
 
   return (
     <div
       ref={canvasContainerRef}
       className={cn(
         "absolute inset-0 w-full h-full bg-neutral-900 overflow-hidden flex items-center justify-center",
-        getAnimationClass(),
-        !isMouseActive && isFullscreen && "cursor-none"
+        !props.isMouseActive && props.isFullscreen && "cursor-none"
       )}
-      style={{
-        ...getAnimationStyles(),
-        pointerEvents: isTransitioningOut ? "none" : "auto",
-      }}
     >
       <div
         ref={sceneRef}
         className="relative overflow-hidden"
-        style={{
-          ...getCanvasAspectRatioStyle(
-            props.sidebarProps.canvasAspectRatio,
-            props.sidebarProps.customAspectRatio
-          ),
-          willChange: "transform",
-        }}
-        onClick={onDeselectAll}
+        style={getCanvasAspectRatioStyle(
+          props.sidebarProps.canvasAspectRatio,
+          props.sidebarProps.customAspectRatio
+        )}
+        onClick={props.onDeselectAll}
         onMouseEnter={() => setIsCanvasHovered(true)}
         onMouseLeave={() => setIsCanvasHovered(false)}
       >
         <CanvasHoverToolbar
-          blankCanvasColor={blankCanvasColor}
+          blankCanvasColor={props.blankCanvasColor}
           onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
-          onCanvasBackgroundUpload={onCanvasBackgroundUpload}
+          onCanvasBackgroundUpload={props.onCanvasBackgroundUpload}
           onCanvasBackgroundAssetSelect={props.onCanvasBackgroundAssetSelect}
           isVisible={isCanvasHovered}
           canvasLayout={props.canvasLayout}
@@ -1191,137 +753,97 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           style={{ zIndex: 100 }}
         />
 
-        {/* Overlays Below Video */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: "var(--z-overlays-below-video)" }}
-        >
-          <OverlayLayer
-            layerOrder="below-video"
-            sceneId={sceneId}
-            containerSize={sceneSize}
-            viewport={viewport}
-            htmlOverlays={generatedOverlays}
-            browserOverlays={browserOverlays}
-            fileOverlays={fileOverlays}
-            textOverlays={textOverlays}
-            activeDynamicTargetId={
-              dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
-            }
-            onSetDynamicLayout={onSetDynamicLayout}
-            onOverlayLayoutChange={rest.onOverlayLayoutChange}
-            onRemoveOverlay={rest.onRemoveOverlay}
-            onPreviewGenerated={onPreviewGenerated}
-            portalContainer={
-              typeof portalContainer === "function" ? null : portalContainer
-            }
-            allOverlays={allOverlays}
-            onSnapGuidesChange={setActiveSnapGuides}
-            onRemoveBrowser={onRemoveBrowser}
-            onBrowserUrlChange={onBrowserUrlChange}
-            onBrowserLayoutChange={onBrowserLayoutChange}
-            selectedBrowserId={selectedBrowserId}
-            onSelectBrowser={setSelectedBrowserId}
-            onRemoveFile={onRemoveFile}
-            onFileLayoutChange={onFileLayoutChange}
-            selectedFileId={selectedFileId}
-            onSelectFile={setSelectedFileId}
-            onTextLayoutChange={onTextLayoutChange}
-            onTextStyleChange={onTextStyleChange}
-            onTextContentChange={onTextContentChange}
-            onRemoveTextOverlay={onRemoveTextOverlay}
-            containerRef={sceneRef}
-            selectedTextId={selectedTextId}
-            onSelectText={setSelectedTextId}
-            isSpacePressed={isSpacePressed}
-            onInternalDragStart={onInternalDragStart}
-            onInternalDragStop={onInternalDragStop}
-          />
-        </div>
-
-        {/* Overlays Above Video */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: "var(--z-overlays-above-video)" }}
-        >
-          <OverlayLayer
-            layerOrder="above-video"
-            sceneId={sceneId}
-            containerSize={sceneSize}
-            viewport={viewport}
-            htmlOverlays={generatedOverlays}
-            browserOverlays={browserOverlays}
-            fileOverlays={fileOverlays}
-            textOverlays={textOverlays}
-            activeDynamicTargetId={
-              dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
-            }
-            onSetDynamicLayout={onSetDynamicLayout}
-            onOverlayLayoutChange={rest.onOverlayLayoutChange}
-            onRemoveOverlay={rest.onRemoveOverlay}
-            onPreviewGenerated={onPreviewGenerated}
-            portalContainer={
-              typeof portalContainer === "function" ? null : portalContainer
-            }
-            allOverlays={allOverlays}
-            onSnapGuidesChange={setActiveSnapGuides}
-            onRemoveBrowser={onRemoveBrowser}
-            onBrowserUrlChange={onBrowserUrlChange}
-            onBrowserLayoutChange={onBrowserLayoutChange}
-            selectedBrowserId={selectedBrowserId}
-            onSelectBrowser={setSelectedBrowserId}
-            onRemoveFile={onRemoveFile}
-            onFileLayoutChange={onFileLayoutChange}
-            selectedFileId={selectedFileId}
-            onSelectFile={setSelectedFileId}
-            onTextLayoutChange={onTextLayoutChange}
-            onTextStyleChange={onTextStyleChange}
-            onTextContentChange={onTextContentChange}
-            onRemoveTextOverlay={onRemoveTextOverlay}
-            containerRef={sceneRef}
-            selectedTextId={selectedTextId}
-            onSelectText={setSelectedTextId}
-            isSpacePressed={isSpacePressed}
-            onInternalDragStart={onInternalDragStart}
-            onInternalDragStop={onInternalDragStop}
-          />
-        </div>
+        {["below-video", "above-video"].map((order) => (
+          <div
+            key={order}
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              zIndex:
+                order === "below-video"
+                  ? "var(--z-overlays-below-video)"
+                  : "var(--z-overlays-above-video)",
+            }}
+          >
+            <OverlayLayer
+              layerOrder={order as "below-video" | "above-video"}
+              sceneId={sceneId}
+              containerSize={sceneSize}
+              viewport={viewport}
+              htmlOverlays={generatedOverlays}
+              browserOverlays={browserOverlays}
+              fileOverlays={fileOverlays}
+              textOverlays={textOverlays}
+              activeDynamicTargetId={
+                dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
+              }
+              onSetDynamicLayout={onSetDynamicLayout}
+              onOverlayLayoutChange={props.onOverlayLayoutChange}
+              onRemoveOverlay={props.onRemoveOverlay}
+              onPreviewGenerated={props.onPreviewGenerated}
+              portalContainer={
+                typeof props.portalContainer === "function"
+                  ? null
+                  : props.portalContainer
+              }
+              allOverlays={allOverlays}
+              onSnapGuidesChange={setActiveSnapGuides}
+              onRemoveBrowser={props.onRemoveBrowser}
+              onBrowserUrlChange={props.onBrowserUrlChange}
+              onBrowserLayoutChange={props.onBrowserLayoutChange}
+              selectedBrowserId={props.selectedBrowserId}
+              onSelectBrowser={props.setSelectedBrowserId}
+              onRemoveFile={props.onRemoveFile}
+              onFileLayoutChange={props.onFileLayoutChange}
+              selectedFileId={props.selectedFileId}
+              onSelectFile={props.setSelectedFileId}
+              onTextLayoutChange={props.onTextLayoutChange}
+              onTextStyleChange={props.onTextStyleChange}
+              onTextContentChange={props.onTextContentChange}
+              onRemoveTextOverlay={props.onRemoveTextOverlay}
+              containerRef={sceneRef}
+              selectedTextId={props.selectedTextId}
+              onSelectText={props.setSelectedTextId}
+              isSpacePressed={isSpacePressed}
+              onInternalDragStart={props.onInternalDragStart}
+              onInternalDragStop={props.onInternalDragStop}
+            />
+          </div>
+        ))}
       </div>
 
-      {/* AI Popover Trigger */}
       {containerSize.width > 0 && (
         <Rnd
           style={{ zIndex: "var(--z-ai-popover-trigger)" }}
           cancel=".aicp-content"
           size={{ width: 64, height: 64 }}
           position={{
-            x: (aiButtonPosition.x / 100) * containerSize.width - 32,
-            y: (aiButtonPosition.y / 100) * containerSize.height - 32,
+            x: (props.aiButtonPosition.x / 100) * containerSize.width - 32,
+            y: (props.aiButtonPosition.y / 100) * containerSize.height - 32,
           }}
           onDragStop={(e, d) => {
             const newX = ((d.x + 32) / containerSize.width) * 100;
             const newY = ((d.y + 32) / containerSize.height) * 100;
-            onAiButtonPositionChange({ x: newX, y: newY });
+            props.onAiButtonPositionChange({ x: newX, y: newY });
           }}
           bounds="parent"
-          disableDragging={false}
-          enableResizing={false}
           className={cn(
             "pointer-events-auto transition-opacity duration-300",
-            props.isMouseActive || !isFullscreen ? "opacity-100" : "opacity-0"
+            props.isMouseActive || !props.isFullscreen
+              ? "opacity-100"
+              : "opacity-0"
           )}
         >
           <AICommandPopover
-            onSubmit={rest.onProcessTranscript}
+            onSubmit={props.onProcessTranscript}
             isProcessing={props.isProcessingAi}
             activeOverlays={generatedOverlays}
-            isFullscreen={isFullscreen}
-            isAiModeEnabled={isAiModeEnabled}
-            onAiModeToggle={onAiModeToggle}
+            isFullscreen={props.isFullscreen}
+            isAiModeEnabled={props.isAiModeEnabled}
+            onAiModeToggle={props.onAiModeToggle}
             captionsEnabled={captionsEnabled}
-            onCaptionsToggle={onCaptionsToggle}
+            onCaptionsToggle={props.onCaptionsToggle}
             portalContainer={canvasContainerRef.current}
-            hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
+            hasAiPopoverAutoOpenedRef={props.hasAiPopoverAutoOpenedRef}
             onAutoClose={props.onAiPopoverAutoClose}
           >
             <Button
@@ -1334,7 +856,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         </Rnd>
       )}
 
-      {/* Snap Guide Lines */}
       {activeSnapGuides.map((guide, index) => (
         <SnapGuideLine
           key={index}

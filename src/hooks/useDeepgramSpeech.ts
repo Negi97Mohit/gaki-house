@@ -1,4 +1,3 @@
-// src/hooks/useDeepgramSpeech.ts
 import { useState, useCallback, useRef, useEffect } from "react";
 import {
   createClient,
@@ -23,9 +22,8 @@ export const useDeepgramSpeech = ({
 }: UseDeepgramSpeechProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const connectionRef = useRef<LiveClient | null>(null);
-  const isCleaningUp = useRef(false);
+  const connectionIdRef = useRef<number>(0); // Track connection ID to prevent race conditions
 
-  // FIX: Use refs for the callbacks.
   const onPartialTranscriptRef = useRef(onPartialTranscript);
   const onFinalTranscriptRef = useRef(onFinalTranscript);
 
@@ -37,97 +35,131 @@ export const useDeepgramSpeech = ({
   const { startCapture, stopCapture } = useContinuousAudio({
     stream,
     onAudioChunk: (chunk) => {
+      // Only send if connected and ready
       if (connectionRef.current?.getReadyState() === 1) {
-        console.log("[useDeepgramSpeech] Sending audio chunk to Deepgram.");
         connectionRef.current.send(chunk);
       }
     },
     onError: (error) => {
       console.error("[useDeepgramSpeech] Audio capture error:", error);
-      toast.error(`Audio Capture Error: ${error.message}`);
+      if (error.name === "NotSupportedError") {
+        toast.error("Microphone format not supported.");
+      }
     },
   });
 
+  // Keep refs to capture functions to use them in callbacks without dependency cycles
+  const captureRefs = useRef({ startCapture, stopCapture });
+  useEffect(() => {
+    captureRefs.current = { startCapture, stopCapture };
+  }, [startCapture, stopCapture]);
+
   const startRecognition = useCallback(() => {
-    isCleaningUp.current = false;
-    if (connectionRef.current) return;
+    // Prevent duplicate connections
+    if (connectionRef.current) {
+      console.log("[useDeepgramSpeech] Already connected, skipping start.");
+      return;
+    }
+
     if (!DEEPGRAM_API_KEY) {
       toast.error("Deepgram API Key is missing.");
       return;
     }
-    console.log(
-      "%c[useDeepgramSpeech] 🎤 Starting Deepgram connection...",
-      "color: #00aaff"
-    );
-    const deepgram = createClient(DEEPGRAM_API_KEY);
-    const connection = deepgram.listen.live({
-      model: "nova-2",
-      interim_results: true,
-      smart_format: true,
-      punctuate: true, // Corrected typo from 'puncutate'
-    });
-    connectionRef.current = connection;
 
-    connection.on(LiveTranscriptionEvents.Open, () => {
-      console.log(
-        "%c[useDeepgramSpeech] ✅ Deepgram connection OPENED.",
-        "color: #00cc00"
-      );
-      startCapture();
-      setIsRecording(true);
-      toast.success("Voice recognition active");
-    });
+    console.log("[useDeepgramSpeech] Starting Deepgram connection...");
 
-    connection.on(LiveTranscriptionEvents.Transcript, (data) => {
-      if (isCleaningUp.current) return;
-      const transcript = data.channel.alternatives[0].transcript;
-      if (!transcript) return;
+    try {
+      const currentConnectionId = Date.now();
+      connectionIdRef.current = currentConnectionId;
 
-      if (data.is_final) {
-        console.log(
-          `%c[useDeepgramSpeech] Final Transcript: "${transcript}"`,
-          "color: #00cc00"
-        );
-        onFinalTranscriptRef.current(transcript);
-      } else {
-        console.log(`[useDeepgramSpeech] Partial Transcript: "${transcript}"`);
-        onPartialTranscriptRef.current(transcript);
-      }
-    });
+      const deepgram = createClient(DEEPGRAM_API_KEY);
+      const connection = deepgram.listen.live({
+        model: "nova-2",
+        interim_results: true,
+        smart_format: true,
+        punctuate: true,
+      });
+      connectionRef.current = connection;
 
-    connection.on(LiveTranscriptionEvents.Close, () => {
-      console.log(
-        "%c[useDeepgramSpeech] 🛑 Deepgram connection CLOSED.",
-        "color: #ff0000"
-      );
-      stopCapture();
-      setIsRecording(false);
-      connectionRef.current = null;
-    });
+      connection.on(LiveTranscriptionEvents.Open, () => {
+        // RACE CONDITION FIX: Only act if this is still the active connection
+        if (connectionIdRef.current === currentConnectionId) {
+          console.log("[useDeepgramSpeech] Connection OPENED.");
+          captureRefs.current.startCapture();
+          setIsRecording(true);
+          toast.success("Listening...");
+        }
+      });
 
-    connection.on(LiveTranscriptionEvents.Error, (error) => {
-      console.error(
-        "%c[useDeepgramSpeech] ❌ Deepgram ERROR:",
-        "color: #ff0000",
-        error
-      );
-      toast.error("Deepgram connection error.");
-    });
-  }, [startCapture, stopCapture]); // FIX: Remove changing dependencies.
+      connection.on(LiveTranscriptionEvents.Transcript, (data) => {
+        if (connectionIdRef.current !== currentConnectionId) return;
+
+        const transcript = data.channel.alternatives[0]?.transcript;
+        if (!transcript) return;
+
+        if (data.is_final) {
+          onFinalTranscriptRef.current(transcript);
+        } else {
+          onPartialTranscriptRef.current(transcript);
+        }
+      });
+
+      connection.on(LiveTranscriptionEvents.Close, () => {
+        // RACE CONDITION FIX: Only stop capture if the CLOSING connection is the ACTIVE one
+        if (connectionIdRef.current === currentConnectionId) {
+          console.log(
+            "[useDeepgramSpeech] Active connection CLOSED. Stopping capture."
+          );
+          captureRefs.current.stopCapture();
+          setIsRecording(false);
+          connectionRef.current = null;
+        } else {
+          console.log("[useDeepgramSpeech] Old connection CLOSED. Ignoring.");
+        }
+      });
+
+      connection.on(LiveTranscriptionEvents.Error, (error) => {
+        if (connectionIdRef.current === currentConnectionId) {
+          console.error("[useDeepgramSpeech] Deepgram Error:", error);
+        }
+      });
+    } catch (err) {
+      console.error("[useDeepgramSpeech] Failed to create client:", err);
+      toast.error("Failed to start voice recognition");
+    }
+  }, []);
 
   const stopRecognition = useCallback(() => {
-    console.log(
-      "%c[useDeepgramSpeech] 🎤 Pausing Deepgram connection...",
-      "color: #ffaa00"
-    );
-    isCleaningUp.current = true;
+    console.log("[useDeepgramSpeech] Stopping recognition...");
+
+    // Invalidate current connection ID so pending events (like Close) don't stop the *next* connection
+    connectionIdRef.current = 0;
+
     if (connectionRef.current) {
-      connectionRef.current.finish();
+      try {
+        connectionRef.current.finish();
+      } catch (e) {
+        console.warn("Error finishing connection:", e);
+      }
       connectionRef.current = null;
     }
-    stopCapture();
+
+    captureRefs.current.stopCapture();
     setIsRecording(false);
-  }, [stopCapture]);
+  }, []);
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      connectionIdRef.current = 0;
+      if (connectionRef.current) {
+        try {
+          connectionRef.current.finish();
+        } catch {}
+        connectionRef.current = null;
+      }
+    };
+  }, []);
 
   return { isRecording, startRecognition, stopRecognition };
 };

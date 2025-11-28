@@ -1,0 +1,407 @@
+[
+  {
+    "id": "vogue-frame-noir",
+    "name": "Vogue Frame Noir",
+    "styleTags": ["fashion", "minimal", "luxury", "editorial"],
+    "background": {
+      "blankCanvasColor": "#0A0A0A",
+      "backgroundEffect": "none"
+    },
+    "pip": {
+      "layoutMode": "pip",
+      "cameraShape": "rectangle",
+      "pipPosition": { "x": 35, "y": 12.5 },
+      "pipSize": { "width": 30, "height": 75 },
+      "pipBorder": { "color": "#D4AF37", "width": 3 },
+      "pipShadow": { "blur": 25, "color": "rgba(212, 175, 55, 0.4)" },
+      "responsive": {
+        "mobile": {
+          "pipPosition": { "x": 15, "y": 7.5 },
+          "pipSize": { "width": 70, "height": 85 }
+        }
+      }
+    },
+    "textOverlays": [
+      {
+        "id": "preset-text-title",
+        "content": "VOGUE",
+        "style": {
+          "fontFamily": "Playfair Display",
+          "fontSize": 72,
+          "color": "#D4AF37",
+          "backgroundColor": "transparent",
+          "textShadow": "0px 4px 12px rgba(0,0,0,0.8)",
+          "textAlign": "center",
+          "fontWeight": "700"
+        },
+        "layout": {
+          "position": { "x": 36, "y": 13 },
+          "size": { "width": 28, "height": 10 },
+          "zIndex": 20,
+          "rotation": 0,
+          "layerOrder": "above-video"
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "fontSize": 56 },
+            "layout": {
+              "position": { "x": 17.5, "y": 10 },
+              "size": { "width": 65, "height": 10 }
+            }
+          }
+        }
+      },
+      {
+        "id": "preset-text-subtitle",
+        "content": "EDITORIAL",
+        "style": {
+          "fontFamily": "Montserrat",
+          "fontSize": 18,
+          "color": "#FFFFFF",
+          "backgroundColor": "transparent",
+          "textAlign": "center",
+          "fontWeight": "300",
+          "textShadow": "0px 2px 8px rgba(0,0,0,0.6)"
+        },
+        "layout": {
+          "position": { "x": 36, "y": 24 },
+          "size": { "width": 28, "height": 4 },
+          "zIndex": 20,
+          "rotation": 0,
+          "layerOrder": "above-video"
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "fontSize": 14 },
+            "layout": {
+              "position": { "x": 17.5, "y": 21 },
+              "size": { "width": 65, "height": 4 }
+            }
+          }
+        }
+      }
+    ],
+    "effects": {
+      "videoFilter": "brightness(1.05) contrast(1.1)",
+      "isBeautifyEnabled": true
+    },
+    "canvasAspectRatio": "9:16"
+  },
+  {
+    "id": "cinematic-gradient-split",
+    "name": "Cinematic Gradient Split",
+    "styleTags": ["cinematic", "dramatic", "split", "modern"],
+    "background": {
+      "blankCanvasColor": "linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)",
+      "backgroundEffect": "blur"
+    },
+    "pip": {
+      "layoutMode": "split-vertical",
+      "cameraShape": "rectangle",
+      "splitRatio": 0.6,
+      "pipBorder": { "color": "rgba(255,255,255,0.2)", "width": 2 },
+      "responsive": {
+        "mobile": {
+          "layoutMode": "pip",
+          "pipPosition": { "x": 7.5, "y": 35 },
+          "pipSize": { "width": 85, "height": 50 }
+        }
+      }
+    },
+    "textOverlays": [
+      {
+        "id": "preset-text-title",
+        "content": "CINEMATIC\nMOMENT",
+        "style": {
+          "fontFamily": "Montserrat",
+          "fontSize": 56,
+          "color": "#FFFFFF",
+          "backgroundColor": "rgba(0,0,0,0.3)",
+          "backdropFilter": "blur(10px)",
+          "textAlign": "left",
+          "textShadow": "2px 2px 8px rgba(0,0,0,0.8)"
+        },
+        "layout": {
+          "position": { "x": 7.5, "y": 42.5 },
+          "size": { "width": 35, "height": 15 },
+          "zIndex": 15,
+          "rotation": 0
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "fontSize": 36, "textAlign": "center" },
+            "layout": {
+              "position": { "x": 7.5, "y": 9 },
+              "size": { "width": 85, "height": 12 }
+            }
+          }
+        }
+      }
+    ],
+    "effects": {
+      "videoFilter": "contrast(1.15) saturate(1.2)",
+      "isNeonEdgeEnabled": false
+    }
+  },
+  {
+    "id": "soft-pastel-focus",
+    "name": "Soft Pastel Focus",
+    "styleTags": ["lifestyle", "soft", "minimal", "clean"],
+    "background": {
+      "blankCanvasColor": "#FFF5F7",
+      "backgroundEffect": "none"
+    },
+    "pip": {
+      "layoutMode": "pip",
+      "cameraShape": "circle",
+      "pipPosition": { "x": 30, "y": 30 },
+      "pipSize": { "width": 40, "height": 40 },
+      "pipBorder": { "color": "#FFB6C1", "width": 4 },
+      "pipShadow": { "blur": 30, "color": "rgba(255, 182, 193, 0.5)" },
+      "responsive": {
+        "mobile": {
+          "pipPosition": { "x": 12.5, "y": 7.5 },
+          "pipSize": { "width": 75, "height": 75 }
+        }
+      }
+    },
+    "textOverlays": [
+      {
+        "id": "preset-text-title",
+        "content": "gentle moments",
+        "style": {
+          "fontFamily": "Quicksand",
+          "fontSize": 42,
+          "color": "#8B6F8E",
+          "backgroundColor": "transparent",
+          "textAlign": "center",
+          "textShadow": "0px 2px 6px rgba(139, 111, 142, 0.2)"
+        },
+        "layout": {
+          "position": { "x": 20, "y": 84 },
+          "size": { "width": 60, "height": 8 },
+          "zIndex": 15,
+          "rotation": 0
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "fontSize": 32 },
+            "layout": {
+              "position": { "x": 10, "y": 86.5 },
+              "size": { "width": 80, "height": 7 }
+            }
+          }
+        }
+      }
+    ],
+    "effects": {
+      "videoFilter": "brightness(1.1) saturate(0.9)",
+      "isBeautifyEnabled": true
+    }
+  },
+  {
+    "id": "editorial-left-bar",
+    "name": "Editorial Magazine",
+    "styleTags": ["editorial", "modern", "magazine", "bold"],
+    "background": {
+      "blankCanvasColor": "#F8F8F8",
+      "backgroundEffect": "none"
+    },
+    "pip": {
+      "layoutMode": "pip",
+      "cameraShape": "rectangle",
+      "pipPosition": { "x": 21, "y": 15 },
+      "pipSize": { "width": 28, "height": 70 },
+      "pipBorder": { "color": "#000000", "width": 2 },
+      "pipShadow": { "blur": 20, "color": "rgba(0, 0, 0, 0.15)" },
+      "responsive": {
+        "mobile": {
+          "pipPosition": { "x": 12.5, "y": 7.5 },
+          "pipSize": { "width": 75, "height": 85 }
+        }
+      }
+    },
+    "textOverlays": [
+      {
+        "id": "preset-text-title",
+        "content": "EDITORIAL",
+        "style": {
+          "fontFamily": "Helvetica",
+          "fontSize": 58,
+          "color": "#000000",
+          "backgroundColor": "transparent",
+          "textAlign": "left",
+          "fontWeight": "900"
+        },
+        "layout": {
+          "position": { "x": 22, "y": 15 },
+          "size": { "width": 26, "height": 10 },
+          "zIndex": 20,
+          "rotation": 0,
+          "layerOrder": "above-video"
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "fontSize": 42, "textAlign": "center" },
+            "layout": {
+              "position": { "x": 15, "y": 10 },
+              "size": { "width": 70, "height": 10 }
+            }
+          }
+        }
+      },
+      {
+        "id": "preset-text-subtitle",
+        "content": "THE NEW\nAESTHETIC",
+        "style": {
+          "fontFamily": "Helvetica",
+          "fontSize": 22,
+          "color": "#666666",
+          "backgroundColor": "transparent",
+          "textAlign": "left",
+          "fontWeight": "300"
+        },
+        "layout": {
+          "position": { "x": 22, "y": 71 },
+          "size": { "width": 26, "height": 8 },
+          "zIndex": 20,
+          "rotation": 0,
+          "layerOrder": "above-video"
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "textAlign": "center" },
+            "layout": {
+              "position": { "x": 15, "y": 71 },
+              "size": { "width": 70, "height": 8 }
+            }
+          }
+        }
+      },
+      {
+        "id": "preset-text-side",
+        "content": "Vol. 2024",
+        "style": {
+          "fontFamily": "Helvetica",
+          "fontSize": 16,
+          "color": "#999999",
+          "backgroundColor": "transparent",
+          "textAlign": "right",
+          "fontWeight": "400"
+        },
+        "layout": {
+          "position": { "x": 47, "y": 47.5 },
+          "size": { "width": 50, "height": 5 },
+          "zIndex": 15,
+          "rotation": 0
+        },
+        "responsive": {
+          "mobile": {
+            "layout": {
+              "position": { "x": 10, "y": 85.5 },
+              "size": { "width": 80, "height": 5 },
+              "rotation": 0
+            }
+          }
+        }
+      }
+    ],
+    "effects": {
+      "videoFilter": "none"
+    },
+    "canvasAspectRatio": "9:16"
+  },
+  {
+    "id": "tech-blue-circuit",
+    "name": "Tech Magazine Cover",
+    "styleTags": ["tech", "futuristic", "magazine", "cyberpunk"],
+    "background": {
+      "blankCanvasColor": "#0A0E27",
+      "backgroundEffect": "none"
+    },
+    "pip": {
+      "layoutMode": "pip",
+      "cameraShape": "rectangle",
+      "pipPosition": { "x": 33, "y": 14 },
+      "pipSize": { "width": 34, "height": 72 },
+      "pipBorder": { "color": "#00D9FF", "width": 3 },
+      "pipShadow": { "blur": 35, "color": "rgba(0, 217, 255, 0.6)" },
+      "responsive": {
+        "mobile": {
+          "pipPosition": { "x": 11, "y": 7 },
+          "pipSize": { "width": 78, "height": 86 }
+        }
+      }
+    },
+    "textOverlays": [
+      {
+        "id": "preset-text-title",
+        "content": "TECH",
+        "style": {
+          "fontFamily": "Orbitron",
+          "fontSize": 66,
+          "color": "#00D9FF",
+          "backgroundColor": "rgba(0, 217, 255, 0.08)",
+          "border": "2px solid #00D9FF",
+          "backdropFilter": "blur(8px)",
+          "textAlign": "center",
+          "fontWeight": "700",
+          "textShadow": "0px 0px 20px rgba(0, 217, 255, 0.8)"
+        },
+        "layout": {
+          "position": { "x": 34, "y": 12.5 },
+          "size": { "width": 32, "height": 11 },
+          "zIndex": 20,
+          "rotation": 0,
+          "layerOrder": "above-video"
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "fontSize": 52 },
+            "layout": {
+              "position": { "x": 13, "y": 8.5 },
+              "size": { "width": 74, "height": 11 }
+            }
+          }
+        }
+      },
+      {
+        "id": "preset-text-subtitle",
+        "content": "THE FUTURE",
+        "style": {
+          "fontFamily": "Rajdhani",
+          "fontSize": 24,
+          "color": "#FFFFFF",
+          "backgroundColor": "rgba(0, 217, 255, 0.1)",
+          "backdropFilter": "blur(5px)",
+          "textAlign": "center",
+          "fontWeight": "500",
+          "textShadow": "0px 2px 10px rgba(0, 217, 255, 0.5)"
+        },
+        "layout": {
+          "position": { "x": 34, "y": 24.5 },
+          "size": { "width": 32, "height": 5 },
+          "zIndex": 20,
+          "rotation": 0,
+          "layerOrder": "above-video"
+        },
+        "responsive": {
+          "mobile": {
+            "style": { "fontSize": 20 },
+            "layout": {
+              "position": { "x": 13, "y": 20.5 },
+              "size": { "width": 74, "height": 5 }
+            }
+          }
+        }
+      }
+    ],
+    "effects": {
+      "videoFilter": "contrast(1.2) saturate(1.3) brightness(0.95)",
+      "isNeonEdgeEnabled": true,
+      "neonColor": "cyan",
+      "neonIntensity": 35
+    },
+    "canvasAspectRatio": "9:16"
+  }
+]
