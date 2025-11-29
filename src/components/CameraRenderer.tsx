@@ -192,10 +192,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
             alt="GAKI Logo"
             className="w-24 h-24 object-contain drop-shadow-2xl mb-2"
           />
-          {/* Optional Text if desired */}
-          <h1 className="text-white font-bold text-lg tracking-widest opacity-90 drop-shadow-md">
-            GAKI
-          </h1>
         </div>
       )}
       <canvas ref={canvasRef} className="w-full h-full" />
