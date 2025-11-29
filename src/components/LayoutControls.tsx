@@ -1,6 +1,6 @@
 // src/components/LayoutControls.tsx
 import React from "react";
-import { LayoutMode, CameraShape } from "@/types/caption";
+import { LayoutMode } from "@/types/caption";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,32 +12,27 @@ import {
 import { Button } from "./ui/button";
 import {
   Layout,
-  Circle,
-  Square,
-  RectangleHorizontal,
   SplitSquareVertical,
   SplitSquareHorizontal,
   Image,
   Upload,
   UserSquare,
-} from "lucide-react";
+} from "lucide-react"; // Removed Shape icons
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 
 interface LayoutControlsProps {
   layoutMode: LayoutMode;
-  cameraShape: CameraShape;
+  // cameraShape: CameraShape; // REMOVED
   onLayoutModeChange: (mode: LayoutMode) => void;
-  onCameraShapeChange: (shape: CameraShape) => void;
+  // onCameraShapeChange: (shape: CameraShape) => void; // REMOVED
   onCustomMaskUpload?: (file: File) => void;
   portalContainer?: HTMLElement | null;
 }
 
 export const LayoutControls = ({
   layoutMode,
-  cameraShape,
   onLayoutModeChange,
-  onCameraShapeChange,
   onCustomMaskUpload,
   portalContainer,
 }: LayoutControlsProps) => {
@@ -55,14 +50,12 @@ export const LayoutControls = ({
           <Layout className="w-5 h-5" />
         </Button>
       </DropdownMenuTrigger>
-      {/* --- PASS THE PROP TO THE CONTENT --- */}
       <DropdownMenuContent
         container={portalContainer}
         align="end"
         className="w-56"
         style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
       >
-        {" "}
         <DropdownMenuLabel>Layout Mode</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => onLayoutModeChange("solo")}>
           <UserSquare className="w-4 h-4 mr-2" />
@@ -90,23 +83,9 @@ export const LayoutControls = ({
           Picture in Picture
           {layoutMode === "pip" && <span className="ml-auto">✓</span>}
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuLabel>Camera Shape</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => onCameraShapeChange("rectangle")}>
-          <Square className="w-4 h-4 mr-2" />
-          Rectangle
-          {cameraShape === "rectangle" && <span className="ml-auto">✓</span>}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onCameraShapeChange("rounded")}>
-          <RectangleHorizontal className="w-4 h-4 mr-2" />
-          Rounded
-          {cameraShape === "rounded" && <span className="ml-auto">✓</span>}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => onCameraShapeChange("circle")}>
-          <Circle className="w-4 h-4 mr-2" />
-          Circle
-          {cameraShape === "circle" && <span className="ml-auto">✓</span>}
-        </DropdownMenuItem>
+
+        {/* REMOVED CAMERA SHAPE SECTION */}
+
         {onCustomMaskUpload && (
           <>
             <DropdownMenuSeparator />

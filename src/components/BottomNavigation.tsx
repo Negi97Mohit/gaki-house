@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { LayoutControls } from "@/components/LayoutControls";
+// Removed LayoutControls import
 import { AssetResult } from "@/components/AssetLibrary";
 import { LayoutMode, CameraShape } from "@/types/caption";
 import { useTheme } from "next-themes";
@@ -98,7 +98,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   setIsDrawing,
   onToggleFullscreen,
   isFullscreen,
-  ...layoutProps
+  portalContainer, // Destructured specifically for ToolsPopover
+  ..._unusedProps // Rest of layout props are no longer needed here
 }) => {
   const { theme, setTheme } = useTheme();
 
@@ -304,10 +305,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           setIsDrawing={setIsDrawing}
           setTheme={setTheme}
           theme={theme}
-          portalContainer={layoutProps.portalContainer}
+          portalContainer={portalContainer}
         />
 
-        <LayoutControls {...layoutProps} />
+        {/* Removed LayoutControls */}
+
         <Button
           variant="ghost"
           size="icon"

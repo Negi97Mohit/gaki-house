@@ -88,62 +88,6 @@
     "canvasAspectRatio": "9:16"
   },
   {
-    "id": "cinematic-gradient-split",
-    "name": "Cinematic Gradient Split",
-    "styleTags": ["cinematic", "dramatic", "split", "modern"],
-    "background": {
-      "blankCanvasColor": "linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%)",
-      "backgroundEffect": "blur"
-    },
-    "pip": {
-      "layoutMode": "split-vertical",
-      "cameraShape": "rectangle",
-      "splitRatio": 0.6,
-      "pipBorder": { "color": "rgba(255,255,255,0.2)", "width": 2 },
-      "responsive": {
-        "mobile": {
-          "layoutMode": "pip",
-          "pipPosition": { "x": 7.5, "y": 35 },
-          "pipSize": { "width": 85, "height": 50 }
-        }
-      }
-    },
-    "textOverlays": [
-      {
-        "id": "preset-text-title",
-        "content": "CINEMATIC\nMOMENT",
-        "style": {
-          "fontFamily": "Montserrat",
-          "fontSize": 56,
-          "color": "#FFFFFF",
-          "backgroundColor": "rgba(0,0,0,0.3)",
-          "backdropFilter": "blur(10px)",
-          "textAlign": "left",
-          "textShadow": "2px 2px 8px rgba(0,0,0,0.8)"
-        },
-        "layout": {
-          "position": { "x": 7.5, "y": 42.5 },
-          "size": { "width": 35, "height": 15 },
-          "zIndex": 15,
-          "rotation": 0
-        },
-        "responsive": {
-          "mobile": {
-            "style": { "fontSize": 36, "textAlign": "center" },
-            "layout": {
-              "position": { "x": 7.5, "y": 9 },
-              "size": { "width": 85, "height": 12 }
-            }
-          }
-        }
-      }
-    ],
-    "effects": {
-      "videoFilter": "contrast(1.15) saturate(1.2)",
-      "isNeonEdgeEnabled": false
-    }
-  },
-  {
     "id": "soft-pastel-focus",
     "name": "Soft Pastel Focus",
     "styleTags": ["lifestyle", "soft", "minimal", "clean"],

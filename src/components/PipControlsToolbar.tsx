@@ -1,4 +1,3 @@
-// src/components/PipControlsToolbar.tsx
 import React, { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +13,7 @@ import {
   Paintbrush,
   Square,
   Settings2,
+  Circle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -35,6 +35,7 @@ import { Label } from "./ui/label";
 import { FILTER_PRESETS } from "@/lib/filters";
 import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
+import { CameraShape } from "@/types/caption";
 
 interface PipControlsToolbarProps {
   position: { x: number; y: number };
@@ -115,6 +116,11 @@ interface PipControlsToolbarProps {
   videoDevices: MediaDeviceInfo[];
   selectedDeviceId?: string;
   onCameraDeviceChange: (deviceId: string) => void;
+
+  // New Props
+  showAspectRatio?: boolean;
+  cameraShape?: CameraShape;
+  onCameraShapeChange?: (shape: CameraShape) => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -123,6 +129,8 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   const toolbarRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
+
+  const showAspectRatio = props.showAspectRatio !== false;
 
   // Positioning logic with smart collision avoidance
   useLayoutEffect(() => {
@@ -255,33 +263,38 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             className="z-[var(--z-text-toolbar)] w-56 max-h-[400px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            <DropdownMenuLabel className="text-xs font-semibold">
-              Aspect Ratio
-            </DropdownMenuLabel>
-            {ASPECT_RATIOS.map((ratio) => (
-              <DropdownMenuCheckboxItem
-                key={ratio.id}
-                checked={props.cameraAspectRatio === ratio.id}
-                onClick={() => props.onCameraAspectRatioChange(ratio.id)}
-                className="text-sm"
-              >
-                {ratio.name}
-              </DropdownMenuCheckboxItem>
-            ))}
-            {props.cameraAspectRatio === "custom" && (
-              <div className="p-2">
-                <Input
-                  type="text"
-                  placeholder="e.g., 21:9"
-                  value={props.customAspectRatio}
-                  onChange={(e) =>
-                    props.onCustomAspectRatioChange(e.target.value)
-                  }
-                  className="h-8 text-sm"
-                />
-              </div>
+            {showAspectRatio && (
+              <>
+                <DropdownMenuLabel className="text-xs font-semibold">
+                  Aspect Ratio
+                </DropdownMenuLabel>
+                {ASPECT_RATIOS.map((ratio) => (
+                  <DropdownMenuCheckboxItem
+                    key={ratio.id}
+                    checked={props.cameraAspectRatio === ratio.id}
+                    onClick={() => props.onCameraAspectRatioChange(ratio.id)}
+                    className="text-sm"
+                  >
+                    {ratio.name}
+                  </DropdownMenuCheckboxItem>
+                ))}
+                {props.cameraAspectRatio === "custom" && (
+                  <div className="p-2">
+                    <Input
+                      type="text"
+                      placeholder="e.g., 21:9"
+                      value={props.customAspectRatio}
+                      onChange={(e) =>
+                        props.onCustomAspectRatioChange(e.target.value)
+                      }
+                      className="h-8 text-sm"
+                    />
+                  </div>
+                )}
+                <DropdownMenuSeparator />
+              </>
             )}
-            <DropdownMenuSeparator />
+
             <DropdownMenuLabel className="text-xs font-semibold">
               Background
             </DropdownMenuLabel>
@@ -434,6 +447,50 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             className="z-[var(--z-text-toolbar)] w-64 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
+            {props.onCameraShapeChange && (
+              <>
+                <DropdownMenuLabel className="text-xs font-semibold">
+                  Shape
+                </DropdownMenuLabel>
+                <div className="grid grid-cols-3 gap-2 p-2">
+                  <Button
+                    variant={
+                      props.cameraShape === "rectangle" ? "default" : "outline"
+                    }
+                    size="sm"
+                    className="h-8"
+                    onClick={() => props.onCameraShapeChange?.("rectangle")}
+                    title="Rectangle"
+                  >
+                    <Square className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={
+                      props.cameraShape === "rounded" ? "default" : "outline"
+                    }
+                    size="sm"
+                    className="h-8"
+                    onClick={() => props.onCameraShapeChange?.("rounded")}
+                    title="Rounded"
+                  >
+                    <RectangleHorizontal className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={
+                      props.cameraShape === "circle" ? "default" : "outline"
+                    }
+                    size="sm"
+                    className="h-8"
+                    onClick={() => props.onCameraShapeChange?.("circle")}
+                    title="Circle"
+                  >
+                    <Circle className="w-4 h-4" />
+                  </Button>
+                </div>
+                <DropdownMenuSeparator />
+              </>
+            )}
+
             <div className="p-3 space-y-3">
               <div className="space-y-2">
                 <Label className="text-xs font-semibold">Border</Label>

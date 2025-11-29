@@ -19,7 +19,9 @@ interface CameraRendererProps {
   customBackgroundUrl?: string | null;
   isFaceTrackingEnabled?: boolean;
   cameraAspectRatio?: string;
-
+  showAspectRatio?: boolean;
+  cameraShape?: "rectangle" | "circle" | "rounded";
+  onCameraShapeChange?: (shape: "rectangle" | "circle" | "rounded") => void;
   // Toolbar Props
   pipBorder?: { color: string; width: number };
   onPipBorderChange: (border: { color: string; width: number }) => void;

@@ -489,11 +489,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           }
           style={style}
           videoFilter={getVideoFilterStyle()}
+          cameraShape={props.cameraShape}
+          onCameraShapeChange={props.onCameraShapeChange}
           isAutoFramingEnabled={props.isAutoFramingEnabled}
           videoDevices={props.videoDevices}
           onCameraDeviceChange={props.onVideoDeviceSelect}
           pipBorder={props.pipBorder}
           pipShadow={props.pipShadow}
+          showAspectRatio={true}
           {...safeSidebarProps}
         />
       </div>

@@ -274,6 +274,11 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                   borderRadius: "0px",
                 }}
                 portalContainer={null}
+                cameraShape={settings.cameraShape || "rectangle"}
+                onCameraShapeChange={(shape) =>
+                  onUpdate({ cameraShape: shape })
+                }
+                showAspectRatio={false}
                 videoDevices={videoDevices}
                 selectedDeviceId={settings.selectedDeviceId}
                 onCameraDeviceChange={(deviceId) =>
@@ -373,6 +378,10 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               }}
               containerRef={containerRef}
               pipBorder={settings.pipBorder}
+              showAspectRatio={false}
+              // PASS LOCAL SHAPE STATE
+              cameraShape={settings.cameraShape || "rectangle"}
+              onCameraShapeChange={(shape) => onUpdate({ cameraShape: shape })}
               onPipBorderChange={(border) => onUpdate({ pipBorder: border })}
               pipShadow={settings.pipShadow}
               onPipShadowChange={(shadow) => onUpdate({ pipShadow: shadow })}
@@ -468,8 +477,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               containerRef={containerRef}
               isSelected={selectedTextId === textOverlay.id}
               onSelect={setSelectedTextId}
-              onInternalDragStart={() => { }}
-              onInternalDragStop={() => { }}
+              onInternalDragStart={() => {}}
+              onInternalDragStop={() => {}}
               isSpacePressed={false}
             />
           ))}
