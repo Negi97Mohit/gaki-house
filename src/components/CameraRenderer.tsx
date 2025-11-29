@@ -2,11 +2,12 @@
 import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
-import { useCanvasRenderLoop } from "@/hooks/useCanvasRenderLoop";
+import { useWebGLRenderLoop } from "@/hooks/useWebGLRenderLoop";
 import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+// ... (Keep Interface CameraRendererProps exactly as is)
 interface CameraRendererProps {
   stream: MediaStream | null;
   className?: string;
@@ -70,11 +71,13 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // --- FIX 3: Robust Hover State ---
   const [isHovered, setIsHovered] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout>();
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
-  // --- Local Stream Management ---
+  // ... (Keep useEffect for Stream Management) ...
   useEffect(() => {
     if (props.selectedDeviceId) {
       let isMounted = true;
@@ -105,7 +108,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
 
   const activeStream = localStream || props.stream;
 
-  // --- Effects & Tracking ---
   const { processedCanvas, facePosition } = useCameraEffects({
     videoElement: videoRef.current,
     isBackgroundRemovalEnabled: props.cameraBackground !== "none",
@@ -116,33 +118,26 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     onUserPositionChange: props.onUserPositionChange,
   });
 
-  // --- Render Loop ---
-  useCanvasRenderLoop({
+  useWebGLRenderLoop({
     canvasRef,
     videoRef,
     activeStream,
-    processedCanvas,
-    facePosition,
     isAutoFramingEnabled: props.isAutoFramingEnabled,
     isFaceTrackingEnabled: props.isFaceTrackingEnabled || false,
     zoomSensitivity: props.zoomSensitivity,
     trackingSpeed: props.trackingSpeed,
-    videoFilter: getVideoFilterStyle(
-      props.videoFilter,
-      props.isBeautifyEnabled,
-      props.isLowLightEnabled
-    ),
+    videoFilter: props.videoFilter,
     activeInteractiveFilter: props.activeInteractiveFilter,
     filterIntensity: props.filterIntensity,
     filterColor: props.filterColor,
-    filterTarget: props.filterTarget,
-    isNeonEdgeEnabled: props.isNeonEdgeEnabled,
-    neonIntensity: props.neonIntensity,
-    neonColor: props.neonColor,
+    processedCanvas,
+    backgroundEffect: props.backgroundEffect,
   });
 
-  // --- Toolbar Positioning ---
+  // --- FIX 3: Improved Mouse Handlers ---
   const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+
     if (containerRef.current) {
       setToolbarPosition({
         x: containerRef.current.offsetWidth / 2,
@@ -152,7 +147,21 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     setIsHovered(true);
   };
 
-  // --- Render Helpers ---
+  const handleMouseLeave = () => {
+    // Delay hiding to allow bridging gap or moving into portal
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 300); // 300ms grace period
+  };
+
+  // Cancel timeout if we re-enter (handled by handleMouseEnter above)
+  // also clear on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
   const toolbarProps = {
     position: toolbarPosition,
     containerRef,
@@ -166,7 +175,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
       className={cn("relative w-full h-full", props.className)}
       style={props.style}
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={handleMouseLeave}
     >
       <video
         ref={videoRef}
@@ -190,7 +199,14 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
       {isHovered &&
         (props.portalContainer instanceof HTMLElement ? (
           createPortal(
-            <PipControlsToolbar {...toolbarProps} />,
+            // Add mouse handlers to the toolbar itself to keep it open
+            <div
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              className="absolute top-0 left-0 w-full" // wrapper to catch events
+            >
+              <PipControlsToolbar {...toolbarProps} />
+            </div>,
             props.portalContainer
           )
         ) : (
@@ -199,16 +215,3 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     </div>
   );
 };
-
-// Helper function moved outside component
-function getVideoFilterStyle(
-  baseFilter: string,
-  isBeautify: boolean,
-  isLowLight: boolean
-): string {
-  const filters: string[] = [];
-  if (baseFilter && baseFilter !== "none") filters.push(baseFilter);
-  if (isBeautify) filters.push("blur(0.5px) saturate(1.1) brightness(1.05)");
-  if (isLowLight) filters.push("brightness(1.3) contrast(1.15)");
-  return filters.length > 0 ? filters.join(" ") : "none";
-}
