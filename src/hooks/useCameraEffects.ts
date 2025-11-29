@@ -19,12 +19,12 @@ interface FacePosition {
   height: number;
 }
 
-// --- Helper to initialize the new detector ---
 let faceDetector: FaceDetector | null = null;
 
 const initializeFaceDetector = async () => {
   if (faceDetector) return faceDetector;
   try {
+    console.log("[useCameraEffects] Initializing FaceDetector model...");
     const vision = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
     );
@@ -35,13 +35,10 @@ const initializeFaceDetector = async () => {
       },
       runningMode: "VIDEO",
     });
-    console.log("[useCameraEffects] FaceDetector initialized successfully.");
+    console.log("[useCameraEffects] FaceDetector ready.");
     return faceDetector;
   } catch (err) {
-    console.error(
-      "[useCameraEffects] Face detector initialization error:",
-      err
-    );
+    console.error("[useCameraEffects] FaceDetector init failed:", err);
     return null;
   }
 };
@@ -58,13 +55,22 @@ export const useCameraEffects = ({
   const segmentationRef = useRef<SelfieSegmentation | null>(null);
   const faceDetectorRef = useRef<FaceDetector | null>(null);
 
-  const [facePosition, setFacePosition] = useState<FacePosition | null>(null);
+  // CHANGED: Ref for position to avoid re-renders
+  const facePositionRef = useRef<FacePosition | null>(null);
+
   const [isSegmentationReady, setIsSegmentationReady] = useState(false);
   const [isFaceDetectionReady, setIsFaceDetectionReady] = useState(false);
   const animationFrameRef = useRef<number>();
   const analysisCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Initialize MediaPipe Selfie Segmentation
+  // Initialize Canvas
+  useEffect(() => {
+    if (!canvasRef.current) {
+      canvasRef.current = document.createElement("canvas");
+    }
+  }, []);
+
+  // Initialize Segmentation
   useEffect(() => {
     if (!isBackgroundRemovalEnabled || backgroundType === "none") {
       setIsSegmentationReady(false);
@@ -76,24 +82,23 @@ export const useCameraEffects = ({
         `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
     });
 
-    selfieSegmentation.setOptions({
-      modelSelection: 1,
-      selfieMode: true,
-    });
+    selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: true });
 
     selfieSegmentation.onResults((results) => {
       if (!canvasRef.current || !videoElement) return;
-
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      canvas.width = videoElement.videoWidth;
-      canvas.height = videoElement.videoHeight;
+      if (
+        canvas.width !== videoElement.videoWidth ||
+        canvas.height !== videoElement.videoHeight
+      ) {
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+      }
 
       ctx.save();
-
-      // Draw background
       if (backgroundType === "blur") {
         ctx.filter = "blur(10px)";
         ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
@@ -106,7 +111,6 @@ export const useCameraEffects = ({
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
 
-      // Draw segmentation mask
       ctx.globalCompositeOperation = "destination-in";
       ctx.drawImage(
         results.segmentationMask,
@@ -115,53 +119,9 @@ export const useCameraEffects = ({
         canvas.width,
         canvas.height
       );
-
-      // Draw the person
       ctx.globalCompositeOperation = "source-over";
       ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-
       ctx.restore();
-
-      // --- Calculate User Centroid (Segment Fallback) ---
-      // Only run this if Face Tracking is OFF (to avoid double reporting)
-      if (onUserPositionChange && !isFaceTrackingEnabled) {
-        if (!analysisCanvasRef.current) {
-          analysisCanvasRef.current = document.createElement("canvas");
-          analysisCanvasRef.current.width = 64;
-          analysisCanvasRef.current.height = 48;
-        }
-        const ac = analysisCanvasRef.current;
-        const actx = ac.getContext("2d", { willReadFrequently: true });
-
-        if (actx) {
-          actx.clearRect(0, 0, ac.width, ac.height);
-          actx.drawImage(results.segmentationMask, 0, 0, ac.width, ac.height);
-
-          const frame = actx.getImageData(0, 0, ac.width, ac.height);
-          const data = frame.data;
-          let sumX = 0;
-          let sumY = 0;
-          let count = 0;
-
-          for (let i = 3; i < data.length; i += 4) {
-            const alpha = data[i];
-            if (alpha > 100) {
-              const pixelIdx = (i - 3) / 4;
-              const x = pixelIdx % ac.width;
-              const y = Math.floor(pixelIdx / ac.width);
-              sumX += x;
-              sumY += y;
-              count++;
-            }
-          }
-
-          if (count > 20) {
-            const centerX = (sumX / count / ac.width) * 100;
-            const centerY = (sumY / count / ac.height) * 100;
-            onUserPositionChange({ x: centerX, y: centerY });
-          }
-        }
-      }
     });
 
     segmentationRef.current = selfieSegmentation;
@@ -177,53 +137,41 @@ export const useCameraEffects = ({
     backgroundType,
     backgroundImageUrl,
     videoElement,
-    isFaceTrackingEnabled, // Added dependency
   ]);
 
-  // Initialize MediaPipe Face Detector
+  // Initialize Face Detector
   useEffect(() => {
     if (!isFaceTrackingEnabled) {
-      if (faceDetectorRef.current) {
-        // We don't close shared detector, just stop using it locally
-        // faceDetectorRef.current.close();
-        faceDetectorRef.current = null;
-      }
       setIsFaceDetectionReady(false);
       return;
     }
 
     let isMounted = true;
-    const init = async () => {
-      const detector = await initializeFaceDetector();
+    initializeFaceDetector().then((detector) => {
       if (isMounted && detector) {
         faceDetectorRef.current = detector;
         setIsFaceDetectionReady(true);
       }
-    };
-
-    init();
+    });
 
     return () => {
       isMounted = false;
     };
   }, [isFaceTrackingEnabled]);
 
-  // Process video frames
+  // Process Frames
   useEffect(() => {
     if (!videoElement) return;
-
     let lastVideoTime = -1;
 
     const processFrame = async () => {
       if (videoElement.readyState >= 2) {
         const currentTime = videoElement.currentTime;
 
-        // Run segmentation (only if enabled)
         if (isSegmentationReady && segmentationRef.current) {
           await segmentationRef.current.send({ image: videoElement });
         }
 
-        // Run face detection (if ready and new frame)
         if (
           isFaceDetectionReady &&
           faceDetectorRef.current &&
@@ -240,7 +188,6 @@ export const useCameraEffects = ({
             const bbox = detection.boundingBox;
 
             if (bbox && videoElement.videoWidth > 0) {
-              // Calculate Center Percentage
               const centerX =
                 ((bbox.originX + bbox.width / 2) / videoElement.videoWidth) *
                 100;
@@ -248,38 +195,33 @@ export const useCameraEffects = ({
                 ((bbox.originY + bbox.height / 2) / videoElement.videoHeight) *
                 100;
 
-              setFacePosition({
+              // Write to REF, do NOT trigger state update
+              facePositionRef.current = {
                 x: centerX,
                 y: centerY,
                 width: (bbox.width / videoElement.videoWidth) * 100,
                 height: (bbox.height / videoElement.videoHeight) * 100,
-              });
+              };
 
-              // --- FIX: Broadcast Position for Sequencer ---
+              // Broadcast position if needed (e.g. for grid sequencer)
               if (onUserPositionChange) {
                 onUserPositionChange({ x: centerX, y: centerY });
               }
-              // ---------------------------------------------
             } else {
-              setFacePosition(null);
+              facePositionRef.current = null;
             }
           } else {
-            setFacePosition(null);
+            facePositionRef.current = null;
           }
-        } else if (!isFaceDetectionReady) {
-          setFacePosition(null);
         }
       }
-
       animationFrameRef.current = requestAnimationFrame(processFrame);
     };
 
     processFrame();
-
     return () => {
-      if (animationFrameRef.current) {
+      if (animationFrameRef.current)
         cancelAnimationFrame(animationFrameRef.current);
-      }
     };
   }, [
     videoElement,
@@ -290,7 +232,7 @@ export const useCameraEffects = ({
 
   return {
     processedCanvas: canvasRef.current,
-    facePosition,
+    facePositionRef, // Returning REF
     isReady: isSegmentationReady || isFaceDetectionReady,
   };
 };

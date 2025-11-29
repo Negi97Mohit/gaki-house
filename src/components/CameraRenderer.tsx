@@ -7,7 +7,6 @@ import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-// ... (Keep Interface CameraRendererProps exactly as is)
 interface CameraRendererProps {
   stream: MediaStream | null;
   className?: string;
@@ -71,13 +70,17 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // --- FIX 3: Robust Hover State ---
   const [isHovered, setIsHovered] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
-  // ... (Keep useEffect for Stream Management) ...
+  // DEBUG: Track re-renders
+  useEffect(() => {
+    // console.log("[CameraRenderer] Re-rendered. Props updated?");
+  });
+
+  // Stream Management
   useEffect(() => {
     if (props.selectedDeviceId) {
       let isMounted = true;
@@ -108,7 +111,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
 
   const activeStream = localStream || props.stream;
 
-  const { processedCanvas, facePosition } = useCameraEffects({
+  // CHANGED: Use facePositionRef to prevent re-renders
+  const { processedCanvas, facePositionRef } = useCameraEffects({
     videoElement: videoRef.current,
     isBackgroundRemovalEnabled: props.cameraBackground !== "none",
     backgroundType: props.cameraBackground || "none",
@@ -132,11 +136,15 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     filterColor: props.filterColor,
     processedCanvas,
     backgroundEffect: props.backgroundEffect,
+    facePositionRef, // Pass ref instead of value
   });
 
-  // --- FIX 3: Improved Mouse Handlers ---
   const handleMouseEnter = () => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    console.log("[CameraRenderer] handleMouseEnter triggered");
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      console.log("[CameraRenderer] Cleared existing leave timeout");
+    }
 
     if (containerRef.current) {
       setToolbarPosition({
@@ -148,14 +156,18 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   };
 
   const handleMouseLeave = () => {
-    // Delay hiding to allow bridging gap or moving into portal
+    console.log(
+      "[CameraRenderer] handleMouseLeave triggered - starting timeout"
+    );
     hoverTimeoutRef.current = setTimeout(() => {
+      console.log(
+        "[CameraRenderer] Timeout finished - setting isHovered=false"
+      );
       setIsHovered(false);
-    }, 300); // 300ms grace period
+    }, 500); // Increased to 500ms for easier debugging/usage
   };
 
-  // Cancel timeout if we re-enter (handled by handleMouseEnter above)
-  // also clear on unmount
+  // Ensure timeout is cleared on unmount
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -196,21 +208,39 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
       )}
       <canvas ref={canvasRef} className="w-full h-full" />
 
+      {/* Using a wrapper div with mouse handlers ensures that moving the mouse 
+          FROM the canvas TO the toolbar doesn't trigger a 'leave' event that closes it.
+      */}
       {isHovered &&
         (props.portalContainer instanceof HTMLElement ? (
           createPortal(
-            // Add mouse handlers to the toolbar itself to keep it open
             <div
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              className="absolute top-0 left-0 w-full" // wrapper to catch events
+              className="absolute top-0 left-0 w-full"
+              style={{ pointerEvents: "auto" }} // Ensure it captures events
+              onMouseEnter={() => {
+                console.log("[CameraRenderer] Entered Portal Toolbar Wrapper");
+                if (hoverTimeoutRef.current)
+                  clearTimeout(hoverTimeoutRef.current);
+                setIsHovered(true);
+              }}
+              onMouseLeave={() => {
+                console.log("[CameraRenderer] Left Portal Toolbar Wrapper");
+                handleMouseLeave();
+              }}
             >
               <PipControlsToolbar {...toolbarProps} />
             </div>,
             props.portalContainer
           )
         ) : (
-          <PipControlsToolbar {...toolbarProps} />
+          <div
+            className="absolute top-0 left-0 w-full h-full pointer-events-none"
+            // We use a full-size wrapper to position the toolbar, but the wrapper itself shouldn't block clicks elsewhere
+          >
+            <div className="pointer-events-auto inline-block">
+              <PipControlsToolbar {...toolbarProps} />
+            </div>
+          </div>
         ))}
     </div>
   );

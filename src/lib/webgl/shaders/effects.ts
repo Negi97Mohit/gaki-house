@@ -5,36 +5,35 @@ precision mediump float;
 
 uniform sampler2D u_video;
 uniform float u_time;
-uniform int u_filter_type; // 0=none, 1=pixel, 2=hologram, 3=neon, 4=thermal, 5=mirror
-uniform float u_intensity; // generic intensity slider
-uniform vec3 u_color;      // generic color picker
+uniform int u_filter_type; 
+// 1=pixel, 2=hologram, 3=neon/edge, 4=thermal/heat, 5=mirror/caleido
+
+uniform float u_intensity;
+uniform vec3 u_color;
 
 in vec2 v_uv;
 out vec4 outColor;
 
-// --- UTILS ---
-float rand(vec2 co) {
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-
-// --- FILTERS ---
+// ... [Keep existing utils] ...
 
 vec4 applyPixelate(vec2 uv, float pixels) {
-    float dx = 100.0 * (1.0 - u_intensity) + 10.0; // Dynamic pixel size
+    float dx = 100.0 * (1.0 - u_intensity) + 10.0; 
     vec2 coord = floor(uv * dx) / dx;
     return texture(u_video, coord);
 }
 
 vec4 applyHologram(vec2 uv, float time) {
-    float shift = sin(time * 0.005) * 0.01 * u_intensity;
+    float shift = sin(time * 2.0) * 0.01 * u_intensity; // Faster time
     vec4 r = texture(u_video, uv + vec2(shift, 0.0));
     vec4 g = texture(u_video, uv);
     vec4 b = texture(u_video, uv - vec2(shift, 0.0));
+    float scan = sin(uv.y * 800.0 + time * 5.0) * 0.1 + 0.9;
     
-    // Scanlines
-    float scan = sin(uv.y * 800.0 + time * 0.1) * 0.1 + 0.9;
+    // Tint with u_color
+    vec3 result = vec3(r.r, g.g, b.b) * scan;
+    result = mix(result, result * u_color * 1.5, 0.3); // Apply 30% tint
     
-    return vec4(r.r, g.g, b.b, 1.0) * scan;
+    return vec4(result, 1.0);
 }
 
 vec4 applyNeonEdge(vec2 uv) {
@@ -46,28 +45,39 @@ vec4 applyNeonEdge(vec2 uv) {
     
     float edge = distance(n, s) + distance(e, w);
     
-    if (edge > 0.1) {
-        return vec4(u_color * edge * u_intensity * 5.0, 1.0);
+    // If edge detected, use u_color. Else use dark video or black.
+    if (edge > 0.05) {
+        return vec4(u_color * edge * u_intensity * 8.0, 1.0);
     }
-    return texture(u_video, uv); // Passthrough if not edge
+    return texture(u_video, uv) * 0.3; // Darken background to make neon pop
 }
 
 vec4 applyThermal(vec2 uv) {
     vec4 color = texture(u_video, uv);
     float lum = dot(color.rgb, vec3(0.299, 0.587, 0.114));
     
+    // Use u_color to shift the thermal palette?
+    // Standard thermal map:
     vec3 c;
     if (lum < 0.25) c = mix(vec3(0,0,1), vec3(0,1,1), lum*4.0);
     else if (lum < 0.5) c = mix(vec3(0,1,1), vec3(0,1,0), (lum-0.25)*4.0);
     else if (lum < 0.75) c = mix(vec3(0,1,0), vec3(1,1,0), (lum-0.5)*4.0);
     else c = mix(vec3(1,1,0), vec3(1,0,0), (lum-0.75)*4.0);
     
+    // Mix with custom color based on intensity
+    c = mix(c, u_color * lum, 0.2);
+    
     return vec4(c, 1.0);
 }
 
 vec4 applyMirror(vec2 uv) {
     vec2 coord = uv;
-    if (coord.x > 0.5) coord.x = 1.0 - coord.x;
+    // Simple 4-way kaleidoscope if intensity > 0.5
+    if (u_intensity > 0.5) {
+        coord = abs(coord - 0.5) + 0.5;
+    } else {
+        if (coord.x > 0.5) coord.x = 1.0 - coord.x;
+    }
     return texture(u_video, coord);
 }
 
