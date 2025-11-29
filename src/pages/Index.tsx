@@ -1,3 +1,4 @@
+// src/pages/Index.tsx
 import { useCallback, useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -88,7 +89,7 @@ const Index = () => {
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
   const [showAnimationLibrary, setShowAnimationLibrary] = useState(false);
-  const [showSettings, setShowSettings] = useState(false); // --- ADDED ---
+  const [showSettings, setShowSettings] = useState(false);
 
   // Selection
   const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(
@@ -163,6 +164,29 @@ const Index = () => {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  // --- NEW: Fullscreen Logic ---
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
+  const handleToggleFullscreen = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }, []);
+  // -----------------------------
 
   // --- Handlers ---
   const handleRecordingComplete = useCallback(
@@ -251,7 +275,7 @@ const Index = () => {
         onRecordingComplete={handleRecordingComplete}
         uiState={{
           isFullscreen,
-          onToggleFullscreen: () => setIsFullscreen(!isFullscreen),
+          onToggleFullscreen: handleToggleFullscreen, // UPDATED
           isFsSidebarOpen,
           onFsSidebarToggle: setIsFsSidebarOpen,
           isMouseActive,
@@ -397,13 +421,8 @@ const Index = () => {
         }}
         isRecording={recording.isRecording}
         onRecordingToggle={() => {
-          // This is a UI-only trigger, logic is in CanvasContainer via handleRecordingToggle ref
-          // Ideally CanvasContainer exposes a handler or we access it differently.
-          // For now, we can replicate the trigger or pass a ref to trigger it.
-          // OR simply pass the recording handler from CanvasContainer back up? No.
-          // We will duplicate the simple trigger logic or access the handler from a shared context/hook if strictly needed.
-          // Or simpler: We define handleRecordingToggle in Index and pass it to both.
-          // Let's rely on the passed prop if possible, or define it in Index.
+          // Toggle logic handled by CanvasContainer ref if needed,
+          // or we can assume the user clicks the FloatingControls primarily.
         }}
         isBroadcasting={isVirtualCameraEnabled}
         onBroadcastToggle={() => setIsVirtualCameraEnabled((prev) => !prev)}
@@ -427,7 +446,7 @@ const Index = () => {
             activeOverlays: [...scene.activeOverlays, newOverlay],
           }));
           if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
-          
+
           // Auto-select
           setSelectedBrowserId(null);
           setSelectedFileId(null);
@@ -437,14 +456,13 @@ const Index = () => {
           toast.success(`Added "${asset.alt}" to canvas`);
         }}
         setIsDrawing={setIsDrawing}
-        onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
+        onToggleFullscreen={handleToggleFullscreen} // UPDATED
         isFullscreen={isFullscreen}
         layoutMode={activeScene.layoutMode}
         cameraShape={activeScene.cameraShape}
         onLayoutModeChange={(val) => updateSceneProperty("layoutMode", val)}
         onCameraShapeChange={(val) => updateSceneProperty("cameraShape", val)}
         onCustomMaskUpload={(file) => {
-          // Duplicate simple handler or move to shared utils
           const reader = new FileReader();
           reader.onload = (e) => {
             if (typeof e.target?.result === "string")
