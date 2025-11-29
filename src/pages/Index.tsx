@@ -16,9 +16,9 @@ import { CanvasContainer } from "./Index/components/CanvasContainer";
 import { useRecordingSession } from "@/hooks/useRecordingSession";
 import { useCompositeStream } from "@/hooks/useCompositeStream";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { useSceneManager } from "./index/hooks/useSceneManager";
-import { useMediaManager } from "./index/hooks/useMediaManager";
-import { useLayoutManager } from "./index/hooks/useLayoutManager";
+import { useSceneManager } from "./Index/hooks/useSceneManager";
+import { useMediaManager } from "./Index/hooks/useMediaManager";
+import { useLayoutManager } from "./Index/hooks/useLayoutManager";
 
 import {
   GeneratedOverlay,
