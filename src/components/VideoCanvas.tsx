@@ -32,7 +32,6 @@ import { AICommandPopover } from "@/components/AICommandPopover";
 import { AssetResult } from "@/components/AssetLibrary";
 import { ASPECT_RATIOS } from "@/lib/backgrounds";
 import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
-import { SnapGuideLine } from "@/components/SnapGuideLine";
 import { GuideLine, OverlayElement } from "@/hooks/useSnapGuides";
 import { DynamicContentRenderer } from "@/components/video-canvas/DynamicContentRenderer";
 import { PipWindow } from "@/components/video-canvas/PipWindow";
@@ -40,6 +39,7 @@ import { OverlayLayer } from "@/components/video-canvas/OverlayLayer";
 import { BrowserOverlayState } from "./DraggableBrowser";
 import { VideoPlayer } from "@/components/video-canvas/VideoPlayer";
 import { ScreenShareView } from "@/components/video-canvas/ScreenShareView";
+import { SnapLines, SnapLinesRef } from "@/components/video-canvas/SnapLines";
 
 interface VideoCanvasProps {
   sceneId: string;
@@ -237,12 +237,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const { theme } = useTheme();
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
+  const snapLinesRef = useRef<SnapLinesRef>(null);
 
   const [viewport, setViewport] = useState({ scale: 1, x: 0, y: 0 });
   const [isCanvasHovered, setIsCanvasHovered] = useState(false);
   const [isSpacePressed, setIsSpacePressed] = useState(false);
   const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
-  const [activeSnapGuides, setActiveSnapGuides] = useState<GuideLine[]>([]);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [isDraggingDynamicSplitter, setIsDraggingDynamicSplitter] =
     useState(false);
@@ -754,6 +754,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           style={{ zIndex: 100 }}
         />
 
+        <SnapLines ref={snapLinesRef} containerSize={sceneSize} />
+
         {["below-video", "above-video"].map((order) => (
           <div
             key={order}
@@ -789,7 +791,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   : props.portalContainer
               }
               allOverlays={allOverlays}
-              onSnapGuidesChange={setActiveSnapGuides}
+              onSnapGuidesChange={(guides) =>
+                snapLinesRef.current?.setGuides(guides)
+              }
               onRemoveBrowser={props.onRemoveBrowser}
               onBrowserUrlChange={props.onBrowserUrlChange}
               onBrowserLayoutChange={props.onBrowserLayoutChange}
@@ -799,13 +803,13 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onFileLayoutChange={props.onFileLayoutChange}
               selectedFileId={props.selectedFileId}
               onSelectFile={props.setSelectedFileId}
+              onRemoveTextOverlay={props.onRemoveTextOverlay}
               onTextLayoutChange={props.onTextLayoutChange}
               onTextStyleChange={props.onTextStyleChange}
               onTextContentChange={props.onTextContentChange}
-              onRemoveTextOverlay={props.onRemoveTextOverlay}
-              containerRef={sceneRef}
               selectedTextId={props.selectedTextId}
               onSelectText={props.setSelectedTextId}
+              containerRef={sceneRef}
               isSpacePressed={isSpacePressed}
               onInternalDragStart={props.onInternalDragStart}
               onInternalDragStop={props.onInternalDragStop}
@@ -858,16 +862,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           </AICommandPopover>
         </Rnd>
       )}
-
-      {activeSnapGuides.map((guide, index) => (
-        <SnapGuideLine
-          key={index}
-          axis={guide.axis}
-          position={guide.position}
-          containerSize={sceneSize}
-          type={guide.type}
-        />
-      ))}
     </div>
   );
 };

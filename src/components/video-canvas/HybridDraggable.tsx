@@ -94,8 +94,17 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
   const [mode, setMode] = useState<InteractionMode>("idle");
   const [resizeHandle, setResizeHandle] = useState<ResizeHandle | null>(null);
 
-  // Local state for smooth visual updates (pixels)
+  // Local state for smooth visual updates (pixels) - ONLY updated at end of interaction or prop change
   const [localTransform, setLocalTransform] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    rotation,
+  });
+
+  // Mutable ref for high-frequency updates during interaction
+  const currentTransformRef = useRef({
     x: 0,
     y: 0,
     width: 0,
@@ -126,6 +135,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
     snapThreshold: 3,
   });
 
+  // Sync props to local state and ref when not interacting
   useEffect(() => {
     if (
       mode === "idle" &&
@@ -133,13 +143,15 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       containerSize.height > 0
     ) {
       const pixels = percentToPixels(position, containerSize);
-      setLocalTransform({
+      const newTransform = {
         x: pixels.x,
         y: pixels.y,
         width: (size.width / 100) * containerSize.width,
         height: (size.height / 100) * containerSize.height,
         rotation,
-      });
+      };
+      setLocalTransform(newTransform);
+      currentTransformRef.current = newTransform;
     }
   }, [position, size, rotation, containerSize, mode]);
 
@@ -149,42 +161,36 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
     (e: PointerEvent) => {
       if (!elementRef.current || !enableDragging) return;
 
-      // Stop propagation to prevent parent (canvas) from receiving this event
-      // This prevents accidental deselection if the canvas listens to pointerdown
       e.stopPropagation();
 
-      // Check cancellation
       if (cancelSelector) {
         const target = e.target as HTMLElement;
         if (target.closest(cancelSelector)) return;
       }
 
-      // Check handle
       if (dragHandleSelector) {
         const target = e.target as HTMLElement;
         if (!target.closest(dragHandleSelector)) return;
       }
 
-      // Capture initial state
+      // Sync ref with current state just in case
+      currentTransformRef.current = { ...localTransform };
+
       startStateRef.current = {
         pointerX: e.clientX,
         pointerY: e.clientY,
-        elementX: localTransform.x,
-        elementY: localTransform.y,
-        elementWidth: localTransform.width,
-        elementHeight: localTransform.height,
-        rotation: localTransform.rotation,
+        elementX: currentTransformRef.current.x,
+        elementY: currentTransformRef.current.y,
+        elementWidth: currentTransformRef.current.width,
+        elementHeight: currentTransformRef.current.height,
+        rotation: currentTransformRef.current.rotation,
         hasMoved: false,
         startTime: Date.now(),
       };
 
-      // Trigger selection
       onSelect?.(id);
-
-      // Optimize for drag
       optimizeForDrag(elementRef.current);
 
-      // Add iframe blocker
       if (elementRef.current.querySelector("iframe")) {
         iframeBlockerRef.current = createIframeBlocker(elementRef.current);
       }
@@ -206,7 +212,6 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       const deltaX = e.clientX - startStateRef.current.pointerX;
       const deltaY = e.clientY - startStateRef.current.pointerY;
 
-      // Movement threshold
       if (
         !startStateRef.current.hasMoved &&
         Math.abs(deltaX) < 3 &&
@@ -226,9 +231,9 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       // Convert to % for snapping
       const xPercent = (newX / containerSize.width) * 100;
       const yPercent = (newY / containerSize.height) * 100;
-      const widthPercent = (localTransform.width / containerSize.width) * 100;
+      const widthPercent = (currentTransformRef.current.width / containerSize.width) * 100;
       const heightPercent =
-        (localTransform.height / containerSize.height) * 100;
+        (currentTransformRef.current.height / containerSize.height) * 100;
 
       // Calculate snap
       const snapResult = calculateSnap(
@@ -247,24 +252,26 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       newY = snappedPixels.y;
 
       // Clamp bounds (relaxed)
-      newX = clamp(newX, -localTransform.width + 20, containerSize.width - 20);
+      newX = clamp(newX, -currentTransformRef.current.width + 20, containerSize.width - 20);
       newY = clamp(
         newY,
-        -localTransform.height + 20,
+        -currentTransformRef.current.height + 20,
         containerSize.height - 20
       );
 
-      setLocalTransform((prev) => ({ ...prev, x: newX, y: newY }));
+      // Update ref
+      currentTransformRef.current.x = newX;
+      currentTransformRef.current.y = newY;
 
+      // Direct DOM update
       applyGPUTransform(elementRef.current, {
         x: newX,
         y: newY,
-        rotation: localTransform.rotation,
+        rotation: currentTransformRef.current.rotation,
       });
     },
     [
       containerSize,
-      localTransform,
       calculateSnap,
       onSnapGuidesChange,
       enableDragging,
@@ -286,8 +293,11 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       onSnapGuidesChange?.([]);
 
       if (wasDragging) {
+        // Sync local state
+        setLocalTransform({ ...currentTransformRef.current });
+
         const percent = pixelsToPercent(
-          { x: localTransform.x, y: localTransform.y },
+          { x: currentTransformRef.current.x, y: currentTransformRef.current.y },
           containerSize
         );
         onCommit(id, {
@@ -312,7 +322,6 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
     },
     [
       id,
-      localTransform,
       containerSize,
       onCommit,
       onSnapGuidesChange,
@@ -339,14 +348,17 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       setResizeHandle(handle);
       onSelect?.(id);
 
+      // Sync ref
+      currentTransformRef.current = { ...localTransform };
+
       startStateRef.current = {
         pointerX: e.clientX,
         pointerY: e.clientY,
-        elementX: localTransform.x,
-        elementY: localTransform.y,
-        elementWidth: localTransform.width,
-        elementHeight: localTransform.height,
-        rotation: localTransform.rotation,
+        elementX: currentTransformRef.current.x,
+        elementY: currentTransformRef.current.y,
+        elementWidth: currentTransformRef.current.width,
+        elementHeight: currentTransformRef.current.height,
+        rotation: currentTransformRef.current.rotation,
         hasMoved: true,
         startTime: Date.now(),
       };
@@ -368,8 +380,6 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       let newX = startStateRef.current.elementX;
       let newY = startStateRef.current.elementY;
 
-      // Simplified resize logic for brevity (same as previous)
-      // ... (keeping logic for se, nw, ne, sw handles)
       switch (resizeHandle) {
         case "se":
           newWidth = Math.max(
@@ -439,23 +449,25 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         }
       }
 
-      setLocalTransform((prev) => ({
-        ...prev,
+      // Update ref
+      currentTransformRef.current = {
+        ...currentTransformRef.current,
         x: newX,
         y: newY,
         width: newWidth,
         height: newHeight,
-      }));
+      };
 
+      // Direct DOM update
       elementRef.current.style.width = `${newWidth}px`;
       elementRef.current.style.height = `${newHeight}px`;
       applyGPUTransform(elementRef.current, {
         x: newX,
         y: newY,
-        rotation: localTransform.rotation,
+        rotation: currentTransformRef.current.rotation,
       });
     },
-    [mode, resizeHandle, minWidth, minHeight, lockAspectRatio, localTransform]
+    [mode, resizeHandle, minWidth, minHeight, lockAspectRatio]
   );
 
   const handleResizeEnd = useCallback(
@@ -466,18 +478,21 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       setResizeHandle(null);
       restoreAfterDrag(elementRef.current);
 
+      // Sync local state
+      setLocalTransform({ ...currentTransformRef.current });
+
       const posPercent = pixelsToPercent(
-        { x: localTransform.x, y: localTransform.y },
+        { x: currentTransformRef.current.x, y: currentTransformRef.current.y },
         containerSize
       );
       const sizePercent = {
-        width: (localTransform.width / containerSize.width) * 100,
-        height: (localTransform.height / containerSize.height) * 100,
+        width: (currentTransformRef.current.width / containerSize.width) * 100,
+        height: (currentTransformRef.current.height / containerSize.height) * 100,
       };
 
       onCommit(id, { position: posPercent, size: sizePercent });
     },
-    [id, localTransform, containerSize, onCommit]
+    [id, containerSize, onCommit]
   );
 
   const resizeBind = usePointerInteraction({
@@ -494,12 +509,15 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       setMode("rotating");
       onSelect?.(id);
 
+      // Sync ref
+      currentTransformRef.current = { ...localTransform };
+
       const rect = elementRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
       const startAngle =
         Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-      const initialRotation = localTransform.rotation;
+      const initialRotation = currentTransformRef.current.rotation;
       liveRotationRef.current = initialRotation;
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
@@ -510,12 +528,15 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         const newRotation = initialRotation + angleDiff;
 
         liveRotationRef.current = newRotation;
-        setLocalTransform((prev) => ({ ...prev, rotation: newRotation }));
 
+        // Update ref
+        currentTransformRef.current.rotation = newRotation;
+
+        // Direct DOM update
         if (elementRef.current) {
           applyGPUTransform(elementRef.current, {
-            x: localTransform.x,
-            y: localTransform.y,
+            x: currentTransformRef.current.x,
+            y: currentTransformRef.current.y,
             rotation: newRotation,
           });
         }
@@ -525,6 +546,10 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         setMode("idle");
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
+
+        // Sync local state
+        setLocalTransform(prev => ({ ...prev, rotation: liveRotationRef.current }));
+
         onCommit(id, { rotation: liveRotationRef.current });
       };
 

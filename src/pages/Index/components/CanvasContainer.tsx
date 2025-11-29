@@ -151,7 +151,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
               fileType,
               fileUrl: url,
               layout: {
-                position: { x: 50, y: 50 },
+                position: { x: 30, y: 30 }, // Centered (50 - 40/2)
                 size: { width: 40, height: 40 },
                 zIndex: zIndex.draggableElement,
                 rotation: 0,
@@ -186,7 +186,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
               id: generateBrowserId(),
               url: text,
               layout: {
-                position: { x: 50, y: 50 },
+                position: { x: 25, y: 20 }, // Centered (50 - 50/2, 50 - 60/2)
                 size: { width: 50, height: 60 },
                 zIndex: zIndex.draggableElement,
                 rotation: 0,
@@ -210,7 +210,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
                 position: { x: 50, y: 50 },
               },
               layout: {
-                position: { x: 50, y: 50 },
+                position: { x: 35, y: 45 }, // Centered (50 - 30/2, 50 - 10/2)
                 size: { width: 30, height: 10 },
                 zIndex: zIndex.draggableElement,
                 rotation: 0,
