@@ -485,6 +485,8 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
     onEnd: handleResizeEnd,
   });
 
+  const liveRotationRef = useRef(rotation);
+
   const handleRotationStart = useCallback(
     (e: React.PointerEvent) => {
       e.stopPropagation();
@@ -498,6 +500,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       const startAngle =
         Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
       const initialRotation = localTransform.rotation;
+      liveRotationRef.current = initialRotation;
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const currentAngle =
@@ -505,7 +508,10 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
           (180 / Math.PI);
         const angleDiff = currentAngle - startAngle;
         const newRotation = initialRotation + angleDiff;
+
+        liveRotationRef.current = newRotation;
         setLocalTransform((prev) => ({ ...prev, rotation: newRotation }));
+
         if (elementRef.current) {
           applyGPUTransform(elementRef.current, {
             x: localTransform.x,
@@ -519,7 +525,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         setMode("idle");
         document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
-        onCommit(id, { rotation: localTransform.rotation });
+        onCommit(id, { rotation: liveRotationRef.current });
       };
 
       document.addEventListener("mousemove", handleMouseMove);

@@ -89,7 +89,7 @@ export const UniversalOverlayWrapper: React.FC<
               {onSetDynamicLayout && (
                 <div
                   className={cn(
-                    "absolute top-2 left-2 z-50 transition-opacity duration-200",
+                    "absolute top-2 left-2 z-[60] transition-opacity duration-200",
                     isSelected
                       ? "opacity-100"
                       : "opacity-0 group-hover:opacity-100"
@@ -112,7 +112,7 @@ export const UniversalOverlayWrapper: React.FC<
                 }}
                 onPointerDown={(e) => e.stopPropagation()}
                 className={cn(
-                  "close-btn absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all shadow-md cursor-pointer z-50",
+                  "close-btn absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all shadow-md cursor-pointer z-[60]",
                   isSelected
                     ? "opacity-100 scale-100"
                     : "opacity-0 group-hover:opacity-100 hover:scale-110"
