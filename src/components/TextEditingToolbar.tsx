@@ -146,8 +146,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       alignment === "left"
         ? "justifyLeft"
         : alignment === "center"
-          ? "justifyCenter"
-          : "justifyRight";
+        ? "justifyCenter"
+        : "justifyRight";
     document.execCommand(command);
     onStyleChange(overlay.id, { textAlign: alignment } as any);
   };
@@ -309,7 +309,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
                       onClick={() => handleFontFamilyChange(font)}
                       className={cn(
                         (overlay.style.fontFamily || "Inter") === font &&
-                        "bg-accent"
+                          "bg-accent"
                       )}
                       style={{ fontFamily: font }}
                     >
@@ -497,42 +497,6 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
               >
                 <AlignRight className="w-4 h-4" />
               </Button>
-
-              <div className="w-px h-6 bg-border" />
-
-              {/* List Types */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    title="Lists"
-                  >
-                    <List className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onClick={() => document.execCommand("insertUnorderedList")}
-                  >
-                    <List className="w-4 h-4 mr-2" />
-                    Bullet List
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => document.execCommand("insertOrderedList")}
-                  >
-                    <ListOrdered className="w-4 h-4 mr-2" />
-                    Numbered List
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => document.execCommand("removeFormat")}
-                  >
-                    <RemoveFormatting className="w-4 h-4 mr-2" />
-                    Remove Formatting
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </>
           )}
           {/* --- END CONDITIONAL BLOCK --- */}
