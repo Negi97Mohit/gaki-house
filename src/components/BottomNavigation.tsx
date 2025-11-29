@@ -1,4 +1,3 @@
-// src/components/BottomNavigation.tsx
 import React from "react";
 import {
   Mic,
@@ -6,14 +5,8 @@ import {
   Webcam,
   VideoOff,
   ScreenShare,
-  Circle,
-  Square,
   ChevronUp,
   Check,
-  Type,
-  Pencil,
-  Sun,
-  Moon,
   Library,
   Expand,
   Shrink,
@@ -21,7 +14,6 @@ import {
   X,
   Monitor,
   Paintbrush,
-  Radio,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,62 +24,43 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { LayoutControls } from "@/components/LayoutControls";
-import { FloatingAssetSearch } from "@/components/FloatingAssetSearch";
-import { InstructionsDialog } from "@/components/InstructionsDialog";
 import { AssetResult } from "@/components/AssetLibrary";
 import { LayoutMode, CameraShape } from "@/types/caption";
 import { useTheme } from "next-themes";
 import { ToolsPopover } from "@/components/ToolsPopover";
 
-// Props interface combining all props needed from Index, VideoCanvas, etc.
 interface BottomNavigationProps {
-  // Scene & Settings Toggles
   onOpenSettings: () => void;
   onOpenSessions: () => void;
   onSaveLayout: () => void;
-  onOpenAnimationLibrary: () => void; // --- ADDED ---
-
-  // Media Controls
+  onOpenAnimationLibrary: () => void;
   isAudioOn: boolean;
   onAudioToggle: (on: boolean) => void;
   audioDevices: MediaDeviceInfo[];
   onAudioDeviceSelect: (deviceId: string) => void;
   selectedAudioDevice: string | undefined;
-
   isVideoOn: boolean;
   onVideoToggle: (on: boolean) => void;
   videoDevices: MediaDeviceInfo[];
   onVideoDeviceSelect: (deviceId: string) => void;
   selectedVideoDevice: string | undefined;
-
-  // Screen Share
   screenShareMode: "off" | "screen" | "canvas";
   onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
-
-  // Recording
   isRecording: boolean;
   onRecordingToggle: () => void;
-
-  // Broadcasting
   isBroadcasting: boolean;
   onBroadcastToggle: () => void;
-
-  // Right-side Controls
   onAddTextOverlay: () => void;
   onAssetSelect: (asset: AssetResult) => void;
   setIsDrawing: (isDrawing: boolean) => void;
   onToggleFullscreen: () => void;
   isFullscreen: boolean;
-
-  // Layout Controls
   layoutMode: LayoutMode;
   cameraShape: CameraShape;
   onLayoutModeChange: (mode: LayoutMode) => void;
   onCameraShapeChange: (shape: CameraShape) => void;
   onCustomMaskUpload?: (file: File) => void;
   portalContainer?: HTMLElement | null;
-
-  // Other props for LayoutControls
   splitRatio: number;
   pipPosition: { x: number; y: number };
   pipSize: { width: number; height: number };
@@ -103,7 +76,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onOpenSettings,
   onOpenSessions,
   onSaveLayout,
-  onOpenAnimationLibrary, // --- ADDED ---
+  onOpenAnimationLibrary,
   isAudioOn,
   onAudioToggle,
   audioDevices,
@@ -151,7 +124,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           <SlidersHorizontal className="w-4 h-4" />
         </Button>
 
-        {/* --- ADDED: Library Button --- */}
         <Button
           variant="ghost"
           size="icon"
@@ -188,21 +160,32 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="bg-background/95 backdrop-blur-xl border-border/40"
+              side="top"
+              align="center"
+              className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
               style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
             >
-              {audioDevices.map((device, i) => (
+              {audioDevices.length === 0 ? (
                 <DropdownMenuItem
-                  key={device.deviceId}
-                  onClick={() => onAudioDeviceSelect(device.deviceId)}
-                  className="text-sm"
+                  disabled
+                  className="text-xs text-muted-foreground"
                 >
-                  {device.deviceId === selectedAudioDevice && (
-                    <Check className="w-3.5 h-3.5 mr-2" />
-                  )}
-                  {device.label || `Microphone ${i + 1}`}
+                  No microphones found
                 </DropdownMenuItem>
-              ))}
+              ) : (
+                audioDevices.map((device, i) => (
+                  <DropdownMenuItem
+                    key={device.deviceId}
+                    onClick={() => onAudioDeviceSelect(device.deviceId)}
+                    className="text-sm"
+                  >
+                    {device.deviceId === selectedAudioDevice && (
+                      <Check className="w-3.5 h-3.5 mr-2" />
+                    )}
+                    {device.label || `Microphone ${i + 1}`}
+                  </DropdownMenuItem>
+                ))
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -231,21 +214,32 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="bg-background/95 backdrop-blur-xl border-border/40"
+              side="top"
+              align="center"
+              className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
               style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
             >
-              {videoDevices.map((device, i) => (
+              {videoDevices.length === 0 ? (
                 <DropdownMenuItem
-                  key={device.deviceId}
-                  onClick={() => onVideoDeviceSelect(device.deviceId)}
-                  className="text-sm"
+                  disabled
+                  className="text-xs text-muted-foreground"
                 >
-                  {device.deviceId === selectedVideoDevice && (
-                    <Check className="w-3.5 h-3.5 mr-2" />
-                  )}
-                  {device.label || `Camera ${i + 1}`}
+                  No cameras found
                 </DropdownMenuItem>
-              ))}
+              ) : (
+                videoDevices.map((device, i) => (
+                  <DropdownMenuItem
+                    key={device.deviceId}
+                    onClick={() => onVideoDeviceSelect(device.deviceId)}
+                    className="text-sm"
+                  >
+                    {device.deviceId === selectedVideoDevice && (
+                      <Check className="w-3.5 h-3.5 mr-2" />
+                    )}
+                    {device.label || `Camera ${i + 1}`}
+                  </DropdownMenuItem>
+                ))
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -265,6 +259,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
+            side="top"
+            align="center"
             className="bg-background/95 backdrop-blur-xl border-border/40"
             style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
           >

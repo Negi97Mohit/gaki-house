@@ -1,6 +1,5 @@
 // src/pages/index/hooks/useMediaManager.ts
-import { useState, useEffect, useRef } from "react";
-import { toast } from "sonner";
+import { useState, useEffect } from "react";
 
 interface UseMediaManagerProps {
   isAudioOn: boolean;
@@ -17,68 +16,58 @@ export const useMediaManager = ({
 }: UseMediaManagerProps) => {
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
-  const [audioStreamForSpeech, setAudioStreamForSpeech] =
-    useState<MediaStream | null>(null);
 
   // Enumerate Devices
   useEffect(() => {
     const getDevices = async () => {
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-        const devices = await navigator.mediaDevices.enumerateDevices();
+        // First enumeration
+        let devices = await navigator.mediaDevices.enumerateDevices();
+
+        // If labels are empty (browser security), trigger a quick permission request
+        const hasLabels = devices.some((d) => d.label);
+        if (!hasLabels) {
+          try {
+            const tempStream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: true,
+            });
+            devices = await navigator.mediaDevices.enumerateDevices();
+            // Immediately stop the temp stream to free up the device
+            tempStream.getTracks().forEach((t) => t.stop());
+          } catch (e) {
+            console.warn("Permission request failed or cancelled", e);
+          }
+        }
+
         setAudioDevices(devices.filter((d) => d.kind === "audioinput"));
         setVideoDevices(devices.filter((d) => d.kind === "videoinput"));
       } catch (err) {
         console.warn("Could not enumerate devices:", err);
       }
     };
+
     getDevices();
-  }, []);
 
-  // Manage Speech Recognition Audio Stream
-  useEffect(() => {
-    let dedicatedAudioStream: MediaStream | null = null;
-
-    const manageAudioStream = async () => {
-      if (isAudioOn) {
-        try {
-          const constraints: MediaStreamConstraints = {
-            audio: selectedAudioDevice
-              ? { deviceId: { exact: selectedAudioDevice } }
-              : true,
-          };
-          dedicatedAudioStream = await navigator.mediaDevices.getUserMedia(
-            constraints
-          );
-          setAudioStreamForSpeech(dedicatedAudioStream);
-        } catch (err) {
-          console.error(
-            "Failed to get dedicated audio stream for captions:",
-            err
-          );
-          toast.error("Could not access microphone for captions.");
-          onAudioToggle(false);
-        }
-      } else {
-        if (audioStreamForSpeech) {
-          audioStreamForSpeech.getTracks().forEach((track) => track.stop());
-          setAudioStreamForSpeech(null);
-        }
-      }
+    // Auto-update lists when devices are plugged/unplugged
+    const handleDeviceChange = () => {
+      getDevices();
     };
-
-    manageAudioStream();
+    navigator.mediaDevices.addEventListener("devicechange", handleDeviceChange);
 
     return () => {
-      if (dedicatedAudioStream) {
-        dedicatedAudioStream.getTracks().forEach((track) => track.stop());
-      }
+      navigator.mediaDevices.removeEventListener(
+        "devicechange",
+        handleDeviceChange
+      );
     };
-  }, [isAudioOn, selectedAudioDevice, onAudioToggle, sceneId]);
+  }, []);
+
+  // Note: Actual stream management is now handled centrally in VideoCanvas
+  // to avoid race conditions and duplicate streams.
 
   return {
     audioDevices,
     videoDevices,
-    audioStreamForSpeech,
   };
 };

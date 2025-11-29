@@ -40,6 +40,7 @@ import { BrowserOverlayState } from "./DraggableBrowser";
 import { VideoPlayer } from "@/components/video-canvas/VideoPlayer";
 import { ScreenShareView } from "@/components/video-canvas/ScreenShareView";
 import { SnapLines, SnapLinesRef } from "@/components/video-canvas/SnapLines";
+import { CaptionRenderer } from "@/components/CaptionRenderer";
 
 interface VideoCanvasProps {
   sceneId: string;
@@ -258,8 +259,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   const [audioStreamForSpeech, setAudioStreamForSpeech] =
     useState<MediaStream | null>(null);
-  // FIX: Track the device ID of the currently active stream to prevent duplicate creation
-  const activeAudioDeviceIdRef = useRef<string | null>(null);
 
   const [fullTranscript, setFullTranscript] = useState("");
   const [interimTranscript, setInterimTranscript] = useState("");
@@ -327,8 +326,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       stopRecognition();
     }
     return () => {
-      // Don't stop immediately on unmount/dep change if we are just switching streams?
-      // No, for safety we must stop. The loop is caused by stream regeneration, fixed below.
       stopRecognition();
       setFullTranscript("");
       setInterimTranscript("");
@@ -340,103 +337,81 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     stopRecognition,
   ]);
 
-  // Effect to manage Audio Stream Creation (STABILIZED)
+  // Cleanup effect
   useEffect(() => {
-    let dedicatedAudioStream: MediaStream | null = null;
-    let isMounted = true;
+    return () => {
+      if (audioStreamForSpeech) {
+        audioStreamForSpeech.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [audioStreamForSpeech]);
 
-    const manageAudioStream = async () => {
-      // 1. If Audio is Off: Clear everything
+  // Stream Creation Effect
+  useEffect(() => {
+    let isCancelled = false;
+
+    const createAudioStream = async () => {
       if (!isAudioOn) {
-        if (activeAudioDeviceIdRef.current !== null) {
-          console.log("[VideoCanvas] Audio off - Clearing stream");
-          setAudioStreamForSpeech(null);
-          activeAudioDeviceIdRef.current = null;
-        }
+        setAudioStreamForSpeech(null);
         return;
       }
-
-      // 2. Identify requested device ID (undefined = default)
-      const requestedDeviceId = selectedAudioDevice || "default";
-
-      // 3. Prevent re-creation if the current stream matches the requested ID
-      if (
-        audioStreamForSpeech &&
-        audioStreamForSpeech.active &&
-        activeAudioDeviceIdRef.current === requestedDeviceId
-      ) {
-        console.log(
-          "[VideoCanvas] Stream already active for device:",
-          requestedDeviceId
-        );
-        return;
-      }
-
-      console.log(
-        "[VideoCanvas] Requesting new audio stream for:",
-        requestedDeviceId
-      );
 
       try {
-        const constraints: MediaStreamConstraints = {
+        const constraints = {
           audio: selectedAudioDevice
             ? { deviceId: { exact: selectedAudioDevice } }
             : true,
         };
 
-        dedicatedAudioStream = await navigator.mediaDevices.getUserMedia(
-          constraints
-        );
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-        if (!isMounted) {
-          dedicatedAudioStream.getTracks().forEach((t) => t.stop());
+        if (isCancelled) {
+          stream.getTracks().forEach((t) => t.stop());
           return;
         }
 
-        // 4. Update State & Ref
-        console.log(
-          "[VideoCanvas] Setting new audio stream ID:",
-          dedicatedAudioStream.id
-        );
-        activeAudioDeviceIdRef.current = requestedDeviceId;
-        setAudioStreamForSpeech(dedicatedAudioStream);
-      } catch (err) {
-        console.error("[VideoCanvas] Audio stream error:", err);
-        // Only toggle off if it's a hard error, not just a permission prompt cancel
-        if (isMounted) {
-          // props.onAudioToggle(false); // Optional: decide if we want to force toggle off
-        }
+        setAudioStreamForSpeech(stream);
+      } catch (error) {
+        console.error("[VideoCanvas] Failed to get audio stream:", error);
+        setAudioStreamForSpeech(null);
       }
     };
 
-    manageAudioStream();
+    createAudioStream();
 
-    // Cleanup function: Only stop tracks if we are genuinely unmounting or switching
     return () => {
-      isMounted = false;
-      // NOTE: We do NOT stop 'dedicatedAudioStream' here because it might be the state we just set.
-      // We only clean up if *this specific run* created a stream that was never used, which is handled by !isMounted logic.
-      // The *previous* stream in state is cleaned up when 'setAudioStreamForSpeech' overwrites it (React doesn't auto-stop streams, we have to do it manually if we lose the ref).
-      // However, since we store it in state, we rely on the NEXT effect run to not trample it unless necessary.
-      // Actually, to be safe: The previous stream is held in 'audioStreamForSpeech'.
-      // We can't stop it here effectively without reference.
+      isCancelled = true;
     };
   }, [isAudioOn, selectedAudioDevice]);
-  // removed `sceneId` from deps to prevent stream cut on autosave
 
-  // Separate cleanup effect for the state-held stream
+  // Stream Verification Effect
   useEffect(() => {
+    if (!audioStreamForSpeech) return;
+
+    const audioTracks = audioStreamForSpeech.getAudioTracks();
+    if (audioTracks.length === 0) {
+      console.warn(
+        "[VideoCanvas] ⚠️ Audio stream exists but has NO audio tracks."
+      );
+      return;
+    }
+
+    const track = audioTracks[0];
+    console.log(
+      `[VideoCanvas] 🎤 Audio Track Status: ${track.label} | Enabled: ${track.enabled} | ReadyState: ${track.readyState}`
+    );
+
+    const handleEnded = () => {
+      console.error("[VideoCanvas] ❌ Audio track ended unexpectedly.");
+    };
+
+    track.addEventListener("ended", handleEnded);
     return () => {
-      if (audioStreamForSpeech) {
-        console.log(
-          "[VideoCanvas] Unmount/State Change - Stopping active stream tracks"
-        );
-        audioStreamForSpeech.getTracks().forEach((t) => t.stop());
-      }
+      track.removeEventListener("ended", handleEnded);
     };
   }, [audioStreamForSpeech]);
 
-  // ... (Rest of component remains same)
+  // ... (Resize logic remains same)
   useEffect(() => {
     const container = canvasContainerRef.current;
     const scene = sceneRef.current;
@@ -616,8 +591,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           <div
             className="relative flex items-center justify-center overflow-hidden"
             style={{
-              [isVertical ? "height" : "width"]: `${(1 - dynamicSplitRatio) * 100
-                }%`,
+              [isVertical ? "height" : "width"]: `${
+                (1 - dynamicSplitRatio) * 100
+              }%`,
             }}
           >
             {renderCamera()}
@@ -673,7 +649,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             screenShareMode={props.screenShareMode}
             onPipPositionChange={props.onPipPositionChange}
             onPipSizeChange={props.onPipSizeChange}
-            onPipRotationChange={props.onPipRotationChange || (() => { })}
+            onPipRotationChange={props.onPipRotationChange || (() => {})}
             pipRotation={props.pipRotation}
             onInternalDragStart={props.onInternalDragStart}
             onInternalDragStop={props.onInternalDragStop}
@@ -716,6 +692,20 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     [textOverlays, browserOverlays, fileOverlays, generatedOverlays]
   );
 
+  // --- ADDED: Style construction helper ---
+  const captionBaseStyle: React.CSSProperties = {
+    fontFamily: props.liveCaptionStyle.fontFamily,
+    fontSize: `${props.liveCaptionStyle.fontSize}px`,
+    color: props.liveCaptionStyle.color,
+    fontWeight: props.liveCaptionStyle.bold ? "bold" : "normal",
+    fontStyle: props.liveCaptionStyle.italic ? "italic" : "normal",
+    textDecoration: props.liveCaptionStyle.underline ? "underline" : "none",
+    textShadow: props.liveCaptionStyle.textShadow,
+  };
+
+  const captionWidth = 600;
+  const captionHeight = 100;
+
   return (
     <div
       ref={canvasContainerRef}
@@ -747,6 +737,69 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         />
 
         {renderContent()}
+
+        {/* --- MODIFIED: Live Caption Renderer with Correct Centering --- */}
+        {captionsEnabled &&
+          (fullTranscript || interimTranscript) &&
+          sceneSize.width > 0 && (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ zIndex: "var(--z-caption)" }}
+            >
+              <Rnd
+                key={sceneSize.width} // Re-mount if scene size changes (fixes init glitch)
+                default={{
+                  // Center the box on the target point
+                  x:
+                    (sceneSize.width * props.liveCaptionStyle.position.x) /
+                      100 -
+                    captionWidth / 2,
+                  y:
+                    (sceneSize.height * props.liveCaptionStyle.position.y) /
+                      100 -
+                    captionHeight / 2,
+                  width: captionWidth,
+                  height: captionHeight,
+                }}
+                // Controlled position: Keep it centered
+                position={{
+                  x:
+                    (sceneSize.width * props.liveCaptionStyle.position.x) /
+                      100 -
+                    captionWidth / 2,
+                  y:
+                    (sceneSize.height * props.liveCaptionStyle.position.y) /
+                      100 -
+                    captionHeight / 2,
+                }}
+                enableResizing={false}
+                // Removed bounds="parent" to prevent clipping if text is near edge
+                className="pointer-events-auto"
+                style={{ position: "absolute" }}
+                onDragStop={(e, d) => {
+                  // Convert top-left coordinate back to center percentage
+                  const centerX = d.x + captionWidth / 2;
+                  const centerY = d.y + captionHeight / 2;
+
+                  const newXPercent = (centerX / sceneSize.width) * 100;
+                  const newYPercent = (centerY / sceneSize.height) * 100;
+
+                  props.onCaptionLayoutChange({
+                    position: { x: newXPercent, y: newYPercent },
+                  });
+                }}
+              >
+                <CaptionRenderer
+                  text=""
+                  fullTranscript={fullTranscript}
+                  interimTranscript={interimTranscript}
+                  activeStyleId={props.dynamicStyle}
+                  captionStyle={props.liveCaptionStyle}
+                  baseStyle={captionBaseStyle}
+                />
+              </Rnd>
+            </div>
+          )}
 
         <canvas
           ref={props.canvasRef}
