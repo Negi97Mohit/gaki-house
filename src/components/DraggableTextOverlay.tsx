@@ -2,10 +2,10 @@
 import React, { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
-import { X, RotateCcw, GripVertical } from "lucide-react";
+import { X, GripVertical } from "lucide-react";
 import { TextEditingToolbar } from "./TextEditingToolbar";
 import { MultiLayerTextRenderer } from "./MultiLayerTextRenderer";
-import { SmartDraggable } from "@/components/video-canvas/SmartDraggable";
+import { HybridDraggable } from "@/components/video-canvas/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
 interface DraggableTextOverlayProps {
@@ -55,42 +55,6 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
-  const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const element = e.currentTarget.closest(".group");
-    if (!element) return;
-
-    const box = element.getBoundingClientRect();
-    const centerX = box.left + box.width / 2;
-    const centerY = box.top + box.height / 2;
-    const startAngle =
-      Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-    const initialRotation = overlay.layout.rotation || 0;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const currentAngle =
-        Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
-        (180 / Math.PI);
-      const angleDiff = currentAngle - startAngle;
-      let newRotation = initialRotation + angleDiff;
-
-      if (!moveEvent.shiftKey) {
-        newRotation = Math.round(newRotation / 15) * 15;
-      }
-      onLayoutChange(overlay.id, { rotation: newRotation });
-    };
-
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
-
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isSpacePressed) return;
@@ -116,7 +80,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
 
   return (
     <>
-      <SmartDraggable
+      <HybridDraggable
         id={overlay.id}
         position={overlay.layout.position}
         size={overlay.layout.size}
@@ -125,29 +89,28 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
         rotation={overlay.layout.rotation}
         isSelected={isSelected}
         onSelect={onSelect}
-        scale={scale}
-        onDragStart={() => {
-          setIsDragging(true); // Hide toolbar
-          if (!isEditing && !isSpacePressed) onInternalDragStart();
-        }}
-        onDragStop={() => {
-          setIsDragging(false); // Show toolbar
-          onInternalDragStop();
-        }}
-        onChange={(id, layout) => {
+        onCommit={(id, layout) => {
+          // Commit changes only on interaction end (smooth 60fps)
           onLayoutChange(id, {
             ...(layout.position && { position: layout.position }),
             ...(layout.size && { size: layout.size }),
+            ...(layout.rotation !== undefined && { rotation: layout.rotation }),
           });
+          setIsDragging(false); // Show toolbar after interaction
+          onInternalDragStop();
         }}
         allOverlays={allOverlays}
         onSnapGuidesChange={onSnapGuidesChange}
         enableResizing={!isEditing && !isSpacePressed}
+        enableRotation={!isEditing && !isSpacePressed}
+        minWidth={50}
+        minHeight={30}
         className={cn(
           "group transition-colors duration-200",
           isEditing && "cursor-text pointer-events-auto"
         )}
-        cancel={isEditing ? "*" : ".close-button, .rotate-handle"}
+        cancelSelector={isEditing ? "*" : ".close-button, .rotate-handle"}
+        dragHandleSelector={isEditing ? undefined : undefined}
       >
         <div
           className={cn(
@@ -238,24 +201,10 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
               >
                 <X className="w-4 h-4 pointer-events-none" />
               </button>
-
-              <div
-                onMouseDown={handleRotationStart}
-                className="rotate-handle absolute -bottom-3 -left-3 flex items-center justify-center cursor-alias"
-                style={{
-                  width: "24px",
-                  height: "24px",
-                  transform: `rotate(-${overlay.layout.rotation || 0}deg)`,
-                }}
-              >
-                <div className="bg-primary text-primary-foreground rounded-full w-full h-full flex items-center justify-center">
-                  <RotateCcw className="w-4 h-4 pointer-events-none" />
-                </div>
-              </div>
             </>
           )}
         </div>
-      </SmartDraggable>
+      </HybridDraggable>
 
       {/* Hide toolbar while dragging to prevent visual lag */}
       {isSelected && !isEditing && !isDragging && (

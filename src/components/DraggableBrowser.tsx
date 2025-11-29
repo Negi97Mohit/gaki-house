@@ -6,11 +6,10 @@ import {
   ArrowRight,
   Globe,
   RefreshCw,
-  RotateCcw,
   X,
 } from "lucide-react";
 import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
-import { SmartDraggable } from "@/components/video-canvas/SmartDraggable";
+import { HybridDraggable } from "@/components/video-canvas/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { GeneratedLayout } from "@/types/caption";
 
@@ -67,37 +66,10 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
     onUrlChange(overlay.id, formattedUrl);
   };
 
-  const handleRotationStart = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const element = e.currentTarget.closest(".group");
-    if (!element) return;
-    const box = element.getBoundingClientRect();
-    const centerX = box.left + box.width / 2;
-    const centerY = box.top + box.height / 2;
-    const startAngle =
-      Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
-    const initialRotation = overlay.layout.rotation || 0;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const currentAngle =
-        Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
-        (180 / Math.PI);
-      const angleDiff = currentAngle - startAngle;
-      onLayoutChange(overlay.id, { rotation: initialRotation + angleDiff });
-    };
-
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
+  // Rotation now handled by HybridDraggable
 
   return (
-    <SmartDraggable
+    <HybridDraggable
       id={overlay.id}
       position={overlay.layout.position}
       size={overlay.layout.size}
@@ -108,17 +80,19 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       minWidth={250}
       minHeight={200}
       onSelect={onSelect}
-      onDragStart={onInternalDragStart}
-      onDragStop={onInternalDragStop}
-      onChange={(id, layout) => {
+      onCommit={(id, layout) => {
         onLayoutChange(id, {
           ...(layout.position && { position: layout.position }),
           ...(layout.size && { size: layout.size }),
+          ...(layout.rotation !== undefined && { rotation: layout.rotation }),
         });
+        onInternalDragStop();
       }}
       allOverlays={allOverlays}
       onSnapGuidesChange={onSnapGuidesChange}
-      cancel="input, button, iframe, .rotate-handle"
+      enableResizing={true}
+      enableRotation={true}
+      cancelSelector="input, button, iframe"
       className={cn(
         "group pointer-events-auto bg-card rounded-lg flex flex-col transition-all duration-200",
         isSelected
@@ -192,16 +166,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
           <X className="w-4 h-4" />
         </button>
 
-        {isSelected && (
-          <div
-            onMouseDown={handleRotationStart}
-            className="rotate-handle absolute -bottom-3 -left-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 cursor-alias z-50"
-            style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
-          >
-            <RotateCcw className="w-4 h-4 pointer-events-none" />
-          </div>
-        )}
       </div>
-    </SmartDraggable>
+    </HybridDraggable>
   );
 };
