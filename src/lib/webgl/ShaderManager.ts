@@ -2,8 +2,8 @@
 import { GLContext } from "./GLContext";
 import { VERTEX_SHADER_SOURCE } from "./shaders/vertex";
 import { BASIC_FRAGMENT_SHADER_SOURCE } from "./shaders/basic";
-import { EFFECTS_FRAGMENT_SHADER_SOURCE } from "./shaders/effects"; // NEW
-import { COMPOSITE_FRAGMENT_SHADER_SOURCE } from "./shaders/composite"; // NEW
+import { EFFECTS_FRAGMENT_SHADER_SOURCE } from "./shaders/effects";
+import { COMPOSITE_FRAGMENT_SHADER_SOURCE } from "./shaders/composite";
 
 type ProgramInfo = {
   program: WebGLProgram;
@@ -34,7 +34,15 @@ export class ShaderManager {
       "effects",
       VERTEX_SHADER_SOURCE,
       EFFECTS_FRAGMENT_SHADER_SOURCE,
-      ["u_video", "u_time", "u_filter_type", "u_intensity", "u_color"]
+      [
+        "u_video",
+        "u_time",
+        "u_filter_type",
+        "u_intensity",
+        "u_color",
+        "u_color_mid", // NEW
+        "u_color_high", // NEW
+      ]
     );
 
     // 3. Composite (Background removal)
@@ -46,6 +54,7 @@ export class ShaderManager {
     );
   }
 
+  // ... (Rest of the class remains identical) ...
   createProgram(
     id: string,
     vertSource: string,
@@ -69,15 +78,12 @@ export class ShaderManager {
 
   activate(id: string) {
     if (this.activeProgramId === id) return;
-
     const info = this.programs.get(id);
     if (!info) return;
-
     this.ctx.gl.useProgram(info.program);
     this.activeProgramId = id;
   }
 
-  // --- Helper Setters ---
   setUniform1f(name: string, value: number) {
     const info = this.getMethodInfo();
     if (info?.uniforms[name]) this.ctx.gl.uniform1f(info.uniforms[name], value);
