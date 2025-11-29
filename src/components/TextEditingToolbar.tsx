@@ -39,6 +39,8 @@ interface TextEditingToolbarProps {
   ) => void;
   position: { x: number; y: number };
   containerRef?: React.RefObject<HTMLElement>;
+  elementHeight?: number;
+  elementWidth?: number;
 }
 
 // Use the expanded font library from fonts.ts
@@ -62,6 +64,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   onStyleChange,
   position,
   containerRef,
+  elementHeight = 40,
+  elementWidth = 100,
 }) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
@@ -78,37 +82,41 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       const toolbarWidth = toolbarRef.current.offsetWidth;
       const containerRect = containerRef.current.getBoundingClientRect();
 
-      const gap = 16; // Gap between toolbar and text element
+      // Gap between toolbar and text element boundaries
+      const gap = 20;
 
-      // Try to center toolbar horizontally relative to the text
-      let x = position.x - toolbarWidth / 2;
+      // Center toolbar horizontally relative to the text element center
+      // position.x is the top-left of the element
+      // We want to center relative to elementWidth
+      let x = position.x + elementWidth / 2 - toolbarWidth / 2;
 
       // Clamp horizontally to stay within container
       x = Math.max(8, Math.min(x, containerRect.width - toolbarWidth - 8));
 
-      // Smart vertical positioning: prefer above, but switch to below if not enough space
+      // Vertical positioning logic
       let y: number;
       const spaceAbove = position.y;
-      const spaceBelow = containerRect.height - position.y;
-      const requiredSpace = toolbarHeight + gap + 20; // Extra padding for safety
+      const spaceBelow = containerRect.height - (position.y + elementHeight);
+      const requiredSpaceAbove = toolbarHeight + gap;
+      const requiredSpaceBelow = toolbarHeight + gap + 45; // Extra space for rotation handle
 
-      if (spaceAbove >= requiredSpace) {
-        // Enough space above - position above the text
+      if (spaceAbove >= requiredSpaceAbove) {
+        // Prefer above: Position above the element
         y = position.y - toolbarHeight - gap;
-      } else if (spaceBelow >= requiredSpace) {
-        // Not enough space above, but space below - position below the text
-        y = position.y + gap + 40; // 40px approximate text element height
+      } else if (spaceBelow >= requiredSpaceBelow) {
+        // Fallback below: Position below the element + rotation handle space
+        y = position.y + elementHeight + 45;
       } else {
-        // Not enough space above or below - position at top of container
-        y = 8;
+        // If tight on both sides, prefer top of screen or wherever it fits best
+        // Try to force it to the top if it fits, otherwise clamp
+        y = Math.max(8, position.y - toolbarHeight - gap);
+        // Final clamp to container
+        y = Math.max(8, Math.min(y, containerRect.height - toolbarHeight - 8));
       }
-
-      // Final clamp to ensure toolbar stays in viewport
-      y = Math.max(8, Math.min(y, containerRect.height - toolbarHeight - 8));
 
       setToolbarPosition({ x, y });
     }
-  }, [position, containerRef]);
+  }, [position, containerRef, elementHeight, elementWidth]);
 
   // --- MODIFIED: All handlers now use document.execCommand ---
 
