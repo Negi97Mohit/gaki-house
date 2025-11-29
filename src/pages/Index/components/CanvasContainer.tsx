@@ -69,6 +69,8 @@ interface CanvasContainerProps {
     setSelectedFileId: (id: string | null) => void;
     selectedTextId: string | null;
     setSelectedTextId: (id: string | null) => void;
+    selectedGeneratedId: string | null;
+    setSelectedGeneratedId: (id: string | null) => void;
     handleDeselectAll: () => void;
   };
 
@@ -205,19 +207,19 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       updateActiveScene((scene) => {
         const updatedCanvasLayout = scene.canvasLayout
           ? {
-              ...scene.canvasLayout,
-              sections: scene.canvasLayout.sections.map((s) =>
-                s.id === sectionId
-                  ? {
-                      ...s,
-                      content: {
-                        type: "image" as const,
-                        src: asset.downloadUrl,
-                      },
-                    }
-                  : s
-              ),
-            }
+            ...scene.canvasLayout,
+            sections: scene.canvasLayout.sections.map((s) =>
+              s.id === sectionId
+                ? {
+                  ...s,
+                  content: {
+                    type: "image" as const,
+                    src: asset.downloadUrl,
+                  },
+                }
+                : s
+            ),
+          }
           : scene.canvasLayout;
         return { ...scene, canvasLayout: updatedCanvasLayout };
       });
@@ -436,7 +438,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           return { ...s, canvasLayout: { ...s.canvasLayout, sections } };
         });
       },
-      onUserPositionChange: () => {},
+      onUserPositionChange: () => { },
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
         updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
       },
@@ -580,7 +582,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         ...s,
         activeOverlays: s.activeOverlays.filter((o) => o.id !== id),
       })),
-    onPreviewGenerated: () => {},
+    onPreviewGenerated: () => { },
     onRemoveBrowser: (id: string) =>
       updateActiveScene((s) => ({
         ...s,
@@ -617,8 +619,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       })),
     selectedFileId: selection.selectedFileId,
     setSelectedFileId: selection.setSelectedFileId,
-    onInternalDragStart: () => {},
-    onInternalDragStop: () => {},
+    onInternalDragStart: () => { },
+    onInternalDragStop: () => { },
     onDeselectAll: selection.handleDeselectAll,
     onSetDynamicLayout: (target: any, mode: any) => {
       if (mode === "reset") {
@@ -670,6 +672,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       })),
     selectedTextId: selection.selectedTextId,
     setSelectedTextId: selection.setSelectedTextId,
+    selectedGeneratedId: selection.selectedGeneratedId,
+    setSelectedGeneratedId: selection.setSelectedGeneratedId,
     isRecording: recording.isRecording,
     onRecordingToggle: () =>
       handleRecordingToggle(

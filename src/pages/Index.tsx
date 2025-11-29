@@ -96,6 +96,9 @@ const Index = () => {
   );
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
+  const [selectedGeneratedId, setSelectedGeneratedId] = useState<string | null>(
+    null
+  );
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [excalidrawElements, setExcalidrawElements] = useState<readonly any[]>(
@@ -191,6 +194,13 @@ const Index = () => {
         activeOverlays: [...scene.activeOverlays, newOverlay],
       }));
       if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
+
+      // Auto-select the new animation
+      setSelectedBrowserId(null);
+      setSelectedFileId(null);
+      setSelectedTextId(null);
+      setSelectedGeneratedId(newOverlay.id);
+
       toast.success(`Added "${preset.name}" to canvas`);
       setShowAnimationLibrary(false);
     },
@@ -258,10 +268,13 @@ const Index = () => {
           setSelectedFileId,
           selectedTextId,
           setSelectedTextId,
+          selectedGeneratedId,
+          setSelectedGeneratedId,
           handleDeselectAll: () => {
             setSelectedBrowserId(null);
             setSelectedFileId(null);
             setSelectedTextId(null);
+            setSelectedGeneratedId(null);
           },
         }}
         canvasRef={canvasRef}

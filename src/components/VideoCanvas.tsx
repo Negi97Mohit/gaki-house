@@ -190,6 +190,8 @@ interface VideoCanvasProps {
   onPipRotationChange?: (rotation: number) => void;
   pipRotation?: number;
   canvasAspectRatio: string;
+  selectedGeneratedId?: string | null;
+  setSelectedGeneratedId?: (id: string | null) => void;
 }
 
 // --- Helpers ---
@@ -614,9 +616,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           <div
             className="relative flex items-center justify-center overflow-hidden"
             style={{
-              [isVertical ? "height" : "width"]: `${
-                (1 - dynamicSplitRatio) * 100
-              }%`,
+              [isVertical ? "height" : "width"]: `${(1 - dynamicSplitRatio) * 100
+                }%`,
             }}
           >
             {renderCamera()}
@@ -672,7 +673,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             screenShareMode={props.screenShareMode}
             onPipPositionChange={props.onPipPositionChange}
             onPipSizeChange={props.onPipSizeChange}
-            onPipRotationChange={props.onPipRotationChange || (() => {})}
+            onPipRotationChange={props.onPipRotationChange || (() => { })}
             pipRotation={props.pipRotation}
             onInternalDragStart={props.onInternalDragStart}
             onInternalDragStop={props.onInternalDragStop}
@@ -780,6 +781,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onOverlayLayoutChange={props.onOverlayLayoutChange}
               onRemoveOverlay={props.onRemoveOverlay}
               onPreviewGenerated={props.onPreviewGenerated}
+              selectedGeneratedId={props.selectedGeneratedId}
+              onSelectGenerated={props.setSelectedGeneratedId}
               portalContainer={
                 typeof props.portalContainer === "function"
                   ? null

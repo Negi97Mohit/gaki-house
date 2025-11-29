@@ -61,6 +61,8 @@ interface OverlayLayerProps {
   // Global Drag handlers
   onInternalDragStart: any;
   onInternalDragStop: any;
+  selectedGeneratedId?: string | null;
+  onSelectGenerated?: (id: string | null) => void;
 }
 
 export const OverlayLayer: React.FC<OverlayLayerProps> = ({
@@ -99,6 +101,8 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
   isSpacePressed,
   onInternalDragStart,
   onInternalDragStop,
+  selectedGeneratedId,
+  onSelectGenerated,
 }) => {
   if (!containerSize.width || !containerSize.height) return null;
 
@@ -134,6 +138,8 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
             portalContainer={portalContainer}
             allOverlays={allOverlays}
             onSnapGuidesChange={onSnapGuidesChange}
+            isSelected={selectedGeneratedId === overlay.id}
+            onSelect={onSelectGenerated}
           />
         ))}
 

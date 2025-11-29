@@ -24,6 +24,8 @@ interface DraggableHtmlOverlayProps {
   portalContainer?: HTMLElement | null;
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
 export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
@@ -35,6 +37,8 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
   containerSize,
   allOverlays,
   onSnapGuidesChange,
+  isSelected,
+  onSelect,
 }) => {
   const { theme } = useTheme();
   const elementRef = useRef<HTMLDivElement>(null);
@@ -65,8 +69,8 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       rotation={overlay.layout.rotation}
       zIndex={overlay.layout.zIndex}
       containerSize={containerSize}
-      isSelected={false} // Currently we don't have separate selection state for HTML overlays in parent, can be added
-      onSelect={() => {}} // Placeholder
+      isSelected={isSelected || false}
+      onSelect={onSelect || (() => { })}
       onRemove={onRemoveOverlay}
       onCommit={(id, layout) => {
         if (layout.position) onLayoutChange(id, "position", layout.position);
@@ -85,6 +89,6 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
           theme={theme}
         />
       </div>
-    </UniversalOverlayWrapper>
+    </UniversalOverlayWrapper >
   );
 };
