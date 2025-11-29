@@ -73,22 +73,22 @@ interface PipControlsToolbarProps {
   isFaceTrackingEnabled: boolean;
   onFaceTrackingToggle: (enabled: boolean) => void;
   activeInteractiveFilter?:
-    | "none"
-    | "neon-edge"
-    | "hologram"
-    | "pixel"
-    | "comic"
-    | "ascii"
-    | "thermal"
-    | "mirror"
-    | "kaleidoscope"
-    | "oil-paint"
-    | "sketch"
-    | "prism"
-    | "vhs"
-    | "infrared"
-    | "xray"
-    | "cyberpunk";
+  | "none"
+  | "neon-edge"
+  | "hologram"
+  | "pixel"
+  | "comic"
+  | "ascii"
+  | "thermal"
+  | "mirror"
+  | "kaleidoscope"
+  | "oil-paint"
+  | "sketch"
+  | "prism"
+  | "vhs"
+  | "infrared"
+  | "xray"
+  | "cyberpunk";
   onInteractiveFilterChange?: (
     filter:
       | "none"

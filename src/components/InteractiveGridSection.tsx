@@ -468,8 +468,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               containerRef={containerRef}
               isSelected={selectedTextId === textOverlay.id}
               onSelect={setSelectedTextId}
-              onInternalDragStart={() => {}}
-              onInternalDragStop={() => {}}
+              onInternalDragStart={() => { }}
+              onInternalDragStop={() => { }}
               isSpacePressed={false}
             />
           ))}

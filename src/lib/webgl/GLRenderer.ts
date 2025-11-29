@@ -12,6 +12,7 @@ export interface RenderOptions {
   filterColor?: string;
   processedCanvas?: HTMLCanvasElement | null;
   backgroundEffect?: "none" | "blur" | "image";
+  backgroundImage?: HTMLImageElement | null; // ADDED
 }
 
 function hexToVec3(hex: string): [number, number, number] {
@@ -26,6 +27,7 @@ export class GLRenderer {
   ctx: GLContext;
   videoTexture: VideoTexture;
   maskTexture: VideoTexture;
+  bgTexture: VideoTexture; // ADDED
   shaderManager: ShaderManager;
   startTime: number;
 
@@ -33,6 +35,7 @@ export class GLRenderer {
     this.ctx = new GLContext(canvas);
     this.videoTexture = new VideoTexture(this.ctx.gl);
     this.maskTexture = new VideoTexture(this.ctx.gl);
+    this.bgTexture = new VideoTexture(this.ctx.gl); // ADDED
     this.shaderManager = new ShaderManager(this.ctx);
     this.startTime = Date.now();
   }
@@ -46,7 +49,6 @@ export class GLRenderer {
     this.videoTexture.update(video);
     this.ctx.clear();
 
-    // Aspect Ratio Fix
     const canvasAspect = this.ctx.canvas.width / this.ctx.canvas.height;
     const videoAspect = video.videoWidth / video.videoHeight;
     let vw = this.ctx.canvas.width;
@@ -64,6 +66,14 @@ export class GLRenderer {
     ) {
       this.shaderManager.activate("composite");
       this.maskTexture.update(options.processedCanvas);
+
+      // Handle Image Background
+      if (options.backgroundEffect === "image" && options.backgroundImage) {
+        this.bgTexture.update(options.backgroundImage);
+        this.shaderManager.setUniform1i("u_bg_image", 2); // Bind to unit 2
+        this.bgTexture.bind(2);
+      }
+
       this.shaderManager.setUniform1i("u_video", 0);
       this.shaderManager.setUniform1i("u_mask", 1);
       this.shaderManager.setUniform1i(
@@ -76,15 +86,14 @@ export class GLRenderer {
       options.activeInteractiveFilter &&
       options.activeInteractiveFilter !== "none"
     ) {
+      // ... (Rest of existing filter logic) ...
       this.shaderManager.activate("effects");
 
       let typeId = 0;
-      // Default color (White)
       let uColor = hexToVec3(options.filterColor || "#ffffff");
       let uColorMid = [0.5, 0.5, 0.5];
       let uColorHigh = [1.0, 1.0, 1.0];
 
-      // Anime Styles -> Type 6
       if (options.activeInteractiveFilter in AnimeStyles) {
         typeId = 6;
         const style = AnimeStyles[options.activeInteractiveFilter];
@@ -92,67 +101,41 @@ export class GLRenderer {
         uColorMid = hexToVec3(style.midColor);
         uColorHigh = hexToVec3(style.highlightColor);
       } else {
-        // Expanded Mapping Table
         const typeMap: Record<string, number> = {
-          // 1: Pixelate
           pixel: 1,
           retro: 1,
-
-          // 2: Hologram (Tech/Blue)
           hologram: 2,
           "hologram-fx": 2,
           holographicGlitch: 2,
           cyberneticAugment: 2,
-
-          // 3: Neon Edge
           "neon-edge": 3,
           neon: 3,
           cyberpunk: 3,
           neonHorror: 3,
           bioluminescent: 3,
-
-          // 4: Thermal
           thermal: 4,
           thermalImaging: 4,
           predator: 4,
           volcanicMagma: 4,
           radioactiveDecay: 4,
-
-          // 5: Mirror (Simple)
           mirror: 5,
           spectralHaunting: 5,
-
-          // 7: Sketch
           sketch: 7,
           noir: 7,
           noirDetective: 7,
-
-          // 8: Comic
           comic: 8,
           comicBold: 8,
           manga: 8,
-
-          // 9: Oil Paint
           "oil-paint": 9,
           oilPaint: 9,
           watercolor: 9,
-
-          // 10: ASCII
           ascii: 10,
           matrix: 10,
-
-          // 11: VHS
           vhs: 11,
           glitchPurple: 11,
-
-          // 12: Prism
           prism: 12,
-
-          // 13: Kaleidoscope
           kaleidoscope: 13,
           crystalline: 13,
-
-          // 14: X-Ray
           xray: 14,
           xrayVision: 14,
           infrared: 14,
@@ -161,17 +144,15 @@ export class GLRenderer {
 
         typeId = typeMap[options.activeInteractiveFilter] || 0;
 
-        // Specific overrides for filters that need color overrides but aren't Anime styles
-        if (options.activeInteractiveFilter === "matrix") {
-          uColor = [0.0, 1.0, 0.0]; // Force Matrix Green
-        } else if (
+        if (options.activeInteractiveFilter === "matrix")
+          uColor = [0.0, 1.0, 0.0];
+        else if (
           options.activeInteractiveFilter === "infrared" ||
           options.activeInteractiveFilter === "infrared-fx"
-        ) {
-          uColor = [1.0, 0.0, 0.0]; // Force Infrared Red
-        } else if (options.activeInteractiveFilter === "sketch") {
-          uColor = [0.1, 0.1, 0.1]; // Force Black Ink for default Sketch
-        }
+        )
+          uColor = [1.0, 0.0, 0.0];
+        else if (options.activeInteractiveFilter === "sketch")
+          uColor = [0.1, 0.1, 0.1];
       }
 
       this.shaderManager.setUniform1i("u_video", 0);
@@ -205,5 +186,6 @@ export class GLRenderer {
   destroy() {
     this.videoTexture.destroy();
     this.maskTexture.destroy();
+    this.bgTexture.destroy(); // CLEANUP
   }
 }

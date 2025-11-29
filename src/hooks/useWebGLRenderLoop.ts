@@ -14,8 +14,8 @@ interface UseWebGLRenderLoopProps {
 
   processedCanvas?: HTMLCanvasElement | null;
   backgroundEffect?: "none" | "blur" | "image";
+  backgroundImageUrl?: string; // ADDED
 
-  // NEW: Accept the ref
   facePositionRef?: React.MutableRefObject<{
     x: number;
     y: number;
@@ -39,10 +39,28 @@ export const useWebGLRenderLoop = ({
   filterColor,
   processedCanvas,
   backgroundEffect,
-  facePositionRef, // Receive ref
+  backgroundImageUrl,
+  facePositionRef,
 }: UseWebGLRenderLoopProps) => {
   const rendererRef = useRef<GLRenderer | null>(null);
   const animationFrameRef = useRef<number>();
+  const bgImageRef = useRef<HTMLImageElement | null>(null);
+  const debugCounter = useRef(0);
+
+  // Load Background Image if needed
+  useEffect(() => {
+    if (backgroundEffect === "image" && backgroundImageUrl) {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = backgroundImageUrl;
+      img.onload = () => {
+        bgImageRef.current = img;
+        console.log("[WebGL] Background image loaded:", backgroundImageUrl);
+      };
+    } else {
+      bgImageRef.current = null;
+    }
+  }, [backgroundEffect, backgroundImageUrl]);
 
   // 1. Manage Video Stream
   useEffect(() => {
@@ -84,7 +102,6 @@ export const useWebGLRenderLoop = ({
       const renderer = rendererRef.current;
 
       if (video && canvas && renderer && video.readyState >= 2) {
-        // High DPI Handling
         const dpr = window.devicePixelRatio || 1;
         const displayWidth = canvas.clientWidth;
         const displayHeight = canvas.clientHeight;
@@ -98,6 +115,16 @@ export const useWebGLRenderLoop = ({
           renderer.resize();
         }
 
+        // Debug Log
+        debugCounter.current++;
+        if (debugCounter.current % 180 === 0) {
+          if (backgroundEffect && backgroundEffect !== "none") {
+            console.log(
+              `[BackgroundDebug] Rendering composite. Effect: ${backgroundEffect}, Mask Ready: ${!!processedCanvas}`
+            );
+          }
+        }
+
         try {
           renderer.render(video, {
             videoFilter,
@@ -106,7 +133,7 @@ export const useWebGLRenderLoop = ({
             filterColor,
             processedCanvas,
             backgroundEffect,
-            // facePosition: facePositionRef?.current // Pass current value to renderer (future use)
+            backgroundImage: bgImageRef.current, // Pass the image
           });
         } catch (e) {
           console.error("[WebGL] Render error:", e);
@@ -129,6 +156,7 @@ export const useWebGLRenderLoop = ({
     filterColor,
     processedCanvas,
     backgroundEffect,
-    // facePositionRef dependency not needed as we read .current
+    // Dependency on bgImageRef.current is not needed as ref mutation doesn't trigger re-render
+    // but the loop picks it up immediately
   ]);
 };

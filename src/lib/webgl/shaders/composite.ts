@@ -4,7 +4,7 @@ export const COMPOSITE_FRAGMENT_SHADER_SOURCE = `#version 300 es
 precision mediump float;
 
 uniform sampler2D u_video;
-uniform sampler2D u_mask; // MediaPipe mask (alpha channel)
+uniform sampler2D u_mask; // MediaPipe mask (Grayscale)
 uniform int u_bg_type;    // 0=none, 1=blur, 2=image
 uniform sampler2D u_bg_image; // Optional background image
 uniform vec4 u_bg_color;      // Optional background color
@@ -14,20 +14,21 @@ out vec4 outColor;
 
 void main() {
     vec4 fg = texture(u_video, v_uv);
-    float mask = texture(u_mask, v_uv).a; // Or .r depending on MediaPipe output
     
-    // Hard threshold for mask to clean up edges slightly
-    float alpha = smoothstep(0.3, 0.7, mask);
+    // CRITICAL FIX: Read the Red channel (Luminance) instead of Alpha.
+    // MediaPipe masks are often opaque (Alpha=1) but grayscale.
+    float maskVal = texture(u_mask, v_uv).r; 
+    
+    // Use smoothstep for cleaner edges
+    float alpha = smoothstep(0.1, 0.6, maskVal);
 
     if (u_bg_type == 0) {
-        // No background effect (normal video)
+        // No background effect
         outColor = fg;
     } else if (u_bg_type == 1) {
         // Blur Background
-        // (Simplified blur for single-pass performance, realistically needs multi-pass)
-        // For now, we mix with a dark color to simulate "background dimmed" or use simple pixelation
-        // Real blur in 1 pass is expensive.
-        vec4 bg = texture(u_video, v_uv, 4.0); // LOD bias for fake blur if mipmaps exist
+        // Using LOD bias (mipmap level 4.0) to simulate blur
+        vec4 bg = texture(u_video, v_uv, 4.0); 
         outColor = mix(bg, fg, alpha);
     } else if (u_bg_type == 2) {
         // Image Background

@@ -35,7 +35,6 @@ const initializeFaceDetector = async () => {
       },
       runningMode: "VIDEO",
     });
-    console.log("[useCameraEffects] FaceDetector ready.");
     return faceDetector;
   } catch (err) {
     console.error("[useCameraEffects] FaceDetector init failed:", err);
@@ -54,14 +53,13 @@ export const useCameraEffects = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const segmentationRef = useRef<SelfieSegmentation | null>(null);
   const faceDetectorRef = useRef<FaceDetector | null>(null);
+  const frameCounter = useRef(0);
 
-  // CHANGED: Ref for position to avoid re-renders
   const facePositionRef = useRef<FacePosition | null>(null);
 
   const [isSegmentationReady, setIsSegmentationReady] = useState(false);
   const [isFaceDetectionReady, setIsFaceDetectionReady] = useState(false);
   const animationFrameRef = useRef<number>();
-  const analysisCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Initialize Canvas
   useEffect(() => {
@@ -77,6 +75,7 @@ export const useCameraEffects = ({
       return;
     }
 
+    console.log("[BackgroundDebug] Initializing SelfieSegmentation...");
     const selfieSegmentation = new SelfieSegmentation({
       locateFile: (file) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
@@ -85,6 +84,11 @@ export const useCameraEffects = ({
     selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: true });
 
     selfieSegmentation.onResults((results) => {
+      frameCounter.current++;
+      if (frameCounter.current % 60 === 0) {
+        console.log("[BackgroundDebug] Mask Updated");
+      }
+
       if (!canvasRef.current || !videoElement) return;
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
@@ -98,20 +102,10 @@ export const useCameraEffects = ({
         canvas.height = videoElement.videoHeight;
       }
 
-      ctx.save();
-      if (backgroundType === "blur") {
-        ctx.filter = "blur(10px)";
-        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-        ctx.filter = "none";
-      } else if (backgroundType === "image" && backgroundImageUrl) {
-        const bgImage = new Image();
-        bgImage.src = backgroundImageUrl;
-        ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-      } else {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-
-      ctx.globalCompositeOperation = "destination-in";
+      // --- FIXED LOGIC ---
+      // Simply draw the mask. White = Person, Black = Background.
+      // We do NOT composite the video here. The WebGL shader will combine them.
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(
         results.segmentationMask,
         0,
@@ -119,9 +113,6 @@ export const useCameraEffects = ({
         canvas.width,
         canvas.height
       );
-      ctx.globalCompositeOperation = "source-over";
-      ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-      ctx.restore();
     });
 
     segmentationRef.current = selfieSegmentation;
@@ -132,12 +123,7 @@ export const useCameraEffects = ({
       segmentationRef.current = null;
       setIsSegmentationReady(false);
     };
-  }, [
-    isBackgroundRemovalEnabled,
-    backgroundType,
-    backgroundImageUrl,
-    videoElement,
-  ]);
+  }, [isBackgroundRemovalEnabled, backgroundType, videoElement]);
 
   // Initialize Face Detector
   useEffect(() => {
@@ -169,7 +155,9 @@ export const useCameraEffects = ({
         const currentTime = videoElement.currentTime;
 
         if (isSegmentationReady && segmentationRef.current) {
-          await segmentationRef.current.send({ image: videoElement });
+          try {
+            await segmentationRef.current.send({ image: videoElement });
+          } catch (e) {}
         }
 
         if (
@@ -186,7 +174,6 @@ export const useCameraEffects = ({
           if (detections.detections && detections.detections.length > 0) {
             const detection = detections.detections[0];
             const bbox = detection.boundingBox;
-
             if (bbox && videoElement.videoWidth > 0) {
               const centerX =
                 ((bbox.originX + bbox.width / 2) / videoElement.videoWidth) *
@@ -194,24 +181,15 @@ export const useCameraEffects = ({
               const centerY =
                 ((bbox.originY + bbox.height / 2) / videoElement.videoHeight) *
                 100;
-
-              // Write to REF, do NOT trigger state update
               facePositionRef.current = {
                 x: centerX,
                 y: centerY,
                 width: (bbox.width / videoElement.videoWidth) * 100,
                 height: (bbox.height / videoElement.videoHeight) * 100,
               };
-
-              // Broadcast position if needed (e.g. for grid sequencer)
-              if (onUserPositionChange) {
+              if (onUserPositionChange)
                 onUserPositionChange({ x: centerX, y: centerY });
-              }
-            } else {
-              facePositionRef.current = null;
             }
-          } else {
-            facePositionRef.current = null;
           }
         }
       }
@@ -232,7 +210,7 @@ export const useCameraEffects = ({
 
   return {
     processedCanvas: canvasRef.current,
-    facePositionRef, // Returning REF
+    facePositionRef,
     isReady: isSegmentationReady || isFaceDetectionReady,
   };
 };
