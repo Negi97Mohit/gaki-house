@@ -12,6 +12,8 @@ import {
   CanvasLayoutState,
   CanvasSectionCameraState,
   DEFAULT_CAMERA_STATE,
+  FileOverlayState,
+  BrowserOverlayState,
   TextOverlayState,
   LayoutMode,
   CameraShape,
@@ -26,6 +28,10 @@ const generateTextOverlayId = () =>
   `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const generateFileId = () =>
+  `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const generateBrowserId = () =>
+  `browser-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 interface CanvasContainerProps {
   // Managers
@@ -104,6 +110,127 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const hasAiPopoverAutoOpenedRef = useRef(false);
+
+  // --- Paste Handler ---
+  React.useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      // Ignore if pasting into an input/textarea
+      if (
+        (e.target as HTMLElement).tagName === "INPUT" ||
+        (e.target as HTMLElement).tagName === "TEXTAREA" ||
+        (e.target as HTMLElement).isContentEditable
+      ) {
+        return;
+      }
+
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      let hasHandled = false;
+
+      // 1. Handle Files (Images, Videos, PDFs)
+      if (e.clipboardData.files.length > 0) {
+        e.preventDefault();
+        hasHandled = true;
+        const newFiles: FileOverlayState[] = [];
+
+        Array.from(e.clipboardData.files).forEach((file) => {
+          let fileType: "image" | "video" | "pdf" | "audio" | "text" | "unknown" = "unknown";
+          if (file.type.startsWith("image/")) fileType = "image";
+          else if (file.type.startsWith("video/")) fileType = "video";
+          else if (file.type === "application/pdf") fileType = "pdf";
+          else if (file.type.startsWith("audio/")) fileType = "audio";
+          else if (file.type.startsWith("text/")) fileType = "text";
+
+          if (fileType !== "unknown") {
+            const url = URL.createObjectURL(file);
+            newFiles.push({
+              id: generateFileId(),
+              file,
+              fileName: file.name,
+              fileType,
+              fileUrl: url,
+              layout: {
+                position: { x: 50, y: 50 },
+                size: { width: 40, height: 40 },
+                zIndex: zIndex.draggableElement,
+                rotation: 0,
+                layerOrder: "above-video",
+              },
+            });
+          }
+        });
+
+        if (newFiles.length > 0) {
+          updateActiveScene((prev) => ({
+            ...prev,
+            fileOverlays: [...prev.fileOverlays, ...newFiles],
+          }));
+          toast.success(`Pasted ${newFiles.length} file(s)`);
+          // Select the last one
+          selection.handleDeselectAll();
+          selection.setSelectedFileId(newFiles[newFiles.length - 1].id);
+        }
+      }
+
+      // 2. Handle Text / URL (only if not handled as file)
+      if (!hasHandled) {
+        const text = e.clipboardData.getData("text/plain");
+        if (text && text.trim()) {
+          e.preventDefault();
+          // Check if it's a URL
+          const isUrl = /^(http|https):\/\/[^ "]+$/.test(text);
+
+          if (isUrl) {
+            const newBrowser: BrowserOverlayState = {
+              id: generateBrowserId(),
+              url: text,
+              layout: {
+                position: { x: 50, y: 50 },
+                size: { width: 50, height: 60 },
+                zIndex: zIndex.draggableElement,
+                rotation: 0,
+                layerOrder: "above-video",
+              },
+            };
+            updateActiveScene((prev) => ({
+              ...prev,
+              browserOverlays: [...prev.browserOverlays, newBrowser],
+            }));
+            toast.success("Pasted URL");
+            selection.handleDeselectAll();
+            selection.setSelectedBrowserId(newBrowser.id);
+          } else {
+            // It's plain text
+            const newText: TextOverlayState = {
+              id: generateTextOverlayId(),
+              content: text,
+              style: {
+                ...activeScene.captionStyle, // Use current default style
+                position: { x: 50, y: 50 },
+              },
+              layout: {
+                position: { x: 50, y: 50 },
+                size: { width: 30, height: 10 },
+                zIndex: zIndex.draggableElement,
+                rotation: 0,
+              },
+            };
+            updateActiveScene((prev) => ({
+              ...prev,
+              textOverlays: [...prev.textOverlays, newText],
+            }));
+            toast.success("Pasted text");
+            selection.handleDeselectAll();
+            selection.setSelectedTextId(newText.id);
+          }
+        }
+      }
+    };
+
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, [updateActiveScene, activeScene.captionStyle, selection]);
 
   // --- Handlers ---
 

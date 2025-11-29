@@ -408,7 +408,34 @@ const Index = () => {
         isBroadcasting={isVirtualCameraEnabled}
         onBroadcastToggle={() => setIsVirtualCameraEnabled((prev) => !prev)}
         onAddTextOverlay={handleAddTextOverlay}
-        onAssetSelect={(asset) => toast.info(`Asset selected: ${asset.alt}`)}
+        onAssetSelect={(asset) => {
+          const newOverlay: GeneratedOverlay = {
+            id: generateOverlayId(),
+            name: asset.alt || "Asset",
+            htmlContent: `<img src="${asset.downloadUrl}" alt="${asset.alt}" style="width: 100%; height: 100%; object-fit: contain;" />`,
+            layout: {
+              position: { x: 50, y: 50 },
+              size: { width: 30, height: 30 },
+              zIndex: zIndex.draggableElement,
+              rotation: 0,
+              layerOrder: "above-video",
+            },
+            preview: asset.previewUrl,
+          };
+          updateActiveScene((scene) => ({
+            ...scene,
+            activeOverlays: [...scene.activeOverlays, newOverlay],
+          }));
+          if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
+          
+          // Auto-select
+          setSelectedBrowserId(null);
+          setSelectedFileId(null);
+          setSelectedTextId(null);
+          setSelectedGeneratedId(newOverlay.id);
+
+          toast.success(`Added "${asset.alt}" to canvas`);
+        }}
         setIsDrawing={setIsDrawing}
         onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
         isFullscreen={isFullscreen}

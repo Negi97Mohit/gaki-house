@@ -72,10 +72,10 @@ export const UniversalOverlayWrapper: React.FC<
         onSnapGuidesChange={onSnapGuidesChange}
         cancelSelector=".close-btn, .layout-picker-btn"
         className={cn(
-          "group transition-colors duration-200",
+          "group transition-colors duration-200 border-2",
           isSelected
-            ? "border-2 border-primary border-dashed"
-            : "border-2 border-transparent hover:border-primary/50 border-dashed"
+            ? "border-transparent" // Selection handled by HybridDraggable ring
+            : "border-transparent hover:border-primary/50"
         )}
       >
         <div className="w-full h-full relative">
