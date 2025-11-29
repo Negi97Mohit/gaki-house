@@ -52,78 +52,80 @@ export const UniversalOverlayWrapper: React.FC<
   enableResizing = true,
   isEditing = false,
 }) => {
-    return (
-      <HybridDraggable
-        id={id}
-        position={position}
-        size={size}
-        rotation={rotation}
-        zIndex={zIndex}
-        containerSize={containerSize}
-        isSelected={isSelected}
-        onCommit={onCommit}
-        onSelect={onSelect}
-        onClick={() => onSelect(id)} // REINFORCE SELECTION ON CLICK
-        onDoubleClick={onDoubleClick}
-        enableDragging={!isEditing}
-        enableResizing={enableResizing && !isEditing}
-        enableRotation={!isEditing}
-        allOverlays={allOverlays}
-        onSnapGuidesChange={onSnapGuidesChange}
-        cancelSelector=".close-btn, .layout-picker-btn"
-        className={cn(
-          "group transition-colors duration-200 border-2",
-          isSelected
-            ? "border-transparent" // Selection handled by HybridDraggable ring
-            : "border-transparent hover:border-primary/50"
-        )}
-      >
-        <div className="w-full h-full relative">
-          {/* Content */}
-          <div className="w-full h-full overflow-hidden relative">{children}</div>
+  return (
+    <HybridDraggable
+      id={id}
+      position={position}
+      size={size}
+      rotation={rotation}
+      zIndex={zIndex}
+      containerSize={containerSize}
+      isSelected={isSelected}
+      onCommit={onCommit}
+      onSelect={onSelect}
+      onClick={() => onSelect(id)} // REINFORCE SELECTION ON CLICK
+      onDoubleClick={onDoubleClick}
+      enableDragging={!isEditing}
+      enableResizing={enableResizing && !isEditing}
+      enableRotation={!isEditing}
+      allOverlays={allOverlays}
+      onSnapGuidesChange={onSnapGuidesChange}
+      cancelSelector=".close-btn, .layout-picker-btn"
+      className={cn(
+        "group transition-colors duration-200 border-2",
+        isSelected
+          ? "border-transparent" // Selection handled by HybridDraggable ring
+          : "border-transparent hover:border-primary/50"
+      )}
+    >
+      <div className="w-full h-full relative">
+        {/* Content */}
+        <div className="w-full h-full overflow-hidden relative">{children}</div>
 
-          {/* UI Controls - Force visible if selected, otherwise hover */}
-          {!isEditing && (
-            <>
-              {/* Dynamic Layout Picker */}
-              {onSetDynamicLayout && (
-                <div
-                  className={cn(
-                    "absolute top-2 left-2 z-[60] transition-opacity duration-200",
-                    isSelected
-                      ? "opacity-100"
-                      : "opacity-0 group-hover:opacity-100"
-                  )}
-                  onPointerDown={(e) => e.stopPropagation()}
-                >
-                  <DynamicLayoutPicker
-                    onSelectLayout={(mode) =>
-                      onSetDynamicLayout({ id, type }, mode)
-                    }
-                  />
-                </div>
-              )}
-
-              {/* Remove Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRemove(id);
-                }}
-                onPointerDown={(e) => e.stopPropagation()}
+        {/* UI Controls - Force visible if selected, otherwise HIDDEN (Fixes sticky hover issue) */}
+        {!isEditing && (
+          <>
+            {/* Dynamic Layout Picker */}
+            {onSetDynamicLayout && (
+              <div
                 className={cn(
-                  "close-btn absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all shadow-md cursor-pointer z-[60]",
+                  "absolute top-2 left-2 z-[60] transition-opacity duration-200",
+                  // CHANGED: Only show when selected to prevent visual noise during hover
                   isSelected
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 group-hover:opacity-100 hover:scale-110"
+                    ? "opacity-100 pointer-events-auto"
+                    : "opacity-0 pointer-events-none"
                 )}
-                title="Remove"
+                onPointerDown={(e) => e.stopPropagation()}
               >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </>
-          )}
-        </div>
-      </HybridDraggable>
-    );
-  };
+                <DynamicLayoutPicker
+                  onSelectLayout={(mode) =>
+                    onSetDynamicLayout({ id, type }, mode)
+                  }
+                />
+              </div>
+            )}
+
+            {/* Remove Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(id);
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              className={cn(
+                "close-btn absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all shadow-md cursor-pointer z-[60]",
+                // CHANGED: Only show when selected. Removed group-hover:opacity-100
+                isSelected
+                  ? "opacity-100 scale-100 pointer-events-auto"
+                  : "opacity-0 scale-90 pointer-events-none"
+              )}
+              title="Remove"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </>
+        )}
+      </div>
+    </HybridDraggable>
+  );
+};
