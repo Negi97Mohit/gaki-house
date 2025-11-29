@@ -29,8 +29,6 @@ import { RecordingSession } from "@/types/editor";
 import { zIndex } from "@/lib/zIndex";
 import { cn } from "@/lib/utils";
 
-import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
-
 const generateOverlayId = () =>
   `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 const generateTextOverlayId = () =>
@@ -275,7 +273,7 @@ const Index = () => {
         onRecordingComplete={handleRecordingComplete}
         uiState={{
           isFullscreen,
-          onToggleFullscreen: handleToggleFullscreen, // UPDATED
+          onToggleFullscreen: handleToggleFullscreen,
           isFsSidebarOpen,
           onFsSidebarToggle: setIsFsSidebarOpen,
           isMouseActive,
@@ -303,6 +301,8 @@ const Index = () => {
         }}
         canvasRef={canvasRef}
         mainContainerRef={(node) => node && setMainContainer(node)}
+        isSettingsOpen={showSettings}
+        onSetSettingsOpen={setShowSettings}
       />
 
       <SceneTabs
@@ -348,47 +348,6 @@ const Index = () => {
         onClose={() => setIsDrawing(false)}
         initialElements={excalidrawElements}
         onElementsChange={setExcalidrawElements}
-      />
-
-      <FloatingControlsPanel
-        isOpen={showSettings}
-        onClose={() => setShowSettings(false)}
-        isMouseActive={isMouseActive}
-        style={activeScene.captionStyle}
-        onStyleChange={(style) => updateSceneProperty("captionStyle", style)}
-        dynamicStyle={activeScene.dynamicStyle}
-        onDynamicStyleChange={(style) =>
-          updateSceneProperty("dynamicStyle", style)
-        }
-        backgroundEffect={activeScene.backgroundEffect}
-        onBackgroundEffectChange={(effect) =>
-          updateSceneProperty("backgroundEffect", effect)
-        }
-        savedOverlays={savedOverlays}
-        onAddSavedOverlay={(overlay) => {
-          const newOverlay = { ...overlay, id: generateOverlayId() };
-          updateActiveScene((scene) => ({
-            ...scene,
-            activeOverlays: [...scene.activeOverlays, newOverlay],
-          }));
-          toast.success("Overlay added to canvas");
-        }}
-        onDeleteSavedOverlay={(id) => {
-          setSavedOverlays((prev) => prev.filter((o) => o.id !== id));
-          toast.success("Overlay removed from saved");
-        }}
-        canvasAspectRatio={activeScene.canvasAspectRatio || "16:9"}
-        onCanvasAspectRatioChange={(ratio) =>
-          updateSceneProperty("canvasAspectRatio", ratio)
-        }
-        customCanvasPresets={layoutManager.customPresets}
-        onSaveCanvasPreset={layoutManager.handleSaveCanvasPreset}
-        onDeleteCanvasPreset={layoutManager.handleDeleteCanvasPreset}
-        onCanvasPresetSelect={layoutManager.handleCanvasPresetSelect}
-        publicPresets={layoutManager.publicPresets}
-        isLoadingPublic={layoutManager.isLoadingPublic}
-        onShareCanvasPreset={layoutManager.shareCanvasPreset}
-        onUnshareCanvasPreset={layoutManager.unshareCanvasPreset}
       />
 
       <BottomNavigation
@@ -456,7 +415,7 @@ const Index = () => {
           toast.success(`Added "${asset.alt}" to canvas`);
         }}
         setIsDrawing={setIsDrawing}
-        onToggleFullscreen={handleToggleFullscreen} // UPDATED
+        onToggleFullscreen={handleToggleFullscreen}
         isFullscreen={isFullscreen}
         layoutMode={activeScene.layoutMode}
         cameraShape={activeScene.cameraShape}

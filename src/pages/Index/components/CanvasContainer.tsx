@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState, useMemo } from "react";
 import { toast } from "sonner";
 import { MainCanvasArea } from "./MainCanvasArea";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
-import { FloatingLogo } from "@/components/FloatingLogo"; // Kept logo with canvas
+import { FloatingLogo } from "@/components/FloatingLogo";
 import {
   CaptionStyle,
   GeneratedOverlay,
@@ -23,7 +23,6 @@ import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { AssetResult } from "@/components/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
 
-// Helper generators
 const generateTextOverlayId = () =>
   `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 const generateOverlayId = () =>
@@ -45,10 +44,10 @@ interface CanvasContainerProps {
   // Media & Layout
   audioDevices: MediaDeviceInfo[];
   videoDevices: MediaDeviceInfo[];
-  layoutManager: any; // Using simplified type for brevity, matches usage
+  layoutManager: any;
 
   // Recording
-  recording: any; // Matches useRecordingSession return
+  recording: any;
   onRecordingComplete: (session: RecordingSession) => void;
 
   // UI State
@@ -83,6 +82,10 @@ interface CanvasContainerProps {
   // Refs
   canvasRef: React.RefObject<HTMLCanvasElement>;
   mainContainerRef: (node: HTMLDivElement) => void;
+
+  // Settings
+  isSettingsOpen: boolean;
+  onSetSettingsOpen: (isOpen: boolean) => void;
 }
 
 export const CanvasContainer: React.FC<CanvasContainerProps> = ({
@@ -105,8 +108,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   selection,
   canvasRef,
   mainContainerRef,
+  isSettingsOpen,
+  onSetSettingsOpen,
 }) => {
-  const [showFloatingPanel, setShowFloatingPanel] = useState(false);
   const [isProcessingAi, setIsProcessingAi] = useState(false);
   const [promptHistory, setPromptHistory] = useState<string[]>([]);
   const hasAiPopoverAutoOpenedRef = useRef(false);
@@ -135,7 +139,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         const newFiles: FileOverlayState[] = [];
 
         Array.from(e.clipboardData.files).forEach((file) => {
-          let fileType: "image" | "video" | "pdf" | "audio" | "text" | "unknown" = "unknown";
+          let fileType:
+            | "image"
+            | "video"
+            | "pdf"
+            | "audio"
+            | "text"
+            | "unknown" = "unknown";
           if (file.type.startsWith("image/")) fileType = "image";
           else if (file.type.startsWith("video/")) fileType = "video";
           else if (file.type === "application/pdf") fileType = "pdf";
@@ -151,7 +161,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
               fileType,
               fileUrl: url,
               layout: {
-                position: { x: 30, y: 30 }, // Centered (50 - 40/2)
+                position: { x: 30, y: 30 },
                 size: { width: 40, height: 40 },
                 zIndex: zIndex.draggableElement,
                 rotation: 0,
@@ -167,18 +177,16 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
             fileOverlays: [...prev.fileOverlays, ...newFiles],
           }));
           toast.success(`Pasted ${newFiles.length} file(s)`);
-          // Select the last one
           selection.handleDeselectAll();
           selection.setSelectedFileId(newFiles[newFiles.length - 1].id);
         }
       }
 
-      // 2. Handle Text / URL (only if not handled as file)
+      // 2. Handle Text / URL
       if (!hasHandled) {
         const text = e.clipboardData.getData("text/plain");
         if (text && text.trim()) {
           e.preventDefault();
-          // Check if it's a URL
           const isUrl = /^(http|https):\/\/[^ "]+$/.test(text);
 
           if (isUrl) {
@@ -186,7 +194,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
               id: generateBrowserId(),
               url: text,
               layout: {
-                position: { x: 25, y: 20 }, // Centered (50 - 50/2, 50 - 60/2)
+                position: { x: 25, y: 20 },
                 size: { width: 50, height: 60 },
                 zIndex: zIndex.draggableElement,
                 rotation: 0,
@@ -201,16 +209,15 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
             selection.handleDeselectAll();
             selection.setSelectedBrowserId(newBrowser.id);
           } else {
-            // It's plain text
             const newText: TextOverlayState = {
               id: generateTextOverlayId(),
               content: text,
               style: {
-                ...activeScene.captionStyle, // Use current default style
+                ...activeScene.captionStyle,
                 position: { x: 50, y: 50 },
               },
               layout: {
-                position: { x: 35, y: 45 }, // Centered (50 - 30/2, 50 - 10/2)
+                position: { x: 35, y: 45 },
                 size: { width: 30, height: 10 },
                 zIndex: zIndex.draggableElement,
                 rotation: 0,
@@ -334,19 +341,19 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       updateActiveScene((scene) => {
         const updatedCanvasLayout = scene.canvasLayout
           ? {
-            ...scene.canvasLayout,
-            sections: scene.canvasLayout.sections.map((s) =>
-              s.id === sectionId
-                ? {
-                  ...s,
-                  content: {
-                    type: "image" as const,
-                    src: asset.downloadUrl,
-                  },
-                }
-                : s
-            ),
-          }
+              ...scene.canvasLayout,
+              sections: scene.canvasLayout.sections.map((s) =>
+                s.id === sectionId
+                  ? {
+                      ...s,
+                      content: {
+                        type: "image" as const,
+                        src: asset.downloadUrl,
+                      },
+                    }
+                  : s
+              ),
+            }
           : scene.canvasLayout;
         return { ...scene, canvasLayout: updatedCanvasLayout };
       });
@@ -565,7 +572,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           return { ...s, canvasLayout: { ...s.canvasLayout, sections } };
         });
       },
-      onUserPositionChange: () => { },
+      onUserPositionChange: () => {},
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
         updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
       },
@@ -642,8 +649,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         onAddSavedOverlay: (overlay: GeneratedOverlay) => {
           updateActiveScene((s) => ({
             ...s,
-            activeOverlays: [...s.activeOverlays, overlay],
+            activeOverlays: [...s.activeOverlays, newOverlay(overlay)],
           }));
+          toast.success("Overlay added to canvas");
         },
         onDeleteSavedOverlay: (id: string) =>
           setSavedOverlays((prev) => prev.filter((o) => o.id !== id)),
@@ -676,6 +684,11 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     };
   };
 
+  const newOverlay = (overlay: GeneratedOverlay) => ({
+    ...overlay,
+    id: generateOverlayId(),
+  });
+
   const activeSceneProps = useMemo(
     () => (activeScene ? getAllPropsForScene(activeScene) : null),
     [activeScene, savedOverlays, layoutManager]
@@ -692,7 +705,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     onFsSidebarToggle: uiState.onFsSidebarToggle,
     dynamicLayout,
     onOpenSessions: uiState.onOpenSessions,
-    onOpenSettings: () => setShowFloatingPanel(!showFloatingPanel),
+    onOpenSettings: () => onSetSettingsOpen(!isSettingsOpen),
     isMouseActive: uiState.isMouseActive,
     isProcessingAi,
     onProcessTranscript: processTranscript,
@@ -709,7 +722,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         ...s,
         activeOverlays: s.activeOverlays.filter((o) => o.id !== id),
       })),
-    onPreviewGenerated: () => { },
+    onPreviewGenerated: () => {},
     onRemoveBrowser: (id: string) =>
       updateActiveScene((s) => ({
         ...s,
@@ -746,8 +759,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       })),
     selectedFileId: selection.selectedFileId,
     setSelectedFileId: selection.setSelectedFileId,
-    onInternalDragStart: () => { },
-    onInternalDragStop: () => { },
+    onInternalDragStart: () => {},
+    onInternalDragStop: () => {},
     onDeselectAll: selection.handleDeselectAll,
     onSetDynamicLayout: (target: any, mode: any) => {
       if (mode === "reset") {
@@ -817,8 +830,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
     onAiPopoverAutoClose: () => {
       setTimeout(() => {
-        setShowFloatingPanel(true);
-        setTimeout(() => setShowFloatingPanel(false), 4000);
+        onSetSettingsOpen(true);
+        setTimeout(() => onSetSettingsOpen(false), 4000);
       }, 500);
     },
   };
@@ -826,8 +839,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   return (
     <>
       <FloatingControlsPanel
-        isOpen={showFloatingPanel}
-        onClose={() => setShowFloatingPanel(false)}
+        isOpen={isSettingsOpen}
+        onClose={() => onSetSettingsOpen(false)}
         isMouseActive={uiState.isMouseActive}
         {...activeSceneProps?.sidebarProps}
         onSaveCanvasPreset={layoutManager.handleSaveCanvasPreset}

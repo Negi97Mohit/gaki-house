@@ -34,10 +34,8 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { FILTER_PRESETS } from "@/lib/filters";
 import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
-// --- 1. IMPORT THE NEW PRESETS ---
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 
-// 1. Define the extensive props interface for all PiP controls
 interface PipControlsToolbarProps {
   position: { x: number; y: number };
   containerRef: React.RefObject<HTMLElement>;
@@ -73,22 +71,22 @@ interface PipControlsToolbarProps {
   isFaceTrackingEnabled: boolean;
   onFaceTrackingToggle: (enabled: boolean) => void;
   activeInteractiveFilter?:
-  | "none"
-  | "neon-edge"
-  | "hologram"
-  | "pixel"
-  | "comic"
-  | "ascii"
-  | "thermal"
-  | "mirror"
-  | "kaleidoscope"
-  | "oil-paint"
-  | "sketch"
-  | "prism"
-  | "vhs"
-  | "infrared"
-  | "xray"
-  | "cyberpunk";
+    | "none"
+    | "neon-edge"
+    | "hologram"
+    | "pixel"
+    | "comic"
+    | "ascii"
+    | "thermal"
+    | "mirror"
+    | "kaleidoscope"
+    | "oil-paint"
+    | "sketch"
+    | "prism"
+    | "vhs"
+    | "infrared"
+    | "xray"
+    | "cyberpunk";
   onInteractiveFilterChange?: (
     filter:
       | "none"
@@ -114,7 +112,6 @@ interface PipControlsToolbarProps {
   onFilterColorChange?: (color: string) => void;
   filterTarget?: "both" | "background" | "person";
   onFilterTargetChange?: (target: "both" | "background" | "person") => void;
-  // NEW PROPS
   videoDevices: MediaDeviceInfo[];
   selectedDeviceId?: string;
   onCameraDeviceChange: (deviceId: string) => void;
@@ -127,7 +124,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
 
-  // 2. Positioning logic with smart collision avoidance
+  // Positioning logic with smart collision avoidance
   useLayoutEffect(() => {
     if (toolbarRef.current && props.containerRef.current) {
       const toolbarHeight = toolbarRef.current.offsetHeight;
@@ -136,29 +133,44 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       const parentRect =
         props.containerRef.current.parentElement!.getBoundingClientRect();
 
-      // Check if positioning above would overlap with top toolbar area (60px reserved for CanvasHoverToolbar)
+      // Default positioning: Above the provided coordinate
       const yAbove = props.position.y - toolbarHeight - 8;
-      const wouldOverlapTopToolbar = yAbove < 60;
 
-      // Position either above or below the PiP to avoid overlap
+      // Check if positioning above would overlap with top toolbar area
+      // or if it goes off-screen top.
+      // Use 80px as a safe zone for the top toolbar + island.
+      const wouldOverlapTopToolbar = yAbove < 80;
+
+      // Position either above or below the PiP/Point
       const x = props.position.x - toolbarWidth / 2;
-      const y = wouldOverlapTopToolbar
-        ? props.position.y + 8 // Position below if it would overlap
-        : yAbove; // Position above otherwise
+
+      // SMART POSITIONING:
+      // If near the top, flip to the bottom.
+      let y: number;
+      if (wouldOverlapTopToolbar) {
+        // Position at the bottom of the container.
+        // UPDATED: Use a larger offset (90px) to clear the bottom navigation bar.
+        y = containerRect.height - toolbarHeight - 90;
+      } else {
+        y = yAbove;
+      }
 
       // Clamp X relative to the main container
       const clampedX = Math.max(
         parentRect.left - containerRect.left + 8,
         Math.min(x, parentRect.right - containerRect.left - toolbarWidth - 8)
       );
-      // Clamp Y within bounds
-      const clampedY = Math.max(8, y);
+
+      // Ensure Y is within bounds (though our logic handles top/bottom, just a safety clamp)
+      const clampedY = Math.max(
+        8,
+        Math.min(y, containerRect.height - toolbarHeight - 8)
+      );
 
       setToolbarPosition({ x: clampedX, y: clampedY });
     }
   }, [props.position, props.containerRef]);
 
-  // 3. Helper handlers for nested controls
   const handlePipBorderWidth = (value: number) => {
     props.onPipBorderChange({ ...props.pipBorder!, width: value });
   };
@@ -182,7 +194,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   const pipShadow = props.pipShadow ?? { blur: 0, color: "rgba(0,0,0,0.5)" };
   const neonEdgeColor = props.neonEdgeColor ?? "#00FF00";
 
-  // 4. Render the toolbar UI
   return (
     <div
       ref={toolbarRef}
@@ -190,12 +201,11 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       style={{
         left: `${toolbarPosition.x}px`,
         top: `${toolbarPosition.y}px`,
-        zIndex: "var(--z-text-toolbar)", // Reuse z-index
+        zIndex: "var(--z-text-toolbar)",
       }}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      {/* --- NEW: Camera Source Selector --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -228,7 +238,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* --- Group 1: Background & Aspect --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -305,7 +314,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* --- Group 2: Effects & Filters --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -323,14 +331,10 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             className="z-[var(--z-text-toolbar)] w-72 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
             onCloseAutoFocus={(e) => e.preventDefault()}
           >
-            {/* --- REMOVED: Beautify, Low Light, Auto Framing from here --- */}
-
-            {/* --- MODIFIED: Replaced Sub-Menu with Label --- */}
             <DropdownMenuLabel className="text-xs font-semibold px-3 py-1.5 flex items-center">
               <Droplet className="w-3.5 h-3.5 mr-2" />
               Color Filters
             </DropdownMenuLabel>
-            {/* --- MODIFIED: Inlined the grid content --- */}
             <div className="p-2">
               <div className="grid grid-cols-3 gap-2 w-full max-h-[240px] overflow-y-auto pr-1">
                 {FILTER_PRESETS.map((filter) => {
@@ -366,9 +370,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 })}
               </div>
             </div>
-            {/* --- END MODIFICATION --- */}
 
-            {/* --- MOVED & FLATTENED: Interactive Filters --- */}
             <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-xs font-semibold px-3 py-1.5 flex items-center">
               <Sparkles className="w-3.5 h-3.5 mr-2" />
@@ -394,7 +396,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                       title={filter.name}
                     >
                       <img
-                        src={filter.thumbnailUrl} // <-- Use new thumbnail URL
+                        src={filter.thumbnailUrl}
                         alt={filter.name}
                         className="w-full h-full object-cover"
                       />
@@ -411,12 +413,10 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 })}
               </div>
             </div>
-            {/* --- END MOVED SECTION --- */}
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* --- Group 3: Style --- */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -482,7 +482,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 </div>
               </div>
             </div>
-            {/* --- MOVED: Beautify, Low Light, Auto Framing moved here --- */}
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               checked={props.isBeautifyEnabled}
@@ -537,7 +536,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 </div>
               </div>
             )}
-            {/* --- END MOVED SECTION --- */}
             <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               checked={props.isNeonEdgeEnabled}
@@ -574,14 +572,11 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                 </div>
               </div>
             )}
-
-            {/* --- REMOVED: Interactive filters are now in 'Effects' --- */}
             <DropdownMenuSeparator />
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
