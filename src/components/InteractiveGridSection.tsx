@@ -173,6 +173,33 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
     "#00FFFF",
   ];
 
+  // --- Scaling Logic ---
+  // Reference resolution: 1280x720
+  const REF_WIDTH = 1280;
+  const REF_HEIGHT = 720;
+
+  // Calculate scale factor
+  // We use the smaller scale dimension to ensure everything fits
+  const scale = Math.min(
+    sceneSize.width / REF_WIDTH,
+    sceneSize.height / REF_HEIGHT
+  );
+
+  // Apply scale to border and shadow
+  const scaledPipBorder = settings.pipBorder
+    ? {
+      ...settings.pipBorder,
+      width: Math.max(1, settings.pipBorder.width * scale),
+    }
+    : undefined;
+
+  const scaledPipShadow = settings.pipShadow
+    ? {
+      ...settings.pipShadow,
+      blur: settings.pipShadow.blur * scale,
+    }
+    : undefined;
+
   return (
     <div
       ref={containerRef}
@@ -266,12 +293,27 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
             )}
             lockAspectRatio={false}
           >
-            <div className="w-full h-full pointer-events-none overflow-hidden rounded-md">
+            <div
+              className="w-full h-full pointer-events-none overflow-hidden"
+              style={{
+                borderRadius:
+                  settings.cameraShape === "circle"
+                    ? "50%"
+                    : settings.cameraShape === "rounded"
+                      ? "12px"
+                      : "0px",
+              }}
+            >
               <CameraRenderer
                 stream={cameraStream}
                 className="w-full h-full object-cover"
                 style={{
-                  borderRadius: "0px",
+                  borderRadius:
+                    settings.cameraShape === "circle"
+                      ? "50%"
+                      : settings.cameraShape === "rounded"
+                        ? "12px"
+                        : "0px",
                 }}
                 portalContainer={null}
                 cameraShape={settings.cameraShape || "rectangle"}
@@ -284,9 +326,9 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                 onCameraDeviceChange={(deviceId) =>
                   onUpdate({ selectedDeviceId: deviceId })
                 }
-                pipBorder={settings.pipBorder}
+                pipBorder={scaledPipBorder}
                 onPipBorderChange={(border) => onUpdate({ pipBorder: border })}
-                pipShadow={settings.pipShadow}
+                pipShadow={scaledPipShadow}
                 onPipShadowChange={(shadow) => onUpdate({ pipShadow: shadow })}
                 isAutoFramingEnabled={settings.isAutoFramingEnabled}
                 onAutoFramingChange={(enabled) =>
@@ -377,13 +419,13 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                 y: (sceneSize.height * (settings.pipPosition?.y || 0)) / 100,
               }}
               containerRef={containerRef}
-              pipBorder={settings.pipBorder}
+              pipBorder={settings.pipBorder} // Pass original for editing
               showAspectRatio={false}
               // PASS LOCAL SHAPE STATE
               cameraShape={settings.cameraShape || "rectangle"}
               onCameraShapeChange={(shape) => onUpdate({ cameraShape: shape })}
               onPipBorderChange={(border) => onUpdate({ pipBorder: border })}
-              pipShadow={settings.pipShadow}
+              pipShadow={settings.pipShadow} // Pass original for editing
               onPipShadowChange={(shadow) => onUpdate({ pipShadow: shadow })}
               isAutoFramingEnabled={settings.isAutoFramingEnabled}
               onAutoFramingChange={(enabled) =>
@@ -477,9 +519,10 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               containerRef={containerRef}
               isSelected={selectedTextId === textOverlay.id}
               onSelect={setSelectedTextId}
-              onInternalDragStart={() => {}}
-              onInternalDragStop={() => {}}
+              onInternalDragStart={() => { }}
+              onInternalDragStop={() => { }}
               isSpacePressed={false}
+              scale={scale} // Pass scale
             />
           ))}
         </>

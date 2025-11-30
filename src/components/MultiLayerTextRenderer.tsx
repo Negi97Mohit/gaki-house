@@ -5,10 +5,14 @@ import { TextDesignLayer, TextLayer } from "@/types/textDesign";
 interface MultiLayerTextRendererProps {
   text: string;
   layers: TextDesignLayer[];
+  scale?: number;
 }
 
 // Helper function to generate CSS for a single layer
-const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
+const getLayerStyle = (
+  layer: TextDesignLayer,
+  scale: number = 1
+): React.CSSProperties => {
   const style: React.CSSProperties = {
     position: "absolute",
     inset: 0,
@@ -25,8 +29,10 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
   switch (layer.type) {
     case "text":
       style.fontFamily = layer.fontFamily;
-      style.fontSize = `${layer.fontSize}px`;
-      style.letterSpacing = layer.letterSpacing;
+      style.fontSize = `${layer.fontSize * scale}px`;
+      style.letterSpacing = layer.letterSpacing
+        ? `${parseFloat(layer.letterSpacing as string) * scale}px`
+        : undefined;
       if (layer.color) {
         style.color = layer.color;
       }
@@ -39,36 +45,39 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
       break;
 
     case "stroke":
-      style.WebkitTextStroke = `${layer.width}px ${layer.color}`;
+      style.WebkitTextStroke = `${layer.width * scale}px ${layer.color}`;
       style.color = "transparent";
       break;
 
     case "glow":
     case "outer-glow":
-      style.textShadow = `0 0 ${layer.blur}px ${layer.color}`;
+      style.textShadow = `0 0 ${layer.blur * scale}px ${layer.color}`;
       style.color = "transparent";
       break;
 
     case "shadow":
-      style.textShadow = `${layer.offsetX}px ${layer.offsetY}px ${layer.blur}px ${layer.color}`;
+      style.textShadow = `${layer.offsetX * scale}px ${layer.offsetY * scale}px ${layer.blur * scale
+        }px ${layer.color}`;
       style.color = "transparent";
       break;
 
     case "inner-shadow":
       // This is trickier and often requires a pseudo-element,
       // but a simple text-shadow can fake it.
-      style.textShadow = `${layer.offsetX}px ${layer.offsetY}px ${layer.blur}px ${layer.color}`;
+      style.textShadow = `${layer.offsetX * scale}px ${layer.offsetY * scale}px ${layer.blur * scale
+        }px ${layer.color}`;
       style.color = "transparent";
       break;
 
     case "extrude":
       // Fake 3D extrude using multiple text-shadows
       const shadows = [];
-      for (let i = 1; i <= layer.depth; i++) {
+      const depth = Math.max(1, Math.round(layer.depth * scale));
+      for (let i = 1; i <= depth; i++) {
         // Simple angle logic (can be improved)
         const x = Math.cos(layer.angle * (Math.PI / 180)) * i;
         const y = Math.sin(layer.angle * (Math.PI / 180)) * i;
-        shadows.push(`${x.toFixed(0)}px ${y.toFixed(0)}px 0 ${layer.color}`);
+        shadows.push(`${x.toFixed(1)}px ${y.toFixed(1)}px 0 ${layer.color}`);
       }
       style.textShadow = shadows.join(", ");
       style.color = "transparent";
@@ -86,7 +95,8 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
 
     case "offset-layer":
       style.color = layer.color;
-      style.transform = `translate(${layer.offsetX}px, ${layer.offsetY}px)`;
+      style.transform = `translate(${layer.offsetX * scale}px, ${layer.offsetY * scale
+        }px)`;
       style.mixBlendMode = "screen"; // Common for chromatic aberration
       break;
 
@@ -102,26 +112,28 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
     // --- PLACEHOLDERS FOR NEW ADVANCED EFFECTS ---
     case "inner-core":
       if ("color" in layer) {
-        style.textShadow = `0 0 2px ${layer.color}, 0 0 5px ${layer.color}`;
+        style.textShadow = `0 0 ${2 * scale}px ${layer.color}, 0 0 ${5 * scale
+          }px ${layer.color}`;
       }
       style.color = "transparent";
       break;
     case "ambient-bloom":
       if ("color" in layer && "opacity" in layer) {
-        style.textShadow = `0 0 45px ${layer.color}`;
+        style.textShadow = `0 0 ${45 * scale}px ${layer.color}`;
         style.opacity = layer.opacity;
       }
       style.color = "transparent";
       break;
     case "bloom":
       if ("color" in layer) {
-        style.textShadow = `0 0 45px ${layer.color || "rgba(255,255,255,0.5)"}`;
+        style.textShadow = `0 0 ${45 * scale}px ${layer.color || "rgba(255,255,255,0.5)"
+          }`;
       }
       style.color = "transparent";
       break;
     case "fog":
       if ("opacity" in layer) {
-        style.textShadow = `0 0 45px rgba(255,255,255,0.5)`;
+        style.textShadow = `0 0 ${45 * scale}px rgba(255,255,255,0.5)`;
         style.opacity = layer.opacity;
       }
       style.color = "transparent";
@@ -129,14 +141,15 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
     case "refraction":
     case "prism-shift":
     case "rgb-shift":
-      style.textShadow = `2px 2px 0px #ff0000, -2px -2px 0px #00ffff`;
+      style.textShadow = `${2 * scale}px ${2 * scale}px 0px #ff0000, -${2 * scale
+        }px -${2 * scale}px 0px #00ffff`;
       style.color = "transparent";
       break;
     case "3d-puff":
     case "jelly-3d":
     case "puff":
       // Fake puff with a soft, inset shadow
-      style.textShadow = `0px 2px 5px rgba(0,0,0,0.3)`;
+      style.textShadow = `0px ${2 * scale}px ${5 * scale}px rgba(0,0,0,0.3)`;
       break;
     case "grain":
       style.backgroundImage = `url(/textures/grain.png)`; // You will need to add this texture
@@ -154,9 +167,8 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
       style.opacity = layer.opacity;
       break;
     case "gold-foil":
-      style.backgroundImage = `url(${
-        layer.texture || "/textures/gold_foil.jpg"
-      })`;
+      style.backgroundImage = `url(${layer.texture || "/textures/gold_foil.jpg"
+        })`;
       style.backgroundSize = "cover";
       style.backgroundClip = "text";
       style.WebkitBackgroundClip = "text";
@@ -182,6 +194,7 @@ const getLayerStyle = (layer: TextDesignLayer): React.CSSProperties => {
 export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
   text,
   layers,
+  scale = 1,
 }) => {
   // Find the base text layer to set font size for the container
   const baseTextLayer = layers.find((l) => l.type === "text") as
@@ -191,7 +204,7 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
   const containerStyle: React.CSSProperties = {
     position: "relative",
     fontFamily: baseTextLayer?.fontFamily || "Inter",
-    fontSize: `${baseTextLayer?.fontSize || 32}px`,
+    fontSize: `${(baseTextLayer?.fontSize || 32) * scale}px`,
     fontWeight: "bold", // Most designs are bold
     textAlign: "center", // Default to center
     width: "100%",
@@ -215,7 +228,7 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
       {/* Invisible spacer to define the size */}
       <span
         style={{
-          ...getLayerStyle(baseText),
+          ...getLayerStyle(baseText, scale),
           position: "relative",
           visibility: "hidden",
         }}
@@ -225,7 +238,7 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
 
       {/* Render all layers, absolutely positioned */}
       {layers.map((layer, index) => (
-        <div key={index} style={getLayerStyle(layer)}>
+        <div key={index} style={getLayerStyle(layer, scale)}>
           {text}
         </div>
       ))}

@@ -43,6 +43,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
   onSelect,
   allOverlays,
   onSnapGuidesChange,
+  scale,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -120,14 +121,19 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
               )}
               style={{
                 fontFamily: overlay.style.fontFamily,
-                fontSize: `${overlay.style.fontSize}px`,
+                fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
                 color: overlay.style.color,
                 backgroundColor: overlay.style.backgroundColor || "transparent",
                 fontWeight: overlay.style.bold ? "bold" : "normal",
                 fontStyle: overlay.style.italic ? "italic" : "normal",
                 textDecoration: overlay.style.underline ? "underline" : "none",
                 textAlign: (overlay.style as any).textAlign || "left",
-                textShadow: overlay.style.textShadow,
+                textShadow: overlay.style.textShadow
+                  ? overlay.style.textShadow.replace(
+                    /(-?\d*\.?\d+)px/g,
+                    (match, p1) => `${parseFloat(p1) * (scale || 1)}px`
+                  )
+                  : undefined,
               }}
               dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
@@ -141,13 +147,18 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                     "Double-click to edit"
                   }
                   layers={overlay.style.layers}
+                  scale={scale || 1} // Pass scale to MultiLayerTextRenderer if it supports it, or handle scaling inside it? 
+                // Wait, MultiLayerTextRenderer likely needs update too if it handles sizing internally.
+                // Let's assume for now we just scale the container or font size here.
+                // Actually, MultiLayerTextRenderer probably uses the style prop or similar.
+                // Let's check MultiLayerTextRenderer in a moment. For now, let's assume it inherits or we need to pass it.
                 />
               ) : (
                 <div
                   className="w-full h-full whitespace-pre-wrap break-words p-2"
                   style={{
                     fontFamily: overlay.style.fontFamily,
-                    fontSize: `${overlay.style.fontSize}px`,
+                    fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
                     color: overlay.style.color,
                     backgroundColor:
                       overlay.style.backgroundColor || "transparent",
@@ -157,7 +168,12 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                       ? "underline"
                       : "none",
                     textAlign: (overlay.style as any).textAlign || "left",
-                    textShadow: overlay.style.textShadow,
+                    textShadow: overlay.style.textShadow
+                      ? overlay.style.textShadow.replace(
+                        /(-?\d*\.?\d+)px/g,
+                        (match, p1) => `${parseFloat(p1) * (scale || 1)}px`
+                      )
+                      : undefined,
                     display: "flex",
                     alignItems: "center",
                     justifyContent:
