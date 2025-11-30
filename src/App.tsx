@@ -11,6 +11,7 @@ import { LogProvider } from "./context/LogContext";
 import { useEffect, useRef, useState } from "react";
 import EditPage from "./pages/Edit";
 import Loader from "./components/Loader";
+import RemoteCamera from "./pages/RemoteCamera";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ const App = () => {
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/edit/:sessionId" element={<EditPage />} />
+                  <Route path="/remote-cam" element={<RemoteCamera />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>

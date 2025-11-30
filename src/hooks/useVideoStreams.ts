@@ -9,6 +9,7 @@ interface UseVideoStreamsProps {
   selectedCameraDevice?: string;
   selectedAudioDevice?: string;
   onScreenShareEnd: () => void;
+  remoteStream?: MediaStream | null;
 }
 
 export const useVideoStreams = ({
@@ -18,6 +19,7 @@ export const useVideoStreams = ({
   selectedCameraDevice,
   selectedAudioDevice,
   onScreenShareEnd,
+  remoteStream,
 }: UseVideoStreamsProps) => {
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
@@ -52,15 +54,32 @@ export const useVideoStreams = ({
         const constraints: MediaStreamConstraints = {
           video: selectedCameraDevice
             ? {
-                deviceId: { exact: selectedCameraDevice },
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-              }
+              deviceId: { exact: selectedCameraDevice },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            }
             : { width: { ideal: 1280 }, height: { ideal: 720 } },
           // Explicitly disable audio for camera stream to avoid feedback/conflict
           // Audio is handled separately in VideoCanvas
           audio: false,
         };
+
+        if (selectedCameraDevice === "remote-peer") {
+          if (remoteStream) {
+            console.log("✅ Using Remote Stream");
+            setCameraStream(remoteStream);
+            // We don't set activeCameraStreamRef here because we don't want to stop the remote tracks
+            // when switching devices (we want to keep the connection alive).
+            // But we do need to clear the previous local stream if any.
+            if (activeCameraStreamRef.current) {
+              stopTracks(activeCameraStreamRef.current);
+              activeCameraStreamRef.current = null;
+            }
+          } else {
+            setCameraStream(null);
+          }
+          return;
+        }
 
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
@@ -101,7 +120,7 @@ export const useVideoStreams = ({
       // but we do stop them if isCameraOn becomes false (handled at start of effect)
       // or if the component unmounts (handled by separate effect).
     };
-  }, [isCameraOn, selectedCameraDevice, stopTracks]);
+  }, [isCameraOn, selectedCameraDevice, stopTracks, remoteStream]);
 
   // --- Screen Share Logic ---
   useEffect(() => {

@@ -19,6 +19,8 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useSceneManager } from "./Index/hooks/useSceneManager";
 import { useMediaManager } from "./Index/hooks/useMediaManager";
 import { useLayoutManager } from "./Index/hooks/useLayoutManager";
+import { useRemotePeer } from "@/hooks/useRemotePeer";
+import { RemoteConnectModal } from "@/components/RemoteConnectModal";
 
 import {
   GeneratedOverlay,
@@ -64,6 +66,22 @@ const Index = () => {
     sceneId: activeSceneId,
     onAudioToggle: (val) => updateSceneProperty("isAudioOn", val),
   });
+
+  const { peerId, remoteStream, isConnected: isRemoteConnected } = useRemotePeer();
+  const [isRemoteModalOpen, setIsRemoteModalOpen] = useState(false);
+
+  // Auto-open modal if remote camera is selected but not connected
+  useEffect(() => {
+    if (
+      activeScene?.selectedVideoDevice === "remote-peer" &&
+      !isRemoteConnected &&
+      !isRemoteModalOpen
+    ) {
+      setIsRemoteModalOpen(true);
+    } else if (isRemoteConnected && isRemoteModalOpen) {
+      setIsRemoteModalOpen(false);
+    }
+  }, [activeScene?.selectedVideoDevice, isRemoteConnected]);
 
   const {
     presets,
@@ -303,6 +321,7 @@ const Index = () => {
         mainContainerRef={(node) => node && setMainContainer(node)}
         isSettingsOpen={showSettings}
         onSetSettingsOpen={setShowSettings}
+        remoteStream={remoteStream}
       />
 
       <SceneTabs
@@ -437,6 +456,13 @@ const Index = () => {
         onPipPositionChange={(val) => updateSceneProperty("pipPosition", val)}
         onPipSizeChange={(val) => updateSceneProperty("pipSize", val)}
         customMaskUrl={activeScene.customMaskUrl}
+      />
+
+      <RemoteConnectModal
+        isOpen={isRemoteModalOpen}
+        onOpenChange={setIsRemoteModalOpen}
+        peerId={peerId}
+        isConnected={isRemoteConnected}
       />
     </div>
   );

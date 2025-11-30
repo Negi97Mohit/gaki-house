@@ -22,6 +22,10 @@ export const useMediaManager = ({
     const getDevices = async () => {
       try {
         // First enumeration
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+          console.warn("Media Devices API not available (requires HTTPS or localhost)");
+          return;
+        }
         let devices = await navigator.mediaDevices.enumerateDevices();
 
         // If labels are empty (browser security), trigger a quick permission request
@@ -41,7 +45,17 @@ export const useMediaManager = ({
         }
 
         setAudioDevices(devices.filter((d) => d.kind === "audioinput"));
-        setVideoDevices(devices.filter((d) => d.kind === "videoinput"));
+        const vDevices = devices.filter((d) => d.kind === "videoinput");
+        // Add Remote Camera option
+        vDevices.push({
+          deviceId: "remote-peer",
+          kind: "videoinput",
+          label: "📱 Remote Phone Camera",
+          groupId: "remote",
+          toJSON: () => ({}),
+        } as MediaDeviceInfo);
+
+        setVideoDevices(vDevices);
       } catch (err) {
         console.warn("Could not enumerate devices:", err);
       }
@@ -53,13 +67,15 @@ export const useMediaManager = ({
     const handleDeviceChange = () => {
       getDevices();
     };
-    navigator.mediaDevices.addEventListener("devicechange", handleDeviceChange);
+
+    if (navigator.mediaDevices) {
+      navigator.mediaDevices.addEventListener("devicechange", handleDeviceChange);
+    }
 
     return () => {
-      navigator.mediaDevices.removeEventListener(
-        "devicechange",
-        handleDeviceChange
-      );
+      if (navigator.mediaDevices) {
+        navigator.mediaDevices.removeEventListener("devicechange", handleDeviceChange);
+      }
     };
   }, []);
 

@@ -45,7 +45,7 @@ export const MainCanvasArea: React.FC<MainCanvasAreaProps> = ({
       )}
 
       <MemoizedVideoCanvas
-        key="active-scene-canvas"
+        key={`active-scene-canvas-${activeScene.id}`}
         {...activeSceneProps}
         {...globalCanvasProps}
         isTransitioningIn={isTransitioning}
