@@ -41,6 +41,9 @@ export const useWebGLRenderLoop = ({
   backgroundEffect,
   backgroundImageUrl,
   facePositionRef,
+  isAutoFramingEnabled,
+  zoomSensitivity,
+  trackingSpeed,
 }: UseWebGLRenderLoopProps) => {
   const rendererRef = useRef<GLRenderer | null>(null);
   const animationFrameRef = useRef<number>();
@@ -133,7 +136,12 @@ export const useWebGLRenderLoop = ({
             filterColor,
             processedCanvas,
             backgroundEffect,
-            backgroundImage: bgImageRef.current, // Pass the image
+            backgroundImage: bgImageRef.current,
+            // Auto-framing props
+            facePosition: facePositionRef?.current,
+            isAutoFramingEnabled,
+            zoomSensitivity,
+            trackingSpeed,
           });
         } catch (e) {
           console.error("[WebGL] Render error:", e);
@@ -156,7 +164,8 @@ export const useWebGLRenderLoop = ({
     filterColor,
     processedCanvas,
     backgroundEffect,
-    // Dependency on bgImageRef.current is not needed as ref mutation doesn't trigger re-render
-    // but the loop picks it up immediately
+    isAutoFramingEnabled,
+    zoomSensitivity,
+    trackingSpeed,
   ]);
 };

@@ -26,7 +26,14 @@ export class ShaderManager {
       "basic",
       VERTEX_SHADER_SOURCE,
       BASIC_FRAGMENT_SHADER_SOURCE,
-      ["u_video", "u_brightness", "u_contrast", "u_saturation"]
+      [
+        "u_video",
+        "u_brightness",
+        "u_contrast",
+        "u_saturation",
+        "u_scale",
+        "u_offset",
+      ]
     );
 
     // 2. Effects (Interactive filters)
@@ -40,8 +47,10 @@ export class ShaderManager {
         "u_filter_type",
         "u_intensity",
         "u_color",
-        "u_color_mid", // NEW
-        "u_color_high", // NEW
+        "u_color_mid",
+        "u_color_high",
+        "u_scale",
+        "u_offset",
       ]
     );
 
@@ -50,7 +59,15 @@ export class ShaderManager {
       "composite",
       VERTEX_SHADER_SOURCE,
       COMPOSITE_FRAGMENT_SHADER_SOURCE,
-      ["u_video", "u_mask", "u_bg_type", "u_bg_image", "u_bg_color"]
+      [
+        "u_video",
+        "u_mask",
+        "u_bg_type",
+        "u_bg_image",
+        "u_bg_color",
+        "u_scale",
+        "u_offset",
+      ]
     );
   }
 
@@ -98,6 +115,12 @@ export class ShaderManager {
     const info = this.getMethodInfo();
     if (info?.uniforms[name])
       this.ctx.gl.uniform3fv(info.uniforms[name], value);
+  }
+
+  setUniform2fv(name: string, value: Float32Array | number[]) {
+    const info = this.getMethodInfo();
+    if (info?.uniforms[name])
+      this.ctx.gl.uniform2fv(info.uniforms[name], value);
   }
 
   private getMethodInfo() {
