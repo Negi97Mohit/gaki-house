@@ -30,7 +30,10 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
         return "rounded-xl";
     }
   };
+
+  // You were calculating this correctly for the log...
   const text = (props.fullTranscript + " " + props.interimTranscript).trim();
+
   console.log(`[CaptionRenderer] Rendering with text: "${text}"`, {
     activeStyleId,
     text,
@@ -41,14 +44,14 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
   const styleEntry = DYNAMIC_STYLES[activeStyleId] || DYNAMIC_STYLES["none"];
   const StyleComponent = styleEntry.component;
 
-  // Create a new style object that combines the base style with our new border style
   const combinedStyle: React.CSSProperties = {
     backgroundColor: captionStyle.backgroundColor,
   };
   if (captionStyle.border) {
     combinedStyle.border = `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`;
   }
-  combinedStyle.minHeight = "2em"; // Set a minimum height to prevent collapse
+  combinedStyle.minHeight = "2em";
+
   const innerStyle: React.CSSProperties = {
     fontFamily: baseStyle.fontFamily,
     fontSize: baseStyle.fontSize,
@@ -65,18 +68,19 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
         getShapeClasses(),
         captionStyle.shape === "banner" && "px-8",
         captionStyle.shape === "speech-bubble" &&
-        `after:border-t-[${captionStyle.backgroundColor.replace(/,/g, "-")}]` // Use the BG color for the speech bubble pointer
+          `after:border-t-[${captionStyle.backgroundColor.replace(/,/g, "-")}]`
       )}
       style={combinedStyle}
     >
-      <div style={{
-        ...innerStyle,
-        overflowWrap: "break-word",
-        wordBreak: "break-word",
-      }}>
-        {" "}
-        {/* <-- WRAP StyleComponent IN A DIV WITH TYPOGRAPHY STYLES */}
-        <StyleComponent {...props} baseStyle={baseStyle} />
+      <div
+        style={{
+          ...innerStyle,
+          overflowWrap: "break-word",
+          wordBreak: "break-word",
+        }}
+      >
+        {/* FIX: Explicitly pass the 'text' prop to the child component */}
+        <StyleComponent {...props} baseStyle={baseStyle} text={text} />
       </div>
     </div>
   );
