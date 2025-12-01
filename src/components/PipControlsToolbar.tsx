@@ -1,3 +1,4 @@
+// src/components/PipControlsToolbar.tsx
 import React, { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,7 @@ import {
   Square,
   Settings2,
   Circle,
+  PictureInPicture, // [!code ++]
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -71,42 +73,8 @@ interface PipControlsToolbarProps {
   onCustomAspectRatioChange: (ratio: string) => void;
   isFaceTrackingEnabled: boolean;
   onFaceTrackingToggle: (enabled: boolean) => void;
-  activeInteractiveFilter?:
-    | "none"
-    | "neon-edge"
-    | "hologram"
-    | "pixel"
-    | "comic"
-    | "ascii"
-    | "thermal"
-    | "mirror"
-    | "kaleidoscope"
-    | "oil-paint"
-    | "sketch"
-    | "prism"
-    | "vhs"
-    | "infrared"
-    | "xray"
-    | "cyberpunk";
-  onInteractiveFilterChange?: (
-    filter:
-      | "none"
-      | "neon-edge"
-      | "hologram"
-      | "pixel"
-      | "comic"
-      | "ascii"
-      | "thermal"
-      | "mirror"
-      | "kaleidoscope"
-      | "oil-paint"
-      | "sketch"
-      | "prism"
-      | "vhs"
-      | "infrared"
-      | "xray"
-      | "cyberpunk"
-  ) => void;
+  activeInteractiveFilter?: string;
+  onInteractiveFilterChange?: (filter: string) => void;
   filterIntensity?: number;
   onFilterIntensityChange?: (intensity: number) => void;
   filterColor?: string;
@@ -121,6 +89,10 @@ interface PipControlsToolbarProps {
   showAspectRatio?: boolean;
   cameraShape?: CameraShape;
   onCameraShapeChange?: (shape: CameraShape) => void;
+
+  // --- Phase 3: Add PiP Props ---
+  isPipActive?: boolean; // [!code ++]
+  onTogglePip?: () => void; // [!code ++]
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -145,19 +117,14 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       const yAbove = props.position.y - toolbarHeight - 8;
 
       // Check if positioning above would overlap with top toolbar area
-      // or if it goes off-screen top.
-      // Use 80px as a safe zone for the top toolbar + island.
       const wouldOverlapTopToolbar = yAbove < 80;
 
       // Position either above or below the PiP/Point
       const x = props.position.x - toolbarWidth / 2;
 
       // SMART POSITIONING:
-      // If near the top, flip to the bottom.
       let y: number;
       if (wouldOverlapTopToolbar) {
-        // Position at the bottom of the container.
-        // UPDATED: Use a larger offset (90px) to clear the bottom navigation bar.
         y = containerRect.height - toolbarHeight - 90;
       } else {
         y = yAbove;
@@ -169,7 +136,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         Math.min(x, parentRect.right - containerRect.left - toolbarWidth - 8)
       );
 
-      // Ensure Y is within bounds (though our logic handles top/bottom, just a safety clamp)
+      // Ensure Y is within bounds
       const clampedY = Math.max(
         8,
         Math.min(y, containerRect.height - toolbarHeight - 8)
@@ -398,7 +365,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
                     <button
                       key={filter.id}
                       onClick={() =>
-                        props.onInteractiveFilterChange?.(filter.id)
+                        props.onInteractiveFilterChange?.(filter.id as any)
                       }
                       className={cn(
                         "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
@@ -633,6 +600,23 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           </DropdownMenuContent>
         </DropdownMenuPortal>
       </DropdownMenu>
+
+      {/* --- Phase 3: Pop-out Button --- */}
+      {props.onTogglePip && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-9 w-9 rounded-xl hover:bg-background/60",
+            props.isPipActive &&
+              "bg-primary/20 text-primary hover:bg-primary/30"
+          )}
+          onClick={props.onTogglePip}
+          title={props.isPipActive ? "Exit Pop-out" : "Pop-out Camera"}
+        >
+          <PictureInPicture className="w-4 h-4" />
+        </Button>
+      )}
 
       <input
         ref={fileInputRef}

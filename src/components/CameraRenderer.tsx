@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { useWebGLRenderLoop } from "@/hooks/useWebGLRenderLoop";
+import { usePictureInPicture } from "@/hooks/usePictureInPicture"; // [!code ++]
 import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -77,6 +78,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
+  // --- Phase 2: Initialize PiP Engine ---
+  // This hook creates the detached video element and manages the stream capture
+  const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef }); // [!code ++]
+
   useEffect(() => {
     if (props.selectedDeviceId) {
       let isMounted = true;
@@ -130,8 +135,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     filterIntensity: props.filterIntensity,
     filterColor: props.filterColor,
     processedCanvas,
-    // FIX: Use camera-specific background prop, falling back to none
-    // Passing the custom URL as well so the renderer can load the image
     backgroundEffect: props.cameraBackground || "none",
     backgroundImageUrl: props.customBackgroundUrl || undefined,
     facePositionRef,
@@ -163,11 +166,14 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     };
   }, []);
 
+  // --- Pass PiP controls to the toolbar ---
   const toolbarProps = {
     position: toolbarPosition,
     containerRef,
     ...props,
     onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
+    isPipActive, // [!code ++]
+    onTogglePip: togglePiP, // [!code ++]
   };
 
   return (
@@ -186,9 +192,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         className="hidden object-cover w-full h-full"
       />
       {!activeStream && (
-        // --- UPDATED: Animated Gradient Background ---
         <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center animate-gradient-bg pointer-events-none">
-          {/* --- Logo Overlay --- */}
           <img
             src="/icon.png"
             alt="GAKI Logo"
@@ -211,6 +215,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
               }}
               onMouseLeave={handleMouseLeave}
             >
+              {/* @ts-ignore: Phase 3 will update the PipControlsToolbar interface */}
               <PipControlsToolbar {...toolbarProps} />
             </div>,
             props.portalContainer
@@ -218,6 +223,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         ) : (
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
             <div className="pointer-events-auto inline-block">
+              {/* @ts-ignore: Phase 3 will update the PipControlsToolbar interface */}
               <PipControlsToolbar {...toolbarProps} />
             </div>
           </div>
