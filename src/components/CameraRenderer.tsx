@@ -81,7 +81,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   // --- Phase 2: Initialize PiP Engine ---
   // This hook creates the detached video element and manages the stream capture
   const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef }); // [!code ++]
-
   useEffect(() => {
     if (props.selectedDeviceId) {
       let isMounted = true;
@@ -172,8 +171,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     containerRef,
     ...props,
     onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
-    isPipActive, // [!code ++]
-    onTogglePip: togglePiP, // [!code ++]
+    isPipActive,
+    onTogglePip: togglePiP,
+    isCameraActive: !!activeStream, // [!code ++]
   };
 
   return (

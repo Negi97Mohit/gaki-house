@@ -15,7 +15,7 @@ import {
   Square,
   Settings2,
   Circle,
-  PictureInPicture, // [!code ++]
+  PictureInPicture,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -85,14 +85,13 @@ interface PipControlsToolbarProps {
   selectedDeviceId?: string;
   onCameraDeviceChange: (deviceId: string) => void;
 
-  // New Props
   showAspectRatio?: boolean;
   cameraShape?: CameraShape;
   onCameraShapeChange?: (shape: CameraShape) => void;
 
-  // --- Phase 3: Add PiP Props ---
-  isPipActive?: boolean; // [!code ++]
-  onTogglePip?: () => void; // [!code ++]
+  isPipActive?: boolean;
+  onTogglePip?: () => void;
+  isCameraActive?: boolean; // [!code ++]
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -104,7 +103,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
 
   const showAspectRatio = props.showAspectRatio !== false;
 
-  // Positioning logic with smart collision avoidance
   useLayoutEffect(() => {
     if (toolbarRef.current && props.containerRef.current) {
       const toolbarHeight = toolbarRef.current.offsetHeight;
@@ -113,16 +111,10 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       const parentRect =
         props.containerRef.current.parentElement!.getBoundingClientRect();
 
-      // Default positioning: Above the provided coordinate
       const yAbove = props.position.y - toolbarHeight - 8;
-
-      // Check if positioning above would overlap with top toolbar area
       const wouldOverlapTopToolbar = yAbove < 80;
-
-      // Position either above or below the PiP/Point
       const x = props.position.x - toolbarWidth / 2;
 
-      // SMART POSITIONING:
       let y: number;
       if (wouldOverlapTopToolbar) {
         y = containerRect.height - toolbarHeight - 90;
@@ -130,13 +122,11 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         y = yAbove;
       }
 
-      // Clamp X relative to the main container
       const clampedX = Math.max(
         parentRect.left - containerRect.left + 8,
         Math.min(x, parentRect.right - containerRect.left - toolbarWidth - 8)
       );
 
-      // Ensure Y is within bounds
       const clampedY = Math.max(
         8,
         Math.min(y, containerRect.height - toolbarHeight - 8)
@@ -601,8 +591,8 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         </DropdownMenuPortal>
       </DropdownMenu>
 
-      {/* --- Phase 3: Pop-out Button --- */}
-      {props.onTogglePip && (
+      {/* Pop-out Button - Only visible when camera is active */}
+      {props.onTogglePip && props.isCameraActive && (
         <Button
           variant="ghost"
           size="icon"
