@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { TextDesignPreset, TextLayer } from "@/types/textDesign";
 import { loadTextDesigns } from "@/lib/textDesigns";
 import { TextOverlayState } from "@/types/caption";
+import { MultiLayerTextRenderer } from "@/components/MultiLayerTextRenderer";
 
 interface TextDesignSelectorProps {
     overlay: TextOverlayState;
@@ -33,10 +34,30 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
     position,
 }) => {
     const [textDesigns, setTextDesigns] = useState<TextDesignPreset[]>([]);
+    const panelRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         loadTextDesigns().then(setTextDesigns);
     }, []);
+
+    // Close on click outside
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            // Don't close if clicking inside the panel or on the toolbar
+            if (
+                panelRef.current?.contains(target) ||
+                target.closest('[data-toolbar-control]') ||
+                target.closest('[data-text-toolbar]')
+            ) {
+                return;
+            }
+            onClose();
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [onClose]);
 
     const handleApplyDesign = (design: TextDesignPreset) => {
         if (design.layers && design.layers.length > 0) {
@@ -54,7 +75,7 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
             onStyleChange(overlay.id, {
                 layers: design.layers,
                 fontFamily: baseTextLayer?.fontFamily || "Inter",
-                fontSize: baseTextLayer?.fontSize || 32,
+                fontSize: baseTextLayer?.fontSize || 48,
                 color: baseTextLayer?.color || "#FFFFFF",
                 gradient: baseTextLayer?.gradient || undefined,
                 letterSpacing: baseTextLayer?.letterSpacing || "normal",
@@ -84,7 +105,7 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
             onStyleChange(overlay.id, {
                 layers: null,
                 fontFamily: oldStyle.fontFamily,
-                fontSize: oldStyle.fontSize,
+                fontSize: oldStyle.fontSize || 48,
                 color: oldStyle.color,
                 backgroundColor: appliedBackgroundColor,
                 bold: oldStyle.bold,
@@ -107,16 +128,17 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
             );
         }
 
-        onClose();
+        // Don't close - let user preview different designs
     };
 
     return (
         <div
+            ref={panelRef}
             className="absolute bg-background border-2 border-border rounded-xl shadow-2xl p-4"
             style={{
                 left: `${position.x}px`,
                 top: `${position.y + 60}px`,
-                zIndex: "calc(var(--z-text-toolbar) + 1)",
+                zIndex: "calc(var(--z-text-toolbar) + 5)",
                 width: "600px",
                 maxHeight: "450px",
             }}
@@ -161,25 +183,8 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
                                                 (l): l is TextLayer => l.type === "text"
                                             ) as TextLayer | undefined;
 
-                                            const previewStyle: React.CSSProperties = {
-                                                fontFamily:
-                                                    baseTextLayer?.fontFamily ||
-                                                    oldStyle?.fontFamily ||
-                                                    "Inter",
-                                                fontSize: "32px",
-                                                color:
-                                                    baseTextLayer?.color || oldStyle?.color || "#FFFFFF",
-                                                letterSpacing:
-                                                    baseTextLayer?.letterSpacing ||
-                                                    oldStyle?.letterSpacing ||
-                                                    "normal",
-                                                WebkitTextStroke:
-                                                    (baseTextLayer as any)?.["-webkit-text-stroke"] ||
-                                                    (oldStyle as any)?.["-webkit-text-stroke"] ||
-                                                    "unset",
-                                            };
-
-                                            let previewBackground = design.thumbnail;
+                                            // Determine preview background
+                                            let previewBackground = design.thumbnail || "#1A1A1A";
                                             if (design.thumbnail?.startsWith("linear-gradient")) {
                                                 previewBackground = "#1A1A1A";
                                             } else if (
@@ -188,6 +193,9 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
                                             ) {
                                                 previewBackground = "#1A1A1A";
                                             }
+
+                                            // Use MultiLayerTextRenderer for accurate preview if design has layers
+                                            const hasLayers = design.layers && design.layers.length > 0;
 
                                             return (
                                                 <button
@@ -199,12 +207,38 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
                                                     }}
                                                 >
                                                     <div className="w-full h-28 flex items-center justify-center p-3">
-                                                        <span
-                                                            className="text-2xl font-bold select-none inline-block"
-                                                            style={previewStyle}
-                                                        >
-                                                            Aa
-                                                        </span>
+                                                        {hasLayers ? (
+                                                            <div className="transform scale-50 origin-center">
+                                                                <MultiLayerTextRenderer
+                                                                    text="Aa"
+                                                                    layers={design.layers}
+                                                                    scale={0.7}
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            <span
+                                                                className="text-2xl font-bold select-none inline-block"
+                                                                style={{
+                                                                    fontFamily:
+                                                                        baseTextLayer?.fontFamily ||
+                                                                        oldStyle?.fontFamily ||
+                                                                        "Inter",
+                                                                    fontSize: "32px",
+                                                                    color:
+                                                                        baseTextLayer?.color || oldStyle?.color || "#FFFFFF",
+                                                                    letterSpacing:
+                                                                        baseTextLayer?.letterSpacing ||
+                                                                        oldStyle?.letterSpacing ||
+                                                                        "normal",
+                                                                    WebkitTextStroke:
+                                                                        (baseTextLayer as any)?.["-webkit-text-stroke"] ||
+                                                                        (oldStyle as any)?.["-webkit-text-stroke"] ||
+                                                                        "unset",
+                                                                }}
+                                                            >
+                                                                Aa
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div className="bg-background border-t border-border p-2">
                                                         <p className="text-xs font-medium text-center truncate text-foreground">

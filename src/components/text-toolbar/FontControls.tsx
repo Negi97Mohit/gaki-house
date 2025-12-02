@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Type, Minus, Plus } from "lucide-react";
+import { Type, Minus, Plus, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ALL_FONTS } from "@/lib/fonts";
 
 interface FontControlsProps {
@@ -25,9 +25,12 @@ export const FontControls: React.FC<FontControlsProps> = ({
     overlay,
     onStyleChange,
 }) => {
+    const [fontOpen, setFontOpen] = useState(false);
+
     const handleFontFamilyChange = (font: string) => {
         document.execCommand("fontName", false, font);
         onStyleChange(overlay.id, { fontFamily: font });
+        // Keep open - user can click outside to close
     };
 
     const handleFontSizeChange = (delta: number) => {
@@ -38,9 +41,9 @@ export const FontControls: React.FC<FontControlsProps> = ({
 
     return (
         <>
-            {/* Font Family Dropdown */}
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+            {/* Font Family Popover */}
+            <Popover open={fontOpen} onOpenChange={setFontOpen}>
+                <PopoverTrigger asChild>
                     <Button
                         variant="ghost"
                         size="sm"
@@ -48,23 +51,42 @@ export const FontControls: React.FC<FontControlsProps> = ({
                     >
                         <Type className="w-3 h-3 mr-1" />
                         {(overlay.style.fontFamily || "Inter").split(",")[0]}
+                        <ChevronDown className="w-3 h-3 ml-1 opacity-50" />
                     </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="max-h-64 overflow-y-auto">
-                    {FONT_FAMILIES.map((font) => (
-                        <DropdownMenuItem
-                            key={font}
-                            onClick={() => handleFontFamilyChange(font)}
-                            className={cn(
-                                (overlay.style.fontFamily || "Inter") === font && "bg-accent"
-                            )}
-                            style={{ fontFamily: font }}
-                        >
-                            {font}
-                        </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                </PopoverTrigger>
+                <PopoverContent 
+                    align="start" 
+                    className="w-56 p-0"
+                    style={{ zIndex: 'calc(var(--z-text-toolbar) + 10)' }}
+                    onInteractOutside={(e) => {
+                        // Only close if clicking outside, not on other toolbar elements
+                        const target = e.target as HTMLElement;
+                        if (target.closest('[data-toolbar-control]')) {
+                            e.preventDefault();
+                        }
+                    }}
+                >
+                    <ScrollArea className="h-64">
+                        <div className="p-1">
+                            {FONT_FAMILIES.map((font) => (
+                                <button
+                                    key={font}
+                                    onClick={() => handleFontFamilyChange(font)}
+                                    className={cn(
+                                        "w-full text-left px-3 py-2 text-sm rounded-md transition-colors",
+                                        "hover:bg-accent hover:text-accent-foreground",
+                                        (overlay.style.fontFamily || "Inter") === font && 
+                                        "bg-primary/10 text-primary font-medium"
+                                    )}
+                                    style={{ fontFamily: font }}
+                                >
+                                    {font}
+                                </button>
+                            ))}
+                        </div>
+                    </ScrollArea>
+                </PopoverContent>
+            </Popover>
 
             <div className="w-px h-6 bg-border" />
 
