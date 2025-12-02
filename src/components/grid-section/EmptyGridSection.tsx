@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
 import { CanvasDesignSelector } from "./CanvasDesignSelector";
-import { CanvasSectionState, DEFAULT_CAMERA_STATE } from "@/types/caption";
+import { CanvasSectionState, DEFAULT_CAMERA_STATE, CameraShape } from "@/types/caption";
 
 interface EmptyGridSectionProps {
     sectionId: string;
@@ -122,13 +122,13 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
                                                 layoutMode: "pip",
                                                 sectionBackgroundColor:
                                                     preset.background.blankCanvasColor,
-                                                cameraShape: preset.pip.cameraShape,
+                                                cameraShape: preset.pip.cameraShape as CameraShape,
                                                 pipPosition: preset.pip.pipPosition,
                                                 pipSize: preset.pip.pipSize,
                                                 textOverlays: preset.textOverlays.map((t) => ({
                                                     id: t.id,
                                                     content: t.content,
-                                                    style: t.style,
+                                                    style: t.style as any,
                                                     layout: {
                                                         position: t.layout.position,
                                                         size: t.layout.size,
@@ -136,7 +136,7 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
                                                         rotation: t.layout.rotation,
                                                         layerOrder: t.layout.layerOrder,
                                                     },
-                                                })),
+                                                })) as any,
                                                 pipBorder: preset.pip.pipBorder,
                                                 pipShadow: preset.pip.pipShadow,
                                                 videoFilter: preset.effects.videoFilter || "none",

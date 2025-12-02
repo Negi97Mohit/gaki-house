@@ -115,9 +115,19 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
         fontFamily: "Inter",
         fontSize: 48,
         color: "#FFFFFF",
+        backgroundColor: "transparent",
+        position: { x: 50, y: 50 },
+        shape: "rectangular",
+        animation: "none",
+        outline: false,
+        shadow: false,
         bold: true,
         italic: false,
         underline: false,
+        rotation: 0,
+        border: false,
+        borderColor: "#FFFFFF",
+        borderWidth: 2,
         textAlign: "center",
       },
       layout: {
@@ -316,6 +326,7 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                       : "0px",
                 }}
                 portalContainer={null}
+                backgroundEffect={settings.cameraBackground || "none"}
                 cameraShape={settings.cameraShape || "rectangle"}
                 onCameraShapeChange={(shape) =>
                   onUpdate({ cameraShape: shape })
@@ -391,7 +402,7 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                 }
                 activeInteractiveFilter={settings.activeInteractiveFilter}
                 onInteractiveFilterChange={(filter) =>
-                  onUpdate({ activeInteractiveFilter: filter })
+                  onUpdate({ activeInteractiveFilter: filter as any })
                 }
                 filterIntensity={settings.filterIntensity}
                 onFilterIntensityChange={(value) =>
@@ -486,7 +497,7 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               }
               activeInteractiveFilter={settings.activeInteractiveFilter}
               onInteractiveFilterChange={(filter) =>
-                onUpdate({ activeInteractiveFilter: filter })
+                onUpdate({ activeInteractiveFilter: filter as any })
               }
               filterIntensity={settings.filterIntensity}
               onFilterIntensityChange={(value) =>

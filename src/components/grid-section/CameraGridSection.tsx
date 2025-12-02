@@ -167,7 +167,7 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
             activeInteractiveFilter={settings.activeInteractiveFilter}
             onInteractiveFilterChange={(filter) =>
                 onSectionCameraSettingsChange(sectionId, {
-                    activeInteractiveFilter: filter,
+                    activeInteractiveFilter: filter as any,
                 })
             }
             filterIntensity={settings.filterIntensity}

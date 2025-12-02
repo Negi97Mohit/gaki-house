@@ -265,7 +265,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
                             textOverlays: preset.textOverlays.map((t) => ({
                               id: t.id,
                               content: t.content,
-                              style: t.style,
+                              style: t.style as any,
                               layout: {
                                 position: t.layout.position,
                                 size: t.layout.size,
@@ -273,7 +273,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
                                 rotation: t.layout.rotation,
                                 layerOrder: t.layout.layerOrder,
                               },
-                            })),
+                            })) as any,
                             videoFilter: preset.effects.videoFilter || "none",
                             isBeautifyEnabled:
                               preset.effects.isBeautifyEnabled || false,

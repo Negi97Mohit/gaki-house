@@ -12,7 +12,7 @@ export interface BackgroundOption {
 export const BACKGROUND_PRESETS: BackgroundOption[] =
   backgroundsData.presets as BackgroundOption[];
 
-export const ASPECT_RATIOS = backgroundsData.aspectRatios || [
+export const ASPECT_RATIOS = (backgroundsData as any).aspectRatios || backgroundsData.ratios || [
   { id: "16:9", name: "16:9 (Widescreen)", value: 16 / 9 },
   { id: "9:16", name: "9:16 (Vertical)", value: 9 / 16 },
   { id: "4:3", name: "4:3 (Standard)", value: 4 / 3 },
