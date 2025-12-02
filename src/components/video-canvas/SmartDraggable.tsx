@@ -1,6 +1,10 @@
 // src/components/video-canvas/SmartDraggable.tsx
 import React, { useState, useEffect, useRef } from "react";
-import { Rnd, DraggableEventHandler, RndResizeCallback } from "react-rnd";
+import { Rnd, RndResizeCallback } from "react-rnd";
+import type { DraggableEvent, DraggableData } from "react-draggable";
+
+// Define local type since react-rnd doesn't export this
+type DraggableEventHandler = (e: DraggableEvent, data: DraggableData) => void | false;
 import { cn } from "@/lib/utils";
 import {
   useSnapGuides,
@@ -199,7 +203,7 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     onChange(id, { position: { x: xPercent, y: yPercent } });
   };
 
-  const handleResizeStart: RndResizeCallback = () => {
+  const handleResizeStart = () => {
     isResizingRef.current = true;
     setIsInteracting(true);
     onSelect?.(id);

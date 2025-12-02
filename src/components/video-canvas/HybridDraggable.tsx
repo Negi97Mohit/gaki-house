@@ -369,7 +369,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
   );
 
   const handleResizeMove = useCallback(
-    (e: React.PointerEvent) => {
+    (e: PointerEvent | React.PointerEvent) => {
       if (!elementRef.current || mode !== "resizing" || !resizeHandle) return;
 
       const deltaX = e.clientX - startStateRef.current.pointerX;
@@ -471,8 +471,9 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
   );
 
   const handleResizeEnd = useCallback(
-    (e: React.PointerEvent) => {
-      e.currentTarget.releasePointerCapture(e.pointerId);
+    (e: PointerEvent | React.PointerEvent) => {
+      const target = e.target as HTMLElement;
+      target?.releasePointerCapture?.(e.pointerId);
       if (!elementRef.current) return;
       setMode("idle");
       setResizeHandle(null);
@@ -590,26 +591,26 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
           <div
             className="absolute -bottom-2 -right-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nwse-resize z-50 shadow-sm"
             onPointerDown={(e) => handleResizeStart(e, "se")}
-            onPointerMove={handleResizeMove}
-            onPointerUp={handleResizeEnd}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
             className="absolute -top-2 -left-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nwse-resize z-50 shadow-sm"
             onPointerDown={(e) => handleResizeStart(e, "nw")}
-            onPointerMove={handleResizeMove}
-            onPointerUp={handleResizeEnd}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
             className="absolute -top-2 -right-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nesw-resize z-50 shadow-sm"
             onPointerDown={(e) => handleResizeStart(e, "ne")}
-            onPointerMove={handleResizeMove}
-            onPointerUp={handleResizeEnd}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
             className="absolute -bottom-2 -left-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nesw-resize z-50 shadow-sm"
             onPointerDown={(e) => handleResizeStart(e, "sw")}
-            onPointerMove={handleResizeMove}
-            onPointerUp={handleResizeEnd}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
           />
         </>
       )}

@@ -254,7 +254,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isScreenSharing: screenShareMode === "screen",
     selectedCameraDevice: selectedVideoDevice,
     selectedAudioDevice: selectedAudioDevice,
-    selectedAudioDevice: selectedAudioDevice,
     onScreenShareEnd: () => props.onScreenShareModeChange("off"),
     remoteStream: props.remoteStream,
   });
