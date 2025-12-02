@@ -1,43 +1,12 @@
-// src/components/PipControlsToolbar.tsx
 import React, { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Camera,
-  Wand2,
-  Minimize2,
-  Image,
-  RectangleHorizontal,
-  Upload,
-  Sparkles,
-  Droplet,
-  Sun,
-  Paintbrush,
-  Square,
-  Settings2,
-  Circle,
-  PictureInPicture,
-} from "lucide-react";
+import { PictureInPicture } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { Slider } from "./ui/slider";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { FILTER_PRESETS } from "@/lib/filters";
-import { BACKGROUND_PRESETS, ASPECT_RATIOS } from "@/lib/backgrounds";
-import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 import { CameraShape } from "@/types/caption";
+import { PipCameraMenu } from "./pip-controls/PipCameraMenu";
+import { PipBackgroundMenu } from "./pip-controls/PipBackgroundMenu";
+import { PipEffectsMenu } from "./pip-controls/PipEffectsMenu";
+import { PipStyleMenu } from "./pip-controls/PipStyleMenu";
 
 interface PipControlsToolbarProps {
   position: { x: number; y: number };
@@ -91,17 +60,14 @@ interface PipControlsToolbarProps {
 
   isPipActive?: boolean;
   onTogglePip?: () => void;
-  isCameraActive?: boolean; // [!code ++]
+  isCameraActive?: boolean;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   props
 ) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
-
-  const showAspectRatio = props.showAspectRatio !== false;
 
   useLayoutEffect(() => {
     if (toolbarRef.current && props.containerRef.current) {
@@ -136,29 +102,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
     }
   }, [props.position, props.containerRef]);
 
-  const handlePipBorderWidth = (value: number) => {
-    props.onPipBorderChange({ ...props.pipBorder!, width: value });
-  };
-  const handlePipBorderColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.onPipBorderChange({ ...props.pipBorder!, color: e.target.value });
-  };
-  const handlePipShadowBlur = (value: number) => {
-    props.onPipShadowChange({ ...props.pipShadow!, blur: value });
-  };
-  const handlePipShadowColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.onPipShadowChange({ ...props.pipShadow!, color: e.target.value });
-  };
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      props.onCustomBackgroundUpload(file);
-    }
-  };
-
-  const pipBorder = props.pipBorder ?? { color: "#FFFFFF", width: 0 };
-  const pipShadow = props.pipShadow ?? { blur: 0, color: "rgba(0,0,0,0.5)" };
-  const neonEdgeColor = props.neonEdgeColor ?? "#00FF00";
-
   return (
     <div
       ref={toolbarRef}
@@ -171,425 +114,54 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-xl hover:bg-background/60"
-            title="Select Camera"
-          >
-            <Camera className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="start"
-          className="z-[var(--z-text-toolbar)] bg-background/95 backdrop-blur-xl border-border/40"
-        >
-          <DropdownMenuLabel className="text-xs">
-            Camera Source
-          </DropdownMenuLabel>
-          {props.videoDevices.map((device, i) => (
-            <DropdownMenuCheckboxItem
-              key={device.deviceId}
-              checked={props.selectedDeviceId === device.deviceId}
-              onCheckedChange={() =>
-                props.onCameraDeviceChange(device.deviceId)
-              }
-            >
-              {device.label || `Camera ${i + 1}`}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <PipCameraMenu
+        videoDevices={props.videoDevices}
+        selectedDeviceId={props.selectedDeviceId}
+        onCameraDeviceChange={props.onCameraDeviceChange}
+      />
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-xl hover:bg-background/60"
-            title="Background & Aspect"
-          >
-            <Image className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuContent
-            align="start"
-            className="z-[var(--z-text-toolbar)] w-56 max-h-[400px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
-            onCloseAutoFocus={(e) => e.preventDefault()}
-          >
-            {showAspectRatio && (
-              <>
-                <DropdownMenuLabel className="text-xs font-semibold">
-                  Aspect Ratio
-                </DropdownMenuLabel>
-                {ASPECT_RATIOS.map((ratio) => (
-                  <DropdownMenuCheckboxItem
-                    key={ratio.id}
-                    checked={props.cameraAspectRatio === ratio.id}
-                    onClick={() => props.onCameraAspectRatioChange(ratio.id)}
-                    className="text-sm"
-                  >
-                    {ratio.name}
-                  </DropdownMenuCheckboxItem>
-                ))}
-                {props.cameraAspectRatio === "custom" && (
-                  <div className="p-2">
-                    <Input
-                      type="text"
-                      placeholder="e.g., 21:9"
-                      value={props.customAspectRatio}
-                      onChange={(e) =>
-                        props.onCustomAspectRatioChange(e.target.value)
-                      }
-                      className="h-8 text-sm"
-                    />
-                  </div>
-                )}
-                <DropdownMenuSeparator />
-              </>
-            )}
+      <PipBackgroundMenu
+        showAspectRatio={props.showAspectRatio}
+        cameraAspectRatio={props.cameraAspectRatio}
+        onCameraAspectRatioChange={props.onCameraAspectRatioChange}
+        customAspectRatio={props.customAspectRatio}
+        onCustomAspectRatioChange={props.onCustomAspectRatioChange}
+        cameraBackground={props.cameraBackground}
+        onCameraBackgroundChange={props.onCameraBackgroundChange}
+        onCustomBackgroundUpload={props.onCustomBackgroundUpload}
+      />
 
-            <DropdownMenuLabel className="text-xs font-semibold">
-              Background
-            </DropdownMenuLabel>
-            {BACKGROUND_PRESETS.map((bg) => (
-              <DropdownMenuCheckboxItem
-                key={bg.id}
-                checked={
-                  (bg.id === "none" && props.cameraBackground === "none") ||
-                  (bg.id === "blur" && props.cameraBackground === "blur") ||
-                  (bg.type === "image" && props.cameraBackground === "image")
-                }
-                onClick={() =>
-                  props.onCameraBackgroundChange(
-                    bg.id as "none" | "blur" | "image"
-                  )
-                }
-                className="text-sm"
-              >
-                {bg.name}
-              </DropdownMenuCheckboxItem>
-            ))}
-            <DropdownMenuItem
-              onClick={() => fileInputRef.current?.click()}
-              className="text-sm"
-            >
-              <Upload className="w-3.5 h-3.5 mr-2" />
-              Upload
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
-      </DropdownMenu>
+      <PipEffectsMenu
+        videoFilter={props.videoFilter}
+        onVideoFilterChange={props.onVideoFilterChange}
+        activeInteractiveFilter={props.activeInteractiveFilter}
+        onInteractiveFilterChange={props.onInteractiveFilterChange}
+      />
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-xl hover:bg-background/60"
-            title="Effects"
-          >
-            <Wand2 className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuContent
-            align="start"
-            className="z-[var(--z-text-toolbar)] w-72 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
-            onCloseAutoFocus={(e) => e.preventDefault()}
-          >
-            <DropdownMenuLabel className="text-xs font-semibold px-3 py-1.5 flex items-center">
-              <Droplet className="w-3.5 h-3.5 mr-2" />
-              Color Filters
-            </DropdownMenuLabel>
-            <div className="p-2">
-              <div className="grid grid-cols-3 gap-2 w-full max-h-[240px] overflow-y-auto pr-1">
-                {FILTER_PRESETS.map((filter) => {
-                  const isSelected = props.videoFilter === filter.style;
-                  return (
-                    <button
-                      key={filter.id}
-                      onClick={() => props.onVideoFilterChange(filter.style)}
-                      className={cn(
-                        "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
-                        isSelected
-                          ? "border-primary shadow-md ring-2 ring-primary/30"
-                          : "border-border/40 hover:border-border"
-                      )}
-                      title={filter.name}
-                    >
-                      <img
-                        src="/placeholder.jpeg"
-                        alt={filter.name}
-                        className="w-full h-full object-cover"
-                        style={{ filter: filter.style }}
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
-                        <span className="text-white text-[8px] font-semibold truncate block text-center">
-                          {filter.name}
-                        </span>
-                      </div>
-                      {isSelected && (
-                        <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs font-semibold px-3 py-1.5 flex items-center">
-              <Sparkles className="w-3.5 h-3.5 mr-2" />
-              Interactive Filters
-            </DropdownMenuLabel>
-            <div className="p-2">
-              <div className="grid grid-cols-3 gap-2 w-full max-h-[240px] overflow-y-auto pr-1">
-                {INTERACTIVE_FILTER_PRESETS.map((filter) => {
-                  const isSelected =
-                    props.activeInteractiveFilter === filter.id;
-                  return (
-                    <button
-                      key={filter.id}
-                      onClick={() =>
-                        props.onInteractiveFilterChange?.(filter.id as any)
-                      }
-                      className={cn(
-                        "aspect-video rounded-lg border transition-all duration-200 relative overflow-hidden group",
-                        isSelected
-                          ? "border-primary shadow-md ring-2 ring-primary/30"
-                          : "border-border/40 hover:border-border"
-                      )}
-                      title={filter.name}
-                    >
-                      <img
-                        src={filter.thumbnailUrl}
-                        alt={filter.name}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-1">
-                        <span className="text-white text-[8px] font-semibold truncate block text-center">
-                          {filter.name}
-                        </span>
-                      </div>
-                      {isSelected && (
-                        <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
-      </DropdownMenu>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 rounded-xl hover:bg-background/60"
-            title="Style"
-          >
-            <Paintbrush className="w-4 h-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuPortal>
-          <DropdownMenuContent
-            align="start"
-            className="z-[var(--z-text-toolbar)] w-64 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
-            onCloseAutoFocus={(e) => e.preventDefault()}
-          >
-            {props.onCameraShapeChange && (
-              <>
-                <DropdownMenuLabel className="text-xs font-semibold">
-                  Shape
-                </DropdownMenuLabel>
-                <div className="grid grid-cols-3 gap-2 p-2">
-                  <Button
-                    variant={
-                      props.cameraShape === "rectangle" ? "default" : "outline"
-                    }
-                    size="sm"
-                    className="h-8"
-                    onClick={() => props.onCameraShapeChange?.("rectangle")}
-                    title="Rectangle"
-                  >
-                    <Square className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={
-                      props.cameraShape === "rounded" ? "default" : "outline"
-                    }
-                    size="sm"
-                    className="h-8"
-                    onClick={() => props.onCameraShapeChange?.("rounded")}
-                    title="Rounded"
-                  >
-                    <RectangleHorizontal className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={
-                      props.cameraShape === "circle" ? "default" : "outline"
-                    }
-                    size="sm"
-                    className="h-8"
-                    onClick={() => props.onCameraShapeChange?.("circle")}
-                    title="Circle"
-                  >
-                    <Circle className="w-4 h-4" />
-                  </Button>
-                </div>
-                <DropdownMenuSeparator />
-              </>
-            )}
-
-            <div className="p-3 space-y-3">
-              <div className="space-y-2">
-                <Label className="text-xs font-semibold">Border</Label>
-                <div className="flex gap-2 items-center">
-                  <Input
-                    type="color"
-                    className="w-12 h-9 p-1 rounded-lg cursor-pointer"
-                    value={pipBorder.color}
-                    onChange={handlePipBorderColor}
-                  />
-                  <div className="flex-1 space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">
-                      Width {pipBorder.width}px
-                    </Label>
-                    <Slider
-                      value={[pipBorder.width]}
-                      onValueChange={([v]) => handlePipBorderWidth(v)}
-                      min={0}
-                      max={20}
-                      step={1}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-semibold">Shadow</Label>
-                <div className="flex gap-2 items-center">
-                  <Input
-                    type="color"
-                    className="w-12 h-9 p-1 rounded-lg cursor-pointer"
-                    value={pipShadow.color}
-                    onChange={handlePipShadowColor}
-                  />
-                  <div className="flex-1 space-y-1">
-                    <Label className="text-[10px] text-muted-foreground">
-                      Blur {pipShadow.blur}px
-                    </Label>
-                    <Slider
-                      value={[pipShadow.blur]}
-                      onValueChange={([v]) => handlePipShadowBlur(v)}
-                      min={0}
-                      max={50}
-                      step={1}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={props.isBeautifyEnabled}
-              onCheckedChange={props.onBeautifyToggle}
-              className="text-sm"
-            >
-              <Sparkles className="w-3.5 h-3.5 mr-2" />
-              Beautify
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={props.isLowLightEnabled}
-              onCheckedChange={props.onLowLightToggle}
-              className="text-sm"
-            >
-              <Sun className="w-3.5 h-3.5 mr-2" />
-              Enhance Lighting
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={props.isAutoFramingEnabled}
-              onCheckedChange={props.onAutoFramingChange}
-              className="text-sm"
-            >
-              <Minimize2 className="w-3.5 h-3.5 mr-2" />
-              Auto Framing
-            </DropdownMenuCheckboxItem>
-            {props.isAutoFramingEnabled && (
-              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">
-                    Zoom {props.zoomSensitivity.toFixed(1)}x
-                  </Label>
-                  <Slider
-                    value={[props.zoomSensitivity]}
-                    onValueChange={([v]) => props.onZoomSensitivityChange(v)}
-                    min={1}
-                    max={10}
-                    step={0.1}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-medium">
-                    Speed {(props.trackingSpeed * 100).toFixed(0)}%
-                  </Label>
-                  <Slider
-                    value={[props.trackingSpeed]}
-                    onValueChange={([v]) => props.onTrackingSpeedChange(v)}
-                    min={0.01}
-                    max={0.5}
-                    step={0.01}
-                  />
-                </div>
-              </div>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem
-              checked={props.isNeonEdgeEnabled}
-              onCheckedChange={props.onNeonEdgeToggle}
-              className="text-sm"
-            >
-              <Settings2 className="w-3.5 h-3.5 mr-2" />
-              Neon Edge (Legacy)
-            </DropdownMenuCheckboxItem>
-            {props.isNeonEdgeEnabled && (
-              <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
-                <div className="space-y-2">
-                  <Label className="text-xs font-semibold">Color</Label>
-                  <Input
-                    type="color"
-                    className="w-full h-9 p-1 rounded-lg cursor-pointer"
-                    value={neonEdgeColor}
-                    onChange={(e) =>
-                      props.onNeonEdgeColorChange(e.target.value)
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-medium">
-                    Intensity {props.neonIntensity}%
-                  </Label>
-                  <Slider
-                    value={[props.neonIntensity]}
-                    onValueChange={([v]) => props.onNeonIntensityChange(v)}
-                    min={0}
-                    max={100}
-                    step={1}
-                  />
-                </div>
-              </div>
-            )}
-            <DropdownMenuSeparator />
-          </DropdownMenuContent>
-        </DropdownMenuPortal>
-      </DropdownMenu>
+      <PipStyleMenu
+        cameraShape={props.cameraShape}
+        onCameraShapeChange={props.onCameraShapeChange}
+        pipBorder={props.pipBorder}
+        onPipBorderChange={props.onPipBorderChange}
+        pipShadow={props.pipShadow}
+        onPipShadowChange={props.onPipShadowChange}
+        isBeautifyEnabled={props.isBeautifyEnabled}
+        onBeautifyToggle={props.onBeautifyToggle}
+        isLowLightEnabled={props.isLowLightEnabled}
+        onLowLightToggle={props.onLowLightToggle}
+        isAutoFramingEnabled={props.isAutoFramingEnabled}
+        onAutoFramingChange={props.onAutoFramingChange}
+        zoomSensitivity={props.zoomSensitivity}
+        onZoomSensitivityChange={props.onZoomSensitivityChange}
+        trackingSpeed={props.trackingSpeed}
+        onTrackingSpeedChange={props.onTrackingSpeedChange}
+        isNeonEdgeEnabled={props.isNeonEdgeEnabled}
+        onNeonEdgeToggle={props.onNeonEdgeToggle}
+        neonIntensity={props.neonIntensity}
+        onNeonIntensityChange={props.onNeonIntensityChange}
+        neonEdgeColor={props.neonEdgeColor}
+        onNeonEdgeColorChange={props.onNeonEdgeColorChange}
+      />
 
       {/* Pop-out Button - Only visible when camera is active */}
       {props.onTogglePip && props.isCameraActive && (
@@ -599,7 +171,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           className={cn(
             "h-9 w-9 rounded-xl hover:bg-background/60",
             props.isPipActive &&
-              "bg-primary/20 text-primary hover:bg-primary/30"
+            "bg-primary/20 text-primary hover:bg-primary/30"
           )}
           onClick={props.onTogglePip}
           title={props.isPipActive ? "Exit Pop-out" : "Pop-out Camera"}
@@ -607,14 +179,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           <PictureInPicture className="w-4 h-4" />
         </Button>
       )}
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/jpg"
-        className="hidden"
-        onChange={handleFileUpload}
-      />
     </div>
   );
 };

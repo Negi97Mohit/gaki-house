@@ -1,39 +1,18 @@
-// src/components/CanvasGridLayout.tsx
-
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, Search, Paintbrush } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   CanvasLayoutState,
   CanvasSectionState,
   FileOverlayState,
   TextOverlayState,
   CanvasSectionCameraState,
-  DEFAULT_CAMERA_STATE,
 } from "@/types/caption";
 import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
-import { CANVAS_PRESETS } from "@/lib/canvasPresets";
-import { FileRenderer } from "@/components/DraggableFileViewer";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
-} from "@/components/ui/dropdown-menu";
 import { GridSectionToolbar } from "./GridSectionToolbar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { AssetLibrary, AssetResult } from "./AssetLibrary";
+import { AssetResult } from "./AssetLibrary";
 import { Loader2 } from "lucide-react";
-import { CameraRenderer } from "@/components/CameraRenderer";
-import { InteractiveGridSection } from "@/components/InteractiveGridSection";
+import { GridSectionRenderer } from "./GridSectionRenderer";
+import { useGridResizing } from "@/hooks/useGridResizing";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -60,9 +39,8 @@ interface CanvasGridLayoutProps {
   ) => void;
   backgroundEffect: "none" | "blur" | "image";
   onSetSectionDefault?: (sectionId: string) => void;
-  activeSequenceId?: string | null; // NEW
-  onUserPositionChange?: (pos: { x: number; y: number } | null) => void; // NEW
-  // ADDED: Explicitly define this prop
+  activeSequenceId?: string | null;
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
   videoDevices?: MediaDeviceInfo[];
 }
@@ -85,7 +63,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   pipShadow,
   onSectionCameraSettingsChange,
   backgroundEffect,
-  // ADDED: Destructure here
   onLayoutUpdate,
   onSetSectionDefault,
   activeSequenceId,
@@ -93,17 +70,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   videoDevices = [],
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
-  const [resizing, setResizing] = useState<{
-    sectionId: string;
-    edge: string;
-  } | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const resizeDataRef = useRef<{
-    startX: number;
-    startY: number;
-    startStyles: Record<string, React.CSSProperties>;
-  } | null>(null);
 
   const [templates, setTemplates] = useState<Record<
     string,
@@ -130,7 +98,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       prevLayoutRef.current.templateId === layout.templateId
     ) {
       // Check if ALL sections changed content simultaneously (rotation)
-      // This means the number of changed sections equals total sections
       let changedCount = 0;
       layout.sections.forEach((sec, idx) => {
         const prevSec = prevLayoutRef.current.sections[idx];
@@ -142,8 +109,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
         }
       });
 
-      // Only trigger animation if ALL or MOST sections changed (rotation)
-      // If only 1 section changed, it's a content update, not rotation
       if (changedCount >= layout.sections.length - 1 && changedCount > 0) {
         setIsTransitioning(true);
         setTimeout(() => setIsTransitioning(false), 500);
@@ -155,194 +120,13 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   const template =
     templates && (templates[layout.templateId] || templates.default);
 
-  // Get resize edges
-  const getResizeEdges = useCallback(
-    (sectionId: string) => {
-      if (!template)
-        return { right: false, bottom: false, left: false, top: false };
-
-      const sections = template.sections.map((s) => ({
-        ...s,
-        style: layout.customSectionStyles?.[s.id] || s.style,
-      }));
-
-      const section = sections.find((s) => s.id === sectionId);
-      if (!section)
-        return { right: false, bottom: false, left: false, top: false };
-
-      const left = parseFloat(section.style.left as string);
-      const top = parseFloat(section.style.top as string);
-      const width = parseFloat(section.style.width as string);
-      const height = parseFloat(section.style.height as string);
-
-      return {
-        right: left + width < 99.5,
-        bottom: top + height < 99.5,
-        left: left > 0.5,
-        top: top > 0.5,
-      };
-    },
-    [template, layout.customSectionStyles]
-  );
-
-  // Handle resize start
-  const handleResizeStart = (
-    sectionId: string,
-    edge: string,
-    e: React.MouseEvent
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!template) return;
-
-    const startStyles: Record<string, React.CSSProperties> = {};
-    template.sections.forEach((s) => {
-      startStyles[s.id] = layout.customSectionStyles?.[s.id] || s.style;
-    });
-
-    resizeDataRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      startStyles,
-    };
-
-    setResizing({ sectionId, edge });
-  };
-
-  // Handle resize move
-  useEffect(() => {
-    if (
-      !resizing ||
-      !containerRef.current ||
-      !resizeDataRef.current ||
-      !onLayoutUpdate ||
-      !template
-    )
-      return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current || !resizeDataRef.current) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const deltaXPx = e.clientX - resizeDataRef.current.startX;
-      const deltaYPx = e.clientY - resizeDataRef.current.startY;
-      const deltaX = (deltaXPx / rect.width) * 100;
-      const deltaY = (deltaYPx / rect.height) * 100;
-
-      const { sectionId, edge } = resizing;
-      const startStyles = resizeDataRef.current.startStyles;
-      const newStyles = { ...startStyles };
-
-      const style = startStyles[sectionId];
-      const left = parseFloat(style.left as string);
-      const top = parseFloat(style.top as string);
-      const width = parseFloat(style.width as string);
-      const height = parseFloat(style.height as string);
-
-      if (edge === "right") {
-        const newWidth = Math.max(10, Math.min(100 - left, width + deltaX));
-        newStyles[sectionId] = { ...style, width: `${newWidth}%` };
-
-        // Adjust right neighbor
-        template.sections.forEach((s) => {
-          if (s.id === sectionId) return;
-          const sStyle = startStyles[s.id];
-          const sLeft = parseFloat(sStyle.left as string);
-          const sWidth = parseFloat(sStyle.width as string);
-
-          if (Math.abs(sLeft - (left + width)) < 2) {
-            const newSWidth = Math.max(10, sWidth - deltaX);
-            newStyles[s.id] = {
-              ...sStyle,
-              left: `${left + newWidth}%`,
-              width: `${newSWidth}%`,
-            };
-          }
-        });
-      } else if (edge === "bottom") {
-        const newHeight = Math.max(10, Math.min(100 - top, height + deltaY));
-        newStyles[sectionId] = { ...style, height: `${newHeight}%` };
-
-        // Adjust bottom neighbor
-        template.sections.forEach((s) => {
-          if (s.id === sectionId) return;
-          const sStyle = startStyles[s.id];
-          const sTop = parseFloat(sStyle.top as string);
-          const sHeight = parseFloat(sStyle.height as string);
-
-          if (Math.abs(sTop - (top + height)) < 2) {
-            const newSHeight = Math.max(10, sHeight - deltaY);
-            newStyles[s.id] = {
-              ...sStyle,
-              top: `${top + newHeight}%`,
-              height: `${newSHeight}%`,
-            };
-          }
-        });
-      } else if (edge === "left") {
-        const newLeft = Math.max(0, Math.min(left + width - 10, left + deltaX));
-        const newWidth = Math.max(10, width - (newLeft - left));
-        newStyles[sectionId] = {
-          ...style,
-          left: `${newLeft}%`,
-          width: `${newWidth}%`,
-        };
-
-        // Adjust left neighbor
-        template.sections.forEach((s) => {
-          if (s.id === sectionId) return;
-          const sStyle = startStyles[s.id];
-          const sLeft = parseFloat(sStyle.left as string);
-          const sWidth = parseFloat(sStyle.width as string);
-
-          if (Math.abs(sLeft + sWidth - left) < 2) {
-            const newSWidth = Math.max(10, sWidth + (newLeft - left));
-            newStyles[s.id] = { ...sStyle, width: `${newSWidth}%` };
-          }
-        });
-      } else if (edge === "top") {
-        const newTop = Math.max(0, Math.min(top + height - 10, top + deltaY));
-        const newHeight = Math.max(10, height - (newTop - top));
-        newStyles[sectionId] = {
-          ...style,
-          top: `${newTop}%`,
-          height: `${newHeight}%`,
-        };
-
-        // Adjust top neighbor
-        template.sections.forEach((s) => {
-          if (s.id === sectionId) return;
-          const sStyle = startStyles[s.id];
-          const sTop = parseFloat(sStyle.top as string);
-          const sHeight = parseFloat(sStyle.height as string);
-
-          if (Math.abs(sTop + sHeight - top) < 2) {
-            const newSHeight = Math.max(10, sHeight + (newTop - top));
-            newStyles[s.id] = { ...sStyle, height: `${newSHeight}%` };
-          }
-        });
-      }
-
-      onLayoutUpdate({
-        ...layout,
-        customSectionStyles: newStyles,
-      });
-    };
-
-    const handleMouseUp = () => {
-      setResizing(null);
-      resizeDataRef.current = null;
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [resizing, layout, onLayoutUpdate, template]);
+  // Use the custom hook for resizing
+  const { resizing, handleResizeStart, getResizeEdges } = useGridResizing({
+    layout,
+    onLayoutUpdate,
+    template,
+    containerRef,
+  });
 
   if (!templates || !template) {
     return (
@@ -351,501 +135,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       </div>
     );
   }
-
-  const renderSectionContent = (section: CanvasSectionState) => {
-    const { content } = section;
-
-    switch (content.type) {
-      case "color":
-        return (
-          <div
-            className="w-full h-full"
-            style={{
-              backgroundColor: content.color || blankCanvasColor,
-            }}
-          />
-        );
-
-      case "image":
-        return (
-          <div
-            className="w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${content.src || backgroundImageUrl})`,
-            }}
-          />
-        );
-
-      case "camera":
-        const settings = content.settings;
-        // Check if this is a "Canvas Design" section (PiP mode)
-        if (settings.layoutMode === "pip") {
-          return (
-            <InteractiveGridSection
-              sectionId={section.id}
-              settings={settings}
-              onUpdate={(newSettings) =>
-                onSectionCameraSettingsChange(section.id, newSettings)
-              }
-              cameraStream={cameraStream}
-              videoDevices={videoDevices}
-              isActive={true} // Or manage active state if needed
-              onSelect={() => {}} // Can be used for global selection
-            />
-          );
-        }
-
-        // Default: Full Camera
-        return (
-          <CameraRenderer
-            stream={cameraStream}
-            className="w-full h-full object-cover"
-            style={{
-              borderRadius:
-                cameraShape === "circle"
-                  ? "50%"
-                  : cameraShape === "rounded"
-                  ? "12px"
-                  : "0",
-            }}
-            portalContainer={null}
-            // --- NEW: Device Selection ---
-            videoDevices={videoDevices}
-            selectedDeviceId={settings.selectedDeviceId}
-            onCameraDeviceChange={(deviceId) =>
-              onSectionCameraSettingsChange(section.id, {
-                selectedDeviceId: deviceId,
-              })
-            }
-            // -----------------------------
-
-            pipBorder={settings.pipBorder}
-            onPipBorderChange={(border) =>
-              onSectionCameraSettingsChange(section.id, {
-                pipBorder: border,
-              })
-            }
-            pipShadow={settings.pipShadow}
-            onPipShadowChange={(shadow) =>
-              onSectionCameraSettingsChange(section.id, {
-                pipShadow: shadow,
-              })
-            }
-            isAutoFramingEnabled={settings.isAutoFramingEnabled}
-            onAutoFramingChange={(enabled) =>
-              onSectionCameraSettingsChange(section.id, {
-                isAutoFramingEnabled: enabled,
-              })
-            }
-            isBeautifyEnabled={settings.isBeautifyEnabled}
-            onBeautifyToggle={(enabled) =>
-              onSectionCameraSettingsChange(section.id, {
-                isBeautifyEnabled: enabled,
-              })
-            }
-            isLowLightEnabled={settings.isLowLightEnabled}
-            onLowLightToggle={(enabled) =>
-              onSectionCameraSettingsChange(section.id, {
-                isLowLightEnabled: enabled,
-              })
-            }
-            videoFilter={settings.videoFilter}
-            onVideoFilterChange={(filter) =>
-              onSectionCameraSettingsChange(section.id, {
-                videoFilter: filter,
-              })
-            }
-            isNeonEdgeEnabled={settings.isNeonEdgeEnabled}
-            onNeonEdgeToggle={(enabled) =>
-              onSectionCameraSettingsChange(section.id, {
-                isNeonEdgeEnabled: enabled,
-              })
-            }
-            neonIntensity={settings.neonIntensity}
-            onNeonIntensityChange={(value) =>
-              onSectionCameraSettingsChange(section.id, {
-                neonIntensity: value,
-              })
-            }
-            neonColor={settings.neonColor}
-            onNeonEdgeColorChange={(color) =>
-              onSectionCameraSettingsChange(section.id, {
-                neonColor: color,
-              })
-            }
-            zoomSensitivity={settings.zoomSensitivity}
-            onZoomSensitivityChange={(value) =>
-              onSectionCameraSettingsChange(section.id, {
-                zoomSensitivity: value,
-              })
-            }
-            trackingSpeed={settings.trackingSpeed}
-            onTrackingSpeedChange={(value) =>
-              onSectionCameraSettingsChange(section.id, {
-                trackingSpeed: value,
-              })
-            }
-            cameraBackground={settings.cameraBackground}
-            onCameraBackgroundChange={(bgId) =>
-              onSectionCameraSettingsChange(section.id, {
-                cameraBackground: bgId,
-              })
-            }
-            onCustomBackgroundUpload={(file) => {
-              const url = URL.createObjectURL(file);
-              onSectionCameraSettingsChange(section.id, {
-                cameraBackground: "image",
-                customBackgroundUrl: url,
-              });
-            }}
-            cameraAspectRatio={settings.cameraAspectRatio}
-            onCameraAspectRatioChange={(ratio) =>
-              onSectionCameraSettingsChange(section.id, {
-                cameraAspectRatio: ratio,
-              })
-            }
-            customAspectRatio={settings.customAspectRatio}
-            onCustomAspectRatioChange={(ratio) =>
-              onSectionCameraSettingsChange(section.id, {
-                customAspectRatio: ratio,
-              })
-            }
-            isFaceTrackingEnabled={settings.isFaceTrackingEnabled}
-            onFaceTrackingToggle={(enabled) =>
-              onSectionCameraSettingsChange(section.id, {
-                isFaceTrackingEnabled: enabled,
-              })
-            }
-            activeInteractiveFilter={settings.activeInteractiveFilter}
-            onInteractiveFilterChange={(filter) =>
-              onSectionCameraSettingsChange(section.id, {
-                activeInteractiveFilter: filter,
-              })
-            }
-            filterIntensity={settings.filterIntensity}
-            onFilterIntensityChange={(value) =>
-              onSectionCameraSettingsChange(section.id, {
-                filterIntensity: value,
-              })
-            }
-            filterColor={settings.filterColor}
-            onFilterColorChange={(color) =>
-              onSectionCameraSettingsChange(section.id, {
-                filterColor: color,
-              })
-            }
-            filterTarget={settings.filterTarget}
-            onFilterTargetChange={(target) =>
-              onSectionCameraSettingsChange(section.id, {
-                filterTarget: target,
-              })
-            }
-            backgroundEffect={backgroundEffect}
-            backgroundImageUrl={backgroundImageUrl}
-            // --- NEW: Only pass tracking callback if this is the active screen in the sequence ---
-            // If no sequence is active, we don't track position to save performance
-            onUserPositionChange={
-              section.id === activeSequenceId ? onUserPositionChange : undefined
-            }
-          />
-        );
-
-      case "screen":
-        if (!screenStream) return <div className="w-full h-full bg-muted" />;
-        return (
-          <video
-            autoPlay
-            playsInline
-            muted
-            ref={(video) => {
-              if (video && screenStream) video.srcObject = screenStream;
-            }}
-            className="w-full h-full object-cover"
-          />
-        );
-
-      case "file":
-        const fileOverlay = fileOverlays.find((f) => f.id === content.fileId);
-        if (!fileOverlay) return <div className="w-full h-full bg-muted" />;
-        return (
-          <div className="w-full h-full flex items-center justify-center">
-            <FileRenderer overlay={fileOverlay} />
-          </div>
-        );
-
-      case "text":
-        const textOverlay = textOverlays.find((t) => t.id === content.textId);
-        if (!textOverlay) return <div className="w-full h-full bg-muted" />;
-        return (
-          <div
-            className="w-full h-full flex items-center justify-center p-4"
-            style={{
-              fontFamily: textOverlay.style.fontFamily,
-              fontSize: `${textOverlay.style.fontSize}px`,
-              color: textOverlay.style.color,
-              backgroundColor: textOverlay.style.backgroundColor,
-              fontWeight: textOverlay.style.bold ? "bold" : "normal",
-              fontStyle: textOverlay.style.italic ? "italic" : "normal",
-              textDecoration: textOverlay.style.underline
-                ? "underline"
-                : "none",
-            }}
-          >
-            {textOverlay.content}
-          </div>
-        );
-
-      case "empty":
-      default:
-        return (
-          <div className="w-full h-full bg-muted/20 flex items-center justify-center p-4">
-            <div className="flex flex-col items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="opacity-90 hover:opacity-100 h-9 w-9"
-                    title="Search Image"
-                  >
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-80 h-[400px] p-0"
-                  style={{ zIndex: 9999 }}
-                  onOpenAutoFocus={(e) => e.preventDefault()}
-                >
-                  <AssetLibrary
-                    onAssetSelect={(asset) =>
-                      onGridAssetSelect(section.id, asset)
-                    }
-                  />
-                </PopoverContent>
-              </Popover>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="opacity-90 hover:opacity-100"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="z-[999] bg-background">
-                  <DropdownMenuItem
-                    onClick={() =>
-                      onSectionContentChange(section.id, {
-                        type: "color",
-                        color: blankCanvasColor,
-                      })
-                    }
-                  >
-                    Solid Color
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() =>
-                      onSectionContentChange(section.id, {
-                        type: "image",
-                        src: backgroundImageUrl,
-                      })
-                    }
-                  >
-                    Background Image
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() =>
-                      onSectionContentChange(section.id, {
-                        type: "camera",
-                        settings: DEFAULT_CAMERA_STATE,
-                      })
-                    }
-                  >
-                    Camera
-                  </DropdownMenuItem>
-
-                  {/* Canvas Designs Preview */}
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      <Paintbrush className="h-4 w-4 mr-2" />
-                      Canvas Designs
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuSubContent className="w-[340px] p-4 max-h-[500px] overflow-y-auto">
-                      <div className="grid grid-cols-2 gap-2">
-                        {CANVAS_PRESETS.map((preset) => (
-                          <button
-                            key={preset.id}
-                            className="flex flex-col gap-2 p-2 rounded-lg border border-border hover:border-primary hover:bg-accent transition-colors text-left group h-full"
-                            onClick={() =>
-                              onSectionContentChange(section.id, {
-                                type: "camera",
-                                settings: {
-                                  ...DEFAULT_CAMERA_STATE,
-                                  canvasDesignId: preset.id,
-                                  layoutMode: "pip",
-                                  sectionBackgroundColor:
-                                    preset.background.blankCanvasColor,
-                                  cameraShape: preset.pip.cameraShape, // ADDED
-                                  pipPosition: preset.pip.pipPosition,
-                                  pipSize: preset.pip.pipSize,
-                                  textOverlays: preset.textOverlays.map(
-                                    (t) => ({
-                                      id: t.id,
-                                      content: t.content,
-                                      style: t.style,
-                                      layout: {
-                                        position: t.layout.position,
-                                        size: t.layout.size,
-                                        zIndex: t.layout.zIndex,
-                                        rotation: t.layout.rotation,
-                                        layerOrder: t.layout.layerOrder,
-                                      },
-                                    })
-                                  ),
-                                  pipBorder: preset.pip.pipBorder,
-                                  pipShadow: preset.pip.pipShadow,
-                                  videoFilter:
-                                    preset.effects.videoFilter || "none",
-                                  isBeautifyEnabled:
-                                    preset.effects.isBeautifyEnabled || false,
-                                  isNeonEdgeEnabled:
-                                    preset.effects.isNeonEdgeEnabled || false,
-                                  neonColor:
-                                    preset.effects.neonColor || "#00FFFF",
-                                  neonIntensity:
-                                    preset.effects.neonIntensity || 20,
-                                },
-                              })
-                            }
-                          >
-                            <div className="w-full aspect-video rounded-md bg-muted/20 flex items-center justify-center overflow-hidden border border-border/50 relative">
-                              <div
-                                className="relative overflow-hidden shadow-sm"
-                                style={{
-                                  aspectRatio: preset.canvasAspectRatio
-                                    ? preset.canvasAspectRatio.replace(":", "/")
-                                    : "16/9",
-                                  height:
-                                    preset.canvasAspectRatio === "21:9"
-                                      ? "auto"
-                                      : "100%",
-                                  width:
-                                    preset.canvasAspectRatio === "21:9"
-                                      ? "100%"
-                                      : "auto",
-                                  background:
-                                    preset.background.blankCanvasColor ||
-                                    "#000000",
-                                  backgroundSize: "cover",
-                                  backgroundPosition: "center",
-                                }}
-                              >
-                                <div
-                                  className="absolute bg-primary/20 border border-primary/50"
-                                  style={{
-                                    left: `${preset.pip?.pipPosition?.x || 0}%`,
-                                    top: `${preset.pip?.pipPosition?.y || 0}%`,
-                                    width: `${
-                                      preset.pip?.pipSize?.width || 30
-                                    }%`,
-                                    height: `${
-                                      preset.pip?.pipSize?.height || 30
-                                    }%`,
-                                    borderRadius:
-                                      preset.pip.cameraShape === "circle"
-                                        ? "50%"
-                                        : preset.pip.cameraShape === "rounded"
-                                        ? "4px"
-                                        : "0px",
-                                    border: preset.pip.pipBorder
-                                      ? `${Math.max(
-                                          1,
-                                          preset.pip.pipBorder.width / 6
-                                        )}px solid ${
-                                          preset.pip.pipBorder.color
-                                        }`
-                                      : undefined,
-                                  }}
-                                />
-                                {preset.textOverlays?.map((t, i) => (
-                                  <div
-                                    key={i}
-                                    className="absolute flex items-center justify-center overflow-hidden"
-                                    style={{
-                                      left: `${t.layout.position.x}%`,
-                                      top: `${t.layout.position.y}%`,
-                                      width: `${t.layout.size.width}%`,
-                                      height: `${t.layout.size.height}%`,
-                                      transform: `rotate(${t.layout.rotation}deg)`,
-                                      fontFamily: t.style.fontFamily,
-                                      fontSize: `${Math.max(
-                                        3,
-                                        t.style.fontSize / 8
-                                      )}px`,
-                                      color: t.style.color,
-                                      backgroundColor: t.style.backgroundColor,
-                                      textAlign: t.style.textAlign as any,
-                                      fontWeight: t.style.fontWeight,
-                                      whiteSpace: "nowrap",
-                                      lineHeight: 1,
-                                      zIndex: 10,
-                                    }}
-                                  >
-                                    {t.content.replace(/<[^>]+>/g, "")}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                            <span className="text-xs font-medium truncate w-full">
-                              {preset.name}
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuSub>
-
-                  <DropdownMenuItem
-                    onClick={() =>
-                      onSectionContentChange(section.id, { type: "screen" })
-                    }
-                  >
-                    Screen Share
-                  </DropdownMenuItem>
-                  {fileOverlays.length > 0 && (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        onSectionContentChange(section.id, {
-                          type: "file",
-                          fileId: fileOverlays[0].id,
-                        })
-                      }
-                    >
-                      File Overlay
-                    </DropdownMenuItem>
-                  )}
-                  {textOverlays.length > 0 && (
-                    <DropdownMenuItem
-                      onClick={() =>
-                        onSectionContentChange(section.id, {
-                          type: "text",
-                          textId: textOverlays[0].id,
-                        })
-                      }
-                    >
-                      Text Overlay
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        );
-    }
-  };
 
   const handleSectionDelete = (sectionId: string) => {
     if (onSectionDelete) {
@@ -892,7 +181,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               isCarousel && !isTransitioning && "opacity-100 scale-100",
               // Ensure this line is active
               section.id === activeSequenceId &&
-                "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
+              "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
             )}
             style={{
               ...sectionStyle,
@@ -902,7 +191,23 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             onMouseLeave={() => setHoveredSectionId(null)}
           >
             <div className="relative w-full h-full">
-              {renderSectionContent(section)}
+              <GridSectionRenderer
+                section={section}
+                cameraStream={cameraStream}
+                screenStream={screenStream}
+                fileOverlays={fileOverlays}
+                textOverlays={textOverlays}
+                blankCanvasColor={blankCanvasColor}
+                backgroundImageUrl={backgroundImageUrl}
+                onSectionContentChange={onSectionContentChange}
+                onGridAssetSelect={onGridAssetSelect}
+                onSectionCameraSettingsChange={onSectionCameraSettingsChange}
+                videoDevices={videoDevices}
+                activeSequenceId={activeSequenceId}
+                onUserPositionChange={onUserPositionChange}
+                cameraShape={cameraShape}
+                backgroundEffect={backgroundEffect}
+              />
 
               {/* Resize handles */}
               {edges.right && (
@@ -911,7 +216,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute top-0 right-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                      "bg-primary/60 w-2"
+                    "bg-primary/60 w-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "right", e)
@@ -924,7 +229,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute bottom-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                      "bg-primary/60 h-2"
+                    "bg-primary/60 h-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "bottom", e)
@@ -937,7 +242,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute top-0 left-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                      "bg-primary/60 w-2"
+                    "bg-primary/60 w-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "left", e)
@@ -950,7 +255,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute top-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                      "bg-primary/60 h-2"
+                    "bg-primary/60 h-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "top", e)
@@ -968,19 +273,19 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   onColorChange={
                     section.content.type === "color"
                       ? (color) =>
-                          onSectionContentChange(section.id, {
-                            type: "color",
-                            color,
-                          })
+                        onSectionContentChange(section.id, {
+                          type: "color",
+                          color,
+                        })
                       : undefined
                   }
                   onImageChange={
                     section.content.type === "image"
                       ? (url) =>
-                          onSectionContentChange(section.id, {
-                            type: "image",
-                            src: url,
-                          })
+                        onSectionContentChange(section.id, {
+                          type: "image",
+                          src: url,
+                        })
                       : undefined
                   }
                   availableFiles={fileOverlays.map((f) => ({
