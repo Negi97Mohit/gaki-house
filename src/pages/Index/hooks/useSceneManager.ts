@@ -106,19 +106,132 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     [scenes, activeSceneId]
   );
 
+  // --- History Management ---
+  // We store history per scene ID to allow independent undo/redo
+  const [history, setHistory] = useState<{
+    [sceneId: string]: {
+      past: SceneState[];
+      future: SceneState[];
+    };
+  }>({});
+
+  const getSceneHistory = useCallback(
+    (sceneId: string) => {
+      return (
+        history[sceneId] || {
+          past: [],
+          future: [],
+        }
+      );
+    },
+    [history]
+  );
+
   const updateActiveScene = useCallback(
     (updates: (scene: SceneState) => SceneState) => {
-      setScenes((prevScenes) =>
-        prevScenes.map((scene) => {
-          if (scene.id === activeSceneId) {
-            return updates(scene);
-          }
-          return scene;
-        })
-      );
+      setScenes((prevScenes) => {
+        const activeSceneIndex = prevScenes.findIndex(
+          (s) => s.id === activeSceneId
+        );
+        if (activeSceneIndex === -1) return prevScenes;
+
+        const currentScene = prevScenes[activeSceneIndex];
+        const newScene = updates(currentScene);
+
+        // If no change, don't update history or state
+        if (JSON.stringify(currentScene) === JSON.stringify(newScene)) {
+          return prevScenes;
+        }
+
+        // Update History
+        setHistory((prev) => {
+          const sceneHistory = prev[activeSceneId] || { past: [], future: [] };
+          // Limit history size to 50
+          const newPast = [...sceneHistory.past, currentScene].slice(-50);
+          return {
+            ...prev,
+            [activeSceneId]: {
+              past: newPast,
+              future: [], // Clear future on new action
+            },
+          };
+        });
+
+        const newScenes = [...prevScenes];
+        newScenes[activeSceneIndex] = newScene;
+        return newScenes;
+      });
     },
     [activeSceneId]
   );
+
+  const undo = useCallback(() => {
+    const sceneHistory = getSceneHistory(activeSceneId);
+    if (sceneHistory.past.length === 0) return;
+
+    const previousState = sceneHistory.past[sceneHistory.past.length - 1];
+    const newPast = sceneHistory.past.slice(0, -1);
+
+    setScenes((prev) =>
+      prev.map((s) => {
+        if (s.id === activeSceneId) {
+          // Push current to future
+          setHistory((h) => ({
+            ...h,
+            [activeSceneId]: {
+              past: newPast,
+              future: [s, ...sceneHistory.future],
+            },
+          }));
+          return previousState;
+        }
+        return s;
+      })
+    );
+  }, [activeSceneId, getSceneHistory]);
+
+  const redo = useCallback(() => {
+    const sceneHistory = getSceneHistory(activeSceneId);
+    if (sceneHistory.future.length === 0) return;
+
+    const nextState = sceneHistory.future[0];
+    const newFuture = sceneHistory.future.slice(1);
+
+    setScenes((prev) =>
+      prev.map((s) => {
+        if (s.id === activeSceneId) {
+          // Push current to past
+          setHistory((h) => ({
+            ...h,
+            [activeSceneId]: {
+              past: [...sceneHistory.past, s],
+              future: newFuture,
+            },
+          }));
+          return nextState;
+        }
+        return s;
+      })
+    );
+  }, [activeSceneId, getSceneHistory]);
+
+  const resetScene = useCallback(() => {
+    updateActiveScene((currentScene) => ({
+      ...createDefaultScene(currentScene.name),
+      id: currentScene.id, // Keep ID
+    }));
+  }, [updateActiveScene]);
+
+  const resetLayout = useCallback(() => {
+    updateActiveScene((scene) => ({
+      ...scene,
+      layoutMode: "solo",
+      canvasLayout: null,
+      splitRatio: 0.5,
+      pipPosition: { x: 75, y: 75 },
+      pipSize: { width: 20, height: 20 },
+    }));
+  }, [updateActiveScene]);
 
   const updateSceneProperty = useCallback(
     <K extends keyof SceneState>(key: K, value: SceneState[K]) => {
@@ -289,5 +402,12 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     handleSceneRename,
     handleTransitionChange,
     handleSequenceTransition,
+    // Undo/Redo/Reset
+    undo,
+    redo,
+    resetScene,
+    resetLayout,
+    canUndo: (history[activeSceneId]?.past.length || 0) > 0,
+    canRedo: (history[activeSceneId]?.future.length || 0) > 0,
   };
 };

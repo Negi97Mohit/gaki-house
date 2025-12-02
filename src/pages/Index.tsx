@@ -54,6 +54,12 @@ const Index = () => {
     handleSceneReorder,
     handleSceneRename,
     handleTransitionChange,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    resetScene,
+    resetLayout,
   } = useSceneManager({ recording });
 
   const { audioDevices, videoDevices } = useMediaManager({
@@ -217,7 +223,7 @@ const Index = () => {
     (preset: AnimationPreset) => {
       const htmlContent = generateHtmlFromPreset(preset);
       const newOverlay: GeneratedOverlay = {
-        id: generateOverlayId(),
+        id: generateId("overlay"),
         name: preset.name,
         htmlContent,
         layout: {
@@ -456,6 +462,13 @@ const Index = () => {
         onPipPositionChange={(val) => updateSceneProperty("pipPosition", val)}
         onPipSizeChange={(val) => updateSceneProperty("pipSize", val)}
         customMaskUrl={activeScene.customMaskUrl}
+        // Undo/Redo/Reset
+        onUndo={undo}
+        onRedo={redo}
+        canUndo={canUndo}
+        canRedo={canRedo}
+        onResetScene={resetScene}
+        canvasLayout={activeScene.canvasLayout}
       />
 
       <RemoteConnectModal

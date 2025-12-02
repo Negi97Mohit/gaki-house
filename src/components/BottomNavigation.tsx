@@ -14,6 +14,9 @@ import {
   X,
   Monitor,
   Paintbrush,
+  Undo2,
+  Redo2,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +24,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 // Removed LayoutControls import
@@ -69,6 +73,13 @@ interface BottomNavigationProps {
   onPipSizeChange: (size: { width: number; height: number }) => void;
   customMaskUrl?: string;
   isMouseActive: boolean;
+  // Undo/Redo/Reset Props
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  onResetScene: () => void;
+  canvasLayout: any; // Using any to avoid complex import for now, or import CanvasLayoutState
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -99,9 +110,18 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onToggleFullscreen,
   isFullscreen,
   portalContainer, // Destructured specifically for ToolsPopover
+  onUndo,
+  onRedo,
+  canUndo,
+  canRedo,
+  onResetScene,
+  canvasLayout,
+  layoutMode,
   ..._unusedProps // Rest of layout props are no longer needed here
 }) => {
   const { theme, setTheme } = useTheme();
+
+  const isLayoutActive = !!canvasLayout || layoutMode !== "solo";
 
   return (
     <div
@@ -134,6 +154,43 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         >
           <Library className="w-4 h-4" />
         </Button>
+
+        <div className="w-px h-6 bg-border/40 mx-1" />
+
+        {/* Undo / Redo Group */}
+        <div className="flex items-center gap-0.5">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10 hover:bg-background/60 disabled:opacity-30"
+            onClick={onUndo}
+            disabled={!canUndo}
+            title="Undo"
+          >
+            <Undo2 className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10 hover:bg-background/60 disabled:opacity-30"
+            onClick={onRedo}
+            disabled={!canRedo}
+            title="Redo"
+          >
+            <Redo2 className="w-4 h-4" />
+          </Button>
+
+          {/* Reset Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10 hover:bg-background/60 text-destructive hover:text-destructive"
+            onClick={onResetScene}
+            title="Reset Scene"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </Button>
+        </div>
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
