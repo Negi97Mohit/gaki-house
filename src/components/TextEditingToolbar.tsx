@@ -64,6 +64,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
     <>
       <div
         ref={toolbarRef}
+        data-text-toolbar
         className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-2"
         style={{
           left: `${toolbarPosition.x}px`,
