@@ -1,12 +1,6 @@
 // src/components/VideoCanvas.tsx
 
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useMemo } from "react";
 import { Rnd } from "react-rnd";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
@@ -22,7 +16,13 @@ import {
   GeneratedOverlay,
   GeneratedLayout,
 } from "@/types/caption";
-import { useDeepgramSpeech } from "@/hooks/useDeepgramSpeech";
+import { useVideoCanvasState } from "@/hooks/useVideoCanvasState";
+import {
+  getNumericAspectRatio,
+  getCanvasAspectRatioStyle,
+  getCameraShapeStyle,
+  getVideoFilterStyle,
+} from "@/components/video-canvas/VideoCanvasHelpers";
 import { useVideoStreams } from "@/hooks/useVideoStreams";
 import { usePipGestures } from "@/hooks/usePipGestures";
 import { Sparkles } from "lucide-react";
@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
 import { AssetResult } from "@/components/AssetLibrary";
-import { ASPECT_RATIOS } from "@/lib/backgrounds";
+
 import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
 import { GuideLine, OverlayElement } from "@/hooks/useSnapGuides";
 import { DynamicContentRenderer } from "@/components/video-canvas/DynamicContentRenderer";
@@ -196,74 +196,40 @@ interface VideoCanvasProps {
   remoteStream?: MediaStream | null;
 }
 
-// --- Helpers ---
-const getNumericAspectRatio = (
-  shape: CameraShape,
-  ratioId: string,
-  customRatio: string
-): number | boolean => {
-  if (shape === "circle") return 1;
-  if (ratioId === "custom") {
-    const [w, h] = customRatio.split(":").map(Number);
-    return w && h ? w / h : false;
-  }
-  if (ratioId && ratioId !== "auto") {
-    const option = ASPECT_RATIOS.find((r) => r.id === ratioId);
-    if (option && option.value > 0) return option.value;
-  }
-  return false;
-};
 
-const getCanvasAspectRatioStyle = (
-  aspectRatio: string,
-  customAspectRatio: string
-): React.CSSProperties => {
-  let ratioValue: string | number = "auto";
-  if (aspectRatio === "custom") {
-    ratioValue = customAspectRatio || "auto";
-  } else {
-    const option = ASPECT_RATIOS.find((r) => r.id === aspectRatio);
-    if (option && option.value > 0) ratioValue = option.value;
-  }
-  return {
-    aspectRatio: String(ratioValue),
-    width: "100%",
-    height: "100%",
-    margin: "auto",
-    objectFit: "contain",
-  };
-};
 
 // --- Main Component ---
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const { theme } = useTheme();
-  const canvasContainerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<HTMLDivElement>(null);
-  const snapLinesRef = useRef<SnapLinesRef>(null);
 
-  const [viewport, setViewport] = useState({ scale: 1, x: 0, y: 0 });
-  const [isCanvasHovered, setIsCanvasHovered] = useState(false);
-  const [isSpacePressed, setIsSpacePressed] = useState(false);
-  const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const [isDraggingDynamicSplitter, setIsDraggingDynamicSplitter] =
-    useState(false);
-  const [dynamicSplitRatio, setDynamicSplitRatio] = useState(0.5);
-  const [dynamicPipPosition, setDynamicPipPosition] = useState({
-    x: 75,
-    y: 75,
+  const {
+    canvasContainerRef,
+    sceneRef,
+    snapLinesRef,
+    viewport,
+    setViewport,
+    isCanvasHovered,
+    setIsCanvasHovered,
+    isSpacePressed,
+    setIsSpacePressed,
+    sceneSize,
+    containerSize,
+    isDraggingDynamicSplitter,
+    setIsDraggingDynamicSplitter,
+    dynamicSplitRatio,
+    setDynamicSplitRatio,
+    dynamicPipPosition,
+    setDynamicPipPosition,
+    dynamicPipSize,
+    setDynamicPipSize,
+    fullTranscript,
+    interimTranscript,
+  } = useVideoCanvasState({
+    isFullscreen: props.isFullscreen,
+    isAudioOn: props.isAudioOn,
+    selectedAudioDevice: props.selectedAudioDevice,
+    captionsEnabled: props.captionsEnabled,
   });
-  const [dynamicPipSize, setDynamicPipSize] = useState({
-    width: 30,
-    height: 30,
-  });
-
-  const [audioStreamForSpeech, setAudioStreamForSpeech] =
-    useState<MediaStream | null>(null);
-
-  const [fullTranscript, setFullTranscript] = useState("");
-  const [interimTranscript, setInterimTranscript] = useState("");
-  const transcriptTimerRef = useRef<NodeJS.Timeout>();
 
   const {
     sceneId,
@@ -303,170 +269,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onScreenShareModeChange: props.onScreenShareModeChange,
   });
 
-  // --- Speech ---
-  const handleFinalTranscript = useCallback((text: string) => {
-    clearTimeout(transcriptTimerRef.current);
-    setFullTranscript(text);
-    setInterimTranscript("");
-    transcriptTimerRef.current = setTimeout(() => setFullTranscript(""), 4000);
-  }, []);
 
-  const { startRecognition, stopRecognition } = useDeepgramSpeech({
-    onFinalTranscript: handleFinalTranscript,
-    onPartialTranscript: (text) => setInterimTranscript(text),
-    stream: audioStreamForSpeech,
-  });
-
-  // Effect to manage Start/Stop based on state
-  useEffect(() => {
-    if (
-      audioStreamForSpeech &&
-      captionsEnabled &&
-      audioStreamForSpeech.active
-    ) {
-      startRecognition();
-    } else {
-      stopRecognition();
-    }
-    return () => {
-      stopRecognition();
-      setFullTranscript("");
-      setInterimTranscript("");
-    };
-  }, [
-    audioStreamForSpeech,
-    captionsEnabled,
-    startRecognition,
-    stopRecognition,
-  ]);
-
-  // Cleanup effect
-  useEffect(() => {
-    return () => {
-      if (audioStreamForSpeech) {
-        audioStreamForSpeech.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, [audioStreamForSpeech]);
-
-  // Stream Creation Effect
-  useEffect(() => {
-    let isCancelled = false;
-
-    const createAudioStream = async () => {
-      if (!isAudioOn) {
-        setAudioStreamForSpeech(null);
-        return;
-      }
-
-      try {
-        const constraints = {
-          audio: selectedAudioDevice
-            ? { deviceId: { exact: selectedAudioDevice } }
-            : true,
-        };
-
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-
-        if (isCancelled) {
-          stream.getTracks().forEach((t) => t.stop());
-          return;
-        }
-
-        setAudioStreamForSpeech(stream);
-      } catch (error) {
-        console.error("[VideoCanvas] Failed to get audio stream:", error);
-        setAudioStreamForSpeech(null);
-      }
-    };
-
-    createAudioStream();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [isAudioOn, selectedAudioDevice]);
-
-  // Stream Verification Effect
-  useEffect(() => {
-    if (!audioStreamForSpeech) return;
-
-    const audioTracks = audioStreamForSpeech.getAudioTracks();
-    if (audioTracks.length === 0) {
-      console.warn(
-        "[VideoCanvas] ⚠️ Audio stream exists but has NO audio tracks."
-      );
-      return;
-    }
-
-    const track = audioTracks[0];
-    console.log(
-      `[VideoCanvas] 🎤 Audio Track Status: ${track.label} | Enabled: ${track.enabled} | ReadyState: ${track.readyState}`
-    );
-
-    const handleEnded = () => {
-      console.error("[VideoCanvas] ❌ Audio track ended unexpectedly.");
-    };
-
-    track.addEventListener("ended", handleEnded);
-    return () => {
-      track.removeEventListener("ended", handleEnded);
-    };
-  }, [audioStreamForSpeech]);
-
-  // ... (Resize logic remains same)
-  useEffect(() => {
-    const container = canvasContainerRef.current;
-    const scene = sceneRef.current;
-    if (!container || !scene) return;
-
-    const updateContainer = () =>
-      setContainerSize({
-        width: container.clientWidth,
-        height: container.clientHeight,
-      });
-    const updateScene = () =>
-      setSceneSize({ width: scene.clientWidth, height: scene.clientHeight });
-
-    const roContainer = new ResizeObserver(updateContainer);
-    const roScene = new ResizeObserver(updateScene);
-
-    roContainer.observe(container);
-    roScene.observe(scene);
-    updateContainer();
-    updateScene();
-
-    return () => {
-      roContainer.disconnect();
-      roScene.disconnect();
-    };
-  }, [props.isFullscreen]);
-
-  const getCameraShapeStyle = () => {
-    const baseStyle: React.CSSProperties = {
-      overflow: "hidden",
-      transition: "all 0.3s ease",
-    };
-    if (props.pipBorder && props.pipBorder.width > 0)
-      baseStyle.border = `${props.pipBorder.width}px solid ${props.pipBorder.color}`;
-    if (props.pipShadow && props.pipShadow.blur > 0)
-      baseStyle.boxShadow = `0 0 ${props.pipShadow.blur}px ${props.pipShadow.color}`;
-    if (props.cameraShape === "circle")
-      return { ...baseStyle, borderRadius: "50%" };
-    if (props.cameraShape === "rounded")
-      return { ...baseStyle, borderRadius: "16px" };
-    return { ...baseStyle, borderRadius: "0" };
-  };
-
-  const getVideoFilterStyle = (): string => {
-    const filters: string[] = [];
-    if (props.videoFilter && props.videoFilter !== "none")
-      filters.push(props.videoFilter);
-    if (props.isBeautifyEnabled)
-      filters.push("blur(0.5px) saturate(1.1) brightness(1.05)");
-    if (props.isLowLightEnabled) filters.push("brightness(1.3) contrast(1.15)");
-    return filters.length > 0 ? filters.join(" ") : "none";
-  };
 
   const renderCamera = (className?: string, style?: React.CSSProperties) => {
     const {
@@ -480,7 +283,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     return (
       <div
         className={cn("w-full h-full", className)}
-        style={{ ...getCameraShapeStyle(), ...style }}
+        style={{
+          ...getCameraShapeStyle(
+            props.cameraShape,
+            props.pipBorder,
+            props.pipShadow
+          ),
+          ...style,
+        }}
       >
         <CameraRenderer
           stream={cameraStream}
@@ -491,7 +301,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               : props.portalContainer
           }
           style={style}
-          videoFilter={getVideoFilterStyle()}
+          videoFilter={getVideoFilterStyle(
+            props.videoFilter,
+            props.isBeautifyEnabled,
+            props.isLowLightEnabled
+          )}
           cameraShape={props.cameraShape}
           onCameraShapeChange={props.onCameraShapeChange}
           isAutoFramingEnabled={props.isAutoFramingEnabled}
