@@ -17,7 +17,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { v4 as uuidv4 } from "uuid";
+import { generateId } from "@/lib/id";
 
 interface InteractiveGridSectionProps {
   sectionId: string;
@@ -109,7 +109,7 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
 
   const handleAddText = () => {
     const newText: TextOverlayState = {
-      id: uuidv4(),
+      id: generateId("text"),
       content: "New Text",
       style: {
         fontFamily: "Inter",
@@ -188,16 +188,16 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
   // Apply scale to border and shadow
   const scaledPipBorder = settings.pipBorder
     ? {
-      ...settings.pipBorder,
-      width: Math.max(1, settings.pipBorder.width * scale),
-    }
+        ...settings.pipBorder,
+        width: Math.max(1, settings.pipBorder.width * scale),
+      }
     : undefined;
 
   const scaledPipShadow = settings.pipShadow
     ? {
-      ...settings.pipShadow,
-      blur: settings.pipShadow.blur * scale,
-    }
+        ...settings.pipShadow,
+        blur: settings.pipShadow.blur * scale,
+      }
     : undefined;
 
   return (
@@ -300,8 +300,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                   settings.cameraShape === "circle"
                     ? "50%"
                     : settings.cameraShape === "rounded"
-                      ? "12px"
-                      : "0px",
+                    ? "12px"
+                    : "0px",
               }}
             >
               <CameraRenderer
@@ -312,8 +312,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                     settings.cameraShape === "circle"
                       ? "50%"
                       : settings.cameraShape === "rounded"
-                        ? "12px"
-                        : "0px",
+                      ? "12px"
+                      : "0px",
                 }}
                 portalContainer={null}
                 cameraShape={settings.cameraShape || "rectangle"}
@@ -519,8 +519,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               containerRef={containerRef}
               isSelected={selectedTextId === textOverlay.id}
               onSelect={setSelectedTextId}
-              onInternalDragStart={() => { }}
-              onInternalDragStop={() => { }}
+              onInternalDragStart={() => {}}
+              onInternalDragStop={() => {}}
               isSpacePressed={false}
               scale={scale} // Pass scale
             />

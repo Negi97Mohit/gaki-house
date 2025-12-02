@@ -22,15 +22,7 @@ import { RecordingSession } from "@/types/editor";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { AssetResult } from "@/components/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
-
-const generateTextOverlayId = () =>
-  `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-const generateOverlayId = () =>
-  `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-const generateFileId = () =>
-  `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-const generateBrowserId = () =>
-  `browser-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+import { generateId } from "@/lib/id";
 
 interface CanvasContainerProps {
   // Managers
@@ -157,7 +149,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           if (fileType !== "unknown") {
             const url = URL.createObjectURL(file);
             newFiles.push({
-              id: generateFileId(),
+              id: generateId("file"),
               file,
               fileName: file.name,
               fileType,
@@ -193,7 +185,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
           if (isUrl) {
             const newBrowser: BrowserOverlayState = {
-              id: generateBrowserId(),
+              id: generateId("browser"),
               url: text,
               layout: {
                 position: { x: 25, y: 20 },
@@ -212,7 +204,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
             selection.setSelectedBrowserId(newBrowser.id);
           } else {
             const newText: TextOverlayState = {
-              id: generateTextOverlayId(),
+              id: generateId("text"),
               content: text,
               style: {
                 ...activeScene.captionStyle,
@@ -343,19 +335,19 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       updateActiveScene((scene) => {
         const updatedCanvasLayout = scene.canvasLayout
           ? {
-            ...scene.canvasLayout,
-            sections: scene.canvasLayout.sections.map((s) =>
-              s.id === sectionId
-                ? {
-                  ...s,
-                  content: {
-                    type: "image" as const,
-                    src: asset.downloadUrl,
-                  },
-                }
-                : s
-            ),
-          }
+              ...scene.canvasLayout,
+              sections: scene.canvasLayout.sections.map((s) =>
+                s.id === sectionId
+                  ? {
+                      ...s,
+                      content: {
+                        type: "image" as const,
+                        src: asset.downloadUrl,
+                      },
+                    }
+                  : s
+              ),
+            }
           : scene.canvasLayout;
         return { ...scene, canvasLayout: updatedCanvasLayout };
       });
@@ -397,7 +389,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
   const handleAddTextOverlay = useCallback(() => {
     const newTextOverlay: TextOverlayState = {
-      id: generateTextOverlayId(),
+      id: generateId("text"),
       content: "Edit Text...",
       style: { ...activeScene.captionStyle, position: { x: 50, y: 50 } },
       layout: {
@@ -456,7 +448,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
             transcript
           );
           const newOverlay: GeneratedOverlay = {
-            id: generateOverlayId(),
+            id: generateId("overlay"),
             name,
             htmlContent,
             layout: {
@@ -574,7 +566,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           return { ...s, canvasLayout: { ...s.canvasLayout, sections } };
         });
       },
-      onUserPositionChange: () => { },
+      onUserPositionChange: () => {},
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
         updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
       },
@@ -688,7 +680,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
   const newOverlay = (overlay: GeneratedOverlay) => ({
     ...overlay,
-    id: generateOverlayId(),
+    id: generateId("overlay"),
   });
 
   const activeSceneProps = useMemo(
@@ -725,7 +717,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         ...s,
         activeOverlays: s.activeOverlays.filter((o) => o.id !== id),
       })),
-    onPreviewGenerated: () => { },
+    onPreviewGenerated: () => {},
     onRemoveBrowser: (id: string) =>
       updateActiveScene((s) => ({
         ...s,
@@ -762,8 +754,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       })),
     selectedFileId: selection.selectedFileId,
     setSelectedFileId: selection.setSelectedFileId,
-    onInternalDragStart: () => { },
-    onInternalDragStop: () => { },
+    onInternalDragStart: () => {},
+    onInternalDragStop: () => {},
     onDeselectAll: selection.handleDeselectAll,
     onSetDynamicLayout: (target: any, mode: any) => {
       if (mode === "reset") {

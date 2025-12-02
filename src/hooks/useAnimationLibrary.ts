@@ -3,7 +3,7 @@ import { AnimationPreset } from "@/types/animation";
 import { ANIMATION_LIBRARY } from "@/lib/animationLibrary";
 import { useLocalStorage } from "./useLocalStorage";
 import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid"; // Ensure uuid is installed or use a simple generator
+import { generateSimpleId } from "@/lib/id";
 
 export const useAnimationLibrary = () => {
   // Load user presets from local storage
@@ -33,7 +33,12 @@ export const useAnimationLibrary = () => {
           // Create new
           return [
             ...prev,
-            { ...preset, id: uuidv4(), isCustom: true, category: "User" },
+            {
+              ...preset,
+              id: generateSimpleId(),
+              isCustom: true,
+              category: "User",
+            },
           ];
         }
       });

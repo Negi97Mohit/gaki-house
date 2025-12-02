@@ -30,11 +30,7 @@ import {
 import { RecordingSession } from "@/types/editor";
 import { zIndex } from "@/lib/zIndex";
 import { cn } from "@/lib/utils";
-
-const generateOverlayId = () =>
-  `overlay-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-const generateTextOverlayId = () =>
-  `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+import { generateId } from "@/lib/id";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -67,7 +63,11 @@ const Index = () => {
     onAudioToggle: (val) => updateSceneProperty("isAudioOn", val),
   });
 
-  const { peerId, remoteStream, isConnected: isRemoteConnected } = useRemotePeer();
+  const {
+    peerId,
+    remoteStream,
+    isConnected: isRemoteConnected,
+  } = useRemotePeer();
   const [isRemoteModalOpen, setIsRemoteModalOpen] = useState(false);
 
   // Auto-open modal if remote camera is selected but not connected
@@ -249,7 +249,7 @@ const Index = () => {
 
   const handleAddTextOverlay = useCallback(() => {
     const newTextOverlay: TextOverlayState = {
-      id: generateTextOverlayId(),
+      id: generateId("text"),
       content: "Edit Text...",
       style: { ...activeScene.captionStyle, position: { x: 50, y: 50 } },
       layout: {
@@ -407,7 +407,7 @@ const Index = () => {
         onAddTextOverlay={handleAddTextOverlay}
         onAssetSelect={(asset) => {
           const newOverlay: GeneratedOverlay = {
-            id: generateOverlayId(),
+            id: generateId("overlay"),
             name: asset.alt || "Asset",
             htmlContent: `<img src="${asset.downloadUrl}" alt="${asset.alt}" style="width: 100%; height: 100%; object-fit: contain;" />`,
             layout: {

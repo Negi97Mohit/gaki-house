@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { Plus, Search, Paintbrush } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
 import {
   CanvasLayoutState,
@@ -391,7 +390,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               cameraStream={cameraStream}
               videoDevices={videoDevices}
               isActive={true} // Or manage active state if needed
-              onSelect={() => { }} // Can be used for global selection
+              onSelect={() => {}} // Can be used for global selection
             />
           );
         }
@@ -406,8 +405,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 cameraShape === "circle"
                   ? "50%"
                   : cameraShape === "rounded"
-                    ? "12px"
-                    : "0",
+                  ? "12px"
+                  : "0",
             }}
             portalContainer={null}
             // --- NEW: Device Selection ---
@@ -749,22 +748,25 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                                   style={{
                                     left: `${preset.pip?.pipPosition?.x || 0}%`,
                                     top: `${preset.pip?.pipPosition?.y || 0}%`,
-                                    width: `${preset.pip?.pipSize?.width || 30
-                                      }%`,
-                                    height: `${preset.pip?.pipSize?.height || 30
-                                      }%`,
+                                    width: `${
+                                      preset.pip?.pipSize?.width || 30
+                                    }%`,
+                                    height: `${
+                                      preset.pip?.pipSize?.height || 30
+                                    }%`,
                                     borderRadius:
                                       preset.pip.cameraShape === "circle"
                                         ? "50%"
                                         : preset.pip.cameraShape === "rounded"
-                                          ? "4px"
-                                          : "0px",
+                                        ? "4px"
+                                        : "0px",
                                     border: preset.pip.pipBorder
                                       ? `${Math.max(
-                                        1,
-                                        preset.pip.pipBorder.width / 6
-                                      )}px solid ${preset.pip.pipBorder.color
-                                      }`
+                                          1,
+                                          preset.pip.pipBorder.width / 6
+                                        )}px solid ${
+                                          preset.pip.pipBorder.color
+                                        }`
                                       : undefined,
                                   }}
                                 />
@@ -890,7 +892,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               isCarousel && !isTransitioning && "opacity-100 scale-100",
               // Ensure this line is active
               section.id === activeSequenceId &&
-              "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
+                "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
             )}
             style={{
               ...sectionStyle,
@@ -909,7 +911,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute top-0 right-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 w-2"
+                      "bg-primary/60 w-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "right", e)
@@ -922,7 +924,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute bottom-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 h-2"
+                      "bg-primary/60 h-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "bottom", e)
@@ -935,7 +937,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute top-0 left-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 w-2"
+                      "bg-primary/60 w-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "left", e)
@@ -948,7 +950,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                     "absolute top-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 h-2"
+                      "bg-primary/60 h-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "top", e)
@@ -966,19 +968,19 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   onColorChange={
                     section.content.type === "color"
                       ? (color) =>
-                        onSectionContentChange(section.id, {
-                          type: "color",
-                          color,
-                        })
+                          onSectionContentChange(section.id, {
+                            type: "color",
+                            color,
+                          })
                       : undefined
                   }
                   onImageChange={
                     section.content.type === "image"
                       ? (url) =>
-                        onSectionContentChange(section.id, {
-                          type: "image",
-                          src: url,
-                        })
+                          onSectionContentChange(section.id, {
+                            type: "image",
+                            src: url,
+                          })
                       : undefined
                   }
                   availableFiles={fileOverlays.map((f) => ({

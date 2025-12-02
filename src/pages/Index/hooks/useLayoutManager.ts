@@ -21,11 +21,9 @@ import {
   getResponsivePipLayout,
   getResponsiveTextLayout,
 } from "@/lib/presetValidation";
+import { generateId } from "@/lib/id";
 
 // Helper to generate IDs (same as in Index.tsx, duplicated for modularity or import if possible)
-const generateTextOverlayId = () =>
-  `text-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
 interface UseLayoutManagerProps {
   activeScene: SceneState;
   updateActiveScene: (updates: (scene: SceneState) => SceneState) => void;
@@ -205,7 +203,7 @@ export const useLayoutManager = ({
             };
 
             return {
-              id: generateTextOverlayId(),
+              id: generateId("text"),
               content: textOverlay.content.replace(/<[^>]+>/g, ""),
               style: {
                 fontFamily: finalStyle.fontFamily,

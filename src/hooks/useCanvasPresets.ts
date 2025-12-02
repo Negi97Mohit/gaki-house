@@ -11,6 +11,7 @@ import {
   doc,
 } from "firebase/firestore"; // --- ADDED: Import firestore functions
 import { toast } from "sonner"; // --- ADDED: Import toast
+import { generateId } from "@/lib/id";
 
 export const useCanvasPresets = () => {
   const [customPresets, setCustomPresets] = useLocalStorage<CanvasPreset[]>(
@@ -22,7 +23,7 @@ export const useCanvasPresets = () => {
     (preset: Omit<CanvasPreset, "id">) => {
       const newPreset: CanvasPreset = {
         ...preset,
-        id: `custom-preset-${Date.now()}`,
+        id: generateId("custom-preset"),
       };
       setCustomPresets((prev) => [newPreset, ...prev]);
       return newPreset;

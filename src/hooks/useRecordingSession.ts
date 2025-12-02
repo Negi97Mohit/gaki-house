@@ -10,8 +10,7 @@ import {
   CameraShape,
 } from "@/types/caption";
 
-const generateSessionId = () =>
-  `session-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+import { generateId } from "@/lib/id";
 
 interface RecordingState {
   isRecording: boolean;
@@ -142,7 +141,7 @@ export const useRecordingSession = () => {
           });
 
           const session: RecordingSession = {
-            id: generateSessionId(),
+            id: generateId("session"),
             name: `Recording ${new Date().toLocaleString()}`,
             videoMetadata: {
               duration,
