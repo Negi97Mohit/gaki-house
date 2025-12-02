@@ -309,6 +309,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onCameraShapeChange={props.onCameraShapeChange}
           isAutoFramingEnabled={props.isAutoFramingEnabled}
           videoDevices={props.videoDevices}
+          selectedDeviceId={selectedVideoDevice}
           onCameraDeviceChange={props.onVideoDeviceSelect}
           pipBorder={props.pipBorder}
           pipShadow={props.pipShadow}
