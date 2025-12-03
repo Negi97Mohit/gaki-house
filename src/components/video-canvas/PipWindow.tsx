@@ -227,14 +227,14 @@ export const PipWindow: React.FC<PipWindowProps> = ({
         <div
           onMouseDown={handlePipRotationStart}
           className={cn(
-            "rotate-handle absolute -bottom-3 -left-3 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110 cursor-alias",
+            "rotate-handle absolute -bottom-4 -left-4 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center transition-all hover:scale-110 cursor-alias shadow-lg",
             "opacity-0 group-hover:opacity-100"
           )}
           style={{
             zIndex: 200,
           }}
         >
-          <RotateCcw className="w-4 h-4 pointer-events-none" />
+          <RotateCcw className="w-5 h-5 pointer-events-none" />
         </div>
 
         {/* Close Button */}
@@ -245,12 +245,12 @@ export const PipWindow: React.FC<PipWindowProps> = ({
               onClose();
             }}
             className={cn(
-              "close-handle absolute -top-3 -right-3 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110",
+              "close-handle absolute -top-4 -right-4 bg-destructive text-destructive-foreground rounded-full w-10 h-10 flex items-center justify-center transition-all hover:scale-110 shadow-lg",
               "opacity-0 group-hover:opacity-100"
             )}
             style={{ zIndex: 200 }}
           >
-            <X className="w-4 h-4 pointer-events-none" />
+            <X className="w-5 h-5 pointer-events-none" />
           </button>
         )}
       </div>
