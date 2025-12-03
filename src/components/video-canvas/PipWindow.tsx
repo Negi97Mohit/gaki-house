@@ -1,7 +1,7 @@
 // src/components/video-canvas/PipWindow.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CameraShape } from "@/types/caption";
 import { SmartDraggable } from "./SmartDraggable";
@@ -24,6 +24,7 @@ interface PipWindowProps {
   onPipRotationChange: (rotation: number) => void;
   onInternalDragStart: () => void;
   onInternalDragStop: () => void;
+  onClose?: () => void;
 
   // Render props for content
   renderContent: (
@@ -54,6 +55,7 @@ export const PipWindow: React.FC<PipWindowProps> = ({
   onPipRotationChange,
   onInternalDragStart,
   onInternalDragStop,
+  onClose,
   renderContent,
   renderScreen,
   currentAspectRatio,
@@ -151,8 +153,6 @@ export const PipWindow: React.FC<PipWindowProps> = ({
     document.addEventListener("mouseup", handleMouseUp);
   };
 
-  if (containerSize.width <= 0) return null;
-
   // Calculate effective size if aspect ratio is locked
   const effectiveSize = { ...pipSize };
   if (
@@ -164,6 +164,23 @@ export const PipWindow: React.FC<PipWindowProps> = ({
     const heightPx = widthPx / currentAspectRatio;
     effectiveSize.height = (heightPx / containerSize.height) * 100;
   }
+
+  // Clamp position to ensure PiP stays fully visible when aspect ratio changes
+  useEffect(() => {
+    if (containerSize.width <= 0 || containerSize.height <= 0) return;
+    
+    const maxX = 100 - effectiveSize.width;
+    const maxY = 100 - effectiveSize.height;
+    
+    const clampedX = Math.max(0, Math.min(pipPosition.x, maxX));
+    const clampedY = Math.max(0, Math.min(pipPosition.y, maxY));
+    
+    if (clampedX !== pipPosition.x || clampedY !== pipPosition.y) {
+      onPipPositionChange({ x: clampedX, y: clampedY });
+    }
+  }, [effectiveSize.width, effectiveSize.height, containerSize, currentAspectRatio, pipPosition.x, pipPosition.y, onPipPositionChange]);
+
+  if (containerSize.width <= 0) return null;
 
   return (
     <SmartDraggable
@@ -219,6 +236,23 @@ export const PipWindow: React.FC<PipWindowProps> = ({
         >
           <RotateCcw className="w-4 h-4 pointer-events-none" />
         </div>
+
+        {/* Close Button */}
+        {onClose && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className={cn(
+              "close-handle absolute -top-3 -right-3 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center transition-all hover:scale-110",
+              "opacity-0 group-hover:opacity-100"
+            )}
+            style={{ zIndex: 200 }}
+          >
+            <X className="w-4 h-4 pointer-events-none" />
+          </button>
+        )}
       </div>
     </SmartDraggable>
   );

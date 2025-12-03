@@ -18,6 +18,7 @@ interface PipBackgroundMenuProps {
   onCameraAspectRatioChange: (ratio: string) => void;
   customAspectRatio: string;
   onCustomAspectRatioChange: (ratio: string) => void;
+  onEnterPipMode?: () => void;
 }
 
 export const PipBackgroundMenu: React.FC<PipBackgroundMenuProps> = ({
@@ -26,7 +27,15 @@ export const PipBackgroundMenu: React.FC<PipBackgroundMenuProps> = ({
   onCameraAspectRatioChange,
   customAspectRatio,
   onCustomAspectRatioChange,
+  onEnterPipMode,
 }) => {
+  const handleAspectRatioSelect = (ratioId: string) => {
+    onCameraAspectRatioChange(ratioId);
+    // Trigger PiP mode when selecting an aspect ratio (except "free")
+    if (ratioId !== "free" && onEnterPipMode) {
+      onEnterPipMode();
+    }
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -54,7 +63,7 @@ export const PipBackgroundMenu: React.FC<PipBackgroundMenuProps> = ({
                 <DropdownMenuCheckboxItem
                   key={ratio.id}
                   checked={cameraAspectRatio === ratio.id}
-                  onClick={() => onCameraAspectRatioChange(ratio.id)}
+                  onClick={() => handleAspectRatioSelect(ratio.id)}
                   className="text-sm"
                 >
                   {ratio.name}

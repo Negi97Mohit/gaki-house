@@ -60,6 +60,7 @@ interface PipControlsToolbarProps {
 
   isPipActive?: boolean;
   onTogglePip?: () => void;
+  onEnterPipMode?: () => void;
   isCameraActive?: boolean;
 }
 
@@ -127,6 +128,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           onCameraAspectRatioChange={props.onCameraAspectRatioChange}
           customAspectRatio={props.customAspectRatio}
           onCustomAspectRatioChange={props.onCustomAspectRatioChange}
+          onEnterPipMode={props.onEnterPipMode}
         />
       )}
 

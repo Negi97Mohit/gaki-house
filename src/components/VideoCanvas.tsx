@@ -279,6 +279,13 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       ...safeSidebarProps
     } = props.sidebarProps || {};
 
+    const handleEnterPipMode = () => {
+      if (props.screenShareMode === "off") {
+        props.onScreenShareModeChange("canvas");
+        props.onLayoutModeChange("pip");
+      }
+    };
+
     return (
       <div
         className={cn("w-full h-full", className)}
@@ -314,6 +321,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           pipBorder={props.pipBorder}
           pipShadow={props.pipShadow}
           showAspectRatio={true}
+          onEnterPipMode={handleEnterPipMode}
           {...safeSidebarProps}
         />
       </div>
@@ -472,6 +480,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             pipRotation={props.pipRotation}
             onInternalDragStart={props.onInternalDragStart}
             onInternalDragStop={props.onInternalDragStop}
+            onClose={() => props.onScreenShareModeChange("off")}
             renderContent={renderCamera}
             renderScreen={() => <VideoPlayer stream={screenStream} />}
             currentAspectRatio={getNumericAspectRatio(
