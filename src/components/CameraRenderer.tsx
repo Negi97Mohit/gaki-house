@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { useWebGLRenderLoop } from "@/hooks/useWebGLRenderLoop";
-import { usePictureInPicture } from "@/hooks/usePictureInPicture"; // [!code ++]
+import { usePictureInPicture } from "@/hooks/usePictureInPicture";
 import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -16,8 +16,6 @@ interface CameraRendererProps {
   isNeonEdgeEnabled: boolean;
   neonIntensity: number;
   neonColor: string;
-  cameraBackground?: "none" | "blur" | "image";
-  customBackgroundUrl?: string | null;
   isFaceTrackingEnabled?: boolean;
   cameraAspectRatio?: string;
   showAspectRatio?: boolean;
@@ -50,15 +48,11 @@ interface CameraRendererProps {
   filterTarget?: "both" | "background" | "person";
   onFilterTargetChange?: (target: "both" | "background" | "person") => void;
 
-  onCameraBackgroundChange: (bgId: "none" | "blur" | "image") => void;
-  onCustomBackgroundUpload: (file: File) => void;
   onCameraAspectRatioChange: (ratio: string) => void;
   customAspectRatio: string;
   onCustomAspectRatioChange: (ratio: string) => void;
   onFaceTrackingToggle: (enabled: boolean) => void;
 
-  backgroundEffect: "none" | "blur" | "image";
-  backgroundImageUrl?: string | null;
   portalContainer?: HTMLElement | null;
   activeInteractiveFilter?: string;
   onInteractiveFilterChange?: (filter: string) => void;
@@ -78,9 +72,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
 
-  // --- Phase 2: Initialize PiP Engine ---
-  // This hook creates the detached video element and manages the stream capture
   const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef });
+
   useEffect(() => {
     if (props.selectedDeviceId) {
       let isMounted = true;
@@ -111,11 +104,13 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
 
   const activeStream = localStream || props.stream;
 
+  // We only need segmentation if a specific filter target is requested
+  const isSegmentationEnabled =
+    props.filterTarget && props.filterTarget !== "both";
+
   const { processedCanvas, facePositionRef } = useCameraEffects({
     videoElement: videoRef.current,
-    isBackgroundRemovalEnabled: props.cameraBackground !== "none",
-    backgroundType: props.cameraBackground || "none",
-    backgroundImageUrl: props.customBackgroundUrl || undefined,
+    isSegmentationEnabled,
     isFaceTrackingEnabled:
       props.isFaceTrackingEnabled || props.isAutoFramingEnabled,
     onUserPositionChange: props.onUserPositionChange,
@@ -133,9 +128,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     activeInteractiveFilter: props.activeInteractiveFilter,
     filterIntensity: props.filterIntensity,
     filterColor: props.filterColor,
-    processedCanvas,
-    backgroundEffect: props.cameraBackground || "none",
-    backgroundImageUrl: props.customBackgroundUrl || undefined,
+    processedCanvas, // Passed only for segmentation masking if needed
     facePositionRef,
   });
 
@@ -165,7 +158,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     };
   }, []);
 
-  // --- Pass PiP controls to the toolbar ---
   const toolbarProps = {
     position: toolbarPosition,
     containerRef,
@@ -215,7 +207,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
               }}
               onMouseLeave={handleMouseLeave}
             >
-              {/* @ts-ignore: Phase 3 will update the PipControlsToolbar interface */}
+              {/* @ts-ignore */}
               <PipControlsToolbar {...toolbarProps} />
             </div>,
             props.portalContainer
@@ -223,7 +215,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         ) : (
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
             <div className="pointer-events-auto inline-block">
-              {/* @ts-ignore: Phase 3 will update the PipControlsToolbar interface */}
+              {/* @ts-ignore */}
               <PipControlsToolbar {...toolbarProps} />
             </div>
           </div>

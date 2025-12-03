@@ -13,8 +13,7 @@ interface UseWebGLRenderLoopProps {
   filterColor?: string;
 
   processedCanvas?: HTMLCanvasElement | null;
-  backgroundEffect?: "none" | "blur" | "image";
-  backgroundImageUrl?: string; // ADDED
+  // Removed backgroundEffect props
 
   facePositionRef?: React.MutableRefObject<{
     x: number;
@@ -38,8 +37,6 @@ export const useWebGLRenderLoop = ({
   filterIntensity,
   filterColor,
   processedCanvas,
-  backgroundEffect,
-  backgroundImageUrl,
   facePositionRef,
   isAutoFramingEnabled,
   zoomSensitivity,
@@ -47,23 +44,6 @@ export const useWebGLRenderLoop = ({
 }: UseWebGLRenderLoopProps) => {
   const rendererRef = useRef<GLRenderer | null>(null);
   const animationFrameRef = useRef<number>();
-  const bgImageRef = useRef<HTMLImageElement | null>(null);
-  const debugCounter = useRef(0);
-
-  // Load Background Image if needed
-  useEffect(() => {
-    if (backgroundEffect === "image" && backgroundImageUrl) {
-      const img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.src = backgroundImageUrl;
-      img.onload = () => {
-        bgImageRef.current = img;
-        console.log("[WebGL] Background image loaded:", backgroundImageUrl);
-      };
-    } else {
-      bgImageRef.current = null;
-    }
-  }, [backgroundEffect, backgroundImageUrl]);
 
   // 1. Manage Video Stream
   useEffect(() => {
@@ -118,16 +98,6 @@ export const useWebGLRenderLoop = ({
           renderer.resize();
         }
 
-        // Debug Log
-        debugCounter.current++;
-        if (debugCounter.current % 180 === 0) {
-          if (backgroundEffect && backgroundEffect !== "none") {
-            console.log(
-              `[BackgroundDebug] Rendering composite. Effect: ${backgroundEffect}, Mask Ready: ${!!processedCanvas}`
-            );
-          }
-        }
-
         try {
           renderer.render(video, {
             videoFilter,
@@ -135,9 +105,6 @@ export const useWebGLRenderLoop = ({
             filterIntensity,
             filterColor,
             processedCanvas,
-            backgroundEffect,
-            backgroundImage: bgImageRef.current,
-            // Auto-framing props
             facePosition: facePositionRef?.current,
             isAutoFramingEnabled,
             zoomSensitivity,
@@ -163,7 +130,6 @@ export const useWebGLRenderLoop = ({
     filterIntensity,
     filterColor,
     processedCanvas,
-    backgroundEffect,
     isAutoFramingEnabled,
     zoomSensitivity,
     trackingSpeed,

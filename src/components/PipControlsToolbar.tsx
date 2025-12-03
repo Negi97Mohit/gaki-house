@@ -126,9 +126,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         onCameraAspectRatioChange={props.onCameraAspectRatioChange}
         customAspectRatio={props.customAspectRatio}
         onCustomAspectRatioChange={props.onCustomAspectRatioChange}
-        cameraBackground={props.cameraBackground}
-        onCameraBackgroundChange={props.onCameraBackgroundChange}
-        onCustomBackgroundUpload={props.onCustomBackgroundUpload}
       />
 
       <PipEffectsMenu
@@ -171,7 +168,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           className={cn(
             "h-9 w-9 rounded-xl hover:bg-background/60",
             props.isPipActive &&
-            "bg-primary/20 text-primary hover:bg-primary/30"
+              "bg-primary/20 text-primary hover:bg-primary/30"
           )}
           onClick={props.onTogglePip}
           title={props.isPipActive ? "Exit Pop-out" : "Pop-out Camera"}

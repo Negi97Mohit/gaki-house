@@ -5,9 +5,7 @@ import { FaceDetector, FilesetResolver } from "@mediapipe/tasks-vision";
 
 interface UseCameraEffectsProps {
   videoElement: HTMLVideoElement | null;
-  isBackgroundRemovalEnabled: boolean;
-  backgroundType: "none" | "blur" | "image";
-  backgroundImageUrl?: string;
+  isSegmentationEnabled: boolean; // Renamed from isBackgroundRemovalEnabled
   isFaceTrackingEnabled: boolean;
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
 }
@@ -24,7 +22,6 @@ let faceDetector: FaceDetector | null = null;
 const initializeFaceDetector = async () => {
   if (faceDetector) return faceDetector;
   try {
-    console.log("[useCameraEffects] Initializing FaceDetector model...");
     const vision = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
     );
@@ -44,17 +41,13 @@ const initializeFaceDetector = async () => {
 
 export const useCameraEffects = ({
   videoElement,
-  isBackgroundRemovalEnabled,
-  backgroundType,
-  backgroundImageUrl,
+  isSegmentationEnabled,
   isFaceTrackingEnabled,
   onUserPositionChange,
 }: UseCameraEffectsProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const segmentationRef = useRef<SelfieSegmentation | null>(null);
   const faceDetectorRef = useRef<FaceDetector | null>(null);
-  const frameCounter = useRef(0);
-
   const facePositionRef = useRef<FacePosition | null>(null);
 
   const [isSegmentationReady, setIsSegmentationReady] = useState(false);
@@ -68,14 +61,13 @@ export const useCameraEffects = ({
     }
   }, []);
 
-  // Initialize Segmentation
+  // Initialize Segmentation (Only if enabled)
   useEffect(() => {
-    if (!isBackgroundRemovalEnabled || backgroundType === "none") {
+    if (!isSegmentationEnabled) {
       setIsSegmentationReady(false);
       return;
     }
 
-    console.log("[BackgroundDebug] Initializing SelfieSegmentation...");
     const selfieSegmentation = new SelfieSegmentation({
       locateFile: (file) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
@@ -84,27 +76,17 @@ export const useCameraEffects = ({
     selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: true });
 
     selfieSegmentation.onResults((results) => {
-      frameCounter.current++;
-      if (frameCounter.current % 60 === 0) {
-        console.log("[BackgroundDebug] Mask Updated");
-      }
-
       if (!canvasRef.current || !videoElement) return;
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      if (
-        canvas.width !== videoElement.videoWidth ||
-        canvas.height !== videoElement.videoHeight
-      ) {
+      if (canvas.width !== videoElement.videoWidth) {
         canvas.width = videoElement.videoWidth;
         canvas.height = videoElement.videoHeight;
       }
 
-      // --- FIXED LOGIC ---
-      // Simply draw the mask. White = Person, Black = Background.
-      // We do NOT composite the video here. The WebGL shader will combine them.
+      // Draw mask for use in shaders
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(
         results.segmentationMask,
@@ -123,7 +105,7 @@ export const useCameraEffects = ({
       segmentationRef.current = null;
       setIsSegmentationReady(false);
     };
-  }, [isBackgroundRemovalEnabled, backgroundType, videoElement]);
+  }, [isSegmentationEnabled, videoElement]);
 
   // Initialize Face Detector
   useEffect(() => {

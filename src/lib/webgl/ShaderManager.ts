@@ -3,7 +3,6 @@ import { GLContext } from "./GLContext";
 import { VERTEX_SHADER_SOURCE } from "./shaders/vertex";
 import { BASIC_FRAGMENT_SHADER_SOURCE } from "./shaders/basic";
 import { EFFECTS_FRAGMENT_SHADER_SOURCE } from "./shaders/effects";
-import { COMPOSITE_FRAGMENT_SHADER_SOURCE } from "./shaders/composite";
 
 type ProgramInfo = {
   program: WebGLProgram;
@@ -53,25 +52,9 @@ export class ShaderManager {
         "u_offset",
       ]
     );
-
-    // 3. Composite (Background removal)
-    this.createProgram(
-      "composite",
-      VERTEX_SHADER_SOURCE,
-      COMPOSITE_FRAGMENT_SHADER_SOURCE,
-      [
-        "u_video",
-        "u_mask",
-        "u_bg_type",
-        "u_bg_image",
-        "u_bg_color",
-        "u_scale",
-        "u_offset",
-      ]
-    );
+    // Composite shader removed
   }
 
-  // ... (Rest of the class remains identical) ...
   createProgram(
     id: string,
     vertSource: string,
