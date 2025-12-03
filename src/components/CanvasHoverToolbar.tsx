@@ -38,6 +38,7 @@ interface CanvasHoverToolbarProps {
   blankCanvasColor: string;
   onBlankCanvasColorChange: (color: string) => void;
   isVisible: boolean;
+  isMouseActive?: boolean;
   onCanvasBackgroundUpload: (file: File) => void;
   canvasLayout: CanvasLayoutState | null;
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
@@ -49,6 +50,7 @@ export const CanvasHoverToolbar = ({
   blankCanvasColor,
   onBlankCanvasColorChange,
   isVisible,
+  isMouseActive = true,
   onCanvasBackgroundUpload,
   canvasLayout,
   onCanvasBackgroundAssetSelect,
@@ -294,14 +296,16 @@ export const CanvasHoverToolbar = ({
     });
   };
 
+  const shouldShow = isVisible && isMouseActive;
+
   return (
     <div
       className={cn(
-        "absolute top-6 left-1/2 -translate-x-1/2 z-50", // UPDATED: Changed from top-2 to top-6
+        "absolute top-6 left-1/2 -translate-x-1/2 z-50",
         "bg-background/95 backdrop-blur-sm border rounded-lg shadow-lg",
         "px-2 py-2 flex items-center gap-1",
         "transition-all duration-300",
-        isVisible
+        shouldShow
           ? "opacity-100 translate-y-0"
           : "opacity-0 -translate-y-2 pointer-events-none"
       )}

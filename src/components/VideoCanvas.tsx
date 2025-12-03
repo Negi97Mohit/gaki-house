@@ -559,6 +559,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onCanvasBackgroundUpload={props.onCanvasBackgroundUpload}
           onCanvasBackgroundAssetSelect={props.onCanvasBackgroundAssetSelect}
           isVisible={isCanvasHovered}
+          isMouseActive={props.isMouseActive}
           canvasLayout={props.canvasLayout}
           onCanvasLayoutChange={props.onCanvasLayoutChange}
           activeSequenceId={props.activeSequenceId}
