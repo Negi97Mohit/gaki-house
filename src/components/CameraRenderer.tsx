@@ -60,6 +60,7 @@ interface CameraRendererProps {
   videoDevices?: MediaDeviceInfo[];
   selectedDeviceId?: string;
   onCameraDeviceChange?: (deviceId: string) => void;
+  onEnterPipMode?: () => void;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
@@ -163,6 +164,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     containerRef,
     ...props,
     onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
+    onEnterPipMode: props.onEnterPipMode,
     isPipActive,
     onTogglePip: togglePiP,
     isCameraActive: !!activeStream,
