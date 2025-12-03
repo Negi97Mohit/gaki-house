@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { LayoutGrid, Loader2, CloudOff, Share2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
 import { CanvasPreset } from "@/types/canvasPreset";
 import { cn } from "@/lib/utils";
@@ -221,8 +221,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
       <h4 className="text-sm font-medium mb-3 text-muted-foreground">
         Template Presets
       </h4>
-      <ScrollArea className="w-full">
-        <div className="flex gap-2 pb-3 min-w-max">
+      <ScrollArea className="w-full whitespace-nowrap pb-3">
+        <div className="flex gap-2 w-max px-1">
           {CANVAS_PRESET_CATEGORIES.map((cat) => {
             const IconComponent = categoryIcons[cat.icon];
             return (
@@ -244,6 +244,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
             );
           })}
         </div>
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
 
       {/* Loading State */}
