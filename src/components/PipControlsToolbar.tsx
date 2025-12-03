@@ -120,7 +120,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         onCameraDeviceChange={props.onCameraDeviceChange}
       />
 
-      {props.showAspectRatio === true && (
+      {props.showAspectRatio !== false && (
         <PipBackgroundMenu
           showAspectRatio={props.showAspectRatio}
           cameraAspectRatio={props.cameraAspectRatio}
