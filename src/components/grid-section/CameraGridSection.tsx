@@ -101,6 +101,7 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
             onVideoFilterChange={(filter) =>
                 onSectionCameraSettingsChange(sectionId, {
                     videoFilter: filter,
+                    activeInteractiveFilter: "none",
                 })
             }
             isNeonEdgeEnabled={settings.isNeonEdgeEnabled}
@@ -133,19 +134,6 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
                     trackingSpeed: value,
                 })
             }
-            cameraBackground={settings.cameraBackground}
-            onCameraBackgroundChange={(bgId) =>
-                onSectionCameraSettingsChange(sectionId, {
-                    cameraBackground: bgId,
-                })
-            }
-            onCustomBackgroundUpload={(file) => {
-                const url = URL.createObjectURL(file);
-                onSectionCameraSettingsChange(sectionId, {
-                    cameraBackground: "image",
-                    customBackgroundUrl: url,
-                });
-            }}
             cameraAspectRatio={settings.cameraAspectRatio}
             onCameraAspectRatioChange={(ratio) =>
                 onSectionCameraSettingsChange(sectionId, {
@@ -168,6 +156,7 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
             onInteractiveFilterChange={(filter) =>
                 onSectionCameraSettingsChange(sectionId, {
                     activeInteractiveFilter: filter as any,
+                    videoFilter: "none",
                 })
             }
             filterIntensity={settings.filterIntensity}
@@ -188,8 +177,6 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
                     filterTarget: target,
                 })
             }
-            backgroundEffect={backgroundEffect}
-            backgroundImageUrl={backgroundImageUrl}
             onUserPositionChange={
                 sectionId === activeSequenceId ? onUserPositionChange : undefined
             }

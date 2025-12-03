@@ -326,7 +326,6 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                       : "0px",
                 }}
                 portalContainer={null}
-                backgroundEffect={settings.cameraBackground || "none"}
                 cameraShape={settings.cameraShape || "rectangle"}
                 onCameraShapeChange={(shape) =>
                   onUpdate({ cameraShape: shape })
@@ -355,7 +354,7 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                 }
                 videoFilter={settings.videoFilter}
                 onVideoFilterChange={(filter) =>
-                  onUpdate({ videoFilter: filter })
+                  onUpdate({ videoFilter: filter, activeInteractiveFilter: "none" })
                 }
                 isNeonEdgeEnabled={settings.isNeonEdgeEnabled}
                 onNeonEdgeToggle={(enabled) =>
@@ -377,17 +376,6 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                 onTrackingSpeedChange={(value) =>
                   onUpdate({ trackingSpeed: value })
                 }
-                cameraBackground={settings.cameraBackground}
-                onCameraBackgroundChange={(bgId) =>
-                  onUpdate({ cameraBackground: bgId })
-                }
-                onCustomBackgroundUpload={(file) => {
-                  const url = URL.createObjectURL(file);
-                  onUpdate({
-                    cameraBackground: "image",
-                    customBackgroundUrl: url,
-                  });
-                }}
                 cameraAspectRatio={settings.cameraAspectRatio}
                 onCameraAspectRatioChange={(ratio) =>
                   onUpdate({ cameraAspectRatio: ratio })
@@ -402,7 +390,7 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                 }
                 activeInteractiveFilter={settings.activeInteractiveFilter}
                 onInteractiveFilterChange={(filter) =>
-                  onUpdate({ activeInteractiveFilter: filter as any })
+                  onUpdate({ activeInteractiveFilter: filter as any, videoFilter: "none" })
                 }
                 filterIntensity={settings.filterIntensity}
                 onFilterIntensityChange={(value) =>

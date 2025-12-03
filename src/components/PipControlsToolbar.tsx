@@ -120,13 +120,15 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         onCameraDeviceChange={props.onCameraDeviceChange}
       />
 
-      <PipBackgroundMenu
-        showAspectRatio={props.showAspectRatio}
-        cameraAspectRatio={props.cameraAspectRatio}
-        onCameraAspectRatioChange={props.onCameraAspectRatioChange}
-        customAspectRatio={props.customAspectRatio}
-        onCustomAspectRatioChange={props.onCustomAspectRatioChange}
-      />
+      {props.showAspectRatio !== false && (
+        <PipBackgroundMenu
+          showAspectRatio={props.showAspectRatio}
+          cameraAspectRatio={props.cameraAspectRatio}
+          onCameraAspectRatioChange={props.onCameraAspectRatioChange}
+          customAspectRatio={props.customAspectRatio}
+          onCustomAspectRatioChange={props.onCustomAspectRatioChange}
+        />
+      )}
 
       <PipEffectsMenu
         videoFilter={props.videoFilter}
