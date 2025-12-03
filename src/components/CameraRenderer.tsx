@@ -61,6 +61,7 @@ interface CameraRendererProps {
   selectedDeviceId?: string;
   onCameraDeviceChange?: (deviceId: string) => void;
   onEnterPipMode?: () => void;
+  isMouseActive?: boolean; // Added
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
@@ -197,6 +198,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
       <canvas ref={canvasRef} className="w-full h-full" />
 
       {isHovered &&
+        (props.isMouseActive ?? true) && // Check isMouseActive here
         (props.portalContainer instanceof HTMLElement ? (
           createPortal(
             <div

@@ -50,6 +50,7 @@ interface CanvasContainerProps {
     onFsSidebarToggle: (open: boolean) => void;
     isMouseActive: boolean;
     onOpenSessions: () => void;
+    isDrawing: boolean; // Added
   };
 
   // Shared State
@@ -112,6 +113,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   // --- Paste Handler ---
   React.useEffect(() => {
     const handlePaste = (e: ClipboardEvent) => {
+      // Ignore if Excalidraw (Drawing Mode) is active
+      if (uiState.isDrawing) return;
+
       // Ignore if pasting into an input/textarea
       if (
         (e.target as HTMLElement).tagName === "INPUT" ||
@@ -231,7 +235,12 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
     window.addEventListener("paste", handlePaste);
     return () => window.removeEventListener("paste", handlePaste);
-  }, [updateActiveScene, activeScene.captionStyle, selection]);
+  }, [
+    updateActiveScene,
+    activeScene.captionStyle,
+    selection,
+    uiState.isDrawing,
+  ]);
 
   // --- Handlers ---
 

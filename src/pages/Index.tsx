@@ -302,6 +302,7 @@ const Index = () => {
           onFsSidebarToggle: setIsFsSidebarOpen,
           isMouseActive,
           onOpenSessions: () => setShowSessionsPanel(true),
+          isDrawing, // Pass isDrawing to CanvasContainer
         }}
         savedOverlays={savedOverlays}
         setSavedOverlays={setSavedOverlays}
@@ -405,8 +406,7 @@ const Index = () => {
         }}
         isRecording={recording.isRecording}
         onRecordingToggle={() => {
-          // Toggle logic handled by CanvasContainer ref if needed,
-          // or we can assume the user clicks the FloatingControls primarily.
+          // Toggle logic handled by CanvasContainer ref if needed
         }}
         isBroadcasting={isVirtualCameraEnabled}
         onBroadcastToggle={() => setIsVirtualCameraEnabled((prev) => !prev)}
