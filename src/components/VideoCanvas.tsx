@@ -313,7 +313,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onCameraDeviceChange={props.onVideoDeviceSelect}
           pipBorder={props.pipBorder}
           pipShadow={props.pipShadow}
-          showAspectRatio={true}
           {...safeSidebarProps}
         />
       </div>
