@@ -181,7 +181,7 @@ const Index = () => {
 
       setIsMouseActive(true);
       if (mouseTimeoutRef.current) clearTimeout(mouseTimeoutRef.current);
-      mouseTimeoutRef.current = setTimeout(() => setIsMouseActive(false), 5000);
+      mouseTimeoutRef.current = setTimeout(() => setIsMouseActive(false), 3000);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
