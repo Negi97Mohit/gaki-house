@@ -17,6 +17,7 @@ import {
   Undo2,
   Redo2,
   RotateCcw,
+  ScanFace, // Added Icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,10 +25,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-// Removed LayoutControls import
 import { AssetResult } from "@/components/AssetLibrary";
 import { LayoutMode, CameraShape } from "@/types/caption";
 import { useTheme } from "next-themes";
@@ -73,13 +72,16 @@ interface BottomNavigationProps {
   onPipSizeChange: (size: { width: number; height: number }) => void;
   customMaskUrl?: string;
   isMouseActive: boolean;
-  // Undo/Redo/Reset Props
   onUndo: () => void;
   onRedo: () => void;
   canUndo: boolean;
   canRedo: boolean;
   onResetScene: () => void;
-  canvasLayout: any; // Using any to avoid complex import for now, or import CanvasLayoutState
+  canvasLayout: any;
+
+  // New Props
+  isSmartSwitchEnabled: boolean;
+  onSmartSwitchToggle: () => void;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -109,7 +111,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   setIsDrawing,
   onToggleFullscreen,
   isFullscreen,
-  portalContainer, // Destructured specifically for ToolsPopover
+  portalContainer,
   onUndo,
   onRedo,
   canUndo,
@@ -117,11 +119,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onResetScene,
   canvasLayout,
   layoutMode,
-  ..._unusedProps // Rest of layout props are no longer needed here
+  isSmartSwitchEnabled,
+  onSmartSwitchToggle,
+  ..._unusedProps
 }) => {
   const { theme, setTheme } = useTheme();
-
-  const isLayoutActive = !!canvasLayout || layoutMode !== "solo";
 
   return (
     <div
@@ -157,7 +159,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
-        {/* Undo / Redo Group */}
         <div className="flex items-center gap-0.5">
           <Button
             variant="ghost"
@@ -180,7 +181,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             <Redo2 className="w-4 h-4" />
           </Button>
 
-          {/* Reset Button */}
           <Button
             variant="ghost"
             size="icon"
@@ -302,6 +302,25 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           </DropdownMenu>
         </div>
 
+        {/* --- Smart Scene Switch Toggle --- */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
+            isSmartSwitchEnabled &&
+              "text-primary bg-primary/10 hover:bg-primary/20"
+          )}
+          onClick={onSmartSwitchToggle}
+          title={
+            isSmartSwitchEnabled
+              ? "Smart Scene Switch: ON"
+              : "Smart Scene Switch: OFF"
+          }
+        >
+          <ScanFace className="w-4 h-4" />
+        </Button>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -364,8 +383,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           theme={theme}
           portalContainer={portalContainer}
         />
-
-        {/* Removed LayoutControls */}
 
         <Button
           variant="ghost"

@@ -1,4 +1,3 @@
-// src/components/CameraRenderer.tsx
 import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
@@ -61,7 +60,7 @@ interface CameraRendererProps {
   selectedDeviceId?: string;
   onCameraDeviceChange?: (deviceId: string) => void;
   onEnterPipMode?: () => void;
-  isMouseActive?: boolean; // Added
+  isMouseActive?: boolean;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
@@ -77,7 +76,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef });
 
   useEffect(() => {
-    if (props.selectedDeviceId) {
+    // --- FIX: Check if device is 'remote-peer' before requesting stream ---
+    if (props.selectedDeviceId && props.selectedDeviceId !== "remote-peer") {
       let isMounted = true;
       const getStream = async () => {
         try {
@@ -91,7 +91,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
           if (isMounted) setLocalStream(newStream);
         } catch (e) {
           console.error("Failed to get local camera stream", e);
-          toast.error("Could not access selected camera");
+          // Only show toast for real errors, not interruptions
+          if ((e as Error).name !== "AbortError") {
+            toast.error("Could not access selected camera");
+          }
         }
       };
       getStream();
@@ -100,13 +103,14 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         if (localStream) localStream.getTracks().forEach((t) => t.stop());
       };
     } else {
+      // If it's remote-peer or undefined, clear local stream so we use props.stream
       setLocalStream(null);
     }
   }, [props.selectedDeviceId]);
 
+  // If localStream is null (e.g. remote peer), fall back to props.stream
   const activeStream = localStream || props.stream;
 
-  // We only need segmentation if a specific filter target is requested
   const isSegmentationEnabled =
     props.filterTarget && props.filterTarget !== "both";
 
@@ -130,7 +134,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     activeInteractiveFilter: props.activeInteractiveFilter,
     filterIntensity: props.filterIntensity,
     filterColor: props.filterColor,
-    processedCanvas, // Passed only for segmentation masking if needed
+    processedCanvas,
     facePositionRef,
   });
 
@@ -193,12 +197,18 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
             alt="GAKI Logo"
             className="w-24 h-24 object-contain drop-shadow-2xl mb-2"
           />
+          {/* Show a hint if waiting for remote connection */}
+          {props.selectedDeviceId === "remote-peer" && (
+            <p className="text-white/80 text-sm animate-pulse">
+              Waiting for phone connection...
+            </p>
+          )}
         </div>
       )}
       <canvas ref={canvasRef} className="w-full h-full" />
 
       {isHovered &&
-        (props.isMouseActive ?? true) && // Check isMouseActive here
+        (props.isMouseActive ?? true) &&
         (props.portalContainer instanceof HTMLElement ? (
           createPortal(
             <div

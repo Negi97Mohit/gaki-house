@@ -1,4 +1,3 @@
-// src/pages/Index.tsx
 import { useCallback, useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -21,6 +20,7 @@ import { useMediaManager } from "./Index/hooks/useMediaManager";
 import { useLayoutManager } from "./Index/hooks/useLayoutManager";
 import { useRemotePeer } from "@/hooks/useRemotePeer";
 import { RemoteConnectModal } from "@/components/RemoteConnectModal";
+import { useSmartCameraSwitcher } from "@/hooks/useSmartCameraSwitcher"; // --- ADDED ---
 
 import {
   GeneratedOverlay,
@@ -76,7 +76,6 @@ const Index = () => {
   } = useRemotePeer();
   const [isRemoteModalOpen, setIsRemoteModalOpen] = useState(false);
 
-  // Auto-open modal if remote camera is selected but not connected
   useEffect(() => {
     if (
       activeScene?.selectedVideoDevice === "remote-peer" &&
@@ -112,6 +111,18 @@ const Index = () => {
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
   const [showAnimationLibrary, setShowAnimationLibrary] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  // --- SMART SCENE SWITCHING ---
+  const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
+
+  useSmartCameraSwitcher({
+    scenes,
+    activeSceneId,
+    onSceneSelect: handleSceneSelect,
+    isEnabled: isSmartSwitchEnabled,
+    remoteStream,
+    videoDevices,
+  });
 
   // Selection
   const [selectedBrowserId, setSelectedBrowserId] = useState<string | null>(
@@ -187,7 +198,6 @@ const Index = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // --- NEW: Fullscreen Logic ---
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -208,9 +218,7 @@ const Index = () => {
       }
     }
   }, []);
-  // -----------------------------
 
-  // --- Handlers ---
   const handleRecordingComplete = useCallback(
     (session: RecordingSession) => {
       setAllSessions((prev) => [session, ...prev]);
@@ -241,7 +249,6 @@ const Index = () => {
       }));
       if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
 
-      // Auto-select the new animation
       setSelectedBrowserId(null);
       setSelectedFileId(null);
       setSelectedTextId(null);
@@ -302,7 +309,7 @@ const Index = () => {
           onFsSidebarToggle: setIsFsSidebarOpen,
           isMouseActive,
           onOpenSessions: () => setShowSessionsPanel(true),
-          isDrawing, // Pass isDrawing to CanvasContainer
+          isDrawing,
         }}
         savedOverlays={savedOverlays}
         setSavedOverlays={setSavedOverlays}
@@ -405,9 +412,7 @@ const Index = () => {
           }));
         }}
         isRecording={recording.isRecording}
-        onRecordingToggle={() => {
-          // Toggle logic handled by CanvasContainer ref if needed
-        }}
+        onRecordingToggle={() => { }}
         isBroadcasting={isVirtualCameraEnabled}
         onBroadcastToggle={() => setIsVirtualCameraEnabled((prev) => !prev)}
         onAddTextOverlay={handleAddTextOverlay}
@@ -431,7 +436,6 @@ const Index = () => {
           }));
           if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
 
-          // Auto-select
           setSelectedBrowserId(null);
           setSelectedFileId(null);
           setSelectedTextId(null);
@@ -462,13 +466,22 @@ const Index = () => {
         onPipPositionChange={(val) => updateSceneProperty("pipPosition", val)}
         onPipSizeChange={(val) => updateSceneProperty("pipSize", val)}
         customMaskUrl={activeScene.customMaskUrl}
-        // Undo/Redo/Reset
         onUndo={undo}
         onRedo={redo}
         canUndo={canUndo}
         canRedo={canRedo}
         onResetScene={resetScene}
         canvasLayout={activeScene.canvasLayout}
+        // --- Smart Switch Props ---
+        isSmartSwitchEnabled={isSmartSwitchEnabled}
+        onSmartSwitchToggle={() => {
+          setIsSmartSwitchEnabled((prev) => !prev);
+          toast.info(
+            isSmartSwitchEnabled
+              ? "Smart Scene Switch: OFF"
+              : "Smart Scene Switch: ON"
+          );
+        }}
       />
 
       <RemoteConnectModal
