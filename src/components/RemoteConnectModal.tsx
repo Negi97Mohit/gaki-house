@@ -59,7 +59,7 @@ export const RemoteConnectModal = ({
                                     <span>Waiting for connection...</span>
                                 </div>
                                 <p className="text-xs text-yellow-500 text-center px-4">
-                                    Note: If the QR code URL starts with "localhost", please access this app via your computer's IP address instead.
+                                    Note: Don't forget to switch on the Camera Here after connecting.
                                 </p>
                             </div>
                         </>
