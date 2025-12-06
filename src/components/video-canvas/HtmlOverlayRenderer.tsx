@@ -4,11 +4,11 @@ export const HtmlOverlayRenderer: React.FC<{
   htmlContent: string;
   theme: string | undefined;
 }> = ({ htmlContent, theme }) => {
-  const colorScheme = theme === "dark" ? "dark" : "light";
+  // Force dark color-scheme to avoid white backgrounds in iframes
   const transparentStyle = `
     <style>
       html {
-        color-scheme: ${colorScheme};
+        color-scheme: dark;
       }
       html, body {
         background-color: transparent !important;
@@ -18,6 +18,10 @@ export const HtmlOverlayRenderer: React.FC<{
         overflow: hidden !important;
         width: 100% !important;
         height: 100% !important;
+      }
+      /* Remove any potential backgrounds */
+      * {
+        background-color: inherit;
       }
       /* Ensure images fit perfectly */
       img {

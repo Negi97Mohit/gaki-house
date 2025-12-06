@@ -63,6 +63,7 @@ interface OverlayLayerProps {
   onInternalDragStop: any;
   selectedGeneratedId?: string | null;
   onSelectGenerated?: (id: string | null) => void;
+  onBannerDoubleClick?: (id: string) => void;
 }
 
 export const OverlayLayer: React.FC<OverlayLayerProps> = ({
@@ -103,6 +104,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
   onInternalDragStop,
   selectedGeneratedId,
   onSelectGenerated,
+  onBannerDoubleClick,
 }) => {
   if (!containerSize.width || !containerSize.height) return null;
 
@@ -140,6 +142,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
             onSnapGuidesChange={onSnapGuidesChange}
             isSelected={selectedGeneratedId === overlay.id}
             onSelect={onSelectGenerated}
+            onDoubleClick={onBannerDoubleClick}
           />
         ))}
 

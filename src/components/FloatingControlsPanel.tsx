@@ -1,9 +1,10 @@
 // src/components/FloatingControlsPanel.tsx
 import React, { useState, useRef, useEffect } from "react";
-import { LayoutGrid, Zap, Paintbrush, Palette, Sparkles } from "lucide-react";
+import { LayoutGrid, Zap, Paintbrush, Palette, Sparkles, BadgeCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CanvasPreset } from "@/types/canvasPreset";
+import { SocialBannerDesign, SocialBannerData } from "@/types/socialBanner";
 
 // Sub-components
 import { CanvasDesignsPanel } from "./panels/CanvasDesignsPanel";
@@ -11,6 +12,7 @@ import { DynamicStylesPanel } from "./panels/DynamicStylesPanel";
 import { StaticPresetsPanel } from "./panels/StaticPresetsPanel";
 import { TextStylePanel } from "./panels/TextStylePanel";
 import { SavedOverlaysPanel } from "./panels/SavedOverlaysPanel";
+import { SocialBannersPanel } from "./panels/SocialBannersPanel";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;
@@ -38,6 +40,7 @@ interface FloatingControlsPanelProps {
   isLoadingPublic?: boolean;
   onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
+  onAddSocialBanner?: (design: SocialBannerDesign, data: SocialBannerData) => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -92,6 +95,11 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       id: "saved-overlays",
       icon: Sparkles,
       title: "Overlays",
+    },
+    {
+      id: "social-banners",
+      icon: BadgeCheck,
+      title: "Social Banners",
     },
   ];
 
@@ -176,6 +184,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               onAddSavedOverlay={props.onAddSavedOverlay}
               onDeleteSavedOverlay={props.onDeleteSavedOverlay}
             />
+          )}
+
+          {activeSection === "social-banners" && props.onAddSocialBanner && (
+            <SocialBannersPanel onAddBanner={props.onAddSocialBanner} />
           )}
         </div>
       </div>

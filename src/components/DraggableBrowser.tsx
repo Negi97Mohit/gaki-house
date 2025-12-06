@@ -8,7 +8,6 @@ import {
   RefreshCw,
   X,
 } from "lucide-react";
-import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 import { HybridDraggable } from "@/components/video-canvas/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { GeneratedLayout } from "@/types/caption";
@@ -101,12 +100,6 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       )}
     >
       <div className="w-full h-full flex flex-col rounded-lg relative overflow-hidden">
-        <DynamicLayoutPicker
-          onSelectLayout={(mode) =>
-            onSetDynamicLayout({ id: overlay.id, type: "browser" }, mode as any)
-          }
-        />
-
         {/* Browser Toolbar - Acts as Drag Handle */}
         <div
           className="flex-shrink-0 h-10 bg-secondary flex items-center p-2 gap-2 cursor-move rounded-t-lg"

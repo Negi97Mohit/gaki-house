@@ -3,7 +3,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { FileOverlayState } from "@/types/caption";
 import { X, File as FileIcon, Loader2 } from "lucide-react";
-import { DynamicLayoutPicker } from "./DynamicLayoutPicker";
 import { HybridDraggable } from "@/components/video-canvas/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
@@ -153,12 +152,6 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         >
           <FileRenderer overlay={overlay} />
         </div>
-
-        <DynamicLayoutPicker
-          onSelectLayout={(mode) =>
-            onSetDynamicLayout({ id: overlay.id, type: "file" }, mode)
-          }
-        />
 
         <button
           onClick={(e) => {

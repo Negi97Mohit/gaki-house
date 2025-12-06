@@ -26,6 +26,7 @@ interface DraggableHtmlOverlayProps {
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
   isSelected?: boolean;
   onSelect?: (id: string) => void;
+  onDoubleClick?: (id: string) => void;
 }
 
 export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
@@ -39,6 +40,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
   onSnapGuidesChange,
   isSelected,
   onSelect,
+  onDoubleClick,
 }) => {
   const { theme } = useTheme();
   const elementRef = useRef<HTMLDivElement>(null);
@@ -81,6 +83,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       onSetDynamicLayout={onSetDynamicLayout}
       allOverlays={allOverlays}
       onSnapGuidesChange={onSnapGuidesChange}
+      onDoubleClick={onDoubleClick}
     >
       <div ref={elementRef} className="w-full h-full overflow-hidden">
         <HtmlOverlayRenderer

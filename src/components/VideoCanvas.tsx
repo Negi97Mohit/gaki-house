@@ -193,6 +193,7 @@ interface VideoCanvasProps {
   canvasAspectRatio: string;
   selectedGeneratedId?: string | null;
   setSelectedGeneratedId?: (id: string | null) => void;
+  onBannerDoubleClick?: (id: string) => void;
   remoteStream?: MediaStream | null;
 }
 
@@ -416,9 +417,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           <div
             className="relative flex items-center justify-center overflow-hidden"
             style={{
-              [isVertical ? "height" : "width"]: `${
-                (1 - dynamicSplitRatio) * 100
-              }%`,
+              [isVertical ? "height" : "width"]: `${(1 - dynamicSplitRatio) * 100
+                }%`,
             }}
           >
             {renderCamera()}
@@ -474,7 +474,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             screenShareMode={props.screenShareMode}
             onPipPositionChange={props.onPipPositionChange}
             onPipSizeChange={props.onPipSizeChange}
-            onPipRotationChange={props.onPipRotationChange || (() => {})}
+            onPipRotationChange={props.onPipRotationChange || (() => { })}
             pipRotation={props.pipRotation}
             onInternalDragStart={props.onInternalDragStart}
             onInternalDragStop={props.onInternalDragStop}
@@ -579,11 +579,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   // Center the box on the target point
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
@@ -592,11 +592,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}
@@ -693,6 +693,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               isSpacePressed={isSpacePressed}
               onInternalDragStart={props.onInternalDragStart}
               onInternalDragStop={props.onInternalDragStop}
+              onBannerDoubleClick={props.onBannerDoubleClick}
             />
           </div>
         ))}
