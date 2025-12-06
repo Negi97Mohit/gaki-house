@@ -124,15 +124,6 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                 </div>
             )}
 
-            {/* Instructions */}
-            {!hasUserInfo && (
-                <div className="p-4 rounded-lg bg-muted/30 border border-border/40 text-center mb-4">
-                    <p className="text-sm text-muted-foreground">
-                        Click "Add Your Info" to set up your name and social links first.
-                    </p>
-                </div>
-            )}
-
             {/* Designs Grid */}
             <h4 className="text-sm font-medium mb-2 text-muted-foreground">
                 Choose a Design
