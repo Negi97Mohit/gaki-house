@@ -72,7 +72,7 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
 
   if (isEditing && editingPreset) {
     return (
-      <div className="fixed inset-0 z-[5050] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8">
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8" style={{ zIndex: "var(--z-sessions-panel)" }}>
         <div className="w-full max-w-6xl h-full max-h-[85vh] bg-background border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <AnimationEditor
             initialPreset={editingPreset}
@@ -96,7 +96,7 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
   });
 
   return (
-    <div className="fixed inset-0 z-[5050] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8" style={{ zIndex: "var(--z-sessions-panel)" }}>
       <div className="w-full max-w-6xl h-full max-h-[85vh] bg-background border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">

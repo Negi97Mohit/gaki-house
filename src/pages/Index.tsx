@@ -86,7 +86,7 @@ const Index = () => {
     } else if (isRemoteConnected && isRemoteModalOpen) {
       setIsRemoteModalOpen(false);
     }
-  }, [activeScene?.selectedVideoDevice, isRemoteConnected]);
+  }, [activeScene?.selectedVideoDevice, isRemoteConnected, isRemoteModalOpen]);
 
   const {
     presets,

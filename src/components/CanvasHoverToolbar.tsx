@@ -352,47 +352,58 @@ export const CanvasHoverToolbar = ({
         </>
       )}
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      <Popover>
+        <PopoverTrigger asChild>
           <Button variant="ghost" size="sm" className="text-xs">
             <Grid3x3 className="h-4 w-4 mr-2" />
             {canvasLayout
               ? layoutTemplates.find((t) => t.id === canvasLayout.templateId)
-                  ?.name || "Layout"
+                ?.name || "Layout"
               : "Grid"}
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-[999] bg-background max-h-[400px] overflow-y-auto w-64 p-2">
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-64 p-2 max-h-[400px] overflow-y-auto"
+          style={{ zIndex: "var(--z-asset-popover)" }}
+          align="center"
+          side="bottom"
+        >
           {templatesLoading && (
-            <DropdownMenuItem disabled>Loading layouts...</DropdownMenuItem>
+            <div className="text-sm text-muted-foreground p-2">Loading layouts...</div>
           )}
 
           {canvasLayout && (
-            <DropdownMenuItem
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-destructive mb-2"
               onClick={() => onCanvasLayoutChange?.(null as any)}
-              className="text-destructive mb-1"
             >
               Clear Grid
-            </DropdownMenuItem>
+            </Button>
           )}
 
-          {layoutTemplates.map((template) => (
-            <DropdownMenuItem
-              key={template.id}
-              onClick={() => handleLayoutSelect(template.id)}
-              className="flex flex-col items-start gap-2 p-2 cursor-pointer"
-            >
-              <GridLayoutPreview sections={template.sections} />
-              <div className="flex items-center justify-between w-full">
-                <span className="text-xs font-medium">{template.name}</span>
-                {canvasLayout?.templateId === template.id && (
-                  <Check className="w-4 h-4 text-primary" />
-                )}
-              </div>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+          <div className="space-y-1">
+            {layoutTemplates.map((template) => (
+              <Button
+                key={template.id}
+                variant="ghost"
+                size="sm"
+                className="w-full flex flex-col items-start gap-2 p-2 h-auto cursor-pointer hover:bg-accent"
+                onClick={() => handleLayoutSelect(template.id)}
+              >
+                <GridLayoutPreview sections={template.sections} />
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-xs font-medium">{template.name}</span>
+                  {canvasLayout?.templateId === template.id && (
+                    <Check className="w-4 h-4 text-primary" />
+                  )}
+                </div>
+              </Button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
 
       {/* Dynamic Layout Transformation Controls */}
       {hasTransformations && canvasLayout && (
@@ -436,17 +447,17 @@ export const CanvasHoverToolbar = ({
           {(layoutId.includes("bento") ||
             layoutId.includes("staircase") ||
             layoutId.includes("diagonal")) && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs h-8 px-2"
-              onClick={() => transformLayout("rotate")}
-              title="Rotate sections"
-            >
-              <RotateCw className="h-4 w-4 mr-1" />
-              Rotate
-            </Button>
-          )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs h-8 px-2"
+                onClick={() => transformLayout("rotate")}
+                title="Rotate sections"
+              >
+                <RotateCw className="h-4 w-4 mr-1" />
+                Rotate
+              </Button>
+            )}
 
           {layoutId.includes("staircase") && (
             <Button

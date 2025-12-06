@@ -202,9 +202,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             onClick={() => onAudioToggle(!isAudioOn)}
           >
             {isAudioOn ? (
-              <Mic className="h-4 h-4" />
+              <Mic className="h-4 w-4" />
             ) : (
-              <MicOff className="h-4 h-4 text-red-500" />
+              <MicOff className="h-4 w-4 text-red-500" />
             )}
           </Button>
           <DropdownMenu>
@@ -256,9 +256,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             onClick={() => onVideoToggle(!isVideoOn)}
           >
             {isVideoOn ? (
-              <Webcam className="h-4 h-4" />
+              <Webcam className="h-4 w-4" />
             ) : (
-              <VideoOff className="h-4 h-4 text-red-500" />
+              <VideoOff className="h-4 w-4 text-red-500" />
             )}
           </Button>
           <DropdownMenu>
@@ -309,7 +309,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           className={cn(
             "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
             isSmartSwitchEnabled &&
-              "text-primary bg-primary/10 hover:bg-primary/20"
+            "text-primary bg-primary/10 hover:bg-primary/20"
           )}
           onClick={onSmartSwitchToggle}
           title={
@@ -332,7 +332,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               )}
               title="Share"
             >
-              <ScreenShare className="h-4 h-4" />
+              <ScreenShare className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -392,9 +392,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           title={isFullscreen ? "Exit" : "Fullscreen"}
         >
           {isFullscreen ? (
-            <Shrink className="h-4 h-4" />
+            <Shrink className="h-4 w-4" />
           ) : (
-            <Expand className="h-4 h-4" />
+            <Expand className="h-4 w-4" />
           )}
         </Button>
       </div>

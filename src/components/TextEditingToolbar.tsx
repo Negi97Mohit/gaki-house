@@ -32,7 +32,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   const [showDesigns, setShowDesigns] = useState(false);
 
   useLayoutEffect(() => {
-    if (toolbarRef.current && containerRef.current) {
+    if (toolbarRef.current && containerRef?.current) {
       const toolbarHeight = toolbarRef.current.offsetHeight;
       const toolbarWidth = toolbarRef.current.offsetWidth;
       const containerRect = containerRef.current.getBoundingClientRect();
