@@ -14,6 +14,7 @@
 @tailwind utilities;
 
 @layer base {
+
   /* Use light theme variables as the default in :root */
   :root {
     --background: 0 0% 100%;
@@ -60,6 +61,7 @@
     --input: 230 15% 14%;
     --ring: 255 85% 65%;
   }
+
   /* Add z-index stack to both :root and .dark */
   :root,
   .dark {
@@ -110,6 +112,7 @@
 }
 
 @layer components {
+
   /* Resize handles for Excalidraw overlay */
   .resize-handle {
     position: absolute;
@@ -206,10 +209,12 @@
 
   /* Onboarding animation */
   @keyframes pulse-border {
+
     0%,
     100% {
       box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
     }
+
     50% {
       box-shadow: 0 0 0 4px hsl(var(--primary) / 0.1);
     }
@@ -223,9 +228,11 @@
 .hide-cursor {
   cursor: none;
 }
+
 body.cursor-inactive * {
   cursor: none !important;
 }
+
 .aicp-content {
   pointer-events: auto !important;
   z-index: 9999 !important;
@@ -234,11 +241,13 @@ body.cursor-inactive * {
 /* Add to your index.css file - REPLACE the existing @keyframes section */
 
 @layer base {
+
   /* Dissolve Animations */
   @keyframes dissolve-in {
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -248,6 +257,7 @@ body.cursor-inactive * {
     from {
       opacity: 1;
     }
+
     to {
       opacity: 0;
     }
@@ -259,6 +269,7 @@ body.cursor-inactive * {
       transform: translateX(100%);
       opacity: 0;
     }
+
     to {
       transform: translateX(0);
       opacity: 1;
@@ -270,6 +281,7 @@ body.cursor-inactive * {
       transform: translateX(0);
       opacity: 1;
     }
+
     to {
       transform: translateX(-100%);
       opacity: 0;
@@ -281,6 +293,7 @@ body.cursor-inactive * {
       transform: translateX(-100%);
       opacity: 0;
     }
+
     to {
       transform: translateX(0);
       opacity: 1;
@@ -292,6 +305,7 @@ body.cursor-inactive * {
       transform: translateX(0);
       opacity: 1;
     }
+
     to {
       transform: translateX(100%);
       opacity: 0;
@@ -334,11 +348,207 @@ body.cursor-inactive * {
     0% {
       background-position: 0% 50%;
     }
+
     50% {
       background-position: 100% 50%;
     }
+
     100% {
       background-position: 0% 50%;
+    }
+  }
+
+  /* ===== SOCIAL BANNER ANIMATIONS ===== */
+
+  /* Shimmer Effect - Moving highlight */
+  @keyframes banner-shimmer {
+    0% {
+      background-position: -200% center;
+    }
+
+    100% {
+      background-position: 200% center;
+    }
+  }
+
+  /* Pulse Glow - Pulsating border/shadow */
+  @keyframes banner-pulse-glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(var(--glow-color, 0, 255, 255), 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 40px rgba(var(--glow-color, 0, 255, 255), 0.8), 0 0 60px rgba(var(--glow-color, 0, 255, 255), 0.4);
+    }
+  }
+
+  /* Neon Flicker - Subtle flicker effect */
+  @keyframes banner-neon-flicker {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    92% {
+      opacity: 1;
+    }
+
+    93% {
+      opacity: 0.8;
+    }
+
+    94% {
+      opacity: 1;
+    }
+
+    96% {
+      opacity: 0.9;
+    }
+
+    97% {
+      opacity: 1;
+    }
+  }
+
+  /* Float - Subtle up/down movement */
+  @keyframes banner-float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  /* Holographic - Rainbow shift */
+  @keyframes banner-holographic {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+
+  /* Border Rotate - Rotating gradient border */
+  @keyframes banner-border-rotate {
+    0% {
+      --angle: 0deg;
+    }
+
+    100% {
+      --angle: 360deg;
+    }
+  }
+
+  /* Scan Line - Retro CRT effect */
+  @keyframes banner-scan-line {
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 0 100%;
+    }
+  }
+
+  /* Gradient Shift - Moving gradients */
+  @keyframes banner-gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  /* Scale Pulse - Subtle breathing */
+  @keyframes banner-breathe {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  /* RGB Cycle - Gaming RGB effect */
+  @keyframes banner-rgb-cycle {
+    0% {
+      border-color: #ff0000;
+      box-shadow: 0 0 20px #ff0000;
+    }
+
+    16% {
+      border-color: #ff8800;
+      box-shadow: 0 0 20px #ff8800;
+    }
+
+    33% {
+      border-color: #ffff00;
+      box-shadow: 0 0 20px #ffff00;
+    }
+
+    50% {
+      border-color: #00ff00;
+      box-shadow: 0 0 20px #00ff00;
+    }
+
+    66% {
+      border-color: #0088ff;
+      box-shadow: 0 0 20px #0088ff;
+    }
+
+    83% {
+      border-color: #8800ff;
+      box-shadow: 0 0 20px #8800ff;
+    }
+
+    100% {
+      border-color: #ff0000;
+      box-shadow: 0 0 20px #ff0000;
+    }
+  }
+
+  /* Glitch Effect */
+  @keyframes banner-glitch {
+    0% {
+      transform: translate(0);
+    }
+
+    20% {
+      transform: translate(-2px, 2px);
+    }
+
+    40% {
+      transform: translate(-2px, -2px);
+    }
+
+    60% {
+      transform: translate(2px, 2px);
+    }
+
+    80% {
+      transform: translate(2px, -2px);
+    }
+
+    100% {
+      transform: translate(0);
     }
   }
 }

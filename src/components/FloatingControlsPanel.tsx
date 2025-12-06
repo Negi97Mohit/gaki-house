@@ -48,6 +48,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const [activeSection, setActiveSection] = useState<string | null>(
     "canvas-designs"
   );
+  const [isHovered, setIsHovered] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Click outside to close
@@ -107,11 +108,13 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     <>
       <div
         ref={panelRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         className={cn(
           "fixed bottom-24 left-6 rounded-2xl overflow-hidden",
           "bg-background/40 backdrop-blur-xl border border-border/40 shadow-2xl",
           "transition-all duration-300 ease-out flex",
-          isOpen && props.isMouseActive
+          isOpen && (props.isMouseActive || isHovered)
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 translate-y-8 pointer-events-none"
         )}

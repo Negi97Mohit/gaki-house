@@ -4,11 +4,22 @@ export const HtmlOverlayRenderer: React.FC<{
   htmlContent: string;
   theme: string | undefined;
 }> = ({ htmlContent, theme }) => {
+  // Google Fonts used by banner designs
+  const googleFontsLink = `
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Cinzel:wght@400;600&family=Cinzel+Decorative&family=Comfortaa:wght@400;700&family=Cormorant+Garamond:wght@400;600&family=Exo+2:wght@700;800&family=Inter:wght@400;600;700&family=Monoton&family=Montserrat:wght@400;600;700&family=Nunito:wght@400;600&family=Orbitron:wght@400;700&family=Oswald:wght@400;700;800&family=Permanent+Marker&family=Playfair+Display:wght@300;400;600&family=Press+Start+2P&family=Raleway:wght@400;500;600&family=Roboto:wght@400;500;700&family=Sacramento&family=Space+Grotesk:wght@400;600;700&family=Teko:wght@400;700;800&family=VT323&display=swap" rel="stylesheet">
+  `;
+
   // Force dark color-scheme to avoid white backgrounds in iframes
   const transparentStyle = `
+    ${googleFontsLink}
     <style>
       html {
         color-scheme: dark;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
       html, body {
         background-color: transparent !important;

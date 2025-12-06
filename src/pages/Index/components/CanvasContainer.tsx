@@ -463,6 +463,20 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     (design: SocialBannerDesign, data: SocialBannerData) => {
       // Generate HTML content from the design and data
       const generateBannerHtml = () => {
+        // CSS keyframes for banner animations - injected inline so they work in isolated contexts
+        const bannerKeyframes = `
+          <style>
+            @keyframes banner-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+            @keyframes banner-pulse-glow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+            @keyframes banner-neon-flicker { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 93% { opacity: 0.8; } 94% { opacity: 1; } 96% { opacity: 0.9; } 97% { opacity: 1; } }
+            @keyframes banner-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+            @keyframes banner-holographic { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+            @keyframes banner-gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+            @keyframes banner-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+            @keyframes banner-rgb-cycle { 0% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } 16% { border-color: #ff8800; box-shadow: 0 0 20px #ff8800; } 33% { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; } 50% { border-color: #00ff00; box-shadow: 0 0 20px #00ff00; } 66% { border-color: #0088ff; box-shadow: 0 0 20px #0088ff; } 83% { border-color: #8800ff; box-shadow: 0 0 20px #8800ff; } 100% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } }
+            @keyframes banner-glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+          </style>
+        `;
 
         const links = data.links
           .slice(0, design.maxLinks)
@@ -488,14 +502,17 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
             : "";
 
         return `
-          <div style="${styleToString(design.styles.container)}">
-            ${avatarHtml}
-            <div style="display: flex; flex-direction: column; gap: 2px;">
-              <span style="${styleToString(design.styles.name)}">${data.name}</span>
-              ${taglineHtml}
-            </div>
-            <div style="${styleToString(design.styles.linksContainer)}">
-              ${links}
+          ${bannerKeyframes}
+          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 20px;">
+            <div style="${styleToString(design.styles.container)}">
+              ${avatarHtml}
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="${styleToString(design.styles.name)}">${data.name}</span>
+                ${taglineHtml}
+              </div>
+              <div style="${styleToString(design.styles.linksContainer)}">
+                ${links}
+              </div>
             </div>
           </div>
         `;
@@ -1031,15 +1048,33 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
                   ? `<span style="${styleToString(design.styles.tagline || {})}">${data.tagline}</span>`
                   : "";
 
+              // CSS keyframes for banner animations - injected inline
+              const bannerKeyframes = `
+                <style>
+                  @keyframes banner-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+                  @keyframes banner-pulse-glow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+                  @keyframes banner-neon-flicker { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 93% { opacity: 0.8; } 94% { opacity: 1; } 96% { opacity: 0.9; } 97% { opacity: 1; } }
+                  @keyframes banner-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+                  @keyframes banner-holographic { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+                  @keyframes banner-gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+                  @keyframes banner-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+                  @keyframes banner-rgb-cycle { 0% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } 16% { border-color: #ff8800; box-shadow: 0 0 20px #ff8800; } 33% { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; } 50% { border-color: #00ff00; box-shadow: 0 0 20px #00ff00; } 66% { border-color: #0088ff; box-shadow: 0 0 20px #0088ff; } 83% { border-color: #8800ff; box-shadow: 0 0 20px #8800ff; } 100% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } }
+                  @keyframes banner-glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+                </style>
+              `;
+
               const newHtmlContent = `
-                <div style="${styleToString(design.styles.container)}">
-                  ${avatarHtml}
-                  <div style="display: flex; flex-direction: column; gap: 2px;">
-                    <span style="${styleToString(design.styles.name)}">${data.name}</span>
-                    ${taglineHtml}
-                  </div>
-                  <div style="${styleToString(design.styles.linksContainer)}">
-                    ${links}
+                ${bannerKeyframes}
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 20px;">
+                  <div style="${styleToString(design.styles.container)}">
+                    ${avatarHtml}
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                      <span style="${styleToString(design.styles.name)}">${data.name}</span>
+                      ${taglineHtml}
+                    </div>
+                    <div style="${styleToString(design.styles.linksContainer)}">
+                      ${links}
+                    </div>
                   </div>
                 </div>
               `;
