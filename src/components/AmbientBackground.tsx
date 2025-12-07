@@ -127,10 +127,15 @@ export const AmbientBackground: React.FC = () => {
     };
 
     const resize = () => {
+      if (!container) return;
       width = container.offsetWidth;
       height = container.offsetHeight;
+
+      // Update canvas dimensions to match container
       canvas.width = width;
       canvas.height = height;
+
+      // Re-distribute circles to fit new size
       initCircles();
     };
 
@@ -162,13 +167,10 @@ export const AmbientBackground: React.FC = () => {
 
         // --- UPDATED COLOR SCHEME ---
         // Strictly #2596be (hsl: 196, 67%, 45%)
-        // No conditional logic for white.
-
         const h = 196;
         const s = "67%";
 
         // Optional: Slight lightness breathe to keep the "organic" feel
-        // varying between 40% and 50%
         const lightNoise = noise.noise2D(c.step, c.step + time);
         const l = `${45 + lightNoise * 5}%`;
 
@@ -188,12 +190,20 @@ export const AmbientBackground: React.FC = () => {
       animationFrameId = requestAnimationFrame(render);
     };
 
+    // --- NEW: ResizeObserver Logic ---
+    // This detects when the CONTAINER changes size (PiP, Grid, etc.)
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+    });
+
+    resizeObserver.observe(container);
+
+    // Initial call
     resize();
     render();
-    window.addEventListener("resize", resize);
 
     return () => {
-      window.removeEventListener("resize", resize);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -201,20 +211,16 @@ export const AmbientBackground: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      // bg-black ensures the background behind the blobs is pitch black
       className="absolute inset-0 w-full h-full overflow-hidden bg-black"
     >
-      {/* The canvas handles the moving shapes */}
       <canvas
         ref={canvasRef}
         className="block w-full h-full"
-        // High blur creates the "Shift" / "Lavalamp" soft gradient effect
         style={{ filter: "blur(80px)" }}
       />
-      {/* Optional overlay texture for grain if desired */}
       <div
         className="absolute inset-0 opacity-20 pointer-events-none"
-        style={{ backgroundImage: 'url("data:image/svg+xml,...")' }} // Add noise svg if desired
+        // style={{ backgroundImage: 'url("...")' }} // optional noise
       />
     </div>
   );
