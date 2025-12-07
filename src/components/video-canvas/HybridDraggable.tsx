@@ -38,7 +38,7 @@ export interface HybridDraggableProps {
   onCommit: (id: string, layout: LayoutUpdate) => void;
   onSelect?: (id: string) => void;
   onClick?: (id: string) => void;
-  onDoubleClick?: (id: string) => void;
+  onDoubleClick?: (id: string, e: React.MouseEvent) => void;
 
   // Snapping
   allOverlays?: OverlayElement[];
@@ -312,7 +312,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         const timeDiff = now - lastClickTimeRef.current;
 
         if (timeDiff < 300) {
-          onDoubleClick?.(id);
+          onDoubleClick?.(id, e as unknown as React.MouseEvent);
           lastClickTimeRef.current = 0;
         } else {
           onClick?.(id);

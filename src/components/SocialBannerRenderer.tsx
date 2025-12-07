@@ -44,7 +44,7 @@ const DiscordIcon = () => (
 );
 
 // Platform icon mapping
-const getPlatformIcon = (platform: SocialPlatform): React.FC<{ className?: string; style?: React.CSSProperties }> => {
+export const getPlatformIcon = (platform: SocialPlatform): React.FC<{ className?: string; style?: React.CSSProperties }> => {
     const icons: Record<SocialPlatform, React.FC<{ className?: string; style?: React.CSSProperties }>> = {
         github: Github,
         instagram: Instagram,

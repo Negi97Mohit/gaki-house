@@ -63,7 +63,7 @@ interface OverlayLayerProps {
   onInternalDragStop: any;
   selectedGeneratedId?: string | null;
   onSelectGenerated?: (id: string | null) => void;
-  onBannerDoubleClick?: (id: string) => void;
+  onBannerDoubleClick?: (id: string, e: React.MouseEvent) => void;
 }
 
 export const OverlayLayer: React.FC<OverlayLayerProps> = ({

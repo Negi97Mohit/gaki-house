@@ -203,7 +203,16 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                 isOpen={isEditorOpen}
                 onClose={() => {
                     setIsEditorOpen(false);
-                    if (!hasUserInfo) {
+
+                    // If a design was selected (which triggered the popup), add it now
+                    // even if the user didn't save new info (using default/current info)
+                    if (selectedDesignId) {
+                        const design = designs.find((d) => d.id === selectedDesignId);
+                        if (design) {
+                            onAddBanner(design, userData);
+                            setRecentlyAdded(design.id);
+                            setTimeout(() => setRecentlyAdded(null), 1500);
+                        }
                         setSelectedDesignId(null);
                     }
                 }}

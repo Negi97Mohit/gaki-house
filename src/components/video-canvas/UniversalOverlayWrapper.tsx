@@ -16,7 +16,7 @@ interface UniversalOverlayWrapperProps {
   onCommit: (id: string, layout: LayoutUpdate) => void;
   onSelect: (id: string) => void;
   onRemove: (id: string) => void;
-  onDoubleClick?: (id: string) => void;
+  onDoubleClick?: (id: string, e: React.MouseEvent) => void;
   onSetDynamicLayout?: (
     target: { id: string; type: any },
     mode: "split-vertical" | "split-horizontal" | "pip" | "reset"

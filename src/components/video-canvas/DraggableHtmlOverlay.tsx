@@ -26,7 +26,7 @@ interface DraggableHtmlOverlayProps {
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
   isSelected?: boolean;
   onSelect?: (id: string) => void;
-  onDoubleClick?: (id: string) => void;
+  onDoubleClick?: (id: string, e: React.MouseEvent) => void;
 }
 
 export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({

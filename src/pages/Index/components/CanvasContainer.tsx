@@ -1,4 +1,6 @@
-import React, { useCallback, useRef, useState, useMemo } from "react";
+﻿import React, { useCallback, useRef, useState, useMemo, useEffect } from "react";
+import ReactDOMServer from "react-dom/server";
+import { getPlatformIcon } from "@/components/SocialBannerRenderer";
 import { toast } from "sonner";
 import { MainCanvasArea } from "./MainCanvasArea";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
@@ -43,7 +45,7 @@ const styleToString = (style: React.CSSProperties): string => {
 const getPlatformSvg = (platform: SocialPlatform): string => {
   const svgs: Record<SocialPlatform, string> = {
     github: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>`,
-    instagram: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+    instagram: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
     linkedin: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>`,
     facebook: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>`,
     youtube: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>`,
@@ -147,10 +149,24 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   // Banner editing state
   const [editingBannerId, setEditingBannerId] = useState<string | null>(null);
   const [isBannerEditorOpen, setIsBannerEditorOpen] = useState(false);
+  const [editingBannerText, setEditingBannerText] = useState<{
+    overlayId: string;
+    field: "name" | "tagline";
+    currentText: string;
+    style: React.CSSProperties;
+  } | null>(null);
+
   const [bannerUserData, setBannerUserData] = useState<SocialBannerData>(() => {
     const saved = localStorage.getItem("social-banner-user-data");
     return saved ? JSON.parse(saved) : DEFAULT_BANNER_DATA;
   });
+
+  // Clear editing state if selection changes
+  useEffect(() => {
+    if (editingBannerText && selection.selectedGeneratedId !== editingBannerText.overlayId) {
+      setEditingBannerText(null);
+    }
+  }, [selection.selectedGeneratedId, editingBannerText]);
 
   // --- Paste Handler ---
   React.useEffect(() => {
@@ -283,6 +299,208 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     selection,
     uiState.isDrawing,
   ]);
+  const generateBannerHtml = useCallback(
+    (design: SocialBannerDesign, data: SocialBannerData) => {
+      // CSS keyframes for banner animations - injected inline so they work in isolated contexts
+      const bannerKeyframes = `
+        <style>
+          @keyframes banner-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+          @keyframes banner-pulse-glow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+          @keyframes banner-neon-flicker { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 93% { opacity: 0.8; } 94% { opacity: 1; } 96% { opacity: 0.9; } 97% { opacity: 1; } }
+          @keyframes banner-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+          @keyframes banner-holographic { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+          @keyframes banner-gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+          @keyframes banner-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+          @keyframes banner-rgb-cycle { 0% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } 16% { border-color: #ff8800; box-shadow: 0 0 20px #ff8800; } 33% { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; } 50% { border-color: #00ff00; box-shadow: 0 0 20px #00ff00; } 66% { border-color: #0088ff; box-shadow: 0 0 20px #0088ff; } 83% { border-color: #8800ff; box-shadow: 0 0 20px #8800ff; } 100% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } }
+          @keyframes banner-glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+        </style>
+      `;
+
+      const links = data.links
+        .slice(0, design.maxLinks)
+        .map((link) => {
+          const IconComponent = getPlatformIcon(link.platform);
+          const iconSvg = ReactDOMServer.renderToString(
+            <IconComponent
+              className="transition-transform hover:scale-110"
+              style={design.styles.icon}
+            />
+          );
+          return `
+            <span style="${styleToString(design.styles.link)}; display: flex; align-items: center; gap: 6px; cursor: default;">
+              <span style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconSvg}</span>
+              <span style="font-size: 12px; white-space: nowrap; opacity: 0.9;">${link.url || link.platform}</span>
+            </span>
+          `;
+        })
+        .join("");
+
+      const avatarHtml = design.showAvatar
+        ? `<div style="width: 48px; height: 48px; border-radius: 50%; background: ${data.avatarUrl ? `url(${data.avatarUrl}) center/cover` : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+        }; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
+            ${!data.avatarUrl
+          ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
+          : ""
+        }
+          </div>`
+        : "";
+
+      const taglineHtml =
+        design.showTagline && data.tagline
+          ? `<span class="banner-text-editable" data-banner-field="tagline" style="${styleToString(design.styles.tagline || {})}">${data.tagline}</span>`
+          : "";
+
+      return `
+        ${bannerKeyframes}
+        <div style="${styleToString(design.styles.container)}; width: 100%; height: 100%; box-sizing: border-box;">
+          ${avatarHtml}
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span class="banner-text-editable" data-banner-field="name" style="${styleToString(design.styles.name)}">${data.name}</span>
+            ${taglineHtml}
+          </div>
+          <div style="${styleToString(design.styles.linksContainer)}">
+            ${links}
+          </div>
+        </div>
+      `;
+    },
+    []
+  );
+
+  // --- Banner Text Editing Handlers ---
+  const handleBannerTextClick = useCallback(
+    (id: string, e: React.MouseEvent) => {
+      // 1. Find the overlay to ensure it exists
+      const overlay = activeScene.activeOverlays.find((o) => o.id === id);
+      if (!overlay) {
+        setIsBannerEditorOpen(true);
+        setEditingBannerId(id);
+        return;
+      }
+
+      // 2. Perform Hit Test on Iframe Content
+      // Since iframe has pointer-events: none, the click is captured by the container.
+      // We must calculate the click position relative to the iframe and check elementFromPoint inside.
+      try {
+        // The event target from HybridDraggable should be the wrapper
+        // Find iframe within the clicked container
+        const container = e.currentTarget as HTMLElement;
+        // In HybridDraggable, onDoubleClick passes the event. e.target might be the wrapper.
+        // We can try to find the iframe in the document if e.currentTarget isn't helpful,
+        // but HybridDraggable calls the callback, it doesn't dispatch a React event to us directly on the DOM,
+        // so e.currentTarget might be null or undefined if not properly proxied?
+        // Wait, HybridDraggable calls `onDoubleClick(id, e)`. `e` is a native/React event object.
+        // Let's assume e.target is the element that was clicked.
+        
+        // Better approach: Find the wrapper by ID if possible?
+        // But we don't set ID on wrapper.
+        
+        // Let's try traversing from e.target.
+        const targetNode = e.target as HTMLElement;
+        const wrapper = targetNode.closest(".group"); // HybridDraggable has class "group"
+        const iframe = wrapper?.querySelector("iframe");
+
+        if (iframe && iframe.contentDocument) {
+          const rect = iframe.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const innerTarget = iframe.contentDocument.elementFromPoint(x, y);
+          
+          if (innerTarget) {
+            // Check for data-banner-field
+            const fieldElement = innerTarget.closest("[data-banner-field]");
+            if (fieldElement) {
+              const field = fieldElement.getAttribute("data-banner-field") as "name" | "tagline";
+              const currentText = fieldElement.textContent || "";
+              
+              // Extract computed style for the toolbar
+              const style = iframe.contentWindow?.getComputedStyle(fieldElement);
+              
+              const relevantStyle: React.CSSProperties = {
+                fontFamily: style?.fontFamily,
+                fontSize: style?.fontSize,
+                fontWeight: style?.fontWeight as any,
+                fontStyle: style?.fontStyle,
+                textDecoration: style?.textDecoration,
+                color: style?.color,
+                textShadow: style?.textShadow,
+                textAlign: style?.textAlign as any,
+              };
+
+              setEditingBannerText({
+                overlayId: id,
+                field,
+                currentText,
+                style: relevantStyle
+              });
+              return; // Inline edit activated, skip modal
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Banner hit test failed:", err);
+      }
+
+      // Fallback: Open Modal
+      setEditingBannerId(id);
+      setIsBannerEditorOpen(true);
+    },
+    [activeScene.activeOverlays]
+  );
+
+  const handleBannerTextStyleChange = useCallback(
+    (newStyle: React.CSSProperties) => {
+      if (!editingBannerText) return;
+
+      const { overlayId, field } = editingBannerText;
+      const overlay = activeScene.activeOverlays.find((o) => o.id === overlayId);
+      if (!overlay || !overlay.metadata?.design || !overlay.metadata?.data) return;
+
+      const design = overlay.metadata.design as SocialBannerDesign;
+      const data = overlay.metadata.data as SocialBannerData;
+
+      // Update the specific style field in the design
+      // Note: We need to deep merge or update the nested style property
+      const updatedDesign = {
+        ...design,
+        styles: {
+          ...design.styles,
+          [field]: {
+            ...design.styles[field],
+            ...newStyle
+          }
+        }
+      };
+
+      // Regenerate HTML
+      const newHtmlContent = generateBannerHtml(updatedDesign, data);
+
+      // Update Scene and Local State
+      updateActiveScene((scene) => ({
+        ...scene,
+        activeOverlays: scene.activeOverlays.map((o) =>
+          o.id === overlayId
+            ? {
+                ...o,
+                htmlContent: newHtmlContent,
+                metadata: {
+                  ...o.metadata,
+                  design: updatedDesign
+                }
+              }
+            : o
+        ),
+      }));
+
+      // Update local state to reflect style change in toolbar (optional, but good for sync)
+      setEditingBannerText((prev) => prev ? ({
+        ...prev,
+        style: { ...prev.style, ...newStyle }
+      }) : null);
+    },
+    [activeScene.activeOverlays, editingBannerText, updateActiveScene, generateBannerHtml]
+  );
 
   // --- Handlers ---
 
@@ -461,74 +679,24 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
   const handleAddSocialBanner = useCallback(
     (design: SocialBannerDesign, data: SocialBannerData) => {
-      // Generate HTML content from the design and data
-      const generateBannerHtml = () => {
-        // CSS keyframes for banner animations - injected inline so they work in isolated contexts
-        const bannerKeyframes = `
-          <style>
-            @keyframes banner-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-            @keyframes banner-pulse-glow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
-            @keyframes banner-neon-flicker { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 93% { opacity: 0.8; } 94% { opacity: 1; } 96% { opacity: 0.9; } 97% { opacity: 1; } }
-            @keyframes banner-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-            @keyframes banner-holographic { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-            @keyframes banner-gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-            @keyframes banner-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-            @keyframes banner-rgb-cycle { 0% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } 16% { border-color: #ff8800; box-shadow: 0 0 20px #ff8800; } 33% { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; } 50% { border-color: #00ff00; box-shadow: 0 0 20px #00ff00; } 66% { border-color: #0088ff; box-shadow: 0 0 20px #0088ff; } 83% { border-color: #8800ff; box-shadow: 0 0 20px #8800ff; } 100% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } }
-            @keyframes banner-glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
-          </style>
-        `;
-
-        const links = data.links
-          .slice(0, design.maxLinks)
-          .map(
-            (link) => `
-          <span style="${styleToString(design.styles.link)}; display: flex; align-items: center; gap: 6px; cursor: default;">
-            <span style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${getPlatformSvg(link.platform)}</span>
-            <span style="font-size: 12px; white-space: nowrap; opacity: 0.9;">${link.url || link.platform}</span>
-          </span>
-        `
-          )
-          .join("");
-
-        const avatarHtml = design.showAvatar
-          ? `<div style="width: 48px; height: 48px; border-radius: 50%; background: ${data.avatarUrl ? `url(${data.avatarUrl}) center/cover` : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
-              ${!data.avatarUrl ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' : ""}
-            </div>`
-          : "";
-
-        const taglineHtml =
-          design.showTagline && data.tagline
-            ? `<span style="${styleToString(design.styles.tagline || {})}">${data.tagline}</span>`
-            : "";
-
-        return `
-          ${bannerKeyframes}
-          <div style="${styleToString(design.styles.container)}; width: 100%; height: 100%; box-sizing: border-box;">
-            ${avatarHtml}
-            <div style="display: flex; flex-direction: column; gap: 2px;">
-              <span style="${styleToString(design.styles.name)}">${data.name}</span>
-              ${taglineHtml}
-            </div>
-            <div style="${styleToString(design.styles.linksContainer)}">
-              ${links}
-            </div>
-          </div>
-        `;
-      };
-
-      const htmlContent = generateBannerHtml();
+      const htmlContent = generateBannerHtml(design, data);
       const newOverlay: GeneratedOverlay = {
         id: generateId("banner"),
         name: `${design.name} Banner`,
         htmlContent,
         layout: {
           position: { x: 50, y: 50 },
-          size: { width: 60, height: 15 },
+          size: { width: 80, height: 25 },
           zIndex: zIndex.draggableElement,
           rotation: 0,
           layerOrder: "above-video",
         },
         preview: design.preview,
+        metadata: {
+          type: "social-banner",
+          design,
+          data
+        }
       };
 
       updateActiveScene((scene) => ({
@@ -539,7 +707,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       selection.setSelectedGeneratedId(newOverlay.id);
       toast.success(`Added "${design.name}" banner to canvas`);
     },
-    [updateActiveScene, selection]
+    [updateActiveScene, selection, generateBannerHtml]
   );
 
   const processTranscript = useCallback(
@@ -807,8 +975,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         onFaceTrackingToggle: (val: boolean) =>
           updateSceneProperty("isFaceTrackingEnabled", val),
         onCanvasPresetSelect: layoutManager.handleCanvasPresetSelect,
+        onCanvasPresetSelect: layoutManager.handleCanvasPresetSelect,
         selectedDeviceId: scene.selectedVideoDevice,
       },
+      // Inline Banner Editing (Top-level props)
+      editingBannerText: editingBannerText,
+      onBannerTextStyleChange: handleBannerTextStyleChange,
+      onBannerTextClose: () => setEditingBannerText(null),
     };
   };
 
@@ -963,14 +1136,14 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         setTimeout(() => onSetSettingsOpen(false), 4000);
       }, 500);
     },
-    onBannerDoubleClick: (id: string) => {
-      // Check if this is a banner overlay (by name containing "Banner")
-      const overlay = activeScene.activeOverlays.find((o) => o.id === id);
-      if (overlay && overlay.name.includes("Banner")) {
-        setEditingBannerId(id);
-        setIsBannerEditorOpen(true);
-      }
+    onAiPopoverAutoClose: () => {
+      setTimeout(() => {
+        onSetSettingsOpen(true);
+        setTimeout(() => onSetSettingsOpen(false), 4000);
+      }, 500);
     },
+    // Updated to use the new handler that supports both inline and modal editing
+    onBannerDoubleClick: (id: string, e: React.MouseEvent) => handleBannerTextClick(id, e),
   };
 
   return (
@@ -1023,66 +1196,22 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
               const design = designs.find((d) => d.name === designName) || designs[0];
 
               // Generate new HTML
-              const links = data.links
-                .slice(0, design.maxLinks)
-                .map(
-                  (link) => `
-                <span style="${styleToString(design.styles.link)}; display: flex; align-items: center; gap: 6px; cursor: default;">
-                  <span style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${getPlatformSvg(link.platform)}</span>
-                  <span style="font-size: 12px; white-space: nowrap; opacity: 0.9;">${link.url || link.platform}</span>
-                </span>
-              `
-                )
-                .join("");
-
-              const avatarHtml = design.showAvatar
-                ? `<div style="width: 48px; height: 48px; border-radius: 50%; background: ${data.avatarUrl ? `url(${data.avatarUrl}) center/cover` : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
-                    ${!data.avatarUrl ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' : ""}
-                  </div>`
-                : "";
-
-              const taglineHtml =
-                design.showTagline && data.tagline
-                  ? `<span style="${styleToString(design.styles.tagline || {})}">${data.tagline}</span>`
-                  : "";
-
-              // CSS keyframes for banner animations - injected inline
-              const bannerKeyframes = `
-                <style>
-                  @keyframes banner-shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-                  @keyframes banner-pulse-glow { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
-                  @keyframes banner-neon-flicker { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 93% { opacity: 0.8; } 94% { opacity: 1; } 96% { opacity: 0.9; } 97% { opacity: 1; } }
-                  @keyframes banner-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-                  @keyframes banner-holographic { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-                  @keyframes banner-gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-                  @keyframes banner-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-                  @keyframes banner-rgb-cycle { 0% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } 16% { border-color: #ff8800; box-shadow: 0 0 20px #ff8800; } 33% { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; } 50% { border-color: #00ff00; box-shadow: 0 0 20px #00ff00; } 66% { border-color: #0088ff; box-shadow: 0 0 20px #0088ff; } 83% { border-color: #8800ff; box-shadow: 0 0 20px #8800ff; } 100% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; } }
-                  @keyframes banner-glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
-                </style>
-              `;
-
-              const newHtmlContent = `
-                ${bannerKeyframes}
-                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 20px;">
-                  <div style="${styleToString(design.styles.container)}">
-                    ${avatarHtml}
-                    <div style="display: flex; flex-direction: column; gap: 2px;">
-                      <span style="${styleToString(design.styles.name)}">${data.name}</span>
-                      ${taglineHtml}
-                    </div>
-                    <div style="${styleToString(design.styles.linksContainer)}">
-                      ${links}
-                    </div>
-                  </div>
-                </div>
-              `;
+              // Generate new HTML using the helper
+              const newHtmlContent = generateBannerHtml(design, data);
 
               // Update the overlay
               updateActiveScene((scene) => ({
                 ...scene,
                 activeOverlays: scene.activeOverlays.map((o) =>
                   o.id === editingBannerId
-                    ? { ...o, htmlContent: newHtmlContent }
+                    ? {
+                      ...o,
+                      htmlContent: newHtmlContent,
+                      metadata: {
+                        ...o.metadata,
+                        data: data // Update data in metadata
+                      }
+                    }
                     : o
                 ),
               }));

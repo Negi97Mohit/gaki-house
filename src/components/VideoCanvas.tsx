@@ -41,6 +41,7 @@ import { VideoPlayer } from "@/components/video-canvas/VideoPlayer";
 import { ScreenShareView } from "@/components/video-canvas/ScreenShareView";
 import { SnapLines, SnapLinesRef } from "@/components/video-canvas/SnapLines";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
+import { TextEditingToolbar } from "@/components/TextEditingToolbar";
 
 interface VideoCanvasProps {
   sceneId: string;
@@ -193,8 +194,17 @@ interface VideoCanvasProps {
   canvasAspectRatio: string;
   selectedGeneratedId?: string | null;
   setSelectedGeneratedId?: (id: string | null) => void;
-  onBannerDoubleClick?: (id: string) => void;
+  onBannerDoubleClick?: (id: string, e: React.MouseEvent) => void;
   remoteStream?: MediaStream | null;
+  // Banner Text Editing
+  editingBannerText?: {
+    overlayId: string;
+    field: "name" | "tagline";
+    currentText: string;
+    style: React.CSSProperties;
+  } | null;
+  onBannerTextStyleChange?: (style: React.CSSProperties) => void;
+  onBannerTextClose?: () => void;
 }
 
 // --- Main Component ---
@@ -627,6 +637,88 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               </Rnd>
             </div>
           )}
+
+        {/* --- ADDED: Banner Text Editing Toolbar --- */}
+        {props.editingBannerText && props.onBannerTextStyleChange && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ zIndex: "var(--z-text-toolbar, 9999)" }}
+          >
+            {(() => {
+              const bannerOverlay = generatedOverlays.find(
+                (o) => o.id === props.editingBannerText?.overlayId
+              );
+              if (!bannerOverlay) return null;
+
+              // Extract layout position relative to container
+              const position = {
+                x: (bannerOverlay.layout.position.x / 100) * sceneSize.width,
+                y: (bannerOverlay.layout.position.y / 100) * sceneSize.height,
+              };
+
+              // Convert CSS style to CaptionStyle for the toolbar
+              const cssStyle = props.editingBannerText.style;
+              const captionStyle: CaptionStyle = {
+                ...props.liveCaptionStyle, // fallback
+                fontFamily: (cssStyle.fontFamily as string) || "Inter",
+                fontSize: parseInt((cssStyle.fontSize as string) || "24", 10),
+                color: (cssStyle.color as string) || "#ffffff",
+                backgroundColor: (cssStyle.backgroundColor as string) || "transparent",
+                bold: cssStyle.fontWeight === "bold" || cssStyle.fontWeight === 700,
+                italic: cssStyle.fontStyle === "italic",
+                underline: (cssStyle.textDecoration as string)?.includes("underline") || false,
+                textShadow: (cssStyle.textShadow as string),
+                textAlign: (cssStyle.textAlign as any) || "left",
+                // Preserve other required props (dummies)
+                position: { x: 0, y: 0 },
+                shape: "rectangular",
+                animation: "none",
+                outline: false,
+                shadow: false,
+                rotation: 0,
+                border: false,
+                borderColor: "transparent",
+                borderWidth: 0,
+              };
+
+              // Create proxy overlay for the toolbar
+              const proxyOverlay: TextOverlayState = {
+                id: props.editingBannerText.overlayId,
+                content: props.editingBannerText.currentText,
+                style: captionStyle,
+                layout: bannerOverlay.layout,
+              };
+
+              return (
+                <div className="pointer-events-auto">
+                  <TextEditingToolbar
+                    overlay={proxyOverlay}
+                    position={position}
+                    containerRef={sceneRef}
+                    elementWidth={(bannerOverlay.layout.size.width / 100) * sceneSize.width}
+                    elementHeight={(bannerOverlay.layout.size.height / 100) * sceneSize.height}
+                    onStyleChange={(id, partialStyle) => {
+                      // Convert partial CaptionStyle back to CSS properties
+                      const newCssStyle: React.CSSProperties = {};
+                      if (partialStyle.fontFamily) newCssStyle.fontFamily = partialStyle.fontFamily;
+                      if (partialStyle.fontSize) newCssStyle.fontSize = `${partialStyle.fontSize}px`;
+                      if (partialStyle.color) newCssStyle.color = partialStyle.color;
+                      if (partialStyle.backgroundColor) newCssStyle.backgroundColor = partialStyle.backgroundColor;
+                      if (partialStyle.bold !== undefined) newCssStyle.fontWeight = partialStyle.bold ? "bold" : "normal";
+                      if (partialStyle.italic !== undefined) newCssStyle.fontStyle = partialStyle.italic ? "italic" : "normal";
+                      if (partialStyle.underline !== undefined) newCssStyle.textDecoration = partialStyle.underline ? "underline" : "none";
+                      if (partialStyle.textShadow !== undefined) newCssStyle.textShadow = partialStyle.textShadow;
+                      if (partialStyle.textAlign) newCssStyle.textAlign = partialStyle.textAlign;
+
+                      props.onBannerTextStyleChange?.(newCssStyle);
+                    }}
+                  />
+                  {/* Close button / Click-outside overlay could be handled here or higher up */}
+                </div>
+              );
+            })()}
+          </div>
+        )}
 
         <canvas
           ref={props.canvasRef}
