@@ -522,7 +522,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         name: `${design.name} Banner`,
         htmlContent,
         layout: {
-          position: { x: 50, y: 85 },
+          position: { x: 50, y: 50 },
           size: { width: 60, height: 15 },
           zIndex: zIndex.draggableElement,
           rotation: 0,
