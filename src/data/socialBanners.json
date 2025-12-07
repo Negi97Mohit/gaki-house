@@ -3883,6 +3883,536 @@
                     "height": "18px"
                 }
             }
+        },
+        {
+            "id": "neon-pulse-wave",
+            "name": "Neon Pulse Wave",
+            "description": "Animated neon glow with pulse effect",
+            "preview": "linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 100%)",
+            "layout": "horizontal",
+            "theme": "neon",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, rgba(10, 10, 26, 0.95) 0%, rgba(26, 10, 46, 0.95) 100%)",
+                    "border": "2px solid #ff00ff",
+                    "borderRadius": "16px",
+                    "padding": "18px 28px",
+                    "boxShadow": "0 0 30px rgba(255, 0, 255, 0.5), 0 0 60px rgba(0, 255, 255, 0.3), inset 0 0 30px rgba(255, 0, 255, 0.1)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "18px",
+                    "animation": "banner-pulse-glow 2s ease-in-out infinite"
+                },
+                "name": {
+                    "color": "#ff00ff",
+                    "fontSize": "26px",
+                    "fontWeight": "700",
+                    "textShadow": "0 0 10px rgba(255, 0, 255, 0.8), 0 0 30px rgba(255, 0, 255, 0.5)",
+                    "fontFamily": "'Orbitron', sans-serif",
+                    "animation": "banner-neon-flicker 3s ease-in-out infinite"
+                },
+                "tagline": {
+                    "color": "#00ffff",
+                    "fontSize": "14px",
+                    "textShadow": "0 0 8px rgba(0, 255, 255, 0.6)"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "12px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#ff00ff",
+                    "background": "rgba(255, 0, 255, 0.15)",
+                    "border": "1px solid rgba(255, 0, 255, 0.4)",
+                    "borderRadius": "10px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "20px",
+                    "height": "20px",
+                    "filter": "drop-shadow(0 0 6px rgba(255, 0, 255, 0.8))"
+                }
+            }
+        },
+        {
+            "id": "holographic-shift",
+            "name": "Holographic Shift",
+            "description": "Rainbow holographic animation with color cycling",
+            "preview": "linear-gradient(135deg, #ff0080 0%, #00ff80 50%, #0080ff 100%)",
+            "layout": "horizontal",
+            "theme": "gradient",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, rgba(255, 0, 128, 0.8) 0%, rgba(0, 255, 128, 0.8) 50%, rgba(0, 128, 255, 0.8) 100%)",
+                    "backgroundSize": "200% 200%",
+                    "border": "2px solid rgba(255, 255, 255, 0.5)",
+                    "borderRadius": "20px",
+                    "padding": "18px 28px",
+                    "boxShadow": "0 8px 40px rgba(0, 255, 128, 0.3)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "18px",
+                    "animation": "banner-holographic 5s linear infinite, banner-gradient-shift 4s ease-in-out infinite"
+                },
+                "name": {
+                    "color": "#ffffff",
+                    "fontSize": "26px",
+                    "fontWeight": "800",
+                    "textShadow": "0 2px 10px rgba(0, 0, 0, 0.3)",
+                    "fontFamily": "'Montserrat', sans-serif"
+                },
+                "tagline": {
+                    "color": "rgba(255, 255, 255, 0.95)",
+                    "fontSize": "14px"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "10px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#ffffff",
+                    "background": "rgba(255, 255, 255, 0.25)",
+                    "borderRadius": "12px",
+                    "padding": "10px",
+                    "backdropFilter": "blur(8px)"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px"
+                }
+            }
+        },
+        {
+            "id": "glitch-matrix",
+            "name": "Glitch Matrix",
+            "description": "Cyberpunk glitch effect with RGB distortion",
+            "preview": "linear-gradient(135deg, #000000 0%, #0d0d0d 100%)",
+            "layout": "horizontal",
+            "theme": "dark",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, #000000 0%, #0d0d0d 100%)",
+                    "border": "2px solid #00ff00",
+                    "borderRadius": "4px",
+                    "padding": "18px 28px",
+                    "boxShadow": "0 0 20px rgba(0, 255, 0, 0.3), inset 0 0 40px rgba(0, 255, 0, 0.05)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "18px",
+                    "animation": "banner-glitch 0.5s steps(1) infinite"
+                },
+                "name": {
+                    "color": "#00ff00",
+                    "fontSize": "26px",
+                    "fontWeight": "700",
+                    "textShadow": "2px 0 #ff0000, -2px 0 #0000ff",
+                    "fontFamily": "'VT323', monospace",
+                    "letterSpacing": "3px"
+                },
+                "tagline": {
+                    "color": "#00ff00",
+                    "fontSize": "13px",
+                    "opacity": "0.8",
+                    "fontFamily": "'VT323', monospace"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "10px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#00ff00",
+                    "background": "rgba(0, 255, 0, 0.1)",
+                    "border": "1px solid rgba(0, 255, 0, 0.3)",
+                    "borderRadius": "4px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px",
+                    "filter": "drop-shadow(0 0 4px rgba(0, 255, 0, 0.8))"
+                }
+            }
+        },
+        {
+            "id": "floating-cloud",
+            "name": "Floating Cloud",
+            "description": "Soft floating animation with dreamy clouds",
+            "preview": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            "layout": "horizontal",
+            "theme": "gradient",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%)",
+                    "borderRadius": "30px",
+                    "padding": "20px 32px",
+                    "boxShadow": "0 20px 60px rgba(102, 126, 234, 0.4), 0 0 100px rgba(255, 255, 255, 0.1)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "20px",
+                    "animation": "banner-float 3s ease-in-out infinite"
+                },
+                "name": {
+                    "color": "#ffffff",
+                    "fontSize": "26px",
+                    "fontWeight": "600",
+                    "textShadow": "0 4px 20px rgba(0, 0, 0, 0.3)",
+                    "fontFamily": "'Nunito', sans-serif"
+                },
+                "tagline": {
+                    "color": "rgba(255, 255, 255, 0.9)",
+                    "fontSize": "14px"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "12px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#667eea",
+                    "background": "rgba(255, 255, 255, 0.95)",
+                    "borderRadius": "50%",
+                    "padding": "12px",
+                    "boxShadow": "0 4px 15px rgba(0, 0, 0, 0.15)"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px"
+                }
+            }
+        },
+        {
+            "id": "rgb-gaming-pro",
+            "name": "RGB Gaming Pro",
+            "description": "Animated RGB border cycling for gamers",
+            "preview": "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%)",
+            "layout": "horizontal",
+            "theme": "dark",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%)",
+                    "border": "3px solid #ff0000",
+                    "borderRadius": "12px",
+                    "padding": "18px 28px",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "18px",
+                    "animation": "banner-rgb-cycle 4s linear infinite"
+                },
+                "name": {
+                    "color": "#ffffff",
+                    "fontSize": "28px",
+                    "fontWeight": "800",
+                    "textTransform": "uppercase",
+                    "letterSpacing": "4px",
+                    "fontFamily": "'Teko', sans-serif"
+                },
+                "tagline": {
+                    "color": "#888888",
+                    "fontSize": "12px",
+                    "textTransform": "uppercase",
+                    "letterSpacing": "2px"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "10px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#ffffff",
+                    "background": "rgba(255, 255, 255, 0.1)",
+                    "borderRadius": "8px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "20px",
+                    "height": "20px"
+                }
+            }
+        },
+        {
+            "id": "breathing-aurora",
+            "name": "Breathing Aurora",
+            "description": "Gentle breathing scale with aurora colors",
+            "preview": "linear-gradient(135deg, #00c6ff 0%, #0072ff 50%, #7c3aed 100%)",
+            "layout": "horizontal",
+            "theme": "gradient",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, rgba(0, 198, 255, 0.85) 0%, rgba(0, 114, 255, 0.85) 50%, rgba(124, 58, 237, 0.85) 100%)",
+                    "backgroundSize": "200% 200%",
+                    "borderRadius": "24px",
+                    "padding": "20px 32px",
+                    "boxShadow": "0 15px 50px rgba(0, 114, 255, 0.4)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "20px",
+                    "animation": "banner-breathe 4s ease-in-out infinite, banner-gradient-shift 6s ease-in-out infinite"
+                },
+                "name": {
+                    "color": "#ffffff",
+                    "fontSize": "26px",
+                    "fontWeight": "700",
+                    "textShadow": "0 2px 15px rgba(0, 0, 0, 0.3)",
+                    "fontFamily": "'Raleway', sans-serif"
+                },
+                "tagline": {
+                    "color": "rgba(255, 255, 255, 0.9)",
+                    "fontSize": "14px"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "12px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#0072ff",
+                    "background": "rgba(255, 255, 255, 0.9)",
+                    "borderRadius": "14px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px"
+                }
+            }
+        },
+        {
+            "id": "shimmer-gold",
+            "name": "Shimmer Gold",
+            "description": "Luxury gold shimmer animation",
+            "preview": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+            "layout": "horizontal",
+            "theme": "dark",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+                    "border": "2px solid #ffd700",
+                    "borderRadius": "16px",
+                    "padding": "18px 28px",
+                    "boxShadow": "0 10px 40px rgba(255, 215, 0, 0.2), inset 0 0 30px rgba(255, 215, 0, 0.05)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "18px"
+                },
+                "name": {
+                    "color": "transparent",
+                    "background": "linear-gradient(90deg, #ffd700, #fff8dc, #ffd700, #fff8dc, #ffd700)",
+                    "backgroundSize": "200% auto",
+                    "backgroundClip": "text",
+                    "WebkitBackgroundClip": "text",
+                    "fontSize": "28px",
+                    "fontWeight": "700",
+                    "fontFamily": "'Cinzel', serif",
+                    "animation": "banner-shimmer 3s linear infinite"
+                },
+                "tagline": {
+                    "color": "#b8860b",
+                    "fontSize": "13px",
+                    "fontStyle": "italic"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "10px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#ffd700",
+                    "background": "rgba(255, 215, 0, 0.1)",
+                    "border": "1px solid rgba(255, 215, 0, 0.3)",
+                    "borderRadius": "10px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px",
+                    "filter": "drop-shadow(0 0 4px rgba(255, 215, 0, 0.6))"
+                }
+            }
+        },
+        {
+            "id": "electric-pulse",
+            "name": "Electric Pulse",
+            "description": "Electric blue pulse with energy effect",
+            "preview": "linear-gradient(135deg, #0a0a20 0%, #1a1a40 100%)",
+            "layout": "horizontal",
+            "theme": "neon",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, rgba(10, 10, 32, 0.95) 0%, rgba(26, 26, 64, 0.95) 100%)",
+                    "border": "2px solid #00bfff",
+                    "borderRadius": "14px",
+                    "padding": "18px 28px",
+                    "boxShadow": "0 0 25px rgba(0, 191, 255, 0.5), 0 0 50px rgba(0, 191, 255, 0.2), inset 0 0 25px rgba(0, 191, 255, 0.1)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "18px",
+                    "animation": "banner-pulse-glow 1.5s ease-in-out infinite"
+                },
+                "name": {
+                    "color": "#00bfff",
+                    "fontSize": "26px",
+                    "fontWeight": "700",
+                    "textShadow": "0 0 15px rgba(0, 191, 255, 0.8), 0 0 30px rgba(0, 191, 255, 0.4)",
+                    "fontFamily": "'Exo 2', sans-serif"
+                },
+                "tagline": {
+                    "color": "#87ceeb",
+                    "fontSize": "14px",
+                    "textShadow": "0 0 8px rgba(135, 206, 235, 0.5)"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "12px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#00bfff",
+                    "background": "rgba(0, 191, 255, 0.15)",
+                    "border": "1px solid rgba(0, 191, 255, 0.4)",
+                    "borderRadius": "10px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px",
+                    "filter": "drop-shadow(0 0 6px rgba(0, 191, 255, 0.8))"
+                }
+            }
+        },
+        {
+            "id": "retro-wave",
+            "name": "Retro Wave",
+            "description": "80s synthwave with gradient shift",
+            "preview": "linear-gradient(135deg, #2d1f4e 0%, #1a0a2e 100%)",
+            "layout": "horizontal",
+            "theme": "retro",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, rgba(45, 31, 78, 0.95) 0%, rgba(26, 10, 46, 0.95) 100%)",
+                    "border": "3px solid transparent",
+                    "borderImage": "linear-gradient(135deg, #ff6b9d, #c44ce2, #00bcd4) 1",
+                    "borderRadius": "0px",
+                    "padding": "18px 32px",
+                    "boxShadow": "0 10px 40px rgba(196, 76, 226, 0.3)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "20px"
+                },
+                "name": {
+                    "color": "#ff6b9d",
+                    "fontSize": "30px",
+                    "fontWeight": "700",
+                    "textTransform": "uppercase",
+                    "letterSpacing": "5px",
+                    "fontFamily": "'Bebas Neue', sans-serif",
+                    "textShadow": "0 0 20px rgba(255, 107, 157, 0.6), 3px 3px 0 #c44ce2"
+                },
+                "tagline": {
+                    "color": "#00bcd4",
+                    "fontSize": "12px",
+                    "textTransform": "uppercase",
+                    "letterSpacing": "4px"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "10px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#ff6b9d",
+                    "background": "rgba(255, 107, 157, 0.15)",
+                    "border": "2px solid #ff6b9d",
+                    "borderRadius": "0px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px"
+                }
+            }
+        },
+        {
+            "id": "cosmic-glow",
+            "name": "Cosmic Glow",
+            "description": "Space-themed with animated glow orbs",
+            "preview": "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+            "layout": "horizontal",
+            "theme": "dark",
+            "showAvatar": true,
+            "showTagline": true,
+            "maxLinks": 5,
+            "styles": {
+                "container": {
+                    "background": "linear-gradient(135deg, rgba(15, 12, 41, 0.95) 0%, rgba(48, 43, 99, 0.95) 50%, rgba(36, 36, 62, 0.95) 100%)",
+                    "backgroundSize": "200% 200%",
+                    "border": "1px solid rgba(138, 43, 226, 0.5)",
+                    "borderRadius": "20px",
+                    "padding": "20px 32px",
+                    "boxShadow": "0 0 40px rgba(138, 43, 226, 0.3), 0 0 80px rgba(75, 0, 130, 0.2), inset 0 0 40px rgba(138, 43, 226, 0.05)",
+                    "display": "flex",
+                    "alignItems": "center",
+                    "gap": "20px",
+                    "animation": "banner-gradient-shift 8s ease-in-out infinite, banner-breathe 5s ease-in-out infinite"
+                },
+                "name": {
+                    "color": "#e0b0ff",
+                    "fontSize": "26px",
+                    "fontWeight": "600",
+                    "textShadow": "0 0 20px rgba(224, 176, 255, 0.6)",
+                    "fontFamily": "'Space Grotesk', sans-serif"
+                },
+                "tagline": {
+                    "color": "#b19cd9",
+                    "fontSize": "14px"
+                },
+                "linksContainer": {
+                    "display": "flex",
+                    "gap": "12px",
+                    "marginLeft": "auto"
+                },
+                "link": {
+                    "color": "#e0b0ff",
+                    "background": "rgba(138, 43, 226, 0.2)",
+                    "border": "1px solid rgba(224, 176, 255, 0.3)",
+                    "borderRadius": "12px",
+                    "padding": "10px"
+                },
+                "icon": {
+                    "width": "18px",
+                    "height": "18px",
+                    "filter": "drop-shadow(0 0 5px rgba(224, 176, 255, 0.8))"
+                }
+            }
         }
     ]
 }
