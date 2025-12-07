@@ -427,8 +427,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           <div
             className="relative flex items-center justify-center overflow-hidden"
             style={{
-              [isVertical ? "height" : "width"]: `${(1 - dynamicSplitRatio) * 100
-                }%`,
+              [isVertical ? "height" : "width"]: `${
+                (1 - dynamicSplitRatio) * 100
+              }%`,
             }}
           >
             {renderCamera()}
@@ -484,7 +485,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             screenShareMode={props.screenShareMode}
             onPipPositionChange={props.onPipPositionChange}
             onPipSizeChange={props.onPipSizeChange}
-            onPipRotationChange={props.onPipRotationChange || (() => { })}
+            onPipRotationChange={props.onPipRotationChange || (() => {})}
             pipRotation={props.pipRotation}
             onInternalDragStart={props.onInternalDragStart}
             onInternalDragStop={props.onInternalDragStop}
@@ -528,7 +529,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     [textOverlays, browserOverlays, fileOverlays, generatedOverlays]
   );
 
-  // --- ADDED: Style construction helper ---
   const captionBaseStyle: React.CSSProperties = {
     fontFamily: props.liveCaptionStyle.fontFamily,
     fontSize: `${props.liveCaptionStyle.fontSize}px`,
@@ -575,7 +575,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
         {renderContent()}
 
-        {/* --- MODIFIED: Live Caption Renderer with Correct Centering --- */}
         {captionsEnabled &&
           (fullTranscript || interimTranscript) &&
           sceneSize.width > 0 && (
@@ -584,37 +583,33 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               style={{ zIndex: "var(--z-caption)" }}
             >
               <Rnd
-                key={sceneSize.width} // Re-mount if scene size changes (fixes init glitch)
+                key={sceneSize.width}
                 default={{
-                  // Center the box on the target point
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
                 }}
-                // Controlled position: Keep it centered
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}
-                // Removed bounds="parent" to prevent clipping if text is near edge
                 className="pointer-events-auto"
                 style={{ position: "absolute" }}
                 onDragStop={(e, d) => {
-                  // Convert top-left coordinate back to center percentage
                   const centerX = d.x + captionWidth / 2;
                   const centerY = d.y + captionHeight / 2;
 
@@ -638,7 +633,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             </div>
           )}
 
-        {/* --- ADDED: Banner Text Editing Toolbar --- */}
         {props.editingBannerText && props.onBannerTextStyleChange && (
           <div
             className="absolute inset-0 pointer-events-none"
@@ -650,26 +644,27 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               );
               if (!bannerOverlay) return null;
 
-              // Extract layout position relative to container
               const position = {
                 x: (bannerOverlay.layout.position.x / 100) * sceneSize.width,
                 y: (bannerOverlay.layout.position.y / 100) * sceneSize.height,
               };
 
-              // Convert CSS style to CaptionStyle for the toolbar
               const cssStyle = props.editingBannerText.style;
               const captionStyle: CaptionStyle = {
-                ...props.liveCaptionStyle, // fallback
+                ...props.liveCaptionStyle,
                 fontFamily: (cssStyle.fontFamily as string) || "Inter",
                 fontSize: parseInt((cssStyle.fontSize as string) || "24", 10),
                 color: (cssStyle.color as string) || "#ffffff",
-                backgroundColor: (cssStyle.backgroundColor as string) || "transparent",
-                bold: cssStyle.fontWeight === "bold" || cssStyle.fontWeight === 700,
+                backgroundColor:
+                  (cssStyle.backgroundColor as string) || "transparent",
+                bold:
+                  cssStyle.fontWeight === "bold" || cssStyle.fontWeight === 700,
                 italic: cssStyle.fontStyle === "italic",
-                underline: (cssStyle.textDecoration as string)?.includes("underline") || false,
-                textShadow: (cssStyle.textShadow as string),
+                underline:
+                  (cssStyle.textDecoration as string)?.includes("underline") ||
+                  false,
+                textShadow: cssStyle.textShadow as string,
                 textAlign: (cssStyle.textAlign as any) || "left",
-                // Preserve other required props (dummies)
                 position: { x: 0, y: 0 },
                 shape: "rectangular",
                 animation: "none",
@@ -681,7 +676,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 borderWidth: 0,
               };
 
-              // Create proxy overlay for the toolbar
               const proxyOverlay: TextOverlayState = {
                 id: props.editingBannerText.overlayId,
                 content: props.editingBannerText.currentText,
@@ -695,25 +689,44 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     overlay={proxyOverlay}
                     position={position}
                     containerRef={sceneRef}
-                    elementWidth={(bannerOverlay.layout.size.width / 100) * sceneSize.width}
-                    elementHeight={(bannerOverlay.layout.size.height / 100) * sceneSize.height}
+                    elementWidth={
+                      (bannerOverlay.layout.size.width / 100) * sceneSize.width
+                    }
+                    elementHeight={
+                      (bannerOverlay.layout.size.height / 100) *
+                      sceneSize.height
+                    }
                     onStyleChange={(id, partialStyle) => {
-                      // Convert partial CaptionStyle back to CSS properties
                       const newCssStyle: React.CSSProperties = {};
-                      if (partialStyle.fontFamily) newCssStyle.fontFamily = partialStyle.fontFamily;
-                      if (partialStyle.fontSize) newCssStyle.fontSize = `${partialStyle.fontSize}px`;
-                      if (partialStyle.color) newCssStyle.color = partialStyle.color;
-                      if (partialStyle.backgroundColor) newCssStyle.backgroundColor = partialStyle.backgroundColor;
-                      if (partialStyle.bold !== undefined) newCssStyle.fontWeight = partialStyle.bold ? "bold" : "normal";
-                      if (partialStyle.italic !== undefined) newCssStyle.fontStyle = partialStyle.italic ? "italic" : "normal";
-                      if (partialStyle.underline !== undefined) newCssStyle.textDecoration = partialStyle.underline ? "underline" : "none";
-                      if (partialStyle.textShadow !== undefined) newCssStyle.textShadow = partialStyle.textShadow;
-                      if (partialStyle.textAlign) newCssStyle.textAlign = partialStyle.textAlign;
+                      if (partialStyle.fontFamily)
+                        newCssStyle.fontFamily = partialStyle.fontFamily;
+                      if (partialStyle.fontSize)
+                        newCssStyle.fontSize = `${partialStyle.fontSize}px`;
+                      if (partialStyle.color)
+                        newCssStyle.color = partialStyle.color;
+                      if (partialStyle.backgroundColor)
+                        newCssStyle.backgroundColor =
+                          partialStyle.backgroundColor;
+                      if (partialStyle.bold !== undefined)
+                        newCssStyle.fontWeight = partialStyle.bold
+                          ? "bold"
+                          : "normal";
+                      if (partialStyle.italic !== undefined)
+                        newCssStyle.fontStyle = partialStyle.italic
+                          ? "italic"
+                          : "normal";
+                      if (partialStyle.underline !== undefined)
+                        newCssStyle.textDecoration = partialStyle.underline
+                          ? "underline"
+                          : "none";
+                      if (partialStyle.textShadow !== undefined)
+                        newCssStyle.textShadow = partialStyle.textShadow;
+                      if (partialStyle.textAlign)
+                        newCssStyle.textAlign = partialStyle.textAlign;
 
                       props.onBannerTextStyleChange?.(newCssStyle);
                     }}
                   />
-                  {/* Close button / Click-outside overlay could be handled here or higher up */}
                 </div>
               );
             })()}
@@ -795,14 +808,17 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <Rnd
           style={{ zIndex: "var(--z-ai-popover-trigger)" }}
           cancel=".aicp-content"
-          size={{ width: 64, height: 64 }}
+          // REDUCED SIZE: 64 -> 48 to be less obtrusive
+          size={{ width: 48, height: 48 }}
           position={{
-            x: (props.aiButtonPosition.x / 100) * containerSize.width - 32,
-            y: (props.aiButtonPosition.y / 100) * containerSize.height - 32,
+            // REDUCED OFFSET: 32 -> 24 (half of 48) to keep it centered
+            x: (props.aiButtonPosition.x / 100) * containerSize.width - 24,
+            y: (props.aiButtonPosition.y / 100) * containerSize.height - 24,
           }}
           onDragStop={(e, d) => {
-            const newX = ((d.x + 32) / containerSize.width) * 100;
-            const newY = ((d.y + 32) / containerSize.height) * 100;
+            // REDUCED OFFSET: 32 -> 24
+            const newX = ((d.x + 24) / containerSize.width) * 100;
+            const newY = ((d.y + 24) / containerSize.height) * 100;
             props.onAiButtonPositionChange({ x: newX, y: newY });
           }}
           bounds="parent"
@@ -828,9 +844,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           >
             <Button
               size="icon"
-              className="rounded-full h-16 w-16 shadow-lg bg-purple-600 hover:bg-purple-700"
+              // REDUCED SIZE: h-16 w-16 -> h-12 w-12
+              // NEW COLOR: bg-purple-600 -> bg-[#2596be]
+              className="rounded-full h-12 w-12 shadow-lg bg-[#2596be] hover:bg-[#1e7ca0]"
             >
-              <Sparkles className="h-8 w-8" />
+              {/* REDUCED ICON SIZE: h-8 w-8 -> h-6 w-6 */}
+              <Sparkles className="h-6 w-6" />
             </Button>
           </AICommandPopover>
         </Rnd>

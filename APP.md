@@ -1,4 +1,4 @@
-# GAKI 小子 - Complete Application Documentation
+# GAKI - Complete Application Documentation
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue)
 ![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)
@@ -23,7 +23,7 @@
 
 ## 🎯 Overview
 
-**GAKI 小子** is a next-generation, AI-powered web application for creating professional video content with real-time effects, live captions, and multi-scene management. Built entirely in the browser using React and modern web APIs, it combines the flexibility of a video editor with the power of AI-driven content generation.
+**GAKI ** is a next-generation, AI-powered web application for creating professional video content with real-time effects, live captions, and multi-scene management. Built entirely in the browser using React and modern web APIs, it combines the flexibility of a video editor with the power of AI-driven content generation.
 
 ### Key Capabilities
 

@@ -1,3 +1,4 @@
+// src/components/CameraRenderer.tsx
 import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
@@ -6,6 +7,7 @@ import { usePictureInPicture } from "@/hooks/usePictureInPicture";
 import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { AmbientBackground } from "./AmbientBackground";
 
 interface CameraRendererProps {
   stream: MediaStream | null;
@@ -178,7 +180,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   return (
     <div
       ref={containerRef}
-      className={cn("relative w-full h-full", props.className)}
+      className={cn("relative w-full h-full overflow-hidden", props.className)}
       style={props.style}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -190,22 +192,30 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         playsInline
         className="hidden object-cover w-full h-full"
       />
+
+      {/* --- UPDATED: New Ambient Background Logic --- */}
       {!activeStream && (
-        <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center animate-gradient-bg pointer-events-none">
-          <img
-            src="/icon.png"
-            alt="GAKI Logo"
-            className="w-24 h-24 object-contain drop-shadow-2xl mb-2"
-          />
-          {/* Show a hint if waiting for remote connection */}
-          {props.selectedDeviceId === "remote-peer" && (
-            <p className="text-white/80 text-sm animate-pulse">
-              Waiting for phone connection...
-            </p>
-          )}
+        <div className="absolute inset-0 w-full h-full">
+          {/* Background Layer */}
+          <AmbientBackground />
+
+          {/* Content Layer (Logo & Text) */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+            <img
+              src="/icon.png"
+              alt="GAKI Logo"
+              className="w-[10%] min-w-[20px] max-w-[50px] h-auto object-contain drop-shadow-2xl mb-4"
+            />
+            {props.selectedDeviceId === "remote-peer" && (
+              <p className="text-white/80 text-sm animate-pulse">
+                Waiting for phone connection...
+              </p>
+            )}
+          </div>
         </div>
       )}
-      <canvas ref={canvasRef} className="w-full h-full" />
+
+      <canvas ref={canvasRef} className="w-full h-full relative z-0" />
 
       {isHovered &&
         (props.isMouseActive ?? true) &&
@@ -213,7 +223,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
           createPortal(
             <div
               className="absolute top-0 left-0 w-full"
-              style={{ pointerEvents: "auto" }}
+              style={{ pointerEvents: "auto", zIndex: 9999 }}
               onMouseEnter={() => {
                 if (hoverTimeoutRef.current)
                   clearTimeout(hoverTimeoutRef.current);
@@ -227,7 +237,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
             props.portalContainer
           )
         ) : (
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-50">
             <div className="pointer-events-auto inline-block">
               {/* @ts-ignore */}
               <PipControlsToolbar {...toolbarProps} />

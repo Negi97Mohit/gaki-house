@@ -5,7 +5,7 @@ export const FloatingLogo = () => {
       <span className="text-2xl font-semibold tracking-tight text-white">
         GAKI
       </span>
-      <span className="text-lg text-white/70">小子</span>
+      <span className="text-lg text-white/70"></span>
     </div>
   );
 };
