@@ -44,19 +44,19 @@ const DiscordIcon = () => (
 );
 
 // Platform icon mapping
-const getPlatformIcon = (platform: SocialPlatform): React.FC<{ className?: string }> => {
-    const icons: Record<SocialPlatform, React.FC<{ className?: string }>> = {
+const getPlatformIcon = (platform: SocialPlatform): React.FC<{ className?: string; style?: React.CSSProperties }> => {
+    const icons: Record<SocialPlatform, React.FC<{ className?: string; style?: React.CSSProperties }>> = {
         github: Github,
         instagram: Instagram,
         linkedin: Linkedin,
         facebook: Facebook,
         youtube: Youtube,
         website: Globe,
-        discord: ({ className }) => <div className={className}><DiscordIcon /></div>,
-        twitch: ({ className }) => <div className={className}><TwitchIcon /></div>,
-        kick: ({ className }) => <div className={className}><KickIcon /></div>,
-        x: ({ className }) => <div className={className}><XIcon /></div>,
-        tiktok: ({ className }) => <div className={className}><TikTokIcon /></div>,
+        discord: ({ className, style }) => <div className={className} style={style}><DiscordIcon /></div>,
+        twitch: ({ className, style }) => <div className={className} style={style}><TwitchIcon /></div>,
+        kick: ({ className, style }) => <div className={className} style={style}><KickIcon /></div>,
+        x: ({ className, style }) => <div className={className} style={style}><XIcon /></div>,
+        tiktok: ({ className, style }) => <div className={className} style={style}><TikTokIcon /></div>,
     };
     return icons[platform] || Globe;
 };

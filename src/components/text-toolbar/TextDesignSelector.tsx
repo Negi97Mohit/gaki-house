@@ -20,6 +20,7 @@ interface TextDesignSelectorProps {
 
 const CATEGORIES = [
     { value: "all", label: "All" },
+    { value: "animated", label: "Animated" },
     { value: "headlines", label: "Headlines" },
     { value: "modern", label: "Modern" },
     { value: "elegant", label: "Elegant" },
@@ -90,7 +91,10 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
                 borderColor: "#FFFFFF",
                 borderWidth: 2,
                 padding: "0",
-            });
+                // Pass animation properties
+                animation: design.animation,
+                animationCSS: design.animationCSS,
+            } as any);
         } else if ((design as any).style) {
             const oldStyle = (design as any).style;
             let appliedBackgroundColor = oldStyle.backgroundColor;
@@ -157,7 +161,7 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
                 </Button>
             </div>
             <Tabs defaultValue="all" className="w-full">
-                <TabsList className="grid grid-cols-6 w-full mb-3 bg-muted">
+                <TabsList className="grid grid-cols-7 w-full mb-3 bg-muted">
                     {CATEGORIES.map((cat) => (
                         <TabsTrigger
                             key={cat.value}

@@ -147,11 +147,9 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                     "Double-click to edit"
                   }
                   layers={overlay.style.layers}
-                  scale={scale || 1} // Pass scale to MultiLayerTextRenderer if it supports it, or handle scaling inside it? 
-                // Wait, MultiLayerTextRenderer likely needs update too if it handles sizing internally.
-                // Let's assume for now we just scale the container or font size here.
-                // Actually, MultiLayerTextRenderer probably uses the style prop or similar.
-                // Let's check MultiLayerTextRenderer in a moment. For now, let's assume it inherits or we need to pass it.
+                  scale={scale || 1}
+                  animation={(overlay.style as any).animation}
+                  animationCSS={(overlay.style as any).animationCSS}
                 />
               ) : (
                 <div

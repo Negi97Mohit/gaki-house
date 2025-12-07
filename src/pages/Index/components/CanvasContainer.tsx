@@ -503,16 +503,14 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
         return `
           ${bannerKeyframes}
-          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; padding: 20px;">
-            <div style="${styleToString(design.styles.container)}">
-              ${avatarHtml}
-              <div style="display: flex; flex-direction: column; gap: 2px;">
-                <span style="${styleToString(design.styles.name)}">${data.name}</span>
-                ${taglineHtml}
-              </div>
-              <div style="${styleToString(design.styles.linksContainer)}">
-                ${links}
-              </div>
+          <div style="${styleToString(design.styles.container)}; width: 100%; height: 100%; box-sizing: border-box;">
+            ${avatarHtml}
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="${styleToString(design.styles.name)}">${data.name}</span>
+              ${taglineHtml}
+            </div>
+            <div style="${styleToString(design.styles.linksContainer)}">
+              ${links}
             </div>
           </div>
         `;
@@ -524,7 +522,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         name: `${design.name} Banner`,
         htmlContent,
         layout: {
-          position: { x: 50, y: 85 },
+          position: { x: 50, y: 50 },
           size: { width: 60, height: 15 },
           zIndex: zIndex.draggableElement,
           rotation: 0,

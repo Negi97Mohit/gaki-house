@@ -9,7 +9,9 @@ import { TransitionPopover } from "@/components/TransitionPopover";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import { AnimationLibraryPanel } from "@/components/AnimationLibraryPanel";
 import { generateHtmlFromPreset } from "@/lib/animationGenerator";
+import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
 import { AnimationPreset } from "@/types/animation";
+import { GSAPPreset } from "@/lib/gsapAnimations";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
 
 import { useRecordingSession } from "@/hooks/useRecordingSession";
@@ -260,6 +262,46 @@ const Index = () => {
     [updateActiveScene, recording]
   );
 
+  const handleSelectGSAPAnimation = useCallback(
+    (preset: GSAPPreset, customText?: string, customColor?: string) => {
+      const displayText = customText || preset.name;
+      const textColor = customColor || preset.config.color || "#FFFFFF";
+      const htmlContent = generateGSAPHtml(preset, displayText, preset.description, {
+        fontFamily: preset.config.fontFamily || "Inter",
+        fontSize: preset.config.fontSize || 48,
+        color: textColor,
+        backgroundColor: "transparent",
+        textAlign: "center",
+      });
+      const newOverlay: GeneratedOverlay = {
+        id: generateId("gsap-overlay"),
+        name: `${preset.name} (Pro)`,
+        htmlContent,
+        layout: {
+          position: { x: 25, y: 35 },
+          size: { width: 50, height: 30 },
+          zIndex: zIndex.draggableElement,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        preview: "",
+      };
+      updateActiveScene((scene) => ({
+        ...scene,
+        activeOverlays: [...scene.activeOverlays, newOverlay],
+      }));
+      if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
+
+      setSelectedBrowserId(null);
+      setSelectedFileId(null);
+      setSelectedTextId(null);
+      setSelectedGeneratedId(newOverlay.id);
+      
+      toast.success(`Added "${displayText}" animation to canvas`);
+    },
+    [updateActiveScene, recording]
+  );
+
   const handleAddTextOverlay = useCallback(() => {
     const newTextOverlay: TextOverlayState = {
       id: generateId("text"),
@@ -362,6 +404,7 @@ const Index = () => {
         isOpen={showAnimationLibrary}
         onClose={() => setShowAnimationLibrary(false)}
         onSelect={handleSelectAnimation}
+        onSelectGSAP={handleSelectGSAPAnimation}
       />
 
       <SavedSessionsPanel

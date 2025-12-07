@@ -1,39 +1,104 @@
-// src/lib/canvasPresets.ts
-import { CanvasPreset } from "@/types/canvasPreset";
-import canvasPresetsData from "@/data/canvasPresets.json";
-import {
-  LayoutGrid,
-  Crown,
-  Zap,
-  Minus,
-  Cpu,
-  Film,
-  Shirt,
-  Clock,
-  Users,
-} from "lucide-react";
+// src/types/canvasPreset.ts
 
-// Directly cast the JSON data to the type
-export const CANVAS_PRESETS: CanvasPreset[] =
-  canvasPresetsData as unknown as CanvasPreset[];
+import type { CanvasLayoutState } from "./caption";
 
-export const CANVAS_PRESET_CATEGORIES = [
-  { id: "all", name: "All Designs", icon: "LayoutGrid" },
-  { id: "magazine", name: "Magazine", icon: "Crown" },
-  { id: "modern", name: "Modern", icon: "Zap" },
-  { id: "minimal", name: "Minimal", icon: "Minus" },
-  { id: "tech", name: "Tech / Cyber", icon: "Cpu" },
-  { id: "cinematic", name: "Cinematic", icon: "Film" },
-  { id: "fashion", name: "Fashion", icon: "Shirt" },
-  { id: "retro", name: "Retro", icon: "Clock" },
-  { id: "community", name: "Community", icon: "Users" },
-];
-
-export function getPresetsByCategory(category: string): CanvasPreset[] {
-  if (category === "all") return CANVAS_PRESETS;
-  return CANVAS_PRESETS.filter((preset) => preset.styleTags.includes(category));
+export interface ResponsiveLayout {
+  mobile?: {
+    layout?: {
+      position?: { x: number; y: number };
+      size?: { width: number; height: number };
+    };
+    style?: {
+      fontFamily?: string;
+      fontSize?: number;
+      color?: string;
+      backgroundColor?: string;
+      textShadow?: string;
+      textAlign?: "left" | "center" | "right";
+      fontWeight?: number | string;
+    };
+    pipPosition?: { x: number; y: number };
+    pipSize?: { width: number; height: number };
+    layoutMode?: string;
+  };
+  tablet?: {
+    layout?: {
+      position?: { x: number; y: number };
+      size?: { width: number; height: number };
+    };
+    style?: {
+      fontFamily?: string;
+      fontSize?: number;
+      color?: string;
+      backgroundColor?: string;
+      textShadow?: string;
+      textAlign?: "left" | "center" | "right";
+      fontWeight?: number | string;
+    };
+    pipPosition?: { x: number; y: number };
+    pipSize?: { width: number; height: number };
+    layoutMode?: string;
+  };
 }
 
-export function getPresetById(id: string): CanvasPreset | undefined {
-  return CANVAS_PRESETS.find((preset) => preset.id === id);
+export interface CanvasPresetTextOverlay {
+  id: string;
+  content: string;
+  style: {
+    fontFamily: string;
+    fontSize: number;
+    color: string;
+    backgroundColor: string;
+    textAlign: "left" | "center" | "right";
+    fontWeight?: number | string;
+    letterSpacing?: string;
+    textTransform?: string;
+    textShadow?: string;
+    border?: string;
+    backdropFilter?: string;
+  };
+  layout: {
+    position: { x: number; y: number };
+    size: { width: number; height: number };
+    zIndex: number;
+    rotation: number;
+    layerOrder?: string;
+  };
+  responsive?: ResponsiveLayout;
 }
+
+export interface CanvasPreset {
+  id: string;
+  name: string;
+  styleTags: string[];
+  canvasAspectRatio: string;
+  publicId?: string;
+  background: {
+    blankCanvasColor: string;
+    backgroundEffect: string;
+    backgroundImageUrl?: string;
+  };
+  pip: {
+    layoutMode: string;
+    cameraShape: string;
+    pipPosition: { x: number; y: number };
+    pipSize: { width: number; height: number };
+    pipBorder?: { color: string; width: number };
+    pipShadow?: { blur: number; color: string };
+    splitRatio?: number;
+    responsive?: ResponsiveLayout;
+  };
+  textOverlays: CanvasPresetTextOverlay[];
+  effects: {
+    videoFilter: string;
+    interactiveFilter?: string;
+    isBeautifyEnabled?: boolean;
+    isNeonEdgeEnabled?: boolean;
+    neonColor?: string;
+    neonIntensity?: number;
+  };
+  canvasLayout?: CanvasLayoutState | null;
+}
+
+// Re-export from lib for convenience
+export { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES, getPresetsByCategory, getPresetById } from "@/lib/canvasPresets";

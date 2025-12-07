@@ -133,7 +133,7 @@ export const useLayoutManager = ({
           browserOverlays: [],
           fileOverlays: [],
           blankCanvasColor: preset.background.blankCanvasColor,
-          backgroundEffect: preset.background.backgroundEffect,
+          backgroundEffect: (preset.background.backgroundEffect === "blur" || preset.background.backgroundEffect === "image" ? preset.background.backgroundEffect : "none") as "none" | "blur" | "image",
           videoFilter: "none",
           isBeautifyEnabled: false,
           isNeonEdgeEnabled: false,

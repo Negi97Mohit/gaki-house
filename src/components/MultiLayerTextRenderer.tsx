@@ -1,11 +1,13 @@
 // src/components/MultiLayerTextRenderer.tsx
-import React from "react";
-import { TextDesignLayer, TextLayer } from "@/types/textDesign";
+import React, { useEffect, useId } from "react";
+import { TextDesignLayer, TextLayer, TextDesignPreset } from "@/types/textDesign";
 
 interface MultiLayerTextRendererProps {
   text: string;
   layers: TextDesignLayer[];
   scale?: number;
+  animation?: TextDesignPreset["animation"];
+  animationCSS?: string;
 }
 
 // Helper function to generate CSS for a single layer
@@ -191,22 +193,198 @@ const getLayerStyle = (
   return style;
 };
 
+// Animation keyframes for various effects
+const ANIMATION_KEYFRAMES: Record<string, string> = {
+  fire: `
+    @keyframes fire-flicker {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 5px #ff6600) drop-shadow(0 -5px 10px #ff3300); }
+      25% { filter: brightness(1.1) drop-shadow(0 0 8px #ff8800) drop-shadow(0 -8px 15px #ff4400); }
+      50% { filter: brightness(0.95) drop-shadow(0 0 6px #ff5500) drop-shadow(0 -6px 12px #ff2200); }
+      75% { filter: brightness(1.05) drop-shadow(0 0 10px #ff7700) drop-shadow(0 -10px 18px #ff3300); }
+    }
+  `,
+  water: `
+    @keyframes water-wave {
+      0%, 100% { transform: translateY(0) scaleY(1); filter: drop-shadow(0 0 8px #00bfff); }
+      25% { transform: translateY(-2px) scaleY(1.02); filter: drop-shadow(0 0 12px #0099ff); }
+      50% { transform: translateY(0) scaleY(0.98); filter: drop-shadow(0 0 6px #00ddff); }
+      75% { transform: translateY(2px) scaleY(1.01); filter: drop-shadow(0 0 10px #00aaff); }
+    }
+  `,
+  snow: `
+    @keyframes snow-sparkle {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 5px #ffffff) drop-shadow(0 0 10px #e0f0ff); }
+      50% { filter: brightness(1.2) drop-shadow(0 0 15px #ffffff) drop-shadow(0 0 20px #c0e0ff); }
+    }
+  `,
+  confetti: `
+    @keyframes confetti-bounce {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-5px) rotate(-2deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(-3px) rotate(2deg); }
+    }
+  `,
+  graffiti: `
+    @keyframes graffiti-shake {
+      0%, 100% { transform: translateX(0); }
+      10% { transform: translateX(-2px) rotate(-0.5deg); }
+      20% { transform: translateX(2px) rotate(0.5deg); }
+      30% { transform: translateX(-1px); }
+      40% { transform: translateX(1px); }
+      50% { transform: translateX(0); }
+    }
+  `,
+  neon: `
+    @keyframes neon-pulse {
+      0%, 100% { filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor); opacity: 1; }
+      50% { filter: drop-shadow(0 0 2px currentColor) drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor); opacity: 0.9; }
+    }
+  `,
+  electric: `
+    @keyframes electric-zap {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 5px #00ffff); transform: skewX(0deg); }
+      10% { filter: brightness(1.5) drop-shadow(0 0 15px #00ffff); transform: skewX(-1deg); }
+      20% { filter: brightness(1) drop-shadow(0 0 5px #00ffff); transform: skewX(1deg); }
+      30% { filter: brightness(1.3) drop-shadow(0 0 20px #ffffff); transform: skewX(0deg); }
+    }
+  `,
+  glitch: `
+    @keyframes glitch-effect {
+      0%, 100% { transform: translate(0); filter: hue-rotate(0deg); }
+      10% { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
+      20% { transform: translate(2px, -1px); filter: hue-rotate(-90deg); }
+      30% { transform: translate(0); clip-path: inset(40% 0 40% 0); }
+      40% { transform: translate(0); clip-path: none; }
+    }
+  `,
+  rainbow: `
+    @keyframes rainbow-shift {
+      0% { filter: hue-rotate(0deg) drop-shadow(0 0 10px currentColor); }
+      100% { filter: hue-rotate(360deg) drop-shadow(0 0 10px currentColor); }
+    }
+  `,
+  pulse: `
+    @keyframes text-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.9; }
+    }
+  `,
+  bounce: `
+    @keyframes text-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  `,
+  shake: `
+    @keyframes text-shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      75% { transform: translateX(3px); }
+    }
+  `,
+  glow: `
+    @keyframes glow-pulse {
+      0%, 100% { filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor); }
+      50% { filter: drop-shadow(0 0 20px currentColor) drop-shadow(0 0 40px currentColor); }
+    }
+  `,
+  float: `
+    @keyframes text-float {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+  `,
+  flame: `
+    @keyframes flame-dance {
+      0%, 100% { transform: scaleY(1) translateY(0); filter: brightness(1); }
+      25% { transform: scaleY(1.02) translateY(-2px); filter: brightness(1.1); }
+      50% { transform: scaleY(0.98) translateY(1px); filter: brightness(0.95); }
+      75% { transform: scaleY(1.01) translateY(-1px); filter: brightness(1.05); }
+    }
+  `,
+  ice: `
+    @keyframes ice-shimmer {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 5px #a0d8ef); }
+      50% { filter: brightness(1.15) drop-shadow(0 0 15px #c0e8ff) drop-shadow(0 0 25px #80c8df); }
+    }
+  `,
+};
+
 export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
   text,
   layers,
   scale = 1,
+  animation,
+  animationCSS,
 }) => {
+  const uniqueId = useId();
+  const animationName = animation?.type || "";
+  const keyframes = animationCSS || ANIMATION_KEYFRAMES[animationName] || "";
+  
+  // Inject keyframes into document
+  useEffect(() => {
+    if (!keyframes) return;
+    
+    const styleId = `text-anim-${uniqueId.replace(/:/g, "-")}`;
+    let styleEl = document.getElementById(styleId) as HTMLStyleElement | null;
+    
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.id = styleId;
+      document.head.appendChild(styleEl);
+    }
+    
+    styleEl.textContent = keyframes;
+    
+    return () => {
+      styleEl?.remove();
+    };
+  }, [keyframes, uniqueId]);
+
   // Find the base text layer to set font size for the container
   const baseTextLayer = layers.find((l) => l.type === "text") as
     | TextLayer
     | undefined;
 
+  // Get animation style
+  const getAnimationStyle = (): React.CSSProperties => {
+    if (!animation?.type) return {};
+    
+    const animMap: Record<string, string> = {
+      fire: "fire-flicker",
+      water: "water-wave",
+      snow: "snow-sparkle",
+      confetti: "confetti-bounce",
+      graffiti: "graffiti-shake",
+      neon: "neon-pulse",
+      electric: "electric-zap",
+      glitch: "glitch-effect",
+      rainbow: "rainbow-shift",
+      pulse: "text-pulse",
+      bounce: "text-bounce",
+      shake: "text-shake",
+      glow: "glow-pulse",
+      float: "text-float",
+      flame: "flame-dance",
+      ice: "ice-shimmer",
+    };
+    
+    const animName = animMap[animation.type] || animation.type;
+    const duration = animation.duration || 1;
+    const infinite = animation.infinite !== false ? "infinite" : "1";
+    
+    return {
+      animation: `${animName} ${duration}s ease-in-out ${infinite}`,
+    };
+  };
+
   const containerStyle: React.CSSProperties = {
     position: "relative",
     fontFamily: baseTextLayer?.fontFamily || "Inter",
     fontSize: `${(baseTextLayer?.fontSize || 32) * scale}px`,
-    fontWeight: "bold", // Most designs are bold
-    textAlign: "center", // Default to center
+    fontWeight: "bold",
+    textAlign: "center",
     width: "100%",
     height: "100%",
     display: "flex",
@@ -215,13 +393,14 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
     overflow: "visible",
     wordWrap: "break-word",
     overflowWrap: "break-word",
+    ...getAnimationStyle(),
   };
 
   // Find the base text layer to render (it must be part of the stack)
   const baseText =
     layers.find((l): l is TextLayer => l.type === "text") ||
     (layers[0] as TextLayer);
-  if (!baseText) return null; // No layers, render nothing
+  if (!baseText) return null;
 
   return (
     <div style={containerStyle}>

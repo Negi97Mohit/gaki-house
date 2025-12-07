@@ -9,12 +9,16 @@ export interface TextDesignPreset {
   // REPLACED 'style' WITH 'layers'
   layers: TextDesignLayer[];
 
-  // 3. ADD ANIMATION PROPERTY
+  // Animation properties
   animation?: {
-    type: string; // e.g., "bounce-in", "fade-up"
+    type: string; // e.g., "bounce-in", "fade-up", "fire", "snow", "confetti"
     duration: number;
     delay?: number;
+    infinite?: boolean;
   };
+  
+  // CSS animation keyframes (for custom animations)
+  animationCSS?: string;
 }
 
 // 1. DEFINE THE LAYER TYPES

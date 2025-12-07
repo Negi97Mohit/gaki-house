@@ -1204,5 +1204,198 @@
       { "type": "sparkle", "density": 0.6 },
       { "type": "glow", "color": "#b7e8ff", "blur": 30 }
     ]
+  },
+  {
+    "id": "fire-blaze",
+    "name": "Fire Blaze",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ff4500 0%, #ff8c00 50%, #ffd700 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Anton", "fontSize": 72, "color": "#ff4500" },
+      { "type": "glow", "color": "#ff6600", "blur": 25 },
+      { "type": "outer-glow", "color": "#ff3300", "blur": 40 }
+    ],
+    "animation": { "type": "fire", "duration": 0.8, "infinite": true }
+  },
+  {
+    "id": "water-flow",
+    "name": "Water Flow",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #00bfff 0%, #1e90ff 50%, #0099cc 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Montserrat", "fontSize": 68, "color": "#00bfff" },
+      { "type": "glow", "color": "#00aaff", "blur": 20 },
+      { "type": "outer-glow", "color": "#0077be", "blur": 35 }
+    ],
+    "animation": { "type": "water", "duration": 2, "infinite": true }
+  },
+  {
+    "id": "snow-frost",
+    "name": "Snow Frost",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ffffff 0%, #e0f0ff 50%, #a0d8ef 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Quicksand", "fontSize": 64, "color": "#ffffff" },
+      { "type": "glow", "color": "#e0f0ff", "blur": 15 },
+      { "type": "outer-glow", "color": "#a0d8ef", "blur": 30 }
+    ],
+    "animation": { "type": "snow", "duration": 1.5, "infinite": true }
+  },
+  {
+    "id": "confetti-party",
+    "name": "Confetti Party",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Bangers", "fontSize": 70, "gradient": "linear-gradient(90deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)" },
+      { "type": "stroke", "color": "#ffffff", "width": 3 },
+      { "type": "shadow", "color": "rgba(0,0,0,0.3)", "blur": 8, "offsetX": 4, "offsetY": 4 }
+    ],
+    "animation": { "type": "confetti", "duration": 0.6, "infinite": true }
+  },
+  {
+    "id": "graffiti-urban",
+    "name": "Graffiti Urban",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00ffff 50%, #ffff00 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Permanent Marker", "fontSize": 66, "color": "#ff00ff" },
+      { "type": "stroke", "color": "#000000", "width": 4 },
+      { "type": "offset-layer", "color": "#00ffff", "offsetX": 3, "offsetY": -3 },
+      { "type": "offset-layer", "color": "#ffff00", "offsetX": -3, "offsetY": 3 }
+    ],
+    "animation": { "type": "graffiti", "duration": 0.5, "infinite": true }
+  },
+  {
+    "id": "neon-flicker",
+    "name": "Neon Flicker",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ff00de 0%, #00fff2 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Orbitron", "fontSize": 60, "color": "#ff00de" },
+      { "type": "glow", "color": "#ff00de", "blur": 20 },
+      { "type": "outer-glow", "color": "#ff00de", "blur": 50 }
+    ],
+    "animation": { "type": "neon", "duration": 1.2, "infinite": true }
+  },
+  {
+    "id": "electric-shock",
+    "name": "Electric Shock",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #00ffff 0%, #ffffff 50%, #00ccff 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Exo 2", "fontSize": 68, "color": "#00ffff" },
+      { "type": "glow", "color": "#00ffff", "blur": 15 },
+      { "type": "outer-glow", "color": "#ffffff", "blur": 30 }
+    ],
+    "animation": { "type": "electric", "duration": 0.3, "infinite": true }
+  },
+  {
+    "id": "glitch-cyber",
+    "name": "Glitch Cyber",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ff0080 0%, #7928ca 50%, #00ffff 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Audiowide", "fontSize": 64, "color": "#ffffff" },
+      { "type": "offset-layer", "color": "#ff0080", "offsetX": 2, "offsetY": 0 },
+      { "type": "offset-layer", "color": "#00ffff", "offsetX": -2, "offsetY": 0 }
+    ],
+    "animation": { "type": "glitch", "duration": 0.5, "infinite": true }
+  },
+  {
+    "id": "rainbow-wave",
+    "name": "Rainbow Wave",
+    "category": "animated",
+    "thumbnail": "linear-gradient(90deg, #ff0000 0%, #ff7f00 14%, #ffff00 28%, #00ff00 42%, #0000ff 57%, #4b0082 71%, #9400d3 85%, #ff0000 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Righteous", "fontSize": 70, "gradient": "linear-gradient(90deg, #ff0000 0%, #ff7f00 16.67%, #ffff00 33.33%, #00ff00 50%, #0000ff 66.67%, #4b0082 83.33%, #9400d3 100%)" },
+      { "type": "stroke", "color": "#ffffff", "width": 2 }
+    ],
+    "animation": { "type": "rainbow", "duration": 3, "infinite": true }
+  },
+  {
+    "id": "pulse-beat",
+    "name": "Pulse Beat",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #e91e63 0%, #9c27b0 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Bebas Neue", "fontSize": 76, "color": "#e91e63" },
+      { "type": "glow", "color": "#e91e63", "blur": 20 },
+      { "type": "outer-glow", "color": "#9c27b0", "blur": 40 }
+    ],
+    "animation": { "type": "pulse", "duration": 0.8, "infinite": true }
+  },
+  {
+    "id": "bounce-fun",
+    "name": "Bounce Fun",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #00c853 0%, #69f0ae 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Luckiest Guy", "fontSize": 68, "color": "#00c853" },
+      { "type": "stroke", "color": "#ffffff", "width": 3 },
+      { "type": "shadow", "color": "rgba(0,0,0,0.3)", "blur": 10, "offsetX": 5, "offsetY": 5 }
+    ],
+    "animation": { "type": "bounce", "duration": 0.6, "infinite": true }
+  },
+  {
+    "id": "shake-impact",
+    "name": "Shake Impact",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ff1744 0%, #d50000 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Anton", "fontSize": 80, "color": "#ff1744" },
+      { "type": "stroke", "color": "#000000", "width": 4 },
+      { "type": "shadow", "color": "rgba(0,0,0,0.5)", "blur": 8, "offsetX": 6, "offsetY": 6 }
+    ],
+    "animation": { "type": "shake", "duration": 0.4, "infinite": true }
+  },
+  {
+    "id": "glow-ethereal",
+    "name": "Glow Ethereal",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #7c4dff 0%, #b388ff 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Cinzel", "fontSize": 62, "color": "#b388ff" },
+      { "type": "glow", "color": "#7c4dff", "blur": 25 },
+      { "type": "outer-glow", "color": "#e040fb", "blur": 50 }
+    ],
+    "animation": { "type": "glow", "duration": 2, "infinite": true }
+  },
+  {
+    "id": "float-dreamy",
+    "name": "Float Dreamy",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Pacifico", "fontSize": 58, "color": "#fcb69f" },
+      { "type": "glow", "color": "#ffecd2", "blur": 15 },
+      { "type": "shadow", "color": "rgba(252,182,159,0.4)", "blur": 20, "offsetX": 0, "offsetY": 10 }
+    ],
+    "animation": { "type": "float", "duration": 3, "infinite": true }
+  },
+  {
+    "id": "flame-inferno",
+    "name": "Flame Inferno",
+    "category": "animated",
+    "thumbnail": "linear-gradient(180deg, #ff0000 0%, #ff4500 30%, #ff8c00 60%, #ffd700 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Russo One", "fontSize": 74, "gradient": "linear-gradient(180deg, #ffd700 0%, #ff8c00 40%, #ff4500 70%, #ff0000 100%)" },
+      { "type": "glow", "color": "#ff4500", "blur": 30 },
+      { "type": "outer-glow", "color": "#ff0000", "blur": 50 }
+    ],
+    "animation": { "type": "flame", "duration": 0.6, "infinite": true }
+  },
+  {
+    "id": "ice-crystal",
+    "name": "Ice Crystal",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #a0d8ef 0%, #e0f0ff 50%, #ffffff 100%)",
+    "layers": [
+      { "type": "text", "fontFamily": "Glacial Indifference", "fontSize": 66, "color": "#a0d8ef" },
+      { "type": "glow", "color": "#e0f0ff", "blur": 20 },
+      { "type": "outer-glow", "color": "#80c8df", "blur": 40 },
+      { "type": "sparkle", "density": 0.5 }
+    ],
+    "animation": { "type": "ice", "duration": 2, "infinite": true }
   }
 ]
