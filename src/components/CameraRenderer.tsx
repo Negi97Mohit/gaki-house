@@ -1,0 +1,239 @@
+import { createPortal } from "react-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { useCameraEffects } from "@/hooks/useCameraEffects";
+import { useWebGLRenderLoop } from "@/hooks/useWebGLRenderLoop";
+import { usePictureInPicture } from "@/hooks/usePictureInPicture";
+import { PipControlsToolbar } from "./PipControlsToolbar";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
+interface CameraRendererProps {
+  stream: MediaStream | null;
+  className?: string;
+  style?: React.CSSProperties;
+  videoFilter: string;
+  isNeonEdgeEnabled: boolean;
+  neonIntensity: number;
+  neonColor: string;
+  isFaceTrackingEnabled?: boolean;
+  cameraAspectRatio?: string;
+  showAspectRatio?: boolean;
+  cameraShape?: "rectangle" | "circle" | "rounded";
+  onCameraShapeChange?: (shape: "rectangle" | "circle" | "rounded") => void;
+  // Toolbar Props
+  pipBorder?: { color: string; width: number };
+  onPipBorderChange: (border: { color: string; width: number }) => void;
+  pipShadow?: { blur: number; color: string };
+  onPipShadowChange: (shadow: { blur: number; color: string }) => void;
+  isAutoFramingEnabled: boolean;
+  onAutoFramingChange: (enabled: boolean) => void;
+  isBeautifyEnabled: boolean;
+  onBeautifyToggle: (enabled: boolean) => void;
+  isLowLightEnabled: boolean;
+  onLowLightToggle: (enabled: boolean) => void;
+  onVideoFilterChange: (filter: string) => void;
+  onNeonEdgeToggle: (enabled: boolean) => void;
+  onNeonIntensityChange: (value: number) => void;
+  onNeonEdgeColorChange: (color: string) => void;
+  zoomSensitivity: number;
+  onZoomSensitivityChange: (value: number) => void;
+  trackingSpeed: number;
+  onTrackingSpeedChange: (value: number) => void;
+
+  filterIntensity?: number;
+  onFilterIntensityChange?: (intensity: number) => void;
+  filterColor?: string;
+  onFilterColorChange?: (color: string) => void;
+  filterTarget?: "both" | "background" | "person";
+  onFilterTargetChange?: (target: "both" | "background" | "person") => void;
+
+  onCameraAspectRatioChange: (ratio: string) => void;
+  customAspectRatio: string;
+  onCustomAspectRatioChange: (ratio: string) => void;
+  onFaceTrackingToggle: (enabled: boolean) => void;
+
+  portalContainer?: HTMLElement | null;
+  activeInteractiveFilter?: string;
+  onInteractiveFilterChange?: (filter: string) => void;
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
+  videoDevices?: MediaDeviceInfo[];
+  selectedDeviceId?: string;
+  onCameraDeviceChange?: (deviceId: string) => void;
+  onEnterPipMode?: () => void;
+  isMouseActive?: boolean;
+}
+
+export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout>();
+  const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+
+  const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef });
+
+  useEffect(() => {
+    // --- FIX: Check if device is 'remote-peer' before requesting stream ---
+    if (props.selectedDeviceId && props.selectedDeviceId !== "remote-peer") {
+      let isMounted = true;
+      const getStream = async () => {
+        try {
+          const newStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              deviceId: { exact: props.selectedDeviceId },
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+            },
+          });
+          if (isMounted) setLocalStream(newStream);
+        } catch (e) {
+          console.error("Failed to get local camera stream", e);
+          // Only show toast for real errors, not interruptions
+          if ((e as Error).name !== "AbortError") {
+            toast.error("Could not access selected camera");
+          }
+        }
+      };
+      getStream();
+      return () => {
+        isMounted = false;
+        if (localStream) localStream.getTracks().forEach((t) => t.stop());
+      };
+    } else {
+      // If it's remote-peer or undefined, clear local stream so we use props.stream
+      setLocalStream(null);
+    }
+  }, [props.selectedDeviceId]);
+
+  // If localStream is null (e.g. remote peer), fall back to props.stream
+  const activeStream = localStream || props.stream;
+
+  const isSegmentationEnabled =
+    props.filterTarget && props.filterTarget !== "both";
+
+  const { processedCanvas, facePositionRef } = useCameraEffects({
+    videoElement: videoRef.current,
+    isSegmentationEnabled,
+    isFaceTrackingEnabled:
+      props.isFaceTrackingEnabled || props.isAutoFramingEnabled,
+    onUserPositionChange: props.onUserPositionChange,
+  });
+
+  useWebGLRenderLoop({
+    canvasRef,
+    videoRef,
+    activeStream,
+    isAutoFramingEnabled: props.isAutoFramingEnabled,
+    isFaceTrackingEnabled: props.isFaceTrackingEnabled || false,
+    zoomSensitivity: props.zoomSensitivity,
+    trackingSpeed: props.trackingSpeed,
+    videoFilter: props.videoFilter,
+    activeInteractiveFilter: props.activeInteractiveFilter,
+    filterIntensity: props.filterIntensity,
+    filterColor: props.filterColor,
+    processedCanvas,
+    facePositionRef,
+  });
+
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+
+    if (containerRef.current) {
+      setToolbarPosition({
+        x: containerRef.current.offsetWidth / 2,
+        y: 0,
+      });
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 500);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
+  const toolbarProps = {
+    position: toolbarPosition,
+    containerRef,
+    ...props,
+    onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
+    onEnterPipMode: props.onEnterPipMode,
+    isPipActive,
+    onTogglePip: togglePiP,
+    isCameraActive: !!activeStream,
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      className={cn("relative w-full h-full", props.className)}
+      style={props.style}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        playsInline
+        className="hidden object-cover w-full h-full"
+      />
+      {!activeStream && (
+        <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center animate-gradient-bg pointer-events-none">
+          <img
+            src="/icon.png"
+            alt="GAKI Logo"
+            className="w-24 h-24 object-contain drop-shadow-2xl mb-2"
+          />
+          {/* Show a hint if waiting for remote connection */}
+          {props.selectedDeviceId === "remote-peer" && (
+            <p className="text-white/80 text-sm animate-pulse">
+              Waiting for phone connection...
+            </p>
+          )}
+        </div>
+      )}
+      <canvas ref={canvasRef} className="w-full h-full" />
+
+      {isHovered &&
+        (props.isMouseActive ?? true) &&
+        (props.portalContainer instanceof HTMLElement ? (
+          createPortal(
+            <div
+              className="absolute top-0 left-0 w-full"
+              style={{ pointerEvents: "auto" }}
+              onMouseEnter={() => {
+                if (hoverTimeoutRef.current)
+                  clearTimeout(hoverTimeoutRef.current);
+                setIsHovered(true);
+              }}
+              onMouseLeave={handleMouseLeave}
+            >
+              {/* @ts-ignore */}
+              <PipControlsToolbar {...toolbarProps} />
+            </div>,
+            props.portalContainer
+          )
+        ) : (
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+            <div className="pointer-events-auto inline-block">
+              {/* @ts-ignore */}
+              <PipControlsToolbar {...toolbarProps} />
+            </div>
+          </div>
+        ))}
+    </div>
+  );
+};

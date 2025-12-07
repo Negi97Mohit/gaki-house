@@ -1,0 +1,215 @@
+// src/components/panels/SocialBannersPanel.tsx
+import React, { useState, useEffect } from "react";
+import { BadgeCheck, Edit3, Plus, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { SocialBannerEditor } from "@/components/SocialBannerEditor";
+import { SocialBannerRenderer } from "@/components/SocialBannerRenderer";
+import {
+    SocialBannerData,
+    SocialBannerDesign,
+    DEFAULT_BANNER_DATA,
+} from "@/types/socialBanner";
+import socialBannersData from "@/data/socialBanners.json";
+
+const LOCAL_STORAGE_KEY = "social-banner-user-data";
+
+interface SocialBannersPanelProps {
+    onAddBanner: (design: SocialBannerDesign, data: SocialBannerData) => void;
+}
+
+export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
+    onAddBanner,
+}) => {
+    const [userData, setUserData] = useState<SocialBannerData>(DEFAULT_BANNER_DATA);
+    const [isEditorOpen, setIsEditorOpen] = useState(false);
+    const [selectedDesignId, setSelectedDesignId] = useState<string | null>(null);
+    const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
+
+    const designs = socialBannersData.designs as SocialBannerDesign[];
+
+    // Load user data from localStorage
+    useEffect(() => {
+        const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (saved) {
+            try {
+                setUserData(JSON.parse(saved));
+            } catch (e) {
+                console.error("Failed to parse saved banner data:", e);
+            }
+        }
+    }, []);
+
+    const handleSaveUserData = (data: SocialBannerData) => {
+        setUserData(data);
+    };
+
+    const handleSelectDesign = (design: SocialBannerDesign) => {
+        // Check if user has set up their info
+        if (userData.name === DEFAULT_BANNER_DATA.name && userData.links.length === 0) {
+            setIsEditorOpen(true);
+            setSelectedDesignId(design.id);
+            return;
+        }
+
+        onAddBanner(design, userData);
+        setRecentlyAdded(design.id);
+        setTimeout(() => setRecentlyAdded(null), 1500);
+    };
+
+    // If user just saved their data and had a design selected, add it
+    useEffect(() => {
+        if (selectedDesignId && userData.name !== DEFAULT_BANNER_DATA.name) {
+            const design = designs.find((d) => d.id === selectedDesignId);
+            if (design) {
+                onAddBanner(design, userData);
+                setRecentlyAdded(design.id);
+                setTimeout(() => setRecentlyAdded(null), 1500);
+            }
+            setSelectedDesignId(null);
+        }
+    }, [userData, selectedDesignId, designs, onAddBanner]);
+
+    const hasUserInfo =
+        userData.name !== DEFAULT_BANNER_DATA.name || userData.links.length > 0;
+
+    return (
+        <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-border/40">
+                <div className="flex items-center gap-2">
+                    <BadgeCheck className="w-5 h-5 text-primary" />
+                    <h3 className="text-base font-semibold tracking-wide">
+                        Social Banners
+                    </h3>
+                </div>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setIsEditorOpen(true)}
+                    className="text-xs gap-1.5"
+                >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    {hasUserInfo ? "Edit Info" : "Add Your Info"}
+                </Button>
+            </div>
+
+            {/* User Info Summary */}
+            {hasUserInfo && (
+                <div className="p-3 rounded-lg bg-primary/10 border border-primary/20 mb-4">
+                    <div className="flex items-center gap-2 text-sm">
+                        <span className="font-medium text-primary">{userData.name}</span>
+                        {userData.tagline && (
+                            <span className="text-muted-foreground text-xs">
+                                • {userData.tagline}
+                            </span>
+                        )}
+                    </div>
+                    <div className="flex gap-1 mt-2 flex-wrap">
+                        {userData.links.slice(0, 5).map((link, i) => (
+                            <span
+                                key={i}
+                                className="px-2 py-0.5 text-[10px] rounded-full bg-background/50 text-muted-foreground capitalize"
+                            >
+                                {link.platform}
+                            </span>
+                        ))}
+                        {userData.links.length > 5 && (
+                            <span className="px-2 py-0.5 text-[10px] rounded-full bg-background/50 text-muted-foreground">
+                                +{userData.links.length - 5} more
+                            </span>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Designs Grid */}
+            <h4 className="text-sm font-medium mb-2 text-muted-foreground">
+                Choose a Design
+            </h4>
+            <p className="text-xs text-muted-foreground/70 mb-3">
+                💡 Tip: Edit your info above, then click any design to add a new banner with updated values.
+            </p>
+            <ScrollArea className="h-[calc(70vh-280px)]">
+                <div className="grid grid-cols-1 gap-4 pr-2">
+                    {designs.map((design) => (
+                        <button
+                            key={design.id}
+                            onClick={() => handleSelectDesign(design)}
+                            className={cn(
+                                "relative group rounded-xl overflow-hidden transition-all duration-300",
+                                "border-2 hover:shadow-lg",
+                                recentlyAdded === design.id
+                                    ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+                                    : "border-border/30 hover:border-primary/50"
+                            )}
+                        >
+                            {/* Preview with actual design */}
+                            <div
+                                className="p-4 min-h-[80px] flex items-center justify-center"
+                                style={{ background: design.preview }}
+                            >
+                                <div className="transform scale-[0.6] origin-center">
+                                    <SocialBannerRenderer
+                                        design={design}
+                                        data={hasUserInfo ? userData : {
+                                            name: "Preview Name",
+                                            tagline: "Creator • Streamer",
+                                            links: [
+                                                { platform: "github", url: "#" },
+                                                { platform: "x", url: "#" },
+                                                { platform: "youtube", url: "#" },
+                                            ],
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Info Footer */}
+                            <div className="px-4 py-3 bg-background/90 backdrop-blur-sm border-t border-border/20">
+                                <div className="flex items-center justify-between">
+                                    <div className="text-left">
+                                        <p className="text-sm font-semibold text-foreground">
+                                            {design.name}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                            {design.description}
+                                        </p>
+                                    </div>
+                                    <div
+                                        className={cn(
+                                            "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                                            recentlyAdded === design.id
+                                                ? "bg-green-500 text-white"
+                                                : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
+                                        )}
+                                    >
+                                        {recentlyAdded === design.id ? (
+                                            <Check className="w-4 h-4" />
+                                        ) : (
+                                            <Plus className="w-4 h-4" />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </button>
+                    ))}
+                </div>
+            </ScrollArea>
+
+            {/* Editor Modal */}
+            <SocialBannerEditor
+                isOpen={isEditorOpen}
+                onClose={() => {
+                    setIsEditorOpen(false);
+                    if (!hasUserInfo) {
+                        setSelectedDesignId(null);
+                    }
+                }}
+                onSave={handleSaveUserData}
+                initialData={userData}
+            />
+        </div>
+    );
+};

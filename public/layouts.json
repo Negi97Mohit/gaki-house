@@ -1,0 +1,2424 @@
+[
+  {
+    "id": "default",
+    "name": "Full Screen",
+    "description": "Single full-screen section",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "two-halves",
+    "name": "Two Halves",
+    "description": "Two equal vertical sections",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "50%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "50%",
+          "width": "50%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "two-halves-horizontal",
+    "name": "Two Halves Horizontal",
+    "description": "Two equal horizontal sections",
+    "sections": [
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "bottom",
+        "name": "Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "100%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "trio",
+    "name": "Trio",
+    "description": "Three equal vertical columns",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "center",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "100%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "quad",
+    "name": "Quad",
+    "description": "Four equal quadrants",
+    "sections": [
+      {
+        "id": "top-left",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "50%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "50%",
+          "width": "50%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "sidebar-left",
+    "name": "Sidebar Left",
+    "description": "Narrow left sidebar with main content",
+    "sections": [
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "25%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "25%",
+          "width": "75%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "sidebar-right",
+    "name": "Sidebar Right",
+    "description": "Main content with narrow right sidebar",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "75%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      },
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "75%",
+          "width": "25%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "header-content",
+    "name": "Header & Content",
+    "description": "Top header with main content below",
+    "sections": [
+      {
+        "id": "header",
+        "name": "Header",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "20%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "content",
+        "name": "Content",
+        "style": {
+          "position": "absolute",
+          "top": "20%",
+          "left": "0%",
+          "width": "100%",
+          "height": "80%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "header-sidebar-content",
+    "name": "Header, Sidebar & Content",
+    "description": "Header with sidebar and main content",
+    "sections": [
+      {
+        "id": "header",
+        "name": "Header",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "15%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "15%",
+          "left": "0%",
+          "width": "20%",
+          "height": "85%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "content",
+        "name": "Content",
+        "style": {
+          "position": "absolute",
+          "top": "15%",
+          "left": "20%",
+          "width": "80%",
+          "height": "85%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "picture-in-picture",
+    "name": "Picture in Picture",
+    "description": "Small overlay in bottom-right corner",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      },
+      {
+        "id": "pip",
+        "name": "PIP",
+        "style": {
+          "position": "absolute",
+          "top": "70%",
+          "left": "70%",
+          "width": "25%",
+          "height": "25%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "triple-horizontal",
+    "name": "Triple Horizontal",
+    "description": "Three equal horizontal rows",
+    "sections": [
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "middle",
+        "name": "Middle",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom",
+        "name": "Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "66.666%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.334%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "grid-six",
+    "name": "Six Grid",
+    "description": "2x3 grid layout",
+    "sections": [
+      {
+        "id": "top-left",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "top-center",
+        "name": "Top Center",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "50%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-center",
+        "name": "Bottom Center",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "50%",
+          "backgroundColor": "rgba(217, 70, 239, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "asymmetric-columns",
+    "name": "Asymmetric Columns",
+    "description": "Three columns with varying widths",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "20%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "center",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "20%",
+          "width": "60%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "80%",
+          "width": "20%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "split-screen-vertical",
+    "name": "Split Screen Vertical",
+    "description": "70/30 vertical split",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "70%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "secondary",
+        "name": "Secondary",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "70%",
+          "width": "30%",
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "gallery-masonry",
+    "name": "Gallery Masonry",
+    "description": "Photo gallery masonry style",
+    "sections": [
+      {
+        "id": "photo-1",
+        "name": "Photo 1",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "40%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "photo-2",
+        "name": "Photo 2",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "60%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "photo-3",
+        "name": "Photo 3",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "45%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "photo-4",
+        "name": "Photo 4",
+        "style": {
+          "position": "absolute",
+          "top": "40%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "60%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "photo-5",
+        "name": "Photo 5",
+        "style": {
+          "position": "absolute",
+          "top": "45%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "55%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
+        }
+      },
+      {
+        "id": "photo-6",
+        "name": "Photo 6",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "40%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "golden-ratio-vertical",
+    "name": "Golden Ratio Vertical",
+    "description": "Two vertical sections split by golden ratio (61.8/38.2)",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "61.8%",
+          "height": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "61.8%",
+          "width": "38.2%",
+          "height": "100%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "golden-ratio-horizontal",
+    "name": "Golden Ratio Horizontal",
+    "description": "Two horizontal sections split by golden ratio",
+    "sections": [
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "61.8%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "bottom",
+        "name": "Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "61.8%",
+          "left": "0%",
+          "width": "100%",
+          "height": "38.2%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "magazine-layout",
+    "name": "Magazine Layout",
+    "description": "Header with three-column content below",
+    "sections": [
+      {
+        "id": "header",
+        "name": "Header",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "25%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "col-left",
+        "name": "Left Column",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "75%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "col-center",
+        "name": "Center Column",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "75%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "col-right",
+        "name": "Right Column",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "75%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "dashboard-grid",
+    "name": "Dashboard Grid",
+    "description": "Sidebar with 2x2 grid content",
+    "sections": [
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "15%",
+          "height": "100%",
+          "backgroundColor": "rgba(71, 85, 105, 0.9)"
+        }
+      },
+      {
+        "id": "grid-1",
+        "name": "Grid 1",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "15%",
+          "width": "42.5%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "grid-2",
+        "name": "Grid 2",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "57.5%",
+          "width": "42.5%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "grid-3",
+        "name": "Grid 3",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "15%",
+          "width": "42.5%",
+          "height": "50%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "grid-4",
+        "name": "Grid 4",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "57.5%",
+          "width": "42.5%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "spotlight-left",
+    "name": "Spotlight Left",
+    "description": "Large left section with two stacked right panels",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "65%",
+          "height": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "65%",
+          "width": "35%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "65%",
+          "width": "35%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "spotlight-right",
+    "name": "Spotlight Right",
+    "description": "Two stacked left panels with large right section",
+    "sections": [
+      {
+        "id": "top-left",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "35%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "35%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "35%",
+          "width": "65%",
+          "height": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "masonry-three",
+    "name": "Masonry Three",
+    "description": "Asymmetric three-section masonry layout",
+    "sections": [
+      {
+        "id": "tall-left",
+        "name": "Tall Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "40%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "40%",
+          "width": "60%",
+          "height": "40%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "40%",
+          "left": "40%",
+          "width": "60%",
+          "height": "60%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "window-pane-nine",
+    "name": "Window Pane Nine",
+    "description": "3x3 equal grid like a window",
+    "sections": [
+      {
+        "id": "tl",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "tc",
+        "name": "Top Center",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "tr",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "ml",
+        "name": "Middle Left",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "mc",
+        "name": "Middle Center",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
+        }
+      },
+      {
+        "id": "mr",
+        "name": "Middle Right",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      },
+      {
+        "id": "bl",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "66.666%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "33.334%",
+          "backgroundColor": "rgba(14, 165, 233, 0.9)"
+        }
+      },
+      {
+        "id": "bc",
+        "name": "Bottom Center",
+        "style": {
+          "position": "absolute",
+          "top": "66.666%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "33.334%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)"
+        }
+      },
+      {
+        "id": "br",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "66.666%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "33.334%",
+          "backgroundColor": "rgba(168, 85, 247, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "side-by-side-thirds",
+    "name": "Side by Side Thirds",
+    "description": "Left third with right two-thirds split",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "66.667%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "33.333%",
+          "width": "66.667%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "top-bottom-thirds",
+    "name": "Top Bottom Thirds",
+    "description": "Top third with bottom two-thirds split",
+    "sections": [
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "0%",
+          "width": "50%",
+          "height": "66.667%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "50%",
+          "width": "50%",
+          "height": "66.667%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "corner-emphasis",
+    "name": "Corner Emphasis",
+    "description": "Large center with four small corners",
+    "sections": [
+      {
+        "id": "center",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "20%",
+          "left": "20%",
+          "width": "60%",
+          "height": "60%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "corner-tl",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "15%",
+          "height": "15%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "corner-tr",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "85%",
+          "width": "15%",
+          "height": "15%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "corner-bl",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "85%",
+          "left": "0%",
+          "width": "15%",
+          "height": "15%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "corner-br",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "85%",
+          "left": "85%",
+          "width": "15%",
+          "height": "15%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "split-vertical-asymmetric",
+    "name": "Split Vertical Asymmetric",
+    "description": "80/20 vertical split",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "80%",
+          "height": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "80%",
+          "width": "20%",
+          "height": "100%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "split-horizontal-asymmetric",
+    "name": "Split Horizontal Asymmetric",
+    "description": "80/20 horizontal split",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "80%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "footer",
+        "name": "Footer",
+        "style": {
+          "position": "absolute",
+          "top": "80%",
+          "left": "0%",
+          "width": "100%",
+          "height": "20%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "grid-twelve",
+    "name": "Grid Twelve",
+    "description": "3x4 grid layout",
+    "sections": [
+      {
+        "id": "cell-1",
+        "name": "Cell 1",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "cell-2",
+        "name": "Cell 2",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "cell-3",
+        "name": "Cell 3",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "25%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "cell-4",
+        "name": "Cell 4",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "cell-5",
+        "name": "Cell 5",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
+        }
+      },
+      {
+        "id": "cell-6",
+        "name": "Cell 6",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "25%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      },
+      {
+        "id": "cell-7",
+        "name": "Cell 7",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(14, 165, 233, 0.9)"
+        }
+      },
+      {
+        "id": "cell-8",
+        "name": "Cell 8",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)"
+        }
+      },
+      {
+        "id": "cell-9",
+        "name": "Cell 9",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "25%",
+          "backgroundColor": "rgba(168, 85, 247, 0.9)"
+        }
+      },
+      {
+        "id": "cell-10",
+        "name": "Cell 10",
+        "style": {
+          "position": "absolute",
+          "top": "75%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(251, 146, 60, 0.9)"
+        }
+      },
+      {
+        "id": "cell-11",
+        "name": "Cell 11",
+        "style": {
+          "position": "absolute",
+          "top": "75%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(20, 184, 166, 0.9)"
+        }
+      },
+      {
+        "id": "cell-12",
+        "name": "Cell 12",
+        "style": {
+          "position": "absolute",
+          "top": "75%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "25%",
+          "backgroundColor": "rgba(244, 63, 94, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "masonry-complex",
+    "name": "Masonry Complex",
+    "description": "Complex masonry with varied sizes",
+    "sections": [
+      {
+        "id": "large-left",
+        "name": "Large Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "50%",
+          "height": "60%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "50%",
+          "width": "50%",
+          "height": "30%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "mid-right",
+        "name": "Mid Right",
+        "style": {
+          "position": "absolute",
+          "top": "30%",
+          "left": "50%",
+          "width": "50%",
+          "height": "30%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "0%",
+          "width": "30%",
+          "height": "40%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-mid",
+        "name": "Bottom Mid",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "30%",
+          "width": "20%",
+          "height": "40%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "50%",
+          "width": "50%",
+          "height": "40%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "portfolio-grid",
+    "name": "Portfolio Grid",
+    "description": "Portfolio with featured and grid items",
+    "sections": [
+      {
+        "id": "featured",
+        "name": "Featured",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "50%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "item-1",
+        "name": "Item 1",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "0%",
+          "width": "25%",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "item-2",
+        "name": "Item 2",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "25%",
+          "width": "25%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "item-3",
+        "name": "Item 3",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "50%",
+          "width": "25%",
+          "height": "50%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "item-4",
+        "name": "Item 4",
+        "style": {
+          "position": "absolute",
+          "top": "50%",
+          "left": "75%",
+          "width": "25%",
+          "height": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "asymmetric-hero",
+    "name": "Asymmetric Hero",
+    "description": "40/60 split for hero emphasis",
+    "sections": [
+      {
+        "id": "hero",
+        "name": "Hero",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "40%",
+          "height": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "content",
+        "name": "Content",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "40%",
+          "width": "60%",
+          "height": "100%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "vertical-thirds",
+    "name": "Vertical Thirds",
+    "description": "Three vertical sections using rule of thirds",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "33.333%",
+          "height": "100%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "center",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "100%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "100%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "horizontal-thirds",
+    "name": "Horizontal Thirds",
+    "description": "Three horizontal sections using rule of thirds",
+    "sections": [
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "middle",
+        "name": "Middle",
+        "style": {
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "bottom",
+        "name": "Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "66.666%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.334%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "spotlight-top",
+    "name": "Spotlight Top",
+    "description": "Large top section with two bottom panels",
+    "sections": [
+      {
+        "id": "spotlight",
+        "name": "Spotlight",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "65%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "65%",
+          "left": "0%",
+          "width": "50%",
+          "height": "35%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "65%",
+          "left": "50%",
+          "width": "50%",
+          "height": "35%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "spotlight-bottom",
+    "name": "Spotlight Bottom",
+    "description": "Two top panels with large bottom section",
+    "sections": [
+      {
+        "id": "top-left",
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "50%",
+          "height": "35%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "50%",
+          "width": "50%",
+          "height": "35%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      },
+      {
+        "id": "spotlight",
+        "name": "Spotlight",
+        "style": {
+          "position": "absolute",
+          "top": "35%",
+          "left": "0%",
+          "width": "100%",
+          "height": "65%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "card-grid-three",
+    "name": "Card Grid Three",
+    "description": "Three card-like sections with gaps",
+    "sections": [
+      {
+        "id": "card-1",
+        "name": "Card 1",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "2.5%",
+          "width": "28.333%",
+          "height": "90%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "card-2",
+        "name": "Card 2",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "35.833%",
+          "width": "28.333%",
+          "height": "90%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "card-3",
+        "name": "Card 3",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "69.167%",
+          "width": "28.333%",
+          "height": "90%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "card-grid-four",
+    "name": "Card Grid Four",
+    "description": "2x2 card grid with spacing",
+    "sections": [
+      {
+        "id": "card-tl",
+        "name": "Card Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "5%",
+          "width": "42.5%",
+          "height": "42.5%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        }
+      },
+      {
+        "id": "card-tr",
+        "name": "Card Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "52.5%",
+          "width": "42.5%",
+          "height": "42.5%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "card-bl",
+        "name": "Card Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "52.5%",
+          "left": "5%",
+          "width": "42.5%",
+          "height": "42.5%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "id": "card-br",
+        "name": "Card Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "52.5%",
+          "left": "52.5%",
+          "width": "42.5%",
+          "height": "42.5%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "carousel-3-cards",
+    "name": "Carousel - 3 Cards",
+    "description": "Three cards with center emphasis",
+    "sections": [
+      {
+        "id": "left-card",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "15%",
+          "left": "5%",
+          "width": "22%",
+          "height": "70%",
+          "backgroundColor": "rgba(148,163,184,0.7)"
+        }
+      },
+      {
+        "id": "center-card",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "32%",
+          "width": "36%",
+          "height": "90%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "right-card",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "15%",
+          "left": "73%",
+          "width": "22%",
+          "height": "70%",
+          "backgroundColor": "rgba(148,163,184,0.7)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "carousel-5-cards",
+    "name": "Carousel - 5 Cards",
+    "description": "Five cards carousel",
+    "sections": [
+      {
+        "id": "far-left",
+        "name": "Far Left",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "1%",
+          "width": "15%",
+          "height": "50%",
+          "backgroundColor": "rgba(148,163,184,0.5)"
+        }
+      },
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "17.5%",
+          "left": "17%",
+          "width": "18%",
+          "height": "65%",
+          "backgroundColor": "rgba(148,163,184,0.7)"
+        }
+      },
+      {
+        "id": "center",
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "36%",
+          "width": "28%",
+          "height": "90%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "17.5%",
+          "left": "65%",
+          "width": "18%",
+          "height": "65%",
+          "backgroundColor": "rgba(148,163,184,0.7)"
+        }
+      },
+      {
+        "id": "far-right",
+        "name": "Far Right",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "left": "84%",
+          "width": "15%",
+          "height": "50%",
+          "backgroundColor": "rgba(148,163,184,0.5)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "magazine-hero",
+    "name": "Magazine Hero",
+    "description": "Editorial style with large hero",
+    "sections": [
+      {
+        "id": "hero",
+        "name": "Hero",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "65%",
+          "height": "65%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "sidebar-1",
+        "name": "Sidebar 1",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "65%",
+          "width": "35%",
+          "height": "32%",
+          "backgroundColor": "rgba(236,72,153,0.9)"
+        }
+      },
+      {
+        "id": "sidebar-2",
+        "name": "Sidebar 2",
+        "style": {
+          "position": "absolute",
+          "top": "32%",
+          "left": "65%",
+          "width": "35%",
+          "height": "33%",
+          "backgroundColor": "rgba(251,146,60,0.9)"
+        }
+      },
+      {
+        "id": "footer-1",
+        "name": "Footer 1",
+        "style": {
+          "position": "absolute",
+          "top": "65%",
+          "left": "0%",
+          "width": "40%",
+          "height": "35%",
+          "backgroundColor": "rgba(34,197,94,0.9)"
+        }
+      },
+      {
+        "id": "footer-2",
+        "name": "Footer 2",
+        "style": {
+          "position": "absolute",
+          "top": "65%",
+          "left": "40%",
+          "width": "60%",
+          "height": "35%",
+          "backgroundColor": "rgba(168,85,247,0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "bento-modern",
+    "name": "Bento Box",
+    "description": "Modern asymmetric tiles",
+    "sections": [
+      {
+        "id": "primary",
+        "name": "Primary",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "55%",
+          "height": "55%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "card-1",
+        "name": "Card 1",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "55%",
+          "width": "22.5%",
+          "height": "27.5%",
+          "backgroundColor": "rgba(236,72,153,0.9)"
+        }
+      },
+      {
+        "id": "card-2",
+        "name": "Card 2",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "77.5%",
+          "width": "22.5%",
+          "height": "27.5%",
+          "backgroundColor": "rgba(251,146,60,0.9)"
+        }
+      },
+      {
+        "id": "card-3",
+        "name": "Card 3",
+        "style": {
+          "position": "absolute",
+          "top": "27.5%",
+          "left": "55%",
+          "width": "45%",
+          "height": "27.5%",
+          "backgroundColor": "rgba(34,197,94,0.9)"
+        }
+      },
+      {
+        "id": "bottom-1",
+        "name": "Bottom 1",
+        "style": {
+          "position": "absolute",
+          "top": "55%",
+          "left": "0%",
+          "width": "30%",
+          "height": "45%",
+          "backgroundColor": "rgba(168,85,247,0.9)"
+        }
+      },
+      {
+        "id": "bottom-2",
+        "name": "Bottom 2",
+        "style": {
+          "position": "absolute",
+          "top": "55%",
+          "left": "30%",
+          "width": "25%",
+          "height": "45%",
+          "backgroundColor": "rgba(59,130,246,0.9)"
+        }
+      },
+      {
+        "id": "bottom-3",
+        "name": "Bottom 3",
+        "style": {
+          "position": "absolute",
+          "top": "55%",
+          "left": "55%",
+          "width": "45%",
+          "height": "45%",
+          "backgroundColor": "rgba(20,184,166,0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "spotlight-frame",
+    "name": "Spotlight Frame",
+    "description": "Center emphasis with decorative frame",
+    "sections": [
+      {
+        "id": "spotlight",
+        "name": "Spotlight",
+        "style": {
+          "position": "absolute",
+          "top": "20%",
+          "left": "20%",
+          "width": "60%",
+          "height": "60%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "top",
+        "name": "Top",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "20%",
+          "backgroundColor": "rgba(59,130,246,0.8)"
+        }
+      },
+      {
+        "id": "bottom",
+        "name": "Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "80%",
+          "left": "0%",
+          "width": "100%",
+          "height": "20%",
+          "backgroundColor": "rgba(59,130,246,0.8)"
+        }
+      },
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "top": "20%",
+          "left": "0%",
+          "width": "20%",
+          "height": "60%",
+          "backgroundColor": "rgba(236,72,153,0.8)"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "top": "20%",
+          "left": "80%",
+          "width": "20%",
+          "height": "60%",
+          "backgroundColor": "rgba(236,72,153,0.8)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "staircase-up",
+    "name": "Staircase Up",
+    "description": "Ascending stepped sections",
+    "sections": [
+      {
+        "id": "step-1",
+        "name": "Step 1",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "25%",
+          "height": "40%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "step-2",
+        "name": "Step 2",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "25%",
+          "width": "25%",
+          "height": "60%",
+          "backgroundColor": "rgba(236,72,153,0.9)"
+        }
+      },
+      {
+        "id": "step-3",
+        "name": "Step 3",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "50%",
+          "width": "25%",
+          "height": "80%",
+          "backgroundColor": "rgba(251,146,60,0.9)"
+        }
+      },
+      {
+        "id": "step-4",
+        "name": "Step 4",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "75%",
+          "width": "25%",
+          "height": "100%",
+          "backgroundColor": "rgba(34,197,94,0.9)"
+        }
+      },
+      {
+        "id": "fill-1",
+        "name": "Fill 1",
+        "style": {
+          "position": "absolute",
+          "top": "40%",
+          "left": "0%",
+          "width": "25%",
+          "height": "60%",
+          "backgroundColor": "rgba(168,85,247,0.9)"
+        }
+      },
+      {
+        "id": "fill-2",
+        "name": "Fill 2",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "25%",
+          "width": "25%",
+          "height": "40%",
+          "backgroundColor": "rgba(59,130,246,0.9)"
+        }
+      },
+      {
+        "id": "fill-3",
+        "name": "Fill 3",
+        "style": {
+          "position": "absolute",
+          "top": "80%",
+          "left": "50%",
+          "width": "25%",
+          "height": "20%",
+          "backgroundColor": "rgba(20,184,166,0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "diagonal-split",
+    "name": "Diagonal Split",
+    "description": "Dynamic diagonal division",
+    "sections": [
+      {
+        "id": "large-top-left",
+        "name": "Large Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "width": "70%",
+          "height": "60%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "small-top-right",
+        "name": "Small Top Right",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "70%",
+          "width": "30%",
+          "height": "30%",
+          "backgroundColor": "rgba(236,72,153,0.9)"
+        }
+      },
+      {
+        "id": "mid-right",
+        "name": "Mid Right",
+        "style": {
+          "position": "absolute",
+          "top": "30%",
+          "left": "70%",
+          "width": "30%",
+          "height": "30%",
+          "backgroundColor": "rgba(251,146,60,0.9)"
+        }
+      },
+      {
+        "id": "small-bottom-left",
+        "name": "Small Bottom Left",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "0%",
+          "width": "30%",
+          "height": "40%",
+          "backgroundColor": "rgba(34,197,94,0.9)"
+        }
+      },
+      {
+        "id": "mid-bottom",
+        "name": "Mid Bottom",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "30%",
+          "width": "40%",
+          "height": "40%",
+          "backgroundColor": "rgba(168,85,247,0.9)"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "left": "70%",
+          "width": "30%",
+          "height": "40%",
+          "backgroundColor": "rgba(59,130,246,0.9)"
+        }
+      }
+    ]
+  },
+  {
+    "id": "pip-creative",
+    "name": "Picture-in-Picture Creative",
+    "description": "Creative PiP with side panels",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "position": "absolute",
+          "top": "10%",
+          "left": "5%",
+          "width": "60%",
+          "height": "80%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        }
+      },
+      {
+        "id": "pip-1",
+        "name": "PiP 1",
+        "style": {
+          "position": "absolute",
+          "top": "5%",
+          "left": "70%",
+          "width": "25%",
+          "height": "28%",
+          "backgroundColor": "rgba(236,72,153,0.9)"
+        }
+      },
+      {
+        "id": "pip-2",
+        "name": "PiP 2",
+        "style": {
+          "position": "absolute",
+          "top": "36%",
+          "left": "70%",
+          "width": "25%",
+          "height": "28%",
+          "backgroundColor": "rgba(251,146,60,0.9)"
+        }
+      },
+      {
+        "id": "pip-3",
+        "name": "PiP 3",
+        "style": {
+          "position": "absolute",
+          "top": "67%",
+          "left": "70%",
+          "width": "25%",
+          "height": "28%",
+          "backgroundColor": "rgba(34,197,94,0.9)"
+        }
+      }
+    ]
+  }
+]

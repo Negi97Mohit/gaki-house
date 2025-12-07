@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GAKI 小子 - House for Video Creation</title>
+    <meta
+      name="description"
+      content="Record videos with real-time captions, customize styles, and share professional content"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&family=Open+Sans:wght@400;600;700&family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;600;700;900&family=Bebas+Neue&family=Quicksand:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Lora:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700;900&family=Anton&family=Press+Start+2P&family=Libre+Baskerville:wght@400;700&family=Oswald:wght@200;300;400;500;600;700&family=Fredoka+One&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Righteous&family=Pacifico&family=Shadows+Into+Light&family=Dancing+Script:wght@400;500;600;700&family=Audiowide&family=Permanent+Marker&family=Alfa+Slab+One&family=Russo+One&family=Abril+Fatface&family=Bangers&family=Caveat:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700;800;900&family=Righteous&family=Bungee&family=Staatliches&family=Saira+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Barlow+Condensed:wght@100;200;300;400;500;600;700;800;900&family=Teko:wght@300;400;500;600;700&family=Archivo+Black&family=Exo+2:wght@100;200;300;400;500;600;700;800;900&family=Luckiest+Guy&display=swap"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <meta name="author" content="Creator Enji" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <meta property="og:title" content="GAKI 小子 - House for Video Creation" />
+    <meta
+      property="og:description"
+      content="AI Video Streaming, Editing, Meeting"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="icon.png" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- ADDED SVG FILTER DEFINITION FOR NEON OUTLINE -->
+    <svg width="0" height="0" style="position: absolute; z-index: -1">
+      <filter id="neon-outline">
+        <feConvolveMatrix
+          order="3"
+          kernelMatrix="0 -1 0 -1 4 -1 0 -1 0"
+          result="edges"
+        />
+        <feGaussianBlur in="edges" stdDeviation="2" result="blurred" />
+        <feColorMatrix
+          in="blurred"
+          type="matrix"
+          values="0 0 0 0  0
+                  0 1 1 0  0
+                  1 0 1 0  0
+                  0 0 0 1  0"
+          result="neonColor"
+        />
+        <feMerge>
+          <feMergeNode in="neonColor" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </svg>
+  </body>
+</html>
