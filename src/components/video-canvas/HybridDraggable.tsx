@@ -382,69 +382,50 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
 
       switch (resizeHandle) {
         case "se":
-          newWidth = Math.max(
-            minWidth,
-            startStateRef.current.elementWidth + deltaX
-          );
-          newHeight = Math.max(
-            minHeight,
-            startStateRef.current.elementHeight + deltaY
-          );
+          newWidth = Math.max(minWidth, startStateRef.current.elementWidth + deltaX);
+          newHeight = Math.max(minHeight, startStateRef.current.elementHeight + deltaY);
           break;
         case "nw":
-          newWidth = Math.max(
-            minWidth,
-            startStateRef.current.elementWidth - deltaX
-          );
-          newHeight = Math.max(
-            minHeight,
-            startStateRef.current.elementHeight - deltaY
-          );
-          newX =
-            startStateRef.current.elementX +
-            (startStateRef.current.elementWidth - newWidth);
-          newY =
-            startStateRef.current.elementY +
-            (startStateRef.current.elementHeight - newHeight);
+          newWidth = Math.max(minWidth, startStateRef.current.elementWidth - deltaX);
+          newHeight = Math.max(minHeight, startStateRef.current.elementHeight - deltaY);
+          newX = startStateRef.current.elementX + (startStateRef.current.elementWidth - newWidth);
+          newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
           break;
         case "ne":
-          newWidth = Math.max(
-            minWidth,
-            startStateRef.current.elementWidth + deltaX
-          );
-          newHeight = Math.max(
-            minHeight,
-            startStateRef.current.elementHeight - deltaY
-          );
-          newY =
-            startStateRef.current.elementY +
-            (startStateRef.current.elementHeight - newHeight);
+          newWidth = Math.max(minWidth, startStateRef.current.elementWidth + deltaX);
+          newHeight = Math.max(minHeight, startStateRef.current.elementHeight - deltaY);
+          newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
           break;
         case "sw":
-          newWidth = Math.max(
-            minWidth,
-            startStateRef.current.elementWidth - deltaX
-          );
-          newHeight = Math.max(
-            minHeight,
-            startStateRef.current.elementHeight + deltaY
-          );
-          newX =
-            startStateRef.current.elementX +
-            (startStateRef.current.elementWidth - newWidth);
+          newWidth = Math.max(minWidth, startStateRef.current.elementWidth - deltaX);
+          newHeight = Math.max(minHeight, startStateRef.current.elementHeight + deltaY);
+          newX = startStateRef.current.elementX + (startStateRef.current.elementWidth - newWidth);
+          break;
+        // Edge handles - resize width OR height only
+        case "e":
+          newWidth = Math.max(minWidth, startStateRef.current.elementWidth + deltaX);
+          break;
+        case "w":
+          newWidth = Math.max(minWidth, startStateRef.current.elementWidth - deltaX);
+          newX = startStateRef.current.elementX + (startStateRef.current.elementWidth - newWidth);
+          break;
+        case "n":
+          newHeight = Math.max(minHeight, startStateRef.current.elementHeight - deltaY);
+          newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
+          break;
+        case "s":
+          newHeight = Math.max(minHeight, startStateRef.current.elementHeight + deltaY);
           break;
       }
 
       if (lockAspectRatio) {
-        const aspectRatio =
-          startStateRef.current.elementWidth /
-          startStateRef.current.elementHeight;
-        if (resizeHandle.length === 2) {
+        const aspectRatio = startStateRef.current.elementWidth / startStateRef.current.elementHeight;
+        // Only apply aspect ratio lock to corner handles, not edge handles
+        const isCornerHandle = resizeHandle.length === 2;
+        if (isCornerHandle) {
           newHeight = newWidth / aspectRatio;
           if (resizeHandle.includes("n")) {
-            newY =
-              startStateRef.current.elementY +
-              (startStateRef.current.elementHeight - newHeight);
+            newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
           }
         }
       }
@@ -584,31 +565,60 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         transformOrigin: "center center",
       }}
     >
-      {children}
+      {/* Content wrapper - fills entire resize box */}
+      <div className="w-full h-full overflow-hidden">
+        {children}
+      </div>
 
+      {/* Resize handles - positioned on the corners, not outside */}
       {isSelected && enableResizing && (
         <>
           <div
-            className="absolute -bottom-2 -right-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nwse-resize z-50 shadow-sm"
+            className="absolute bottom-0 right-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nwse-resize z-50 shadow-sm translate-x-1/2 translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "se")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute -top-2 -left-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nwse-resize z-50 shadow-sm"
+            className="absolute top-0 left-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nwse-resize z-50 shadow-sm -translate-x-1/2 -translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "nw")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute -top-2 -right-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nesw-resize z-50 shadow-sm"
+            className="absolute top-0 right-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nesw-resize z-50 shadow-sm translate-x-1/2 -translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "ne")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute -bottom-2 -left-2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-nesw-resize z-50 shadow-sm"
+            className="absolute bottom-0 left-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nesw-resize z-50 shadow-sm -translate-x-1/2 translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "sw")}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
+          />
+          {/* Edge handles for more intuitive resizing */}
+          <div
+            className="absolute top-1/2 left-0 w-2 h-8 bg-white/80 border border-primary rounded-sm cursor-ew-resize z-50 -translate-x-1/2 -translate-y-1/2"
+            onPointerDown={(e) => handleResizeStart(e, "w")}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
+          />
+          <div
+            className="absolute top-1/2 right-0 w-2 h-8 bg-white/80 border border-primary rounded-sm cursor-ew-resize z-50 translate-x-1/2 -translate-y-1/2"
+            onPointerDown={(e) => handleResizeStart(e, "e")}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
+          />
+          <div
+            className="absolute top-0 left-1/2 w-8 h-2 bg-white/80 border border-primary rounded-sm cursor-ns-resize z-50 -translate-x-1/2 -translate-y-1/2"
+            onPointerDown={(e) => handleResizeStart(e, "n")}
+            onPointerMove={(e) => handleResizeMove(e)}
+            onPointerUp={(e) => handleResizeEnd(e)}
+          />
+          <div
+            className="absolute bottom-0 left-1/2 w-8 h-2 bg-white/80 border border-primary rounded-sm cursor-ns-resize z-50 -translate-x-1/2 translate-y-1/2"
+            onPointerDown={(e) => handleResizeStart(e, "s")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
@@ -617,12 +627,12 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
 
       {isSelected && enableRotation && (
         <div
-          className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-6 h-6 bg-white border-2 border-primary rounded-full cursor-alias z-50 flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+          className="absolute -bottom-7 left-1/2 -translate-x-1/2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-alias z-50 flex items-center justify-center shadow-md hover:scale-110 transition-transform"
           onPointerDown={handleRotationStart}
         >
           <svg
-            width="12"
-            height="12"
+            width="10"
+            height="10"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
