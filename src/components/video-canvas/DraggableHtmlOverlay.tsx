@@ -6,8 +6,14 @@ import { generatePreview } from "@/lib/preview";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
 import { UniversalOverlayWrapper } from "./UniversalOverlayWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
-import { AnimatedBannerRenderer, BannerContentData, BannerElementState } from "@/components/animated-banners";
-import { ANIMATED_BANNER_DESIGNS } from "@/types/animatedBanner";
+import {
+  AnimatedBannerRenderer,
+  BannerContentData,
+  BannerElementState,
+} from "@/components/animated-banners";
+import animatedBannersData from "@/data/animatedBanners.json";
+
+const ANIMATED_BANNER_DESIGNS = animatedBannersData.designs;
 
 interface DraggableHtmlOverlayProps {
   overlay: GeneratedOverlay;
@@ -66,8 +72,10 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
 
   // Check if this is an animated banner
   const animatedBannerDesign = useMemo(() => {
-    if (overlay.metadata?.type === 'animated-banner') {
-      return ANIMATED_BANNER_DESIGNS.find(d => d.id === overlay.metadata?.animatedBannerId);
+    if (overlay.metadata?.type === "animated-banner") {
+      return ANIMATED_BANNER_DESIGNS.find(
+        (d) => d.id === overlay.metadata?.animatedBannerId
+      );
     }
     return null;
   }, [overlay.metadata]);
@@ -77,13 +85,21 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
     if (animatedBannerDesign && overlay.metadata?.data) {
       const data = overlay.metadata.data;
       return {
-        name: data.name || 'Your Name',
-        tagline: data.tagline || 'Creator • Streamer',
+        name: data.name || "Your Name",
+        tagline: data.tagline || "Creator • Streamer",
         avatarUrl: data.avatarUrl,
-        links: data.links?.map((l: any) => ({ platform: l.platform, url: l.url })) || [],
-        primaryColor: overlay.metadata.customColors?.primary || animatedBannerDesign.particleSettings?.color,
-        secondaryColor: overlay.metadata.customColors?.secondary || animatedBannerDesign.particleSettings?.colorVariant,
-        backgroundColor: overlay.metadata.customColors?.background || animatedBannerDesign.preview,
+        links:
+          data.links?.map((l: any) => ({ platform: l.platform, url: l.url })) ||
+          [],
+        primaryColor:
+          overlay.metadata.customColors?.primary ||
+          animatedBannerDesign.particleSettings?.color,
+        secondaryColor:
+          overlay.metadata.customColors?.secondary ||
+          animatedBannerDesign.particleSettings?.colorVariant,
+        backgroundColor:
+          overlay.metadata.customColors?.background ||
+          animatedBannerDesign.preview,
       };
     }
     return undefined;
@@ -133,7 +149,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       containerSize={containerSize}
       isSelected={isSelected || false}
       isEditing={false}
-      onSelect={onSelect || (() => { })}
+      onSelect={onSelect || (() => {})}
       onRemove={onRemoveOverlay}
       onCommit={(id, layout) => {
         if (layout.position) onLayoutChange(id, "position", layout.position);
@@ -148,8 +164,8 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
     >
       <div ref={elementRef} className="w-full h-full overflow-hidden">
         {animatedBannerDesign ? (
-          <AnimatedBannerRenderer 
-            design={animatedBannerDesign} 
+          <AnimatedBannerRenderer
+            design={animatedBannerDesign}
             className="rounded-lg"
             contentData={bannerContentData}
             isEditing={isSelected}
@@ -166,6 +182,6 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
           />
         )}
       </div>
-    </UniversalOverlayWrapper >
+    </UniversalOverlayWrapper>
   );
 };
