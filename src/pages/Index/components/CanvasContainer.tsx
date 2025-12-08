@@ -975,7 +975,6 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         onFaceTrackingToggle: (val: boolean) =>
           updateSceneProperty("isFaceTrackingEnabled", val),
         onCanvasPresetSelect: layoutManager.handleCanvasPresetSelect,
-        onCanvasPresetSelect: layoutManager.handleCanvasPresetSelect,
         selectedDeviceId: scene.selectedVideoDevice,
       },
       // Inline Banner Editing (Top-level props)
@@ -1130,12 +1129,6 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     onRecordingComplete,
     portalContainer: mainContainerRef,
     hasAiPopoverAutoOpenedRef: hasAiPopoverAutoOpenedRef,
-    onAiPopoverAutoClose: () => {
-      setTimeout(() => {
-        onSetSettingsOpen(true);
-        setTimeout(() => onSetSettingsOpen(false), 4000);
-      }, 500);
-    },
     onAiPopoverAutoClose: () => {
       setTimeout(() => {
         onSetSettingsOpen(true);
