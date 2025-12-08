@@ -7,7 +7,3 @@ export { EsportsHUD } from './EsportsHUD';
 export { InkFlow } from './InkFlow';
 export { AnimatedBannerRenderer } from './AnimatedBannerRenderer';
 export type { BannerContentData } from './AnimatedBannerRenderer';
-export { EditableBannerContent } from './EditableBannerContent';
-export type { EditableBannerContentData } from './EditableBannerContent';
-export { BannerElementEditor } from './BannerElementEditor';
-export type { BannerElement } from './BannerElementEditor';

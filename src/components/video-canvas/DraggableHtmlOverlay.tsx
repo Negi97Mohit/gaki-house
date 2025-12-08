@@ -136,7 +136,6 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
             contentData={bannerContentData}
             isEditing={isSelected}
             onContentChange={handleContentChange}
-            containerSize={containerSize}
           />
         ) : (
           <HtmlOverlayRenderer

@@ -1,11 +1,10 @@
 // src/components/animated-banners/AnimatedBannerRenderer.tsx
-import React, { useMemo, useRef, useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { GlitchMatrix } from './GlitchMatrix';
 import { EsportsHUD } from './EsportsHUD';
 import { InkFlow } from './InkFlow';
 import { VTuberFrameOverlay } from './VTuberFrame';
-import { EditableBannerContent, EditableBannerContentData } from './EditableBannerContent';
 import type { AnimatedBannerDesign } from '@/types/animatedBanner';
 
 export interface BannerContentData {
@@ -16,7 +15,6 @@ export interface BannerContentData {
   primaryColor?: string;
   secondaryColor?: string;
   backgroundColor?: string;
-  elements?: EditableBannerContentData['elements'];
 }
 
 interface AnimatedBannerRendererProps {
@@ -25,7 +23,6 @@ interface AnimatedBannerRendererProps {
   contentData?: BannerContentData;
   isEditing?: boolean;
   onContentChange?: (field: keyof BannerContentData, value: any) => void;
-  containerSize?: { width: number; height: number };
 }
 
 // Simple particle background for preview
@@ -414,32 +411,8 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
   className = '',
   contentData,
   isEditing = false,
-  onContentChange,
-  containerSize: externalContainerSize
+  onContentChange
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [internalContainerSize, setInternalContainerSize] = useState({ width: 400, height: 150 });
-
-  // Measure container size for proper scaling
-  useEffect(() => {
-    if (containerRef.current) {
-      const updateSize = () => {
-        if (containerRef.current) {
-          setInternalContainerSize({
-            width: containerRef.current.offsetWidth,
-            height: containerRef.current.offsetHeight
-          });
-        }
-      };
-      updateSize();
-      const observer = new ResizeObserver(updateSize);
-      observer.observe(containerRef.current);
-      return () => observer.disconnect();
-    }
-  }, []);
-
-  const containerSize = externalContainerSize || internalContainerSize;
-
   const data = contentData || {
     name: 'Your Name',
     tagline: 'Creator • Streamer',
@@ -447,12 +420,6 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
     secondaryColor: design.particleSettings?.colorVariant || '#3b82f6',
     backgroundColor: design.preview,
   };
-
-  // Handle element changes from EditableBannerContent
-  const handleElementsChange = (newData: EditableBannerContentData) => {
-    onContentChange?.('elements', newData.elements);
-  };
-
   const renderContent = () => {
     switch (design.id) {
       case 'cosmic-swarm':
@@ -567,24 +534,94 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
 
   return (
     <div 
-      ref={containerRef}
       className={`relative w-full h-full overflow-hidden ${className}`}
       style={{ background: data.backgroundColor || design.preview }}
     >
       {/* Animated background effects */}
       {renderContent()}
       
-      {/* Editable banner content overlay */}
-      <EditableBannerContent
-        isEditing={isEditing}
-        containerSize={containerSize}
-        initialData={data.elements ? { elements: data.elements } : undefined}
-        primaryColor={data.primaryColor}
-        secondaryColor={data.secondaryColor}
-        onChange={handleElementsChange}
-        showAvatar={design.showAvatar}
-        showTagline={design.showTagline}
-      />
+      {/* Banner content overlay */}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="flex items-center gap-4 px-6 py-4 max-w-full">
+          {/* Avatar */}
+          {design.showAvatar && (
+            <motion.div
+              className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 border-white/30"
+              style={{ 
+                background: `linear-gradient(135deg, ${data.primaryColor || '#667eea'}, ${data.secondaryColor || '#764ba2'})`,
+                boxShadow: `0 0 20px ${data.primaryColor || '#667eea'}40`
+              }}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              {data.avatarUrl ? (
+                <img src={data.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              )}
+            </motion.div>
+          )}
+          
+          {/* Text content */}
+          <div className="flex flex-col gap-1 min-w-0 flex-1">
+            <motion.span
+              className="text-white font-bold text-sm sm:text-lg md:text-xl truncate"
+              style={{ 
+                textShadow: `0 0 10px ${data.primaryColor || '#667eea'}80`,
+              }}
+              contentEditable={isEditing}
+              suppressContentEditableWarning
+              onBlur={(e) => onContentChange?.('name', e.currentTarget.textContent)}
+            >
+              {data.name || 'Your Name'}
+            </motion.span>
+            {design.showTagline && (
+              <motion.span
+                className="text-white/80 text-xs sm:text-sm truncate"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                contentEditable={isEditing}
+                suppressContentEditableWarning
+                onBlur={(e) => onContentChange?.('tagline', e.currentTarget.textContent)}
+              >
+                {data.tagline || 'Creator • Streamer'}
+              </motion.span>
+            )}
+          </div>
+          
+          {/* Social links */}
+          {data.links && data.links.length > 0 && (
+            <div className="flex gap-2 flex-shrink-0">
+              {data.links.slice(0, design.maxLinks).map((link, i) => (
+                <motion.a
+                  key={i}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                  whileHover={{ scale: 1.1 }}
+                  animate={{ 
+                    boxShadow: [
+                      `0 0 10px ${data.primaryColor || '#667eea'}40`,
+                      `0 0 20px ${data.primaryColor || '#667eea'}60`,
+                      `0 0 10px ${data.primaryColor || '#667eea'}40`
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d={getSocialIcon(link.platform)} />
+                  </svg>
+                </motion.a>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
