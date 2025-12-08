@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { BannerElementState, BannerContentData, BannerDesign, isStaticBanner } from "@/types/banner";
 
 interface UseBannerEditorProps {
@@ -21,6 +21,9 @@ export const useBannerEditor = ({
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [textEditingId, setTextEditingId] = useState<string | null>(null);
     const [editingText, setEditingText] = useState("");
+
+    // Track if an internal update is pending to avoid overwriting with stale props
+    const isInternalUpdateRef = useRef(false);
 
     // Calculate default states based on design type
     const calculateDefaultStates = useCallback((): BannerElementState[] => {
@@ -91,15 +94,30 @@ export const useBannerEditor = ({
         return initialElementStates || calculateDefaultStates();
     });
 
-    const states = initialElementStates || localElementStates;
+    // Sync from props when they change externally (not from our own updates)
+    useEffect(() => {
+        if (initialElementStates && !isInternalUpdateRef.current) {
+            setLocalElementStates(initialElementStates);
+        }
+        // Reset the flag after the effect runs
+        isInternalUpdateRef.current = false;
+    }, [initialElementStates]);
+
+    // Always use local state - this is the source of truth for rendering
+    const states = localElementStates;
 
     // Sync state changes
     const updateState = useCallback(
         (newStates: BannerElementState[]) => {
+            // Always update local state immediately for responsive UI
+            setLocalElementStates(newStates);
+
+            // Mark as internal update so the useEffect doesn't overwrite with stale props
+            isInternalUpdateRef.current = true;
+
+            // Notify parent if callback is provided
             if (onElementStatesChange) {
                 onElementStatesChange(newStates);
-            } else {
-                setLocalElementStates(newStates);
             }
         },
         [onElementStatesChange]

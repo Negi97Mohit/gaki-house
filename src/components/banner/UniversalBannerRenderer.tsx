@@ -72,8 +72,12 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
         (selectedElement.type === "name" || selectedElement.type === "tagline");
 
     // --- STATIC PREVIEW MODE (Legacy Flexbox Layout) ---
-    // Only use this if it is a static banner AND we are NOT editing.
-    if (isStatic && !isEditing) {
+    // Only use this if it is a static banner AND we are NOT editing AND no custom positions exist.
+    // If elementStates exist (meaning user has customized positions), we need to use the interactive mode
+    // to respect those positions even when not editing.
+    const hasCustomPositions = elementStates && elementStates.length > 0;
+
+    if (isStatic && !isEditing && !hasCustomPositions) {
         const staticDesign = design as any; // Cast to access styles
         const visibleLinks = contentData.links.slice(0, staticDesign.maxLinks);
 
@@ -139,7 +143,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
     }
 
     // --- INTERACTIVE / UNIVERSAL MODE ---
-    // Used for Animated Banners (Always) AND Static Banners (When Editing)
+    // Used for Animated Banners (Always) AND Static Banners (When Editing or when positions have been customized)
 
     return (
         <div
