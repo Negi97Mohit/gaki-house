@@ -1,31 +1,37 @@
 // src/components/panels/SocialBannersPanel.tsx
-import React, { useState, useEffect } from "react";
-import { BadgeCheck, Edit3, Plus, Check } from "lucide-react";
+import React, { useState, useEffect, Suspense } from "react";
+import { BadgeCheck, Edit3, Plus, Check, Sparkles, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { SocialBannerEditor } from "@/components/SocialBannerEditor";
 import { SocialBannerRenderer } from "@/components/SocialBannerRenderer";
+import { AnimatedBannerRenderer } from "@/components/animated-banners";
 import {
     SocialBannerData,
     SocialBannerDesign,
     DEFAULT_BANNER_DATA,
 } from "@/types/socialBanner";
+import { ANIMATED_BANNER_DESIGNS, AnimatedBannerDesign } from "@/types/animatedBanner";
 import socialBannersData from "@/data/socialBanners.json";
 
 const LOCAL_STORAGE_KEY = "social-banner-user-data";
 
 interface SocialBannersPanelProps {
     onAddBanner: (design: SocialBannerDesign, data: SocialBannerData) => void;
+    onAddAnimatedBanner?: (design: AnimatedBannerDesign, data: SocialBannerData) => void;
 }
 
 export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
     onAddBanner,
+    onAddAnimatedBanner,
 }) => {
     const [userData, setUserData] = useState<SocialBannerData>(DEFAULT_BANNER_DATA);
     const [isEditorOpen, setIsEditorOpen] = useState(false);
     const [selectedDesignId, setSelectedDesignId] = useState<string | null>(null);
     const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<"static" | "animated">("static");
 
     const designs = socialBannersData.designs as SocialBannerDesign[];
 
@@ -73,6 +79,14 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
 
     const hasUserInfo =
         userData.name !== DEFAULT_BANNER_DATA.name || userData.links.length > 0;
+
+    const handleSelectAnimatedBanner = (design: AnimatedBannerDesign) => {
+        if (onAddAnimatedBanner) {
+            onAddAnimatedBanner(design, userData);
+            setRecentlyAdded(design.id);
+            setTimeout(() => setRecentlyAdded(null), 1500);
+        }
+    };
 
     return (
         <div className="space-y-4">
@@ -124,14 +138,24 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                 </div>
             )}
 
-            {/* Designs Grid */}
-            <h4 className="text-sm font-medium mb-2 text-muted-foreground">
-                Choose a Design
-            </h4>
-            <p className="text-xs text-muted-foreground/70 mb-3">
-                💡 Tip: Edit your info above, then click any design to add a new banner with updated values.
-            </p>
-            <ScrollArea className="h-[calc(70vh-280px)]">
+            {/* Banner Type Tabs */}
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "static" | "animated")}>
+                <TabsList className="w-full grid grid-cols-2 mb-3">
+                    <TabsTrigger value="static" className="gap-1.5 text-xs">
+                        <Layers className="w-3.5 h-3.5" />
+                        Static
+                    </TabsTrigger>
+                    <TabsTrigger value="animated" className="gap-1.5 text-xs">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Animated
+                    </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="static" className="mt-0">
+                    <p className="text-xs text-muted-foreground/70 mb-3">
+                        💡 Click any design to add it to your canvas.
+                    </p>
+                    <ScrollArea className="h-[calc(70vh-340px)]">
                 <div className="grid grid-cols-1 gap-4 pr-2">
                     {designs.map((design) => (
                         <button
@@ -195,8 +219,98 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                             </div>
                         </button>
                     ))}
-                </div>
-            </ScrollArea>
+                        </div>
+                    </ScrollArea>
+                </TabsContent>
+
+                <TabsContent value="animated" className="mt-0">
+                    <p className="text-xs text-muted-foreground/70 mb-3">
+                        ✨ Cinematic animated banners with 3D effects, particles, and shaders.
+                    </p>
+                    <ScrollArea className="h-[calc(70vh-340px)]">
+                        <div className="grid grid-cols-1 gap-4 pr-2">
+                            {ANIMATED_BANNER_DESIGNS.map((design) => (
+                                <button
+                                    key={design.id}
+                                    onClick={() => handleSelectAnimatedBanner(design)}
+                                    className={cn(
+                                        "relative group rounded-xl overflow-hidden transition-all duration-300",
+                                        "border-2 hover:shadow-lg",
+                                        recentlyAdded === design.id
+                                            ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+                                            : "border-border/30 hover:border-primary/50"
+                                    )}
+                                >
+                                    {/* Animated Preview */}
+                                    <div className="relative h-24 overflow-hidden">
+                                        <Suspense fallback={
+                                            <div 
+                                                className="absolute inset-0" 
+                                                style={{ background: design.preview }}
+                                            />
+                                        }>
+                                            <AnimatedBannerRenderer design={design} />
+                                        </Suspense>
+                                        
+                                        {/* Technology badges */}
+                                        <div className="absolute top-2 left-2 flex gap-1 flex-wrap">
+                                            {design.technologiesUsed.slice(0, 2).map((tech) => (
+                                                <span
+                                                    key={tech}
+                                                    className="px-1.5 py-0.5 text-[8px] rounded bg-black/60 text-white/90 backdrop-blur-sm"
+                                                >
+                                                    {tech}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Info Footer */}
+                                    <div className="px-4 py-3 bg-background/90 backdrop-blur-sm border-t border-border/20">
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-left">
+                                                <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                                                    <Sparkles className="w-3.5 h-3.5 text-primary" />
+                                                    {design.name}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground line-clamp-1">
+                                                    {design.description}
+                                                </p>
+                                            </div>
+                                            <div
+                                                className={cn(
+                                                    "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                                                    recentlyAdded === design.id
+                                                        ? "bg-green-500 text-white"
+                                                        : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
+                                                )}
+                                            >
+                                                {recentlyAdded === design.id ? (
+                                                    <Check className="w-4 h-4" />
+                                                ) : (
+                                                    <Plus className="w-4 h-4" />
+                                                )}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Recommended uses */}
+                                        <div className="flex gap-1 mt-2 flex-wrap">
+                                            {design.recommendedUseCases.slice(0, 3).map((useCase) => (
+                                                <span
+                                                    key={useCase}
+                                                    className="px-1.5 py-0.5 text-[9px] rounded-full bg-primary/10 text-primary"
+                                                >
+                                                    {useCase}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </ScrollArea>
+                </TabsContent>
+            </Tabs>
 
             {/* Editor Modal */}
             <SocialBannerEditor
