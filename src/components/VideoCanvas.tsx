@@ -1,5 +1,3 @@
-// src/components/VideoCanvas.tsx
-
 import React, { useMemo } from "react";
 import { Rnd } from "react-rnd";
 import { useTheme } from "next-themes";
@@ -20,28 +18,27 @@ import { useVideoCanvasState } from "@/hooks/useVideoCanvasState";
 import {
   getNumericAspectRatio,
   getCanvasAspectRatioStyle,
-  getCameraShapeStyle,
-  getVideoFilterStyle,
 } from "@/components/video-canvas/VideoCanvasHelpers";
 import { useVideoStreams } from "@/hooks/useVideoStreams";
 import { usePipGestures } from "@/hooks/usePipGestures";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CameraRenderer } from "@/components/CameraRenderer";
 import { AICommandPopover } from "@/components/AICommandPopover";
 import { AssetResult } from "@/components/AssetLibrary";
-
 import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
-import { GuideLine, OverlayElement } from "@/hooks/useSnapGuides";
-import { DynamicContentRenderer } from "@/components/video-canvas/DynamicContentRenderer";
+import { OverlayElement } from "@/hooks/useSnapGuides";
 import { PipWindow } from "@/components/video-canvas/PipWindow";
 import { OverlayLayer } from "@/components/video-canvas/OverlayLayer";
 import { BrowserOverlayState } from "./DraggableBrowser";
 import { VideoPlayer } from "@/components/video-canvas/VideoPlayer";
 import { ScreenShareView } from "@/components/video-canvas/ScreenShareView";
-import { SnapLines, SnapLinesRef } from "@/components/video-canvas/SnapLines";
+import { SnapLines } from "@/components/video-canvas/SnapLines";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { TextEditingToolbar } from "@/components/TextEditingToolbar";
+
+// --- New Imported Sub-Components ---
+import { VideoCanvasCamera } from "@/components/video-canvas/VideoCanvasCamera";
+import { VideoCanvasSplitLayout } from "@/components/video-canvas/VideoCanvasSplitLayout";
 
 interface VideoCanvasProps {
   sceneId: string;
@@ -197,7 +194,6 @@ interface VideoCanvasProps {
   setSelectedGeneratedId?: (id: string | null) => void;
   onBannerDoubleClick?: (id: string, e: React.MouseEvent) => void;
   remoteStream?: MediaStream | null;
-  // Banner Text Editing
   editingBannerText?: {
     overlayId: string;
     field: "name" | "tagline";
@@ -208,7 +204,6 @@ interface VideoCanvasProps {
   onBannerTextClose?: () => void;
 }
 
-// --- Main Component ---
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const { theme } = useTheme();
 
@@ -278,164 +273,53 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onScreenShareModeChange: props.onScreenShareModeChange,
   });
 
-  const renderCamera = (className?: string, style?: React.CSSProperties) => {
-    const {
-      style: _unsafeStyle,
-      width: _unsafeWidth,
-      height: _unsafeHeight,
-      className: _unsafeClassName,
-      ...safeSidebarProps
-    } = props.sidebarProps || {};
-
-    const handleEnterPipMode = () => {
-      if (props.screenShareMode === "off") {
-        props.onScreenShareModeChange("canvas");
-        props.onLayoutModeChange("pip");
+  const renderCamera = (className?: string, style?: React.CSSProperties) => (
+    <VideoCanvasCamera
+      className={className}
+      style={style}
+      stream={cameraStream}
+      cameraShape={props.cameraShape}
+      pipBorder={props.pipBorder}
+      pipShadow={props.pipShadow}
+      videoFilter={props.videoFilter}
+      isBeautifyEnabled={props.isBeautifyEnabled}
+      isLowLightEnabled={props.isLowLightEnabled}
+      isAutoFramingEnabled={props.isAutoFramingEnabled}
+      videoDevices={props.videoDevices}
+      selectedVideoDevice={selectedVideoDevice}
+      onVideoDeviceSelect={props.onVideoDeviceSelect}
+      onCameraShapeChange={props.onCameraShapeChange}
+      portalContainer={
+        typeof props.portalContainer === "function"
+          ? undefined
+          : props.portalContainer
       }
-    };
-
-    return (
-      <div
-        className={cn("w-full h-full", className)}
-        style={{
-          ...getCameraShapeStyle(
-            props.cameraShape,
-            props.pipBorder,
-            props.pipShadow
-          ),
-          ...style,
-        }}
-      >
-        <CameraRenderer
-          stream={cameraStream}
-          className="w-full h-full"
-          portalContainer={
-            typeof props.portalContainer === "function"
-              ? undefined
-              : props.portalContainer
-          }
-          style={style}
-          videoFilter={getVideoFilterStyle(
-            props.videoFilter,
-            props.isBeautifyEnabled,
-            props.isLowLightEnabled
-          )}
-          cameraShape={props.cameraShape}
-          onCameraShapeChange={props.onCameraShapeChange}
-          isAutoFramingEnabled={props.isAutoFramingEnabled}
-          videoDevices={props.videoDevices}
-          selectedDeviceId={selectedVideoDevice}
-          onCameraDeviceChange={props.onVideoDeviceSelect}
-          pipBorder={props.pipBorder}
-          pipShadow={props.pipShadow}
-          showAspectRatio={true}
-          onEnterPipMode={handleEnterPipMode}
-          isMouseActive={props.isMouseActive}
-          {...safeSidebarProps}
-        />
-      </div>
-    );
-  };
+      isMouseActive={props.isMouseActive}
+      sidebarProps={props.sidebarProps}
+      screenShareMode={props.screenShareMode}
+      onScreenShareModeChange={props.onScreenShareModeChange}
+      onLayoutModeChange={props.onLayoutModeChange}
+    />
+  );
 
   const renderContent = () => {
     if (dynamicLayout.isActive && dynamicLayout.target) {
-      const isVertical = dynamicLayout.mode === "split-vertical";
-      if (dynamicLayout.mode === "pip") {
-        return (
-          <div className="w-full h-full relative bg-black">
-            {renderCamera()}
-            <Rnd
-              size={{
-                width: (containerSize.width * dynamicPipSize.width) / 100,
-                height: (containerSize.height * dynamicPipSize.height) / 100,
-              }}
-              position={{
-                x: (containerSize.width * dynamicPipPosition.x) / 100,
-                y: (containerSize.height * dynamicPipPosition.y) / 100,
-              }}
-              minWidth={150}
-              minHeight={150}
-              bounds="parent"
-              onDragStop={(e, d) =>
-                setDynamicPipPosition({
-                  x: (d.x / containerSize.width) * 100,
-                  y: (d.y / containerSize.height) * 100,
-                })
-              }
-              onResizeStop={(e, dir, ref, delta, pos) => {
-                setDynamicPipSize({
-                  width:
-                    (parseInt(ref.style.width, 10) / containerSize.width) * 100,
-                  height:
-                    (parseInt(ref.style.height, 10) / containerSize.height) *
-                    100,
-                });
-                setDynamicPipPosition({
-                  x: (pos.x / containerSize.width) * 100,
-                  y: (pos.y / containerSize.height) * 100,
-                });
-              }}
-              className="pointer-events-auto border-2 border-primary shadow-lg rounded-lg overflow-hidden"
-            >
-              <DynamicContentRenderer
-                target={dynamicLayout.target}
-                theme={theme}
-                fullTranscript={fullTranscript}
-                interimTranscript={interimTranscript}
-                sidebarProps={props.sidebarProps}
-              />
-            </Rnd>
-          </div>
-        );
-      }
       return (
-        <div
-          className={cn(
-            "w-full h-full flex bg-black",
-            isVertical ? "flex-col" : "flex-row"
-          )}
-        >
-          <div
-            className="relative flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${dynamicSplitRatio * 100}%`,
-            }}
-          >
-            <DynamicContentRenderer
-              target={dynamicLayout.target}
-              theme={theme}
-              fullTranscript={fullTranscript}
-              interimTranscript={interimTranscript}
-              sidebarProps={props.sidebarProps}
-            />
-          </div>
-          <div
-            className={cn(
-              "bg-border hover:bg-primary transition-colors flex items-center justify-center group z-10",
-              isVertical
-                ? "h-2 w-full cursor-row-resize"
-                : "w-2 h-full cursor-col-resize"
-            )}
-            onMouseDown={() => setIsDraggingDynamicSplitter(true)}
-          >
-            <div
-              className={cn(
-                "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
-                isVertical ? "w-12 h-1" : "w-1 h-12"
-              )}
-            />
-          </div>
-          <div
-            className="relative flex items-center justify-center overflow-hidden"
-            style={{
-              [isVertical ? "height" : "width"]: `${
-                (1 - dynamicSplitRatio) * 100
-              }%`,
-            }}
-          >
-            {renderCamera()}
-          </div>
-        </div>
+        <VideoCanvasSplitLayout
+          dynamicLayout={dynamicLayout}
+          containerSize={containerSize}
+          dynamicPipSize={dynamicPipSize}
+          setDynamicPipSize={setDynamicPipSize}
+          dynamicPipPosition={dynamicPipPosition}
+          setDynamicPipPosition={setDynamicPipPosition}
+          dynamicSplitRatio={dynamicSplitRatio}
+          setIsDraggingDynamicSplitter={setIsDraggingDynamicSplitter}
+          renderCamera={() => renderCamera()}
+          theme={theme}
+          fullTranscript={fullTranscript}
+          interimTranscript={interimTranscript}
+          sidebarProps={props.sidebarProps}
+        />
       );
     }
 
@@ -509,22 +393,22 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       ...textOverlays.map((o) => ({
         id: o.id,
         layout: o.layout,
-        type: "text",
+        type: "text" as const,
       })),
       ...browserOverlays.map((o) => ({
         id: o.id,
         layout: o.layout,
-        type: "browser",
+        type: "browser" as const,
       })),
       ...fileOverlays.map((o) => ({
         id: o.id,
         layout: o.layout,
-        type: "file",
+        type: "file" as const,
       })),
       ...generatedOverlays.map((o) => ({
         id: o.id,
         layout: o.layout,
-        type: "generated",
+        type: "generated" as const,
       })),
     ],
     [textOverlays, browserOverlays, fileOverlays, generatedOverlays]

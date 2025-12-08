@@ -1,15 +1,15 @@
 // src/components/banner-editor/BannerTextToolbar.tsx
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Bold, Italic, Minus, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { motion } from "framer-motion";
+import { Bold, Italic, Minus, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 interface BannerTextToolbarProps {
   fontSize: number;
@@ -24,14 +24,14 @@ interface BannerTextToolbarProps {
 }
 
 const FONT_OPTIONS = [
-  { value: 'Inter', label: 'Inter' },
-  { value: 'Arial', label: 'Arial' },
-  { value: 'Georgia', label: 'Georgia' },
-  { value: 'Helvetica', label: 'Helvetica' },
-  { value: 'Times New Roman', label: 'Times' },
-  { value: 'Courier New', label: 'Courier' },
-  { value: 'Verdana', label: 'Verdana' },
-  { value: 'Impact', label: 'Impact' },
+  { value: "Inter", label: "Inter" },
+  { value: "Arial", label: "Arial" },
+  { value: "Georgia", label: "Georgia" },
+  { value: "Helvetica", label: "Helvetica" },
+  { value: "Times New Roman", label: "Times" },
+  { value: "Courier New", label: "Courier" },
+  { value: "Verdana", label: "Verdana" },
+  { value: "Impact", label: "Impact" },
 ];
 
 export const BannerTextToolbar: React.FC<BannerTextToolbarProps> = ({
@@ -50,23 +50,32 @@ export const BannerTextToolbar: React.FC<BannerTextToolbarProps> = ({
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 5 }}
-      className="absolute bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl p-2 flex items-center gap-2 z-[300]"
+      className="absolute bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl p-2 flex items-center gap-2"
       style={{
         left: position.x,
         top: position.y - 50,
-        transform: 'translateX(-50%)',
+        transform: "translateX(-50%)",
+        zIndex: 9999, // Ensure it sits on top of everything
+        pointerEvents: "auto",
       }}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()} // Critical: Prevents drag initiation
     >
       {/* Font Family */}
       <Select value={fontFamily} onValueChange={onFontFamilyChange}>
         <SelectTrigger className="w-24 h-7 text-xs">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="z-[9999]">
+          {" "}
+          {/* Ensure dropdown is on top */}
           {FONT_OPTIONS.map((font) => (
-            <SelectItem key={font.value} value={font.value} style={{ fontFamily: font.value }}>
+            <SelectItem
+              key={font.value}
+              value={font.value}
+              style={{ fontFamily: font.value }}
+            >
               {font.label}
             </SelectItem>
           ))}
@@ -100,22 +109,27 @@ export const BannerTextToolbar: React.FC<BannerTextToolbarProps> = ({
 
       {/* Bold */}
       <Button
-        variant={fontWeight === 'bold' ? 'secondary' : 'ghost'}
+        variant={fontWeight === "bold" ? "secondary" : "ghost"}
         size="icon"
         className="h-7 w-7"
-        onClick={() => onFontWeightChange(fontWeight === 'bold' ? 'normal' : 'bold')}
+        onClick={() =>
+          onFontWeightChange(fontWeight === "bold" ? "normal" : "bold")
+        }
       >
         <Bold className="w-3 h-3" />
       </Button>
 
       {/* Color */}
-      <div className="relative">
+      <div className="relative flex items-center justify-center">
         <input
           type="color"
-          value={color.startsWith('#') ? color : '#ffffff'}
+          value={color.startsWith("#") ? color : "#ffffff"}
           onChange={(e) => onColorChange(e.target.value)}
-          className="w-7 h-7 cursor-pointer rounded border border-border"
+          className="w-6 h-6 p-0 border-0 rounded-full cursor-pointer overflow-hidden"
+          style={{ padding: 0 }}
         />
+        {/* Custom ring to make the color picker look better */}
+        <div className="absolute inset-0 rounded-full border border-border pointer-events-none" />
       </div>
     </motion.div>
   );

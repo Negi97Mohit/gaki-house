@@ -12,6 +12,8 @@ import { DraggableBrowser } from "@/components/DraggableBrowser";
 import { DraggableFileViewer } from "@/components/DraggableFileViewer";
 import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
+import { HybridDraggable } from "./HybridDraggable";
+import { SocialBannerRenderer } from "@/components/SocialBannerRenderer";
 
 interface OverlayLayerProps {
   layerOrder: "above-video" | "below-video";
@@ -28,8 +30,12 @@ interface OverlayLayerProps {
 
   // Handlers
   onSetDynamicLayout: any;
-  onOverlayLayoutChange: any;
-  onRemoveOverlay: any;
+  onOverlayLayoutChange: (
+    id: string,
+    key: "position" | "size" | "rotation",
+    value: any
+  ) => void;
+  onRemoveOverlay: (id: string) => void;
   onPreviewGenerated: any;
   onUpdateOverlayMetadata?: (id: string, metadata: any) => void;
   portalContainer: any;
@@ -127,27 +133,97 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
 
   return (
     <div className="w-full h-full relative">
-      {/* HTML Overlays */}
+      {/* HTML / Generated Overlays */}
       {htmlOverlays
         .filter((o) => filterDynamic(o.id) && checkLayer(o.layout))
-        .map((overlay) => (
-          <DraggableHtmlOverlay
-            key={overlay.id}
-            overlay={overlay}
-            onSetDynamicLayout={onSetDynamicLayout}
-            onLayoutChange={onOverlayLayoutChange}
-            onRemoveOverlay={onRemoveOverlay}
-            onPreviewGenerated={onPreviewGenerated}
-            onUpdateMetadata={onUpdateOverlayMetadata}
-            containerSize={containerSize}
-            portalContainer={portalContainer}
-            allOverlays={allOverlays}
-            onSnapGuidesChange={onSnapGuidesChange}
-            isSelected={selectedGeneratedId === overlay.id}
-            onSelect={onSelectGenerated}
-            onDoubleClick={onBannerDoubleClick}
-          />
-        ))}
+        .map((overlay) => {
+          // --- Interactive Banner Handling ---
+          if (overlay.metadata?.type === "social-banner-interactive") {
+            return (
+              <HybridDraggable
+                key={overlay.id}
+                id={overlay.id}
+                position={overlay.layout.position}
+                size={overlay.layout.size}
+                rotation={overlay.layout.rotation}
+                zIndex={overlay.layout.zIndex}
+                containerSize={containerSize}
+                isSelected={selectedGeneratedId === overlay.id}
+                onSelect={() => onSelectGenerated?.(overlay.id)}
+                onCommit={(id, changes) => {
+                  if (changes.position)
+                    onOverlayLayoutChange(
+                      overlay.id,
+                      "position",
+                      changes.position
+                    );
+                  if (changes.size)
+                    onOverlayLayoutChange(overlay.id, "size", changes.size);
+                  if (changes.rotation !== undefined)
+                    onOverlayLayoutChange(
+                      overlay.id,
+                      "rotation",
+                      changes.rotation
+                    );
+                }}
+                onDoubleClick={(id, e) => onBannerDoubleClick?.(id, e)} // Pass double click here
+              >
+                <div className="w-full h-full pointer-events-auto">
+                  <SocialBannerRenderer
+                    design={overlay.metadata.design}
+                    data={overlay.metadata.data}
+                    isEditing={true}
+                    // Passes down selection state to handle deselection clearing
+                    isOverlaySelected={selectedGeneratedId === overlay.id}
+                    elementStates={overlay.metadata.elementStates}
+                    onElementStatesChange={(states) => {
+                      onUpdateOverlayMetadata?.(overlay.id, {
+                        ...overlay.metadata,
+                        elementStates: states,
+                      });
+                    }}
+                    onContentChange={(field, value) => {
+                      onUpdateOverlayMetadata?.(overlay.id, {
+                        ...overlay.metadata,
+                        data: {
+                          ...overlay.metadata.data,
+                          [field]: value,
+                        },
+                      });
+                    }}
+                    containerSize={{
+                      width:
+                        (overlay.layout.size.width / 100) * containerSize.width,
+                      height:
+                        (overlay.layout.size.height / 100) *
+                        containerSize.height,
+                    }}
+                  />
+                </div>
+              </HybridDraggable>
+            );
+          }
+
+          // --- Standard HTML Overlay (Iframe) ---
+          return (
+            <DraggableHtmlOverlay
+              key={overlay.id}
+              overlay={overlay}
+              onSetDynamicLayout={onSetDynamicLayout}
+              onLayoutChange={onOverlayLayoutChange}
+              onRemoveOverlay={onRemoveOverlay}
+              onPreviewGenerated={onPreviewGenerated}
+              onUpdateMetadata={onUpdateOverlayMetadata}
+              containerSize={containerSize}
+              portalContainer={portalContainer}
+              allOverlays={allOverlays}
+              onSnapGuidesChange={onSnapGuidesChange}
+              isSelected={selectedGeneratedId === overlay.id}
+              onSelect={onSelectGenerated}
+              onDoubleClick={onBannerDoubleClick}
+            />
+          );
+        })}
 
       {/* Browser Overlays */}
       {browserOverlays
@@ -218,7 +294,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
             isSpacePressed={isSpacePressed}
             allOverlays={allOverlays}
             onSnapGuidesChange={onSnapGuidesChange}
-            scale={viewport.scale} // Pass scale prop here!
+            scale={viewport.scale}
           />
         ))}
     </div>

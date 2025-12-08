@@ -231,7 +231,8 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       // Convert to % for snapping
       const xPercent = (newX / containerSize.width) * 100;
       const yPercent = (newY / containerSize.height) * 100;
-      const widthPercent = (currentTransformRef.current.width / containerSize.width) * 100;
+      const widthPercent =
+        (currentTransformRef.current.width / containerSize.width) * 100;
       const heightPercent =
         (currentTransformRef.current.height / containerSize.height) * 100;
 
@@ -252,7 +253,11 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       newY = snappedPixels.y;
 
       // Clamp bounds (relaxed)
-      newX = clamp(newX, -currentTransformRef.current.width + 20, containerSize.width - 20);
+      newX = clamp(
+        newX,
+        -currentTransformRef.current.width + 20,
+        containerSize.width - 20
+      );
       newY = clamp(
         newY,
         -currentTransformRef.current.height + 20,
@@ -270,12 +275,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         rotation: currentTransformRef.current.rotation,
       });
     },
-    [
-      containerSize,
-      calculateSnap,
-      onSnapGuidesChange,
-      enableDragging,
-    ]
+    [containerSize, calculateSnap, onSnapGuidesChange, enableDragging]
   );
 
   const handleDragEnd = useCallback(
@@ -297,7 +297,10 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         setLocalTransform({ ...currentTransformRef.current });
 
         const percent = pixelsToPercent(
-          { x: currentTransformRef.current.x, y: currentTransformRef.current.y },
+          {
+            x: currentTransformRef.current.x,
+            y: currentTransformRef.current.y,
+          },
           containerSize
         );
         onCommit(id, {
@@ -320,14 +323,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         }
       }
     },
-    [
-      id,
-      containerSize,
-      onCommit,
-      onSnapGuidesChange,
-      onClick,
-      onDoubleClick,
-    ]
+    [id, containerSize, onCommit, onSnapGuidesChange, onClick, onDoubleClick]
   );
 
   const dragBind = usePointerInteraction({
@@ -382,50 +378,102 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
 
       switch (resizeHandle) {
         case "se":
-          newWidth = Math.max(minWidth, startStateRef.current.elementWidth + deltaX);
-          newHeight = Math.max(minHeight, startStateRef.current.elementHeight + deltaY);
+          newWidth = Math.max(
+            minWidth,
+            startStateRef.current.elementWidth + deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startStateRef.current.elementHeight + deltaY
+          );
           break;
         case "nw":
-          newWidth = Math.max(minWidth, startStateRef.current.elementWidth - deltaX);
-          newHeight = Math.max(minHeight, startStateRef.current.elementHeight - deltaY);
-          newX = startStateRef.current.elementX + (startStateRef.current.elementWidth - newWidth);
-          newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
+          newWidth = Math.max(
+            minWidth,
+            startStateRef.current.elementWidth - deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startStateRef.current.elementHeight - deltaY
+          );
+          newX =
+            startStateRef.current.elementX +
+            (startStateRef.current.elementWidth - newWidth);
+          newY =
+            startStateRef.current.elementY +
+            (startStateRef.current.elementHeight - newHeight);
           break;
         case "ne":
-          newWidth = Math.max(minWidth, startStateRef.current.elementWidth + deltaX);
-          newHeight = Math.max(minHeight, startStateRef.current.elementHeight - deltaY);
-          newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
+          newWidth = Math.max(
+            minWidth,
+            startStateRef.current.elementWidth + deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startStateRef.current.elementHeight - deltaY
+          );
+          newY =
+            startStateRef.current.elementY +
+            (startStateRef.current.elementHeight - newHeight);
           break;
         case "sw":
-          newWidth = Math.max(minWidth, startStateRef.current.elementWidth - deltaX);
-          newHeight = Math.max(minHeight, startStateRef.current.elementHeight + deltaY);
-          newX = startStateRef.current.elementX + (startStateRef.current.elementWidth - newWidth);
+          newWidth = Math.max(
+            minWidth,
+            startStateRef.current.elementWidth - deltaX
+          );
+          newHeight = Math.max(
+            minHeight,
+            startStateRef.current.elementHeight + deltaY
+          );
+          newX =
+            startStateRef.current.elementX +
+            (startStateRef.current.elementWidth - newWidth);
           break;
         // Edge handles - resize width OR height only
         case "e":
-          newWidth = Math.max(minWidth, startStateRef.current.elementWidth + deltaX);
+          newWidth = Math.max(
+            minWidth,
+            startStateRef.current.elementWidth + deltaX
+          );
           break;
         case "w":
-          newWidth = Math.max(minWidth, startStateRef.current.elementWidth - deltaX);
-          newX = startStateRef.current.elementX + (startStateRef.current.elementWidth - newWidth);
+          newWidth = Math.max(
+            minWidth,
+            startStateRef.current.elementWidth - deltaX
+          );
+          newX =
+            startStateRef.current.elementX +
+            (startStateRef.current.elementWidth - newWidth);
           break;
         case "n":
-          newHeight = Math.max(minHeight, startStateRef.current.elementHeight - deltaY);
-          newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
+          newHeight = Math.max(
+            minHeight,
+            startStateRef.current.elementHeight - deltaY
+          );
+          newY =
+            startStateRef.current.elementY +
+            (startStateRef.current.elementHeight - newHeight);
           break;
         case "s":
-          newHeight = Math.max(minHeight, startStateRef.current.elementHeight + deltaY);
+          newHeight = Math.max(
+            minHeight,
+            startStateRef.current.elementHeight + deltaY
+          );
           break;
       }
 
       if (lockAspectRatio) {
-        const aspectRatio = startStateRef.current.elementWidth / startStateRef.current.elementHeight;
+        const aspectRatio =
+          startStateRef.current.elementWidth /
+          startStateRef.current.elementHeight;
         // Only apply aspect ratio lock to corner handles, not edge handles
         const isCornerHandle = resizeHandle.length === 2;
         if (isCornerHandle) {
           newHeight = newWidth / aspectRatio;
           if (resizeHandle.includes("n")) {
-            newY = startStateRef.current.elementY + (startStateRef.current.elementHeight - newHeight);
+            newY =
+              startStateRef.current.elementY +
+              (startStateRef.current.elementHeight - newHeight);
           }
         }
       }
@@ -469,7 +517,8 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       );
       const sizePercent = {
         width: (currentTransformRef.current.width / containerSize.width) * 100,
-        height: (currentTransformRef.current.height / containerSize.height) * 100,
+        height:
+          (currentTransformRef.current.height / containerSize.height) * 100,
       };
 
       onCommit(id, { position: posPercent, size: sizePercent });
@@ -530,7 +579,10 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         document.removeEventListener("mouseup", handleMouseUp);
 
         // Sync local state
-        setLocalTransform(prev => ({ ...prev, rotation: liveRotationRef.current }));
+        setLocalTransform((prev) => ({
+          ...prev,
+          rotation: liveRotationRef.current,
+        }));
 
         onCommit(id, { rotation: liveRotationRef.current });
       };
@@ -566,7 +618,9 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       }}
     >
       {/* Content wrapper - fills entire resize box */}
-      <div className="w-full h-full overflow-hidden">
+      <div className="w-full h-full">
+        {" "}
+        {/* Removed overflow-hidden */}
         {children}
       </div>
 

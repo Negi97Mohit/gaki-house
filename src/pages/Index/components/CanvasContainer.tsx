@@ -722,8 +722,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       },
       data: SocialBannerData
     ) => {
+      // Logic change: We treat ALL banners as interactive metadata types now
+      // This stops generating the static HTML string for "Static" designs
+
       const isAnimated = design.isAnimatedBanner === true;
-      const htmlContent = isAnimated ? "" : generateBannerHtml(design, data);
+
+      // Previously, we generated HTML here. Now we pass an empty string and use metadata.
+      const htmlContent = "";
 
       const newOverlay: GeneratedOverlay = {
         id: generateId("banner"),
@@ -739,18 +744,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           layerOrder: "above-video",
         },
         preview: design.preview,
-        metadata: isAnimated
-          ? {
-              type: "animated-banner",
-              animatedBannerId: design.animatedBannerId,
-              design,
-              data,
-            }
-          : {
-              type: "social-banner",
-              design,
-              data,
-            },
+        metadata: {
+          // Use a new type for static banners that need interactivity
+          type: isAnimated ? "animated-banner" : "social-banner-interactive",
+          animatedBannerId: isAnimated ? design.animatedBannerId : undefined,
+          design,
+          data,
+        },
       };
 
       updateActiveScene((scene) => ({
@@ -761,9 +761,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       selection.setSelectedGeneratedId(newOverlay.id);
       toast.success(`Added "${design.name}" banner to canvas`);
     },
-    [updateActiveScene, selection, generateBannerHtml]
+    [updateActiveScene, selection]
   );
-
   const processTranscript = useCallback(
     async (transcript: string, targetId: string | null = null) => {
       if (!activeScene.isAiModeEnabled || isProcessingAi || !activeScene)
