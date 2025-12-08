@@ -6,7 +6,7 @@ import { generatePreview } from "@/lib/preview";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
 import { UniversalOverlayWrapper } from "./UniversalOverlayWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
-import { AnimatedBannerRenderer, BannerContentData } from "@/components/animated-banners";
+import { AnimatedBannerRenderer, BannerContentData, BannerElementState } from "@/components/animated-banners";
 import { ANIMATED_BANNER_DESIGNS } from "@/types/animatedBanner";
 
 interface DraggableHtmlOverlayProps {
@@ -103,6 +103,23 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
     }
   };
 
+  // Handle element state changes for animated banners
+  const handleElementStatesChange = (states: BannerElementState[]) => {
+    if (onUpdateMetadata && overlay.metadata) {
+      onUpdateMetadata(overlay.id, {
+        ...overlay.metadata,
+        elementStates: states,
+      });
+    }
+  };
+
+  // Get the actual rendered size of the banner
+  const bannerSize = useMemo(() => {
+    const sizeW = overlay.layout.size?.width || 400;
+    const sizeH = overlay.layout.size?.height || 100;
+    return { width: sizeW, height: sizeH };
+  }, [overlay.layout.size]);
+
   if (!containerSize.width || !containerSize.height) return null;
 
   return (
@@ -136,6 +153,9 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
             contentData={bannerContentData}
             isEditing={isSelected}
             onContentChange={handleContentChange}
+            elementStates={overlay.metadata?.elementStates}
+            onElementStatesChange={handleElementStatesChange}
+            containerSize={bannerSize}
           />
         ) : (
           <HtmlOverlayRenderer
