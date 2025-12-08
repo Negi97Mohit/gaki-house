@@ -53,7 +53,7 @@ export const BannerTextToolbar: React.FC<BannerTextToolbarProps> = ({
       className="absolute bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl p-2 flex items-center gap-2"
       style={{
         left: position.x,
-        top: position.y - 50,
+        top: position.y < 60 ? position.y + 20 : position.y - 50, // Flip down if too close to top
         transform: "translateX(-50%)",
         zIndex: 9999, // Ensure it sits on top of everything
         pointerEvents: "auto",

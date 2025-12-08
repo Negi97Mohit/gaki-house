@@ -1,111 +1,25 @@
-// src/components/SocialBannerRenderer.tsx
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import {
-  Github,
-  Instagram,
-  Linkedin,
-  Facebook,
-  Youtube,
-  Globe,
-  User,
-} from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+import React from "react";
 import type {
   SocialBannerDesign,
   SocialBannerData,
-  SocialPlatform,
 } from "@/types/socialBanner";
-import {
-  BannerInternalDraggable,
-  BannerElementData,
-} from "@/components/banner-editor/BannerInternalDraggable";
-import { BannerTextToolbar } from "@/components/banner-editor/BannerTextToolbar";
+import { UniversalBannerRenderer } from "./banner/UniversalBannerRenderer";
+import { BannerElementState } from "@/types/banner";
+import { getPlatformIcon as sharedGetPlatformIcon } from "./banner/PlatformIcons";
 
-// Custom icons for platforms not in lucide
-const TwitchIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-    <path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z" />
-  </svg>
-);
-
-const KickIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-    <path d="M1.333 0v24h5.334v-8.889L12.89 24h7.777l-7.556-10.667L20 0h-8l-5.333 8.444V0z" />
-  </svg>
-);
-
-const XIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
-
-const TikTokIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
-  </svg>
-);
-
-const DiscordIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z" />
-  </svg>
-);
-
-// Platform icon mapping
-export const getPlatformIcon = (
-  platform: SocialPlatform
-): React.FC<{ className?: string; style?: React.CSSProperties }> => {
-  const icons: Record<
-    SocialPlatform,
-    React.FC<{ className?: string; style?: React.CSSProperties }>
-  > = {
-    github: Github,
-    instagram: Instagram,
-    linkedin: Linkedin,
-    facebook: Facebook,
-    youtube: Youtube,
-    website: Globe,
-    discord: ({ className, style }) => (
-      <div className={className} style={style}>
-        <DiscordIcon />
-      </div>
-    ),
-    twitch: ({ className, style }) => (
-      <div className={className} style={style}>
-        <TwitchIcon />
-      </div>
-    ),
-    kick: ({ className, style }) => (
-      <div className={className} style={style}>
-        <KickIcon />
-      </div>
-    ),
-    x: ({ className, style }) => (
-      <div className={className} style={style}>
-        <XIcon />
-      </div>
-    ),
-    tiktok: ({ className, style }) => (
-      <div className={className} style={style}>
-        <TikTokIcon />
-      </div>
-    ),
-  };
-  return icons[platform] || Globe;
-};
+// Re-export getPlatformIcon for backward compatibility
+export const getPlatformIcon = sharedGetPlatformIcon;
 
 interface SocialBannerRendererProps {
   design: SocialBannerDesign;
   data: SocialBannerData;
   scale?: number;
   onClick?: () => void;
-  // Interactivity Props
   isEditing?: boolean;
-  isOverlaySelected?: boolean; // New prop to track parent selection
+  isOverlaySelected?: boolean;
   containerSize?: { width: number; height: number };
-  elementStates?: BannerElementData[];
-  onElementStatesChange?: (states: BannerElementData[]) => void;
+  elementStates?: BannerElementState[]; // Use unified type (structural match)
+  onElementStatesChange?: (states: BannerElementState[]) => void;
   onContentChange?: (field: keyof SocialBannerData, value: string) => void;
 }
 
@@ -116,449 +30,34 @@ export const SocialBannerRenderer: React.FC<SocialBannerRendererProps> = ({
   onClick,
   isEditing = false,
   isOverlaySelected = false,
-  containerSize = { width: 600, height: 150 },
+  containerSize,
   elementStates,
   onElementStatesChange,
   onContentChange,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [textEditingId, setTextEditingId] = useState<string | null>(null);
-  const [editingText, setEditingText] = useState("");
+  // Map SocialBannerData to BannerContentData (Unified)
+  // They are mostly identical, but BannerContentData adds optional colors which we can omit for generic social banners
+  // or pass defaults if design requires them (usually not for static).
 
-  // Clear internal selection when overlay is deselected
-  useEffect(() => {
-    if (!isOverlaySelected) {
-      setSelectedId(null);
-      setTextEditingId(null);
-    }
-  }, [isOverlaySelected]);
-
-  // Default states for interactive mode
-  const [localElementStates, setLocalElementStates] = useState<
-    BannerElementData[]
-  >(() => {
-    if (elementStates) return elementStates;
-
-    // Calculate sensible default positions based on design
-    return [
-      {
-        id: "avatar",
-        type: "avatar",
-        visible: design.showAvatar,
-        position: { x: 20, y: 20 },
-        style: {
-          fontSize: 48, // Used for width/height
-          fontFamily: "Inter",
-          color: "#ffffff",
-          fontWeight: "normal",
-        },
-      },
-      {
-        id: "name",
-        type: "name",
-        visible: true,
-        position: { x: design.showAvatar ? 80 : 20, y: 30 },
-        style: {
-          fontSize: parseInt((design.styles.name.fontSize as string) || "22"),
-          fontFamily: (design.styles.name.fontFamily as string) || "Inter",
-          color: (design.styles.name.color as string) || "#ffffff",
-          fontWeight: (design.styles.name.fontWeight as string) || "bold",
-        },
-      },
-      {
-        id: "tagline",
-        type: "tagline",
-        visible: design.showTagline,
-        position: { x: design.showAvatar ? 80 : 20, y: 60 },
-        style: {
-          fontSize: parseInt(
-            (design.styles.tagline?.fontSize as string) || "14"
-          ),
-          fontFamily: "Inter",
-          color:
-            (design.styles.tagline?.color as string) || "rgba(255,255,255,0.8)",
-          fontWeight: "normal",
-        },
-      },
-      {
-        id: "socialLinks",
-        type: "socialLinks",
-        visible: true,
-        position: { x: containerSize.width - 150, y: 35 },
-        style: {
-          fontSize: parseInt((design.styles.icon?.width as string) || "20"),
-          fontFamily: "Inter",
-          color: "#ffffff",
-          fontWeight: "normal",
-        },
-      },
-    ];
-  });
-
-  const states = elementStates || localElementStates;
-
-  // --- State Management ---
-
-  const updateState = useCallback(
-    (newStates: BannerElementData[]) => {
-      if (onElementStatesChange) {
-        onElementStatesChange(newStates);
-      } else {
-        setLocalElementStates(newStates);
-      }
-    },
-    [onElementStatesChange]
-  );
-
-  const handlePositionChange = useCallback(
-    (id: string, position: { x: number; y: number }) => {
-      updateState(
-        states.map((el) => (el.id === id ? { ...el, position } : el))
-      );
-    },
-    [states, updateState]
-  );
-
-  const handleStyleChange = useCallback(
-    (id: string, style: Partial<BannerElementData["style"]>) => {
-      updateState(
-        states.map((el) =>
-          el.id === id ? { ...el, style: { ...el.style, ...style } } : el
-        )
-      );
-    },
-    [states, updateState]
-  );
-
-  const handleVisibilityChange = useCallback(
-    (id: string, visible: boolean) => {
-      updateState(states.map((el) => (el.id === id ? { ...el, visible } : el)));
-    },
-    [states, updateState]
-  );
-
-  const handleTextDoubleClick = useCallback(
-    (id: string) => {
-      const state = states.find((s) => s.id === id);
-      if (state && (state.type === "name" || state.type === "tagline")) {
-        setTextEditingId(id);
-        setEditingText(id === "name" ? data.name : data.tagline || "");
-      }
-    },
-    [states, data]
-  );
-
-  const handleTextBlur = useCallback(() => {
-    if (textEditingId && onContentChange) {
-      const field = textEditingId === "name" ? "name" : "tagline";
-      onContentChange(field, editingText);
-    }
-    setTextEditingId(null);
-  }, [textEditingId, editingText, onContentChange]);
-
-  const getElementState = (id: string) => states.find((s) => s.id === id);
-  const visibleLinks = data.links.slice(0, design.maxLinks);
-
-  const avatarState = getElementState("avatar");
-  const nameState = getElementState("name");
-  const taglineState = getElementState("tagline");
-  const socialState = getElementState("socialLinks");
-
-  // --- RENDER PREVIEW (Static) ---
-  if (!isEditing) {
-    return (
-      <div
-        style={{
-          ...design.styles.container,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-          cursor: onClick ? "pointer" : "default",
-          position: "relative",
-        }}
-        onClick={onClick}
-      >
-        {design.showAvatar && (
-          <div
-            style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "50%",
-              background: data.avatarUrl
-                ? `url(${data.avatarUrl}) center/cover`
-                : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-              border: "2px solid rgba(255, 255, 255, 0.3)",
-            }}
-          >
-            {!data.avatarUrl && <User className="w-6 h-6 text-white/80" />}
-          </div>
-        )}
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-          <span style={design.styles.name}>{data.name}</span>
-          {design.showTagline && data.tagline && (
-            <span style={design.styles.tagline}>{data.tagline}</span>
-          )}
-        </div>
-
-        <div style={design.styles.linksContainer}>
-          {visibleLinks.map((link, index) => {
-            const IconComponent = getPlatformIcon(link.platform);
-            return (
-              <div
-                key={`${link.platform}-${index}`}
-                style={design.styles.link}
-                onClick={(e) => e.stopPropagation()}
-                title={link.username || link.platform}
-              >
-                <IconComponent
-                  className="transition-transform hover:scale-110"
-                  style={design.styles.icon}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  }
-
-  // --- RENDER INTERACTIVE MODE ---
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          setSelectedId(null);
-          if (textEditingId) handleTextBlur();
-        }
-      }}
-    >
-      {/* Banner Container with Overflow Hidden */}
-      <div
-        style={{
-          ...design.styles.container,
-          display: "block",
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          padding: 0,
-          overflow: "hidden",
-        }}
-      >
-        {/* Avatar */}
-        {design.showAvatar && avatarState?.visible && (
-          <BannerInternalDraggable
-            element={avatarState}
-            isEditing={true}
-            isSelected={selectedId === "avatar"}
-            isTextEditing={false}
-            containerSize={containerSize}
-            onPositionChange={handlePositionChange}
-            onSelect={setSelectedId}
-            onDoubleClick={() => {}}
-            onRemove={(id) => handleVisibilityChange(id, false)}
-            content={
-              <div
-                style={{
-                  width: `${avatarState.style.fontSize}px`,
-                  height: `${avatarState.style.fontSize}px`,
-                  borderRadius: "50%",
-                  background: data.avatarUrl
-                    ? `url(${data.avatarUrl}) center/cover`
-                    : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "2px solid rgba(255, 255, 255, 0.3)",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                }}
-              >
-                {!data.avatarUrl && (
-                  <User className="w-1/2 h-1/2 text-white/80" />
-                )}
-              </div>
-            }
-          />
-        )}
-
-        {/* Name */}
-        {nameState?.visible && (
-          <BannerInternalDraggable
-            element={nameState}
-            isEditing={true}
-            isSelected={selectedId === "name"}
-            isTextEditing={textEditingId === "name"}
-            containerSize={containerSize}
-            onPositionChange={handlePositionChange}
-            onSelect={setSelectedId}
-            onDoubleClick={handleTextDoubleClick}
-            onRemove={(id) => handleVisibilityChange(id, false)}
-            content={
-              <span
-                style={{
-                  ...design.styles.name,
-                  fontSize: nameState.style.fontSize,
-                  fontFamily: nameState.style.fontFamily,
-                  color: nameState.style.color,
-                  fontWeight: nameState.style.fontWeight as any,
-                  display: "block",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {data.name}
-              </span>
-            }
-            editContent={
-              <input
-                type="text"
-                value={editingText}
-                onChange={(e) => setEditingText(e.target.value)}
-                onBlur={handleTextBlur}
-                onKeyDown={(e) => e.key === "Enter" && handleTextBlur()}
-                autoFocus
-                style={{
-                  ...design.styles.name,
-                  fontSize: nameState.style.fontSize,
-                  fontFamily: nameState.style.fontFamily,
-                  color: nameState.style.color,
-                  fontWeight: nameState.style.fontWeight as any,
-                  background: "transparent",
-                  border: "none",
-                  outline: "none",
-                  minWidth: "50px",
-                }}
-              />
-            }
-          />
-        )}
-
-        {/* Tagline */}
-        {design.showTagline && taglineState?.visible && (
-          <BannerInternalDraggable
-            element={taglineState}
-            isEditing={true}
-            isSelected={selectedId === "tagline"}
-            isTextEditing={textEditingId === "tagline"}
-            containerSize={containerSize}
-            onPositionChange={handlePositionChange}
-            onSelect={setSelectedId}
-            onDoubleClick={handleTextDoubleClick}
-            onRemove={(id) => handleVisibilityChange(id, false)}
-            content={
-              <span
-                style={{
-                  ...design.styles.tagline,
-                  fontSize: taglineState.style.fontSize,
-                  fontFamily: taglineState.style.fontFamily,
-                  color: taglineState.style.color,
-                  fontWeight: taglineState.style.fontWeight as any,
-                  display: "block",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {data.tagline}
-              </span>
-            }
-            editContent={
-              <input
-                type="text"
-                value={editingText}
-                onChange={(e) => setEditingText(e.target.value)}
-                onBlur={handleTextBlur}
-                onKeyDown={(e) => e.key === "Enter" && handleTextBlur()}
-                autoFocus
-                style={{
-                  ...design.styles.tagline,
-                  fontSize: taglineState.style.fontSize,
-                  fontFamily: taglineState.style.fontFamily,
-                  color: taglineState.style.color,
-                  fontWeight: taglineState.style.fontWeight as any,
-                  background: "transparent",
-                  border: "none",
-                  outline: "none",
-                  minWidth: "50px",
-                }}
-              />
-            }
-          />
-        )}
-
-        {/* Social Links */}
-        {socialState?.visible && (
-          <BannerInternalDraggable
-            element={socialState}
-            isEditing={true}
-            isSelected={selectedId === "socialLinks"}
-            isTextEditing={false}
-            containerSize={containerSize}
-            onPositionChange={handlePositionChange}
-            onSelect={setSelectedId}
-            onDoubleClick={() => {}}
-            onRemove={(id) => handleVisibilityChange(id, false)}
-            content={
-              <div style={{ display: "flex", gap: "8px" }}>
-                {visibleLinks.map((link, index) => {
-                  const IconComponent = getPlatformIcon(link.platform);
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        ...design.styles.link,
-                        padding: "8px",
-                        cursor: "default",
-                      }}
-                    >
-                      <IconComponent
-                        style={{
-                          ...design.styles.icon,
-                          width: `${socialState.style.fontSize}px`,
-                          height: `${socialState.style.fontSize}px`,
-                        }}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            }
-          />
-        )}
-      </div>
-
-      {/* Floating Toolbar - Outside Overflow Hidden */}
-      <AnimatePresence>
-        {selectedId && (selectedId === "name" || selectedId === "tagline") && (
-          <BannerTextToolbar
-            fontSize={getElementState(selectedId)?.style.fontSize || 16}
-            fontFamily={
-              getElementState(selectedId)?.style.fontFamily || "Inter"
-            }
-            color={getElementState(selectedId)?.style.color || "#ffffff"}
-            fontWeight={
-              getElementState(selectedId)?.style.fontWeight || "normal"
-            }
-            onFontSizeChange={(size) =>
-              handleStyleChange(selectedId, { fontSize: size })
-            }
-            onFontFamilyChange={(family) =>
-              handleStyleChange(selectedId, { fontFamily: family })
-            }
-            onColorChange={(color) => handleStyleChange(selectedId, { color })}
-            onFontWeightChange={(weight) =>
-              handleStyleChange(selectedId, { fontWeight: weight })
-            }
-            position={{
-              x: getElementState(selectedId)?.position.x || 0,
-              y: getElementState(selectedId)?.position.y || 0,
-            }}
-          />
-        )}
-      </AnimatePresence>
-    </div>
+    <UniversalBannerRenderer
+      design={design}
+      contentData={data}
+      scale={scale}
+      onClick={onClick}
+      isEditing={isEditing}
+      // isOverlaySelected is not directly used by Universal, 
+      // but Universal uses internal selection state.
+      // If we want to simulate isOverlaySelected behavior (clearing selection), 
+      // we might need to handle it via a ref/effect in Universal or pass a prop 'isSelected'
+      // But for now, Universal handles selection internally when clicked.
+      // The old SocialBannerRenderer cleared selection if isOverlaySelected became false.
+      // UniversalBannerRenderer doesn't expose a way to force clear selection from outside easily yet unless we lift the useBannerEditor hook here.
+      // However, if isEditing is passed, Universal handles it.
+      containerSize={containerSize}
+      elementStates={elementStates}
+      onElementStatesChange={onElementStatesChange}
+      onContentChange={onContentChange as any}
+    />
   );
 };

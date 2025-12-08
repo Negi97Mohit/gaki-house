@@ -126,6 +126,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
       maxLinks: design.maxLinks,
       isAnimatedBanner: true,
       animatedBannerId: design.id,
+      ...design, // Spread all animated design properties (motionSystem, etc)
     };
     onAddBanner(compatibleDesign as SocialBannerDesign, userData);
     setRecentlyAdded(design.id);
@@ -248,14 +249,14 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                               hasUserInfo
                                 ? userData
                                 : {
-                                    name: "Preview Name",
-                                    tagline: "Your Tagline Here",
-                                    links: [
-                                      { platform: "twitter", url: "#" },
-                                      { platform: "instagram", url: "#" },
-                                      { platform: "youtube", url: "#" },
-                                    ],
-                                  }
+                                  name: "Preview Name",
+                                  tagline: "Your Tagline Here",
+                                  links: [
+                                    { platform: "twitter", url: "#" },
+                                    { platform: "instagram", url: "#" },
+                                    { platform: "youtube", url: "#" },
+                                  ],
+                                }
                             }
                           />
                         </div>

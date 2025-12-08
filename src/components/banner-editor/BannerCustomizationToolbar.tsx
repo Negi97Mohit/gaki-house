@@ -1,13 +1,13 @@
 // src/components/banner-editor/BannerCustomizationToolbar.tsx
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Type, 
-  Palette, 
-  Eye, 
-  EyeOff, 
-  Plus, 
-  Trash2, 
+import {
+  Type,
+  Palette,
+  Eye,
+  EyeOff,
+  Plus,
+  Trash2,
   Bold,
   Image,
   Minus
@@ -30,6 +30,7 @@ interface BannerCustomizationToolbarProps {
   onSecondaryColorChange: (color: string) => void;
   onAddElement: (type: BannerElementData['type']) => void;
   onRemoveElement: (id: string) => void;
+  onDeleteBanner?: () => void;
   onClose: () => void;
 }
 
@@ -58,6 +59,7 @@ export const BannerCustomizationToolbar: React.FC<BannerCustomizationToolbarProp
   onSecondaryColorChange,
   onAddElement,
   onRemoveElement,
+  onDeleteBanner,
   onClose,
 }) => {
   const selectedElement = elements.find(e => e.id === selectedElementId);
@@ -125,8 +127,8 @@ export const BannerCustomizationToolbar: React.FC<BannerCustomizationToolbarProp
             variant="ghost"
             size="sm"
             className="h-6 w-6 p-0"
-            onClick={() => onElementStyleChange(selectedElement.id, { 
-              fontSize: Math.max(10, selectedElement.style.fontSize - 2) 
+            onClick={() => onElementStyleChange(selectedElement.id, {
+              fontSize: Math.max(10, selectedElement.style.fontSize - 2)
             })}
           >
             <Minus className="w-3 h-3" />
@@ -136,8 +138,8 @@ export const BannerCustomizationToolbar: React.FC<BannerCustomizationToolbarProp
             variant="ghost"
             size="sm"
             className="h-6 w-6 p-0"
-            onClick={() => onElementStyleChange(selectedElement.id, { 
-              fontSize: Math.min(72, selectedElement.style.fontSize + 2) 
+            onClick={() => onElementStyleChange(selectedElement.id, {
+              fontSize: Math.min(72, selectedElement.style.fontSize + 2)
             })}
           >
             <Plus className="w-3 h-3" />
@@ -190,9 +192,8 @@ export const BannerCustomizationToolbar: React.FC<BannerCustomizationToolbarProp
               {colorPresets.map((color) => (
                 <button
                   key={color}
-                  className={`w-8 h-8 rounded border-2 transition-transform hover:scale-110 ${
-                    selectedElement.style.color === color ? 'border-primary' : 'border-transparent'
-                  }`}
+                  className={`w-8 h-8 rounded border-2 transition-transform hover:scale-110 ${selectedElement.style.color === color ? 'border-primary' : 'border-transparent'
+                    }`}
                   style={{ backgroundColor: color }}
                   onClick={() => onElementStyleChange(selectedElement.id, { color })}
                 />
@@ -247,6 +248,18 @@ export const BannerCustomizationToolbar: React.FC<BannerCustomizationToolbarProp
           </div>
         </PopoverContent>
       </Popover>
+
+      {onDeleteBanner && (
+        <Button
+          variant="destructive"
+          size="sm"
+          className="h-8 w-8 p-0 ml-1 rounded-full"
+          onClick={onDeleteBanner}
+          title="Remove Banner"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      )}
 
       <Button variant="ghost" size="sm" className="h-8 px-2 ml-1" onClick={onClose}>
         Done

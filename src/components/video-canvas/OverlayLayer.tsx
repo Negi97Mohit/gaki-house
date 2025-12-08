@@ -14,6 +14,7 @@ import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { HybridDraggable } from "./HybridDraggable";
 import { SocialBannerRenderer } from "@/components/SocialBannerRenderer";
+import { UniversalBannerRenderer } from "@/components/banner/UniversalBannerRenderer";
 
 interface OverlayLayerProps {
   layerOrder: "above-video" | "below-video";
@@ -138,7 +139,11 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
         .filter((o) => filterDynamic(o.id) && checkLayer(o.layout))
         .map((overlay) => {
           // --- Interactive Banner Handling ---
-          if (overlay.metadata?.type === "social-banner-interactive") {
+          // --- Interactive Banner Handling (Static & Animated) ---
+          if (
+            overlay.metadata?.type === "social-banner-interactive" ||
+            overlay.metadata?.type === "animated-banner"
+          ) {
             return (
               <HybridDraggable
                 key={overlay.id}
@@ -169,12 +174,11 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                 onDoubleClick={(id, e) => onBannerDoubleClick?.(id, e)} // Pass double click here
               >
                 <div className="w-full h-full pointer-events-auto">
-                  <SocialBannerRenderer
+                  <UniversalBannerRenderer
                     design={overlay.metadata.design}
-                    data={overlay.metadata.data}
-                    isEditing={true}
-                    // Passes down selection state to handle deselection clearing
-                    isOverlaySelected={selectedGeneratedId === overlay.id}
+                    contentData={overlay.metadata.data}
+                    isEditing={selectedGeneratedId === overlay.id} // Only show edit UI when selected
+                    onDelete={() => onRemoveOverlay(overlay.id)}
                     elementStates={overlay.metadata.elementStates}
                     onElementStatesChange={(states) => {
                       onUpdateOverlayMetadata?.(overlay.id, {
