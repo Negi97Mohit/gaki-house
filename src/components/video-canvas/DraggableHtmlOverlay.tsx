@@ -6,6 +6,8 @@ import { generatePreview } from "@/lib/preview";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
 import { UniversalOverlayWrapper } from "./UniversalOverlayWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
+import { AnimatedBannerRenderer } from "@/components/animated-banners";
+import { ANIMATED_BANNER_DESIGNS } from "@/types/animatedBanner";
 
 interface DraggableHtmlOverlayProps {
   overlay: GeneratedOverlay;
@@ -62,6 +64,11 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
 
   if (!containerSize.width || !containerSize.height) return null;
 
+  // Check if this is an animated banner
+  const animatedBannerDesign = overlay.metadata?.type === 'animated-banner' 
+    ? ANIMATED_BANNER_DESIGNS.find(d => d.id === overlay.metadata?.animatedBannerId)
+    : null;
+
   return (
     <UniversalOverlayWrapper
       id={overlay.id}
@@ -86,11 +93,15 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       onDoubleClick={onDoubleClick}
     >
       <div ref={elementRef} className="w-full h-full overflow-hidden">
-        <HtmlOverlayRenderer
-          key={theme}
-          htmlContent={overlay.htmlContent}
-          theme={theme}
-        />
+        {animatedBannerDesign ? (
+          <AnimatedBannerRenderer design={animatedBannerDesign} className="rounded-lg" />
+        ) : (
+          <HtmlOverlayRenderer
+            key={theme}
+            htmlContent={overlay.htmlContent}
+            theme={theme}
+          />
+        )}
       </div>
     </UniversalOverlayWrapper >
   );

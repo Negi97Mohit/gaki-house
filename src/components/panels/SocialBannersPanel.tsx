@@ -81,9 +81,8 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
         userData.name !== DEFAULT_BANNER_DATA.name || userData.links.length > 0;
 
     const handleSelectAnimatedBanner = (design: AnimatedBannerDesign) => {
-        // For animated banners, we'll create a simple overlay using the design
-        // Convert to a compatible format and use onAddBanner
-        const compatibleDesign: SocialBannerDesign = {
+        // For animated banners, create a design that will be recognized as animated
+        const compatibleDesign: SocialBannerDesign & { isAnimatedBanner?: boolean; animatedBannerId?: string } = {
             id: design.id,
             name: design.name,
             description: design.description,
@@ -101,8 +100,11 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
             showAvatar: design.showAvatar,
             showTagline: design.showTagline,
             maxLinks: design.maxLinks,
+            // Mark as animated banner for special rendering
+            isAnimatedBanner: true,
+            animatedBannerId: design.id,
         };
-        onAddBanner(compatibleDesign, userData);
+        onAddBanner(compatibleDesign as SocialBannerDesign, userData);
         setRecentlyAdded(design.id);
         setTimeout(() => setRecentlyAdded(null), 1500);
     };
