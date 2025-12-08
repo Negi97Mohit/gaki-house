@@ -7,3 +7,5 @@ export type { EditableBannerState } from './EditableBannerContent';
 export { BannerEditableElement } from './BannerEditableElement';
 export type { BannerElementData as EditableBannerElementData } from './BannerEditableElement';
 export { BannerTextToolbar } from './BannerTextToolbar';
+export { BannerInternalDraggable } from './BannerInternalDraggable';
+export type { BannerElementData as InternalDraggableElementData } from './BannerInternalDraggable';
