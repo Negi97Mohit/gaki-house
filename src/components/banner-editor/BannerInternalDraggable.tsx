@@ -1,11 +1,11 @@
 // src/components/banner-editor/BannerInternalDraggable.tsx
-import React, { useRef, useState, useCallback, useEffect } from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useRef, useState, useCallback, useEffect } from "react";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface BannerElementData {
   id: string;
-  type: 'avatar' | 'name' | 'tagline' | 'socialLinks';
+  type: "avatar" | "name" | "tagline" | "socialLinks";
   visible: boolean;
   position: { x: number; y: number };
   style: {
@@ -30,7 +30,9 @@ interface BannerInternalDraggableProps {
   onRemove: (id: string) => void;
 }
 
-export const BannerInternalDraggable: React.FC<BannerInternalDraggableProps> = ({
+export const BannerInternalDraggable: React.FC<
+  BannerInternalDraggableProps
+> = ({
   element,
   content,
   editContent,
@@ -45,8 +47,16 @@ export const BannerInternalDraggable: React.FC<BannerInternalDraggableProps> = (
 }) => {
   const elementRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const startPosRef = useRef({ pointerX: 0, pointerY: 0, elementX: 0, elementY: 0 });
-  const currentPosRef = useRef({ x: element.position.x, y: element.position.y });
+  const startPosRef = useRef({
+    pointerX: 0,
+    pointerY: 0,
+    elementX: 0,
+    elementY: 0,
+  });
+  const currentPosRef = useRef({
+    x: element.position.x,
+    y: element.position.y,
+  });
   const lastClickRef = useRef(0);
 
   // Sync position from props when not dragging
@@ -56,82 +66,116 @@ export const BannerInternalDraggable: React.FC<BannerInternalDraggableProps> = (
     }
   }, [element.position, isDragging]);
 
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    if (!isEditing || isTextEditing) return;
-    
-    e.stopPropagation();
-    e.preventDefault();
-    
-    const target = e.target as HTMLElement;
-    if (target.closest('.remove-btn')) return;
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!isEditing || isTextEditing) return;
 
-    elementRef.current?.setPointerCapture(e.pointerId);
-    
-    startPosRef.current = {
-      pointerX: e.clientX,
-      pointerY: e.clientY,
-      elementX: currentPosRef.current.x,
-      elementY: currentPosRef.current.y,
-    };
+      e.stopPropagation();
+      e.preventDefault();
 
-    onSelect(element.id);
-  }, [isEditing, isTextEditing, element.id, onSelect]);
+      const target = e.target as HTMLElement;
+      if (target.closest(".remove-btn")) return;
 
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!elementRef.current?.hasPointerCapture(e.pointerId)) return;
-    
-    e.stopPropagation();
-    e.preventDefault();
+      elementRef.current?.setPointerCapture(e.pointerId);
 
-    const deltaX = e.clientX - startPosRef.current.pointerX;
-    const deltaY = e.clientY - startPosRef.current.pointerY;
+      startPosRef.current = {
+        pointerX: e.clientX,
+        pointerY: e.clientY,
+        elementX: currentPosRef.current.x,
+        elementY: currentPosRef.current.y,
+      };
 
-    // Start dragging after threshold
-    if (!isDragging && (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3)) {
-      setIsDragging(true);
-    }
+      onSelect(element.id);
+    },
+    [isEditing, isTextEditing, element.id, onSelect]
+  );
 
-    if (isDragging || Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
-      let newX = startPosRef.current.elementX + deltaX;
-      let newY = startPosRef.current.elementY + deltaY;
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!elementRef.current?.hasPointerCapture(e.pointerId)) return;
 
-      // Clamp to container bounds
-      const elWidth = elementRef.current?.offsetWidth || 50;
-      const elHeight = elementRef.current?.offsetHeight || 20;
-      newX = Math.max(0, Math.min(newX, containerSize.width - elWidth));
-      newY = Math.max(0, Math.min(newY, containerSize.height - elHeight));
+      e.stopPropagation();
+      e.preventDefault();
 
-      currentPosRef.current = { x: newX, y: newY };
+      const rawDeltaX = e.clientX - startPosRef.current.pointerX;
+      const rawDeltaY = e.clientY - startPosRef.current.pointerY;
 
-      // Direct DOM update for smooth dragging
-      if (elementRef.current) {
-        elementRef.current.style.left = `${newX}px`;
-        elementRef.current.style.top = `${newY}px`;
+      // Start dragging after threshold
+      if (!isDragging && (Math.abs(rawDeltaX) > 3 || Math.abs(rawDeltaY) > 3)) {
+        setIsDragging(true);
       }
-    }
-  }, [isDragging, containerSize]);
 
-  const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    if (!elementRef.current?.hasPointerCapture(e.pointerId)) return;
-    
-    e.stopPropagation();
-    elementRef.current.releasePointerCapture(e.pointerId);
+      if (isDragging || Math.abs(rawDeltaX) > 3 || Math.abs(rawDeltaY) > 3) {
+        // Calculate scale factor to handle transformed containers (e.g. preview zoom)
+        let scale = 1;
+        if (elementRef.current) {
+          const rect = elementRef.current.getBoundingClientRect();
+          if (elementRef.current.offsetWidth > 0) {
+            scale = rect.width / elementRef.current.offsetWidth;
+          }
+        }
 
-    if (isDragging) {
-      // Commit position change
-      onPositionChange(element.id, currentPosRef.current);
-      setIsDragging(false);
-    } else {
-      // Handle click/double-click
-      const now = Date.now();
-      if (now - lastClickRef.current < 300) {
-        onDoubleClick(element.id);
-        lastClickRef.current = 0;
+        // Adjust delta by scale to map screen movement to CSS pixel movement
+        const deltaX = rawDeltaX / scale;
+        const deltaY = rawDeltaY / scale;
+
+        let newX = startPosRef.current.elementX + deltaX;
+        let newY = startPosRef.current.elementY + deltaY;
+
+        // Clamp to container bounds
+        // Use offsetParent dimensions for truth if available, falling back to props
+        const elWidth = elementRef.current?.offsetWidth || 50;
+        const elHeight = elementRef.current?.offsetHeight || 20;
+
+        const parent = elementRef.current?.offsetParent as HTMLElement;
+        const boundsWidth = parent ? parent.clientWidth : containerSize.width;
+        const boundsHeight = parent
+          ? parent.clientHeight
+          : containerSize.height;
+
+        // Ensure we don't clamp to 0 if bounds are invalid (e.g. 0)
+        const maxX = Math.max(0, boundsWidth - elWidth);
+        const maxY = Math.max(0, boundsHeight - elHeight);
+
+        newX = Math.max(0, Math.min(newX, maxX));
+        newY = Math.max(0, Math.min(newY, maxY));
+
+        currentPosRef.current = { x: newX, y: newY };
+
+        // Direct DOM update for smooth dragging performance
+        if (elementRef.current) {
+          elementRef.current.style.left = `${newX}px`;
+          elementRef.current.style.top = `${newY}px`;
+        }
+      }
+    },
+    [isDragging, containerSize]
+  );
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!elementRef.current?.hasPointerCapture(e.pointerId)) return;
+
+      e.stopPropagation();
+      elementRef.current.releasePointerCapture(e.pointerId);
+
+      if (isDragging) {
+        // Commit position change
+        onPositionChange(element.id, currentPosRef.current);
+        setIsDragging(false);
       } else {
-        lastClickRef.current = now;
+        // Handle click/double-click
+        const now = Date.now();
+        if (now - lastClickRef.current < 300) {
+          onDoubleClick(element.id);
+          lastClickRef.current = 0;
+        } else {
+          lastClickRef.current = now;
+        }
       }
-    }
-  }, [isDragging, element.id, onPositionChange, onDoubleClick]);
+    },
+    [isDragging, element.id, onPositionChange, onDoubleClick]
+  );
 
   if (!element.visible) return null;
 
@@ -147,7 +191,7 @@ export const BannerInternalDraggable: React.FC<BannerInternalDraggableProps> = (
         left: element.position.x,
         top: element.position.y,
         zIndex: isDragging || isSelected ? 100 : 10,
-        willChange: isDragging ? 'transform' : 'auto',
+        willChange: isDragging ? "transform" : "auto",
       }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -156,16 +200,16 @@ export const BannerInternalDraggable: React.FC<BannerInternalDraggableProps> = (
     >
       {/* Selection outline */}
       {isEditing && (
-        <div 
+        <div
           className={cn(
             "absolute -inset-1.5 rounded-md border-2 transition-all pointer-events-none",
-            isSelected 
-              ? "border-primary bg-primary/10 shadow-[0_0_8px_rgba(var(--primary),0.3)]" 
+            isSelected
+              ? "border-primary bg-primary/10 shadow-[0_0_8px_rgba(var(--primary),0.3)]"
               : "border-transparent group-hover:border-primary/40"
           )}
         />
       )}
-      
+
       {/* Delete button */}
       {isEditing && (
         <button
@@ -173,7 +217,9 @@ export const BannerInternalDraggable: React.FC<BannerInternalDraggableProps> = (
             "remove-btn absolute -top-2.5 -right-2.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground",
             "flex items-center justify-center shadow-lg z-50 transition-all cursor-pointer",
             "hover:scale-110 hover:bg-destructive/90",
-            isSelected || isDragging ? "opacity-100 scale-100" : "opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
+            isSelected || isDragging
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100"
           )}
           onClick={(e) => {
             e.stopPropagation();
