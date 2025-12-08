@@ -678,8 +678,10 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   }, [activeScene.captionStyle, updateActiveScene, selection]);
 
   const handleAddSocialBanner = useCallback(
-    (design: SocialBannerDesign, data: SocialBannerData) => {
-      const htmlContent = generateBannerHtml(design, data);
+    (design: SocialBannerDesign & { isAnimatedBanner?: boolean; animatedBannerId?: string }, data: SocialBannerData) => {
+      const isAnimated = design.isAnimatedBanner === true;
+      const htmlContent = isAnimated ? '' : generateBannerHtml(design, data);
+      
       const newOverlay: GeneratedOverlay = {
         id: generateId("banner"),
         name: `${design.name} Banner`,
@@ -692,7 +694,12 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           layerOrder: "above-video",
         },
         preview: design.preview,
-        metadata: {
+        metadata: isAnimated ? {
+          type: "animated-banner",
+          animatedBannerId: design.animatedBannerId,
+          design,
+          data
+        } : {
           type: "social-banner",
           design,
           data
