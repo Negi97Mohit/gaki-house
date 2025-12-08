@@ -1,12 +1,12 @@
 // src/components/video-canvas/DraggableHtmlOverlay.tsx
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import { useTheme } from "next-themes";
 import { GeneratedOverlay } from "@/types/caption";
 import { generatePreview } from "@/lib/preview";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
 import { UniversalOverlayWrapper } from "./UniversalOverlayWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
-import { AnimatedBannerRenderer } from "@/components/animated-banners";
+import { AnimatedBannerRenderer, BannerContentData } from "@/components/animated-banners";
 import { ANIMATED_BANNER_DESIGNS } from "@/types/animatedBanner";
 
 interface DraggableHtmlOverlayProps {
@@ -22,6 +22,7 @@ interface DraggableHtmlOverlayProps {
     target: { id: string; type: string },
     mode: "pip" | "reset" | "split-horizontal" | "split-vertical"
   ) => void;
+  onUpdateMetadata?: (id: string, metadata: any) => void;
   containerSize: { width: number; height: number };
   portalContainer?: HTMLElement | null;
   allOverlays?: OverlayElement[];
@@ -37,6 +38,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
   onRemoveOverlay,
   onPreviewGenerated,
   onSetDynamicLayout,
+  onUpdateMetadata,
   containerSize,
   allOverlays,
   onSnapGuidesChange,
@@ -62,12 +64,46 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
     }
   }, [overlay.id, overlay.preview, onPreviewGenerated]);
 
-  if (!containerSize.width || !containerSize.height) return null;
-
   // Check if this is an animated banner
-  const animatedBannerDesign = overlay.metadata?.type === 'animated-banner' 
-    ? ANIMATED_BANNER_DESIGNS.find(d => d.id === overlay.metadata?.animatedBannerId)
-    : null;
+  const animatedBannerDesign = useMemo(() => {
+    if (overlay.metadata?.type === 'animated-banner') {
+      return ANIMATED_BANNER_DESIGNS.find(d => d.id === overlay.metadata?.animatedBannerId);
+    }
+    return null;
+  }, [overlay.metadata]);
+
+  // Extract content data from metadata for animated banners
+  const bannerContentData: BannerContentData | undefined = useMemo(() => {
+    if (animatedBannerDesign && overlay.metadata?.data) {
+      const data = overlay.metadata.data;
+      return {
+        name: data.name || 'Your Name',
+        tagline: data.tagline || 'Creator • Streamer',
+        avatarUrl: data.avatarUrl,
+        links: data.links?.map((l: any) => ({ platform: l.platform, url: l.url })) || [],
+        primaryColor: overlay.metadata.customColors?.primary || animatedBannerDesign.particleSettings?.color,
+        secondaryColor: overlay.metadata.customColors?.secondary || animatedBannerDesign.particleSettings?.colorVariant,
+        backgroundColor: overlay.metadata.customColors?.background || animatedBannerDesign.preview,
+      };
+    }
+    return undefined;
+  }, [animatedBannerDesign, overlay.metadata]);
+
+  // Handle content changes for animated banners
+  const handleContentChange = (field: keyof BannerContentData, value: any) => {
+    if (onUpdateMetadata && overlay.metadata) {
+      const updatedData = {
+        ...overlay.metadata.data,
+        [field]: value,
+      };
+      onUpdateMetadata(overlay.id, {
+        ...overlay.metadata,
+        data: updatedData,
+      });
+    }
+  };
+
+  if (!containerSize.width || !containerSize.height) return null;
 
   return (
     <UniversalOverlayWrapper
@@ -94,7 +130,13 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
     >
       <div ref={elementRef} className="w-full h-full overflow-hidden">
         {animatedBannerDesign ? (
-          <AnimatedBannerRenderer design={animatedBannerDesign} className="rounded-lg" />
+          <AnimatedBannerRenderer 
+            design={animatedBannerDesign} 
+            className="rounded-lg"
+            contentData={bannerContentData}
+            isEditing={isSelected}
+            onContentChange={handleContentChange}
+          />
         ) : (
           <HtmlOverlayRenderer
             key={theme}

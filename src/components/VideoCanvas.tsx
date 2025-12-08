@@ -64,6 +64,7 @@ interface VideoCanvasProps {
     value: any
   ) => void;
   onRemoveOverlay: (id: string) => void;
+  onUpdateOverlayMetadata?: (id: string, metadata: any) => void;
   liveCaptionStyle: CaptionStyle;
   dynamicStyle: string;
   videoFilter: string;
@@ -768,6 +769,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               onOverlayLayoutChange={props.onOverlayLayoutChange}
               onRemoveOverlay={props.onRemoveOverlay}
               onPreviewGenerated={props.onPreviewGenerated}
+              onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
               selectedGeneratedId={props.selectedGeneratedId}
               onSelectGenerated={props.setSelectedGeneratedId}
               portalContainer={

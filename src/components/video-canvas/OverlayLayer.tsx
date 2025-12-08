@@ -31,6 +31,7 @@ interface OverlayLayerProps {
   onOverlayLayoutChange: any;
   onRemoveOverlay: any;
   onPreviewGenerated: any;
+  onUpdateOverlayMetadata?: (id: string, metadata: any) => void;
   portalContainer: any;
   allOverlays: OverlayElement[];
   onSnapGuidesChange: (guides: GuideLine[]) => void;
@@ -80,6 +81,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
   onOverlayLayoutChange,
   onRemoveOverlay,
   onPreviewGenerated,
+  onUpdateOverlayMetadata,
   portalContainer,
   allOverlays,
   onSnapGuidesChange,
@@ -136,6 +138,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
             onLayoutChange={onOverlayLayoutChange}
             onRemoveOverlay={onRemoveOverlay}
             onPreviewGenerated={onPreviewGenerated}
+            onUpdateMetadata={onUpdateOverlayMetadata}
             containerSize={containerSize}
             portalContainer={portalContainer}
             allOverlays={allOverlays}

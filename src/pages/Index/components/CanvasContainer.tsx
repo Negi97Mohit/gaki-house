@@ -1030,6 +1030,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         ...s,
         activeOverlays: s.activeOverlays.filter((o) => o.id !== id),
       })),
+    onUpdateOverlayMetadata: (id: string, metadata: any) =>
+      updateActiveScene((s) => ({
+        ...s,
+        activeOverlays: s.activeOverlays.map((o) =>
+          o.id === id ? { ...o, metadata } : o
+        ),
+      })),
     onPreviewGenerated: () => { },
     onRemoveBrowser: (id: string) =>
       updateActiveScene((s) => ({
