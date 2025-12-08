@@ -1,10 +1,12 @@
 // src/components/animated-banners/AnimatedBannerRenderer.tsx
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { GlitchMatrix } from './GlitchMatrix';
 import { EsportsHUD } from './EsportsHUD';
 import { InkFlow } from './InkFlow';
 import { VTuberFrameOverlay } from './VTuberFrame';
+import { BannerEditableElement } from '@/components/banner-editor/BannerEditableElement';
+import { BannerTextToolbar } from '@/components/banner-editor/BannerTextToolbar';
 import type { AnimatedBannerDesign } from '@/types/animatedBanner';
 
 export interface BannerContentData {
@@ -433,8 +435,9 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
   containerSize = { width: 400, height: 100 },
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [draggingId, setDraggingId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [textEditingId, setTextEditingId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState('');
   
   const data = contentData || {
     name: 'Your Name',
@@ -488,23 +491,16 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
     }
   }, [localElementStates, onElementStatesChange, elementStates]);
 
-  const handleDragEnd = useCallback((id: string, info: { offset: { x: number; y: number } }) => {
-    const updateStates = (prev: BannerElementState[]) => {
-      return prev.map(el => {
-        if (el.id !== id) return el;
-        const newX = Math.max(0, Math.min(el.position.x + info.offset.x, containerSize.width - 50));
-        const newY = Math.max(0, Math.min(el.position.y + info.offset.y, containerSize.height - 20));
-        return { ...el, position: { x: newX, y: newY } };
-      });
-    };
+  const handlePositionChange = useCallback((id: string, position: { x: number; y: number }) => {
+    const updateStates = (prev: BannerElementState[]) => 
+      prev.map(el => el.id === id ? { ...el, position } : el);
 
     if (elementStates && onElementStatesChange) {
       onElementStatesChange(updateStates(elementStates));
     } else {
       setLocalElementStates(updateStates);
     }
-    setDraggingId(null);
-  }, [containerSize, elementStates, onElementStatesChange]);
+  }, [elementStates, onElementStatesChange]);
 
   const handleStyleChange = useCallback((id: string, style: Partial<BannerElementState['style']>) => {
     const updateStates = (prev: BannerElementState[]) => 
@@ -641,36 +637,28 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
     return icons[platform.toLowerCase()] || icons.twitter;
   };
 
-  // Render a draggable element
-  const renderDraggableElement = (
-    elementId: string,
-    content: React.ReactNode,
-    additionalProps?: any
-  ) => {
-    const state = getElementState(elementId);
-    if (!state || !state.visible) return null;
+  // Handle element removal (hide)
+  const handleRemoveElement = useCallback((id: string) => {
+    handleVisibilityChange(id, false);
+  }, [handleVisibilityChange]);
 
-    return (
-      <motion.div
-        key={elementId}
-        className={`absolute ${isEditing ? 'cursor-move' : ''} ${selectedId === elementId ? 'ring-2 ring-primary rounded' : ''}`}
-        style={{
-          left: state.position.x,
-          top: state.position.y,
-          zIndex: draggingId === elementId ? 100 : 10,
-        }}
-        drag={isEditing}
-        dragMomentum={false}
-        onDragStart={() => setDraggingId(elementId)}
-        onDragEnd={(e, info) => handleDragEnd(elementId, info)}
-        onClick={() => isEditing && setSelectedId(elementId)}
-        whileDrag={{ scale: 1.05, zIndex: 100 }}
-        {...additionalProps}
-      >
-        {content}
-      </motion.div>
-    );
-  };
+  // Handle double click to start text editing
+  const handleTextDoubleClick = useCallback((id: string) => {
+    const state = getElementState(id);
+    if (state && (state.type === 'name' || state.type === 'tagline')) {
+      setTextEditingId(id);
+      setEditingText(id === 'name' ? (data.name || 'Your Name') : (data.tagline || 'Creator • Streamer'));
+    }
+  }, [data.name, data.tagline]);
+
+  // Commit text edit
+  const handleTextBlur = useCallback(() => {
+    if (textEditingId) {
+      const field = textEditingId === 'name' ? 'name' : 'tagline';
+      onContentChange?.(field, editingText);
+      setTextEditingId(null);
+    }
+  }, [textEditingId, editingText, onContentChange]);
 
   const avatarState = getElementState('avatar');
   const nameState = getElementState('name');
@@ -682,184 +670,214 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
       ref={containerRef}
       className={`relative w-full h-full overflow-hidden ${className}`}
       style={{ background: data.backgroundColor || design.preview }}
-      onClick={(e) => e.target === e.currentTarget && setSelectedId(null)}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          setSelectedId(null);
+          if (textEditingId) handleTextBlur();
+        }
+      }}
     >
       {/* Animated background effects */}
       {renderContent()}
       
-      {/* Draggable Avatar */}
-      {design.showAvatar && renderDraggableElement('avatar',
-        <motion.div
-          className="rounded-full overflow-hidden border-2 border-white/30"
-          style={{ 
-            width: avatarState?.style.fontSize || 48,
-            height: avatarState?.style.fontSize || 48,
-            background: `linear-gradient(135deg, ${data.primaryColor || '#667eea'}, ${data.secondaryColor || '#764ba2'})`,
-            boxShadow: `0 0 20px ${data.primaryColor || '#667eea'}40`
-          }}
-          animate={!isEditing ? { scale: [1, 1.02, 1] } : undefined}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          {data.avatarUrl ? (
-            <img src={data.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <svg className="w-1/2 h-1/2 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-          )}
-        </motion.div>
-      )}
-
-      {/* Draggable Name */}
-      {renderDraggableElement('name',
-        isEditing && selectedId === 'name' ? (
-          <input
-            type="text"
-            defaultValue={data.name || 'Your Name'}
-            className="bg-transparent border-none outline-none"
-            style={{
-              fontSize: nameState?.style.fontSize || 22,
-              fontFamily: nameState?.style.fontFamily || 'Inter',
-              color: nameState?.style.color || '#ffffff',
-              fontWeight: nameState?.style.fontWeight || 'bold',
-              textShadow: `0 0 10px ${data.primaryColor || '#667eea'}80`,
-              minWidth: '50px',
-            }}
-            onBlur={(e) => onContentChange?.('name', e.target.value)}
-            onClick={(e) => e.stopPropagation()}
-            autoFocus
-          />
-        ) : (
-          <motion.span
-            style={{
-              fontSize: nameState?.style.fontSize || 22,
-              fontFamily: nameState?.style.fontFamily || 'Inter',
-              color: nameState?.style.color || '#ffffff',
-              fontWeight: nameState?.style.fontWeight || 'bold',
-              textShadow: `0 0 10px ${data.primaryColor || '#667eea'}80`,
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {data.name || 'Your Name'}
-          </motion.span>
-        )
-      )}
-
-      {/* Draggable Tagline */}
-      {design.showTagline && renderDraggableElement('tagline',
-        isEditing && selectedId === 'tagline' ? (
-          <input
-            type="text"
-            defaultValue={data.tagline || 'Creator • Streamer'}
-            className="bg-transparent border-none outline-none"
-            style={{
-              fontSize: taglineState?.style.fontSize || 14,
-              fontFamily: taglineState?.style.fontFamily || 'Inter',
-              color: taglineState?.style.color || 'rgba(255,255,255,0.8)',
-              fontWeight: taglineState?.style.fontWeight || 'normal',
-              minWidth: '50px',
-            }}
-            onBlur={(e) => onContentChange?.('tagline', e.target.value)}
-            onClick={(e) => e.stopPropagation()}
-            autoFocus
-          />
-        ) : (
-          <motion.span
-            style={{
-              fontSize: taglineState?.style.fontSize || 14,
-              fontFamily: taglineState?.style.fontFamily || 'Inter',
-              color: taglineState?.style.color || 'rgba(255,255,255,0.8)',
-              fontWeight: taglineState?.style.fontWeight || 'normal',
-              whiteSpace: 'nowrap',
-            }}
-            animate={!isEditing ? { opacity: [0.7, 1, 0.7] } : undefined}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            {data.tagline || 'Creator • Streamer'}
-          </motion.span>
-        )
-      )}
-
-      {/* Draggable Social Links */}
-      {data.links && data.links.length > 0 && renderDraggableElement('socialLinks',
-        <div className="flex gap-2">
-          {data.links.slice(0, design.maxLinks).map((link, i) => (
-            <motion.a
-              key={i}
-              href={isEditing ? undefined : link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
-              style={{ width: socialState?.style.fontSize || 32, height: socialState?.style.fontSize || 32 }}
-              whileHover={!isEditing ? { scale: 1.1 } : undefined}
-              animate={!isEditing ? { 
-                boxShadow: [
-                  `0 0 10px ${data.primaryColor || '#667eea'}40`,
-                  `0 0 20px ${data.primaryColor || '#667eea'}60`,
-                  `0 0 10px ${data.primaryColor || '#667eea'}40`
-                ]
-              } : undefined}
+      {/* Avatar Element */}
+      {design.showAvatar && avatarState?.visible && (
+        <BannerEditableElement
+          element={avatarState}
+          isEditing={isEditing}
+          isSelected={selectedId === 'avatar'}
+          isTextEditing={false}
+          containerSize={containerSize}
+          onPositionChange={handlePositionChange}
+          onSelect={setSelectedId}
+          onDoubleClick={() => {}}
+          onRemove={handleRemoveElement}
+          content={
+            <motion.div
+              className="rounded-full overflow-hidden border-2 border-white/30"
+              style={{ 
+                width: avatarState.style.fontSize || 48,
+                height: avatarState.style.fontSize || 48,
+                background: `linear-gradient(135deg, ${data.primaryColor || '#667eea'}, ${data.secondaryColor || '#764ba2'})`,
+                boxShadow: `0 0 20px ${data.primaryColor || '#667eea'}40`
+              }}
+              animate={!isEditing ? { scale: [1, 1.02, 1] } : undefined}
               transition={{ duration: 2, repeat: Infinity }}
-              onClick={(e) => isEditing && e.preventDefault()}
             >
-              <svg className="w-1/2 h-1/2 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d={getSocialIcon(link.platform)} />
-              </svg>
-            </motion.a>
-          ))}
-        </div>
+              {data.avatarUrl ? (
+                <img src={data.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <svg className="w-1/2 h-1/2 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              )}
+            </motion.div>
+          }
+        />
       )}
 
-      {/* Editing toolbar */}
-      {isEditing && selectedId && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute -top-12 left-1/2 -translate-x-1/2 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl p-2 flex items-center gap-2 z-[200]"
-        >
-          {/* Font size controls */}
-          <button
-            className="w-6 h-6 flex items-center justify-center hover:bg-muted rounded"
-            onClick={() => {
-              const state = getElementState(selectedId);
-              if (state) handleStyleChange(selectedId, { fontSize: Math.max(10, state.style.fontSize - 2) });
-            }}
-          >
-            <span className="text-sm font-bold">A-</span>
-          </button>
-          <span className="text-xs w-8 text-center">{getElementState(selectedId)?.style.fontSize}px</span>
-          <button
-            className="w-6 h-6 flex items-center justify-center hover:bg-muted rounded"
-            onClick={() => {
-              const state = getElementState(selectedId);
-              if (state) handleStyleChange(selectedId, { fontSize: Math.min(72, state.style.fontSize + 2) });
-            }}
-          >
-            <span className="text-sm font-bold">A+</span>
-          </button>
-          
-          {/* Color picker */}
-          <input
-            type="color"
-            value={getElementState(selectedId)?.style.color || '#ffffff'}
-            onChange={(e) => handleStyleChange(selectedId, { color: e.target.value })}
-            className="w-6 h-6 cursor-pointer rounded border-0"
-          />
-          
-          {/* Visibility toggle */}
-          <button
-            className="w-6 h-6 flex items-center justify-center hover:bg-muted rounded text-destructive"
-            onClick={() => handleVisibilityChange(selectedId, false)}
-            title="Hide element"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-            </svg>
-          </button>
-        </motion.div>
+      {/* Name Element */}
+      {nameState?.visible && (
+        <BannerEditableElement
+          element={nameState}
+          isEditing={isEditing}
+          isSelected={selectedId === 'name'}
+          isTextEditing={textEditingId === 'name'}
+          containerSize={containerSize}
+          onPositionChange={handlePositionChange}
+          onSelect={setSelectedId}
+          onDoubleClick={handleTextDoubleClick}
+          onRemove={handleRemoveElement}
+          content={
+            <motion.span
+              style={{
+                fontSize: nameState.style.fontSize || 22,
+                fontFamily: nameState.style.fontFamily || 'Inter',
+                color: nameState.style.color || '#ffffff',
+                fontWeight: nameState.style.fontWeight || 'bold',
+                textShadow: `0 0 10px ${data.primaryColor || '#667eea'}80`,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {data.name || 'Your Name'}
+            </motion.span>
+          }
+          editContent={
+            <input
+              type="text"
+              value={editingText}
+              onChange={(e) => setEditingText(e.target.value)}
+              onBlur={handleTextBlur}
+              onKeyDown={(e) => e.key === 'Enter' && handleTextBlur()}
+              className="bg-transparent border-none outline-none"
+              style={{
+                fontSize: nameState.style.fontSize || 22,
+                fontFamily: nameState.style.fontFamily || 'Inter',
+                color: nameState.style.color || '#ffffff',
+                fontWeight: nameState.style.fontWeight || 'bold',
+                textShadow: `0 0 10px ${data.primaryColor || '#667eea'}80`,
+                minWidth: '50px',
+              }}
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+            />
+          }
+        />
       )}
+
+      {/* Tagline Element */}
+      {design.showTagline && taglineState?.visible && (
+        <BannerEditableElement
+          element={taglineState}
+          isEditing={isEditing}
+          isSelected={selectedId === 'tagline'}
+          isTextEditing={textEditingId === 'tagline'}
+          containerSize={containerSize}
+          onPositionChange={handlePositionChange}
+          onSelect={setSelectedId}
+          onDoubleClick={handleTextDoubleClick}
+          onRemove={handleRemoveElement}
+          content={
+            <motion.span
+              style={{
+                fontSize: taglineState.style.fontSize || 14,
+                fontFamily: taglineState.style.fontFamily || 'Inter',
+                color: taglineState.style.color || 'rgba(255,255,255,0.8)',
+                fontWeight: taglineState.style.fontWeight || 'normal',
+                whiteSpace: 'nowrap',
+              }}
+              animate={!isEditing ? { opacity: [0.7, 1, 0.7] } : undefined}
+              transition={{ duration: 3, repeat: Infinity }}
+            >
+              {data.tagline || 'Creator • Streamer'}
+            </motion.span>
+          }
+          editContent={
+            <input
+              type="text"
+              value={editingText}
+              onChange={(e) => setEditingText(e.target.value)}
+              onBlur={handleTextBlur}
+              onKeyDown={(e) => e.key === 'Enter' && handleTextBlur()}
+              className="bg-transparent border-none outline-none"
+              style={{
+                fontSize: taglineState.style.fontSize || 14,
+                fontFamily: taglineState.style.fontFamily || 'Inter',
+                color: taglineState.style.color || 'rgba(255,255,255,0.8)',
+                fontWeight: taglineState.style.fontWeight || 'normal',
+                minWidth: '50px',
+              }}
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+            />
+          }
+        />
+      )}
+
+      {/* Social Links Element */}
+      {data.links && data.links.length > 0 && socialState?.visible && (
+        <BannerEditableElement
+          element={socialState}
+          isEditing={isEditing}
+          isSelected={selectedId === 'socialLinks'}
+          isTextEditing={false}
+          containerSize={containerSize}
+          onPositionChange={handlePositionChange}
+          onSelect={setSelectedId}
+          onDoubleClick={() => {}}
+          onRemove={handleRemoveElement}
+          content={
+            <div className="flex gap-2">
+              {data.links.slice(0, design.maxLinks).map((link, i) => (
+                <motion.a
+                  key={i}
+                  href={isEditing ? undefined : link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                  style={{ width: socialState.style.fontSize || 32, height: socialState.style.fontSize || 32 }}
+                  whileHover={!isEditing ? { scale: 1.1 } : undefined}
+                  animate={!isEditing ? { 
+                    boxShadow: [
+                      `0 0 10px ${data.primaryColor || '#667eea'}40`,
+                      `0 0 20px ${data.primaryColor || '#667eea'}60`,
+                      `0 0 10px ${data.primaryColor || '#667eea'}40`
+                    ]
+                  } : undefined}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  onClick={(e) => isEditing && e.preventDefault()}
+                >
+                  <svg className="w-1/2 h-1/2 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d={getSocialIcon(link.platform)} />
+                  </svg>
+                </motion.a>
+              ))}
+            </div>
+          }
+        />
+      )}
+
+      {/* Text Editing Toolbar - shows when double-clicked on text */}
+      <AnimatePresence>
+        {isEditing && textEditingId && (textEditingId === 'name' || textEditingId === 'tagline') && (
+          <BannerTextToolbar
+            fontSize={getElementState(textEditingId)?.style.fontSize || 16}
+            fontFamily={getElementState(textEditingId)?.style.fontFamily || 'Inter'}
+            color={getElementState(textEditingId)?.style.color || '#ffffff'}
+            fontWeight={getElementState(textEditingId)?.style.fontWeight || 'normal'}
+            onFontSizeChange={(size) => handleStyleChange(textEditingId, { fontSize: size })}
+            onFontFamilyChange={(family) => handleStyleChange(textEditingId, { fontFamily: family })}
+            onColorChange={(color) => handleStyleChange(textEditingId, { color })}
+            onFontWeightChange={(weight) => handleStyleChange(textEditingId, { fontWeight: weight })}
+            position={{ 
+              x: getElementState(textEditingId)?.position.x || 0, 
+              y: getElementState(textEditingId)?.position.y || 0 
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
