@@ -1,6 +1,6 @@
 // src/components/animated-banners/GlitchMatrix.tsx
-import React, { useRef, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 
 interface GlitchMatrixProps {
   color?: string;
@@ -8,94 +8,104 @@ interface GlitchMatrixProps {
 }
 
 export const GlitchMatrix: React.FC<GlitchMatrixProps> = ({
-  color = '#00ff00',
-  intensity = 0.5
+  color = "#00ff00",
+  intensity = 0.5,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
-  
-  const animate = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    
-    const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789';
-    const fontSize = 14;
-    const columns = Math.floor(canvas.width / fontSize);
-    
-    // Initialize drops if not exists
-    if (!canvas.dataset.drops) {
-      const drops = new Array(columns).fill(1).map(() => Math.random() * -100);
-      canvas.dataset.drops = JSON.stringify(drops);
-    }
-    
-    const drops = JSON.parse(canvas.dataset.drops);
-    
-    // Fade effect
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.fillStyle = color;
-    ctx.font = `${fontSize}px monospace`;
-    
-    for (let i = 0; i < drops.length; i++) {
-      const char = chars[Math.floor(Math.random() * chars.length)];
-      const x = i * fontSize;
-      const y = drops[i] * fontSize;
-      
-      // Brighter leading character
-      if (Math.random() > 0.5) {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillText(char, x, y);
-        ctx.fillStyle = color;
-      } else {
-        ctx.fillText(char, x, y);
-      }
-      
-      // Reset drop
-      if (y > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-      drops[i]++;
-    }
-    
-    canvas.dataset.drops = JSON.stringify(drops);
-    animationRef.current = requestAnimationFrame(animate);
-  }, [color]);
+  const dropsRef = useRef<number[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const resizeCanvas = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const fontSize = 14;
+
+    // Function to initialize drops based on width
+    const initDrops = (width: number) => {
+      const columns = Math.ceil(width / fontSize);
+      // Only re-initialize if the number of columns has changed to avoid resetting active drops unnecessarily
+      if (dropsRef.current.length !== columns) {
+        // Initialize drops at random y positions above the canvas for a staggered start
+        dropsRef.current = new Array(columns)
+          .fill(1)
+          .map(() => Math.random() * -100);
+      }
     };
-    
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    animationRef.current = requestAnimationFrame(animate);
-    
+
+    const render = () => {
+      // Create fading trail effect
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.font = `${fontSize}px monospace`;
+
+      const chars =
+        "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789";
+
+      for (let i = 0; i < dropsRef.current.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = dropsRef.current[i] * fontSize;
+
+        // Randomly color characters white for a "spark" effect
+        ctx.fillStyle = Math.random() > 0.95 ? "#ffffff" : color;
+        ctx.fillText(text, x, y);
+
+        // Reset drop to top randomly after it crosses the bottom
+        if (y > canvas.height && Math.random() > 0.975) {
+          dropsRef.current[i] = 0;
+        }
+
+        dropsRef.current[i]++;
+      }
+
+      animationRef.current = requestAnimationFrame(render);
+    };
+
+    // Handle Resize
+    const handleResize = () => {
+      if (container && canvas) {
+        canvas.width = container.offsetWidth;
+        canvas.height = container.offsetHeight;
+        initDrops(canvas.width);
+      }
+    };
+
+    // Initialize
+    handleResize();
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(container);
+
+    // Start Animation Loop
+    render();
+
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationRef.current);
+      resizeObserver.disconnect();
     };
-  }, [animate]);
+  }, [color]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden bg-black"
+    >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full opacity-60"
+        className="absolute inset-0 w-full h-full block opacity-80"
       />
-      
+
       {/* Glitch overlay */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         animate={{
-          opacity: [0, intensity, 0, intensity * 0.5, 0],
+          opacity: [0, intensity * 0.3, 0, intensity * 0.5, 0],
           x: [-2, 2, -1, 1, 0],
         }}
         transition={{
@@ -105,9 +115,10 @@ export const GlitchMatrix: React.FC<GlitchMatrixProps> = ({
         }}
         style={{
           background: `linear-gradient(90deg, transparent 0%, ${color}20 50%, transparent 100%)`,
+          mixBlendMode: "screen",
         }}
       />
-      
+
       {/* Scanlines */}
       <div
         className="absolute inset-0 pointer-events-none opacity-30"
@@ -116,8 +127,8 @@ export const GlitchMatrix: React.FC<GlitchMatrixProps> = ({
             0deg,
             transparent,
             transparent 2px,
-            rgba(0, 0, 0, 0.3) 2px,
-            rgba(0, 0, 0, 0.3) 4px
+            rgba(0, 0, 0, 0.5) 2px,
+            rgba(0, 0, 0, 0.5) 4px
           )`,
         }}
       />

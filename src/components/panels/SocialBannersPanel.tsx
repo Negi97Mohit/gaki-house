@@ -1,18 +1,29 @@
-// src/components/panels/SocialBannersPanel.tsx
 import React, { useState, useEffect, Suspense } from "react";
-import { BadgeCheck, Edit3, Plus, Check, Sparkles, Layers } from "lucide-react";
+import {
+  BadgeCheck,
+  Edit3,
+  Plus,
+  Check,
+  Sparkles,
+  Layers,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { SocialBannerEditor } from "@/components/SocialBannerEditor";
-import { SocialBannerRenderer } from "@/components/SocialBannerRenderer";
+import {
+  SocialBannerRenderer,
+  getPlatformIcon,
+} from "@/components/SocialBannerRenderer";
 import { AnimatedBannerRenderer } from "@/components/animated-banners";
 import {
   SocialBannerData,
   SocialBannerDesign,
   DEFAULT_BANNER_DATA,
 } from "@/types/socialBanner";
+
 import animatedBannersData from "@/data/animatedBanners.json";
 
 const ANIMATED_BANNER_DESIGNS = animatedBannersData.designs;
@@ -92,7 +103,6 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
     userData.name !== DEFAULT_BANNER_DATA.name || userData.links.length > 0;
 
   const handleSelectAnimatedBanner = (design: AnimatedBannerDesign) => {
-    // For animated banners, create a design that will be recognized as animated
     const compatibleDesign: SocialBannerDesign & {
       isAnimatedBanner?: boolean;
       animatedBannerId?: string;
@@ -114,7 +124,6 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
       showAvatar: design.showAvatar,
       showTagline: design.showTagline,
       maxLinks: design.maxLinks,
-      // Mark as animated banner for special rendering
       isAnimatedBanner: true,
       animatedBannerId: design.id,
     };
@@ -124,240 +133,235 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-border/40">
-        <div className="flex items-center gap-2">
-          <BadgeCheck className="w-5 h-5 text-primary" />
-          <h3 className="text-base font-semibold tracking-wide">
-            Social Banners
-          </h3>
+    <div className="flex flex-col h-full space-y-3">
+      {/* Header & User Info Combined */}
+      <div className="flex flex-col gap-2 shrink-0">
+        <div className="flex items-center justify-between pb-2 border-b border-border/40">
+          <div className="flex items-center gap-2">
+            <BadgeCheck className="w-5 h-5 text-primary" />
+            <h3 className="text-base font-semibold tracking-wide">
+              Social Banners
+            </h3>
+          </div>
+          {!hasUserInfo && (
+            <Button
+              size="sm"
+              variant="default"
+              onClick={() => setIsEditorOpen(true)}
+              className="h-7 text-xs px-3"
+            >
+              Setup Profile
+            </Button>
+          )}
         </div>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => setIsEditorOpen(true)}
-          className="text-xs gap-1.5"
-        >
-          <Edit3 className="w-3.5 h-3.5" />
-          {hasUserInfo ? "Edit Info" : "Add Your Info"}
-        </Button>
-      </div>
 
-      {/* User Info Summary */}
-      {hasUserInfo && (
-        <div className="p-3 rounded-lg bg-primary/10 border border-primary/20 mb-4">
-          <div className="flex items-center gap-2 text-sm">
-            <span className="font-medium text-primary">{userData.name}</span>
-            {userData.tagline && (
-              <span className="text-muted-foreground text-xs">
-                • {userData.tagline}
-              </span>
-            )}
+        {/* Compact User Info Card */}
+        {hasUserInfo && (
+          <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 border border-border/50 group hover:border-primary/20 transition-colors">
+            <div className="flex-1 min-w-0 mr-2">
+              <div className="flex items-center gap-2 mb-1.5">
+                <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <User className="w-3 h-3 text-primary" />
+                </div>
+                <span className="font-medium text-sm truncate">
+                  {userData.name}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 overflow-hidden pl-7">
+                {userData.links.slice(0, 6).map((link, i) => {
+                  const Icon = getPlatformIcon(link.platform);
+                  return (
+                    <div
+                      key={i}
+                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      title={link.platform}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={() => setIsEditorOpen(true)}
+              className="h-7 w-7 text-muted-foreground hover:text-primary opacity-60 group-hover:opacity-100 transition-all"
+              title="Edit Info"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+            </Button>
           </div>
-          <div className="flex gap-1 mt-2 flex-wrap">
-            {userData.links.slice(0, 5).map((link, i) => (
-              <span
-                key={i}
-                className="px-2 py-0.5 text-[10px] rounded-full bg-background/50 text-muted-foreground capitalize"
-              >
-                {link.platform}
-              </span>
-            ))}
-            {userData.links.length > 5 && (
-              <span className="px-2 py-0.5 text-[10px] rounded-full bg-background/50 text-muted-foreground">
-                +{userData.links.length - 5} more
-              </span>
-            )}
-          </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Banner Type Tabs */}
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as "static" | "animated")}
+        className="flex-1 flex flex-col min-h-0"
       >
-        <TabsList className="w-full grid grid-cols-2 mb-3">
+        <TabsList className="w-full grid grid-cols-2 mb-3 shrink-0">
           <TabsTrigger value="static" className="gap-1.5 text-xs">
             <Layers className="w-3.5 h-3.5" />
-            Static
+            Static Designs
           </TabsTrigger>
           <TabsTrigger value="animated" className="gap-1.5 text-xs">
             <Sparkles className="w-3.5 h-3.5" />
-            Animated
+            Animated (Pro)
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="static" className="mt-0">
-          <p className="text-xs text-muted-foreground/70 mb-3">
-            Click any design to add it to your canvas
-          </p>
-          <ScrollArea className="h-[calc(70vh-300px)]">
-            <div className="grid grid-cols-1 gap-3 pr-2">
-              {designs.map((design) => (
-                <button
-                  key={design.id}
-                  onClick={() => handleSelectDesign(design)}
-                  className={cn(
-                    "relative group rounded-xl overflow-hidden transition-all duration-300",
-                    "border hover:shadow-xl hover:scale-[1.02]",
-                    recentlyAdded === design.id
-                      ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)] ring-2 ring-green-500/30"
-                      : "border-border/40 hover:border-primary/60"
-                  )}
-                >
-                  {/* Banner Preview - Full width, proper aspect ratio */}
-                  <div
-                    className="relative w-full aspect-[4/1] flex items-center justify-center overflow-hidden"
-                    style={{ background: design.preview }}
+        <div className="flex-1 min-h-0 relative">
+          <TabsContent value="static" className="absolute inset-0 mt-0">
+            <ScrollArea className="h-full pr-3">
+              <div className="grid grid-cols-1 gap-4 pb-4">
+                {designs.map((design) => (
+                  <button
+                    key={design.id}
+                    onClick={() => handleSelectDesign(design)}
+                    className={cn(
+                      "relative group rounded-xl overflow-hidden transition-all duration-300 w-full text-left",
+                      "border bg-card hover:shadow-lg hover:border-primary/50",
+                      recentlyAdded === design.id
+                        ? "border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                        : "border-border/40"
+                    )}
                   >
-                    <div className="w-full px-4">
-                      <SocialBannerRenderer
-                        design={design}
-                        data={
-                          hasUserInfo
-                            ? userData
-                            : {
-                                name: "Your Name",
-                                tagline: "Creator • Streamer",
-                                links: [
-                                  { platform: "github", url: "#" },
-                                  { platform: "x", url: "#" },
-                                  { platform: "youtube", url: "#" },
-                                ],
-                              }
-                        }
-                      />
-                    </div>
-
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-
-                  {/* Info Footer - Compact */}
-                  <div className="px-3 py-2 bg-background/95 backdrop-blur-sm border-t border-border/20 flex items-center justify-between">
-                    <div className="text-left min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {design.name}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground truncate">
-                        {design.description}
-                      </p>
-                    </div>
-                    <div
-                      className={cn(
-                        "w-7 h-7 rounded-full flex items-center justify-center transition-all flex-shrink-0 ml-2",
-                        recentlyAdded === design.id
-                          ? "bg-green-500 text-white"
-                          : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
-                      )}
-                    >
-                      {recentlyAdded === design.id ? (
-                        <Check className="w-3.5 h-3.5" />
-                      ) : (
-                        <Plus className="w-3.5 h-3.5" />
-                      )}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </ScrollArea>
-        </TabsContent>
-
-        <TabsContent value="animated" className="mt-0">
-          <p className="text-xs text-muted-foreground/70 mb-3">
-            Animated banners with particles, shaders & effects
-          </p>
-          <ScrollArea className="h-[calc(70vh-300px)]">
-            <div className="grid grid-cols-1 gap-3 pr-2">
-              {ANIMATED_BANNER_DESIGNS.map((design) => (
-                <button
-                  key={design.id}
-                  onClick={() => handleSelectAnimatedBanner(design)}
-                  className={cn(
-                    "relative group rounded-xl overflow-hidden transition-all duration-300",
-                    "border hover:shadow-xl hover:scale-[1.02]",
-                    recentlyAdded === design.id
-                      ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)] ring-2 ring-green-500/30"
-                      : "border-border/40 hover:border-primary/60"
-                  )}
-                >
-                  {/* Animated Preview - Larger and clearer */}
-                  <div className="relative w-full aspect-[4/1] overflow-hidden">
-                    <Suspense
-                      fallback={
+                    {/* Banner Preview - Increased Height & Centered Scaling */}
+                    <div className="relative w-full h-32 bg-secondary/20 flex items-center justify-center overflow-hidden">
+                      {/* We create a container that's wider than the view to simulate a 'desktop' banner look, then scale it down */}
+                      <div
+                        className="absolute inset-0 flex items-center justify-center"
+                        style={{ background: design.preview }}
+                      >
                         <div
-                          className="absolute inset-0"
-                          style={{ background: design.preview }}
-                        />
-                      }
-                    >
-                      <AnimatedBannerRenderer design={design} />
-                    </Suspense>
-
-                    {/* Technology badges - Top left */}
-                    <div className="absolute top-1.5 left-1.5 flex gap-1">
-                      {design.technologiesUsed.slice(0, 2).map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-1.5 py-0.5 text-[8px] font-medium rounded bg-black/70 text-white/90 backdrop-blur-sm"
+                          style={{
+                            width: "600px",
+                            transform: "scale(0.6)",
+                            transformOrigin: "center",
+                          }}
                         >
-                          {tech}
-                        </span>
-                      ))}
+                          <SocialBannerRenderer
+                            design={design}
+                            data={
+                              hasUserInfo
+                                ? userData
+                                : {
+                                    name: "Preview Name",
+                                    tagline: "Your Tagline Here",
+                                    links: [
+                                      { platform: "twitter", url: "#" },
+                                      { platform: "instagram", url: "#" },
+                                      { platform: "youtube", url: "#" },
+                                    ],
+                                  }
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-background/90 backdrop-blur text-foreground text-xs font-medium px-3 py-1.5 rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                          Click to Add
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-
-                  {/* Info Footer - Compact */}
-                  <div className="px-3 py-2 bg-background/95 backdrop-blur-sm border-t border-border/20">
-                    <div className="flex items-center justify-between">
-                      <div className="text-left min-w-0 flex-1">
-                        <p className="text-sm font-medium text-foreground flex items-center gap-1.5 truncate">
-                          <Sparkles className="w-3 h-3 text-primary flex-shrink-0" />
-                          <span className="truncate">{design.name}</span>
+                    {/* Info Footer */}
+                    <div className="px-3 py-2.5 flex items-center justify-between border-t border-border/10 bg-muted/20">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {design.name}
                         </p>
                         <p className="text-[10px] text-muted-foreground truncate">
                           {design.description}
                         </p>
                       </div>
-                      <div
-                        className={cn(
-                          "w-7 h-7 rounded-full flex items-center justify-center transition-all flex-shrink-0 ml-2",
-                          recentlyAdded === design.id
-                            ? "bg-green-500 text-white"
-                            : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
-                        )}
-                      >
-                        {recentlyAdded === design.id ? (
+                      {recentlyAdded === design.id && (
+                        <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 ml-2 animate-in zoom-in">
                           <Check className="w-3.5 h-3.5" />
-                        ) : (
-                          <Plus className="w-3.5 h-3.5" />
-                        )}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          </TabsContent>
+
+          <TabsContent value="animated" className="absolute inset-0 mt-0">
+            <ScrollArea className="h-full pr-3">
+              <div className="grid grid-cols-1 gap-4 pb-4">
+                {ANIMATED_BANNER_DESIGNS.map((design) => (
+                  <button
+                    key={design.id}
+                    onClick={() => handleSelectAnimatedBanner(design)}
+                    className={cn(
+                      "relative group rounded-xl overflow-hidden transition-all duration-300 w-full text-left",
+                      "border bg-card hover:shadow-lg hover:border-primary/50",
+                      recentlyAdded === design.id
+                        ? "border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                        : "border-border/40"
+                    )}
+                  >
+                    <div className="relative w-full h-36 overflow-hidden bg-black">
+                      <Suspense
+                        fallback={
+                          <div className="absolute inset-0 bg-secondary/20 animate-pulse" />
+                        }
+                      >
+                        <AnimatedBannerRenderer
+                          design={design}
+                          containerSize={{ width: 400, height: 144 }}
+                        />
+                      </Suspense>
+
+                      {/* Tech Badges */}
+                      <div className="absolute top-2 left-2 flex gap-1 flex-wrap max-w-[80%]">
+                        {design.technologiesUsed.slice(0, 2).map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-1.5 py-0.5 text-[8px] font-medium rounded-md bg-black/60 text-white/90 backdrop-blur-sm border border-white/10"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-background/90 backdrop-blur text-foreground text-xs font-medium px-3 py-1.5 rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
+                          Click to Add
+                        </div>
                       </div>
                     </div>
 
-                    {/* Use cases - Smaller */}
-                    <div className="flex gap-1 mt-1.5 flex-wrap">
-                      {design.recommendedUseCases.slice(0, 3).map((useCase) => (
-                        <span
-                          key={useCase}
-                          className="px-1.5 py-0.5 text-[8px] rounded-full bg-primary/10 text-primary"
-                        >
-                          {useCase}
-                        </span>
-                      ))}
+                    <div className="px-3 py-2.5 flex items-center justify-between border-t border-border/10 bg-muted/20">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <Sparkles className="w-3 h-3 text-purple-500 shrink-0" />
+                          <p className="text-sm font-medium text-foreground truncate">
+                            {design.name}
+                          </p>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground truncate">
+                          {design.description}
+                        </p>
+                      </div>
+                      {recentlyAdded === design.id && (
+                        <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 ml-2 animate-in zoom-in">
+                          <Check className="w-3.5 h-3.5" />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </ScrollArea>
-        </TabsContent>
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          </TabsContent>
+        </div>
       </Tabs>
 
       {/* Editor Modal */}
@@ -365,9 +369,6 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
         isOpen={isEditorOpen}
         onClose={() => {
           setIsEditorOpen(false);
-
-          // If a design was selected (which triggered the popup), add it now
-          // even if the user didn't save new info (using default/current info)
           if (selectedDesignId) {
             const design = designs.find((d) => d.id === selectedDesignId);
             if (design) {

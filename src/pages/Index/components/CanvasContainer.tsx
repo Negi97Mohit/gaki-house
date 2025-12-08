@@ -1,4 +1,10 @@
-﻿import React, { useCallback, useRef, useState, useMemo, useEffect } from "react";
+﻿import React, {
+  useCallback,
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+} from "react";
 import ReactDOMServer from "react-dom/server";
 import { getPlatformIcon } from "@/components/SocialBannerRenderer";
 import { toast } from "sonner";
@@ -58,7 +64,6 @@ const getPlatformSvg = (platform: SocialPlatform): string => {
   };
   return svgs[platform] || svgs.website;
 };
-
 
 interface CanvasContainerProps {
   // Managers
@@ -163,7 +168,10 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
   // Clear editing state if selection changes
   useEffect(() => {
-    if (editingBannerText && selection.selectedGeneratedId !== editingBannerText.overlayId) {
+    if (
+      editingBannerText &&
+      selection.selectedGeneratedId !== editingBannerText.overlayId
+    ) {
       setEditingBannerText(null);
     }
   }, [selection.selectedGeneratedId, editingBannerText]);
@@ -327,35 +335,49 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
             />
           );
           return `
-            <span style="${styleToString(design.styles.link)}; display: flex; align-items: center; gap: 6px; cursor: default;">
+            <span style="${styleToString(
+              design.styles.link
+            )}; display: flex; align-items: center; gap: 6px; cursor: default;">
               <span style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconSvg}</span>
-              <span style="font-size: 12px; white-space: nowrap; opacity: 0.9;">${link.url || link.platform}</span>
+              <span style="font-size: 12px; white-space: nowrap; opacity: 0.9;">${
+                link.url || link.platform
+              }</span>
             </span>
           `;
         })
         .join("");
 
       const avatarHtml = design.showAvatar
-        ? `<div style="width: 48px; height: 48px; border-radius: 50%; background: ${data.avatarUrl ? `url(${data.avatarUrl}) center/cover` : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-        }; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
-            ${!data.avatarUrl
-          ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
-          : ""
-        }
+        ? `<div style="width: 48px; height: 48px; border-radius: 50%; background: ${
+            data.avatarUrl
+              ? `url(${data.avatarUrl}) center/cover`
+              : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+          }; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
+            ${
+              !data.avatarUrl
+                ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
+                : ""
+            }
           </div>`
         : "";
 
       const taglineHtml =
         design.showTagline && data.tagline
-          ? `<span class="banner-text-editable" data-banner-field="tagline" style="${styleToString(design.styles.tagline || {})}">${data.tagline}</span>`
+          ? `<span class="banner-text-editable" data-banner-field="tagline" style="${styleToString(
+              design.styles.tagline || {}
+            )}">${data.tagline}</span>`
           : "";
 
       return `
         ${bannerKeyframes}
-        <div style="${styleToString(design.styles.container)}; width: 100%; height: 100%; box-sizing: border-box;">
+        <div style="${styleToString(
+          design.styles.container
+        )}; width: 100%; height: 100%; box-sizing: border-box;">
           ${avatarHtml}
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <span class="banner-text-editable" data-banner-field="name" style="${styleToString(design.styles.name)}">${data.name}</span>
+            <span class="banner-text-editable" data-banner-field="name" style="${styleToString(
+              design.styles.name
+            )}">${data.name}</span>
             ${taglineHtml}
           </div>
           <div style="${styleToString(design.styles.linksContainer)}">
@@ -391,10 +413,10 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         // so e.currentTarget might be null or undefined if not properly proxied?
         // Wait, HybridDraggable calls `onDoubleClick(id, e)`. `e` is a native/React event object.
         // Let's assume e.target is the element that was clicked.
-        
+
         // Better approach: Find the wrapper by ID if possible?
         // But we don't set ID on wrapper.
-        
+
         // Let's try traversing from e.target.
         const targetNode = e.target as HTMLElement;
         const wrapper = targetNode.closest(".group"); // HybridDraggable has class "group"
@@ -404,19 +426,22 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           const rect = iframe.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
-          
+
           const innerTarget = iframe.contentDocument.elementFromPoint(x, y);
-          
+
           if (innerTarget) {
             // Check for data-banner-field
             const fieldElement = innerTarget.closest("[data-banner-field]");
             if (fieldElement) {
-              const field = fieldElement.getAttribute("data-banner-field") as "name" | "tagline";
+              const field = fieldElement.getAttribute("data-banner-field") as
+                | "name"
+                | "tagline";
               const currentText = fieldElement.textContent || "";
-              
+
               // Extract computed style for the toolbar
-              const style = iframe.contentWindow?.getComputedStyle(fieldElement);
-              
+              const style =
+                iframe.contentWindow?.getComputedStyle(fieldElement);
+
               const relevantStyle: React.CSSProperties = {
                 fontFamily: style?.fontFamily,
                 fontSize: style?.fontSize,
@@ -432,7 +457,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
                 overlayId: id,
                 field,
                 currentText,
-                style: relevantStyle
+                style: relevantStyle,
               });
               return; // Inline edit activated, skip modal
             }
@@ -454,8 +479,11 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       if (!editingBannerText) return;
 
       const { overlayId, field } = editingBannerText;
-      const overlay = activeScene.activeOverlays.find((o) => o.id === overlayId);
-      if (!overlay || !overlay.metadata?.design || !overlay.metadata?.data) return;
+      const overlay = activeScene.activeOverlays.find(
+        (o) => o.id === overlayId
+      );
+      if (!overlay || !overlay.metadata?.design || !overlay.metadata?.data)
+        return;
 
       const design = overlay.metadata.design as SocialBannerDesign;
       const data = overlay.metadata.data as SocialBannerData;
@@ -468,9 +496,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           ...design.styles,
           [field]: {
             ...design.styles[field],
-            ...newStyle
-          }
-        }
+            ...newStyle,
+          },
+        },
       };
 
       // Regenerate HTML
@@ -486,20 +514,29 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
                 htmlContent: newHtmlContent,
                 metadata: {
                   ...o.metadata,
-                  design: updatedDesign
-                }
+                  design: updatedDesign,
+                },
               }
             : o
         ),
       }));
 
       // Update local state to reflect style change in toolbar (optional, but good for sync)
-      setEditingBannerText((prev) => prev ? ({
-        ...prev,
-        style: { ...prev.style, ...newStyle }
-      }) : null);
+      setEditingBannerText((prev) =>
+        prev
+          ? {
+              ...prev,
+              style: { ...prev.style, ...newStyle },
+            }
+          : null
+      );
     },
-    [activeScene.activeOverlays, editingBannerText, updateActiveScene, generateBannerHtml]
+    [
+      activeScene.activeOverlays,
+      editingBannerText,
+      updateActiveScene,
+      generateBannerHtml,
+    ]
   );
 
   // --- Handlers ---
@@ -604,19 +641,19 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       updateActiveScene((scene) => {
         const updatedCanvasLayout = scene.canvasLayout
           ? {
-            ...scene.canvasLayout,
-            sections: scene.canvasLayout.sections.map((s) =>
-              s.id === sectionId
-                ? {
-                  ...s,
-                  content: {
-                    type: "image" as const,
-                    src: asset.downloadUrl,
-                  },
-                }
-                : s
-            ),
-          }
+              ...scene.canvasLayout,
+              sections: scene.canvasLayout.sections.map((s) =>
+                s.id === sectionId
+                  ? {
+                      ...s,
+                      content: {
+                        type: "image" as const,
+                        src: asset.downloadUrl,
+                      },
+                    }
+                  : s
+              ),
+            }
           : scene.canvasLayout;
         return { ...scene, canvasLayout: updatedCanvasLayout };
       });
@@ -678,32 +715,42 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   }, [activeScene.captionStyle, updateActiveScene, selection]);
 
   const handleAddSocialBanner = useCallback(
-    (design: SocialBannerDesign & { isAnimatedBanner?: boolean; animatedBannerId?: string }, data: SocialBannerData) => {
+    (
+      design: SocialBannerDesign & {
+        isAnimatedBanner?: boolean;
+        animatedBannerId?: string;
+      },
+      data: SocialBannerData
+    ) => {
       const isAnimated = design.isAnimatedBanner === true;
-      const htmlContent = isAnimated ? '' : generateBannerHtml(design, data);
-      
+      const htmlContent = isAnimated ? "" : generateBannerHtml(design, data);
+
       const newOverlay: GeneratedOverlay = {
         id: generateId("banner"),
         name: `${design.name} Banner`,
         htmlContent,
         layout: {
-          position: { x: 50, y: 50 },
-          size: { width: 80, height: 25 },
+          // Centered position (50% - width/2, 50% - height/2)
+          position: { x: 25, y: 42 },
+          // Responsive size (50% width, 16% height)
+          size: { width: 50, height: 16 },
           zIndex: zIndex.draggableElement,
           rotation: 0,
           layerOrder: "above-video",
         },
         preview: design.preview,
-        metadata: isAnimated ? {
-          type: "animated-banner",
-          animatedBannerId: design.animatedBannerId,
-          design,
-          data
-        } : {
-          type: "social-banner",
-          design,
-          data
-        }
+        metadata: isAnimated
+          ? {
+              type: "animated-banner",
+              animatedBannerId: design.animatedBannerId,
+              design,
+              data,
+            }
+          : {
+              type: "social-banner",
+              design,
+              data,
+            },
       };
 
       updateActiveScene((scene) => ({
@@ -875,7 +922,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           return { ...s, canvasLayout: { ...s.canvasLayout, sections } };
         });
       },
-      onUserPositionChange: () => { },
+      onUserPositionChange: () => {},
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
         updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
       },
@@ -1037,7 +1084,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           o.id === id ? { ...o, metadata } : o
         ),
       })),
-    onPreviewGenerated: () => { },
+    onPreviewGenerated: () => {},
     onRemoveBrowser: (id: string) =>
       updateActiveScene((s) => ({
         ...s,
@@ -1074,8 +1121,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       })),
     selectedFileId: selection.selectedFileId,
     setSelectedFileId: selection.setSelectedFileId,
-    onInternalDragStart: () => { },
-    onInternalDragStop: () => { },
+    onInternalDragStart: () => {},
+    onInternalDragStop: () => {},
     onDeselectAll: selection.handleDeselectAll,
     onSetDynamicLayout: (target: any, mode: any) => {
       if (mode === "reset") {
@@ -1150,7 +1197,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       }, 500);
     },
     // Updated to use the new handler that supports both inline and modal editing
-    onBannerDoubleClick: (id: string, e: React.MouseEvent) => handleBannerTextClick(id, e),
+    onBannerDoubleClick: (id: string, e: React.MouseEvent) =>
+      handleBannerTextClick(id, e),
   };
 
   return (
@@ -1195,12 +1243,15 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           setBannerUserData(data);
           if (editingBannerId) {
             // Find the overlay and regenerate its HTML with new data
-            const overlay = activeScene.activeOverlays.find((o) => o.id === editingBannerId);
+            const overlay = activeScene.activeOverlays.find(
+              (o) => o.id === editingBannerId
+            );
             if (overlay) {
               // Find which design this banner uses (extract from name)
               const designName = overlay.name.replace(" Banner", "");
               const designs = socialBannersData.designs as SocialBannerDesign[];
-              const design = designs.find((d) => d.name === designName) || designs[0];
+              const design =
+                designs.find((d) => d.name === designName) || designs[0];
 
               // Generate new HTML
               // Generate new HTML using the helper
@@ -1212,13 +1263,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
                 activeOverlays: scene.activeOverlays.map((o) =>
                   o.id === editingBannerId
                     ? {
-                      ...o,
-                      htmlContent: newHtmlContent,
-                      metadata: {
-                        ...o.metadata,
-                        data: data // Update data in metadata
+                        ...o,
+                        htmlContent: newHtmlContent,
+                        metadata: {
+                          ...o.metadata,
+                          data: data, // Update data in metadata
+                        },
                       }
-                    }
                     : o
                 ),
               }));

@@ -1,6 +1,13 @@
 // src/components/FloatingControlsPanel.tsx
 import React, { useState, useRef, useEffect } from "react";
-import { LayoutGrid, Zap, Paintbrush, Palette, Sparkles, BadgeCheck } from "lucide-react";
+import {
+  LayoutGrid,
+  Zap,
+  Paintbrush,
+  Palette,
+  Sparkles,
+  BadgeCheck,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CanvasPreset } from "@/types/canvasPreset";
@@ -40,7 +47,10 @@ interface FloatingControlsPanelProps {
   isLoadingPublic?: boolean;
   onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
-  onAddSocialBanner?: (design: SocialBannerDesign, data: SocialBannerData) => void;
+  onAddSocialBanner?: (
+    design: SocialBannerDesign,
+    data: SocialBannerData
+  ) => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -120,11 +130,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         )}
         style={{
           zIndex: "var(--z-floating-panel)",
-          maxHeight: "70vh",
+          height: "70vh",
         }}
       >
         {/* Sidebar Navigation */}
         <div className="w-16 bg-background/20 backdrop-blur-sm border-r border-border/30 flex flex-col items-center py-3 gap-1.5">
+          {" "}
           {sections.map((section) => (
             <button
               key={section.id}
@@ -146,7 +157,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         </div>
 
         {/* Content Area */}
-        <div className="w-[420px] max-h-[70vh] overflow-y-auto p-5 bg-background/10 backdrop-blur-sm">
+        <div className="w-[420px] h-full overflow-y-auto p-5 bg-background/10 backdrop-blur-sm">
           {activeSection === "canvas-designs" && (
             <CanvasDesignsPanel
               onCanvasPresetSelect={props.onCanvasPresetSelect}
