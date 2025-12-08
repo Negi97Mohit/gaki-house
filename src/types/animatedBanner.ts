@@ -374,5 +374,347 @@ export const ANIMATED_BANNER_DESIGNS: AnimatedBannerDesign[] = [
     showAvatar: true,
     showTagline: true,
     maxLinks: 5
+  },
+  {
+    id: "cyber-pulse",
+    name: "Cyber Pulse",
+    description: "Pulsing neon grid with data streams and circuit patterns",
+    preview: "linear-gradient(135deg, #0a0014 0%, #1a0033 50%, #0d001a 100%)",
+    layout: "horizontal",
+    theme: "cyber",
+    technologiesUsed: ["framer-motion", "canvas-2d"],
+    motionSystem: {
+      timelines: ["pulse-sequence", "data-flow"],
+      shaders: ["grid-glow"]
+    },
+    animatedBehaviors: ["grid-pulse", "line-trace", "node-blink"],
+    layers: {
+      background: "cyber-void",
+      midground: "circuit-grid",
+      foreground: "data-nodes"
+    },
+    shaderEffects: [
+      { name: "neon-glow", uniforms: { intensity: 1.8 } }
+    ],
+    particleSettings: {
+      count: 50,
+      speed: 0.4,
+      noise: 0.3,
+      size: 0.02,
+      color: "#00ffcc",
+      colorVariant: "#ff00ff"
+    },
+    colorVariants: ["cyan-magenta", "green-purple", "blue-orange"],
+    recommendedUseCases: ["tech-streams", "programming", "cyberpunk"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
+  },
+  {
+    id: "nebula-drift",
+    name: "Nebula Drift",
+    description: "Slow-moving cosmic nebula clouds with star field",
+    preview: "linear-gradient(135deg, #0a0020 0%, #200040 50%, #100030 100%)",
+    layout: "horizontal",
+    theme: "cosmic",
+    technologiesUsed: ["framer-motion", "css-animations"],
+    motionSystem: {
+      shaders: ["nebula-blend", "star-twinkle"],
+      particles: true
+    },
+    animatedBehaviors: ["cloud-drift", "star-pulse", "depth-parallax"],
+    layers: {
+      background: "deep-space",
+      midground: "nebula-layers",
+      foreground: "star-dust"
+    },
+    shaderEffects: [
+      { name: "gaussian-blur", uniforms: { radius: 8 } }
+    ],
+    particleSettings: {
+      count: 100,
+      speed: 0.1,
+      noise: 0.6,
+      size: 0.01,
+      color: "#ff66aa",
+      colorVariant: "#6666ff"
+    },
+    colorVariants: ["pink-blue", "purple-orange", "cyan-red"],
+    recommendedUseCases: ["space-content", "ambient", "asmr"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
+  },
+  {
+    id: "retro-wave",
+    name: "Retro Wave",
+    description: "80s synthwave aesthetic with neon grid and sun",
+    preview: "linear-gradient(180deg, #1a0033 0%, #330066 40%, #ff6600 100%)",
+    layout: "horizontal",
+    theme: "cinematic",
+    technologiesUsed: ["framer-motion", "gsap", "css-animations"],
+    motionSystem: {
+      timelines: ["grid-scroll", "sun-pulse"],
+      shaders: ["scanlines", "crt-warp"]
+    },
+    animatedBehaviors: ["grid-perspective", "sun-glow", "palm-sway"],
+    layers: {
+      background: "sunset-gradient",
+      midground: "perspective-grid",
+      foreground: "silhouette-elements"
+    },
+    shaderEffects: [
+      { name: "chromatic-aberration", uniforms: { offset: 0.003 } }
+    ],
+    colorVariants: ["sunset-purple", "midnight-blue", "neon-pink"],
+    recommendedUseCases: ["synthwave", "retro-gaming", "music"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
+  },
+  {
+    id: "hologram-scan",
+    name: "Hologram Scan",
+    description: "Futuristic holographic display with scanning effects",
+    preview: "linear-gradient(135deg, #001a1a 0%, #003333 50%, #001a2a 100%)",
+    layout: "horizontal",
+    theme: "cyber",
+    technologiesUsed: ["framer-motion", "canvas-2d"],
+    motionSystem: {
+      shaders: ["hologram-flicker", "scan-sweep"],
+      timelines: ["glitch-random"]
+    },
+    animatedBehaviors: ["line-scan", "static-flicker", "depth-shift"],
+    layers: {
+      background: "dark-tech",
+      midground: "hologram-frame",
+      foreground: "scan-overlay"
+    },
+    shaderEffects: [
+      { name: "hologram", uniforms: { opacity: 0.9, scanSpeed: 1.5 } }
+    ],
+    particleSettings: {
+      count: 30,
+      speed: 0.2,
+      noise: 0.1,
+      size: 0.015,
+      color: "#00ffff"
+    },
+    colorVariants: ["cyan-white", "green-white", "blue-white"],
+    recommendedUseCases: ["sci-fi", "tech-reviews", "futuristic"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 4
+  },
+  {
+    id: "forest-spirits",
+    name: "Forest Spirits",
+    description: "Mystical forest with floating light orbs and fireflies",
+    preview: "linear-gradient(180deg, #0a1a0a 0%, #1a3320 50%, #0a1510 100%)",
+    layout: "horizontal",
+    theme: "organic",
+    technologiesUsed: ["framer-motion", "css-animations"],
+    motionSystem: {
+      particles: true,
+      timelines: ["firefly-dance"]
+    },
+    animatedBehaviors: ["orb-float", "leaf-fall", "mist-drift"],
+    layers: {
+      background: "forest-depth",
+      midground: "tree-silhouettes",
+      foreground: "light-particles"
+    },
+    shaderEffects: [
+      { name: "soft-glow", uniforms: { intensity: 1.2 } }
+    ],
+    particleSettings: {
+      count: 40,
+      speed: 0.15,
+      noise: 0.7,
+      size: 0.025,
+      color: "#88ff88",
+      colorVariant: "#ffff88"
+    },
+    colorVariants: ["green-gold", "blue-silver", "purple-pink"],
+    recommendedUseCases: ["nature", "fantasy", "cozy-gaming"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
+  },
+  {
+    id: "ocean-depths",
+    name: "Ocean Depths",
+    description: "Deep underwater scene with caustic light and bubbles",
+    preview: "linear-gradient(180deg, #001a33 0%, #002244 50%, #001122 100%)",
+    layout: "horizontal",
+    theme: "ethereal",
+    technologiesUsed: ["framer-motion", "canvas-2d"],
+    motionSystem: {
+      shaders: ["caustics", "water-distortion"],
+      particles: true
+    },
+    animatedBehaviors: ["bubble-rise", "light-caustics", "seaweed-sway"],
+    layers: {
+      background: "deep-blue",
+      midground: "water-volume",
+      foreground: "bubble-particles"
+    },
+    shaderEffects: [
+      { name: "caustics", uniforms: { scale: 2.0, speed: 0.5 } }
+    ],
+    particleSettings: {
+      count: 60,
+      speed: 0.3,
+      noise: 0.4,
+      size: 0.02,
+      color: "#66ccff",
+      colorVariant: "#ffffff"
+    },
+    colorVariants: ["ocean-blue", "tropical-teal", "deep-purple"],
+    recommendedUseCases: ["ocean-content", "relaxation", "aquarium"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
+  },
+  {
+    id: "electric-storm",
+    name: "Electric Storm",
+    description: "Dynamic lightning strikes with electric plasma arcs",
+    preview: "linear-gradient(135deg, #0a0a1a 0%, #1a1a33 50%, #0a0a20 100%)",
+    layout: "horizontal",
+    theme: "cinematic",
+    technologiesUsed: ["canvas-2d", "framer-motion"],
+    motionSystem: {
+      timelines: ["lightning-flash", "thunder-rumble"],
+      shaders: ["electric-arc"]
+    },
+    animatedBehaviors: ["bolt-strike", "plasma-crackle", "cloud-surge"],
+    layers: {
+      background: "storm-clouds",
+      midground: "rain-sheets",
+      foreground: "lightning-bolts"
+    },
+    shaderEffects: [
+      { name: "bloom", uniforms: { intensity: 3.0, threshold: 0.1 } }
+    ],
+    particleSettings: {
+      count: 80,
+      speed: 1.0,
+      noise: 0.2,
+      size: 0.01,
+      color: "#aaccff",
+      colorVariant: "#ffffff"
+    },
+    colorVariants: ["blue-white", "purple-pink", "red-orange"],
+    recommendedUseCases: ["dramatic", "action", "weather"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 4
+  },
+  {
+    id: "sakura-petals",
+    name: "Sakura Petals",
+    description: "Gentle falling cherry blossom petals with soft glow",
+    preview: "linear-gradient(180deg, #1a0a15 0%, #2a1525 50%, #150a10 100%)",
+    layout: "horizontal",
+    theme: "vtuber",
+    technologiesUsed: ["framer-motion", "css-animations"],
+    motionSystem: {
+      particles: true,
+      timelines: ["petal-cascade"]
+    },
+    animatedBehaviors: ["petal-fall", "wind-gust", "soft-glow"],
+    layers: {
+      background: "twilight-pink",
+      midground: "branch-silhouettes",
+      foreground: "falling-petals"
+    },
+    shaderEffects: [
+      { name: "soft-bloom", uniforms: { intensity: 1.0 } }
+    ],
+    particleSettings: {
+      count: 50,
+      speed: 0.2,
+      noise: 0.5,
+      size: 0.04,
+      color: "#ffaacc",
+      colorVariant: "#ffffff"
+    },
+    colorVariants: ["pink-white", "purple-lavender", "red-coral"],
+    recommendedUseCases: ["anime", "vtuber", "aesthetic"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
+  },
+  {
+    id: "neon-city",
+    name: "Neon City",
+    description: "Cyberpunk cityscape with rain and neon reflections",
+    preview: "linear-gradient(180deg, #0a0a15 0%, #151530 50%, #0a0a20 100%)",
+    layout: "horizontal",
+    theme: "cyber",
+    technologiesUsed: ["canvas-2d", "framer-motion"],
+    motionSystem: {
+      particles: true,
+      timelines: ["rain-fall", "sign-flicker"],
+      shaders: ["wet-surface-reflection"]
+    },
+    animatedBehaviors: ["rain-stream", "neon-pulse", "car-lights"],
+    layers: {
+      background: "city-skyline",
+      midground: "building-lights",
+      foreground: "rain-overlay"
+    },
+    shaderEffects: [
+      { name: "rain-distortion", uniforms: { intensity: 0.5 } }
+    ],
+    particleSettings: {
+      count: 200,
+      speed: 1.5,
+      noise: 0.1,
+      size: 0.005,
+      color: "#66aaff",
+      colorVariant: "#ff66aa"
+    },
+    colorVariants: ["blue-pink", "purple-cyan", "orange-teal"],
+    recommendedUseCases: ["cyberpunk", "lofi", "night-streams"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
+  },
+  {
+    id: "golden-particles",
+    name: "Golden Particles",
+    description: "Elegant floating gold dust with premium shimmer effect",
+    preview: "linear-gradient(135deg, #1a1510 0%, #2a2015 50%, #151008 100%)",
+    layout: "horizontal",
+    theme: "cinematic",
+    technologiesUsed: ["framer-motion", "css-animations"],
+    motionSystem: {
+      particles: true,
+      shaders: ["metallic-shimmer"]
+    },
+    animatedBehaviors: ["dust-float", "light-catch", "gentle-swirl"],
+    layers: {
+      background: "warm-dark",
+      midground: "ambient-glow",
+      foreground: "gold-particles"
+    },
+    shaderEffects: [
+      { name: "metallic-sheen", uniforms: { roughness: 0.2 } }
+    ],
+    particleSettings: {
+      count: 80,
+      speed: 0.1,
+      noise: 0.6,
+      size: 0.015,
+      color: "#ffd700",
+      colorVariant: "#ffaa00"
+    },
+    colorVariants: ["gold", "silver", "rose-gold", "bronze"],
+    recommendedUseCases: ["luxury", "awards", "premium-content"],
+    showAvatar: true,
+    showTagline: true,
+    maxLinks: 5
   }
 ];
