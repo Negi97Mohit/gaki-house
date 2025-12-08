@@ -174,96 +174,97 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
 
                 <TabsContent value="static" className="mt-0">
                     <p className="text-xs text-muted-foreground/70 mb-3">
-                        💡 Click any design to add it to your canvas.
+                        Click any design to add it to your canvas
                     </p>
-                    <ScrollArea className="h-[calc(70vh-340px)]">
-                <div className="grid grid-cols-1 gap-4 pr-2">
-                    {designs.map((design) => (
-                        <button
-                            key={design.id}
-                            onClick={() => handleSelectDesign(design)}
-                            className={cn(
-                                "relative group rounded-xl overflow-hidden transition-all duration-300",
-                                "border-2 hover:shadow-lg",
-                                recentlyAdded === design.id
-                                    ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
-                                    : "border-border/30 hover:border-primary/50"
-                            )}
-                        >
-                            {/* Preview with actual design */}
-                            <div
-                                className="p-4 min-h-[80px] flex items-center justify-center"
-                                style={{ background: design.preview }}
-                            >
-                                <div className="transform scale-[0.6] origin-center">
-                                    <SocialBannerRenderer
-                                        design={design}
-                                        data={hasUserInfo ? userData : {
-                                            name: "Preview Name",
-                                            tagline: "Creator • Streamer",
-                                            links: [
-                                                { platform: "github", url: "#" },
-                                                { platform: "x", url: "#" },
-                                                { platform: "youtube", url: "#" },
-                                            ],
-                                        }}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Info Footer */}
-                            <div className="px-4 py-3 bg-background/90 backdrop-blur-sm border-t border-border/20">
-                                <div className="flex items-center justify-between">
-                                    <div className="text-left">
-                                        <p className="text-sm font-semibold text-foreground">
-                                            {design.name}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {design.description}
-                                        </p>
-                                    </div>
+                    <ScrollArea className="h-[calc(70vh-300px)]">
+                        <div className="grid grid-cols-1 gap-3 pr-2">
+                            {designs.map((design) => (
+                                <button
+                                    key={design.id}
+                                    onClick={() => handleSelectDesign(design)}
+                                    className={cn(
+                                        "relative group rounded-xl overflow-hidden transition-all duration-300",
+                                        "border hover:shadow-xl hover:scale-[1.02]",
+                                        recentlyAdded === design.id
+                                            ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)] ring-2 ring-green-500/30"
+                                            : "border-border/40 hover:border-primary/60"
+                                    )}
+                                >
+                                    {/* Banner Preview - Full width, proper aspect ratio */}
                                     <div
-                                        className={cn(
-                                            "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-                                            recentlyAdded === design.id
-                                                ? "bg-green-500 text-white"
-                                                : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
-                                        )}
+                                        className="relative w-full aspect-[4/1] flex items-center justify-center overflow-hidden"
+                                        style={{ background: design.preview }}
                                     >
-                                        {recentlyAdded === design.id ? (
-                                            <Check className="w-4 h-4" />
-                                        ) : (
-                                            <Plus className="w-4 h-4" />
-                                        )}
+                                        <div className="w-full px-4">
+                                            <SocialBannerRenderer
+                                                design={design}
+                                                data={hasUserInfo ? userData : {
+                                                    name: "Your Name",
+                                                    tagline: "Creator • Streamer",
+                                                    links: [
+                                                        { platform: "github", url: "#" },
+                                                        { platform: "x", url: "#" },
+                                                        { platform: "youtube", url: "#" },
+                                                    ],
+                                                }}
+                                            />
+                                        </div>
+                                        
+                                        {/* Hover overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
-                                </div>
-                            </div>
-                        </button>
-                    ))}
+
+                                    {/* Info Footer - Compact */}
+                                    <div className="px-3 py-2 bg-background/95 backdrop-blur-sm border-t border-border/20 flex items-center justify-between">
+                                        <div className="text-left min-w-0 flex-1">
+                                            <p className="text-sm font-medium text-foreground truncate">
+                                                {design.name}
+                                            </p>
+                                            <p className="text-[10px] text-muted-foreground truncate">
+                                                {design.description}
+                                            </p>
+                                        </div>
+                                        <div
+                                            className={cn(
+                                                "w-7 h-7 rounded-full flex items-center justify-center transition-all flex-shrink-0 ml-2",
+                                                recentlyAdded === design.id
+                                                    ? "bg-green-500 text-white"
+                                                    : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
+                                            )}
+                                        >
+                                            {recentlyAdded === design.id ? (
+                                                <Check className="w-3.5 h-3.5" />
+                                            ) : (
+                                                <Plus className="w-3.5 h-3.5" />
+                                            )}
+                                        </div>
+                                    </div>
+                                </button>
+                            ))}
                         </div>
                     </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="animated" className="mt-0">
                     <p className="text-xs text-muted-foreground/70 mb-3">
-                        ✨ Cinematic animated banners with 3D effects, particles, and shaders.
+                        Animated banners with particles, shaders & effects
                     </p>
-                    <ScrollArea className="h-[calc(70vh-340px)]">
-                        <div className="grid grid-cols-1 gap-4 pr-2">
+                    <ScrollArea className="h-[calc(70vh-300px)]">
+                        <div className="grid grid-cols-1 gap-3 pr-2">
                             {ANIMATED_BANNER_DESIGNS.map((design) => (
                                 <button
                                     key={design.id}
                                     onClick={() => handleSelectAnimatedBanner(design)}
                                     className={cn(
                                         "relative group rounded-xl overflow-hidden transition-all duration-300",
-                                        "border-2 hover:shadow-lg",
+                                        "border hover:shadow-xl hover:scale-[1.02]",
                                         recentlyAdded === design.id
-                                            ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)]"
-                                            : "border-border/30 hover:border-primary/50"
+                                            ? "border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.4)] ring-2 ring-green-500/30"
+                                            : "border-border/40 hover:border-primary/60"
                                     )}
                                 >
-                                    {/* Animated Preview */}
-                                    <div className="relative h-24 overflow-hidden">
+                                    {/* Animated Preview - Larger and clearer */}
+                                    <div className="relative w-full aspect-[4/1] overflow-hidden">
                                         <Suspense fallback={
                                             <div 
                                                 className="absolute inset-0" 
@@ -273,53 +274,56 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                                             <AnimatedBannerRenderer design={design} />
                                         </Suspense>
                                         
-                                        {/* Technology badges */}
-                                        <div className="absolute top-2 left-2 flex gap-1 flex-wrap">
+                                        {/* Technology badges - Top left */}
+                                        <div className="absolute top-1.5 left-1.5 flex gap-1">
                                             {design.technologiesUsed.slice(0, 2).map((tech) => (
                                                 <span
                                                     key={tech}
-                                                    className="px-1.5 py-0.5 text-[8px] rounded bg-black/60 text-white/90 backdrop-blur-sm"
+                                                    className="px-1.5 py-0.5 text-[8px] font-medium rounded bg-black/70 text-white/90 backdrop-blur-sm"
                                                 >
                                                     {tech}
                                                 </span>
                                             ))}
                                         </div>
+                                        
+                                        {/* Hover overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                                     </div>
 
-                                    {/* Info Footer */}
-                                    <div className="px-4 py-3 bg-background/90 backdrop-blur-sm border-t border-border/20">
+                                    {/* Info Footer - Compact */}
+                                    <div className="px-3 py-2 bg-background/95 backdrop-blur-sm border-t border-border/20">
                                         <div className="flex items-center justify-between">
-                                            <div className="text-left">
-                                                <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                                                    <Sparkles className="w-3.5 h-3.5 text-primary" />
-                                                    {design.name}
+                                            <div className="text-left min-w-0 flex-1">
+                                                <p className="text-sm font-medium text-foreground flex items-center gap-1.5 truncate">
+                                                    <Sparkles className="w-3 h-3 text-primary flex-shrink-0" />
+                                                    <span className="truncate">{design.name}</span>
                                                 </p>
-                                                <p className="text-xs text-muted-foreground line-clamp-1">
+                                                <p className="text-[10px] text-muted-foreground truncate">
                                                     {design.description}
                                                 </p>
                                             </div>
                                             <div
                                                 className={cn(
-                                                    "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                                                    "w-7 h-7 rounded-full flex items-center justify-center transition-all flex-shrink-0 ml-2",
                                                     recentlyAdded === design.id
                                                         ? "bg-green-500 text-white"
                                                         : "bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground"
                                                 )}
                                             >
                                                 {recentlyAdded === design.id ? (
-                                                    <Check className="w-4 h-4" />
+                                                    <Check className="w-3.5 h-3.5" />
                                                 ) : (
-                                                    <Plus className="w-4 h-4" />
+                                                    <Plus className="w-3.5 h-3.5" />
                                                 )}
                                             </div>
                                         </div>
                                         
-                                        {/* Recommended uses */}
-                                        <div className="flex gap-1 mt-2 flex-wrap">
+                                        {/* Use cases - Smaller */}
+                                        <div className="flex gap-1 mt-1.5 flex-wrap">
                                             {design.recommendedUseCases.slice(0, 3).map((useCase) => (
                                                 <span
                                                     key={useCase}
-                                                    className="px-1.5 py-0.5 text-[9px] rounded-full bg-primary/10 text-primary"
+                                                    className="px-1.5 py-0.5 text-[8px] rounded-full bg-primary/10 text-primary"
                                                 >
                                                     {useCase}
                                                 </span>

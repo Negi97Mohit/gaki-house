@@ -5,7 +5,7 @@ import { GlitchMatrix } from './GlitchMatrix';
 import { EsportsHUD } from './EsportsHUD';
 import { InkFlow } from './InkFlow';
 import { VTuberFrameOverlay } from './VTuberFrame';
-import { BannerEditableElement } from '@/components/banner-editor/BannerEditableElement';
+import { BannerInternalDraggable } from '@/components/banner-editor/BannerInternalDraggable';
 import { BannerTextToolbar } from '@/components/banner-editor/BannerTextToolbar';
 import type { AnimatedBannerDesign } from '@/types/animatedBanner';
 
@@ -682,7 +682,7 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
       
       {/* Avatar Element */}
       {design.showAvatar && avatarState?.visible && (
-        <BannerEditableElement
+        <BannerInternalDraggable
           element={avatarState}
           isEditing={isEditing}
           isSelected={selectedId === 'avatar'}
@@ -720,7 +720,7 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
 
       {/* Name Element */}
       {nameState?.visible && (
-        <BannerEditableElement
+        <BannerInternalDraggable
           element={nameState}
           isEditing={isEditing}
           isSelected={selectedId === 'name'}
@@ -769,7 +769,7 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
 
       {/* Tagline Element */}
       {design.showTagline && taglineState?.visible && (
-        <BannerEditableElement
+        <BannerInternalDraggable
           element={taglineState}
           isEditing={isEditing}
           isSelected={selectedId === 'tagline'}
@@ -818,7 +818,7 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
 
       {/* Social Links Element */}
       {data.links && data.links.length > 0 && socialState?.visible && (
-        <BannerEditableElement
+        <BannerInternalDraggable
           element={socialState}
           isEditing={isEditing}
           isSelected={selectedId === 'socialLinks'}
