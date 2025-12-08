@@ -122,9 +122,6 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
 
   if (!containerSize.width || !containerSize.height) return null;
 
-  // When banner is selected and in editing mode, disable parent dragging
-  const isBannerEditing = isSelected && !!animatedBannerDesign;
-
   return (
     <UniversalOverlayWrapper
       id={overlay.id}
@@ -135,7 +132,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       zIndex={overlay.layout.zIndex}
       containerSize={containerSize}
       isSelected={isSelected || false}
-      isEditing={isBannerEditing}
+      isEditing={false}
       onSelect={onSelect || (() => { })}
       onRemove={onRemoveOverlay}
       onCommit={(id, layout) => {
