@@ -51,9 +51,6 @@ export const UniversalOverlayWrapper: React.FC<
   enableResizing = true,
   isEditing = false,
 }) => {
-    // When isEditing is true (e.g., editing banner internals), disable all parent transforms
-    const disableParentTransforms = isEditing;
-
     return (
       <HybridDraggable
         id={id}
@@ -67,9 +64,9 @@ export const UniversalOverlayWrapper: React.FC<
         onSelect={onSelect}
         onClick={() => onSelect(id)}
         onDoubleClick={onDoubleClick}
-        enableDragging={!disableParentTransforms}
-        enableResizing={enableResizing && !disableParentTransforms}
-        enableRotation={!disableParentTransforms}
+        enableDragging={!isEditing}
+        enableResizing={enableResizing && !isEditing}
+        enableRotation={!isEditing}
         allOverlays={allOverlays}
         onSnapGuidesChange={onSnapGuidesChange}
         cancelSelector=".close-btn, .layout-picker-btn, [data-banner-element]"
