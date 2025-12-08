@@ -58,6 +58,7 @@ export const BannerEditableElement: React.FC<BannerEditableElementProps> = ({
   return (
     <motion.div
       ref={elementRef}
+      data-banner-element="true"
       className={`absolute group ${isEditing ? 'cursor-move' : ''}`}
       style={{
         left: element.position.x,
@@ -66,8 +67,19 @@ export const BannerEditableElement: React.FC<BannerEditableElementProps> = ({
       }}
       drag={isEditing && !isTextEditing}
       dragMomentum={false}
-      onDragStart={() => setIsDragging(true)}
-      onDragEnd={handleDragEnd}
+      dragConstraints={{ left: 0, top: 0, right: containerSize.width - 50, bottom: containerSize.height - 20 }}
+      onDragStart={(e) => {
+        e.stopPropagation();
+        setIsDragging(true);
+      }}
+      onDrag={(e) => e.stopPropagation()}
+      onDragEnd={(e, info) => {
+        e.stopPropagation();
+        handleDragEnd(e, info);
+      }}
+      onPointerDown={(e) => {
+        if (isEditing) e.stopPropagation();
+      }}
       onClick={(e) => {
         e.stopPropagation();
         if (isEditing) onSelect(element.id);
