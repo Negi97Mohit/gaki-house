@@ -1,6 +1,40 @@
 // src/components/animated-banners/InkFlow.tsx
 import React, { useRef, useEffect, useCallback } from 'react';
-import { createNoise2D } from 'simplex-noise';
+
+// Simple noise function to replace simplex-noise
+const createNoise2D = () => {
+  const permutation = Array.from({ length: 256 }, (_, i) => i);
+  for (let i = 255; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [permutation[i], permutation[j]] = [permutation[j], permutation[i]];
+  }
+  const p = [...permutation, ...permutation];
+  
+  const fade = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
+  const lerp = (a: number, b: number, t: number) => a + t * (b - a);
+  const grad = (hash: number, x: number, y: number) => {
+    const h = hash & 3;
+    const u = h < 2 ? x : y;
+    const v = h < 2 ? y : x;
+    return ((h & 1) ? -u : u) + ((h & 2) ? -2 * v : 2 * v);
+  };
+  
+  return (x: number, y: number): number => {
+    const X = Math.floor(x) & 255;
+    const Y = Math.floor(y) & 255;
+    x -= Math.floor(x);
+    y -= Math.floor(y);
+    const u = fade(x);
+    const v = fade(y);
+    const A = p[X] + Y;
+    const B = p[X + 1] + Y;
+    return lerp(
+      lerp(grad(p[A], x, y), grad(p[B], x - 1, y), u),
+      lerp(grad(p[A + 1], x, y - 1), grad(p[B + 1], x - 1, y - 1), u),
+      v
+    ) * 0.5 + 0.5;
+  };
+};
 
 interface InkFlowProps {
   primaryColor?: string;
