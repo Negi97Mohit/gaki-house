@@ -211,7 +211,7 @@ export const SocialBannerEditor: React.FC<SocialBannerEditorProps> = ({
                         </DialogTitle>
                     </DialogHeader>
 
-                    <ScrollArea className="max-h-[60vh] pr-4">
+                    <ScrollArea className="max-h-[60vh] overflow-y-auto pr-4">
                         <div className="space-y-6 py-4">
                             {/* Avatar Upload */}
                             <div className="space-y-2">
