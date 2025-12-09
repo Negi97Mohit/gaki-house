@@ -1,7 +1,6 @@
-import React, { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Palette, Sparkles, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Palette, Sparkles, X } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { BannerDesign, isAnimatedBanner } from "@/types/banner";
@@ -33,6 +32,12 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
 
   const currentDesigns = activeTab === "static" ? staticDesigns : animatedDesigns;
 
+  // Stop all events from bubbling to prevent HybridDraggable interference
+  const stopEvents = (e: React.MouseEvent | React.PointerEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
   // Position the toolbar above the banner
   const toolbarStyle: React.CSSProperties = {
     position: "absolute",
@@ -50,7 +55,10 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
       transition={{ duration: 0.15 }}
       style={toolbarStyle}
-      className="pointer-events-auto"
+      className="pointer-events-auto banner-toolbar-btn"
+      onClick={stopEvents}
+      onPointerDown={stopEvents}
+      onMouseDown={stopEvents}
     >
       <div className="bg-background border border-accent flex flex-col w-[360px] max-w-[90vw]">
         {/* Header */}
@@ -59,8 +67,13 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
             Change Design
           </span>
           <button
-            onClick={onClose}
-            className="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-accent transition-colors"
+            onClick={(e) => {
+              stopEvents(e);
+              onClose();
+            }}
+            onPointerDown={stopEvents}
+            onMouseDown={stopEvents}
+            className="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-accent transition-colors cursor-pointer"
           >
             <X className="w-3 h-3" />
           </button>
@@ -69,9 +82,14 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
         {/* Tabs */}
         <div className="flex border-b border-accent">
           <button
-            onClick={() => setActiveTab("static")}
+            onClick={(e) => {
+              stopEvents(e);
+              setActiveTab("static");
+            }}
+            onPointerDown={stopEvents}
+            onMouseDown={stopEvents}
             className={cn(
-              "flex-1 px-3 py-2 text-xs font-mono uppercase tracking-wide flex items-center justify-center gap-1.5 transition-colors",
+              "flex-1 px-3 py-2 text-xs font-mono uppercase tracking-wide flex items-center justify-center gap-1.5 transition-colors cursor-pointer",
               activeTab === "static"
                 ? "bg-accent text-background"
                 : "text-muted-foreground hover:text-foreground hover:bg-accent/10"
@@ -81,9 +99,14 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
             Static
           </button>
           <button
-            onClick={() => setActiveTab("animated")}
+            onClick={(e) => {
+              stopEvents(e);
+              setActiveTab("animated");
+            }}
+            onPointerDown={stopEvents}
+            onMouseDown={stopEvents}
             className={cn(
-              "flex-1 px-3 py-2 text-xs font-mono uppercase tracking-wide flex items-center justify-center gap-1.5 transition-colors",
+              "flex-1 px-3 py-2 text-xs font-mono uppercase tracking-wide flex items-center justify-center gap-1.5 transition-colors cursor-pointer",
               activeTab === "animated"
                 ? "bg-accent text-background"
                 : "text-muted-foreground hover:text-foreground hover:bg-accent/10"
@@ -102,9 +125,14 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
               return (
                 <button
                   key={design.id}
-                  onClick={() => onSelectDesign(design)}
+                  onClick={(e) => {
+                    stopEvents(e);
+                    onSelectDesign(design);
+                  }}
+                  onPointerDown={stopEvents}
+                  onMouseDown={stopEvents}
                   className={cn(
-                    "aspect-[2/1] rounded-sm overflow-hidden border-2 transition-all hover:scale-105",
+                    "aspect-[2/1] rounded-sm overflow-hidden border-2 transition-all hover:scale-105 cursor-pointer",
                     isSelected
                       ? "border-accent ring-1 ring-accent"
                       : "border-transparent hover:border-accent/50"
