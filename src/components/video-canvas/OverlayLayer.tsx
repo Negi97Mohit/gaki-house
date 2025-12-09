@@ -176,6 +176,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                 zIndex={overlay.layout.zIndex}
                 containerSize={containerSize}
                 isSelected={isSelected}
+                cancelSelector=".banner-toolbar-btn"
                 onSelect={() => {
                   onSelectGenerated?.(overlay.id);
                   // Close design selector if clicking a different banner
@@ -196,7 +197,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                   setShowDesignSelector(prev => prev === id ? null : id);
                 }}
               >
-                <div className="w-full h-full pointer-events-auto relative">
+                <div className="w-full h-full pointer-events-auto relative overflow-visible">
                   {/* Design Selector Toolbar */}
                   <AnimatePresence>
                     {showDesignSelector === overlay.id && (
@@ -215,9 +216,17 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        e.preventDefault();
                         setShowDesignSelector(overlay.id);
                       }}
-                      className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-background border border-accent text-accent text-[10px] font-mono uppercase tracking-wider hover:bg-accent hover:text-background transition-colors z-50 whitespace-nowrap"
+                      onPointerDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="banner-toolbar-btn absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-background border border-accent text-accent text-[10px] font-mono uppercase tracking-wider hover:bg-accent hover:text-background transition-colors whitespace-nowrap pointer-events-auto cursor-pointer"
+                      style={{ zIndex: 9999 }}
                     >
                       Change Design
                     </button>

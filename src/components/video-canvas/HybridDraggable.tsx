@@ -618,9 +618,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
       }}
     >
       {/* Content wrapper - fills entire resize box */}
-      <div className="w-full h-full">
-        {" "}
-        {/* Removed overflow-hidden */}
+      <div className="w-full h-full overflow-visible">
         {children}
       </div>
 
