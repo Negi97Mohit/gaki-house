@@ -63,10 +63,10 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
       : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
 
   return (
-    <div className="space-y-4 font-mono">
+    <div className="flex flex-col h-full font-mono">
       {/* Header */}
-      <div className="flex items-center justify-between gap-2 pb-3 border-b border-border">
-        <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
+      <div className="flex items-center justify-between gap-2 pb-3 border-b-2 border-primary shrink-0">
+        <span className="text-sm font-bold text-primary tracking-wider uppercase">
           Select Layout
         </span>
         {onSaveCanvasPreset && (
@@ -74,7 +74,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
             size="sm"
             variant="outline"
             onClick={() => setShowSaveInput(!showSaveInput)}
-            className="text-[10px] h-7 px-3 font-mono tracking-wide border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+            className="text-[10px] h-7 px-3 font-mono tracking-wide border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
           >
             {showSaveInput ? "CANCEL" : "SAVE CURRENT"}
           </Button>
@@ -83,12 +83,12 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
       {/* Save Preset Input */}
       {showSaveInput && onSaveCanvasPreset && (
-        <div className="flex gap-2 p-3 bg-card border border-border">
+        <div className="flex gap-2 p-3 bg-card border-2 border-primary shrink-0 mt-3">
           <Input
             placeholder="Preset name..."
             value={savePresetName}
             onChange={(e) => setSavePresetName(e.target.value)}
-            className="flex-1 h-8 text-xs font-mono border-border bg-background focus:border-primary"
+            className="flex-1 h-8 text-xs font-mono border-2 border-border bg-background focus:border-primary"
             onKeyDown={(e) => {
               if (e.key === "Enter" && savePresetName.trim()) {
                 onSaveCanvasPreset(savePresetName.trim());
@@ -107,7 +107,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
               }
             }}
             disabled={!savePresetName.trim()}
-            className="h-8 px-4 text-[10px] font-mono tracking-wide"
+            className="h-8 px-4 text-[10px] font-mono tracking-wide border-2 border-primary"
           >
             SAVE
           </Button>
@@ -116,16 +116,16 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
       {/* Custom Presets Section */}
       {customCanvasPresets && customCanvasPresets.length > 0 && (
-        <div className="mb-4">
-          <h4 className="text-[10px] font-medium mb-3 text-primary tracking-widest uppercase">
+        <div className="mb-4 shrink-0 mt-4">
+          <h4 className="text-xs font-bold mb-3 text-primary tracking-widest uppercase">
             Your Presets
           </h4>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {customCanvasPresets.map((preset) => (
               <div key={preset.id} className="relative group">
                 <button
                   onClick={() => onCanvasPresetSelect?.(preset)}
-                  className="w-full overflow-hidden border border-primary/50 hover:border-primary transition-all duration-150 bg-card"
+                  className="w-full overflow-hidden border-2 border-primary/50 hover:border-primary hover:shadow-[0_0_15px_hsl(50,100%,50%,0.3)] transition-all duration-150 bg-card"
                 >
                   <div
                     className="w-full aspect-video relative overflow-hidden"
@@ -154,8 +154,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
                       }}
                     />
                   </div>
-                  <div className="px-2 py-1.5 bg-card border-t border-border">
-                    <p className="text-[10px] font-medium text-foreground truncate tracking-wide">
+                  <div className="px-2 py-2 bg-card border-t-2 border-primary/30">
+                    <p className="text-[11px] font-bold text-foreground truncate tracking-wide">
                       {preset.name.toUpperCase()}
                     </p>
                   </div>
@@ -217,12 +217,12 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
       )}
 
       {/* Category Navigation */}
-      <div className="space-y-2">
-        <h4 className="text-[10px] font-medium text-muted-foreground tracking-widest uppercase">
+      <div className="space-y-2 shrink-0 mt-4">
+        <h4 className="text-xs font-bold text-primary tracking-widest uppercase">
           Templates
         </h4>
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex gap-1 w-max">
+          <div className="flex gap-1.5 w-max">
             {CANVAS_PRESET_CATEGORIES.map((cat) => {
               const IconComponent = categoryIcons[cat.icon];
               return (
@@ -232,38 +232,38 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
                   size="sm"
                   onClick={() => setSelectedCategory(cat.id)}
                   className={cn(
-                    "text-[9px] font-mono whitespace-nowrap transition-all duration-150 h-7 px-2",
-                    "border",
+                    "text-[10px] font-mono font-bold whitespace-nowrap transition-all duration-150 h-8 px-3",
+                    "border-2",
                     selectedCategory === cat.id
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "border-border text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-transparent"
+                      ? "bg-primary text-primary-foreground border-primary shadow-[0_0_10px_hsl(50,100%,50%,0.4)]"
+                      : "border-border text-muted-foreground hover:text-primary hover:border-primary hover:bg-primary/10"
                   )}
                 >
-                  {IconComponent && <IconComponent className="w-3 h-3 mr-1" strokeWidth={1.5} />}
+                  {IconComponent && <IconComponent className="w-3.5 h-3.5 mr-1.5" strokeWidth={2} />}
                   {cat.name.toUpperCase()}
                 </Button>
               );
             })}
           </div>
-          <ScrollBar orientation="horizontal" className="h-1.5" />
+          <ScrollBar orientation="horizontal" className="h-2" />
         </ScrollArea>
       </div>
 
       {/* Loading State */}
       {selectedCategory === "community" && isLoadingPublic && (
-        <div className="flex items-center justify-center h-32 border border-dashed border-border">
-          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+        <div className="flex items-center justify-center h-32 border-2 border-dashed border-primary/50">
+          <Loader2 className="w-5 h-5 animate-spin text-primary" />
         </div>
       )}
 
-      {/* Presets Grid */}
-      <div className="grid grid-cols-2 gap-2 max-h-[calc(70vh-280px)] overflow-y-auto sharp-scrollbar pr-1">
+      {/* Presets Grid - Takes remaining space */}
+      <div className="flex-1 grid grid-cols-2 gap-3 overflow-y-auto sharp-scrollbar pr-1 mt-4 content-start">
         {!(selectedCategory === "community" && isLoadingPublic) &&
           filteredCanvasPresets.map((preset) => (
             <button
               key={preset.id}
               onClick={() => onCanvasPresetSelect?.(preset)}
-              className="group relative overflow-hidden border border-border hover:border-primary transition-all duration-150 bg-card"
+              className="group relative overflow-hidden border-2 border-border hover:border-primary hover:shadow-[0_0_15px_hsl(50,100%,50%,0.3)] transition-all duration-150 bg-card h-fit"
             >
               <div
                 className="w-full aspect-video relative overflow-hidden"
@@ -333,20 +333,20 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
               {/* Label overlay */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/90 to-transparent p-2 pt-4">
-                <span className="text-[10px] font-mono font-semibold text-foreground block truncate tracking-wide">
+                <span className="text-[11px] font-mono font-bold text-foreground block truncate tracking-wide">
                   {preset.name.toUpperCase()}
                 </span>
                 {selectedCategory === "community" &&
                   (preset as any).authorName && (
-                    <span className="text-[8px] text-muted-foreground block font-mono">
+                    <span className="text-[9px] text-muted-foreground block font-mono font-medium">
                       BY {(preset as any).authorName.toUpperCase()}
                     </span>
                   )}
-                <div className="flex flex-wrap gap-1 mt-1">
+                <div className="flex flex-wrap gap-1 mt-1.5">
                   {preset.styleTags.slice(0, 2).map((tag) => (
                     <span
                       key={tag}
-                      className="text-[8px] px-1.5 py-0.5 bg-primary/20 text-primary font-mono tracking-wide"
+                      className="text-[8px] px-1.5 py-0.5 bg-primary/20 text-primary font-mono font-bold tracking-wide border border-primary/30"
                     >
                       {tag.toUpperCase()}
                     </span>
@@ -358,7 +358,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
       </div>
 
       {filteredCanvasPresets.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground text-xs font-mono border border-dashed border-border">
+        <div className="text-center py-8 text-primary/70 text-sm font-mono font-bold border-2 border-dashed border-primary/30">
           NO DESIGNS FOUND
         </div>
       )}

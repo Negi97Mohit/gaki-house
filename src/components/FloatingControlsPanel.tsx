@@ -130,8 +130,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "fixed bottom-24 left-6 overflow-hidden",
-          "bg-background border border-border shadow-2xl",
+          "fixed bottom-16 left-6 overflow-hidden",
+          "bg-background border-2 border-primary shadow-[0_0_30px_hsl(50,100%,50%,0.15)]",
           "transition-all duration-200 ease-out flex",
           isOpen && (props.isMouseActive || isHovered)
             ? "opacity-100 translate-y-0 pointer-events-auto"
@@ -139,45 +139,45 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         )}
         style={{
           zIndex: "var(--z-floating-panel)",
-          height: "70vh",
-          maxHeight: "680px",
+          height: "80vh",
+          maxHeight: "800px",
         }}
       >
         {/* Sharp Sidebar Navigation */}
-        <div className="w-14 bg-card border-r border-border flex flex-col items-center py-2 gap-0.5">
+        <div className="w-14 bg-card border-r-2 border-primary flex flex-col items-center py-2 gap-0.5">
           {sections.map((section) => (
             <button
               key={section.id}
               onClick={() => setActiveSection(section.id)}
               className={cn(
                 "w-full h-14 flex flex-col items-center justify-center transition-all duration-150 relative group",
-                "font-mono text-[9px] tracking-wider",
+                "font-mono text-[9px] tracking-wider border-b border-border",
                 activeSection === section.id
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  : "text-muted-foreground hover:text-primary hover:bg-primary/10"
               )}
               title={section.title}
             >
-              <section.icon className="w-4 h-4 mb-1" strokeWidth={1.5} />
-              <span className="font-medium">{section.shortTitle}</span>
+              <section.icon className="w-4 h-4 mb-1" strokeWidth={2} />
+              <span className="font-bold">{section.shortTitle}</span>
               
               {/* Active indicator line */}
               {activeSection === section.id && (
-                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary-foreground" />
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-foreground" />
               )}
             </button>
           ))}
         </div>
 
         {/* Content Area */}
-        <div className="flex flex-col w-[400px] h-full bg-background">
+        <div className="flex flex-col w-[420px] h-full bg-background">
           {/* Header Bar */}
-          <div className="h-10 border-b border-border flex items-center justify-between px-4 bg-card shrink-0">
+          <div className="h-10 border-b-2 border-primary flex items-center justify-between px-4 bg-card shrink-0">
             <div className="flex items-center gap-2">
               {activeTab && (
                 <>
-                  <activeTab.icon className="w-3.5 h-3.5 text-primary" strokeWidth={2} />
-                  <span className="font-mono text-xs font-semibold tracking-wide text-foreground">
+                  <activeTab.icon className="w-4 h-4 text-primary" strokeWidth={2} />
+                  <span className="font-mono text-sm font-bold tracking-wider text-primary">
                     {activeTab.title}
                   </span>
                 </>
@@ -185,14 +185,14 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             </div>
             <button
               onClick={() => setIsOpen()}
-              className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 border border-border hover:border-primary transition-all"
             >
-              <X className="w-3.5 h-3.5" strokeWidth={2} />
+              <X className="w-4 h-4" strokeWidth={2} />
             </button>
           </div>
 
-          {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-4 sharp-scrollbar">
+          {/* Scrollable Content - Full Height */}
+          <div className="flex-1 overflow-y-auto p-3 sharp-scrollbar">
             {activeSection === "canvas-designs" && (
               <CanvasDesignsPanel
                 onCanvasPresetSelect={props.onCanvasPresetSelect}
