@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import { LayoutGrid, Loader2, CloudOff, Share2, Trash2, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
-import { CanvasPreset } from "@/types/canvasPreset";
+import { CanvasPreset, CanvasPresetTextOverlay } from "@/types/canvasPreset";
 import { cn } from "@/lib/utils";
 import {
   Crown,
@@ -27,6 +28,108 @@ interface CanvasDesignsPanelProps {
   onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
 }
+
+// Accurate preview renderer component
+const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
+  return (
+    <div
+      className="w-full aspect-video relative overflow-hidden"
+      style={{
+        background: preset.background.blankCanvasColor || "#1a1a1a",
+      }}
+    >
+      {/* Background image if exists */}
+      {preset.background.backgroundImageUrl && (
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-50"
+          style={{
+            backgroundImage: `url(${preset.background.backgroundImageUrl})`,
+          }}
+        />
+      )}
+
+      {/* PIP Camera Preview - Accurate position and size */}
+      <div
+        className="absolute"
+        style={{
+          left: `${preset.pip.pipPosition?.x || 50}%`,
+          top: `${preset.pip.pipPosition?.y || 50}%`,
+          width: `${preset.pip.pipSize?.width || 40}%`,
+          height: `${preset.pip.pipSize?.height || 40}%`,
+          transform: "translate(-50%, -50%)",
+          borderRadius:
+            preset.pip.cameraShape === "circle"
+              ? "50%"
+              : preset.pip.cameraShape === "rounded"
+              ? "8%"
+              : "0",
+          border: preset.pip.pipBorder
+            ? `${Math.max(1, preset.pip.pipBorder.width * 0.5)}px solid ${preset.pip.pipBorder.color}`
+            : "1px solid rgba(255,255,255,0.3)",
+          boxShadow: preset.pip.pipShadow
+            ? `0 0 ${preset.pip.pipShadow.blur * 0.3}px ${preset.pip.pipShadow.color}`
+            : "none",
+          background: "linear-gradient(145deg, #444 0%, #222 100%)",
+        }}
+      >
+        {/* Camera icon indicator */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-40">
+          <svg viewBox="0 0 24 24" className="w-1/3 h-1/3" fill="currentColor" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Text Overlays - Accurate rendering */}
+      {preset.textOverlays.map((text: CanvasPresetTextOverlay) => (
+        <div
+          key={text.id}
+          className="absolute overflow-hidden pointer-events-none"
+          style={{
+            left: `${text.layout.position.x}%`,
+            top: `${text.layout.position.y}%`,
+            width: `${text.layout.size.width}%`,
+            height: `${text.layout.size.height}%`,
+            transform: `translate(-50%, -50%) rotate(${text.layout.rotation || 0}deg)`,
+            zIndex: text.layout.zIndex || 1,
+          }}
+        >
+          <div
+            className="w-full h-full flex items-center overflow-hidden"
+            style={{
+              fontFamily: text.style.fontFamily || "sans-serif",
+              fontSize: `${Math.max(6, Math.min(text.style.fontSize * 0.08, 12))}px`,
+              color: text.style.color || "#fff",
+              backgroundColor: text.style.backgroundColor || "transparent",
+              textAlign: text.style.textAlign || "center",
+              justifyContent: text.style.textAlign === "left" ? "flex-start" : text.style.textAlign === "right" ? "flex-end" : "center",
+              fontWeight: text.style.fontWeight || 400,
+              letterSpacing: text.style.letterSpacing || "normal",
+              textTransform: (text.style.textTransform as any) || "none",
+              textShadow: text.style.textShadow || "none",
+              border: text.style.border || "none",
+              backdropFilter: text.style.backdropFilter || "none",
+              padding: "2px 4px",
+              lineHeight: 1.1,
+            }}
+          >
+            <span className="truncate">
+              {text.content.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim().substring(0, 30)}
+            </span>
+          </div>
+        </div>
+      ))}
+
+      {/* Effects indicator */}
+      {(preset.effects.isNeonEdgeEnabled || preset.effects.interactiveFilter) && (
+        <div className="absolute bottom-1 right-1 px-1 py-0.5 bg-primary/80 text-[6px] font-bold text-primary-foreground">
+          FX
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
   onCanvasPresetSelect,
@@ -67,7 +170,6 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     onCanvasPresetSelect?.(preset);
   };
 
-  // Simplified preview card component
   const PreviewCard = ({ preset, isCustom = false }: { preset: CanvasPreset; isCustom?: boolean }) => {
     const isSelected = selectedPresetId === preset.id;
     
@@ -83,44 +185,19 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
               : "border-border hover:border-primary/60"
           )}
         >
-          {/* Clean Preview Area */}
-          <div
-            className="w-full aspect-[16/10] relative overflow-hidden"
-            style={{
-              background: preset.background.blankCanvasColor || "#1a1a1a",
-            }}
-          >
-            {/* Camera Preview - Clean representation */}
-            <div
-              className="absolute transition-all duration-200"
-              style={{
-                left: `${preset.pip.pipPosition?.x || 50}%`,
-                top: `${preset.pip.pipPosition?.y || 50}%`,
-                width: `${preset.pip.pipSize?.width || 40}%`,
-                height: `${preset.pip.pipSize?.height || 40}%`,
-                transform: "translate(-50%, -50%)",
-                borderRadius:
-                  preset.pip.cameraShape === "circle"
-                    ? "50%"
-                    : preset.pip.cameraShape === "rounded"
-                    ? "8px"
-                    : "0",
-                border: `2px solid hsl(50, 100%, 50%)`,
-                background: "linear-gradient(135deg, hsl(50, 100%, 50%, 0.3) 0%, hsl(50, 100%, 30%, 0.3) 100%)",
-              }}
-            />
+          {/* Accurate Preview */}
+          <PresetPreview preset={preset} />
 
-            {/* Selection Indicator */}
-            {isSelected && (
-              <div className="absolute top-2 right-2 w-5 h-5 bg-primary flex items-center justify-center">
-                <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />
-              </div>
-            )}
-          </div>
+          {/* Selection Indicator */}
+          {isSelected && (
+            <div className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center">
+              <Check className="w-3 h-3 text-primary-foreground" strokeWidth={3} />
+            </div>
+          )}
 
-          {/* Clean Label */}
-          <div className="px-3 py-2 bg-card border-t border-border">
-            <p className="text-xs font-bold text-foreground truncate tracking-wider text-left">
+          {/* Label */}
+          <div className="px-2 py-1.5 bg-card border-t border-border">
+            <p className="text-[10px] font-bold text-foreground truncate tracking-wider text-left">
               {preset.name.toUpperCase()}
             </p>
           </div>
@@ -128,49 +205,44 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
         {/* Action Buttons for Custom Presets */}
         {isCustom && (
-          <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-1 left-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             {preset.publicId ? (
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-6 w-6 bg-card/90 border border-border hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
+                className="h-5 w-5 bg-card/90 border border-border hover:bg-destructive hover:text-destructive-foreground"
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (confirm("Unshare this preset?")) {
-                    onUnshareCanvasPreset?.(preset);
-                  }
+                  if (confirm("Unshare?")) onUnshareCanvasPreset?.(preset);
                 }}
-                title="Unshare"
               >
-                <CloudOff className="h-3 w-3" />
+                <CloudOff className="h-2.5 w-2.5" />
               </Button>
             ) : (
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-6 w-6 bg-card/90 border border-border hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                className="h-5 w-5 bg-card/90 border border-border hover:bg-primary hover:text-primary-foreground"
                 onClick={(e) => {
                   e.stopPropagation();
-                  const authorName = prompt("Your name (optional):") || "Anonymous";
-                  onShareCanvasPreset?.(preset, authorName);
+                  const name = prompt("Your name:") || "Anonymous";
+                  onShareCanvasPreset?.(preset, name);
                 }}
-                title="Share"
               >
-                <Share2 className="h-3 w-3" />
+                <Share2 className="h-2.5 w-2.5" />
               </Button>
             )}
             {onDeleteCanvasPreset && (
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-6 w-6 bg-card/90 border border-border hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
+                className="h-5 w-5 bg-card/90 border border-border hover:bg-destructive hover:text-destructive-foreground"
                 onClick={(e) => {
                   e.stopPropagation();
                   onDeleteCanvasPreset(preset.id);
                 }}
-                title="Delete"
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-2.5 w-2.5" />
               </Button>
             )}
           </div>
@@ -180,42 +252,45 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full font-mono gap-4">
-      {/* Category Filter - Horizontal Tabs */}
+    <div className="flex flex-col h-full font-mono gap-3">
+      {/* Horizontally Scrollable Categories */}
       <div className="shrink-0">
-        <div className="flex flex-wrap gap-1.5">
-          {CANVAS_PRESET_CATEGORIES.map((cat) => {
-            const IconComponent = categoryIcons[cat.icon];
-            const isActive = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={cn(
-                  "flex items-center gap-1.5 px-3 py-2 text-[10px] font-bold tracking-wider uppercase transition-all duration-150",
-                  "border-2",
-                  isActive
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-transparent text-muted-foreground border-border hover:border-primary hover:text-primary"
-                )}
-              >
-                {IconComponent && <IconComponent className="w-3 h-3" strokeWidth={2} />}
-                {cat.name}
-              </button>
-            );
-          })}
-        </div>
+        <ScrollArea className="w-full">
+          <div className="flex gap-1.5 pb-2">
+            {CANVAS_PRESET_CATEGORIES.map((cat) => {
+              const IconComponent = categoryIcons[cat.icon];
+              const isActive = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-bold tracking-wider uppercase transition-all duration-150 whitespace-nowrap",
+                    "border-2",
+                    isActive
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-transparent text-muted-foreground border-border hover:border-primary hover:text-primary"
+                  )}
+                >
+                  {IconComponent && <IconComponent className="w-3 h-3" strokeWidth={2} />}
+                  {cat.name}
+                </button>
+              );
+            })}
+          </div>
+          <ScrollBar orientation="horizontal" className="h-1.5" />
+        </ScrollArea>
       </div>
 
-      {/* Save Current Button */}
+      {/* Save Current */}
       {onSaveCanvasPreset && (
         <div className="shrink-0">
           {!showSaveInput ? (
             <button
               onClick={() => setShowSaveInput(true)}
-              className="w-full py-2 text-xs font-bold tracking-wider uppercase border-2 border-dashed border-primary/50 text-primary hover:border-primary hover:bg-primary/10 transition-all"
+              className="w-full py-1.5 text-[10px] font-bold tracking-wider uppercase border-2 border-dashed border-primary/40 text-primary/70 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
             >
-              + SAVE CURRENT LAYOUT
+              + SAVE CURRENT
             </button>
           ) : (
             <div className="flex gap-2 p-2 bg-card border-2 border-primary">
@@ -223,7 +298,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
                 placeholder="Name..."
                 value={savePresetName}
                 onChange={(e) => setSavePresetName(e.target.value)}
-                className="flex-1 h-8 text-xs font-mono border-2 border-border bg-background focus:border-primary"
+                className="flex-1 h-7 text-[10px] font-mono border-2 border-border bg-background"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && savePresetName.trim()) {
@@ -247,20 +322,9 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
                   }
                 }}
                 disabled={!savePresetName.trim()}
-                className="h-8 px-4 text-[10px] font-bold tracking-wide"
+                className="h-7 px-3 text-[9px] font-bold"
               >
-                SAVE
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setShowSaveInput(false);
-                  setSavePresetName("");
-                }}
-                className="h-8 px-2 text-[10px] border-2 border-border"
-              >
-                ✕
+                OK
               </Button>
             </div>
           )}
@@ -270,8 +334,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
       {/* Custom Presets */}
       {customCanvasPresets && customCanvasPresets.length > 0 && (
         <div className="shrink-0">
-          <h4 className="text-[10px] font-bold mb-2 text-primary tracking-widest uppercase flex items-center gap-2">
-            <Crown className="w-3 h-3" /> YOUR PRESETS
+          <h4 className="text-[9px] font-bold mb-2 text-primary/80 tracking-widest uppercase">
+            YOUR PRESETS
           </h4>
           <div className="grid grid-cols-2 gap-2">
             {customCanvasPresets.map((preset) => (
@@ -281,10 +345,10 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
         </div>
       )}
 
-      {/* Loading State */}
+      {/* Loading */}
       {selectedCategory === "community" && isLoadingPublic && (
-        <div className="flex items-center justify-center py-12 border-2 border-dashed border-primary/30">
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <div className="flex items-center justify-center py-8 border-2 border-dashed border-primary/30">
+          <Loader2 className="w-5 h-5 animate-spin text-primary" />
         </div>
       )}
 
@@ -298,8 +362,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
         </div>
 
         {filteredCanvasPresets.length === 0 && !isLoadingPublic && (
-          <div className="text-center py-12 text-muted-foreground text-xs font-bold tracking-wider border-2 border-dashed border-border">
-            NO DESIGNS IN THIS CATEGORY
+          <div className="text-center py-8 text-muted-foreground text-[10px] font-bold tracking-wider border-2 border-dashed border-border">
+            EMPTY
           </div>
         )}
       </div>
