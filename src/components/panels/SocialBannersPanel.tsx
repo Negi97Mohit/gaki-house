@@ -102,39 +102,40 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   const hasUserInfo =
     userData.name !== DEFAULT_BANNER_DATA.name || userData.links.length > 0;
 
-  const handleSelectAnimatedBanner = (design: (typeof ANIMATED_BANNER_DESIGNS)[number]) => {
-    const layoutMap: Record<string, "horizontal" | "vertical" | "compact" | "card"> = {
-      frame: "horizontal",
-      horizontal: "horizontal",
-      vertical: "vertical",
-      compact: "compact",
-      card: "card",
-    };
-    const compatibleDesign: SocialBannerDesign & {
-      isAnimatedBanner?: boolean;
-      animatedBannerId?: string;
-    } = {
-      id: design.id,
-      name: design.name,
-      description: design.description,
-      preview: design.preview,
-      layout: layoutMap[design.layout] || "horizontal",
-      theme: "gradient",
-      styles: {
-        container: { background: design.preview },
-        name: { color: "#ffffff", fontWeight: "bold" },
-        tagline: { color: "rgba(255,255,255,0.8)" },
-        linksContainer: { display: "flex", gap: "8px" },
-        link: { color: design.particleSettings?.color || "#a855f7" },
-        icon: { width: "20px", height: "20px" },
-      },
-      showAvatar: design.showAvatar,
-      showTagline: design.showTagline,
-      maxLinks: design.maxLinks,
-      isAnimatedBanner: true,
-      animatedBannerId: design.id,
-    };
-    onAddBanner(compatibleDesign, userData);
+  const handleSelectAnimatedBanner = (design: AnimatedBannerDesign) => {
+    // Use the dedicated animated banner handler if available
+    if (onAddAnimatedBanner) {
+      onAddAnimatedBanner(design, userData);
+    } else {
+      // Fallback: create a static-compatible design for legacy support
+      const layoutMap: Record<string, "horizontal" | "vertical" | "compact" | "card"> = {
+        frame: "horizontal",
+        horizontal: "horizontal",
+        vertical: "vertical",
+        compact: "compact",
+        card: "card",
+      };
+      const compatibleDesign: SocialBannerDesign = {
+        id: design.id,
+        name: design.name,
+        description: design.description,
+        preview: design.preview,
+        layout: layoutMap[design.layout] || "horizontal",
+        theme: "gradient",
+        styles: {
+          container: { background: design.preview },
+          name: { color: "#ffffff", fontWeight: "bold" },
+          tagline: { color: "rgba(255,255,255,0.8)" },
+          linksContainer: { display: "flex", gap: "8px" },
+          link: { color: design.particleSettings?.color || "#a855f7" },
+          icon: { width: "20px", height: "20px" },
+        },
+        showAvatar: design.showAvatar,
+        showTagline: design.showTagline,
+        maxLinks: design.maxLinks,
+      };
+      onAddBanner(compatibleDesign, userData);
+    }
     setRecentlyAdded(design.id);
     setTimeout(() => setRecentlyAdded(null), 1500);
   };
@@ -306,7 +307,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                 {ANIMATED_BANNER_DESIGNS.map((design) => (
                   <button
                     key={design.id}
-                    onClick={() => handleSelectAnimatedBanner(design)}
+                    onClick={() => handleSelectAnimatedBanner(design as AnimatedBannerDesign)}
                     className={cn(
                       "relative group overflow-hidden transition-all duration-150 w-full text-left",
                       "border bg-card hover:border-primary",
