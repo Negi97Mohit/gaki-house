@@ -150,8 +150,8 @@ export const useLayoutManager = ({
           screenShareMode: (preset.canvasLayout
             ? "canvas"
             : preset.pip.layoutMode === "solo"
-            ? "off"
-            : "canvas") as any,
+              ? "off"
+              : "canvas") as any,
         };
 
         if (preset.effects.videoFilter)
@@ -165,6 +165,10 @@ export const useLayoutManager = ({
         if (preset.effects.neonIntensity !== undefined)
           newScene.neonIntensity = preset.effects.neonIntensity;
 
+        // Force camera aspect ratio to "free" to allow custom PiP sizes to take effect
+        // unless the preset explicitly defines a camera aspect ratio (which standard CanvasPreset doesn't usually do for PiP)
+        newScene.cameraAspectRatio = "free";
+
         const newTextOverlays: TextOverlayState[] = preset.textOverlays.map(
           (textOverlay) => {
             const { position: responsivePosition, size: responsiveSize } =
@@ -172,12 +176,12 @@ export const useLayoutManager = ({
 
             const responsiveStyle =
               screenSize.type === "mobile" &&
-              textOverlay.responsive?.mobile?.style
+                textOverlay.responsive?.mobile?.style
                 ? textOverlay.responsive.mobile.style
                 : screenSize.type === "tablet" &&
                   textOverlay.responsive?.tablet?.style
-                ? textOverlay.responsive.tablet.style
-                : null;
+                  ? textOverlay.responsive.tablet.style
+                  : null;
 
             const finalLayout = {
               position: responsivePosition,

@@ -324,9 +324,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     }
 
     const isGridActive = !!props.canvasLayout;
-    const isScreenSharing = screenShareMode !== "off" || isGridActive;
+    // UPDATED CHECK: Screen sharing OR explicit PiP layout mode triggers the "complex" view
+    const showPipMode =
+      screenShareMode !== "off" || isGridActive || props.layoutMode === "pip";
 
-    const mainContent = isScreenSharing ? (
+    const mainContent = showPipMode ? (
       <ScreenShareView
         screenShareMode={isGridActive ? "canvas" : screenShareMode}
         screenStream={screenStream}
@@ -357,7 +359,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     return (
       <div className="w-full h-full relative">
         <div className="relative w-full h-full">{mainContent}</div>
-        {isScreenSharing && !isGridActive && props.layoutMode === "pip" && (
+        {/* Render PiP Window if we are in PiP mode (either screen sharing OR just camera PiP) */}
+        {showPipMode && !isGridActive && props.layoutMode === "pip" && (
           <PipWindow
             sceneId={sceneId}
             containerSize={containerSize}
@@ -370,18 +373,29 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             screenShareMode={props.screenShareMode}
             onPipPositionChange={props.onPipPositionChange}
             onPipSizeChange={props.onPipSizeChange}
-            onPipRotationChange={props.onPipRotationChange || (() => {})}
+            onPipRotationChange={props.onPipRotationChange || (() => { })}
             pipRotation={props.pipRotation}
             onInternalDragStart={props.onInternalDragStart}
             onInternalDragStop={props.onInternalDragStop}
             onClose={() => props.onScreenShareModeChange("off")}
             renderContent={renderCamera}
+            // If screen sharing is off, the "screen" layer is the background (handled by ScreenShareView), so we just pass null or empty here
+            // But PipWindow expects renderScreen? No, PipWindow renders the *PIP* content.
+            // Wait, PipWindow renders the *content* inside the draggable box.
+            // For Camera PiP, renderContent is renderCamera.
+            // For Screen PiP (swap), renderContent is renderScreen.
+            // The logic inside PipWindow usually handles what to render based on props, but here we pass 'renderContent'
+            // We want the CAMERA to be in the PiP window.
             renderScreen={() => <VideoPlayer stream={screenStream} />}
-            currentAspectRatio={getNumericAspectRatio(
-              props.cameraShape,
-              props.sidebarProps.cameraAspectRatio,
-              props.sidebarProps.customAspectRatio
-            )}
+            currentAspectRatio={
+              props.cameraShape === "circle"
+                ? 1 // Force 1:1 for circle
+                : getNumericAspectRatio(
+                  props.cameraShape,
+                  props.sidebarProps.cameraAspectRatio,
+                  props.sidebarProps.customAspectRatio
+                )
+            }
           />
         )}
       </div>
@@ -472,11 +486,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 default={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
@@ -484,11 +498,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}
