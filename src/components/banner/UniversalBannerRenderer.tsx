@@ -222,18 +222,13 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     content={
                         <span
                             style={{
+                                ...(isStatic ? (design as any).styles.name : {}),
                                 fontSize: getElement("name")?.style.fontSize,
                                 fontFamily: getElement("name")?.style.fontFamily,
                                 color: getElement("name")?.style.color,
                                 fontWeight: getElement("name")?.style.fontWeight as any,
                                 display: "block",
                                 whiteSpace: "nowrap",
-                                // Fallback static styles if needed? No, state should handle it.
-                                ...(isStatic ? (design as any).styles.name : {}), // Apply base styles
-                                // Override with state specifics
-                                fontSize: getElement("name")?.style.fontSize,
-                                color: getElement("name")?.style.color,
-                                fontFamily: getElement("name")?.style.fontFamily,
                             }}
                         >
                             {contentData.name}
@@ -278,18 +273,13 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     content={
                         <span
                             style={{
+                                ...(isStatic && (design as any).styles.tagline ? (design as any).styles.tagline : {}),
                                 fontSize: getElement("tagline")?.style.fontSize,
                                 fontFamily: getElement("tagline")?.style.fontFamily,
                                 color: getElement("tagline")?.style.color,
                                 fontWeight: getElement("tagline")?.style.fontWeight as any,
                                 display: "block",
                                 whiteSpace: "nowrap",
-                                ...(isStatic && (design as any).styles.tagline ? (design as any).styles.tagline : {}),
-                                // Override
-                                fontSize: getElement("tagline")?.style.fontSize,
-                                color: getElement("tagline")?.style.color,
-                                fontFamily: getElement("tagline")?.style.fontFamily,
-
                             }}
                         >
                             {contentData.tagline}
