@@ -25,12 +25,8 @@ export interface BannerElementState {
         fontFamily: string;
         color: string;
         fontWeight: string;
-        // Extended style properties to preserve design-specific effects
-        textShadow?: string;
-        textTransform?: string;
-        letterSpacing?: string;
-        opacity?: string;
-        filter?: string;
+        // Allow any CSS property to be preserved
+        [key: string]: string | number | undefined;
     };
 }
 

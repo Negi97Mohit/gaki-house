@@ -161,7 +161,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
             {isStatic ? (
                 <StaticBannerBackground
                     design={design as any}
-                    className="w-full h-full absolute inset-0 !p-0 !border-0" // override layout
+                    className="w-full h-full absolute inset-0" // Removed !p-0 !border-0 to preserve design styles
                 // We might need to ensure the container styles (border, radius, shadow, bg) are applied
                 // but NOT the flex layout. StaticBannerBackground renders the styles.container
                 />
@@ -222,13 +222,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     content={
                         <span
                             style={{
-                                fontSize: getElement("name")?.style.fontSize,
-                                fontFamily: getElement("name")?.style.fontFamily,
-                                color: getElement("name")?.style.color,
-                                fontWeight: getElement("name")?.style.fontWeight as any,
-                                textShadow: getElement("name")?.style.textShadow,
-                                textTransform: getElement("name")?.style.textTransform as any,
-                                letterSpacing: getElement("name")?.style.letterSpacing,
+                                ...getElement("name")?.style, // Apply all styles first
                                 display: "block",
                                 whiteSpace: "nowrap",
                             }}
@@ -275,12 +269,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     content={
                         <span
                             style={{
-                                fontSize: getElement("tagline")?.style.fontSize,
-                                fontFamily: getElement("tagline")?.style.fontFamily,
-                                color: getElement("tagline")?.style.color,
-                                fontWeight: getElement("tagline")?.style.fontWeight as any,
-                                textShadow: getElement("tagline")?.style.textShadow,
-                                opacity: getElement("tagline")?.style.opacity,
+                                ...getElement("tagline")?.style,
                                 display: "block",
                                 whiteSpace: "nowrap",
                             }}
@@ -328,7 +317,8 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                         <div style={{ display: "flex", gap: "8px" }}>
                             {contentData.links.slice(0, design.maxLinks).map((link, index) => {
                                 const IconComponent = getPlatformIcon(link.platform);
-                                const size = getElement("socialLinks")?.style.fontSize || 20;
+                                const elementStyle = getElement("socialLinks")?.style || {};
+                                const size = elementStyle.fontSize || 20;
 
                                 return (
                                     <div
@@ -343,7 +333,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                                             style={{
                                                 width: `${size}px`,
                                                 height: `${size}px`,
-                                                // apply static icon styles optionally
+                                                ...elementStyle // Apply extracted styles (filters, color, etc)
                                             }}
                                         />
                                     </div>

@@ -35,10 +35,11 @@ export const useBannerEditor = ({
         return fallback;
     };
 
+
     // Calculate default states based on design type - preserving ALL original design styles
     const calculateDefaultStates = useCallback((): BannerElementState[] => {
         const isStatic = isStaticBanner(design);
-        
+
         // For static banners, extract styles from the design's style definitions
         // For animated banners, use theme-appropriate defaults
         let nameStyles: BannerElementState["style"];
@@ -46,40 +47,50 @@ export const useBannerEditor = ({
         let avatarStyles: BannerElementState["style"];
         let socialLinksStyles: BannerElementState["style"];
 
+        // Helper to extract numeric font size but keep other properties as-is
+        const extractStyles = (sourceStyle: Record<string, any>, defaultFontSize: number): BannerElementState["style"] => {
+            const style: BannerElementState["style"] = {
+                fontSize: defaultFontSize,
+                fontFamily: "Inter",
+                color: "#ffffff",
+                fontWeight: "normal",
+                ...sourceStyle // Spread all original styles first
+            };
+
+            // Ensure fontSize is a number
+            if (sourceStyle.fontSize) {
+                style.fontSize = parseFontSize(sourceStyle.fontSize, defaultFontSize);
+            }
+
+            return style;
+        };
+
         if (isStatic && design.styles) {
             // Extract ALL style properties from static banner design
+            // We use the helper to ensure fontSize is correct while preserving everything else
+
             const nameStyle = design.styles.name || {};
             const taglineStyle = design.styles.tagline || {};
-            
-            nameStyles = {
-                fontSize: parseFontSize(nameStyle.fontSize, 22),
-                fontFamily: (nameStyle.fontFamily as string) || "Inter",
-                color: (nameStyle.color as string) || "#ffffff",
-                fontWeight: (nameStyle.fontWeight as string) || "bold",
-                // Preserve text-shadow and other special effects
-                textShadow: nameStyle.textShadow as string | undefined,
-                textTransform: nameStyle.textTransform as string | undefined,
-                letterSpacing: nameStyle.letterSpacing as string | undefined,
-            };
-            
-            taglineStyles = {
-                fontSize: parseFontSize(taglineStyle.fontSize, 14),
-                fontFamily: (taglineStyle.fontFamily as string) || "Inter",
-                color: (taglineStyle.color as string) || "rgba(255,255,255,0.8)",
-                fontWeight: (taglineStyle.fontWeight as string) || "normal",
-                textShadow: taglineStyle.textShadow as string | undefined,
-                opacity: taglineStyle.opacity as string | undefined,
-            };
-            
-            // Icon styles from design
             const iconStyle = design.styles.icon || {};
-            socialLinksStyles = {
-                fontSize: parseFontSize(iconStyle.width || iconStyle.height, 20),
-                fontFamily: "Inter",
-                color: (design.styles.link?.color as string) || "#ffffff",
-                fontWeight: "normal",
-            };
-            
+            const linkStyle = design.styles.link || {};
+
+            nameStyles = extractStyles(nameStyle, 22);
+            // Ensure fallback defaults if not present in source style
+            if (!nameStyle.fontWeight) nameStyles.fontWeight = "bold";
+
+            taglineStyles = extractStyles(taglineStyle, 14);
+            if (!taglineStyle.color) taglineStyles.color = "rgba(255,255,255,0.8)";
+
+            socialLinksStyles = extractStyles(iconStyle, 20);
+            // Width/height in icon style usually determines "font size" for icons here
+            const iconSize = parseFontSize(iconStyle.width || iconStyle.height, 20);
+            socialLinksStyles.fontSize = iconSize;
+
+            // Map link color to the icon/text color if specific icon color isn't set
+            if (!socialLinksStyles.color && linkStyle.color) {
+                socialLinksStyles.color = linkStyle.color as string;
+            }
+
             avatarStyles = {
                 fontSize: 48,
                 fontFamily: "Inter",
@@ -90,28 +101,28 @@ export const useBannerEditor = ({
             // Animated banner - use theme-based defaults from particleSettings or design properties
             const primaryColor = (design as any).particleSettings?.color || "#a855f7";
             const secondaryColor = (design as any).particleSettings?.colorVariant || "#ffffff";
-            
+
             nameStyles = {
                 fontSize: 22,
                 fontFamily: "Inter",
                 color: secondaryColor,
                 fontWeight: "bold",
             };
-            
+
             taglineStyles = {
                 fontSize: 14,
                 fontFamily: "Inter",
                 color: `${secondaryColor}cc`, // slightly transparent
                 fontWeight: "normal",
             };
-            
+
             avatarStyles = {
                 fontSize: 48,
                 fontFamily: "Inter",
                 color: "#ffffff",
                 fontWeight: "normal",
             };
-            
+
             socialLinksStyles = {
                 fontSize: 20,
                 fontFamily: "Inter",
@@ -121,36 +132,77 @@ export const useBannerEditor = ({
         }
 
         // Position logic
-        const avatarX = 20;
-        const nameX = design.showAvatar ? 80 : 20;
+        // Calculate vertical center based on container height
+        const centerY = containerSize.height / 2;
+
+        let avatarX = 20;
+        let avatarY = 20;
+
+        let nameX = 20;
+        let nameY = 30;
+
+        let taglineX = 20;
+        let taglineY = 60;
+
+        let socialX = containerSize.width - 150;
+        let socialY = 35;
+
+        // Default layout for horizontal banners (most common)
+        if (design.layout === "horizontal" || !design.layout) {
+            // Assume left padding around 24px based on most designs
+            const leftPadding = 24;
+            const gap = 16;
+
+            if (design.showAvatar) {
+                avatarX = leftPadding;
+                avatarY = centerY - (48 / 2); // Center 48px avatar
+                nameX = avatarX + 48 + gap;
+            } else {
+                nameX = leftPadding;
+            }
+
+            // Center text block vertically
+            // Name height ~28px, Tagline ~16px, Gap ~4px -> Total ~48px
+            const textBlockHeight = design.showTagline ? 48 : 28;
+            nameY = centerY - (textBlockHeight / 2);
+            taglineX = nameX;
+            taglineY = nameY + 28 + 4; // Below name
+
+            // Social links often right aligned
+            socialX = containerSize.width - 160;
+            socialY = centerY - (25 / 2); // Center items approx 25px high
+        }
+
+        // TODO: specific overrides for 'vertical', 'card', etc. if needed
+        // For now, this horizontal logic covers the reported "Neon Glow" case
 
         return [
             {
                 id: "avatar",
                 type: "avatar",
                 visible: design.showAvatar,
-                position: { x: avatarX, y: 20 },
+                position: { x: avatarX, y: avatarY },
                 style: avatarStyles,
             },
             {
                 id: "name",
                 type: "name",
                 visible: true,
-                position: { x: nameX, y: 30 },
+                position: { x: nameX, y: nameY },
                 style: nameStyles,
             },
             {
                 id: "tagline",
                 type: "tagline",
                 visible: design.showTagline,
-                position: { x: nameX, y: 60 },
+                position: { x: taglineX, y: taglineY },
                 style: taglineStyles,
             },
             {
                 id: "socialLinks",
                 type: "socialLinks",
                 visible: true,
-                position: { x: containerSize.width - 150, y: 35 },
+                position: { x: socialX, y: socialY },
                 style: socialLinksStyles,
             },
         ];
