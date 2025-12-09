@@ -25,36 +25,102 @@ export const useBannerEditor = ({
     // Track if an internal update is pending to avoid overwriting with stale props
     const isInternalUpdateRef = useRef(false);
 
-    // Calculate default states based on design type
+    // Helper to extract numeric font size from various formats
+    const parseFontSize = (value: string | number | undefined, fallback: number): number => {
+        if (typeof value === 'number') return value;
+        if (typeof value === 'string') {
+            const parsed = parseInt(value, 10);
+            return isNaN(parsed) ? fallback : parsed;
+        }
+        return fallback;
+    };
+
+    // Calculate default states based on design type - preserving ALL original design styles
     const calculateDefaultStates = useCallback((): BannerElementState[] => {
         const isStatic = isStaticBanner(design);
-        const commonStyles = {
-            avatar: { fontSize: 48, fontFamily: "Inter", color: "#ffffff", fontWeight: "normal" },
-            name: { fontSize: 22, fontFamily: "Inter", color: "#ffffff", fontWeight: "bold" },
-            tagline: { fontSize: 14, fontFamily: "Inter", color: "rgba(255,255,255,0.8)", fontWeight: "normal" },
-            socialLinks: { fontSize: 24, fontFamily: "Inter", color: "#ffffff", fontWeight: "normal" },
-        };
+        
+        // For static banners, extract styles from the design's style definitions
+        // For animated banners, use theme-appropriate defaults
+        let nameStyles: BannerElementState["style"];
+        let taglineStyles: BannerElementState["style"];
+        let avatarStyles: BannerElementState["style"];
+        let socialLinksStyles: BannerElementState["style"];
 
-        // Override with static styles if available
-        if (isStatic) {
-            commonStyles.name = {
-                fontSize: parseInt((design.styles.name.fontSize as string) || "22"),
-                fontFamily: (design.styles.name.fontFamily as string) || "Inter",
-                color: (design.styles.name.color as string) || "#ffffff",
-                fontWeight: (design.styles.name.fontWeight as string) || "bold",
+        if (isStatic && design.styles) {
+            // Extract ALL style properties from static banner design
+            const nameStyle = design.styles.name || {};
+            const taglineStyle = design.styles.tagline || {};
+            
+            nameStyles = {
+                fontSize: parseFontSize(nameStyle.fontSize, 22),
+                fontFamily: (nameStyle.fontFamily as string) || "Inter",
+                color: (nameStyle.color as string) || "#ffffff",
+                fontWeight: (nameStyle.fontWeight as string) || "bold",
+                // Preserve text-shadow and other special effects
+                textShadow: nameStyle.textShadow as string | undefined,
+                textTransform: nameStyle.textTransform as string | undefined,
+                letterSpacing: nameStyle.letterSpacing as string | undefined,
             };
-            if (design.styles.tagline) {
-                commonStyles.tagline = {
-                    fontSize: parseInt((design.styles.tagline.fontSize as string) || "14"),
-                    fontFamily: (design.styles.tagline.fontFamily as string) || "Inter",
-                    color: (design.styles.tagline.color as string) || "rgba(255,255,255,0.8)",
-                    fontWeight: (design.styles.tagline.fontWeight as string) || "normal",
-                };
-            }
-            // Social links icon size logic could go here
+            
+            taglineStyles = {
+                fontSize: parseFontSize(taglineStyle.fontSize, 14),
+                fontFamily: (taglineStyle.fontFamily as string) || "Inter",
+                color: (taglineStyle.color as string) || "rgba(255,255,255,0.8)",
+                fontWeight: (taglineStyle.fontWeight as string) || "normal",
+                textShadow: taglineStyle.textShadow as string | undefined,
+                opacity: taglineStyle.opacity as string | undefined,
+            };
+            
+            // Icon styles from design
+            const iconStyle = design.styles.icon || {};
+            socialLinksStyles = {
+                fontSize: parseFontSize(iconStyle.width || iconStyle.height, 20),
+                fontFamily: "Inter",
+                color: (design.styles.link?.color as string) || "#ffffff",
+                fontWeight: "normal",
+            };
+            
+            avatarStyles = {
+                fontSize: 48,
+                fontFamily: "Inter",
+                color: "#ffffff",
+                fontWeight: "normal",
+            };
+        } else {
+            // Animated banner - use theme-based defaults from particleSettings or design properties
+            const primaryColor = (design as any).particleSettings?.color || "#a855f7";
+            const secondaryColor = (design as any).particleSettings?.colorVariant || "#ffffff";
+            
+            nameStyles = {
+                fontSize: 22,
+                fontFamily: "Inter",
+                color: secondaryColor,
+                fontWeight: "bold",
+            };
+            
+            taglineStyles = {
+                fontSize: 14,
+                fontFamily: "Inter",
+                color: `${secondaryColor}cc`, // slightly transparent
+                fontWeight: "normal",
+            };
+            
+            avatarStyles = {
+                fontSize: 48,
+                fontFamily: "Inter",
+                color: "#ffffff",
+                fontWeight: "normal",
+            };
+            
+            socialLinksStyles = {
+                fontSize: 20,
+                fontFamily: "Inter",
+                color: secondaryColor,
+                fontWeight: "normal",
+            };
         }
 
-        // Position logic could be improved to be smarter based on layout, but keeping simple defaults for now
+        // Position logic
         const avatarX = 20;
         const nameX = design.showAvatar ? 80 : 20;
 
@@ -64,28 +130,28 @@ export const useBannerEditor = ({
                 type: "avatar",
                 visible: design.showAvatar,
                 position: { x: avatarX, y: 20 },
-                style: commonStyles.avatar,
+                style: avatarStyles,
             },
             {
                 id: "name",
                 type: "name",
                 visible: true,
                 position: { x: nameX, y: 30 },
-                style: commonStyles.name,
+                style: nameStyles,
             },
             {
                 id: "tagline",
                 type: "tagline",
                 visible: design.showTagline,
                 position: { x: nameX, y: 60 },
-                style: commonStyles.tagline,
+                style: taglineStyles,
             },
             {
                 id: "socialLinks",
                 type: "socialLinks",
                 visible: true,
                 position: { x: containerSize.width - 150, y: 35 },
-                style: commonStyles.socialLinks,
+                style: socialLinksStyles,
             },
         ];
     }, [design, containerSize.width]);

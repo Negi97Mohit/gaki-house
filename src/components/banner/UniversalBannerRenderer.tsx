@@ -222,11 +222,13 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     content={
                         <span
                             style={{
-                                ...(isStatic ? (design as any).styles.name : {}),
                                 fontSize: getElement("name")?.style.fontSize,
                                 fontFamily: getElement("name")?.style.fontFamily,
                                 color: getElement("name")?.style.color,
                                 fontWeight: getElement("name")?.style.fontWeight as any,
+                                textShadow: getElement("name")?.style.textShadow,
+                                textTransform: getElement("name")?.style.textTransform as any,
+                                letterSpacing: getElement("name")?.style.letterSpacing,
                                 display: "block",
                                 whiteSpace: "nowrap",
                             }}
@@ -247,11 +249,11 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                                 border: "none",
                                 outline: "none",
                                 minWidth: "50px",
-                                // Consistent styling
                                 fontSize: getElement("name")?.style.fontSize,
                                 fontFamily: getElement("name")?.style.fontFamily,
                                 color: getElement("name")?.style.color,
                                 fontWeight: getElement("name")?.style.fontWeight as any,
+                                textShadow: getElement("name")?.style.textShadow,
                             }}
                         />
                     }
@@ -273,11 +275,12 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     content={
                         <span
                             style={{
-                                ...(isStatic && (design as any).styles.tagline ? (design as any).styles.tagline : {}),
                                 fontSize: getElement("tagline")?.style.fontSize,
                                 fontFamily: getElement("tagline")?.style.fontFamily,
                                 color: getElement("tagline")?.style.color,
                                 fontWeight: getElement("tagline")?.style.fontWeight as any,
+                                textShadow: getElement("tagline")?.style.textShadow,
+                                opacity: getElement("tagline")?.style.opacity,
                                 display: "block",
                                 whiteSpace: "nowrap",
                             }}
@@ -302,6 +305,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                                 fontFamily: getElement("tagline")?.style.fontFamily,
                                 color: getElement("tagline")?.style.color,
                                 fontWeight: getElement("tagline")?.style.fontWeight as any,
+                                textShadow: getElement("tagline")?.style.textShadow,
                             }}
                         />
                     }
