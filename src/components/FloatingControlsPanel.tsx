@@ -7,6 +7,7 @@ import {
   Palette,
   Sparkles,
   BadgeCheck,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
@@ -85,34 +86,42 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
     {
       id: "canvas-designs",
       icon: LayoutGrid,
-      title: "Designs",
+      title: "DESIGNS",
+      shortTitle: "DSN",
     },
     {
       id: "dynamic-styles",
       icon: Zap,
-      title: "Caption Dynamic Styles",
+      title: "DYNAMIC",
+      shortTitle: "DYN",
     },
     {
       id: "static-presets",
       icon: Paintbrush,
-      title: "Style Presets",
+      title: "PRESETS",
+      shortTitle: "PRE",
     },
     {
       id: "base-text",
       icon: Palette,
-      title: "Caption Text Style",
+      title: "TEXT",
+      shortTitle: "TXT",
     },
     {
       id: "saved-overlays",
       icon: Sparkles,
-      title: "Overlays",
+      title: "OVERLAYS",
+      shortTitle: "OVR",
     },
     {
       id: "social-banners",
       icon: BadgeCheck,
-      title: "Social Banners",
+      title: "BANNERS",
+      shortTitle: "BNR",
     },
   ];
+
+  const activeTab = sections.find((s) => s.id === activeSection);
 
   return (
     <>
@@ -121,88 +130,115 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "fixed bottom-24 left-6 rounded-2xl overflow-hidden",
-          "bg-background/40 backdrop-blur-xl border border-border/40 shadow-2xl",
-          "transition-all duration-300 ease-out flex",
+          "fixed bottom-24 left-6 overflow-hidden",
+          "bg-background border border-border shadow-2xl",
+          "transition-all duration-200 ease-out flex",
           isOpen && (props.isMouseActive || isHovered)
             ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 translate-y-8 pointer-events-none"
+            : "opacity-0 translate-y-4 pointer-events-none"
         )}
         style={{
           zIndex: "var(--z-floating-panel)",
           height: "70vh",
+          maxHeight: "680px",
         }}
       >
-        {/* Sidebar Navigation */}
-        <div className="w-16 bg-background/20 backdrop-blur-sm border-r border-border/30 flex flex-col items-center py-3 gap-1.5">
-          {" "}
+        {/* Sharp Sidebar Navigation */}
+        <div className="w-14 bg-card border-r border-border flex flex-col items-center py-2 gap-0.5">
           {sections.map((section) => (
             <button
               key={section.id}
               onClick={() => setActiveSection(section.id)}
               className={cn(
-                "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 group relative",
+                "w-full h-14 flex flex-col items-center justify-center transition-all duration-150 relative group",
+                "font-mono text-[9px] tracking-wider",
                 activeSection === section.id
-                  ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                  : "hover:bg-background/40 text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
               title={section.title}
             >
-              <section.icon className="w-5 h-5" />
+              <section.icon className="w-4 h-4 mb-1" strokeWidth={1.5} />
+              <span className="font-medium">{section.shortTitle}</span>
+              
+              {/* Active indicator line */}
               {activeSection === section.id && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-primary rounded-l-full" />
+                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary-foreground" />
               )}
             </button>
           ))}
         </div>
 
         {/* Content Area */}
-        <div className="w-[420px] h-full overflow-y-auto p-5 bg-background/10 backdrop-blur-sm">
-          {activeSection === "canvas-designs" && (
-            <CanvasDesignsPanel
-              onCanvasPresetSelect={props.onCanvasPresetSelect}
-              onSaveCanvasPreset={props.onSaveCanvasPreset}
-              customCanvasPresets={props.customCanvasPresets}
-              onDeleteCanvasPreset={props.onDeleteCanvasPreset}
-              publicPresets={props.publicPresets}
-              isLoadingPublic={props.isLoadingPublic}
-              onShareCanvasPreset={props.onShareCanvasPreset}
-              onUnshareCanvasPreset={props.onUnshareCanvasPreset}
-            />
-          )}
+        <div className="flex flex-col w-[400px] h-full bg-background">
+          {/* Header Bar */}
+          <div className="h-10 border-b border-border flex items-center justify-between px-4 bg-card shrink-0">
+            <div className="flex items-center gap-2">
+              {activeTab && (
+                <>
+                  <activeTab.icon className="w-3.5 h-3.5 text-primary" strokeWidth={2} />
+                  <span className="font-mono text-xs font-semibold tracking-wide text-foreground">
+                    {activeTab.title}
+                  </span>
+                </>
+              )}
+            </div>
+            <button
+              onClick={() => setIsOpen()}
+              className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <X className="w-3.5 h-3.5" strokeWidth={2} />
+            </button>
+          </div>
 
-          {activeSection === "dynamic-styles" && (
-            <DynamicStylesPanel
-              dynamicStyle={props.dynamicStyle}
-              onDynamicStyleChange={props.onDynamicStyleChange}
-            />
-          )}
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto p-4 sharp-scrollbar">
+            {activeSection === "canvas-designs" && (
+              <CanvasDesignsPanel
+                onCanvasPresetSelect={props.onCanvasPresetSelect}
+                onSaveCanvasPreset={props.onSaveCanvasPreset}
+                customCanvasPresets={props.customCanvasPresets}
+                onDeleteCanvasPreset={props.onDeleteCanvasPreset}
+                publicPresets={props.publicPresets}
+                isLoadingPublic={props.isLoadingPublic}
+                onShareCanvasPreset={props.onShareCanvasPreset}
+                onUnshareCanvasPreset={props.onUnshareCanvasPreset}
+              />
+            )}
 
-          {activeSection === "static-presets" && (
-            <StaticPresetsPanel
-              currentStyle={props.style}
-              onStyleChange={props.onStyleChange}
-            />
-          )}
+            {activeSection === "dynamic-styles" && (
+              <DynamicStylesPanel
+                dynamicStyle={props.dynamicStyle}
+                onDynamicStyleChange={props.onDynamicStyleChange}
+              />
+            )}
 
-          {activeSection === "base-text" && (
-            <TextStylePanel
-              style={props.style}
-              onStyleChange={props.onStyleChange}
-            />
-          )}
+            {activeSection === "static-presets" && (
+              <StaticPresetsPanel
+                currentStyle={props.style}
+                onStyleChange={props.onStyleChange}
+              />
+            )}
 
-          {activeSection === "saved-overlays" && (
-            <SavedOverlaysPanel
-              savedOverlays={props.savedOverlays}
-              onAddSavedOverlay={props.onAddSavedOverlay}
-              onDeleteSavedOverlay={props.onDeleteSavedOverlay}
-            />
-          )}
+            {activeSection === "base-text" && (
+              <TextStylePanel
+                style={props.style}
+                onStyleChange={props.onStyleChange}
+              />
+            )}
 
-          {activeSection === "social-banners" && props.onAddSocialBanner && (
-            <SocialBannersPanel onAddBanner={props.onAddSocialBanner} />
-          )}
+            {activeSection === "saved-overlays" && (
+              <SavedOverlaysPanel
+                savedOverlays={props.savedOverlays}
+                onAddSavedOverlay={props.onAddSavedOverlay}
+                onDeleteSavedOverlay={props.onDeleteSavedOverlay}
+              />
+            )}
+
+            {activeSection === "social-banners" && props.onAddSocialBanner && (
+              <SocialBannersPanel onAddBanner={props.onAddSocialBanner} />
+            )}
+          </div>
         </div>
       </div>
     </>

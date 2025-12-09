@@ -140,38 +140,35 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full space-y-3">
+    <div className="flex flex-col h-full space-y-3 font-mono">
       {/* Header & User Info Combined */}
       <div className="flex flex-col gap-2 shrink-0">
-        <div className="flex items-center justify-between pb-2 border-b border-border/40">
-          <div className="flex items-center gap-2">
-            <BadgeCheck className="w-5 h-5 text-primary" />
-            <h3 className="text-base font-semibold tracking-wide">
-              Social Banners
-            </h3>
-          </div>
+        <div className="flex items-center justify-between pb-2 border-b border-border">
+          <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
+            Social Banners
+          </span>
           {!hasUserInfo && (
             <Button
               size="sm"
-              variant="default"
+              variant="outline"
               onClick={() => setIsEditorOpen(true)}
-              className="h-7 text-xs px-3"
+              className="h-7 text-[10px] px-3 font-mono tracking-wide border-border hover:bg-primary hover:text-primary-foreground hover:border-primary"
             >
-              Setup Profile
+              SETUP PROFILE
             </Button>
           )}
         </div>
 
         {/* Compact User Info Card */}
         {hasUserInfo && (
-          <div className="flex items-center justify-between p-2.5 rounded-lg bg-muted/40 border border-border/50 group hover:border-primary/20 transition-colors">
+          <div className="flex items-center justify-between p-2.5 bg-card border border-border group hover:border-primary/50 transition-colors">
             <div className="flex-1 min-w-0 mr-2">
               <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <div className="w-5 h-5 bg-primary/10 flex items-center justify-center shrink-0">
                   <User className="w-3 h-3 text-primary" />
                 </div>
-                <span className="font-medium text-sm truncate">
-                  {userData.name}
+                <span className="font-medium text-xs tracking-wide truncate">
+                  {userData.name.toUpperCase()}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 overflow-hidden pl-7">
@@ -183,7 +180,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                       className="text-muted-foreground hover:text-foreground transition-colors"
                       title={link.platform}
                     >
-                      <Icon className="w-3.5 h-3.5" />
+                      <Icon className="w-3 h-3" />
                     </div>
                   );
                 })}
@@ -193,10 +190,10 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
               size="icon"
               variant="ghost"
               onClick={() => setIsEditorOpen(true)}
-              className="h-7 w-7 text-muted-foreground hover:text-primary opacity-60 group-hover:opacity-100 transition-all"
+              className="h-6 w-6 text-muted-foreground hover:text-primary opacity-60 group-hover:opacity-100 transition-all"
               title="Edit Info"
             >
-              <Edit3 className="w-3.5 h-3.5" />
+              <Edit3 className="w-3 h-3" />
             </Button>
           </div>
         )}
@@ -208,36 +205,41 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
         onValueChange={(v) => setActiveTab(v as "static" | "animated")}
         className="flex-1 flex flex-col min-h-0"
       >
-        <TabsList className="w-full grid grid-cols-2 mb-3 shrink-0">
-          <TabsTrigger value="static" className="gap-1.5 text-xs">
-            <Layers className="w-3.5 h-3.5" />
-            Static Designs
+        <TabsList className="w-full grid grid-cols-2 mb-3 shrink-0 h-8 p-0 bg-card border border-border">
+          <TabsTrigger 
+            value="static" 
+            className="gap-1.5 text-[10px] font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-none"
+          >
+            <Layers className="w-3 h-3" />
+            STATIC
           </TabsTrigger>
-          <TabsTrigger value="animated" className="gap-1.5 text-xs">
-            <Sparkles className="w-3.5 h-3.5" />
-            Animated (Pro)
+          <TabsTrigger 
+            value="animated" 
+            className="gap-1.5 text-[10px] font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-none"
+          >
+            <Sparkles className="w-3 h-3" />
+            ANIMATED
           </TabsTrigger>
         </TabsList>
 
         <div className="flex-1 min-h-0 relative">
           <TabsContent value="static" className="absolute inset-0 mt-0">
-            <ScrollArea className="h-full pr-3">
-              <div className="grid grid-cols-1 gap-4 pb-4">
+            <ScrollArea className="h-full pr-2 sharp-scrollbar">
+              <div className="grid grid-cols-1 gap-2 pb-4">
                 {designs.map((design) => (
                   <button
                     key={design.id}
                     onClick={() => handleSelectDesign(design)}
                     className={cn(
-                      "relative group rounded-xl overflow-hidden transition-all duration-300 w-full text-left",
-                      "border bg-card hover:shadow-lg hover:border-primary/50",
+                      "relative group overflow-hidden transition-all duration-150 w-full text-left",
+                      "border bg-card hover:border-primary",
                       recentlyAdded === design.id
-                        ? "border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-                        : "border-border/40"
+                        ? "border-green-500"
+                        : "border-border"
                     )}
                   >
-                    {/* Banner Preview - Increased Height & Centered Scaling */}
-                    <div className="relative w-full h-32 bg-secondary/20 flex items-center justify-center overflow-hidden">
-                      {/* We create a container that's wider than the view to simulate a 'desktop' banner look, then scale it down */}
+                    {/* Banner Preview */}
+                    <div className="relative w-full h-28 bg-secondary/20 flex items-center justify-center overflow-hidden">
                       <div
                         className="absolute inset-0 flex items-center justify-center"
                         style={{ background: design.preview }}
@@ -245,7 +247,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                         <div
                           style={{
                             width: "600px",
-                            transform: "scale(0.6)",
+                            transform: "scale(0.55)",
                             transformOrigin: "center",
                           }}
                         >
@@ -269,26 +271,26 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                       </div>
 
                       {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div className="bg-background/90 backdrop-blur text-foreground text-xs font-medium px-3 py-1.5 rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                          Click to Add
+                      <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-primary text-primary-foreground text-[10px] font-mono font-medium px-3 py-1.5 tracking-wide">
+                          CLICK TO ADD
                         </div>
                       </div>
                     </div>
 
                     {/* Info Footer */}
-                    <div className="px-3 py-2.5 flex items-center justify-between border-t border-border/10 bg-muted/20">
+                    <div className="px-3 py-2 flex items-center justify-between border-t border-border bg-card">
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">
-                          {design.name}
+                        <p className="text-[10px] font-medium text-foreground truncate tracking-wide">
+                          {design.name.toUpperCase()}
                         </p>
-                        <p className="text-[10px] text-muted-foreground truncate">
+                        <p className="text-[9px] text-muted-foreground truncate">
                           {design.description}
                         </p>
                       </div>
                       {recentlyAdded === design.id && (
-                        <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 ml-2 animate-in zoom-in">
-                          <Check className="w-3.5 h-3.5" />
+                        <div className="w-5 h-5 bg-green-500 text-white flex items-center justify-center shrink-0 ml-2">
+                          <Check className="w-3 h-3" />
                         </div>
                       )}
                     </div>
@@ -299,21 +301,21 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
           </TabsContent>
 
           <TabsContent value="animated" className="absolute inset-0 mt-0">
-            <ScrollArea className="h-full pr-3">
-              <div className="grid grid-cols-1 gap-4 pb-4">
+            <ScrollArea className="h-full pr-2 sharp-scrollbar">
+              <div className="grid grid-cols-1 gap-2 pb-4">
                 {ANIMATED_BANNER_DESIGNS.map((design) => (
                   <button
                     key={design.id}
                     onClick={() => handleSelectAnimatedBanner(design)}
                     className={cn(
-                      "relative group rounded-xl overflow-hidden transition-all duration-300 w-full text-left",
-                      "border bg-card hover:shadow-lg hover:border-primary/50",
+                      "relative group overflow-hidden transition-all duration-150 w-full text-left",
+                      "border bg-card hover:border-primary",
                       recentlyAdded === design.id
-                        ? "border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]"
-                        : "border-border/40"
+                        ? "border-green-500"
+                        : "border-border"
                     )}
                   >
-                    <div className="relative w-full h-36 overflow-hidden bg-black">
+                    <div className="relative w-full h-32 overflow-hidden bg-black">
                       <Suspense
                         fallback={
                           <div className="absolute inset-0 bg-secondary/20 animate-pulse" />
@@ -321,7 +323,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                       >
                         <AnimatedBannerRenderer
                           design={design as AnimatedBannerDesign}
-                          containerSize={{ width: 400, height: 144 }}
+                          containerSize={{ width: 400, height: 128 }}
                         />
                       </Suspense>
 
@@ -330,36 +332,36 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                         {design.technologiesUsed.slice(0, 2).map((tech) => (
                           <span
                             key={tech}
-                            className="px-1.5 py-0.5 text-[8px] font-medium rounded-md bg-black/60 text-white/90 backdrop-blur-sm border border-white/10"
+                            className="px-1.5 py-0.5 text-[8px] font-mono font-medium bg-background/80 text-foreground border border-border"
                           >
-                            {tech}
+                            {tech.toUpperCase()}
                           </span>
                         ))}
                       </div>
 
                       {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <div className="bg-background/90 backdrop-blur text-foreground text-xs font-medium px-3 py-1.5 rounded-full shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
-                          Click to Add
+                      <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="bg-primary text-primary-foreground text-[10px] font-mono font-medium px-3 py-1.5 tracking-wide">
+                          CLICK TO ADD
                         </div>
                       </div>
                     </div>
 
-                    <div className="px-3 py-2.5 flex items-center justify-between border-t border-border/10 bg-muted/20">
+                    <div className="px-3 py-2 flex items-center justify-between border-t border-border bg-card">
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5">
-                          <Sparkles className="w-3 h-3 text-purple-500 shrink-0" />
-                          <p className="text-sm font-medium text-foreground truncate">
-                            {design.name}
+                          <Sparkles className="w-2.5 h-2.5 text-primary shrink-0" />
+                          <p className="text-[10px] font-medium text-foreground truncate tracking-wide">
+                            {design.name.toUpperCase()}
                           </p>
                         </div>
-                        <p className="text-[10px] text-muted-foreground truncate">
+                        <p className="text-[9px] text-muted-foreground truncate">
                           {design.description}
                         </p>
                       </div>
                       {recentlyAdded === design.id && (
-                        <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 ml-2 animate-in zoom-in">
-                          <Check className="w-3.5 h-3.5" />
+                        <div className="w-5 h-5 bg-green-500 text-white flex items-center justify-center shrink-0 ml-2">
+                          <Check className="w-3 h-3" />
                         </div>
                       )}
                     </div>

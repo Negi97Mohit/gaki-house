@@ -207,6 +207,25 @@
     background-color: hsl(var(--primary));
   }
 
+  /* Sharp Panel Scrollbar - Override for floating panel */
+  .sharp-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .sharp-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--background) / 0.3);
+  }
+
+  .sharp-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.6);
+    border-radius: 0;
+  }
+
+  .sharp-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+
   /* Onboarding animation */
   @keyframes pulse-border {
 
@@ -222,6 +241,41 @@
 
   .animate-pulse-border {
     animation: pulse-border 2s ease-in-out infinite;
+  }
+
+  /* Sharp Panel Styles */
+  .sharp-panel {
+    --panel-bg: hsl(var(--background));
+    --panel-border: hsl(var(--border));
+    --panel-accent: hsl(var(--primary));
+  }
+
+  .sharp-button {
+    position: relative;
+    transition: all 0.15s ease;
+  }
+
+  .sharp-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+
+  .sharp-button:hover::before {
+    border-color: hsl(var(--primary) / 0.5);
+  }
+
+  .sharp-button.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 60%;
+    background: hsl(var(--primary));
   }
 }
 
