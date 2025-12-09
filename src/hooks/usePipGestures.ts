@@ -11,6 +11,38 @@ interface UsePipGesturesProps {
   onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
 }
 
+// Selectors for UI elements that should block PiP gesture
+const UI_ELEMENT_SELECTORS = [
+  '[data-radix-popper-content-wrapper]', // Radix dropdowns/popovers
+  '[role="dialog"]',
+  '[role="menu"]',
+  '[role="listbox"]',
+  '.banner-design-selector',
+  '.floating-controls-panel',
+  '.pip-controls-toolbar',
+  '.text-editing-toolbar',
+  '.canvas-hover-toolbar',
+  '[data-floating-panel]',
+  '[data-no-pip-gesture]',
+];
+
+const isOverUIElement = (target: EventTarget | null): boolean => {
+  if (!(target instanceof Element)) return false;
+  
+  // Check if target or any parent matches UI selectors
+  for (const selector of UI_ELEMENT_SELECTORS) {
+    if (target.closest(selector)) return true;
+  }
+  
+  // Also check for common interactive elements with pointer-events
+  const computed = window.getComputedStyle(target);
+  if (computed.pointerEvents === 'auto' && target.closest('[class*="toolbar"], [class*="panel"], [class*="menu"], [class*="popover"]')) {
+    return true;
+  }
+  
+  return false;
+};
+
 export const usePipGestures = ({
   layoutMode,
   containerRef,
@@ -24,6 +56,9 @@ export const usePipGestures = ({
     (e: WheelEvent) => {
       const container = containerRef.current;
       if (!container || layoutMode !== "solo") return;
+
+      // Don't trigger PiP if scrolling over UI elements
+      if (isOverUIElement(e.target)) return;
 
       e.preventDefault();
       e.stopPropagation();
