@@ -1,5 +1,6 @@
 // src/components/video-canvas/OverlayLayer.tsx
-import React from "react";
+import React, { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import {
   GeneratedOverlay,
   FileOverlayState,
@@ -15,6 +16,8 @@ import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { HybridDraggable } from "./HybridDraggable";
 import { SocialBannerRenderer } from "@/components/SocialBannerRenderer";
 import { UniversalBannerRenderer } from "@/components/banner/UniversalBannerRenderer";
+import { BannerDesignSelectorToolbar } from "@/components/banner-editor/BannerDesignSelectorToolbar";
+import { BannerDesign, isAnimatedBanner } from "@/types/banner";
 
 interface OverlayLayerProps {
   layerOrder: "above-video" | "below-video";
@@ -115,6 +118,8 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
   onSelectGenerated,
   onBannerDoubleClick,
 }) => {
+  const [showDesignSelector, setShowDesignSelector] = useState<string | null>(null);
+
   if (!containerSize.width || !containerSize.height) return null;
 
   // Filter overlays based on dynamic layout (exclude if active target)
@@ -138,12 +143,29 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
       {htmlOverlays
         .filter((o) => filterDynamic(o.id) && checkLayer(o.layout))
         .map((overlay) => {
-          // --- Interactive Banner Handling ---
           // --- Interactive Banner Handling (Static & Animated) ---
           if (
             overlay.metadata?.type === "social-banner-interactive" ||
             overlay.metadata?.type === "animated-banner"
           ) {
+            const isSelected = selectedGeneratedId === overlay.id;
+            const currentDesign = overlay.metadata.design as BannerDesign;
+
+            const handleDesignChange = (newDesign: BannerDesign) => {
+              const newType = isAnimatedBanner(newDesign) 
+                ? "animated-banner" 
+                : "social-banner-interactive";
+              
+              onUpdateOverlayMetadata?.(overlay.id, {
+                ...overlay.metadata,
+                type: newType,
+                design: newDesign,
+                // Reset element states when design changes
+                elementStates: undefined,
+              });
+              setShowDesignSelector(null);
+            };
+
             return (
               <HybridDraggable
                 key={overlay.id}
@@ -153,31 +175,58 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                 rotation={overlay.layout.rotation}
                 zIndex={overlay.layout.zIndex}
                 containerSize={containerSize}
-                isSelected={selectedGeneratedId === overlay.id}
-                onSelect={() => onSelectGenerated?.(overlay.id)}
+                isSelected={isSelected}
+                onSelect={() => {
+                  onSelectGenerated?.(overlay.id);
+                  // Close design selector if clicking a different banner
+                  if (showDesignSelector && showDesignSelector !== overlay.id) {
+                    setShowDesignSelector(null);
+                  }
+                }}
                 onCommit={(id, changes) => {
                   if (changes.position)
-                    onOverlayLayoutChange(
-                      overlay.id,
-                      "position",
-                      changes.position
-                    );
+                    onOverlayLayoutChange(overlay.id, "position", changes.position);
                   if (changes.size)
                     onOverlayLayoutChange(overlay.id, "size", changes.size);
                   if (changes.rotation !== undefined)
-                    onOverlayLayoutChange(
-                      overlay.id,
-                      "rotation",
-                      changes.rotation
-                    );
+                    onOverlayLayoutChange(overlay.id, "rotation", changes.rotation);
                 }}
-                onDoubleClick={(id, e) => onBannerDoubleClick?.(id, e)} // Pass double click here
+                onDoubleClick={(id, e) => {
+                  // Toggle design selector on double click
+                  setShowDesignSelector(prev => prev === id ? null : id);
+                }}
               >
-                <div className="w-full h-full pointer-events-auto">
+                <div className="w-full h-full pointer-events-auto relative">
+                  {/* Design Selector Toolbar */}
+                  <AnimatePresence>
+                    {showDesignSelector === overlay.id && (
+                      <BannerDesignSelectorToolbar
+                        currentDesignId={currentDesign.id}
+                        onSelectDesign={handleDesignChange}
+                        onClose={() => setShowDesignSelector(null)}
+                        position={overlay.layout.position}
+                        containerSize={containerSize}
+                      />
+                    )}
+                  </AnimatePresence>
+
+                  {/* Change Design Button - shows when selected but selector is closed */}
+                  {isSelected && showDesignSelector !== overlay.id && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowDesignSelector(overlay.id);
+                      }}
+                      className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-background border border-accent text-accent text-[10px] font-mono uppercase tracking-wider hover:bg-accent hover:text-background transition-colors z-50 whitespace-nowrap"
+                    >
+                      Change Design
+                    </button>
+                  )}
+
                   <UniversalBannerRenderer
                     design={overlay.metadata.design}
                     contentData={overlay.metadata.data}
-                    isEditing={selectedGeneratedId === overlay.id} // Only show edit UI when selected
+                    isEditing={isSelected}
                     onDelete={() => onRemoveOverlay(overlay.id)}
                     elementStates={overlay.metadata.elementStates}
                     onElementStatesChange={(states) => {
@@ -196,11 +245,8 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                       });
                     }}
                     containerSize={{
-                      width:
-                        (overlay.layout.size.width / 100) * containerSize.width,
-                      height:
-                        (overlay.layout.size.height / 100) *
-                        containerSize.height,
+                      width: (overlay.layout.size.width / 100) * containerSize.width,
+                      height: (overlay.layout.size.height / 100) * containerSize.height,
                     }}
                   />
                 </div>

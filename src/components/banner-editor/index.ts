@@ -9,3 +9,4 @@ export type { BannerElementData as EditableBannerElementData } from './BannerEdi
 export { BannerTextToolbar } from './BannerTextToolbar';
 export { BannerInternalDraggable } from './BannerInternalDraggable';
 export type { BannerElementData as InternalDraggableElementData } from './BannerInternalDraggable';
+export { BannerDesignSelectorToolbar } from './BannerDesignSelectorToolbar';
