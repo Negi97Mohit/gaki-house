@@ -63,6 +63,8 @@ export default {
       fontFamily: {
         sans: ["geist-sans"],
         cyber: ["Cyber", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+        display: ["Space Mono", "monospace"],
       },
       keyframes: {
         "accordion-down": {

@@ -1,6 +1,5 @@
 // src/components/panels/DynamicStylesPanel.tsx
 import React, { useState, useEffect } from "react";
-import { Zap } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -25,24 +24,25 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
   }, []);
 
   const previewBaseStyle: React.CSSProperties = {
-    fontSize: "18px",
-    fontFamily: "Inter, sans-serif",
+    fontSize: "16px",
+    fontFamily: "JetBrains Mono, monospace",
     color: "hsl(var(--foreground))",
-    fontWeight: "600",
+    fontWeight: "500",
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
-        <Zap className="w-5 h-5 text-primary" />
-        <h3 className="text-base font-semibold tracking-wide">
-          Caption Dynamic Styles
-        </h3>
+    <div className="space-y-4 font-mono">
+      {/* Section Label */}
+      <div className="pb-3 border-b border-border">
+        <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
+          Select Animation
+        </span>
       </div>
+
       <RadioGroup
         value={dynamicStyle}
         onValueChange={onDynamicStyleChange}
-        className="grid grid-cols-2 gap-3"
+        className="grid grid-cols-2 gap-2"
       >
         {Object.values(DYNAMIC_STYLES).map((styleDef) => {
           const isSelected = dynamicStyle === styleDef.id;
@@ -52,10 +52,10 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
             <div
               key={styleDef.id}
               className={cn(
-                "relative rounded-lg border-2 overflow-hidden transition-all duration-200 cursor-pointer group",
+                "relative border overflow-hidden transition-all duration-150 cursor-pointer group",
                 isSelected
-                  ? "border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]"
-                  : "border-yellow-500/20 hover:border-yellow-500/60"
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:border-primary/50"
               )}
               onClick={() => onDynamicStyleChange(styleDef.id)}
             >
@@ -65,8 +65,8 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                 className="sr-only"
               />
               <Label htmlFor={styleDef.id} className="block cursor-pointer">
-                <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center p-4 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-grid-yellow-500/10" />
+                {/* Preview Area */}
+                <div className="aspect-video bg-card flex items-center justify-center p-3 relative overflow-hidden border-b border-border">
                   <div
                     key={`${styleDef.id}-${previewKey}`}
                     className="relative z-10 w-full text-center"
@@ -80,8 +80,8 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                     }
                   >
                     <Component
-                      text="This is a preview"
-                      fullTranscript="This is a preview"
+                      text="Preview text"
+                      fullTranscript="Preview text"
                       interimTranscript=""
                       baseStyle={
                         isSelected
@@ -94,17 +94,24 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                     />
                   </div>
                 </div>
+
+                {/* Label */}
                 <div
                   className={cn(
-                    "p-2 text-center text-xs font-semibold font-cyber transition-colors",
+                    "px-2 py-1.5 text-center text-[10px] font-medium tracking-wide transition-colors",
                     isSelected
-                      ? "bg-yellow-500 text-black"
-                      : "bg-background/80 text-foreground"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-muted-foreground group-hover:text-foreground"
                   )}
                 >
-                  {styleDef.name}
+                  {styleDef.name.toUpperCase()}
                 </div>
               </Label>
+              
+              {/* Active indicator */}
+              {isSelected && (
+                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
+              )}
             </div>
           );
         })}

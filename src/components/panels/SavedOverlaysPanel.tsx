@@ -3,6 +3,7 @@ import React from "react";
 import { Sparkles, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GeneratedOverlay } from "@/types/caption";
+import { cn } from "@/lib/utils";
 
 interface SavedOverlaysPanelProps {
   savedOverlays: GeneratedOverlay[];
@@ -16,26 +17,31 @@ export const SavedOverlaysPanel: React.FC<SavedOverlaysPanelProps> = ({
   onDeleteSavedOverlay,
 }) => {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/40">
-        <Sparkles className="w-5 h-5 text-primary" />
-        <h3 className="text-base font-semibold tracking-wide">
-          Saved Overlays
-        </h3>
+    <div className="space-y-4 font-mono">
+      {/* Section Label */}
+      <div className="pb-3 border-b border-border">
+        <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
+          Saved Overlays ({savedOverlays.length})
+        </span>
       </div>
+
       {savedOverlays.length === 0 ? (
-        <div className="text-center p-8 rounded-lg bg-background/50 border-2 border-purple-500/20">
-          <Sparkles className="w-12 h-12 mx-auto mb-3 text-purple-500/50" />
-          <p className="text-sm text-muted-foreground font-cyber">
-            Generated overlays will be saved here for reuse.
+        <div className="text-center p-8 border border-dashed border-border">
+          <Sparkles className="w-8 h-8 mx-auto mb-3 text-muted-foreground/50" strokeWidth={1} />
+          <p className="text-[10px] text-muted-foreground tracking-wide uppercase">
+            Generated overlays will appear here
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {savedOverlays.map((overlay) => (
             <div
               key={overlay.id}
-              className="group relative aspect-square rounded-lg bg-background/50 border-2 border-purple-500/20 hover:border-purple-500 flex items-center justify-center overflow-hidden transition-all duration-200 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+              className={cn(
+                "group relative aspect-square bg-card border border-border",
+                "flex items-center justify-center overflow-hidden transition-all duration-150",
+                "hover:border-primary"
+              )}
             >
               <button
                 className="w-full h-full"
@@ -49,19 +55,19 @@ export const SavedOverlaysPanel: React.FC<SavedOverlaysPanelProps> = ({
                     className="w-full h-full object-contain p-1"
                   />
                 ) : (
-                  <span className="text-xs text-muted-foreground font-cyber">
+                  <span className="text-[8px] text-muted-foreground tracking-wide">
                     NO PREVIEW
                   </span>
                 )}
               </button>
               <Button
-                variant="destructive"
+                variant="ghost"
                 size="icon"
-                className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-0.5 right-0.5 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity bg-destructive/80 hover:bg-destructive text-destructive-foreground"
                 onClick={() => onDeleteSavedOverlay(overlay.id)}
                 title="Delete saved overlay"
               >
-                <Trash2 className="w-3 h-3" />
+                <Trash2 className="w-2.5 h-2.5" />
               </Button>
             </div>
           ))}
