@@ -12,9 +12,8 @@ import {
 import { Slider } from "./ui/slider";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
-// --- UPDATED IMPORT ---
+import { cn } from "@/lib/utils";
 import { ALL_FONTS } from "@/lib/fonts";
-// --- END OF UPDATED IMPORT ---
 
 interface StyleControlsProps {
   style: CaptionStyle;
@@ -64,34 +63,41 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
   return (
     <div className="space-y-6">
       {/* Rotation Slider */}
-      <Label htmlFor="rotation">Rotation: {style.rotation}°</Label>
-      <Slider
-        id="rotation"
-        value={[style.rotation]}
-        onValueChange={([value]) => handleValueChange("rotation", value)}
-        min={-180}
-        max={180}
-        step={1}
-      />
+      <div className="space-y-3">
+        <Label htmlFor="rotation" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Rotation: {style.rotation}°
+        </Label>
+        <Slider
+          id="rotation"
+          value={[style.rotation]}
+          onValueChange={([value]) => handleValueChange("rotation", value)}
+          min={-180}
+          max={180}
+          step={1}
+          className="[&_[role=slider]]:rounded-lg"
+        />
+      </div>
+
       {/* Font Family Dropdown with Preview */}
       <div className="space-y-2">
-        <Label htmlFor="font-family">Font Family</Label>
+        <Label htmlFor="font-family" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Font Family
+        </Label>
         <Select
           value={style.fontFamily}
           onValueChange={(value) => handleValueChange("fontFamily", value)}
         >
-          <SelectTrigger id="font-family">
+          <SelectTrigger id="font-family" className="rounded-xl">
             <SelectValue placeholder="Select a font" />
           </SelectTrigger>
 
-          <SelectContent position="popper" className="z-[2050]">
-            {/* --- MAPPING OVER ALL_FONTS --- */}
+          <SelectContent position="popper" className="z-[2050] rounded-xl">
             {ALL_FONTS.map((font) => (
               <SelectItem
                 key={font}
                 value={font}
-                // Applies the actual font for preview
                 style={{ fontFamily: font, fontSize: "1.1rem" }}
+                className="rounded-lg"
               >
                 {font}
               </SelectItem>
@@ -101,8 +107,10 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
       </div>
 
       {/* Font Size Slider */}
-      <div className="space-y-2">
-        <Label htmlFor="font-size">Font Size: {style.fontSize}px</Label>
+      <div className="space-y-3">
+        <Label htmlFor="font-size" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Font Size: {style.fontSize}px
+        </Label>
         <Slider
           id="font-size"
           value={[style.fontSize]}
@@ -110,103 +118,167 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
           min={12}
           max={96}
           step={1}
+          className="[&_[role=slider]]:rounded-lg"
         />
       </div>
 
-      {/* Color Pickers */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="color">Text Color</Label>
-          <Input
-            id="color"
-            type="color"
-            value={style.color}
-            onChange={(e) => handleValueChange("color", e.target.value)}
-            className="p-1 h-10"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="bg-color">Background Color</Label>
-          <Input
-            id="bg-color"
-            type="color"
-            value={style.backgroundColor.substring(0, 7)} // Use only the hex part for the color picker
-            onChange={(e) => handleBackgroundColorChange(e.target.value)}
-            className="p-1 h-10"
-            disabled={isTransparent}
-          />{" "}
+      {/* Modern Color Pickers */}
+      <div className="space-y-3">
+        <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Colors
+        </Label>
+        <div className="grid grid-cols-2 gap-3">
+          {/* Text Color */}
+          <div className="relative group">
+            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl border border-border/50 transition-all hover:border-border hover:bg-muted/70">
+              <div className="relative">
+                <div
+                  className="w-10 h-10 rounded-lg border-2 border-border/50 shadow-sm transition-transform group-hover:scale-105"
+                  style={{ backgroundColor: style.color }}
+                />
+                <Input
+                  id="color"
+                  type="color"
+                  value={style.color}
+                  onChange={(e) => handleValueChange("color", e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs font-medium">Text</span>
+                <span className="text-[10px] text-muted-foreground uppercase">{style.color}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Background Color */}
+          <div className="relative group">
+            <div className={cn(
+              "flex items-center gap-3 p-3 bg-muted/50 rounded-xl border border-border/50 transition-all",
+              isTransparent ? "opacity-50" : "hover:border-border hover:bg-muted/70"
+            )}>
+              <div className="relative">
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-lg border-2 border-border/50 shadow-sm transition-transform",
+                    isTransparent ? "bg-[repeating-conic-gradient(#80808040_0%_25%,transparent_0%_50%)] bg-[length:8px_8px]" : "group-hover:scale-105"
+                  )}
+                  style={{ backgroundColor: isTransparent ? undefined : style.backgroundColor.substring(0, 7) }}
+                />
+                <Input
+                  id="bg-color"
+                  type="color"
+                  value={style.backgroundColor.substring(0, 7)}
+                  onChange={(e) => handleBackgroundColorChange(e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  disabled={isTransparent}
+                />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs font-medium">BG</span>
+                <span className="text-[10px] text-muted-foreground uppercase">
+                  {isTransparent ? "None" : style.backgroundColor.substring(0, 7)}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      {/* Background Transparency Toggle (NEW) */}
-      <div className="flex items-center space-x-2">
+
+      {/* Background Transparency Toggle */}
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+        <Label htmlFor="transparent-toggle" className="text-sm font-medium cursor-pointer">
+          Transparent Background
+        </Label>
         <Switch
           id="transparent-toggle"
           checked={isTransparent}
           onCheckedChange={handleTransparentToggle}
         />
-        <Label htmlFor="transparent-toggle">Transparent Background</Label>
       </div>
       {/* Boolean Toggles */}
-      <div className="grid grid-cols-2 gap-y-4 gap-x-2 pt-2">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="bold-toggle"
-            checked={style.bold}
-            onCheckedChange={(checked) => handleValueChange("bold", checked)}
-          />
-          <Label htmlFor="bold-toggle">Bold</Label>
+      <div className="space-y-3">
+        <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Text Style
+        </Label>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+            <Label htmlFor="bold-toggle" className="text-sm cursor-pointer">Bold</Label>
+            <Switch
+              id="bold-toggle"
+              checked={style.bold}
+              onCheckedChange={(checked) => handleValueChange("bold", checked)}
+            />
+          </div>
+          <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+            <Label htmlFor="italic-toggle" className="text-sm cursor-pointer">Italic</Label>
+            <Switch
+              id="italic-toggle"
+              checked={style.italic}
+              onCheckedChange={(checked) => handleValueChange("italic", checked)}
+            />
+          </div>
+          <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+            <Label htmlFor="underline-toggle" className="text-sm cursor-pointer">Underline</Label>
+            <Switch
+              id="underline-toggle"
+              checked={style.underline}
+              onCheckedChange={(checked) =>
+                handleValueChange("underline", checked)
+              }
+            />
+          </div>
+          <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+            <Label htmlFor="shadow-toggle" className="text-sm cursor-pointer">Shadow</Label>
+            <Switch
+              id="shadow-toggle"
+              checked={style.shadow}
+              onCheckedChange={(checked) => handleValueChange("shadow", checked)}
+            />
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="italic-toggle"
-            checked={style.italic}
-            onCheckedChange={(checked) => handleValueChange("italic", checked)}
-          />
-          <Label htmlFor="italic-toggle">Italic</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="underline-toggle"
-            checked={style.underline}
-            onCheckedChange={(checked) =>
-              handleValueChange("underline", checked)
-            }
-          />
-          <Label htmlFor="underline-toggle">Underline</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="shadow-toggle"
-            checked={style.shadow}
-            onCheckedChange={(checked) => handleValueChange("shadow", checked)}
-          />
-          <Label htmlFor="shadow-toggle">Shadow</Label>
-        </div>
-        <div className="flex items-center space-x-2">
+      </div>
+
+      {/* Border Toggle & Settings */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between p-3 bg-muted/30 rounded-xl">
+          <Label htmlFor="border-toggle" className="text-sm cursor-pointer">Border</Label>
           <Switch
             id="border-toggle"
             checked={style.border}
             onCheckedChange={(checked) => handleValueChange("border", checked)}
           />
-          <Label htmlFor="border-toggle">Border</Label>
         </div>
+        
         {style.border && (
-          <>
-            <div className="col-span-2 space-y-2 pt-4 border-t animate-fade-in">
-              <Label htmlFor="border-color">Border Color</Label>
-              <Input
-                id="border-color"
-                type="color"
-                value={style.borderColor}
-                onChange={(e) =>
-                  handleValueChange("borderColor", e.target.value)
-                }
-                className="p-1 h-10"
-              />
+          <div className="space-y-4 p-4 bg-muted/20 rounded-xl border border-border/50 animate-in fade-in slide-in-from-top-2 duration-200">
+            {/* Border Color */}
+            <div className="flex items-center gap-3">
+              <div className="relative group">
+                <div
+                  className="w-10 h-10 rounded-lg border-2 border-border/50 shadow-sm transition-transform group-hover:scale-105"
+                  style={{ backgroundColor: style.borderColor }}
+                />
+                <Input
+                  id="border-color"
+                  type="color"
+                  value={style.borderColor}
+                  onChange={(e) =>
+                    handleValueChange("borderColor", e.target.value)
+                  }
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-xs font-medium">Border Color</span>
+                <span className="text-[10px] text-muted-foreground uppercase">{style.borderColor}</span>
+              </div>
             </div>
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="border-width">
-                Border Width: {style.borderWidth}px
+
+            {/* Border Width */}
+            <div className="space-y-2">
+              <Label htmlFor="border-width" className="text-xs font-medium">
+                Width: {style.borderWidth}px
               </Label>
               <Slider
                 id="border-width"
@@ -217,9 +289,10 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
                 min={1}
                 max={10}
                 step={1}
+                className="[&_[role=slider]]:rounded-lg"
               />
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
