@@ -28,6 +28,7 @@ import {
 } from "@/types/caption";
 import { RecordingSession } from "@/types/editor";
 import { SocialBannerDesign, SocialBannerData } from "@/types/socialBanner";
+import { AnimatedBannerDesign } from "@/types/animatedBanner";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 import { AssetResult } from "@/components/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
@@ -763,6 +764,39 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     },
     [updateActiveScene, selection]
   );
+
+  // Handler for animated banners - passes the full design with motionSystem
+  const handleAddAnimatedBanner = useCallback(
+    (design: AnimatedBannerDesign, data: SocialBannerData) => {
+      const newOverlay: GeneratedOverlay = {
+        id: generateId("banner"),
+        name: `${design.name} Banner`,
+        htmlContent: "",
+        layout: {
+          position: { x: 25, y: 42 },
+          size: { width: 50, height: 16 },
+          zIndex: zIndex.draggableElement,
+          rotation: 0,
+          layerOrder: "above-video",
+        },
+        preview: design.preview,
+        metadata: {
+          type: "animated-banner",
+          design, // Pass the FULL animated design with motionSystem
+          data,
+        },
+      };
+
+      updateActiveScene((scene) => ({
+        ...scene,
+        activeOverlays: [...scene.activeOverlays, newOverlay],
+      }));
+      selection.handleDeselectAll();
+      selection.setSelectedGeneratedId(newOverlay.id);
+      toast.success(`Added "${design.name}" animated banner to canvas`);
+    },
+    [updateActiveScene, selection]
+  );
   const processTranscript = useCallback(
     async (transcript: string, targetId: string | null = null) => {
       if (!activeScene.isAiModeEnabled || isProcessingAi || !activeScene)
@@ -1215,6 +1249,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         onShareCanvasPreset={layoutManager.shareCanvasPreset}
         onUnshareCanvasPreset={layoutManager.unshareCanvasPreset}
         onAddSocialBanner={handleAddSocialBanner}
+        onAddAnimatedBanner={handleAddAnimatedBanner}
       />
 
       <div className="fixed top-6 left-6 z-[2015] transition-opacity duration-300">

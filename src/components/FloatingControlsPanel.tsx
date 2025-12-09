@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CanvasPreset } from "@/types/canvasPreset";
 import { SocialBannerDesign, SocialBannerData } from "@/types/socialBanner";
+import { AnimatedBannerDesign } from "@/types/animatedBanner";
 
 // Sub-components
 import { CanvasDesignsPanel } from "./panels/CanvasDesignsPanel";
@@ -50,6 +51,10 @@ interface FloatingControlsPanelProps {
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
   onAddSocialBanner?: (
     design: SocialBannerDesign,
+    data: SocialBannerData
+  ) => void;
+  onAddAnimatedBanner?: (
+    design: AnimatedBannerDesign,
     data: SocialBannerData
   ) => void;
 }
@@ -236,7 +241,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             )}
 
             {activeSection === "social-banners" && props.onAddSocialBanner && (
-              <SocialBannersPanel onAddBanner={props.onAddSocialBanner} />
+              <SocialBannersPanel 
+                onAddBanner={props.onAddSocialBanner} 
+                onAddAnimatedBanner={props.onAddAnimatedBanner}
+              />
             )}
           </div>
         </div>
