@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { Palette, Sparkles, X } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -25,13 +25,32 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
   position,
   containerSize,
 }) => {
-  const [activeTab, setActiveTab] = useState<"static" | "animated">("static");
-  const toolbarRef = useRef<HTMLDivElement>(null);
-  
   const staticDesigns = socialBannersData.designs as SocialBannerDesign[];
   const animatedDesigns = animatedBannersData.designs as AnimatedBannerDesign[];
 
+  // Determine which tab the current design is in
+  const isCurrentStatic = staticDesigns.some(d => d.id === currentDesignId);
+  const [activeTab, setActiveTab] = useState<"static" | "animated">(isCurrentStatic ? "static" : "animated");
+  
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const selectedRef = useRef<HTMLButtonElement>(null);
+
   const currentDesigns = activeTab === "static" ? staticDesigns : animatedDesigns;
+
+  // Scroll to selected design on mount and tab change
+  useLayoutEffect(() => {
+    const timer = setTimeout(() => {
+      if (selectedRef.current) {
+        selectedRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        });
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [activeTab, currentDesignId]);
 
   // Click outside to close
   useEffect(() => {
@@ -41,7 +60,6 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
       }
     };
 
-    // Add listener with a small delay to avoid immediate closing
     const timer = setTimeout(() => {
       document.addEventListener("mousedown", handleClickOutside);
     }, 100);
@@ -52,20 +70,16 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
     };
   }, [onClose]);
 
-  // Stop all events from bubbling to prevent HybridDraggable interference
   const stopEvents = (e: React.MouseEvent | React.PointerEvent) => {
     e.stopPropagation();
     e.preventDefault();
   };
 
-  // Handle design selection - don't close
   const handleSelectDesign = (design: BannerDesign, e: React.MouseEvent) => {
     stopEvents(e);
     onSelectDesign(design);
-    // Don't call onClose - keep window open
   };
 
-  // Position the toolbar above the banner
   const toolbarStyle: React.CSSProperties = {
     position: "absolute",
     left: "50%",
@@ -146,21 +160,21 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
         </div>
 
         {/* Designs Grid */}
-        <ScrollArea className="h-36">
-          <div className="grid grid-cols-4 gap-2 p-2">
+        <ScrollArea className="h-44" ref={scrollAreaRef}>
+          <div className="grid grid-cols-3 gap-2 p-2">
             {currentDesigns.map((design) => {
               const isSelected = design.id === currentDesignId;
-              // Get the preview gradient/color
               const previewBg = design.preview || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
               
               return (
                 <button
                   key={design.id}
+                  ref={isSelected ? selectedRef : null}
                   onClick={(e) => handleSelectDesign(design, e)}
                   onPointerDown={stopEvents}
                   onMouseDown={stopEvents}
                   className={cn(
-                    "aspect-[2/1] rounded overflow-hidden border-2 transition-all hover:scale-105 cursor-pointer relative group",
+                    "aspect-[16/9] rounded overflow-hidden border-2 transition-all hover:scale-105 cursor-pointer relative group flex flex-col",
                     isSelected
                       ? "border-accent ring-2 ring-accent ring-offset-1 ring-offset-background"
                       : "border-border/50 hover:border-accent/50"
@@ -175,16 +189,18 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
                       backgroundSize: "cover"
                     }}
                   />
-                  {/* Hover overlay with name */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="text-[8px] text-white font-medium text-center px-1 leading-tight">
+                  
+                  {/* Always visible name overlay at bottom */}
+                  <div className="absolute inset-x-0 bottom-0 bg-black/70 backdrop-blur-sm px-1 py-0.5">
+                    <span className="text-[9px] text-white font-medium leading-tight line-clamp-1 block text-center">
                       {design.name}
                     </span>
                   </div>
+
                   {/* Selected checkmark */}
                   {isSelected && (
-                    <div className="absolute top-0.5 right-0.5 w-3 h-3 bg-accent rounded-full flex items-center justify-center">
-                      <span className="text-background text-[8px]">✓</span>
+                    <div className="absolute top-0.5 right-0.5 w-4 h-4 bg-accent rounded-full flex items-center justify-center">
+                      <span className="text-background text-[10px] font-bold">✓</span>
                     </div>
                   )}
                 </button>
@@ -197,7 +213,7 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
         {/* Selected Design Name */}
         <div className="px-3 py-1.5 border-t border-accent/30 text-center">
           <span className="text-[10px] text-muted-foreground font-mono">
-            {currentDesigns.find(d => d.id === currentDesignId)?.name || "Select a design"}
+            Selected: <span className="text-foreground font-medium">{currentDesigns.find(d => d.id === currentDesignId)?.name || "None"}</span>
           </span>
         </div>
       </div>
