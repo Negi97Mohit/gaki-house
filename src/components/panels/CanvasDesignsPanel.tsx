@@ -55,14 +55,17 @@ const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
           left: `${preset.pip.pipPosition?.x || 50}%`,
           top: `${preset.pip.pipPosition?.y || 50}%`,
           width: `${preset.pip.pipSize?.width || 40}%`,
-          height: `${preset.pip.pipSize?.height || 40}%`,
+          height: `${preset.pip.cameraShape === "circle"
+              ? (preset.pip.pipSize?.width || 40) * (16 / 9)
+              : preset.pip.pipSize?.height || 40
+            }%`,
           transform: "translate(-50%, -50%)",
           borderRadius:
             preset.pip.cameraShape === "circle"
               ? "50%"
               : preset.pip.cameraShape === "rounded"
-              ? "8%"
-              : "0",
+                ? "8%"
+                : "0",
           border: preset.pip.pipBorder
             ? `${Math.max(1, preset.pip.pipBorder.width * 0.5)}px solid ${preset.pip.pipBorder.color}`
             : "1px solid rgba(255,255,255,0.3)",
@@ -162,8 +165,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     selectedCategory === "all"
       ? CANVAS_PRESETS
       : selectedCategory === "community"
-      ? publicPresets || []
-      : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+        ? publicPresets || []
+        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
 
   const handlePresetSelect = (preset: CanvasPreset) => {
     setSelectedPresetId(preset.id);
@@ -172,7 +175,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
   const PreviewCard = ({ preset, isCustom = false }: { preset: CanvasPreset; isCustom?: boolean }) => {
     const isSelected = selectedPresetId === preset.id;
-    
+
     return (
       <div className="relative group">
         <button
@@ -180,8 +183,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
           className={cn(
             "w-full overflow-hidden transition-all duration-200 bg-card",
             "border-2",
-            isSelected 
-              ? "border-primary shadow-[0_0_20px_hsl(50,100%,50%,0.4)]" 
+            isSelected
+              ? "border-primary shadow-[0_0_20px_hsl(50,100%,50%,0.4)]"
               : "border-border hover:border-primary/60"
           )}
         >

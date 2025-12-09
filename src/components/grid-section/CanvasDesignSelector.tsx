@@ -45,8 +45,8 @@ export const CanvasDesignSelector: React.FC<CanvasDesignSelectorProps> = ({
     selectedCategory === "all"
       ? CANVAS_PRESETS
       : selectedCategory === "community"
-      ? publicPresets
-      : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+        ? publicPresets
+        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
 
   return (
     <div className="space-y-3">
@@ -121,18 +121,21 @@ export const CanvasDesignSelector: React.FC<CanvasDesignSelectorProps> = ({
                     left: `${preset.pip?.pipPosition?.x || 0}%`,
                     top: `${preset.pip?.pipPosition?.y || 0}%`,
                     width: `${preset.pip?.pipSize?.width || 30}%`,
-                    height: `${preset.pip?.pipSize?.height || 30}%`,
+                    height: `${preset.pip?.cameraShape === "circle"
+                        ? (preset.pip?.pipSize?.width || 30) * (16 / 9)
+                        : preset.pip?.pipSize?.height || 30
+                      }%`,
                     borderRadius:
                       preset.pip.cameraShape === "circle"
                         ? "50%"
                         : preset.pip.cameraShape === "rounded"
-                        ? "4px"
-                        : "0px",
+                          ? "4px"
+                          : "0px",
                     border: preset.pip.pipBorder
                       ? `${Math.max(
-                          1,
-                          preset.pip.pipBorder.width / 6
-                        )}px solid ${preset.pip.pipBorder.color}`
+                        1,
+                        preset.pip.pipBorder.width / 6
+                      )}px solid ${preset.pip.pipBorder.color}`
                       : undefined,
                   }}
                 />
