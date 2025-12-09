@@ -301,102 +301,130 @@ export const CanvasHoverToolbar = ({
   return (
     <div
       className={cn(
-        "absolute top-6 left-1/2 -translate-x-1/2 z-50",
-        "bg-background/95 backdrop-blur-sm border rounded-lg shadow-lg",
-        "px-2 py-2 flex items-center gap-1",
-        "transition-all duration-300",
+        "absolute top-4 left-1/2 -translate-x-1/2 z-50",
+        "bg-background/90 backdrop-blur-xl border border-border/50 rounded-2xl shadow-xl",
+        "px-3 py-2.5 flex items-center gap-2",
+        "transition-all duration-300 ease-out",
         shouldShow
           ? "opacity-100 translate-y-0"
-          : "opacity-0 -translate-y-2 pointer-events-none"
+          : "opacity-0 -translate-y-3 pointer-events-none"
       )}
     >
       {!canvasLayout && (
         <>
-          <div className="flex items-center gap-2 pr-2 border-r border-border">
-            <Label htmlFor="canvas-color" className="text-xs whitespace-nowrap">
-              BG
-            </Label>
-            <Input
-              id="canvas-color"
-              type="color"
-              value={blankCanvasColor}
-              onChange={(e) => onBlankCanvasColorChange(e.target.value)}
-              className="w-16 h-8 cursor-pointer"
-            />
+          {/* Modern Color Picker Island */}
+          <div className="flex items-center gap-2 px-2 py-1 bg-muted/50 rounded-xl">
+            <div className="relative group">
+              <div
+                className="w-8 h-8 rounded-lg border-2 border-border/50 cursor-pointer shadow-sm transition-all duration-200 group-hover:scale-105 group-hover:shadow-md"
+                style={{ backgroundColor: blankCanvasColor }}
+              />
+              <Input
+                id="canvas-color"
+                type="color"
+                value={blankCanvasColor}
+                onChange={(e) => onBlankCanvasColorChange(e.target.value)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+              <Paintbrush className="absolute bottom-0 right-0 w-3 h-3 text-foreground/70 pointer-events-none translate-x-0.5 translate-y-0.5" />
+            </div>
+            <span className="text-xs font-medium text-muted-foreground hidden sm:block">BG</span>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Upload className="h-4 w-4 mr-2" />
-            Upload
-          </Button>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-xs">
-                <Search className="h-4 w-4 mr-2" />
-                Search
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-80 h-[400px] p-0"
-              style={{ zIndex: "var(--z-asset-popover)" }}
-              align="center"
-              side="bottom"
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-border/50" />
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-9 px-3 rounded-xl text-xs font-medium hover:bg-muted/70 transition-colors"
+              onClick={() => fileInputRef.current?.click()}
             >
-              <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
-            </PopoverContent>
-          </Popover>
+              <Upload className="h-4 w-4 mr-1.5" />
+              <span className="hidden sm:inline">Upload</span>
+            </Button>
+            
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-9 px-3 rounded-xl text-xs font-medium hover:bg-muted/70 transition-colors">
+                  <Search className="h-4 w-4 mr-1.5" />
+                  <span className="hidden sm:inline">Search</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-80 h-[400px] p-0 rounded-2xl overflow-hidden border-border/50"
+                style={{ zIndex: "var(--z-asset-popover)" }}
+                align="center"
+                side="bottom"
+                sideOffset={8}
+              >
+                <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
+              </PopoverContent>
+            </Popover>
+          </div>
         </>
       )}
 
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm" className="text-xs">
-            <Grid3x3 className="h-4 w-4 mr-2" />
-            {canvasLayout
-              ? layoutTemplates.find((t) => t.id === canvasLayout.templateId)
-                ?.name || "Layout"
-              : "Grid"}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-9 px-3 rounded-xl text-xs font-medium hover:bg-muted/70 transition-colors"
+          >
+            <Grid3x3 className="h-4 w-4 mr-1.5" />
+            <span className="hidden sm:inline">
+              {canvasLayout
+                ? layoutTemplates.find((t) => t.id === canvasLayout.templateId)
+                  ?.name || "Layout"
+                : "Grid"}
+            </span>
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-64 p-2 max-h-[400px] overflow-y-auto"
+          className="w-72 p-3 max-h-[420px] overflow-y-auto rounded-2xl border-border/50"
           style={{ zIndex: "var(--z-asset-popover)" }}
           align="center"
           side="bottom"
+          sideOffset={8}
         >
           {templatesLoading && (
-            <div className="text-sm text-muted-foreground p-2">Loading layouts...</div>
+            <div className="text-sm text-muted-foreground p-3 text-center">Loading layouts...</div>
           )}
 
           {canvasLayout && (
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-destructive mb-2"
+              className="w-full justify-start text-destructive mb-3 rounded-xl hover:bg-destructive/10"
               onClick={() => onCanvasLayoutChange?.(null as any)}
             >
+              <X className="h-4 w-4 mr-2" />
               Clear Grid
             </Button>
           )}
 
-          <div className="space-y-1">
+          <div className="grid grid-cols-2 gap-2">
             {layoutTemplates.map((template) => (
               <Button
                 key={template.id}
                 variant="ghost"
                 size="sm"
-                className="w-full flex flex-col items-start gap-2 p-2 h-auto cursor-pointer hover:bg-accent"
+                className={cn(
+                  "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
+                  canvasLayout?.templateId === template.id
+                    ? "bg-primary/10 border-primary/50"
+                    : "hover:bg-muted/70 hover:border-border"
+                )}
                 onClick={() => handleLayoutSelect(template.id)}
               >
                 <GridLayoutPreview sections={template.sections} />
-                <div className="flex items-center justify-between w-full">
-                  <span className="text-xs font-medium">{template.name}</span>
+                <div className="flex items-center gap-1.5 w-full justify-center">
+                  <span className="text-xs font-medium truncate">{template.name}</span>
                   {canvasLayout?.templateId === template.id && (
-                    <Check className="w-4 h-4 text-primary" />
+                    <Check className="w-3.5 h-3.5 text-primary shrink-0" />
                   )}
                 </div>
               </Button>
@@ -407,86 +435,89 @@ export const CanvasHoverToolbar = ({
 
       {/* Dynamic Layout Transformation Controls */}
       {hasTransformations && canvasLayout && (
-        <div className="flex items-center gap-1 border-l pl-2">
-          {isCarouselLayout && (
-            <>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs h-8 px-2"
-                onClick={() => rotateCarousel("left")}
-                title="Rotate carousel left"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs h-8 px-2"
-                onClick={() => rotateCarousel("right")}
-                title="Rotate carousel right"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </>
-          )}
+        <>
+          <div className="w-px h-6 bg-border/50" />
+          <div className="flex items-center gap-1 px-1 py-1 bg-muted/30 rounded-xl">
+            {isCarouselLayout && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-lg hover:bg-background/80"
+                  onClick={() => rotateCarousel("left")}
+                  title="Rotate carousel left"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-lg hover:bg-background/80"
+                  onClick={() => rotateCarousel("right")}
+                  title="Rotate carousel right"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </>
+            )}
 
-          {layoutId === "magazine-hero" && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs h-8 px-2"
-              onClick={() => transformLayout("swap")}
-              title="Swap hero and sidebar"
-            >
-              <RotateCw className="h-4 w-4 mr-1" />
-              Swap
-            </Button>
-          )}
-
-          {(layoutId.includes("bento") ||
-            layoutId.includes("staircase") ||
-            layoutId.includes("diagonal")) && (
+            {layoutId === "magazine-hero" && (
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs h-8 px-2"
-                onClick={() => transformLayout("rotate")}
-                title="Rotate sections"
+                className="h-8 px-2.5 rounded-lg text-xs font-medium hover:bg-background/80"
+                onClick={() => transformLayout("swap")}
+                title="Swap hero and sidebar"
               >
-                <RotateCw className="h-4 w-4 mr-1" />
-                Rotate
+                <RotateCw className="h-3.5 w-3.5 mr-1" />
+                Swap
               </Button>
             )}
 
-          {layoutId.includes("staircase") && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs h-8 px-2"
-              onClick={() => transformLayout("reverse")}
-              title="Reverse order"
-            >
-              <ChevronLeft className="h-3 w-3" />
-              <ChevronRight className="h-3 w-3" />
-            </Button>
-          )}
+            {(layoutId.includes("bento") ||
+              layoutId.includes("staircase") ||
+              layoutId.includes("diagonal")) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2.5 rounded-lg text-xs font-medium hover:bg-background/80"
+                  onClick={() => transformLayout("rotate")}
+                  title="Rotate sections"
+                >
+                  <RotateCw className="h-3.5 w-3.5 mr-1" />
+                  Rotate
+                </Button>
+              )}
 
-          {(layoutId === "spotlight-frame" || layoutId === "pip-creative") && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs h-8 px-2"
-              onClick={() => transformLayout("rotate")}
-              title={
-                layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"
-              }
-            >
-              <RotateCw className="h-4 w-4 mr-1" />
-              {layoutId === "spotlight-frame" ? "Frame" : "Cycle"}
-            </Button>
-          )}
-        </div>
+            {layoutId.includes("staircase") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-lg hover:bg-background/80"
+                onClick={() => transformLayout("reverse")}
+                title="Reverse order"
+              >
+                <ChevronLeft className="h-3 w-3" />
+                <ChevronRight className="h-3 w-3" />
+              </Button>
+            )}
+
+            {(layoutId === "spotlight-frame" || layoutId === "pip-creative") && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2.5 rounded-lg text-xs font-medium hover:bg-background/80"
+                onClick={() => transformLayout("rotate")}
+                title={
+                  layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"
+                }
+              >
+                <RotateCw className="h-3.5 w-3.5 mr-1" />
+                {layoutId === "spotlight-frame" ? "Frame" : "Cycle"}
+              </Button>
+            )}
+          </div>
+        </>
       )}
 
       {/* Sequence Reorder Popup */}
