@@ -73,11 +73,12 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
   // Check if this is an animated banner
   const animatedBannerDesign = useMemo(() => {
     if (overlay.metadata?.type === "animated-banner") {
-      return ANIMATED_BANNER_DESIGNS.find(
+      const found = ANIMATED_BANNER_DESIGNS.find(
         (d) => d.id === overlay.metadata?.animatedBannerId
       );
+      return found as import("@/types/animatedBanner").AnimatedBannerDesign | undefined;
     }
-    return null;
+    return undefined;
   }, [overlay.metadata]);
 
   // Extract content data from metadata for animated banners

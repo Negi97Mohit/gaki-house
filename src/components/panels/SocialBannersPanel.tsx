@@ -102,7 +102,14 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   const hasUserInfo =
     userData.name !== DEFAULT_BANNER_DATA.name || userData.links.length > 0;
 
-  const handleSelectAnimatedBanner = (design: AnimatedBannerDesign) => {
+  const handleSelectAnimatedBanner = (design: (typeof ANIMATED_BANNER_DESIGNS)[number]) => {
+    const layoutMap: Record<string, "horizontal" | "vertical" | "compact" | "card"> = {
+      frame: "horizontal",
+      horizontal: "horizontal",
+      vertical: "vertical",
+      compact: "compact",
+      card: "card",
+    };
     const compatibleDesign: SocialBannerDesign & {
       isAnimatedBanner?: boolean;
       animatedBannerId?: string;
@@ -111,7 +118,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
       name: design.name,
       description: design.description,
       preview: design.preview,
-      layout: design.layout === "frame" ? "horizontal" : design.layout,
+      layout: layoutMap[design.layout] || "horizontal",
       theme: "gradient",
       styles: {
         container: { background: design.preview },
@@ -126,9 +133,8 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
       maxLinks: design.maxLinks,
       isAnimatedBanner: true,
       animatedBannerId: design.id,
-      ...design, // Spread all animated design properties (motionSystem, etc)
     };
-    onAddBanner(compatibleDesign as SocialBannerDesign, userData);
+    onAddBanner(compatibleDesign, userData);
     setRecentlyAdded(design.id);
     setTimeout(() => setRecentlyAdded(null), 1500);
   };
@@ -252,7 +258,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                                   name: "Preview Name",
                                   tagline: "Your Tagline Here",
                                   links: [
-                                    { platform: "twitter", url: "#" },
+                                    { platform: "x", url: "#" },
                                     { platform: "instagram", url: "#" },
                                     { platform: "youtube", url: "#" },
                                   ],
@@ -314,7 +320,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                         }
                       >
                         <AnimatedBannerRenderer
-                          design={design}
+                          design={design as AnimatedBannerDesign}
                           containerSize={{ width: 400, height: 144 }}
                         />
                       </Suspense>
