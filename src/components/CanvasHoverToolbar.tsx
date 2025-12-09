@@ -301,9 +301,9 @@ export const CanvasHoverToolbar = ({
   return (
     <div
       className={cn(
-        "absolute top-4 left-1/2 -translate-x-1/2 z-50",
-        "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-2xl",
-        "px-2 py-2 flex items-center gap-1",
+        "absolute top-3 left-1/2 -translate-x-1/2 z-50",
+        "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-lg",
+        "px-1.5 py-1 sm:px-2 sm:py-1.5 flex items-center gap-0.5 sm:gap-1",
         "transition-all duration-300 ease-out",
         shouldShow
           ? "opacity-100 translate-y-0"
@@ -317,11 +317,11 @@ export const CanvasHoverToolbar = ({
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full h-10 w-10 hover:bg-background/60 p-0 overflow-hidden"
+              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60 p-0 overflow-hidden"
               title="Background Color"
             >
               <div
-                className="w-5 h-5 rounded-full border-2 border-border/50"
+                className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-border/50"
                 style={{ backgroundColor: blankCanvasColor }}
               />
             </Button>
@@ -337,11 +337,11 @@ export const CanvasHoverToolbar = ({
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10 hover:bg-background/60"
+            className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
             onClick={() => fileInputRef.current?.click()}
             title="Upload Background"
           >
-            <Upload className="h-4 w-4" />
+            <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </Button>
 
           <Popover>
@@ -349,10 +349,10 @@ export const CanvasHoverToolbar = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
                 title="Search Assets"
               >
-                <Search className="h-4 w-4" />
+                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </Button>
             </PopoverTrigger>
             <PopoverContent
@@ -366,7 +366,7 @@ export const CanvasHoverToolbar = ({
             </PopoverContent>
           </Popover>
 
-          <div className="w-px h-6 bg-border/40 mx-1" />
+          <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
         </>
       )}
 
@@ -376,12 +376,12 @@ export const CanvasHoverToolbar = ({
             variant="ghost"
             size="icon"
             className={cn(
-              "rounded-full h-10 w-10 hover:bg-background/60",
+              "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
               canvasLayout && "bg-primary/20 text-primary"
             )}
             title="Grid Layout"
           >
-            <Grid3x3 className="h-4 w-4" />
+            <Grid3x3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -437,26 +437,26 @@ export const CanvasHoverToolbar = ({
       {/* Dynamic Layout Transformation Controls */}
       {hasTransformations && canvasLayout && (
         <>
-          <div className="w-px h-6 bg-border/40 mx-1" />
+          <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
           {isCarouselLayout && (
             <>
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
                 onClick={() => rotateCarousel("left")}
                 title="Rotate carousel left"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
                 onClick={() => rotateCarousel("right")}
                 title="Rotate carousel right"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </Button>
             </>
           )}
@@ -465,11 +465,11 @@ export const CanvasHoverToolbar = ({
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full h-10 w-10 hover:bg-background/60"
+              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
               onClick={() => transformLayout("swap")}
               title="Swap hero and sidebar"
             >
-              <RotateCw className="h-4 w-4" />
+              <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
           )}
 
@@ -479,11 +479,11 @@ export const CanvasHoverToolbar = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
                 onClick={() => transformLayout("rotate")}
                 title="Rotate sections"
               >
-                <RotateCw className="h-4 w-4" />
+                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </Button>
             )}
 
@@ -491,11 +491,11 @@ export const CanvasHoverToolbar = ({
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full h-10 w-10 hover:bg-background/60"
+              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
               onClick={() => transformLayout("rotate")}
               title={layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"}
             >
-              <RotateCw className="h-4 w-4" />
+              <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
           )}
         </>
