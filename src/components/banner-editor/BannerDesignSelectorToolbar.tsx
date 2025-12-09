@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Palette, Sparkles, X } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { BannerDesign, isAnimatedBanner } from "@/types/banner";
+import { BannerDesign } from "@/types/banner";
 import { SocialBannerDesign } from "@/types/socialBanner";
 import { AnimatedBannerDesign } from "@/types/animatedBanner";
 
@@ -26,16 +26,43 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
   containerSize,
 }) => {
   const [activeTab, setActiveTab] = useState<"static" | "animated">("static");
+  const toolbarRef = useRef<HTMLDivElement>(null);
   
   const staticDesigns = socialBannersData.designs as SocialBannerDesign[];
   const animatedDesigns = animatedBannersData.designs as AnimatedBannerDesign[];
 
   const currentDesigns = activeTab === "static" ? staticDesigns : animatedDesigns;
 
+  // Click outside to close
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (toolbarRef.current && !toolbarRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+
+    // Add listener with a small delay to avoid immediate closing
+    const timer = setTimeout(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   // Stop all events from bubbling to prevent HybridDraggable interference
   const stopEvents = (e: React.MouseEvent | React.PointerEvent) => {
     e.stopPropagation();
     e.preventDefault();
+  };
+
+  // Handle design selection - don't close
+  const handleSelectDesign = (design: BannerDesign, e: React.MouseEvent) => {
+    stopEvents(e);
+    onSelectDesign(design);
+    // Don't call onClose - keep window open
   };
 
   // Position the toolbar above the banner
@@ -50,6 +77,7 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
 
   return (
     <motion.div
+      ref={toolbarRef}
       initial={{ opacity: 0, y: 10, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -60,7 +88,7 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
       onPointerDown={stopEvents}
       onMouseDown={stopEvents}
     >
-      <div className="bg-background border border-accent flex flex-col w-[360px] max-w-[90vw]">
+      <div className="bg-background border border-accent flex flex-col w-[360px] max-w-[90vw] shadow-lg">
         {/* Header */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-accent">
           <span className="text-xs font-bold text-accent uppercase tracking-wider">
@@ -118,31 +146,47 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
         </div>
 
         {/* Designs Grid */}
-        <ScrollArea className="h-32">
-          <div className="grid grid-cols-4 gap-1 p-2">
+        <ScrollArea className="h-36">
+          <div className="grid grid-cols-4 gap-2 p-2">
             {currentDesigns.map((design) => {
               const isSelected = design.id === currentDesignId;
+              // Get the preview gradient/color
+              const previewBg = design.preview || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+              
               return (
                 <button
                   key={design.id}
-                  onClick={(e) => {
-                    stopEvents(e);
-                    onSelectDesign(design);
-                  }}
+                  onClick={(e) => handleSelectDesign(design, e)}
                   onPointerDown={stopEvents}
                   onMouseDown={stopEvents}
                   className={cn(
-                    "aspect-[2/1] rounded-sm overflow-hidden border-2 transition-all hover:scale-105 cursor-pointer",
+                    "aspect-[2/1] rounded overflow-hidden border-2 transition-all hover:scale-105 cursor-pointer relative group",
                     isSelected
-                      ? "border-accent ring-1 ring-accent"
-                      : "border-transparent hover:border-accent/50"
+                      ? "border-accent ring-2 ring-accent ring-offset-1 ring-offset-background"
+                      : "border-border/50 hover:border-accent/50"
                   )}
                   title={design.name}
                 >
+                  {/* Preview background */}
                   <div
-                    className="w-full h-full"
-                    style={{ background: design.preview }}
+                    className="absolute inset-0"
+                    style={{ 
+                      background: previewBg,
+                      backgroundSize: "cover"
+                    }}
                   />
+                  {/* Hover overlay with name */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="text-[8px] text-white font-medium text-center px-1 leading-tight">
+                      {design.name}
+                    </span>
+                  </div>
+                  {/* Selected checkmark */}
+                  {isSelected && (
+                    <div className="absolute top-0.5 right-0.5 w-3 h-3 bg-accent rounded-full flex items-center justify-center">
+                      <span className="text-background text-[8px]">✓</span>
+                    </div>
+                  )}
                 </button>
               );
             })}

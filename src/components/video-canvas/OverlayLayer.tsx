@@ -163,7 +163,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                 // Reset element states when design changes
                 elementStates: undefined,
               });
-              setShowDesignSelector(null);
+              // Don't close selector - let user browse and compare designs
             };
 
             return (
