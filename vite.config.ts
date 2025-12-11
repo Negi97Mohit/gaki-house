@@ -10,6 +10,13 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    proxy: {
+      "/api/apertus": {
+        target: "https://api.publicai.co",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/apertus/, ""),
+      },
+    },
   },
   plugins: [react(), basicSsl(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

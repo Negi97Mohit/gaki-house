@@ -12,8 +12,10 @@ import {
   ChevronLeft,
   ChevronRight,
   RotateCw,
+  Sparkles,
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
+import { AIChatbot } from "./AIChatbot";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -62,6 +64,7 @@ export const CanvasHoverToolbar = ({
     CanvasLayoutTemplate[]
   >([]);
   const [templatesLoading, setTemplatesLoading] = useState(true);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   useEffect(() => {
     getLayoutTemplates()
@@ -296,7 +299,7 @@ export const CanvasHoverToolbar = ({
     });
   };
 
-  const shouldShow = isVisible && isMouseActive;
+  const shouldShow = (isVisible && isMouseActive) || isChatbotOpen;
 
   return (
     <div
@@ -369,6 +372,21 @@ export const CanvasHoverToolbar = ({
           <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
         </>
       )}
+
+      {/* AIChatbot Toggle */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn(
+          "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
+          isChatbotOpen && "bg-primary/20 text-primary"
+        )}
+        onClick={() => setIsChatbotOpen(!isChatbotOpen)}
+        title="AI Chatbot"
+      >
+        <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+      </Button>
+      <AIChatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
 
       <Popover>
         <PopoverTrigger asChild>
@@ -522,76 +540,76 @@ export const CanvasHoverToolbar = ({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64 p-2 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl" align="center" side="bottom" sideOffset={8}>
-              <div className="space-y-2">
-                <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
-                  Screen Order
-                </h4>
-                {canvasLayout.sectionOrder.map((sectionId, idx) => {
-                  const isActive = sectionId === activeSequenceId;
-                  return (
-                    <div
-                      key={sectionId}
-                      className={cn(
-                        "flex items-center justify-between p-2 rounded-md text-sm group transition-colors",
-                        isActive
-                          ? "bg-primary/10 border border-primary/20"
-                          : "bg-muted/30"
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={cn(
-                            "font-bold w-4 text-center",
-                            isActive ? "text-primary" : "text-muted-foreground"
-                          )}
-                        >
-                          {idx + 1}
-                        </span>
-                        <span className="truncate max-w-[100px]">
-                          {sectionId}
-                        </span>
-                        {isActive && (
-                          <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-[9px] font-bold text-white animate-pulse">
-                            LIVE
-                          </span>
+                <div className="space-y-2">
+                  <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
+                    Screen Order
+                  </h4>
+                  {canvasLayout.sectionOrder.map((sectionId, idx) => {
+                    const isActive = sectionId === activeSequenceId;
+                    return (
+                      <div
+                        key={sectionId}
+                        className={cn(
+                          "flex items-center justify-between p-2 rounded-md text-sm group transition-colors",
+                          isActive
+                            ? "bg-primary/10 border border-primary/20"
+                            : "bg-muted/30"
                         )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={cn(
+                              "font-bold w-4 text-center",
+                              isActive ? "text-primary" : "text-muted-foreground"
+                            )}
+                          >
+                            {idx + 1}
+                          </span>
+                          <span className="truncate max-w-[100px]">
+                            {sectionId}
+                          </span>
+                          {isActive && (
+                            <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-[9px] font-bold text-white animate-pulse">
+                              LIVE
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6"
+                            disabled={idx === 0}
+                            onClick={() => moveItem(idx, "up")}
+                          >
+                            <ArrowUp className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6"
+                            disabled={
+                              idx === canvasLayout.sectionOrder!.length - 1
+                            }
+                            onClick={() => moveItem(idx, "down")}
+                          >
+                            <ArrowDown className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6 text-destructive hover:text-destructive"
+                            onClick={() => removeFromOrder(sectionId)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-6 w-6"
-                          disabled={idx === 0}
-                          onClick={() => moveItem(idx, "up")}
-                        >
-                          <ArrowUp className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-6 w-6"
-                          disabled={
-                            idx === canvasLayout.sectionOrder!.length - 1
-                          }
-                          onClick={() => moveItem(idx, "down")}
-                        >
-                          <ArrowDown className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-6 w-6 text-destructive hover:text-destructive"
-                          onClick={() => removeFromOrder(sectionId)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </PopoverContent>
-          </Popover>
+                    );
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
           </>
         )}
 
