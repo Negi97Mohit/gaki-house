@@ -14,6 +14,13 @@
   # The port Netlify will expose for your local dev environment
   port = 8888
 
+# API Proxy Redirect
+[[redirects]]
+  from = "/api/apertus/*"
+  to = "https://api.publicai.co/:splat"
+  status = 200
+  force = true
+
 # This redirect rule is ESSENTIAL for Single-Page Applications (SPAs) like React.
 # It ensures that refreshing the page on a route like '/dashboard' doesn't result in a 404 error.
 [[redirects]]
