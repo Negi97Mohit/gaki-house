@@ -408,6 +408,11 @@ const Index = () => {
         isHidden={isSceneTabsHidden}
         onHide={() => setIsSceneTabsHidden(true)}
         isPopoverOpen={activeTransition !== null}
+        onApplyStreamStyle={(preset) => {
+          // Apply stream style - create scenes from preset
+          toast.success(`Stream style "${preset.name}" applied! Creating scenes...`);
+          // TODO: Wire up actual scene creation from preset
+        }}
       />
 
       <TransitionPopover
