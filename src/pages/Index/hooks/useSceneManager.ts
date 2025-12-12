@@ -16,6 +16,7 @@ import {
 } from "@/types/caption";
 import { zIndex } from "@/lib/zIndex";
 import { StreamStylePreset, DEFAULT_STREAM_SCENES } from "@/types/streamStyle";
+import { generateAllSceneDesigns, GeneratedSceneDesign } from "@/lib/streamSceneDesigns";
 
 const generateSceneId = () => `scene-${Date.now()}`;
 const generateSubsceneId = () => `subscene-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
@@ -581,98 +582,77 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     [updateActiveScene]
   );
 
-  // --- Create subscenes from Stream Style Preset in the active scene ---
-  const createScenesFromStreamStyle = useCallback((preset: StreamStylePreset, canvasPresets: any[]) => {
-    // Pick 6 different presets for variety - shuffle and pick different ones for each scene type
-    const shuffledPresets = [...canvasPresets].sort(() => Math.random() - 0.5);
-    
-    // Map scene types to different preset categories for variety
-    const scenePresetMapping: Record<string, string[]> = {
-      'starting-soon': ['minimal', 'modern', 'tech'],
-      'live': ['gaming', 'tech', 'cinematic'],
-      'brb': ['retro', 'minimal', 'fashion'],
-      'intermission': ['magazine', 'editorial', 'modern'],
-      'ending': ['cinematic', 'minimal', 'elegant'],
-      'offline': ['minimal', 'modern', 'tech'],
-    };
+  // --- Create subscenes from Stream Style Preset using generateAllSceneDesigns ---
+  const createScenesFromStreamStyle = useCallback((preset: StreamStylePreset) => {
+    // Generate unique designs for this theme
+    const generatedDesigns = generateAllSceneDesigns(preset.theme, preset.id);
     
     const newSubscenes: SubSceneState[] = [];
     
-    // Create a subscene for each stream scene type with DIFFERENT presets
-    DEFAULT_STREAM_SCENES.forEach((sceneConfig, index) => {
+    // Create a subscene for each generated design
+    generatedDesigns.forEach((design: GeneratedSceneDesign, index: number) => {
       const subsceneId = generateSubsceneId();
       
-      // Find a preset matching this scene type's preferred categories
-      const preferredCategories = scenePresetMapping[sceneConfig.id] || ['minimal'];
-      let canvasPreset = shuffledPresets.find(p => 
-        preferredCategories.some(cat => p.styleTags?.includes(cat))
-      );
-      
-      // Fallback to a different preset for each scene to ensure variety
-      if (!canvasPreset) {
-        canvasPreset = shuffledPresets[index % shuffledPresets.length];
-      }
-      
-      // Remove used preset from shuffled array to avoid duplicates
-      const presetIndex = shuffledPresets.indexOf(canvasPreset);
-      if (presetIndex > -1) {
-        shuffledPresets.splice(presetIndex, 1);
-      }
-      
-      // Build text overlays from the canvas preset, customizing the first one with scene text
-      const textOverlays: TextOverlayState[] = (canvasPreset?.textOverlays || []).map((overlay: any, i: number) => ({
+      // Convert GeneratedSceneDesign text overlays to TextOverlayState
+      const textOverlays: TextOverlayState[] = design.textOverlays.map((overlay, i) => ({
         id: `${subsceneId}-text-${i}-${Date.now()}`,
-        content: i === 0 ? sceneConfig.defaultText : (overlay.content || ''),
+        content: overlay.content,
         style: {
-          fontFamily: overlay.style?.fontFamily || preset.theme.fonts.heading,
-          fontSize: overlay.style?.fontSize || 32,
-          color: overlay.style?.color || preset.theme.colors.text,
-          backgroundColor: overlay.style?.backgroundColor || 'transparent',
-          position: overlay.layout?.position || { x: 50, y: 50 },
-          shape: 'rounded' as CaptionShape,
-          animation: 'fade' as CaptionAnimation,
-          outline: false,
-          shadow: true,
-          bold: false,
-          italic: false,
-          underline: false,
-          textShadow: overlay.style?.textShadow,
-          rotation: overlay.layout?.rotation || 0,
-          border: !!overlay.style?.border,
-          borderColor: '#FFFFFF',
-          borderWidth: 2,
+          fontFamily: overlay.style.fontFamily,
+          fontSize: overlay.style.fontSize,
+          color: overlay.style.color,
+          backgroundColor: overlay.style.backgroundColor || 'transparent',
+          position: overlay.style.position,
+          shape: overlay.style.shape || 'rounded' as CaptionShape,
+          animation: overlay.style.animation || 'fade' as CaptionAnimation,
+          outline: overlay.style.outline ?? false,
+          shadow: overlay.style.shadow ?? true,
+          bold: overlay.style.bold ?? false,
+          italic: overlay.style.italic ?? false,
+          underline: overlay.style.underline ?? false,
+          textShadow: overlay.style.textShadow,
+          rotation: overlay.style.rotation || 0,
+          border: overlay.style.border ?? false,
+          borderColor: overlay.style.borderColor || '#FFFFFF',
+          borderWidth: overlay.style.borderWidth ?? 0,
+          letterSpacing: overlay.style.letterSpacing,
+          padding: overlay.style.padding,
+          textAlign: overlay.style.textAlign,
         },
         layout: {
-          position: overlay.layout?.position || { x: 50, y: 50 },
-          size: overlay.layout?.size || { width: 80, height: 10 },
-          zIndex: overlay.layout?.zIndex || 15,
-          rotation: overlay.layout?.rotation || 0,
+          position: overlay.layout.position,
+          size: overlay.layout.size,
+          zIndex: overlay.layout.zIndex,
+          rotation: overlay.layout.rotation,
         },
       }));
       
       const newSubscene: SubSceneState = {
         id: subsceneId,
-        name: sceneConfig.name,
+        name: design.name,
         parentId: activeSceneId,
         order: index,
         canvasPreset: {
-          id: canvasPreset?.id || `stream-${sceneConfig.id}`,
-          name: canvasPreset?.name || sceneConfig.name,
-          blankCanvasColor: canvasPreset?.background?.blankCanvasColor || preset.theme.colors.background,
-          backgroundEffect: (canvasPreset?.background?.backgroundEffect as "none" | "blur" | "image") || 'none',
-          layoutMode: (canvasPreset?.pip?.layoutMode || (sceneConfig.hasCamera ? 'pip' : 'solo')) as LayoutMode,
-          cameraShape: (canvasPreset?.pip?.cameraShape || 'rectangle') as CameraShape,
-          pipPosition: sceneConfig.cameraPosition || canvasPreset?.pip?.pipPosition || { x: 75, y: 75 },
-          pipSize: sceneConfig.cameraSize || canvasPreset?.pip?.pipSize || { width: 25, height: 30 },
-          pipBorder: canvasPreset?.pip?.pipBorder || { color: preset.theme.colors.primary, width: 3 },
-          pipShadow: canvasPreset?.pip?.pipShadow,
-          videoFilter: canvasPreset?.effects?.videoFilter || 'none',
+          id: design.id,
+          name: design.name,
+          blankCanvasColor: design.blankCanvasColor,
+          backgroundEffect: design.backgroundEffect,
+          backgroundImageUrl: design.backgroundGradient, // Use gradient as background
+          // Map layoutMode to valid caption LayoutMode type
+          layoutMode: (design.layoutMode === 'corner-floating' || design.layoutMode === 'diagonal-split' || design.layoutMode === 'grid-3x3' || design.layoutMode === 'overlay-full') 
+            ? 'pip' as LayoutMode 
+            : design.layoutMode as LayoutMode,
+          cameraShape: design.cameraShape as CameraShape,
+          pipPosition: design.pipPosition,
+          pipSize: design.pipSize,
+          pipBorder: design.pipBorder,
+          // Convert pipShadow string to object format if needed
+          pipShadow: design.pipShadow 
+            ? { blur: 20, color: design.pipShadow } 
+            : undefined,
+          videoFilter: design.videoFilter,
           textOverlays,
-          canvasAspectRatio: canvasPreset?.canvasAspectRatio || '16:9',
-          isBeautifyEnabled: canvasPreset?.effects?.isBeautifyEnabled,
-          isNeonEdgeEnabled: canvasPreset?.effects?.isNeonEdgeEnabled,
-          neonColor: canvasPreset?.effects?.neonColor,
-          neonIntensity: canvasPreset?.effects?.neonIntensity,
+          canvasAspectRatio: design.canvasAspectRatio,
         },
       };
       
