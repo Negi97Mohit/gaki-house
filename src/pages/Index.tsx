@@ -13,6 +13,7 @@ import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
 import { AnimationPreset } from "@/types/animation";
 import { GSAPPreset } from "@/lib/gsapAnimations";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
+import { CANVAS_PRESETS } from "@/lib/canvasPresets";
 
 import { useRecordingSession } from "@/hooks/useRecordingSession";
 import { useCompositeStream } from "@/hooks/useCompositeStream";
@@ -42,6 +43,7 @@ const Index = () => {
   const {
     scenes,
     activeScene,
+    effectiveScene,
     activeSceneId,
     activeSubsceneId,
     previousScene,
@@ -333,7 +335,7 @@ const Index = () => {
     toast.info("Text element added. Click to edit!");
   }, [activeScene?.captionStyle, updateActiveScene]);
 
-  if (!activeScene) return <div>Loading...</div>;
+  if (!activeScene || !effectiveScene) return <div>Loading...</div>;
 
   return (
     <div
@@ -344,7 +346,7 @@ const Index = () => {
       )}
     >
       <CanvasContainer
-        activeScene={activeScene}
+        activeScene={effectiveScene}
         previousScene={previousScene}
         activeTransition={activeTransition}
         isTransitioning={isTransitioning}
@@ -412,8 +414,8 @@ const Index = () => {
         onHide={() => setIsSceneTabsHidden(true)}
         isPopoverOpen={activeTransition !== null}
         onApplyStreamStyle={(preset) => {
-          const newScenes = createScenesFromStreamStyle(preset);
-          toast.success(`Created ${newScenes.length} scenes from "${preset.name}" style!`);
+          const newSubscenes = createScenesFromStreamStyle(preset, CANVAS_PRESETS);
+          toast.success(`Created ${newSubscenes.length} subscenes from "${preset.name}" style!`);
         }}
       />
 
