@@ -227,12 +227,43 @@ export interface TextOverlayState {
 }
 
 export type TransitionType =
+  // Basic Transitions
   | "none"
-  | "dissolve"
+  | "hard_cut"
+  | "cross_dissolve"
+  | "fade_black"
+  | "fade_white"
+  | "j_cut"
+  | "l_cut"
+  | "match_cut"
+  | "wipe"
+  | "dip_color"
+  | "cross_blur"
+  // Dynamic & Motion-Based
+  | "pan"
+  | "whip_pan"
+  | "zoom_in"
+  | "zoom_out"
+  | "spin"
+  | "push"
   | "slide"
-  | "circle_wipe"
-  | "color_wipe"
-  | "line_wipe";
+  | "object_block"
+  | "speed_ramp"
+  | "mirror"
+  // Trendy & Effect-Driven
+  | "glitch"
+  | "light_leak"
+  | "burn"
+  | "pixelate"
+  | "auto_mask"
+  | "liquid"
+  | "banding_h"
+  | "banding_v"
+  | "film_roll"
+  | "reveal"
+  | "bloom"
+  | "iris_wipe"
+  | "breaker";
 
 export type TransitionEasing =
   | "ease-in"
