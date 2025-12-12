@@ -103,7 +103,7 @@ export const StreamStyleSelector: React.FC<StreamStyleSelectorProps> = ({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-[95vw] max-w-6xl h-[85vh] bg-card border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col"
+          className="w-[90vw] max-w-5xl max-h-[80vh] min-h-[400px] bg-card border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
@@ -136,8 +136,8 @@ export const StreamStyleSelector: React.FC<StreamStyleSelectorProps> = ({
           <div className="flex-1 overflow-hidden">
             {step === 'select' && (
               <ScrollArea className="h-full">
-                <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="p-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     {STREAM_STYLE_PRESETS.map((preset) => (
                       <motion.div
                         key={preset.id}
@@ -153,35 +153,26 @@ export const StreamStyleSelector: React.FC<StreamStyleSelectorProps> = ({
                           onClick={() => handleSelectPreset(preset)}
                         >
                           {/* Preview thumbnail */}
-                          <div className="h-40 relative overflow-hidden">
-                            <StreamSceneRenderer
-                              sceneType="starting-soon"
-                              theme={preset.theme}
-                              className="scale-50 origin-top-left w-[200%] h-[200%]"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+                          <div className="aspect-video relative overflow-hidden bg-muted">
+                            <div className="absolute inset-0 scale-[0.5] origin-top-left w-[200%] h-[200%]">
+                              <StreamSceneRenderer
+                                sceneType="starting-soon"
+                                theme={preset.theme}
+                                className="w-full h-full"
+                              />
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
                           </div>
                           
-                          <CardHeader className="pb-2">
-                            <div className="flex items-center justify-between">
-                              <CardTitle className="text-lg">{preset.name}</CardTitle>
-                              <Badge variant="secondary" className="flex items-center gap-1">
+                          <CardHeader className="p-3 pb-2">
+                            <div className="flex items-center justify-between gap-1">
+                              <CardTitle className="text-sm truncate">{preset.name}</CardTitle>
+                              <Badge variant="secondary" className="flex items-center gap-0.5 text-[10px] px-1.5 py-0">
                                 {getCategoryIcon(preset.theme.category)}
-                                {preset.theme.category}
                               </Badge>
                             </div>
-                            <CardDescription>{preset.description}</CardDescription>
+                            <CardDescription className="text-xs line-clamp-1">{preset.description}</CardDescription>
                           </CardHeader>
-                          
-                          <CardContent>
-                            <div className="flex flex-wrap gap-1">
-                              {DEFAULT_STREAM_SCENES.map((scene) => (
-                                <Badge key={scene.id} variant="outline" className="text-xs">
-                                  {scene.name}
-                                </Badge>
-                              ))}
-                            </div>
-                          </CardContent>
                         </Card>
                       </motion.div>
                     ))}
@@ -191,43 +182,28 @@ export const StreamStyleSelector: React.FC<StreamStyleSelectorProps> = ({
             )}
 
             {step === 'preview' && selectedPreset && (
-              <div className="h-full flex">
-                {/* Scene list sidebar */}
-                <div className="w-64 border-r border-border p-4">
-                  <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">
-                    Scenes
-                  </h3>
-                  <div className="space-y-2">
+              <div className="h-full flex flex-col sm:flex-row">
+                {/* Scene list - horizontal on mobile, sidebar on desktop */}
+                <div className="sm:w-48 border-b sm:border-b-0 sm:border-r border-border p-2 sm:p-3">
+                  <div className="flex sm:flex-col gap-1 overflow-x-auto sm:overflow-x-visible">
                     {DEFAULT_STREAM_SCENES.map((scene) => (
                       <Button
                         key={scene.id}
                         variant={previewScene === scene.id ? 'secondary' : 'ghost'}
-                        className="w-full justify-start gap-2"
+                        size="sm"
+                        className="flex-shrink-0 justify-start gap-1.5 text-xs"
                         onClick={() => setPreviewScene(scene.id)}
                       >
                         {getSceneIcon(scene.id)}
-                        {scene.name}
-                        {scene.hasCamera && (
-                          <Video className="w-3 h-3 ml-auto text-muted-foreground" />
-                        )}
+                        <span className="hidden sm:inline">{scene.name}</span>
                       </Button>
                     ))}
-                  </div>
-
-                  {/* Scene info */}
-                  <div className="mt-6 p-3 bg-muted/50 rounded-lg">
-                    <h4 className="text-sm font-medium mb-1">
-                      {DEFAULT_STREAM_SCENES.find(s => s.id === previewScene)?.name}
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      {DEFAULT_STREAM_SCENES.find(s => s.id === previewScene)?.description}
-                    </p>
                   </div>
                 </div>
 
                 {/* Preview area */}
-                <div className="flex-1 p-6 flex flex-col">
-                  <div className="flex-1 rounded-xl overflow-hidden border border-border shadow-inner">
+                <div className="flex-1 p-3 flex flex-col min-h-0">
+                  <div className="flex-1 rounded-lg overflow-hidden border border-border shadow-inner aspect-video">
                     <StreamSceneRenderer
                       sceneType={previewScene}
                       theme={selectedPreset.theme}
@@ -236,13 +212,13 @@ export const StreamStyleSelector: React.FC<StreamStyleSelectorProps> = ({
                   </div>
                   
                   {/* Color palette preview */}
-                  <div className="mt-4 flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground">Colors:</span>
-                    <div className="flex gap-2">
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Colors:</span>
+                    <div className="flex gap-1">
                       {Object.entries(selectedPreset.theme.colors).slice(0, 5).map(([name, color]) => (
                         <div
                           key={name}
-                          className="w-8 h-8 rounded-full border border-border"
+                          className="w-5 h-5 rounded-full border border-border"
                           style={{ background: color }}
                           title={name}
                         />
