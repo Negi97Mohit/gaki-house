@@ -64,6 +64,9 @@ const Index = () => {
     handleSubsceneRename,
     handleToggleExpand,
     handleDuplicateScene,
+    // Stream Style
+    createScenesFromStreamStyle,
+    // Undo/Redo
     undo,
     redo,
     canUndo,
@@ -409,9 +412,8 @@ const Index = () => {
         onHide={() => setIsSceneTabsHidden(true)}
         isPopoverOpen={activeTransition !== null}
         onApplyStreamStyle={(preset) => {
-          // Apply stream style - create scenes from preset
-          toast.success(`Stream style "${preset.name}" applied! Creating scenes...`);
-          // TODO: Wire up actual scene creation from preset
+          const newScenes = createScenesFromStreamStyle(preset);
+          toast.success(`Created ${newScenes.length} scenes from "${preset.name}" style!`);
         }}
       />
 

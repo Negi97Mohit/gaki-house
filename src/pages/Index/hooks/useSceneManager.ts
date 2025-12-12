@@ -10,6 +10,7 @@ import {
   CanvasLayoutState,
 } from "@/types/caption";
 import { zIndex } from "@/lib/zIndex";
+import { StreamStylePreset, DEFAULT_STREAM_SCENES } from "@/types/streamStyle";
 
 const generateSceneId = () => `scene-${Date.now()}`;
 const generateSubsceneId = () => `subscene-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
@@ -539,6 +540,59 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     [updateActiveScene]
   );
 
+  // --- Create scenes from Stream Style Preset ---
+  const createScenesFromStreamStyle = useCallback((preset: StreamStylePreset) => {
+    const newScenes: SceneState[] = [];
+    const newTransitions: SceneTransition[] = [];
+    
+    // Create a scene for each stream scene type in the preset
+    DEFAULT_STREAM_SCENES.forEach((sceneConfig, index) => {
+      const sceneId = `stream-${preset.id}-${sceneConfig.id}-${Date.now()}-${index}`;
+      
+      const newScene: SceneState = {
+        ...createDefaultScene(sceneConfig.name),
+        id: sceneId,
+        name: `${preset.name} - ${sceneConfig.name}`,
+        // Apply theme colors
+        blankCanvasColor: preset.theme.colors.background,
+        captionStyle: {
+          ...DEFAULT_CAPTION_STYLE,
+          fontFamily: preset.theme.fonts.heading,
+          color: preset.theme.colors.text,
+          backgroundColor: preset.theme.colors.primary,
+        },
+      };
+      
+      newScenes.push(newScene);
+      
+      // Create transition to previous scene
+      if (index > 0) {
+        newTransitions.push({
+          id: generateTransitionId(),
+          fromSceneId: newScenes[index - 1].id,
+          toSceneId: sceneId,
+          type: 'cross_dissolve',
+          durationMs: 500,
+          animationIn: 'ease-in-out',
+          animationOut: 'ease-in-out',
+          overlayEnabled: false,
+        });
+      }
+    });
+    
+    // Add all scenes and transitions
+    setScenes(prev => [...prev, ...newScenes]);
+    setSceneTransitions(prev => [...prev, ...newTransitions]);
+    
+    // Select the first new scene
+    if (newScenes.length > 0) {
+      setActiveSceneId(newScenes[0].id);
+      setActiveSubsceneId(null);
+    }
+    
+    return newScenes;
+  }, []);
+
   return {
     scenes,
     activeScene,
@@ -565,6 +619,8 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     handleSubsceneRename,
     handleToggleExpand,
     handleDuplicateScene,
+    // Stream Style
+    createScenesFromStreamStyle,
     // Undo/Redo/Reset
     undo,
     redo,
