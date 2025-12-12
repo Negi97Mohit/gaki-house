@@ -441,6 +441,19 @@ export interface SubSceneState {
   parentId: string;
   order: number;
   transitionToNext?: SceneTransition;
+  // Canvas preset data for subscene
+  presetId?: string;
+  blankCanvasColor?: string;
+  backgroundEffect?: "none" | "blur" | "image";
+  backgroundImageUrl?: string | null;
+  textOverlays?: TextOverlayState[];
+  pipPosition?: { x: number; y: number };
+  pipSize?: { width: number; height: number };
+  pipBorder?: { color: string; width: number };
+  pipShadow?: { blur: number; color: string };
+  layoutMode?: LayoutMode;
+  cameraShape?: CameraShape;
+  videoFilter?: string;
 }
 
 // --- SCENE STATE ---

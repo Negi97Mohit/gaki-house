@@ -381,6 +381,34 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
   // --- Subscene Management ---
   const [activeSubsceneId, setActiveSubsceneId] = useState<string | undefined>(undefined);
 
+  // Compute effective scene that merges subscene settings when subscene is active
+  const effectiveScene = useMemo(() => {
+    const scene = scenes.find((s) => s.id === activeSceneId);
+    if (!scene) return scene!;
+    
+    // If no active subscene, return scene as-is
+    if (!activeSubsceneId) return scene;
+    
+    // Find the active subscene
+    const subscene = scene.subscenes?.find(s => s.id === activeSubsceneId);
+    if (!subscene) return scene;
+    
+    // Merge subscene settings into scene (subscene overrides take precedence)
+    return {
+      ...scene,
+      blankCanvasColor: subscene.blankCanvasColor ?? scene.blankCanvasColor,
+      backgroundEffect: subscene.backgroundEffect ?? scene.backgroundEffect,
+      backgroundImageUrl: subscene.backgroundImageUrl ?? scene.backgroundImageUrl,
+      layoutMode: subscene.layoutMode ?? scene.layoutMode,
+      cameraShape: subscene.cameraShape ?? scene.cameraShape,
+      pipPosition: subscene.pipPosition ?? scene.pipPosition,
+      pipSize: subscene.pipSize ?? scene.pipSize,
+      pipBorder: subscene.pipBorder ?? scene.pipBorder,
+      pipShadow: subscene.pipShadow ?? scene.pipShadow,
+      videoFilter: subscene.videoFilter ?? scene.videoFilter,
+      textOverlays: subscene.textOverlays ?? scene.textOverlays,
+    };
+  }, [scenes, activeSceneId, activeSubsceneId]);
   const handleAddSubscene = useCallback((parentId: string) => {
     setScenes((prev) => {
       return prev.map((scene) => {
@@ -540,62 +568,77 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     [updateActiveScene]
   );
 
-  // --- Create scenes from Stream Style Preset ---
-  const createScenesFromStreamStyle = useCallback((preset: StreamStylePreset) => {
-    const newScenes: SceneState[] = [];
-    const newTransitions: SceneTransition[] = [];
+  // --- Create subscenes from Stream Style Preset in the active scene ---
+  const createScenesFromStreamStyle = useCallback((preset: StreamStylePreset, canvasPresets: any[]) => {
+    // Get a selection of canvas presets to use for the subscenes
+    // We'll pick presets that match the theme category or use first available ones
+    const categoryPresets = canvasPresets.filter(p => 
+      p.styleTags?.includes(preset.theme.category) || 
+      p.styleTags?.includes('minimal') ||
+      p.styleTags?.includes('modern')
+    );
+    const presetsToUse = categoryPresets.length >= 6 ? categoryPresets : canvasPresets;
     
-    // Create a scene for each stream scene type in the preset
+    const newSubscenes: SubSceneState[] = [];
+    
+    // Create a subscene for each stream scene type
     DEFAULT_STREAM_SCENES.forEach((sceneConfig, index) => {
-      const sceneId = `stream-${preset.id}-${sceneConfig.id}-${Date.now()}-${index}`;
+      const subsceneId = generateSubsceneId();
+      const canvasPreset = presetsToUse[index % presetsToUse.length];
       
-      const newScene: SceneState = {
-        ...createDefaultScene(sceneConfig.name),
-        id: sceneId,
-        name: `${preset.name} - ${sceneConfig.name}`,
-        // Apply theme colors
-        blankCanvasColor: preset.theme.colors.background,
-        captionStyle: {
-          ...DEFAULT_CAPTION_STYLE,
-          fontFamily: preset.theme.fonts.heading,
-          color: preset.theme.colors.text,
-          backgroundColor: preset.theme.colors.primary,
-        },
+      const newSubscene: SubSceneState = {
+        id: subsceneId,
+        name: sceneConfig.name,
+        parentId: activeSceneId,
+        order: index,
+        presetId: canvasPreset?.id,
+        blankCanvasColor: canvasPreset?.background?.blankCanvasColor || preset.theme.colors.background,
+        backgroundEffect: canvasPreset?.background?.backgroundEffect || 'none',
+        layoutMode: canvasPreset?.pip?.layoutMode || (sceneConfig.hasCamera ? 'pip' : 'solo'),
+        cameraShape: canvasPreset?.pip?.cameraShape || 'rectangle',
+        pipPosition: sceneConfig.cameraPosition || canvasPreset?.pip?.pipPosition || { x: 75, y: 75 },
+        pipSize: sceneConfig.cameraSize || canvasPreset?.pip?.pipSize || { width: 25, height: 30 },
+        pipBorder: canvasPreset?.pip?.pipBorder || { color: preset.theme.colors.primary, width: 3 },
+        pipShadow: canvasPreset?.pip?.pipShadow,
+        videoFilter: canvasPreset?.effects?.videoFilter || 'none',
+        textOverlays: canvasPreset?.textOverlays?.map((overlay: any, i: number) => ({
+          id: `${subsceneId}-text-${i}`,
+          content: i === 0 ? sceneConfig.defaultText : (sceneConfig.subText || overlay.content),
+          style: {
+            ...overlay.style,
+            fontFamily: preset.theme.fonts.heading,
+          },
+          layout: overlay.layout,
+        })) || [],
       };
       
-      newScenes.push(newScene);
-      
-      // Create transition to previous scene
-      if (index > 0) {
-        newTransitions.push({
-          id: generateTransitionId(),
-          fromSceneId: newScenes[index - 1].id,
-          toSceneId: sceneId,
-          type: 'cross_dissolve',
-          durationMs: 500,
-          animationIn: 'ease-in-out',
-          animationOut: 'ease-in-out',
-          overlayEnabled: false,
-        });
-      }
+      newSubscenes.push(newSubscene);
     });
     
-    // Add all scenes and transitions
-    setScenes(prev => [...prev, ...newScenes]);
-    setSceneTransitions(prev => [...prev, ...newTransitions]);
+    // Add subscenes to the active scene
+    setScenes(prev => prev.map(scene => {
+      if (scene.id !== activeSceneId) return scene;
+      
+      const existingSubscenes = scene.subscenes || [];
+      return {
+        ...scene,
+        subscenes: [...existingSubscenes, ...newSubscenes],
+        isExpanded: true,
+      };
+    }));
     
-    // Select the first new scene
-    if (newScenes.length > 0) {
-      setActiveSceneId(newScenes[0].id);
-      setActiveSubsceneId(null);
+    // Select the first new subscene
+    if (newSubscenes.length > 0) {
+      setActiveSubsceneId(newSubscenes[0].id);
     }
     
-    return newScenes;
-  }, []);
+    return newSubscenes;
+  }, [activeSceneId]);
 
   return {
     scenes,
     activeScene,
+    effectiveScene,
     activeSceneId,
     activeSubsceneId,
     previousScene,
