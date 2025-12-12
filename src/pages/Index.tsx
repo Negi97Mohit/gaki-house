@@ -414,7 +414,7 @@ const Index = () => {
         onHide={() => setIsSceneTabsHidden(true)}
         isPopoverOpen={activeTransition !== null}
         onApplyStreamStyle={(preset) => {
-          const newSubscenes = createScenesFromStreamStyle(preset, CANVAS_PRESETS);
+          const newSubscenes = createScenesFromStreamStyle(preset);
           toast.success(`Created ${newSubscenes.length} subscenes from "${preset.name}" style!`);
         }}
       />
