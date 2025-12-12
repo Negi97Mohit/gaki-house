@@ -5,17 +5,14 @@ export interface CanvasLayoutTemplate {
   id: string;
   name: string;
   description: string;
-  // icon: React.ReactNode;
   sections: Array<{
     id: string;
     name: string;
+    description?: string;
     style: React.CSSProperties;
   }>;
 }
 
-/**
- * Constant definition for the Expanding Cards layout
- */
 export const EXPANDING_CARDS_TEMPLATE: CanvasLayoutTemplate = {
   id: "expanding-cards",
   name: "Expanding Cards",
@@ -84,10 +81,6 @@ export const EXPANDING_CARDS_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
-/**
- * Constant definition for the Gradient Slider layout
- * Updated: Removed images, added gradients, designed for white background.
- */
 export const SLIDER_TEMPLATE: CanvasLayoutTemplate = {
   id: "slider-layout",
   name: "Gradient Slider",
@@ -157,9 +150,58 @@ export const SLIDER_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
-/**
- * In-memory cache for layout templates
- */
+export const VERTICAL_SLIDER_TEMPLATE: CanvasLayoutTemplate = {
+  id: "vertical-slider",
+  name: "Double Vertical Slider",
+  description: "Split screen slider with reverse scrolling",
+  sections: [
+    // --- PAIR 1 ---
+    {
+      id: "v-slide-1-left",
+      name: "Slide 1 Left",
+      style: { backgroundColor: "#FD3555", color: "#ffffff" },
+    },
+    {
+      id: "v-slide-1-right",
+      name: "Slide 1 Right",
+      style: { backgroundColor: "#FFE4E8", color: "#000000" },
+    },
+    // --- PAIR 2 ---
+    {
+      id: "v-slide-2-left",
+      name: "Slide 2 Left",
+      style: { backgroundColor: "#2A86BA", color: "#ffffff" },
+    },
+    {
+      id: "v-slide-2-right",
+      name: "Slide 2 Right",
+      style: { backgroundColor: "#D4EFFC", color: "#000000" },
+    },
+    // --- PAIR 3 ---
+    {
+      id: "v-slide-3-left",
+      name: "Slide 3 Left",
+      style: { backgroundColor: "#252E33", color: "#ffffff" },
+    },
+    {
+      id: "v-slide-3-right",
+      name: "Slide 3 Right",
+      style: { backgroundColor: "#E6E6E6", color: "#000000" },
+    },
+    // --- PAIR 4 ---
+    {
+      id: "v-slide-4-left",
+      name: "Slide 4 Left",
+      style: { backgroundColor: "#FFB866", color: "#ffffff" },
+    },
+    {
+      id: "v-slide-4-right",
+      name: "Slide 4 Right",
+      style: { backgroundColor: "#FFF0D6", color: "#000000" },
+    },
+  ],
+};
+
 let templateCache: {
   list: CanvasLayoutTemplate[];
   record: Record<string, CanvasLayoutTemplate>;
@@ -191,6 +233,9 @@ export async function getLayoutTemplates(): Promise<{
     if (!list.find((t) => t.id === "slider-layout")) {
       list.push(SLIDER_TEMPLATE);
     }
+    if (!list.find((t) => t.id === "vertical-slider")) {
+      list.push(VERTICAL_SLIDER_TEMPLATE);
+    }
 
     const record = list.reduce((acc, template) => {
       acc[template.id] = template;
@@ -201,10 +246,15 @@ export async function getLayoutTemplates(): Promise<{
     return templateCache;
   } catch (error) {
     console.error("Error loading layout templates:", error);
-    const list = [EXPANDING_CARDS_TEMPLATE, SLIDER_TEMPLATE];
+    const list = [
+      EXPANDING_CARDS_TEMPLATE,
+      SLIDER_TEMPLATE,
+      VERTICAL_SLIDER_TEMPLATE,
+    ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
       "slider-layout": SLIDER_TEMPLATE,
+      "vertical-slider": VERTICAL_SLIDER_TEMPLATE,
     };
     return { list, record };
   }
