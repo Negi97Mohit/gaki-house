@@ -1,3 +1,4 @@
+// src/components/CanvasGridLayout.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -73,6 +74,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // State to track the currently expanded card for the specific layout
+  const [activeCardId, setActiveCardId] = useState<string>("card-1");
+
   const [templates, setTemplates] = useState<Record<
     string,
     CanvasLayoutTemplate
@@ -120,6 +124,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   const template =
     templates && (templates[layout.templateId] || templates.default);
 
+  // Check if we are in the Expanding Cards mode
+  const isExpandingCards = layout.templateId === "expanding-cards";
+
   // Use the custom hook for resizing
   const { resizing, handleResizeStart, getResizeEdges } = useGridResizing({
     layout,
@@ -145,7 +152,14 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
   };
 
   return (
-    <div ref={containerRef} className="relative w-full h-full overflow-hidden">
+    <div
+      ref={containerRef}
+      className={cn(
+        "relative w-full h-full overflow-hidden",
+        // Switch to flexbox container if in Expanding Cards mode
+        isExpandingCards && "flex items-center justify-center px-4 gap-4"
+      )}
+    >
       {template.sections.map((templateSection) => {
         const section =
           layout.sections.find((s) => s.id === templateSection.id) ||
@@ -168,28 +182,63 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
 
         const isCarousel = layout.templateId?.includes("carousel");
 
+        // Expanding Cards Logic
+        const isActiveCard = activeCardId === section.id;
+
         return (
           <div
             key={templateSection.id}
             className={cn(
-              "absolute border border-border/20",
-              "hover:border-primary/60 hover:shadow-lg hover:shadow-primary/20",
-              "group",
-              // Carousel animation - subtle cross-fade
+              // Base classes
+              "overflow-hidden border border-border/20",
+              "group transition-all duration-500 ease-in-out",
+
+              // Standard Layout Logic
+              !isExpandingCards && "absolute",
+              !isExpandingCards &&
+                "hover:border-primary/60 hover:shadow-lg hover:shadow-primary/20",
+
+              // Carousel Logic
               isCarousel && "transition-all duration-500 ease-in-out",
               isCarousel && isTransitioning && "opacity-70 scale-[0.98]",
               isCarousel && !isTransitioning && "opacity-100 scale-100",
-              // Ensure this line is active
+
+              // Expanding Cards Logic
+              isExpandingCards &&
+                "relative rounded-[24px] cursor-pointer shadow-md h-[90%]",
+              isExpandingCards && (isActiveCard ? "flex-[5]" : "flex-[0.5]"),
+              isExpandingCards &&
+                !isActiveCard &&
+                "opacity-80 hover:opacity-100",
+
+              // Active Sequence Highlight
               section.id === activeSequenceId &&
-              "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
+                "border-red-500/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] z-10"
             )}
-            style={{
-              ...sectionStyle,
-              overflow: "hidden",
-            }}
+            style={
+              !isExpandingCards
+                ? { ...sectionStyle, overflow: "hidden" }
+                : undefined // Let Flexbox handle positioning
+            }
             onMouseEnter={() => setHoveredSectionId(templateSection.id)}
             onMouseLeave={() => setHoveredSectionId(null)}
+            // Click to expand in card mode
+            onClick={() => isExpandingCards && setActiveCardId(section.id)}
           >
+            {/* Title Overlay for Expanding Cards (visible when active) */}
+            {isExpandingCards && (
+              <div
+                className={cn(
+                  "absolute bottom-6 left-6 z-20 transition-opacity duration-300 delay-200 pointer-events-none",
+                  isActiveCard ? "opacity-100" : "opacity-0"
+                )}
+              >
+                <h3 className="text-xl font-bold text-white drop-shadow-md bg-black/20 px-3 py-1 rounded backdrop-blur-sm">
+                  {templateSection.name}
+                </h3>
+              </div>
+            )}
+
             <div className="relative w-full h-full">
               <GridSectionRenderer
                 section={section}
@@ -209,53 +258,53 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                 backgroundEffect={backgroundEffect}
               />
 
-              {/* Resize handles */}
-              {edges.right && (
+              {/* Resize handles - Hide in Expanding Cards mode */}
+              {!isExpandingCards && edges.right && (
                 <div
                   className={cn(
                     "absolute top-0 right-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 w-2"
+                      "bg-primary/60 w-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "right", e)
                   }
                 />
               )}
-              {edges.bottom && (
+              {!isExpandingCards && edges.bottom && (
                 <div
                   className={cn(
                     "absolute bottom-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 h-2"
+                      "bg-primary/60 h-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "bottom", e)
                   }
                 />
               )}
-              {edges.left && (
+              {!isExpandingCards && edges.left && (
                 <div
                   className={cn(
                     "absolute top-0 left-0 w-1 h-full cursor-ew-resize z-50",
                     "hover:w-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 w-2"
+                      "bg-primary/60 w-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "left", e)
                   }
                 />
               )}
-              {edges.top && (
+              {!isExpandingCards && edges.top && (
                 <div
                   className={cn(
                     "absolute top-0 left-0 w-full h-1 cursor-ns-resize z-50",
                     "hover:h-2 hover:bg-primary/40 transition-all",
                     resizing?.sectionId === templateSection.id &&
-                    "bg-primary/60 h-2"
+                      "bg-primary/60 h-2"
                   )}
                   onMouseDown={(e) =>
                     handleResizeStart(templateSection.id, "top", e)
@@ -273,19 +322,19 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   onColorChange={
                     section.content.type === "color"
                       ? (color) =>
-                        onSectionContentChange(section.id, {
-                          type: "color",
-                          color,
-                        })
+                          onSectionContentChange(section.id, {
+                            type: "color",
+                            color,
+                          })
                       : undefined
                   }
                   onImageChange={
                     section.content.type === "image"
                       ? (url) =>
-                        onSectionContentChange(section.id, {
-                          type: "image",
-                          src: url,
-                        })
+                          onSectionContentChange(section.id, {
+                            type: "image",
+                            src: url,
+                          })
                       : undefined
                   }
                   availableFiles={fileOverlays.map((f) => ({
@@ -302,7 +351,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   onTextSelect={(textId) =>
                     onSectionContentChange(section.id, { type: "text", textId })
                   }
-                  // UPDATED: Pass order prop and handler using onLayoutUpdate
                   orderIndex={displayOrder}
                   onToggleOrder={() => {
                     if (onLayoutUpdate) {
