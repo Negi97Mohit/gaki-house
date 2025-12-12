@@ -441,19 +441,27 @@ export interface SubSceneState {
   parentId: string;
   order: number;
   transitionToNext?: SceneTransition;
-  // Canvas preset data for subscene
-  presetId?: string;
-  blankCanvasColor?: string;
-  backgroundEffect?: "none" | "blur" | "image";
-  backgroundImageUrl?: string | null;
-  textOverlays?: TextOverlayState[];
-  pipPosition?: { x: number; y: number };
-  pipSize?: { width: number; height: number };
-  pipBorder?: { color: string; width: number };
-  pipShadow?: { blur: number; color: string };
-  layoutMode?: LayoutMode;
-  cameraShape?: CameraShape;
-  videoFilter?: string;
+  // Full canvas preset reference for this subscene
+  canvasPreset?: {
+    id: string;
+    name: string;
+    blankCanvasColor: string;
+    backgroundEffect: "none" | "blur" | "image";
+    backgroundImageUrl?: string | null;
+    layoutMode: LayoutMode;
+    cameraShape: CameraShape;
+    pipPosition: { x: number; y: number };
+    pipSize: { width: number; height: number };
+    pipBorder?: { color: string; width: number };
+    pipShadow?: { blur: number; color: string };
+    videoFilter: string;
+    textOverlays: TextOverlayState[];
+    canvasAspectRatio?: string;
+    isBeautifyEnabled?: boolean;
+    isNeonEdgeEnabled?: boolean;
+    neonColor?: string;
+    neonIntensity?: number;
+  };
 }
 
 // --- SCENE STATE ---

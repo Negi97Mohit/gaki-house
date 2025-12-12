@@ -5,6 +5,11 @@ import {
   SceneTransition,
   SubSceneState,
   CaptionStyle,
+  CaptionShape,
+  CaptionAnimation,
+  TextOverlayState,
+  LayoutMode,
+  CameraShape,
   DEFAULT_LAYOUT_STATE,
   DEFAULT_CAMERA_STATE,
   CanvasLayoutState,
@@ -381,7 +386,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
   // --- Subscene Management ---
   const [activeSubsceneId, setActiveSubsceneId] = useState<string | undefined>(undefined);
 
-  // Compute effective scene that merges subscene settings when subscene is active
+  // Compute effective scene that merges subscene canvas preset when subscene is active
   const effectiveScene = useMemo(() => {
     const scene = scenes.find((s) => s.id === activeSceneId);
     if (!scene) return scene!;
@@ -391,24 +396,32 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     
     // Find the active subscene
     const subscene = scene.subscenes?.find(s => s.id === activeSubsceneId);
-    if (!subscene) return scene;
+    if (!subscene || !subscene.canvasPreset) return scene;
     
-    // Merge subscene settings into scene (subscene overrides take precedence)
+    const preset = subscene.canvasPreset;
+    
+    // Apply full canvas preset to scene
     return {
       ...scene,
-      blankCanvasColor: subscene.blankCanvasColor ?? scene.blankCanvasColor,
-      backgroundEffect: subscene.backgroundEffect ?? scene.backgroundEffect,
-      backgroundImageUrl: subscene.backgroundImageUrl ?? scene.backgroundImageUrl,
-      layoutMode: subscene.layoutMode ?? scene.layoutMode,
-      cameraShape: subscene.cameraShape ?? scene.cameraShape,
-      pipPosition: subscene.pipPosition ?? scene.pipPosition,
-      pipSize: subscene.pipSize ?? scene.pipSize,
-      pipBorder: subscene.pipBorder ?? scene.pipBorder,
-      pipShadow: subscene.pipShadow ?? scene.pipShadow,
-      videoFilter: subscene.videoFilter ?? scene.videoFilter,
-      textOverlays: subscene.textOverlays ?? scene.textOverlays,
+      blankCanvasColor: preset.blankCanvasColor,
+      backgroundEffect: preset.backgroundEffect,
+      backgroundImageUrl: preset.backgroundImageUrl ?? scene.backgroundImageUrl,
+      layoutMode: preset.layoutMode,
+      cameraShape: preset.cameraShape,
+      pipPosition: preset.pipPosition,
+      pipSize: preset.pipSize,
+      pipBorder: preset.pipBorder ?? scene.pipBorder,
+      pipShadow: preset.pipShadow ?? scene.pipShadow,
+      videoFilter: preset.videoFilter,
+      textOverlays: preset.textOverlays,
+      canvasAspectRatio: preset.canvasAspectRatio ?? scene.canvasAspectRatio,
+      isBeautifyEnabled: preset.isBeautifyEnabled ?? scene.isBeautifyEnabled,
+      isNeonEdgeEnabled: preset.isNeonEdgeEnabled ?? scene.isNeonEdgeEnabled,
+      neonColor: preset.neonColor ?? scene.neonColor,
+      neonIntensity: preset.neonIntensity ?? scene.neonIntensity,
     };
   }, [scenes, activeSceneId, activeSubsceneId]);
+
   const handleAddSubscene = useCallback((parentId: string) => {
     setScenes((prev) => {
       return prev.map((scene) => {
@@ -570,46 +583,97 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
 
   // --- Create subscenes from Stream Style Preset in the active scene ---
   const createScenesFromStreamStyle = useCallback((preset: StreamStylePreset, canvasPresets: any[]) => {
-    // Get a selection of canvas presets to use for the subscenes
-    // We'll pick presets that match the theme category or use first available ones
-    const categoryPresets = canvasPresets.filter(p => 
-      p.styleTags?.includes(preset.theme.category) || 
-      p.styleTags?.includes('minimal') ||
-      p.styleTags?.includes('modern')
-    );
-    const presetsToUse = categoryPresets.length >= 6 ? categoryPresets : canvasPresets;
+    // Pick 6 different presets for variety - shuffle and pick different ones for each scene type
+    const shuffledPresets = [...canvasPresets].sort(() => Math.random() - 0.5);
+    
+    // Map scene types to different preset categories for variety
+    const scenePresetMapping: Record<string, string[]> = {
+      'starting-soon': ['minimal', 'modern', 'tech'],
+      'live': ['gaming', 'tech', 'cinematic'],
+      'brb': ['retro', 'minimal', 'fashion'],
+      'intermission': ['magazine', 'editorial', 'modern'],
+      'ending': ['cinematic', 'minimal', 'elegant'],
+      'offline': ['minimal', 'modern', 'tech'],
+    };
     
     const newSubscenes: SubSceneState[] = [];
     
-    // Create a subscene for each stream scene type
+    // Create a subscene for each stream scene type with DIFFERENT presets
     DEFAULT_STREAM_SCENES.forEach((sceneConfig, index) => {
       const subsceneId = generateSubsceneId();
-      const canvasPreset = presetsToUse[index % presetsToUse.length];
+      
+      // Find a preset matching this scene type's preferred categories
+      const preferredCategories = scenePresetMapping[sceneConfig.id] || ['minimal'];
+      let canvasPreset = shuffledPresets.find(p => 
+        preferredCategories.some(cat => p.styleTags?.includes(cat))
+      );
+      
+      // Fallback to a different preset for each scene to ensure variety
+      if (!canvasPreset) {
+        canvasPreset = shuffledPresets[index % shuffledPresets.length];
+      }
+      
+      // Remove used preset from shuffled array to avoid duplicates
+      const presetIndex = shuffledPresets.indexOf(canvasPreset);
+      if (presetIndex > -1) {
+        shuffledPresets.splice(presetIndex, 1);
+      }
+      
+      // Build text overlays from the canvas preset, customizing the first one with scene text
+      const textOverlays: TextOverlayState[] = (canvasPreset?.textOverlays || []).map((overlay: any, i: number) => ({
+        id: `${subsceneId}-text-${i}-${Date.now()}`,
+        content: i === 0 ? sceneConfig.defaultText : (overlay.content || ''),
+        style: {
+          fontFamily: overlay.style?.fontFamily || preset.theme.fonts.heading,
+          fontSize: overlay.style?.fontSize || 32,
+          color: overlay.style?.color || preset.theme.colors.text,
+          backgroundColor: overlay.style?.backgroundColor || 'transparent',
+          position: overlay.layout?.position || { x: 50, y: 50 },
+          shape: 'rounded' as CaptionShape,
+          animation: 'fade' as CaptionAnimation,
+          outline: false,
+          shadow: true,
+          bold: false,
+          italic: false,
+          underline: false,
+          textShadow: overlay.style?.textShadow,
+          rotation: overlay.layout?.rotation || 0,
+          border: !!overlay.style?.border,
+          borderColor: '#FFFFFF',
+          borderWidth: 2,
+        },
+        layout: {
+          position: overlay.layout?.position || { x: 50, y: 50 },
+          size: overlay.layout?.size || { width: 80, height: 10 },
+          zIndex: overlay.layout?.zIndex || 15,
+          rotation: overlay.layout?.rotation || 0,
+        },
+      }));
       
       const newSubscene: SubSceneState = {
         id: subsceneId,
         name: sceneConfig.name,
         parentId: activeSceneId,
         order: index,
-        presetId: canvasPreset?.id,
-        blankCanvasColor: canvasPreset?.background?.blankCanvasColor || preset.theme.colors.background,
-        backgroundEffect: canvasPreset?.background?.backgroundEffect || 'none',
-        layoutMode: canvasPreset?.pip?.layoutMode || (sceneConfig.hasCamera ? 'pip' : 'solo'),
-        cameraShape: canvasPreset?.pip?.cameraShape || 'rectangle',
-        pipPosition: sceneConfig.cameraPosition || canvasPreset?.pip?.pipPosition || { x: 75, y: 75 },
-        pipSize: sceneConfig.cameraSize || canvasPreset?.pip?.pipSize || { width: 25, height: 30 },
-        pipBorder: canvasPreset?.pip?.pipBorder || { color: preset.theme.colors.primary, width: 3 },
-        pipShadow: canvasPreset?.pip?.pipShadow,
-        videoFilter: canvasPreset?.effects?.videoFilter || 'none',
-        textOverlays: canvasPreset?.textOverlays?.map((overlay: any, i: number) => ({
-          id: `${subsceneId}-text-${i}`,
-          content: i === 0 ? sceneConfig.defaultText : (sceneConfig.subText || overlay.content),
-          style: {
-            ...overlay.style,
-            fontFamily: preset.theme.fonts.heading,
-          },
-          layout: overlay.layout,
-        })) || [],
+        canvasPreset: {
+          id: canvasPreset?.id || `stream-${sceneConfig.id}`,
+          name: canvasPreset?.name || sceneConfig.name,
+          blankCanvasColor: canvasPreset?.background?.blankCanvasColor || preset.theme.colors.background,
+          backgroundEffect: (canvasPreset?.background?.backgroundEffect as "none" | "blur" | "image") || 'none',
+          layoutMode: (canvasPreset?.pip?.layoutMode || (sceneConfig.hasCamera ? 'pip' : 'solo')) as LayoutMode,
+          cameraShape: (canvasPreset?.pip?.cameraShape || 'rectangle') as CameraShape,
+          pipPosition: sceneConfig.cameraPosition || canvasPreset?.pip?.pipPosition || { x: 75, y: 75 },
+          pipSize: sceneConfig.cameraSize || canvasPreset?.pip?.pipSize || { width: 25, height: 30 },
+          pipBorder: canvasPreset?.pip?.pipBorder || { color: preset.theme.colors.primary, width: 3 },
+          pipShadow: canvasPreset?.pip?.pipShadow,
+          videoFilter: canvasPreset?.effects?.videoFilter || 'none',
+          textOverlays,
+          canvasAspectRatio: canvasPreset?.canvasAspectRatio || '16:9',
+          isBeautifyEnabled: canvasPreset?.effects?.isBeautifyEnabled,
+          isNeonEdgeEnabled: canvasPreset?.effects?.isNeonEdgeEnabled,
+          neonColor: canvasPreset?.effects?.neonColor,
+          neonIntensity: canvasPreset?.effects?.neonIntensity,
+        },
       };
       
       newSubscenes.push(newSubscene);
