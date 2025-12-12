@@ -11,6 +11,7 @@ import {
   GitBranch,
   MoreHorizontal,
   Copy,
+  Sparkles,
 } from "lucide-react";
 import { SceneState, SceneTransition, SubSceneState } from "@/types/caption";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { StreamStyleSelector } from "@/components/stream-scenes";
+import { StreamStylePreset } from "@/types/streamStyle";
 
 const TransitionIcon = () => (
   <svg
@@ -72,6 +75,7 @@ interface SceneTabsProps {
   isHidden: boolean;
   onHide: () => void;
   isPopoverOpen?: boolean; // Prevent hiding when popover is open
+  onApplyStreamStyle?: (preset: StreamStylePreset) => void;
 }
 
 export const SceneTabs: React.FC<SceneTabsProps> = ({
@@ -94,6 +98,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   isHidden,
   onHide,
   isPopoverOpen = false,
+  onApplyStreamStyle,
 }) => {
   const [dragState, setDragState] = useState<{
     type: 'scene' | 'subscene';
@@ -110,6 +115,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   const [editingName, setEditingName] = useState("");
   const [showTopScroll, setShowTopScroll] = useState(false);
   const [showBottomScroll, setShowBottomScroll] = useState(false);
+  const [isStreamStyleSelectorOpen, setIsStreamStyleSelectorOpen] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -284,13 +290,22 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
               Scenes
             </span>
           </div>
-          <button
-            className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors"
-            onClick={onHide}
-            title="Hide Scenes"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              className="w-6 h-6 flex items-center justify-center text-primary hover:text-primary/80 rounded hover:bg-primary/10 transition-colors"
+              onClick={() => setIsStreamStyleSelectorOpen(true)}
+              title="Stream Styles"
+            >
+              <Sparkles className="w-4 h-4" />
+            </button>
+            <button
+              className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors"
+              onClick={onHide}
+              title="Hide Scenes"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Scroll Up */}
@@ -677,6 +692,16 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
           </Button>
         </div>
       </div>
+
+      {/* Stream Style Selector Dialog */}
+      <StreamStyleSelector
+        isOpen={isStreamStyleSelectorOpen}
+        onClose={() => setIsStreamStyleSelectorOpen(false)}
+        onApplyStyle={(preset) => {
+          onApplyStreamStyle?.(preset);
+          setIsStreamStyleSelectorOpen(false);
+        }}
+      />
     </div>
   );
 };
