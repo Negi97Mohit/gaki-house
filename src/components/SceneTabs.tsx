@@ -71,6 +71,7 @@ interface SceneTabsProps {
   onDuplicateScene?: (sceneId: string) => void;
   isHidden: boolean;
   onHide: () => void;
+  isPopoverOpen?: boolean; // Prevent hiding when popover is open
 }
 
 export const SceneTabs: React.FC<SceneTabsProps> = ({
@@ -92,6 +93,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   onDuplicateScene,
   isHidden,
   onHide,
+  isPopoverOpen = false,
 }) => {
   const [dragState, setDragState] = useState<{
     type: 'scene' | 'subscene';
@@ -258,12 +260,15 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
     );
   };
 
+  // Don't hide while dragging or while popover is open
+  const effectivelyHidden = isHidden && !dragState && !isPopoverOpen;
+
   return (
     <div
       className={cn(
         "fixed top-1/2 right-4 -translate-y-1/2",
         "transition-all duration-300 ease-in-out",
-        isHidden
+        effectivelyHidden
           ? "translate-x-full opacity-0 pointer-events-none"
           : "opacity-100"
       )}
