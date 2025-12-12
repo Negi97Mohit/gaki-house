@@ -43,6 +43,7 @@ const Index = () => {
     scenes,
     activeScene,
     activeSceneId,
+    activeSubsceneId,
     previousScene,
     sceneTransitions,
     activeTransition,
@@ -56,6 +57,13 @@ const Index = () => {
     handleSceneReorder,
     handleSceneRename,
     handleTransitionChange,
+    // Subscene management
+    handleAddSubscene,
+    handleSubsceneClose,
+    handleSubsceneReorder,
+    handleSubsceneRename,
+    handleToggleExpand,
+    handleDuplicateScene,
     undo,
     redo,
     canUndo,
@@ -383,15 +391,23 @@ const Index = () => {
       <SceneTabs
         scenes={scenes}
         activeSceneId={activeSceneId}
+        activeSubsceneId={activeSubsceneId}
         transitions={sceneTransitions}
         onSceneSelect={handleSceneSelect}
         onSceneAdd={handleAddScene}
+        onSubsceneAdd={handleAddSubscene}
         onTransitionClick={setActiveTransition}
         onSceneClose={handleSceneClose}
+        onSubsceneClose={handleSubsceneClose}
         onSceneReorder={handleSceneReorder}
+        onSubsceneReorder={handleSubsceneReorder}
         onSceneRename={handleSceneRename}
+        onSubsceneRename={handleSubsceneRename}
+        onToggleExpand={handleToggleExpand}
+        onDuplicateScene={handleDuplicateScene}
         isHidden={isSceneTabsHidden}
         onHide={() => setIsSceneTabsHidden(true)}
+        isPopoverOpen={activeTransition !== null}
       />
 
       <TransitionPopover
