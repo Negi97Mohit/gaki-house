@@ -69,7 +69,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
 ) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
-  const [canvasBounds, setCanvasBounds] = useState<{ left: number; top: number; right: number; bottom: number } | undefined>();
 
   useLayoutEffect(() => {
     if (toolbarRef.current && props.containerRef.current) {
@@ -78,14 +77,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       const containerRect = props.containerRef.current.getBoundingClientRect();
       const parentRect =
         props.containerRef.current.parentElement!.getBoundingClientRect();
-
-      // Store canvas bounds for child menus
-      setCanvasBounds({
-        left: containerRect.left,
-        top: containerRect.top,
-        right: containerRect.right,
-        bottom: containerRect.bottom,
-      });
 
       const yAbove = props.position.y - toolbarHeight - 8;
       const wouldOverlapTopToolbar = yAbove < 80;
@@ -146,7 +137,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         onVideoFilterChange={props.onVideoFilterChange}
         activeInteractiveFilter={props.activeInteractiveFilter}
         onInteractiveFilterChange={props.onInteractiveFilterChange}
-        canvasBounds={canvasBounds}
       />
 
       <PipStyleMenu

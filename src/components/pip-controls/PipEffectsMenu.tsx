@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import { Wand2, Droplet, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +18,6 @@ interface PipEffectsMenuProps {
     onVideoFilterChange: (filter: string) => void;
     activeInteractiveFilter?: string;
     onInteractiveFilterChange?: (filter: string) => void;
-    canvasBounds?: { left: number; top: number; right: number; bottom: number };
 }
 
 export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
@@ -26,47 +25,9 @@ export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
     onVideoFilterChange,
     activeInteractiveFilter,
     onInteractiveFilterChange,
-    canvasBounds,
 }) => {
-    const triggerRef = useRef<HTMLButtonElement>(null);
-    const [side, setSide] = useState<"top" | "bottom">("bottom");
-    const [align, setAlign] = useState<"start" | "center" | "end">("start");
-
     const hasAnyFilter = (videoFilter && videoFilter !== "none") || 
         (activeInteractiveFilter && activeInteractiveFilter !== "none");
-
-    // Calculate optimal positioning based on canvas bounds
-    useEffect(() => {
-        if (!triggerRef.current || !canvasBounds) return;
-        
-        const triggerRect = triggerRef.current.getBoundingClientRect();
-        const menuHeight = 500; // max height of menu
-        const menuWidth = 288; // w-72 = 18rem = 288px
-        
-        // Determine vertical position
-        const spaceBelow = canvasBounds.bottom - triggerRect.bottom;
-        const spaceAbove = triggerRect.top - canvasBounds.top;
-        
-        if (spaceBelow < menuHeight && spaceAbove > spaceBelow) {
-            setSide("top");
-        } else {
-            setSide("bottom");
-        }
-        
-        // Determine horizontal alignment
-        const spaceRight = canvasBounds.right - triggerRect.left;
-        const spaceLeft = triggerRect.right - canvasBounds.left;
-        
-        if (spaceRight < menuWidth && spaceLeft > spaceRight) {
-            setAlign("end");
-        } else if (triggerRect.left + menuWidth / 2 > canvasBounds.right) {
-            setAlign("end");
-        } else if (triggerRect.right - menuWidth / 2 < canvasBounds.left) {
-            setAlign("start");
-        } else {
-            setAlign("start");
-        }
-    }, [canvasBounds]);
 
     const handleColorFilterClick = (filterStyle: string) => {
         if (videoFilter === filterStyle) {
@@ -91,19 +52,10 @@ export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
         onInteractiveFilterChange?.("none");
     };
 
-    // Calculate collision boundary padding
-    const collisionPadding = canvasBounds ? {
-        top: 8,
-        bottom: 8,
-        left: 8,
-        right: 8,
-    } : 8;
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button
-                    ref={triggerRef}
                     variant="ghost"
                     size="icon"
                     className={cn(
@@ -117,12 +69,8 @@ export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
             </DropdownMenuTrigger>
             <DropdownMenuPortal>
                 <DropdownMenuContent
-                    side={side}
-                    align={align}
-                    sideOffset={8}
-                    collisionPadding={collisionPadding}
-                    avoidCollisions={true}
-                    className="z-[var(--z-text-toolbar)] w-72 max-h-[min(500px,calc(100vh-100px))] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
+                    align="start"
+                    className="z-[var(--z-text-toolbar)] w-72 max-h-[500px] overflow-y-auto bg-background/95 backdrop-blur-xl border-border/40"
                     onCloseAutoFocus={(e) => e.preventDefault()}
                 >
                     {hasAnyFilter && (
