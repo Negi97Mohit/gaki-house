@@ -3,6 +3,7 @@ import { useState, useCallback, useMemo } from "react";
 import {
   SceneState,
   SceneTransition,
+  SubSceneState,
   CaptionStyle,
   DEFAULT_LAYOUT_STATE,
   DEFAULT_CAMERA_STATE,
@@ -11,6 +12,7 @@ import {
 import { zIndex } from "@/lib/zIndex";
 
 const generateSceneId = () => `scene-${Date.now()}`;
+const generateSubsceneId = () => `subscene-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
 const generateTransitionId = () => `trans-${Date.now()}`;
 
 export const DEFAULT_CAPTION_STYLE: CaptionStyle = {
@@ -346,10 +348,13 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
   };
 
   const handleSceneReorder = (fromIndex: number, toIndex: number) => {
-    const newScenes = [...scenes];
-    const [moved] = newScenes.splice(fromIndex, 1);
-    newScenes.splice(toIndex, 0, moved);
-    setScenes(newScenes);
+    if (fromIndex === toIndex) return;
+    setScenes((prev) => {
+      const newScenes = [...prev];
+      const [moved] = newScenes.splice(fromIndex, 1);
+      newScenes.splice(toIndex, 0, moved);
+      return newScenes;
+    });
   };
 
   const handleSceneRename = (sceneId: string, newName: string) => {
@@ -372,6 +377,156 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     }
   };
 
+  // --- Subscene Management ---
+  const [activeSubsceneId, setActiveSubsceneId] = useState<string | undefined>(undefined);
+
+  const handleAddSubscene = useCallback((parentId: string) => {
+    setScenes((prev) => {
+      return prev.map((scene) => {
+        if (scene.id !== parentId) return scene;
+        
+        const currentSubscenes = scene.subscenes || [];
+        const newSubscene: SubSceneState = {
+          id: generateSubsceneId(),
+          name: `Sub ${currentSubscenes.length + 1}`,
+          parentId,
+          order: currentSubscenes.length,
+        };
+        
+        return {
+          ...scene,
+          subscenes: [...currentSubscenes, newSubscene],
+          isExpanded: true,
+        };
+      });
+    });
+  }, []);
+
+  const handleSubsceneClose = useCallback((parentId: string, subsceneId: string) => {
+    setScenes((prev) => {
+      return prev.map((scene) => {
+        if (scene.id !== parentId || !scene.subscenes) return scene;
+        
+        const newSubscenes = scene.subscenes
+          .filter((s) => s.id !== subsceneId)
+          .map((s, idx) => ({ ...s, order: idx }));
+        
+        return {
+          ...scene,
+          subscenes: newSubscenes,
+          activeSubsceneId: scene.activeSubsceneId === subsceneId 
+            ? undefined 
+            : scene.activeSubsceneId,
+        };
+      });
+    });
+    
+    if (activeSubsceneId === subsceneId) {
+      setActiveSubsceneId(undefined);
+    }
+  }, [activeSubsceneId]);
+
+  const handleSubsceneReorder = useCallback((parentId: string, fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    
+    setScenes((prev) => {
+      return prev.map((scene) => {
+        if (scene.id !== parentId || !scene.subscenes) return scene;
+        
+        const newSubscenes = [...scene.subscenes].sort((a, b) => a.order - b.order);
+        const [moved] = newSubscenes.splice(fromIndex, 1);
+        newSubscenes.splice(toIndex, 0, moved);
+        
+        return {
+          ...scene,
+          subscenes: newSubscenes.map((s, idx) => ({ ...s, order: idx })),
+        };
+      });
+    });
+  }, []);
+
+  const handleSubsceneRename = useCallback((parentId: string, subsceneId: string, newName: string) => {
+    setScenes((prev) => {
+      return prev.map((scene) => {
+        if (scene.id !== parentId || !scene.subscenes) return scene;
+        
+        return {
+          ...scene,
+          subscenes: scene.subscenes.map((s) =>
+            s.id === subsceneId ? { ...s, name: newName } : s
+          ),
+        };
+      });
+    });
+  }, []);
+
+  const handleToggleExpand = useCallback((sceneId: string) => {
+    setScenes((prev) => {
+      return prev.map((scene) => {
+        if (scene.id !== sceneId) return scene;
+        return { ...scene, isExpanded: !(scene.isExpanded ?? true) };
+      });
+    });
+  }, []);
+
+  const handleDuplicateScene = useCallback((sceneId: string) => {
+    const sceneToDuplicate = scenes.find((s) => s.id === sceneId);
+    if (!sceneToDuplicate) return;
+
+    const newScene: SceneState = {
+      ...sceneToDuplicate,
+      id: generateSceneId(),
+      name: `${sceneToDuplicate.name} (Copy)`,
+      subscenes: sceneToDuplicate.subscenes?.map((sub) => ({
+        ...sub,
+        id: generateSubsceneId(),
+        parentId: '', // Will be updated
+      })),
+    };
+
+    // Update parent IDs for subscenes
+    if (newScene.subscenes) {
+      newScene.subscenes = newScene.subscenes.map((sub) => ({
+        ...sub,
+        parentId: newScene.id,
+      }));
+    }
+
+    const sceneIndex = scenes.findIndex((s) => s.id === sceneId);
+    setScenes((prev) => {
+      const newScenes = [...prev];
+      newScenes.splice(sceneIndex + 1, 0, newScene);
+      return newScenes;
+    });
+
+    // Add transition from original to duplicate
+    const newTransition: SceneTransition = {
+      id: generateTransitionId(),
+      fromSceneId: sceneId,
+      toSceneId: newScene.id,
+      type: "dissolve",
+      durationMs: 300,
+      animationIn: "ease-in-out",
+      animationOut: "ease-in-out",
+      overlayEnabled: false,
+    };
+    setSceneTransitions((prev) => [...prev, newTransition]);
+  }, [scenes]);
+
+  const handleSceneSelectWithSubscene = useCallback((sceneId: string, subsceneId?: string) => {
+    if (sceneId === activeSceneId && subsceneId === activeSubsceneId) return;
+    
+    // If just changing subscene within same scene
+    if (sceneId === activeSceneId && subsceneId !== activeSubsceneId) {
+      setActiveSubsceneId(subsceneId);
+      return;
+    }
+    
+    // Otherwise do full scene transition
+    handleSceneSelect(sceneId);
+    setActiveSubsceneId(subsceneId);
+  }, [activeSceneId, activeSubsceneId, handleSceneSelect]);
+
   // --- Sequencer Logic for Scene Manager ---
   const handleSequenceTransition = useCallback(
     (newLayout: CanvasLayoutState, newActiveId: string) => {
@@ -388,6 +543,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     scenes,
     activeScene,
     activeSceneId,
+    activeSubsceneId,
     previousScene,
     sceneTransitions,
     activeTransition,
@@ -396,12 +552,19 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     updateActiveScene,
     updateSceneProperty,
     handleAddScene,
-    handleSceneSelect,
+    handleSceneSelect: handleSceneSelectWithSubscene,
     handleSceneClose,
     handleSceneReorder,
     handleSceneRename,
     handleTransitionChange,
     handleSequenceTransition,
+    // Subscene management
+    handleAddSubscene,
+    handleSubsceneClose,
+    handleSubsceneReorder,
+    handleSubsceneRename,
+    handleToggleExpand,
+    handleDuplicateScene,
     // Undo/Redo/Reset
     undo,
     redo,

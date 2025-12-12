@@ -403,10 +403,23 @@ export interface CanvasLayoutState {
   customSectionStyles?: CustomSectionStyle; // Store custom resized dimensions
 }
 
+// --- SUBSCENE STATE ---
+export interface SubSceneState {
+  id: string;
+  name: string;
+  parentId: string;
+  order: number;
+  transitionToNext?: SceneTransition;
+}
+
 // --- SCENE STATE ---
 export interface SceneState {
   id: string;
   name: string;
+  // Subscene support
+  subscenes?: SubSceneState[];
+  activeSubsceneId?: string;
+  isExpanded?: boolean;
 
   // Canvas layout grid (null = traditional single canvas)
   canvasLayout: CanvasLayoutState | null;
