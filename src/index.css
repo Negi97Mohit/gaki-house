@@ -109,6 +109,22 @@
   html {
     font-size: 14px;
   }
+
+  /* Icon hover - turn yellow (primary color) */
+  button:hover svg,
+  a:hover svg,
+  [role="button"]:hover svg,
+  .hover-icon-primary:hover svg {
+    color: hsl(var(--primary));
+    transition: color 0.15s ease;
+  }
+
+  /* Prevent icon hover color on already-active/selected items */
+  button[data-state="active"] svg,
+  button.active svg,
+  [aria-selected="true"] svg {
+    color: inherit;
+  }
 }
 
 @layer components {
