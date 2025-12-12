@@ -414,7 +414,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         <MoreHorizontal className="h-3 h-3" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-36">
+                    <DropdownMenuContent align="end" className="w-36 z-[9999] bg-popover border border-border shadow-lg">
                       <DropdownMenuItem onClick={() => handleDoubleClick(scene.id, scene.name)}>
                         Rename
                       </DropdownMenuItem>
