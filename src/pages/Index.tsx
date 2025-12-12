@@ -68,6 +68,7 @@ const Index = () => {
     handleDuplicateScene,
     // Stream Style
     createScenesFromStreamStyle,
+    handleResetSceneToDefault,
     // Undo/Redo
     undo,
     redo,
@@ -410,6 +411,7 @@ const Index = () => {
         onSubsceneRename={handleSubsceneRename}
         onToggleExpand={handleToggleExpand}
         onDuplicateScene={handleDuplicateScene}
+        onResetScene={handleResetSceneToDefault}
         isHidden={isSceneTabsHidden}
         onHide={() => setIsSceneTabsHidden(true)}
         isPopoverOpen={activeTransition !== null}
