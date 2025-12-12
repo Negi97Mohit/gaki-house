@@ -349,10 +349,34 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     setSceneTransitions((prev) =>
       prev.filter((t) => t.fromSceneId !== sceneId && t.toSceneId !== sceneId)
     );
+    // Clear active subscene if it belonged to deleted scene
     if (activeSceneId === sceneId) {
       setActiveSceneId(newScenes[0].id);
+      setActiveSubsceneId(undefined);
     }
   };
+
+  // Reset a scene back to default state
+  const handleResetSceneToDefault = useCallback((sceneId: string) => {
+    setScenes((prev) =>
+      prev.map((scene) => {
+        if (scene.id !== sceneId) return scene;
+        
+        const defaultScene = createDefaultScene(scene.name);
+        return {
+          ...defaultScene,
+          id: scene.id, // Keep the original ID
+          name: scene.name, // Keep the original name
+          subscenes: undefined, // Clear all subscenes
+          isExpanded: false,
+        };
+      })
+    );
+    // Clear active subscene if resetting active scene
+    if (activeSceneId === sceneId) {
+      setActiveSubsceneId(undefined);
+    }
+  }, [activeSceneId]);
 
   const handleSceneReorder = (fromIndex: number, toIndex: number) => {
     if (fromIndex === toIndex) return;
@@ -706,6 +730,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     handleSubsceneRename,
     handleToggleExpand,
     handleDuplicateScene,
+    handleResetSceneToDefault,
     // Stream Style
     createScenesFromStreamStyle,
     // Undo/Redo/Reset

@@ -12,6 +12,7 @@ import {
   MoreHorizontal,
   Copy,
   Sparkles,
+  RotateCcw,
 } from "lucide-react";
 import { SceneState, SceneTransition, SubSceneState } from "@/types/caption";
 import { cn } from "@/lib/utils";
@@ -72,6 +73,7 @@ interface SceneTabsProps {
   onSubsceneRename?: (parentId: string, subsceneId: string, newName: string) => void;
   onToggleExpand?: (sceneId: string) => void;
   onDuplicateScene?: (sceneId: string) => void;
+  onResetScene?: (sceneId: string) => void;
   isHidden: boolean;
   onHide: () => void;
   isPopoverOpen?: boolean; // Prevent hiding when popover is open
@@ -95,6 +97,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   onSubsceneRename,
   onToggleExpand,
   onDuplicateScene,
+  onResetScene,
   isHidden,
   onHide,
   isPopoverOpen = false,
@@ -454,6 +457,12 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
+                      {onResetScene && (
+                        <DropdownMenuItem onClick={() => onResetScene(scene.id)}>
+                          <RotateCcw className="w-3 h-3 mr-2" />
+                          Reset to Default
+                        </DropdownMenuItem>
+                      )}
                       {scenes.length > 1 && (
                         <DropdownMenuItem 
                           onClick={() => onSceneClose(scene.id)}
