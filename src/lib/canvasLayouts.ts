@@ -1,212 +1,24 @@
 // src/lib/canvasLayouts.ts
-import React from "react";
+import { CanvasLayoutTemplate } from "@/types/layout";
+import { EXPANDING_CARDS_TEMPLATE } from "./layouts/ExpandingCards";
+import { SLIDER_TEMPLATE } from "./layouts/GradientSlider";
+import { VERTICAL_SLIDER_TEMPLATE } from "./layouts/DoubleVerticalSlider";
 
-export interface CanvasLayoutTemplate {
-  id: string;
-  name: string;
-  description: string;
-  sections: Array<{
-    id: string;
-    name: string;
-    description?: string;
-    style: React.CSSProperties;
-  }>;
-}
+// Re-export the interface for compatibility
+export type { CanvasLayoutTemplate };
 
-export const EXPANDING_CARDS_TEMPLATE: CanvasLayoutTemplate = {
-  id: "expanding-cards",
-  name: "Expanding Cards",
-  description: "Interactive timeline with 5 expanding panels",
-  sections: [
-    {
-      id: "card-1",
-      name: "Sunrise",
-      style: {
-        top: "0%",
-        left: "0%",
-        width: "20%",
-        height: "100%",
-        background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "card-2",
-      name: "Lavender",
-      style: {
-        top: "0%",
-        left: "20%",
-        width: "20%",
-        height: "100%",
-        background: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "card-3",
-      name: "Ocean",
-      style: {
-        top: "0%",
-        left: "40%",
-        width: "20%",
-        height: "100%",
-        background: "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "card-4",
-      name: "Peach",
-      style: {
-        top: "0%",
-        left: "60%",
-        width: "20%",
-        height: "100%",
-        background: "linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "card-5",
-      name: "Sky",
-      style: {
-        top: "0%",
-        left: "80%",
-        width: "20%",
-        height: "100%",
-        background: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
-        color: "#ffffff",
-      },
-    },
-  ],
-};
-
-export const SLIDER_TEMPLATE: CanvasLayoutTemplate = {
-  id: "slider-layout",
-  name: "Gradient Slider",
-  description: "Clean slider with gradient backgrounds",
-  sections: [
-    {
-      id: "slide-1",
-      name: "Deep Purple",
-      style: {
-        top: "0%",
-        left: "0%",
-        width: "100%",
-        height: "100%",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "slide-2",
-      name: "Sunset Orange",
-      style: {
-        top: "0%",
-        left: "0%",
-        width: "100%",
-        height: "100%",
-        background:
-          "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "slide-3",
-      name: "Ocean Blue",
-      style: {
-        top: "0%",
-        left: "0%",
-        width: "100%",
-        height: "100%",
-        background: "linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "slide-4",
-      name: "Lush Green",
-      style: {
-        top: "0%",
-        left: "0%",
-        width: "100%",
-        height: "100%",
-        background: "linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)",
-        color: "#ffffff",
-      },
-    },
-    {
-      id: "slide-5",
-      name: "Midnight",
-      style: {
-        top: "0%",
-        left: "0%",
-        width: "100%",
-        height: "100%",
-        background: "linear-gradient(to top, #30cfd0 0%, #330867 100%)",
-        color: "#ffffff",
-      },
-    },
-  ],
-};
-
-export const VERTICAL_SLIDER_TEMPLATE: CanvasLayoutTemplate = {
-  id: "vertical-slider",
-  name: "Double Vertical Slider",
-  description: "Split screen slider with reverse scrolling",
-  sections: [
-    // --- PAIR 1 ---
-    {
-      id: "v-slide-1-left",
-      name: "Slide 1 Left",
-      style: { backgroundColor: "#FD3555", color: "#ffffff" },
-    },
-    {
-      id: "v-slide-1-right",
-      name: "Slide 1 Right",
-      style: { backgroundColor: "#FFE4E8", color: "#000000" },
-    },
-    // --- PAIR 2 ---
-    {
-      id: "v-slide-2-left",
-      name: "Slide 2 Left",
-      style: { backgroundColor: "#2A86BA", color: "#ffffff" },
-    },
-    {
-      id: "v-slide-2-right",
-      name: "Slide 2 Right",
-      style: { backgroundColor: "#D4EFFC", color: "#000000" },
-    },
-    // --- PAIR 3 ---
-    {
-      id: "v-slide-3-left",
-      name: "Slide 3 Left",
-      style: { backgroundColor: "#252E33", color: "#ffffff" },
-    },
-    {
-      id: "v-slide-3-right",
-      name: "Slide 3 Right",
-      style: { backgroundColor: "#E6E6E6", color: "#000000" },
-    },
-    // --- PAIR 4 ---
-    {
-      id: "v-slide-4-left",
-      name: "Slide 4 Left",
-      style: { backgroundColor: "#FFB866", color: "#ffffff" },
-    },
-    {
-      id: "v-slide-4-right",
-      name: "Slide 4 Right",
-      style: { backgroundColor: "#FFF0D6", color: "#000000" },
-    },
-  ],
-};
-
+/**
+ * In-memory cache for layout templates
+ */
 let templateCache: {
   list: CanvasLayoutTemplate[];
   record: Record<string, CanvasLayoutTemplate>;
 } | null = null;
 
+/**
+ * Fetches layout templates from the public JSON file.
+ * Caches results in memory to avoid redundant fetches.
+ */
 export async function getLayoutTemplates(): Promise<{
   list: CanvasLayoutTemplate[];
   record: Record<string, CanvasLayoutTemplate>;
@@ -227,6 +39,7 @@ export async function getLayoutTemplates(): Promise<{
       }
     }
 
+    // Ensure templates are in the list
     if (!list.find((t) => t.id === "expanding-cards")) {
       list.push(EXPANDING_CARDS_TEMPLATE);
     }
