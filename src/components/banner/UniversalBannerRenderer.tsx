@@ -247,7 +247,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                                 fontFamily: getElement("name")?.style.fontFamily,
                                 color: getElement("name")?.style.color,
                                 fontWeight: getElement("name")?.style.fontWeight as any,
-                                textShadow: getElement("name")?.style.textShadow,
+                                textShadow: getElement("name")?.style.textShadow as string | undefined,
                             }}
                         />
                     }
@@ -294,7 +294,7 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                                 fontFamily: getElement("tagline")?.style.fontFamily,
                                 color: getElement("tagline")?.style.color,
                                 fontWeight: getElement("tagline")?.style.fontWeight as any,
-                                textShadow: getElement("tagline")?.style.textShadow,
+                                textShadow: getElement("tagline")?.style.textShadow as string | undefined,
                             }}
                         />
                     }
@@ -317,8 +317,8 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                         <div style={{ display: "flex", gap: "8px" }}>
                             {contentData.links.slice(0, design.maxLinks).map((link, index) => {
                                 const IconComponent = getPlatformIcon(link.platform);
-                                const elementStyle = getElement("socialLinks")?.style || {};
-                                const size = elementStyle.fontSize || 20;
+                                const elementStyle = getElement("socialLinks")?.style || {} as Record<string, any>;
+                                const size = typeof elementStyle.fontSize === 'number' ? elementStyle.fontSize : 20;
 
                                 return (
                                     <div
