@@ -157,7 +157,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
       className={cn(
         "relative w-full h-full overflow-hidden",
         // Switch to flexbox container if in Expanding Cards mode
-        isExpandingCards && "flex items-center justify-center px-4 gap-4"
+        // ADDED: bg-white to ensure background is white as requested
+        isExpandingCards &&
+          "flex items-center justify-center px-4 gap-4 bg-white"
       )}
     >
       {template.sections.map((templateSection) => {
@@ -206,10 +208,11 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
               // Expanding Cards Logic
               isExpandingCards &&
                 "relative rounded-[24px] cursor-pointer shadow-md h-[90%]",
+              // NOTE: bg-muted/40 removed to prevent overriding the gradient style
               isExpandingCards && (isActiveCard ? "flex-[5]" : "flex-[0.5]"),
               isExpandingCards &&
                 !isActiveCard &&
-                "opacity-80 hover:opacity-100",
+                "opacity-90 hover:opacity-100",
 
               // Active Sequence Highlight
               section.id === activeSequenceId &&
@@ -218,7 +221,18 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
             style={
               !isExpandingCards
                 ? { ...sectionStyle, overflow: "hidden" }
-                : undefined // Let Flexbox handle positioning
+                : {
+                    // In Expanding Cards mode, we strip absolute positioning
+                    // but pass the background gradient from the template
+                    background: templateSection.style.background,
+                    overflow: "hidden",
+                    // Reset positioning
+                    position: "relative",
+                    width: undefined,
+                    height: undefined,
+                    top: undefined,
+                    left: undefined,
+                  }
             }
             onMouseEnter={() => setHoveredSectionId(templateSection.id)}
             onMouseLeave={() => setHoveredSectionId(null)}
@@ -233,7 +247,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = ({
                   isActiveCard ? "opacity-100" : "opacity-0"
                 )}
               >
-                <h3 className="text-xl font-bold text-white drop-shadow-md bg-black/20 px-3 py-1 rounded backdrop-blur-sm">
+                <h3 className="text-xl font-bold text-white drop-shadow-md bg-black/10 px-3 py-1 rounded backdrop-blur-sm">
                   {templateSection.name}
                 </h3>
               </div>

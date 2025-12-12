@@ -15,17 +15,74 @@ export interface CanvasLayoutTemplate {
 
 /**
  * Constant definition for the Expanding Cards layout
+ * Uses linear gradients for each card.
+ * Includes top/left/width/height so the preview component renders them correctly as columns.
  */
 export const EXPANDING_CARDS_TEMPLATE: CanvasLayoutTemplate = {
   id: "expanding-cards",
   name: "Expanding Cards",
   description: "Interactive timeline with 5 expanding panels",
   sections: [
-    { id: "card-1", name: "Panel 1", style: {} },
-    { id: "card-2", name: "Panel 2", style: {} },
-    { id: "card-3", name: "Panel 3", style: {} },
-    { id: "card-4", name: "Panel 4", style: {} },
-    { id: "card-5", name: "Panel 5", style: {} },
+    {
+      id: "card-1",
+      name: "Sunrise",
+      style: {
+        top: "0%",
+        left: "0%",
+        width: "20%",
+        height: "100%",
+        background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+        color: "#ffffff",
+      },
+    },
+    {
+      id: "card-2",
+      name: "Lavender",
+      style: {
+        top: "0%",
+        left: "20%",
+        width: "20%",
+        height: "100%",
+        background: "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+        color: "#ffffff",
+      },
+    },
+    {
+      id: "card-3",
+      name: "Ocean",
+      style: {
+        top: "0%",
+        left: "40%",
+        width: "20%",
+        height: "100%",
+        background: "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
+        color: "#ffffff",
+      },
+    },
+    {
+      id: "card-4",
+      name: "Peach",
+      style: {
+        top: "0%",
+        left: "60%",
+        width: "20%",
+        height: "100%",
+        background: "linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)",
+        color: "#ffffff",
+      },
+    },
+    {
+      id: "card-5",
+      name: "Sky",
+      style: {
+        top: "0%",
+        left: "80%",
+        width: "20%",
+        height: "100%",
+        background: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
+        color: "#ffffff",
+      },
+    },
   ],
 };
 
@@ -53,7 +110,6 @@ export async function getLayoutTemplates(): Promise<{
     const response = await fetch("/layouts.json");
     let list: CanvasLayoutTemplate[] = [];
 
-    // If fetch is successful, parse the JSON
     if (response.ok) {
       try {
         list = await response.json();
@@ -76,7 +132,6 @@ export async function getLayoutTemplates(): Promise<{
     return templateCache;
   } catch (error) {
     console.error("Error loading layout templates:", error);
-    // Return a safe default state with our hardcoded template
     const list = [EXPANDING_CARDS_TEMPLATE];
     const record = { "expanding-cards": EXPANDING_CARDS_TEMPLATE };
     return { list, record };
