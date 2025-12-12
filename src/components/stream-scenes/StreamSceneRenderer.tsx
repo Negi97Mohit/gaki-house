@@ -49,116 +49,54 @@ export const StreamSceneRenderer: React.FC<StreamSceneRendererProps> = ({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Animate main text
-    if (textRef.current) {
-      anime({
-        targets: textRef.current,
-        opacity: [0, 1],
-        translateY: [30, 0],
-        scale: [0.9, 1],
-        duration: 1200,
-        easing: 'easeOutExpo'
-      });
+    const ctx = gsap.context(() => {
+      // Animate main text
+      if (textRef.current) {
+        gsap.fromTo(textRef.current, 
+          { opacity: 0, y: 30, scale: 0.9 },
+          { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'expo.out' }
+        );
 
-      // Add floating animation
-      anime({
-        targets: textRef.current,
-        translateY: [-5, 5],
-        duration: 3000,
-        direction: 'alternate',
-        loop: true,
-        easing: 'easeInOutSine'
-      });
-
-      // Glow pulse for neon themes
-      if (theme.effects.glow) {
-        anime({
-          targets: textRef.current,
-          textShadow: [
-            `0 0 20px ${theme.colors.glow}, 0 0 40px ${theme.colors.glow}`,
-            `0 0 40px ${theme.colors.glow}, 0 0 80px ${theme.colors.glow}`,
-            `0 0 20px ${theme.colors.glow}, 0 0 40px ${theme.colors.glow}`
-          ],
-          duration: 2000,
-          loop: true,
-          easing: 'easeInOutSine'
+        // Add floating animation
+        gsap.to(textRef.current, {
+          y: 5,
+          duration: 3,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut'
         });
+
+        // Glow pulse for neon themes
+        if (theme.effects.glow) {
+          gsap.to(textRef.current, {
+            keyframes: [
+              { textShadow: `0 0 20px ${theme.colors.glow}, 0 0 40px ${theme.colors.glow}` },
+              { textShadow: `0 0 40px ${theme.colors.glow}, 0 0 80px ${theme.colors.glow}` },
+              { textShadow: `0 0 20px ${theme.colors.glow}, 0 0 40px ${theme.colors.glow}` }
+            ],
+            duration: 2,
+            repeat: -1,
+            ease: 'sine.inOut'
+          });
+        }
       }
-    }
 
-    // Animate sub text
-    if (subTextRef.current) {
-      anime({
-        targets: subTextRef.current,
-        opacity: [0, 0.8],
-        translateY: [20, 0],
-        duration: 1000,
-        delay: 300,
-        easing: 'easeOutExpo'
-      });
-    }
+      // Animate sub text
+      if (subTextRef.current) {
+        gsap.fromTo(subTextRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 0.8, y: 0, duration: 1, delay: 0.3, ease: 'expo.out' }
+        );
+      }
 
-    // Create particles
-    if (theme.effects.particles && particlesRef.current) {
-      createParticles();
-    }
+      // Create particles
+      if (theme.effects.particles && particlesRef.current) {
+        createParticles(particlesRef.current, theme);
+      }
+    }, containerRef);
 
-    return () => {
-      anime.remove(textRef.current);
-      anime.remove(subTextRef.current);
-    };
+    return () => ctx.revert();
   }, [sceneType, theme]);
-
-  const createParticles = () => {
-    if (!particlesRef.current) return;
-    particlesRef.current.innerHTML = '';
-
-    const particleCount = theme.category === 'anime' ? 30 : 20;
-    
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'stream-particle';
-      
-      if (theme.category === 'anime') {
-        // Sakura petals
-        particle.innerHTML = '🌸';
-        particle.style.fontSize = `${Math.random() * 16 + 12}px`;
-      } else if (theme.category === 'neon') {
-        // Neon dots
-        particle.style.width = `${Math.random() * 4 + 2}px`;
-        particle.style.height = particle.style.width;
-        particle.style.borderRadius = '50%';
-        particle.style.background = Math.random() > 0.5 ? theme.colors.primary : theme.colors.secondary;
-        particle.style.boxShadow = `0 0 10px ${theme.colors.glow}`;
-      } else {
-        // Generic particles
-        particle.style.width = '4px';
-        particle.style.height = '4px';
-        particle.style.borderRadius = '50%';
-        particle.style.background = theme.colors.accent;
-      }
-
-      particle.style.position = 'absolute';
-      particle.style.left = `${Math.random() * 100}%`;
-      particle.style.top = `-20px`;
-      particle.style.opacity = '0';
-
-      particlesRef.current.appendChild(particle);
-
-      // Animate each particle
-      anime({
-        targets: particle,
-        translateY: window.innerHeight + 100,
-        translateX: () => anime.random(-100, 100),
-        rotate: () => anime.random(-360, 360),
-        opacity: [0, 0.8, 0],
-        duration: () => anime.random(4000, 8000),
-        delay: () => anime.random(0, 5000),
-        loop: true,
-        easing: 'linear'
-      });
-    }
-  };
 
   // Get background based on theme
   const getBackground = () => {
@@ -291,23 +229,91 @@ export const StreamSceneRenderer: React.FC<StreamSceneRendererProps> = ({
   );
 };
 
+// Helper to create particles with GSAP
+function createParticles(container: HTMLDivElement, theme: StreamStyleTheme) {
+  container.innerHTML = '';
+
+  const particleCount = theme.category === 'anime' ? 30 : 20;
+  
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'stream-particle';
+    
+    if (theme.category === 'anime') {
+      // Sakura petals
+      particle.innerHTML = '🌸';
+      particle.style.fontSize = `${Math.random() * 16 + 12}px`;
+    } else if (theme.category === 'neon') {
+      // Neon dots
+      const size = Math.random() * 4 + 2;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      particle.style.borderRadius = '50%';
+      particle.style.background = Math.random() > 0.5 ? theme.colors.primary : theme.colors.secondary;
+      particle.style.boxShadow = `0 0 10px ${theme.colors.glow}`;
+    } else {
+      // Generic particles
+      particle.style.width = '4px';
+      particle.style.height = '4px';
+      particle.style.borderRadius = '50%';
+      particle.style.background = theme.colors.accent;
+    }
+
+    particle.style.position = 'absolute';
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = '-20px';
+    particle.style.opacity = '0';
+
+    container.appendChild(particle);
+
+    const duration = 4 + Math.random() * 4;
+    const delay = Math.random() * 5;
+
+    // Animate each particle
+    gsap.to(particle, {
+      y: window.innerHeight + 100,
+      x: `+=${-100 + Math.random() * 200}`,
+      rotation: -360 + Math.random() * 720,
+      duration: duration,
+      delay: delay,
+      repeat: -1,
+      ease: 'none'
+    });
+
+    // Opacity animation
+    gsap.to(particle, {
+      keyframes: [
+        { opacity: 0, duration: 0 },
+        { opacity: 0.8, duration: duration * 0.15 },
+        { opacity: 0.8, duration: duration * 0.7 },
+        { opacity: 0, duration: duration * 0.15 }
+      ],
+      delay: delay,
+      repeat: -1
+    });
+  }
+}
+
 // Sakura-themed animated background
 const SakuraBackground: React.FC = () => {
-  const mountainRef = useRef<SVGSVGElement>(null);
   const sunRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Sun glow animation
-    if (sunRef.current) {
-      anime({
-        targets: sunRef.current,
-        scale: [1, 1.05, 1],
-        opacity: [0.8, 1, 0.8],
-        duration: 4000,
-        loop: true,
-        easing: 'easeInOutSine'
-      });
-    }
+    const ctx = gsap.context(() => {
+      // Sun glow animation
+      if (sunRef.current) {
+        gsap.to(sunRef.current, {
+          scale: 1.05,
+          opacity: 1,
+          duration: 4,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut'
+        });
+      }
+    });
+
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -323,13 +329,13 @@ const SakuraBackground: React.FC = () => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           background: 'radial-gradient(circle, hsla(45, 100%, 90%, 0.8) 0%, transparent 70%)',
-          filter: 'blur(20px)'
+          filter: 'blur(20px)',
+          opacity: 0.8
         }}
       />
 
       {/* Mountain silhouettes */}
       <svg
-        ref={mountainRef}
         className="absolute bottom-0 w-full h-1/2"
         viewBox="0 0 1920 400"
         preserveAspectRatio="none"
@@ -389,16 +395,19 @@ const CherryBlossomBranch: React.FC<{ side: 'left' | 'right' }> = ({ side }) => 
   const branchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (branchRef.current) {
-      anime({
-        targets: branchRef.current,
-        rotate: side === 'left' ? [-2, 2] : [2, -2],
-        duration: 4000,
-        direction: 'alternate',
-        loop: true,
-        easing: 'easeInOutSine'
-      });
-    }
+    const ctx = gsap.context(() => {
+      if (branchRef.current) {
+        gsap.to(branchRef.current, {
+          rotation: side === 'left' ? 2 : -2,
+          duration: 4,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut'
+        });
+      }
+    });
+
+    return () => ctx.revert();
   }, [side]);
 
   return (
@@ -433,17 +442,21 @@ const NeonBackground: React.FC<{ theme: StreamStyleTheme }> = ({ theme }) => {
   const neonSignRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (neonSignRef.current) {
-      anime({
-        targets: neonSignRef.current.querySelectorAll('.neon-flicker'),
-        opacity: [1, 0.6, 1, 0.8, 1],
-        duration: 150,
-        delay: anime.stagger(50, { start: 0 }),
-        loop: true,
-        direction: 'alternate',
-        easing: 'steps(1)'
-      });
-    }
+    const ctx = gsap.context(() => {
+      if (neonSignRef.current) {
+        const flickerElements = neonSignRef.current.querySelectorAll('.neon-flicker');
+        gsap.to(flickerElements, {
+          opacity: 0.6,
+          duration: 0.15,
+          stagger: 0.05,
+          yoyo: true,
+          repeat: -1,
+          ease: 'steps(1)'
+        });
+      }
+    });
+
+    return () => ctx.revert();
   }, []);
 
   return (

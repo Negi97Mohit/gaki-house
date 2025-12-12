@@ -1,9 +1,9 @@
 // src/components/stream-scenes/AnimatedStreamScene.tsx
-// Individual animated scene components with full anime.js animations
+// Individual animated scene components with GSAP animations
 
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { StreamSceneType, StreamStyleTheme, SAKURA_THEME, CYBERPUNK_THEME } from '@/types/streamStyle';
+import { StreamSceneType, StreamStyleTheme } from '@/types/streamStyle';
 import { cn } from '@/lib/utils';
 
 interface AnimatedStreamSceneProps {
@@ -29,35 +29,25 @@ export const AnimatedStreamScene: React.FC<AnimatedStreamSceneProps> = ({
   useEffect(() => {
     if (!containerRef.current || !isAnimating) return;
 
-    const timeline = anime.timeline({
-      easing: 'easeOutExpo',
-      duration: 1000
-    });
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out', duration: 1 } });
 
-    // Animate all animatable elements
-    timeline
-      .add({
-        targets: containerRef.current.querySelectorAll('.animate-fade-up'),
-        opacity: [0, 1],
-        translateY: [40, 0],
-        delay: anime.stagger(150)
+      tl.from('.animate-fade-up', {
+        opacity: 0,
+        y: 40,
+        stagger: 0.15
       })
-      .add({
-        targets: containerRef.current.querySelectorAll('.animate-scale'),
-        scale: [0.8, 1],
-        opacity: [0, 1]
-      }, '-=800')
-      .add({
-        targets: containerRef.current.querySelectorAll('.animate-glow'),
-        textShadow: [
-          '0 0 0px transparent',
-          `0 0 20px ${theme.colors.glow}, 0 0 40px ${theme.colors.glow}`
-        ]
-      }, '-=600');
+      .from('.animate-scale', {
+        scale: 0.8,
+        opacity: 0
+      }, '-=0.8')
+      .to('.animate-glow', {
+        textShadow: `0 0 20px ${theme.colors.glow}, 0 0 40px ${theme.colors.glow}`,
+        duration: 0.6
+      }, '-=0.6');
+    }, containerRef);
 
-    return () => {
-      anime.remove(containerRef.current?.querySelectorAll('*'));
-    };
+    return () => ctx.revert();
   }, [sceneType, theme, isAnimating]);
 
   // Render based on theme category
@@ -110,22 +100,25 @@ const SakuraScene = React.forwardRef<HTMLDivElement, AnimatedStreamSceneProps>(
     const textRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      // Floating text animation
-      if (textRef.current) {
-        anime({
-          targets: textRef.current,
-          translateY: [-8, 8],
-          duration: 3000,
-          direction: 'alternate',
-          loop: true,
-          easing: 'easeInOutSine'
-        });
-      }
+      const ctx = gsap.context(() => {
+        // Floating text animation
+        if (textRef.current) {
+          gsap.to(textRef.current, {
+            y: 8,
+            duration: 3,
+            yoyo: true,
+            repeat: -1,
+            ease: 'sine.inOut'
+          });
+        }
+      });
 
       // Create falling petals
       if (petalsRef.current) {
         createSakuraPetals(petalsRef.current);
       }
+
+      return () => ctx.revert();
     }, [sceneType]);
 
     const getText = () => {
@@ -323,34 +316,42 @@ const NeonScene = React.forwardRef<HTMLDivElement, AnimatedStreamSceneProps>(
     const glitchRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      // Neon flicker effect
-      if (textRef.current) {
-        anime({
-          targets: textRef.current,
-          textShadow: [
-            `0 0 10px ${theme.colors.primary}, 0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.secondary}`,
-            `0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.primary}, 0 0 80px ${theme.colors.secondary}`,
-            `0 0 10px ${theme.colors.primary}, 0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.secondary}`
-          ],
-          duration: 2000,
-          loop: true,
-          easing: 'easeInOutSine'
-        });
-      }
-
-      // Random glitch effect
-      if (glitchRef.current) {
-        const glitchInterval = setInterval(() => {
-          anime({
-            targets: glitchRef.current,
-            translateX: [0, -5, 5, -2, 0],
-            duration: 100,
-            easing: 'steps(4)'
+      const ctx = gsap.context(() => {
+        // Neon flicker effect
+        if (textRef.current) {
+          gsap.to(textRef.current, {
+            keyframes: [
+              { textShadow: `0 0 10px ${theme.colors.primary}, 0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.secondary}` },
+              { textShadow: `0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.primary}, 0 0 80px ${theme.colors.secondary}` },
+              { textShadow: `0 0 10px ${theme.colors.primary}, 0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.secondary}` }
+            ],
+            duration: 2,
+            repeat: -1,
+            ease: 'sine.inOut'
           });
-        }, 3000 + Math.random() * 2000);
+        }
 
-        return () => clearInterval(glitchInterval);
-      }
+        // Random glitch effect
+        if (glitchRef.current) {
+          const glitchInterval = setInterval(() => {
+            gsap.to(glitchRef.current, {
+              keyframes: [
+                { x: 0 },
+                { x: -5 },
+                { x: 5 },
+                { x: -2 },
+                { x: 0 }
+              ],
+              duration: 0.1,
+              ease: 'steps(4)'
+            });
+          }, 3000 + Math.random() * 2000);
+
+          return () => clearInterval(glitchInterval);
+        }
+      });
+
+      return () => ctx.revert();
     }, [sceneType, theme]);
 
     const getText = () => {
@@ -531,20 +532,23 @@ const GamingScene = React.forwardRef<HTMLDivElement, AnimatedStreamSceneProps>(
     const textRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-      if (textRef.current) {
-        // Pulse glow effect
-        anime({
-          targets: textRef.current,
-          textShadow: [
-            `0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.primary}`,
-            `0 0 40px ${theme.colors.primary}, 0 0 80px ${theme.colors.secondary}`,
-            `0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.primary}`
-          ],
-          duration: 2500,
-          loop: true,
-          easing: 'easeInOutQuad'
-        });
-      }
+      const ctx = gsap.context(() => {
+        if (textRef.current) {
+          // Pulse glow effect
+          gsap.to(textRef.current, {
+            keyframes: [
+              { textShadow: `0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.primary}` },
+              { textShadow: `0 0 40px ${theme.colors.primary}, 0 0 80px ${theme.colors.secondary}` },
+              { textShadow: `0 0 20px ${theme.colors.primary}, 0 0 40px ${theme.colors.primary}` }
+            ],
+            duration: 2.5,
+            repeat: -1,
+            ease: 'power1.inOut'
+          });
+        }
+      });
+
+      return () => ctx.revert();
     }, [theme]);
 
     const getText = () => {
@@ -623,7 +627,7 @@ const GamingScene = React.forwardRef<HTMLDivElement, AnimatedStreamSceneProps>(
   }
 );
 
-// Helper function to create sakura petals
+// Helper function to create sakura petals using GSAP
 function createSakuraPetals(container: HTMLDivElement) {
   container.innerHTML = '';
   
@@ -640,16 +644,33 @@ function createSakuraPetals(container: HTMLDivElement) {
     `;
     container.appendChild(petal);
 
-    anime({
-      targets: petal,
-      translateY: window.innerHeight + 100,
-      translateX: () => anime.random(-150, 150),
-      rotate: () => anime.random(-180, 180),
-      opacity: [0, 0.9, 0.9, 0],
-      duration: () => anime.random(5000, 10000),
-      delay: () => anime.random(0, 8000),
-      loop: true,
-      easing: 'linear'
+    const duration = 5 + Math.random() * 5;
+    const delay = Math.random() * 8;
+
+    gsap.to(petal, {
+      y: window.innerHeight + 100,
+      x: `+=${-150 + Math.random() * 300}`,
+      rotation: -180 + Math.random() * 360,
+      opacity: 0.9,
+      duration: duration,
+      delay: delay,
+      repeat: -1,
+      ease: 'none',
+      onRepeat: () => {
+        gsap.set(petal, { y: -30, x: 0, opacity: 0 });
+      }
+    });
+
+    // Fade in/out
+    gsap.to(petal, {
+      keyframes: [
+        { opacity: 0, duration: 0 },
+        { opacity: 0.9, duration: duration * 0.1 },
+        { opacity: 0.9, duration: duration * 0.8 },
+        { opacity: 0, duration: duration * 0.1 }
+      ],
+      delay: delay,
+      repeat: -1
     });
   }
 }
