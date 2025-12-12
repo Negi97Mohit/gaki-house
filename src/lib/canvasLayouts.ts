@@ -3,22 +3,15 @@ import { CanvasLayoutTemplate } from "@/types/layout";
 import { EXPANDING_CARDS_TEMPLATE } from "./layouts/ExpandingCards";
 import { SLIDER_TEMPLATE } from "./layouts/GradientSlider";
 import { VERTICAL_SLIDER_TEMPLATE } from "./layouts/DoubleVerticalSlider";
+import { SPLIT_LANDING_PAGE_TEMPLATE } from "./layouts/SplitLandingPage"; // Import new layout
 
-// Re-export the interface for compatibility
 export type { CanvasLayoutTemplate };
 
-/**
- * In-memory cache for layout templates
- */
 let templateCache: {
   list: CanvasLayoutTemplate[];
   record: Record<string, CanvasLayoutTemplate>;
 } | null = null;
 
-/**
- * Fetches layout templates from the public JSON file.
- * Caches results in memory to avoid redundant fetches.
- */
 export async function getLayoutTemplates(): Promise<{
   list: CanvasLayoutTemplate[];
   record: Record<string, CanvasLayoutTemplate>;
@@ -39,16 +32,19 @@ export async function getLayoutTemplates(): Promise<{
       }
     }
 
-    // Ensure templates are in the list
-    if (!list.find((t) => t.id === "expanding-cards")) {
-      list.push(EXPANDING_CARDS_TEMPLATE);
-    }
-    if (!list.find((t) => t.id === "slider-layout")) {
-      list.push(SLIDER_TEMPLATE);
-    }
-    if (!list.find((t) => t.id === "vertical-slider")) {
-      list.push(VERTICAL_SLIDER_TEMPLATE);
-    }
+    // Register all templates
+    const defaults = [
+      EXPANDING_CARDS_TEMPLATE,
+      SLIDER_TEMPLATE,
+      VERTICAL_SLIDER_TEMPLATE,
+      SPLIT_LANDING_PAGE_TEMPLATE, // Add to defaults
+    ];
+
+    defaults.forEach((t) => {
+      if (!list.find((existing) => existing.id === t.id)) {
+        list.push(t);
+      }
+    });
 
     const record = list.reduce((acc, template) => {
       acc[template.id] = template;
@@ -63,11 +59,13 @@ export async function getLayoutTemplates(): Promise<{
       EXPANDING_CARDS_TEMPLATE,
       SLIDER_TEMPLATE,
       VERTICAL_SLIDER_TEMPLATE,
+      SPLIT_LANDING_PAGE_TEMPLATE,
     ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
       "slider-layout": SLIDER_TEMPLATE,
       "vertical-slider": VERTICAL_SLIDER_TEMPLATE,
+      "split-landing-page": SPLIT_LANDING_PAGE_TEMPLATE,
     };
     return { list, record };
   }
