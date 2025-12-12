@@ -549,20 +549,45 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                           )}
 
                           {/* Transition between subscenes */}
-                          {nextSubscene && subscene.transitionToNext && (
+                          {nextSubscene && (
                             <div className="flex items-center ml-7 py-0.5">
+                              <div className="flex-1 h-px bg-border/20" />
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-4 w-4 text-muted-foreground hover:text-accent"
-                                onClick={() => onTransitionClick(subscene.transitionToNext!)}
-                                title={`Transition: ${subscene.transitionToNext.type}`}
+                                className={cn(
+                                  "h-4 w-4 mx-0.5 transition-all",
+                                  subscene.transitionToNext
+                                    ? "text-muted-foreground hover:text-accent"
+                                    : "text-muted-foreground/30 hover:text-accent"
+                                )}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (subscene.transitionToNext) {
+                                    onTransitionClick(subscene.transitionToNext);
+                                  } else {
+                                    // Create default subscene transition
+                                    const newTransition: SceneTransition = {
+                                      id: `subtrans-${Date.now()}`,
+                                      fromSceneId: subscene.id,
+                                      toSceneId: nextSubscene.id,
+                                      type: 'dissolve',
+                                      durationMs: 200,
+                                      animationIn: 'ease-in-out',
+                                      animationOut: 'ease-in-out',
+                                      overlayEnabled: false,
+                                    };
+                                    onTransitionClick(newTransition);
+                                  }
+                                }}
+                                title={subscene.transitionToNext 
+                                  ? `${subscene.transitionToNext.type} (${subscene.transitionToNext.durationMs}ms)` 
+                                  : "Add transition"
+                                }
                               >
-                                <TransitionIcon />
+                                {subscene.transitionToNext ? <TransitionIcon /> : <Plus className="w-2.5 h-2.5" />}
                               </Button>
-                              <span className="text-[9px] text-muted-foreground ml-1">
-                                {subscene.transitionToNext.durationMs}ms
-                              </span>
+                              <div className="flex-1 h-px bg-border/20" />
                             </div>
                           )}
                         </div>
