@@ -5,6 +5,7 @@ export const EXPANDING_CARDS_TEMPLATE: CanvasLayoutTemplate = {
   id: "expanding-cards",
   name: "Expanding Cards",
   description: "Interactive timeline with 5 expanding panels",
+  category: "dynamic",
   sections: [
     {
       id: "card-1",

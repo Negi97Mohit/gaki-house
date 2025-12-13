@@ -5,6 +5,7 @@ export const SPLIT_LANDING_PAGE_TEMPLATE: CanvasLayoutTemplate = {
   id: "split-landing-page",
   name: "Split Landing Page",
   description: "Interactive split screen with hover expansion",
+  category: "dynamic",
   sections: [
     {
       id: "split-left",

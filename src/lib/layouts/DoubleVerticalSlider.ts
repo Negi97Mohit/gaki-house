@@ -5,6 +5,7 @@ export const VERTICAL_SLIDER_TEMPLATE: CanvasLayoutTemplate = {
   id: "vertical-slider",
   name: "Double Vertical Slider",
   description: "Split screen slider with reverse scrolling",
+  category: "dynamic",
   sections: [
     // --- PAIR 1 ---
     {

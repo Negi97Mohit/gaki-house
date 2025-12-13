@@ -5,6 +5,7 @@ export const CASE_STUDY_TEMPLATE: CanvasLayoutTemplate = {
     id: "case-study",
     name: "Case Study",
     description: "Vertical list of case studies with gallery and details",
+    category: "dynamic",
     sections: [
         {
             id: "case-1",

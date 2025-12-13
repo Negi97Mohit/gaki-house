@@ -13,6 +13,8 @@ import {
   ChevronRight,
   RotateCw,
   Sparkles,
+  Zap,
+  Layout,
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import { AIChatbot } from "./AIChatbot";
@@ -425,30 +427,81 @@ export const CanvasHoverToolbar = ({
             </Button>
           )}
 
-          <div className="grid grid-cols-2 gap-2">
-            {layoutTemplates.map((template) => (
-              <Button
-                key={template.id}
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
-                  canvasLayout?.templateId === template.id
-                    ? "bg-primary/10 border-primary/50"
-                    : "hover:bg-muted/70 hover:border-border"
+          {/* Dynamic Designs Section */}
+          {(() => {
+            const dynamicLayouts = layoutTemplates.filter(t => t.category === 'dynamic');
+            const staticLayouts = layoutTemplates.filter(t => t.category !== 'dynamic');
+            
+            return (
+              <div className="space-y-4">
+                {dynamicLayouts.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 px-1">
+                      <Zap className="h-3.5 w-3.5 text-primary" />
+                      <span className="text-xs font-semibold text-foreground">Dynamic Designs</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {dynamicLayouts.map((template) => (
+                        <Button
+                          key={template.id}
+                          variant="ghost"
+                          size="sm"
+                          className={cn(
+                            "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
+                            canvasLayout?.templateId === template.id
+                              ? "bg-primary/10 border-primary/50"
+                              : "hover:bg-muted/70 hover:border-border"
+                          )}
+                          onClick={() => handleLayoutSelect(template.id)}
+                        >
+                          <GridLayoutPreview sections={template.sections} />
+                          <div className="flex items-center gap-1.5 w-full justify-center">
+                            <span className="text-xs font-medium truncate">{template.name}</span>
+                            {canvasLayout?.templateId === template.id && (
+                              <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+                            )}
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
                 )}
-                onClick={() => handleLayoutSelect(template.id)}
-              >
-                <GridLayoutPreview sections={template.sections} />
-                <div className="flex items-center gap-1.5 w-full justify-center">
-                  <span className="text-xs font-medium truncate">{template.name}</span>
-                  {canvasLayout?.templateId === template.id && (
-                    <Check className="w-3.5 h-3.5 text-primary shrink-0" />
-                  )}
-                </div>
-              </Button>
-            ))}
-          </div>
+
+                {staticLayouts.length > 0 && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-2 px-1">
+                      <Layout className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-xs font-semibold text-foreground">Static Designs</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {staticLayouts.map((template) => (
+                        <Button
+                          key={template.id}
+                          variant="ghost"
+                          size="sm"
+                          className={cn(
+                            "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
+                            canvasLayout?.templateId === template.id
+                              ? "bg-primary/10 border-primary/50"
+                              : "hover:bg-muted/70 hover:border-border"
+                          )}
+                          onClick={() => handleLayoutSelect(template.id)}
+                        >
+                          <GridLayoutPreview sections={template.sections} />
+                          <div className="flex items-center gap-1.5 w-full justify-center">
+                            <span className="text-xs font-medium truncate">{template.name}</span>
+                            {canvasLayout?.templateId === template.id && (
+                              <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+                            )}
+                          </div>
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
         </PopoverContent>
       </Popover>
 

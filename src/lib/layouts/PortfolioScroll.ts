@@ -6,6 +6,7 @@ export const PORTFOLIO_SCROLL_TEMPLATE: CanvasLayoutTemplate = {
   name: "Portfolio Scroll",
   description:
     "Vertical project list with bold typography and colored sections",
+  category: "dynamic",
   sections: [
     // Section 1: Intro / Home
     {

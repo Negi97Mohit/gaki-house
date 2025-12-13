@@ -1,5 +1,5 @@
 // src/lib/canvasLayouts.ts
-import { CanvasLayoutTemplate } from "@/types/layout";
+import { CanvasLayoutTemplate, LayoutCategory } from "@/types/layout";
 import { EXPANDING_CARDS_TEMPLATE } from "./layouts/ExpandingCards";
 import { SLIDER_TEMPLATE } from "./layouts/GradientSlider";
 import { VERTICAL_SLIDER_TEMPLATE } from "./layouts/DoubleVerticalSlider";
@@ -8,6 +8,12 @@ import { CASE_STUDY_TEMPLATE } from "./layouts/CaseStudy";
 import { PORTFOLIO_SCROLL_TEMPLATE } from "./layouts/PortfolioScroll";
 
 export type { CanvasLayoutTemplate };
+
+// IDs of layouts that should be marked as dynamic (from layouts.json)
+const DYNAMIC_LAYOUT_IDS = new Set([
+  "carousel-3-cards",
+  "carousel-5-cards",
+]);
 
 let templateCache: {
   list: CanvasLayoutTemplate[];
@@ -28,13 +34,18 @@ export async function getLayoutTemplates(): Promise<{
 
     if (response.ok) {
       try {
-        list = await response.json();
+        const parsed = await response.json();
+        // Add category to layouts from JSON based on DYNAMIC_LAYOUT_IDS
+        list = parsed.map((layout: CanvasLayoutTemplate) => ({
+          ...layout,
+          category: DYNAMIC_LAYOUT_IDS.has(layout.id) ? 'dynamic' as LayoutCategory : (layout.category || 'static' as LayoutCategory),
+        }));
       } catch (e) {
         console.warn("Failed to parse layouts.json, using defaults");
       }
     }
 
-    // Register all templates
+    // Register all templates (already have category defined)
     const defaults = [
       EXPANDING_CARDS_TEMPLATE,
       SLIDER_TEMPLATE,
@@ -65,6 +76,7 @@ export async function getLayoutTemplates(): Promise<{
       VERTICAL_SLIDER_TEMPLATE,
       SPLIT_LANDING_PAGE_TEMPLATE,
       CASE_STUDY_TEMPLATE,
+      PORTFOLIO_SCROLL_TEMPLATE,
     ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
