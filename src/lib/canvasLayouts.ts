@@ -7,6 +7,7 @@ import { SPLIT_LANDING_PAGE_TEMPLATE } from "./layouts/SplitLandingPage";
 import { CASE_STUDY_TEMPLATE } from "./layouts/CaseStudy";
 import { PORTFOLIO_SCROLL_TEMPLATE } from "./layouts/PortfolioScroll";
 import { SIMON_PORTFOLIO_TEMPLATE } from "./layouts/SimonPortfolio";
+import { PHOTOYOSHI_TEMPLATE } from "./layouts/Photoyoshi";
 
 export type { CanvasLayoutTemplate };
 
@@ -55,6 +56,7 @@ export async function getLayoutTemplates(): Promise<{
       CASE_STUDY_TEMPLATE,
       PORTFOLIO_SCROLL_TEMPLATE,
       SIMON_PORTFOLIO_TEMPLATE,
+      PHOTOYOSHI_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -80,6 +82,7 @@ export async function getLayoutTemplates(): Promise<{
       CASE_STUDY_TEMPLATE,
       PORTFOLIO_SCROLL_TEMPLATE,
       SIMON_PORTFOLIO_TEMPLATE,
+      PHOTOYOSHI_TEMPLATE,
     ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
@@ -89,6 +92,7 @@ export async function getLayoutTemplates(): Promise<{
       "case-study": CASE_STUDY_TEMPLATE,
       "portfolio-scroll": PORTFOLIO_SCROLL_TEMPLATE,
       "simon-portfolio": SIMON_PORTFOLIO_TEMPLATE,
+      "photoyoshi": PHOTOYOSHI_TEMPLATE,
     };
     return { list, record };
   }
