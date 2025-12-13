@@ -8,12 +8,29 @@ import { CASE_STUDY_TEMPLATE } from "./layouts/CaseStudy";
 import { PORTFOLIO_SCROLL_TEMPLATE } from "./layouts/PortfolioScroll";
 import { SIMON_PORTFOLIO_TEMPLATE } from "./layouts/SimonPortfolio";
 
+
+export const PERFORMANCE_FLOW_TEMPLATE: CanvasLayoutTemplate = {
+  id: "performance-flow",
+  name: "Performance Flow",
+  description: "A cinematic horizontal scroll layout.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "flow-1", name: "Featured 1", style: { background: "#1a1a1a" } },
+    { id: "flow-2", name: "Featured 2", style: { background: "#1a1a1a" } },
+    { id: "flow-3", name: "Featured 3", style: { background: "#1a1a1a" } },
+    { id: "flow-4", name: "Featured 4", style: { background: "#1a1a1a" } },
+    { id: "flow-5", name: "Featured 5", style: { background: "#1a1a1a" } },
+    { id: "flow-6", name: "Featured 6", style: { background: "#1a1a1a" } },
+  ],
+};
+
 export type { CanvasLayoutTemplate };
 
 // IDs of layouts that should be marked as dynamic (from layouts.json)
 const DYNAMIC_LAYOUT_IDS = new Set([
   "carousel-3-cards",
   "carousel-5-cards",
+  "performance-flow",
 ]);
 
 let templateCache: {
@@ -55,6 +72,7 @@ export async function getLayoutTemplates(): Promise<{
       CASE_STUDY_TEMPLATE,
       PORTFOLIO_SCROLL_TEMPLATE,
       SIMON_PORTFOLIO_TEMPLATE,
+      PERFORMANCE_FLOW_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -80,6 +98,7 @@ export async function getLayoutTemplates(): Promise<{
       CASE_STUDY_TEMPLATE,
       PORTFOLIO_SCROLL_TEMPLATE,
       SIMON_PORTFOLIO_TEMPLATE,
+      PERFORMANCE_FLOW_TEMPLATE,
     ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
@@ -89,6 +108,7 @@ export async function getLayoutTemplates(): Promise<{
       "case-study": CASE_STUDY_TEMPLATE,
       "portfolio-scroll": PORTFOLIO_SCROLL_TEMPLATE,
       "simon-portfolio": SIMON_PORTFOLIO_TEMPLATE,
+      "performance-flow": PERFORMANCE_FLOW_TEMPLATE,
     };
     return { list, record };
   }

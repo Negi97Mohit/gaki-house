@@ -18,6 +18,7 @@ import { SplitLandingLayout } from "./layouts/SplitLandingLayout";
 import { CaseStudyLayout } from "./layouts/CaseStudyLayout";
 import { PortfolioScrollLayout } from "./layouts/PortfolioScrollLayout";
 import { SimonPortfolioLayout } from "./layouts/SimonPortfolioLayout";
+import { PerformanceFlowLayout } from "./layouts/PerformanceFlowLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -124,7 +125,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         isExpandingCards && "bg-white",
         isSlider && "flex items-center justify-center bg-white",
         isVerticalSlider &&
-          "relative w-full h-[100vh] overflow-hidden bg-background",
+        "relative w-full h-[100vh] overflow-hidden bg-background",
         isSplitLanding && "relative w-full h-full bg-[#333]",
         isPortfolioScroll && "bg-white",
         isSimonPortfolio && "bg-white"
@@ -142,6 +143,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <PortfolioScrollLayout {...commonProps} />
       ) : isSimonPortfolio ? (
         <SimonPortfolioLayout {...commonProps} />
+      ) : layout.templateId === "performance-flow" ? (
+        <PerformanceFlowLayout {...commonProps} />
       ) : layout.templateId === "case-study" ? (
         <CaseStudyLayout {...commonProps} />
       ) : (
