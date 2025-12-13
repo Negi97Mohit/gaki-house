@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { GridSectionWrapper } from "./GridSectionWrapper";
-import { Plus, Trash2, ArrowUpRight, Menu, X } from "lucide-react";
+import { Plus, Trash2, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 
 interface SimonPortfolioLayoutProps {
@@ -161,57 +161,6 @@ const LoadingAnimation: React.FC<{ onComplete: () => void }> = ({ onComplete }) 
   );
 };
 
-// Navigation header
-const NavigationHeader: React.FC<{
-  siteName: string;
-  onSiteNameChange: (value: string) => void;
-  menuItems: string[];
-  onMenuItemChange: (index: number, value: string) => void;
-  textColor: string;
-}> = ({ siteName, onSiteNameChange, menuItems, onMenuItemChange, textColor }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  return (
-    <>
-      <header 
-        className="fixed top-0 left-0 right-0 z-50 p-6 md:p-10 flex justify-between items-start mix-blend-difference"
-        style={{ color: "#fff" }}
-      >
-        <EditableText
-          value={siteName}
-          onChange={onSiteNameChange}
-          className="text-lg md:text-xl font-bold tracking-tight"
-          as="h1"
-        />
-        
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="text-lg font-medium tracking-wide hover:opacity-60 transition-opacity flex items-center gap-2"
-        >
-          {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          <span className="hidden md:inline">{menuOpen ? "CLOSE" : "MENU"}</span>
-        </button>
-      </header>
-
-      {/* Full screen menu overlay */}
-      <div 
-        className={cn(
-          "fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 transition-all duration-500",
-          menuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
-        )}
-      >
-        {menuItems.map((item, i) => (
-          <EditableText
-            key={i}
-            value={item}
-            onChange={(v) => onMenuItemChange(i, v)}
-            className="text-white text-4xl md:text-6xl font-bold tracking-tighter hover:opacity-60 transition-opacity cursor-pointer"
-          />
-        ))}
-      </div>
-    </>
-  );
-};
 
 // Project detail view with animations
 const ProjectDetail: React.FC<{
@@ -341,10 +290,8 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
 
   // Global settings from customSectionData["_global"]
   const globalData = layout.customSectionData?.["_global"] || {};
-  const siteName = globalData.siteName ?? "SIMON DAUFRESNE";
   const tagline = globalData.tagline ?? "Independent Graphic Designer";
   const location = globalData.location ?? "Paris, France";
-  const menuItems = globalData.menuItems ?? ["WORK", "ABOUT", "CONTACT"];
 
   const handleUpdateGlobal = useCallback((field: string, value: any) => {
     if (!onLayoutUpdate) return;
@@ -426,6 +373,21 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
     }
   }, [layout, onLayoutUpdate, sectionIds, activeProjectIndex]);
 
+  const handleClearGrid = useCallback(() => {
+    if (!onLayoutUpdate) return;
+    if (!confirm("Clear all projects from this layout?")) return;
+    
+    onLayoutUpdate({
+      ...layout,
+      sections: [],
+      sectionOrder: [],
+      customSectionData: { _global: globalData },
+      customSectionStyles: {},
+    });
+    setActiveProjectIndex(null);
+    setViewMode("list");
+  }, [layout, onLayoutUpdate, globalData]);
+
   const handleProjectClick = (index: number) => {
     setActiveProjectIndex(index);
     setViewMode("detail");
@@ -448,26 +410,13 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
   }, [showLoader, viewMode]);
 
   return (
-    <div className="w-full h-full overflow-hidden bg-white text-black font-sans relative">
+    <div className="w-full h-full overflow-y-auto bg-white text-black font-sans relative">
       {/* Loading animation */}
       {showLoader && <LoadingAnimation onComplete={() => setShowLoader(false)} />}
 
-      {/* Navigation */}
-      <NavigationHeader
-        siteName={siteName}
-        onSiteNameChange={(v) => handleUpdateGlobal("siteName", v)}
-        menuItems={menuItems}
-        onMenuItemChange={(i, v) => {
-          const newItems = [...menuItems];
-          newItems[i] = v;
-          handleUpdateGlobal("menuItems", newItems);
-        }}
-        textColor={viewMode === "detail" ? "#fff" : "#000"}
-      />
-
       {/* List View */}
       {viewMode === "list" && (
-        <div ref={containerRef} className="w-full min-h-screen pt-32 md:pt-40 px-6 md:px-16">
+        <div ref={containerRef} className="w-full min-h-screen pt-16 md:pt-24 px-6 md:px-16">
           {/* Hero section */}
           <div className="mb-20 md:mb-32 max-w-4xl">
             <EditableText
@@ -515,13 +464,6 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
       {/* Detail View */}
       {viewMode === "detail" && activeProjectIndex !== null && (
         <div className="w-full min-h-screen">
-          {/* Back button */}
-          <button
-            onClick={handleBackToList}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-2 text-sm font-medium tracking-wide border border-current/20 rounded-full hover:bg-black hover:text-white transition-all duration-300 mix-blend-difference text-white"
-          >
-            BACK TO LIST
-          </button>
 
           {sectionIds.map((sectionId, index) => {
             if (index !== activeProjectIndex) return null;
@@ -550,8 +492,8 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
             );
           })}
 
-          {/* Navigation arrows */}
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-50 mix-blend-difference">
+          {/* Navigation arrows + Back button */}
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 z-50 mix-blend-difference">
             <button
               onClick={() => setActiveProjectIndex(Math.max(0, activeProjectIndex - 1))}
               disabled={activeProjectIndex === 0}
@@ -559,9 +501,12 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
             >
               ← PREV
             </button>
-            <span className="text-white text-sm opacity-50">
-              {activeProjectIndex + 1} / {sectionIds.length}
-            </span>
+            <button
+              onClick={handleBackToList}
+              className="px-6 py-2 text-sm font-medium tracking-wide border border-white/40 rounded-full hover:bg-white hover:text-black transition-all duration-300 text-white"
+            >
+              BACK TO LIST
+            </button>
             <button
               onClick={() => setActiveProjectIndex(Math.min(sectionIds.length - 1, activeProjectIndex + 1))}
               disabled={activeProjectIndex === sectionIds.length - 1}
@@ -573,14 +518,25 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
         </div>
       )}
 
-      {/* FAB to add project */}
-      <button
-        onClick={handleAddSection}
-        className="fixed bottom-8 right-8 z-50 w-14 h-14 bg-black text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
-        title="Add New Project"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
+      {/* FAB buttons */}
+      <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-3">
+        {sectionIds.length > 0 && (
+          <button
+            onClick={handleClearGrid}
+            className="w-12 h-12 bg-red-600 text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+            title="Clear All Projects"
+          >
+            <Trash2 className="w-5 h-5" />
+          </button>
+        )}
+        <button
+          onClick={handleAddSection}
+          className="w-14 h-14 bg-black text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
+          title="Add New Project"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      </div>
     </div>
   );
 };
