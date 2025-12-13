@@ -429,6 +429,13 @@ export interface CustomSectionStyle {
 export interface SectionData {
   name?: string;
   description?: string;
+  // Extended fields
+  category?: string; // e.g. "Brand Identity" / "Project No."
+  date?: string;     // e.g. "2024"
+  label?: string;    // e.g. "01.12"
+  creditsLabel?: string; // e.g. "Credits"
+  creditsValue?: string; // e.g. "Designed by Users"
+  location?: string; // e.g. "Paris, FR"
 }
 
 // The overall layout state for the canvas

@@ -9,7 +9,7 @@ interface PortfolioScrollLayoutProps {
   layout: CanvasLayoutState;
   template: CanvasLayoutTemplate;
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
-  [key: string]: any; // Allow passing through GridSectionWrapper props
+  [key: string]: any;
 }
 
 export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
@@ -20,7 +20,6 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
 }) => {
   const [hoveredSectionId, setHoveredSectionId] = useState<string | null>(null);
 
-  // Use sectionOrder if available, otherwise default to template sections
   const sectionIds =
     layout.sectionOrder && layout.sectionOrder.length > 0
       ? layout.sectionOrder
@@ -35,7 +34,6 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
       content: { type: "empty" },
     };
 
-    // Cycle through some background colors for variety
     const bgColors = ["#B21C1B", "#003F66", "#CFCC93", "#333333", "#E6E6E6"];
     const randomColor = bgColors[Math.floor(Math.random() * bgColors.length)];
     const textColor =
@@ -46,13 +44,6 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
     const newSections = [...layout.sections, newSection];
     const newOrder = [...sectionIds, newId];
 
-    // Note: We need to store the style for custom sections somewhere.
-    // The current implementation of StandardGridLayout uses `layout.customSectionStyles`.
-    // We can reuse that or store it in `customSectionData`.
-    // Let's use `customSectionStyles` for the visual style (background) if possible,
-    // but the template logic usually reads from `templateSection.style`.
-    // For now, let's assume we can map custom IDs to a style object we construct on the fly,
-    // OR we update `customSectionStyles`.
     const newCustomStyles = {
       ...layout.customSectionStyles,
       [newId]: {
@@ -66,6 +57,10 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
       [newId]: {
         name: "New Project",
         description: "Portfolio Item",
+        category: "Project No.",
+        label: `0${sectionIds.length}`,
+        date: "2024 Design",
+        location: "Paris, FR",
       },
     };
 
@@ -97,11 +92,7 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
     });
   };
 
-  const handleUpdateText = (
-    id: string,
-    field: "name" | "description",
-    value: string
-  ) => {
+  const handleUpdateText = (id: string, field: string, value: string) => {
     if (!onLayoutUpdate) return;
     const currentData = layout.customSectionData?.[id] || {};
     const newCustomData = {
@@ -116,6 +107,10 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
       customSectionData: newCustomData,
     });
   };
+
+  const getEditableClass = (customClass = "") =>
+    `bg-transparent border-none focus:outline-none focus:ring-0 placeholder-current/50 ${customClass}`;
+
 
   return (
     <div className="w-full h-full overflow-y-auto bg-white font-sans scroll-smooth snap-y snap-mandatory relative">
@@ -132,7 +127,7 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
           (s) => s.id === sectionId
         );
 
-        // Resolve style: Custom Styles > Template Style > Default
+        // Resolve style
         const style = layout.customSectionStyles?.[sectionId] ||
           templateSection?.style || {
           backgroundColor: "#f0f0f0",
@@ -140,13 +135,19 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
         };
 
         // Resolve Text
-        const customData = layout.customSectionData?.[sectionId];
-        const displayName =
-          customData?.name ?? templateSection?.name ?? "Untitled Project";
-        const displayDescription =
-          customData?.description ??
-          templateSection?.description ??
-          "Description";
+        const customData = layout.customSectionData?.[sectionId] || {};
+
+        const name = customData.name ?? templateSection?.name ?? "Untitled Project";
+        const description = customData.description ?? templateSection?.description ?? "Description";
+
+        const category = customData.category ?? "Project No.";
+        const label = customData.label ?? `0${index}`; // Auto-index but editable if stored? If editable, it should persist. If not stored, derive from index.
+        const date = customData.date ?? "2024 Design";
+        const location = customData.location ?? "Paris, FR";
+
+        // Logic: if it's in customData, use it. If not, use default.
+        // For label (e.g. 00, 01), we can default to index if customData.label is undefined.
+        // But if user edits it, customData.label will be set.
 
         const isHovered = hoveredSectionId === sectionId;
         const isIntro = index === 0;
@@ -161,7 +162,6 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
           >
             <div className="w-full max-w-6xl h-[80vh] flex flex-col relative z-10">
               {/* Delete Button */}
-              {/* Show for all sections or just custom? Let's show for all to allow full editability */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -179,71 +179,78 @@ export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
                 <div className="w-full max-w-3xl">
                   {/* Editable Title */}
                   <input
-                    className="w-full text-4xl md:text-6xl font-bold tracking-tighter leading-none bg-transparent border-none focus:outline-none focus:ring-0 placeholder-current/50"
+                    className={getEditableClass("w-full text-4xl md:text-6xl font-bold tracking-tighter leading-none")}
                     style={{ color: "currentColor" }}
-                    value={displayName}
-                    onChange={(e) =>
-                      handleUpdateText(sectionId, "name", e.target.value)
-                    }
+                    value={name}
+                    onChange={(e) => handleUpdateText(sectionId, "name", e.target.value)}
                     placeholder="Project Name"
                   />
                   {/* Editable Description */}
                   <input
-                    className="w-full opacity-60 text-lg mt-2 font-light bg-transparent border-none focus:outline-none focus:ring-0"
+                    className={getEditableClass("w-full opacity-60 text-lg mt-2 font-light")}
                     style={{ color: "currentColor" }}
-                    value={displayDescription}
-                    onChange={(e) =>
-                      handleUpdateText(
-                        sectionId,
-                        "description",
-                        e.target.value
-                      )
-                    }
+                    value={description}
+                    onChange={(e) => handleUpdateText(sectionId, "description", e.target.value)}
                     placeholder="Short description"
                   />
                 </div>
 
                 {!isIntro && (
                   <div className="text-right hidden md:block shrink-0 ml-4">
-                    <span className="block text-xs font-bold uppercase tracking-widest opacity-50">
-                      Project No.
-                    </span>
-                    <span className="text-3xl font-mono">0{index}</span>
+                    <input
+                      className={getEditableClass("block text-xs font-bold uppercase tracking-widest opacity-50 text-right w-full")}
+                      style={{ color: "currentColor" }}
+                      value={category}
+                      onChange={(e) => handleUpdateText(sectionId, "category", e.target.value)}
+                    />
+                    <input
+                      className={getEditableClass("text-3xl font-mono text-right w-full bg-transparent")}
+                      style={{ color: "currentColor" }}
+                      value={label}
+                      onChange={(e) => handleUpdateText(sectionId, "label", e.target.value)}
+                    />
                   </div>
                 )}
               </div>
 
-              {/* Main Content Area (The "Card") */}
-              {/* This is where the user's video/image content will live */}
+              {/* Main Content Area */}
               <div className="flex-1 relative bg-black/5 rounded-lg overflow-hidden shadow-2xl transition-transform duration-700 hover:scale-[1.02]">
                 <GridSectionWrapper
                   {...wrapperProps}
                   section={section}
-                  templateSection={templateSection || { id: sectionId }} // Fallback
+                  templateSection={templateSection || { id: sectionId }}
                   isHovered={isHovered}
                 />
               </div>
 
-              {/* Footer / Navigation Hint */}
+              {/* Footer */}
               <div className="mt-8 flex justify-between items-center opacity-50 text-sm font-medium uppercase tracking-widest">
-                <span>2024 Design</span>
+                <input
+                  className={getEditableClass("text-left min-w-[100px]")}
+                  style={{ color: "currentColor" }}
+                  value={date}
+                  onChange={(e) => handleUpdateText(sectionId, "date", e.target.value)}
+                />
+
                 {index < sectionIds.length - 1 && (
                   <div className="animate-bounce">
                     <ArrowDown className="w-5 h-5" />
                   </div>
                 )}
-                <span>Paris, FR</span>
+
+                <input
+                  className={getEditableClass("text-right min-w-[100px]")}
+                  style={{ color: "currentColor" }}
+                  value={location}
+                  onChange={(e) => handleUpdateText(sectionId, "location", e.target.value)}
+                />
               </div>
             </div>
           </div>
         );
       })}
 
-      {/* Add Section Button (Fixed at bottom right or part of the flow?) 
-           Since it is a scroll layout, maybe a fixed FAB is better? 
-           Or a final section "Add New"? 
-           Let's go with a fixed FAB (Floating Action Button) for easy access.
-      */}
+      {/* FAB */}
       <button
         onClick={handleAddSection}
         className="fixed bottom-8 right-8 z-50 w-14 h-14 bg-black text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300"
