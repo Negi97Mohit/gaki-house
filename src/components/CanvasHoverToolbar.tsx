@@ -34,6 +34,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { CanvasLayoutState } from "@/types/caption";
 import { GridLayoutPreview } from "./GridLayoutPreview";
@@ -427,79 +428,88 @@ export const CanvasHoverToolbar = ({
             </Button>
           )}
 
-          {/* Dynamic Designs Section */}
+          {/* Tabbed Layout Selection */}
           {(() => {
             const dynamicLayouts = layoutTemplates.filter(t => t.category === 'dynamic');
             const staticLayouts = layoutTemplates.filter(t => t.category !== 'dynamic');
             
             return (
-              <div className="space-y-4">
-                {dynamicLayouts.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-2 px-1">
-                      <Zap className="h-3.5 w-3.5 text-primary" />
-                      <span className="text-xs font-semibold text-foreground">Dynamic Designs</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {dynamicLayouts.map((template) => (
-                        <Button
-                          key={template.id}
-                          variant="ghost"
-                          size="sm"
-                          className={cn(
-                            "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
-                            canvasLayout?.templateId === template.id
-                              ? "bg-primary/10 border-primary/50"
-                              : "hover:bg-muted/70 hover:border-border"
-                          )}
-                          onClick={() => handleLayoutSelect(template.id)}
-                        >
-                          <GridLayoutPreview sections={template.sections} />
-                          <div className="flex items-center gap-1.5 w-full justify-center">
-                            <span className="text-xs font-medium truncate">{template.name}</span>
-                            {canvasLayout?.templateId === template.id && (
-                              <Check className="w-3.5 h-3.5 text-primary shrink-0" />
-                            )}
-                          </div>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              <Tabs defaultValue="dynamic" className="w-full">
+                <TabsList className="w-full grid grid-cols-2 mb-3">
+                  <TabsTrigger value="dynamic" className="text-xs gap-1.5">
+                    <Zap className="h-3.5 w-3.5" />
+                    Dynamic
+                  </TabsTrigger>
+                  <TabsTrigger value="static" className="text-xs gap-1.5">
+                    <Layout className="h-3.5 w-3.5" />
+                    Static
+                  </TabsTrigger>
+                </TabsList>
 
-                {staticLayouts.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-2 px-1">
-                      <Layout className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span className="text-xs font-semibold text-foreground">Static Designs</span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {staticLayouts.map((template) => (
-                        <Button
-                          key={template.id}
-                          variant="ghost"
-                          size="sm"
-                          className={cn(
-                            "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
-                            canvasLayout?.templateId === template.id
-                              ? "bg-primary/10 border-primary/50"
-                              : "hover:bg-muted/70 hover:border-border"
+                <TabsContent value="dynamic" className="mt-0">
+                  <div className="grid grid-cols-2 gap-2">
+                    {dynamicLayouts.map((template) => (
+                      <Button
+                        key={template.id}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
+                          canvasLayout?.templateId === template.id
+                            ? "bg-primary/10 border-primary/50"
+                            : "hover:bg-muted/70 hover:border-border"
+                        )}
+                        onClick={() => handleLayoutSelect(template.id)}
+                      >
+                        <GridLayoutPreview sections={template.sections} />
+                        <div className="flex items-center gap-1.5 w-full justify-center">
+                          <span className="text-xs font-medium truncate">{template.name}</span>
+                          {canvasLayout?.templateId === template.id && (
+                            <Check className="w-3.5 h-3.5 text-primary shrink-0" />
                           )}
-                          onClick={() => handleLayoutSelect(template.id)}
-                        >
-                          <GridLayoutPreview sections={template.sections} />
-                          <div className="flex items-center gap-1.5 w-full justify-center">
-                            <span className="text-xs font-medium truncate">{template.name}</span>
-                            {canvasLayout?.templateId === template.id && (
-                              <Check className="w-3.5 h-3.5 text-primary shrink-0" />
-                            )}
-                          </div>
-                        </Button>
-                      ))}
-                    </div>
+                        </div>
+                      </Button>
+                    ))}
+                    {dynamicLayouts.length === 0 && (
+                      <div className="col-span-2 text-center text-sm text-muted-foreground py-4">
+                        No dynamic layouts available
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </TabsContent>
+
+                <TabsContent value="static" className="mt-0">
+                  <div className="grid grid-cols-2 gap-2">
+                    {staticLayouts.map((template) => (
+                      <Button
+                        key={template.id}
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
+                          canvasLayout?.templateId === template.id
+                            ? "bg-primary/10 border-primary/50"
+                            : "hover:bg-muted/70 hover:border-border"
+                        )}
+                        onClick={() => handleLayoutSelect(template.id)}
+                      >
+                        <GridLayoutPreview sections={template.sections} />
+                        <div className="flex items-center gap-1.5 w-full justify-center">
+                          <span className="text-xs font-medium truncate">{template.name}</span>
+                          {canvasLayout?.templateId === template.id && (
+                            <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+                          )}
+                        </div>
+                      </Button>
+                    ))}
+                    {staticLayouts.length === 0 && (
+                      <div className="col-span-2 text-center text-sm text-muted-foreground py-4">
+                        No static layouts available
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
             );
           })()}
         </PopoverContent>
