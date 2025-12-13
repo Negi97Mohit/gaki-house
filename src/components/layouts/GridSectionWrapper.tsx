@@ -10,40 +10,40 @@ import { AssetResult } from "../AssetLibrary";
 import { GridSectionToolbar } from "../GridSectionToolbar";
 import { GridSectionRenderer } from "../GridSectionRenderer";
 
-interface GridSectionWrapperProps {
+export interface GridSectionWrapperProps {
     section: CanvasSectionState;
-    templateSection: any; // Using any to match existing usage, or could be stricter
+    templateSection: any;
     isHovered: boolean;
-    onMouseEnter?: () => void; // Optional if handled by parent container
-    onMouseLeave?: () => void; // Optional if handled by parent container
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
 
-    // Data
-    cameraStream: MediaStream | null;
-    screenStream: MediaStream | null;
-    fileOverlays: FileOverlayState[];
-    textOverlays: TextOverlayState[];
-    blankCanvasColor: string;
+    // Data - all optional with defaults
+    cameraStream?: MediaStream | null;
+    screenStream?: MediaStream | null;
+    fileOverlays?: FileOverlayState[];
+    textOverlays?: TextOverlayState[];
+    blankCanvasColor?: string;
     backgroundImageUrl?: string;
     videoDevices?: MediaDeviceInfo[];
     activeSequenceId?: string | null;
-    layoutMode: string;
-    cameraShape: "rectangle" | "circle" | "rounded";
-    backgroundEffect: "none" | "blur" | "image";
+    layoutMode?: string;
+    cameraShape?: "rectangle" | "circle" | "rounded";
+    backgroundEffect?: "none" | "blur" | "image";
 
-    // Callbacks
-    onSectionContentChange: (
+    // Callbacks - optional
+    onSectionContentChange?: (
         sectionId: string,
         content: CanvasSectionState["content"]
     ) => void;
-    onSectionDelete: (sectionId: string) => void;
-    onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
-    onSectionCameraSettingsChange: (
+    onSectionDelete?: (sectionId: string) => void;
+    onGridAssetSelect?: (sectionId: string, asset: AssetResult) => void;
+    onSectionCameraSettingsChange?: (
         sectionId: string,
         settings: Partial<CanvasSectionCameraState>
     ) => void;
     onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
 
-    // Layout specific flags (passed from parent layout)
+    // Layout specific flags
     isVertical?: boolean;
     isSplit?: boolean;
 }
