@@ -18,6 +18,7 @@ import { SplitLandingLayout } from "./layouts/SplitLandingLayout";
 import { CaseStudyLayout } from "./layouts/CaseStudyLayout";
 import { PortfolioScrollLayout } from "./layouts/PortfolioScrollLayout";
 import { SimonPortfolioLayout } from "./layouts/SimonPortfolioLayout";
+import { PhotoyoshiLayout } from "./layouts/PhotoyoshiLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -108,6 +109,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isSplitLanding = layout.templateId === "split-landing-page";
   const isPortfolioScroll = layout.templateId === "portfolio-scroll";
   const isSimonPortfolio = layout.templateId === "simon-portfolio";
+  const isPhotoyoshi = layout.templateId === "photoyoshi";
 
   const commonProps = {
     ...props,
@@ -127,7 +129,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
           "relative w-full h-[100vh] overflow-hidden bg-background",
         isSplitLanding && "relative w-full h-full bg-[#333]",
         isPortfolioScroll && "bg-white",
-        isSimonPortfolio && "bg-white"
+        isSimonPortfolio && "bg-white",
+        isPhotoyoshi && "bg-[#f5f0e8]"
       )}
     >
       {isExpandingCards ? (
@@ -142,6 +145,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <PortfolioScrollLayout {...commonProps} />
       ) : isSimonPortfolio ? (
         <SimonPortfolioLayout {...commonProps} />
+      ) : isPhotoyoshi ? (
+        <PhotoyoshiLayout {...commonProps} />
       ) : layout.templateId === "case-study" ? (
         <CaseStudyLayout {...commonProps} />
       ) : (
