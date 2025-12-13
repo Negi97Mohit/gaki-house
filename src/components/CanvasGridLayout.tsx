@@ -19,6 +19,7 @@ import { CaseStudyLayout } from "./layouts/CaseStudyLayout";
 import { PortfolioScrollLayout } from "./layouts/PortfolioScrollLayout";
 import { SimonPortfolioLayout } from "./layouts/SimonPortfolioLayout";
 import { PerformanceFlowLayout } from "./layouts/PerformanceFlowLayout";
+import { MagnetismGridLayout } from "./layouts/MagnetismGridLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -145,6 +146,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <SimonPortfolioLayout {...commonProps} />
       ) : layout.templateId === "performance-flow" ? (
         <PerformanceFlowLayout {...commonProps} />
+      ) : layout.templateId === "magnetism-layout" ? (
+        <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
       ) : layout.templateId === "case-study" ? (
         <CaseStudyLayout {...commonProps} />
       ) : (

@@ -7,6 +7,7 @@ import { SPLIT_LANDING_PAGE_TEMPLATE } from "./layouts/SplitLandingPage";
 import { CASE_STUDY_TEMPLATE } from "./layouts/CaseStudy";
 import { PORTFOLIO_SCROLL_TEMPLATE } from "./layouts/PortfolioScroll";
 import { SIMON_PORTFOLIO_TEMPLATE } from "./layouts/SimonPortfolio";
+import { MAGNETISM_GRID_TEMPLATE } from "./layouts/MagnetismGrid";
 
 
 export const PERFORMANCE_FLOW_TEMPLATE: CanvasLayoutTemplate = {
@@ -30,7 +31,9 @@ export type { CanvasLayoutTemplate };
 const DYNAMIC_LAYOUT_IDS = new Set([
   "carousel-3-cards",
   "carousel-5-cards",
+  "carousel-5-cards",
   "performance-flow",
+  "magnetism-layout",
 ]);
 
 let templateCache: {
@@ -73,6 +76,7 @@ export async function getLayoutTemplates(): Promise<{
       PORTFOLIO_SCROLL_TEMPLATE,
       SIMON_PORTFOLIO_TEMPLATE,
       PERFORMANCE_FLOW_TEMPLATE,
+      MAGNETISM_GRID_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -99,6 +103,7 @@ export async function getLayoutTemplates(): Promise<{
       PORTFOLIO_SCROLL_TEMPLATE,
       SIMON_PORTFOLIO_TEMPLATE,
       PERFORMANCE_FLOW_TEMPLATE,
+      MAGNETISM_GRID_TEMPLATE,
     ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
@@ -109,6 +114,7 @@ export async function getLayoutTemplates(): Promise<{
       "portfolio-scroll": PORTFOLIO_SCROLL_TEMPLATE,
       "simon-portfolio": SIMON_PORTFOLIO_TEMPLATE,
       "performance-flow": PERFORMANCE_FLOW_TEMPLATE,
+      "magnetism-layout": MAGNETISM_GRID_TEMPLATE,
     };
     return { list, record };
   }

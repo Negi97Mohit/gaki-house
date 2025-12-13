@@ -48,5 +48,7 @@ export interface CanvasLayoutTemplate {
     name: string;
     description?: string;
     style: React.CSSProperties;
+    type?: string;
+    content?: Record<string, any>;
   }>;
 }
