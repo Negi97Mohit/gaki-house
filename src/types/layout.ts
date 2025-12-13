@@ -36,10 +36,13 @@ export const DEFAULT_LAYOUT_STATE: LayoutState = {
 };
 
 // --- ADDED FOR REFRACTOR ---
+export type LayoutCategory = 'static' | 'dynamic';
+
 export interface CanvasLayoutTemplate {
   id: string;
   name: string;
   description: string;
+  category?: LayoutCategory;
   sections: Array<{
     id: string;
     name: string;

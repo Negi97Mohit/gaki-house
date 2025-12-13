@@ -5,6 +5,7 @@ export const SLIDER_TEMPLATE: CanvasLayoutTemplate = {
   id: "slider-layout",
   name: "Gradient Slider",
   description: "Clean slider with gradient backgrounds",
+  category: "dynamic",
   sections: [
     {
       id: "slide-1",
