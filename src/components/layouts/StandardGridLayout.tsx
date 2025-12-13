@@ -5,17 +5,12 @@ import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { useGridResizing } from "@/hooks/useGridResizing";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 
-interface StandardGridLayoutProps extends React.ComponentProps<typeof GridSectionWrapper> {
-    // Omit specific section props as they will be provided by the iterator
-    section?: never;
-    templateSection?: never;
-    isHovered?: never;
-
+interface StandardGridLayoutProps {
     layout: CanvasLayoutState;
     template: CanvasLayoutTemplate;
     containerRef: React.RefObject<HTMLDivElement>;
     onLayoutUpdate?: (layout: CanvasLayoutState) => void;
-    // We need to pass down the props required by GridSectionWrapper, but we'll spread them
+    [key: string]: any;
 }
 
 export const StandardGridLayout: React.FC<any> = ({

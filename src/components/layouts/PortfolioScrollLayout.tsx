@@ -6,10 +6,10 @@ import { GridSectionWrapper } from "./GridSectionWrapper";
 import { ArrowDown, Plus, Trash2 } from "lucide-react";
 
 interface PortfolioScrollLayoutProps {
-  layout: CanvasLayoutState;
-  template: CanvasLayoutTemplate;
-  onLayoutUpdate?: (layout: CanvasLayoutState) => void;
-  [key: string]: any;
+    layout: CanvasLayoutState;
+    template: CanvasLayoutTemplate;
+    onLayoutUpdate?: (layout: CanvasLayoutState) => void;
+    [key: string]: any;
 }
 
 export const PortfolioScrollLayout: React.FC<PortfolioScrollLayoutProps> = ({
