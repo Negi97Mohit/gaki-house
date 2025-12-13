@@ -436,6 +436,14 @@ export interface SectionData {
   creditsLabel?: string; // e.g. "Credits"
   creditsValue?: string; // e.g. "Designed by Users"
   location?: string; // e.g. "Paris, FR"
+  // Simon portfolio fields
+  year?: string;
+  client?: string;
+  // Global layout settings (for _global key)
+  siteName?: string;
+  tagline?: string;
+  menuItems?: string[];
+  [key: string]: any; // Allow additional custom fields
 }
 
 // The overall layout state for the canvas

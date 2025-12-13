@@ -6,6 +6,7 @@ import { VERTICAL_SLIDER_TEMPLATE } from "./layouts/DoubleVerticalSlider";
 import { SPLIT_LANDING_PAGE_TEMPLATE } from "./layouts/SplitLandingPage";
 import { CASE_STUDY_TEMPLATE } from "./layouts/CaseStudy";
 import { PORTFOLIO_SCROLL_TEMPLATE } from "./layouts/PortfolioScroll";
+import { SIMON_PORTFOLIO_TEMPLATE } from "./layouts/SimonPortfolio";
 
 export type { CanvasLayoutTemplate };
 
@@ -53,6 +54,7 @@ export async function getLayoutTemplates(): Promise<{
       SPLIT_LANDING_PAGE_TEMPLATE,
       CASE_STUDY_TEMPLATE,
       PORTFOLIO_SCROLL_TEMPLATE,
+      SIMON_PORTFOLIO_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -77,6 +79,7 @@ export async function getLayoutTemplates(): Promise<{
       SPLIT_LANDING_PAGE_TEMPLATE,
       CASE_STUDY_TEMPLATE,
       PORTFOLIO_SCROLL_TEMPLATE,
+      SIMON_PORTFOLIO_TEMPLATE,
     ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
@@ -85,6 +88,7 @@ export async function getLayoutTemplates(): Promise<{
       "split-landing-page": SPLIT_LANDING_PAGE_TEMPLATE,
       "case-study": CASE_STUDY_TEMPLATE,
       "portfolio-scroll": PORTFOLIO_SCROLL_TEMPLATE,
+      "simon-portfolio": SIMON_PORTFOLIO_TEMPLATE,
     };
     return { list, record };
   }
