@@ -492,29 +492,13 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
             );
           })}
 
-          {/* Navigation arrows + Back button */}
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 z-50 mix-blend-difference">
-            <button
-              onClick={() => setActiveProjectIndex(Math.max(0, activeProjectIndex - 1))}
-              disabled={activeProjectIndex === 0}
-              className="px-4 py-2 text-white text-sm disabled:opacity-30 hover:opacity-60 transition-opacity"
-            >
-              ← PREV
-            </button>
-            <button
-              onClick={handleBackToList}
-              className="px-6 py-2 text-sm font-medium tracking-wide border border-white/40 rounded-full hover:bg-white hover:text-black transition-all duration-300 text-white"
-            >
-              BACK TO LIST
-            </button>
-            <button
-              onClick={() => setActiveProjectIndex(Math.min(sectionIds.length - 1, activeProjectIndex + 1))}
-              disabled={activeProjectIndex === sectionIds.length - 1}
-              className="px-4 py-2 text-white text-sm disabled:opacity-30 hover:opacity-60 transition-opacity"
-            >
-              NEXT →
-            </button>
-          </div>
+          {/* Back button - positioned higher to avoid video controls */}
+          <button
+            onClick={handleBackToList}
+            className="fixed top-6 left-6 z-50 px-6 py-2 text-sm font-medium tracking-wide border border-current/40 rounded-full hover:bg-black hover:text-white transition-all duration-300"
+          >
+            ← BACK TO LIST
+          </button>
         </div>
       )}
 
