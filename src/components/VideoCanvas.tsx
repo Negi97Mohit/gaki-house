@@ -289,6 +289,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     remoteStream: props.remoteStream,
   });
 
+  // Calculate Default Mode: No active selections, not editing text/banner/etc., and NOT in a grid layout.
+  const isDefaultMode =
+    !props.selectedTextId &&
+    !props.selectedBrowserId &&
+    !props.selectedFileId &&
+    !props.selectedGeneratedId &&
+    !props.editingBannerText &&
+    !props.dynamicLayout.isActive &&
+    !props.canvasLayout;
+
   usePipGestures({
     layoutMode: props.layoutMode,
     containerRef: sceneRef,
@@ -297,6 +307,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onPipPositionChange: props.onPipPositionChange,
     screenShareMode: props.screenShareMode,
     onScreenShareModeChange: props.onScreenShareModeChange,
+    isDefaultMode,
   });
 
   const renderCamera = (className?: string, style?: React.CSSProperties) => (
