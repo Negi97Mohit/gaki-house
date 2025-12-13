@@ -17,6 +17,7 @@ import { VerticalSliderLayout } from "./layouts/VerticalSliderLayout";
 import { SplitLandingLayout } from "./layouts/SplitLandingLayout";
 import { CaseStudyLayout } from "./layouts/CaseStudyLayout";
 import { PortfolioScrollLayout } from "./layouts/PortfolioScrollLayout";
+import { SimonPortfolioLayout } from "./layouts/SimonPortfolioLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -73,7 +74,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const prevLayoutRef = useRef(layout);
   useEffect(() => {
     // Basic transition logic remains same
-    // Ref: existing effect which was empty in the previous file but had comment "Basic transition logic remains same"
   }, [layout]);
 
   if (!templates) {
@@ -107,11 +107,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isVerticalSlider = layout.templateId === "vertical-slider";
   const isSplitLanding = layout.templateId === "split-landing-page";
   const isPortfolioScroll = layout.templateId === "portfolio-scroll";
+  const isSimonPortfolio = layout.templateId === "simon-portfolio";
 
   const commonProps = {
     ...props,
     template,
-    onSectionDelete: handleSectionDelete, // Override to ensure fallback logic
+    onSectionDelete: handleSectionDelete,
     containerRef,
   };
 
@@ -125,7 +126,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         isVerticalSlider &&
           "relative w-full h-[100vh] overflow-hidden bg-background",
         isSplitLanding && "relative w-full h-full bg-[#333]",
-        isPortfolioScroll && "bg-white"
+        isPortfolioScroll && "bg-white",
+        isSimonPortfolio && "bg-white"
       )}
     >
       {isExpandingCards ? (
@@ -138,6 +140,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <SplitLandingLayout {...commonProps} />
       ) : isPortfolioScroll ? (
         <PortfolioScrollLayout {...commonProps} />
+      ) : isSimonPortfolio ? (
+        <SimonPortfolioLayout {...commonProps} />
       ) : layout.templateId === "case-study" ? (
         <CaseStudyLayout {...commonProps} />
       ) : (
