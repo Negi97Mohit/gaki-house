@@ -16,6 +16,7 @@ import { SliderLayout } from "./layouts/SliderLayout";
 import { VerticalSliderLayout } from "./layouts/VerticalSliderLayout";
 import { SplitLandingLayout } from "./layouts/SplitLandingLayout";
 import { CaseStudyLayout } from "./layouts/CaseStudyLayout";
+import { PortfolioScrollLayout } from "./layouts/PortfolioScrollLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -49,12 +50,8 @@ interface CanvasGridLayoutProps {
 }
 
 export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
-  const {
-    layout,
-    onSectionDelete,
-    onSectionContentChange,
-    onLayoutUpdate,
-  } = props;
+  const { layout, onSectionDelete, onSectionContentChange, onLayoutUpdate } =
+    props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -109,6 +106,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isSlider = layout.templateId === "slider-layout";
   const isVerticalSlider = layout.templateId === "vertical-slider";
   const isSplitLanding = layout.templateId === "split-landing-page";
+  const isPortfolioScroll = layout.templateId === "portfolio-scroll";
 
   const commonProps = {
     ...props,
@@ -124,8 +122,10 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         "relative w-full h-full overflow-hidden transition-all duration-500 ease-in-out",
         isExpandingCards && "bg-white",
         isSlider && "flex items-center justify-center bg-white",
-        isVerticalSlider && "relative w-full h-[100vh] overflow-hidden bg-background",
-        isSplitLanding && "relative w-full h-full bg-[#333]"
+        isVerticalSlider &&
+          "relative w-full h-[100vh] overflow-hidden bg-background",
+        isSplitLanding && "relative w-full h-full bg-[#333]",
+        isPortfolioScroll && "bg-white"
       )}
     >
       {isExpandingCards ? (
@@ -136,6 +136,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <VerticalSliderLayout {...commonProps} />
       ) : isSplitLanding ? (
         <SplitLandingLayout {...commonProps} />
+      ) : isPortfolioScroll ? (
+        <PortfolioScrollLayout {...commonProps} />
       ) : layout.templateId === "case-study" ? (
         <CaseStudyLayout {...commonProps} />
       ) : (

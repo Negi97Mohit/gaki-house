@@ -426,12 +426,18 @@ export interface CustomSectionStyle {
   [sectionId: string]: React.CSSProperties;
 }
 
+export interface SectionData {
+  name?: string;
+  description?: string;
+}
+
 // The overall layout state for the canvas
 export interface CanvasLayoutState {
   templateId: string; // e.g., 'two-halves', 'main-and-corner'
   sections: CanvasSectionState[];
   sectionOrder?: string[];
   customSectionStyles?: CustomSectionStyle; // Store custom resized dimensions
+  customSectionData?: Record<string, SectionData>; // Store editable text
 }
 
 // --- SUBSCENE STATE ---

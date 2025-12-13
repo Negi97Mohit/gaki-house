@@ -5,6 +5,7 @@ import { SLIDER_TEMPLATE } from "./layouts/GradientSlider";
 import { VERTICAL_SLIDER_TEMPLATE } from "./layouts/DoubleVerticalSlider";
 import { SPLIT_LANDING_PAGE_TEMPLATE } from "./layouts/SplitLandingPage";
 import { CASE_STUDY_TEMPLATE } from "./layouts/CaseStudy";
+import { PORTFOLIO_SCROLL_TEMPLATE } from "./layouts/PortfolioScroll";
 
 export type { CanvasLayoutTemplate };
 
@@ -40,6 +41,7 @@ export async function getLayoutTemplates(): Promise<{
       VERTICAL_SLIDER_TEMPLATE,
       SPLIT_LANDING_PAGE_TEMPLATE,
       CASE_STUDY_TEMPLATE,
+      PORTFOLIO_SCROLL_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -70,6 +72,7 @@ export async function getLayoutTemplates(): Promise<{
       "vertical-slider": VERTICAL_SLIDER_TEMPLATE,
       "split-landing-page": SPLIT_LANDING_PAGE_TEMPLATE,
       "case-study": CASE_STUDY_TEMPLATE,
+      "portfolio-scroll": PORTFOLIO_SCROLL_TEMPLATE,
     };
     return { list, record };
   }
