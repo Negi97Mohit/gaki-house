@@ -253,13 +253,39 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   } = props;
 
   // --- Hooks ---
+  // Check if any grid section requires screen sharing
+  const hasScreenSection = props.canvasLayout?.sections.some(
+    (s) => s.content.type === "screen"
+  );
+
   const { cameraStream, screenStream } = useVideoStreams({
     isCameraOn: isVideoOn,
     isAudioOn: isAudioOn,
-    isScreenSharing: screenShareMode === "screen",
+    isScreenSharing: screenShareMode === "screen" || !!hasScreenSection,
     selectedCameraDevice: selectedVideoDevice,
     selectedAudioDevice: selectedAudioDevice,
-    onScreenShareEnd: () => props.onScreenShareModeChange("off"),
+    onScreenShareEnd: () => {
+      props.onScreenShareModeChange("off");
+      // If we were sharing for a grid section, clear it locally
+      if (props.canvasLayout && props.onCanvasLayoutChange) {
+        const updatedSections = props.canvasLayout.sections.map((s) =>
+          s.content.type === "screen"
+            ? { ...s, content: { type: "empty" } as const } // Cast to const to satisfy strict union types if needed
+            : s
+        );
+        // Only update if there was actually a screen section to clear
+        if (
+          updatedSections.some(
+            (s, i) => s.content.type !== props.canvasLayout!.sections[i].content.type
+          )
+        ) {
+          props.onCanvasLayoutChange({
+            ...props.canvasLayout,
+            sections: updatedSections,
+          });
+        }
+      }
+    },
     remoteStream: props.remoteStream,
   });
 

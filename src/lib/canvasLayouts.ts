@@ -3,7 +3,8 @@ import { CanvasLayoutTemplate } from "@/types/layout";
 import { EXPANDING_CARDS_TEMPLATE } from "./layouts/ExpandingCards";
 import { SLIDER_TEMPLATE } from "./layouts/GradientSlider";
 import { VERTICAL_SLIDER_TEMPLATE } from "./layouts/DoubleVerticalSlider";
-import { SPLIT_LANDING_PAGE_TEMPLATE } from "./layouts/SplitLandingPage"; // Import new layout
+import { SPLIT_LANDING_PAGE_TEMPLATE } from "./layouts/SplitLandingPage";
+import { CASE_STUDY_TEMPLATE } from "./layouts/CaseStudy";
 
 export type { CanvasLayoutTemplate };
 
@@ -37,7 +38,8 @@ export async function getLayoutTemplates(): Promise<{
       EXPANDING_CARDS_TEMPLATE,
       SLIDER_TEMPLATE,
       VERTICAL_SLIDER_TEMPLATE,
-      SPLIT_LANDING_PAGE_TEMPLATE, // Add to defaults
+      SPLIT_LANDING_PAGE_TEMPLATE,
+      CASE_STUDY_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -60,12 +62,14 @@ export async function getLayoutTemplates(): Promise<{
       SLIDER_TEMPLATE,
       VERTICAL_SLIDER_TEMPLATE,
       SPLIT_LANDING_PAGE_TEMPLATE,
+      CASE_STUDY_TEMPLATE,
     ];
     const record = {
       "expanding-cards": EXPANDING_CARDS_TEMPLATE,
       "slider-layout": SLIDER_TEMPLATE,
       "vertical-slider": VERTICAL_SLIDER_TEMPLATE,
       "split-landing-page": SPLIT_LANDING_PAGE_TEMPLATE,
+      "case-study": CASE_STUDY_TEMPLATE,
     };
     return { list, record };
   }

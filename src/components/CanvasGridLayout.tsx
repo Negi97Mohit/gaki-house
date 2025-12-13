@@ -15,6 +15,7 @@ import { ExpandingCardsLayout } from "./layouts/ExpandingCardsLayout";
 import { SliderLayout } from "./layouts/SliderLayout";
 import { VerticalSliderLayout } from "./layouts/VerticalSliderLayout";
 import { SplitLandingLayout } from "./layouts/SplitLandingLayout";
+import { CaseStudyLayout } from "./layouts/CaseStudyLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -135,6 +136,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <VerticalSliderLayout {...commonProps} />
       ) : isSplitLanding ? (
         <SplitLandingLayout {...commonProps} />
+      ) : layout.templateId === "case-study" ? (
+        <CaseStudyLayout {...commonProps} />
       ) : (
         <StandardGridLayout {...commonProps} />
       )}

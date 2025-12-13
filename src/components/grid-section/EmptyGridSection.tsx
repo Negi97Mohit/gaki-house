@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, Search, Paintbrush } from "lucide-react";
+import { Plus, Search, Paintbrush, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -103,6 +103,16 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
                             }
                         >
                             Camera
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() =>
+                                onSectionContentChange(sectionId, {
+                                    type: "screen",
+                                })
+                            }
+                        >
+                            <Monitor className="h-4 w-4 mr-2" />
+                            Share Screen
                         </DropdownMenuItem>
 
                         {/* Canvas Designs Preview */}
