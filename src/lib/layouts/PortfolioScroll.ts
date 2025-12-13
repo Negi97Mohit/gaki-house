@@ -18,30 +18,30 @@ export const PORTFOLIO_SCROLL_TEMPLATE: CanvasLayoutTemplate = {
         color: "#000000",
       },
     },
-    // Section 2: Babylone (Red)
+    // Section 2: Intro (Red)
     {
-      id: "project-babylone",
-      name: "Babylone",
+      id: "project-Intro",
+      name: "Intro",
       description: "Selected Project",
       style: {
         backgroundColor: "#B21C1B", // From HTML snippet
         color: "#ffffff",
       },
     },
-    // Section 3: Acqua Di Giò (Deep Blue)
+    // Section 3: Slide1 (Deep Blue)
     {
       id: "project-acqua",
-      name: "Acqua Di Giò",
+      name: "Slide1",
       description: "Selected Project",
       style: {
         backgroundColor: "#003F66", // From HTML snippet
         color: "#ffffff",
       },
     },
-    // Section 4: La Grande Épicerie (Beige)
+    // Section 4: Slide2 (Beige)
     {
       id: "project-epicerie",
-      name: "La Grande Épicerie",
+      name: "Slide2",
       description: "Selected Project",
       style: {
         backgroundColor: "#CFCC93", // From HTML snippet

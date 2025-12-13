@@ -8,8 +8,8 @@ export const SIMON_PORTFOLIO_TEMPLATE: CanvasLayoutTemplate = {
   category: "dynamic",
   sections: [
     {
-      id: "project-babylone",
-      name: "Babylone",
+      id: "project-Intro",
+      name: "Intro",
       description: "Art direction & Visual Identity for a luxury perfume brand",
       style: {
         backgroundColor: "#B21C1B",
@@ -18,8 +18,8 @@ export const SIMON_PORTFOLIO_TEMPLATE: CanvasLayoutTemplate = {
     },
     {
       id: "project-acqua",
-      name: "Acqua Di Giò",
-      description: "Campaign design for Giorgio Armani fragrance collection",
+      name: "Slide1",
+      description: "Sub Content",
       style: {
         backgroundColor: "#003F66",
         color: "#ffffff",
@@ -27,7 +27,7 @@ export const SIMON_PORTFOLIO_TEMPLATE: CanvasLayoutTemplate = {
     },
     {
       id: "project-epicerie",
-      name: "La Grande Épicerie",
+      name: "Slide2",
       description: "Brand identity refresh for Le Bon Marché food hall",
       style: {
         backgroundColor: "#CFCC93",
