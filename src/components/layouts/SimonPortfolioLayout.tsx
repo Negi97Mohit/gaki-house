@@ -492,10 +492,10 @@ export const SimonPortfolioLayout: React.FC<SimonPortfolioLayoutProps> = ({
             );
           })}
 
-          {/* Back button - positioned higher to avoid video controls */}
+          {/* Back button - bottom-left, above video controls */}
           <button
             onClick={handleBackToList}
-            className="fixed top-6 left-6 z-50 px-6 py-2 text-sm font-medium tracking-wide border border-current/40 rounded-full hover:bg-black hover:text-white transition-all duration-300"
+            className="fixed bottom-24 left-6 z-50 px-6 py-2 text-sm font-medium tracking-wide border border-current/40 rounded-full hover:bg-black hover:text-white transition-all duration-300"
           >
             ← BACK TO LIST
           </button>
