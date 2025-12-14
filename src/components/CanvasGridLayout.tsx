@@ -29,7 +29,7 @@ import { LiquidLensLayout } from "./layouts/dynamic/LiquidLensLayout";
 
 import { BrutalistGlitchLayout } from "./layouts/dynamic/BrutalistGlitchLayout";
 import { HadidRibbonLayout } from "./layouts/dynamic/HadidRibbonLayout";
-import { VortexTunnelLayout } from "./layouts/dynamic/VortexTunnelLayout";
+
 
 // Note: Ensure HybridGridContainer is used inside the layouts or imported if needed globally
 
@@ -126,7 +126,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
 
   const isBrutalist = tId === "brutalist-glitch";
   const isHadid = tId === "hadid-ribbon";
-  const isVortex = tId === "vortex-tunnel";
+
 
 
   // Combine props to pass down to layouts
@@ -144,7 +144,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
     isLiquid ||
     isBrutalist ||
     isHadid ||
-    isVortex;
+    isHadid;
 
   return (
     <div
@@ -174,8 +174,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
       ) : /* --- Phase 3: Fluid & Parametric --- */
         isHadid ? (
           <HadidRibbonLayout sections={layout.sections} {...commonProps} />
-        ) : isVortex ? (
-          <VortexTunnelLayout sections={layout.sections} {...commonProps} />
+
         ) : /* --- Phase 4: Physics --- */
 
           isExpandingCards ? (

@@ -115,19 +115,7 @@ export const HADID_RIBBON_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
-export const VORTEX_TUNNEL_TEMPLATE: CanvasLayoutTemplate = {
-  id: "vortex-tunnel",
-  name: "Vortex Tunnel",
-  description: "Infinite cylindrical scroll flight.",
-  category: "dynamic" as LayoutCategory,
-  sections: [
-    { id: "sec-1", name: "Sector 1", style: { background: "#000" } },
-    { id: "sec-2", name: "Sector 2", style: { background: "#000" } },
-    { id: "sec-3", name: "Sector 3", style: { background: "#000" } },
-    { id: "sec-4", name: "Sector 4", style: { background: "#000" } },
-    { id: "sec-5", name: "Sector 5", style: { background: "#000" } },
-  ],
-};
+
 
 
 
@@ -146,7 +134,7 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   "liquid-lens",
   "brutalist-glitch",
   "hadid-ribbon",
-  "vortex-tunnel",
+
 
 ]);
 
@@ -197,7 +185,7 @@ export async function getLayoutTemplates(): Promise<{
       LIQUID_LENS_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
       HADID_RIBBON_TEMPLATE,
-      VORTEX_TUNNEL_TEMPLATE,
+
     ];
 
     defaults.forEach((t) => {
@@ -230,7 +218,7 @@ export async function getLayoutTemplates(): Promise<{
       LIQUID_LENS_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
       HADID_RIBBON_TEMPLATE,
-      VORTEX_TUNNEL_TEMPLATE,
+
 
     ];
 

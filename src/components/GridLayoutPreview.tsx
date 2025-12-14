@@ -188,20 +188,7 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
 
 
 
-  // --- 7. VORTEX TUNNEL PREVIEW ---
-  if (templateId === "vortex-tunnel") {
-    return (
-      <div className="relative w-full aspect-video rounded-sm bg-black border border-border/50 overflow-hidden flex items-center justify-center">
-        <div className="absolute inset-0 border-[20px] border-neutral-900 rounded-full scale-150" />
-        <div className="absolute inset-0 border-[20px] border-neutral-800 rounded-full scale-100" />
-        <div className="absolute inset-0 border-[10px] border-neutral-700 rounded-full scale-50" />
-        <div className="w-2 h-2 bg-white rounded-full z-10 box-shadow-[0_0_10px_white]" />
-        <div className="absolute bottom-1 right-1 text-[7px] font-mono text-white/40">
-          VORTEX
-        </div>
-      </div>
-    );
-  }
+
 
   // --- STANDARD LAYOUT LOGIC (Slider / Grid) ---
 
