@@ -420,6 +420,7 @@ export interface CanvasSectionState {
   content: CanvasSectionContent;
   savedCameraSettings?: CanvasSectionCameraState;
   defaultContent?: CanvasSectionContent;
+  style?: React.CSSProperties; // Added to match usage in layout templates
 }
 
 export interface CustomSectionStyle {

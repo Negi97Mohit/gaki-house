@@ -87,18 +87,7 @@ export const LIQUID_LENS_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
-export const ORIGAMI_FOLD_TEMPLATE: CanvasLayoutTemplate = {
-  id: "origami-fold",
-  name: "Origami Fold",
-  description: "3D structural folding animation on scroll.",
-  category: "dynamic" as LayoutCategory,
-  sections: [
-    { id: "fold-1", name: "Fold 1", style: { background: "#111" } },
-    { id: "fold-2", name: "Fold 2", style: { background: "#111" } },
-    { id: "fold-3", name: "Fold 3", style: { background: "#111" } },
-    { id: "fold-4", name: "Fold 4", style: { background: "#111" } },
-  ],
-};
+
 
 export const BRUTALIST_GLITCH_TEMPLATE: CanvasLayoutTemplate = {
   id: "brutalist-glitch",
@@ -140,42 +129,9 @@ export const VORTEX_TUNNEL_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
-export const GRAVITY_MASONRY_TEMPLATE: CanvasLayoutTemplate = {
-  id: "gravity-masonry",
-  name: "Gravity Sim",
-  description: "Physics-based falling grid items.",
-  category: "dynamic" as LayoutCategory,
-  sections: [
-    { id: "phys-1", name: "Object 1", style: { background: "#1a1a1a" } },
-    { id: "phys-2", name: "Object 2", style: { background: "#1a1a1a" } },
-    { id: "phys-3", name: "Object 3", style: { background: "#1a1a1a" } },
-    { id: "phys-4", name: "Object 4", style: { background: "#1a1a1a" } },
-  ],
-};
 
-export const PARTICLE_DISSOLVE_TEMPLATE: CanvasLayoutTemplate = {
-  id: "particle-dissolve",
-  name: "Particle Dissolve",
-  description: "Images disperse into thousands of points.",
-  category: "dynamic" as LayoutCategory,
-  sections: [
-    { id: "part-1", name: "Atom 1", style: { background: "#000" } },
-    { id: "part-2", name: "Atom 2", style: { background: "#000" } },
-    { id: "part-3", name: "Atom 3", style: { background: "#000" } },
-  ],
-};
 
-export const GLASS_PRISM_TEMPLATE: CanvasLayoutTemplate = {
-  id: "glass-prism",
-  name: "Glass Prism",
-  description: "Refractive glass blocks with HDR lighting.",
-  category: "dynamic" as LayoutCategory,
-  sections: [
-    { id: "glass-1", name: "Prism 1", style: { background: "#f0f0f0" } },
-    { id: "glass-2", name: "Prism 2", style: { background: "#f0f0f0" } },
-    { id: "glass-3", name: "Prism 3", style: { background: "#f0f0f0" } },
-  ],
-};
+
 
 export type { CanvasLayoutTemplate };
 
@@ -188,13 +144,10 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   // New IDs
   "vogue-parallax",
   "liquid-lens",
-  "origami-fold",
   "brutalist-glitch",
   "hadid-ribbon",
   "vortex-tunnel",
-  "gravity-masonry",
-  "particle-dissolve",
-  "glass-prism",
+
 ]);
 
 let templateCache: {
@@ -242,13 +195,9 @@ export async function getLayoutTemplates(): Promise<{
       // --- REGISTER NEW TEMPLATES HERE ---
       VOGUE_PARALLAX_TEMPLATE,
       LIQUID_LENS_TEMPLATE,
-      ORIGAMI_FOLD_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
       HADID_RIBBON_TEMPLATE,
       VORTEX_TUNNEL_TEMPLATE,
-      GRAVITY_MASONRY_TEMPLATE,
-      PARTICLE_DISSOLVE_TEMPLATE,
-      GLASS_PRISM_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -279,13 +228,10 @@ export async function getLayoutTemplates(): Promise<{
       MAGNETISM_GRID_TEMPLATE,
       VOGUE_PARALLAX_TEMPLATE,
       LIQUID_LENS_TEMPLATE,
-      ORIGAMI_FOLD_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
       HADID_RIBBON_TEMPLATE,
       VORTEX_TUNNEL_TEMPLATE,
-      GRAVITY_MASONRY_TEMPLATE,
-      PARTICLE_DISSOLVE_TEMPLATE,
-      GLASS_PRISM_TEMPLATE,
+
     ];
 
     const record = defaults.reduce((acc, t) => {

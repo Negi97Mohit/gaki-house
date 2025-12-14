@@ -4,7 +4,7 @@ import { Html, ScrollControls, useScroll } from "@react-three/drei";
 import * as THREE from "three";
 import { BrutalistGlitchMaterial } from "@/lib/webgl/shaders/BrutalistGlitchShader";
 import { GridSectionWrapper } from "../GridSectionWrapper";
-import { Plus, Trash2, AlertTriangle } from "lucide-react";
+import { Plus, Trash2, AlertTriangle, Type } from "lucide-react";
 
 const GlitchCell = ({ section, index, wrapperProps, onRemove }: any) => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -43,6 +43,7 @@ const GlitchCell = ({ section, index, wrapperProps, onRemove }: any) => {
         onPointerOut={() => setHover(false)}
       >
         <planeGeometry args={[1, 1, 16, 16]} />
+        {/* Pass a light-friendly color if the shader supports it, or use default */}
         <primitive object={material} attach="material" />
       </mesh>
 
@@ -59,25 +60,26 @@ const GlitchCell = ({ section, index, wrapperProps, onRemove }: any) => {
         style={{ width: "320px", height: "280px", pointerEvents: "auto" }}
       >
         <div
-          className={`w-full h-full border-2 ${
-            hovered ? "border-red-500" : "border-white/20"
-          } bg-black transition-colors relative group`}
+          className={`w-full h-full border-2 ${hovered ? "border-red-600" : "border-black/10"
+            } bg-white transition-colors relative group`}
         >
           <button
             onClick={(e) => {
               e.stopPropagation();
               onRemove(section.id);
             }}
-            className="absolute top-0 right-0 w-8 h-8 bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-50"
+            className="absolute top-0 right-0 w-8 h-8 bg-red-600 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-auto cursor-pointer"
           >
             <Trash2 className="w-4 h-4" />
           </button>
-          <GridSectionWrapper
-            section={section}
-            templateSection={{ id: section.id, name: "ERR" }}
-            isHovered={hovered}
-            {...wrapperProps}
-          />
+          <div className="w-full h-full overflow-hidden">
+            <GridSectionWrapper
+              section={section}
+              templateSection={{ id: section.id, name: "ERR" }}
+              isHovered={hovered}
+              {...wrapperProps}
+            />
+          </div>
         </div>
       </Html>
 
@@ -90,7 +92,7 @@ const GlitchCell = ({ section, index, wrapperProps, onRemove }: any) => {
         ]}
         style={{ pointerEvents: "none" }}
       >
-        <div className="bg-white text-black font-mono text-[9px] px-1 font-bold">
+        <div className="bg-black text-white font-mono text-[9px] px-1 font-bold">
           ERR_0{index}
         </div>
       </Html>
@@ -104,6 +106,8 @@ export const BrutalistGlitchLayout: React.FC<any> = ({
   onLayoutUpdate,
   ...wrapperProps
 }) => {
+  const [mainTitle, setMainTitle] = useState("SYSTEM FAILURE");
+
   const handleAdd = () =>
     onLayoutUpdate &&
     onLayoutUpdate({
@@ -113,7 +117,7 @@ export const BrutalistGlitchLayout: React.FC<any> = ({
         {
           id: `glitch-${Date.now()}`,
           content: { type: "empty" },
-          style: { background: "#000" },
+          style: { background: "#ffffff" },
         },
       ],
     });
@@ -125,21 +129,30 @@ export const BrutalistGlitchLayout: React.FC<any> = ({
     });
 
   return (
-    <div className="w-full h-screen bg-[#050505] text-white overflow-hidden">
-      <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-start pointer-events-none z-10 border-b border-white/20">
-        <h1 className="text-6xl font-black uppercase tracking-tighter leading-none">
-          SYSTEM
-          <br />
-          <span className="text-red-600">FAILURE</span>
-        </h1>
-        <div className="text-right font-mono text-xs text-red-500 flex flex-col items-end">
+    <div className="w-full h-screen bg-white text-black overflow-hidden relative">
+      {/* Header */}
+      <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-start z-10 border-b border-black/10 pointer-events-auto">
+        <div className="relative group">
+          <input
+            value={mainTitle}
+            onChange={(e) => setMainTitle(e.target.value)}
+            className="text-6xl font-black uppercase tracking-tighter leading-none bg-transparent border-none focus:outline-none w-full max-w-[80vw] text-black"
+            style={{ fontFamily: 'Inter, sans-serif' }}
+          />
+          <Type className="absolute top-1/2 -right-8 -translate-y-1/2 w-6 h-6 text-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+
+        <div className="text-right font-mono text-xs text-red-600 flex flex-col items-end pt-2">
           <AlertTriangle className="w-6 h-6 mb-2" />
           <span>CRITICAL_ERROR</span>
         </div>
       </div>
 
       <Canvas camera={{ position: [0, 0, 9], fov: 50 }}>
-        <color attach="background" args={["#050505"]} />
+        <color attach="background" args={["#ffffff"]} />
+        <ambientLight intensity={0.8} />
+        <directionalLight position={[5, 10, 5]} intensity={1} />
+
         <ScrollControls
           pages={Math.ceil(sections.length / 3) + 1}
           damping={0.1}
@@ -158,12 +171,16 @@ export const BrutalistGlitchLayout: React.FC<any> = ({
           <Html
             position={[0, -Math.ceil(sections.length / 3) * 3.6 + 1, 0]}
             center
+            style={{ pointerEvents: 'auto' }}
           >
             <button
               onClick={handleAdd}
-              className="bg-red-600 text-black font-mono font-bold px-4 py-2 hover:bg-white transition-colors"
+              className="group flex flex-col items-center gap-2"
             >
-              INIT_NEW_BLOCK
+              <div className="bg-red-600 text-white font-mono font-bold px-6 py-3 hover:bg-black transition-colors shadow-lg cursor-pointer">
+                INIT_NEW_BLOCK
+              </div>
+              <Plus className="w-4 h-4 text-red-600 opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
           </Html>
         </ScrollControls>

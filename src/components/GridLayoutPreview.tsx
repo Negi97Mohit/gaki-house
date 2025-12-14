@@ -170,19 +170,7 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
     );
   }
 
-  // --- 4. ORIGAMI FOLD PREVIEW ---
-  if (templateId === "origami-fold") {
-    return (
-      <div className="relative w-full aspect-video rounded-sm bg-[#111] border border-border/50 overflow-hidden flex flex-col gap-1 p-2">
-        <div className="w-full h-[30%] bg-neutral-800 border-b border-white/10 skew-x-12 origin-left" />
-        <div className="w-full h-[30%] bg-neutral-800 border-b border-white/10 -skew-x-12 origin-right" />
-        <div className="w-full h-[30%] bg-neutral-800 border-b border-white/10 skew-x-12 origin-left" />
-        <div className="absolute bottom-1 right-1 text-[7px] font-mono text-white/40">
-          FOLD
-        </div>
-      </div>
-    );
-  }
+
 
   // --- 5. BRUTALIST GLITCH PREVIEW ---
   if (templateId === "brutalist-glitch") {
@@ -198,19 +186,7 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
     );
   }
 
-  // --- 6. GLASS PRISM PREVIEW ---
-  if (templateId === "glass-prism") {
-    return (
-      <div className="relative w-full aspect-video rounded-sm bg-gray-200 border border-border/50 overflow-hidden flex items-center justify-center gap-2">
-        <div className="w-8 h-12 bg-white/40 backdrop-blur-md border border-white/60 shadow-lg rounded-sm" />
-        <div className="w-8 h-12 bg-white/40 backdrop-blur-md border border-white/60 shadow-lg rounded-sm scale-110" />
-        <div className="w-8 h-12 bg-white/40 backdrop-blur-md border border-white/60 shadow-lg rounded-sm" />
-        <div className="absolute bottom-1 right-1 text-[7px] font-mono text-black/40">
-          GLASS
-        </div>
-      </div>
-    );
-  }
+
 
   // --- 7. VORTEX TUNNEL PREVIEW ---
   if (templateId === "vortex-tunnel") {

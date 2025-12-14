@@ -1,9 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { ScrollControls, useScroll, Html, Stars } from "@react-three/drei";
+import { ScrollControls, useScroll, Html, Sparkles } from "@react-three/drei";
 import * as THREE from "three";
 import { GridSectionWrapper } from "../GridSectionWrapper";
-import { Plus, Trash2, Zap } from "lucide-react";
+import { Plus, Trash2, Zap, Type } from "lucide-react";
 
 const TunnelContent = ({ sections, wrapperProps, onRemove, onAdd }: any) => {
   const scroll = useScroll();
@@ -38,19 +38,19 @@ const TunnelContent = ({ sections, wrapperProps, onRemove, onAdd }: any) => {
               distanceFactor={5}
               style={{ width: "400px", height: "280px", pointerEvents: "auto" }}
             >
-              <div className="w-full h-full bg-black/80 border-2 border-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.3)] rounded-lg overflow-hidden group relative hover:border-cyan-400">
+              <div className="w-full h-full bg-white/90 border-2 border-cyan-500/20 shadow-[0_0_20px_rgba(6,182,212,0.1)] rounded-lg overflow-hidden group relative hover:border-cyan-400 transition-all">
                 <div className="absolute top-2 right-2 z-50">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onRemove(section.id);
                     }}
-                    className="p-1 bg-cyan-900/50 text-cyan-200 hover:bg-cyan-500 hover:text-black rounded transition-colors"
+                    className="p-1 bg-white text-cyan-500 hover:bg-cyan-500 hover:text-white rounded transition-colors shadow-sm"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="h-full opacity-80 group-hover:opacity-100 transition-opacity">
+                <div className="h-full opacity-100 group-hover:opacity-100 transition-opacity">
                   <GridSectionWrapper
                     section={section}
                     templateSection={{ id: section.id, name: "Vortex" }}
@@ -70,7 +70,7 @@ const TunnelContent = ({ sections, wrapperProps, onRemove, onAdd }: any) => {
         <Html transform>
           <button
             onClick={onAdd}
-            className="w-32 h-32 rounded-full border-4 border-dashed border-cyan-500 flex flex-col items-center justify-center text-cyan-500 hover:bg-cyan-500/20 transition-all"
+            className="w-32 h-32 rounded-full border-4 border-dashed border-cyan-500/30 flex flex-col items-center justify-center text-cyan-600 hover:bg-cyan-500/10 transition-all bg-white/50 backdrop-blur-sm cursor-pointer pointer-events-auto"
           >
             <Plus className="w-10 h-10 mb-2" />
             <span className="text-xs font-mono">EXTEND</span>
@@ -87,6 +87,8 @@ export const VortexTunnelLayout: React.FC<any> = ({
   onLayoutUpdate,
   ...wrapperProps
 }) => {
+  const [mainTitle, setMainTitle] = useState("HYPERLOOP");
+
   const handleAdd = () =>
     onLayoutUpdate &&
     onLayoutUpdate({
@@ -96,7 +98,7 @@ export const VortexTunnelLayout: React.FC<any> = ({
         {
           id: `vortex-${Date.now()}`,
           content: { type: "empty" },
-          style: { background: "#000" },
+          style: { background: "#ffffff" },
         },
       ],
     });
@@ -108,20 +110,28 @@ export const VortexTunnelLayout: React.FC<any> = ({
     });
 
   return (
-    <div className="w-full h-screen bg-black relative">
-      <div className="absolute top-5 right-5 text-right z-20 pointer-events-none">
-        <div className="text-cyan-400 font-mono text-xl tracking-widest flex items-center justify-end gap-2">
-          HYPERLOOP <Zap className="w-4 h-4" />
+    <div className="w-full h-screen bg-white relative">
+      <div className="absolute top-5 right-5 text-right z-20 pointer-events-auto flex flex-col items-end">
+        <div className="text-cyan-600 font-mono text-xl tracking-widest flex items-center justify-end gap-2 group relative">
+          <input
+            value={mainTitle}
+            onChange={(e) => setMainTitle(e.target.value)}
+            className="bg-transparent border-none text-right focus:outline-none w-48 text-cyan-600"
+          />
+          <Type className="h-4 w-4 opacity-0 group-hover:opacity-100 absolute -right-6 top-1/2 -translate-y-1/2 text-cyan-300" />
+          <Zap className="w-4 h-4" />
         </div>
-        <div className="text-cyan-900 text-xs">VELOCITY: INFINITE</div>
+        <div className="text-cyan-900/50 text-xs">VELOCITY: INFINITE</div>
       </div>
       <Canvas
         camera={{ position: [0, 0, 0], fov: 70 }}
         gl={{ antialias: true }}
       >
-        <color attach="background" args={["#000508"]} />
-        <fog attach="fog" args={["#000508", 5, 40]} />
-        <Stars radius={100} count={2000} factor={4} fade speed={2} />
+        <color attach="background" args={["#ffffff"]} />
+        <fog attach="fog" args={["#ffffff", 5, 40]} />
+        {/* Dark dust particles instead of white starts */}
+        <Sparkles count={2000} scale={100} size={4} speed={2} opacity={0.5} color="#000000" />
+
         <ScrollControls
           pages={Math.max(3, sections.length * 0.5)}
           damping={0.2}

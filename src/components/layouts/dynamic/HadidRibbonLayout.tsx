@@ -252,8 +252,8 @@ export const HadidRibbonLayout: React.FC<HadidRibbonProps> = ({
       {/* 2. 3D Scene */}
       <div className="absolute inset-0 z-10">
         <Canvas gl={{ antialias: true }} shadows>
-          <color attach="background" args={["#fafafa"]} />
-          <fog attach="fog" args={["#fafafa", 10, 50]} />
+          <color attach="background" args={["#ffffff"]} />
+          <fog attach="fog" args={["#ffffff", 10, 50]} />
 
           <ambientLight intensity={0.6} />
           <directionalLight position={[10, 10, 5]} intensity={1} castShadow />

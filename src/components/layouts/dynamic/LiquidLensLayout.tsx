@@ -34,7 +34,7 @@ const LiquidPlane = ({ customBackground }: { customBackground?: string }) => {
         uIntensity: { value: 0.2 },
       },
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.2, // Reduced opacity for lighter feel
     });
   }, [texture, viewport]);
 
@@ -121,10 +121,7 @@ const FloatingGridContent = ({
     // Scale down the whole group so it fits nicely
     <group scale={0.85}>
       {sections.map((section, i) => {
-        const totalCols = Math.min(sections.length, 3);
-
         // DYNAMIC CENTERING LOGIC
-        // If we have fewer than 3 items, shift them to center
         const col = i % 3;
         const row = Math.floor(i / 3);
 
@@ -134,6 +131,8 @@ const FloatingGridContent = ({
         // Correction for 1 or 2 items
         if (sections.length === 1) x = 0;
         if (sections.length === 2) x = i === 0 ? -2.5 : 2.5;
+        // Correction for row 2 if incomplete
+        // if (i >= 3 && sections.length === 4) x = 0; 
 
         const y = -(row * 4.0) + 2.0;
 
@@ -217,7 +216,8 @@ export const LiquidLensLayout: React.FC<LiquidLensProps> = ({
   };
 
   return (
-    <div className="w-full h-screen bg-[#fafafa] relative overflow-hidden">
+    // Enforce white background
+    <div className="w-full h-full min-h-screen bg-white relative overflow-hidden">
       {/* 1. DOM Title Layer */}
       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center z-0">
         <div className="relative group pointer-events-auto">
@@ -232,12 +232,15 @@ export const LiquidLensLayout: React.FC<LiquidLensProps> = ({
       </div>
 
       {/* 2. R3F Canvas Layer */}
-      <div className="absolute inset-0 z-10 pointer-events-none">
+      <div className="absolute inset-0 z-10">
         <Canvas
           camera={{ position: [0, 0, 16], fov: 35 }} // Zoomed out for better view
           eventSource={document.getElementById("root") || undefined}
           eventPrefix="client"
+          className="pointer-events-none"
+          style={{ pointerEvents: 'none' }} // Ensure clicks pass through to Html if needed, but Html usually handles it
         >
+          {/* Transparent canvas background */}
           <color attach="background" args={["transparent"]} />
           <ambientLight intensity={0.8} />
 
@@ -247,7 +250,7 @@ export const LiquidLensLayout: React.FC<LiquidLensProps> = ({
           </Suspense>
 
           <ScrollControls
-            pages={Math.max(1.5, sections.length * 0.4)}
+            pages={Math.max(1.5, Math.ceil(sections.length / 3) * 0.8)}
             damping={0.2}
           >
             <FloatingGridContent
@@ -261,7 +264,7 @@ export const LiquidLensLayout: React.FC<LiquidLensProps> = ({
       </div>
 
       {/* UI Overlay / Instructions */}
-      <div className="absolute bottom-8 left-8 flex flex-col gap-1 pointer-events-none z-20">
+      <div className="absolute bottom-8 left-8 flex flex-col gap-1 pointer-events-auto z-20">
         <div className="text-black/30 text-[10px] font-mono">
           /// SYSTEM: FLUID_DYNAMICS
         </div>
@@ -273,3 +276,4 @@ export const LiquidLensLayout: React.FC<LiquidLensProps> = ({
     </div>
   );
 };
+

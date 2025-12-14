@@ -26,13 +26,11 @@ import { MagnetismGridLayout } from "./layouts/MagnetismGridLayout";
 // --- NEW DYNAMIC / AWWWARDS LAYOUTS ---
 import { VogueParallaxLayout } from "./layouts/dynamic/VogueParallaxLayout";
 import { LiquidLensLayout } from "./layouts/dynamic/LiquidLensLayout";
-import { OrigamiFoldLayout } from "./layouts/dynamic/OrigamiFoldLayout";
+
 import { BrutalistGlitchLayout } from "./layouts/dynamic/BrutalistGlitchLayout";
 import { HadidRibbonLayout } from "./layouts/dynamic/HadidRibbonLayout";
 import { VortexTunnelLayout } from "./layouts/dynamic/VortexTunnelLayout";
-import { GravityMasonryLayout } from "./layouts/dynamic/GravityMasonryLayout";
-import { ParticleDissolveLayout } from "./layouts/dynamic/ParticleDissolveLayout";
-import { GlassPrismLayout } from "./layouts/dynamic/GlassPrismLayout";
+
 // Note: Ensure HybridGridContainer is used inside the layouts or imported if needed globally
 
 interface CanvasGridLayoutProps {
@@ -125,13 +123,11 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   // Dynamic 3D Styles Detection
   const isVogue = tId === "vogue-parallax";
   const isLiquid = tId === "liquid-lens";
-  const isOrigami = tId === "origami-fold";
+
   const isBrutalist = tId === "brutalist-glitch";
   const isHadid = tId === "hadid-ribbon";
   const isVortex = tId === "vortex-tunnel";
-  const isGravity = tId === "gravity-masonry";
-  const isParticle = tId === "particle-dissolve";
-  const isGlass = tId === "glass-prism";
+
 
   // Combine props to pass down to layouts
   const commonProps = {
@@ -146,13 +142,9 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const is3DLayout =
     isVogue ||
     isLiquid ||
-    isOrigami ||
     isBrutalist ||
     isHadid ||
-    isVortex ||
-    isGravity ||
-    isParticle ||
-    isGlass;
+    isVortex;
 
   return (
     <div
@@ -163,12 +155,12 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         isExpandingCards && "bg-white",
         isSlider && "flex items-center justify-center bg-white",
         isVerticalSlider &&
-          "relative w-full h-[100vh] overflow-hidden bg-background",
+        "relative w-full h-[100vh] overflow-hidden bg-background",
         isSplitLanding && "relative w-full h-full bg-[#333]",
         isPortfolioScroll && "bg-white",
-        isSimonPortfolio && "bg-white",
-        // 3D Layout Defaults (usually dark/immersive)
-        is3DLayout && "bg-black"
+        isSimonPortfolio && "bg-white"
+        // 3D Layout Defaults: Removed forced black as per user request for white/light themes
+        // is3DLayout && "bg-black"
       )}
     >
       {/* --- Phase 2: Editorial --- */}
@@ -176,45 +168,37 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <VogueParallaxLayout sections={layout.sections} {...commonProps} />
       ) : isLiquid ? (
         <LiquidLensLayout sections={layout.sections} {...commonProps} />
-      ) : isOrigami ? (
-        <OrigamiFoldLayout sections={layout.sections} {...commonProps} />
+
       ) : isBrutalist ? (
         <BrutalistGlitchLayout sections={layout.sections} {...commonProps} />
       ) : /* --- Phase 3: Fluid & Parametric --- */
-      isHadid ? (
-        <HadidRibbonLayout sections={layout.sections} {...commonProps} />
-      ) : isVortex ? (
-        <VortexTunnelLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Phase 4: Physics --- */
-      isGravity ? (
-        <GravityMasonryLayout sections={layout.sections} {...commonProps} />
-      ) : isParticle ? (
-        <ParticleDissolveLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Phase 5: Avant-Garde --- */
-      isGlass ? (
-        <GlassPrismLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Standard Layouts (Fallback) --- */
-      isExpandingCards ? (
-        <ExpandingCardsLayout {...commonProps} />
-      ) : isSlider ? (
-        <SliderLayout {...commonProps} />
-      ) : isVerticalSlider ? (
-        <VerticalSliderLayout {...commonProps} />
-      ) : isSplitLanding ? (
-        <SplitLandingLayout {...commonProps} />
-      ) : isPortfolioScroll ? (
-        <PortfolioScrollLayout {...commonProps} />
-      ) : isSimonPortfolio ? (
-        <SimonPortfolioLayout {...commonProps} />
-      ) : tId === "performance-flow" ? (
-        <PerformanceFlowLayout {...commonProps} />
-      ) : tId === "magnetism-layout" ? (
-        <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
-      ) : tId === "case-study" ? (
-        <CaseStudyLayout {...commonProps} />
-      ) : (
-        <StandardGridLayout {...commonProps} />
-      )}
+        isHadid ? (
+          <HadidRibbonLayout sections={layout.sections} {...commonProps} />
+        ) : isVortex ? (
+          <VortexTunnelLayout sections={layout.sections} {...commonProps} />
+        ) : /* --- Phase 4: Physics --- */
+
+          isExpandingCards ? (
+            <ExpandingCardsLayout {...commonProps} />
+          ) : isSlider ? (
+            <SliderLayout {...commonProps} />
+          ) : isVerticalSlider ? (
+            <VerticalSliderLayout {...commonProps} />
+          ) : isSplitLanding ? (
+            <SplitLandingLayout {...commonProps} />
+          ) : isPortfolioScroll ? (
+            <PortfolioScrollLayout {...commonProps} />
+          ) : isSimonPortfolio ? (
+            <SimonPortfolioLayout {...commonProps} />
+          ) : tId === "performance-flow" ? (
+            <PerformanceFlowLayout {...commonProps} />
+          ) : tId === "magnetism-layout" ? (
+            <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
+          ) : tId === "case-study" ? (
+            <CaseStudyLayout {...commonProps} />
+          ) : (
+            <StandardGridLayout {...commonProps} />
+          )}
     </div>
   );
 };
