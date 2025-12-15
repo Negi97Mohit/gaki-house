@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
@@ -13,6 +13,10 @@ export const CircularGalleryLayout: React.FC<{
   [key: string]: any;
 }> = ({ sections, ...props }) => {
   const wheelRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [radius, setRadius] = useState(300);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const inactiveTimer = useRef<NodeJS.Timeout | null>(null);
 
   const {
     hoveredSectionId,
@@ -37,6 +41,45 @@ export const CircularGalleryLayout: React.FC<{
   const headerData = props.layout.customSectionData?.["header"] || {};
   const spinText = headerData.spinText || "SPIN";
 
+  // Inactivity Logic
+  useEffect(() => {
+    const onMouseMove = () => {
+      setControlsVisible(true);
+      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
+      inactiveTimer.current = setTimeout(() => {
+        setControlsVisible(false);
+      }, 3000);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    onMouseMove();
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
+    }
+  }, []);
+
+  // Dynamic Radius Logic
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        // Calculate max radius that keeps 300px/200px cards roughly inside
+        // We want diameter + card_diagonal to be < screen
+        // Safer: radius = min(w, h) * 0.35
+        // This generally keeps cards (which are centered on the radius) within bounds unless screen is tiny.
+        const minDim = Math.min(width, height);
+        setRadius(minDim * 0.30);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+
   useEffect(() => {
     const tween = gsap.to(wheelRef.current, {
       rotation: 360,
@@ -45,17 +88,12 @@ export const CircularGalleryLayout: React.FC<{
       ease: "none",
     });
 
-    // Store tween on element for easy access? Or mostly just rely on React state re-renders not killing it?
-    // Actually, re-renders might duplicate tweens if not cleaned up.
-    // gsap.context handles cleanup.
-
     return () => { tween.kill(); };
   }, []);
 
-  const radius = 400; // px
-
   return (
     <div
+      ref={containerRef}
       className="w-full h-full overflow-hidden flex items-center justify-center relative"
       style={{ backgroundColor }}
     >
@@ -89,14 +127,16 @@ export const CircularGalleryLayout: React.FC<{
 
       <div
         ref={wheelRef}
-        className="relative w-[800px] h-[800px] rounded-full border border-white/10 z-10"
-        onMouseEnter={() => gsap.globalTimeline.timeScale(0)} // Global pause on hover for interaction
+        className="relative z-10"
+        style={{ width: radius * 2, height: radius * 2 }}
+        onMouseEnter={() => gsap.globalTimeline.timeScale(0)}
         onMouseLeave={() => gsap.globalTimeline.timeScale(1)}
       >
         {sections.map((section, i) => {
           const angle = (i / sections.length) * 2 * Math.PI;
-          const x = Math.cos(angle) * radius + 400; // center offset
-          const y = Math.sin(angle) * radius + 400;
+          // Offset relative to center (radius, radius)
+          const x = Math.cos(angle) * radius + radius;
+          const y = Math.sin(angle) * radius + radius;
 
           return (
             <div
@@ -118,8 +158,11 @@ export const CircularGalleryLayout: React.FC<{
                 onSectionContentChange={props.onSectionContentChange}
                 {...props}
               />
-              {/* Delete Button */}
-              <div className={cn("absolute top-2 right-2 z-50 transition-opacity duration-200", hoveredSectionId === section.id ? "opacity-100" : "opacity-0")}>
+              {/* Delete Button - Auto hide */}
+              <div className={cn(
+                "absolute top-2 right-2 z-50 transition-opacity duration-200",
+                hoveredSectionId === section.id && controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+              )}>
                 <button
                   onClick={(e) => handleDeleteSection(section.id, e)}
                   className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md"
@@ -132,11 +175,15 @@ export const CircularGalleryLayout: React.FC<{
         })}
       </div>
 
-      {/* Central Add Button */}
-      <div className="absolute z-20">
+      {/* Central Add Button - Auto hide */}
+      <div className={cn(
+        "absolute z-20 transition-all duration-500",
+        controlsVisible ? "opacity-100 scale-100" : "opacity-0 scale-50 pointer-events-none"
+      )}>
         <button
           onClick={handleAddSection}
           className="w-20 h-20 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_50px_rgba(255,255,255,0.5)]"
+          style={{ backgroundColor: textColor, color: backgroundColor }}
         >
           <Plus className="w-10 h-10" />
         </button>
