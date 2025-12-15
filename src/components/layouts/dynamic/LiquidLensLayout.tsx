@@ -84,7 +84,7 @@ const LiquidItem = ({ section, index, onRemove, ...props }: any) => {
             <GridSectionWrapper
               section={section}
               templateSection={{ id: section.id, name: "Fluid Node" }}
-              isHovered={false}
+              isHovered={props.editor?.hoveredSectionId === section.id}
               {...props}
             />
           </div>
@@ -201,7 +201,7 @@ export const LiquidLensLayout: React.FC<LiquidLensProps> = ({
     const newSection: CanvasSectionState = {
       id: `liq-${Date.now()}`,
       content: { type: "empty" },
-      style: { background: "#ffffff" },
+      style: { background: "#e0f2fe" },
     };
     onLayoutUpdate({ ...layout, sections: [...layout.sections, newSection] });
   };

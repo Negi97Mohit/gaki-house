@@ -259,7 +259,7 @@ const VogueCard = ({ section, index, onRemove, ...props }: any) => {
           <GridSectionWrapper
             section={section}
             templateSection={{ id: section.id, name: "Editorial Frame" }}
-            isHovered={false}
+            isHovered={props.editor?.hoveredSectionId === section.id}
             {...props}
           />
         </div>

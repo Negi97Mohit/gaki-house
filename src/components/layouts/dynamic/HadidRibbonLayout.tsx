@@ -129,7 +129,7 @@ const RibbonItem = React.memo(
             <GridSectionWrapper
               section={section}
               templateSection={{ id: section.id, name: `Node ${index + 1}` }}
-              isHovered={false}
+              isHovered={wrapperProps.editor?.hoveredSectionId === section.id}
               {...props}
             />
           </div>
@@ -323,7 +323,7 @@ export const HadidRibbonLayout: React.FC<HadidRibbonProps> = ({
     const newSection: CanvasSectionState = {
       id: `node-${Date.now()}`,
       content: { type: "empty" },
-      style: { background: "#ffffff" },
+      style: { background: "#f1f5f9" },
       name: `SECTION ${String(sections.length + 1).padStart(2, "0")}`,
     };
     onLayoutUpdate({ ...layout, sections: [...layout.sections, newSection] });

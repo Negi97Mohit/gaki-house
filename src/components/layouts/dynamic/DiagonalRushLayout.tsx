@@ -43,10 +43,11 @@ const DiagonalRushContent: React.FC<{ sections: CanvasSectionState[], [key: stri
           <div
             key={section.id}
             className={cn(
-              "relative border-4 bg-black group transition-transform duration-300 hover:scale-105 hover:z-30",
+              "relative border-4 group transition-transform duration-300 hover:scale-105 hover:z-30",
               "w-[300px] h-[400px]"
             )}
             style={{
+              backgroundColor: i % 2 === 0 ? "#FACC15" : "#A3E635", // Use vibrant backgrounds for the panels themselves if empty
               transform: `rotate(${i % 2 === 0 ? -2 : 2}deg)`,
               borderColor: i % 2 === 0 ? "#FACC15" : "#A3E635",
               boxShadow: `10px 10px 0px ${i % 2 === 0 ? "rgba(250,204,21,0.2)" : "rgba(163,230,53,0.2)"}`
@@ -127,7 +128,7 @@ export const DiagonalRushLayout: React.FC<{
       layout={props.layout}
       onLayoutUpdate={props.onLayoutUpdate}
       sections={sections}
-      defaultBackgroundColor="#111111"
+      defaultBackgroundColor="#1a1a2e"
       defaultTextColor="#ffffff"
       {...props}
     >

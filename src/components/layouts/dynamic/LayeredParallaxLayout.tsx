@@ -117,9 +117,10 @@ const LayeredParallaxContent: React.FC<{ sections: CanvasSectionState[];[key: st
               <div
                 key={section.id}
                 className={cn(
-                  "parallax-card absolute w-[85%] max-w-[450px] aspect-[3/4] bg-black/40 backdrop-blur-xl border shadow-2xl rounded-2xl overflow-hidden pointer-events-auto",
+                  "parallax-card absolute w-[85%] max-w-[450px] aspect-[3/4] backdrop-blur-xl border shadow-2xl rounded-2xl overflow-hidden pointer-events-auto",
                 )}
                 style={{
+                  backgroundColor: `hsl(${220 + index * 20}, 70%, 20%)`, // Dynamic deep blues/purples
                   borderColor: colors.textColor,
                   zIndex: 20 + index
                 }}
@@ -194,7 +195,7 @@ export const LayeredParallaxLayout: React.FC<{
       layout={props.layout}
       onLayoutUpdate={props.onLayoutUpdate}
       sections={sections}
-      defaultBackgroundColor="#0a0a0a"
+      defaultBackgroundColor="#0f172a"
       defaultTextColor="#ffffff"
       {...props}
     >

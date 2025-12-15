@@ -75,7 +75,8 @@ const CircularGalleryContent: React.FC<{ sections: CanvasSectionState[];[key: st
                 left: x,
                 top: y,
                 transform: `rotate(${angle * (180 / Math.PI) + 90}deg)`,
-                borderColor: colors.textColor
+                borderColor: colors.textColor,
+                backgroundColor: `hsl(${i * 60}, 70%, 25%)` // Rainbow circle
               }}
               onMouseEnter={() => editor.setHoveredSectionId(section.id)}
               onMouseLeave={() => editor.setHoveredSectionId(null)}
@@ -85,6 +86,7 @@ const CircularGalleryContent: React.FC<{ sections: CanvasSectionState[];[key: st
                 templateSection={{ id: section.id }}
                 onSectionDelete={props.onSectionDelete}
                 onSectionContentChange={props.onSectionContentChange}
+                isHovered={editor.hoveredSectionId === section.id}
                 {...props}
               />
               <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
@@ -119,7 +121,7 @@ export const CircularGalleryLayout: React.FC<{
       layout={props.layout}
       onLayoutUpdate={props.onLayoutUpdate}
       sections={sections}
-      defaultBackgroundColor="#1a1a1a"
+      defaultBackgroundColor="#0F0F0F"
       defaultTextColor="#ffffff"
       {...props}
     >

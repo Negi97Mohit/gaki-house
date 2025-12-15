@@ -102,7 +102,7 @@ export const KineticStencilLayout: React.FC<{
       layout={props.layout}
       onLayoutUpdate={props.onLayoutUpdate}
       sections={sections}
-      defaultBackgroundColor="#ffffff"
+      defaultBackgroundColor="#FFD700"
       defaultTextColor="#000000"
       {...props}
     >

@@ -44,7 +44,10 @@ const ScrollZoomContent: React.FC<{ sections: CanvasSectionState[];[key: string]
                 "relative border overflow-hidden transition-all duration-300",
                 sections.length === 1 ? "w-full h-full" : "w-1/2 h-1/2"
               )}
-              style={{ borderColor: colors.textColor }}
+              style={{
+                borderColor: colors.textColor,
+                backgroundColor: i % 2 === 0 ? "#FF007F" : "#7F00FF", // Neon Pink / Purple
+              }}
               onMouseEnter={() => editor.setHoveredSectionId(section.id)}
               onMouseLeave={() => editor.setHoveredSectionId(null)}
             >
@@ -53,6 +56,7 @@ const ScrollZoomContent: React.FC<{ sections: CanvasSectionState[];[key: string]
                 templateSection={{ id: section.id }}
                 onSectionDelete={props.onSectionDelete}
                 onSectionContentChange={props.onSectionContentChange}
+                isHovered={editor.hoveredSectionId === section.id}
                 {...props}
               />
               <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
@@ -104,7 +108,7 @@ export const ScrollZoomLayout: React.FC<{
       layout={props.layout}
       onLayoutUpdate={props.onLayoutUpdate}
       sections={sections}
-      defaultBackgroundColor="#000000"
+      defaultBackgroundColor="#120A2A"
       defaultTextColor="#ffffff"
       {...props}
     >

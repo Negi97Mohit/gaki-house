@@ -23,13 +23,15 @@ const SnapStoriesContent: React.FC<{ sections: CanvasSectionState[], [key: strin
           {/* Background Media */}
           <div className={cn(
             "absolute inset-0 transition-all duration-300",
-            section.content?.type === "empty" ? "z-20 opacity-100" : "z-0 opacity-60"
+            section.content?.type === "empty" ? "z-40 opacity-100" : "z-0 opacity-60",
+            "bg-gradient-to-b from-indigo-900 to-purple-900" // Default bg
           )}>
             <GridSectionWrapper
               section={section}
               templateSection={{ id: section.id }}
               onSectionDelete={props.onSectionDelete}
               onSectionContentChange={props.onSectionContentChange}
+              isHovered={editor.hoveredSectionId === section.id}
               {...props}
             />
           </div>
@@ -54,8 +56,8 @@ const SnapStoriesContent: React.FC<{ sections: CanvasSectionState[], [key: strin
         </div>
       ))}
 
-      {/* Add New Story Slide - Custom Look but uses editor.handleAddSection */}
-      <div className="w-full h-full snap-start flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+      {/* Add New Story Slide - Ensure z-index is higher and accessible */}
+      <div className="w-full h-full snap-start flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer relative z-50"
         onClick={editor.handleAddSection}
       >
         <div className={cn(
@@ -86,7 +88,7 @@ export const SnapSectionsLayout: React.FC<{
       layout={props.layout}
       onLayoutUpdate={props.onLayoutUpdate}
       sections={sections}
-      defaultBackgroundColor="#000000"
+      defaultBackgroundColor="#000000" // Keep black for stories loop feel, but sections are colored
       defaultTextColor="#ffffff"
       {...props}
     >

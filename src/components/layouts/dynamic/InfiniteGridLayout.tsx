@@ -51,7 +51,10 @@ const InfiniteGridContent: React.FC<{ sections: CanvasSectionState[], [key: stri
     return (
       <div
         key={`${section.id}-${index}`}
-        className="w-[400px] h-[250px] shrink-0 relative group"
+        className="w-[400px] h-[250px] shrink-0 relative group rounded-lg overflow-hidden"
+        style={{
+          background: index % 2 === 0 ? "linear-gradient(135deg, #FF6B6B 0%, #EE5D5D 100%)" : "linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%)",
+        }}
         onMouseEnter={() => {
           editor.setHoveredSectionId(section.id);
           pauseAnimation();
@@ -66,6 +69,7 @@ const InfiniteGridContent: React.FC<{ sections: CanvasSectionState[], [key: stri
           templateSection={{ id: section.id }}
           onSectionDelete={props.onSectionDelete}
           onSectionContentChange={props.onSectionContentChange}
+          isHovered={editor.hoveredSectionId === section.id}
           {...props}
         />
         <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
@@ -98,7 +102,7 @@ export const InfiniteGridLayout: React.FC<{
       layout={props.layout}
       onLayoutUpdate={props.onLayoutUpdate}
       sections={sections}
-      defaultBackgroundColor="#000000"
+      defaultBackgroundColor="#101010"
       defaultTextColor="#ffffff"
       {...props}
     >

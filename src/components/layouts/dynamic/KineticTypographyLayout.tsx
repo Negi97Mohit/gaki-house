@@ -134,8 +134,9 @@ const KineticTypographyContent: React.FC<{ sections: CanvasSectionState[];[key: 
         {/* Featured Section (Hero) */}
         {featuredSection && (
           <div
-            className="kinetic-card w-full h-[50vh] md:h-[60vh] relative group border-4 bg-white hover:-translate-y-1 transition-all duration-300"
+            className="kinetic-card w-full h-[50vh] md:h-[60vh] relative group border-4 hover:-translate-y-1 transition-all duration-300"
             style={{
+              backgroundColor: "#ff4d4d", // Vibrant red for hero
               borderColor: colors.textColor,
               boxShadow: `8px 8px 0px 0px ${colors.textColor}`
             }}
@@ -153,6 +154,7 @@ const KineticTypographyContent: React.FC<{ sections: CanvasSectionState[];[key: 
               templateSection={{ id: featuredSection.id, name: "Hero" }}
               onSectionDelete={props.onSectionDelete}
               onSectionContentChange={props.onSectionContentChange}
+              isHovered={editor.hoveredSectionId === featuredSection.id}
               {...props}
             />
           </div>
@@ -164,10 +166,13 @@ const KineticTypographyContent: React.FC<{ sections: CanvasSectionState[];[key: 
             <div
               key={section.id}
               className={cn(
-                "kinetic-card relative bg-white border-2 h-[300px] md:h-[400px] flex flex-col shadow-lg",
+                "kinetic-card relative border-2 h-[300px] md:h-[400px] flex flex-col shadow-lg",
                 i % 3 === 0 ? "md:col-span-2" : ""
               )}
-              style={{ borderColor: colors.textColor }}
+              style={{
+                borderColor: colors.textColor,
+                backgroundColor: i % 2 === 0 ? "#ffffff" : "#f0f0f0" // Alternating slight contrast
+              }}
               onMouseEnter={() => editor.setHoveredSectionId(section.id)}
               onMouseLeave={() => editor.setHoveredSectionId(null)}
             >
@@ -187,6 +192,7 @@ const KineticTypographyContent: React.FC<{ sections: CanvasSectionState[];[key: 
                   templateSection={{ id: section.id, name: `Grid-${i}` }}
                   onSectionDelete={props.onSectionDelete}
                   onSectionContentChange={props.onSectionContentChange}
+                  isHovered={editor.hoveredSectionId === section.id}
                   {...props}
                 />
                 <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />

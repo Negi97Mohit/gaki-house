@@ -107,6 +107,7 @@ const StickySplitContent: React.FC<{ sections: CanvasSectionState[];[key: string
                 templateSection={{ id: section.id }}
                 onSectionDelete={props.onSectionDelete}
                 onSectionContentChange={props.onSectionContentChange}
+                isHovered={editor.hoveredSectionId === section.id}
                 {...props}
               />
             </div>
