@@ -432,7 +432,7 @@ export const CanvasHoverToolbar = ({
           {(() => {
             const dynamicLayouts = layoutTemplates.filter(t => t.category === 'dynamic');
             const staticLayouts = layoutTemplates.filter(t => t.category !== 'dynamic');
-            
+
             return (
               <Tabs defaultValue="dynamic" className="w-full">
                 <TabsList className="w-full grid grid-cols-2 mb-3">
@@ -555,8 +555,7 @@ export const CanvasHoverToolbar = ({
           )}
 
           {(layoutId.includes("bento") ||
-            layoutId.includes("staircase") ||
-            layoutId.includes("diagonal")) && (
+            layoutId.includes("staircase")) && (
               <Button
                 variant="ghost"
                 size="icon"
