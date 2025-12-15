@@ -13,7 +13,6 @@ const generateFallbackPositions = (
 ) => {
   const count = sections.length;
 
-  // Check if this is a pairs layout (e.g., Double Vertical Slider)
   const isPairsLayout =
     count > 2 &&
     count % 2 === 0 &&
@@ -22,7 +21,6 @@ const generateFallbackPositions = (
     );
 
   if (isPairsLayout) {
-    // Show first pair side by side as preview
     return sections.slice(0, 2).map((section, i) => ({
       ...section,
       style: {
@@ -35,14 +33,12 @@ const generateFallbackPositions = (
     }));
   }
 
-  // Check if sections need fallback (no positioning defined)
   const needsFallback = sections.some(
     (s) => !s.style.top && !s.style.left && !s.style.width && !s.style.height
   );
 
   if (!needsFallback) return sections;
 
-  // Generate grid-like fallback positions
   if (count === 2) {
     return sections.map((section, i) => ({
       ...section,
@@ -82,7 +78,6 @@ const generateFallbackPositions = (
     }));
   }
 
-  // Generic fallback: stacked rows
   const heightPer = Math.floor(85 / count);
   return sections.map((section, i) => ({
     ...section,
@@ -100,44 +95,37 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
   sections,
   templateId,
 }) => {
-  // --- 1. HADID RIBBON PREVIEW ---
+  // --- 1. HADID RIBBON PREVIEW (UPDATED) ---
+  // Reflects the new Linear/Gallery style
   if (templateId === "hadid-ribbon") {
     return (
-      <div className="relative w-full aspect-video rounded-sm bg-white border border-border/50 overflow-hidden group">
-        {/* The Curve Path */}
-        <svg
-          className="absolute inset-0 w-full h-full text-black/10 group-hover:text-black/20 transition-colors"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M 50,0 Q 90,25 50,50 Q 10,75 50,100"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          />
-        </svg>
+      <div className="relative w-full aspect-video rounded-md bg-[#f8fafc] border border-border/50 overflow-hidden group">
+        {/* Floor Line */}
+        <div className="absolute bottom-[20%] left-0 w-full h-[1px] bg-black/5" />
 
-        {/* Nodes along curve */}
-        <div className="absolute top-[10%] left-[55%] w-[30%] h-[20%] bg-white border border-black/20 shadow-sm rounded-sm z-10" />
-        <div className="absolute top-[40%] left-[15%] w-[30%] h-[20%] bg-white border border-black/20 shadow-sm rounded-sm z-10" />
-        <div className="absolute top-[70%] left-[55%] w-[30%] h-[20%] bg-white border border-black/20 shadow-sm rounded-sm z-10" />
+        {/* Floating Cards (Linear) */}
+        <div className="absolute top-1/2 left-[15%] w-[30%] h-[50%] bg-white border border-gray-200 shadow-sm rounded-sm transform -translate-y-1/2 group-hover:-translate-y-[55%] transition-transform duration-500">
+          <div className="w-full h-1.5 bg-gray-100 border-b border-gray-100" />
+        </div>
 
-        <div className="absolute bottom-1 right-1 text-[7px] font-mono text-black/40 bg-white/80 px-1 rounded">
-          PARAMETRIC
+        <div className="absolute top-1/2 left-[50%] w-[30%] h-[50%] bg-white border border-gray-200 shadow-sm rounded-sm transform -translate-y-1/2 group-hover:-translate-y-[55%] transition-transform duration-500 delay-75">
+          <div className="w-full h-1.5 bg-gray-100 border-b border-gray-100" />
+        </div>
+
+        {/* Peek next card */}
+        <div className="absolute top-1/2 left-[85%] w-[15%] h-[50%] bg-white/50 border border-dashed border-gray-300 rounded-sm transform -translate-y-1/2" />
+
+        <div className="absolute bottom-1 right-2 text-[8px] font-mono font-bold text-gray-300 uppercase">
+          Gallery Flow
         </div>
       </div>
     );
   }
 
-  // --- 2. LIQUID LENS PREVIEW ---
   if (templateId === "liquid-lens") {
     return (
       <div className="relative w-full aspect-video rounded-sm bg-gray-50 border border-border/50 overflow-hidden">
-        {/* Ripples */}
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-300 via-transparent to-transparent" />
-
-        {/* Grid */}
         <div className="grid grid-cols-3 gap-1 p-2 h-full items-center">
           <div className="aspect-square bg-white border border-black/10 shadow-sm rounded-sm transform -translate-y-1" />
           <div className="aspect-square bg-white border border-black/10 shadow-sm rounded-sm transform translate-y-1" />
@@ -150,17 +138,14 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
     );
   }
 
-  // --- 3. VOGUE EDITORIAL PREVIEW ---
   if (templateId === "vogue-parallax") {
     return (
       <div className="relative w-full aspect-video rounded-sm bg-white border border-border/50 overflow-hidden">
-        {/* Title Background */}
         <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
           <span className="text-[30px] font-serif font-bold uppercase text-black">
             VOGUE
           </span>
         </div>
-        {/* Asymmetrical Columns */}
         <div className="absolute top-[10%] left-[10%] w-[35%] h-[60%] bg-gray-100 border border-black/10 shadow-sm" />
         <div className="absolute top-[30%] right-[10%] w-[35%] h-[60%] bg-gray-100 border border-black/10 shadow-sm" />
         <div className="absolute bottom-1 right-1 text-[7px] font-mono text-black/40 bg-white/80 px-1 rounded">
@@ -170,9 +155,6 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
     );
   }
 
-
-
-  // --- 5. BRUTALIST GLITCH PREVIEW ---
   if (templateId === "brutalist-glitch") {
     return (
       <div className="relative w-full aspect-video rounded-sm bg-black border border-white/20 overflow-hidden">
@@ -186,20 +168,13 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
     );
   }
 
-
-
-
-
-  // --- STANDARD LAYOUT LOGIC (Slider / Grid) ---
-
-  // Detect if this is a "slider" type layout where all sections overlap
+  // --- STANDARD LAYOUT LOGIC ---
   const isSliderLayout =
     sections.length > 1 &&
     sections.every(
       (s) => s.style.width === "100%" && s.style.height === "100%"
     );
 
-  // Generate positions for sections without explicit positioning
   const processedSections = isSliderLayout
     ? [sections[0]]
     : generateFallbackPositions(sections);
@@ -231,14 +206,12 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
         );
       })}
 
-      {/* Show slide count indicator for slider layouts */}
       {isSliderLayout && sections.length > 1 && (
         <div className="absolute bottom-1 right-1 bg-background/80 text-[8px] px-1 rounded text-muted-foreground">
           {sections.length} slides
         </div>
       )}
 
-      {/* Show section count for pair layouts */}
       {!isSliderLayout && sections.length > processedSections.length && (
         <div className="absolute bottom-1 right-1 bg-background/80 text-[8px] px-1 rounded text-muted-foreground">
           {sections.length / 2} pairs

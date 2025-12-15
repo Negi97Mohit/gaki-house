@@ -1,6 +1,6 @@
-// src/lib/canvasPresets.ts
 import { CanvasPreset } from "@/types/canvasPreset";
-import canvasPresetsData from "@/data/canvasPresets.json";
+import standardPresets from "@/data/canvasPresets.json";
+import dynamicPresets from "@/data/dynamic/dynamicPresets.json";
 import {
   LayoutGrid,
   Crown,
@@ -13,9 +13,23 @@ import {
   Users,
 } from "lucide-react";
 
-// Directly cast the JSON data to the type
-export const CANVAS_PRESETS: CanvasPreset[] =
-  canvasPresetsData as unknown as CanvasPreset[];
+// Helper to remove duplicates by ID
+const deduplicate = (items: CanvasPreset[]) => {
+  const seen = new Set();
+  return items.filter((item) => {
+    if (seen.has(item.id)) {
+      return false;
+    }
+    seen.add(item.id);
+    return true;
+  });
+};
+
+// Merge standard and dynamic presets, prioritizing dynamic ones if IDs clash
+export const CANVAS_PRESETS: CanvasPreset[] = deduplicate([
+  ...(dynamicPresets as unknown as CanvasPreset[]),
+  ...(standardPresets as unknown as CanvasPreset[]),
+]);
 
 export const CANVAS_PRESET_CATEGORIES = [
   { id: "all", name: "All Designs", icon: "LayoutGrid" },

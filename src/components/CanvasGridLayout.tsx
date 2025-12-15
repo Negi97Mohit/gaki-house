@@ -23,15 +23,20 @@ import { SimonPortfolioLayout } from "./layouts/SimonPortfolioLayout";
 import { PerformanceFlowLayout } from "./layouts/PerformanceFlowLayout";
 import { MagnetismGridLayout } from "./layouts/MagnetismGridLayout";
 
-// --- NEW DYNAMIC / AWWWARDS LAYOUTS ---
+// --- DYNAMIC / AWWWARDS LAYOUTS ---
 import { VogueParallaxLayout } from "./layouts/dynamic/VogueParallaxLayout";
 import { LiquidLensLayout } from "./layouts/dynamic/LiquidLensLayout";
-
-import { BrutalistGlitchLayout } from "./layouts/dynamic/BrutalistGlitchLayout";
 import { HadidRibbonLayout } from "./layouts/dynamic/HadidRibbonLayout";
-
-
-// Note: Ensure HybridGridContainer is used inside the layouts or imported if needed globally
+import { KineticTypographyLayout } from "./layouts/dynamic/KineticTypographyLayout";
+import { KineticStencilLayout } from "./layouts/dynamic/KineticStencilLayout";
+import { DiagonalRushLayout } from "./layouts/dynamic/DiagonalRushLayout";
+import { ScrollZoomLayout } from "./layouts/dynamic/ScrollZoomLayout";
+import { InfiniteGridLayout } from "./layouts/dynamic/InfiniteGridLayout";
+import { StickySplitLayout } from "./layouts/dynamic/StickySplitLayout";
+import { LayeredParallaxLayout } from "./layouts/dynamic/LayeredParallaxLayout";
+import { HorizontalScrollLayout } from "./layouts/dynamic/HorizontalScrollLayout";
+import { CircularGalleryLayout } from "./layouts/dynamic/CircularGalleryLayout";
+import { SnapSectionsLayout } from "./layouts/dynamic/SnapSectionsLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -120,14 +125,24 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isPortfolioScroll = tId === "portfolio-scroll";
   const isSimonPortfolio = tId === "simon-portfolio";
 
-  // Dynamic 3D Styles Detection
+  // Dynamic 3D/Motion Styles Detection
   const isVogue = tId === "vogue-parallax";
   const isLiquid = tId === "liquid-lens";
-
-  const isBrutalist = tId === "brutalist-glitch";
   const isHadid = tId === "hadid-ribbon";
 
+  // New Kinetic Styles
+  const isKinetic = tId === "kinetic-typography";
+  const isStencil = tId === "kinetic-stencil";
+  const isDiagonal = tId === "diagonal-rush";
 
+  // Batch 2 Styles (Cleaned)
+  const isScrollZoom = tId === "scroll-zoom";
+  const isInfiniteGrid = tId === "infinite-grid";
+  const isStickySplit = tId === "sticky-split";
+  const isLayeredParallax = tId === "layered-parallax";
+  const isHorizontalScroll = tId === "horizontal-scroll";
+  const isCircularGallery = tId === "circular-gallery";
+  const isSnapSections = tId === "snap-sections";
 
   // Combine props to pass down to layouts
   const commonProps = {
@@ -136,15 +151,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
     onSectionDelete: handleSectionDelete,
     containerRef,
   };
-
-  // Determine container classes based on layout type
-  // (3D layouts often need black backgrounds or specific overflow settings)
-  const is3DLayout =
-    isVogue ||
-    isLiquid ||
-    isBrutalist ||
-    isHadid ||
-    isHadid;
 
   return (
     <div
@@ -155,49 +161,63 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         isExpandingCards && "bg-white",
         isSlider && "flex items-center justify-center bg-white",
         isVerticalSlider &&
-        "relative w-full h-[100vh] overflow-hidden bg-background",
+          "relative w-full h-[100vh] overflow-hidden bg-background",
         isSplitLanding && "relative w-full h-full bg-[#333]",
         isPortfolioScroll && "bg-white",
-        isSimonPortfolio && "bg-white"
-        // 3D Layout Defaults: Removed forced black as per user request for white/light themes
-        // is3DLayout && "bg-black"
+        isSimonPortfolio && "bg-white",
+        isKinetic && "bg-[#E5E5E5]"
       )}
     >
-      {/* --- Phase 2: Editorial --- */}
+      {/* --- Phase 2: Editorial & Motion --- */}
       {isVogue ? (
         <VogueParallaxLayout sections={layout.sections} {...commonProps} />
       ) : isLiquid ? (
         <LiquidLensLayout sections={layout.sections} {...commonProps} />
-
-      ) : isBrutalist ? (
-        <BrutalistGlitchLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Phase 3: Fluid & Parametric --- */
-        isHadid ? (
-          <HadidRibbonLayout sections={layout.sections} {...commonProps} />
-
-        ) : /* --- Phase 4: Physics --- */
-
-          isExpandingCards ? (
-            <ExpandingCardsLayout {...commonProps} />
-          ) : isSlider ? (
-            <SliderLayout {...commonProps} />
-          ) : isVerticalSlider ? (
-            <VerticalSliderLayout {...commonProps} />
-          ) : isSplitLanding ? (
-            <SplitLandingLayout {...commonProps} />
-          ) : isPortfolioScroll ? (
-            <PortfolioScrollLayout {...commonProps} />
-          ) : isSimonPortfolio ? (
-            <SimonPortfolioLayout {...commonProps} />
-          ) : tId === "performance-flow" ? (
-            <PerformanceFlowLayout {...commonProps} />
-          ) : tId === "magnetism-layout" ? (
-            <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
-          ) : tId === "case-study" ? (
-            <CaseStudyLayout {...commonProps} />
-          ) : (
-            <StandardGridLayout {...commonProps} />
-          )}
+      ) : isHadid ? (
+        <HadidRibbonLayout sections={layout.sections} {...commonProps} />
+      ) : isKinetic ? (
+        <KineticTypographyLayout sections={layout.sections} {...commonProps} />
+      ) : isStencil ? (
+        <KineticStencilLayout sections={layout.sections} {...commonProps} />
+      ) : isDiagonal ? (
+        <DiagonalRushLayout sections={layout.sections} {...commonProps} />
+      ) : /* --- Phase 3: New Interactive Layouts --- */
+      isScrollZoom ? (
+        <ScrollZoomLayout sections={layout.sections} {...commonProps} />
+      ) : isInfiniteGrid ? (
+        <InfiniteGridLayout sections={layout.sections} {...commonProps} />
+      ) : isStickySplit ? (
+        <StickySplitLayout sections={layout.sections} {...commonProps} />
+      ) : isLayeredParallax ? (
+        <LayeredParallaxLayout sections={layout.sections} {...commonProps} />
+      ) : isHorizontalScroll ? (
+        <HorizontalScrollLayout sections={layout.sections} {...commonProps} />
+      ) : isCircularGallery ? (
+        <CircularGalleryLayout sections={layout.sections} {...commonProps} />
+      ) : isSnapSections ? (
+        <SnapSectionsLayout sections={layout.sections} {...commonProps} />
+      ) : /* --- Phase 4: Standard Interactive --- */
+      isExpandingCards ? (
+        <ExpandingCardsLayout {...commonProps} />
+      ) : isSlider ? (
+        <SliderLayout {...commonProps} />
+      ) : isVerticalSlider ? (
+        <VerticalSliderLayout {...commonProps} />
+      ) : isSplitLanding ? (
+        <SplitLandingLayout {...commonProps} />
+      ) : isPortfolioScroll ? (
+        <PortfolioScrollLayout {...commonProps} />
+      ) : isSimonPortfolio ? (
+        <SimonPortfolioLayout {...commonProps} />
+      ) : tId === "performance-flow" ? (
+        <PerformanceFlowLayout {...commonProps} />
+      ) : tId === "magnetism-layout" ? (
+        <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
+      ) : tId === "case-study" ? (
+        <CaseStudyLayout {...commonProps} />
+      ) : (
+        <StandardGridLayout {...commonProps} />
+      )}
     </div>
   );
 };

@@ -1,0 +1,167 @@
+[
+  {
+    "id": "kinetic-typography-v1",
+    "name": "Kinetic Editorial",
+    "styleTags": ["modern", "typography", "bold", "editorial", "gsap"],
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "kinetic-typography",
+      "sections": [
+        { "id": "hero", "content": { "type": "camera" } },
+        { "id": "grid-1", "content": { "type": "image" } },
+        { "id": "grid-2", "content": { "type": "video" } }
+      ]
+    },
+    "background": { "blankCanvasColor": "#E5E5E5", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "contrast(1.1)" }
+  },
+  {
+    "id": "kinetic-stencil-v1",
+    "name": "Kinetic Stencil",
+    "styleTags": ["bold", "mask", "typography", "video-in-text"],
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "kinetic-stencil",
+      "sections": [{ "id": "main-feed", "content": { "type": "camera" } }]
+    },
+    "background": { "blankCanvasColor": "#000000", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "grayscale(1) contrast(1.2)" }
+  },
+  {
+    "id": "diagonal-rush-v1",
+    "name": "Diagonal Rush",
+    "styleTags": ["fashion", "diagonal", "scroll", "fast"],
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "templateId": "diagonal-rush",
+      "sections": [{ "id": "center-cam", "content": { "type": "camera" } }]
+    },
+    "background": { "blankCanvasColor": "#F0F0F0", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "saturate(0) contrast(1.1)" }
+  },
+  {
+    "id": "kinetic-scroll-zoom",
+    "name": "Scroll Zoom Hero",
+    "styleTags": ["scale", "hero", "impact", "modern"],
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "scroll-zoom",
+      "sections": [{ "id": "hero-zoom", "content": { "type": "camera" } }]
+    },
+    "background": { "blankCanvasColor": "#111", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "none" }
+  },
+  {
+    "id": "kinetic-infinite-grid",
+    "name": "Infinite Grid",
+    "styleTags": ["grid", "loop", "seamless", "gallery"],
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "infinite-grid",
+      "sections": [
+        { "id": "grid-1", "content": { "type": "camera" } },
+        { "id": "grid-2", "content": { "type": "empty" } },
+        { "id": "grid-3", "content": { "type": "empty" } },
+        { "id": "grid-4", "content": { "type": "empty" } }
+      ]
+    },
+    "background": { "blankCanvasColor": "#000", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "contrast(1.1)" }
+  },
+  {
+    "id": "editorial-sticky-split",
+    "name": "Sticky Editorial",
+    "styleTags": ["split", "editorial", "clean", "reading"],
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "sticky-split",
+      "sections": [{ "id": "sticky-media", "content": { "type": "camera" } }]
+    },
+    "background": { "blankCanvasColor": "#FFF", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "sepia(0.2)" }
+  },
+  {
+    "id": "fashion-layered-parallax",
+    "name": "Layered Parallax",
+    "styleTags": ["fashion", "depth", "scroll", "image"],
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "templateId": "layered-parallax",
+      "sections": [
+        { "id": "layer-back", "content": { "type": "camera" } },
+        { "id": "layer-front", "content": { "type": "empty" } }
+      ]
+    },
+    "background": { "blankCanvasColor": "#1A1A1A", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "contrast(1.2)" }
+  },
+  {
+    "id": "fashion-horizontal-scroll",
+    "name": "Runway Horizontal",
+    "styleTags": ["horizontal", "fashion", "gallery", "pan"],
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "horizontal-scroll",
+      "sections": [
+        { "id": "item-1", "content": { "type": "camera" } },
+        { "id": "item-2", "content": { "type": "empty" } },
+        { "id": "item-3", "content": { "type": "empty" } }
+      ]
+    },
+    "background": { "blankCanvasColor": "#FFF", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "grayscale(1)" }
+  },
+  {
+    "id": "modern-circular-gallery",
+    "name": "Circular Gallery",
+    "styleTags": ["circle", "rotate", "creative", "experimental"],
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "circular-gallery",
+      "sections": [
+        { "id": "circle-1", "content": { "type": "camera" } },
+        { "id": "circle-2", "content": { "type": "empty" } },
+        { "id": "circle-3", "content": { "type": "empty" } },
+        { "id": "circle-4", "content": { "type": "empty" } }
+      ]
+    },
+    "background": { "blankCanvasColor": "#111", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "none" }
+  },
+  {
+    "id": "modern-snap-sections",
+    "name": "Snap Stories",
+    "styleTags": ["snap", "fullscreen", "story", "mobile"],
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "templateId": "snap-sections",
+      "sections": [
+        { "id": "snap-1", "content": { "type": "camera" } },
+        { "id": "snap-2", "content": { "type": "empty" } },
+        { "id": "snap-3", "content": { "type": "empty" } }
+      ]
+    },
+    "background": { "blankCanvasColor": "#000", "backgroundEffect": "none" },
+    "pip": { "layoutMode": "hidden" },
+    "textOverlays": [],
+    "effects": { "videoFilter": "none" }
+  }
+]
