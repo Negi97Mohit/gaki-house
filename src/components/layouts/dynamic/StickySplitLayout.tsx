@@ -13,6 +13,8 @@ export const StickySplitLayout: React.FC<{
 }> = ({ sections, ...props }) => {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const textRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const inactiveTimer = useRef<NodeJS.Timeout | null>(null);
 
   const {
     hoveredSectionId,
@@ -34,6 +36,25 @@ export const StickySplitLayout: React.FC<{
   });
 
   const { backgroundColor, textColor } = getGlobalSettings("#ffffff", "#000000");
+
+  // Mouse Inactivity Logic
+  useEffect(() => {
+    const onMouseMove = () => {
+      setControlsVisible(true);
+      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
+      inactiveTimer.current = setTimeout(() => {
+        setControlsVisible(false);
+      }, 3000);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    onMouseMove();
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
+    }
+  }, []);
 
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -109,8 +130,11 @@ export const StickySplitLayout: React.FC<{
                   className="bg-transparent border-none text-xl leading-relaxed w-full min-h-[100px] resize-none focus:outline-none"
                 />
 
-                {/* Delete Button for this Chapter */}
-                <div className="mt-4">
+                {/* Delete Button for this Chapter - Auto Hide */}
+                <div className={cn(
+                  "mt-4 transition-opacity duration-500",
+                  controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}>
                   <button
                     onClick={(e) => handleDeleteSection(section.id, e)}
                     className="text-red-500 text-sm hover:underline flex items-center gap-1"
@@ -122,8 +146,12 @@ export const StickySplitLayout: React.FC<{
             )
           })}
 
-          {/* Add Button */}
-          <div className="h-[200px] flex items-center justify-center border-2 border-dashed rounded-lg opacity-50 hover:opacity-100 cursor-pointer transition-opacity"
+          {/* Add Button - Auto Hide */}
+          <div
+            className={cn(
+              "h-[200px] flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer transition-all duration-500",
+              controlsVisible ? "opacity-50 hover:opacity-100" : "opacity-0 pointer-events-none"
+            )}
             onClick={handleAddSection}
             style={{ borderColor: textColor }}
           >
