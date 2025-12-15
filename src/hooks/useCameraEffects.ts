@@ -1,6 +1,7 @@
 // src/hooks/useCameraEffects.ts
 import { useEffect, useRef, useState } from "react";
 import { SelfieSegmentation } from "@mediapipe/selfie_segmentation";
+import * as SelfieSegmentationModule from "@mediapipe/selfie_segmentation";
 import { FaceDetector, FilesetResolver } from "@mediapipe/tasks-vision";
 
 interface UseCameraEffectsProps {
@@ -68,8 +69,11 @@ export const useCameraEffects = ({
       return;
     }
 
-    const selfieSegmentation = new SelfieSegmentation({
-      locateFile: (file) =>
+    // @ts-ignore
+    const SelfieSegmentationConstructor = SelfieSegmentationModule.SelfieSegmentation || SelfieSegmentationModule;
+    // @ts-ignore
+    const selfieSegmentation = new SelfieSegmentationConstructor({
+      locateFile: (file: string) =>
         `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
     });
 
@@ -139,7 +143,7 @@ export const useCameraEffects = ({
         if (isSegmentationReady && segmentationRef.current) {
           try {
             await segmentationRef.current.send({ image: videoElement });
-          } catch (e) {}
+          } catch (e) { }
         }
 
         if (
