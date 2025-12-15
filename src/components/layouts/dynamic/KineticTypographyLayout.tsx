@@ -4,6 +4,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { cn } from "@/lib/utils";
+import { useLayoutEditor } from "@/hooks/useLayoutEditor";
+import { LayoutEditorToolbar } from "../LayoutEditorToolbar";
+import { LayoutSettingsCtrl } from "../LayoutSettingsCtrl";
+import { Plus, Trash2 } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,6 +27,31 @@ export const KineticTypographyLayout: React.FC<
   const marqueeRef2 = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const {
+    hoveredSectionId,
+    setHoveredSectionId,
+    focusedField,
+    setFocusedField,
+    toolbarRef,
+    handleUpdateText,
+    handleUpdateStyle,
+    handleFocus,
+    handleAddSection,
+    handleDeleteSection,
+    getFieldStyle,
+    getGlobalSettings,
+    updateGlobalSetting,
+  } = useLayoutEditor({
+    layout: props.layout,
+    onLayoutUpdate: props.onLayoutUpdate,
+  });
+
+  const { backgroundColor, textColor } = getGlobalSettings("#E5E5E5", "#000000");
+
+  const headerData = props.layout.customSectionData?.["header"] || {};
+  const marqueeText = headerData.marqueeText || "MOTION DESIGN • EDITORIAL • KINETIC • ";
+  const marqueeText2 = headerData.marqueeText2 || "CREATIVE • CANVAS • DYNAMIC • ";
+
   useEffect(() => {
     // Wait for render to ensure refs are ready
     const timer = setTimeout(() => {
@@ -33,24 +62,33 @@ export const KineticTypographyLayout: React.FC<
         // 1. Marquee Animations (Infinite Scroll) - independent of scroll
         const tl = gsap.timeline({ repeat: -1 });
         if (marqueeRef1.current) {
-          tl.to(marqueeRef1.current, {
-            xPercent: -50,
-            duration: 20,
-            ease: "none",
-          });
+          try {
+            // Reset first to avoid conflict
+            gsap.set(marqueeRef1.current, { xPercent: 0 });
+            tl.to(marqueeRef1.current, {
+              xPercent: -50,
+              duration: 20,
+              ease: "none",
+            });
+          } catch (e) { console.warn("GSAP error", e) }
         }
 
         const tl2 = gsap.timeline({ repeat: -1 });
         if (marqueeRef2.current) {
-          tl2.to(marqueeRef2.current, {
-            xPercent: 50, // Reverse direction
-            duration: 25,
-            ease: "none",
-          });
+          try {
+            gsap.set(marqueeRef2.current, { xPercent: 0 }); // Reset
+            tl2.fromTo(marqueeRef2.current,
+              { xPercent: -50 }, // Start shifted left
+              {
+                xPercent: 0, // Move to 0 (rightward visually)
+                duration: 25,
+                ease: "none",
+              }
+            );
+          } catch (e) { console.warn("GSAP error", e) }
         }
 
         // 2. Parallax & Scale Effect on Content Cards
-        // IMPORTANT: We must specify 'scroller' because the scrollbar is on the container div
         const cards = gsap.utils.toArray(".kinetic-card");
         cards.forEach((card: any, i) => {
           gsap.fromTo(
@@ -70,8 +108,8 @@ export const KineticTypographyLayout: React.FC<
               ease: "power3.out",
               scrollTrigger: {
                 trigger: card,
-                scroller: scroller, // <--- CRITICAL FIX
-                start: "top bottom-=50", // Trigger when top of card hits 50px from bottom of view
+                scroller: scroller,
+                start: "top bottom-=50",
                 toggleActions: "play none none reverse",
               },
             }
@@ -83,7 +121,7 @@ export const KineticTypographyLayout: React.FC<
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [sections]);
+  }, [sections]); // Re-run when sections change
 
   // Split sections for layout variety
   const featuredSection = sections[0];
@@ -92,45 +130,121 @@ export const KineticTypographyLayout: React.FC<
   return (
     <div
       ref={containerRef}
-      className="w-full h-full bg-[#E5E5E5] text-black overflow-y-auto overflow-x-hidden relative font-sans"
+      className="w-full h-full overflow-y-auto overflow-x-hidden relative font-sans"
+      style={{ backgroundColor, color: textColor }}
     >
-      {/* Background Kinetic Text */}
-      <div className="fixed inset-0 pointer-events-none flex flex-col justify-between opacity-5 z-0 select-none overflow-hidden">
+      <LayoutSettingsCtrl
+        backgroundColor={backgroundColor}
+        textColor={textColor}
+        onUpdate={updateGlobalSetting}
+      />
+
+      <LayoutEditorToolbar
+        focusedField={focusedField}
+        toolbarRef={toolbarRef}
+        currentStyle={focusedField ? props.layout.customSectionStyles?.[focusedField.id] : {}}
+        onUpdateStyle={(field, value) => focusedField && handleUpdateStyle(focusedField.id, field, value)}
+        onClose={() => setFocusedField(null)}
+      />
+
+      {/* Background Kinetic Text - Only editable via global marquee settings really, or mapped input */}
+      <div className="fixed inset-0 pointer-events-none flex flex-col justify-between opacity-5 z-0 select-none overflow-hidden"
+        style={{ color: textColor }}>
         <div
           ref={marqueeRef1}
-          className="whitespace-nowrap text-[20vh] font-black leading-none flex w-[200%]"
+          className="whitespace-nowrap text-[20vh] font-black leading-none flex w-fit"
         >
-          <span>MOTION DESIGN • EDITORIAL • KINETIC • </span>
-          <span>MOTION DESIGN • EDITORIAL • KINETIC • </span>
+          {/* Using a repeating pattern for the marquee */}
+          <span>{marqueeText}{marqueeText}</span>
+          <span>{marqueeText}{marqueeText}</span>
         </div>
         <div
           ref={marqueeRef2}
-          className="whitespace-nowrap text-[20vh] font-black leading-none flex w-[200%] -ml-[100%]"
+          className="whitespace-nowrap text-[20vh] font-black leading-none flex w-fit"
         >
-          <span>CREATIVE • CANVAS • DYNAMIC • </span>
-          <span>CREATIVE • CANVAS • DYNAMIC • </span>
+          <span>{marqueeText2}{marqueeText2}</span>
+          <span>{marqueeText2}{marqueeText2}</span>
+
         </div>
       </div>
 
       <div className="relative z-10 w-full min-h-full p-8 md:p-16 flex flex-col gap-16">
         {/* Header */}
-        <header className="w-full border-b-4 border-black pb-8 mb-8">
-          <h1 className="text-6xl md:text-8xl xl:text-9xl font-black uppercase tracking-tighter mix-blend-difference break-words">
-            The Issue
-          </h1>
-          <div className="flex justify-between text-lg md:text-xl font-bold mt-4 uppercase border-t border-black pt-4">
-            <span>Vol. 01</span>
-            <span>Kinetic Series</span>
-            <span>2025</span>
+        <header className="w-full border-b-4 pb-8 mb-8" style={{ borderColor: textColor }}>
+          {/* Editable Title */}
+          <textarea
+            value={headerData.title ?? "The Issue"}
+            onChange={(e) => {
+              handleUpdateText("header", "title", e.target.value);
+              e.target.style.height = "auto";
+              e.target.style.height = e.target.scrollHeight + "px";
+            }}
+            onFocus={(e) => handleFocus("header_title", e)}
+            style={{
+              ...getFieldStyle("header_title"),
+              color: textColor // Ensure visible against bg
+            }}
+            className="w-full bg-transparent text-6xl md:text-8xl xl:text-9xl font-black uppercase tracking-tighter mix-blend-difference break-words focus:outline-none resize-none overflow-hidden bg-transparent p-0 m-0 leading-none"
+            rows={1}
+          />
+
+          <div className="flex justify-between text-lg md:text-xl font-bold mt-4 uppercase border-t pt-4" style={{ borderColor: textColor }}>
+            <textarea
+              value={headerData.vol ?? "Vol. 01"}
+              onChange={(e) => handleUpdateText("header", "vol", e.target.value)}
+              onFocus={(e) => handleFocus("header_vol", e)}
+              style={getFieldStyle("header_vol")}
+              className="bg-transparent focus:outline-none resize-none w-32"
+              rows={1}
+            />
+            <textarea
+              value={headerData.series ?? "Kinetic Series"}
+              onChange={(e) => handleUpdateText("header", "series", e.target.value)}
+              onFocus={(e) => handleFocus("header_series", e)}
+              style={getFieldStyle("header_series")}
+              className="bg-transparent focus:outline-none resize-none text-center"
+              rows={1}
+            />
+            <textarea
+              value={headerData.year ?? "2025"}
+              onChange={(e) => handleUpdateText("header", "year", e.target.value)}
+              onFocus={(e) => handleFocus("header_year", e)}
+              style={getFieldStyle("header_year")}
+              className="bg-transparent focus:outline-none resize-none text-right w-20"
+              rows={1}
+            />
           </div>
         </header>
 
         {/* Featured Section (Hero) */}
         {featuredSection && (
-          <div className="kinetic-card w-full h-[50vh] md:h-[60vh] relative group border-4 border-black bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-300">
-            <div className="absolute top-0 left-0 z-20 bg-black text-white px-4 py-2 font-bold text-lg uppercase tracking-wider">
-              Cover Story
+          <div
+            className="kinetic-card w-full h-[50vh] md:h-[60vh] relative group border-4 bg-white hover:-translate-y-1 transition-all duration-300"
+            style={{
+              borderColor: textColor,
+              boxShadow: `8px 8px 0px 0px ${textColor}`
+            }}
+            onMouseEnter={() => setHoveredSectionId(featuredSection.id)}
+            onMouseLeave={() => setHoveredSectionId(null)}
+          >
+            <div className="absolute top-0 left-0 z-20 px-4 py-2 font-bold text-lg uppercase tracking-wider" style={{ background: textColor, color: backgroundColor }}>
+              <input
+                value={props.layout.customSectionData?.[featuredSection.id]?.label ?? "Cover Story"}
+                onChange={(e) => handleUpdateText(featuredSection.id, "label", e.target.value)}
+                className="bg-transparent border-none focus:outline-none text-inherit w-full"
+              />
             </div>
+            {/* Delete Button */}
+            <div className={cn("absolute top-2 right-2 flex gap-2 z-50 transition-opacity duration-200", hoveredSectionId === featuredSection.id ? "opacity-100" : "opacity-0")}>
+              <button
+                onClick={(e) => handleDeleteSection(featuredSection.id, e)}
+                className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md"
+                title="Remove Panel"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+
             <GridSectionWrapper
               section={featuredSection}
               templateSection={{ id: featuredSection.id, name: "Hero" }}
@@ -150,20 +264,24 @@ export const KineticTypographyLayout: React.FC<
             <div
               key={section.id}
               className={cn(
-                "kinetic-card relative bg-white border-2 border-black h-[300px] md:h-[400px] flex flex-col shadow-lg",
+                "kinetic-card relative bg-white border-2 h-[300px] md:h-[400px] flex flex-col shadow-lg",
                 i % 3 === 0 ? "md:col-span-2" : ""
               )}
+              style={{ borderColor: textColor }}
+              onMouseEnter={() => setHoveredSectionId(section.id)}
+              onMouseLeave={() => setHoveredSectionId(null)}
             >
-              <div className="border-b-2 border-black p-2 flex justify-between items-center bg-yellow-300">
-                <span className="font-mono font-bold text-xs uppercase tracking-widest">
+              <div className="border-b-2 p-2 flex justify-between items-center bg-yellow-300" style={{ borderColor: textColor }}>
+                <span className="font-mono font-bold text-xs uppercase tracking-widest text-black">
                   Fig. 0{i + 1}
                 </span>
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 rounded-full bg-black" />
-                  <div className="w-2 h-2 rounded-full bg-transparent border border-black" />
+                  <div className="w-2 h-2 rounded-full" style={{ background: textColor }} />
+                  <div className="w-2 h-2 rounded-full bg-transparent border" style={{ borderColor: textColor }} />
                 </div>
               </div>
-              <div className="flex-1 relative overflow-hidden">
+
+              <div className="flex-1 relative overflow-hidden group">
                 <GridSectionWrapper
                   section={section}
                   templateSection={{ id: section.id, name: `Grid-${i}` }}
@@ -171,28 +289,51 @@ export const KineticTypographyLayout: React.FC<
                   onSectionContentChange={onSectionContentChange}
                   {...props}
                 />
+                {/* Hover controls */}
+                <div className={cn("absolute top-2 right-2 flex gap-2 z-50 transition-opacity duration-200", hoveredSectionId === section.id ? "opacity-100" : "opacity-0")}>
+                  <button
+                    onClick={(e) => handleDeleteSection(section.id, e)}
+                    className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-              <div className="p-3 border-t-2 border-black bg-white">
-                <h3 className="font-bold text-lg uppercase leading-none">
-                  Section Input
-                </h3>
+
+              <div className="p-3 border-t-2 bg-white" style={{ borderColor: textColor }}>
+                <textarea
+                  value={props.layout.customSectionData?.[section.id]?.caption ?? "Section Input"}
+                  onChange={(e) => handleUpdateText(section.id, "caption", e.target.value)}
+                  onFocus={(e) => handleFocus(`${section.id}_caption`, e)}
+                  style={getFieldStyle(`${section.id}_caption`)}
+                  className="w-full bg-transparent font-bold text-lg uppercase leading-none border-none focus:outline-none resize-none text-black"
+                  rows={1}
+                />
               </div>
             </div>
           ))}
 
-          {/* Add Placeholder slots if fewer than 3 grid items to flesh out the layout */}
-          {gridSections.length < 3 && (
-            <div className="kinetic-card p-8 border-2 border-dashed border-black/30 flex items-center justify-center h-[300px] md:col-span-1 opacity-50">
-              <span className="font-mono text-xl uppercase">Coming Soon</span>
-            </div>
-          )}
+          {/* Add Panel Button */}
+          <div
+            onClick={handleAddSection}
+            className="kinetic-card p-8 border-2 border-dashed flex flex-col items-center justify-center h-[300px] md:col-span-1 opacity-50 hover:opacity-100 cursor-pointer hover:bg-black/5 transition-all"
+            style={{ borderColor: textColor, color: textColor }}
+          >
+            <Plus className="w-12 h-12 mb-2" />
+            <span className="font-mono text-xl uppercase">Add Panel</span>
+          </div>
         </div>
 
         {/* Footer Filler */}
-        <div className="h-[20vh] flex flex-col items-center justify-center border-t-4 border-black mt-8">
-          <p className="text-4xl md:text-6xl font-black text-black/10 uppercase">
-            End of Stream
-          </p>
+        <div className="h-[20vh] flex flex-col items-center justify-center border-t-4 mt-8" style={{ borderColor: textColor }}>
+          <textarea
+            value={headerData.footer ?? "End of Stream"}
+            onChange={(e) => handleUpdateText("header", "footer", e.target.value)}
+            onFocus={(e) => handleFocus("header_footer", e)}
+            style={getFieldStyle("header_footer")}
+            className="text-4xl md:text-6xl font-black uppercase text-center bg-transparent border-none focus:outline-none opacity-20 resize-none w-full"
+            rows={1}
+          />
         </div>
       </div>
     </div>
