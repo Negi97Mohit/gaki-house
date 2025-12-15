@@ -324,18 +324,47 @@ export const KineticTypographyLayout: React.FC<
           </div>
         </div>
 
-        {/* Footer Filler */}
-        <div className="h-[20vh] flex flex-col items-center justify-center border-t-4 mt-8" style={{ borderColor: textColor }}>
-          <textarea
-            value={headerData.footer ?? "End of Stream"}
-            onChange={(e) => handleUpdateText("header", "footer", e.target.value)}
-            onFocus={(e) => handleFocus("header_footer", e)}
-            style={getFieldStyle("header_footer")}
-            className="text-4xl md:text-6xl font-black uppercase text-center bg-transparent border-none focus:outline-none opacity-20 resize-none w-full"
-            rows={1}
-          />
+      </div>
+
+      {/* Footer Filler */}
+      <div className="h-[20vh] flex flex-col items-center justify-center border-t-4 mt-8" style={{ borderColor: textColor }}>
+        <textarea
+          value={headerData.footer ?? "End of Stream"}
+          onChange={(e) => handleUpdateText("header", "footer", e.target.value)}
+          onFocus={(e) => handleFocus("header_footer", e)}
+          style={getFieldStyle("header_footer")}
+          className="text-4xl md:text-6xl font-black uppercase text-center bg-transparent border-none focus:outline-none opacity-20 resize-none w-full"
+          rows={1}
+        />
+      </div>
+
+      {/* Settings Footer */}
+      <div className="border-t-4 pt-8 mt-16 pb-32" style={{ borderColor: textColor }}>
+        <h3 className="text-xl font-bold uppercase mb-4 opacity-50">Background Text Settings</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="text-xs font-bold uppercase block mb-2 opacity-50">Top Scrolling Text</label>
+            <input
+              value={marqueeText}
+              onChange={(e) => handleUpdateText("header", "marqueeText", e.target.value)}
+              className="w-full bg-black/5 p-4 font-mono text-sm border-none focus:outline-none placeholder-gray-500"
+              placeholder="Enter top scrolling text..."
+              style={{ color: textColor }}
+            />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase block mb-2 opacity-50">Bottom Scrolling Text</label>
+            <input
+              value={marqueeText2}
+              onChange={(e) => handleUpdateText("header", "marqueeText2", e.target.value)}
+              className="w-full bg-black/5 p-4 font-mono text-sm border-none focus:outline-none placeholder-gray-500"
+              placeholder="Enter bottom scrolling text..."
+              style={{ color: textColor }}
+            />
+          </div>
         </div>
       </div>
     </div>
+
   );
 };

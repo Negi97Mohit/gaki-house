@@ -127,7 +127,7 @@ export const KineticStencilLayout: React.FC<KineticStencilLayoutProps> = ({
         className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none mix-blend-multiply"
         style={{ backgroundColor }} // User controls this. Default white.
       >
-        <div ref={textRef} className="text-center w-full">
+        <div ref={textRef} className="text-center w-full pointer-events-auto">
           <input
             value={headerData.line1 ?? "VISION"}
             onChange={(e) => handleUpdateText("header", "line1", e.target.value)}
