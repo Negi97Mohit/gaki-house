@@ -70,43 +70,55 @@ export const useCameraEffects = ({
     }
 
     // @ts-ignore
-    const SelfieSegmentationConstructor = SelfieSegmentationModule.SelfieSegmentation || SelfieSegmentationModule;
-    // @ts-ignore
-    const selfieSegmentation = new SelfieSegmentationConstructor({
-      locateFile: (file: string) =>
-        `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
-    });
+    // Fix for Vite production build where named exports may be lost
+    const SelfieSegmentationConstructor =
+      SelfieSegmentationModule.SelfieSegmentation ||
+      SelfieSegmentationModule.default ||
+      SelfieSegmentationModule;
 
-    selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: true });
+    try {
+      // @ts-ignore
+      const selfieSegmentation = new SelfieSegmentationConstructor({
+        locateFile: (file: string) =>
+          `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
+      });
 
-    selfieSegmentation.onResults((results) => {
-      if (!canvasRef.current || !videoElement) return;
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: true });
 
-      if (canvas.width !== videoElement.videoWidth) {
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-      }
+      selfieSegmentation.onResults((results) => {
+        if (!canvasRef.current || !videoElement) return;
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
 
-      // Draw mask for use in shaders
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(
-        results.segmentationMask,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-    });
+        if (canvas.width !== videoElement.videoWidth) {
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+        }
 
-    segmentationRef.current = selfieSegmentation;
-    setIsSegmentationReady(true);
+        // Draw mask for use in shaders
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+          results.segmentationMask,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      });
+
+      segmentationRef.current = selfieSegmentation;
+      setIsSegmentationReady(true);
+    } catch (error) {
+      console.error("[useCameraEffects] Failed to initialize SelfieSegmentation:", error);
+      setIsSegmentationReady(false);
+    }
 
     return () => {
-      selfieSegmentation.close();
-      segmentationRef.current = null;
+      if (segmentationRef.current) {
+        segmentationRef.current.close();
+        segmentationRef.current = null;
+      }
       setIsSegmentationReady(false);
     };
   }, [isSegmentationEnabled, videoElement]);
