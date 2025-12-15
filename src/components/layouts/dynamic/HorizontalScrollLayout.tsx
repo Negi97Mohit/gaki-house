@@ -3,66 +3,22 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
-import { useLayoutEditor } from "@/hooks/useLayoutEditor";
-import { LayoutEditorToolbar } from "../LayoutEditorToolbar";
-import { LayoutSettingsCtrl } from "../LayoutSettingsCtrl";
-import { Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
+import { useDynamicLayout } from "./core/DynamicLayoutContext";
+import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
+import { EditableText } from "./core/EditableText";
+import { Plus } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export const HorizontalScrollLayout: React.FC<{
-  sections: CanvasSectionState[];
-  [key: string]: any;
-}> = ({ sections, ...props }) => {
+const HorizontalScrollContent: React.FC<{ sections: CanvasSectionState[];[key: string]: any }> = ({ sections, ...props }) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [trackWidth, setTrackWidth] = useState(0);
-  const [controlsVisible, setControlsVisible] = useState(true);
-  const inactiveTimer = useRef<NodeJS.Timeout | null>(null);
+  const { colors, editor, controlsVisible } = useDynamicLayout();
 
-  const {
-    hoveredSectionId,
-    setHoveredSectionId,
-    focusedField,
-    setFocusedField,
-    toolbarRef,
-    handleUpdateText,
-    handleUpdateStyle,
-    handleFocus,
-    handleAddSection,
-    handleDeleteSection,
-    getFieldStyle,
-    getGlobalSettings,
-    updateGlobalSetting,
-  } = useLayoutEditor({
-    layout: props.layout,
-    onLayoutUpdate: props.onLayoutUpdate,
-  });
-
-  const { backgroundColor, textColor } = getGlobalSettings("#ffffff", "#000000");
-  const headerData = props.layout.customSectionData?.["header"] || {};
-
-  // Mouse Inactivity Logic
-  useEffect(() => {
-    const onMouseMove = () => {
-      setControlsVisible(true);
-      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
-      inactiveTimer.current = setTimeout(() => {
-        setControlsVisible(false);
-      }, 3000);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    onMouseMove();
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
-    }
-  }, []);
-
-  // Measure track width after render
+  // Measure track width after render/updates
   useEffect(() => {
     if (trackRef.current) {
       setTimeout(() => {
@@ -100,57 +56,37 @@ export const HorizontalScrollLayout: React.FC<{
   }, [trackWidth]);
 
   return (
-    <div
-      ref={scrollerRef}
-      className="w-full h-full overflow-y-auto relative"
-      style={{ backgroundColor }}
-    >
-      <LayoutSettingsCtrl
-        backgroundColor={backgroundColor}
-        textColor={textColor}
-        onUpdate={updateGlobalSetting}
-      />
-      <LayoutEditorToolbar
-        focusedField={focusedField}
-        toolbarRef={toolbarRef}
-        currentStyle={focusedField ? props.layout.customSectionStyles?.[focusedField.id] : {}}
-        onUpdateStyle={(field, value) => focusedField && handleUpdateStyle(focusedField.id, field, value)}
-        onClose={() => setFocusedField(null)}
-      />
-
-      {/* Ghost Height */}
+    <div ref={scrollerRef} className="w-full h-full overflow-y-auto relative">
       <div
         className="ghost-height w-full"
         style={{
           height: `${Math.max(100, (trackWidth / window.innerWidth) * 100)}vh`,
         }}
       >
-        {/* Sticky Viewport */}
         <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center">
-          {/* The Moving Track */}
           <div ref={trackRef} className="flex h-full w-fit">
 
-            {/* Intro Section - Inverted Colors for Contrast */}
+            {/* Intro Section - Inverted Colors */}
             <div className="w-screen h-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: textColor, color: backgroundColor }}>
+              style={{ backgroundColor: colors.textColor, color: colors.backgroundColor }}>
               <div className="text-center w-full px-8">
-                <input
-                  value={headerData.title ?? "Runway"}
-                  onChange={(e) => handleUpdateText("header", "title", e.target.value)}
-                  onFocus={(e) => handleFocus("header_title", e)}
-                  style={{ ...getFieldStyle("header_title"), color: backgroundColor }}
-                  className="bg-transparent border-none text-9xl font-bold uppercase tracking-tighter text-center focus:outline-none w-full"
+                <EditableText
+                  sectionId="header"
+                  fieldId="title"
+                  defaultValue="Runway"
+                  className="text-9xl font-bold uppercase tracking-tighter text-center w-full text-inherit"
+                  style={{ color: colors.backgroundColor }}
                 />
                 <div className={cn(
                   "transition-opacity duration-500",
                   controlsVisible ? "opacity-100" : "opacity-0"
                 )}>
-                  <input
-                    value={headerData.subtitle ?? "↓ SCROLL TO PAN ↓"}
-                    onChange={(e) => handleUpdateText("header", "subtitle", e.target.value)}
-                    onFocus={(e) => handleFocus("header_subtitle", e)}
-                    style={{ ...getFieldStyle("header_subtitle"), color: backgroundColor }}
-                    className="bg-transparent border-none mt-4 text-xl opacity-50 animate-bounce text-center focus:outline-none w-full"
+                  <EditableText
+                    sectionId="header"
+                    fieldId="subtitle"
+                    defaultValue="↓ SCROLL TO PAN ↓"
+                    className="mt-4 text-xl opacity-50 animate-bounce text-center w-full text-inherit"
+                    style={{ color: colors.backgroundColor }}
                   />
                 </div>
               </div>
@@ -161,33 +97,15 @@ export const HorizontalScrollLayout: React.FC<{
               <div
                 key={section.id}
                 className="w-[80vw] h-full p-12 shrink-0 border-r border-gray-200 flex items-center justify-center relative group/slide"
-                style={{
-                  borderColor: textColor,
-                  backgroundColor
-                }}
+                style={{ borderColor: colors.textColor, backgroundColor: colors.backgroundColor }}
               >
-                {/* Delete Button (Top Right) */}
-                <div className={cn(
-                  "absolute top-4 right-4 z-50 transition-opacity duration-300",
-                  hoveredSectionId === section.id && controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-                  // Modified to ALSO depend on controlsVisible, or just hover? 
-                  // Usually "mouse inactivity" implies global cleanup, but if I'm actively hovering a card, the mouse IS moving/active.
-                  // The inactiveTimer handles lack of MOVEMENT.
-                  // So if I stare at a card for 3s, the delete button fades. That's consistent.
-                )}>
-                  <button
-                    onClick={(e) => handleDeleteSection(section.id, e)}
-                    className="bg-red-500 text-white p-3 rounded-full hover:scale-110 shadow-lg"
-                  >
-                    <Trash2 className="w-6 h-6" />
-                  </button>
-                </div>
+                <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-4 right-4", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
 
                 <div
                   className="w-full h-full relative shadow-2xl overflow-hidden group"
                   style={{ backgroundColor: "#f3f4f6" }}
-                  onMouseEnter={() => setHoveredSectionId(section.id)}
-                  onMouseLeave={() => setHoveredSectionId(null)}
+                  onMouseEnter={() => editor.setHoveredSectionId(section.id)}
+                  onMouseLeave={() => editor.setHoveredSectionId(null)}
                 >
                   <GridSectionWrapper
                     section={section}
@@ -197,13 +115,12 @@ export const HorizontalScrollLayout: React.FC<{
                     {...props}
                   />
 
-                  {/* Overlay Label - Auto hide as well? User only asked for SCROLL TO PAN. */}
-                  {/* I'll leave label visible as it's content. */}
                   <div className="absolute bottom-0 left-0 p-8 w-full bg-gradient-to-t from-black/50 to-transparent text-white pointer-events-none">
-                    <input
-                      value={props.layout.customSectionData?.[section.id]?.label ?? `LOOK 0${i + 1}`}
-                      onChange={(e) => handleUpdateText(section.id, "label", e.target.value)}
-                      className="bg-transparent border-none text-6xl font-black mix-blend-overlay focus:outline-none w-full pointer-events-auto"
+                    <EditableText
+                      sectionId={section.id}
+                      fieldId="label"
+                      defaultValue={`LOOK 0${i + 1}`}
+                      className="text-6xl font-black mix-blend-overlay w-full pointer-events-auto"
                     />
                   </div>
                 </div>
@@ -212,33 +129,52 @@ export const HorizontalScrollLayout: React.FC<{
 
             {/* Add Section Card */}
             <div className="w-[40vw] h-full flex items-center justify-center shrink-0 border-r border-dashed"
-              style={{ borderColor: textColor }}>
+              style={{ borderColor: colors.textColor }}>
               <div
-                onClick={handleAddSection}
+                onClick={editor.handleAddSection}
                 className={cn(
                   "w-32 h-32 rounded-full border-4 border-dashed flex items-center justify-center cursor-pointer hover:bg-black/5 transition-all duration-500",
                   controlsVisible ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"
                 )}
-                style={{ borderColor: textColor }}
+                style={{ borderColor: colors.textColor }}
               >
-                <Plus className="w-12 h-12" style={{ color: textColor }} />
+                <Plus className="w-12 h-12" style={{ color: colors.textColor }} />
               </div>
             </div>
 
             {/* Outro Section */}
             <div className="w-screen h-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: textColor, color: backgroundColor }}>
-              <input
-                value={headerData.outro ?? "FIN"}
-                onChange={(e) => handleUpdateText("header", "outro", e.target.value)}
-                onFocus={(e) => handleFocus("header_outro", e)}
-                style={{ ...getFieldStyle("header_outro"), color: backgroundColor }}
-                className="bg-transparent border-none text-9xl font-bold uppercase tracking-tighter text-center focus:outline-none w-full"
+              style={{ backgroundColor: colors.textColor, color: colors.backgroundColor }}>
+              <EditableText
+                sectionId="header"
+                fieldId="outro"
+                defaultValue="FIN"
+                className="text-9xl font-bold uppercase tracking-tighter text-center w-full text-inherit"
+                style={{ color: colors.backgroundColor }}
               />
             </div>
+
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+export const HorizontalScrollLayout: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
+  return (
+    <DynamicLayoutWrapper
+      layout={props.layout}
+      onLayoutUpdate={props.onLayoutUpdate}
+      sections={sections}
+      defaultBackgroundColor="#ffffff"
+      defaultTextColor="#000000"
+      {...props}
+    >
+      <HorizontalScrollContent sections={sections} {...props} />
+    </DynamicLayoutWrapper>
   );
 };

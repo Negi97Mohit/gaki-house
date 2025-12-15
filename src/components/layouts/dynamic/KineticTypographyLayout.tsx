@@ -4,53 +4,21 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { cn } from "@/lib/utils";
-import { useLayoutEditor } from "@/hooks/useLayoutEditor";
-import { LayoutEditorToolbar } from "../LayoutEditorToolbar";
-import { LayoutSettingsCtrl } from "../LayoutSettingsCtrl";
-import { Plus, Trash2 } from "lucide-react";
+import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
+import { useDynamicLayout } from "./core/DynamicLayoutContext";
+import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
+import { EditableText } from "./core/EditableText";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface KineticTypographyLayoutProps {
-  sections: CanvasSectionState[];
-  template: any;
-  onSectionDelete: (id: string) => void;
-  onSectionContentChange: (id: string, content: any) => void;
-  [key: string]: any;
-}
-
-export const KineticTypographyLayout: React.FC<
-  KineticTypographyLayoutProps
-> = ({ sections, onSectionDelete, onSectionContentChange, ...props }) => {
+const KineticTypographyContent: React.FC<{ sections: CanvasSectionState[];[key: string]: any }> = ({ sections, ...props }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const marqueeRef1 = useRef<HTMLDivElement>(null);
   const marqueeRef2 = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const { colors, editor, controlsVisible, layout } = useDynamicLayout();
 
-  const {
-    hoveredSectionId,
-    setHoveredSectionId,
-    focusedField,
-    setFocusedField,
-    toolbarRef,
-    handleUpdateText,
-    handleUpdateStyle,
-    handleFocus,
-    handleAddSection,
-    handleDeleteSection,
-    getFieldStyle,
-    getGlobalSettings,
-    updateGlobalSetting,
-  } = useLayoutEditor({
-    layout: props.layout,
-    onLayoutUpdate: props.onLayoutUpdate,
-  });
-
-  const { backgroundColor, textColor } = getGlobalSettings("#E5E5E5", "#000000");
-
-  const headerData = props.layout.customSectionData?.["header"] || {};
-  const marqueeText = headerData.marqueeText || "MOTION DESIGN • EDITORIAL • KINETIC • ";
-  const marqueeText2 = headerData.marqueeText2 || "CREATIVE • CANVAS • DYNAMIC • ";
+  const marqueeText = layout.customSectionData?.["header"]?.["marqueeText"] || "MOTION DESIGN • EDITORIAL • KINETIC • ";
+  const marqueeText2 = layout.customSectionData?.["header"]?.["marqueeText2"] || "CREATIVE • CANVAS • DYNAMIC • ";
 
   useEffect(() => {
     // Wait for render to ensure refs are ready
@@ -121,9 +89,8 @@ export const KineticTypographyLayout: React.FC<
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [sections]); // Re-run when sections change
+  }, [sections, marqueeText, marqueeText2]);
 
-  // Split sections for layout variety
   const featuredSection = sections[0];
   const gridSections = sections.slice(1);
 
@@ -131,37 +98,15 @@ export const KineticTypographyLayout: React.FC<
     <div
       ref={containerRef}
       className="w-full h-full overflow-y-auto overflow-x-hidden relative font-sans"
-      style={{ backgroundColor, color: textColor }}
     >
-      <LayoutSettingsCtrl
-        backgroundColor={backgroundColor}
-        textColor={textColor}
-        onUpdate={updateGlobalSetting}
-      />
-
-      <LayoutEditorToolbar
-        focusedField={focusedField}
-        toolbarRef={toolbarRef}
-        currentStyle={focusedField ? props.layout.customSectionStyles?.[focusedField.id] : {}}
-        onUpdateStyle={(field, value) => focusedField && handleUpdateStyle(focusedField.id, field, value)}
-        onClose={() => setFocusedField(null)}
-      />
-
-      {/* Background Kinetic Text - Only editable via global marquee settings really, or mapped input */}
+      {/* Background Kinetic Text */}
       <div className="fixed inset-0 pointer-events-none flex flex-col justify-between opacity-5 z-0 select-none overflow-hidden"
-        style={{ color: textColor }}>
-        <div
-          ref={marqueeRef1}
-          className="whitespace-nowrap text-[20vh] font-black leading-none flex w-fit"
-        >
-          {/* Using a repeating pattern for the marquee */}
+        style={{ color: colors.textColor }}>
+        <div ref={marqueeRef1} className="whitespace-nowrap text-[20vh] font-black leading-none flex w-fit">
           <span>{marqueeText}{marqueeText}</span>
           <span>{marqueeText}{marqueeText}</span>
         </div>
-        <div
-          ref={marqueeRef2}
-          className="whitespace-nowrap text-[20vh] font-black leading-none flex w-fit"
-        >
+        <div ref={marqueeRef2} className="whitespace-nowrap text-[20vh] font-black leading-none flex w-fit">
           <span>{marqueeText2}{marqueeText2}</span>
           <span>{marqueeText2}{marqueeText2}</span>
 
@@ -170,49 +115,19 @@ export const KineticTypographyLayout: React.FC<
 
       <div className="relative z-10 w-full min-h-full p-8 md:p-16 flex flex-col gap-16">
         {/* Header */}
-        <header className="w-full border-b-4 pb-8 mb-8" style={{ borderColor: textColor }}>
-          {/* Editable Title */}
-          <textarea
-            value={headerData.title ?? "The Issue"}
-            onChange={(e) => {
-              handleUpdateText("header", "title", e.target.value);
-              e.target.style.height = "auto";
-              e.target.style.height = e.target.scrollHeight + "px";
-            }}
-            onFocus={(e) => handleFocus("header_title", e)}
-            style={{
-              ...getFieldStyle("header_title"),
-              color: textColor // Ensure visible against bg
-            }}
-            className="w-full bg-transparent text-6xl md:text-8xl xl:text-9xl font-black uppercase tracking-tighter mix-blend-difference break-words focus:outline-none resize-none overflow-hidden bg-transparent p-0 m-0 leading-none"
-            rows={1}
+        <header className="w-full border-b-4 pb-8 mb-8" style={{ borderColor: colors.textColor }}>
+          <EditableText
+            sectionId="header"
+            fieldId="title"
+            defaultValue="The Issue"
+            multiline
+            className="w-full text-6xl md:text-8xl xl:text-9xl font-black uppercase tracking-tighter mix-blend-difference break-words resize-none overflow-hidden p-0 m-0 leading-none"
           />
 
-          <div className="flex justify-between text-lg md:text-xl font-bold mt-4 uppercase border-t pt-4" style={{ borderColor: textColor }}>
-            <textarea
-              value={headerData.vol ?? "Vol. 01"}
-              onChange={(e) => handleUpdateText("header", "vol", e.target.value)}
-              onFocus={(e) => handleFocus("header_vol", e)}
-              style={getFieldStyle("header_vol")}
-              className="bg-transparent focus:outline-none resize-none w-32"
-              rows={1}
-            />
-            <textarea
-              value={headerData.series ?? "Kinetic Series"}
-              onChange={(e) => handleUpdateText("header", "series", e.target.value)}
-              onFocus={(e) => handleFocus("header_series", e)}
-              style={getFieldStyle("header_series")}
-              className="bg-transparent focus:outline-none resize-none text-center"
-              rows={1}
-            />
-            <textarea
-              value={headerData.year ?? "2025"}
-              onChange={(e) => handleUpdateText("header", "year", e.target.value)}
-              onFocus={(e) => handleFocus("header_year", e)}
-              style={getFieldStyle("header_year")}
-              className="bg-transparent focus:outline-none resize-none text-right w-20"
-              rows={1}
-            />
+          <div className="flex justify-between text-lg md:text-xl font-bold mt-4 uppercase border-t pt-4" style={{ borderColor: colors.textColor }}>
+            <EditableText sectionId="header" fieldId="vol" defaultValue="Vol. 01" className="w-32 resize-none" multiline />
+            <EditableText sectionId="header" fieldId="series" defaultValue="Kinetic Series" className="text-center resize-none" multiline />
+            <EditableText sectionId="header" fieldId="year" defaultValue="2025" className="text-right w-20 resize-none" multiline />
           </div>
         </header>
 
@@ -221,45 +136,30 @@ export const KineticTypographyLayout: React.FC<
           <div
             className="kinetic-card w-full h-[50vh] md:h-[60vh] relative group border-4 bg-white hover:-translate-y-1 transition-all duration-300"
             style={{
-              borderColor: textColor,
-              boxShadow: `8px 8px 0px 0px ${textColor}`
+              borderColor: colors.textColor,
+              boxShadow: `8px 8px 0px 0px ${colors.textColor}`
             }}
-            onMouseEnter={() => setHoveredSectionId(featuredSection.id)}
-            onMouseLeave={() => setHoveredSectionId(null)}
+            onMouseEnter={() => editor.setHoveredSectionId(featuredSection.id)}
+            onMouseLeave={() => editor.setHoveredSectionId(null)}
           >
-            <div className="absolute top-0 left-0 z-20 px-4 py-2 font-bold text-lg uppercase tracking-wider" style={{ background: textColor, color: backgroundColor }}>
-              <input
-                value={props.layout.customSectionData?.[featuredSection.id]?.label ?? "Cover Story"}
-                onChange={(e) => handleUpdateText(featuredSection.id, "label", e.target.value)}
-                className="bg-transparent border-none focus:outline-none text-inherit w-full"
-              />
+            <div className="absolute top-0 left-0 z-20 px-4 py-2 font-bold text-lg uppercase tracking-wider" style={{ background: colors.textColor, color: colors.backgroundColor }}>
+              <EditableText sectionId={featuredSection.id} fieldId="label" defaultValue="Cover Story" className="text-inherit" />
             </div>
-            {/* Delete Button */}
-            <div className={cn("absolute top-2 right-2 flex gap-2 z-50 transition-opacity duration-200", hoveredSectionId === featuredSection.id ? "opacity-100" : "opacity-0")}>
-              <button
-                onClick={(e) => handleDeleteSection(featuredSection.id, e)}
-                className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md"
-                title="Remove Panel"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
+
+            <DynamicDeleteButton sectionId={featuredSection.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === featuredSection.id ? "opacity-100" : "opacity-0")} />
 
             <GridSectionWrapper
               section={featuredSection}
               templateSection={{ id: featuredSection.id, name: "Hero" }}
-              onSectionDelete={onSectionDelete}
-              onSectionContentChange={onSectionContentChange}
+              onSectionDelete={props.onSectionDelete}
+              onSectionContentChange={props.onSectionContentChange}
               {...props}
             />
           </div>
         )}
 
         {/* Dynamic Grid */}
-        <div
-          ref={contentRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {gridSections.map((section, i) => (
             <div
               key={section.id}
@@ -267,17 +167,17 @@ export const KineticTypographyLayout: React.FC<
                 "kinetic-card relative bg-white border-2 h-[300px] md:h-[400px] flex flex-col shadow-lg",
                 i % 3 === 0 ? "md:col-span-2" : ""
               )}
-              style={{ borderColor: textColor }}
-              onMouseEnter={() => setHoveredSectionId(section.id)}
-              onMouseLeave={() => setHoveredSectionId(null)}
+              style={{ borderColor: colors.textColor }}
+              onMouseEnter={() => editor.setHoveredSectionId(section.id)}
+              onMouseLeave={() => editor.setHoveredSectionId(null)}
             >
-              <div className="border-b-2 p-2 flex justify-between items-center bg-yellow-300" style={{ borderColor: textColor }}>
+              <div className="border-b-2 p-2 flex justify-between items-center bg-yellow-300" style={{ borderColor: colors.textColor }}>
                 <span className="font-mono font-bold text-xs uppercase tracking-widest text-black">
                   Fig. 0{i + 1}
                 </span>
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 rounded-full" style={{ background: textColor }} />
-                  <div className="w-2 h-2 rounded-full bg-transparent border" style={{ borderColor: textColor }} />
+                  <div className="w-2 h-2 rounded-full" style={{ background: colors.textColor }} />
+                  <div className="w-2 h-2 rounded-full bg-transparent border" style={{ borderColor: colors.textColor }} />
                 </div>
               </div>
 
@@ -285,86 +185,86 @@ export const KineticTypographyLayout: React.FC<
                 <GridSectionWrapper
                   section={section}
                   templateSection={{ id: section.id, name: `Grid-${i}` }}
-                  onSectionDelete={onSectionDelete}
-                  onSectionContentChange={onSectionContentChange}
+                  onSectionDelete={props.onSectionDelete}
+                  onSectionContentChange={props.onSectionContentChange}
                   {...props}
                 />
-                {/* Hover controls */}
-                <div className={cn("absolute top-2 right-2 flex gap-2 z-50 transition-opacity duration-200", hoveredSectionId === section.id ? "opacity-100" : "opacity-0")}>
-                  <button
-                    onClick={(e) => handleDeleteSection(section.id, e)}
-                    className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
+                <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
               </div>
 
-              <div className="p-3 border-t-2 bg-white" style={{ borderColor: textColor }}>
-                <textarea
-                  value={props.layout.customSectionData?.[section.id]?.caption ?? "Section Input"}
-                  onChange={(e) => handleUpdateText(section.id, "caption", e.target.value)}
-                  onFocus={(e) => handleFocus(`${section.id}_caption`, e)}
-                  style={getFieldStyle(`${section.id}_caption`)}
-                  className="w-full bg-transparent font-bold text-lg uppercase leading-none border-none focus:outline-none resize-none text-black"
-                  rows={1}
+              <div className="p-3 border-t-2 bg-white" style={{ borderColor: colors.textColor }}>
+                <EditableText
+                  sectionId={section.id}
+                  fieldId="caption"
+                  defaultValue="Section Input"
+                  className="font-bold text-lg uppercase leading-none text-black resize-none"
+                  multiline
                 />
               </div>
             </div>
           ))}
 
-          {/* Add Panel Button */}
-          <div
-            onClick={handleAddSection}
-            className="kinetic-card p-8 border-2 border-dashed flex flex-col items-center justify-center h-[300px] md:col-span-1 opacity-50 hover:opacity-100 cursor-pointer hover:bg-black/5 transition-all"
-            style={{ borderColor: textColor, color: textColor }}
-          >
-            <Plus className="w-12 h-12 mb-2" />
-            <span className="font-mono text-xl uppercase">Add Panel</span>
+          <DynamicAddButton className="kinetic-card h-[300px] md:col-span-1" defaultValue="Add Panel" />
+        </div>
+
+        {/* Footer Filler */}
+        <div className="h-[20vh] flex flex-col items-center justify-center border-t-4 mt-8" style={{ borderColor: colors.textColor }}>
+          <EditableText
+            sectionId="header"
+            fieldId="footer"
+            defaultValue="End of Stream"
+            className="text-4xl md:text-6xl font-black uppercase text-center opacity-20 resize-none"
+            multiline
+          />
+        </div>
+
+        {/* Settings Footer - using controlsVisible logic from wrapper */}
+        <div className={cn(
+          "border-t-4 pt-8 mt-16 pb-32 transition-opacity duration-300",
+          controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        )} style={{ borderColor: colors.textColor }}>
+          <h3 className="text-xl font-bold uppercase mb-4 opacity-50">Background Text Settings</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-bold uppercase block mb-2 opacity-50">Top Scrolling Text</label>
+              <EditableText
+                sectionId="header"
+                fieldId="marqueeText"
+                defaultValue="MOTION DESIGN • EDITORIAL • KINETIC • "
+                className="bg-black/5 p-4 font-mono text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase block mb-2 opacity-50">Bottom Scrolling Text</label>
+              <EditableText
+                sectionId="header"
+                fieldId="marqueeText2"
+                defaultValue="CREATIVE • CANVAS • DYNAMIC • "
+                className="bg-black/5 p-4 font-mono text-sm"
+              />
+            </div>
           </div>
         </div>
 
-      </div>
-
-      {/* Footer Filler */}
-      <div className="h-[20vh] flex flex-col items-center justify-center border-t-4 mt-8" style={{ borderColor: textColor }}>
-        <textarea
-          value={headerData.footer ?? "End of Stream"}
-          onChange={(e) => handleUpdateText("header", "footer", e.target.value)}
-          onFocus={(e) => handleFocus("header_footer", e)}
-          style={getFieldStyle("header_footer")}
-          className="text-4xl md:text-6xl font-black uppercase text-center bg-transparent border-none focus:outline-none opacity-20 resize-none w-full"
-          rows={1}
-        />
-      </div>
-
-      {/* Settings Footer */}
-      <div className="border-t-4 pt-8 mt-16 pb-32" style={{ borderColor: textColor }}>
-        <h3 className="text-xl font-bold uppercase mb-4 opacity-50">Background Text Settings</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-xs font-bold uppercase block mb-2 opacity-50">Top Scrolling Text</label>
-            <input
-              value={marqueeText}
-              onChange={(e) => handleUpdateText("header", "marqueeText", e.target.value)}
-              className="w-full bg-black/5 p-4 font-mono text-sm border-none focus:outline-none placeholder-gray-500"
-              placeholder="Enter top scrolling text..."
-              style={{ color: textColor }}
-            />
-          </div>
-          <div>
-            <label className="text-xs font-bold uppercase block mb-2 opacity-50">Bottom Scrolling Text</label>
-            <input
-              value={marqueeText2}
-              onChange={(e) => handleUpdateText("header", "marqueeText2", e.target.value)}
-              className="w-full bg-black/5 p-4 font-mono text-sm border-none focus:outline-none placeholder-gray-500"
-              placeholder="Enter bottom scrolling text..."
-              style={{ color: textColor }}
-            />
-          </div>
-        </div>
       </div>
     </div>
+  );
+};
 
+export const KineticTypographyLayout: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
+  return (
+    <DynamicLayoutWrapper
+      layout={props.layout}
+      onLayoutUpdate={props.onLayoutUpdate}
+      sections={sections}
+      defaultBackgroundColor="#E5E5E5"
+      defaultTextColor="#000000"
+      {...props}
+    >
+      <KineticTypographyContent sections={sections} {...props} />
+    </DynamicLayoutWrapper>
   );
 };

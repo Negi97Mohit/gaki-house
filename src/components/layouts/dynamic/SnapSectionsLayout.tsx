@@ -1,85 +1,26 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
-import { useLayoutEditor } from "@/hooks/useLayoutEditor";
-import { LayoutEditorToolbar } from "../LayoutEditorToolbar";
-import { LayoutSettingsCtrl } from "../LayoutSettingsCtrl";
-import { Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
+import { useDynamicLayout } from "./core/DynamicLayoutContext";
+import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
+import { EditableText } from "./core/EditableText";
+import { Plus } from "lucide-react"; // Custom icon for the add slide
 
-export const SnapSectionsLayout: React.FC<{
-  sections: CanvasSectionState[];
-  [key: string]: any;
-}> = ({ sections, ...props }) => {
-  const [controlsVisible, setControlsVisible] = useState(true);
-  const inactiveTimer = useRef<NodeJS.Timeout | null>(null);
-
-  const {
-    hoveredSectionId,
-    setHoveredSectionId,
-    focusedField,
-    setFocusedField,
-    toolbarRef,
-    handleUpdateText,
-    handleUpdateStyle,
-    handleFocus,
-    handleAddSection,
-    handleDeleteSection,
-    getFieldStyle,
-    getGlobalSettings,
-    updateGlobalSetting,
-  } = useLayoutEditor({
-    layout: props.layout,
-    onLayoutUpdate: props.onLayoutUpdate,
-  });
-
-  const { backgroundColor, textColor } = getGlobalSettings("#000000", "#ffffff");
-
-  // Mouse Inactivity Logic
-  useEffect(() => {
-    const onMouseMove = () => {
-      setControlsVisible(true);
-      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
-      inactiveTimer.current = setTimeout(() => {
-        setControlsVisible(false);
-      }, 3000);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    onMouseMove();
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
-    }
-  }, []);
+const SnapStoriesContent: React.FC<{ sections: CanvasSectionState[], [key: string]: any }> = ({ sections, ...props }) => {
+  const { colors, editor, controlsVisible } = useDynamicLayout();
 
   return (
-    <div
-      className="w-full h-full overflow-y-scroll snap-y snap-mandatory relative scroll-smooth"
-      style={{ backgroundColor }}
-    >
-      <LayoutSettingsCtrl
-        backgroundColor={backgroundColor}
-        textColor={textColor}
-        onUpdate={updateGlobalSetting}
-      />
-      <LayoutEditorToolbar
-        focusedField={focusedField}
-        toolbarRef={toolbarRef}
-        currentStyle={focusedField ? props.layout.customSectionStyles?.[focusedField.id] : {}}
-        onUpdateStyle={(field, value) => focusedField && handleUpdateStyle(focusedField.id, field, value)}
-        onClose={() => setFocusedField(null)}
-      />
-
+    <div className="w-full h-full overflow-y-scroll snap-y snap-mandatory relative scroll-smooth">
       {sections.map((section, i) => (
         <div
           key={section.id}
           className="w-full h-full snap-start relative flex items-center justify-center group"
-          onMouseEnter={() => setHoveredSectionId(section.id)}
-          onMouseLeave={() => setHoveredSectionId(null)}
+          onMouseEnter={() => editor.setHoveredSectionId(section.id)}
+          onMouseLeave={() => editor.setHoveredSectionId(null)}
         >
-          {/* Background Media - Higher Z-index if empty so we can click add buttons */}
+          {/* Background Media */}
           <div className={cn(
             "absolute inset-0 transition-all duration-300",
             section.content?.type === "empty" ? "z-20 opacity-100" : "z-0 opacity-60"
@@ -93,50 +34,63 @@ export const SnapSectionsLayout: React.FC<{
             />
           </div>
 
-          {/* Overlay Text - Added pointer-events-none to container so it doesn't block background clicks */}
-          <div className="relative z-10 text-center mix-blend-difference w-full px-8 pointer-events-none">
-            <input
-              value={props.layout.customSectionData?.[section.id]?.seq ?? `Story 0${i + 1}`}
-              onChange={(e) => handleUpdateText(section.id, "seq", e.target.value)}
-              className="bg-transparent border-none text-2xl tracking-[0.5em] uppercase mb-4 text-center w-full focus:outline-none pointer-events-auto"
-              style={{ color: textColor }}
+          {/* Overlay Text */}
+          <div className="relative z-30 text-center mix-blend-difference w-full px-8 pointer-events-none">
+            <EditableText
+              sectionId={section.id}
+              fieldId="seq"
+              defaultValue={`Story 0${i + 1}`}
+              className="text-2xl tracking-[0.5em] uppercase mb-4 text-center"
             />
-            <input
-              value={props.layout.customSectionData?.[section.id]?.headline ?? "IMMERSE"}
-              onChange={(e) => handleUpdateText(section.id, "headline", e.target.value)}
-              className="bg-transparent border-none text-8xl font-black uppercase text-center w-full focus:outline-none pointer-events-auto"
-              style={{ color: textColor }}
+            <EditableText
+              sectionId={section.id}
+              fieldId="headline"
+              defaultValue="IMMERSE"
+              className="text-8xl font-black uppercase text-center"
             />
           </div>
 
-          {/* Delete Button - Auto Hide */}
-          <div className={cn(
-            "absolute top-8 right-8 z-50 transition-opacity duration-200",
-            hoveredSectionId === section.id && controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-          )}>
-            <button
-              onClick={(e) => handleDeleteSection(section.id, e)}
-              className="bg-red-500 text-white p-3 rounded-full hover:scale-110 shadow-lg"
-            >
-              <Trash2 className="w-6 h-6" />
-            </button>
-          </div>
+          <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-8 right-8", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
         </div>
       ))}
 
-      {/* Add New Story Slide */}
+      {/* Add New Story Slide - Custom Look but uses editor.handleAddSection */}
       <div className="w-full h-full snap-start flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
-        onClick={handleAddSection}
+        onClick={editor.handleAddSection}
       >
         <div className={cn(
           "flex flex-col items-center gap-4 transition-opacity duration-500",
           controlsVisible ? "opacity-50" : "opacity-0"
         )}>
-          <Plus className="w-20 h-20" style={{ color: textColor }} />
-          <h2 className="text-2xl uppercase tracking-widest font-bold" style={{ color: textColor }}>Add Story</h2>
+          <Plus className="w-20 h-20" style={{ color: colors.textColor }} />
+          <div onClick={(e) => e.stopPropagation()}>
+            <EditableText
+              sectionId="header"
+              fieldId="addText"
+              defaultValue="Add Story"
+              className="text-2xl uppercase tracking-widest font-bold text-center bg-transparent border-none focus:outline-none w-full"
+            />
+          </div>
         </div>
       </div>
-
     </div>
+  )
+}
+
+export const SnapSectionsLayout: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
+  return (
+    <DynamicLayoutWrapper
+      layout={props.layout}
+      onLayoutUpdate={props.onLayoutUpdate}
+      sections={sections}
+      defaultBackgroundColor="#000000"
+      defaultTextColor="#ffffff"
+      {...props}
+    >
+      <SnapStoriesContent sections={sections} {...props} />
+    </DynamicLayoutWrapper>
   );
 };

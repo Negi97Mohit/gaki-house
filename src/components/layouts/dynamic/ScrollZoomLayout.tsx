@@ -3,43 +3,19 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
-import { useLayoutEditor } from "@/hooks/useLayoutEditor";
-import { LayoutEditorToolbar } from "../LayoutEditorToolbar";
-import { LayoutSettingsCtrl } from "../LayoutSettingsCtrl";
-import { Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
+import { useDynamicLayout } from "./core/DynamicLayoutContext";
+import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
+import { EditableText } from "./core/EditableText";
+import { Plus } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export const ScrollZoomLayout: React.FC<{
-  sections: CanvasSectionState[];
-  [key: string]: any;
-}> = ({ sections, ...props }) => {
+const ScrollZoomContent: React.FC<{ sections: CanvasSectionState[];[key: string]: any }> = ({ sections, ...props }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const zoomRef = useRef<HTMLDivElement>(null);
-
-  const {
-    hoveredSectionId,
-    setHoveredSectionId,
-    focusedField,
-    setFocusedField,
-    toolbarRef,
-    handleUpdateText,
-    handleUpdateStyle,
-    handleFocus,
-    handleAddSection,
-    handleDeleteSection,
-    getFieldStyle,
-    getGlobalSettings,
-    updateGlobalSetting,
-  } = useLayoutEditor({
-    layout: props.layout,
-    onLayoutUpdate: props.onLayoutUpdate,
-  });
-
-  const { backgroundColor, textColor } = getGlobalSettings("#000000", "#ffffff");
-  const headerData = props.layout.customSectionData?.["header"] || {};
-  const zoomText = headerData.zoomText || "SCROLL TO ZOOM";
+  const { colors, editor, controlsVisible } = useDynamicLayout();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -57,37 +33,20 @@ export const ScrollZoomLayout: React.FC<{
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full h-[200vh] relative"
-      style={{ backgroundColor }}
-    >
-      <LayoutSettingsCtrl
-        backgroundColor={backgroundColor}
-        textColor={textColor}
-        onUpdate={updateGlobalSetting}
-      />
-      <LayoutEditorToolbar
-        focusedField={focusedField}
-        toolbarRef={toolbarRef}
-        currentStyle={focusedField ? props.layout.customSectionStyles?.[focusedField.id] : {}}
-        onUpdateStyle={(field, value) => focusedField && handleUpdateStyle(focusedField.id, field, value)}
-        onClose={() => setFocusedField(null)}
-      />
-
+    <div ref={containerRef} className="w-full h-[200vh] relative">
       <div className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center">
         <div ref={zoomRef} className="w-[60%] h-[60%] shadow-2xl relative z-10 flex flex-wrap content-center justify-center bg-black/50 backdrop-blur-sm">
-          {/* Render all sections in a grid/flex inside the zoom container */}
+          {/* Sections Grid */}
           {sections.map((section, i) => (
             <div
               key={section.id}
               className={cn(
                 "relative border overflow-hidden transition-all duration-300",
-                sections.length === 1 ? "w-full h-full" : "w-1/2 h-1/2" // Simple logic: 1=Full, >1=Grid
+                sections.length === 1 ? "w-full h-full" : "w-1/2 h-1/2"
               )}
-              style={{ borderColor: textColor }}
-              onMouseEnter={() => setHoveredSectionId(section.id)}
-              onMouseLeave={() => setHoveredSectionId(null)}
+              style={{ borderColor: colors.textColor }}
+              onMouseEnter={() => editor.setHoveredSectionId(section.id)}
+              onMouseLeave={() => editor.setHoveredSectionId(null)}
             >
               <GridSectionWrapper
                 section={section}
@@ -96,46 +55,60 @@ export const ScrollZoomLayout: React.FC<{
                 onSectionContentChange={props.onSectionContentChange}
                 {...props}
               />
-              {/* Delete Panel */}
-              <div className={cn("absolute top-2 right-2 flex gap-2 z-50 transition-opacity duration-200", hoveredSectionId === section.id ? "opacity-100" : "opacity-0")}>
-                <button
-                  onClick={(e) => handleDeleteSection(section.id, e)}
-                  className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+              <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
             </div>
           ))}
 
-          {/* Add Button */}
-          <div
-            onClick={handleAddSection}
-            className={cn(
-              "flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition-colors border-2 border-dashed",
-              sections.length === 0 ? "w-full h-full" : "absolute bottom-4 right-4 w-12 h-12 rounded-full border-none bg-white text-black z-50 shadow-lg"
-            )}
-            style={sections.length === 0 ? { borderColor: textColor } : {}}
-          >
-            <Plus className={sections.length === 0 ? "w-12 h-12" : "w-6 h-6"} />
-            {sections.length === 0 && <span className="mt-2 font-bold" style={{ color: textColor }}>ADD CONTENT</span>}
-          </div>
+          {/* Add Button Logic */}
+          {sections.length === 0 ? (
+            <div className="absolute inset-0 flex items-center justify-center p-8">
+              <DynamicAddButton defaultValue="ADD CONTENT" className="w-full h-full" />
+            </div>
+          ) : (
+            <div className={cn(
+              "absolute bottom-4 right-4 z-50 transition-all duration-300",
+              controlsVisible ? "opacity-100 scale-100" : "opacity-0 scale-0 pointer-events-none"
+            )}>
+              <button
+                onClick={editor.handleAddSection}
+                className="w-12 h-12 rounded-full border-none bg-white text-black shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+                style={{ backgroundColor: colors.textColor, color: colors.backgroundColor }}
+              >
+                <Plus className="w-6 h-6" />
+              </button>
+            </div>
+          )}
+
         </div>
 
         {/* Editable Big Text */}
-        <div className="absolute z-20 pointer-events-auto mix-blend-difference top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full">
-          <input
-            value={zoomText}
-            onChange={(e) => handleUpdateText("header", "zoomText", e.target.value)}
-            onFocus={(e) => handleFocus("header_zoomText", e)}
-            style={{
-              ...getFieldStyle("header_zoomText"),
-              color: textColor // Actually mix-blend-difference might invert this, but user can change it.
-            }}
-            className="bg-transparent border-none text-center focus:outline-none w-full text-[10vw] font-bold tracking-tighter"
+        <div className="absolute z-20 pointer-events-none top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-full mix-blend-difference">
+          <EditableText
+            sectionId="header"
+            fieldId="zoomText"
+            defaultValue="SCROLL TO ZOOM"
+            className="text-center w-full text-[10vw] font-bold tracking-tighter"
           />
         </div>
       </div>
     </div>
+  )
+}
+
+export const ScrollZoomLayout: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
+  return (
+    <DynamicLayoutWrapper
+      layout={props.layout}
+      onLayoutUpdate={props.onLayoutUpdate}
+      sections={sections}
+      defaultBackgroundColor="#000000"
+      defaultTextColor="#ffffff"
+      {...props}
+    >
+      <ScrollZoomContent sections={sections} {...props} />
+    </DynamicLayoutWrapper>
   );
 };

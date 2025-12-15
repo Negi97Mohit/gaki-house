@@ -100,13 +100,13 @@ export const useLayoutEditor = ({ layout, onLayoutUpdate }: UseLayoutEditorProps
     const getFieldStyle = (fieldId: string, defaultStyle: React.CSSProperties = {}) => {
         const s = layout.customSectionStyles?.[fieldId] || {};
         return {
+            ...defaultStyle,
+            ...s, // Spread raw styles first so they don't overwrite processed ones
             fontSize: s.fontSize ? `${s.fontSize}px` : undefined,
             fontWeight: s.bold ? "bold" : "normal",
             fontStyle: s.italic ? "italic" : "normal",
             textAlign: (s.textAlign as any) || "left",
             color: s.color, // Explicitly pass color if set
-            ...defaultStyle,
-            ...s,
         };
     };
 

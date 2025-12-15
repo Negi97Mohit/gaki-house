@@ -2,73 +2,25 @@ import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
-import { useLayoutEditor } from "@/hooks/useLayoutEditor";
-import { LayoutEditorToolbar } from "../LayoutEditorToolbar";
-import { LayoutSettingsCtrl } from "../LayoutSettingsCtrl";
-import { Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
+import { useDynamicLayout } from "./core/DynamicLayoutContext";
+import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
+import { EditableText } from "./core/EditableText";
+import { Plus } from "lucide-react";
 
-export const CircularGalleryLayout: React.FC<{
-  sections: CanvasSectionState[];
-  [key: string]: any;
-}> = ({ sections, ...props }) => {
+const CircularGalleryContent: React.FC<{ sections: CanvasSectionState[];[key: string]: any }> = ({ sections, ...props }) => {
   const wheelRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [radius, setRadius] = useState(300);
-  const [controlsVisible, setControlsVisible] = useState(true);
-  const inactiveTimer = useRef<NodeJS.Timeout | null>(null);
-
-  const {
-    hoveredSectionId,
-    setHoveredSectionId,
-    focusedField,
-    setFocusedField,
-    toolbarRef,
-    handleUpdateText,
-    handleUpdateStyle,
-    handleFocus,
-    handleAddSection,
-    handleDeleteSection,
-    getFieldStyle,
-    getGlobalSettings,
-    updateGlobalSetting,
-  } = useLayoutEditor({
-    layout: props.layout,
-    onLayoutUpdate: props.onLayoutUpdate,
-  });
-
-  const { backgroundColor, textColor } = getGlobalSettings("#1a1a1a", "#ffffff");
-  const headerData = props.layout.customSectionData?.["header"] || {};
-  const spinText = headerData.spinText || "SPIN";
-
-  // Inactivity Logic
-  useEffect(() => {
-    const onMouseMove = () => {
-      setControlsVisible(true);
-      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
-      inactiveTimer.current = setTimeout(() => {
-        setControlsVisible(false);
-      }, 3000);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    onMouseMove();
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      if (inactiveTimer.current) clearTimeout(inactiveTimer.current);
-    }
-  }, []);
+  const { colors, editor, controlsVisible } = useDynamicLayout();
 
   // Dynamic Radius Logic
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
         const { width, height } = containerRef.current.getBoundingClientRect();
-        // Calculate max radius that keeps 300px/200px cards roughly inside
-        // We want diameter + card_diagonal to be < screen
-        // Safer: radius = min(w, h) * 0.35
-        // This generally keeps cards (which are centered on the radius) within bounds unless screen is tiny.
+        // Safer: radius = min(w, h) * 0.30
         const minDim = Math.min(width, height);
         setRadius(minDim * 0.30);
       }
@@ -78,7 +30,6 @@ export const CircularGalleryLayout: React.FC<{
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   useEffect(() => {
     const tween = gsap.to(wheelRef.current, {
@@ -92,36 +43,15 @@ export const CircularGalleryLayout: React.FC<{
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full h-full overflow-hidden flex items-center justify-center relative"
-      style={{ backgroundColor }}
-    >
-      <LayoutSettingsCtrl
-        backgroundColor={backgroundColor}
-        textColor={textColor}
-        onUpdate={updateGlobalSetting}
-      />
-      <LayoutEditorToolbar
-        focusedField={focusedField}
-        toolbarRef={toolbarRef}
-        currentStyle={focusedField ? props.layout.customSectionStyles?.[focusedField.id] : {}}
-        onUpdateStyle={(field, value) => focusedField && handleUpdateStyle(focusedField.id, field, value)}
-        onClose={() => setFocusedField(null)}
-      />
-
+    <div ref={containerRef} className="w-full h-full overflow-hidden flex items-center justify-center relative">
       {/* Background Text */}
-      <div className="absolute flex items-center justify-center pointer-events-auto z-0">
-        <input
-          value={spinText}
-          onChange={(e) => handleUpdateText("header", "spinText", e.target.value)}
-          onFocus={(e) => handleFocus("header_spinText", e)}
-          style={{
-            ...getFieldStyle("header_spinText"),
-            color: textColor,
-            opacity: 0.1
-          }}
-          className="bg-transparent border-none text-[20vw] font-bold text-center focus:outline-none w-full uppercase"
+      <div className="absolute flex items-center justify-center pointer-events-auto z-0 w-full">
+        <EditableText
+          sectionId="header"
+          fieldId="spinText"
+          defaultValue="SPIN"
+          className="text-[20vw] font-bold text-center w-full uppercase"
+          style={{ opacity: 0.1 }}
         />
       </div>
 
@@ -134,7 +64,6 @@ export const CircularGalleryLayout: React.FC<{
       >
         {sections.map((section, i) => {
           const angle = (i / sections.length) * 2 * Math.PI;
-          // Offset relative to center (radius, radius)
           const x = Math.cos(angle) * radius + radius;
           const y = Math.sin(angle) * radius + radius;
 
@@ -146,10 +75,10 @@ export const CircularGalleryLayout: React.FC<{
                 left: x,
                 top: y,
                 transform: `rotate(${angle * (180 / Math.PI) + 90}deg)`,
-                borderColor: textColor
+                borderColor: colors.textColor
               }}
-              onMouseEnter={() => setHoveredSectionId(section.id)}
-              onMouseLeave={() => setHoveredSectionId(null)}
+              onMouseEnter={() => editor.setHoveredSectionId(section.id)}
+              onMouseLeave={() => editor.setHoveredSectionId(null)}
             >
               <GridSectionWrapper
                 section={section}
@@ -158,20 +87,9 @@ export const CircularGalleryLayout: React.FC<{
                 onSectionContentChange={props.onSectionContentChange}
                 {...props}
               />
-              {/* Delete Button - Auto hide */}
-              <div className={cn(
-                "absolute top-2 right-2 z-50 transition-opacity duration-200",
-                hoveredSectionId === section.id && controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-              )}>
-                <button
-                  onClick={(e) => handleDeleteSection(section.id, e)}
-                  className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+              <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
             </div>
-          );
+          )
         })}
       </div>
 
@@ -181,13 +99,31 @@ export const CircularGalleryLayout: React.FC<{
         controlsVisible ? "opacity-100 scale-100" : "opacity-0 scale-50 pointer-events-none"
       )}>
         <button
-          onClick={handleAddSection}
+          onClick={editor.handleAddSection}
           className="w-20 h-20 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_50px_rgba(255,255,255,0.5)]"
-          style={{ backgroundColor: textColor, color: backgroundColor }}
+          style={{ backgroundColor: colors.textColor, color: colors.backgroundColor }}
         >
           <Plus className="w-10 h-10" />
         </button>
       </div>
     </div>
+  )
+}
+
+export const CircularGalleryLayout: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
+  return (
+    <DynamicLayoutWrapper
+      layout={props.layout}
+      onLayoutUpdate={props.onLayoutUpdate}
+      sections={sections}
+      defaultBackgroundColor="#1a1a1a"
+      defaultTextColor="#ffffff"
+      {...props}
+    >
+      <CircularGalleryContent sections={sections} {...props} />
+    </DynamicLayoutWrapper>
   );
 };
