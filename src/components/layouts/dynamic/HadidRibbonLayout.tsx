@@ -304,7 +304,7 @@ const WheelHandler = ({
 interface HadidRibbonProps {
   sections: CanvasSectionState[];
   layout: CanvasLayoutState;
-  onLayoutUpdate: (layout: CanvasLayoutState) => void;
+  onLayoutUpdate?: (layout: CanvasLayoutState) => void;
   [key: string]: any;
 }
 

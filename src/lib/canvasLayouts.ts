@@ -87,8 +87,6 @@ export const LIQUID_LENS_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
-
-
 export const BRUTALIST_GLITCH_TEMPLATE: CanvasLayoutTemplate = {
   id: "brutalist-glitch",
   name: "Brutalist Glitch",
@@ -115,9 +113,37 @@ export const HADID_RIBBON_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
+export const ZAHA_PARAMETRIC_TEMPLATE: CanvasLayoutTemplate = {
+  id: "zaha-parametric",
+  name: "Zaha Parametric",
+  description: "Abstract curved 3D geometries and flow.",
+  category: "dynamic" as LayoutCategory,
+  sections: [{ id: "zaha-1", name: "Main", style: { background: "#000" } }],
+};
 
+export const WINTOUR_EDITORIAL_TEMPLATE: CanvasLayoutTemplate = {
+  id: "wintour-editorial",
+  name: "Wintour Editorial",
+  description: "High-impact typography and scroll snapping.",
+  category: "dynamic" as LayoutCategory,
+  sections: [{ id: "win-1", name: "Cover", style: { background: "#fff" } }],
+};
 
+export const SISTINE_DEPTH_TEMPLATE: CanvasLayoutTemplate = {
+  id: "sistine-depth",
+  name: "Sistine Depth",
+  description: "Deep parallax and layered floating elements.",
+  category: "dynamic" as LayoutCategory,
+  sections: [{ id: "sis-1", name: "Layer 1", style: { background: "#1a1512" } }],
+};
 
+export const VITRUVIAN_MOTION_TEMPLATE: CanvasLayoutTemplate = {
+  id: "vitruvian-motion",
+  name: "Vitruvian Motion",
+  description: "Technical sketching and geometry animations.",
+  category: "dynamic" as LayoutCategory,
+  sections: [{ id: "vit-1", name: "Canvas", style: { background: "#f5f1eb" } }],
+};
 
 
 
@@ -134,8 +160,11 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   "liquid-lens",
   "brutalist-glitch",
   "hadid-ribbon",
-
-
+  "zaha-parametric",
+  "wintour-editorial",
+  "sistine-depth",
+  "vitruvian-motion",
+  "liquid-chrome",
 ]);
 
 let templateCache: {
@@ -185,7 +214,11 @@ export async function getLayoutTemplates(): Promise<{
       LIQUID_LENS_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
       HADID_RIBBON_TEMPLATE,
-
+      ZAHA_PARAMETRIC_TEMPLATE,
+      WINTOUR_EDITORIAL_TEMPLATE,
+      SISTINE_DEPTH_TEMPLATE,
+      VITRUVIAN_MOTION_TEMPLATE,
+      LIQUID_CHROME_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -218,8 +251,13 @@ export async function getLayoutTemplates(): Promise<{
       LIQUID_LENS_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
       HADID_RIBBON_TEMPLATE,
-
-
+      ZAHA_PARAMETRIC_TEMPLATE,
+      WINTOUR_EDITORIAL_TEMPLATE,
+      SISTINE_DEPTH_TEMPLATE,
+      VITRUVIAN_MOTION_TEMPLATE,
+      SISTINE_DEPTH_TEMPLATE,
+      VITRUVIAN_MOTION_TEMPLATE,
+      LIQUID_CHROME_TEMPLATE,
     ];
 
     const record = defaults.reduce((acc, t) => {

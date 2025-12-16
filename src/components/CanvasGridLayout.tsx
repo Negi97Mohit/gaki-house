@@ -37,6 +37,12 @@ import { LayeredParallaxLayout } from "./layouts/dynamic/LayeredParallaxLayout";
 import { HorizontalScrollLayout } from "./layouts/dynamic/HorizontalScrollLayout";
 import { CircularGalleryLayout } from "./layouts/dynamic/CircularGalleryLayout";
 import { SnapSectionsLayout } from "./layouts/dynamic/SnapSectionsLayout";
+// New Batch
+import { ZahaParametricLayout } from "./layouts/dynamic/ZahaParametricLayout";
+import { WintourEditorialLayout } from "./layouts/dynamic/WintourEditorialLayout";
+import { SistineDepthLayout } from "./layouts/dynamic/SistineDepthLayout";
+import { VitruvianMotionLayout } from "./layouts/dynamic/VitruvianMotionLayout";
+import { LiquidChromeLayout } from "./layouts/dynamic/LiquidChromeLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -144,6 +150,13 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isCircularGallery = tId === "circular-gallery";
   const isSnapSections = tId === "snap-sections";
 
+  // New Batch 3
+  const isZaha = tId === "zaha-parametric";
+  const isWintour = tId === "wintour-editorial";
+  const isSistine = tId === "sistine-depth";
+  const isVitruvian = tId === "vitruvian-motion";
+  const isLiquidChrome = tId === "liquid-chrome";
+
   // Combine props to pass down to layouts
   const commonProps = {
     ...props,
@@ -161,7 +174,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         isExpandingCards && "bg-white",
         isSlider && "flex items-center justify-center bg-white",
         isVerticalSlider &&
-          "relative w-full h-[100vh] overflow-hidden bg-background",
+        "relative w-full h-[100vh] overflow-hidden bg-background",
         isSplitLanding && "relative w-full h-full bg-[#333]",
         isPortfolioScroll && "bg-white",
         isSimonPortfolio && "bg-white",
@@ -182,42 +195,53 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
       ) : isDiagonal ? (
         <DiagonalRushLayout sections={layout.sections} {...commonProps} />
       ) : /* --- Phase 3: New Interactive Layouts --- */
-      isScrollZoom ? (
-        <ScrollZoomLayout sections={layout.sections} {...commonProps} />
-      ) : isInfiniteGrid ? (
-        <InfiniteGridLayout sections={layout.sections} {...commonProps} />
-      ) : isStickySplit ? (
-        <StickySplitLayout sections={layout.sections} {...commonProps} />
-      ) : isLayeredParallax ? (
-        <LayeredParallaxLayout sections={layout.sections} {...commonProps} />
-      ) : isHorizontalScroll ? (
-        <HorizontalScrollLayout sections={layout.sections} {...commonProps} />
-      ) : isCircularGallery ? (
-        <CircularGalleryLayout sections={layout.sections} {...commonProps} />
-      ) : isSnapSections ? (
-        <SnapSectionsLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Phase 4: Standard Interactive --- */
-      isExpandingCards ? (
-        <ExpandingCardsLayout {...commonProps} />
-      ) : isSlider ? (
-        <SliderLayout {...commonProps} />
-      ) : isVerticalSlider ? (
-        <VerticalSliderLayout {...commonProps} />
-      ) : isSplitLanding ? (
-        <SplitLandingLayout {...commonProps} />
-      ) : isPortfolioScroll ? (
-        <PortfolioScrollLayout {...commonProps} />
-      ) : isSimonPortfolio ? (
-        <SimonPortfolioLayout {...commonProps} />
-      ) : tId === "performance-flow" ? (
-        <PerformanceFlowLayout {...commonProps} />
-      ) : tId === "magnetism-layout" ? (
-        <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
-      ) : tId === "case-study" ? (
-        <CaseStudyLayout {...commonProps} />
-      ) : (
-        <StandardGridLayout {...commonProps} />
-      )}
+        isScrollZoom ? (
+          <ScrollZoomLayout sections={layout.sections} {...commonProps} />
+        ) : isInfiniteGrid ? (
+          <InfiniteGridLayout sections={layout.sections} {...commonProps} />
+        ) : isStickySplit ? (
+          <StickySplitLayout sections={layout.sections} {...commonProps} />
+        ) : isLayeredParallax ? (
+          <LayeredParallaxLayout sections={layout.sections} {...commonProps} />
+        ) : isHorizontalScroll ? (
+          <HorizontalScrollLayout sections={layout.sections} {...commonProps} />
+        ) : isCircularGallery ? (
+          <CircularGalleryLayout sections={layout.sections} {...commonProps} />
+        ) : isSnapSections ? (
+          <SnapSectionsLayout sections={layout.sections} {...commonProps} />
+        ) : /* --- Phase 5: New Architect Layouts --- */
+          isZaha ? (
+            <ZahaParametricLayout sections={layout.sections} {...commonProps} />
+          ) : isWintour ? (
+            <WintourEditorialLayout sections={layout.sections} {...commonProps} />
+          ) : isSistine ? (
+            <SistineDepthLayout sections={layout.sections} {...commonProps} />
+          ) : isVitruvian ? (
+            <VitruvianMotionLayout sections={layout.sections} {...commonProps} />
+          ) : isLiquidChrome ? (
+            <LiquidChromeLayout sections={layout.sections} {...commonProps} />
+          ) : /* --- Phase 4: Standard Interactive --- */
+            isExpandingCards ? (
+              <ExpandingCardsLayout {...commonProps} />
+            ) : isSlider ? (
+              <SliderLayout {...commonProps} />
+            ) : isVerticalSlider ? (
+              <VerticalSliderLayout {...commonProps} />
+            ) : isSplitLanding ? (
+              <SplitLandingLayout {...commonProps} />
+            ) : isPortfolioScroll ? (
+              <PortfolioScrollLayout {...commonProps} />
+            ) : isSimonPortfolio ? (
+              <SimonPortfolioLayout {...commonProps} />
+            ) : tId === "performance-flow" ? (
+              <PerformanceFlowLayout {...commonProps} />
+            ) : tId === "magnetism-layout" ? (
+              <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
+            ) : tId === "case-study" ? (
+              <CaseStudyLayout {...commonProps} />
+            ) : (
+              <StandardGridLayout {...commonProps} />
+            )}
     </div>
   );
 };
