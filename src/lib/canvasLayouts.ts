@@ -275,6 +275,126 @@ export const CINEMATIC_PARALLAX_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
+// --- PHASE 4: ARTISTIC VISION LAYOUTS ---
+
+export const TEMPORAL_FRACTURE_TEMPLATE: CanvasLayoutTemplate = {
+  id: "temporal-fracture",
+  name: "Temporal Fracture",
+  description: "Nolan-inspired time-fragmented grid.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "frag-1", name: "Fragment 1", style: { background: "#0a0c12" } },
+    { id: "frag-2", name: "Fragment 2", style: { background: "#0a0c12" } },
+    { id: "frag-3", name: "Fragment 3", style: { background: "#0a0c12" } },
+  ],
+};
+
+export const PARAMETRIC_FLOW_TEMPLATE: CanvasLayoutTemplate = {
+  id: "parametric-flow",
+  name: "Parametric Flow",
+  description: "Hadid-inspired curved panel system.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "curve-1", name: "Curve A", style: { background: "#fafafa" } },
+    { id: "curve-2", name: "Curve B", style: { background: "#fafafa" } },
+    { id: "curve-3", name: "Curve C", style: { background: "#fafafa" } },
+  ],
+};
+
+export const EDITORIAL_GRID_SHIFT_TEMPLATE: CanvasLayoutTemplate = {
+  id: "editorial-grid-shift",
+  name: "Editorial Grid Shift",
+  description: "Magazine grid that shifts clockwise on click.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "edit-1", name: "Featured", style: { background: "#ffffff" } },
+    { id: "edit-2", name: "Panel 2", style: { background: "#ffffff" } },
+    { id: "edit-3", name: "Panel 3", style: { background: "#ffffff" } },
+  ],
+};
+
+export const FIBONACCI_CASCADE_TEMPLATE: CanvasLayoutTemplate = {
+  id: "fibonacci-cascade",
+  name: "Fibonacci Cascade",
+  description: "Da Vinci-inspired golden ratio layout.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "fib-1", name: "Sequence 1", style: { background: "#faf8f5" } },
+    { id: "fib-2", name: "Sequence 2", style: { background: "#faf8f5" } },
+    { id: "fib-3", name: "Sequence 3", style: { background: "#faf8f5" } },
+  ],
+};
+
+export const DEPTH_CHOREOGRAPHY_TEMPLATE: CanvasLayoutTemplate = {
+  id: "depth-choreography",
+  name: "Depth Choreography",
+  description: "Cinematic depth of field layers.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "depth-1", name: "Layer 1", style: { background: "#0a0a0f" } },
+    { id: "depth-2", name: "Layer 2", style: { background: "#0a0a0f" } },
+  ],
+};
+
+export const CRYSTALLINE_TESSELLATION_TEMPLATE: CanvasLayoutTemplate = {
+  id: "crystalline-tessellation",
+  name: "Crystalline Tessellation",
+  description: "Hadid-inspired geometric fracturing.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "crystal-1", name: "Facet 1", style: { background: "#fafafc" } },
+    { id: "crystal-2", name: "Facet 2", style: { background: "#fafafc" } },
+    { id: "crystal-3", name: "Facet 3", style: { background: "#fafafc" } },
+  ],
+};
+
+export const HAUTE_COUTURE_STACKS_TEMPLATE: CanvasLayoutTemplate = {
+  id: "haute-couture-stacks",
+  name: "Haute Couture Stacks",
+  description: "Fashion runway card reveals.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "look-1", name: "Look 01", style: { background: "#f8f8f6" } },
+    { id: "look-2", name: "Look 02", style: { background: "#f8f8f6" } },
+    { id: "look-3", name: "Look 03", style: { background: "#f8f8f6" } },
+  ],
+};
+
+export const CHIAROSCURO_CANVAS_TEMPLATE: CanvasLayoutTemplate = {
+  id: "chiaroscuro-canvas",
+  name: "Chiaroscuro Canvas",
+  description: "Michelangelo-inspired dramatic lighting.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "study-1", name: "Study 1", style: { background: "#0a0806" } },
+    { id: "study-2", name: "Study 2", style: { background: "#0a0806" } },
+  ],
+};
+
+export const INTERSTELLAR_DOCK_TEMPLATE: CanvasLayoutTemplate = {
+  id: "interstellar-dock",
+  name: "Interstellar Dock",
+  description: "3D rotating spacecraft modules.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "module-1", name: "Module 001", style: { background: "#05050f" } },
+    { id: "module-2", name: "Module 002", style: { background: "#05050f" } },
+    { id: "module-3", name: "Module 003", style: { background: "#05050f" } },
+  ],
+};
+
+export const VOID_EMERGENCE_TEMPLATE: CanvasLayoutTemplate = {
+  id: "void-emergence",
+  name: "Void Emergence",
+  description: "Physics-based panel emergence.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "entity-1", name: "Entity 01", style: { background: "#08050f" } },
+    { id: "entity-2", name: "Entity 02", style: { background: "#08050f" } },
+    { id: "entity-3", name: "Entity 03", style: { background: "#08050f" } },
+  ],
+};
+
 export type { CanvasLayoutTemplate };
 
 // IDs that should be marked as dynamic
@@ -304,6 +424,17 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   "holographic-prism",
   "elastic-morph-cards",
   "cinematic-parallax",
+  // Phase 4 - Artistic Vision Layouts
+  "temporal-fracture",
+  "parametric-flow",
+  "editorial-grid-shift",
+  "fibonacci-cascade",
+  "depth-choreography",
+  "crystalline-tessellation",
+  "haute-couture-stacks",
+  "chiaroscuro-canvas",
+  "interstellar-dock",
+  "void-emergence",
 ]);
 
 let templateCache: {
@@ -369,6 +500,17 @@ export async function getLayoutTemplates(): Promise<{
       HOLOGRAPHIC_PRISM_TEMPLATE,
       ELASTIC_MORPH_CARDS_TEMPLATE,
       CINEMATIC_PARALLAX_TEMPLATE,
+      // Phase 4 - Artistic Vision Layouts
+      TEMPORAL_FRACTURE_TEMPLATE,
+      PARAMETRIC_FLOW_TEMPLATE,
+      EDITORIAL_GRID_SHIFT_TEMPLATE,
+      FIBONACCI_CASCADE_TEMPLATE,
+      DEPTH_CHOREOGRAPHY_TEMPLATE,
+      CRYSTALLINE_TESSELLATION_TEMPLATE,
+      HAUTE_COUTURE_STACKS_TEMPLATE,
+      CHIAROSCURO_CANVAS_TEMPLATE,
+      INTERSTELLAR_DOCK_TEMPLATE,
+      VOID_EMERGENCE_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -417,6 +559,17 @@ export async function getLayoutTemplates(): Promise<{
       HOLOGRAPHIC_PRISM_TEMPLATE,
       ELASTIC_MORPH_CARDS_TEMPLATE,
       CINEMATIC_PARALLAX_TEMPLATE,
+      // Phase 4 - Artistic Vision Layouts
+      TEMPORAL_FRACTURE_TEMPLATE,
+      PARAMETRIC_FLOW_TEMPLATE,
+      EDITORIAL_GRID_SHIFT_TEMPLATE,
+      FIBONACCI_CASCADE_TEMPLATE,
+      DEPTH_CHOREOGRAPHY_TEMPLATE,
+      CRYSTALLINE_TESSELLATION_TEMPLATE,
+      HAUTE_COUTURE_STACKS_TEMPLATE,
+      CHIAROSCURO_CANVAS_TEMPLATE,
+      INTERSTELLAR_DOCK_TEMPLATE,
+      VOID_EMERGENCE_TEMPLATE,
     ];
 
     const record = defaults.reduce((acc, t) => {

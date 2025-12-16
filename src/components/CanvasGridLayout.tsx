@@ -54,6 +54,17 @@ import { GlitchMatrixLayout } from "./layouts/dynamic/GlitchMatrixLayout";
 import { HolographicPrismLayout } from "./layouts/dynamic/HolographicPrismLayout";
 import { ElasticMorphCardsLayout } from "./layouts/dynamic/ElasticMorphCardsLayout";
 import { CinematicParallaxLayout } from "./layouts/dynamic/CinematicParallaxLayout";
+// Phase 4 - Artistic Vision Layouts
+import { TemporalFractureLayout } from "./layouts/dynamic/TemporalFractureLayout";
+import { ParametricFlowLayout } from "./layouts/dynamic/ParametricFlowLayout";
+import { EditorialGridShiftLayout } from "./layouts/dynamic/EditorialGridShiftLayout";
+import { FibonacciCascadeLayout } from "./layouts/dynamic/FibonacciCascadeLayout";
+import { DepthChoreographyLayout } from "./layouts/dynamic/DepthChoreographyLayout";
+import { CrystallineTessellationLayout } from "./layouts/dynamic/CrystallineTessellationLayout";
+import { HauteCoutureStacksLayout } from "./layouts/dynamic/HauteCoutureStacksLayout";
+import { ChiaroscuroCanvasLayout } from "./layouts/dynamic/ChiaroscuroCanvasLayout";
+import { InterstellarDockLayout } from "./layouts/dynamic/InterstellarDockLayout";
+import { VoidEmergenceLayout } from "./layouts/dynamic/VoidEmergenceLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -180,6 +191,18 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isElasticMorphCards = tId === "elastic-morph-cards";
   const isCinematicParallax = tId === "cinematic-parallax";
 
+  // Phase 4 - Artistic Vision Layouts
+  const isTemporalFracture = tId === "temporal-fracture";
+  const isParametricFlow = tId === "parametric-flow";
+  const isEditorialGridShift = tId === "editorial-grid-shift";
+  const isFibonacciCascade = tId === "fibonacci-cascade";
+  const isDepthChoreography = tId === "depth-choreography";
+  const isCrystallineTessellation = tId === "crystalline-tessellation";
+  const isHauteCoutureStacks = tId === "haute-couture-stacks";
+  const isChiaroscuroCanvas = tId === "chiaroscuro-canvas";
+  const isInterstellarDock = tId === "interstellar-dock";
+  const isVoidEmergence = tId === "void-emergence";
+
   // Combine props to pass down to layouts
   const commonProps = {
     ...props,
@@ -264,28 +287,49 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
               <ElasticMorphCardsLayout sections={layout.sections} {...commonProps} />
             ) : isCinematicParallax ? (
               <CinematicParallaxLayout sections={layout.sections} {...commonProps} />
-            ) : /* --- Phase 4: Standard Interactive --- */
-              isExpandingCards ? (
-                <ExpandingCardsLayout {...commonProps} />
-              ) : isSlider ? (
-                <SliderLayout {...commonProps} />
-              ) : isVerticalSlider ? (
-                <VerticalSliderLayout {...commonProps} />
-              ) : isSplitLanding ? (
-                <SplitLandingLayout {...commonProps} />
-              ) : isPortfolioScroll ? (
-                <PortfolioScrollLayout {...commonProps} />
-              ) : isSimonPortfolio ? (
-                <SimonPortfolioLayout {...commonProps} />
-              ) : tId === "performance-flow" ? (
-                <PerformanceFlowLayout {...commonProps} />
-              ) : tId === "magnetism-layout" ? (
-                <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
-              ) : tId === "case-study" ? (
-                <CaseStudyLayout {...commonProps} />
-              ) : (
-                <StandardGridLayout {...commonProps} />
-              )}
+            ) : /* --- Phase 4: Artistic Vision Layouts --- */
+              isTemporalFracture ? (
+                <TemporalFractureLayout sections={layout.sections} {...commonProps} />
+              ) : isParametricFlow ? (
+                <ParametricFlowLayout sections={layout.sections} {...commonProps} />
+              ) : isEditorialGridShift ? (
+                <EditorialGridShiftLayout sections={layout.sections} {...commonProps} />
+              ) : isFibonacciCascade ? (
+                <FibonacciCascadeLayout sections={layout.sections} {...commonProps} />
+              ) : isDepthChoreography ? (
+                <DepthChoreographyLayout sections={layout.sections} {...commonProps} />
+              ) : isCrystallineTessellation ? (
+                <CrystallineTessellationLayout sections={layout.sections} {...commonProps} />
+              ) : isHauteCoutureStacks ? (
+                <HauteCoutureStacksLayout sections={layout.sections} {...commonProps} />
+              ) : isChiaroscuroCanvas ? (
+                <ChiaroscuroCanvasLayout sections={layout.sections} {...commonProps} />
+              ) : isInterstellarDock ? (
+                <InterstellarDockLayout sections={layout.sections} {...commonProps} />
+              ) : isVoidEmergence ? (
+                <VoidEmergenceLayout sections={layout.sections} {...commonProps} />
+              ) : /* --- Standard Interactive --- */
+                isExpandingCards ? (
+                  <ExpandingCardsLayout {...commonProps} />
+                ) : isSlider ? (
+                  <SliderLayout {...commonProps} />
+                ) : isVerticalSlider ? (
+                  <VerticalSliderLayout {...commonProps} />
+                ) : isSplitLanding ? (
+                  <SplitLandingLayout {...commonProps} />
+                ) : isPortfolioScroll ? (
+                  <PortfolioScrollLayout {...commonProps} />
+                ) : isSimonPortfolio ? (
+                  <SimonPortfolioLayout {...commonProps} />
+                ) : tId === "performance-flow" ? (
+                  <PerformanceFlowLayout {...commonProps} />
+                ) : tId === "magnetism-layout" ? (
+                  <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
+                ) : tId === "case-study" ? (
+                  <CaseStudyLayout {...commonProps} />
+                ) : (
+                  <StandardGridLayout {...commonProps} />
+                )}
     </div>
   );
 };
