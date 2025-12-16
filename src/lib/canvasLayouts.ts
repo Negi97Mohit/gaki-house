@@ -155,7 +155,125 @@ export const LIQUID_CHROME_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
+// --- NEW INNOVATIVE DYNAMIC LAYOUTS ---
 
+export const AURORA_BOREALIS_TEMPLATE: CanvasLayoutTemplate = {
+  id: "aurora-borealis",
+  name: "Aurora Borealis",
+  description: "Northern lights with flowing particle waves.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "aurora-1", name: "Aurora 1", style: { background: "#050a14" } },
+    { id: "aurora-2", name: "Aurora 2", style: { background: "#050a14" } },
+    { id: "aurora-3", name: "Aurora 3", style: { background: "#050a14" } },
+  ],
+};
+
+export const MORPHING_BLOB_TEMPLATE: CanvasLayoutTemplate = {
+  id: "morphing-blob",
+  name: "Morphing Blob",
+  description: "Organic blob shapes with gooey physics.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "blob-1", name: "Blob 1", style: { background: "#fef3f2" } },
+    { id: "blob-2", name: "Blob 2", style: { background: "#fef3f2" } },
+    { id: "blob-3", name: "Blob 3", style: { background: "#fef3f2" } },
+  ],
+};
+
+export const NEON_PULSE_CITY_TEMPLATE: CanvasLayoutTemplate = {
+  id: "neon-pulse-city",
+  name: "Neon Pulse City",
+  description: "Cyberpunk grid with pulsing neon effects.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "neon-1", name: "Node 01", style: { background: "#0a0a14" } },
+    { id: "neon-2", name: "Node 02", style: { background: "#0a0a14" } },
+    { id: "neon-3", name: "Node 03", style: { background: "#0a0a14" } },
+  ],
+};
+
+export const ORIGAMI_UNFOLD_TEMPLATE: CanvasLayoutTemplate = {
+  id: "origami-unfold",
+  name: "Origami Unfold",
+  description: "3D paper folding animation effects.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "fold-1", name: "Fold 1", style: { background: "#FDFAF6" } },
+    { id: "fold-2", name: "Fold 2", style: { background: "#FFF5F5" } },
+  ],
+};
+
+export const LIQUID_MIRROR_TEMPLATE: CanvasLayoutTemplate = {
+  id: "liquid-mirror",
+  name: "Liquid Mirror",
+  description: "Interactive water ripple distortion.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "mirror-1", name: "Reflection 1", style: { background: "#1a365d" } },
+    { id: "mirror-2", name: "Reflection 2", style: { background: "#1a365d" } },
+    { id: "mirror-3", name: "Reflection 3", style: { background: "#1a365d" } },
+  ],
+};
+
+export const PARTICLE_UNIVERSE_TEMPLATE: CanvasLayoutTemplate = {
+  id: "particle-universe",
+  name: "Particle Universe",
+  description: "Interactive particle system with gravity.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "star-1", name: "Star System 1", style: { background: "#050514" } },
+    { id: "star-2", name: "Star System 2", style: { background: "#050514" } },
+    { id: "star-3", name: "Star System 3", style: { background: "#050514" } },
+  ],
+};
+
+export const GLITCH_MATRIX_TEMPLATE: CanvasLayoutTemplate = {
+  id: "glitch-matrix",
+  name: "Glitch Matrix",
+  description: "Digital rain with glitch distortion.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "matrix-1", name: "Node 001", style: { background: "#000000" } },
+    { id: "matrix-2", name: "Node 002", style: { background: "#000000" } },
+    { id: "matrix-3", name: "Node 003", style: { background: "#000000" } },
+  ],
+};
+
+export const HOLOGRAPHIC_PRISM_TEMPLATE: CanvasLayoutTemplate = {
+  id: "holographic-prism",
+  name: "Holographic Prism",
+  description: "Rainbow light refraction effects.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "prism-1", name: "Spectrum 1", style: { background: "#0a0a0f" } },
+    { id: "prism-2", name: "Spectrum 2", style: { background: "#0a0a0f" } },
+    { id: "prism-3", name: "Spectrum 3", style: { background: "#0a0a0f" } },
+  ],
+};
+
+export const ELASTIC_MORPH_CARDS_TEMPLATE: CanvasLayoutTemplate = {
+  id: "elastic-morph-cards",
+  name: "Elastic Morph Cards",
+  description: "Rubber-band physics card interactions.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "elastic-1", name: "Card 1", style: { background: "#FF6B6B" } },
+    { id: "elastic-2", name: "Card 2", style: { background: "#4ECDC4" } },
+    { id: "elastic-3", name: "Card 3", style: { background: "#45B7D1" } },
+  ],
+};
+
+export const CINEMATIC_PARALLAX_TEMPLATE: CanvasLayoutTemplate = {
+  id: "cinematic-parallax",
+  name: "Cinematic Parallax",
+  description: "Film-style depth of field parallax.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "scene-1", name: "Scene 01", style: { background: "#0a0a0f" } },
+    { id: "scene-2", name: "Scene 02", style: { background: "#0a0a0f" } },
+  ],
+};
 
 export type { CanvasLayoutTemplate };
 
@@ -165,7 +283,7 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   "carousel-5-cards",
   "performance-flow",
   "magnetism-layout",
-  // New IDs
+  // Phase 2 IDs
   "vogue-parallax",
   "liquid-lens",
   "brutalist-glitch",
@@ -175,6 +293,17 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   "sistine-depth",
   "vitruvian-motion",
   "liquid-chrome",
+  // Phase 3 - New Innovative Layouts
+  "aurora-borealis",
+  "morphing-blob",
+  "neon-pulse-city",
+  "origami-unfold",
+  "liquid-mirror",
+  "particle-universe",
+  "glitch-matrix",
+  "holographic-prism",
+  "elastic-morph-cards",
+  "cinematic-parallax",
 ]);
 
 let templateCache: {
@@ -229,6 +358,17 @@ export async function getLayoutTemplates(): Promise<{
       SISTINE_DEPTH_TEMPLATE,
       VITRUVIAN_MOTION_TEMPLATE,
       LIQUID_CHROME_TEMPLATE,
+      // New Innovative Layouts
+      AURORA_BOREALIS_TEMPLATE,
+      MORPHING_BLOB_TEMPLATE,
+      NEON_PULSE_CITY_TEMPLATE,
+      ORIGAMI_UNFOLD_TEMPLATE,
+      LIQUID_MIRROR_TEMPLATE,
+      PARTICLE_UNIVERSE_TEMPLATE,
+      GLITCH_MATRIX_TEMPLATE,
+      HOLOGRAPHIC_PRISM_TEMPLATE,
+      ELASTIC_MORPH_CARDS_TEMPLATE,
+      CINEMATIC_PARALLAX_TEMPLATE,
     ];
 
     defaults.forEach((t) => {
@@ -265,9 +405,18 @@ export async function getLayoutTemplates(): Promise<{
       WINTOUR_EDITORIAL_TEMPLATE,
       SISTINE_DEPTH_TEMPLATE,
       VITRUVIAN_MOTION_TEMPLATE,
-      SISTINE_DEPTH_TEMPLATE,
-      VITRUVIAN_MOTION_TEMPLATE,
       LIQUID_CHROME_TEMPLATE,
+      // New Innovative Layouts
+      AURORA_BOREALIS_TEMPLATE,
+      MORPHING_BLOB_TEMPLATE,
+      NEON_PULSE_CITY_TEMPLATE,
+      ORIGAMI_UNFOLD_TEMPLATE,
+      LIQUID_MIRROR_TEMPLATE,
+      PARTICLE_UNIVERSE_TEMPLATE,
+      GLITCH_MATRIX_TEMPLATE,
+      HOLOGRAPHIC_PRISM_TEMPLATE,
+      ELASTIC_MORPH_CARDS_TEMPLATE,
+      CINEMATIC_PARALLAX_TEMPLATE,
     ];
 
     const record = defaults.reduce((acc, t) => {

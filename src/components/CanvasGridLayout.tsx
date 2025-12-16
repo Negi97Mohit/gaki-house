@@ -43,6 +43,17 @@ import { WintourEditorialLayout } from "./layouts/dynamic/WintourEditorialLayout
 import { SistineDepthLayout } from "./layouts/dynamic/SistineDepthLayout";
 import { VitruvianMotionLayout } from "./layouts/dynamic/VitruvianMotionLayout";
 import { LiquidChromeLayout } from "./layouts/dynamic/LiquidChromeLayout";
+// Phase 3 - New Innovative Layouts
+import { AuroraBorealisLayout } from "./layouts/dynamic/AuroraBorealisLayout";
+import { MorphingBlobLayout } from "./layouts/dynamic/MorphingBlobLayout";
+import { NeonPulseCityLayout } from "./layouts/dynamic/NeonPulseCityLayout";
+import { OrigamiUnfoldLayout } from "./layouts/dynamic/OrigamiUnfoldLayout";
+import { LiquidMirrorLayout } from "./layouts/dynamic/LiquidMirrorLayout";
+import { ParticleUniverseLayout } from "./layouts/dynamic/ParticleUniverseLayout";
+import { GlitchMatrixLayout } from "./layouts/dynamic/GlitchMatrixLayout";
+import { HolographicPrismLayout } from "./layouts/dynamic/HolographicPrismLayout";
+import { ElasticMorphCardsLayout } from "./layouts/dynamic/ElasticMorphCardsLayout";
+import { CinematicParallaxLayout } from "./layouts/dynamic/CinematicParallaxLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -157,6 +168,18 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isVitruvian = tId === "vitruvian-motion";
   const isLiquidChrome = tId === "liquid-chrome";
 
+  // Phase 3 - New Innovative Layouts
+  const isAuroraBorealis = tId === "aurora-borealis";
+  const isMorphingBlob = tId === "morphing-blob";
+  const isNeonPulseCity = tId === "neon-pulse-city";
+  const isOrigamiUnfold = tId === "origami-unfold";
+  const isLiquidMirror = tId === "liquid-mirror";
+  const isParticleUniverse = tId === "particle-universe";
+  const isGlitchMatrix = tId === "glitch-matrix";
+  const isHolographicPrism = tId === "holographic-prism";
+  const isElasticMorphCards = tId === "elastic-morph-cards";
+  const isCinematicParallax = tId === "cinematic-parallax";
+
   // Combine props to pass down to layouts
   const commonProps = {
     ...props,
@@ -220,28 +243,49 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
             <VitruvianMotionLayout sections={layout.sections} {...commonProps} />
           ) : isLiquidChrome ? (
             <LiquidChromeLayout sections={layout.sections} {...commonProps} />
-          ) : /* --- Phase 4: Standard Interactive --- */
-            isExpandingCards ? (
-              <ExpandingCardsLayout {...commonProps} />
-            ) : isSlider ? (
-              <SliderLayout {...commonProps} />
-            ) : isVerticalSlider ? (
-              <VerticalSliderLayout {...commonProps} />
-            ) : isSplitLanding ? (
-              <SplitLandingLayout {...commonProps} />
-            ) : isPortfolioScroll ? (
-              <PortfolioScrollLayout {...commonProps} />
-            ) : isSimonPortfolio ? (
-              <SimonPortfolioLayout {...commonProps} />
-            ) : tId === "performance-flow" ? (
-              <PerformanceFlowLayout {...commonProps} />
-            ) : tId === "magnetism-layout" ? (
-              <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
-            ) : tId === "case-study" ? (
-              <CaseStudyLayout {...commonProps} />
-            ) : (
-              <StandardGridLayout {...commonProps} />
-            )}
+          ) : /* --- Phase 6: New Innovative Layouts --- */
+            isAuroraBorealis ? (
+              <AuroraBorealisLayout sections={layout.sections} {...commonProps} />
+            ) : isMorphingBlob ? (
+              <MorphingBlobLayout sections={layout.sections} {...commonProps} />
+            ) : isNeonPulseCity ? (
+              <NeonPulseCityLayout sections={layout.sections} {...commonProps} />
+            ) : isOrigamiUnfold ? (
+              <OrigamiUnfoldLayout sections={layout.sections} {...commonProps} />
+            ) : isLiquidMirror ? (
+              <LiquidMirrorLayout sections={layout.sections} {...commonProps} />
+            ) : isParticleUniverse ? (
+              <ParticleUniverseLayout sections={layout.sections} {...commonProps} />
+            ) : isGlitchMatrix ? (
+              <GlitchMatrixLayout sections={layout.sections} {...commonProps} />
+            ) : isHolographicPrism ? (
+              <HolographicPrismLayout sections={layout.sections} {...commonProps} />
+            ) : isElasticMorphCards ? (
+              <ElasticMorphCardsLayout sections={layout.sections} {...commonProps} />
+            ) : isCinematicParallax ? (
+              <CinematicParallaxLayout sections={layout.sections} {...commonProps} />
+            ) : /* --- Phase 4: Standard Interactive --- */
+              isExpandingCards ? (
+                <ExpandingCardsLayout {...commonProps} />
+              ) : isSlider ? (
+                <SliderLayout {...commonProps} />
+              ) : isVerticalSlider ? (
+                <VerticalSliderLayout {...commonProps} />
+              ) : isSplitLanding ? (
+                <SplitLandingLayout {...commonProps} />
+              ) : isPortfolioScroll ? (
+                <PortfolioScrollLayout {...commonProps} />
+              ) : isSimonPortfolio ? (
+                <SimonPortfolioLayout {...commonProps} />
+              ) : tId === "performance-flow" ? (
+                <PerformanceFlowLayout {...commonProps} />
+              ) : tId === "magnetism-layout" ? (
+                <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
+              ) : tId === "case-study" ? (
+                <CaseStudyLayout {...commonProps} />
+              ) : (
+                <StandardGridLayout {...commonProps} />
+              )}
     </div>
   );
 };
