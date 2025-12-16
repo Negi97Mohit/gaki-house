@@ -145,6 +145,16 @@ export const VITRUVIAN_MOTION_TEMPLATE: CanvasLayoutTemplate = {
   sections: [{ id: "vit-1", name: "Canvas", style: { background: "#f5f1eb" } }],
 };
 
+export const LIQUID_CHROME_TEMPLATE: CanvasLayoutTemplate = {
+  id: "liquid-chrome",
+  name: "Liquid Chrome",
+  description: "Metallic liquid distortion effect.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "chrome-1", name: "Chrome", style: { background: "#e0e0e0" } }
+  ],
+};
+
 
 
 export type { CanvasLayoutTemplate };
