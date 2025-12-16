@@ -17,70 +17,128 @@ const RemoteCamera = () => {
     const [isVideoEnabled, setIsVideoEnabled] = useState(true);
     const [facingMode, setFacingMode] = useState<"user" | "environment">("environment");
 
+    // 1. Manage Media Stream
     useEffect(() => {
-        if (!targetId) {
-            setStatus("error");
-            setErrorMsg("No target device specified. Scan the QR code again.");
-            return;
-        }
+        let activeStream: MediaStream | null = null;
+        let isActive = true;
 
-        const startStream = async () => {
+        const initMedia = async () => {
             try {
-                setStatus("connecting");
                 const mediaStream = await navigator.mediaDevices.getUserMedia({
                     video: { facingMode: facingMode },
                     audio: true,
                 });
 
+                if (!isActive) {
+                    mediaStream.getTracks().forEach(t => t.stop());
+                    return;
+                }
+
+                activeStream = mediaStream;
                 setStream(mediaStream);
+
                 if (videoRef.current) {
                     videoRef.current.srcObject = mediaStream;
                 }
-
-                const peer = new Peer();
-                peerRef.current = peer;
-
-                peer.on("open", () => {
-                    const call = peer.call(targetId, mediaStream);
-
-                    call.on("close", () => {
-                        setStatus("idle");
-                        setErrorMsg("Connection closed by remote.");
-                    });
-
-                    call.on("error", (err) => {
-                        console.error(err);
-                        setStatus("error");
-                        setErrorMsg("Connection error.");
-                    });
-
-                    setStatus("connected");
-                });
-
-                peer.on("error", (err) => {
-                    console.error(err);
-                    setStatus("error");
-                    setErrorMsg(`Peer error: ${err.type}`);
-                });
-
             } catch (err) {
-                console.error(err);
-                setStatus("error");
-                setErrorMsg("Could not access camera/microphone. Please allow permissions.");
+                console.error("Media init error:", err);
+                if (isActive) {
+                    setStatus("error");
+                    setErrorMsg("Could not access camera/microphone.");
+                }
             }
         };
 
-        startStream();
+        initMedia();
 
         return () => {
-            if (stream) {
-                stream.getTracks().forEach(t => t.stop());
+            isActive = false;
+            if (activeStream) {
+                activeStream.getTracks().forEach(t => t.stop());
             }
-            if (peerRef.current) {
-                peerRef.current.destroy();
-            }
+            setStream(null); // Clear stream so connection effect disconnects/pauses
         };
-    }, [targetId, facingMode]);
+    }, [facingMode]);
+
+    // 2. Manage Peer Connection
+    useEffect(() => {
+        // Persist targetId logic
+        let currentTargetId = targetId;
+        if (currentTargetId) {
+            localStorage.setItem("caption-cam-target-id", currentTargetId);
+        } else {
+            currentTargetId = localStorage.getItem("caption-cam-target-id");
+        }
+
+        if (!currentTargetId) {
+            setStatus("error");
+            setErrorMsg("No target device specified. Scan the QR code again.");
+            return;
+        }
+
+        if (!stream) {
+            // Waiting for stream...
+            return;
+        }
+
+        let retryTimeout: NodeJS.Timeout;
+        let isActive = true;
+        let peerInstance: Peer | null = null;
+        let callInstance: any = null;
+
+        const connectToPeer = () => {
+            if (!isActive || !stream) return;
+
+            setStatus("connecting");
+
+            const peer = new Peer();
+            peerInstance = peer;
+            peerRef.current = peer;
+
+            peer.on("open", (id) => {
+                if (!isActive) return;
+                console.log(`My Peer ID: ${id}. Connecting to: ${currentTargetId}`);
+
+                const call = peer.call(currentTargetId!, stream);
+                callInstance = call;
+
+                call.on("close", () => {
+                    console.log("Call closed");
+                    if (isActive) {
+                        setStatus("connecting");
+                        setErrorMsg("Connection lost. Reconnecting...");
+                        retryTimeout = setTimeout(connectToPeer, 2000);
+                    }
+                });
+
+                call.on("error", (err) => {
+                    console.error("Call error:", err);
+                    if (isActive) {
+                        retryTimeout = setTimeout(connectToPeer, 3000);
+                    }
+                });
+
+                setStatus("connected");
+                setErrorMsg("");
+            });
+
+            peer.on("error", (err) => {
+                console.error("Peer error:", err);
+                if (isActive) {
+                    retryTimeout = setTimeout(connectToPeer, 3000);
+                }
+            });
+        };
+
+        connectToPeer();
+
+        return () => {
+            isActive = false;
+            clearTimeout(retryTimeout);
+            if (callInstance) callInstance.close();
+            if (peerInstance) peerInstance.destroy();
+        };
+    }, [stream, targetId]);
 
     const toggleAudio = () => {
         if (stream) {
