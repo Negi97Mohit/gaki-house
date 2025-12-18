@@ -143,11 +143,11 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
           : "shadow-none border-2 border-transparent group-hover:border-primary/50"
       )}
     >
-      <div className="w-full h-full flex flex-col rounded-lg relative overflow-hidden">
+      <div className="w-full h-full flex flex-col relative">
 
         <div
           className={cn(
-            "flex-grow w-full h-full relative overflow-hidden",
+            "flex-grow w-full h-full relative overflow-hidden rounded-lg",
             overlay.fileType !== "image" && "bg-background/50"
           )}
         >
@@ -159,7 +159,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             e.stopPropagation();
             onRemove(overlay.id);
           }}
-          className="close-button absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-50"
+          className="close-button absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-50 pointer-events-auto shadow-sm"
           style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
         >
           <X className="w-4 h-4" />
@@ -172,11 +172,13 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
           >
             <button
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 onLayoutChange(overlay.id, { isBehindUser: !overlay.layout.isBehindUser });
               }}
+              onPointerDown={(e) => e.stopPropagation()}
               className={cn(
-                "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors",
+                "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
                 overlay.layout.isBehindUser
                   ? "bg-primary text-primary-foreground"
                   : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
