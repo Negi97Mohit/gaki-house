@@ -28,9 +28,10 @@ interface DraggableFileViewerProps {
 }
 
 // FileRenderer (kept inline for simplicity, or import if separate)
-export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
-  overlay,
-}) => {
+export const FileRenderer: React.FC<{
+  overlay: FileOverlayState;
+  onAspectRatioDetermined?: (ratio: number) => void;
+}> = ({ overlay, onAspectRatioDetermined }) => {
   const [textContent, setTextContent] = useState("");
 
   useEffect(() => {
@@ -54,7 +55,13 @@ export const FileRenderer: React.FC<{ overlay: FileOverlayState }> = ({
         <img
           src={overlay.fileUrl}
           alt={overlay.fileName}
-          className="w-full h-full object-contain"
+          className="w-full h-full select-none"
+          onLoad={(e) => {
+            const img = e.currentTarget;
+            if (img.naturalWidth && img.naturalHeight) {
+              onAspectRatioDetermined?.(img.naturalWidth / img.naturalHeight);
+            }
+          }}
         />
       );
     case "video":
@@ -110,6 +117,28 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
 }) => {
   // Rotation now handled by HybridDraggable
 
+  const handleAspectRatioDetermined = (ratio: number) => {
+    // Check if current aspect ratio differs significantly
+    const currentRatio =
+      ((overlay.layout.size.width / 100) * sceneSize.width) /
+      ((overlay.layout.size.height / 100) * sceneSize.height);
+
+    if (Math.abs(currentRatio - ratio) > 0.01) {
+      // Calculate new height to match aspect ratio, keeping width constant
+      // ratio = width / height  =>  height = width / ratio
+      const currentWidthPx = (overlay.layout.size.width / 100) * sceneSize.width;
+      const newHeightPx = currentWidthPx / ratio;
+      const newHeightPercent = (newHeightPx / sceneSize.height) * 100;
+
+      onLayoutChange(overlay.id, {
+        size: {
+          width: overlay.layout.size.width,
+          height: newHeightPercent,
+        },
+      });
+    }
+  };
+
   return (
     <HybridDraggable
       id={overlay.id}
@@ -119,8 +148,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       zIndex={overlay.layout.zIndex}
       containerSize={sceneSize}
       isSelected={isSelected}
-      minWidth={200}
-      minHeight={150}
+      minWidth={50} // Reduced min width to allow smaller logos
+      minHeight={50}
       onSelect={onSelect}
       onCommit={(id, layout) => {
         onLayoutChange(id, {
@@ -134,6 +163,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       onSnapGuidesChange={onSnapGuidesChange}
       enableResizing={true}
       enableRotation={true}
+      lockAspectRatio={overlay.fileType === "image"}
       cancelSelector="audio, video, iframe"
       className={cn(
         "group transition-all duration-200",
@@ -151,15 +181,20 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             overlay.fileType !== "image" && "bg-background/50"
           )}
         >
-          <FileRenderer overlay={overlay} />
+          <FileRenderer
+            overlay={overlay}
+            onAspectRatioDetermined={handleAspectRatioDetermined}
+          />
         </div>
 
         <button
           onClick={(e) => {
+            e.preventDefault();
             e.stopPropagation();
             onRemove(overlay.id);
           }}
-          className="close-button absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-50 pointer-events-auto shadow-sm"
+          onPointerDown={(e) => e.stopPropagation()}
+          className="close-button absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:scale-110 z-50 pointer-events-auto shadow-sm"
           style={{ transform: `rotate(-${overlay.layout.rotation || 0}deg)` }}
         >
           <X className="w-4 h-4" />
