@@ -37,8 +37,15 @@ export const DynamicAddButton: React.FC<{
     defaultValue?: string;
     sectionId?: string;
     fieldId?: string;
-}> = ({ className, defaultValue = "Add Section", sectionId = "ui", fieldId = "add_btn_label" }) => {
+    style?: React.CSSProperties;
+}> = ({ className, defaultValue = "Add Section", sectionId = "ui", fieldId = "add_btn_label", style }) => {
     const { editor, controlsVisible, colors } = useDynamicLayout();
+
+    const mergedStyle: React.CSSProperties = {
+        borderColor: colors.textColor,
+        color: colors.textColor,
+        ...style,
+    };
 
     return (
         <div
@@ -48,7 +55,7 @@ export const DynamicAddButton: React.FC<{
                 controlsVisible ? "opacity-50" : "opacity-0 pointer-events-none",
                 className
             )}
-            style={{ borderColor: colors.textColor, color: colors.textColor }}
+            style={mergedStyle}
         >
             <Plus className="w-12 h-12 mb-2" />
             <div onClick={(e) => e.stopPropagation()}>

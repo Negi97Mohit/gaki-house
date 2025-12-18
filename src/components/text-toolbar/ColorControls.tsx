@@ -55,7 +55,7 @@ export const ColorControls: React.FC<ColorControlsProps> = ({
                         />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent className="z-[10000] bg-popover border border-border shadow-xl">
                     <div className="grid grid-cols-5 gap-2 p-2">
                         {PRESET_COLORS.map((color) => (
                             <button
@@ -92,7 +92,7 @@ export const ColorControls: React.FC<ColorControlsProps> = ({
                         />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
+                <DropdownMenuContent className="z-[10000] bg-popover border border-border shadow-xl">
                     <div className="grid grid-cols-5 gap-2 p-2">
                         {PRESET_COLORS.map((color) => (
                             <button
