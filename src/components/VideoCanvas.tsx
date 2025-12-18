@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { Rnd } from "react-rnd";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
@@ -39,6 +39,8 @@ import { TextEditingToolbar } from "@/components/TextEditingToolbar";
 // --- New Imported Sub-Components ---
 import { VideoCanvasCamera } from "@/components/video-canvas/VideoCanvasCamera";
 import { VideoCanvasSplitLayout } from "@/components/video-canvas/VideoCanvasSplitLayout";
+import { ForegroundUserLayer } from "@/components/video-canvas/ForegroundUserLayer";
+import { useCameraEffects } from "@/hooks/useCameraEffects";
 
 interface VideoCanvasProps {
   sceneId: string;
@@ -252,6 +254,21 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onSetDynamicLayout,
   } = props;
 
+  // --- Text Behind User State ---
+  const [isTextDepthEnabled, setIsTextDepthEnabled] = React.useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const isSegmentationEnabled =
+    isTextDepthEnabled ||
+    (props.sidebarProps?.filterTarget && props.sidebarProps.filterTarget !== "both");
+
+  const { processedCanvas, facePositionRef } = useCameraEffects({
+    videoElement: videoRef.current,
+    isSegmentationEnabled: !!isSegmentationEnabled,
+    isFaceTrackingEnabled: props.isAutoFramingEnabled,
+    onUserPositionChange: props.onUserPositionChange,
+  });
+
   // --- Hooks ---
   // Check if any grid section requires screen sharing
   const hasScreenSection = props.canvasLayout?.sections.some(
@@ -336,6 +353,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       screenShareMode={props.screenShareMode}
       onScreenShareModeChange={props.onScreenShareModeChange}
       onLayoutModeChange={props.onLayoutModeChange}
+      externalVideoRef={videoRef}
+      processedCanvas={processedCanvas}
+      facePositionRef={facePositionRef}
     />
   );
 
@@ -507,6 +527,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           canvasLayout={props.canvasLayout}
           onCanvasLayoutChange={props.onCanvasLayoutChange}
           activeSequenceId={props.activeSequenceId}
+          isTextDepthEnabled={isTextDepthEnabled}
+          onTextDepthToggle={setIsTextDepthEnabled}
         />
 
         {renderContent()}
@@ -739,6 +761,19 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             />
           </div>
         ))}
+
+        {isTextDepthEnabled && containerSize.width > 0 && (
+          <ForegroundUserLayer
+            videoRef={videoRef}
+            processedCanvas={processedCanvas}
+            facePositionRef={facePositionRef}
+            videoFilter={props.videoFilter}
+            isAutoFramingEnabled={props.isAutoFramingEnabled}
+            zoomSensitivity={props.zoomSensitivity}
+            trackingSpeed={props.trackingSpeed}
+            containerSize={containerSize}
+          />
+        )}
       </div>
 
       {containerSize.width > 0 && (

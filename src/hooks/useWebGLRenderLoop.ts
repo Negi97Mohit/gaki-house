@@ -26,6 +26,7 @@ interface UseWebGLRenderLoopProps {
   isFaceTrackingEnabled?: boolean;
   zoomSensitivity?: number;
   trackingSpeed?: number;
+  isMasked?: boolean;
 }
 
 export const useWebGLRenderLoop = ({
@@ -41,14 +42,18 @@ export const useWebGLRenderLoop = ({
   isAutoFramingEnabled,
   zoomSensitivity,
   trackingSpeed,
+  isMasked,
 }: UseWebGLRenderLoopProps) => {
   const rendererRef = useRef<GLRenderer | null>(null);
   const animationFrameRef = useRef<number>();
 
   // 1. Manage Video Stream
   useEffect(() => {
+    // If we don't own the stream management (e.g. shared video ref), skip this.
+    // However, for the loop to work, the video must be playing.
+    // We assume the owner handles playing.
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || activeStream === undefined) return;
 
     if (activeStream) {
       if (video.srcObject !== activeStream) {
@@ -109,6 +114,7 @@ export const useWebGLRenderLoop = ({
             isAutoFramingEnabled,
             zoomSensitivity,
             trackingSpeed,
+            isMasked,
           });
         } catch (e) {
           console.error("[WebGL] Render error:", e);
@@ -133,5 +139,6 @@ export const useWebGLRenderLoop = ({
     isAutoFramingEnabled,
     zoomSensitivity,
     trackingSpeed,
+    isMasked,
   ]);
 };

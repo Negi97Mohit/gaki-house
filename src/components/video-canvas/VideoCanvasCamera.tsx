@@ -28,6 +28,9 @@ export interface VideoCanvasCameraProps {
   screenShareMode: "off" | "screen" | "canvas";
   onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
   onLayoutModeChange: (mode: LayoutMode) => void;
+  externalVideoRef?: React.RefObject<HTMLVideoElement>;
+  processedCanvas?: HTMLCanvasElement | null;
+  facePositionRef?: React.MutableRefObject<any>;
 }
 
 export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
@@ -79,6 +82,9 @@ export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
         showAspectRatio={true}
         onEnterPipMode={handleEnterPipMode}
         isMouseActive={props.isMouseActive}
+        externalVideoRef={props.externalVideoRef}
+        processedCanvas={props.processedCanvas}
+        facePositionRef={props.facePositionRef}
         {...safeSidebarProps}
       />
     </div>

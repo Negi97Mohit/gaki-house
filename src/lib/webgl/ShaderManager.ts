@@ -3,6 +3,7 @@ import { GLContext } from "./GLContext";
 import { VERTEX_SHADER_SOURCE } from "./shaders/vertex";
 import { BASIC_FRAGMENT_SHADER_SOURCE } from "./shaders/basic";
 import { EFFECTS_FRAGMENT_SHADER_SOURCE } from "./shaders/effects";
+import { MASKED_FRAGMENT_SHADER_SOURCE } from "./shaders/masked";
 
 type ProgramInfo = {
   program: WebGLProgram;
@@ -52,7 +53,14 @@ export class ShaderManager {
         "u_offset",
       ]
     );
-    // Composite shader removed
+
+    // 3. Masked (Foreground User)
+    this.createProgram(
+      "masked",
+      VERTEX_SHADER_SOURCE,
+      MASKED_FRAGMENT_SHADER_SOURCE,
+      ["u_video", "u_mask", "u_scale", "u_offset"]
+    );
   }
 
   createProgram(

@@ -63,10 +63,14 @@ interface CameraRendererProps {
   onCameraDeviceChange?: (deviceId: string) => void;
   onEnterPipMode?: () => void;
   isMouseActive?: boolean;
+  externalVideoRef?: React.RefObject<HTMLVideoElement>;
+  processedCanvas?: HTMLCanvasElement | null;
+  facePositionRef?: React.MutableRefObject<any>;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const internalVideoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = props.externalVideoRef || internalVideoRef;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -113,16 +117,22 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   // If localStream is null (e.g. remote peer), fall back to props.stream
   const activeStream = localStream || props.stream;
 
-  const isSegmentationEnabled =
-    props.filterTarget && props.filterTarget !== "both";
+  const isInternalSegmentationNeeded =
+    !!(props.filterTarget && props.filterTarget !== "both") && !props.processedCanvas;
 
-  const { processedCanvas, facePositionRef } = useCameraEffects({
+  const isInternalFaceTrackingNeeded =
+    (props.isFaceTrackingEnabled || props.isAutoFramingEnabled) && !props.facePositionRef;
+
+  // Use internal hook if processedCanvas is NOT provided externally (legacy/fallback)
+  const internalEffects = useCameraEffects({
     videoElement: videoRef.current,
-    isSegmentationEnabled,
-    isFaceTrackingEnabled:
-      props.isFaceTrackingEnabled || props.isAutoFramingEnabled,
+    isSegmentationEnabled: isInternalSegmentationNeeded,
+    isFaceTrackingEnabled: isInternalFaceTrackingNeeded,
     onUserPositionChange: props.onUserPositionChange,
   });
+
+  const processedCanvas = props.processedCanvas || internalEffects.processedCanvas;
+  const facePositionRef = props.facePositionRef || internalEffects.facePositionRef;
 
   useWebGLRenderLoop({
     canvasRef,
@@ -170,7 +180,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     position: toolbarPosition,
     containerRef,
     ...props,
-    onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
+    onCameraDeviceChange: props.onCameraDeviceChange || (() => { }),
     onEnterPipMode: props.onEnterPipMode,
     isPipActive,
     onTogglePip: togglePiP,

@@ -15,6 +15,7 @@ import {
   Sparkles,
   Zap,
   Layout,
+  Layers,
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 import { AIChatbot } from "./AIChatbot";
@@ -49,6 +50,8 @@ interface CanvasHoverToolbarProps {
   onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
   onCanvasBackgroundAssetSelect: (asset: AssetResult) => void;
   activeSequenceId?: string | null;
+  isTextDepthEnabled?: boolean;
+  onTextDepthToggle?: (enabled: boolean) => void;
 }
 
 export const CanvasHoverToolbar = ({
@@ -61,6 +64,8 @@ export const CanvasHoverToolbar = ({
   onCanvasBackgroundAssetSelect,
   onCanvasLayoutChange,
   activeSequenceId,
+  isTextDepthEnabled,
+  onTextDepthToggle,
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [layoutTemplates, setLayoutTemplates] = useState<
@@ -371,6 +376,21 @@ export const CanvasHoverToolbar = ({
               <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
             </PopoverContent>
           </Popover>
+
+          {onTextDepthToggle && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
+                isTextDepthEnabled && "bg-primary/20 text-primary"
+              )}
+              onClick={() => onTextDepthToggle(!isTextDepthEnabled)}
+              title="Toggle Text Behind User"
+            >
+              <Layers className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            </Button>
+          )}
 
           <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
         </>

@@ -83,7 +83,7 @@ export const useCameraEffects = ({
           `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
       });
 
-      selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: true });
+      selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: false });
 
       selfieSegmentation.onResults((results) => {
         if (!canvasRef.current || !videoElement) return;

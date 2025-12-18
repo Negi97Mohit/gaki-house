@@ -16,6 +16,7 @@ export interface RenderOptions {
   isAutoFramingEnabled?: boolean;
   zoomSensitivity?: number; // 0.0 to 1.0
   trackingSpeed?: number; // 0.0 to 1.0
+  isMasked?: boolean;
 }
 
 function hexToVec3(hex: string): [number, number, number] {
@@ -29,7 +30,7 @@ function hexToVec3(hex: string): [number, number, number] {
 export class GLRenderer {
   ctx: GLContext;
   videoTexture: VideoTexture;
-  // Removed bgTexture and maskTexture if no longer needed for composite
+  maskTexture: VideoTexture;
   shaderManager: ShaderManager;
   startTime: number;
 
@@ -39,6 +40,7 @@ export class GLRenderer {
   constructor(canvas: HTMLCanvasElement) {
     this.ctx = new GLContext(canvas);
     this.videoTexture = new VideoTexture(this.ctx.gl);
+    this.maskTexture = new VideoTexture(this.ctx.gl);
     this.shaderManager = new ShaderManager(this.ctx);
     this.startTime = Date.now();
   }
@@ -91,11 +93,24 @@ export class GLRenderer {
     this.shaderManager.setUniform1f("u_scale", this.currentScale);
     this.shaderManager.setUniform2fv("u_offset", this.currentOffset);
 
-    // Render loop simplified - remove composite shader block
-    if (
+    // --- Shader Logic ---
+    if (options.isMasked && options.processedCanvas) {
+      // 1. Masked Rendering
+      this.shaderManager.activate("masked");
+      this.maskTexture.update(options.processedCanvas);
+
+      this.shaderManager.setUniform1i("u_video", 0);
+      this.shaderManager.setUniform1i("u_mask", 1);
+      this.shaderManager.setUniform1f("u_scale", this.currentScale);
+      this.shaderManager.setUniform2fv("u_offset", this.currentOffset);
+
+      this.videoTexture.bind(0);
+      this.maskTexture.bind(1);
+    } else if (
       options.activeInteractiveFilter &&
       options.activeInteractiveFilter !== "none"
     ) {
+      // 2. Interactive Effects
       this.shaderManager.activate("effects");
 
       let typeId = 0;
@@ -110,7 +125,7 @@ export class GLRenderer {
         uColorMid = hexToVec3(style.midColor);
         uColorHigh = hexToVec3(style.highlightColor);
       } else {
-        // ... (Keep existing filter mapping)
+        // ... (Filter mapping)
         const typeMap: Record<string, number> = {
           pixel: 1,
           retro: 1,
@@ -179,6 +194,7 @@ export class GLRenderer {
 
       this.videoTexture.bind(0);
     } else {
+      // 3. Basic Rendering
       this.shaderManager.activate("basic");
       const filters = parseFilterString(options.videoFilter || "");
       this.shaderManager.setUniform1i("u_video", 0);
@@ -196,5 +212,6 @@ export class GLRenderer {
 
   destroy() {
     this.videoTexture.destroy();
+    this.maskTexture.destroy();
   }
 }
