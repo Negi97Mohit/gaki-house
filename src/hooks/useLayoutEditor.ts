@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
+import { CanvasLayoutState, CanvasSectionState, ExtendedCSSProperties } from "@/types/caption";
 
 export interface UseLayoutEditorProps {
     layout: CanvasLayoutState;

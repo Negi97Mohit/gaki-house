@@ -13,7 +13,7 @@ import { GridSectionRenderer } from "../GridSectionRenderer";
 export interface GridSectionWrapperProps {
     section: CanvasSectionState;
     templateSection: any;
-    isHovered: boolean;
+    isHovered?: boolean;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
 
@@ -46,12 +46,15 @@ export interface GridSectionWrapperProps {
     // Layout specific flags
     isVertical?: boolean;
     isSplit?: boolean;
+    
+    // Allow extra props to pass through
+    [key: string]: any;
 }
 
 export const GridSectionWrapper: React.FC<GridSectionWrapperProps> = ({
     section,
     templateSection,
-    isHovered,
+    isHovered = false,
     onMouseEnter,
     onMouseLeave,
 

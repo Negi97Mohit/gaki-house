@@ -662,40 +662,23 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                       (bannerOverlay.layout.size.height / 100) *
                       sceneSize.height
                     }
-                    onLayoutChange={(id, partialLayout) => {
-                      if (partialLayout.position) {
-                        // Convert overlay percentage back to absolute for banner logic if needed
-                        // But actually VideoCanvas expects onOverlayLayoutChange for banners
-                        props.onOverlayLayoutChange(id, "position", partialLayout.position);
-                      }
-                      if (partialLayout.size) {
-                        props.onOverlayLayoutChange(id, "size", partialLayout.size);
-                      }
-                      if (partialLayout.rotation !== undefined) {
-                        props.onOverlayLayoutChange(id, "rotation", partialLayout.rotation);
-                      }
-                      // Handle custom banner metadata like depth
-                      if (partialLayout.isBehindUser !== undefined && props.onUpdateOverlayMetadata) {
-                        // Update metadata to persist depth in banner
-                        props.onUpdateOverlayMetadata(id, {
-                          ...bannerOverlay.metadata,
-                          data: {
-                            ...bannerOverlay.metadata.data,
-                            isBehindUser: partialLayout.isBehindUser
-                          }
-                        });
-                        // Also update the core layout structure if 'isBehindUser' is moved there
-                        // Currently we put isBehindUser on GeneratedLayout, so we should call onOverlayLayoutChange?
-                        // But onOverlayLayoutChange only takes "position" | "size" | "rotation".
-                        // We might need to extend onOverlayLayoutChange or use onUpdateOverlayMetadata.
-                        // For now, let's assume we can't update isBehindUser for banners yet or use metadata.
-                      }
-                    }}
                     onLayoutChange={(id: string, partialLayout: any) => {
                       if (partialLayout.position) props.onOverlayLayoutChange(id, "position", partialLayout.position);
                       if (partialLayout.size) props.onOverlayLayoutChange(id, "size", partialLayout.size);
                       if (partialLayout.rotation !== undefined) props.onOverlayLayoutChange(id, "rotation", partialLayout.rotation);
-                      if (partialLayout.isBehindUser !== undefined) props.onOverlayLayoutChange(id, "isBehindUser", partialLayout.isBehindUser);
+                      if (partialLayout.isBehindUser !== undefined) {
+                        props.onOverlayLayoutChange(id, "isBehindUser", partialLayout.isBehindUser);
+                        // Also update metadata if available
+                        if (props.onUpdateOverlayMetadata) {
+                          props.onUpdateOverlayMetadata(id, {
+                            ...bannerOverlay.metadata,
+                            data: {
+                              ...bannerOverlay.metadata?.data,
+                              isBehindUser: partialLayout.isBehindUser
+                            }
+                          });
+                        }
+                      }
                     }}
                     onStyleChange={(id, partialStyle) => {
                       const newCssStyle: React.CSSProperties = {};
