@@ -1,12 +1,15 @@
 // src/hooks/useCameraEffects.ts
 import { useEffect, useRef, useState } from "react";
-import { SelfieSegmentation } from "@mediapipe/selfie_segmentation";
-import * as SelfieSegmentationModule from "@mediapipe/selfie_segmentation";
-import { FaceDetector, FilesetResolver } from "@mediapipe/tasks-vision";
+import {
+  FaceDetector,
+  FilesetResolver,
+  ImageSegmenter,
+  ImageSegmenterResult,
+} from "@mediapipe/tasks-vision";
 
 interface UseCameraEffectsProps {
   videoElement: HTMLVideoElement | null;
-  isSegmentationEnabled: boolean; // Renamed from isBackgroundRemovalEnabled
+  isSegmentationEnabled: boolean;
   isFaceTrackingEnabled: boolean;
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
 }
@@ -19,13 +22,18 @@ interface FacePosition {
 }
 
 let faceDetector: FaceDetector | null = null;
+let imageSegmenter: ImageSegmenter | null = null;
 
-const initializeFaceDetector = async () => {
+const createVisionTask = async () => {
+  const vision = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+  );
+  return vision;
+};
+
+const initializeFaceDetector = async (vision: any) => {
   if (faceDetector) return faceDetector;
   try {
-    const vision = await FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
-    );
     faceDetector = await FaceDetector.createFromOptions(vision, {
       baseOptions: {
         modelAssetPath: `https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite`,
@@ -40,6 +48,26 @@ const initializeFaceDetector = async () => {
   }
 };
 
+const initializeImageSegmenter = async (vision: any) => {
+  if (imageSegmenter) return imageSegmenter;
+  try {
+    imageSegmenter = await ImageSegmenter.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath:
+          "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite",
+        delegate: "GPU",
+      },
+      runningMode: "VIDEO",
+      outputCategoryMask: false,
+      outputConfidenceMasks: true,
+    });
+    return imageSegmenter;
+  } catch (err) {
+    console.error("[useCameraEffects] ImageSegmenter init failed:", err);
+    return null;
+  }
+};
+
 export const useCameraEffects = ({
   videoElement,
   isSegmentationEnabled,
@@ -47,13 +75,12 @@ export const useCameraEffects = ({
   onUserPositionChange,
 }: UseCameraEffectsProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const segmentationRef = useRef<SelfieSegmentation | null>(null);
-  const faceDetectorRef = useRef<FaceDetector | null>(null);
   const facePositionRef = useRef<FacePosition | null>(null);
 
   const [isSegmentationReady, setIsSegmentationReady] = useState(false);
   const [isFaceDetectionReady, setIsFaceDetectionReady] = useState(false);
   const animationFrameRef = useRef<number>();
+  const lastVideoTimeRef = useRef<number>(-1);
 
   // Initialize Canvas
   useEffect(() => {
@@ -62,131 +89,124 @@ export const useCameraEffects = ({
     }
   }, []);
 
-  // Initialize Segmentation (Only if enabled)
+  // Initialize Tasks
   useEffect(() => {
-    if (!isSegmentationEnabled) {
-      setIsSegmentationReady(false);
-      return;
-    }
-
-    // @ts-ignore
-    // Fix for Vite production build where named exports may be lost
-    const SelfieSegmentationConstructor =
-      SelfieSegmentationModule.SelfieSegmentation ||
-      SelfieSegmentationModule.default ||
-      SelfieSegmentationModule;
-
-    try {
-      // @ts-ignore
-      const selfieSegmentation = new SelfieSegmentationConstructor({
-        locateFile: (file: string) =>
-          `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
-      });
-
-      selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: false });
-
-      selfieSegmentation.onResults((results) => {
-        if (!canvasRef.current || !videoElement) return;
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
-        if (canvas.width !== videoElement.videoWidth) {
-          canvas.width = videoElement.videoWidth;
-          canvas.height = videoElement.videoHeight;
-        }
-
-        // Draw mask for use in shaders
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(
-          results.segmentationMask,
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-      });
-
-      segmentationRef.current = selfieSegmentation;
-      setIsSegmentationReady(true);
-    } catch (error) {
-      console.error("[useCameraEffects] Failed to initialize SelfieSegmentation:", error);
-      setIsSegmentationReady(false);
-    }
-
-    return () => {
-      if (segmentationRef.current) {
-        segmentationRef.current.close();
-        segmentationRef.current = null;
-      }
-      setIsSegmentationReady(false);
-    };
-  }, [isSegmentationEnabled, videoElement]);
-
-  // Initialize Face Detector
-  useEffect(() => {
-    if (!isFaceTrackingEnabled) {
-      setIsFaceDetectionReady(false);
-      return;
-    }
-
     let isMounted = true;
-    initializeFaceDetector().then((detector) => {
-      if (isMounted && detector) {
-        faceDetectorRef.current = detector;
-        setIsFaceDetectionReady(true);
+
+    const init = async () => {
+      const vision = await createVisionTask();
+
+      if (isSegmentationEnabled && isMounted) {
+        const segmenter = await initializeImageSegmenter(vision);
+        if (segmenter && isMounted) setIsSegmentationReady(true);
       }
-    });
+
+      if (isFaceTrackingEnabled && isMounted) {
+        const detector = await initializeFaceDetector(vision);
+        if (detector && isMounted) setIsFaceDetectionReady(true);
+      }
+    };
+
+    init();
 
     return () => {
       isMounted = false;
     };
-  }, [isFaceTrackingEnabled]);
+  }, [isSegmentationEnabled, isFaceTrackingEnabled]);
 
   // Process Frames
   useEffect(() => {
     if (!videoElement) return;
-    let lastVideoTime = -1;
 
     const processFrame = async () => {
       if (videoElement.readyState >= 2) {
-        const currentTime = videoElement.currentTime;
+        // Only process if time has advanced
+        if (videoElement.currentTime !== lastVideoTimeRef.current) {
+          lastVideoTimeRef.current = videoElement.currentTime;
+          const timestamp = performance.now();
 
-        if (isSegmentationReady && segmentationRef.current) {
-          try {
-            await segmentationRef.current.send({ image: videoElement });
-          } catch (e) { }
-        }
+          // 1. Segmentation
+          if (isSegmentationEnabled && isSegmentationReady && imageSegmenter) {
+            imageSegmenter.segmentForVideo(
+              videoElement,
+              timestamp,
+              (result: ImageSegmenterResult) => {
+                if (
+                  canvasRef.current &&
+                  result.confidenceMasks &&
+                  result.confidenceMasks.length > 0
+                ) {
+                  const mask = result.confidenceMasks[0];
+                  // If utilizing GPU (which we requested), getting data might require conversion
+                  // But callbacks usually provide Float32Array on CPU in current JS API
+                  // If use GPU backing, we need to handle it. 
+                  // For simplicity in this integration, we assume standard array access.
 
-        if (
-          isFaceDetectionReady &&
-          faceDetectorRef.current &&
-          currentTime !== lastVideoTime
-        ) {
-          lastVideoTime = currentTime;
-          const detections = faceDetectorRef.current.detectForVideo(
-            videoElement,
-            performance.now()
-          );
+                  // Note: mask.getAsFloat32Array() is the standard method
+                  const maskData = mask.getAsFloat32Array();
+                  const width = mask.width;
+                  const height = mask.height;
 
-          if (detections.detections && detections.detections.length > 0) {
-            const detection = detections.detections[0];
-            const bbox = detection.boundingBox;
-            if (bbox && videoElement.videoWidth > 0) {
-              const centerX =
-                ((bbox.originX + bbox.width / 2) / videoElement.videoWidth) *
-                100;
-              const centerY =
-                ((bbox.originY + bbox.height / 2) / videoElement.videoHeight) *
-                100;
-              facePositionRef.current = {
-                x: centerX,
-                y: centerY,
-                width: (bbox.width / videoElement.videoWidth) * 100,
-                height: (bbox.height / videoElement.videoHeight) * 100,
-              };
-              if (onUserPositionChange)
-                onUserPositionChange({ x: centerX, y: centerY });
+                  // We need to draw this to our canvas
+                  const canvas = canvasRef.current;
+                  if (canvas.width !== width || canvas.height !== height) {
+                    canvas.width = width;
+                    canvas.height = height;
+                  }
+
+                  const ctx = canvas.getContext("2d");
+                  if (ctx) {
+                    // Create ImageData
+                    const imageData = ctx.createImageData(width, height);
+                    const data = imageData.data;
+
+                    for (let i = 0; i < maskData.length; i++) {
+                      // maskData is 0.0 to 1.0 probability of person
+                      const val = Math.round(maskData[i] * 255);
+                      const idx = i * 4;
+                      // Encode into Red channel for the shader
+                      data[idx] = val;     // R
+                      data[idx + 1] = val; // G
+                      data[idx + 2] = val; // B
+                      data[idx + 3] = 255; // Alpha (always opaque, we use color for value)
+                    }
+                    ctx.putImageData(imageData, 0, 0);
+                  }
+                }
+              }
+            );
+          }
+
+          // 2. Face Detection
+          if (
+            isFaceTrackingEnabled &&
+            isFaceDetectionReady &&
+            faceDetector
+          ) {
+            const detections = faceDetector.detectForVideo(
+              videoElement,
+              timestamp
+            );
+
+            if (detections.detections && detections.detections.length > 0) {
+              const detection = detections.detections[0];
+              const bbox = detection.boundingBox;
+              if (bbox && videoElement.videoWidth > 0) {
+                const centerX =
+                  ((bbox.originX + bbox.width / 2) / videoElement.videoWidth) *
+                  100;
+                const centerY =
+                  ((bbox.originY + bbox.height / 2) / videoElement.videoHeight) *
+                  100;
+                facePositionRef.current = {
+                  x: centerX,
+                  y: centerY,
+                  width: (bbox.width / videoElement.videoWidth) * 100,
+                  height: (bbox.height / videoElement.videoHeight) * 100,
+                };
+                if (onUserPositionChange)
+                  onUserPositionChange({ x: centerX, y: centerY });
+              }
             }
           }
         }
@@ -201,6 +221,8 @@ export const useCameraEffects = ({
     };
   }, [
     videoElement,
+    isSegmentationEnabled,
+    isFaceTrackingEnabled,
     isSegmentationReady,
     isFaceDetectionReady,
     onUserPositionChange,

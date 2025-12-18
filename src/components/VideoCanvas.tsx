@@ -762,7 +762,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           </div>
         ))}
 
-        {isTextDepthEnabled && containerSize.width > 0 && (
+        {isTextDepthEnabled && !props.canvasLayout && containerSize.width > 0 && (
           <ForegroundUserLayer
             videoRef={videoRef}
             processedCanvas={processedCanvas}

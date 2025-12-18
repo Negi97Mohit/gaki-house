@@ -34,8 +34,10 @@ void main() {
   float alpha = maskColor.r; 
   
   // Apply mask to alpha with some sharpening
-  float alphaFinal = smoothstep(0.1, 0.6, alpha);
-
+  // Using wider range to allow for anti-aliasing from the high quality confidence mask
+  float alphaFinal = smoothstep(0.1, 0.9, alpha);
+  // Optional: Add a multiplier if it's too faint, but usually 0-1 is correct
+  
   outColor = vec4(color.rgb, alphaFinal);
 }
 `;

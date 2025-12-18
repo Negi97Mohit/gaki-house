@@ -312,7 +312,7 @@ export const CanvasHoverToolbar = ({
   return (
     <div
       className={cn(
-        "absolute top-3 left-1/2 -translate-x-1/2 z-50",
+        "absolute top-3 left-1/2 -translate-x-1/2 z-[20000]",
         "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-lg",
         "px-1.5 py-1 sm:px-2 sm:py-1.5 flex items-center gap-0.5 sm:gap-1",
         "transition-all duration-300 ease-out",
