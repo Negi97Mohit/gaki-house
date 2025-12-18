@@ -64,7 +64,7 @@ const GuideRail = ({ curve }: { curve: THREE.CatmullRomCurve3 }) => {
 
 // --- 3. Panel Component ---
 const RibbonItem = React.memo(
-  ({ section, index, onRemove, onRename, ...props }: any) => {
+  ({ section, index, onRemove, onRename, editor, ...props }: any) => {
     const [hovered, setHover] = useState(false);
     useCursor(hovered);
 
@@ -129,7 +129,7 @@ const RibbonItem = React.memo(
             <GridSectionWrapper
               section={section}
               templateSection={{ id: section.id, name: `Node ${index + 1}` }}
-              isHovered={wrapperProps.editor?.hoveredSectionId === section.id}
+              isHovered={editor?.hoveredSectionId === section.id}
               {...props}
             />
           </div>
@@ -398,8 +398,6 @@ export const HadidRibbonLayout: React.FC<HadidRibbonProps> = ({
             pages={Math.max(1.5, sections.length * 0.8 + 1)}
             damping={0.3}
             horizontal={true}
-            // Snap to each item AND the add button
-            snap={1 / (sections.length || 1)}
           >
             <RibbonScene
               sections={sections}

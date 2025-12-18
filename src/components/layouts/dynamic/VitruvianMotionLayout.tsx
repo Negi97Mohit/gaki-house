@@ -11,7 +11,7 @@ interface VitruvianMotionLayoutProps {
     layout: CanvasLayoutState;
     template: CanvasLayoutTemplate;
     containerRef: React.RefObject<HTMLDivElement>;
-    onLayoutUpdate: (layout: CanvasLayoutState) => void;
+    onLayoutUpdate?: (layout: CanvasLayoutState) => void;
     [key: string]: any;
 }
 

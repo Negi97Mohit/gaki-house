@@ -10,28 +10,29 @@ import { AssetResult } from "@/components/AssetLibrary";
 import { EmptyGridSection } from "@/components/grid-section/EmptyGridSection";
 import { CameraGridSection } from "@/components/grid-section/CameraGridSection";
 
-interface GridSectionRendererProps {
+export interface GridSectionRendererProps {
     section: CanvasSectionState;
-    cameraStream: MediaStream | null;
-    screenStream: MediaStream | null;
-    fileOverlays: FileOverlayState[];
-    textOverlays: TextOverlayState[];
-    blankCanvasColor: string;
+    cameraStream?: MediaStream | null;
+    screenStream?: MediaStream | null;
+    fileOverlays?: FileOverlayState[];
+    textOverlays?: TextOverlayState[];
+    blankCanvasColor?: string;
     backgroundImageUrl?: string;
-    onSectionContentChange: (
+    onSectionContentChange?: (
         sectionId: string,
         content: CanvasSectionState["content"]
     ) => void;
-    onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
-    onSectionCameraSettingsChange: (
+    onGridAssetSelect?: (sectionId: string, asset: AssetResult) => void;
+    onSectionCameraSettingsChange?: (
         sectionId: string,
         settings: Partial<CanvasSectionCameraState>
     ) => void;
     videoDevices?: MediaDeviceInfo[];
     activeSequenceId?: string | null;
     onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
-    cameraShape: "rectangle" | "circle" | "rounded";
-    backgroundEffect: "none" | "blur" | "image";
+    cameraShape?: "rectangle" | "circle" | "rounded";
+    backgroundEffect?: "none" | "blur" | "image";
+    [key: string]: any;
 }
 
 export const GridSectionRenderer: React.FC<GridSectionRendererProps> = ({

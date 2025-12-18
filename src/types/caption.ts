@@ -418,14 +418,21 @@ export type CanvasSectionContent =
 // The state for a single grid section
 export interface CanvasSectionState {
   id: string; // e.g., 'main', 'sidebar', 'corner'
+  name?: string; // Optional display name for the section
   content: CanvasSectionContent;
   savedCameraSettings?: CanvasSectionCameraState;
   defaultContent?: CanvasSectionContent;
   style?: React.CSSProperties; // Added to match usage in layout templates
 }
 
+// Extended CSS properties for layout editor styling
+export interface ExtendedCSSProperties extends React.CSSProperties {
+  bold?: boolean;
+  italic?: boolean;
+}
+
 export interface CustomSectionStyle {
-  [sectionId: string]: React.CSSProperties;
+  [sectionId: string]: ExtendedCSSProperties;
 }
 
 export interface SectionData {

@@ -3,18 +3,18 @@ import { useDynamicLayout } from "./DynamicLayoutContext";
 import { cn } from "@/lib/utils";
 
 interface EditableTextProps {
-    sectionId: string; // Creates a unique namespace. Use 'header' for global text.
-    fieldId: string;   // The specific field name (e.g. 'title', 'subtitle')
-    defaultValue: string;
+    sectionId?: string; // Creates a unique namespace. Use 'header' for global text.
+    fieldId?: string;   // The specific field name (e.g. 'title', 'subtitle')
+    defaultValue?: string;
     className?: string;
     multiline?: boolean;
     style?: React.CSSProperties;
 }
 
 export const EditableText: React.FC<EditableTextProps> = ({
-    sectionId,
-    fieldId,
-    defaultValue,
+    sectionId = 'default',
+    fieldId = 'text',
+    defaultValue = '',
     className,
     multiline = false,
     style

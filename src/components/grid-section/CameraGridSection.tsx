@@ -21,7 +21,7 @@ interface CameraGridSectionProps {
 
 // Default fallback to prevent crashes
 const DEFAULT_SETTINGS: CanvasSectionCameraState = {
-  layoutMode: "camera",
+  layoutMode: "solo",
   selectedDeviceId: "",
   pipBorder: { color: "#FFF", width: 0 },
   pipShadow: { blur: 0, color: "transparent" },
@@ -41,6 +41,7 @@ const DEFAULT_SETTINGS: CanvasSectionCameraState = {
   filterIntensity: 100,
   filterColor: "#000",
   filterTarget: "background",
+  cameraBackground: "none",
 };
 
 export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
