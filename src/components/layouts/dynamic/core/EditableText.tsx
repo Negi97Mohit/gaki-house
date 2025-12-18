@@ -2,9 +2,9 @@ import React from "react";
 import { useDynamicLayout } from "./DynamicLayoutContext";
 import { cn } from "@/lib/utils";
 
-interface EditableTextProps {
-    sectionId?: string; // Creates a unique namespace. Use 'header' for global text.
-    fieldId?: string;   // The specific field name (e.g. 'title', 'subtitle')
+export interface EditableTextProps {
+    sectionId?: string;
+    fieldId?: string;
     defaultValue?: string;
     className?: string;
     multiline?: boolean;
@@ -21,13 +21,8 @@ export const EditableText: React.FC<EditableTextProps> = ({
 }) => {
     const { layout, editor, colors } = useDynamicLayout();
 
-    // Construct unique ID for styling/focus tracking
     const uniqueId = `${sectionId}_${fieldId}`;
-
-    // Get current value
     const value = layout.customSectionData?.[sectionId]?.[fieldId] ?? defaultValue;
-
-    // Get combined styles (base style + user customized style via toolbar)
     const combinedStyle = editor.getFieldStyle(uniqueId, { ...style, color: colors.textColor });
 
     const commonProps = {
