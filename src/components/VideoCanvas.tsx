@@ -203,7 +203,10 @@ interface VideoCanvasProps {
     style: React.CSSProperties;
   } | null;
   onBannerTextStyleChange?: (style: React.CSSProperties) => void;
+  onBannerTextStyleChange?: (style: React.CSSProperties) => void;
   onBannerTextClose?: () => void;
+  isChatbotOpen?: boolean;
+  onChatbotToggle?: (open: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
@@ -535,7 +538,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           canvasLayout={props.canvasLayout}
           onCanvasLayoutChange={props.onCanvasLayoutChange}
           activeSequenceId={props.activeSequenceId}
-
+          isChatbotOpen={props.isChatbotOpen}
+          onToggleChatbot={props.onChatbotToggle}
         />
 
         {renderContent()}

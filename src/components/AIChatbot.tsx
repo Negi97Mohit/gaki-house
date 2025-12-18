@@ -122,6 +122,22 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
         };
     }, [isOpen, onClose]);
 
+    // Handle Escape key
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && isOpen) {
+                if (isLoading) {
+                    stopGeneration();
+                } else {
+                    onClose();
+                }
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isOpen, isLoading, onClose]);
+
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -52,6 +52,8 @@ interface CanvasHoverToolbarProps {
   activeSequenceId?: string | null;
   isTextDepthEnabled?: boolean;
   onTextDepthToggle?: (enabled: boolean) => void;
+  isChatbotOpen?: boolean;
+  onToggleChatbot?: (open: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 export const CanvasHoverToolbar = ({
@@ -66,13 +68,17 @@ export const CanvasHoverToolbar = ({
   activeSequenceId,
   isTextDepthEnabled,
   onTextDepthToggle,
+  isChatbotOpen, // passed from props
+  onToggleChatbot, // passed from props
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [layoutTemplates, setLayoutTemplates] = useState<
     CanvasLayoutTemplate[]
   >([]);
   const [templatesLoading, setTemplatesLoading] = useState(true);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("tools"); // added missing state if any, assuming standard tabs
+  // NO local isChatbotOpen state
+
 
   useEffect(() => {
     getLayoutTemplates()
@@ -404,12 +410,19 @@ export const CanvasHoverToolbar = ({
           "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
           isChatbotOpen && "bg-primary/20 text-primary"
         )}
-        onClick={() => setIsChatbotOpen(!isChatbotOpen)}
+        onClick={() => {
+          if (onToggleChatbot) onToggleChatbot((prev) => !prev);
+        }}
         title="AI Chatbot"
       >
         <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
       </Button>
-      <AIChatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
+      <AIChatbot
+        isOpen={!!isChatbotOpen}
+        onClose={() => {
+          if (onToggleChatbot) onToggleChatbot(false);
+        }}
+      />
 
       <Popover>
         <PopoverTrigger asChild>
