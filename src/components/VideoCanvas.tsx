@@ -255,7 +255,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   } = props;
 
   // --- Text Behind User State ---
-  const [isTextDepthEnabled, setIsTextDepthEnabled] = React.useState(true);
+  const [isTextDepthEnabled, setIsTextDepthEnabled] = React.useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const allOverlays: OverlayElement[] = useMemo(
@@ -535,8 +535,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           canvasLayout={props.canvasLayout}
           onCanvasLayoutChange={props.onCanvasLayoutChange}
           activeSequenceId={props.activeSequenceId}
-          isTextDepthEnabled={isTextDepthEnabled}
-          onTextDepthToggle={setIsTextDepthEnabled}
+
         />
 
         {renderContent()}
