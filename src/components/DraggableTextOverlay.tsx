@@ -201,6 +201,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
           <TextEditingToolbar
             overlay={overlay}
             onStyleChange={onStyleChange}
+            onLayoutChange={onLayoutChange}
             position={{
               x: (overlay.layout.position.x / 100) * sceneSize.width,
               y: (overlay.layout.position.y / 100) * sceneSize.height,

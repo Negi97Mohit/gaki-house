@@ -48,6 +48,7 @@ export type GeneratedLayout = {
   rotation: number;
   // Control whether overlay should render above or below video elements
   layerOrder?: "above-video" | "below-video" | "auto";
+  isBehindUser?: boolean; // New prop for user segmentation depth
 };
 export interface GeneratedOverlay {
   id: string;

@@ -19,7 +19,7 @@ interface DraggableHtmlOverlayProps {
   overlay: GeneratedOverlay;
   onLayoutChange: (
     id: string,
-    key: "position" | "size" | "rotation",
+    key: "position" | "size" | "rotation" | "isBehindUser",
     value: any
   ) => void;
   onRemoveOverlay: (id: string) => void;
@@ -137,6 +137,12 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
     return { width: sizeW, height: sizeH };
   }, [overlay.layout.size]);
 
+  // Handle toggling depth
+  const handleToggleDepth = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onLayoutChange(overlay.id, "isBehindUser", !overlay.layout.isBehindUser);
+  };
+
   if (!containerSize.width || !containerSize.height) return null;
 
   return (
@@ -150,7 +156,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       containerSize={containerSize}
       isSelected={isSelected || false}
       isEditing={false}
-      onSelect={onSelect || (() => {})}
+      onSelect={onSelect || (() => { })}
       onRemove={onRemoveOverlay}
       onCommit={(id, layout) => {
         if (layout.position) onLayoutChange(id, "position", layout.position);
@@ -163,7 +169,27 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       onSnapGuidesChange={onSnapGuidesChange}
       onDoubleClick={onDoubleClick}
     >
-      <div ref={elementRef} className="w-full h-full overflow-hidden">
+      <div ref={elementRef} className="w-full h-full overflow-hidden relative group">
+        {/* Layers Button - Only show when selected */}
+        {isSelected && (
+          <div
+            className="absolute top-2 left-2 z-50 flex gap-1 pointer-events-auto"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleToggleDepth}
+              className={`p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors ${overlay.layout.isBehindUser
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
+                }`}
+              title={overlay.layout.isBehindUser ? "Behind User" : "In Front"}
+            >
+              {/* Inline SVG for Layers icon to avoid import issues if not imported yet */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layers"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z" /><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65" /><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65" /></svg>
+            </button>
+          </div>
+        )}
+
         {animatedBannerDesign ? (
           <AnimatedBannerRenderer
             design={animatedBannerDesign}

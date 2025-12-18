@@ -7,6 +7,7 @@ import {
   Globe,
   RefreshCw,
   X,
+  Layers,
 } from "lucide-react";
 import { HybridDraggable } from "@/components/video-canvas/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
@@ -133,6 +134,25 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
             className="p-1 hover:bg-primary/20 rounded-sm"
           >
             <ArrowRight className="w-4 h-4" />
+          </button>
+
+          <div className="w-px h-6 bg-border mx-1" />
+
+          <button
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onLayoutChange(overlay.id, { isBehindUser: !overlay.layout.isBehindUser });
+            }}
+            className={cn(
+              "p-1 rounded-sm transition-colors",
+              overlay.layout.isBehindUser
+                ? "bg-primary/20 text-primary hover:bg-primary/30"
+                : "text-muted-foreground hover:bg-primary/20 hover:text-foreground"
+            )}
+            title={overlay.layout.isBehindUser ? "Currently Behind User (Click to move front)" : "Currently In Front (Click to move behind)"}
+          >
+            <Layers className="w-4 h-4" />
           </button>
         </div>
 

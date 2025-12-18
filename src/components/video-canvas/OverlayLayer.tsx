@@ -36,7 +36,7 @@ interface OverlayLayerProps {
   onSetDynamicLayout: any;
   onOverlayLayoutChange: (
     id: string,
-    key: "position" | "size" | "rotation",
+    key: "position" | "size" | "rotation" | "isBehindUser",
     value: any
   ) => void;
   onRemoveOverlay: (id: string) => void;
@@ -75,6 +75,7 @@ interface OverlayLayerProps {
   selectedGeneratedId?: string | null;
   onSelectGenerated?: (id: string | null) => void;
   onBannerDoubleClick?: (id: string, e: React.MouseEvent) => void;
+  filterBehindUser?: boolean; // New prop
 }
 
 export const OverlayLayer: React.FC<OverlayLayerProps> = ({
@@ -117,6 +118,7 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
   selectedGeneratedId,
   onSelectGenerated,
   onBannerDoubleClick,
+  filterBehindUser = false, // Default to false (in front)
 }) => {
   const [showDesignSelector, setShowDesignSelector] = useState<string | null>(null);
 
@@ -125,16 +127,25 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
   // Filter overlays based on dynamic layout (exclude if active target)
   const filterDynamic = (id: string) => id !== activeDynamicTargetId;
 
-  // Helper to check layer order
+  // Helper to check layer order AND user depth
   const checkLayer = (layout: GeneratedLayout) => {
+    // 1. Check video layer (existing logic)
+    let isCorrectVideoLayer = false;
     if (layerOrder === "above-video") {
-      return (
+      isCorrectVideoLayer =
         !layout.layerOrder ||
         layout.layerOrder === "above-video" ||
-        layout.layerOrder === "auto"
-      );
+        layout.layerOrder === "auto";
+    } else {
+      isCorrectVideoLayer = layout.layerOrder === "below-video";
     }
-    return layout.layerOrder === "below-video";
+
+    // 2. Check depth relative to user (New logic)
+    // If filterBehindUser is true, we ONLY want items with isBehindUser=true
+    // If filterBehindUser is false, we ONLY want items with isBehindUser=false (or undefined)
+    const isBehind = !!layout.isBehindUser;
+
+    return isCorrectVideoLayer && (isBehind === filterBehindUser);
   };
 
   return (
@@ -152,10 +163,10 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
             const currentDesign = overlay.metadata.design as BannerDesign;
 
             const handleDesignChange = (newDesign: BannerDesign) => {
-              const newType = isAnimatedBanner(newDesign) 
-                ? "animated-banner" 
+              const newType = isAnimatedBanner(newDesign)
+                ? "animated-banner"
                 : "social-banner-interactive";
-              
+
               onUpdateOverlayMetadata?.(overlay.id, {
                 ...overlay.metadata,
                 type: newType,

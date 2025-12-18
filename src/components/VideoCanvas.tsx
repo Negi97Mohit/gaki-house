@@ -59,7 +59,7 @@ interface VideoCanvasProps {
   generatedOverlays: GeneratedOverlay[];
   onOverlayLayoutChange: (
     id: string,
-    key: "position" | "size" | "rotation",
+    key: "position" | "size" | "rotation" | "isBehindUser",
     value: any
   ) => void;
   onRemoveOverlay: (id: string) => void;
@@ -258,8 +258,40 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isTextDepthEnabled, setIsTextDepthEnabled] = React.useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const allOverlays: OverlayElement[] = useMemo(
+    () => [
+      ...textOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "text" as const,
+      })),
+      ...browserOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "browser" as const,
+      })),
+      ...fileOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "file" as const,
+      })),
+      ...generatedOverlays.map((o) => ({
+        id: o.id,
+        layout: o.layout,
+        type: "generated" as const,
+      })),
+    ],
+    [textOverlays, browserOverlays, fileOverlays, generatedOverlays]
+  );
+
+  // Check if any overlay is explicitly set to be behind the user
+  const hasBehindUserOverlay = useMemo(() => {
+    return allOverlays.some(o => o.layout.isBehindUser);
+  }, [allOverlays]);
+
   const isSegmentationEnabled =
     isTextDepthEnabled ||
+    hasBehindUserOverlay ||
     (props.sidebarProps?.filterTarget && props.sidebarProps.filterTarget !== "both");
 
   const { processedCanvas, facePositionRef } = useCameraEffects({
@@ -459,31 +491,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     );
   };
 
-  const allOverlays: OverlayElement[] = useMemo(
-    () => [
-      ...textOverlays.map((o) => ({
-        id: o.id,
-        layout: o.layout,
-        type: "text" as const,
-      })),
-      ...browserOverlays.map((o) => ({
-        id: o.id,
-        layout: o.layout,
-        type: "browser" as const,
-      })),
-      ...fileOverlays.map((o) => ({
-        id: o.id,
-        layout: o.layout,
-        type: "file" as const,
-      })),
-      ...generatedOverlays.map((o) => ({
-        id: o.id,
-        layout: o.layout,
-        type: "generated" as const,
-      })),
-    ],
-    [textOverlays, browserOverlays, fileOverlays, generatedOverlays]
-  );
+
 
   const captionBaseStyle: React.CSSProperties = {
     fontFamily: props.liveCaptionStyle.fontFamily,
@@ -654,6 +662,41 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                       (bannerOverlay.layout.size.height / 100) *
                       sceneSize.height
                     }
+                    onLayoutChange={(id, partialLayout) => {
+                      if (partialLayout.position) {
+                        // Convert overlay percentage back to absolute for banner logic if needed
+                        // But actually VideoCanvas expects onOverlayLayoutChange for banners
+                        props.onOverlayLayoutChange(id, "position", partialLayout.position);
+                      }
+                      if (partialLayout.size) {
+                        props.onOverlayLayoutChange(id, "size", partialLayout.size);
+                      }
+                      if (partialLayout.rotation !== undefined) {
+                        props.onOverlayLayoutChange(id, "rotation", partialLayout.rotation);
+                      }
+                      // Handle custom banner metadata like depth
+                      if (partialLayout.isBehindUser !== undefined && props.onUpdateOverlayMetadata) {
+                        // Update metadata to persist depth in banner
+                        props.onUpdateOverlayMetadata(id, {
+                          ...bannerOverlay.metadata,
+                          data: {
+                            ...bannerOverlay.metadata.data,
+                            isBehindUser: partialLayout.isBehindUser
+                          }
+                        });
+                        // Also update the core layout structure if 'isBehindUser' is moved there
+                        // Currently we put isBehindUser on GeneratedLayout, so we should call onOverlayLayoutChange?
+                        // But onOverlayLayoutChange only takes "position" | "size" | "rotation".
+                        // We might need to extend onOverlayLayoutChange or use onUpdateOverlayMetadata.
+                        // For now, let's assume we can't update isBehindUser for banners yet or use metadata.
+                      }
+                    }}
+                    onLayoutChange={(id: string, partialLayout: any) => {
+                      if (partialLayout.position) props.onOverlayLayoutChange(id, "position", partialLayout.position);
+                      if (partialLayout.size) props.onOverlayLayoutChange(id, "size", partialLayout.size);
+                      if (partialLayout.rotation !== undefined) props.onOverlayLayoutChange(id, "rotation", partialLayout.rotation);
+                      if (partialLayout.isBehindUser !== undefined) props.onOverlayLayoutChange(id, "isBehindUser", partialLayout.isBehindUser);
+                    }}
                     onStyleChange={(id, partialStyle) => {
                       const newCssStyle: React.CSSProperties = {};
                       if (partialStyle.fontFamily)
@@ -699,81 +742,185 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
         <SnapLines ref={snapLinesRef} containerSize={sceneSize} />
 
-        {["below-video", "above-video"].map((order) => (
-          <div
-            key={order}
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              zIndex:
-                order === "below-video"
-                  ? "var(--z-overlays-below-video)"
-                  : "var(--z-overlays-above-video)",
-            }}
-          >
-            <OverlayLayer
-              layerOrder={order as "below-video" | "above-video"}
-              sceneId={sceneId}
-              containerSize={sceneSize}
-              viewport={viewport}
-              htmlOverlays={generatedOverlays}
-              browserOverlays={browserOverlays}
-              fileOverlays={fileOverlays}
-              textOverlays={textOverlays}
-              activeDynamicTargetId={
-                dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
-              }
-              onSetDynamicLayout={onSetDynamicLayout}
-              onOverlayLayoutChange={props.onOverlayLayoutChange}
-              onRemoveOverlay={props.onRemoveOverlay}
-              onPreviewGenerated={props.onPreviewGenerated}
-              onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
-              selectedGeneratedId={props.selectedGeneratedId}
-              onSelectGenerated={props.setSelectedGeneratedId}
-              portalContainer={
-                typeof props.portalContainer === "function"
-                  ? null
-                  : props.portalContainer
-              }
-              allOverlays={allOverlays}
-              onSnapGuidesChange={(guides) =>
-                snapLinesRef.current?.setGuides(guides)
-              }
-              onRemoveBrowser={props.onRemoveBrowser}
-              onBrowserUrlChange={props.onBrowserUrlChange}
-              onBrowserLayoutChange={props.onBrowserLayoutChange}
-              selectedBrowserId={props.selectedBrowserId}
-              onSelectBrowser={props.setSelectedBrowserId}
-              onRemoveFile={props.onRemoveFile}
-              onFileLayoutChange={props.onFileLayoutChange}
-              selectedFileId={props.selectedFileId}
-              onSelectFile={props.setSelectedFileId}
-              onRemoveTextOverlay={props.onRemoveTextOverlay}
-              onTextLayoutChange={props.onTextLayoutChange}
-              onTextStyleChange={props.onTextStyleChange}
-              onTextContentChange={props.onTextContentChange}
-              selectedTextId={props.selectedTextId}
-              onSelectText={props.setSelectedTextId}
-              containerRef={sceneRef}
-              isSpacePressed={isSpacePressed}
-              onInternalDragStart={props.onInternalDragStart}
-              onInternalDragStop={props.onInternalDragStop}
-              onBannerDoubleClick={props.onBannerDoubleClick}
-            />
-          </div>
-        ))}
+        {["below-video", "above-video"].map((order) => {
+          // We only apply the sandwich logic for 'above-video'. 
+          // 'below-video' is behind everything anyway.
+          if (order === "below-video") {
+            return (
+              <div
+                key={order}
+                className="absolute inset-0 pointer-events-none"
+                style={{ zIndex: "var(--z-overlays-below-video)" }}
+              >
+                <OverlayLayer
+                  layerOrder="below-video"
+                  sceneId={sceneId}
+                  containerSize={sceneSize}
+                  viewport={viewport}
+                  htmlOverlays={generatedOverlays}
+                  browserOverlays={browserOverlays}
+                  fileOverlays={fileOverlays}
+                  textOverlays={textOverlays}
+                  activeDynamicTargetId={
+                    dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
+                  }
+                  onSetDynamicLayout={onSetDynamicLayout}
+                  onOverlayLayoutChange={props.onOverlayLayoutChange}
+                  onRemoveOverlay={props.onRemoveOverlay}
+                  onPreviewGenerated={props.onPreviewGenerated}
+                  onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+                  selectedGeneratedId={props.selectedGeneratedId}
+                  onSelectGenerated={props.setSelectedGeneratedId}
+                  portalContainer={typeof props.portalContainer === 'function' ? null : props.portalContainer}
+                  allOverlays={allOverlays}
+                  onSnapGuidesChange={(guides) => snapLinesRef.current?.setGuides(guides)}
+                  onRemoveBrowser={props.onRemoveBrowser}
+                  onBrowserUrlChange={props.onBrowserUrlChange}
+                  onBrowserLayoutChange={props.onBrowserLayoutChange}
+                  selectedBrowserId={props.selectedBrowserId}
+                  onSelectBrowser={props.setSelectedBrowserId}
+                  onRemoveFile={props.onRemoveFile}
+                  onFileLayoutChange={props.onFileLayoutChange}
+                  selectedFileId={props.selectedFileId}
+                  onSelectFile={props.setSelectedFileId}
+                  onRemoveTextOverlay={props.onRemoveTextOverlay}
+                  onTextLayoutChange={props.onTextLayoutChange}
+                  onTextStyleChange={props.onTextStyleChange}
+                  onTextContentChange={props.onTextContentChange}
+                  selectedTextId={props.selectedTextId}
+                  onSelectText={props.setSelectedTextId}
+                  containerRef={sceneRef}
+                  isSpacePressed={isSpacePressed}
+                  onInternalDragStart={props.onInternalDragStart}
+                  onInternalDragStop={props.onInternalDragStop}
+                  onBannerDoubleClick={props.onBannerDoubleClick}
+                // No filtering for behind user here as it's already below video
+                />
+              </div>
+            );
+          }
 
-        {isTextDepthEnabled && !props.canvasLayout && containerSize.width > 0 && (
-          <ForegroundUserLayer
-            videoRef={videoRef}
-            processedCanvas={processedCanvas}
-            facePositionRef={facePositionRef}
-            videoFilter={props.videoFilter}
-            isAutoFramingEnabled={props.isAutoFramingEnabled}
-            zoomSensitivity={props.zoomSensitivity}
-            trackingSpeed={props.trackingSpeed}
-            containerSize={containerSize}
-          />
-        )}
+          // --- ABOVE VIDEO (The Sandwich) ---
+          return (
+            <React.Fragment key="above-video-group">
+              {/* 1. Overlays BEHIND User */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ zIndex: "var(--z-overlays-above-video)" }} // z-index 150 (Below User 1000)
+              >
+                <OverlayLayer
+                  layerOrder="above-video"
+                  sceneId={sceneId}
+                  containerSize={sceneSize}
+                  viewport={viewport}
+                  htmlOverlays={generatedOverlays}
+                  browserOverlays={browserOverlays}
+                  fileOverlays={fileOverlays}
+                  textOverlays={textOverlays}
+                  activeDynamicTargetId={
+                    dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
+                  }
+                  onSetDynamicLayout={onSetDynamicLayout}
+                  onOverlayLayoutChange={props.onOverlayLayoutChange}
+                  onRemoveOverlay={props.onRemoveOverlay}
+                  onPreviewGenerated={props.onPreviewGenerated}
+                  onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+                  selectedGeneratedId={props.selectedGeneratedId}
+                  onSelectGenerated={props.setSelectedGeneratedId}
+                  portalContainer={typeof props.portalContainer === 'function' ? null : props.portalContainer}
+                  allOverlays={allOverlays}
+                  onSnapGuidesChange={(guides) => snapLinesRef.current?.setGuides(guides)}
+                  onRemoveBrowser={props.onRemoveBrowser}
+                  onBrowserUrlChange={props.onBrowserUrlChange}
+                  onBrowserLayoutChange={props.onBrowserLayoutChange}
+                  selectedBrowserId={props.selectedBrowserId}
+                  onSelectBrowser={props.setSelectedBrowserId}
+                  onRemoveFile={props.onRemoveFile}
+                  onFileLayoutChange={props.onFileLayoutChange}
+                  selectedFileId={props.selectedFileId}
+                  onSelectFile={props.setSelectedFileId}
+                  onRemoveTextOverlay={props.onRemoveTextOverlay}
+                  onTextLayoutChange={props.onTextLayoutChange}
+                  onTextStyleChange={props.onTextStyleChange}
+                  onTextContentChange={props.onTextContentChange}
+                  selectedTextId={props.selectedTextId}
+                  onSelectText={props.setSelectedTextId}
+                  containerRef={sceneRef}
+                  isSpacePressed={isSpacePressed}
+                  onInternalDragStart={props.onInternalDragStart}
+                  onInternalDragStop={props.onInternalDragStop}
+                  onBannerDoubleClick={props.onBannerDoubleClick}
+                  filterBehindUser={true}
+                />
+              </div>
+
+              {/* 2. THE USER (Cutout Layer) */}
+              {(isTextDepthEnabled || hasBehindUserOverlay) && !props.canvasLayout && containerSize.width > 0 && (
+                <ForegroundUserLayer
+                  videoRef={videoRef}
+                  processedCanvas={processedCanvas}
+                  facePositionRef={facePositionRef}
+                  videoFilter={props.videoFilter}
+                  isAutoFramingEnabled={props.isAutoFramingEnabled}
+                  zoomSensitivity={props.zoomSensitivity}
+                  trackingSpeed={props.trackingSpeed}
+                  containerSize={containerSize}
+                />
+              )}
+
+              {/* 3. Overlays IN FRONT of User (Must be > 1000) */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ zIndex: 1500 }}
+              >
+                <OverlayLayer
+                  layerOrder="above-video"
+                  sceneId={sceneId}
+                  containerSize={sceneSize}
+                  viewport={viewport}
+                  htmlOverlays={generatedOverlays}
+                  browserOverlays={browserOverlays}
+                  fileOverlays={fileOverlays}
+                  textOverlays={textOverlays}
+                  activeDynamicTargetId={
+                    dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
+                  }
+                  onSetDynamicLayout={onSetDynamicLayout}
+                  onOverlayLayoutChange={props.onOverlayLayoutChange}
+                  onRemoveOverlay={props.onRemoveOverlay}
+                  onPreviewGenerated={props.onPreviewGenerated}
+                  onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+                  selectedGeneratedId={props.selectedGeneratedId}
+                  onSelectGenerated={props.setSelectedGeneratedId}
+                  portalContainer={typeof props.portalContainer === 'function' ? null : props.portalContainer}
+                  allOverlays={allOverlays}
+                  onSnapGuidesChange={(guides) => snapLinesRef.current?.setGuides(guides)}
+                  onRemoveBrowser={props.onRemoveBrowser}
+                  onBrowserUrlChange={props.onBrowserUrlChange}
+                  onBrowserLayoutChange={props.onBrowserLayoutChange}
+                  selectedBrowserId={props.selectedBrowserId}
+                  onSelectBrowser={props.setSelectedBrowserId}
+                  onRemoveFile={props.onRemoveFile}
+                  onFileLayoutChange={props.onFileLayoutChange}
+                  selectedFileId={props.selectedFileId}
+                  onSelectFile={props.setSelectedFileId}
+                  onRemoveTextOverlay={props.onRemoveTextOverlay}
+                  onTextLayoutChange={props.onTextLayoutChange}
+                  onTextStyleChange={props.onTextStyleChange}
+                  onTextContentChange={props.onTextContentChange}
+                  selectedTextId={props.selectedTextId}
+                  onSelectText={props.setSelectedTextId}
+                  containerRef={sceneRef}
+                  isSpacePressed={isSpacePressed}
+                  onInternalDragStart={props.onInternalDragStart}
+                  onInternalDragStop={props.onInternalDragStop}
+                  onBannerDoubleClick={props.onBannerDoubleClick}
+                  filterBehindUser={false}
+                />
+              </div>
+            </React.Fragment>
+          );
+        })}
       </div>
 
       {containerSize.width > 0 && (

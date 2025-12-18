@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { FileOverlayState } from "@/types/caption";
-import { X, File as FileIcon, Loader2 } from "lucide-react";
+import { X, File as FileIcon, Loader2, Layers } from "lucide-react";
 import { HybridDraggable } from "@/components/video-canvas/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
@@ -144,6 +144,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       )}
     >
       <div className="w-full h-full flex flex-col rounded-lg relative overflow-hidden">
+
         <div
           className={cn(
             "flex-grow w-full h-full relative overflow-hidden",
@@ -163,6 +164,29 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         >
           <X className="w-4 h-4" />
         </button>
+
+        {isSelected && (
+          <div
+            className="absolute top-2 left-2 z-50 flex gap-1 pointer-events-auto"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onLayoutChange(overlay.id, { isBehindUser: !overlay.layout.isBehindUser });
+              }}
+              className={cn(
+                "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors",
+                overlay.layout.isBehindUser
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
+              )}
+              title={overlay.layout.isBehindUser ? "Behind User" : "In Front"}
+            >
+              <Layers className="w-3 h-3" />
+            </button>
+          </div>
+        )}
 
       </div>
     </HybridDraggable>

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, RemoveFormatting } from "lucide-react";
+import { Sparkles, RemoveFormatting, Layers } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import { TextFormattingControls } from "@/components/text-toolbar/TextFormattingControls";
 import { FontControls } from "@/components/text-toolbar/FontControls";
@@ -13,6 +14,10 @@ interface TextEditingToolbarProps {
     id: string,
     style: Partial<TextOverlayState["style"]>
   ) => void;
+  onLayoutChange: (
+    id: string, // ADDED
+    layout: Partial<TextOverlayState["layout"]> // ADDED
+  ) => void;
   position: { x: number; y: number };
   containerRef?: React.RefObject<HTMLElement>;
   elementHeight?: number;
@@ -22,6 +27,7 @@ interface TextEditingToolbarProps {
 export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   overlay,
   onStyleChange,
+  onLayoutChange, // ADDED
   position,
   containerRef,
   elementHeight = 40,
@@ -83,6 +89,21 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           >
             <Sparkles className="w-3 h-3 mr-1" />
             Designs
+          </Button>
+
+          <div className="w-px h-6 bg-border" />
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "h-8 w-8",
+              overlay.layout.isBehindUser ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
+            )}
+            title={overlay.layout.isBehindUser ? "Currently Behind User (Click to move front)" : "Currently In Front (Click to move behind)"}
+            onClick={() => onLayoutChange(overlay.id, { isBehindUser: !overlay.layout.isBehindUser })}
+          >
+            <Layers className="w-4 h-4" />
           </Button>
 
           {overlay.style.layers ? (
