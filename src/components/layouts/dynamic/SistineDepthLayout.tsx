@@ -5,6 +5,7 @@ import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Panel } from "./core/Panel";
 
 interface SistineDepthLayoutProps {
     sections: CanvasSectionState[];
@@ -101,13 +102,15 @@ export const SistineDepthLayout: React.FC<SistineDepthLayoutProps> = ({
                                     background: section.style?.background || "#2a2420",
                                 }}
                             >
-                                <GridSectionWrapper
+                                <Panel
                                     section={section}
-                                    templateSection={{ id: section.id, name: section.name || `Fig. ${i + 1}` }}
-                                    {...wrapperProps}
-                                    onLayoutUpdate={onLayoutUpdate}
-                                    layout={layout}
+                                    index={i}
                                     className="rounded-t-[1000px]"
+                                    wrapperProps={{
+                                        ...wrapperProps,
+                                        onLayoutUpdate,
+                                        layout
+                                    }}
                                 />
                             </div>
 
@@ -115,14 +118,6 @@ export const SistineDepthLayout: React.FC<SistineDepthLayoutProps> = ({
                             <div className="absolute -bottom-10 left-0 w-full text-center font-serif italic text-sm text-[#e0c9a6]/60">
                                 {section.name || `Figure ${i + 1}`}
                             </div>
-
-                            {/* Remove Button */}
-                            <button
-                                onClick={() => handleRemoveSection(section.id)}
-                                className="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-red-900/80 text-[#e0c9a6] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-800 z-50 pointer-events-auto"
-                            >
-                                &times;
-                            </button>
                         </motion.div>
                     ))}
 

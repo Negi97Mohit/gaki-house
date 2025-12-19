@@ -5,6 +5,7 @@ import { CanvasLayoutTemplate } from "@/types/layout";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus } from "lucide-react";
+import { Panel } from "./core/Panel";
 
 interface LiquidChromeLayoutProps {
     sections: CanvasSectionState[];
@@ -31,29 +32,18 @@ const FloatingPanel = ({
     return (
         <group position={position} rotation={rotation}>
             <Html transform position={[0, 0, 0]} style={{ width: "320px", height: "400px" }}>
-                <div className="w-full h-full relative group">
-                    <div className="w-full h-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl transition-all hover:bg-white/20 hover:scale-[1.02]">
-                        <GridSectionWrapper
-                            section={section}
-                            templateSection={{ id: section.id, name: section.name || "Reflections" }}
-                            {...wrapperProps}
-                            className="bg-transparent"
-                        />
-                    </div>
-                    {/* Remove Button */}
-                    <button
-                        onPointerDown={(e) => {
-                            e.stopPropagation();
-                            onRemove();
-                        }}
-                        className="absolute -top-3 -right-3 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-50 shadow-xl border border-white/20 cursor-pointer pointer-events-auto"
-                    >
-                        &times;
-                    </button>
-
+                <Panel
+                    section={section}
+                    index={0} // Index not strictly needed here but required by prop
+                    className="w-full h-full bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden shadow-2xl transition-all hover:bg-white/20 hover:scale-[1.02]"
+                    wrapperProps={{
+                        ...wrapperProps,
+                        className: "bg-transparent"
+                    }}
+                >
                     {/* Reflection/Distortion Effect Indicator */}
                     <div className="absolute inset-0 border-2 border-white/10 rounded-2xl pointer-events-none" />
-                </div>
+                </Panel>
             </Html>
         </group>
     )

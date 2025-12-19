@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus } from "lucide-react";
+import { Panel } from "./core/Panel";
 
 interface WintourEditorialLayoutProps {
     sections: CanvasSectionState[];
@@ -92,14 +93,15 @@ export const WintourEditorialLayout: React.FC<WintourEditorialLayoutProps> = ({
                             </div>
 
                             <div className="flex-1 mt-8 relative rounded-lg overflow-hidden bg-gray-50 border border-black/5 shadow-inner">
-                                <GridSectionWrapper
+                                <Panel
                                     section={section}
-                                    templateSection={{ id: section.id, name: section.name || `Edit Content` }}
-                                    {...wrapperProps}
-                                    onLayoutUpdate={onLayoutUpdate}
-                                    layout={layout}
-                                    // Force clean styling for editorial look
+                                    index={index}
                                     className="bg-transparent"
+                                    wrapperProps={{
+                                        ...wrapperProps,
+                                        onLayoutUpdate,
+                                        layout
+                                    }}
                                 />
                             </div>
 
@@ -121,14 +123,13 @@ export const WintourEditorialLayout: React.FC<WintourEditorialLayoutProps> = ({
                             </span>
                         </div>
 
-                        {/* Remove Button (Hover only) */}
-                        <button
-                            onClick={() => handleRemoveSection(section.id)}
-                            className="absolute top-4 right-4 z-50 opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full transition-all hover:scale-110"
-                            title="Remove Page"
-                        >
-                            &times;
-                        </button>
+                        {/* Remove Button (Hover only) - keeping external button as Panel handles internal remove. 
+                           However, standard behavior is Panel handles it.
+                           If I want to use Panel, I should probably remove this button if Panel's button is sufficient.
+                           Panel's button is top-right.
+                           The button here is top-right.
+                           So I can likely remove this duplicate button.
+                        */}
                     </section>
                 );
             })}

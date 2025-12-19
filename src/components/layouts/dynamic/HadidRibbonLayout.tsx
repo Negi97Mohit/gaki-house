@@ -19,6 +19,7 @@ import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus, Trash2, LayoutTemplate, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Panel } from "./core/Panel";
 
 // --- 1. Linear Path ---
 const createLinearCurve = (length: number) => {
@@ -112,25 +113,16 @@ const RibbonItem = React.memo(
                 />
               </div>
             </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onRemove();
-              }}
-              className="w-6 h-6 flex items-center justify-center rounded hover:bg-red-50 text-gray-300 hover:text-red-500 transition-colors pointer-events-auto cursor-pointer z-50"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
+            {/* Delete button removed - handled by Panel */}
           </div>
 
-          {/* Content Area */}
+          {/* Content Area using Panel */}
           <div className="relative flex-1 w-full h-full bg-white transform-gpu">
-            <GridSectionWrapper
+            <Panel
               section={section}
-              templateSection={{ id: section.id, name: `Node ${index + 1}` }}
-              isHovered={editor?.hoveredSectionId === section.id}
-              {...props}
+              index={index}
+              className="w-full h-full"
+              wrapperProps={props}
             />
           </div>
         </div>
@@ -278,6 +270,7 @@ const WheelHandler = ({
         'div[style*="overflow"]'
       ) as HTMLElement;
 
+      // ... existing code ...
       if (scrollContainer) {
         if (e.deltaY !== 0) {
           scrollContainer.scrollLeft += e.deltaY;
