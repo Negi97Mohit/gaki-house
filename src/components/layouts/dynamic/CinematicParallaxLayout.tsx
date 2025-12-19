@@ -8,6 +8,7 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
+import { Panel } from "./core/Panel";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -199,28 +200,22 @@ const CinematicParallaxContent: React.FC<{ sections: CanvasSectionState[];[key: 
                                 onMouseEnter={() => editor.setHoveredSectionId(section.id)}
                                 onMouseLeave={() => editor.setHoveredSectionId(null)}
                             >
-                                {/* Cinematic frame */}
-                                <div
+                                {/* Cinematic frame using Panel */}
+                                <Panel
+                                    section={section}
+                                    index={i}
                                     className={cn(
                                         "relative overflow-hidden transition-all duration-700",
                                         "bg-black/40 backdrop-blur-sm border border-white/10",
                                         "group-hover:border-white/20 group-hover:bg-black/50"
                                     )}
                                     style={{
-                                        aspectRatio: "2.39/1", // Anamorphic widescreen
+                                        aspectRatio: "2.39/1",
                                         boxShadow:
                                             "0 0 60px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.3)",
                                     }}
+                                    wrapperProps={props}
                                 >
-                                    <GridSectionWrapper
-                                        section={section}
-                                        templateSection={{ id: section.id, name: `Scene-${i + 1}` }}
-                                        isHovered={editor.hoveredSectionId === section.id}
-                                        onSectionDelete={props.onSectionDelete}
-                                        onSectionContentChange={props.onSectionContentChange}
-                                        {...props}
-                                    />
-
                                     {/* Vignette */}
                                     <div
                                         className="absolute inset-0 pointer-events-none"
@@ -229,16 +224,7 @@ const CinematicParallaxContent: React.FC<{ sections: CanvasSectionState[];[key: 
                                                 "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%)",
                                         }}
                                     />
-
-                                    {/* Delete Button */}
-                                    <DynamicDeleteButton
-                                        sectionId={section.id}
-                                        className={cn(
-                                            "absolute top-4 right-4 transition-opacity duration-300",
-                                            editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                </div>
+                                </Panel>
 
                                 {/* Scene info */}
                                 <div className="mt-6 flex justify-between items-end">

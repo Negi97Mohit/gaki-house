@@ -46,7 +46,7 @@ export interface GridSectionWrapperProps {
     // Layout specific flags
     isVertical?: boolean;
     isSplit?: boolean;
-    
+
     // Allow extra props to pass through
     [key: string]: any;
 }
@@ -133,30 +133,34 @@ export const GridSectionWrapper: React.FC<GridSectionWrapperProps> = ({
                 backgroundEffect={backgroundEffect}
             />
 
-            <div className="relative z-50">
-                <GridSectionToolbar
-                    section={section}
-                    onDelete={() => onSectionDelete(section.id)}
-                    onGridAssetSelect={onGridAssetSelect}
-                    // Show toolbar on hover OR if content is empty
-                    isVisible={isHovered || (isEmpty && (isVertical || isSplit))}
-                    availableFiles={fileOverlays.map((f) => ({
-                        id: f.id,
-                        name: f.fileName,
-                    }))}
-                    availableTexts={textOverlays.map((t) => ({
-                        id: t.id,
-                        content: t.content,
-                    }))}
-                    onFileSelect={(fileId) =>
-                        onSectionContentChange(section.id, { type: "file", fileId })
-                    }
-                    onTextSelect={(textId) =>
-                        onSectionContentChange(section.id, { type: "text", textId })
-                    }
-                    onSectionContentChange={onSectionContentChange}
-                />
-            </div>
+            <GridSectionToolbar
+                section={section}
+                onDelete={() => onSectionDelete(section.id)}
+                onGridAssetSelect={onGridAssetSelect}
+                // Show toolbar on hover OR if content is empty
+                isVisible={isHovered || (isEmpty && (isVertical || isSplit))}
+                availableFiles={fileOverlays.map((f) => ({
+                    id: f.id,
+                    name: f.fileName,
+                }))}
+                availableTexts={textOverlays.map((t) => ({
+                    id: t.id,
+                    content: t.content,
+                }))}
+                onFileSelect={(fileId) =>
+                    onSectionContentChange(section.id, { type: "file", fileId })
+                }
+                onTextSelect={(textId) =>
+                    onSectionContentChange(section.id, { type: "text", textId })
+                }
+                onSectionContentChange={onSectionContentChange}
+                onColorChange={(color) =>
+                    onSectionContentChange(section.id, { type: "color", color })
+                }
+                onImageChange={(url) =>
+                    onSectionContentChange(section.id, { type: "image", src: url })
+                }
+            />
         </>
     );
 };

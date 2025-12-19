@@ -1,4 +1,3 @@
-// src/components/GridSectionToolbar.tsx
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +13,7 @@ import {
   Unlink,
   Save,
   LayoutTemplate,
+  MinusCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { cn } from "@/lib/utils";
+import { SearchButton } from "./layouts/dynamic/core/SearchButton";
 
 interface GridSectionToolbarProps {
   section: CanvasSectionState;
@@ -75,8 +76,8 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   return (
     <div
       className={`absolute top-2 right-2 flex items-center gap-1 z-[100] transition-all duration-200 ${isVisible
-          ? "opacity-90 hover:opacity-100 translate-y-0"
-          : "opacity-0 -translate-y-2 pointer-events-none"
+        ? "opacity-90 hover:opacity-100 translate-y-0"
+        : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
     >
       {/* Type-specific controls */}
@@ -142,27 +143,11 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
         </DropdownMenu>
       )}
 
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="secondary"
-            size="icon"
-            className="h-8 w-8 bg-background/95 backdrop-blur"
-            title="Search for image"
-          >
-            <Search className="h-4 w-4" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-80 h-[400px] p-0"
-          style={{ zIndex: 9999 }}
-          onOpenAutoFocus={(e) => e.preventDefault()}
-        >
-          <AssetLibrary
-            onAssetSelect={(asset) => onGridAssetSelect(section.id, asset)}
-          />
-        </PopoverContent>
-      </Popover>
+      {/* Centralized Search Button */}
+      <SearchButton
+        sectionId={section.id}
+        onAssetSelect={onGridAssetSelect}
+      />
 
       {/* Order Toggle */}
       {onToggleOrder && (
@@ -294,12 +279,26 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
           </DropdownMenu>
         )}
 
-      {/* Delete button */}
+      {/* Remove Content Button (Only if content is NOT empty) */}
+      {content.type !== "empty" && onSectionContentChange && (
+        <Button
+          variant="secondary"
+          size="icon"
+          className="h-8 w-8 bg-background/95 backdrop-blur hover:bg-red-100 hover:text-red-500"
+          onClick={() => onSectionContentChange(section.id, { type: "empty" })}
+          title="Clear Content"
+        >
+          <MinusCircle className="h-4 w-4" />
+        </Button>
+      )}
+
+      {/* Delete Panel Button */}
       <Button
         variant="destructive"
         size="icon"
         className="h-8 w-8 bg-destructive/95 backdrop-blur"
         onClick={onDelete}
+        title="Delete Panel"
       >
         <X className="h-4 w-4" />
       </Button>
