@@ -135,10 +135,7 @@ export const useKeyboardShortcuts = ({
             }
 
             // --- Media & Stream ---
-            if (isCmdOrCtrl && e.key.toLowerCase() === "r") {
-                e.preventDefault();
-                onToggleRecording?.();
-            }
+
             if (isCmdOrCtrl && e.key.toLowerCase() === "m") {
                 e.preventDefault();
                 onToggleMic?.();
