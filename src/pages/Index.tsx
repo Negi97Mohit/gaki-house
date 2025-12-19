@@ -92,18 +92,27 @@ const Index = () => {
     isConnected: isRemoteConnected,
   } = useRemotePeer();
   const [isRemoteModalOpen, setIsRemoteModalOpen] = useState(false);
+  const [hasDismissedRemoteModal, setHasDismissedRemoteModal] = useState(false);
+
+  // Reset dismissal when we switch AWAY from remote peer, so if we come back, it asks again.
+  useEffect(() => {
+    if (activeScene?.selectedVideoDevice !== "remote-peer") {
+      setHasDismissedRemoteModal(false);
+    }
+  }, [activeScene?.selectedVideoDevice]);
 
   useEffect(() => {
     if (
       activeScene?.selectedVideoDevice === "remote-peer" &&
       !isRemoteConnected &&
-      !isRemoteModalOpen
+      !isRemoteModalOpen &&
+      !hasDismissedRemoteModal
     ) {
       setIsRemoteModalOpen(true);
     } else if (isRemoteConnected && isRemoteModalOpen) {
       setIsRemoteModalOpen(false);
     }
-  }, [activeScene?.selectedVideoDevice, isRemoteConnected, isRemoteModalOpen]);
+  }, [activeScene?.selectedVideoDevice, isRemoteConnected, isRemoteModalOpen, hasDismissedRemoteModal]);
 
   const {
     presets,
@@ -607,7 +616,14 @@ const Index = () => {
         }
         selectedAudioDevice={activeScene.selectedAudioDevice}
         isVideoOn={activeScene.isVideoOn}
-        onVideoToggle={(val) => updateSceneProperty("isVideoOn", val)}
+        onVideoToggle={(val) => {
+          // If turning ON and using remote peer, force the modal to reappear even if previously dismissed
+          if (val && activeScene.selectedVideoDevice === "remote-peer" && !isRemoteConnected) {
+            setHasDismissedRemoteModal(false);
+            setIsRemoteModalOpen(true);
+          }
+          updateSceneProperty("isVideoOn", val);
+        }}
         videoDevices={videoDevices}
         onVideoDeviceSelect={(val) =>
           updateSceneProperty("selectedVideoDevice", val)
@@ -696,7 +712,10 @@ const Index = () => {
 
       <RemoteConnectModal
         isOpen={isRemoteModalOpen}
-        onOpenChange={setIsRemoteModalOpen}
+        onOpenChange={(open) => {
+          setIsRemoteModalOpen(open);
+          if (!open) setHasDismissedRemoteModal(true);
+        }}
         peerId={peerId}
         isConnected={isRemoteConnected}
       />

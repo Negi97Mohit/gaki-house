@@ -77,45 +77,14 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const [isHovered, setIsHovered] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
-  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  // FIX: rely directly on the stream passed down from the parent (VideoCanvas or CameraGridSection)
+  // This ensures that:
+  // 1. We don't auto-turn on the camera when selecting a device in PiP menu
+  // 2. We don't freeze on the last frame if the camera fails (parent sends null stream)
+  const activeStream = props.stream;
 
   const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef });
 
-  useEffect(() => {
-    // --- FIX: Check if device is 'remote-peer' before requesting stream ---
-    if (props.selectedDeviceId && props.selectedDeviceId !== "remote-peer") {
-      let isMounted = true;
-      const getStream = async () => {
-        try {
-          const newStream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              deviceId: { exact: props.selectedDeviceId },
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-            },
-          });
-          if (isMounted) setLocalStream(newStream);
-        } catch (e) {
-          console.error("Failed to get local camera stream", e);
-          // Only show toast for real errors, not interruptions
-          if ((e as Error).name !== "AbortError") {
-            toast.error("Could not access selected camera");
-          }
-        }
-      };
-      getStream();
-      return () => {
-        isMounted = false;
-        if (localStream) localStream.getTracks().forEach((t) => t.stop());
-      };
-    } else {
-      // If it's remote-peer or undefined, clear local stream so we use props.stream
-      setLocalStream(null);
-    }
-  }, [props.selectedDeviceId]);
-
-  // If localStream is null (e.g. remote peer), fall back to props.stream
-  const activeStream = localStream || props.stream;
 
   const isInternalSegmentationNeeded =
     !!(props.filterTarget && props.filterTarget !== "both") && !props.processedCanvas;

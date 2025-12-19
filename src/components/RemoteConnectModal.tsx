@@ -29,7 +29,7 @@ export const RemoteConnectModal = ({
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-md">
-                <DialogHeader>
+                <DialogHeader className="relative">
                     <DialogTitle>Connect Remote Camera</DialogTitle>
                     <DialogDescription>
                         Scan this QR code with your phone to use it as a camera and microphone.
