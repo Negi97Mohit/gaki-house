@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useLayoutEffect } from "react";
 import { useDynamicLayout } from "./DynamicLayoutContext";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
   style,
 }) => {
   const { layout, editor, colors, controlsVisible } = useDynamicLayout();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const uniqueId = `${sectionId}_${fieldId}`;
   const value =
@@ -33,6 +34,27 @@ export const EditableText: React.FC<EditableTextProps> = ({
   // Check if this specific field is currently selected in the editor
   const isFocused = editor.focusedField?.id === uniqueId;
 
+  // Auto-resize logic for textarea
+  useLayoutEffect(() => {
+    if (multiline && textareaRef.current) {
+      // Reset height to auto to correctly calculate new scrollHeight (allows shrinking)
+      textareaRef.current.style.height = "auto";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${scrollHeight}px`;
+
+      // Check if we've hit the max-height limit defined in CSS/Style
+      const computedStyle = window.getComputedStyle(textareaRef.current);
+      const maxHeight = parseInt(computedStyle.maxHeight);
+
+      // If content exceeds max-height, show scrollbar, otherwise hide it
+      if (maxHeight && scrollHeight > maxHeight) {
+        textareaRef.current.style.overflowY = "auto";
+      } else {
+        textareaRef.current.style.overflowY = "hidden";
+      }
+    }
+  }, [value, multiline, style]); // Re-run when value changes
+
   const commonProps = {
     value,
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -44,17 +66,18 @@ export const EditableText: React.FC<EditableTextProps> = ({
       "bg-transparent border-none w-full pointer-events-auto transition-all duration-200 rounded-sm px-1 -mx-1",
       // Remove browser default outline
       "focus:outline-none",
-      // Apply dashed border if focused (even if actual focus is on toolbar)
+      // Apply dashed border if focused
       isFocused && "ring-1 ring-dashed ring-primary/50 bg-white/5",
-      // Hide resize handle and scrollbar when controls are not visible
-      !controlsVisible &&
-        "resize-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+      // Hide resize handle always for multiline
+      multiline && "resize-none",
+      // Default hidden scrollbar (handled dynamically above for overflow)
+      multiline && "overflow-hidden",
       className
     ),
   };
 
   if (multiline) {
-    return <textarea rows={1} {...commonProps} />;
+    return <textarea ref={textareaRef} rows={1} {...commonProps} />;
   }
 
   return <input {...commonProps} />;

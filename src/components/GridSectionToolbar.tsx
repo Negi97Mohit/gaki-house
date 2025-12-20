@@ -73,22 +73,24 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
 }) => {
   const { content } = section;
 
+  // Common styles for all toolbar buttons to ensure visibility on all backgrounds
+  const buttonClass =
+    "h-8 w-8 bg-white/90 backdrop-blur border border-black/10 shadow-sm hover:bg-white hover:shadow-md transition-all text-black/80";
+
   return (
     <div
-      className={`absolute top-2 right-2 flex items-center gap-1 z-[100] transition-all duration-200 ${isVisible
-        ? "opacity-90 hover:opacity-100 translate-y-0"
-        : "opacity-0 -translate-y-2 pointer-events-none"
-        }`}
+      className={cn(
+        "absolute top-2 right-2 flex items-center gap-1 z-[100] transition-all duration-200",
+        isVisible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-2 pointer-events-none"
+      )}
     >
       {/* Type-specific controls */}
       {content.type === "color" && onColorChange && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8 bg-background/95 backdrop-blur"
-            >
+            <Button variant="secondary" size="icon" className={buttonClass}>
               <Palette className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -109,7 +111,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
         <Button
           variant="secondary"
           size="icon"
-          className="h-8 w-8 bg-background/95 backdrop-blur"
+          className={buttonClass}
           onClick={() => {
             const url = prompt("Enter image URL:");
             if (url) onImageChange(url);
@@ -122,11 +124,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       {content.type === "file" && availableFiles.length > 0 && onFileSelect && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8 bg-background/95 backdrop-blur"
-            >
+            <Button variant="secondary" size="icon" className={buttonClass}>
               <FileText className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -147,6 +145,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       <SearchButton
         sectionId={section.id}
         onAssetSelect={onGridAssetSelect}
+        className={buttonClass}
       />
 
       {/* Order Toggle */}
@@ -155,10 +154,10 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
           variant={orderIndex !== undefined ? "default" : "secondary"}
           size="icon"
           className={cn(
-            "h-8 w-8 backdrop-blur",
+            buttonClass,
             orderIndex !== undefined
-              ? "bg-primary text-primary-foreground"
-              : "bg-background/95"
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : ""
           )}
           onClick={onToggleOrder}
           title={
@@ -179,7 +178,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
         <Button
           variant="secondary"
           size="icon"
-          className="h-8 w-8 bg-background/95 backdrop-blur"
+          className={buttonClass}
           onClick={onSetDefault}
           title="Save current view as Idle state"
         >
@@ -190,11 +189,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       {content.type === "text" && availableTexts.length > 0 && onTextSelect && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8 bg-background/95 backdrop-blur"
-            >
+            <Button variant="secondary" size="icon" className={buttonClass}>
               <Type className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -219,7 +214,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
               <Button
                 variant="secondary"
                 size="icon"
-                className="h-8 w-8 bg-background/95 backdrop-blur"
+                className={buttonClass}
                 title="Apply Canvas Design"
               >
                 <LayoutTemplate className="h-4 w-4" />
@@ -284,7 +279,10 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
         <Button
           variant="secondary"
           size="icon"
-          className="h-8 w-8 bg-background/95 backdrop-blur hover:bg-red-100 hover:text-red-500"
+          className={cn(
+            buttonClass,
+            "hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+          )}
           onClick={() => onSectionContentChange(section.id, { type: "empty" })}
           title="Clear Content"
         >
@@ -296,7 +294,11 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       <Button
         variant="destructive"
         size="icon"
-        className="h-8 w-8 bg-destructive/95 backdrop-blur"
+        className={cn(
+          "h-8 w-8 shadow-sm",
+          buttonClass,
+          "bg-red-500 text-white hover:bg-red-600 border-red-600 hover:border-red-700"
+        )}
         onClick={onDelete}
         title="Delete Panel"
       >
