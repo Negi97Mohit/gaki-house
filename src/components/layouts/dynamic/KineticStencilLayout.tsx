@@ -6,7 +6,10 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { EditableText } from "./core/EditableText";
 
-const KineticStencilContent: React.FC<{ sections: CanvasSectionState[];[key: string]: any }> = ({ sections, ...props }) => {
+const KineticStencilContent: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const { colors } = useDynamicLayout();
@@ -27,8 +30,10 @@ const KineticStencilContent: React.FC<{ sections: CanvasSectionState[];[key: str
   const mainSection = sections[0];
 
   return (
-    <div ref={containerRef} className="w-full h-full relative bg-black overflow-hidden">
-
+    <div
+      ref={containerRef}
+      className="w-full h-full relative bg-black overflow-hidden"
+    >
       {/* 1. The Video Layer (Full Background) */}
       <div className="absolute inset-0 z-0">
         {mainSection && (
@@ -63,15 +68,7 @@ const KineticStencilContent: React.FC<{ sections: CanvasSectionState[];[key: str
 
       {/* 3. Overlay Elements (On top of everything) */}
       <div className="absolute inset-0 z-20 pointer-events-none p-12 border-[20px] border-white/10">
-        <div className="absolute top-8 left-8 bg-black text-white px-4 py-2 font-mono text-xl uppercase pointer-events-auto">
-          <EditableText
-            sectionId="header"
-            fieldId="badge"
-            defaultValue="Live Feed"
-            className="text-inherit w-32"
-            style={{ color: "white" }} // Override global text color since this is on black badge
-          />
-        </div>
+        {/* Removed Live Feed Badge */}
         <div className="absolute bottom-8 right-8 text-white font-mono text-right pointer-events-auto">
           <EditableText
             sectionId="header"
@@ -90,8 +87,8 @@ const KineticStencilContent: React.FC<{ sections: CanvasSectionState[];[key: str
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const KineticStencilLayout: React.FC<{
   sections: CanvasSectionState[];
