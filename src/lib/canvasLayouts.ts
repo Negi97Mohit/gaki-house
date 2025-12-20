@@ -129,14 +129,6 @@ export const WINTOUR_EDITORIAL_TEMPLATE: CanvasLayoutTemplate = {
   sections: [{ id: "win-1", name: "Cover", style: { background: "#fff" } }],
 };
 
-export const SISTINE_DEPTH_TEMPLATE: CanvasLayoutTemplate = {
-  id: "sistine-depth",
-  name: "Sistine Depth",
-  description: "Deep parallax and layered floating elements.",
-  category: "dynamic" as LayoutCategory,
-  sections: [{ id: "sis-1", name: "Layer 1", style: { background: "#1a1512" } }],
-};
-
 export const VITRUVIAN_MOTION_TEMPLATE: CanvasLayoutTemplate = {
   id: "vitruvian-motion",
   name: "Vitruvian Motion",
@@ -151,7 +143,7 @@ export const LIQUID_CHROME_TEMPLATE: CanvasLayoutTemplate = {
   description: "Metallic liquid distortion effect.",
   category: "dynamic" as LayoutCategory,
   sections: [
-    { id: "chrome-1", name: "Chrome", style: { background: "#e0e0e0" } }
+    { id: "chrome-1", name: "Chrome", style: { background: "#e0e0e0" } },
   ],
 };
 
@@ -410,7 +402,6 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   "hadid-ribbon",
   "zaha-parametric",
   "wintour-editorial",
-  "sistine-depth",
   "vitruvian-motion",
   "liquid-chrome",
   // Phase 3 - New Innovative Layouts
@@ -486,7 +477,6 @@ export async function getLayoutTemplates(): Promise<{
       HADID_RIBBON_TEMPLATE,
       ZAHA_PARAMETRIC_TEMPLATE,
       WINTOUR_EDITORIAL_TEMPLATE,
-      SISTINE_DEPTH_TEMPLATE,
       VITRUVIAN_MOTION_TEMPLATE,
       LIQUID_CHROME_TEMPLATE,
       // New Innovative Layouts
@@ -545,7 +535,6 @@ export async function getLayoutTemplates(): Promise<{
       HADID_RIBBON_TEMPLATE,
       ZAHA_PARAMETRIC_TEMPLATE,
       WINTOUR_EDITORIAL_TEMPLATE,
-      SISTINE_DEPTH_TEMPLATE,
       VITRUVIAN_MOTION_TEMPLATE,
       LIQUID_CHROME_TEMPLATE,
       // New Innovative Layouts
