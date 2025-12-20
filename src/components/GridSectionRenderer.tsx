@@ -1,9 +1,9 @@
 import React from "react";
 import {
-    CanvasSectionState,
-    FileOverlayState,
-    TextOverlayState,
-    CanvasSectionCameraState,
+  CanvasSectionState,
+  FileOverlayState,
+  TextOverlayState,
+  CanvasSectionCameraState,
 } from "@/types/caption";
 import { FileRenderer } from "@/components/DraggableFileViewer";
 import { AssetResult } from "@/components/AssetLibrary";
@@ -11,139 +11,151 @@ import { EmptyGridSection } from "@/components/grid-section/EmptyGridSection";
 import { CameraGridSection } from "@/components/grid-section/CameraGridSection";
 
 export interface GridSectionRendererProps {
-    section: CanvasSectionState;
-    cameraStream?: MediaStream | null;
-    screenStream?: MediaStream | null;
-    fileOverlays?: FileOverlayState[];
-    textOverlays?: TextOverlayState[];
-    blankCanvasColor?: string;
-    backgroundImageUrl?: string;
-    onSectionContentChange?: (
-        sectionId: string,
-        content: CanvasSectionState["content"]
-    ) => void;
-    onGridAssetSelect?: (sectionId: string, asset: AssetResult) => void;
-    onSectionCameraSettingsChange?: (
-        sectionId: string,
-        settings: Partial<CanvasSectionCameraState>
-    ) => void;
-    videoDevices?: MediaDeviceInfo[];
-    activeSequenceId?: string | null;
-    onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
-    cameraShape?: "rectangle" | "circle" | "rounded";
-    backgroundEffect?: "none" | "blur" | "image";
-    [key: string]: any;
+  section: CanvasSectionState;
+  cameraStream?: MediaStream | null;
+  screenStream?: MediaStream | null;
+  fileOverlays?: FileOverlayState[];
+  textOverlays?: TextOverlayState[];
+  blankCanvasColor?: string;
+  backgroundImageUrl?: string;
+  onSectionContentChange?: (
+    sectionId: string,
+    content: CanvasSectionState["content"]
+  ) => void;
+  onGridAssetSelect?: (sectionId: string, asset: AssetResult) => void;
+  onSectionCameraSettingsChange?: (
+    sectionId: string,
+    settings: Partial<CanvasSectionCameraState>
+  ) => void;
+  videoDevices?: MediaDeviceInfo[];
+  activeSequenceId?: string | null;
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
+  cameraShape?: "rectangle" | "circle" | "rounded";
+  backgroundEffect?: "none" | "blur" | "image";
+  [key: string]: any;
 }
 
 export const GridSectionRenderer: React.FC<GridSectionRendererProps> = ({
-    section,
-    cameraStream,
-    screenStream,
-    fileOverlays,
-    textOverlays,
-    blankCanvasColor,
-    backgroundImageUrl,
-    onSectionContentChange,
-    onGridAssetSelect,
-    onSectionCameraSettingsChange,
-    videoDevices = [],
-    activeSequenceId,
-    onUserPositionChange,
-    cameraShape,
-    backgroundEffect,
+  section,
+  cameraStream,
+  screenStream,
+  fileOverlays,
+  textOverlays,
+  blankCanvasColor,
+  backgroundImageUrl,
+  onSectionContentChange,
+  onGridAssetSelect,
+  onSectionCameraSettingsChange,
+  videoDevices = [],
+  activeSequenceId,
+  onUserPositionChange,
+  cameraShape,
+  backgroundEffect,
 }) => {
-    const { content } = section;
+  const { content } = section;
 
-    switch (content.type) {
-        case "color":
-            return (
-                <div
-                    className="w-full h-full"
-                    style={{
-                        backgroundColor: content.color || blankCanvasColor,
-                    }}
-                />
-            );
+  switch (content.type) {
+    case "color":
+      return (
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundColor: content.color || blankCanvasColor,
+          }}
+        />
+      );
 
-        case "image":
-            return (
-                <div
-                    className="w-full h-full bg-cover bg-center"
-                    style={{
-                        backgroundImage: `url(${content.src || backgroundImageUrl})`,
-                    }}
-                />
-            );
+    case "image":
+      // Fix: If no src is provided, show empty controls instead of broken image
+      if (!content.src && !backgroundImageUrl) {
+        return (
+          <EmptyGridSection
+            sectionId={section.id}
+            blankCanvasColor={blankCanvasColor}
+            backgroundImageUrl={backgroundImageUrl}
+            onSectionContentChange={onSectionContentChange}
+            onGridAssetSelect={onGridAssetSelect}
+          />
+        );
+      }
+      return (
+        <div
+          className="w-full h-full bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${content.src || backgroundImageUrl})`,
+          }}
+        />
+      );
 
-        case "camera":
-            return (
-                <CameraGridSection
-                    sectionId={section.id}
-                    settings={content.settings}
-                    cameraStream={cameraStream}
-                    videoDevices={videoDevices}
-                    onSectionCameraSettingsChange={onSectionCameraSettingsChange}
-                    cameraShape={cameraShape}
-                    backgroundEffect={backgroundEffect}
-                    activeSequenceId={activeSequenceId}
-                    onUserPositionChange={onUserPositionChange}
-                    backgroundImageUrl={backgroundImageUrl}
-                />
-            );
+    case "camera":
+      return (
+        <CameraGridSection
+          sectionId={section.id}
+          settings={content.settings}
+          cameraStream={cameraStream}
+          videoDevices={videoDevices}
+          onSectionCameraSettingsChange={onSectionCameraSettingsChange}
+          cameraShape={cameraShape}
+          backgroundEffect={backgroundEffect}
+          activeSequenceId={activeSequenceId}
+          onUserPositionChange={onUserPositionChange}
+          backgroundImageUrl={backgroundImageUrl}
+        />
+      );
 
-        case "screen":
-            if (!screenStream) return <div className="w-full h-full bg-muted" />;
-            return (
-                <video
-                    autoPlay
-                    playsInline
-                    muted
-                    ref={(video) => {
-                        if (video && screenStream) video.srcObject = screenStream;
-                    }}
-                    className="w-full h-full object-cover"
-                />
-            );
+    case "screen":
+      if (!screenStream) return <div className="w-full h-full bg-muted" />;
+      return (
+        <video
+          autoPlay
+          playsInline
+          muted
+          ref={(video) => {
+            if (video && screenStream) video.srcObject = screenStream;
+          }}
+          className="w-full h-full object-cover"
+        />
+      );
 
-        case "file":
-            const fileOverlay = fileOverlays.find((f) => f.id === content.fileId);
-            if (!fileOverlay) return <div className="w-full h-full bg-muted" />;
-            return (
-                <div className="w-full h-full flex items-center justify-center">
-                    <FileRenderer overlay={fileOverlay} />
-                </div>
-            );
+    case "file":
+      const fileOverlay = fileOverlays.find((f) => f.id === content.fileId);
+      if (!fileOverlay) return <div className="w-full h-full bg-muted" />;
+      return (
+        <div className="w-full h-full flex items-center justify-center">
+          <FileRenderer overlay={fileOverlay} />
+        </div>
+      );
 
-        case "text":
-            const textOverlay = textOverlays.find((t) => t.id === content.textId);
-            if (!textOverlay) return <div className="w-full h-full bg-muted" />;
-            return (
-                <div
-                    className="w-full h-full flex items-center justify-center p-4"
-                    style={{
-                        fontFamily: textOverlay.style.fontFamily,
-                        fontSize: `${textOverlay.style.fontSize}px`,
-                        color: textOverlay.style.color,
-                        backgroundColor: textOverlay.style.backgroundColor,
-                        fontWeight: textOverlay.style.bold ? "bold" : "normal",
-                        fontStyle: textOverlay.style.italic ? "italic" : "normal",
-                        textDecoration: textOverlay.style.underline ? "underline" : "none",
-                    }}
-                >
-                    {textOverlay.content}
-                </div>
-            );
+    case "text":
+      const textOverlay = textOverlays.find((t) => t.id === content.textId);
+      if (!textOverlay) return <div className="w-full h-full bg-muted" />;
+      return (
+        <div
+          className="w-full h-full flex items-center justify-center p-4"
+          style={{
+            fontFamily: textOverlay.style.fontFamily,
+            fontSize: `${textOverlay.style.fontSize}px`,
+            color: textOverlay.style.color,
+            backgroundColor: textOverlay.style.backgroundColor,
+            fontWeight: textOverlay.style.bold ? "bold" : "normal",
+            fontStyle: textOverlay.style.italic ? "italic" : "normal",
+            textDecoration: textOverlay.style.underline ? "underline" : "none",
+          }}
+        >
+          {textOverlay.content}
+        </div>
+      );
 
-        case "empty":
-        default:
-            return (
-                <EmptyGridSection
-                    sectionId={section.id}
-                    blankCanvasColor={blankCanvasColor}
-                    backgroundImageUrl={backgroundImageUrl}
-                    onSectionContentChange={onSectionContentChange}
-                    onGridAssetSelect={onGridAssetSelect}
-                />
-            );
-    }
+    case "empty":
+    default:
+      return (
+        <EmptyGridSection
+          sectionId={section.id}
+          blankCanvasColor={blankCanvasColor}
+          backgroundImageUrl={backgroundImageUrl}
+          onSectionContentChange={onSectionContentChange}
+          onGridAssetSelect={onGridAssetSelect}
+        />
+      );
+  }
 };

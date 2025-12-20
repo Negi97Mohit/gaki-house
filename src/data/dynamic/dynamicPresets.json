@@ -8,8 +8,8 @@
       "templateId": "kinetic-typography",
       "sections": [
         { "id": "hero", "content": { "type": "camera" } },
-        { "id": "grid-1", "content": { "type": "image" } },
-        { "id": "grid-2", "content": { "type": "video" } }
+        { "id": "grid-1", "content": { "type": "empty" } },
+        { "id": "grid-2", "content": { "type": "empty" } }
       ]
     },
     "background": { "blankCanvasColor": "#E5E5E5", "backgroundEffect": "none" },
