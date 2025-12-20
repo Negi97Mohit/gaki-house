@@ -24,10 +24,14 @@ export const EditableText: React.FC<EditableTextProps> = ({
   const uniqueId = `${sectionId}_${fieldId}`;
   const value =
     layout.customSectionData?.[sectionId]?.[fieldId] ?? defaultValue;
+
   const combinedStyle = editor.getFieldStyle(uniqueId, {
     ...style,
     color: colors.textColor,
   });
+
+  // Check if this specific field is currently selected in the editor
+  const isFocused = editor.focusedField?.id === uniqueId;
 
   const commonProps = {
     value,
@@ -37,7 +41,11 @@ export const EditableText: React.FC<EditableTextProps> = ({
       editor.handleFocus(uniqueId, e),
     style: combinedStyle,
     className: cn(
-      "bg-transparent border-none focus:outline-none w-full pointer-events-auto transition-all duration-300",
+      "bg-transparent border-none w-full pointer-events-auto transition-all duration-200 rounded-sm px-1 -mx-1",
+      // Remove browser default outline
+      "focus:outline-none",
+      // Apply dashed border if focused (even if actual focus is on toolbar)
+      isFocused && "ring-1 ring-dashed ring-primary/50 bg-white/5",
       // Hide resize handle and scrollbar when controls are not visible
       !controlsVisible &&
         "resize-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
