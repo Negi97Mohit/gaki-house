@@ -26,9 +26,10 @@ export const EditableText: React.FC<EditableTextProps> = ({
   const value =
     layout.customSectionData?.[sectionId]?.[fieldId] ?? defaultValue;
 
+  // CHANGED: Passed `style` now overrides the default color
   const combinedStyle = editor.getFieldStyle(uniqueId, {
-    ...style,
     color: colors.textColor,
+    ...style,
   });
 
   // Check if this specific field is currently selected in the editor
@@ -37,7 +38,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
   // Auto-resize logic for textarea
   useLayoutEffect(() => {
     if (multiline && textareaRef.current) {
-      // Reset height to auto to correctly calculate new scrollHeight (allows shrinking)
+      // Reset height to auto to correctly calculate new scrollHeight
       textareaRef.current.style.height = "auto";
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = `${scrollHeight}px`;
@@ -53,7 +54,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
         textareaRef.current.style.overflowY = "hidden";
       }
     }
-  }, [value, multiline, style]); // Re-run when value changes
+  }, [value, multiline, style]);
 
   const commonProps = {
     value,
