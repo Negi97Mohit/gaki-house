@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
-  X,
   Palette,
   Image,
   Camera,
@@ -290,20 +289,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
         </Button>
       )}
 
-      {/* Delete Panel Button */}
-      <Button
-        variant="destructive"
-        size="icon"
-        className={cn(
-          "h-8 w-8 shadow-sm",
-          buttonClass,
-          "bg-red-500 text-white hover:bg-red-600 border-red-600 hover:border-red-700"
-        )}
-        onClick={onDelete}
-        title="Delete Panel"
-      >
-        <X className="h-4 w-4" />
-      </Button>
+      {/* REMOVED: Delete Panel Button (X) */}
     </div>
   );
 };
