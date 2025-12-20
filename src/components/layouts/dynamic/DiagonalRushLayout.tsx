@@ -8,30 +8,44 @@ import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
 
-const DiagonalRushContent: React.FC<{ sections: CanvasSectionState[], [key: string]: any }> = ({ sections, ...props }) => {
+const DiagonalRushContent: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
   const rowsRef = useRef<HTMLDivElement[]>([]);
   const { colors, editor, controlsVisible, layout } = useDynamicLayout();
 
   // The text content is now fetched via loop but we pass a reference "header.rushText" to EditableText
-  // But for the background animation we need to READ it.
-  // EditableText manages the write.
-  // We can read from our context via `layout`
-  const rushText = layout.customSectionData?.["header"]?.["rushText"] || "Break The Grid • Kinetic Motion •";
+  const rushText =
+    layout.customSectionData?.["header"]?.["rushText"] ||
+    "Break The Grid • Kinetic Motion •";
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       rowsRef.current.forEach((row, i) => {
         if (!row) return;
-        const direction = i % 2 === 0 ? 1 : -1;
-        gsap.set(row, { xPercent: 0 });
-        gsap.to(row, {
-          xPercent: direction * -50,
-          ease: "none",
-          duration: 15 + i * 2,
-          repeat: -1,
-        });
+
+        // Determine direction (alternating rows)
+        // Even rows: Move Left (0 -> -50%)
+        // Odd rows: Move Right (-50% -> 0)
+        const isLeft = i % 2 === 0;
+
+        // We use fromTo to ensure the start and end points are strictly controlled
+        // for seamless looping.
+        gsap.fromTo(
+          row,
+          {
+            xPercent: isLeft ? 0 : -50,
+          },
+          {
+            xPercent: isLeft ? -50 : 0,
+            ease: "none",
+            duration: 20 + i * 2, // Slightly slower base duration for smoother rush
+            repeat: -1,
+          }
+        );
       });
-    }, rowsRef); // Passing ref object not ideal if it's array. Use specific scope if possible or just nothing.
+    }, rowsRef);
     return () => ctx.revert();
   }, [rushText]); // Re-animate on text change
 
@@ -47,10 +61,12 @@ const DiagonalRushContent: React.FC<{ sections: CanvasSectionState[], [key: stri
               "w-[300px] h-[400px]"
             )}
             style={{
-              backgroundColor: i % 2 === 0 ? "#FACC15" : "#A3E635", // Use vibrant backgrounds for the panels themselves if empty
+              backgroundColor: i % 2 === 0 ? "#FACC15" : "#A3E635",
               transform: `rotate(${i % 2 === 0 ? -2 : 2}deg)`,
               borderColor: i % 2 === 0 ? "#FACC15" : "#A3E635",
-              boxShadow: `10px 10px 0px ${i % 2 === 0 ? "rgba(250,204,21,0.2)" : "rgba(163,230,53,0.2)"}`
+              boxShadow: `10px 10px 0px ${
+                i % 2 === 0 ? "rgba(250,204,21,0.2)" : "rgba(163,230,53,0.2)"
+              }`,
             }}
             onMouseEnter={() => editor.setHoveredSectionId(section.id)}
             onMouseLeave={() => editor.setHoveredSectionId(null)}
@@ -62,7 +78,15 @@ const DiagonalRushContent: React.FC<{ sections: CanvasSectionState[], [key: stri
               onSectionContentChange={props.onSectionContentChange}
               {...props}
             />
-            <DynamicDeleteButton sectionId={section.id} className={cn("absolute top-2 right-2", editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0")} />
+            <DynamicDeleteButton
+              sectionId={section.id}
+              className={cn(
+                "absolute top-2 right-2",
+                editor.hoveredSectionId === section.id
+                  ? "opacity-100"
+                  : "opacity-0"
+              )}
+            />
           </div>
         ))}
 
@@ -78,27 +102,39 @@ const DiagonalRushContent: React.FC<{ sections: CanvasSectionState[], [key: stri
         {Array.from({ length: 15 }).map((_, i) => (
           <div
             key={i}
-            ref={(el) => { if (el) rowsRef.current[i] = el; }}
+            ref={(el) => {
+              if (el) rowsRef.current[i] = el;
+            }}
             className={`flex whitespace-nowrap text-[8vw] font-black uppercase`}
             style={{
               color: i % 2 === 0 ? colors.textColor : "transparent",
-              WebkitTextStroke: i % 2 !== 0 ? `2px ${colors.textColor}` : "none",
-              opacity: i % 2 !== 0 ? 0.5 : 1
+              WebkitTextStroke:
+                i % 2 !== 0 ? `2px ${colors.textColor}` : "none",
+              opacity: i % 2 !== 0 ? 0.5 : 1,
             }}
           >
-            {Array.from({ length: 8 }).map((_, j) => (
-              <span key={j} className="mx-8 relative">{rushText}</span>
+            {/* Increased repeats to 20 to ensure no gaps even on large screens or with short text */}
+            {Array.from({ length: 20 }).map((_, j) => (
+              <span key={j} className="mx-8 relative">
+                {rushText}
+              </span>
             ))}
           </div>
         ))}
       </div>
 
       {/* Editable Input for Background */}
-      <div className={cn(
-        "fixed bottom-8 left-8 z-40 bg-black/50 p-4 rounded backdrop-blur transition-all duration-500",
-        controlsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
-      )}>
-        <label className="text-xs text-white/50 uppercase block mb-1">Background Text</label>
+      <div
+        className={cn(
+          "fixed bottom-8 left-8 z-40 bg-black/50 p-4 rounded backdrop-blur transition-all duration-500",
+          controlsVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-10 pointer-events-none"
+        )}
+      >
+        <label className="text-xs text-white/50 uppercase block mb-1">
+          Background Text
+        </label>
         <EditableText
           sectionId="header"
           fieldId="rushText"
@@ -116,8 +152,8 @@ const DiagonalRushContent: React.FC<{ sections: CanvasSectionState[], [key: stri
         }}
       />
     </div>
-  )
-}
+  );
+};
 
 export const DiagonalRushLayout: React.FC<{
   sections: CanvasSectionState[];
