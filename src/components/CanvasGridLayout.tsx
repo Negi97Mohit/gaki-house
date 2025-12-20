@@ -26,7 +26,6 @@ import { MagnetismGridLayout } from "./layouts/MagnetismGridLayout";
 // --- DYNAMIC / AWWWARDS LAYOUTS ---
 import { VogueParallaxLayout } from "./layouts/dynamic/VogueParallaxLayout";
 import { LiquidLensLayout } from "./layouts/dynamic/LiquidLensLayout";
-import { HadidRibbonLayout } from "./layouts/dynamic/HadidRibbonLayout";
 import { KineticTypographyLayout } from "./layouts/dynamic/KineticTypographyLayout";
 import { KineticStencilLayout } from "./layouts/dynamic/KineticStencilLayout";
 import { DiagonalRushLayout } from "./layouts/dynamic/DiagonalRushLayout";
@@ -155,7 +154,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   // Dynamic 3D/Motion Styles Detection
   const isVogue = tId === "vogue-parallax";
   const isLiquid = tId === "liquid-lens";
-  const isHadid = tId === "hadid-ribbon";
 
   // New Kinetic Styles
   const isKinetic = tId === "kinetic-typography";
@@ -230,8 +228,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <VogueParallaxLayout sections={layout.sections} {...commonProps} />
       ) : isLiquid ? (
         <LiquidLensLayout sections={layout.sections} {...commonProps} />
-      ) : isHadid ? (
-        <HadidRibbonLayout sections={layout.sections} {...commonProps} />
       ) : isKinetic ? (
         <KineticTypographyLayout sections={layout.sections} {...commonProps} />
       ) : isStencil ? (

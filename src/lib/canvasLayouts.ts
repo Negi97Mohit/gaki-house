@@ -99,20 +99,6 @@ export const BRUTALIST_GLITCH_TEMPLATE: CanvasLayoutTemplate = {
   ],
 };
 
-export const HADID_RIBBON_TEMPLATE: CanvasLayoutTemplate = {
-  id: "hadid-ribbon",
-  name: "Hadid Ribbon",
-  description: "Parametric 3D spline curve layout.",
-  category: "dynamic" as LayoutCategory,
-  sections: [
-    { id: "node-1", name: "Node 1", style: { background: "#080808" } },
-    { id: "node-2", name: "Node 2", style: { background: "#080808" } },
-    { id: "node-3", name: "Node 3", style: { background: "#080808" } },
-    { id: "node-4", name: "Node 4", style: { background: "#080808" } },
-    { id: "node-5", name: "Node 5", style: { background: "#080808" } },
-  ],
-};
-
 export const ZAHA_PARAMETRIC_TEMPLATE: CanvasLayoutTemplate = {
   id: "zaha-parametric",
   name: "Zaha Parametric",
@@ -127,6 +113,16 @@ export const WINTOUR_EDITORIAL_TEMPLATE: CanvasLayoutTemplate = {
   description: "High-impact typography and scroll snapping.",
   category: "dynamic" as LayoutCategory,
   sections: [{ id: "win-1", name: "Cover", style: { background: "#fff" } }],
+};
+
+export const SISTINE_DEPTH_TEMPLATE: CanvasLayoutTemplate = {
+  id: "sistine-depth",
+  name: "Sistine Depth",
+  description: "Deep parallax and layered floating elements.",
+  category: "dynamic" as LayoutCategory,
+  sections: [
+    { id: "sis-1", name: "Layer 1", style: { background: "#1a1512" } },
+  ],
 };
 
 export const VITRUVIAN_MOTION_TEMPLATE: CanvasLayoutTemplate = {
@@ -399,9 +395,9 @@ const DYNAMIC_LAYOUT_IDS = new Set([
   "vogue-parallax",
   "liquid-lens",
   "brutalist-glitch",
-  "hadid-ribbon",
   "zaha-parametric",
   "wintour-editorial",
+  "sistine-depth",
   "vitruvian-motion",
   "liquid-chrome",
   // Phase 3 - New Innovative Layouts
@@ -474,9 +470,9 @@ export async function getLayoutTemplates(): Promise<{
       VOGUE_PARALLAX_TEMPLATE,
       LIQUID_LENS_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
-      HADID_RIBBON_TEMPLATE,
       ZAHA_PARAMETRIC_TEMPLATE,
       WINTOUR_EDITORIAL_TEMPLATE,
+      SISTINE_DEPTH_TEMPLATE,
       VITRUVIAN_MOTION_TEMPLATE,
       LIQUID_CHROME_TEMPLATE,
       // New Innovative Layouts
@@ -532,9 +528,9 @@ export async function getLayoutTemplates(): Promise<{
       VOGUE_PARALLAX_TEMPLATE,
       LIQUID_LENS_TEMPLATE,
       BRUTALIST_GLITCH_TEMPLATE,
-      HADID_RIBBON_TEMPLATE,
       ZAHA_PARAMETRIC_TEMPLATE,
       WINTOUR_EDITORIAL_TEMPLATE,
+      SISTINE_DEPTH_TEMPLATE,
       VITRUVIAN_MOTION_TEMPLATE,
       LIQUID_CHROME_TEMPLATE,
       // New Innovative Layouts
