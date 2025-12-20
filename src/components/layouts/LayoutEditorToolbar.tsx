@@ -90,17 +90,34 @@ export const LayoutEditorToolbar: React.FC<LayoutEditorToolbarProps> = ({
     onUpdateStyle("fontSize", newVal.toString());
   };
 
+  // --- POSITIONING LOGIC FIX ---
+  const TOOLBAR_HEIGHT = 60; // Estimated height including padding/shadow
+  const GAP = 12; // Gap between element and toolbar
+  const MIN_TOP_OFFSET = 10; // Minimum distance from window top
+
+  // Default: Place above the element
+  let topPosition = focusedField.rect.top - TOOLBAR_HEIGHT - GAP;
+
+  // If there isn't enough space above, place it below the element
+  if (topPosition < MIN_TOP_OFFSET) {
+    topPosition = focusedField.rect.bottom + GAP;
+  }
+
+  // Ensure it doesn't go off the left/right edges
+  const leftPosition = Math.max(
+    20,
+    Math.min(window.innerWidth - 450, focusedField.rect.left)
+  );
+  // -----------------------------
+
   return (
     <div
       ref={toolbarRef}
       className="fixed px-3 py-2 bg-black text-white rounded-xl shadow-2xl flex items-center gap-3 animate-in fade-in zoom-in-95 duration-200 border border-white/10"
       style={{
         zIndex: 9999,
-        top: Math.max(80, focusedField.rect.top - 60),
-        left: Math.max(
-          20,
-          Math.min(window.innerWidth - 450, focusedField.rect.left)
-        ),
+        top: topPosition,
+        left: leftPosition,
       }}
       onMouseDown={(e) => e.stopPropagation()} // Prevent blur
     >
