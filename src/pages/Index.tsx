@@ -134,6 +134,7 @@ const Index = () => {
   const [isSceneTabsHidden, setIsSceneTabsHidden] = useState(true);
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
   const [isMouseActive, setIsMouseActive] = useState(true);
+  const [isBottomNavVisible, setIsBottomNavVisible] = useState(false); // Proximity-based for bottom nav only
   const [showSessionsPanel, setShowSessionsPanel] = useState(false);
   const [showAnimationLibrary, setShowAnimationLibrary] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -381,13 +382,26 @@ const Index = () => {
         setIsSceneTabsHidden(false);
       else if (window.innerWidth - e.clientX > 300) setIsSceneTabsHidden(true);
 
+      // Original mouse tracking for cursor and general UI (keeps other controls visible)
       setIsMouseActive(true);
       if (mouseTimeoutRef.current) clearTimeout(mouseTimeoutRef.current);
       mouseTimeoutRef.current = setTimeout(() => setIsMouseActive(false), 3000);
+
+      // Separate proximity detection ONLY for bottom navigation (like scene tabs)
+      const bottomProximity = 120;
+      const hideThreshold = 200;
+      const distanceFromBottom = window.innerHeight - e.clientY;
+
+      if (distanceFromBottom <= bottomProximity) {
+        setIsBottomNavVisible(true);
+      } else if (distanceFromBottom > hideThreshold) {
+        setIsBottomNavVisible(false);
+      }
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -603,7 +617,7 @@ const Index = () => {
       />
 
       <BottomNavigation
-        isMouseActive={isMouseActive}
+        isMouseActive={isBottomNavVisible}
         onOpenSettings={() => setShowSettings((prev) => !prev)}
         onOpenSessions={() => setShowSessionsPanel(true)}
         onSaveLayout={handleSaveLayout}

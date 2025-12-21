@@ -18,7 +18,10 @@ const HauteCoutureStacksContent: React.FC<{ sections: CanvasSectionState[];[key:
     const { colors, editor, controlsVisible } = useDynamicLayout();
     const containerRef = useRef<HTMLDivElement>(null);
     const cardsRef = useRef<HTMLDivElement[]>([]);
+    const [hoveredCard, setHoveredCard] = useState<number | null>(null);
     const [expandedCard, setExpandedCard] = useState<number | null>(null);
+    const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const leaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -47,75 +50,129 @@ const HauteCoutureStacksContent: React.FC<{ sections: CanvasSectionState[];[key:
         return () => ctx.revert();
     }, [sections.length]);
 
-    // Handle card expansion like opening a lookbook
-    const handleCardClick = (index: number) => {
-        if (expandedCard === index) {
-            // Close
-            gsap.to(cardsRef.current[index], {
-                scale: 1,
-                zIndex: sections.length - index,
-                y: 0,
-                duration: 0.5,
-                ease: "power2.inOut"
-            });
-            setExpandedCard(null);
-        } else {
-            // Close previous
-            if (expandedCard !== null && cardsRef.current[expandedCard]) {
-                gsap.to(cardsRef.current[expandedCard], {
-                    scale: 1,
-                    zIndex: sections.length - expandedCard,
-                    y: 0,
-                    duration: 0.3
-                });
-            }
+    // Hover interaction - swipe card out to reveal more (with delay to prevent accidental triggers)
+    const handleCardHover = (index: number) => {
+        if (expandedCard !== null) return; // Don't swipe if a card is expanded
 
-            // Unfold new card
-            gsap.to(cardsRef.current[index], {
-                scale: 1.05,
-                zIndex: 100,
-                y: -20,
-                duration: 0.5,
-                ease: "power2.out"
+        // Clear any pending leave animation
+        if (leaveTimeoutRef.current) {
+            clearTimeout(leaveTimeoutRef.current);
+            leaveTimeoutRef.current = null;
+        }
+
+        // Add delay before swipe to prevent accidental triggers
+        if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+        }
+
+        hoverTimeoutRef.current = setTimeout(() => {
+            setHoveredCard(index);
+            const card = cardsRef.current[index];
+            if (!card) return;
+
+            // Swipe the hovered card out to the right to reveal it (slower, smoother)
+            gsap.to(card, {
+                x: 60,
+                y: -10,
+                scale: 1.02,
+                zIndex: 200,
+                duration: 0.6, // Slower animation
+                ease: "power2.out",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.4)"
             });
 
-            // Push other cards down
-            cardsRef.current.forEach((card, i) => {
-                if (i !== index && card) {
-                    const direction = i < index ? -1 : 1;
-                    gsap.to(card, {
-                        y: direction * 30,
-                        opacity: 0.6,
-                        scale: 0.98,
-                        duration: 0.4
+            // Slightly dim other cards (slower fade)
+            cardsRef.current.forEach((c, i) => {
+                if (i !== index && c) {
+                    gsap.to(c, {
+                        opacity: 0.7,
+                        duration: 0.5 // Slower fade
                     });
                 }
             });
+        }, 150); // 150ms delay before triggering swipe
+    };
 
-            setExpandedCard(index);
+    // Reset hover state (with delay to allow moving between cards)
+    const handleCardLeave = () => {
+        if (expandedCard !== null) return; // Don't reset if a card is expanded
+
+        // Clear hover trigger
+        if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+            hoverTimeoutRef.current = null;
         }
+
+        // Add small delay before resetting to allow moving to another card
+        if (leaveTimeoutRef.current) {
+            clearTimeout(leaveTimeoutRef.current);
+        }
+
+        leaveTimeoutRef.current = setTimeout(() => {
+            setHoveredCard(null);
+
+            cardsRef.current.forEach((card, i) => {
+                if (!card) return;
+                const stackOffset = i * 15;
+                const rotation = (i - sections.length / 2) * 2;
+
+                gsap.to(card, {
+                    x: 0,
+                    y: stackOffset,
+                    scale: 1,
+                    opacity: 1,
+                    rotation: rotation,
+                    zIndex: sections.length - i,
+                    duration: 0.5, // Slower return animation
+                    ease: "power2.inOut",
+                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                });
+            });
+        }, 200); // Small delay before reset
     };
 
-    const resetCards = () => {
-        cardsRef.current.forEach((card, i) => {
-            if (!card) return;
-            gsap.to(card, {
-                scale: 1,
-                y: 0,
-                opacity: 1,
-                zIndex: sections.length - i,
-                duration: 0.3
-            });
-        });
-        setExpandedCard(null);
+    // Click interaction - pop card out to full view
+    const handleCardClick = (index: number) => {
+        // Clear any pending animations
+        if (hoverTimeoutRef.current) {
+            clearTimeout(hoverTimeoutRef.current);
+        }
+        if (leaveTimeoutRef.current) {
+            clearTimeout(leaveTimeoutRef.current);
+        }
+        setExpandedCard(index);
     };
+
+    const handleCloseExpanded = () => {
+        setExpandedCard(null);
+        // Reset all cards to stack position
+        handleCardLeave();
+    };
+
+    // Cleanup timeouts on unmount
+    useEffect(() => {
+        return () => {
+            if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+            if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
+        };
+    }, []);
+
+    // Focus the lightbox when it opens to ensure it receives keyboard events
+    useEffect(() => {
+        if (expandedCard !== null && containerRef.current) {
+            // Find the lightbox overlay and focus it
+            const overlay = containerRef.current.querySelector('[tabindex="-1"]') as HTMLElement;
+            if (overlay) {
+                setTimeout(() => overlay.focus(), 0);
+            }
+        }
+    }, [expandedCard]);
 
     return (
         <div
             ref={containerRef}
             className="w-full h-full overflow-hidden relative"
             style={{ perspective: "1500px" }}
-            onMouseLeave={resetCards}
         >
             {/* Elegant pattern background */}
             <div
@@ -179,7 +236,8 @@ const HauteCoutureStacksContent: React.FC<{ sections: CanvasSectionState[];[key:
                                     ref={(el) => { if (el) cardsRef.current[i] = el; }}
                                     className={cn(
                                         "absolute inset-0 cursor-pointer group",
-                                        "bg-white shadow-2xl overflow-hidden"
+                                        "bg-white shadow-2xl overflow-hidden",
+                                        "transition-shadow duration-300"
                                     )}
                                     style={{
                                         zIndex: sections.length - i,
@@ -187,8 +245,14 @@ const HauteCoutureStacksContent: React.FC<{ sections: CanvasSectionState[];[key:
                                         transformOrigin: "center bottom"
                                     }}
                                     onClick={() => handleCardClick(i)}
-                                    onMouseEnter={() => editor.setHoveredSectionId(section.id)}
-                                    onMouseLeave={() => editor.setHoveredSectionId(null)}
+                                    onMouseEnter={() => {
+                                        handleCardHover(i);
+                                        editor.setHoveredSectionId(section.id);
+                                    }}
+                                    onMouseLeave={() => {
+                                        handleCardLeave();
+                                        editor.setHoveredSectionId(null);
+                                    }}
                                 >
                                     {/* Card content */}
                                     <div className="absolute inset-0">
@@ -207,7 +271,26 @@ const HauteCoutureStacksContent: React.FC<{ sections: CanvasSectionState[];[key:
                                         className="absolute top-4 left-4 px-3 py-1 text-xs font-light tracking-widest bg-white/90"
                                         style={{ color: "#1a1a1a" }}
                                     >
-                                        LOOK {String(i + 1).padStart(2, "0")}
+                                        <EditableText
+                                            sectionId={section.id}
+                                            fieldId="look_number"
+                                            defaultValue={`LOOK ${String(i + 1).padStart(2, "0")}`}
+                                            className="text-xs font-light tracking-widest"
+                                            style={{ color: "#1a1a1a" }}
+                                        />
+                                    </div>
+
+                                    {/* Hover instruction hint */}
+                                    <div className={cn(
+                                        "absolute top-4 right-16 px-3 py-1 text-xs font-light tracking-widest bg-black/80 text-white",
+                                        "opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                                    )}>
+                                        <EditableText
+                                            sectionId="hints"
+                                            fieldId="click_hint"
+                                            defaultValue="CLICK TO EXPAND"
+                                            className="text-xs font-light tracking-widest text-white"
+                                        />
                                     </div>
 
                                     {/* Info panel */}
@@ -260,10 +343,85 @@ const HauteCoutureStacksContent: React.FC<{ sections: CanvasSectionState[];[key:
                     <EditableText
                         sectionId="footer"
                         fieldId="right"
-                        defaultValue="TAP TO REVEAL"
+                        defaultValue="HOVER TO REVEAL"
                     />
                 </footer>
             </div>
+
+            {/* Lightbox - Expanded View */}
+            {expandedCard !== null && sections[expandedCard] && (
+                <div
+                    className="fixed inset-0 z-[1000] bg-black/95 flex items-center justify-center p-8"
+                    onClick={handleCloseExpanded}
+                    onKeyDown={(e) => {
+                        if (e.key === "Escape") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleCloseExpanded();
+                        }
+                    }}
+                    tabIndex={-1}
+                    style={{ outline: 'none' }}
+                >
+                    {/* Close button */}
+                    <button
+                        onClick={handleCloseExpanded}
+                        className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full transition-colors group"
+                        aria-label="Close expanded view"
+                    >
+                        <div className="relative w-6 h-6">
+                            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white transform rotate-45"></div>
+                            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white transform -rotate-45"></div>
+                        </div>
+                    </button>
+
+                    {/* Expanded card */}
+                    <div
+                        className="relative bg-white w-full max-w-5xl h-[85vh] overflow-auto shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="w-full h-full">
+                            <GridSectionWrapper
+                                section={sections[expandedCard]}
+                                templateSection={{ id: sections[expandedCard].id, name: `Look-${expandedCard + 1}` }}
+                                isHovered={false}
+                                onSectionDelete={props.onSectionDelete}
+                                onSectionContentChange={props.onSectionContentChange}
+                                {...props}
+                            />
+                        </div>
+
+                        {/* Info overlay in expanded view */}
+                        <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white via-white/98 to-transparent">
+                            <div className="text-xs tracking-widest opacity-50 mb-3">
+                                <EditableText
+                                    sectionId={sections[expandedCard].id}
+                                    fieldId="look_number"
+                                    defaultValue={`LOOK ${String(expandedCard + 1).padStart(2, "0")}`}
+                                    className="text-xs tracking-widest opacity-50"
+                                />
+                            </div>
+                            <EditableText
+                                sectionId={sections[expandedCard].id}
+                                fieldId="title"
+                                defaultValue={`Silhouette ${expandedCard + 1}`}
+                                className="text-3xl font-light text-black"
+                            />
+                            <EditableText
+                                sectionId={sections[expandedCard].id}
+                                fieldId="details"
+                                defaultValue="Silk, Organza"
+                                className="text-sm tracking-widest text-black/50 mt-2"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Counter */}
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white text-sm tracking-widest font-light">
+                        {expandedCard + 1} / {sections.length}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
