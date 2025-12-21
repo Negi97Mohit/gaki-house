@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
@@ -7,6 +8,23 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
+import { Info, Plus, Settings2, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+
+// --- Portal Component ---
+const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
+  const [mounted, setMounted] = useState(false);
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    const el = document.getElementById("layout-controls-slot");
+    if (el) setContainer(el);
+  }, []);
+
+  if (!mounted || !container) return null;
+  return createPortal(children, container);
+};
 
 const DiagonalRushContent: React.FC<{
   sections: CanvasSectionState[];
@@ -14,8 +32,8 @@ const DiagonalRushContent: React.FC<{
 }> = ({ sections, ...props }) => {
   const rowsRef = useRef<HTMLDivElement[]>([]);
   const { colors, editor, controlsVisible, layout } = useDynamicLayout();
+  const [showInfo, setShowInfo] = useState(false);
 
-  // The text content is now fetched via loop but we pass a reference "header.rushText" to EditableText
   const rushText =
     layout.customSectionData?.["header"]?.["rushText"] ||
     "Break The Grid • Kinetic Motion •";
@@ -26,12 +44,8 @@ const DiagonalRushContent: React.FC<{
         if (!row) return;
 
         // Determine direction (alternating rows)
-        // Even rows: Move Left (0 -> -50%)
-        // Odd rows: Move Right (-50% -> 0)
         const isLeft = i % 2 === 0;
 
-        // We use fromTo to ensure the start and end points are strictly controlled
-        // for seamless looping.
         gsap.fromTo(
           row,
           {
@@ -40,14 +54,14 @@ const DiagonalRushContent: React.FC<{
           {
             xPercent: isLeft ? -50 : 0,
             ease: "none",
-            duration: 20 + i * 2, // Slightly slower base duration for smoother rush
+            duration: 20 + i * 2,
             repeat: -1,
           }
         );
       });
     }, rowsRef);
     return () => ctx.revert();
-  }, [rushText]); // Re-animate on text change
+  }, [rushText]);
 
   return (
     <div className="w-full h-full overflow-y-auto overflow-x-hidden relative font-sans">
@@ -89,12 +103,6 @@ const DiagonalRushContent: React.FC<{
             />
           </div>
         ))}
-
-        {/* Add Button */}
-        <DynamicAddButton
-          defaultValue="Add Stream"
-          className="w-[300px] h-[400px] rotate-2"
-        />
       </div>
 
       {/* Background Text */}
@@ -113,7 +121,6 @@ const DiagonalRushContent: React.FC<{
               opacity: i % 2 !== 0 ? 0.5 : 1,
             }}
           >
-            {/* Increased repeats to 20 to ensure no gaps even on large screens or with short text */}
             {Array.from({ length: 20 }).map((_, j) => (
               <span key={j} className="mx-8 relative">
                 {rushText}
@@ -123,25 +130,68 @@ const DiagonalRushContent: React.FC<{
         ))}
       </div>
 
-      {/* Editable Input for Background */}
-      <div
-        className={cn(
-          "fixed bottom-8 left-8 z-40 bg-black/50 p-4 rounded backdrop-blur transition-all duration-500",
-          controlsVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-10 pointer-events-none"
-        )}
-      >
-        <label className="text-xs text-white/50 uppercase block mb-1">
-          Background Text
-        </label>
-        <EditableText
-          sectionId="header"
-          fieldId="rushText"
-          defaultValue="Break The Grid • Kinetic Motion •"
-          className="bg-transparent border-b border-white/30 text-white w-64 text-base"
-        />
-      </div>
+      {/* Control Island Portal */}
+      <LayoutControlsPortal>
+        <div className="relative">
+          <AnimatePresence>
+            {showInfo && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: "circOut" }}
+                className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-black/80 p-4 rounded-2xl backdrop-blur-xl border border-white/10 shadow-2xl w-80 flex flex-col gap-4 origin-bottom z-50"
+              >
+                {/* Background Settings */}
+                <div className="flex flex-col gap-3">
+                  <label className="text-[10px] text-white/50 uppercase font-mono tracking-wider flex items-center gap-2">
+                    <Settings2 className="w-3 h-3" />
+                    Background Text
+                  </label>
+
+                  <input
+                    type="text"
+                    value={rushText}
+                    onChange={(e) =>
+                      editor.handleUpdateText(
+                        "header",
+                        "rushText",
+                        e.target.value
+                      )
+                    }
+                    className="bg-white/5 border border-white/10 rounded-md px-3 py-2 text-xs text-white/90 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full placeholder:text-white/20"
+                  />
+                </div>
+
+                {/* Add Stream Button */}
+                <button
+                  onClick={editor.handleAddSection}
+                  className="w-full mt-2 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 text-white flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] group"
+                >
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                  <span className="text-xs font-medium tracking-wide">
+                    ADD STREAM
+                  </span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            className={cn(
+              "rounded-full h-10 w-10 hover:bg-background/60 flex items-center justify-center transition-all",
+              showInfo ? "bg-white text-black hover:bg-white/90" : "text-white"
+            )}
+          >
+            {showInfo ? (
+              <X className="w-4 h-4" />
+            ) : (
+              <Info className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+      </LayoutControlsPortal>
 
       {/* Grain */}
       <div

@@ -1,18 +1,16 @@
-// src/components/layouts/SimonPortfolioLayout.tsx
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { GridSectionWrapper } from "./GridSectionWrapper";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Plus, Info, X } from "lucide-react";
 import gsap from "gsap";
 import { DynamicLayoutWrapper } from "./dynamic/core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./dynamic/core/DynamicLayoutContext";
 import { EditableText } from "./dynamic/core/EditableText";
-import {
-  DynamicAddButton,
-  DynamicDeleteButton,
-} from "./dynamic/core/LayoutButtons";
+import { DynamicDeleteButton } from "./dynamic/core/LayoutButtons";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface SimonPortfolioLayoutProps {
   layout: CanvasLayoutState;
@@ -20,6 +18,21 @@ interface SimonPortfolioLayoutProps {
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
   [key: string]: any;
 }
+
+// --- Portal Component ---
+const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
+  const [mounted, setMounted] = useState(false);
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    const el = document.getElementById("layout-controls-slot");
+    if (el) setContainer(el);
+  }, []);
+
+  if (!mounted || !container) return null;
+  return createPortal(children, container);
+};
 
 // Animated project title with magnetic hover effect
 const AnimatedProjectTitle: React.FC<{
@@ -280,6 +293,7 @@ const SimonPortfolioContent: React.FC<any> = ({
     null
   );
   const [viewMode, setViewMode] = useState<"list" | "detail">("list");
+  const [showInfo, setShowInfo] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const sectionIds = layout.sectionOrder?.length
@@ -470,27 +484,60 @@ const SimonPortfolioContent: React.FC<any> = ({
             );
           })}
 
-          {/* Back button - bottom-left, above video controls */}
+          {/* Back button - bottom-left */}
           <button
             onClick={handleBackToList}
-            className="fixed bottom-24 left-6 z-50 px-6 py-2 text-sm font-medium tracking-wide border border-current/40 rounded-full hover:bg-black hover:text-white transition-all duration-300"
+            className="fixed bottom-24 left-6 z-50 px-6 py-2 text-sm font-medium tracking-wide border border-current/40 rounded-full hover:bg-black hover:text-white transition-all duration-300 backdrop-blur-md"
           >
             ← BACK TO LIST
           </button>
         </div>
       )}
 
-      {/* FAB buttons */}
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col gap-3">
-        {/* Removed Clear Grid Button as requested */}
+      {/* Control Island Portal */}
+      <LayoutControlsPortal>
+        <div className="relative">
+          <AnimatePresence>
+            {showInfo && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: "circOut" }}
+                className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-black/80 p-4 rounded-2xl backdrop-blur-xl border border-white/10 shadow-2xl w-64 flex flex-col gap-4 origin-bottom z-50"
+              >
+                <div className="text-center text-white/60 font-mono text-[10px] tracking-widest border-b border-white/10 pb-2">
+                  SIMON LAYOUT
+                </div>
 
-        <DynamicAddButton
-          onAdd={handleAddSection}
-          defaultValue=""
-          className="w-14 h-14 bg-black text-white rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 border-none opacity-100"
-          style={{ color: "white" }}
-        />
-      </div>
+                <button
+                  onClick={handleAddSection}
+                  className="w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 text-white flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] group"
+                >
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                  <span className="text-xs font-medium tracking-wide">
+                    ADD PROJECT
+                  </span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            className={cn(
+              "rounded-full h-10 w-10 hover:bg-background/60 flex items-center justify-center transition-all",
+              showInfo ? "bg-white text-black hover:bg-white/90" : "text-white"
+            )}
+          >
+            {showInfo ? (
+              <X className="w-4 h-4" />
+            ) : (
+              <Info className="w-4 h-4" />
+            )}
+          </button>
+        </div>
+      </LayoutControlsPortal>
     </div>
   );
 };
