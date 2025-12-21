@@ -1,6 +1,7 @@
 // src/components/video-canvas/OverlayLayer.tsx
 import React, { useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 import {
   GeneratedOverlay,
   FileOverlayState,
@@ -240,6 +241,28 @@ export const OverlayLayer: React.FC<OverlayLayerProps> = ({
                       style={{ zIndex: 9999 }}
                     >
                       Change Design
+                    </button>
+                  )}
+
+                  {/* Close Button - shows when selected */}
+                  {isSelected && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        onRemoveOverlay(overlay.id);
+                      }}
+                      onPointerDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="close-btn absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-destructive/90 transition-colors pointer-events-auto cursor-pointer"
+                      style={{ zIndex: 9999 }}
+                      title="Remove banner"
+                    >
+                      <X className="w-4 h-4" />
                     </button>
                   )}
 
