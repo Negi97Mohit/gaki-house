@@ -63,6 +63,8 @@ import { HauteCoutureStacksLayout } from "./layouts/dynamic/HauteCoutureStacksLa
 import { ChiaroscuroCanvasLayout } from "./layouts/dynamic/ChiaroscuroCanvasLayout";
 import { InterstellarDockLayout } from "./layouts/dynamic/InterstellarDockLayout";
 import { VoidEmergenceLayout } from "./layouts/dynamic/VoidEmergenceLayout";
+// Added Sistine Import
+import { SistineDepthLayout } from "./layouts/dynamic/SistineDepthLayout";
 
 interface CanvasGridLayoutProps {
   layout: CanvasLayoutState;
@@ -198,6 +200,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   const isChiaroscuroCanvas = tId === "chiaroscuro-canvas";
   const isInterstellarDock = tId === "interstellar-dock";
   const isVoidEmergence = tId === "void-emergence";
+  // Added Sistine Check
+  const isSistine = tId === "sistine-depth";
 
   // Combine props to pass down to layouts
   const commonProps = {
@@ -303,6 +307,8 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         <InterstellarDockLayout sections={layout.sections} {...commonProps} />
       ) : isVoidEmergence ? (
         <VoidEmergenceLayout sections={layout.sections} {...commonProps} />
+      ) : isSistine ? (
+        <SistineDepthLayout sections={layout.sections} {...commonProps} />
       ) : /* --- Standard Interactive --- */
       isExpandingCards ? (
         <ExpandingCardsLayout {...commonProps} />
