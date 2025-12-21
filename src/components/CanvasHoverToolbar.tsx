@@ -56,6 +56,78 @@ interface CanvasHoverToolbarProps {
   onToggleChatbot?: (open: boolean | ((prev: boolean) => boolean)) => void;
 }
 
+// NEW: Helper component to handle auto-scrolling
+interface LayoutListProps {
+  layouts: CanvasLayoutTemplate[];
+  activeId?: string;
+  onSelect: (id: string) => void;
+  emptyMessage: string;
+}
+
+const LayoutList = ({
+  layouts,
+  activeId,
+  onSelect,
+  emptyMessage,
+}: LayoutListProps) => {
+  const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    // Scroll active item into view on mount or when activeId changes
+    if (activeId && itemRefs.current[activeId]) {
+      setTimeout(() => {
+        itemRefs.current[activeId]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 100); // Small delay to ensure layout stability
+    }
+  }, [activeId]);
+
+  if (layouts.length === 0) {
+    return (
+      <div className="col-span-2 text-center text-sm text-muted-foreground py-4">
+        {emptyMessage}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {layouts.map((template) => (
+        <Button
+          key={template.id}
+          // Attach ref for scrolling
+          ref={(el) => (itemRefs.current[template.id] = el)}
+          variant="ghost"
+          size="sm"
+          className={cn(
+            "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
+            activeId === template.id
+              ? "bg-primary/10 border-primary/50"
+              : "hover:bg-muted/70 hover:border-border"
+          )}
+          onClick={() => onSelect(template.id)}
+        >
+          {/* Passed templateId to fix specific previews */}
+          <GridLayoutPreview
+            sections={template.sections}
+            templateId={template.id}
+          />
+          <div className="flex items-center gap-1.5 w-full justify-center">
+            <span className="text-xs font-medium truncate">
+              {template.name}
+            </span>
+            {activeId === template.id && (
+              <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+            )}
+          </div>
+        </Button>
+      ))}
+    </div>
+  );
+};
+
 export const CanvasHoverToolbar = ({
   blankCanvasColor,
   onBlankCanvasColorChange,
@@ -76,9 +148,7 @@ export const CanvasHoverToolbar = ({
     CanvasLayoutTemplate[]
   >([]);
   const [templatesLoading, setTemplatesLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("tools"); // added missing state if any, assuming standard tabs
-  // NO local isChatbotOpen state
-
+  const [activeTab, setActiveTab] = useState("tools");
 
   useEffect(() => {
     getLayoutTemplates()
@@ -92,6 +162,7 @@ export const CanvasHoverToolbar = ({
         setTemplatesLoading(false);
       });
   }, []);
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -446,7 +517,9 @@ export const CanvasHoverToolbar = ({
           sideOffset={8}
         >
           {templatesLoading && (
-            <div className="text-sm text-muted-foreground p-3 text-center">Loading layouts...</div>
+            <div className="text-sm text-muted-foreground p-3 text-center">
+              Loading layouts...
+            </div>
           )}
 
           {canvasLayout && (
@@ -463,8 +536,12 @@ export const CanvasHoverToolbar = ({
 
           {/* Tabbed Layout Selection */}
           {(() => {
-            const dynamicLayouts = layoutTemplates.filter(t => t.category === 'dynamic');
-            const staticLayouts = layoutTemplates.filter(t => t.category !== 'dynamic');
+            const dynamicLayouts = layoutTemplates.filter(
+              (t) => t.category === "dynamic"
+            );
+            const staticLayouts = layoutTemplates.filter(
+              (t) => t.category !== "dynamic"
+            );
 
             return (
               <Tabs defaultValue="dynamic" className="w-full">
@@ -480,67 +557,21 @@ export const CanvasHoverToolbar = ({
                 </TabsList>
 
                 <TabsContent value="dynamic" className="mt-0">
-                  <div className="grid grid-cols-2 gap-2">
-                    {dynamicLayouts.map((template) => (
-                      <Button
-                        key={template.id}
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
-                          canvasLayout?.templateId === template.id
-                            ? "bg-primary/10 border-primary/50"
-                            : "hover:bg-muted/70 hover:border-border"
-                        )}
-                        onClick={() => handleLayoutSelect(template.id)}
-                      >
-                        <GridLayoutPreview sections={template.sections} />
-                        <div className="flex items-center gap-1.5 w-full justify-center">
-                          <span className="text-xs font-medium truncate">{template.name}</span>
-                          {canvasLayout?.templateId === template.id && (
-                            <Check className="w-3.5 h-3.5 text-primary shrink-0" />
-                          )}
-                        </div>
-                      </Button>
-                    ))}
-                    {dynamicLayouts.length === 0 && (
-                      <div className="col-span-2 text-center text-sm text-muted-foreground py-4">
-                        No dynamic layouts available
-                      </div>
-                    )}
-                  </div>
+                  <LayoutList
+                    layouts={dynamicLayouts}
+                    activeId={canvasLayout?.templateId}
+                    onSelect={handleLayoutSelect}
+                    emptyMessage="No dynamic layouts available"
+                  />
                 </TabsContent>
 
                 <TabsContent value="static" className="mt-0">
-                  <div className="grid grid-cols-2 gap-2">
-                    {staticLayouts.map((template) => (
-                      <Button
-                        key={template.id}
-                        variant="ghost"
-                        size="sm"
-                        className={cn(
-                          "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
-                          canvasLayout?.templateId === template.id
-                            ? "bg-primary/10 border-primary/50"
-                            : "hover:bg-muted/70 hover:border-border"
-                        )}
-                        onClick={() => handleLayoutSelect(template.id)}
-                      >
-                        <GridLayoutPreview sections={template.sections} />
-                        <div className="flex items-center gap-1.5 w-full justify-center">
-                          <span className="text-xs font-medium truncate">{template.name}</span>
-                          {canvasLayout?.templateId === template.id && (
-                            <Check className="w-3.5 h-3.5 text-primary shrink-0" />
-                          )}
-                        </div>
-                      </Button>
-                    ))}
-                    {staticLayouts.length === 0 && (
-                      <div className="col-span-2 text-center text-sm text-muted-foreground py-4">
-                        No static layouts available
-                      </div>
-                    )}
-                  </div>
+                  <LayoutList
+                    layouts={staticLayouts}
+                    activeId={canvasLayout?.templateId}
+                    onSelect={handleLayoutSelect}
+                    emptyMessage="No static layouts available"
+                  />
                 </TabsContent>
               </Tabs>
             );
@@ -587,18 +618,17 @@ export const CanvasHoverToolbar = ({
             </Button>
           )}
 
-          {(layoutId.includes("bento") ||
-            layoutId.includes("staircase")) && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-                onClick={() => transformLayout("rotate")}
-                title="Rotate sections"
-              >
-                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              </Button>
-            )}
+          {(layoutId.includes("bento") || layoutId.includes("staircase")) && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+              onClick={() => transformLayout("rotate")}
+              title="Rotate sections"
+            >
+              <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            </Button>
+          )}
 
           {(layoutId === "spotlight-frame" || layoutId === "pip-creative") && (
             <Button
@@ -606,7 +636,9 @@ export const CanvasHoverToolbar = ({
               size="icon"
               className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
               onClick={() => transformLayout("rotate")}
-              title={layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"}
+              title={
+                layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"
+              }
             >
               <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
@@ -634,7 +666,12 @@ export const CanvasHoverToolbar = ({
                   </span>
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-64 p-2 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl" align="center" side="bottom" sideOffset={8}>
+              <PopoverContent
+                className="w-64 p-2 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
+                align="center"
+                side="bottom"
+                sideOffset={8}
+              >
                 <div className="space-y-2">
                   <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
                     Screen Order
@@ -655,7 +692,9 @@ export const CanvasHoverToolbar = ({
                           <span
                             className={cn(
                               "font-bold w-4 text-center",
-                              isActive ? "text-primary" : "text-muted-foreground"
+                              isActive
+                                ? "text-primary"
+                                : "text-muted-foreground"
                             )}
                           >
                             {idx + 1}

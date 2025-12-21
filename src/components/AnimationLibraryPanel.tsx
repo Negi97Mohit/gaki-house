@@ -1,6 +1,15 @@
 // src/components/AnimationLibraryPanel.tsx
-import React, { useState } from "react";
-import { X, Search, Sparkles, Zap, Box, Type, Paintbrush, Layers } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  X,
+  Search,
+  Sparkles,
+  Zap,
+  Box,
+  Type,
+  Paintbrush,
+  Layers,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -20,8 +29,14 @@ import { GSAP_PRESETS, GSAPPreset } from "@/lib/gsapAnimations";
 interface AnimationLibraryPanelProps {
   isOpen: boolean;
   onClose: () => void;
+  // NEW: Accept the active animation ID
+  activeAnimationId?: string;
   onSelect: (preset: AnimationPreset) => void;
-  onSelectGSAP?: (preset: GSAPPreset, customText?: string, customColor?: string) => void;
+  onSelectGSAP?: (
+    preset: GSAPPreset,
+    customText?: string,
+    customColor?: string
+  ) => void;
 }
 
 const GSAP_CATEGORIES = [
@@ -38,6 +53,7 @@ const GSAP_CATEGORIES = [
 export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
   isOpen,
   onClose,
+  activeAnimationId, // Destructure new prop
   onSelect,
   onSelectGSAP,
 }) => {
@@ -51,15 +67,45 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editingPreset, setEditingPreset] = useState<AnimationPreset | null>(null);
-  
+  const [editingPreset, setEditingPreset] = useState<AnimationPreset | null>(
+    null
+  );
+
   // GSAP editing state
   const [isEditingGSAP, setIsEditingGSAP] = useState(false);
-  const [editingGSAPPreset, setEditingGSAPPreset] = useState<GSAPPreset | null>(null);
+  const [editingGSAPPreset, setEditingGSAPPreset] = useState<GSAPPreset | null>(
+    null
+  );
   const [customGSAPPresets, setCustomGSAPPresets] = useState<GSAPPreset[]>([]);
+
+  // NEW: Refs for scroll-to-selected
+  const itemRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // NEW: Scroll effect
+  useEffect(() => {
+    if (isOpen && activeAnimationId && itemRefs.current[activeAnimationId]) {
+      const element = itemRefs.current[activeAnimationId];
+      if (element) {
+        // Small timeout to allow Tab content to mount/paint
+        setTimeout(() => {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }, 100);
+      }
+    }
+  }, [
+    isOpen,
+    activeAnimationId,
+    activeTab,
+    activeCategory,
+    activeGsapCategory,
+  ]);
 
   if (!isOpen) return null;
 
+  // ... (Keep existing handlers: handleEditClick, handleDuplicateClick, etc.) ...
   const handleEditClick = (e: React.MouseEvent, preset: AnimationPreset) => {
     e.stopPropagation();
     const presetToEdit = prepareForEditing(preset);
@@ -67,7 +113,10 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
     setIsEditing(true);
   };
 
-  const handleDuplicateClick = (e: React.MouseEvent, preset: AnimationPreset) => {
+  const handleDuplicateClick = (
+    e: React.MouseEvent,
+    preset: AnimationPreset
+  ) => {
     e.stopPropagation();
     const newPreset = prepareForEditing(preset);
     newPreset.name = `${newPreset.name} (Copy)`;
@@ -104,9 +153,14 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
     toast.success("GSAP animation duplicated");
   };
 
-  const handleGSAPSave = (preset: GSAPPreset, customText?: string, customColor?: string) => {
-    // Save the preset to custom presets
-    const existingIndex = customGSAPPresets.findIndex((p) => p.id === preset.id);
+  const handleGSAPSave = (
+    preset: GSAPPreset,
+    customText?: string,
+    customColor?: string
+  ) => {
+    const existingIndex = customGSAPPresets.findIndex(
+      (p) => p.id === preset.id
+    );
     if (existingIndex >= 0) {
       setCustomGSAPPresets((prev) => {
         const updated = [...prev];
@@ -116,16 +170,15 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
     } else {
       setCustomGSAPPresets((prev) => [...prev, preset]);
     }
-    
-    // Apply the animation to canvas with custom text and color
+
     if (onSelectGSAP) {
       onSelectGSAP(preset, customText || preset.name, customColor);
     }
-    
+
     setIsEditingGSAP(false);
     setEditingGSAPPreset(null);
     toast.success("Animation saved and applied to canvas");
-    onClose(); // Close the library panel after applying
+    onClose();
   };
 
   const handleGSAPSelect = (preset: GSAPPreset) => {
@@ -136,10 +189,13 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
     onClose();
   };
 
-  // Show GSAP editor
+  // ... (Keep Editors render logic) ...
   if (isEditingGSAP && editingGSAPPreset) {
     return (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8" style={{ zIndex: "var(--z-sessions-panel)" }}>
+      <div
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+        style={{ zIndex: "var(--z-sessions-panel)" }}
+      >
         <div className="w-full max-w-6xl h-full max-h-[85vh] bg-background border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <GSAPAnimationEditor
             preset={editingGSAPPreset}
@@ -151,10 +207,12 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
     );
   }
 
-  // Show basic animation editor
   if (isEditing && editingPreset) {
     return (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8" style={{ zIndex: "var(--z-sessions-panel)" }}>
+      <div
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+        style={{ zIndex: "var(--z-sessions-panel)" }}
+      >
         <div className="w-full max-w-6xl h-full max-h-[85vh] bg-background border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <AnimationEditor
             initialPreset={editingPreset}
@@ -171,15 +229,18 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
       activeCategory === "All" ||
       preset.category === activeCategory ||
       (activeCategory === "User" && preset.isCustom);
-    const matchesSearch = preset.name.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = preset.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
-  // Combine built-in GSAP presets with custom ones
   const allGsapPresets = [...GSAP_PRESETS, ...customGSAPPresets];
   const filteredGsapPresets =
     activeGsapCategory === "all"
-      ? allGsapPresets.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
+      ? allGsapPresets.filter((p) =>
+          p.name.toLowerCase().includes(search.toLowerCase())
+        )
       : allGsapPresets.filter(
           (p) =>
             p.category === activeGsapCategory &&
@@ -187,7 +248,10 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
         );
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8" style={{ zIndex: "var(--z-sessions-panel)" }}>
+    <div
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+      style={{ zIndex: "var(--z-sessions-panel)" }}
+    >
       <div className="w-full max-w-6xl h-full max-h-[85vh] bg-background border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -196,7 +260,6 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
               <Sparkles className="w-5 h-5 text-primary" />
               Animation Library
             </h2>
-            {/* Main Tab Switcher */}
             <div className="flex bg-muted rounded-lg p-0.5">
               <button
                 onClick={() => setActiveTab("pro")}
@@ -242,7 +305,6 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
         {/* Pro Animations (GSAP) */}
         {activeTab === "pro" && (
           <>
-            {/* GSAP Category Tabs */}
             <div className="flex gap-1 p-3 overflow-x-auto border-b border-border/30 bg-muted/20">
               {GSAP_CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
@@ -264,18 +326,26 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
               })}
             </div>
 
-            {/* GSAP Grid Content */}
             <ScrollArea className="flex-1 p-6 bg-muted/10">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredGsapPresets.map((preset) => (
-                  <GSAPPresetPreview
+                  // WRAPPER DIV for REF
+                  <div
                     key={preset.id}
-                    preset={preset}
-                    isSelected={hoveredId === preset.id}
-                    onClick={() => handleGSAPSelect(preset)}
-                    onEdit={handleGSAPEdit}
-                    onDuplicate={handleGSAPDuplicate}
-                  />
+                    ref={(el) => (itemRefs.current[preset.id] = el)}
+                  >
+                    <GSAPPresetPreview
+                      preset={preset}
+                      // Check if this matches activeAnimationId
+                      isSelected={
+                        hoveredId === preset.id ||
+                        activeAnimationId === preset.id
+                      }
+                      onClick={() => handleGSAPSelect(preset)}
+                      onEdit={handleGSAPEdit}
+                      onDuplicate={handleGSAPDuplicate}
+                    />
+                  </div>
                 ))}
               </div>
               {filteredGsapPresets.length === 0 && (
@@ -286,11 +356,11 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
               )}
             </ScrollArea>
 
-            {/* Pro Footer */}
             <div className="p-3 border-t border-border/30 bg-gradient-to-r from-primary/5 to-transparent">
               <p className="text-xs text-muted-foreground text-center">
                 <Zap className="w-3 h-3 inline mr-1" />
-                {filteredGsapPresets.length} professional animations powered by GSAP • Hover to preview
+                {filteredGsapPresets.length} professional animations powered by
+                GSAP • Hover to preview
               </p>
             </div>
           </>
@@ -299,9 +369,12 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
         {/* Basic Animations (Original) */}
         {activeTab === "basic" && (
           <>
-            {/* Categories */}
             <div className="px-4 pt-2 bg-muted/30">
-              <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
+              <Tabs
+                value={activeCategory}
+                onValueChange={setActiveCategory}
+                className="w-full"
+              >
                 <TabsList className="w-full justify-start h-auto flex-wrap gap-y-1 bg-transparent p-0">
                   {ANIMATION_CATEGORIES.map((cat) => (
                     <TabsTrigger
@@ -322,20 +395,28 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
               </Tabs>
             </div>
 
-            {/* Grid Content */}
             <ScrollArea className="flex-1 p-6 bg-muted/10">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredPresets.map((preset) => (
-                  <AnimationGridItem
+                  // WRAPPER DIV for REF
+                  <div
                     key={preset.id}
-                    preset={preset}
-                    isPlaying={hoveredId === preset.id}
-                    onHover={setHoveredId}
-                    onSelect={onSelect}
-                    onEdit={handleEditClick}
-                    onDuplicate={handleDuplicateClick}
-                    onDelete={handleDeleteClick}
-                  />
+                    ref={(el) => (itemRefs.current[preset.id] = el)}
+                  >
+                    <AnimationGridItem
+                      preset={preset}
+                      // Check activeAnimationId to auto-play or highlight
+                      isPlaying={
+                        hoveredId === preset.id ||
+                        activeAnimationId === preset.id
+                      }
+                      onHover={setHoveredId}
+                      onSelect={onSelect}
+                      onEdit={handleEditClick}
+                      onDuplicate={handleDuplicateClick}
+                      onDelete={handleDeleteClick}
+                    />
+                  </div>
                 ))}
               </div>
               {filteredPresets.length === 0 && (

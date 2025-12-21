@@ -13,6 +13,7 @@ import {
   Save,
   LayoutTemplate,
   MinusCircle,
+  Check,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -53,6 +54,51 @@ interface GridSectionToolbarProps {
     content: CanvasSectionState["content"]
   ) => void;
 }
+
+// NEW: Helper component to handle scroll-on-mount behavior for the submenu
+const CanvasDesignList = ({
+  activeId,
+  onSelect,
+}: {
+  activeId?: string;
+  onSelect: (preset: (typeof CANVAS_PRESETS)[0]) => void;
+}) => {
+  const itemRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
+
+  React.useEffect(() => {
+    // When the submenu mounts, scroll the active item into view
+    if (activeId && itemRefs.current[activeId]) {
+      // Small timeout to ensure layout is calculated after mount animation
+      setTimeout(() => {
+        itemRefs.current[activeId]?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 100);
+    }
+  }, [activeId]);
+
+  return (
+    <>
+      {CANVAS_PRESETS.map((preset) => (
+        <DropdownMenuItem
+          key={preset.id}
+          // Attach ref for scrolling
+          ref={(el) => (itemRefs.current[preset.id] = el)}
+          onClick={() => onSelect(preset)}
+          className={cn(
+            "flex items-center justify-between gap-2 cursor-pointer",
+            activeId === preset.id &&
+              "bg-accent text-accent-foreground font-medium"
+          )}
+        >
+          <span>{preset.name}</span>
+          {activeId === preset.id && <Check className="w-3 h-3 opacity-70" />}
+        </DropdownMenuItem>
+      ))}
+    </>
+  );
+};
 
 export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   section,
@@ -227,47 +273,48 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
                   Canvas Designs
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="max-h-[300px] overflow-y-auto">
-                  {CANVAS_PRESETS.map((preset) => (
-                    <DropdownMenuItem
-                      key={preset.id}
-                      onClick={() => {
-                        onSectionContentChange(section.id, {
-                          type: "camera",
-                          settings: {
-                            ...DEFAULT_CAMERA_STATE,
-                            canvasDesignId: preset.id,
-                            layoutMode: "pip",
-                            pipPosition: preset.pip.pipPosition,
-                            pipSize: preset.pip.pipSize,
-                            sectionBackgroundColor:
-                              preset.background.blankCanvasColor,
-                            // Convert preset text overlays to section text overlays
-                            textOverlays: preset.textOverlays.map((t) => ({
-                              id: t.id,
-                              content: t.content,
-                              style: t.style as any,
-                              layout: {
-                                position: t.layout.position,
-                                size: t.layout.size,
-                                zIndex: t.layout.zIndex,
-                                rotation: t.layout.rotation,
-                                layerOrder: t.layout.layerOrder,
-                              },
-                            })) as any,
-                            videoFilter: preset.effects.videoFilter || "none",
-                            isBeautifyEnabled:
-                              preset.effects.isBeautifyEnabled || false,
-                            isNeonEdgeEnabled:
-                              preset.effects.isNeonEdgeEnabled || false,
-                            neonColor: preset.effects.neonColor || "#00FFFF",
-                            neonIntensity: preset.effects.neonIntensity || 20,
-                          },
-                        });
-                      }}
-                    >
-                      {preset.name}
-                    </DropdownMenuItem>
-                  ))}
+                  {/* REPLACED inline map with CanvasDesignList component */}
+                  <CanvasDesignList
+                    activeId={
+                      content.type === "camera"
+                        ? content.settings?.canvasDesignId
+                        : undefined
+                    }
+                    onSelect={(preset) => {
+                      onSectionContentChange(section.id, {
+                        type: "camera",
+                        settings: {
+                          ...DEFAULT_CAMERA_STATE,
+                          canvasDesignId: preset.id,
+                          layoutMode: "pip",
+                          pipPosition: preset.pip.pipPosition,
+                          pipSize: preset.pip.pipSize,
+                          sectionBackgroundColor:
+                            preset.background.blankCanvasColor,
+                          // Convert preset text overlays to section text overlays
+                          textOverlays: preset.textOverlays.map((t: any) => ({
+                            id: t.id,
+                            content: t.content,
+                            style: t.style as any,
+                            layout: {
+                              position: t.layout.position,
+                              size: t.layout.size,
+                              zIndex: t.layout.zIndex,
+                              rotation: t.layout.rotation,
+                              layerOrder: t.layout.layerOrder,
+                            },
+                          })) as any,
+                          videoFilter: preset.effects.videoFilter || "none",
+                          isBeautifyEnabled:
+                            preset.effects.isBeautifyEnabled || false,
+                          isNeonEdgeEnabled:
+                            preset.effects.isNeonEdgeEnabled || false,
+                          neonColor: preset.effects.neonColor || "#00FFFF",
+                          neonIntensity: preset.effects.neonIntensity || 20,
+                        },
+                      });
+                    }}
+                  />
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
             </DropdownMenuContent>
@@ -289,8 +336,6 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
           <MinusCircle className="h-4 w-4" />
         </Button>
       )}
-
-      {/* REMOVED: Delete Panel Button (X) */}
     </div>
   );
 };

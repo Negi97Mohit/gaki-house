@@ -68,9 +68,17 @@ interface SceneTabsProps {
   onSceneClose: (id: string) => void;
   onSubsceneClose?: (parentId: string, subsceneId: string) => void;
   onSceneReorder: (fromIndex: number, toIndex: number) => void;
-  onSubsceneReorder?: (parentId: string, fromIndex: number, toIndex: number) => void;
+  onSubsceneReorder?: (
+    parentId: string,
+    fromIndex: number,
+    toIndex: number
+  ) => void;
   onSceneRename: (id: string, newName: string) => void;
-  onSubsceneRename?: (parentId: string, subsceneId: string, newName: string) => void;
+  onSubsceneRename?: (
+    parentId: string,
+    subsceneId: string,
+    newName: string
+  ) => void;
   onToggleExpand?: (sceneId: string) => void;
   onDuplicateScene?: (sceneId: string) => void;
   onResetScene?: (sceneId: string) => void;
@@ -104,24 +112,47 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   onApplyStreamStyle,
 }) => {
   const [dragState, setDragState] = useState<{
-    type: 'scene' | 'subscene';
+    type: "scene" | "subscene";
     index: number;
     parentId?: string;
   } | null>(null);
   const [dropTarget, setDropTarget] = useState<{
-    type: 'scene' | 'subscene';
+    type: "scene" | "subscene";
     index: number;
     parentId?: string;
-    position: 'before' | 'after';
+    position: "before" | "after";
   } | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [showTopScroll, setShowTopScroll] = useState(false);
   const [showBottomScroll, setShowBottomScroll] = useState(false);
-  const [isStreamStyleSelectorOpen, setIsStreamStyleSelectorOpen] = useState(false);
+  const [isStreamStyleSelectorOpen, setIsStreamStyleSelectorOpen] =
+    useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // NEW: Ref to store all tab elements by ID
+  const tabsRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // NEW: Effect to scroll active tab into view
+  useEffect(() => {
+    // Determine which ID is the "active" one to scroll to
+    const targetId = activeSubsceneId || activeSceneId;
+
+    if (targetId && tabsRef.current[targetId]) {
+      const element = tabsRef.current[targetId];
+      if (element) {
+        // Use a small timeout to ensure layout is settled (e.g. after expanding a folder)
+        setTimeout(() => {
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest", // Ensures it doesn't scroll the whole page
+          });
+        }, 50);
+      }
+    }
+  }, [activeSceneId, activeSubsceneId, scenes]); // Depend on scenes in case expansion changes layout
 
   useEffect(() => {
     if (editingId && inputRef.current) {
@@ -133,7 +164,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   useEffect(() => {
     const checkScroll = () => {
       if (scrollContainerRef.current) {
-        const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+        const { scrollTop, scrollHeight, clientHeight } =
+          scrollContainerRef.current;
         setShowTopScroll(scrollTop > 0);
         setShowBottomScroll(scrollTop < scrollHeight - clientHeight - 1);
       }
@@ -160,8 +192,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   };
 
   const handleDragStart = (
-    e: React.DragEvent, 
-    type: 'scene' | 'subscene',
+    e: React.DragEvent,
+    type: "scene" | "subscene",
     index: number,
     parentId?: string
   ) => {
@@ -171,23 +203,23 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   };
 
   const handleDragOver = (
-    e: React.DragEvent, 
-    type: 'scene' | 'subscene',
+    e: React.DragEvent,
+    type: "scene" | "subscene",
     index: number,
     parentId?: string
   ) => {
     e.preventDefault();
     if (!dragState) return;
-    
+
     // Only allow same-type drags
     if (dragState.type !== type) return;
-    if (type === 'subscene' && dragState.parentId !== parentId) return;
+    if (type === "subscene" && dragState.parentId !== parentId) return;
     if (dragState.index === index && dragState.parentId === parentId) return;
 
     const rect = (e.target as HTMLElement).getBoundingClientRect();
     const midY = rect.top + rect.height / 2;
-    const position = e.clientY < midY ? 'before' : 'after';
-    
+    const position = e.clientY < midY ? "before" : "after";
+
     setDropTarget({ type, index, parentId, position });
   };
 
@@ -198,23 +230,23 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
       setDropTarget(null);
       return;
     }
-    
+
     let toIndex = dropTarget.index;
-    if (dropTarget.position === 'after') {
+    if (dropTarget.position === "after") {
       toIndex += 1;
     }
     // Adjust if dragging from before the drop position
     if (dragState.index < toIndex) {
       toIndex -= 1;
     }
-    
-    if (dragState.type === 'scene' && dropTarget.type === 'scene') {
+
+    if (dragState.type === "scene" && dropTarget.type === "scene") {
       if (dragState.index !== toIndex) {
         onSceneReorder(dragState.index, toIndex);
       }
     } else if (
-      dragState.type === 'subscene' && 
-      dropTarget.type === 'subscene' &&
+      dragState.type === "subscene" &&
+      dropTarget.type === "subscene" &&
       dragState.parentId === dropTarget.parentId &&
       onSubsceneReorder
     ) {
@@ -222,7 +254,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         onSubsceneReorder(dragState.parentId!, dragState.index, toIndex);
       }
     }
-    
+
     setDragState(null);
     setDropTarget(null);
   };
@@ -253,7 +285,11 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
     setEditingName("");
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, sceneId: string, subsceneId?: string) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent,
+    sceneId: string,
+    subsceneId?: string
+  ) => {
     if (e.key === "Enter") {
       handleNameSubmit(sceneId, subsceneId);
     } else if (e.key === "Escape") {
@@ -262,10 +298,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
     }
   };
 
-  const getTransitionBetweenScenes = (fromSceneId: string, toSceneId: string) => {
+  const getTransitionBetweenScenes = (
+    fromSceneId: string,
+    toSceneId: string
+  ) => {
     return transitions.find(
-      t => (t.fromSceneId === fromSceneId && t.toSceneId === toSceneId) ||
-           (t.fromSceneId === toSceneId && t.toSceneId === fromSceneId)
+      (t) =>
+        (t.fromSceneId === fromSceneId && t.toSceneId === toSceneId) ||
+        (t.fromSceneId === toSceneId && t.toSceneId === fromSceneId)
     );
   };
 
@@ -329,15 +369,24 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         >
           {scenes.map((scene, index) => {
             const isActive = scene.id === activeSceneId && !activeSubsceneId;
-            const isDragging = dragState?.type === 'scene' && dragState.index === index;
-            const isDropBefore = dropTarget?.type === 'scene' && dropTarget.index === index && dropTarget.position === 'before';
-            const isDropAfter = dropTarget?.type === 'scene' && dropTarget.index === index && dropTarget.position === 'after';
+            const isDragging =
+              dragState?.type === "scene" && dragState.index === index;
+            const isDropBefore =
+              dropTarget?.type === "scene" &&
+              dropTarget.index === index &&
+              dropTarget.position === "before";
+            const isDropAfter =
+              dropTarget?.type === "scene" &&
+              dropTarget.index === index &&
+              dropTarget.position === "after";
             const hasSubscenes = scene.subscenes && scene.subscenes.length > 0;
             const isExpanded = scene.isExpanded ?? true;
-            
+
             // Get transition to next scene
             const nextScene = scenes[index + 1];
-            const transitionToNext = nextScene ? getTransitionBetweenScenes(scene.id, nextScene.id) : null;
+            const transitionToNext = nextScene
+              ? getTransitionBetweenScenes(scene.id, nextScene.id)
+              : null;
 
             return (
               <React.Fragment key={scene.id}>
@@ -345,12 +394,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                 {isDropBefore && (
                   <div className="h-0.5 bg-accent mx-2 rounded-full" />
                 )}
-                
+
                 {/* Scene Tab */}
                 <div
+                  // NEW: Attach ref here
+                  ref={(el) => (tabsRef.current[scene.id] = el)}
                   draggable
-                  onDragStart={(e) => handleDragStart(e, 'scene', index)}
-                  onDragOver={(e) => handleDragOver(e, 'scene', index)}
+                  onDragStart={(e) => handleDragStart(e, "scene", index)}
+                  onDragOver={(e) => handleDragOver(e, "scene", index)}
                   onDrop={handleDrop}
                   onDragEnd={handleDragEnd}
                   className={cn(
@@ -364,7 +415,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                     if (editingId) return;
                     // Check if clicking on expand/collapse area
                     const target = e.target as HTMLElement;
-                    if (target.closest('[data-expand-toggle]')) return;
+                    if (target.closest("[data-expand-toggle]")) return;
                     onSceneSelect(scene.id);
                   }}
                   onDoubleClick={() => handleDoubleClick(scene.id, scene.name)}
@@ -388,10 +439,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         )}
                       </button>
                     ) : (
-                      <div className={cn(
-                        "w-1.5 h-1.5 rounded-full",
-                        isActive ? "bg-accent-foreground/60" : "bg-muted-foreground/40"
-                      )} />
+                      <div
+                        className={cn(
+                          "w-1.5 h-1.5 rounded-full",
+                          isActive
+                            ? "bg-accent-foreground/60"
+                            : "bg-muted-foreground/40"
+                        )}
+                      />
                     )}
                   </div>
 
@@ -440,31 +495,42 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         <MoreHorizontal className="h-3 h-3" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-36 z-[9999] bg-popover border border-border shadow-lg">
-                      <DropdownMenuItem onClick={() => handleDoubleClick(scene.id, scene.name)}>
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-36 z-[9999] bg-popover border border-border shadow-lg"
+                    >
+                      <DropdownMenuItem
+                        onClick={() => handleDoubleClick(scene.id, scene.name)}
+                      >
                         Rename
                       </DropdownMenuItem>
                       {onDuplicateScene && (
-                        <DropdownMenuItem onClick={() => onDuplicateScene(scene.id)}>
+                        <DropdownMenuItem
+                          onClick={() => onDuplicateScene(scene.id)}
+                        >
                           <Copy className="w-3 h-3 mr-2" />
                           Duplicate
                         </DropdownMenuItem>
                       )}
                       {onSubsceneAdd && (
-                        <DropdownMenuItem onClick={() => onSubsceneAdd(scene.id)}>
+                        <DropdownMenuItem
+                          onClick={() => onSubsceneAdd(scene.id)}
+                        >
                           <GitBranch className="w-3 h-3 mr-2" />
                           Add Subscene
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
                       {onResetScene && (
-                        <DropdownMenuItem onClick={() => onResetScene(scene.id)}>
+                        <DropdownMenuItem
+                          onClick={() => onResetScene(scene.id)}
+                        >
                           <RotateCcw className="w-3 h-3 mr-2" />
                           Reset to Default
                         </DropdownMenuItem>
                       )}
                       {scenes.length > 1 && (
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           onClick={() => onSceneClose(scene.id)}
                           className="text-destructive focus:text-destructive"
                         >
@@ -486,146 +552,187 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   <div className="ml-4 relative">
                     {/* Vertical git line */}
                     <div className="absolute left-2.5 top-0 bottom-2 w-px bg-border" />
-                    
-                    {scene.subscenes!.sort((a, b) => a.order - b.order).map((subscene, subIndex) => {
-                      const isSubActive = scene.id === activeSceneId && subscene.id === activeSubsceneId;
-                      const isSubDragging = 
-                        dragState?.type === 'subscene' && 
-                        dragState.parentId === scene.id && 
-                        dragState.index === subIndex;
-                      const isSubDropBefore = 
-                        dropTarget?.type === 'subscene' && 
-                        dropTarget.parentId === scene.id && 
-                        dropTarget.index === subIndex &&
-                        dropTarget.position === 'before';
-                      const isSubDropAfter = 
-                        dropTarget?.type === 'subscene' && 
-                        dropTarget.parentId === scene.id && 
-                        dropTarget.index === subIndex &&
-                        dropTarget.position === 'after';
-                      const nextSubscene = scene.subscenes![subIndex + 1];
-                      
-                      return (
-                        <div key={subscene.id} className="relative">
-                          {/* Horizontal branch line */}
-                          <div className="absolute left-2.5 top-[14px] w-2.5 h-px bg-border" />
-                          
-                          {/* Branch node */}
-                          <div className={cn(
-                            "absolute left-[7px] top-[11px] w-2 h-2 rounded-full border-2",
-                            isSubActive 
-                              ? "bg-accent border-accent" 
-                              : "bg-background border-muted-foreground/40"
-                          )} />
-                          
-                          {/* Drop indicator before */}
-                          {isSubDropBefore && (
-                            <div className="h-0.5 bg-accent ml-5 mr-1 rounded-full" />
-                          )}
-                          
-                          <div
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, 'subscene', subIndex, scene.id)}
-                            onDragOver={(e) => handleDragOver(e, 'subscene', subIndex, scene.id)}
-                            onDrop={handleDrop}
-                            onDragEnd={handleDragEnd}
-                            className={cn(
-                              "group flex items-center gap-1 h-7 px-2 ml-5 mr-1 rounded cursor-pointer transition-all",
-                              isSubActive
-                                ? "bg-accent/80 text-accent-foreground"
-                                : "hover:bg-muted/40",
-                              isSubDragging && "opacity-40"
-                            )}
-                            onClick={() => onSceneSelect(scene.id, subscene.id)}
-                            onDoubleClick={() => handleDoubleClick(subscene.id, subscene.name)}
-                          >
-                            <GripVertical className="w-2.5 h-2.5 opacity-0 group-hover:opacity-50 flex-shrink-0 cursor-grab" />
-                            
-                            {editingId === subscene.id ? (
-                              <input
-                                ref={inputRef}
-                                value={editingName}
-                                onChange={handleNameChange}
-                                onBlur={() => handleNameSubmit(scene.id, subscene.id)}
-                                onKeyDown={(e) => handleKeyDown(e, scene.id, subscene.id)}
-                                className="flex-1 bg-transparent border-b border-accent-foreground/50 text-[11px] outline-none min-w-0"
-                                onClick={(e) => e.stopPropagation()}
-                              />
-                            ) : (
-                              <span className={cn(
-                                "flex-1 text-[11px] truncate",
-                                isSubActive ? "font-medium" : "text-muted-foreground"
-                              )}>
-                                {subscene.name}
-                              </span>
+
+                    {scene
+                      .subscenes!.sort((a, b) => a.order - b.order)
+                      .map((subscene, subIndex) => {
+                        const isSubActive =
+                          scene.id === activeSceneId &&
+                          subscene.id === activeSubsceneId;
+                        const isSubDragging =
+                          dragState?.type === "subscene" &&
+                          dragState.parentId === scene.id &&
+                          dragState.index === subIndex;
+                        const isSubDropBefore =
+                          dropTarget?.type === "subscene" &&
+                          dropTarget.parentId === scene.id &&
+                          dropTarget.index === subIndex &&
+                          dropTarget.position === "before";
+                        const isSubDropAfter =
+                          dropTarget?.type === "subscene" &&
+                          dropTarget.parentId === scene.id &&
+                          dropTarget.index === subIndex &&
+                          dropTarget.position === "after";
+                        const nextSubscene = scene.subscenes![subIndex + 1];
+
+                        return (
+                          <div key={subscene.id} className="relative">
+                            {/* Horizontal branch line */}
+                            <div className="absolute left-2.5 top-[14px] w-2.5 h-px bg-border" />
+
+                            {/* Branch node */}
+                            <div
+                              className={cn(
+                                "absolute left-[7px] top-[11px] w-2 h-2 rounded-full border-2",
+                                isSubActive
+                                  ? "bg-accent border-accent"
+                                  : "bg-background border-muted-foreground/40"
+                              )}
+                            />
+
+                            {/* Drop indicator before */}
+                            {isSubDropBefore && (
+                              <div className="h-0.5 bg-accent ml-5 mr-1 rounded-full" />
                             )}
 
-                            {onSubsceneClose && (
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-4 w-4 opacity-0 group-hover:opacity-100"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onSubsceneClose(scene.id, subscene.id);
-                                }}
-                              >
-                                <X className="h-2.5 w-2.5" />
-                              </Button>
+                            <div
+                              // NEW: Attach ref here for Subscene
+                              ref={(el) => (tabsRef.current[subscene.id] = el)}
+                              draggable
+                              onDragStart={(e) =>
+                                handleDragStart(
+                                  e,
+                                  "subscene",
+                                  subIndex,
+                                  scene.id
+                                )
+                              }
+                              onDragOver={(e) =>
+                                handleDragOver(
+                                  e,
+                                  "subscene",
+                                  subIndex,
+                                  scene.id
+                                )
+                              }
+                              onDrop={handleDrop}
+                              onDragEnd={handleDragEnd}
+                              className={cn(
+                                "group flex items-center gap-1 h-7 px-2 ml-5 mr-1 rounded cursor-pointer transition-all",
+                                isSubActive
+                                  ? "bg-accent/80 text-accent-foreground"
+                                  : "hover:bg-muted/40",
+                                isSubDragging && "opacity-40"
+                              )}
+                              onClick={() =>
+                                onSceneSelect(scene.id, subscene.id)
+                              }
+                              onDoubleClick={() =>
+                                handleDoubleClick(subscene.id, subscene.name)
+                              }
+                            >
+                              <GripVertical className="w-2.5 h-2.5 opacity-0 group-hover:opacity-50 flex-shrink-0 cursor-grab" />
+
+                              {editingId === subscene.id ? (
+                                <input
+                                  ref={inputRef}
+                                  value={editingName}
+                                  onChange={handleNameChange}
+                                  onBlur={() =>
+                                    handleNameSubmit(scene.id, subscene.id)
+                                  }
+                                  onKeyDown={(e) =>
+                                    handleKeyDown(e, scene.id, subscene.id)
+                                  }
+                                  className="flex-1 bg-transparent border-b border-accent-foreground/50 text-[11px] outline-none min-w-0"
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                              ) : (
+                                <span
+                                  className={cn(
+                                    "flex-1 text-[11px] truncate",
+                                    isSubActive
+                                      ? "font-medium"
+                                      : "text-muted-foreground"
+                                  )}
+                                >
+                                  {subscene.name}
+                                </span>
+                              )}
+
+                              {onSubsceneClose && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-4 w-4 opacity-0 group-hover:opacity-100"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onSubsceneClose(scene.id, subscene.id);
+                                  }}
+                                >
+                                  <X className="h-2.5 w-2.5" />
+                                </Button>
+                              )}
+                            </div>
+
+                            {/* Drop indicator after */}
+                            {isSubDropAfter && (
+                              <div className="h-0.5 bg-accent ml-5 mr-1 rounded-full" />
+                            )}
+
+                            {/* Transition between subscenes */}
+                            {nextSubscene && (
+                              <div className="flex items-center ml-7 py-0.5">
+                                <div className="flex-1 h-px bg-border/20" />
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className={cn(
+                                    "h-4 w-4 mx-0.5 transition-all",
+                                    subscene.transitionToNext
+                                      ? "text-muted-foreground hover:text-accent"
+                                      : "text-muted-foreground/30 hover:text-accent"
+                                  )}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (subscene.transitionToNext) {
+                                      onTransitionClick(
+                                        subscene.transitionToNext
+                                      );
+                                    } else {
+                                      // Create default subscene transition
+                                      const newTransition: SceneTransition = {
+                                        id: `subtrans-${Date.now()}`,
+                                        fromSceneId: subscene.id,
+                                        toSceneId: nextSubscene.id,
+                                        type: "cross_dissolve",
+                                        durationMs: 200,
+                                        animationIn: "ease-in-out",
+                                        animationOut: "ease-in-out",
+                                        overlayEnabled: false,
+                                      };
+                                      onTransitionClick(newTransition);
+                                    }
+                                  }}
+                                  title={
+                                    subscene.transitionToNext
+                                      ? `${subscene.transitionToNext.type} (${subscene.transitionToNext.durationMs}ms)`
+                                      : "Add transition"
+                                  }
+                                >
+                                  {subscene.transitionToNext ? (
+                                    <TransitionIcon />
+                                  ) : (
+                                    <Plus className="w-2.5 h-2.5" />
+                                  )}
+                                </Button>
+                                <div className="flex-1 h-px bg-border/20" />
+                              </div>
                             )}
                           </div>
+                        );
+                      })}
 
-                          {/* Drop indicator after */}
-                          {isSubDropAfter && (
-                            <div className="h-0.5 bg-accent ml-5 mr-1 rounded-full" />
-                          )}
-
-                          {/* Transition between subscenes */}
-                          {nextSubscene && (
-                            <div className="flex items-center ml-7 py-0.5">
-                              <div className="flex-1 h-px bg-border/20" />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className={cn(
-                                  "h-4 w-4 mx-0.5 transition-all",
-                                  subscene.transitionToNext
-                                    ? "text-muted-foreground hover:text-accent"
-                                    : "text-muted-foreground/30 hover:text-accent"
-                                )}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (subscene.transitionToNext) {
-                                    onTransitionClick(subscene.transitionToNext);
-                                  } else {
-                                    // Create default subscene transition
-                                    const newTransition: SceneTransition = {
-                                      id: `subtrans-${Date.now()}`,
-                                      fromSceneId: subscene.id,
-                                      toSceneId: nextSubscene.id,
-                                      type: 'cross_dissolve',
-                                      durationMs: 200,
-                                      animationIn: 'ease-in-out',
-                                      animationOut: 'ease-in-out',
-                                      overlayEnabled: false,
-                                    };
-                                    onTransitionClick(newTransition);
-                                  }
-                                }}
-                                title={subscene.transitionToNext 
-                                  ? `${subscene.transitionToNext.type} (${subscene.transitionToNext.durationMs}ms)` 
-                                  : "Add transition"
-                                }
-                              >
-                                {subscene.transitionToNext ? <TransitionIcon /> : <Plus className="w-2.5 h-2.5" />}
-                              </Button>
-                              <div className="flex-1 h-px bg-border/20" />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                    
                     {/* Add subscene at end */}
                     {onSubsceneAdd && (
                       <div className="relative">
@@ -651,7 +758,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       size="icon"
                       className={cn(
                         "h-5 w-5 mx-1 border transition-all",
-                        transitionToNext 
+                        transitionToNext
                           ? "text-muted-foreground hover:text-accent border-transparent hover:border-accent/30"
                           : "text-muted-foreground/30 border-dashed border-border/50 hover:border-accent/50 hover:text-accent"
                       )}
@@ -665,18 +772,26 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                             id: `trans-${Date.now()}`,
                             fromSceneId: scene.id,
                             toSceneId: nextScene.id,
-                            type: 'cross_dissolve',
+                            type: "cross_dissolve",
                             durationMs: 300,
-                            animationIn: 'ease-in-out',
-                            animationOut: 'ease-in-out',
+                            animationIn: "ease-in-out",
+                            animationOut: "ease-in-out",
                             overlayEnabled: false,
                           };
                           onTransitionClick(newTransition);
                         }
                       }}
-                      title={transitionToNext ? `${transitionToNext.type} (${transitionToNext.durationMs}ms)` : "Add transition"}
+                      title={
+                        transitionToNext
+                          ? `${transitionToNext.type} (${transitionToNext.durationMs}ms)`
+                          : "Add transition"
+                      }
                     >
-                      {transitionToNext ? <TransitionIcon /> : <Plus className="w-3 h-3" />}
+                      {transitionToNext ? (
+                        <TransitionIcon />
+                      ) : (
+                        <Plus className="w-3 h-3" />
+                      )}
                     </Button>
                     <div className="flex-1 h-px bg-border/30" />
                   </div>
