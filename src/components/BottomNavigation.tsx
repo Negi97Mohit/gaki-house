@@ -17,7 +17,7 @@ import {
   Undo2,
   Redo2,
   RotateCcw,
-  ScanFace, // Added Icon
+  ScanFace,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -309,7 +309,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           className={cn(
             "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
             isSmartSwitchEnabled &&
-            "text-primary bg-primary/10 hover:bg-primary/20"
+              "text-primary bg-primary/10 hover:bg-primary/20"
           )}
           onClick={onSmartSwitchToggle}
           title={
@@ -374,6 +374,12 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         </DropdownMenu>
 
         <div className="w-px h-6 bg-border/40 mx-1" />
+
+        {/* Dynamic Layout Controls Slot - This allows active layouts to inject buttons here */}
+        <div
+          id="layout-controls-slot"
+          className="flex items-center gap-1"
+        ></div>
 
         <ToolsPopover
           onAddTextOverlay={onAddTextOverlay}

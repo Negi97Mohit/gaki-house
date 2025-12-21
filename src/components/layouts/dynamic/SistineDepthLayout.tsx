@@ -1,5 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { createPortal } from "react-dom";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  AnimatePresence,
+} from "framer-motion";
 import {
   CanvasSectionState,
   CanvasLayoutState,
@@ -9,9 +16,8 @@ import { cn } from "@/lib/utils";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { Panel } from "./core/Panel";
-import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
-import { Plus } from "lucide-react";
+import { Plus, Info, X, Settings2 } from "lucide-react";
 
 interface SistineDepthLayoutProps {
   sections: CanvasSectionState[];
@@ -158,11 +164,24 @@ const FloatingSection = ({
           }}
           wrapperProps={props}
         />
-
-        {/* Delete Button (visible only on hover) - Panel has one, but we can keep this or rely on panel's */}
       </div>
     </motion.div>
   );
+};
+
+// --- Portal Component for Bottom Nav Integration ---
+const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
+  const [mounted, setMounted] = useState(false);
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    const el = document.getElementById("layout-controls-slot");
+    if (el) setContainer(el);
+  }, []);
+
+  if (!mounted || !container) return null;
+  return createPortal(children, container);
 };
 
 const SistineDepthContent: React.FC<SistineDepthLayoutProps> = ({
@@ -173,6 +192,7 @@ const SistineDepthContent: React.FC<SistineDepthLayoutProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { colors, editor } = useDynamicLayout();
+  const [showInfo, setShowInfo] = useState(false);
 
   // Mouse position state for parallax
   const x = useMotionValue(0);
@@ -304,7 +324,6 @@ const SistineDepthContent: React.FC<SistineDepthLayoutProps> = ({
         <div
           className="absolute flex items-center justify-center pointer-events-auto z-0 w-[90%] min-h-[200px]"
           style={{
-            // Brought closer (-600px instead of -2000px) and adjusted scale
             transform: "translateZ(-600px) scale(1)",
             opacity: bgOpacity,
           }}
@@ -314,12 +333,11 @@ const SistineDepthContent: React.FC<SistineDepthLayoutProps> = ({
             value={bgTextValue}
             onChange={(e) => updateBg("bg_title", e.target.value)}
             className={cn(
-              // CHANGED: replaced overflow-visible with overflow-hidden to hide scrollbars
               "font-bold leading-[0.9] text-center whitespace-normal break-words w-full bg-transparent resize-none overflow-hidden transition-all duration-300 border-none outline-none focus:outline-none focus:ring-0",
               bgFontFamily
             )}
             style={{
-              fontSize: `${bgFontSize}vw`, // Now applied directly to the textarea
+              fontSize: `${bgFontSize}vw`,
               color: bgColor,
               height: "auto",
               minHeight: "200px",
@@ -345,122 +363,141 @@ const SistineDepthContent: React.FC<SistineDepthLayoutProps> = ({
         ))}
       </div>
 
-      {/* UI Controls */}
-      <div className="absolute bottom-12 right-12 z-50 flex flex-col gap-4 items-end">
-        <div className="flex flex-col items-end gap-1 mb-2 bg-black/40 p-4 rounded-lg backdrop-blur-md border border-white/10 shadow-xl w-64">
-          <EditableText
-            sectionId="sistine_ui"
-            fieldId="nav_instruction_1"
-            defaultValue="SCROLL TO NAVIGATE"
-            className="text-right text-white/40 font-mono text-xs"
-          />
-          <EditableText
-            sectionId="sistine_ui"
-            fieldId="nav_instruction_2"
-            defaultValue="CLICK TO FOCUS"
-            className="text-right text-white/40 font-mono text-xs"
-          />
+      {/* Inject controls into Bottom Navigation via Portal */}
+      <LayoutControlsPortal>
+        <div className="relative">
+          {/* Expandable Menu Panel */}
+          <AnimatePresence>
+            {showInfo && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: "circOut" }}
+                className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 bg-black/80 p-4 rounded-2xl backdrop-blur-xl border border-white/10 shadow-2xl w-80 flex flex-col gap-4 origin-bottom z-50"
+              >
+                {/* Header / Instructions */}
+                <div className="flex flex-col gap-1 items-center pb-2 border-b border-white/5">
+                  <div className="text-center text-white/60 font-mono text-[10px] tracking-widest">
+                    SCROLL TO NAVIGATE
+                  </div>
+                  <div className="text-center text-white/40 font-mono text-[10px] tracking-widest">
+                    CLICK LAYER TO FOCUS
+                  </div>
+                </div>
 
-          {/* Background Text Settings */}
-          <div className="mt-4 pt-3 border-t border-white/10 w-full flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <label className="text-[10px] text-white/50 uppercase font-mono tracking-wider">
-                Background Text
-              </label>
-            </div>
+                {/* Background Text Settings */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] text-white/50 uppercase font-mono tracking-wider flex items-center gap-2">
+                      <Settings2 className="w-3 h-3" />
+                      Background Text
+                    </label>
+                  </div>
 
-            {/* Text Input */}
-            <input
-              type="text"
-              value={bgTextValue}
-              onChange={(e) => updateBg("bg_title", e.target.value)}
-              placeholder="Text..."
-              className="bg-white/5 border border-white/10 rounded px-2 py-1 text-xs text-white/90 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full"
-            />
-
-            {/* Style Controls Row */}
-            <div className="grid grid-cols-2 gap-2">
-              {/* Font Family */}
-              <div className="flex flex-col gap-1">
-                <label className="text-[9px] text-white/30 uppercase">
-                  Family
-                </label>
-                <select
-                  value={bgFontFamily}
-                  onChange={(e) => updateBg("bg_fontFamily", e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded px-1 py-1 text-[10px] text-white/70 focus:outline-none"
-                >
-                  <option value="font-serif">Serif</option>
-                  <option value="font-sans">Sans</option>
-                  <option value="font-mono">Mono</option>
-                </select>
-              </div>
-
-              {/* Color */}
-              <div className="flex flex-col gap-1">
-                <label className="text-[9px] text-white/30 uppercase">
-                  Color
-                </label>
-                <div className="flex items-center gap-2">
                   <input
-                    type="color"
-                    value={bgColor}
-                    onChange={(e) => updateBg("bg_color", e.target.value)}
-                    className="w-full h-6 bg-transparent cursor-pointer rounded overflow-hidden"
+                    type="text"
+                    value={bgTextValue}
+                    onChange={(e) => updateBg("bg_title", e.target.value)}
+                    placeholder="Background Text..."
+                    className="bg-white/5 border border-white/10 rounded-md px-3 py-2 text-xs text-white/90 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all w-full placeholder:text-white/20"
                   />
-                </div>
-              </div>
-            </div>
 
-            {/* Sliders */}
-            <div className="flex flex-col gap-3 mt-1">
-              {/* Size */}
-              <div className="flex flex-col gap-1">
-                <div className="flex justify-between text-[9px] text-white/30 uppercase">
-                  <span>Size</span>
-                  <span>{bgFontSize}vw</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] text-white/30 uppercase pl-1">
+                        Typography
+                      </label>
+                      <select
+                        value={bgFontFamily}
+                        onChange={(e) =>
+                          updateBg("bg_fontFamily", e.target.value)
+                        }
+                        className="w-full bg-white/5 border border-white/10 rounded px-2 py-1.5 text-[10px] text-white/70 focus:outline-none cursor-pointer hover:bg-white/10"
+                      >
+                        <option value="font-serif">Serif</option>
+                        <option value="font-sans">Sans</option>
+                        <option value="font-mono">Mono</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] text-white/30 uppercase pl-1">
+                        Color
+                      </label>
+                      <div className="flex items-center h-full">
+                        <input
+                          type="color"
+                          value={bgColor}
+                          onChange={(e) => updateBg("bg_color", e.target.value)}
+                          className="w-full h-[26px] bg-transparent cursor-pointer rounded overflow-hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 mt-1 bg-black/20 p-3 rounded-lg">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex justify-between text-[9px] text-white/30 uppercase">
+                        <span>Size</span>
+                        <span>{bgFontSize}vw</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="5"
+                        max="50"
+                        value={bgFontSize}
+                        onChange={(e) =>
+                          updateBg("bg_fontSize", parseInt(e.target.value))
+                        }
+                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex justify-between text-[9px] text-white/30 uppercase">
+                        <span>Opacity</span>
+                        <span>{Math.round(bgOpacity * 100)}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.05"
+                        value={bgOpacity}
+                        onChange={(e) =>
+                          updateBg("bg_opacity", parseFloat(e.target.value))
+                        }
+                        className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="50"
-                  value={bgFontSize}
-                  onChange={(e) =>
-                    updateBg("bg_fontSize", parseInt(e.target.value))
-                  }
-                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer"
-                />
-              </div>
-              {/* Opacity */}
-              <div className="flex flex-col gap-1">
-                <div className="flex justify-between text-[9px] text-white/30 uppercase">
-                  <span>Opacity</span>
-                  <span>{Math.round(bgOpacity * 100)}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={bgOpacity}
-                  onChange={(e) =>
-                    updateBg("bg_opacity", parseFloat(e.target.value))
-                  }
-                  className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer"
-                />
-              </div>
-            </div>
-          </div>
+
+                <button
+                  onClick={handleAddSection}
+                  className="w-full mt-2 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10 text-white flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] group"
+                >
+                  <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                  <span className="text-xs font-medium tracking-wide">
+                    ADD NEW LAYER
+                  </span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Island Toggle Button */}
+          <button
+            onClick={() => setShowInfo(!showInfo)}
+            className={cn(
+              "rounded-full h-10 w-10 hover:bg-background/60 flex items-center justify-center transition-all",
+              showInfo ? "bg-white text-black hover:bg-white/90" : "text-white"
+            )}
+            title="Layout Controls"
+          >
+            <Info className="w-4 h-4" />
+          </button>
         </div>
-
-        {/* Custom Add Button - Circular & Styled */}
-        <button
-          onClick={handleAddSection}
-          className="w-16 h-16 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-2xl backdrop-blur-sm"
-        >
-          <Plus className="w-8 h-8" />
-        </button>
-      </div>
+      </LayoutControlsPortal>
 
       {/* Depth Indicators (Left Side) */}
       <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-50">
