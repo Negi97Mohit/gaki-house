@@ -187,11 +187,9 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     activePresetId || null
   );
 
-  // NEW: Sync local state if parent prop changes
+  // Sync local state with parent prop (including clearing when reset)
   useEffect(() => {
-    if (activePresetId) {
-      setSelectedPresetId(activePresetId);
-    }
+    setSelectedPresetId(activePresetId || null);
   }, [activePresetId]);
 
   // NEW: Refs for scroll-to-selected
