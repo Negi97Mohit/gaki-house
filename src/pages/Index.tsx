@@ -567,7 +567,7 @@ const Index = () => {
         onSceneClose={handleSceneClose}
         onSubsceneClose={handleSubsceneClose}
         onSceneReorder={handleSceneReorder}
-        onSubsceneReorder={handleSceneReorder}
+        onSubsceneReorder={handleSubsceneReorder}
         onSceneRename={handleSceneRename}
         onSubsceneRename={handleSubsceneRename}
         onToggleExpand={handleToggleExpand}

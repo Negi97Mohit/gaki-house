@@ -5,9 +5,9 @@ import { LayoutEditorToolbar } from "../../LayoutEditorToolbar";
 import { LayoutSettingsCtrl } from "../../LayoutSettingsCtrl";
 import { DynamicLayoutProvider } from "./DynamicLayoutContext";
 
-interface DynamicLayoutWrapperProps {
+export interface DynamicLayoutWrapperProps {
   layout: CanvasLayoutState;
-  onLayoutUpdate: (layout: CanvasLayoutState) => void;
+  onLayoutUpdate?: (layout: CanvasLayoutState) => void;
   sections: CanvasSectionState[];
   children: React.ReactNode;
 

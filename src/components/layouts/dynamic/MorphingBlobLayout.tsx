@@ -134,7 +134,7 @@ const MorphingBlobContent: React.FC<{
 
   const handleAddSection = () => {
     if (!onLayoutUpdate) return;
-    const newSection = { id: `blob-${Date.now()}`, content: { type: "empty" } };
+    const newSection: CanvasSectionState = { id: `blob-${Date.now()}`, content: { type: "empty" as const } };
     onLayoutUpdate({ ...layout, sections: [...layout.sections, newSection] });
   };
 

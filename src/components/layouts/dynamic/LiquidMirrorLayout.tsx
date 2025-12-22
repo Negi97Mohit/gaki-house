@@ -159,9 +159,9 @@ const LiquidMirrorContent: React.FC<{
 
   const handleAddSection = () => {
     if (!onLayoutUpdate) return;
-    const newSection = {
+    const newSection: CanvasSectionState = {
       id: `mirror-${Date.now()}`,
-      content: { type: "empty" },
+      content: { type: "empty" as const },
     };
     onLayoutUpdate({ ...layout, sections: [...layout.sections, newSection] });
   };

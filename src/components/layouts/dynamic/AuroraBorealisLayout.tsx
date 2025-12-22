@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
-import { CanvasSectionState } from "@/types/caption";
+import { CanvasSectionState, CanvasLayoutState } from "@/types/caption";
 import { cn } from "@/lib/utils";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
@@ -160,9 +160,12 @@ const AuroraBorealisContent: React.FC<{
     if (!onLayoutUpdate) return;
     onLayoutUpdate({
       ...layout,
-      style: {
-        ...layout.style,
-        background: newColor,
+      customSectionStyles: {
+        ...(layout.customSectionStyles || {}),
+        _global: {
+          ...(layout.customSectionStyles?._global || {}),
+          background: newColor,
+        },
       },
     });
   };
@@ -344,11 +347,15 @@ const AuroraBorealisContent: React.FC<{
 
 export const AuroraBorealisLayout: React.FC<{
   sections: CanvasSectionState[];
+  layout: CanvasLayoutState;
+  onLayoutUpdate?: (layout: CanvasLayoutState) => void;
   [key: string]: any;
 }> = (props) => {
   return (
     <DynamicLayoutWrapper
-      {...props}
+      layout={props.layout}
+      onLayoutUpdate={props.onLayoutUpdate}
+      sections={props.sections}
       defaultBackgroundColor="#02060c"
       defaultTextColor="#fff"
     >

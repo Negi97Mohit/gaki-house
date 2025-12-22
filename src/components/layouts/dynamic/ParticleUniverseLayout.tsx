@@ -180,7 +180,7 @@ const ParticleUniverseContent: React.FC<{
 
   const handleAddSection = () => {
     if (!onLayoutUpdate) return;
-    const newSection = { id: `orb-${Date.now()}`, content: { type: "empty" } };
+    const newSection: CanvasSectionState = { id: `orb-${Date.now()}`, content: { type: "empty" as const } };
     onLayoutUpdate({ ...layout, sections: [...layout.sections, newSection] });
   };
 
