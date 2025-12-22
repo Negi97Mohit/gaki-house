@@ -343,45 +343,48 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           );
           return `
             <span style="${styleToString(
-            design.styles.link
-          )}; display: flex; align-items: center; gap: 6px; cursor: default;">
+              design.styles.link
+            )}; display: flex; align-items: center; gap: 6px; cursor: default;">
               <span style="width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${iconSvg}</span>
-              <span style="font-size: 12px; white-space: nowrap; opacity: 0.9;">${link.url || link.platform
-            }</span>
+              <span style="font-size: 12px; white-space: nowrap; opacity: 0.9;">${
+                link.url || link.platform
+              }</span>
             </span>
           `;
         })
         .join("");
 
       const avatarHtml = design.showAvatar
-        ? `<div style="width: 48px; height: 48px; border-radius: 50%; background: ${data.avatarUrl
-          ? `url(${data.avatarUrl}) center/cover`
-          : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-        }; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
-            ${!data.avatarUrl
-          ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
-          : ""
-        }
+        ? `<div style="width: 48px; height: 48px; border-radius: 50%; background: ${
+            data.avatarUrl
+              ? `url(${data.avatarUrl}) center/cover`
+              : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+          }; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
+            ${
+              !data.avatarUrl
+                ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'
+                : ""
+            }
           </div>`
         : "";
 
       const taglineHtml =
         design.showTagline && data.tagline
           ? `<span class="banner-text-editable" data-banner-field="tagline" style="${styleToString(
-            design.styles.tagline || {}
-          )}">${data.tagline}</span>`
+              design.styles.tagline || {}
+            )}">${data.tagline}</span>`
           : "";
 
       return `
         ${bannerKeyframes}
         <div style="${styleToString(
-        design.styles.container
-      )}; width: 100%; height: 100%; box-sizing: border-box;">
+          design.styles.container
+        )}; width: 100%; height: 100%; box-sizing: border-box;">
           ${avatarHtml}
           <div style="display: flex; flex-direction: column; gap: 2px;">
             <span class="banner-text-editable" data-banner-field="name" style="${styleToString(
-        design.styles.name
-      )}">${data.name}</span>
+              design.styles.name
+            )}">${data.name}</span>
             ${taglineHtml}
           </div>
           <div style="${styleToString(design.styles.linksContainer)}">
@@ -514,13 +517,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         activeOverlays: scene.activeOverlays.map((o) =>
           o.id === overlayId
             ? {
-              ...o,
-              htmlContent: newHtmlContent,
-              metadata: {
-                ...o.metadata,
-                design: updatedDesign,
-              },
-            }
+                ...o,
+                htmlContent: newHtmlContent,
+                metadata: {
+                  ...o.metadata,
+                  design: updatedDesign,
+                },
+              }
             : o
         ),
       }));
@@ -529,9 +532,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       setEditingBannerText((prev) =>
         prev
           ? {
-            ...prev,
-            style: { ...prev.style, ...newStyle },
-          }
+              ...prev,
+              style: { ...prev.style, ...newStyle },
+            }
           : null
       );
     },
@@ -645,19 +648,19 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       updateActiveScene((scene) => {
         const updatedCanvasLayout = scene.canvasLayout
           ? {
-            ...scene.canvasLayout,
-            sections: scene.canvasLayout.sections.map((s) =>
-              s.id === sectionId
-                ? {
-                  ...s,
-                  content: {
-                    type: "image" as const,
-                    src: asset.downloadUrl,
-                  },
-                }
-                : s
-            ),
-          }
+              ...scene.canvasLayout,
+              sections: scene.canvasLayout.sections.map((s) =>
+                s.id === sectionId
+                  ? {
+                      ...s,
+                      content: {
+                        type: "image" as const,
+                        src: asset.downloadUrl,
+                      },
+                    }
+                  : s
+              ),
+            }
           : scene.canvasLayout;
         return { ...scene, canvasLayout: updatedCanvasLayout };
       });
@@ -958,7 +961,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           return { ...s, canvasLayout: { ...s.canvasLayout, sections } };
         });
       },
-      onUserPositionChange: () => { },
+      onUserPositionChange: () => {},
       onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
         updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
       },
@@ -1122,7 +1125,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           o.id === id ? { ...o, metadata } : o
         ),
       })),
-    onPreviewGenerated: () => { },
+    onPreviewGenerated: () => {},
     onRemoveBrowser: (id: string) =>
       updateActiveScene((s) => ({
         ...s,
@@ -1159,8 +1162,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       })),
     selectedFileId: selection.selectedFileId,
     setSelectedFileId: selection.setSelectedFileId,
-    onInternalDragStart: () => { },
-    onInternalDragStop: () => { },
+    onInternalDragStart: () => {},
+    onInternalDragStop: () => {},
     onDeselectAll: selection.handleDeselectAll,
     onSetDynamicLayout: (target: any, mode: any) => {
       if (mode === "reset") {
@@ -1257,7 +1260,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         onAddAnimatedBanner={handleAddAnimatedBanner}
       />
 
-      <div className="fixed top-6 left-6 z-[2015] transition-opacity duration-300">
+      <div
+        className={`fixed top-6 left-6 z-[2015] transition-opacity duration-300 ${
+          uiState.isMouseActive
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none"
+        }`}
+      >
         <FloatingLogo />
       </div>
 
@@ -1302,13 +1311,13 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
                 activeOverlays: scene.activeOverlays.map((o) =>
                   o.id === editingBannerId
                     ? {
-                      ...o,
-                      htmlContent: newHtmlContent,
-                      metadata: {
-                        ...o.metadata,
-                        data: data, // Update data in metadata
-                      },
-                    }
+                        ...o,
+                        htmlContent: newHtmlContent,
+                        metadata: {
+                          ...o.metadata,
+                          data: data, // Update data in metadata
+                        },
+                      }
                     : o
                 ),
               }));
