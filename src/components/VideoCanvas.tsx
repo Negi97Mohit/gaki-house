@@ -203,7 +203,6 @@ interface VideoCanvasProps {
     style: React.CSSProperties;
   } | null;
   onBannerTextStyleChange?: (style: React.CSSProperties) => void;
-  onBannerTextStyleChange?: (style: React.CSSProperties) => void;
   onBannerTextClose?: () => void;
   isChatbotOpen?: boolean;
   onChatbotToggle?: (open: boolean | ((prev: boolean) => boolean)) => void;

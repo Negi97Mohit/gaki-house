@@ -142,8 +142,11 @@ const NeonGridCanvas: React.FC<{
 
 const NeonPulseCityContent: React.FC<{
   sections: CanvasSectionState[];
+  onSectionDelete?: (id: string) => void;
+  onSectionContentChange?: any;
   [key: string]: any;
-}> = ({ sections, ...props }) => {
+}> = (props) => {
+  const { sections, onSectionDelete, onSectionContentChange, ...restProps } = props;
   const { editor, layout, onLayoutUpdate, colors } = useDynamicLayout();
   const [showInfo, setShowInfo] = useState(false);
 
@@ -159,7 +162,7 @@ const NeonPulseCityContent: React.FC<{
 
   const handleAddSection = () => {
     if (!onLayoutUpdate) return;
-    const newSection = { id: `neon-${Date.now()}`, content: { type: "empty" } };
+    const newSection: CanvasSectionState = { id: `neon-${Date.now()}`, content: { type: "empty" as const } };
     onLayoutUpdate({ ...layout, sections: [...layout.sections, newSection] });
   };
 
@@ -182,7 +185,7 @@ const NeonPulseCityContent: React.FC<{
               className="text-6xl md:text-9xl font-black italic tracking-widest bg-clip-text text-transparent bg-gradient-to-b from-white to-white/0 uppercase select-none cursor-text"
               style={{
                 WebkitTextStroke: `2px ${neonColor}`,
-                dropShadow: `0 0 20px ${neonColor}80`,
+                filter: `drop-shadow(0 0 20px ${neonColor}80)`,
               }}
             />
 

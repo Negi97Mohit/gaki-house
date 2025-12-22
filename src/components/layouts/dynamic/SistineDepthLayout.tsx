@@ -10,7 +10,6 @@ import {
 import {
   CanvasSectionState,
   CanvasLayoutState,
-  CanvasLayoutTemplate,
 } from "@/types/caption";
 import { cn } from "@/lib/utils";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
@@ -22,7 +21,6 @@ import { Plus, Info, X, Settings2 } from "lucide-react";
 interface SistineDepthLayoutProps {
   sections: CanvasSectionState[];
   layout: CanvasLayoutState;
-  template: CanvasLayoutTemplate;
   containerRef: React.RefObject<HTMLDivElement>;
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
   [key: string]: any;
