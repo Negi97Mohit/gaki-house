@@ -839,8 +839,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 />
               </div>
 
-              {/* 2. THE USER (Cutout Layer) */}
-              {(isTextDepthEnabled || hasBehindUserOverlay) && !props.canvasLayout && containerSize.width > 0 && (
+              {/* 2. THE USER (Cutout Layer) - Hide when in PIP mode since camera is in PIP window */}
+              {(isTextDepthEnabled || hasBehindUserOverlay) && !props.canvasLayout && containerSize.width > 0 && props.layoutMode !== 'pip' && (
                 <ForegroundUserLayer
                   videoRef={videoRef}
                   processedCanvas={processedCanvas}
