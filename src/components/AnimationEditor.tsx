@@ -26,6 +26,10 @@ import {
   Settings,
 } from "lucide-react";
 import { ALL_FONTS } from "@/lib/fonts"; // Assuming you have this from previous context
+import { EffectsControls } from "@/components/animation-editor/EffectsControls";
+import { MotionControls } from "@/components/animation-editor/MotionControls";
+import { SettingsControls } from "@/components/animation-editor/SettingsControls";
+import { StyleControls } from "@/components/animation-editor/StyleControls";
 
 interface AnimationEditorProps {
   initialPreset: AnimationPreset;
@@ -51,7 +55,7 @@ export const AnimationEditor: React.FC<AnimationEditorProps> = ({
     setPreset((prev) => ({
       ...prev,
       [section]: {
-        ...prev[section as any],
+        ...prev[section],
         [key]: value,
       },
     }));
@@ -143,156 +147,7 @@ export const AnimationEditor: React.FC<AnimationEditorProps> = ({
                 <Sparkles className="h-4 w-4" />
               </TabsTrigger>
               <TabsContent value="effects" className="space-y-6 mt-0">
-                {/* Text Shadow / Glow */}
-                <div className="space-y-3">
-                  <Label>Neon Glow / Shadow</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        updatePreset("baseStyle", "textShadow", "none")
-                      }
-                    >
-                      None
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        updatePreset(
-                          "baseStyle",
-                          "textShadow",
-                          "0 0 10px currentColor"
-                        )
-                      }
-                    >
-                      Soft Glow
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        updatePreset(
-                          "baseStyle",
-                          "textShadow",
-                          "2px 2px 0px #000"
-                        )
-                      }
-                    >
-                      Retro Drop
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        updatePreset(
-                          "baseStyle",
-                          "textShadow",
-                          "0 0 5px #fff, 0 0 10px currentColor, 0 0 20px currentColor"
-                        )
-                      }
-                    >
-                      Intense Neon
-                    </Button>
-                  </div>
-                  {/* Custom Shadow Input */}
-                  <Input
-                    placeholder="e.g. 0 4px 10px rgba(0,0,0,0.5)"
-                    value={preset.baseStyle.textShadow || ""}
-                    onChange={(e) =>
-                      updatePreset("baseStyle", "textShadow", e.target.value)
-                    }
-                  />
-                </div>
-
-                {/* Background & Glass */}
-                <div className="space-y-3">
-                  <Label>Background & Glass</Label>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs">
-                      <span>Blur</span>
-                      <span>{preset.baseStyle.backgroundBlur || 0}px</span>
-                    </div>
-                    <Slider
-                      value={[preset.baseStyle.backgroundBlur || 0]}
-                      min={0}
-                      max={20}
-                      step={1}
-                      onValueChange={([val]) =>
-                        updatePreset("baseStyle", "backgroundBlur", val)
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-xs">Background Color</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="color"
-                        className="w-8 h-8 p-0 border-0"
-                        value={preset.baseStyle.backgroundColor || "#000000"}
-                        onChange={(e) =>
-                          updatePreset(
-                            "baseStyle",
-                            "backgroundColor",
-                            e.target.value
-                          )
-                        }
-                      />
-                      <Input
-                        value={preset.baseStyle.backgroundColor || ""}
-                        placeholder="rgba(0,0,0,0.5) or #000"
-                        onChange={(e) =>
-                          updatePreset(
-                            "baseStyle",
-                            "backgroundColor",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gradient Text */}
-                <div className="space-y-3">
-                  <Label>Text Gradient</Label>
-                  <Select
-                    value={preset.baseStyle.gradient || "none"}
-                    onValueChange={(val) =>
-                      updatePreset(
-                        "baseStyle",
-                        "gradient",
-                        val === "none" ? undefined : val
-                      )
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Gradient" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None (Solid Color)</SelectItem>
-                      <SelectItem value="linear-gradient(to right, #ff00cc, #333399)">
-                        Sunset
-                      </SelectItem>
-                      <SelectItem value="linear-gradient(to right, #00c6ff, #0072ff)">
-                        Ocean
-                      </SelectItem>
-                      <SelectItem value="linear-gradient(to right, #f857a6, #ff5858)">
-                        Cherry
-                      </SelectItem>
-                      <SelectItem value="linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%)">
-                        Peach
-                      </SelectItem>
-                      <SelectItem value="linear-gradient(to right, #43e97b 0%, #38f9d7 100%)">
-                        Mint
-                      </SelectItem>
-                      <SelectItem value="linear-gradient(to right, #fa709a 0%, #fee140 100%)">
-                        Gold Pink
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <EffectsControls preset={preset} updatePreset={updatePreset} />
               </TabsContent>
             </TabsList>
 
@@ -314,231 +169,17 @@ export const AnimationEditor: React.FC<AnimationEditorProps> = ({
 
               {/* --- STYLE TAB --- */}
               <TabsContent value="style" className="space-y-6 mt-0">
-                <div className="space-y-3">
-                  <Label>Font Family</Label>
-                  <Select
-                    value={preset.baseStyle.fontFamily}
-                    onValueChange={(val) =>
-                      updatePreset("baseStyle", "fontFamily", val)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {/* Assuming ALL_FONTS or a subset is available */}
-                      {[
-                        "Inter",
-                        "Roboto",
-                        "Playfair Display",
-                        "Bebas Neue",
-                        "Courier New",
-                      ].map((font) => (
-                        <SelectItem
-                          key={font}
-                          value={font}
-                          style={{ fontFamily: font }}
-                        >
-                          {font}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Font Size ({preset.baseStyle.fontSize}px)</Label>
-                  <Slider
-                    value={[preset.baseStyle.fontSize]}
-                    min={12}
-                    max={120}
-                    step={1}
-                    onValueChange={([val]) =>
-                      updatePreset("baseStyle", "fontSize", val)
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Color</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="color"
-                        value={preset.baseStyle.color}
-                        onChange={(e) =>
-                          updatePreset("baseStyle", "color", e.target.value)
-                        }
-                        className="w-10 h-10 p-1 px-1"
-                      />
-                      <Input
-                        value={preset.baseStyle.color}
-                        onChange={(e) =>
-                          updatePreset("baseStyle", "color", e.target.value)
-                        }
-                        className="flex-1"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Accent</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="color"
-                        value={preset.baseStyle.accentColor || "#000000"}
-                        onChange={(e) =>
-                          updatePreset(
-                            "baseStyle",
-                            "accentColor",
-                            e.target.value
-                          )
-                        }
-                        className="w-10 h-10 p-1 px-1"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Alignment</Label>
-                  <div className="flex bg-muted rounded-md p-1">
-                    {["left", "center", "right"].map((align) => (
-                      <button
-                        key={align}
-                        className={`flex-1 py-1.5 text-xs rounded-sm capitalize transition-all ${
-                          preset.baseStyle.alignment === align
-                            ? "bg-background shadow-sm font-medium"
-                            : "hover:bg-background/50"
-                        }`}
-                        onClick={() =>
-                          updatePreset("baseStyle", "alignment", align)
-                        }
-                      >
-                        {align}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <StyleControls preset={preset} updatePreset={updatePreset} />
               </TabsContent>
 
               {/* --- MOTION TAB --- */}
               <TabsContent value="motion" className="space-y-6 mt-0">
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <Label>Duration</Label>
-                    <span className="text-xs text-muted-foreground">
-                      {preset.animationConfig.duration}s
-                    </span>
-                  </div>
-                  <Slider
-                    value={[preset.animationConfig.duration]}
-                    min={0.2}
-                    max={5}
-                    step={0.1}
-                    onValueChange={([val]) =>
-                      updatePreset("animationConfig", "duration", val)
-                    }
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <Label>Stagger Delay</Label>
-                    <span className="text-xs text-muted-foreground">
-                      {preset.animationConfig.delay || 0}s
-                    </span>
-                  </div>
-                  <Slider
-                    value={[preset.animationConfig.delay || 0]}
-                    min={0}
-                    max={2}
-                    step={0.05}
-                    onValueChange={([val]) =>
-                      updatePreset("animationConfig", "delay", val)
-                    }
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Direction</Label>
-                  <Select
-                    value={preset.animationConfig.direction || "up"}
-                    onValueChange={(val) =>
-                      updatePreset("animationConfig", "direction", val)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="up">Up</SelectItem>
-                      <SelectItem value="down">Down</SelectItem>
-                      <SelectItem value="left">Left</SelectItem>
-                      <SelectItem value="right">Right</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Easing</Label>
-                  <Select
-                    value={preset.animationConfig.easing || "smooth"}
-                    onValueChange={(val) =>
-                      updatePreset("animationConfig", "easing", val)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="smooth">Smooth</SelectItem>
-                      <SelectItem value="bouncy">Bouncy</SelectItem>
-                      <SelectItem value="elastic">Elastic</SelectItem>
-                      <SelectItem value="linear">Linear</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <MotionControls preset={preset} updatePreset={updatePreset} />
               </TabsContent>
 
               {/* --- SETTINGS TAB (Looping) --- */}
               <TabsContent value="settings" className="space-y-6 mt-0">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="space-y-0.5">
-                    <Label className="text-base">Loop Animation</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Restart automatically
-                    </p>
-                  </div>
-                  <Switch
-                    checked={preset.animationConfig.loop || false}
-                    onCheckedChange={(val) =>
-                      updatePreset("animationConfig", "loop", val)
-                    }
-                  />
-                </div>
-
-                {preset.animationConfig.loop && (
-                  <div className="space-y-3 animate-in fade-in slide-in-from-top-2">
-                    <div className="flex justify-between">
-                      <Label>Loop Delay (Pause)</Label>
-                      <span className="text-xs text-muted-foreground">
-                        {preset.animationConfig.loopDelay || 0}s
-                      </span>
-                    </div>
-                    <Slider
-                      value={[preset.animationConfig.loopDelay || 0]}
-                      min={0}
-                      max={10}
-                      step={0.5}
-                      onValueChange={([val]) =>
-                        updatePreset("animationConfig", "loopDelay", val)
-                      }
-                    />
-                    <p className="text-xs text-muted-foreground pt-2">
-                      Time to wait before the animation restarts.
-                    </p>
-                  </div>
-                )}
+                <SettingsControls preset={preset} updatePreset={updatePreset} />
               </TabsContent>
             </div>
           </Tabs>

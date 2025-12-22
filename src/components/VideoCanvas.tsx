@@ -27,186 +27,17 @@ import { AICommandPopover } from "@/components/AICommandPopover";
 import { AssetResult } from "@/components/AssetLibrary";
 import { CanvasHoverToolbar } from "@/components/CanvasHoverToolbar";
 import { OverlayElement } from "@/hooks/useSnapGuides";
-import { PipWindow } from "@/components/video-canvas/PipWindow";
-import { OverlayLayer } from "@/components/video-canvas/OverlayLayer";
-import { BrowserOverlayState } from "./DraggableBrowser";
-import { VideoPlayer } from "@/components/video-canvas/VideoPlayer";
-import { ScreenShareView } from "@/components/video-canvas/ScreenShareView";
-import { SnapLines } from "@/components/video-canvas/SnapLines";
 import { CaptionRenderer } from "@/components/CaptionRenderer";
 import { TextEditingToolbar } from "@/components/TextEditingToolbar";
-
-// --- New Imported Sub-Components ---
 import { VideoCanvasCamera } from "@/components/video-canvas/VideoCanvasCamera";
-import { VideoCanvasSplitLayout } from "@/components/video-canvas/VideoCanvasSplitLayout";
 import { ForegroundUserLayer } from "@/components/video-canvas/ForegroundUserLayer";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
+import { VideoCanvasProps } from "@/types/videoCanvas";
+import { CanvasContent } from "@/components/video-canvas/CanvasContent";
 
-interface VideoCanvasProps {
-  sceneId: string;
-  isTransitioningIn?: boolean;
-  isTransitioningOut?: boolean;
-  transition?: SceneTransition | null;
-  captionsEnabled: boolean;
-  onStyleChange: (style: any) => void;
-  onCaptionsToggle: (on: boolean) => void;
-  isAiModeEnabled: boolean;
-  onAiModeToggle: (on: boolean) => void;
-  backgroundEffect: "none" | "blur" | "image";
-  backgroundImageUrl: string | null;
-  isAutoFramingEnabled: boolean;
-  onProcessTranscript: (transcript: string, targetId: string | null) => void;
-  generatedOverlays: GeneratedOverlay[];
-  onOverlayLayoutChange: (
-    id: string,
-    key: "position" | "size" | "rotation" | "isBehindUser",
-    value: any
-  ) => void;
-  onRemoveOverlay: (id: string) => void;
-  onUpdateOverlayMetadata?: (id: string, metadata: any) => void;
-  liveCaptionStyle: CaptionStyle;
-  dynamicStyle: string;
-  videoFilter: string;
-  isAudioOn: boolean;
-  onAudioToggle: (on: boolean) => void;
-  isVideoOn: boolean;
-  onVideoToggle: (on: boolean) => void;
-  isRecording: boolean;
-  onRecordingToggle: (
-    on: boolean,
-    stream: MediaStream,
-    size: { width: number; height: number }
-  ) => void;
-  selectedAudioDevice: string | undefined;
-  onAudioDeviceSelect: (deviceId: string) => void;
-  selectedVideoDevice: string | undefined;
-  onVideoDeviceSelect: (deviceId: string) => void;
-  audioDevices: MediaDeviceInfo[];
-  videoDevices: MediaDeviceInfo[];
-  zoomSensitivity: number;
-  trackingSpeed: number;
-  isBeautifyEnabled: boolean;
-  isLowLightEnabled: boolean;
-  layoutMode: LayoutMode;
-  textOverlays: TextOverlayState[];
-  onRemoveTextOverlay: (id: string) => void;
-  onTextLayoutChange: (
-    id: string,
-    layout: Partial<TextOverlayState["layout"]>
-  ) => void;
-  onTextStyleChange: (
-    id: string,
-    style: Partial<TextOverlayState["style"]>
-  ) => void;
-  onTextContentChange: (id: string, content: string) => void;
-  selectedTextId: string | null;
-  setSelectedTextId: (id: string | null) => void;
-  cameraShape: CameraShape;
-  splitRatio: number;
-  pipPosition: { x: number; y: number };
-  pipSize: { width: number; height: number };
-  onLayoutModeChange: (mode: LayoutMode) => void;
-  onCameraShapeChange: (shape: CameraShape) => void;
-  onSplitRatioChange: (ratio: number) => void;
-  onPipPositionChange: (position: { x: number; y: number }) => void;
-  onPipSizeChange: (size: { width: number; height: number }) => void;
-  customMaskUrl?: string;
-  onCustomMaskUpload?: (file: File) => void;
-  aiButtonPosition: { x: number; y: number };
-  onAiButtonPositionChange: (position: { x: number; y: number }) => void;
-  onCaptionLayoutChange: (layout: {
-    position?: { x: number; y: number };
-    size?: { width: number; height: number };
-  }) => void;
-  isNeonEdgeEnabled: boolean;
-  neonIntensity: number;
-  neonColor: string;
-  isProcessingAi: boolean;
-  onPreviewGenerated: (id: string, dataUrl: string) => void;
-  isFullscreen: boolean;
-  onToggleFullscreen: () => void;
-  isFsSidebarOpen: boolean;
-  onFsSidebarToggle: (open: boolean | ((prev: boolean) => boolean)) => void;
-  portalContainer?: HTMLElement | null | ((node: HTMLDivElement) => void);
-  browserOverlays: BrowserOverlayState[];
-  onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
-  screenShareMode: "off" | "screen" | "canvas";
-  onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
-  onSectionCameraSettingsChange: (
-    sectionId: string,
-    settings: Partial<CanvasSectionCameraState>
-  ) => void;
-  onSetSectionDefault?: (sectionId: string) => void;
-  activeSequenceId?: string | null;
-  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
-  canvasLayout: CanvasLayoutState | null;
-  onCanvasLayoutChange?: (layout: CanvasLayoutState) => void;
-  onRemoveBrowser: (id: string) => void;
-  onBrowserUrlChange: (id: string, url: string) => void;
-  onCanvasBackgroundUpload: (file: File) => void;
-  onBrowserLayoutChange: (
-    id: string,
-    layout: Partial<BrowserOverlayState["layout"]>
-  ) => void;
-  sidebarProps: any;
-  selectedBrowserId: string | null;
-  setSelectedBrowserId: (id: string | null) => void;
-  fileOverlays: FileOverlayState[];
-  onRemoveFile: (id: string) => void;
-  onFileLayoutChange: (
-    id: string,
-    layout: Partial<FileOverlayState["layout"]>
-  ) => void;
-  selectedFileId: string | null;
-  setSelectedFileId: (id: string | null) => void;
-  onInternalDragStart: () => void;
-  onInternalDragStop: () => void;
-  onDeselectAll: () => void;
-  dynamicLayout: {
-    isActive: boolean;
-    mode: "split-vertical" | "split-horizontal" | "pip";
-    target: {
-      id: string;
-      type: string;
-      content: any;
-      layout: GeneratedLayout;
-    } | null;
-  };
-  onSetDynamicLayout: (
-    target: { id: string; type: string },
-    mode: "split-vertical" | "split-horizontal" | "pip" | "reset"
-  ) => void;
-  isMouseActive: boolean;
-  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
-  onRecordingComplete: (
-    session: import("@/types/editor").RecordingSession
-  ) => void;
-  onOpenSessions: () => void;
-  onOpenSettings: () => void;
-  blankCanvasColor: string;
-  hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
-  onCanvasBackgroundAssetSelect: (asset: AssetResult) => void;
-  onAiPopoverAutoClose?: () => void;
-  pipBorder?: { color: string; width: number };
-  pipShadow?: { blur: number; color: string };
-  onPipRotationChange?: (rotation: number) => void;
-  pipRotation?: number;
-  canvasAspectRatio: string;
-  selectedGeneratedId?: string | null;
-  setSelectedGeneratedId?: (id: string | null) => void;
-  onBannerDoubleClick?: (id: string, e: React.MouseEvent) => void;
-  remoteStream?: MediaStream | null;
-  editingBannerText?: {
-    overlayId: string;
-    field: "name" | "tagline";
-    currentText: string;
-    style: React.CSSProperties;
-  } | null;
-  onBannerTextStyleChange?: (style: React.CSSProperties) => void;
-  onBannerTextClose?: () => void;
-  isChatbotOpen?: boolean;
-  onChatbotToggle?: (open: boolean | ((prev: boolean) => boolean)) => void;
-}
+// VideoCanvasProps moved to @/types/videoCanvas
+import { OverlayLayer } from "@/components/video-canvas/OverlayLayer";
+import { SnapLines } from "@/components/video-canvas/SnapLines";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   const { theme } = useTheme();
@@ -400,105 +231,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     />
   );
 
-  const renderContent = () => {
-    if (dynamicLayout.isActive && dynamicLayout.target) {
-      return (
-        <VideoCanvasSplitLayout
-          dynamicLayout={dynamicLayout}
-          containerSize={containerSize}
-          dynamicPipSize={dynamicPipSize}
-          setDynamicPipSize={setDynamicPipSize}
-          dynamicPipPosition={dynamicPipPosition}
-          setDynamicPipPosition={setDynamicPipPosition}
-          dynamicSplitRatio={dynamicSplitRatio}
-          setIsDraggingDynamicSplitter={setIsDraggingDynamicSplitter}
-          renderCamera={() => renderCamera()}
-          theme={theme}
-          fullTranscript={fullTranscript}
-          interimTranscript={interimTranscript}
-          sidebarProps={props.sidebarProps}
-        />
-      );
-    }
-
-    const isGridActive = !!props.canvasLayout;
-    // UPDATED CHECK: Screen sharing OR explicit PiP layout mode triggers the "complex" view
-    const showPipMode =
-      screenShareMode !== "off" || isGridActive || props.layoutMode === "pip";
-
-    const mainContent = showPipMode ? (
-      <ScreenShareView
-        screenShareMode={isGridActive ? "canvas" : screenShareMode}
-        screenStream={screenStream}
-        cameraStream={cameraStream}
-        canvasLayout={props.canvasLayout}
-        fileOverlays={fileOverlays}
-        textOverlays={textOverlays}
-        blankCanvasColor={props.blankCanvasColor}
-        backgroundImageUrl={props.backgroundImageUrl || null}
-        backgroundEffect={props.backgroundEffect}
-        layoutMode={props.layoutMode}
-        cameraShape={props.cameraShape}
-        pipSize={props.pipSize}
-        pipBorder={props.pipBorder}
-        pipShadow={props.pipShadow}
-        videoDevices={props.videoDevices}
-        onGridAssetSelect={props.onGridAssetSelect}
-        onSectionCameraSettingsChange={props.onSectionCameraSettingsChange}
-        onSetSectionDefault={props.onSetSectionDefault}
-        activeSequenceId={props.activeSequenceId}
-        onUserPositionChange={props.onUserPositionChange}
-        onCanvasLayoutChange={props.onCanvasLayoutChange}
-      />
-    ) : (
-      renderCamera()
-    );
-
-    return (
-      <div className="w-full h-full relative">
-        <div className="relative w-full h-full">{mainContent}</div>
-        {/* Render PiP Window if we are in PiP mode (either screen sharing OR just camera PiP) */}
-        {showPipMode && !isGridActive && props.layoutMode === "pip" && (
-          <PipWindow
-            sceneId={sceneId}
-            containerSize={containerSize}
-            pipPosition={props.pipPosition}
-            pipSize={props.pipSize}
-            cameraShape={props.cameraShape}
-            pipBorder={props.pipBorder}
-            pipShadow={props.pipShadow}
-            customMaskUrl={props.customMaskUrl}
-            screenShareMode={props.screenShareMode}
-            onPipPositionChange={props.onPipPositionChange}
-            onPipSizeChange={props.onPipSizeChange}
-            onPipRotationChange={props.onPipRotationChange || (() => { })}
-            pipRotation={props.pipRotation}
-            onInternalDragStart={props.onInternalDragStart}
-            onInternalDragStop={props.onInternalDragStop}
-            onClose={() => props.onScreenShareModeChange("off")}
-            renderContent={renderCamera}
-            // If screen sharing is off, the "screen" layer is the background (handled by ScreenShareView), so we just pass null or empty here
-            // But PipWindow expects renderScreen? No, PipWindow renders the *PIP* content.
-            // Wait, PipWindow renders the *content* inside the draggable box.
-            // For Camera PiP, renderContent is renderCamera.
-            // For Screen PiP (swap), renderContent is renderScreen.
-            // The logic inside PipWindow usually handles what to render based on props, but here we pass 'renderContent'
-            // We want the CAMERA to be in the PiP window.
-            renderScreen={() => <VideoPlayer stream={screenStream} />}
-            currentAspectRatio={
-              props.cameraShape === "circle"
-                ? 1 // Force 1:1 for circle
-                : getNumericAspectRatio(
-                  props.cameraShape,
-                  props.sidebarProps.cameraAspectRatio,
-                  props.sidebarProps.customAspectRatio
-                )
-            }
-          />
-        )}
-      </div>
-    );
-  };
+  // renderContent removed, replaced by CanvasContent
 
 
 
@@ -548,7 +281,24 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           onToggleChatbot={props.onChatbotToggle}
         />
 
-        {renderContent()}
+        <CanvasContent
+          {...props}
+          dynamicLayout={dynamicLayout}
+          containerSize={containerSize}
+          dynamicPipSize={dynamicPipSize}
+          setDynamicPipSize={setDynamicPipSize}
+          dynamicPipPosition={dynamicPipPosition}
+          setDynamicPipPosition={setDynamicPipPosition}
+          dynamicSplitRatio={dynamicSplitRatio}
+          setIsDraggingDynamicSplitter={setIsDraggingDynamicSplitter}
+          renderCamera={() => renderCamera()}
+          theme={theme}
+          fullTranscript={fullTranscript}
+          interimTranscript={interimTranscript}
+          sidebarProps={props.sidebarProps}
+          screenStream={screenStream}
+          cameraStream={cameraStream}
+        />
 
         {captionsEnabled &&
           (fullTranscript || interimTranscript) &&
