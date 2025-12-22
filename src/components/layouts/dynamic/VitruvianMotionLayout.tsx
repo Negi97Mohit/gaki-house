@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";

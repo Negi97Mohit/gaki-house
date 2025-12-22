@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 import { ArrowDown, Plus, Info, X } from "lucide-react";
 import { DynamicLayoutWrapper } from "./dynamic/core/DynamicLayoutWrapper";
@@ -136,9 +136,9 @@ const PortfolioScrollContent: React.FC<any> = ({
         // Resolve style
         const style = layout.customSectionStyles?.[sectionId] ||
           templateSection?.style || {
-            backgroundColor: "#f0f0f0",
-            color: "#000",
-          };
+          backgroundColor: "#f0f0f0",
+          color: "#000",
+        };
 
         const textColor = style.color || "#000000";
 

@@ -7,7 +7,7 @@ import {
   TextOverlayState,
   CanvasSectionCameraState,
 } from "@/types/caption";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { AssetResult } from "./AssetLibrary";
 import { Loader2 } from "lucide-react";
 import { useLayoutTemplates } from "@/hooks/useLayoutTemplates";

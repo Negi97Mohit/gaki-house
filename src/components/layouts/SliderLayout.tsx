@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 

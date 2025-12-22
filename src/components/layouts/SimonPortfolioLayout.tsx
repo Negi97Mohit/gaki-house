@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 import { ArrowUpRight, Plus, Info, X } from "lucide-react";
 import gsap from "gsap";
@@ -181,107 +181,107 @@ const ProjectDetail: React.FC<{
   wrapperProps,
   onDelete,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!containerRef.current) return;
+    useEffect(() => {
+      if (!containerRef.current) return;
 
-    if (isActive) {
-      gsap.fromTo(
-        containerRef.current.querySelectorAll(".animate-in"),
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, stagger: 0.1, duration: 0.8, ease: "power3.out" }
-      );
-    }
-  }, [isActive]);
+      if (isActive) {
+        gsap.fromTo(
+          containerRef.current.querySelectorAll(".animate-in"),
+          { y: 60, opacity: 0 },
+          { y: 0, opacity: 1, stagger: 0.1, duration: 0.8, ease: "power3.out" }
+        );
+      }
+    }, [isActive]);
 
-  const name = templateSection?.name ?? "Project Title";
-  const description = templateSection?.description ?? "Project Description";
+    const name = templateSection?.name ?? "Project Title";
+    const description = templateSection?.description ?? "Project Description";
 
-  return (
-    <div
-      ref={containerRef}
-      className="w-full min-h-screen flex flex-col relative group"
-      style={style}
-    >
-      {/* Restored Delete Button */}
-      <DynamicDeleteButton
-        sectionId={section.id}
-        onDelete={onDelete}
-        className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-50"
-      />
+    return (
+      <div
+        ref={containerRef}
+        className="w-full min-h-screen flex flex-col relative group"
+        style={style}
+      >
+        {/* Restored Delete Button */}
+        <DynamicDeleteButton
+          sectionId={section.id}
+          onDelete={onDelete}
+          className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity z-50"
+        />
 
-      {/* Project content */}
-      <div className="flex-1 flex flex-col md:flex-row">
-        {/* Left side - Project info */}
-        <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
-          <div className="space-y-8">
-            {/* Meta info */}
-            <div className="animate-in flex gap-8 text-sm uppercase tracking-widest opacity-60">
-              <EditableText
-                sectionId={section.id}
-                fieldId="year"
-                defaultValue="2024"
-                className="font-mono"
-              />
-              <EditableText
-                sectionId={section.id}
-                fieldId="category"
-                defaultValue="Design"
-              />
-            </div>
+        {/* Project content */}
+        <div className="flex-1 flex flex-col md:flex-row">
+          {/* Left side - Project info */}
+          <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+            <div className="space-y-8">
+              {/* Meta info */}
+              <div className="animate-in flex gap-8 text-sm uppercase tracking-widest opacity-60">
+                <EditableText
+                  sectionId={section.id}
+                  fieldId="year"
+                  defaultValue="2024"
+                  className="font-mono"
+                />
+                <EditableText
+                  sectionId={section.id}
+                  fieldId="category"
+                  defaultValue="Design"
+                />
+              </div>
 
-            {/* Title */}
-            <div className="animate-in">
-              <EditableText
-                sectionId={section.id}
-                fieldId="name"
-                defaultValue={name}
-                className="text-5xl md:text-7xl lg:text-9xl font-bold tracking-tighter leading-[0.85] uppercase"
-              />
-            </div>
+              {/* Title */}
+              <div className="animate-in">
+                <EditableText
+                  sectionId={section.id}
+                  fieldId="name"
+                  defaultValue={name}
+                  className="text-5xl md:text-7xl lg:text-9xl font-bold tracking-tighter leading-[0.85] uppercase"
+                />
+              </div>
 
-            {/* Description */}
-            <div className="animate-in">
-              <EditableText
-                sectionId={section.id}
-                fieldId="description"
-                defaultValue={description}
-                multiline
-                className="text-lg md:text-xl font-light opacity-70 max-w-md leading-relaxed"
-              />
-            </div>
+              {/* Description */}
+              <div className="animate-in">
+                <EditableText
+                  sectionId={section.id}
+                  fieldId="description"
+                  defaultValue={description}
+                  multiline
+                  className="text-lg md:text-xl font-light opacity-70 max-w-md leading-relaxed"
+                />
+              </div>
 
-            {/* Client */}
-            <div className="animate-in pt-8 border-t border-current/20">
-              <span className="text-xs uppercase tracking-widest opacity-40 block mb-2">
-                Client
-              </span>
-              <EditableText
-                sectionId={section.id}
-                fieldId="client"
-                defaultValue="Client Name"
-                className="text-lg font-medium"
-              />
+              {/* Client */}
+              <div className="animate-in pt-8 border-t border-current/20">
+                <span className="text-xs uppercase tracking-widest opacity-40 block mb-2">
+                  Client
+                </span>
+                <EditableText
+                  sectionId={section.id}
+                  fieldId="client"
+                  defaultValue="Client Name"
+                  className="text-lg font-medium"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Right side - Project media */}
-        <div className="w-full md:w-1/2 relative min-h-[50vh] md:min-h-full">
-          <div className="absolute inset-4 md:inset-8 bg-black/5 rounded-lg overflow-hidden">
-            <GridSectionWrapper
-              {...wrapperProps}
-              section={section}
-              templateSection={templateSection || { id: section.id }}
-              isHovered={isActive}
-            />
+          {/* Right side - Project media */}
+          <div className="w-full md:w-1/2 relative min-h-[50vh] md:min-h-full">
+            <div className="absolute inset-4 md:inset-8 bg-black/5 rounded-lg overflow-hidden">
+              <GridSectionWrapper
+                {...wrapperProps}
+                section={section}
+                templateSection={templateSection || { id: section.id }}
+                isHovered={isActive}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 const SimonPortfolioContent: React.FC<any> = ({
   template,
@@ -465,9 +465,9 @@ const SimonPortfolioContent: React.FC<any> = ({
             );
             const style = layout.customSectionStyles?.[sectionId] ||
               templateSection?.style || {
-                backgroundColor: "#f0f0f0",
-                color: "#000",
-              };
+              backgroundColor: "#f0f0f0",
+              color: "#000",
+            };
             const customData = layout.customSectionData?.[sectionId] || {};
 
             return (

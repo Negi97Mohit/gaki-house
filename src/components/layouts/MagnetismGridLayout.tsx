@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { cn } from "@/lib/utils";
 import { AssetResult } from "../AssetLibrary";
 import { GridSectionRenderer } from "../GridSectionRenderer";
@@ -202,7 +202,7 @@ export const MagnetismGridLayout: React.FC<MagnetismGridLayoutProps> = ({
               Math.min(window.innerWidth - 300, focusedField.rect.left)
             ), // Simplified bounds
           }}
-          // REMOVED preventDefault here to allow input focus
+        // REMOVED preventDefault here to allow input focus
         >
           <div className="flex items-center gap-2 mr-2 border-r border-white/20 pr-2">
             <Type className="w-3 h-3 text-white/50" />
@@ -405,10 +405,10 @@ export const MagnetismGridLayout: React.FC<MagnetismGridLayoutProps> = ({
                   customStyle.gridColumn === "span 2"
                     ? "md:col-span-2"
                     : customStyle.gridColumn === "span 1"
-                    ? "md:col-span-1"
-                    : defaultStyle.colSpan === "span 2"
-                    ? "md:col-span-2"
-                    : "md:col-span-1";
+                      ? "md:col-span-1"
+                      : defaultStyle.colSpan === "span 2"
+                        ? "md:col-span-2"
+                        : "md:col-span-1";
 
                 const aspectStyle = customStyle.aspectRatio
                   ? { aspectRatio: customStyle.aspectRatio }

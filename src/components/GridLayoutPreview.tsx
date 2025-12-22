@@ -1,5 +1,5 @@
 import React from "react";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { cn } from "@/lib/utils";
 
 interface GridLayoutPreviewProps {

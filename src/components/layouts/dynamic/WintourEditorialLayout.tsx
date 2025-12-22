@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { cn } from "@/lib/utils";
-import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/types/layout";
 import { Plus } from "lucide-react";
 import { Panel } from "./core/Panel";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
