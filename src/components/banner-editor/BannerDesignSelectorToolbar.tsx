@@ -7,8 +7,7 @@ import { BannerDesign } from "@/types/banner";
 import { SocialBannerDesign } from "@/types/socialBanner";
 import { AnimatedBannerDesign } from "@/types/animatedBanner";
 
-import socialBannersData from "@/data/socialBanners.json";
-import animatedBannersData from "@/data/animatedBanners.json";
+import { useSocialBanners } from "@/hooks/useSocialBanners";
 
 interface BannerDesignSelectorToolbarProps {
   currentDesignId: string;
@@ -25,13 +24,14 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
   position,
   containerSize,
 }) => {
-  const staticDesigns = socialBannersData.designs as SocialBannerDesign[];
-  const animatedDesigns = animatedBannersData.designs as AnimatedBannerDesign[];
+  const { socialBanners, animatedBanners } = useSocialBanners();
+  const staticDesigns = socialBanners as SocialBannerDesign[];
+  const animatedDesigns = animatedBanners as AnimatedBannerDesign[];
 
   // Determine which tab the current design is in
   const isCurrentStatic = staticDesigns.some(d => d.id === currentDesignId);
   const [activeTab, setActiveTab] = useState<"static" | "animated">(isCurrentStatic ? "static" : "animated");
-  
+
   const toolbarRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
@@ -165,7 +165,7 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
             {currentDesigns.map((design) => {
               const isSelected = design.id === currentDesignId;
               const previewBg = design.preview || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-              
+
               return (
                 <button
                   key={design.id}
@@ -184,12 +184,12 @@ export const BannerDesignSelectorToolbar: React.FC<BannerDesignSelectorToolbarPr
                   {/* Preview background */}
                   <div
                     className="absolute inset-0"
-                    style={{ 
+                    style={{
                       background: previewBg,
                       backgroundSize: "cover"
                     }}
                   />
-                  
+
                   {/* Always visible name overlay at bottom */}
                   <div className="absolute inset-x-0 bottom-0 bg-black/70 backdrop-blur-sm px-1 py-0.5">
                     <span className="text-[9px] text-white font-medium leading-tight line-clamp-1 block text-center">

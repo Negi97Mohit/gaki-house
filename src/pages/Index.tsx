@@ -13,7 +13,6 @@ import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
 import { AnimationPreset } from "@/types/animation";
 import { GSAPPreset } from "@/lib/gsapAnimations";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
-import { CANVAS_PRESETS } from "@/lib/canvasPresets";
 
 import { useRecordingSession } from "@/hooks/useRecordingSession";
 import { useCompositeStream } from "@/hooks/useCompositeStream";

@@ -429,139 +429,46 @@ let templateCache: {
   record: Record<string, CanvasLayoutTemplate>;
 } | null = null;
 
-export async function getLayoutTemplates(): Promise<{
-  list: CanvasLayoutTemplate[];
-  record: Record<string, CanvasLayoutTemplate>;
-}> {
-  if (templateCache) {
-    return templateCache;
-  }
+export const DEFAULT_LAYOUT_TEMPLATES = [
+  EXPANDING_CARDS_TEMPLATE,
+  SLIDER_TEMPLATE,
+  VERTICAL_SLIDER_TEMPLATE,
+  SPLIT_LANDING_PAGE_TEMPLATE,
+  CASE_STUDY_TEMPLATE,
+  PORTFOLIO_SCROLL_TEMPLATE,
+  SIMON_PORTFOLIO_TEMPLATE,
+  PERFORMANCE_FLOW_TEMPLATE,
+  MAGNETISM_GRID_TEMPLATE,
+  // --- REGISTER NEW TEMPLATES HERE ---
+  VOGUE_PARALLAX_TEMPLATE,
+  LIQUID_LENS_TEMPLATE,
+  BRUTALIST_GLITCH_TEMPLATE,
+  ZAHA_PARAMETRIC_TEMPLATE,
+  WINTOUR_EDITORIAL_TEMPLATE,
+  SISTINE_DEPTH_TEMPLATE,
+  VITRUVIAN_MOTION_TEMPLATE,
+  LIQUID_CHROME_TEMPLATE,
+  // New Innovative Layouts
+  AURORA_BOREALIS_TEMPLATE,
+  MORPHING_BLOB_TEMPLATE,
+  NEON_PULSE_CITY_TEMPLATE,
+  ORIGAMI_UNFOLD_TEMPLATE,
+  LIQUID_MIRROR_TEMPLATE,
+  PARTICLE_UNIVERSE_TEMPLATE,
+  GLITCH_MATRIX_TEMPLATE,
+  HOLOGRAPHIC_PRISM_TEMPLATE,
+  ELASTIC_MORPH_CARDS_TEMPLATE,
+  CINEMATIC_PARALLAX_TEMPLATE,
+  // Phase 4 - Artistic Vision Layouts
+  TEMPORAL_FRACTURE_TEMPLATE,
+  PARAMETRIC_FLOW_TEMPLATE,
+  EDITORIAL_GRID_SHIFT_TEMPLATE,
+  FIBONACCI_CASCADE_TEMPLATE,
+  DEPTH_CHOREOGRAPHY_TEMPLATE,
+  CRYSTALLINE_TESSELLATION_TEMPLATE,
+  HAUTE_COUTURE_STACKS_TEMPLATE,
+  CHIAROSCURO_CANVAS_TEMPLATE,
+  INTERSTELLAR_DOCK_TEMPLATE,
+  VOID_EMERGENCE_TEMPLATE,
+];
 
-  try {
-    const response = await fetch("/layouts.json");
-    let list: CanvasLayoutTemplate[] = [];
-
-    if (response.ok) {
-      try {
-        const parsed = await response.json();
-        list = parsed.map((layout: CanvasLayoutTemplate) => ({
-          ...layout,
-          category: DYNAMIC_LAYOUT_IDS.has(layout.id)
-            ? ("dynamic" as LayoutCategory)
-            : layout.category || ("static" as LayoutCategory),
-        }));
-      } catch (e) {
-        console.warn("Failed to parse layouts.json, using defaults");
-      }
-    }
-
-    // Register all templates including new ones
-    const defaults = [
-      EXPANDING_CARDS_TEMPLATE,
-      SLIDER_TEMPLATE,
-      VERTICAL_SLIDER_TEMPLATE,
-      SPLIT_LANDING_PAGE_TEMPLATE,
-      CASE_STUDY_TEMPLATE,
-      PORTFOLIO_SCROLL_TEMPLATE,
-      SIMON_PORTFOLIO_TEMPLATE,
-      PERFORMANCE_FLOW_TEMPLATE,
-      MAGNETISM_GRID_TEMPLATE,
-      // --- REGISTER NEW TEMPLATES HERE ---
-      VOGUE_PARALLAX_TEMPLATE,
-      LIQUID_LENS_TEMPLATE,
-      BRUTALIST_GLITCH_TEMPLATE,
-      ZAHA_PARAMETRIC_TEMPLATE,
-      WINTOUR_EDITORIAL_TEMPLATE,
-      SISTINE_DEPTH_TEMPLATE,
-      VITRUVIAN_MOTION_TEMPLATE,
-      LIQUID_CHROME_TEMPLATE,
-      // New Innovative Layouts
-      AURORA_BOREALIS_TEMPLATE,
-      MORPHING_BLOB_TEMPLATE,
-      NEON_PULSE_CITY_TEMPLATE,
-      ORIGAMI_UNFOLD_TEMPLATE,
-      LIQUID_MIRROR_TEMPLATE,
-      PARTICLE_UNIVERSE_TEMPLATE,
-      GLITCH_MATRIX_TEMPLATE,
-      HOLOGRAPHIC_PRISM_TEMPLATE,
-      ELASTIC_MORPH_CARDS_TEMPLATE,
-      CINEMATIC_PARALLAX_TEMPLATE,
-      // Phase 4 - Artistic Vision Layouts
-      TEMPORAL_FRACTURE_TEMPLATE,
-      PARAMETRIC_FLOW_TEMPLATE,
-      EDITORIAL_GRID_SHIFT_TEMPLATE,
-      FIBONACCI_CASCADE_TEMPLATE,
-      DEPTH_CHOREOGRAPHY_TEMPLATE,
-      CRYSTALLINE_TESSELLATION_TEMPLATE,
-      HAUTE_COUTURE_STACKS_TEMPLATE,
-      CHIAROSCURO_CANVAS_TEMPLATE,
-      INTERSTELLAR_DOCK_TEMPLATE,
-      VOID_EMERGENCE_TEMPLATE,
-    ];
-
-    defaults.forEach((t) => {
-      if (!list.find((existing) => existing.id === t.id)) {
-        list.push(t);
-      }
-    });
-
-    const record = list.reduce((acc, template) => {
-      acc[template.id] = template;
-      return acc;
-    }, {} as Record<string, CanvasLayoutTemplate>);
-
-    templateCache = { list, record };
-    return templateCache;
-  } catch (error) {
-    console.error("Error loading layout templates:", error);
-    // Fallback list
-    const defaults = [
-      EXPANDING_CARDS_TEMPLATE,
-      SLIDER_TEMPLATE,
-      VERTICAL_SLIDER_TEMPLATE,
-      SPLIT_LANDING_PAGE_TEMPLATE,
-      CASE_STUDY_TEMPLATE,
-      PORTFOLIO_SCROLL_TEMPLATE,
-      SIMON_PORTFOLIO_TEMPLATE,
-      PERFORMANCE_FLOW_TEMPLATE,
-      MAGNETISM_GRID_TEMPLATE,
-      VOGUE_PARALLAX_TEMPLATE,
-      LIQUID_LENS_TEMPLATE,
-      BRUTALIST_GLITCH_TEMPLATE,
-      ZAHA_PARAMETRIC_TEMPLATE,
-      WINTOUR_EDITORIAL_TEMPLATE,
-      SISTINE_DEPTH_TEMPLATE,
-      VITRUVIAN_MOTION_TEMPLATE,
-      LIQUID_CHROME_TEMPLATE,
-      // New Innovative Layouts
-      AURORA_BOREALIS_TEMPLATE,
-      MORPHING_BLOB_TEMPLATE,
-      NEON_PULSE_CITY_TEMPLATE,
-      ORIGAMI_UNFOLD_TEMPLATE,
-      LIQUID_MIRROR_TEMPLATE,
-      PARTICLE_UNIVERSE_TEMPLATE,
-      GLITCH_MATRIX_TEMPLATE,
-      HOLOGRAPHIC_PRISM_TEMPLATE,
-      ELASTIC_MORPH_CARDS_TEMPLATE,
-      CINEMATIC_PARALLAX_TEMPLATE,
-      // Phase 4 - Artistic Vision Layouts
-      TEMPORAL_FRACTURE_TEMPLATE,
-      PARAMETRIC_FLOW_TEMPLATE,
-      EDITORIAL_GRID_SHIFT_TEMPLATE,
-      FIBONACCI_CASCADE_TEMPLATE,
-      DEPTH_CHOREOGRAPHY_TEMPLATE,
-      CRYSTALLINE_TESSELLATION_TEMPLATE,
-      HAUTE_COUTURE_STACKS_TEMPLATE,
-      CHIAROSCURO_CANVAS_TEMPLATE,
-      INTERSTELLAR_DOCK_TEMPLATE,
-      VOID_EMERGENCE_TEMPLATE,
-    ];
-
-    const record = defaults.reduce((acc, t) => {
-      acc[t.id] = t;
-      return acc;
-    }, {} as Record<string, CanvasLayoutTemplate>);
-
-    return { list: defaults, record };
-  }
-}

@@ -7,9 +7,10 @@ import {
   TextOverlayState,
   CanvasSectionCameraState,
 } from "@/types/caption";
-import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import { AssetResult } from "./AssetLibrary";
 import { Loader2 } from "lucide-react";
+import { useLayoutTemplates } from "@/hooks/useLayoutTemplates";
 
 // --- Existing Standard Layouts ---
 import { StandardGridLayout } from "./layouts/StandardGridLayout";
@@ -103,22 +104,10 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [templates, setTemplates] = useState<Record<
-    string,
-    CanvasLayoutTemplate
-  > | null>(null);
+  // Replaced local state/effect with hook
+  const { templateRecord: templates, loading } = useLayoutTemplates();
 
-  useEffect(() => {
-    getLayoutTemplates()
-      .then(({ record }) => {
-        setTemplates(record);
-      })
-      .catch((err) => {
-        console.error("Failed to load layout templates", err);
-      });
-  }, []);
-
-  if (!templates) {
+  if (loading || !templates) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-muted/20">
         <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
@@ -220,7 +209,7 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
         isExpandingCards && "bg-white",
         isSlider && "flex items-center justify-center bg-white",
         isVerticalSlider &&
-          "relative w-full h-[100vh] overflow-hidden bg-background",
+        "relative w-full h-[100vh] overflow-hidden bg-background",
         isSplitLanding && "relative w-full h-full bg-[#333]",
         isPortfolioScroll && "bg-white",
         isSimonPortfolio && "bg-white",
@@ -239,98 +228,98 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
       ) : isDiagonal ? (
         <DiagonalRushLayout sections={layout.sections} {...commonProps} />
       ) : /* --- Phase 3: New Interactive Layouts --- */
-      isScrollZoom ? (
-        <ScrollZoomLayout sections={layout.sections} {...commonProps} />
-      ) : isInfiniteGrid ? (
-        <InfiniteGridLayout sections={layout.sections} {...commonProps} />
-      ) : isStickySplit ? (
-        <StickySplitLayout sections={layout.sections} {...commonProps} />
-      ) : isLayeredParallax ? (
-        <LayeredParallaxLayout sections={layout.sections} {...commonProps} />
-      ) : isHorizontalScroll ? (
-        <HorizontalScrollLayout sections={layout.sections} {...commonProps} />
-      ) : isCircularGallery ? (
-        <CircularGalleryLayout sections={layout.sections} {...commonProps} />
-      ) : isSnapSections ? (
-        <SnapSectionsLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Phase 5: New Architect Layouts --- */
-      isZaha ? (
-        <ZahaParametricLayout sections={layout.sections} {...commonProps} />
-      ) : isWintour ? (
-        <WintourEditorialLayout sections={layout.sections} {...commonProps} />
-      ) : isVitruvian ? (
-        <VitruvianMotionLayout sections={layout.sections} {...commonProps} />
-      ) : isLiquidChrome ? (
-        <LiquidChromeLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Phase 6: New Innovative Layouts --- */
-      isAuroraBorealis ? (
-        <AuroraBorealisLayout sections={layout.sections} {...commonProps} />
-      ) : isMorphingBlob ? (
-        <MorphingBlobLayout sections={layout.sections} {...commonProps} />
-      ) : isNeonPulseCity ? (
-        <NeonPulseCityLayout sections={layout.sections} {...commonProps} />
-      ) : isOrigamiUnfold ? (
-        <OrigamiUnfoldLayout sections={layout.sections} {...commonProps} />
-      ) : isLiquidMirror ? (
-        <LiquidMirrorLayout sections={layout.sections} {...commonProps} />
-      ) : isParticleUniverse ? (
-        <ParticleUniverseLayout sections={layout.sections} {...commonProps} />
-      ) : isGlitchMatrix ? (
-        <GlitchMatrixLayout sections={layout.sections} {...commonProps} />
-      ) : isHolographicPrism ? (
-        <HolographicPrismLayout sections={layout.sections} {...commonProps} />
-      ) : isElasticMorphCards ? (
-        <ElasticMorphCardsLayout sections={layout.sections} {...commonProps} />
-      ) : isCinematicParallax ? (
-        <CinematicParallaxLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Phase 4: Artistic Vision Layouts --- */
-      isTemporalFracture ? (
-        <TemporalFractureLayout sections={layout.sections} {...commonProps} />
-      ) : isParametricFlow ? (
-        <ParametricFlowLayout sections={layout.sections} {...commonProps} />
-      ) : isEditorialGridShift ? (
-        <EditorialGridShiftLayout sections={layout.sections} {...commonProps} />
-      ) : isFibonacciCascade ? (
-        <FibonacciCascadeLayout sections={layout.sections} {...commonProps} />
-      ) : isDepthChoreography ? (
-        <DepthChoreographyLayout sections={layout.sections} {...commonProps} />
-      ) : isCrystallineTessellation ? (
-        <CrystallineTessellationLayout
-          sections={layout.sections}
-          {...commonProps}
-        />
-      ) : isHauteCoutureStacks ? (
-        <HauteCoutureStacksLayout sections={layout.sections} {...commonProps} />
-      ) : isChiaroscuroCanvas ? (
-        <ChiaroscuroCanvasLayout sections={layout.sections} {...commonProps} />
-      ) : isInterstellarDock ? (
-        <InterstellarDockLayout sections={layout.sections} {...commonProps} />
-      ) : isVoidEmergence ? (
-        <VoidEmergenceLayout sections={layout.sections} {...commonProps} />
-      ) : isSistine ? (
-        <SistineDepthLayout sections={layout.sections} {...commonProps} />
-      ) : /* --- Standard Interactive --- */
-      isExpandingCards ? (
-        <ExpandingCardsLayout {...commonProps} />
-      ) : isSlider ? (
-        <SliderLayout {...commonProps} />
-      ) : isVerticalSlider ? (
-        <VerticalSliderLayout {...commonProps} />
-      ) : isSplitLanding ? (
-        <SplitLandingLayout {...commonProps} />
-      ) : isPortfolioScroll ? (
-        <PortfolioScrollLayout {...commonProps} />
-      ) : isSimonPortfolio ? (
-        <SimonPortfolioLayout {...commonProps} />
-      ) : tId === "performance-flow" ? (
-        <PerformanceFlowLayout {...commonProps} />
-      ) : tId === "magnetism-layout" ? (
-        <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
-      ) : tId === "case-study" ? (
-        <CaseStudyLayout {...commonProps} />
-      ) : (
-        <StandardGridLayout {...commonProps} />
-      )}
+        isScrollZoom ? (
+          <ScrollZoomLayout sections={layout.sections} {...commonProps} />
+        ) : isInfiniteGrid ? (
+          <InfiniteGridLayout sections={layout.sections} {...commonProps} />
+        ) : isStickySplit ? (
+          <StickySplitLayout sections={layout.sections} {...commonProps} />
+        ) : isLayeredParallax ? (
+          <LayeredParallaxLayout sections={layout.sections} {...commonProps} />
+        ) : isHorizontalScroll ? (
+          <HorizontalScrollLayout sections={layout.sections} {...commonProps} />
+        ) : isCircularGallery ? (
+          <CircularGalleryLayout sections={layout.sections} {...commonProps} />
+        ) : isSnapSections ? (
+          <SnapSectionsLayout sections={layout.sections} {...commonProps} />
+        ) : /* --- Phase 5: New Architect Layouts --- */
+          isZaha ? (
+            <ZahaParametricLayout sections={layout.sections} {...commonProps} />
+          ) : isWintour ? (
+            <WintourEditorialLayout sections={layout.sections} {...commonProps} />
+          ) : isVitruvian ? (
+            <VitruvianMotionLayout sections={layout.sections} {...commonProps} />
+          ) : isLiquidChrome ? (
+            <LiquidChromeLayout sections={layout.sections} {...commonProps} />
+          ) : /* --- Phase 6: New Innovative Layouts --- */
+            isAuroraBorealis ? (
+              <AuroraBorealisLayout sections={layout.sections} {...commonProps} />
+            ) : isMorphingBlob ? (
+              <MorphingBlobLayout sections={layout.sections} {...commonProps} />
+            ) : isNeonPulseCity ? (
+              <NeonPulseCityLayout sections={layout.sections} {...commonProps} />
+            ) : isOrigamiUnfold ? (
+              <OrigamiUnfoldLayout sections={layout.sections} {...commonProps} />
+            ) : isLiquidMirror ? (
+              <LiquidMirrorLayout sections={layout.sections} {...commonProps} />
+            ) : isParticleUniverse ? (
+              <ParticleUniverseLayout sections={layout.sections} {...commonProps} />
+            ) : isGlitchMatrix ? (
+              <GlitchMatrixLayout sections={layout.sections} {...commonProps} />
+            ) : isHolographicPrism ? (
+              <HolographicPrismLayout sections={layout.sections} {...commonProps} />
+            ) : isElasticMorphCards ? (
+              <ElasticMorphCardsLayout sections={layout.sections} {...commonProps} />
+            ) : isCinematicParallax ? (
+              <CinematicParallaxLayout sections={layout.sections} {...commonProps} />
+            ) : /* --- Phase 4: Artistic Vision Layouts --- */
+              isTemporalFracture ? (
+                <TemporalFractureLayout sections={layout.sections} {...commonProps} />
+              ) : isParametricFlow ? (
+                <ParametricFlowLayout sections={layout.sections} {...commonProps} />
+              ) : isEditorialGridShift ? (
+                <EditorialGridShiftLayout sections={layout.sections} {...commonProps} />
+              ) : isFibonacciCascade ? (
+                <FibonacciCascadeLayout sections={layout.sections} {...commonProps} />
+              ) : isDepthChoreography ? (
+                <DepthChoreographyLayout sections={layout.sections} {...commonProps} />
+              ) : isCrystallineTessellation ? (
+                <CrystallineTessellationLayout
+                  sections={layout.sections}
+                  {...commonProps}
+                />
+              ) : isHauteCoutureStacks ? (
+                <HauteCoutureStacksLayout sections={layout.sections} {...commonProps} />
+              ) : isChiaroscuroCanvas ? (
+                <ChiaroscuroCanvasLayout sections={layout.sections} {...commonProps} />
+              ) : isInterstellarDock ? (
+                <InterstellarDockLayout sections={layout.sections} {...commonProps} />
+              ) : isVoidEmergence ? (
+                <VoidEmergenceLayout sections={layout.sections} {...commonProps} />
+              ) : isSistine ? (
+                <SistineDepthLayout sections={layout.sections} {...commonProps} />
+              ) : /* --- Standard Interactive --- */
+                isExpandingCards ? (
+                  <ExpandingCardsLayout {...commonProps} />
+                ) : isSlider ? (
+                  <SliderLayout {...commonProps} />
+                ) : isVerticalSlider ? (
+                  <VerticalSliderLayout {...commonProps} />
+                ) : isSplitLanding ? (
+                  <SplitLandingLayout {...commonProps} />
+                ) : isPortfolioScroll ? (
+                  <PortfolioScrollLayout {...commonProps} />
+                ) : isSimonPortfolio ? (
+                  <SimonPortfolioLayout {...commonProps} />
+                ) : tId === "performance-flow" ? (
+                  <PerformanceFlowLayout {...commonProps} />
+                ) : tId === "magnetism-layout" ? (
+                  <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
+                ) : tId === "case-study" ? (
+                  <CaseStudyLayout {...commonProps} />
+                ) : (
+                  <StandardGridLayout {...commonProps} />
+                )}
     </div>
   );
 };

@@ -10,7 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
+import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
+import { useCanvasPresets } from "@/hooks/useCanvasPresets"; // --- MODIFIED
 import { CanvasPreset, CanvasPresetTextOverlay } from "@/types/canvasPreset";
 import { cn } from "@/lib/utils";
 import {
@@ -63,27 +64,24 @@ const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
           left: `${preset.pip.pipPosition?.x || 50}%`,
           top: `${preset.pip.pipPosition?.y || 50}%`,
           width: `${preset.pip.pipSize?.width || 40}%`,
-          height: `${
-            preset.pip.cameraShape === "circle"
+          height: `${preset.pip.cameraShape === "circle"
               ? (preset.pip.pipSize?.width || 40) * (16 / 9)
               : preset.pip.pipSize?.height || 40
-          }%`,
+            }%`,
           transform: "translate(-50%, -50%)",
           borderRadius:
             preset.pip.cameraShape === "circle"
               ? "50%"
               : preset.pip.cameraShape === "rounded"
-              ? "8%"
-              : "0",
+                ? "8%"
+                : "0",
           border: preset.pip.pipBorder
-            ? `${Math.max(1, preset.pip.pipBorder.width * 0.5)}px solid ${
-                preset.pip.pipBorder.color
-              }`
+            ? `${Math.max(1, preset.pip.pipBorder.width * 0.5)}px solid ${preset.pip.pipBorder.color
+            }`
             : "1px solid rgba(255,255,255,0.3)",
           boxShadow: preset.pip.pipShadow
-            ? `0 0 ${preset.pip.pipShadow.blur * 0.3}px ${
-                preset.pip.pipShadow.color
-              }`
+            ? `0 0 ${preset.pip.pipShadow.blur * 0.3}px ${preset.pip.pipShadow.color
+            }`
             : "none",
           background: "linear-gradient(145deg, #444 0%, #222 100%)",
         }}
@@ -112,9 +110,8 @@ const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
             top: `${text.layout.position.y}%`,
             width: `${text.layout.size.width}%`,
             height: `${text.layout.size.height}%`,
-            transform: `translate(-50%, -50%) rotate(${
-              text.layout.rotation || 0
-            }deg)`,
+            transform: `translate(-50%, -50%) rotate(${text.layout.rotation || 0
+              }deg)`,
             zIndex: text.layout.zIndex || 1,
           }}
         >
@@ -133,8 +130,8 @@ const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
                 text.style.textAlign === "left"
                   ? "flex-start"
                   : text.style.textAlign === "right"
-                  ? "flex-end"
-                  : "center",
+                    ? "flex-end"
+                    : "center",
               fontWeight: text.style.fontWeight || 400,
               letterSpacing: text.style.letterSpacing || "normal",
               textTransform: (text.style.textTransform as any) || "none",
@@ -159,10 +156,10 @@ const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
       {/* Effects indicator */}
       {(preset.effects.isNeonEdgeEnabled ||
         preset.effects.interactiveFilter) && (
-        <div className="absolute bottom-1 right-1 px-1 py-0.5 bg-primary/80 text-[6px] font-bold text-primary-foreground">
-          FX
-        </div>
-      )}
+          <div className="absolute bottom-1 right-1 px-1 py-0.5 bg-primary/80 text-[6px] font-bold text-primary-foreground">
+            FX
+          </div>
+        )}
     </div>
   );
 };
@@ -186,6 +183,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(
     activePresetId || null
   );
+
+  const { systemPresets: CANVAS_PRESETS } = useCanvasPresets(); // --- ADDED
 
   // Sync local state with parent prop (including clearing when reset)
   useEffect(() => {
@@ -227,8 +226,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     selectedCategory === "all"
       ? CANVAS_PRESETS
       : selectedCategory === "community"
-      ? publicPresets || []
-      : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+        ? publicPresets || []
+        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
 
   const handlePresetSelect = (preset: CanvasPreset) => {
     setSelectedPresetId(preset.id);

@@ -1,6 +1,4 @@
 import { CanvasPreset } from "@/types/canvasPreset";
-import standardPresets from "@/data/canvasPresets.json";
-import dynamicPresets from "@/data/dynamic/dynamicPresets.json";
 import {
   LayoutGrid,
   Crown,
@@ -13,23 +11,8 @@ import {
   Users,
 } from "lucide-react";
 
-// Helper to remove duplicates by ID
-const deduplicate = (items: CanvasPreset[]) => {
-  const seen = new Set();
-  return items.filter((item) => {
-    if (seen.has(item.id)) {
-      return false;
-    }
-    seen.add(item.id);
-    return true;
-  });
-};
-
-// Merge standard and dynamic presets, prioritizing dynamic ones if IDs clash
-export const CANVAS_PRESETS: CanvasPreset[] = deduplicate([
-  ...(dynamicPresets as unknown as CanvasPreset[]),
-  ...(standardPresets as unknown as CanvasPreset[]),
-]);
+// Deprecated static data - replaced by useCanvasPresets hook
+export const CANVAS_PRESETS: CanvasPreset[] = [];
 
 export const CANVAS_PRESET_CATEGORIES = [
   { id: "all", name: "All Designs", icon: "LayoutGrid" },
@@ -44,10 +27,11 @@ export const CANVAS_PRESET_CATEGORIES = [
 ];
 
 export function getPresetsByCategory(category: string): CanvasPreset[] {
-  if (category === "all") return CANVAS_PRESETS;
-  return CANVAS_PRESETS.filter((preset) => preset.styleTags.includes(category));
+  // Deprecated use of static array
+  return [];
 }
 
 export function getPresetById(id: string): CanvasPreset | undefined {
-  return CANVAS_PRESETS.find((preset) => preset.id === id);
+  // Deprecated use of static array
+  return undefined;
 }

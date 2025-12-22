@@ -1,6 +1,5 @@
 // src/lib/captionPresets.ts
 import { CaptionTemplate } from "@/types/caption";
-import captionPresetsData from "@/data/captionPresets.json";
 
-export const CAPTION_PRESETS: CaptionTemplate[] =
-  captionPresetsData as unknown as CaptionTemplate[];
+// Deprecated: Data is now fetched via useCaptionPresets hook
+export const CAPTION_PRESETS: CaptionTemplate[] = [];

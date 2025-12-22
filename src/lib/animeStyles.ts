@@ -1,6 +1,5 @@
 // src/lib/animeStyles.ts
 import { ColorUtils, ImageProcessor } from "./utils/imageProcessing";
-import animeStylesData from "@/data/animeStyles.json";
 
 // ===== TYPES AND INTERFACES =====
 export interface TriToneConfig {
@@ -21,8 +20,14 @@ export interface ProcessedImageData {
 }
 
 // ===== PRESET STYLES =====
-export const AnimeStyles: Record<string, TriToneConfig> =
-  animeStylesData as unknown as Record<string, TriToneConfig>;
+let AnimeStyles: Record<string, TriToneConfig> = {};
+
+export { AnimeStyles };
+
+// Export a function to update the styles
+export const updateAnimeStyles = (newStyles: Record<string, TriToneConfig>) => {
+  AnimeStyles = { ...AnimeStyles, ...newStyles };
+};
 
 // ===== MAIN PROCESSING FUNCTION =====
 export function applyTriTone(

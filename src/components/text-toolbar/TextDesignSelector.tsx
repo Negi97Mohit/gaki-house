@@ -3,10 +3,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { TextDesignPreset, TextLayer } from "@/types/textDesign";
-import { loadTextDesigns } from "@/lib/textDesigns";
-import { TextOverlayState } from "@/types/caption";
-import { MultiLayerTextRenderer } from "@/components/MultiLayerTextRenderer";
+import { useTextDesigns } from "@/hooks/useTextDesigns";
 
 interface TextDesignSelectorProps {
     overlay: TextOverlayState;
@@ -34,12 +31,11 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
     onClose,
     position,
 }) => {
-    const [textDesigns, setTextDesigns] = useState<TextDesignPreset[]>([]);
+    const { textDesigns } = useTextDesigns();
     const panelRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        loadTextDesigns().then(setTextDesigns);
-    }, []);
+    // Replaced useEffect/loadTextDesigns with hook
+
 
     // Close on click outside
     useEffect(() => {

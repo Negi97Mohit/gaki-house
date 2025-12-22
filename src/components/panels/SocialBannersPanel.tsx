@@ -24,12 +24,7 @@ import {
   DEFAULT_BANNER_DATA,
 } from "@/types/socialBanner";
 
-import animatedBannersData from "@/data/animatedBanners.json";
-
-const ANIMATED_BANNER_DESIGNS = animatedBannersData.designs;
-
-import { AnimatedBannerDesign } from "@/types/animatedBanner";
-import socialBannersData from "@/data/socialBanners.json";
+import { useSocialBanners } from "@/hooks/useSocialBanners";
 
 const LOCAL_STORAGE_KEY = "social-banner-user-data";
 
@@ -52,7 +47,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"static" | "animated">("static");
 
-  const designs = socialBannersData.designs as SocialBannerDesign[];
+  const { socialBanners: designs, animatedBanners: ANIMATED_BANNER_DESIGNS, loading } = useSocialBanners();
 
   // Load user data from localStorage
   useEffect(() => {
@@ -207,15 +202,15 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
         className="flex-1 flex flex-col min-h-0"
       >
         <TabsList className="w-full grid grid-cols-2 mb-3 shrink-0 h-8 p-0 bg-card border border-border">
-          <TabsTrigger 
-            value="static" 
+          <TabsTrigger
+            value="static"
             className="gap-1.5 text-[10px] font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-none"
           >
             <Layers className="w-3 h-3" />
             STATIC
           </TabsTrigger>
-          <TabsTrigger 
-            value="animated" 
+          <TabsTrigger
+            value="animated"
             className="gap-1.5 text-[10px] font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-none"
           >
             <Sparkles className="w-3 h-3" />

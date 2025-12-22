@@ -29,7 +29,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { getLayoutTemplates, CanvasLayoutTemplate } from "@/lib/canvasLayouts";
+import { CanvasLayoutTemplate } from "@/lib/canvasLayouts";
 import {
   Popover,
   PopoverContent,
@@ -39,6 +39,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { CanvasLayoutState } from "@/types/caption";
 import { GridLayoutPreview } from "./GridLayoutPreview";
+import { useLayoutTemplates } from "@/hooks/useLayoutTemplates";
+
 
 interface CanvasHoverToolbarProps {
   blankCanvasColor: string;
@@ -144,24 +146,11 @@ export const CanvasHoverToolbar = ({
   onToggleChatbot, // passed from props
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [layoutTemplates, setLayoutTemplates] = useState<
-    CanvasLayoutTemplate[]
-  >([]);
-  const [templatesLoading, setTemplatesLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("tools");
 
-  useEffect(() => {
-    getLayoutTemplates()
-      .then(({ list }) => {
-        setLayoutTemplates(list);
-      })
-      .catch((err) => {
-        console.error("Failed to load layout templates", err);
-      })
-      .finally(() => {
-        setTemplatesLoading(false);
-      });
-  }, []);
+  // Use hook for templates
+  const { layoutTemplates, loading: templatesLoading } = useLayoutTemplates();
+
+  const [activeTab, setActiveTab] = useState("tools");
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

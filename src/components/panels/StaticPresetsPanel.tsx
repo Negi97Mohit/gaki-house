@@ -1,6 +1,6 @@
 // src/components/panels/StaticPresetsPanel.tsx
 import React, { useEffect, useRef } from "react";
-import { CAPTION_PRESETS } from "@/lib/captionPresets";
+import { useCaptionPresets } from "@/hooks/useCaptionPresets";
 import { CaptionStyle } from "@/types/caption";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
   currentStyle,
   activePresetId,
 }) => {
+  const { captionPresets: CAPTION_PRESETS } = useCaptionPresets();
   // NEW: Refs for scroll-to functionality
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 

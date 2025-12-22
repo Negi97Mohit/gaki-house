@@ -12,6 +12,9 @@ import { useEffect, useRef, useState } from "react";
 import EditPage from "./pages/Edit";
 import Loader from "./components/Loader";
 import RemoteCamera from "./pages/RemoteCamera";
+import { StyleSync } from "@/components/StyleSync";
+
+
 
 const queryClient = new QueryClient();
 
@@ -57,6 +60,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <LogProvider>
         <DebugProvider>
+          <StyleSync />
           <ThemeProvider
             attribute="class"
             forcedTheme="dark"

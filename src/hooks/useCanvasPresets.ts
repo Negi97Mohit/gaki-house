@@ -1,5 +1,5 @@
 // src/hooks/useCanvasPresets.ts
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CanvasPreset } from "@/types/canvasPreset";
 import { useLocalStorage } from "./useLocalStorage";
 import { db } from "@/lib/firebase"; // --- ADDED: Import db
@@ -9,6 +9,9 @@ import {
   serverTimestamp,
   deleteDoc,
   doc,
+  query,
+  orderBy,
+  onSnapshot
 } from "firebase/firestore"; // --- ADDED: Import firestore functions
 import { toast } from "sonner"; // --- ADDED: Import toast
 import { generateId } from "@/lib/id";
@@ -18,6 +21,53 @@ export const useCanvasPresets = () => {
     "custom-canvas-presets",
     []
   );
+
+  // System presets (canvas_presets + dynamic_presets)
+  const [systemPresets, setSystemPresets] = useState<CanvasPreset[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 1. Fetch Canvas Presets
+    const qCanvas = query(collection(db, "canvas_presets"), orderBy("createdAt", "desc"));
+    const unsubCanvas = onSnapshot(qCanvas, (snapshot) => {
+      const canvasDocs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as CanvasPreset));
+
+      // 2. Fetch Dynamic Presets (nested to ensure we combine them)
+      // Ideally we would do this in parallel but for simplicity in this hook:
+      // Actually onSnapshot is async listener, we can have two states and combine them.
+      setSystemPresets((prev) => {
+        // We need to merge carefully. Let's separate them.
+        return prev;
+      });
+    });
+
+    // Actually, let's just use one effect to manage subscription to both if they are just "system presets"
+    // But since onSnapshot is real-time, it's better to accept we might have two lists.
+    // Let's create two separate queries.
+  }, []);
+
+  // Simplified approach: Two separate state variables for the two collections
+  const [staticSystemPresets, setStaticSystemPresets] = useState<CanvasPreset[]>([]);
+  const [dynamicSystemPresets, setDynamicSystemPresets] = useState<CanvasPreset[]>([]);
+
+  useEffect(() => {
+    const q1 = query(collection(db, "canvas_presets"), orderBy("createdAt", "desc"));
+    const u1 = onSnapshot(q1, (snap) => {
+      setStaticSystemPresets(snap.docs.map(d => ({ id: d.id, ...d.data() } as CanvasPreset)));
+    });
+
+    const q2 = query(collection(db, "dynamic_presets"), orderBy("createdAt", "desc"));
+    const u2 = onSnapshot(q2, (snap) => {
+      setDynamicSystemPresets(snap.docs.map(d => ({ id: d.id, ...d.data() } as CanvasPreset)));
+    });
+
+    setLoading(false);
+    return () => { u1(); u2(); };
+  }, []);
+
+  // Combine them
+  const allSystemPresets = [...dynamicSystemPresets, ...staticSystemPresets];
+
 
   const saveCanvasPreset = useCallback(
     (preset: Omit<CanvasPreset, "id">) => {
@@ -125,5 +175,7 @@ export const useCanvasPresets = () => {
     updateCanvasPreset,
     shareCanvasPreset, // --- ADDED: Expose the new function
     unshareCanvasPreset,
+    systemPresets: allSystemPresets,
+    loading
   };
 };

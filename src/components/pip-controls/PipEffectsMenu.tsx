@@ -10,7 +10,8 @@ import {
     DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { FILTER_PRESETS } from "@/lib/filters";
+import { useFilters } from "@/hooks/useFilters";
+// import { FILTER_PRESETS } from "@/lib/filters"; // Deprecated
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 
 interface PipEffectsMenuProps {
@@ -26,7 +27,9 @@ export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
     activeInteractiveFilter,
     onInteractiveFilterChange,
 }) => {
-    const hasAnyFilter = (videoFilter && videoFilter !== "none") || 
+    const { filters: filterPresets } = useFilters();
+
+    const hasAnyFilter = (videoFilter && videoFilter !== "none") ||
         (activeInteractiveFilter && activeInteractiveFilter !== "none");
 
     const handleColorFilterClick = (filterStyle: string) => {
@@ -96,7 +99,7 @@ export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
                     </DropdownMenuLabel>
                     <div className="p-2">
                         <div className="grid grid-cols-3 gap-2 w-full max-h-[240px] overflow-y-auto pr-1">
-                            {FILTER_PRESETS.map((filter) => {
+                            {filterPresets.map((filter) => {
                                 const isSelected = videoFilter === filter.style;
                                 return (
                                     <button

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
+import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
+import { useCanvasPresets } from "@/hooks/useCanvasPresets"; // --- ADDED
 import { CanvasPreset } from "@/types/canvasPreset";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -31,6 +32,8 @@ export const CanvasDesignSelector: React.FC<CanvasDesignSelectorProps> = ({
   isLoadingPublic = false,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const { systemPresets: CANVAS_PRESETS } = useCanvasPresets(); // --- ADDED
 
   // NEW: Refs for scroll functionality
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -66,8 +69,8 @@ export const CanvasDesignSelector: React.FC<CanvasDesignSelectorProps> = ({
     selectedCategory === "all"
       ? CANVAS_PRESETS
       : selectedCategory === "community"
-      ? publicPresets
-      : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+        ? publicPresets
+        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
 
   return (
     <div className="space-y-3">
@@ -153,22 +156,21 @@ export const CanvasDesignSelector: React.FC<CanvasDesignSelectorProps> = ({
                       left: `${preset.pip?.pipPosition?.x || 0}%`,
                       top: `${preset.pip?.pipPosition?.y || 0}%`,
                       width: `${preset.pip?.pipSize?.width || 30}%`,
-                      height: `${
-                        preset.pip?.cameraShape === "circle"
+                      height: `${preset.pip?.cameraShape === "circle"
                           ? (preset.pip?.pipSize?.width || 30) * (16 / 9)
                           : preset.pip?.pipSize?.height || 30
-                      }%`,
+                        }%`,
                       borderRadius:
                         preset.pip.cameraShape === "circle"
                           ? "50%"
                           : preset.pip.cameraShape === "rounded"
-                          ? "4px"
-                          : "0px",
+                            ? "4px"
+                            : "0px",
                       border: preset.pip.pipBorder
                         ? `${Math.max(
-                            1,
-                            preset.pip.pipBorder.width / 6
-                          )}px solid ${preset.pip.pipBorder.color}`
+                          1,
+                          preset.pip.pipBorder.width / 6
+                        )}px solid ${preset.pip.pipBorder.color}`
                         : undefined,
                     }}
                   />

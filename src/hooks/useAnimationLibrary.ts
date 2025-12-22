@@ -1,76 +1,80 @@
-import { useState, useEffect, useCallback } from "react";
-import { AnimationPreset } from "@/types/animation";
-import { ANIMATION_LIBRARY } from "@/lib/animationLibrary";
-import { useLocalStorage } from "./useLocalStorage";
+import { useState, useEffect } from "react";
+import { collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { AnimationPreset, AnimationCategory } from "@/types/animation";
 import { toast } from "sonner";
-import { generateSimpleId } from "@/lib/id";
+import { generateId } from "@/lib/id";
+
+export const ANIMATION_CATEGORIES: AnimationCategory[] = [
+  "All",
+  "Reveal",
+  "Morph",
+  "Glitch",
+  "Data",
+  "Kinetic",
+  "Social",
+  "UI",
+];
 
 export const useAnimationLibrary = () => {
-  // Load user presets from local storage
-  const [userPresets, setUserPresets] = useLocalStorage<AnimationPreset[]>(
-    "gaki-user-animations",
-    []
-  );
+  const [animationLibrary, setAnimationLibrary] = useState<AnimationPreset[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Combined list for display
-  const [allPresets, setAllPresets] = useState<AnimationPreset[]>([]);
-
-  // Sync static + user presets
   useEffect(() => {
-    setAllPresets([...ANIMATION_LIBRARY, ...userPresets]);
-  }, [userPresets]);
+    const q = query(collection(db, "animation_library"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as AnimationPreset));
+      setAnimationLibrary(docs);
+      setLoading(false);
+    });
 
-  // --- ACTIONS ---
+    return () => unsubscribe();
+  }, []);
 
-  const savePreset = useCallback(
-    (preset: AnimationPreset) => {
-      setUserPresets((prev) => {
-        const exists = prev.find((p) => p.id === preset.id);
-        if (exists) {
-          // Update existing
-          return prev.map((p) => (p.id === preset.id ? preset : p));
-        } else {
-          // Create new
-          return [
-            ...prev,
-            {
-              ...preset,
-              id: generateSimpleId(),
-              isCustom: true,
-              category: "User",
-            },
-          ];
-        }
-      });
-      toast.success("Animation saved to library!");
-    },
-    [setUserPresets]
-  );
+  const savePreset = async (preset: AnimationPreset) => {
+    try {
+      const id = preset.id || generateId("anim");
+      const docRef = doc(db, "animation_library", id);
+      // Ensure strictly serializable data
+      const { ...data } = preset;
+      const payload = {
+        ...data,
+        id,
+        updatedAt: serverTimestamp(),
+        // If new, add createdAt
+        ...(preset.id ? {} : { createdAt: serverTimestamp() })
+      };
+      await setDoc(docRef, payload, { merge: true });
+      toast.success("Animation saved to library");
+    } catch (error) {
+      console.error("Error saving animation:", error);
+      toast.error("Failed to save animation");
+    }
+  };
 
-  const deletePreset = useCallback(
-    (id: string) => {
-      setUserPresets((prev) => prev.filter((p) => p.id !== id));
-      toast.success("Animation deleted.");
-    },
-    [setUserPresets]
-  );
+  const deletePreset = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "animation_library", id));
+      toast.success("Animation deleted");
+    } catch (error) {
+      toast.error("Failed to delete animation");
+    }
+  };
 
-  // "Forking" Logic:
-  // When a user edits a standard preset, we don't overwrite it.
-  // We check if they changed visuals vs just logic.
-  const prepareForEditing = useCallback(
-    (preset: AnimationPreset): AnimationPreset => {
-      // Return a deep copy to ensure we don't mutate the library reference
-      return JSON.parse(JSON.stringify(preset));
-    },
-    []
-  );
+  const prepareForEditing = (preset: AnimationPreset): AnimationPreset => {
+    // Return a copy, maybe remove ID if duplicating? 
+    // The original hook likely managed this.
+    // If duplicating, we should generate new ID elsewhere, but here:
+    return { ...preset };
+  };
 
   return {
-    allPresets,
-    userPresets,
+    animationLibrary, // New prop
+    allPresets: animationLibrary, // Legacy prop alias
+    loading,
     savePreset,
     deletePreset,
     prepareForEditing,
+    categories: ANIMATION_CATEGORIES
   };
 };

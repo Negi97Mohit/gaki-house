@@ -25,7 +25,8 @@ import {
   DropdownMenuSubContent,
 } from "@/components/ui/dropdown-menu";
 import { CanvasSectionState, DEFAULT_CAMERA_STATE } from "@/types/caption";
-import { CANVAS_PRESETS } from "@/lib/canvasPresets";
+import { useCanvasPresets } from "@/hooks/useCanvasPresets";
+import { CanvasPreset } from "@/types/canvasPreset";
 import {
   Popover,
   PopoverContent,
@@ -61,8 +62,9 @@ const CanvasDesignList = ({
   onSelect,
 }: {
   activeId?: string;
-  onSelect: (preset: (typeof CANVAS_PRESETS)[0]) => void;
+  onSelect: (preset: CanvasPreset) => void;
 }) => {
+  const { systemPresets: CANVAS_PRESETS } = useCanvasPresets(); // --- ADDED
   const itemRefs = React.useRef<Record<string, HTMLDivElement | null>>({});
 
   React.useEffect(() => {
@@ -89,7 +91,7 @@ const CanvasDesignList = ({
           className={cn(
             "flex items-center justify-between gap-2 cursor-pointer",
             activeId === preset.id &&
-              "bg-accent text-accent-foreground font-medium"
+            "bg-accent text-accent-foreground font-medium"
           )}
         >
           <span>{preset.name}</span>

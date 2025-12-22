@@ -1,6 +1,5 @@
 // src/lib/animationLibrary.ts
 import { AnimationPreset, AnimationCategory } from "@/types/animation";
-import animationLibraryData from "@/data/animationLibrary.json";
 
 export const ANIMATION_CATEGORIES: AnimationCategory[] = [
   "All",
@@ -13,6 +12,5 @@ export const ANIMATION_CATEGORIES: AnimationCategory[] = [
   "UI",
 ];
 
-// Cast the imported JSON data to the strict AnimationPreset[] type
-export const ANIMATION_LIBRARY: AnimationPreset[] =
-  animationLibraryData as unknown as AnimationPreset[];
+// Deprecated: Data is now fetched via useAnimationLibrary hook
+export const ANIMATION_LIBRARY: AnimationPreset[] = [];
