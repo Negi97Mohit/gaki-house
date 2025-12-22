@@ -260,6 +260,13 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isTextDepthEnabled, setIsTextDepthEnabled] = React.useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Auto-disable depth mode when entering PIP mode
+  React.useEffect(() => {
+    if (props.layoutMode === 'pip' && isTextDepthEnabled) {
+      setIsTextDepthEnabled(false);
+    }
+  }, [props.layoutMode]);
+
   const allOverlays: OverlayElement[] = useMemo(
     () => [
       ...textOverlays.map((o) => ({
