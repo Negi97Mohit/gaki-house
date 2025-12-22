@@ -955,11 +955,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           >
             <Button
               size="icon"
-              // REDUCED SIZE: h-16 w-16 -> h-12 w-12
-              // NEW COLOR: bg-purple-600 -> bg-[#2596be]
-              className="rounded-full h-12 w-12 shadow-lg bg-[#2596be] hover:bg-[#1e7ca0]"
+              variant="outline"
+              className="rounded-full h-12 w-12 shadow-lg bg-black border-2 border-yellow-400 hover:bg-black/80 hover:border-yellow-300 text-yellow-400"
             >
-              {/* REDUCED ICON SIZE: h-8 w-8 -> h-6 w-6 */}
               <Sparkles className="h-6 w-6" />
             </Button>
           </AICommandPopover>
