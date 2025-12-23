@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { usePreviewMode } from "./dynamic/core/PreviewModeContext";
 
 interface LayoutSettingsCtrlProps {
   backgroundColor: string;
@@ -18,6 +19,11 @@ export const LayoutSettingsCtrl: React.FC<LayoutSettingsCtrlProps> = ({
   backgroundColor,
   onUpdate,
 }) => {
+  const isPreview = usePreviewMode();
+
+  // Don't render any controls in preview mode
+  if (isPreview) return null;
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -52,3 +58,4 @@ export const LayoutSettingsCtrl: React.FC<LayoutSettingsCtrlProps> = ({
     </Popover>
   );
 };
+

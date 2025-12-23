@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/types/layout";
@@ -9,6 +8,7 @@ import { DynamicLayoutWrapper } from "./dynamic/core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./dynamic/core/DynamicLayoutContext";
 import { EditableText } from "./dynamic/core/EditableText";
 import { DynamicDeleteButton } from "./dynamic/core/LayoutButtons";
+import { LayoutControlsPortal } from "./dynamic/core/LayoutControlsPortal";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface PortfolioScrollLayoutProps {
@@ -17,21 +17,6 @@ interface PortfolioScrollLayoutProps {
   onLayoutUpdate?: (layout: CanvasLayoutState) => void;
   [key: string]: any;
 }
-
-// --- Portal Component ---
-const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
-  const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    const el = document.getElementById("layout-controls-slot");
-    if (el) setContainer(el);
-  }, []);
-
-  if (!mounted || !container) return null;
-  return createPortal(children, container);
-};
 
 const PortfolioScrollContent: React.FC<any> = ({
   template,

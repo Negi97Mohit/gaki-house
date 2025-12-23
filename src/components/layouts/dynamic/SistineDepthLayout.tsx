@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import {
   motion,
   useMotionValue,
@@ -16,6 +15,7 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { Panel } from "./core/Panel";
 import { EditableText } from "./core/EditableText";
+import { LayoutControlsPortal } from "./core/LayoutControlsPortal";
 import { Plus, Info, X, Settings2 } from "lucide-react";
 
 interface SistineDepthLayoutProps {
@@ -165,21 +165,6 @@ const FloatingSection = ({
       </div>
     </motion.div>
   );
-};
-
-// --- Portal Component for Bottom Nav Integration ---
-const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
-  const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    const el = document.getElementById("layout-controls-slot");
-    if (el) setContainer(el);
-  }, []);
-
-  if (!mounted || !container) return null;
-  return createPortal(children, container);
 };
 
 const SistineDepthContent: React.FC<SistineDepthLayoutProps> = ({

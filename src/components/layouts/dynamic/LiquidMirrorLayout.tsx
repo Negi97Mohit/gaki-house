@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
@@ -8,21 +7,9 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
+import { LayoutControlsPortal } from "./core/LayoutControlsPortal";
 import { Info, Plus, Settings2, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-
-// --- Portal ---
-const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
-  const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-  useEffect(() => {
-    setMounted(true);
-    const el = document.getElementById("layout-controls-slot");
-    if (el) setContainer(el);
-  }, []);
-  if (!mounted || !container) return null;
-  return createPortal(children, container);
-};
 
 // --- SVG Liquid Filter Definition ---
 // This hidden SVG defines the turbulence filter used by CSS

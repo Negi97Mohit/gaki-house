@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
 import { cn } from "@/lib/utils";
@@ -7,6 +6,7 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
+import { LayoutControlsPortal } from "./core/LayoutControlsPortal";
 import { Info, Plus, Settings2, X, Clapperboard } from "lucide-react";
 import {
   AnimatePresence,
@@ -15,19 +15,6 @@ import {
   useTransform,
   useSpring,
 } from "framer-motion";
-
-// --- Portal ---
-const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
-  const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-  useEffect(() => {
-    setMounted(true);
-    const el = document.getElementById("layout-controls-slot");
-    if (el) setContainer(el);
-  }, []);
-  if (!mounted || !container) return null;
-  return createPortal(children, container);
-};
 
 // --- Film Grain & Projector Flicker Canvas ---
 const FilmGrainCanvas: React.FC<{ className?: string; opacity: number }> = ({

@@ -35,6 +35,7 @@ import {
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 import { cn } from "@/lib/utils";
 import { SearchButton } from "./layouts/dynamic/core/SearchButton";
+import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
 
 interface GridSectionToolbarProps {
   section: CanvasSectionState;
@@ -119,6 +120,10 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
   onSectionContentChange,
 }) => {
   const { content } = section;
+  const isPreview = usePreviewMode();
+
+  // Don't render any toolbar controls in preview mode to avoid nested button issues
+  if (isPreview) return null;
 
   // Common styles for all toolbar buttons to ensure visibility on all backgrounds
   const buttonClass =

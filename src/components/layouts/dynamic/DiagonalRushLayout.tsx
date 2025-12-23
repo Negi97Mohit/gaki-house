@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState } from "@/types/caption";
@@ -8,23 +7,9 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicAddButton, DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
+import { LayoutControlsPortal } from "./core/LayoutControlsPortal";
 import { Info, Plus, Settings2, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-
-// --- Portal Component ---
-const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
-  const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    const el = document.getElementById("layout-controls-slot");
-    if (el) setContainer(el);
-  }, []);
-
-  if (!mounted || !container) return null;
-  return createPortal(children, container);
-};
 
 const DiagonalRushContent: React.FC<{
   sections: CanvasSectionState[];
@@ -78,9 +63,8 @@ const DiagonalRushContent: React.FC<{
               backgroundColor: i % 2 === 0 ? "#FACC15" : "#A3E635",
               transform: `rotate(${i % 2 === 0 ? -2 : 2}deg)`,
               borderColor: i % 2 === 0 ? "#FACC15" : "#A3E635",
-              boxShadow: `10px 10px 0px ${
-                i % 2 === 0 ? "rgba(250,204,21,0.2)" : "rgba(163,230,53,0.2)"
-              }`,
+              boxShadow: `10px 10px 0px ${i % 2 === 0 ? "rgba(250,204,21,0.2)" : "rgba(163,230,53,0.2)"
+                }`,
             }}
             onMouseEnter={() => editor.setHoveredSectionId(section.id)}
             onMouseLeave={() => editor.setHoveredSectionId(null)}

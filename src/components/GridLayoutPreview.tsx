@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { CanvasGridLayoutRenderer } from "./CanvasGridLayout";
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { CanvasLayoutState, DEFAULT_CAMERA_STATE } from "@/types/caption";
+import { PreviewModeProvider } from "./layouts/dynamic/core/PreviewModeContext";
 
 interface GridLayoutPreviewProps {
   templateId: string;
@@ -63,54 +64,56 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
   const noop = () => { };
 
   return (
-    <div
-      ref={wrapperRef}
-      className="relative w-full aspect-video rounded-md bg-[#f8fafc] border border-border/50 overflow-hidden group isolate"
-    >
-      {/* 
-        Scaled Inner Container 
-        - Fixed size at BASE_WIDTH/HEIGHT
-        - Scaled down to fit wrapper
-        - Origin top-left
-      */}
+    <PreviewModeProvider isPreview={true}>
       <div
-        style={{
-          width: BASE_WIDTH,
-          height: BASE_HEIGHT,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-          pointerEvents: "none", // Disable all interactions in preview
-        }}
+        ref={wrapperRef}
+        className="relative w-full aspect-video rounded-md bg-[#f8fafc] border border-border/50 overflow-hidden group isolate"
       >
-        <CanvasGridLayoutRenderer
-          layout={mockLayout}
-          template={mockTemplate}
-          containerRef={rendererContainerRef}
-          cameraStream={null}
-          screenStream={null}
-          fileOverlays={[]}
-          textOverlays={[]}
-          blankCanvasColor="#ffffff"
-          onSectionContentChange={noop}
-          onSectionDelete={noop}
-          onGridAssetSelect={noop}
-          layoutMode="solo"
-          cameraShape="rectangle"
-          pipSize={{ width: 20, height: 20 }}
-          pipBorder={{ color: "#ffffff", width: 0 }}
-          pipShadow={{ blur: 0, color: "rgba(0,0,0,0)" }}
-          onSectionCameraSettingsChange={noop}
-          backgroundEffect="none"
-          onSetSectionDefault={noop}
-          onLayoutUpdate={noop}
-          activeSequenceId={null}
-          onUserPositionChange={noop}
-          videoDevices={[]}
-        />
-      </div>
+        {/* 
+          Scaled Inner Container 
+          - Fixed size at BASE_WIDTH/HEIGHT
+          - Scaled down to fit wrapper
+          - Origin top-left
+        */}
+        <div
+          style={{
+            width: BASE_WIDTH,
+            height: BASE_HEIGHT,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            pointerEvents: "none", // Disable all interactions in preview
+          }}
+        >
+          <CanvasGridLayoutRenderer
+            layout={mockLayout}
+            template={mockTemplate}
+            containerRef={rendererContainerRef}
+            cameraStream={null}
+            screenStream={null}
+            fileOverlays={[]}
+            textOverlays={[]}
+            blankCanvasColor="#ffffff"
+            onSectionContentChange={noop}
+            onSectionDelete={noop}
+            onGridAssetSelect={noop}
+            layoutMode="solo"
+            cameraShape="rectangle"
+            pipSize={{ width: 20, height: 20 }}
+            pipBorder={{ color: "#ffffff", width: 0 }}
+            pipShadow={{ blur: 0, color: "rgba(0,0,0,0)" }}
+            onSectionCameraSettingsChange={noop}
+            backgroundEffect="none"
+            onSetSectionDefault={noop}
+            onLayoutUpdate={noop}
+            activeSequenceId={null}
+            onUserPositionChange={noop}
+            videoDevices={[]}
+          />
+        </div>
 
-      {/* Hover Overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
-    </div>
+        {/* Hover Overlay */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+      </div>
+    </PreviewModeProvider>
   );
 };

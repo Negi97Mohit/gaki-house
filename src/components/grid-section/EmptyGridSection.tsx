@@ -18,6 +18,7 @@ import {
 import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
 import { CanvasDesignSelector } from "./CanvasDesignSelector";
 import { CanvasSectionState, DEFAULT_CAMERA_STATE, CameraShape } from "@/types/caption";
+import { usePreviewMode } from "@/components/layouts/dynamic/core/PreviewModeContext";
 
 interface EmptyGridSectionProps {
     sectionId: string;
@@ -37,6 +38,17 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
     onSectionContentChange,
     onGridAssetSelect,
 }) => {
+    const isPreview = usePreviewMode();
+
+    // In preview mode, just show a simple empty placeholder without interactive controls
+    if (isPreview) {
+        return (
+            <div className="w-full h-full bg-muted/20 flex items-center justify-center p-4">
+                <div className="opacity-30 text-xs text-muted-foreground">Empty</div>
+            </div>
+        );
+    }
+
     return (
         <div className="w-full h-full bg-muted/20 flex items-center justify-center p-4">
             <div className="flex flex-col items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

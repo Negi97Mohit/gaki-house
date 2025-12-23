@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState, CanvasLayoutState } from "@/types/caption";
@@ -8,6 +7,7 @@ import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicDeleteButton } from "./core/LayoutButtons";
 import { EditableText } from "./core/EditableText";
+import { LayoutControlsPortal } from "./core/LayoutControlsPortal";
 import { Info, Plus, Settings2, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -29,21 +29,6 @@ const hexToRgba = (hex: string, alpha: number) => {
     b = parseInt("0x" + hex[5] + hex[6]);
   }
   return `rgba(${r},${g},${b},${alpha})`;
-};
-
-// --- Portal Component ---
-const LayoutControlsPortal = ({ children }: { children: React.ReactNode }) => {
-  const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    const el = document.getElementById("layout-controls-slot");
-    if (el) setContainer(el);
-  }, []);
-
-  if (!mounted || !container) return null;
-  return createPortal(children, container);
 };
 
 // --- Aurora Canvas (Background) ---
@@ -89,9 +74,9 @@ const AuroraCanvas: React.FC<{ className?: string; baseColor: string }> = ({
           const y =
             wave.y +
             Math.sin((x + time * wave.speed) * wave.frequency) *
-              wave.amplitude +
+            wave.amplitude +
             Math.sin((x * 0.5 + time * wave.speed * 0.5) * wave.frequency * 2) *
-              (wave.amplitude * 0.3);
+            (wave.amplitude * 0.3);
           ctx.lineTo(x, y);
         }
 

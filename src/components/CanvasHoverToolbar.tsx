@@ -41,7 +41,6 @@ import { CanvasLayoutState } from "@/types/caption";
 import { GridLayoutPreview } from "./GridLayoutPreview";
 import { useLayoutTemplates } from "@/hooks/useLayoutTemplates";
 
-
 interface CanvasHoverToolbarProps {
   blankCanvasColor: string;
   onBlankCanvasColorChange: (color: string) => void;
@@ -65,14 +64,14 @@ interface LayoutListProps {
   onSelect: (id: string) => void;
   emptyMessage: string;
 }
-
 const LayoutList = ({
   layouts,
   activeId,
   onSelect,
   emptyMessage,
 }: LayoutListProps) => {
-  const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  // Changed HTMLButtonElement to HTMLDivElement
+  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
     // Scroll active item into view on mount or when activeId changes
@@ -97,12 +96,11 @@ const LayoutList = ({
   return (
     <div className="grid grid-cols-2 gap-2">
       {layouts.map((template) => (
-        <Button
+        <div // CHANGED: Button -> div to fix nesting error
           key={template.id}
           // Attach ref for scrolling
           ref={(el) => (itemRefs.current[template.id] = el)}
-          variant="ghost"
-          size="sm"
+          // Manually applied styles that mirror the Button component
           className={cn(
             "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
             activeId === template.id
@@ -110,6 +108,14 @@ const LayoutList = ({
               : "hover:bg-muted/70 hover:border-border"
           )}
           onClick={() => onSelect(template.id)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onSelect(template.id);
+            }
+          }}
         >
           {/* Passed templateId to fix specific previews */}
           <GridLayoutPreview
@@ -124,11 +130,11 @@ const LayoutList = ({
               <Check className="w-3.5 h-3.5 text-primary shrink-0" />
             )}
           </div>
-        </Button>
+        </div>
       ))}
     </div>
   );
-};
+}; // <--- MAKE SURE THIS CLOSING BRACE & SEMICOLON EXIST
 
 export const CanvasHoverToolbar = ({
   blankCanvasColor,

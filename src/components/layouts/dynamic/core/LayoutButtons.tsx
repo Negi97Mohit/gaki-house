@@ -1,5 +1,6 @@
 import React from "react";
 import { useDynamicLayout } from "./DynamicLayoutContext";
+import { usePreviewMode } from "./PreviewModeContext";
 import { Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EditableText } from "./EditableText";
@@ -10,6 +11,10 @@ export const DynamicDeleteButton: React.FC<{
   onDelete?: (id: string, e: React.MouseEvent) => void;
 }> = ({ sectionId, className, onDelete }) => {
   const { editor, controlsVisible } = useDynamicLayout();
+  const isPreview = usePreviewMode();
+
+  // Don't render in preview mode to avoid nested button issues
+  if (isPreview) return null;
 
   const handleClick = (e: React.MouseEvent) => {
     if (onDelete) {
@@ -52,41 +57,46 @@ export const DynamicAddButton: React.FC<{
   style,
   onAdd,
 }) => {
-  const { editor, controlsVisible, colors } = useDynamicLayout();
+    const { editor, controlsVisible, colors } = useDynamicLayout();
+    const isPreview = usePreviewMode();
 
-  const mergedStyle: React.CSSProperties = {
-    borderColor: colors.textColor,
-    color: colors.textColor,
-    ...style,
-  };
+    // Don't render in preview mode to avoid nested button issues
+    if (isPreview) return null;
 
-  const handleClick = () => {
-    if (onAdd) {
-      onAdd();
-    } else {
-      editor.handleAddSection();
-    }
-  };
+    const mergedStyle: React.CSSProperties = {
+      borderColor: colors.textColor,
+      color: colors.textColor,
+      ...style,
+    };
 
-  return (
-    <div
-      onClick={handleClick}
-      className={cn(
-        "cursor-pointer transition-all duration-300 flex flex-col items-center justify-center border-2 border-dashed rounded-lg opacity-50 hover:opacity-100",
-        controlsVisible ? "opacity-50" : "opacity-0 pointer-events-none",
-        className
-      )}
-      style={mergedStyle}
-    >
-      <Plus className="w-12 h-12 mb-2" />
-      <div onClick={(e) => e.stopPropagation()}>
-        <EditableText
-          sectionId={sectionId}
-          fieldId={fieldId}
-          defaultValue={defaultValue}
-          className="font-bold uppercase tracking-widest bg-transparent border-none text-center focus:outline-none w-full"
-        />
+    const handleClick = () => {
+      if (onAdd) {
+        onAdd();
+      } else {
+        editor.handleAddSection();
+      }
+    };
+
+    return (
+      <div
+        onClick={handleClick}
+        className={cn(
+          "cursor-pointer transition-all duration-300 flex flex-col items-center justify-center border-2 border-dashed rounded-lg opacity-50 hover:opacity-100",
+          controlsVisible ? "opacity-50" : "opacity-0 pointer-events-none",
+          className
+        )}
+        style={mergedStyle}
+      >
+        <Plus className="w-12 h-12 mb-2" />
+        <div onClick={(e) => e.stopPropagation()}>
+          <EditableText
+            sectionId={sectionId}
+            fieldId={fieldId}
+            defaultValue={defaultValue}
+            className="font-bold uppercase tracking-widest bg-transparent border-none text-center focus:outline-none w-full"
+          />
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
+
