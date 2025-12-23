@@ -91,12 +91,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isTextDepthEnabled, setIsTextDepthEnabled] = React.useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Auto-disable depth mode when entering PIP mode
-  React.useEffect(() => {
-    if (props.layoutMode === 'pip' && isTextDepthEnabled) {
-      setIsTextDepthEnabled(false);
-    }
-  }, [props.layoutMode]);
+  // Auto-disable depth mode REMOVED
+  // React.useEffect(() => {
+  //   if (props.layoutMode === 'pip' && isTextDepthEnabled) {
+  //     setIsTextDepthEnabled(false);
+  //   }
+  // }, [props.layoutMode]);
 
   const allOverlays: OverlayElement[] = useMemo(
     () => [
@@ -597,7 +597,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               </div>
 
               {/* 2. THE USER (Cutout Layer) - Hide when in PIP mode since camera is in PIP window */}
-              {(isTextDepthEnabled || hasBehindUserOverlay) && !props.canvasLayout && containerSize.width > 0 && props.layoutMode !== 'pip' && (
+              {(isTextDepthEnabled || hasBehindUserOverlay) && !props.canvasLayout && containerSize.width > 0 && (
                 <ForegroundUserLayer
                   videoRef={videoRef}
                   processedCanvas={processedCanvas}
@@ -607,6 +607,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   zoomSensitivity={props.zoomSensitivity}
                   trackingSpeed={props.trackingSpeed}
                   containerSize={containerSize}
+                  layoutMode={props.layoutMode}
+                  pipPosition={props.pipPosition}
+                  pipSize={props.pipSize}
+                  pipRotation={props.pipRotation}
+                  cameraShape={props.cameraShape}
+                  pipBorder={props.pipBorder}
+                  pipShadow={props.pipShadow}
+                  customMaskUrl={props.customMaskUrl}
+                  sidebarProps={props.sidebarProps}
                 />
               )}
 
