@@ -98,40 +98,16 @@ interface CanvasGridLayoutProps {
   videoDevices?: MediaDeviceInfo[];
 }
 
-export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
-  const { layout, onSectionDelete, onSectionContentChange, onLayoutUpdate } =
-    props;
+export interface CanvasGridLayoutRendererProps extends CanvasGridLayoutProps {
+  template: CanvasLayoutTemplate;
+  containerRef: React.RefObject<HTMLDivElement>;
+  onSectionDelete: (sectionId: string) => void;
+}
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Replaced local state/effect with hook
-  const { templateRecord: templates, loading } = useLayoutTemplates();
-
-  if (loading || !templates) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-muted/20">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  const template = templates[layout.templateId] || templates.default;
-
-  if (!template) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-muted/20">
-        <p>Layout template not found</p>
-      </div>
-    );
-  }
-
-  const handleSectionDelete = (sectionId: string) => {
-    if (onSectionDelete) {
-      onSectionDelete(sectionId);
-    } else {
-      onSectionContentChange(sectionId, { type: "empty" });
-    }
-  };
+export const CanvasGridLayoutRenderer: React.FC<CanvasGridLayoutRendererProps> = (
+  props
+) => {
+  const { layout, template, containerRef } = props;
 
   // --- Layout Type Detection ---
   const tId = layout.templateId;
@@ -192,14 +168,6 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
   // Added Sistine Check
   const isSistine = tId === "sistine-depth";
 
-  // Combine props to pass down to layouts
-  const commonProps = {
-    ...props,
-    template,
-    onSectionDelete: handleSectionDelete,
-    containerRef,
-  };
-
   return (
     <div
       ref={containerRef}
@@ -218,108 +186,152 @@ export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
     >
       {/* --- Phase 2: Editorial & Motion --- */}
       {isVogue ? (
-        <VogueParallaxLayout sections={layout.sections} {...commonProps} />
+        <VogueParallaxLayout sections={layout.sections} {...props} />
       ) : isLiquid ? (
-        <LiquidLensLayout sections={layout.sections} {...commonProps} />
+        <LiquidLensLayout sections={layout.sections} {...props} />
       ) : isKinetic ? (
-        <KineticTypographyLayout sections={layout.sections} {...commonProps} />
+        <KineticTypographyLayout sections={layout.sections} {...props} />
       ) : isStencil ? (
-        <KineticStencilLayout sections={layout.sections} {...commonProps} />
+        <KineticStencilLayout sections={layout.sections} {...props} />
       ) : isDiagonal ? (
-        <DiagonalRushLayout sections={layout.sections} {...commonProps} />
+        <DiagonalRushLayout sections={layout.sections} {...props} />
       ) : /* --- Phase 3: New Interactive Layouts --- */
         isScrollZoom ? (
-          <ScrollZoomLayout sections={layout.sections} {...commonProps} />
+          <ScrollZoomLayout sections={layout.sections} {...props} />
         ) : isInfiniteGrid ? (
-          <InfiniteGridLayout sections={layout.sections} {...commonProps} />
+          <InfiniteGridLayout sections={layout.sections} {...props} />
         ) : isStickySplit ? (
-          <StickySplitLayout sections={layout.sections} {...commonProps} />
+          <StickySplitLayout sections={layout.sections} {...props} />
         ) : isLayeredParallax ? (
-          <LayeredParallaxLayout sections={layout.sections} {...commonProps} />
+          <LayeredParallaxLayout sections={layout.sections} {...props} />
         ) : isHorizontalScroll ? (
-          <HorizontalScrollLayout sections={layout.sections} {...commonProps} />
+          <HorizontalScrollLayout sections={layout.sections} {...props} />
         ) : isCircularGallery ? (
-          <CircularGalleryLayout sections={layout.sections} {...commonProps} />
+          <CircularGalleryLayout sections={layout.sections} {...props} />
         ) : isSnapSections ? (
-          <SnapSectionsLayout sections={layout.sections} {...commonProps} />
+          <SnapSectionsLayout sections={layout.sections} {...props} />
         ) : /* --- Phase 5: New Architect Layouts --- */
           isZaha ? (
-            <ZahaParametricLayout sections={layout.sections} {...commonProps} />
+            <ZahaParametricLayout sections={layout.sections} {...props} />
           ) : isWintour ? (
-            <WintourEditorialLayout sections={layout.sections} {...commonProps} />
+            <WintourEditorialLayout sections={layout.sections} {...props} />
           ) : isVitruvian ? (
-            <VitruvianMotionLayout sections={layout.sections} {...commonProps} />
+            <VitruvianMotionLayout sections={layout.sections} {...props} />
           ) : isLiquidChrome ? (
-            <LiquidChromeLayout sections={layout.sections} {...commonProps} />
+            <LiquidChromeLayout sections={layout.sections} {...props} />
           ) : /* --- Phase 6: New Innovative Layouts --- */
             isAuroraBorealis ? (
-              <AuroraBorealisLayout sections={layout.sections} {...commonProps} />
+              <AuroraBorealisLayout sections={layout.sections} {...props} />
             ) : isMorphingBlob ? (
-              <MorphingBlobLayout sections={layout.sections} {...commonProps} />
+              <MorphingBlobLayout sections={layout.sections} {...props} />
             ) : isNeonPulseCity ? (
-              <NeonPulseCityLayout sections={layout.sections} {...commonProps} />
+              <NeonPulseCityLayout sections={layout.sections} {...props} />
             ) : isOrigamiUnfold ? (
-              <OrigamiUnfoldLayout sections={layout.sections} {...commonProps} />
+              <OrigamiUnfoldLayout sections={layout.sections} {...props} />
             ) : isLiquidMirror ? (
-              <LiquidMirrorLayout sections={layout.sections} {...commonProps} />
+              <LiquidMirrorLayout sections={layout.sections} {...props} />
             ) : isParticleUniverse ? (
-              <ParticleUniverseLayout sections={layout.sections} {...commonProps} />
+              <ParticleUniverseLayout sections={layout.sections} {...props} />
             ) : isGlitchMatrix ? (
-              <GlitchMatrixLayout sections={layout.sections} {...commonProps} />
+              <GlitchMatrixLayout sections={layout.sections} {...props} />
             ) : isHolographicPrism ? (
-              <HolographicPrismLayout sections={layout.sections} {...commonProps} />
+              <HolographicPrismLayout sections={layout.sections} {...props} />
             ) : isElasticMorphCards ? (
-              <ElasticMorphCardsLayout sections={layout.sections} {...commonProps} />
+              <ElasticMorphCardsLayout sections={layout.sections} {...props} />
             ) : isCinematicParallax ? (
-              <CinematicParallaxLayout sections={layout.sections} {...commonProps} />
+              <CinematicParallaxLayout sections={layout.sections} {...props} />
             ) : /* --- Phase 4: Artistic Vision Layouts --- */
               isTemporalFracture ? (
-                <TemporalFractureLayout sections={layout.sections} {...commonProps} />
+                <TemporalFractureLayout sections={layout.sections} {...props} />
               ) : isParametricFlow ? (
-                <ParametricFlowLayout sections={layout.sections} {...commonProps} />
+                <ParametricFlowLayout sections={layout.sections} {...props} />
               ) : isEditorialGridShift ? (
-                <EditorialGridShiftLayout sections={layout.sections} {...commonProps} />
+                <EditorialGridShiftLayout sections={layout.sections} {...props} />
               ) : isFibonacciCascade ? (
-                <FibonacciCascadeLayout sections={layout.sections} {...commonProps} />
+                <FibonacciCascadeLayout sections={layout.sections} {...props} />
               ) : isDepthChoreography ? (
-                <DepthChoreographyLayout sections={layout.sections} {...commonProps} />
+                <DepthChoreographyLayout sections={layout.sections} {...props} />
               ) : isCrystallineTessellation ? (
                 <CrystallineTessellationLayout
                   sections={layout.sections}
-                  {...commonProps}
+                  {...props}
                 />
               ) : isHauteCoutureStacks ? (
-                <HauteCoutureStacksLayout sections={layout.sections} {...commonProps} />
+                <HauteCoutureStacksLayout sections={layout.sections} {...props} />
               ) : isChiaroscuroCanvas ? (
-                <ChiaroscuroCanvasLayout sections={layout.sections} {...commonProps} />
+                <ChiaroscuroCanvasLayout sections={layout.sections} {...props} />
               ) : isInterstellarDock ? (
-                <InterstellarDockLayout sections={layout.sections} {...commonProps} />
+                <InterstellarDockLayout sections={layout.sections} {...props} />
               ) : isVoidEmergence ? (
-                <VoidEmergenceLayout sections={layout.sections} {...commonProps} />
+                <VoidEmergenceLayout sections={layout.sections} {...props} />
               ) : isSistine ? (
-                <SistineDepthLayout sections={layout.sections} {...commonProps} />
+                <SistineDepthLayout sections={layout.sections} {...props} />
               ) : /* --- Standard Interactive --- */
                 isExpandingCards ? (
-                  <ExpandingCardsLayout {...commonProps} />
+                  <ExpandingCardsLayout {...props} />
                 ) : isSlider ? (
-                  <SliderLayout {...commonProps} />
+                  <SliderLayout {...props} />
                 ) : isVerticalSlider ? (
-                  <VerticalSliderLayout {...commonProps} />
+                  <VerticalSliderLayout {...props} />
                 ) : isSplitLanding ? (
-                  <SplitLandingLayout {...commonProps} />
+                  <SplitLandingLayout {...props} />
                 ) : isPortfolioScroll ? (
-                  <PortfolioScrollLayout {...commonProps} />
+                  <PortfolioScrollLayout {...props} />
                 ) : isSimonPortfolio ? (
-                  <SimonPortfolioLayout {...commonProps} />
+                  <SimonPortfolioLayout {...props} />
                 ) : tId === "performance-flow" ? (
-                  <PerformanceFlowLayout {...commonProps} />
+                  <PerformanceFlowLayout {...props} />
                 ) : tId === "magnetism-layout" ? (
-                  <MagnetismGridLayout {...commonProps} onLayoutUpdate={onLayoutUpdate} />
+                  <MagnetismGridLayout {...props} />
                 ) : tId === "case-study" ? (
-                  <CaseStudyLayout {...commonProps} />
+                  <CaseStudyLayout {...props} />
                 ) : (
-                  <StandardGridLayout {...commonProps} />
+                  <StandardGridLayout {...props} />
                 )}
     </div>
+  );
+};
+
+export const CanvasGridLayout: React.FC<CanvasGridLayoutProps> = (props) => {
+  const { layout, onSectionDelete, onSectionContentChange } = props;
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Replaced local state/effect with hook
+  const { templateRecord: templates, loading } = useLayoutTemplates();
+
+  if (loading || !templates) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-muted/20">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const template = templates[layout.templateId] || templates.default;
+
+  if (!template) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-muted/20">
+        <p>Layout template not found</p>
+      </div>
+    );
+  }
+
+  const handleSectionDelete = (sectionId: string) => {
+    if (onSectionDelete) {
+      onSectionDelete(sectionId);
+    } else {
+      onSectionContentChange(sectionId, { type: "empty" });
+    }
+  };
+
+  return (
+    <CanvasGridLayoutRenderer
+      {...props}
+      template={template}
+      containerRef={containerRef}
+      onSectionDelete={handleSectionDelete}
+    />
   );
 };

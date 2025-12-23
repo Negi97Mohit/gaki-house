@@ -499,7 +499,7 @@ export const CanvasHoverToolbar = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-72 p-3 max-h-[420px] overflow-y-auto rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
+          className="w-[480px] p-3 max-h-[500px] overflow-y-auto rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
           style={{ zIndex: "var(--z-asset-popover)" }}
           align="center"
           side="bottom"
