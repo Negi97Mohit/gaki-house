@@ -168,17 +168,25 @@ export const PipWindow: React.FC<PipWindowProps> = ({
   // Clamp position to ensure PiP stays fully visible when aspect ratio changes
   useEffect(() => {
     if (containerSize.width <= 0 || containerSize.height <= 0) return;
-    
+
     const maxX = 100 - effectiveSize.width;
     const maxY = 100 - effectiveSize.height;
-    
+
     const clampedX = Math.max(0, Math.min(pipPosition.x, maxX));
     const clampedY = Math.max(0, Math.min(pipPosition.y, maxY));
-    
+
     if (clampedX !== pipPosition.x || clampedY !== pipPosition.y) {
       onPipPositionChange({ x: clampedX, y: clampedY });
     }
-  }, [effectiveSize.width, effectiveSize.height, containerSize, currentAspectRatio, pipPosition.x, pipPosition.y, onPipPositionChange]);
+  }, [
+    effectiveSize.width,
+    effectiveSize.height,
+    containerSize,
+    currentAspectRatio,
+    pipPosition.x,
+    pipPosition.y,
+    onPipPositionChange,
+  ]);
 
   if (containerSize.width <= 0) return null;
 
@@ -223,21 +231,21 @@ export const PipWindow: React.FC<PipWindowProps> = ({
           <div className="absolute inset-0 w-full h-full border-2 border-primary border-dashed rounded-[inherit] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
         </div>
 
-        {/* Rotate Handle - Outside clipped area, fully visible */}
+        {/* Rotate Handle - Inside, Modern, Glassmorphism */}
         <div
           onMouseDown={handlePipRotationStart}
           className={cn(
-            "rotate-handle absolute -bottom-4 -left-4 bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center transition-all hover:scale-110 cursor-alias shadow-lg",
+            "rotate-handle absolute bottom-2 left-2 bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center transition-all hover:scale-105 hover:bg-primary cursor-alias backdrop-blur-sm border border-white/10 shadow-sm",
             "opacity-0 group-hover:opacity-100"
           )}
           style={{
             zIndex: 200,
           }}
         >
-          <RotateCcw className="w-5 h-5 pointer-events-none" />
+          <RotateCcw className="w-4 h-4 pointer-events-none" />
         </div>
 
-        {/* Close Button */}
+        {/* Close Button - Inside, Modern, Glassmorphism */}
         {onClose && (
           <button
             onClick={(e) => {
@@ -245,12 +253,12 @@ export const PipWindow: React.FC<PipWindowProps> = ({
               onClose();
             }}
             className={cn(
-              "close-handle absolute -top-4 -right-4 bg-destructive text-destructive-foreground rounded-full w-10 h-10 flex items-center justify-center transition-all hover:scale-110 shadow-lg",
+              "close-handle absolute top-2 right-2 bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center transition-all hover:scale-105 hover:bg-destructive backdrop-blur-sm border border-white/10 shadow-sm",
               "opacity-0 group-hover:opacity-100"
             )}
             style={{ zIndex: 200 }}
           >
-            <X className="w-5 h-5 pointer-events-none" />
+            <X className="w-4 h-4 pointer-events-none" />
           </button>
         )}
       </div>
