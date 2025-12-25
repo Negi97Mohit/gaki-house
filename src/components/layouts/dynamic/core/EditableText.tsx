@@ -62,6 +62,8 @@ export const EditableText: React.FC<EditableTextProps> = ({
       editor.handleUpdateText(sectionId, fieldId, e.target.value),
     onFocus: (e: React.FocusEvent<HTMLElement>) =>
       editor.handleFocus(uniqueId, e),
+    // STOP PROPAGATION HERE: Prevents the parent card from receiving the pointer down event
+    onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
     style: combinedStyle,
     className: cn(
       "bg-transparent border-none w-full pointer-events-auto transition-all duration-200 rounded-sm px-1 -mx-1",
