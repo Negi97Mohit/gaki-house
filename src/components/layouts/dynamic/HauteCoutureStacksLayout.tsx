@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GridSectionWrapper } from "../GridSectionWrapper";
@@ -11,435 +11,387 @@ import { EditableText } from "./core/EditableText";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const HauteCoutureStacksContent: React.FC<{ sections: CanvasSectionState[];[key: string]: any }> = ({
-    sections,
-    ...props
-}) => {
-    const { colors, editor, controlsVisible } = useDynamicLayout();
-    const containerRef = useRef<HTMLDivElement>(null);
-    const cardsRef = useRef<HTMLDivElement[]>([]);
-    const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-    const [expandedCard, setExpandedCard] = useState<number | null>(null);
-    const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const leaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+const HauteCoutureStacksContent: React.FC<{
+  sections: CanvasSectionState[];
+  [key: string]: any;
+}> = ({ sections, ...props }) => {
+  const { colors, editor } = useDynamicLayout();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            // Stacked card entrance
-            cardsRef.current.forEach((card, i) => {
-                if (!card) return;
+  // Order of sections (indices) - last element is the top card
+  const [stackOrder, setStackOrder] = useState<number[]>([]);
 
-                gsap.fromTo(card,
-                    {
-                        y: 200,
-                        opacity: 0,
-                        rotateX: -30
-                    },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        rotateX: 0,
-                        duration: 0.8,
-                        delay: i * 0.2,
-                        ease: "power3.out"
-                    }
-                );
-            });
-        }, containerRef);
+  // Drag state
+  const dragRef = useRef({
+    isDragging: false,
+    startX: 0,
+    activeCardIndex: -1,
+  });
 
-        return () => ctx.revert();
-    }, [sections.length]);
+  const [expandedCard, setExpandedCard] = useState<number | null>(null);
 
-    // Hover interaction - swipe card out to reveal more (with delay to prevent accidental triggers)
-    const handleCardHover = (index: number) => {
-        if (expandedCard !== null) return; // Don't swipe if a card is expanded
+  // Initialize stack order when sections change
+  useEffect(() => {
+    setStackOrder(sections.map((_, i) => i));
+  }, [sections.length]);
 
-        // Clear any pending leave animation
-        if (leaveTimeoutRef.current) {
-            clearTimeout(leaveTimeoutRef.current);
-            leaveTimeoutRef.current = null;
+  // Update visual positions of all cards based on stackOrder
+  const updateCardVisuals = useCallback(
+    (instant = false) => {
+      if (stackOrder.length === 0) return;
+
+      stackOrder.forEach((sectionIndex, visualIndex) => {
+        const card = cardsRef.current[sectionIndex];
+        if (!card) return;
+
+        // visualIndex 0 is bottom, length-1 is top
+        const distFromTop = stackOrder.length - 1 - visualIndex;
+
+        // Visual parameters
+        const scale = Math.max(1 - distFromTop * 0.05, 0.5);
+        const opacity = Math.max(1 - distFromTop * 0.15, 0);
+        // Random-ish but deterministic rotation
+        const rotation =
+          distFromTop === 0
+            ? 0
+            : (sectionIndex % 2 === 0 ? 1 : -1) * (2 + distFromTop);
+        const zIndex = visualIndex + 10;
+
+        if (instant) {
+          gsap.set(card, {
+            scale,
+            opacity,
+            rotation,
+            zIndex,
+            x: 0,
+            y: 0,
+            overwrite: "auto",
+          });
+        } else {
+          gsap.to(card, {
+            scale,
+            opacity,
+            rotation,
+            zIndex,
+            x: 0,
+            y: 0,
+            duration: 0.5,
+            ease: "power3.out",
+            overwrite: "auto",
+          });
         }
+      });
+    },
+    [stackOrder]
+  );
 
-        // Add delay before swipe to prevent accidental triggers
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
-        }
+  // Initial setup
+  useEffect(() => {
+    updateCardVisuals(true);
+  }, [updateCardVisuals]);
 
-        hoverTimeoutRef.current = setTimeout(() => {
-            setHoveredCard(index);
-            const card = cardsRef.current[index];
-            if (!card) return;
+  // Drag Interaction Logic
+  const handlePointerDown = (e: React.PointerEvent, sectionIndex: number) => {
+    // Only allow dragging the top card
+    if (sectionIndex !== stackOrder[stackOrder.length - 1]) return;
+    if (expandedCard !== null) return;
 
-            // Swipe the hovered card out to the right to reveal it (slower, smoother)
-            gsap.to(card, {
-                x: 60,
-                y: -10,
-                scale: 1.02,
-                zIndex: 200,
-                duration: 0.6, // Slower animation
-                ease: "power2.out",
-                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.4)"
-            });
+    const card = cardsRef.current[sectionIndex];
+    if (!card) return;
 
-            // Slightly dim other cards (slower fade)
-            cardsRef.current.forEach((c, i) => {
-                if (i !== index && c) {
-                    gsap.to(c, {
-                        opacity: 0.7,
-                        duration: 0.5 // Slower fade
-                    });
-                }
-            });
-        }, 150); // 150ms delay before triggering swipe
+    dragRef.current = {
+      isDragging: true,
+      startX: e.clientX,
+      activeCardIndex: sectionIndex,
     };
 
-    // Reset hover state (with delay to allow moving between cards)
-    const handleCardLeave = () => {
-        if (expandedCard !== null) return; // Don't reset if a card is expanded
+    // Lift the card slightly
+    gsap.to(card, { scale: 1.05, duration: 0.2, ease: "power2.out" });
 
-        // Clear hover trigger
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
-            hoverTimeoutRef.current = null;
-        }
+    // Capture pointer
+    (e.target as Element).setPointerCapture(e.pointerId);
+  };
 
-        // Add small delay before resetting to allow moving to another card
-        if (leaveTimeoutRef.current) {
-            clearTimeout(leaveTimeoutRef.current);
-        }
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!dragRef.current.isDragging) return;
 
-        leaveTimeoutRef.current = setTimeout(() => {
-            setHoveredCard(null);
+    const deltaX = e.clientX - dragRef.current.startX;
+    const card = cardsRef.current[dragRef.current.activeCardIndex];
 
-            cardsRef.current.forEach((card, i) => {
-                if (!card) return;
-                const stackOffset = i * 15;
-                const rotation = (i - sections.length / 2) * 2;
+    if (card) {
+      gsap.set(card, {
+        x: deltaX,
+        rotation: deltaX * 0.05, // Slight rotation with drag
+      });
+    }
+  };
 
-                gsap.to(card, {
-                    x: 0,
-                    y: stackOffset,
-                    scale: 1,
-                    opacity: 1,
-                    rotation: rotation,
-                    zIndex: sections.length - i,
-                    duration: 0.5, // Slower return animation
-                    ease: "power2.inOut",
-                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-                });
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!dragRef.current.isDragging) return;
+
+    const deltaX = e.clientX - dragRef.current.startX;
+    const absDeltaX = Math.abs(deltaX);
+    const card = cardsRef.current[dragRef.current.activeCardIndex];
+
+    const TAP_THRESHOLD = 5; // Pixels: movement less than this is a click
+    const SWIPE_THRESHOLD = 150; // Pixels: movement more than this is a swipe
+
+    if (card) {
+      if (absDeltaX < TAP_THRESHOLD) {
+        // 1. CLICK / TAP ACTION
+        // Only if barely moved
+        setExpandedCard(dragRef.current.activeCardIndex);
+
+        // Reset scale from the "lift" animation
+        gsap.to(card, { scale: 1, duration: 0.3 });
+      } else if (absDeltaX > SWIPE_THRESHOLD) {
+        // 2. SWIPE SUCCESS ACTION
+        const direction = deltaX > 0 ? 1 : -1;
+        const endX = window.innerWidth * direction;
+
+        gsap.to(card, {
+          x: endX,
+          rotation: direction * 45,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power2.in",
+          onComplete: () => {
+            // Move top card to bottom of stack
+            setStackOrder((prev) => {
+              const newOrder = [...prev];
+              const topCard = newOrder.pop();
+              if (topCard !== undefined) newOrder.unshift(topCard);
+              return newOrder;
             });
-        }, 200); // Small delay before reset
-    };
+            // Reset position (will be hidden at bottom)
+            gsap.set(card, { x: 0, y: 0, opacity: 0 });
+          },
+        });
+      } else {
+        // 3. CANCEL ACTION (Spring back)
+        gsap.to(card, {
+          x: 0,
+          rotation: 0,
+          scale: 1,
+          duration: 0.5,
+          ease: "elastic.out(1, 0.5)",
+        });
+      }
+    }
 
-    // Click interaction - pop card out to full view
-    const handleCardClick = (index: number) => {
-        // Clear any pending animations
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
-        }
-        if (leaveTimeoutRef.current) {
-            clearTimeout(leaveTimeoutRef.current);
-        }
-        setExpandedCard(index);
-    };
+    dragRef.current.isDragging = false;
+    (e.target as Element).releasePointerCapture(e.pointerId);
+  };
 
-    const handleCloseExpanded = () => {
-        setExpandedCard(null);
-        // Reset all cards to stack position
-        handleCardLeave();
-    };
+  const handleCloseExpanded = () => {
+    setExpandedCard(null);
+  };
 
-    // Cleanup timeouts on unmount
-    useEffect(() => {
-        return () => {
-            if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-            if (leaveTimeoutRef.current) clearTimeout(leaveTimeoutRef.current);
-        };
-    }, []);
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full overflow-hidden relative select-none"
+      style={{
+        perspective: "1500px",
+        touchAction: "none",
+      }}
+    >
+      {/* Elegant pattern background */}
+      <div
+        className="absolute inset-0 opacity-5 pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodeURIComponent(
+            colors.textColor
+          )}' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+      />
 
-    // Focus the lightbox when it opens to ensure it receives keyboard events
-    useEffect(() => {
-        if (expandedCard !== null && containerRef.current) {
-            // Find the lightbox overlay and focus it
-            const overlay = containerRef.current.querySelector('[tabindex="-1"]') as HTMLElement;
-            if (overlay) {
-                setTimeout(() => overlay.focus(), 0);
-            }
-        }
-    }, [expandedCard]);
-
-    return (
-        <div
-            ref={containerRef}
-            className="w-full h-full overflow-hidden relative"
-            style={{ perspective: "1500px" }}
-        >
-            {/* Elegant pattern background */}
-            <div
-                className="absolute inset-0 opacity-5"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='${encodeURIComponent(colors.textColor)}' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-                }}
+      {/* Content */}
+      <div className="relative z-10 w-full h-full flex flex-col p-6 md:p-12">
+        {/* Header */}
+        <header className="flex-shrink-0 mb-8 flex justify-between items-end">
+          <div>
+            <EditableText
+              sectionId="header"
+              fieldId="brand"
+              defaultValue="HAUTE"
+              className="text-xs font-light tracking-[0.5em] opacity-50"
+              style={{ color: colors.textColor }}
             />
+            <EditableText
+              sectionId="header"
+              fieldId="title"
+              defaultValue="COUTURE"
+              className="text-5xl md:text-7xl font-extralight tracking-[0.2em]"
+              style={{
+                color: colors.textColor,
+                fontFamily: "'Playfair Display', serif",
+              }}
+            />
+          </div>
+          <div className="text-right hidden md:block">
+            <EditableText
+              sectionId="header"
+              fieldId="season"
+              defaultValue="SS25"
+              className="text-4xl font-extralight"
+              style={{ color: colors.textColor }}
+            />
+          </div>
+        </header>
 
-            {/* Content */}
-            <div className="relative z-10 w-full h-full flex flex-col p-6 md:p-12">
-                {/* Header */}
-                <header className="flex-shrink-0 mb-8 flex justify-between items-end">
-                    <div>
-                        <EditableText
-                            sectionId="header"
-                            fieldId="brand"
-                            defaultValue="HAUTE"
-                            className="text-xs font-light tracking-[0.5em] opacity-50"
-                            style={{ color: colors.textColor }}
-                        />
-                        <EditableText
-                            sectionId="header"
-                            fieldId="title"
-                            defaultValue="COUTURE"
-                            className="text-5xl md:text-7xl font-extralight tracking-[0.2em]"
-                            style={{
-                                color: colors.textColor,
-                                fontFamily: "'Playfair Display', serif"
-                            }}
-                        />
-                    </div>
-                    <div className="text-right">
-                        <EditableText
-                            sectionId="header"
-                            fieldId="season"
-                            defaultValue="SS25"
-                            className="text-4xl font-extralight"
-                            style={{ color: colors.textColor }}
-                        />
-                        <EditableText
-                            sectionId="header"
-                            fieldId="collection"
-                            defaultValue="COLLECTION"
-                            className="text-xs tracking-[0.5em] opacity-50"
-                            style={{ color: colors.textColor }}
-                        />
-                    </div>
-                </header>
+        {/* Runway Cards Stack */}
+        <div className="flex-1 flex flex-col items-center justify-center pb-12 relative">
+          <div className="relative w-full max-w-md aspect-[3/4]">
+            {/* Stack Container */}
+            <div className="absolute inset-0">
+              {sections.map((section, i) => {
+                // Calculate visual order
+                const isTop = stackOrder[stackOrder.length - 1] === i;
 
-                {/* Runway Cards Stack */}
-                <div className="flex-1 flex items-center justify-center pb-20">
-                    <div className="relative w-full max-w-lg h-[500px] md:h-[600px]">
-                        {sections.map((section, i) => {
-                            const stackOffset = i * 15;
-                            const rotation = (i - sections.length / 2) * 2;
-
-                            return (
-                                <div
-                                    key={section.id}
-                                    ref={(el) => { if (el) cardsRef.current[i] = el; }}
-                                    className={cn(
-                                        "absolute inset-0 cursor-pointer group",
-                                        "bg-white shadow-2xl overflow-hidden",
-                                        "transition-shadow duration-300"
-                                    )}
-                                    style={{
-                                        zIndex: sections.length - i,
-                                        transform: `translateY(${stackOffset}px) rotate(${rotation}deg)`,
-                                        transformOrigin: "center bottom"
-                                    }}
-                                    onClick={() => handleCardClick(i)}
-                                    onMouseEnter={() => {
-                                        handleCardHover(i);
-                                        editor.setHoveredSectionId(section.id);
-                                    }}
-                                    onMouseLeave={() => {
-                                        handleCardLeave();
-                                        editor.setHoveredSectionId(null);
-                                    }}
-                                >
-                                    {/* Card content */}
-                                    <div className="absolute inset-0">
-                                        <GridSectionWrapper
-                                            section={section}
-                                            templateSection={{ id: section.id, name: `Look-${i + 1}` }}
-                                            isHovered={editor.hoveredSectionId === section.id}
-                                            onSectionDelete={props.onSectionDelete}
-                                            onSectionContentChange={props.onSectionContentChange}
-                                            {...props}
-                                        />
-                                    </div>
-
-                                    {/* Look number */}
-                                    <div
-                                        className="absolute top-4 left-4 px-3 py-1 text-xs font-light tracking-widest bg-white/90"
-                                        style={{ color: "#1a1a1a" }}
-                                    >
-                                        <EditableText
-                                            sectionId={section.id}
-                                            fieldId="look_number"
-                                            defaultValue={`LOOK ${String(i + 1).padStart(2, "0")}`}
-                                            className="text-xs font-light tracking-widest"
-                                            style={{ color: "#1a1a1a" }}
-                                        />
-                                    </div>
-
-                                    {/* Hover instruction hint */}
-                                    <div className={cn(
-                                        "absolute top-4 right-16 px-3 py-1 text-xs font-light tracking-widest bg-black/80 text-white",
-                                        "opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                                    )}>
-                                        <EditableText
-                                            sectionId="hints"
-                                            fieldId="click_hint"
-                                            defaultValue="CLICK TO EXPAND"
-                                            className="text-xs font-light tracking-widest text-white"
-                                        />
-                                    </div>
-
-                                    {/* Info panel */}
-                                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-white via-white/95 to-transparent">
-                                        <EditableText
-                                            sectionId={section.id}
-                                            fieldId="title"
-                                            defaultValue={`Silhouette ${i + 1}`}
-                                            className="text-lg font-light text-black"
-                                        />
-                                        <EditableText
-                                            sectionId={section.id}
-                                            fieldId="details"
-                                            defaultValue="Silk, Organza"
-                                            className="text-xs tracking-widest text-black/50 mt-1"
-                                        />
-                                    </div>
-
-                                    {/* Delete button */}
-                                    <DynamicDeleteButton
-                                        sectionId={section.id}
-                                        className={cn(
-                                            "absolute top-4 right-4 transition-opacity duration-300",
-                                            editor.hoveredSectionId === section.id ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* Add Button */}
-                <div className="flex-shrink-0 flex justify-center">
-                    <DynamicAddButton
-                        defaultValue="+ ADD LOOK"
-                        className="px-8 py-4 border border-current hover:bg-black/5 text-sm tracking-[0.3em] font-light"
-                        style={{ color: colors.textColor }}
-                    />
-                </div>
-
-                {/* Footer */}
-                <footer className="flex-shrink-0 mt-8 pt-4 border-t flex justify-between items-center text-xs tracking-widest opacity-40"
-                    style={{ borderColor: `${colors.textColor}30`, color: colors.textColor }}>
-                    <EditableText
-                        sectionId="footer"
-                        fieldId="left"
-                        defaultValue="PARIS FASHION WEEK"
-                    />
-                    <EditableText
-                        sectionId="footer"
-                        fieldId="right"
-                        defaultValue="HOVER TO REVEAL"
-                    />
-                </footer>
-            </div>
-
-            {/* Lightbox - Expanded View */}
-            {expandedCard !== null && sections[expandedCard] && (
-                <div
-                    className="fixed inset-0 z-[1000] bg-black/95 flex items-center justify-center p-8"
-                    onClick={handleCloseExpanded}
-                    onKeyDown={(e) => {
-                        if (e.key === "Escape") {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleCloseExpanded();
-                        }
+                return (
+                  <div
+                    key={section.id}
+                    ref={(el) => {
+                      cardsRef.current[i] = el;
                     }}
-                    tabIndex={-1}
-                    style={{ outline: 'none' }}
-                >
-                    {/* Close button */}
-                    <button
-                        onClick={handleCloseExpanded}
-                        className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full transition-colors group"
-                        aria-label="Close expanded view"
-                    >
-                        <div className="relative w-6 h-6">
-                            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white transform rotate-45"></div>
-                            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white transform -rotate-45"></div>
-                        </div>
-                    </button>
-
-                    {/* Expanded card */}
-                    <div
-                        className="relative bg-white w-full max-w-5xl h-[85vh] overflow-auto shadow-2xl"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div className="w-full h-full">
-                            <GridSectionWrapper
-                                section={sections[expandedCard]}
-                                templateSection={{ id: sections[expandedCard].id, name: `Look-${expandedCard + 1}` }}
-                                isHovered={false}
-                                onSectionDelete={props.onSectionDelete}
-                                onSectionContentChange={props.onSectionContentChange}
-                                {...props}
-                            />
-                        </div>
-
-                        {/* Info overlay in expanded view */}
-                        <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white via-white/98 to-transparent">
-                            <div className="text-xs tracking-widest opacity-50 mb-3">
-                                <EditableText
-                                    sectionId={sections[expandedCard].id}
-                                    fieldId="look_number"
-                                    defaultValue={`LOOK ${String(expandedCard + 1).padStart(2, "0")}`}
-                                    className="text-xs tracking-widest opacity-50"
-                                />
-                            </div>
-                            <EditableText
-                                sectionId={sections[expandedCard].id}
-                                fieldId="title"
-                                defaultValue={`Silhouette ${expandedCard + 1}`}
-                                className="text-3xl font-light text-black"
-                            />
-                            <EditableText
-                                sectionId={sections[expandedCard].id}
-                                fieldId="details"
-                                defaultValue="Silk, Organza"
-                                className="text-sm tracking-widest text-black/50 mt-2"
-                            />
-                        </div>
+                    className={cn(
+                      "absolute inset-0 bg-white shadow-2xl overflow-hidden rounded-xl",
+                      // Only the top card gets pointer events
+                      isTop
+                        ? "cursor-grab active:cursor-grabbing touch-none"
+                        : "pointer-events-none"
+                    )}
+                    onPointerDown={(e) => handlePointerDown(e, i)}
+                    onPointerMove={handlePointerMove}
+                    onPointerUp={handlePointerUp}
+                    onPointerLeave={handlePointerUp}
+                    // Removed onClick to prevent conflict
+                  >
+                    {/* Card content */}
+                    <div className="absolute inset-0 pointer-events-none">
+                      <GridSectionWrapper
+                        section={section}
+                        templateSection={{
+                          id: section.id,
+                          name: `Look-${i + 1}`,
+                        }}
+                        isHovered={editor.hoveredSectionId === section.id}
+                        onSectionDelete={props.onSectionDelete}
+                        onSectionContentChange={props.onSectionContentChange}
+                        {...props}
+                      />
                     </div>
 
-                    {/* Counter */}
-                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white text-sm tracking-widest font-light">
-                        {expandedCard + 1} / {sections.length}
+                    {/* Look number badge */}
+                    <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm z-20">
+                      <EditableText
+                        sectionId={section.id}
+                        fieldId="look_number"
+                        defaultValue={`LOOK ${String(i + 1).padStart(2, "0")}`}
+                        className="text-xs font-light tracking-widest text-black"
+                      />
                     </div>
-                </div>
-            )}
+
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" />
+
+                    {/* Delete button (only visible on top card for admin) */}
+                    <DynamicDeleteButton
+                      sectionId={section.id}
+                      className={cn(
+                        "absolute top-4 right-4 z-30 pointer-events-auto",
+                        isTop && editor.hoveredSectionId === section.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Instructions */}
+          <div className="mt-12 text-center opacity-40">
+            <p
+              className="text-xs tracking-widest uppercase mb-2"
+              style={{ color: colors.textColor }}
+            >
+              Swipe to Navigate • Tap to Expand
+            </p>
+            <div className="w-12 h-1 bg-current mx-auto rounded-full opacity-20" />
+          </div>
         </div>
-    );
+
+        {/* Add Button */}
+        <div className="flex-shrink-0 flex justify-center">
+          <DynamicAddButton
+            defaultValue="+ ADD LOOK"
+            className="px-8 py-4 border border-current hover:bg-black/5 text-sm tracking-[0.3em] font-light transition-colors"
+            style={{ color: colors.textColor }}
+          />
+        </div>
+      </div>
+
+      {/* Lightbox - Expanded View */}
+      {expandedCard !== null && sections[expandedCard] && (
+        <div
+          className="fixed inset-0 z-[1000] bg-black/95 flex items-center justify-center p-4 md:p-8"
+          onClick={handleCloseExpanded}
+        >
+          <button
+            onClick={handleCloseExpanded}
+            className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full transition-colors z-50"
+          >
+            <span className="text-white text-2xl">&times;</span>
+          </button>
+
+          <div
+            className="relative bg-white w-full max-w-5xl h-[85vh] overflow-hidden shadow-2xl rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GridSectionWrapper
+              section={sections[expandedCard]}
+              templateSection={{
+                id: sections[expandedCard].id,
+                name: `Look-${expandedCard + 1}`,
+              }}
+              isHovered={false}
+              onSectionDelete={props.onSectionDelete}
+              onSectionContentChange={props.onSectionContentChange}
+              {...props}
+            />
+            <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white via-white/90 to-transparent">
+              <EditableText
+                sectionId={sections[expandedCard].id}
+                fieldId="title"
+                defaultValue={`Silhouette ${expandedCard + 1}`}
+                className="text-3xl font-light text-black"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export const HauteCoutureStacksLayout: React.FC<{
-    sections: CanvasSectionState[];
-    [key: string]: any;
+  sections: CanvasSectionState[];
+  [key: string]: any;
 }> = ({ sections, ...props }) => {
-    return (
-        <DynamicLayoutWrapper
-            layout={props.layout}
-            onLayoutUpdate={props.onLayoutUpdate}
-            sections={sections}
-            defaultBackgroundColor="#f8f8f6"
-            defaultTextColor="#1a1a1a"
-            {...props}
-        >
-            <HauteCoutureStacksContent sections={sections} {...props} />
-        </DynamicLayoutWrapper>
-    );
+  return (
+    <DynamicLayoutWrapper
+      layout={props.layout}
+      onLayoutUpdate={props.onLayoutUpdate}
+      sections={sections}
+      defaultBackgroundColor="#f8f8f6"
+      defaultTextColor="#1a1a1a"
+      {...props}
+    >
+      <HauteCoutureStacksContent sections={sections} {...props} />
+    </DynamicLayoutWrapper>
+  );
 };
