@@ -1,4 +1,4 @@
-// src/components/CameraRenderer.tsx
+// src/features/stream/ui/CameraRenderer.tsx
 import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
@@ -6,7 +6,6 @@ import { useWebGLRenderLoop } from "@/features/canvas/hooks/useWebGLRenderLoop";
 import { usePictureInPicture } from "@/hooks/usePictureInPicture";
 import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/shared/lib/utils";
-import { toast } from "sonner";
 import { AmbientBackground } from "./AmbientBackground";
 
 interface CameraRendererProps {
@@ -76,23 +75,20 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
 
   const [isHovered, setIsHovered] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
-  const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
-  // FIX: rely directly on the stream passed down from the parent (VideoCanvas or CameraGridSection)
-  // This ensures that:
-  // 1. We don't auto-turn on the camera when selecting a device in PiP menu
-  // 2. We don't freeze on the last frame if the camera fails (parent sends null stream)
+
+  // FIX: rely directly on the stream passed down from the parent
   const activeStream = props.stream;
 
   const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef });
 
-
   const isInternalSegmentationNeeded =
-    !!(props.filterTarget && props.filterTarget !== "both") && !props.processedCanvas;
+    !!(props.filterTarget && props.filterTarget !== "both") &&
+    !props.processedCanvas;
 
   const isInternalFaceTrackingNeeded =
-    (props.isFaceTrackingEnabled || props.isAutoFramingEnabled) && !props.facePositionRef;
+    (props.isFaceTrackingEnabled || props.isAutoFramingEnabled) &&
+    !props.facePositionRef;
 
-  // Use internal hook if processedCanvas is NOT provided externally (legacy/fallback)
   const internalEffects = useCameraEffects({
     videoElement: videoRef.current,
     isSegmentationEnabled: isInternalSegmentationNeeded,
@@ -100,8 +96,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     onUserPositionChange: props.onUserPositionChange,
   });
 
-  const processedCanvas = props.processedCanvas || internalEffects.processedCanvas;
-  const facePositionRef = props.facePositionRef || internalEffects.facePositionRef;
+  const processedCanvas =
+    props.processedCanvas || internalEffects.processedCanvas;
+  const facePositionRef =
+    props.facePositionRef || internalEffects.facePositionRef;
 
   useWebGLRenderLoop({
     canvasRef,
@@ -120,16 +118,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   });
 
   const handleMouseEnter = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-
-    if (containerRef.current) {
-      setToolbarPosition({
-        x: containerRef.current.offsetWidth / 2,
-        y: 0,
-      });
-    }
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     setIsHovered(true);
   };
 
@@ -146,10 +135,11 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   }, []);
 
   const toolbarProps = {
-    position: toolbarPosition,
+    // We don't need exact x/y anymore, we use CSS centering
+    position: { x: 0, y: 0 },
     containerRef,
     ...props,
-    onCameraDeviceChange: props.onCameraDeviceChange || (() => { }),
+    onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
     onEnterPipMode: props.onEnterPipMode,
     isPipActive,
     onTogglePip: togglePiP,
@@ -172,13 +162,9 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         className="hidden object-cover w-full h-full"
       />
 
-      {/* --- UPDATED: New Ambient Background Logic --- */}
       {!activeStream && (
         <div className="absolute inset-0 w-full h-full">
-          {/* Background Layer */}
           <AmbientBackground />
-
-          {/* Content Layer (Logo & Text) */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
             <img
               src="/icon.png"
@@ -200,9 +186,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         (props.isMouseActive ?? true) &&
         (props.portalContainer instanceof HTMLElement ? (
           createPortal(
+            // FIX: Changed to inset-0 to cover full area, pointer-events-none to pass clicks through
             <div
-              className="absolute top-0 left-0 w-full"
-              style={{ pointerEvents: "auto", zIndex: 9999 }}
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              style={{ zIndex: 9999 }}
               onMouseEnter={() => {
                 if (hoverTimeoutRef.current)
                   clearTimeout(hoverTimeoutRef.current);
@@ -216,11 +203,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
             props.portalContainer
           )
         ) : (
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-50">
-            <div className="pointer-events-auto inline-block">
-              {/* @ts-ignore */}
-              <PipControlsToolbar {...toolbarProps} />
-            </div>
+          // FIX: Changed to inset-0 to cover full area
+          <div className="absolute inset-0 w-full h-full pointer-events-none z-50">
+            {/* @ts-ignore */}
+            <PipControlsToolbar {...toolbarProps} />
           </div>
         ))}
     </div>

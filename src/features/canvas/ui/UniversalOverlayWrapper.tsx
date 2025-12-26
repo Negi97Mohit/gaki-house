@@ -1,4 +1,3 @@
-// src/components/video-canvas/UniversalOverlayWrapper.tsx
 import React from "react";
 import { cn } from "@/shared/lib/utils";
 import { X } from "lucide-react";
@@ -51,60 +50,65 @@ export const UniversalOverlayWrapper: React.FC<
   enableResizing = true,
   isEditing = false,
 }) => {
-    return (
-      <HybridDraggable
-        id={id}
-        position={position}
-        size={size}
-        rotation={rotation}
-        zIndex={zIndex}
-        containerSize={containerSize}
-        isSelected={isSelected}
-        onCommit={onCommit}
-        onSelect={onSelect}
-        onClick={() => onSelect(id)}
-        onDoubleClick={onDoubleClick}
-        enableDragging={!isEditing}
-        enableResizing={enableResizing && !isEditing}
-        enableRotation={!isEditing}
-        allOverlays={allOverlays}
-        onSnapGuidesChange={onSnapGuidesChange}
-        cancelSelector=".close-btn, .layout-picker-btn, [data-banner-element]"
-        className={cn(
-          "group transition-colors duration-200 border-2",
-          isSelected
-            ? "border-transparent" // Selection handled by HybridDraggable ring
-            : "border-transparent hover:border-primary/50"
-        )}
-      >
-        <div className="w-full h-full relative">
-          {/* Content */}
-          <div className="w-full h-full overflow-hidden relative">{children}</div>
+  // Edge Detection from Phase 1 (preserved)
+  const isCloseToRightEdge = position.x + size.width > 95;
+  const isCloseToTopEdge = position.y < 5;
 
-          {/* UI Controls - Force visible if selected, otherwise HIDDEN (Fixes sticky hover issue) */}
-          {!isEditing && (
-            <>
-              {/* Remove Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRemove(id);
-                }}
-                onPointerDown={(e) => e.stopPropagation()}
-                className={cn(
-                  "close-btn absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all shadow-md cursor-pointer z-[60]",
-                  // CHANGED: Only show when selected. Removed group-hover:opacity-100
-                  isSelected
-                    ? "opacity-100 scale-100 pointer-events-auto"
-                    : "opacity-0 scale-90 pointer-events-none"
-                )}
-                title="Remove"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </>
-          )}
-        </div>
-      </HybridDraggable>
-    );
-  };
+  return (
+    <HybridDraggable
+      id={id}
+      position={position}
+      size={size}
+      rotation={rotation}
+      zIndex={zIndex}
+      containerSize={containerSize}
+      isSelected={isSelected}
+      onCommit={onCommit}
+      onSelect={onSelect}
+      onClick={() => onSelect(id)}
+      onDoubleClick={onDoubleClick}
+      enableDragging={!isEditing}
+      enableResizing={enableResizing && !isEditing}
+      enableRotation={!isEditing}
+      allOverlays={allOverlays}
+      onSnapGuidesChange={onSnapGuidesChange}
+      cancelSelector=".close-btn, .layout-picker-btn, [data-banner-element]"
+      className={cn(
+        "group transition-colors duration-200 border-2",
+        isSelected
+          ? "border-transparent"
+          : "border-transparent hover:border-primary/50"
+      )}
+    >
+      <div className="w-full h-full relative">
+        {/* PHASE 2 FIX: Removed 'overflow-hidden' */}
+        {/* This allows shadows, glows, and custom borders to extend outside the box */}
+        <div className="w-full h-full relative">{children}</div>
+
+        {/* UI Controls */}
+        {!isEditing && (
+          <>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove(id);
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              className={cn(
+                "close-btn absolute bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transition-all shadow-md cursor-pointer z-[60]",
+                isCloseToRightEdge ? "right-1" : "-right-3",
+                isCloseToTopEdge ? "top-1" : "-top-3",
+                isSelected
+                  ? "opacity-100 scale-100 pointer-events-auto"
+                  : "opacity-0 scale-90 pointer-events-none"
+              )}
+              title="Remove"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </>
+        )}
+      </div>
+    </HybridDraggable>
+  );
+};

@@ -1,5 +1,4 @@
-// src/components/DraggableTextOverlay.tsx
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import { cn } from "@/shared/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import { TextEditingToolbar } from "./TextEditingToolbar";
@@ -47,12 +46,12 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Focus editor when entering edit mode
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isEditing && editorRef.current) {
       editorRef.current.focus();
-      // Move cursor to end
       const range = document.createRange();
       const sel = window.getSelection();
       range.selectNodeContents(editorRef.current);
@@ -62,6 +61,58 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
     }
   }, [isEditing]);
 
+  // PHASE 2 FIX: Auto-Resize & Center-Pivot Logic
+  // This ensures the container always fits the text tightly ("fit-content")
+  // and maintains the center position when the size changes ("No Jumping").
+  useLayoutEffect(() => {
+    // Determine which element to measure (editor or view mode renderer)
+    const elementToMeasure = isEditing ? editorRef.current : contentRef.current;
+
+    if (elementToMeasure && sceneSize.width > 0 && sceneSize.height > 0) {
+      // 1. Measure the natural size of the content
+      const { scrollWidth, scrollHeight } = elementToMeasure;
+
+      // Add a small buffer for borders/shadows/cursor
+      const measuredWidth = scrollWidth + 4;
+      const measuredHeight = scrollHeight + 4;
+
+      // 2. Convert to percentages
+      const newWidthPct = (measuredWidth / sceneSize.width) * 100;
+      const newHeightPct = (measuredHeight / sceneSize.height) * 100;
+
+      // 3. Check if size has changed significantly (> 0.5%) to avoid loops
+      const currentWidth = overlay.layout.size.width;
+      const currentHeight = overlay.layout.size.height;
+
+      const widthDiff = Math.abs(newWidthPct - currentWidth);
+      const heightDiff = Math.abs(newHeightPct - currentHeight);
+
+      if (widthDiff > 0.1 || heightDiff > 0.1) {
+        // 4. Center-Pivot Calculation:
+        // Adjust X/Y so the center point remains stationary
+        const widthDelta = newWidthPct - currentWidth;
+        const heightDelta = newHeightPct - currentHeight;
+
+        const newX = overlay.layout.position.x - widthDelta / 2;
+        const newY = overlay.layout.position.y - heightDelta / 2;
+
+        // 5. Update Layout
+        onLayoutChange(overlay.id, {
+          size: { width: newWidthPct, height: newHeightPct },
+          position: { x: newX, y: newY },
+        });
+      }
+    }
+  }, [
+    overlay.content,
+    overlay.style,
+    isEditing,
+    sceneSize.width,
+    sceneSize.height,
+    // Dependency on ID ensures we check when switching items
+    overlay.id,
+  ]);
+
   const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     setIsEditing(false);
     const newContent = e.currentTarget.innerHTML;
@@ -70,13 +121,22 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
     }
   };
 
-  const getToolbarPosition = () => {
-    const x =
-      (overlay.layout.position.x / 100) * sceneSize.width +
-      ((overlay.layout.size.width / 100) * sceneSize.width) / 2;
-    const y = (overlay.layout.position.y / 100) * sceneSize.height;
-    return { x, y };
-  };
+  const getStyleObject = () => ({
+    fontFamily: overlay.style.fontFamily,
+    fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
+    color: overlay.style.color,
+    backgroundColor: overlay.style.backgroundColor || "transparent",
+    fontWeight: overlay.style.bold ? "bold" : "normal",
+    fontStyle: overlay.style.italic ? "italic" : "normal",
+    textDecoration: overlay.style.underline ? "underline" : "none",
+    textAlign: (overlay.style as any).textAlign || "left",
+    textShadow: overlay.style.textShadow
+      ? overlay.style.textShadow.replace(
+          /(-?\d*\.?\d+)px/g,
+          (match, p1) => `${parseFloat(p1) * (scale || 1)}px`
+        )
+      : undefined,
+  });
 
   return (
     <>
@@ -108,7 +168,6 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
             "w-full h-full",
             isEditing ? "cursor-text select-text" : "cursor-default"
           )}
-        // Removed onClick here because HybridDraggable now handles it via UniversalOverlayWrapper
         >
           {isEditing ? (
             <div
@@ -116,30 +175,23 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
               contentEditable={true}
               suppressContentEditableWarning={true}
               onBlur={handleBlur}
-              className={cn(
-                "w-full h-full outline-none focus:ring-2 focus:ring-primary/50 rounded break-words p-2"
-              )}
+              className="w-full h-full outline-none focus:ring-0 whitespace-pre-wrap break-words p-1 bg-transparent"
               style={{
-                fontFamily: overlay.style.fontFamily,
-                fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
-                color: overlay.style.color,
-                backgroundColor: overlay.style.backgroundColor || "transparent",
-                fontWeight: overlay.style.bold ? "bold" : "normal",
-                fontStyle: overlay.style.italic ? "italic" : "normal",
-                textDecoration: overlay.style.underline ? "underline" : "none",
-                textAlign: (overlay.style as any).textAlign || "left",
-                textShadow: overlay.style.textShadow
-                  ? overlay.style.textShadow.replace(
-                    /(-?\d*\.?\d+)px/g,
-                    (match, p1) => `${parseFloat(p1) * (scale || 1)}px`
-                  )
-                  : undefined,
+                ...getStyleObject(),
+                // Use min-width to prevent collapse to 0
+                minWidth: "1em",
+                minHeight: "1em",
               }}
               dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
           ) : (
             // View Mode
-            <div className="w-full h-full">
+            <div
+              ref={contentRef}
+              className="w-full h-full"
+              // Ensure container fits content for measurement
+              style={{ width: "fit-content", height: "fit-content" }}
+            >
               {overlay.style.layers ? (
                 <MultiLayerTextRenderer
                   text={
@@ -153,25 +205,9 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                 />
               ) : (
                 <div
-                  className="w-full h-full whitespace-pre-wrap break-words p-2"
+                  className="w-full h-full whitespace-pre-wrap break-words p-1"
                   style={{
-                    fontFamily: overlay.style.fontFamily,
-                    fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
-                    color: overlay.style.color,
-                    backgroundColor:
-                      overlay.style.backgroundColor || "transparent",
-                    fontWeight: overlay.style.bold ? "bold" : "normal",
-                    fontStyle: overlay.style.italic ? "italic" : "normal",
-                    textDecoration: overlay.style.underline
-                      ? "underline"
-                      : "none",
-                    textAlign: (overlay.style as any).textAlign || "left",
-                    textShadow: overlay.style.textShadow
-                      ? overlay.style.textShadow.replace(
-                        /(-?\d*\.?\d+)px/g,
-                        (match, p1) => `${parseFloat(p1) * (scale || 1)}px`
-                      )
-                      : undefined,
+                    ...getStyleObject(),
                     display: "flex",
                     alignItems: "center",
                     justifyContent:
@@ -208,7 +244,9 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
             }}
             containerRef={containerRef}
             elementWidth={(overlay.layout.size.width / 100) * sceneSize.width}
-            elementHeight={(overlay.layout.size.height / 100) * sceneSize.height}
+            elementHeight={
+              (overlay.layout.size.height / 100) * sceneSize.height
+            }
           />
         </div>
       )}

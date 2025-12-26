@@ -1,3 +1,4 @@
+// src/features/stream/ui/PipControlsToolbar.tsx
 import React, { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { PictureInPicture } from "lucide-react";
@@ -68,49 +69,33 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   props
 ) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
-  const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
+  const [isFlipped, setIsFlipped] = useState(false);
 
+  // Check if we are too close to the bottom of the viewport to flip upwards (optional)
   useLayoutEffect(() => {
-    if (toolbarRef.current && props.containerRef.current) {
-      const toolbarHeight = toolbarRef.current.offsetHeight;
-      const toolbarWidth = toolbarRef.current.offsetWidth;
+    if (props.containerRef.current) {
       const containerRect = props.containerRef.current.getBoundingClientRect();
-      const parentRect =
-        props.containerRef.current.parentElement!.getBoundingClientRect();
-
-      const yAbove = props.position.y - toolbarHeight - 8;
-      const wouldOverlapTopToolbar = yAbove < 80;
-      const x = props.position.x - toolbarWidth / 2;
-
-      let y: number;
-      if (wouldOverlapTopToolbar) {
-        y = containerRect.height - toolbarHeight - 90;
-      } else {
-        y = yAbove;
-      }
-
-      const clampedX = Math.max(
-        parentRect.left - containerRect.left + 8,
-        Math.min(x, parentRect.right - containerRect.left - toolbarWidth - 8)
-      );
-
-      const clampedY = Math.max(
-        8,
-        Math.min(y, containerRect.height - toolbarHeight - 8)
-      );
-
-      setToolbarPosition({ x: clampedX, y: clampedY });
+      // If container is very small or near the bottom, you could adjust logic here.
+      // For now, we default to bottom-docked.
+      setIsFlipped(false);
     }
-  }, [props.position, props.containerRef]);
+  }, [props.containerRef]);
 
   return (
     <div
       ref={toolbarRef}
-      className="absolute bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl shadow-2xl p-1.5 flex items-center gap-0.5"
+      className={cn(
+        // Centered horizontally, docked at bottom with margin
+        "absolute left-1/2 -translate-x-1/2 flex items-center gap-0.5 p-1.5",
+        "bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl shadow-2xl",
+        "transition-all duration-200 ease-out pointer-events-auto",
+        // Position Logic: Standard bottom dock vs Top dock
+        isFlipped ? "top-4" : "bottom-4"
+      )}
       style={{
-        left: `${toolbarPosition.x}px`,
-        top: `${toolbarPosition.y}px`,
         zIndex: "var(--z-text-toolbar)",
+        width: "max-content",
+        maxWidth: "90vw",
       }}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
@@ -172,7 +157,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           className={cn(
             "h-9 w-9 rounded-xl hover:bg-background/60",
             props.isPipActive &&
-            "bg-primary/20 text-primary hover:bg-primary/30"
+              "bg-primary/20 text-primary hover:bg-primary/30"
           )}
           onClick={props.onTogglePip}
           title={props.isPipActive ? "Exit Pop-out" : "Pop-out Camera"}

@@ -15,6 +15,14 @@ import { CanvasPreset } from "@/types/canvasPreset";
 import { SocialBannerDesign, SocialBannerData } from "@/types/socialBanner";
 import { AnimatedBannerDesign } from "@/types/animatedBanner";
 
+// PHASE 3 FIX: Tooltips for Sidebar
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shared/ui/tooltip";
+
 // Sub-components
 import { CanvasDesignsPanel } from "./panels/CanvasDesignsPanel";
 import { DynamicStylesPanel } from "./panels/DynamicStylesPanel";
@@ -150,28 +158,40 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       >
         {/* Sharp Sidebar Navigation */}
         <div className="w-14 bg-card border-r-2 border-primary flex flex-col items-center py-2 gap-0.5">
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
-              className={cn(
-                "w-full h-14 flex flex-col items-center justify-center transition-all duration-150 relative group",
-                "font-mono text-[9px] tracking-wider border-b border-border",
-                activeSection === section.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-primary hover:bg-primary/10"
-              )}
-              title={section.title}
-            >
-              <section.icon className="w-4 h-4 mb-1" strokeWidth={2} />
-              <span className="font-bold">{section.shortTitle}</span>
-              
-              {/* Active indicator line */}
-              {activeSection === section.id && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-foreground" />
-              )}
-            </button>
-          ))}
+          <TooltipProvider delayDuration={100}>
+            {sections.map((section) => (
+              <Tooltip key={section.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setActiveSection(section.id)}
+                    className={cn(
+                      "w-full h-14 flex flex-col items-center justify-center transition-all duration-150 relative group",
+                      "font-mono text-[9px] tracking-wider border-b border-border",
+                      activeSection === section.id
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    )}
+                  >
+                    <section.icon className="w-4 h-4 mb-1" strokeWidth={2} />
+                    <span className="font-bold">{section.shortTitle}</span>
+
+                    {/* Active indicator line */}
+                    {activeSection === section.id && (
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary-foreground" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                {/* TOOLTIP CONTENT */}
+                <TooltipContent
+                  side="right"
+                  sideOffset={10}
+                  className="font-mono text-xs"
+                >
+                  {section.title}
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </TooltipProvider>
         </div>
 
         {/* Content Area */}
@@ -181,7 +201,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             <div className="flex items-center gap-2">
               {activeTab && (
                 <>
-                  <activeTab.icon className="w-4 h-4 text-primary" strokeWidth={2} />
+                  <activeTab.icon
+                    className="w-4 h-4 text-primary"
+                    strokeWidth={2}
+                  />
                   <span className="font-mono text-sm font-bold tracking-wider text-primary">
                     {activeTab.title}
                   </span>
@@ -241,8 +264,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             )}
 
             {activeSection === "social-banners" && props.onAddSocialBanner && (
-              <SocialBannersPanel 
-                onAddBanner={props.onAddSocialBanner} 
+              <SocialBannersPanel
+                onAddBanner={props.onAddSocialBanner}
                 onAddAnimatedBanner={props.onAddAnimatedBanner}
               />
             )}

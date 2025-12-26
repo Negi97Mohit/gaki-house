@@ -14,17 +14,17 @@ interface UsePipGesturesProps {
 
 // Selectors for UI elements that should block PiP gesture
 const UI_ELEMENT_SELECTORS = [
-  '[data-radix-popper-content-wrapper]', // Radix dropdowns/popovers
+  "[data-radix-popper-content-wrapper]", // Radix dropdowns/popovers
   '[role="dialog"]',
   '[role="menu"]',
   '[role="listbox"]',
-  '.banner-design-selector',
-  '.floating-controls-panel',
-  '.pip-controls-toolbar',
-  '.text-editing-toolbar',
-  '.canvas-hover-toolbar',
-  '[data-floating-panel]',
-  '[data-no-pip-gesture]',
+  ".banner-design-selector",
+  ".floating-controls-panel",
+  ".pip-controls-toolbar",
+  ".text-editing-toolbar",
+  ".canvas-hover-toolbar",
+  "[data-floating-panel]",
+  "[data-no-pip-gesture]",
 ];
 
 const isOverUIElement = (target: EventTarget | null): boolean => {
@@ -37,7 +37,12 @@ const isOverUIElement = (target: EventTarget | null): boolean => {
 
   // Also check for common interactive elements with pointer-events
   const computed = window.getComputedStyle(target);
-  if (computed.pointerEvents === 'auto' && target.closest('[class*="toolbar"], [class*="panel"], [class*="menu"], [class*="popover"]')) {
+  if (
+    computed.pointerEvents === "auto" &&
+    target.closest(
+      '[class*="toolbar"], [class*="panel"], [class*="menu"], [class*="popover"]'
+    )
+  ) {
     return true;
   }
 
@@ -60,11 +65,12 @@ const isDirectContact = (target: EventTarget | null): boolean => {
   // Or inversely, check if we are inside an overlay.
 
   // Check if we are inside any known overlay types
-  if (target.closest('.react-draggable') || // Most overlays (text, generated) use Rnd or similar which usually adds draggable classes or we can check our specific overlay structures
-    target.closest('[data-overlay-type]') || // If we have this
-    target.closest('.browser-view') ||
-    target.closest('.file-overlay') ||
-    target.closest('.text-overlay')
+  if (
+    target.closest(".react-draggable") || // Most overlays (text, generated) use Rnd or similar which usually adds draggable classes or we can check our specific overlay structures
+    target.closest("[data-overlay-type]") || // If we have this
+    target.closest(".browser-view") ||
+    target.closest(".file-overlay") ||
+    target.closest(".text-overlay")
   ) {
     return false;
   }
@@ -94,6 +100,9 @@ export const usePipGestures = ({
       // 2. Must be "direct contact" (not over UI, not over overlays)
       if (isOverUIElement(e.target)) return;
       if (!isDirectContact(e.target)) return;
+
+      // 3. REQUIRE MODIFIER KEY: Only allow resize if Ctrl or Meta is held
+      if (!e.ctrlKey && !e.metaKey) return;
 
       e.preventDefault();
       e.stopPropagation();

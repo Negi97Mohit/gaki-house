@@ -3,6 +3,7 @@ import { cn } from "@/shared/lib/utils";
 import { generateId } from "@/shared/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import { GeneratedOverlay } from "@/types/caption";
+import { Loader } from "lucide-react"; // Import Loader icon
 
 // Components
 import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
@@ -35,7 +36,18 @@ const Index = () => {
     overlayHandlers,
   } = editor;
 
-  if (!activeScene || !effectiveScene) return <div>Loading...</div>;
+  // PHASE 3 FIX: Better Loading State
+  // Removed text-only loading for a centered spinner, ensuring immediate feedback
+  if (!activeScene || !effectiveScene) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-background text-muted-foreground gap-4">
+        <Loader className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-sm font-medium animate-pulse">
+          Initializing Studio...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div

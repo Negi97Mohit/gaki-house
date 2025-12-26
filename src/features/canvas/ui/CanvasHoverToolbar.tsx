@@ -30,11 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 import { CanvasLayoutTemplate } from "@/types/layout";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/shared/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { CanvasLayoutState } from "@/types/caption";
@@ -70,18 +66,16 @@ const LayoutList = ({
   onSelect,
   emptyMessage,
 }: LayoutListProps) => {
-  // Changed HTMLButtonElement to HTMLDivElement
   const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useEffect(() => {
-    // Scroll active item into view on mount or when activeId changes
     if (activeId && itemRefs.current[activeId]) {
       setTimeout(() => {
         itemRefs.current[activeId]?.scrollIntoView({
           behavior: "smooth",
           block: "center",
         });
-      }, 100); // Small delay to ensure layout stability
+      }, 100);
     }
   }, [activeId]);
 
@@ -96,11 +90,9 @@ const LayoutList = ({
   return (
     <div className="grid grid-cols-2 gap-2">
       {layouts.map((template) => (
-        <div // CHANGED: Button -> div to fix nesting error
+        <div
           key={template.id}
-          // Attach ref for scrolling
           ref={(el) => (itemRefs.current[template.id] = el)}
-          // Manually applied styles that mirror the Button component
           className={cn(
             "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
             activeId === template.id
@@ -117,7 +109,6 @@ const LayoutList = ({
             }
           }}
         >
-          {/* Passed templateId to fix specific previews */}
           <GridLayoutPreview
             sections={template.sections}
             templateId={template.id}
@@ -134,7 +125,7 @@ const LayoutList = ({
       ))}
     </div>
   );
-}; // <--- MAKE SURE THIS CLOSING BRACE & SEMICOLON EXIST
+};
 
 export const CanvasHoverToolbar = ({
   blankCanvasColor,
@@ -148,14 +139,11 @@ export const CanvasHoverToolbar = ({
   activeSequenceId,
   isTextDepthEnabled,
   onTextDepthToggle,
-  isChatbotOpen, // passed from props
-  onToggleChatbot, // passed from props
+  isChatbotOpen,
+  onToggleChatbot,
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Use hook for templates
   const { layoutTemplates, loading: templatesLoading } = useLayoutTemplates();
-
   const [activeTab, setActiveTab] = useState("tools");
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +173,6 @@ export const CanvasHoverToolbar = ({
     onCanvasLayoutChange(newLayout);
   };
 
-  // Helper to move items in the order array
   const moveItem = (index: number, direction: "up" | "down") => {
     if (!canvasLayout?.sectionOrder || !onCanvasLayoutChange) return;
 
@@ -213,14 +200,10 @@ export const CanvasHoverToolbar = ({
     });
   };
 
-  // Check if current layout is a carousel type
   const isCarouselLayout = canvasLayout?.templateId?.includes("carousel");
 
-  // Rotate carousel content (shift section content assignments)
   const rotateCarousel = (direction: "left" | "right") => {
     if (!canvasLayout || !onCanvasLayoutChange) return;
-
-    // Get the current template
     const template = layoutTemplates.find(
       (t) => t.id === canvasLayout.templateId
     );
@@ -228,11 +211,8 @@ export const CanvasHoverToolbar = ({
 
     const sectionIds = template.sections.map((s) => s.id);
     const currentSections = [...canvasLayout.sections];
-
-    // Create a mapping of section ID to content
     const contentMap = new Map(currentSections.map((s) => [s.id, s.content]));
 
-    // Rotate the content assignments
     const rotatedSections = sectionIds.map((id, index) => {
       const sourceIndex =
         direction === "right"
@@ -258,7 +238,6 @@ export const CanvasHoverToolbar = ({
     });
   };
 
-  // Check if layout has dynamic transformations
   const layoutId = canvasLayout?.templateId || "";
   const hasTransformations =
     isCarouselLayout ||
@@ -269,7 +248,6 @@ export const CanvasHoverToolbar = ({
     layoutId.includes("spotlight") ||
     layoutId.includes("pip-creative");
 
-  // Generic transformation function
   const transformLayout = (type: "rotate" | "flip" | "swap" | "reverse") => {
     if (!canvasLayout || !onCanvasLayoutChange) return;
 
@@ -284,7 +262,6 @@ export const CanvasHoverToolbar = ({
 
     let transformedSections = [...currentSections];
 
-    // Magazine Hero: Swap hero with first sidebar
     if (layoutId === "magazine-hero" && type === "swap") {
       const heroContent = contentMap.get("hero");
       const sidebar1Content = contentMap.get("sidebar-1");
@@ -298,10 +275,7 @@ export const CanvasHoverToolbar = ({
           return { ...s, content: heroContent || { type: "empty" as const } };
         return s;
       });
-    }
-
-    // Bento Box / Staircase / Diagonal: Rotate all
-    else if (
+    } else if (
       (layoutId.includes("bento") ||
         layoutId.includes("staircase") ||
         layoutId.includes("diagonal")) &&
@@ -320,10 +294,7 @@ export const CanvasHoverToolbar = ({
             ?.defaultContent,
         };
       });
-    }
-
-    // Spotlight Frame: Rotate frame positions
-    else if (layoutId === "spotlight-frame" && type === "rotate") {
+    } else if (layoutId === "spotlight-frame" && type === "rotate") {
       const frameIds = ["top", "right", "bottom", "left"];
       const frameContents = frameIds.map((id) => contentMap.get(id));
       transformedSections = currentSections.map((s) => {
@@ -337,10 +308,7 @@ export const CanvasHoverToolbar = ({
         }
         return s;
       });
-    }
-
-    // PiP Creative: Cycle PiP positions
-    else if (layoutId === "pip-creative" && type === "rotate") {
+    } else if (layoutId === "pip-creative" && type === "rotate") {
       const pipIds = ["pip-1", "pip-2", "pip-3"];
       const pipContents = pipIds.map((id) => contentMap.get(id));
       transformedSections = currentSections.map((s) => {
@@ -354,10 +322,7 @@ export const CanvasHoverToolbar = ({
         }
         return s;
       });
-    }
-
-    // Staircase: Reverse order
-    else if (layoutId.includes("staircase") && type === "reverse") {
+    } else if (layoutId.includes("staircase") && type === "reverse") {
       const reversedIds = [...sectionIds].reverse();
       transformedSections = sectionIds.map((id, index) => {
         const sourceId = reversedIds[index];
@@ -379,6 +344,8 @@ export const CanvasHoverToolbar = ({
     });
   };
 
+  // PHASE 3 FIX: Improved Visibility Logic
+  // Show when mouse is active or chatbot is open, otherwise semi-transparent
   const shouldShow = (isVisible && isMouseActive) || isChatbotOpen;
 
   return (
@@ -388,9 +355,11 @@ export const CanvasHoverToolbar = ({
         "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-lg",
         "px-1.5 py-1 sm:px-2 sm:py-1.5 flex items-center gap-0.5 sm:gap-1",
         "transition-all duration-300 ease-out",
+        // CHANGED: Instead of completely hiding it, we make it semi-transparent (50%)
+        // and only slightly offset, so it's always discoverable.
         shouldShow
           ? "opacity-100 translate-y-0"
-          : "opacity-0 -translate-y-3 pointer-events-none"
+          : "opacity-50 -translate-y-1 hover:opacity-100 hover:translate-y-0"
       )}
     >
       {!canvasLayout && (
