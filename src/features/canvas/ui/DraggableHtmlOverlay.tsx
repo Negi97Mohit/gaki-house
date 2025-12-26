@@ -10,7 +10,7 @@ import {
   AnimatedBannerRenderer,
   BannerContentData,
   BannerElementState,
-} from "@/components/animated-banners";
+} from "@/features/banners/ui/animated-banners";
 import animatedBannersData from "@/data/animatedBanners.json";
 
 const ANIMATED_BANNER_DESIGNS = animatedBannersData.designs;
@@ -179,8 +179,8 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
             <button
               onClick={handleToggleDepth}
               className={`p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors ${overlay.layout.isBehindUser
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
+                ? "bg-primary text-primary-foreground"
+                : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
                 }`}
               title={overlay.layout.isBehindUser ? "Behind User" : "In Front"}
             >

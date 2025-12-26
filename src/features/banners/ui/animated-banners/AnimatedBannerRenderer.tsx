@@ -1,6 +1,6 @@
 import React from "react";
 import type { AnimatedBannerDesign } from "@/types/animatedBanner";
-import { UniversalBannerRenderer } from "@/components/banner/UniversalBannerRenderer";
+import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
 import { BannerContentData, BannerElementState } from "@/types/banner";
 
 // Re-export shared types for backward compatibility

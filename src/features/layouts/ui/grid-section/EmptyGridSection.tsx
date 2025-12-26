@@ -18,7 +18,7 @@ import {
 import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
 import { CanvasDesignSelector } from "./CanvasDesignSelector";
 import { CanvasSectionState, DEFAULT_CAMERA_STATE, CameraShape } from "@/types/caption";
-import { usePreviewMode } from "@/components/layouts/dynamic/core/PreviewModeContext";
+import { usePreviewMode } from "@/features/layouts/ui/layouts/dynamic/core/PreviewModeContext";
 
 interface EmptyGridSectionProps {
     sectionId: string;

@@ -3,7 +3,7 @@ import ReactDOMServer from "react-dom/server";
 import { toast } from "sonner";
 import { generateId } from "@/shared/lib/id";
 import { zIndex } from "@/lib/zIndex";
-import { getPlatformIcon } from "@/components/SocialBannerRenderer";
+import { getPlatformIcon } from "@/features/banners/ui/SocialBannerRenderer";
 import { SceneState, GeneratedOverlay } from "@/types/caption";
 import {
   SocialBannerDesign,

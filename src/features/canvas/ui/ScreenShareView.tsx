@@ -1,6 +1,6 @@
 import React from "react";
 import { ScreenShare } from "lucide-react";
-import { CanvasGridLayout } from "@/components/CanvasGridLayout";
+import { CanvasGridLayout } from "@/features/layouts/ui/CanvasGridLayout";
 import { VideoPlayer } from "./VideoPlayer";
 import {
   CanvasLayoutState,

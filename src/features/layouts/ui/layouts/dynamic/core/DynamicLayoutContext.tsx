@@ -1,6 +1,6 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import { CanvasLayoutState } from "@/types/caption";
-import { useLayoutEditor } from "@/hooks/useLayoutEditor";
+import { useLayoutEditor } from "@/features/layouts/hooks/useLayoutEditor";
 
 interface DynamicLayoutContextProps {
     // Original props pass-through

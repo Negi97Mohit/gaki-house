@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/types/layout";
-import { useGridResizing } from "@/hooks/useGridResizing";
+import { useGridResizing } from "@/features/layouts/hooks/useGridResizing";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 
 interface StandardGridLayoutProps {

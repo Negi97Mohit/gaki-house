@@ -2,7 +2,7 @@
 import React, { useRef, useMemo } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useGridMotionFrame } from "@/hooks/useGridMotion";
+import { useGridMotionFrame } from "@/features/layouts/hooks/useGridMotion";
 import {
   GRID_VERTEX_BASE,
   LIQUID_FRAGMENT,

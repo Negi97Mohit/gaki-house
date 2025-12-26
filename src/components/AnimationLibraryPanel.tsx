@@ -23,7 +23,7 @@ import { useAnimationLibrary } from "@/hooks/useAnimationLibrary";
 import { ANIMATION_CATEGORIES } from "@/lib/animationLibrary";
 import { toast } from "sonner";
 import { AnimationGridItem } from "./AnimationGridItem";
-import { GSAPPresetPreview } from "./GSAPAnimatedBanner";
+import { GSAPPresetPreview } from "@/features/banners/ui/GSAPAnimatedBanner";
 import { GSAP_PRESETS, GSAPPreset } from "@/lib/gsapAnimations";
 
 interface AnimationLibraryPanelProps {
@@ -239,13 +239,13 @@ export const AnimationLibraryPanel: React.FC<AnimationLibraryPanelProps> = ({
   const filteredGsapPresets =
     activeGsapCategory === "all"
       ? allGsapPresets.filter((p) =>
-          p.name.toLowerCase().includes(search.toLowerCase())
-        )
+        p.name.toLowerCase().includes(search.toLowerCase())
+      )
       : allGsapPresets.filter(
-          (p) =>
-            p.category === activeGsapCategory &&
-            p.name.toLowerCase().includes(search.toLowerCase())
-        );
+        (p) =>
+          p.category === activeGsapCategory &&
+          p.name.toLowerCase().includes(search.toLowerCase())
+      );
 
   return (
     <div

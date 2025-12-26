@@ -12,19 +12,19 @@ import { Button } from "@/shared/ui/button";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { cn } from "@/shared/lib/utils";
-import { SocialBannerEditor } from "@/components/SocialBannerEditor";
+import { SocialBannerEditor } from "@/features/banners/ui/SocialBannerEditor";
 import {
   SocialBannerRenderer,
   getPlatformIcon,
-} from "@/components/SocialBannerRenderer";
-import { AnimatedBannerRenderer } from "@/components/animated-banners";
+} from "@/features/banners/ui/SocialBannerRenderer";
+import { AnimatedBannerRenderer } from "@/features/banners/ui/animated-banners";
 import {
   SocialBannerData,
   SocialBannerDesign,
   DEFAULT_BANNER_DATA,
 } from "@/types/socialBanner";
 
-import { useSocialBanners } from "@/hooks/useSocialBanners";
+import { useSocialBanners } from "@/features/banners/hooks/useSocialBanners";
 
 const LOCAL_STORAGE_KEY = "social-banner-user-data";
 

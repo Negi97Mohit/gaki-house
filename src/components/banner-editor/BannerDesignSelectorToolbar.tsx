@@ -7,7 +7,7 @@ import { BannerDesign } from "@/types/banner";
 import { SocialBannerDesign } from "@/types/socialBanner";
 import { AnimatedBannerDesign } from "@/types/animatedBanner";
 
-import { useSocialBanners } from "@/hooks/useSocialBanners";
+import { useSocialBanners } from "@/features/banners/hooks/useSocialBanners";
 
 interface BannerDesignSelectorToolbarProps {
   currentDesignId: string;

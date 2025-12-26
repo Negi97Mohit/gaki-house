@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "./GridSectionWrapper";
-import { EditableText } from "@/components/layouts/dynamic/core/EditableText";
+import { EditableText } from "@/features/layouts/ui/layouts/dynamic/core/EditableText";
 import { DynamicLayoutWrapper } from "./dynamic/core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./dynamic/core/DynamicLayoutContext";
 

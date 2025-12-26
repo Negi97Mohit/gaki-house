@@ -1,6 +1,6 @@
 // src/pages/index/hooks/useLayoutManager.ts
 import { useCallback } from "react";
-import { useLayoutPresets } from "@/hooks/useLayoutPresets";
+import { useLayoutPresets } from "@/features/layouts/hooks/useLayoutPresets";
 import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
 import { usePublicPresets } from "@/hooks/usePublicPresets";
 import { toast } from "sonner";

@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { MainCanvasArea } from "./MainCanvasArea";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
 import { FloatingLogo } from "@/components/FloatingLogo";
-import { SocialBannerEditor } from "@/components/SocialBannerEditor";
+import { SocialBannerEditor } from "@/features/banners/ui/SocialBannerEditor";
 import {
   CaptionStyle,
   GeneratedOverlay,

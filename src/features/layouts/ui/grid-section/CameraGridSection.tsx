@@ -1,7 +1,7 @@
 import React from "react";
 import { CanvasSectionCameraState } from "@/types/caption";
 import { CameraRenderer } from "@/components/CameraRenderer";
-import { InteractiveGridSection } from "@/components/InteractiveGridSection";
+import { InteractiveGridSection } from "@/features/layouts/ui/InteractiveGridSection";
 
 interface CameraGridSectionProps {
   sectionId: string;

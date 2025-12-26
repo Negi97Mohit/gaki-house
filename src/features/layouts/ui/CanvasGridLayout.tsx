@@ -10,7 +10,7 @@ import {
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { AssetResult } from "./AssetLibrary";
 import { Loader2 } from "lucide-react";
-import { useLayoutTemplates } from "@/hooks/useLayoutTemplates";
+import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";
 
 // --- Existing Standard Layouts ---
 import { StandardGridLayout } from "./layouts/StandardGridLayout";

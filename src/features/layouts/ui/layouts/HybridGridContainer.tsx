@@ -2,7 +2,7 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { HybridGridScene } from "./HybridGridScene";
-import { useGridMotion } from "@/hooks/useGridMotion";
+import { useGridMotion } from "@/features/layouts/hooks/useGridMotion";
 
 interface HybridGridContainerProps {
   children: React.ReactNode;

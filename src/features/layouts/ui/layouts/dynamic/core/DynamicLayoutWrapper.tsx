@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CanvasSectionState, CanvasLayoutState } from "@/types/caption";
-import { useLayoutEditor } from "@/hooks/useLayoutEditor";
+import { useLayoutEditor } from "@/features/layouts/hooks/useLayoutEditor";
 import { LayoutEditorToolbar } from "../../LayoutEditorToolbar";
 import { LayoutSettingsCtrl } from "../../LayoutSettingsCtrl";
 import { DynamicLayoutProvider } from "./DynamicLayoutContext";

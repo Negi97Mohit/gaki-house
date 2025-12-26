@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import { isStaticBanner, BannerDesign, BannerContentData, BannerElementState } from "@/types/banner";
-import { useBannerEditor } from "@/hooks/useBannerEditor";
+import { useBannerEditor } from "@/features/banners/hooks/useBannerEditor";
 import { StaticBannerBackground } from "./StaticBannerBackground";
-import { BannerBackgroundRenderer } from "@/components/animated-banners/BannerBackgroundRenderer";
+import { BannerBackgroundRenderer } from "@/features/banners/ui/animated-banners/BannerBackgroundRenderer";
 import { BannerInternalDraggable } from "@/components/banner-editor/BannerInternalDraggable";
 import { BannerTextToolbar } from "@/components/banner-editor/BannerTextToolbar";
 import { BannerCustomizationToolbar } from "@/components/banner-editor/BannerCustomizationToolbar";

@@ -14,8 +14,8 @@ import {
     SocialBannerData,
     DEFAULT_BANNER_DATA,
 } from "@/types/socialBanner";
-import { SocialProfileForm } from "@/components/social-banner/SocialProfileForm";
-import { SocialLinkList } from "@/components/social-banner/SocialLinkList";
+import { SocialProfileForm } from "@/features/banners/ui/social-banner/SocialProfileForm";
+import { SocialLinkList } from "@/features/banners/ui/social-banner/SocialLinkList";
 
 const LOCAL_STORAGE_KEY = "social-banner-user-data";
 

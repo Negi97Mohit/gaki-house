@@ -15,8 +15,8 @@ import { DraggableFileViewer } from "@/features/canvas/ui/DraggableFileViewer";
 import { DraggableTextOverlay } from "@/features/canvas/ui/DraggableTextOverlay";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { HybridDraggable } from "./HybridDraggable";
-import { SocialBannerRenderer } from "@/components/SocialBannerRenderer";
-import { UniversalBannerRenderer } from "@/components/banner/UniversalBannerRenderer";
+import { SocialBannerRenderer } from "@/features/banners/ui/SocialBannerRenderer";
+import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
 import { BannerDesignSelectorToolbar } from "@/components/banner-editor/BannerDesignSelectorToolbar";
 import { BannerDesign, isAnimatedBanner } from "@/types/banner";
 

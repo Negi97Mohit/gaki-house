@@ -7,8 +7,8 @@ import {
 } from "@/types/caption";
 import { FileRenderer } from "@/features/canvas/ui/DraggableFileViewer";
 import { AssetResult } from "@/components/AssetLibrary";
-import { EmptyGridSection } from "@/components/grid-section/EmptyGridSection";
-import { CameraGridSection } from "@/components/grid-section/CameraGridSection";
+import { EmptyGridSection } from "@/features/layouts/ui/grid-section/EmptyGridSection";
+import { CameraGridSection } from "@/features/layouts/ui/grid-section/CameraGridSection";
 
 export interface GridSectionRendererProps {
   section: CanvasSectionState;

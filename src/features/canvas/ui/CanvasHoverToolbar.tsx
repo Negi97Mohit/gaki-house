@@ -38,8 +38,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
 import { CanvasLayoutState } from "@/types/caption";
-import { GridLayoutPreview } from "@/components/GridLayoutPreview";
-import { useLayoutTemplates } from "@/hooks/useLayoutTemplates";
+import { GridLayoutPreview } from "@/features/layouts/ui/GridLayoutPreview";
+import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";
 
 interface CanvasHoverToolbarProps {
   blankCanvasColor: string;
