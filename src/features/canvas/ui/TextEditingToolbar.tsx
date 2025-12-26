@@ -34,10 +34,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   elementWidth = 100,
 }) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
-  // Initialize with the passed position to minimize initial jump
   const [toolbarPosition, setToolbarPosition] = useState(position);
   const [showDesigns, setShowDesigns] = useState(false);
-  // Only show the toolbar after we've calculated its constrained position
   const [isReady, setIsReady] = useState(false);
 
   // Smart Positioning Logic
@@ -59,7 +57,6 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
 
       setToolbarPosition({ x, y });
     }
-    // Mark as ready to trigger the appearance animation
     setIsReady(true);
   }, [position, containerRef, elementHeight, elementWidth]);
 
@@ -69,7 +66,6 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
         ref={toolbarRef}
         className={cn(
           "absolute pointer-events-auto flex items-center gap-1 p-1.5 bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl isolate",
-          // Only animate in when positioned correctly to avoid "flying" from 0,0
           isReady
             ? "animate-in fade-in zoom-in-95 duration-200"
             : "opacity-0 pointer-events-none"
@@ -98,7 +94,6 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
 
         <div className="w-px h-5 bg-border mx-0.5" />
 
-        {/* Color Controls ENABLED for designs now */}
         <ColorControls overlay={overlay} onStyleChange={onStyleChange} />
 
         <div className="w-px h-5 bg-border mx-0.5" />
@@ -150,10 +145,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           overlay={overlay}
           onStyleChange={onStyleChange}
           onClose={() => setShowDesigns(false)}
-          position={{
-            x: toolbarPosition.x,
-            y: toolbarPosition.y + 50,
-          }}
+          // Pass the raw toolbar position; Selector handles its own placement
+          position={toolbarPosition}
         />
       )}
     </>
