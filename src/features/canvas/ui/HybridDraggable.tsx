@@ -603,7 +603,8 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         className,
         mode !== "idle" && "cursor-grabbing",
         mode === "dragging" && "shadow-2xl opacity-90 scale-[1.01]",
-        isSelected && "ring-2 ring-primary"
+        // Updated: Thinner, cleaner selection ring
+        isSelected && "ring-1 ring-primary"
       )}
       style={{
         width: `${localTransform.width}px`,
@@ -617,59 +618,59 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         transformOrigin: "center center",
       }}
     >
-      {/* Content wrapper - fills entire resize box */}
-      <div className="w-full h-full overflow-visible">
-        {children}
-      </div>
+      {/* Content wrapper */}
+      <div className="w-full h-full overflow-visible">{children}</div>
 
-      {/* Resize handles - positioned on the corners, not outside */}
+      {/* Resize handles */}
       {isSelected && enableResizing && (
         <>
+          {/* Corner Handles: Updated to be small, clean circles */}
           <div
-            className="absolute bottom-0 right-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nwse-resize z-50 shadow-sm translate-x-1/2 translate-y-1/2"
+            className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-white border border-primary rounded-full cursor-nwse-resize z-50 shadow-sm translate-x-1/2 translate-y-1/2 hover:scale-125 transition-transform"
             onPointerDown={(e) => handleResizeStart(e, "se")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute top-0 left-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nwse-resize z-50 shadow-sm -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-0 left-0 w-2.5 h-2.5 bg-white border border-primary rounded-full cursor-nwse-resize z-50 shadow-sm -translate-x-1/2 -translate-y-1/2 hover:scale-125 transition-transform"
             onPointerDown={(e) => handleResizeStart(e, "nw")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute top-0 right-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nesw-resize z-50 shadow-sm translate-x-1/2 -translate-y-1/2"
+            className="absolute top-0 right-0 w-2.5 h-2.5 bg-white border border-primary rounded-full cursor-nesw-resize z-50 shadow-sm translate-x-1/2 -translate-y-1/2 hover:scale-125 transition-transform"
             onPointerDown={(e) => handleResizeStart(e, "ne")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute bottom-0 left-0 w-4 h-4 bg-white border-2 border-primary rounded-sm cursor-nesw-resize z-50 shadow-sm -translate-x-1/2 translate-y-1/2"
+            className="absolute bottom-0 left-0 w-2.5 h-2.5 bg-white border border-primary rounded-full cursor-nesw-resize z-50 shadow-sm -translate-x-1/2 translate-y-1/2 hover:scale-125 transition-transform"
             onPointerDown={(e) => handleResizeStart(e, "sw")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
-          {/* Edge handles for more intuitive resizing */}
+
+          {/* Edge handles: Updated to be invisible but interactive (no visual clutter) */}
           <div
-            className="absolute top-1/2 left-0 w-2 h-8 bg-white/80 border border-primary rounded-sm cursor-ew-resize z-50 -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-1/2 left-0 w-2 h-8 bg-transparent cursor-ew-resize z-50 -translate-x-1/2 -translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "w")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute top-1/2 right-0 w-2 h-8 bg-white/80 border border-primary rounded-sm cursor-ew-resize z-50 translate-x-1/2 -translate-y-1/2"
+            className="absolute top-1/2 right-0 w-2 h-8 bg-transparent cursor-ew-resize z-50 translate-x-1/2 -translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "e")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute top-0 left-1/2 w-8 h-2 bg-white/80 border border-primary rounded-sm cursor-ns-resize z-50 -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-0 left-1/2 w-8 h-2 bg-transparent cursor-ns-resize z-50 -translate-x-1/2 -translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "n")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
           />
           <div
-            className="absolute bottom-0 left-1/2 w-8 h-2 bg-white/80 border border-primary rounded-sm cursor-ns-resize z-50 -translate-x-1/2 translate-y-1/2"
+            className="absolute bottom-0 left-1/2 w-8 h-2 bg-transparent cursor-ns-resize z-50 -translate-x-1/2 translate-y-1/2"
             onPointerDown={(e) => handleResizeStart(e, "s")}
             onPointerMove={(e) => handleResizeMove(e)}
             onPointerUp={(e) => handleResizeEnd(e)}
@@ -677,9 +678,10 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         </>
       )}
 
+      {/* Rotation Handle: Updated to be cleaner and consistent */}
       {isSelected && enableRotation && (
         <div
-          className="absolute -bottom-7 left-1/2 -translate-x-1/2 w-5 h-5 bg-white border-2 border-primary rounded-full cursor-alias z-50 flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+          className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-5 h-5 bg-white border border-primary rounded-full cursor-alias z-50 flex items-center justify-center shadow-md hover:scale-110 transition-transform"
           onPointerDown={handleRotationStart}
         >
           <svg
