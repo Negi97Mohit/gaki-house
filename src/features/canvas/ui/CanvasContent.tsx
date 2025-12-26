@@ -8,7 +8,6 @@ import { PipWindow } from "@/features/canvas/ui/PipWindow";
 import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
 import { getNumericAspectRatio } from "@/features/canvas/ui/VideoCanvasHelpers";
 import { VideoCanvasProps } from "@/types/videoCanvas";
-import { Camera, FileUp, Monitor } from "lucide-react"; // Icons for empty state
 
 interface CanvasContentProps {
   dynamicLayout: {
@@ -139,17 +138,6 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
   const showPipMode =
     screenShareMode !== "off" || isGridActive || layoutMode === "pip";
 
-  // PHASE 3 FIX: "Black Void" Detection
-  // Check if the canvas is effectively empty to show onboarding
-  const isEffectivelyEmpty =
-    !cameraStream &&
-    !screenStream &&
-    !backgroundImageUrl &&
-    fileOverlays.length === 0 &&
-    textOverlays.length === 0 &&
-    !isGridActive &&
-    screenShareMode === "off";
-
   const mainContent = showPipMode ? (
     <ScreenShareView
       screenShareMode={isGridActive ? "canvas" : screenShareMode}
@@ -181,34 +169,6 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
   return (
     <div className="w-full h-full relative">
       <div className="relative w-full h-full">{mainContent}</div>
-
-      {/* PHASE 3 FIX: Onboarding Empty State */}
-      {isEffectivelyEmpty && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="bg-background/80 backdrop-blur-md border border-border/50 p-8 rounded-2xl shadow-2xl max-w-md text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
-            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
-              Start Creating
-            </h2>
-            <p className="text-muted-foreground text-sm">
-              Your canvas is empty. Choose an action below to begin:
-            </p>
-            <div className="grid grid-cols-3 gap-4 pt-2">
-              <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-muted/50">
-                <Camera className="w-6 h-6 text-primary" />
-                <span className="text-xs font-medium">Turn on Camera</span>
-              </div>
-              <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-muted/50">
-                <Monitor className="w-6 h-6 text-blue-500" />
-                <span className="text-xs font-medium">Share Screen</span>
-              </div>
-              <div className="flex flex-col items-center gap-2 p-2 rounded-lg bg-muted/50">
-                <FileUp className="w-6 h-6 text-green-500" />
-                <span className="text-xs font-medium">Add Media</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {showPipMode && !isGridActive && layoutMode === "pip" && (
         <PipWindow

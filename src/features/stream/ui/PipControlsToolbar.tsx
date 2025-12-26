@@ -1,4 +1,3 @@
-// src/features/stream/ui/PipControlsToolbar.tsx
 import React, { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@/shared/ui/button";
 import { PictureInPicture } from "lucide-react";
@@ -69,14 +68,22 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
   props
 ) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
 
-  // Check if we are too close to the bottom of the viewport to flip upwards (optional)
+  // Detect context: Full Screen vs PiP Window
   useLayoutEffect(() => {
     if (props.containerRef.current) {
-      const containerRect = props.containerRef.current.getBoundingClientRect();
-      // If container is very small or near the bottom, you could adjust logic here.
-      // For now, we default to bottom-docked.
+      const rect = props.containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // 1. Check if we are "Full Screen" (height is > 80% of window)
+      // If so, we are likely blocked by the BottomNavigation bar.
+      const isTall = rect.height > windowHeight * 0.8;
+      setIsFullScreen(isTall);
+
+      // 2. Flip logic (optional, if at very bottom edge)
+      // Usually bottom docking is fine if we have margin
       setIsFlipped(false);
     }
   }, [props.containerRef]);
@@ -85,12 +92,13 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
     <div
       ref={toolbarRef}
       className={cn(
-        // Centered horizontally, docked at bottom with margin
         "absolute left-1/2 -translate-x-1/2 flex items-center gap-0.5 p-1.5",
         "bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl shadow-2xl",
         "transition-all duration-200 ease-out pointer-events-auto",
-        // Position Logic: Standard bottom dock vs Top dock
-        isFlipped ? "top-4" : "bottom-4"
+        // POSITIONING LOGIC:
+        // If Full Screen: Move up to 'bottom-24' (approx 96px) to clear the BottomNavigation (which is ~72px tall/offset).
+        // If PiP Window: Keep at 'bottom-4' for tight packing.
+        isFlipped ? "top-4" : isFullScreen ? "bottom-24" : "bottom-4"
       )}
       style={{
         zIndex: "var(--z-text-toolbar)",

@@ -1,4 +1,4 @@
-// src/features/stream/ui/CameraRenderer.tsx
+// src/components/CameraRenderer.tsx
 import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
@@ -75,8 +75,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
 
   const [isHovered, setIsHovered] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
-
-  // FIX: rely directly on the stream passed down from the parent
   const activeStream = props.stream;
 
   const { isPipActive, togglePiP } = usePictureInPicture({ canvasRef });
@@ -135,7 +133,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   }, []);
 
   const toolbarProps = {
-    // We don't need exact x/y anymore, we use CSS centering
     position: { x: 0, y: 0 },
     containerRef,
     ...props,
@@ -186,7 +183,6 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         (props.isMouseActive ?? true) &&
         (props.portalContainer instanceof HTMLElement ? (
           createPortal(
-            // FIX: Changed to inset-0 to cover full area, pointer-events-none to pass clicks through
             <div
               className="absolute inset-0 w-full h-full pointer-events-none"
               style={{ zIndex: 9999 }}
@@ -203,8 +199,11 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
             props.portalContainer
           )
         ) : (
-          // FIX: Changed to inset-0 to cover full area
-          <div className="absolute inset-0 w-full h-full pointer-events-none z-50">
+          // FALLBACK: If no portal, use absolute positioning with high Z-index
+          // to try and beat the BottomNavigation.
+          // Note: If CanvasContainer has a lower stacking context, this z-index might not escape,
+          // which is why the 'bottom-24' position fix in PipControlsToolbar is critical.
+          <div className="absolute inset-0 w-full h-full pointer-events-none z-[5000]">
             {/* @ts-ignore */}
             <PipControlsToolbar {...toolbarProps} />
           </div>
