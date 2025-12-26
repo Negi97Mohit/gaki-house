@@ -3,7 +3,7 @@ import {
   MainMenu,
 } from "@excalidraw/excalidraw";
 import { useTheme } from "next-themes";
-import { Button } from "./ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   X,
   GripVertical,
@@ -81,11 +81,11 @@ export const ExcalidrawOverlay = ({
 
   const currentSize = isMaximized
     ? {
-        x: 0,
-        y: 0,
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }
+      x: 0,
+      y: 0,
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
     : previousSize;
 
   return (
@@ -200,7 +200,7 @@ export const ExcalidrawOverlay = ({
                   className={cn(
                     "w-6 h-6 rounded border-2",
                     option.value === "transparent" &&
-                      "bg-gradient-to-br from-gray-200 to-white dark:from-gray-700 dark:to-gray-800"
+                    "bg-gradient-to-br from-gray-200 to-white dark:from-gray-700 dark:to-gray-800"
                   )}
                   style={{
                     backgroundColor:

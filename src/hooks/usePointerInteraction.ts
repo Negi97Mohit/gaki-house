@@ -1,7 +1,7 @@
 // src/hooks/usePointerInteraction.ts
 
 import { useCallback, useRef, useEffect } from 'react';
-import { useRAFThrottle } from './useRAFThrottle';
+import { useRAFThrottle } from '@/shared/hooks/useRAFThrottle';
 
 export interface PointerInteractionCallbacks {
     onStart?: (e: PointerEvent) => void;

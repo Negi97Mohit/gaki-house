@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { useTextDesigns } from "@/hooks/useTextDesigns";
-import { MultiLayerTextRenderer } from "@/components/MultiLayerTextRenderer";
+import { MultiLayerTextRenderer } from "@/features/canvas/ui/MultiLayerTextRenderer";
 
 interface TextDesignSelectorProps {
     overlay: TextOverlayState;

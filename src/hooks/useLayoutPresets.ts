@@ -1,7 +1,7 @@
 // src/hooks/useLayoutPresets.ts
 import { useState, useCallback } from "react";
 import { LayoutPreset } from "@/types/layoutPreset";
-import { useLocalStorage } from "./useLocalStorage";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import { generateId } from "@/shared/lib/id";
 
 export const useLayoutPresets = () => {

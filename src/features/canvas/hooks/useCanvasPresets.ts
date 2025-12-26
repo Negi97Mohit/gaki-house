@@ -1,7 +1,7 @@
 // src/hooks/useCanvasPresets.ts
 import { useState, useCallback, useEffect } from "react";
 import { CanvasPreset } from "@/types/canvasPreset";
-import { useLocalStorage } from "./useLocalStorage";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import { db } from "@/lib/firebase"; // --- ADDED: Import db
 import {
   collection,

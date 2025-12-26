@@ -3,7 +3,7 @@
 import { AIDecision, GraphObject } from "@/types/caption";
 import { CUSTOM_STYLES, CustomStyle } from "@/lib/customStyles";
 import { useMemo } from "react";
-import { Button } from "./ui/button";
+import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 interface CustomStylesSelectorProps {

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Send, X, Bot, User, RefreshCw, Sparkles, MessageSquare, Square, Check, Copy } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { ScrollArea } from "./ui/scroll-area";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { ScrollArea } from "@/shared/ui/scroll-area";
 import { cn } from "@/shared/lib/utils";
-import { useToast } from "./ui/use-toast";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useToast } from "@/shared/ui/use-toast";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 

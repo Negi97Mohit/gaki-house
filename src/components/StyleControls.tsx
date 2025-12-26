@@ -1,17 +1,17 @@
 // src/components/StyleControls.tsx
 
 import { CaptionStyle } from "@/types/caption";
-import { Label } from "./ui/label";
+import { Label } from "@/shared/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { Slider } from "./ui/slider";
-import { Input } from "./ui/input";
-import { Switch } from "./ui/switch";
+} from "@/shared/ui/select";
+import { Slider } from "@/shared/ui/slider";
+import { Input } from "@/shared/ui/input";
+import { Switch } from "@/shared/ui/switch";
 import { cn } from "@/shared/lib/utils";
 import { ALL_FONTS } from "@/lib/fonts";
 
@@ -249,7 +249,7 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
             onCheckedChange={(checked) => handleValueChange("border", checked)}
           />
         </div>
-        
+
         {style.border && (
           <div className="space-y-4 p-4 bg-muted/20 rounded-xl border border-border/50 animate-in fade-in slide-in-from-top-2 duration-200">
             {/* Border Color */}
