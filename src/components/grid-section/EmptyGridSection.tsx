@@ -1,6 +1,6 @@
 import React from "react";
 import { Plus, Search, Paintbrush, Monitor } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -9,12 +9,12 @@ import {
     DropdownMenuSub,
     DropdownMenuSubTrigger,
     DropdownMenuSubContent,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/ui/dropdown-menu";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/shared/ui/popover";
 import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
 import { CanvasDesignSelector } from "./CanvasDesignSelector";
 import { CanvasSectionState, DEFAULT_CAMERA_STATE, CameraShape } from "@/types/caption";

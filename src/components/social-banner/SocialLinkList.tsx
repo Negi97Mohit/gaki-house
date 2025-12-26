@@ -1,14 +1,14 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from "@/shared/ui/select";
 import { Plus, Trash2 } from "lucide-react";
 import {
     SocialBannerData,
@@ -16,7 +16,7 @@ import {
     SocialPlatform,
     PLATFORM_INFO,
 } from "@/types/socialBanner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { getPlatformIcon } from "@/components/icons/SocialIcons";
 
 const ALL_PLATFORMS: SocialPlatform[] = [

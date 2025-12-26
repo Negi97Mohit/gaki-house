@@ -1,23 +1,23 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Rnd } from "react-rnd";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import {
   CanvasSectionCameraState,
   TextOverlayState,
   DEFAULT_CAMERA_STATE,
 } from "@/types/caption";
 import { CameraRenderer } from "@/components/CameraRenderer";
-import { DraggableTextOverlay } from "@/components/DraggableTextOverlay";
+import { DraggableTextOverlay } from "@/features/canvas/ui/DraggableTextOverlay";
 import { PipControlsToolbar } from "@/components/PipControlsToolbar";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { Paintbrush, Plus, Type } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { generateId } from "@/lib/id";
+} from "@/shared/ui/dropdown-menu";
+import { generateId } from "@/shared/lib/id";
 
 interface InteractiveGridSectionProps {
   sectionId: string;

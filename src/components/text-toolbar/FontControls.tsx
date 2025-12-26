@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { Type, Minus, Plus, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/shared/ui/popover";
+import { ScrollArea } from "@/shared/ui/scroll-area";
 import { ALL_FONTS } from "@/lib/fonts";
 
 interface FontControlsProps {

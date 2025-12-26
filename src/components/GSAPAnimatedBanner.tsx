@@ -7,7 +7,7 @@ import {
   executeGSAPAnimation,
   splitTextToChars,
 } from "@/lib/gsapAnimations";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { ParticleEffectOverlay } from "./ParticleEffectOverlay";
 import { EffectType } from "@/lib/particleEffects";
 

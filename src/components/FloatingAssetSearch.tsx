@@ -1,11 +1,11 @@
 // src/components/FloatingAssetSearch.tsx
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/shared/ui/popover";
 import { Search } from "lucide-react";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
 

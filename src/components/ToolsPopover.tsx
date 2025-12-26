@@ -3,9 +3,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/shared/ui/popover";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { LayoutGrid as Apps, Type, Pencil, Sun, Moon } from "lucide-react";
 import { FloatingAssetSearch } from "@/components/FloatingAssetSearch";
 import { InstructionsDialog } from "@/components/InstructionsDialog";

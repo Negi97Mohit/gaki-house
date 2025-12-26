@@ -1,7 +1,7 @@
 import React from "react";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
+import { Label } from "@/shared/ui/label";
+import { Slider } from "@/shared/ui/slider";
+import { Switch } from "@/shared/ui/switch";
 import { AnimationPreset } from "@/types/animation";
 
 interface SettingsControlsProps {

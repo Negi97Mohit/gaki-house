@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/types/layout";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { AssetResult } from "../AssetLibrary";
 import { GridSectionRenderer } from "../GridSectionRenderer";
 import {

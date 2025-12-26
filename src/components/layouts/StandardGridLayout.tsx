@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { useGridResizing } from "@/hooks/useGridResizing";

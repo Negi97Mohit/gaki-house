@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import {
   CanvasLayoutState,
   CanvasSectionState,

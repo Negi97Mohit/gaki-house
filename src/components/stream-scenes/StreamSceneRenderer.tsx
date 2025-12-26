@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { StreamSceneType, StreamStyleTheme } from '@/types/streamStyle';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 interface StreamSceneRendererProps {
   sceneType: StreamSceneType;

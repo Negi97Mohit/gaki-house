@@ -1,6 +1,6 @@
 import React from "react";
 import { Wand2, Droplet, Sparkles, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,8 +8,8 @@ import {
     DropdownMenuPortal,
     DropdownMenuSeparator,
     DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+} from "@/shared/ui/dropdown-menu";
+import { cn } from "@/shared/lib/utils";
 import { useFilters } from "@/hooks/useFilters";
 // import { FILTER_PRESETS } from "@/lib/filters"; // Deprecated
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";

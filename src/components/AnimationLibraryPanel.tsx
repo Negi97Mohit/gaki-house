@@ -10,15 +10,15 @@ import {
   Paintbrush,
   Layers,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
+import { ScrollArea } from "@/shared/ui/scroll-area";
 import { SmartTextAnimator } from "./SmartTextAnimator";
 import { AnimationEditor } from "./AnimationEditor";
 import { GSAPAnimationEditor } from "./GSAPAnimationEditor";
 import { AnimationPreset } from "@/types/animation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { useAnimationLibrary } from "@/hooks/useAnimationLibrary";
 import { ANIMATION_CATEGORIES } from "@/lib/animationLibrary";
 import { toast } from "sonner";

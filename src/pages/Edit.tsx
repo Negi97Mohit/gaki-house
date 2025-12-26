@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { RecordingSession, EMPTY_SESSION, ComponentTrack } from "@/types/editor";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
+import { Button } from "@/shared/ui/button";
+import { Slider } from "@/shared/ui/slider";
+import { Switch } from "@/shared/ui/switch";
+import { Label } from "@/shared/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import {
   Video,
   X,
@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useSessionPlayback } from "@/hooks/useSessionPlayback";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 const formatTime = (ms: number) => {
   const totalSeconds = Math.floor(ms / 1000);

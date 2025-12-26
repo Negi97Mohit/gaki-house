@@ -1,6 +1,6 @@
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
-import { generateId } from "@/lib/id";
+import { cn } from "@/shared/lib/utils";
+import { generateId } from "@/shared/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import { GeneratedOverlay } from "@/types/caption";
 

@@ -4,7 +4,7 @@ import { AIDecision, GraphObject } from "@/types/caption";
 import { CUSTOM_STYLES, CustomStyle } from "@/lib/customStyles";
 import { useMemo } from "react";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface CustomStylesSelectorProps {
   overlays: (AIDecision | GraphObject)[];

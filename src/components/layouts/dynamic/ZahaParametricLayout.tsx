@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { EditableText } from "./core/EditableText";
 import { Panel } from "./core/Panel";
 import { DynamicAddButton } from "./core/LayoutButtons";

@@ -3,7 +3,7 @@ import { collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverT
 import { db } from "@/lib/firebase";
 import { AnimationPreset, AnimationCategory } from "@/types/animation";
 import { toast } from "sonner";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 
 export const ANIMATION_CATEGORIES: AnimationCategory[] = [
   "All",

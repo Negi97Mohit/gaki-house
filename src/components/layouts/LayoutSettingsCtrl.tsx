@@ -4,9 +4,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+} from "@/shared/ui/popover";
+import { Label } from "@/shared/ui/label";
+import { Input } from "@/shared/ui/input";
 import { usePreviewMode } from "./dynamic/core/PreviewModeContext";
 
 interface LayoutSettingsCtrlProps {

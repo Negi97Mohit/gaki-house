@@ -1,7 +1,7 @@
 // src/pages/index/hooks/useLayoutManager.ts
 import { useCallback } from "react";
 import { useLayoutPresets } from "@/hooks/useLayoutPresets";
-import { useCanvasPresets } from "@/hooks/useCanvasPresets";
+import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
 import { usePublicPresets } from "@/hooks/usePublicPresets";
 import { toast } from "sonner";
 import {
@@ -21,7 +21,7 @@ import {
   getResponsivePipLayout,
   getResponsiveTextLayout,
 } from "@/lib/presetValidation";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 
 // Helper to generate IDs (same as in Index.tsx, duplicated for modularity or import if possible)
 interface UseLayoutManagerProps {

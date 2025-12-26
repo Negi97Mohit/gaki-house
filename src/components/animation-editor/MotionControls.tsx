@@ -1,7 +1,7 @@
 import React from "react";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/shared/ui/label";
+import { Slider } from "@/shared/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { AnimationPreset } from "@/types/animation";
 
 interface MotionControlsProps {

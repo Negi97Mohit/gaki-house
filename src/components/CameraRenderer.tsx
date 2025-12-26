@@ -2,10 +2,10 @@
 import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
-import { useWebGLRenderLoop } from "@/hooks/useWebGLRenderLoop";
+import { useWebGLRenderLoop } from "@/features/canvas/hooks/useWebGLRenderLoop";
 import { usePictureInPicture } from "@/hooks/usePictureInPicture";
 import { PipControlsToolbar } from "./PipControlsToolbar";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
 import { AmbientBackground } from "./AmbientBackground";
 

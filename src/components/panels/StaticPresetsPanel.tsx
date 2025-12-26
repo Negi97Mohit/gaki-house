@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { useCaptionPresets } from "@/hooks/useCaptionPresets";
 import { CaptionStyle } from "@/types/caption";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface StaticPresetsPanelProps {
   onStyleChange: (style: CaptionStyle) => void;

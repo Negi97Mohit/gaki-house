@@ -4,7 +4,7 @@ import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface VitruvianMotionLayoutProps {
     sections: CanvasSectionState[];

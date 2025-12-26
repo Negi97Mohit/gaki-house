@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus, Trash2, Type } from "lucide-react";

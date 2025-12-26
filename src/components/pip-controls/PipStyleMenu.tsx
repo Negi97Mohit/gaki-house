@@ -9,7 +9,7 @@ import {
     Minimize2,
     Settings2,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,10 +18,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuCheckboxItem,
     DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
-import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/shared/ui/dropdown-menu";
+import { Slider } from "@/shared/ui/slider";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
 import { CameraShape } from "@/types/caption";
 
 interface PipStyleMenuProps {

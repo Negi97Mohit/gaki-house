@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect } from "react";
 import { useDynamicLayout } from "./DynamicLayoutContext";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 export interface EditableTextProps {
   sectionId?: string;

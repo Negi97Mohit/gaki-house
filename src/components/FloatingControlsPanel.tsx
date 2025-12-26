@@ -9,7 +9,7 @@ import {
   BadgeCheck,
   X,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CanvasPreset } from "@/types/canvasPreset";
 import { SocialBannerDesign, SocialBannerData } from "@/types/socialBanner";

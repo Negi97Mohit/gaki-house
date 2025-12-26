@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, doc, writeBatch, serverTimestamp } from "firebase/firestore";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { toast } from "sonner";
 
 // Import local data

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
     Bold,
     Italic,
@@ -8,7 +8,7 @@ import {
     AlignCenter,
     AlignRight,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 
 interface TextFormattingControlsProps {

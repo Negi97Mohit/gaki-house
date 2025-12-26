@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { RecordingSession } from "@/types/editor";
 import { LayoutPreset } from "@/types/layoutPreset";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/shared/ui/button";
+import { Card } from "@/shared/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import {
   Video,
   Edit,
@@ -17,7 +17,7 @@ import {
   Layers,
   CheckCircle,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 

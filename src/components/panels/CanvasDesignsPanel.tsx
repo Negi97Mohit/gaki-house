@@ -7,13 +7,13 @@ import {
   Trash2,
   Check,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
 import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
-import { useCanvasPresets } from "@/hooks/useCanvasPresets"; // --- MODIFIED
+import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets"; // --- MODIFIED
 import { CanvasPreset, CanvasPresetTextOverlay } from "@/types/canvasPreset";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import {
   Crown,
   Zap as ZapIcon,

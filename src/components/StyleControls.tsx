@@ -12,7 +12,7 @@ import {
 import { Slider } from "./ui/slider";
 import { Input } from "./ui/input";
 import { Switch } from "./ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { ALL_FONTS } from "@/lib/fonts";
 
 interface StyleControlsProps {

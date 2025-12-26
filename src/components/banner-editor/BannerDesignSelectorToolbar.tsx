@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { Palette, Sparkles, X } from "lucide-react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
+import { cn } from "@/shared/lib/utils";
 import { BannerDesign } from "@/types/banner";
 import { SocialBannerDesign } from "@/types/socialBanner";
 import { AnimatedBannerDesign } from "@/types/animatedBanner";

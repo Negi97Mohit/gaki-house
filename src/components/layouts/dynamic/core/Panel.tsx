@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../../GridSectionWrapper";
 import { useDynamicLayout } from "./DynamicLayoutContext";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { DynamicDeleteButton } from "./LayoutButtons";
 
 interface PanelProps {

@@ -1,12 +1,12 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { Type } from "lucide-react";
 import { TextOverlayState } from "@/types/caption";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/ui/dropdown-menu";
 
 interface ColorControlsProps {
     overlay: TextOverlayState;

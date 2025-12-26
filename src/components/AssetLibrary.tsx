@@ -1,9 +1,9 @@
 // src/components/AssetLibrary.tsx
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Button } from "@/shared/ui/button";
 import { PopoverClose } from "@radix-ui/react-popover"; // Corrected import
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Search, Loader2, X } from "lucide-react"; // Added X
 import { toast } from "sonner";
 import {

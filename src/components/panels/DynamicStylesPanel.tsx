@@ -1,8 +1,8 @@
 // src/components/panels/DynamicStylesPanel.tsx
 import React, { useState, useEffect } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
+import { Label } from "@/shared/ui/label";
+import { cn } from "@/shared/lib/utils";
 import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";
 
 interface DynamicStylesPanelProps {

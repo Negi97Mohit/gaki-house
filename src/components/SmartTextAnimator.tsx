@@ -1,7 +1,7 @@
 // src/components/SmartTextAnimator.tsx
 import React, { useState, useEffect } from "react";
 import { AnimationPreset } from "@/types/animation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface SmartTextAnimatorProps {
   preset: AnimationPreset;

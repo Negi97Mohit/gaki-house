@@ -5,7 +5,7 @@ import {
   TextOverlayState,
   CanvasSectionCameraState,
 } from "@/types/caption";
-import { FileRenderer } from "@/components/DraggableFileViewer";
+import { FileRenderer } from "@/features/canvas/ui/DraggableFileViewer";
 import { AssetResult } from "@/components/AssetLibrary";
 import { EmptyGridSection } from "@/components/grid-section/EmptyGridSection";
 import { CameraGridSection } from "@/components/grid-section/CameraGridSection";

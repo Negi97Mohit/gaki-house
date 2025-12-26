@@ -10,7 +10,7 @@ import {
   CanvasSectionState,
   CanvasLayoutState,
 } from "@/types/caption";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { Panel } from "./core/Panel";

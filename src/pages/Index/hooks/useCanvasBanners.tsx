@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import { toast } from "sonner";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import { getPlatformIcon } from "@/components/SocialBannerRenderer";
 import { SceneState, GeneratedOverlay } from "@/types/caption";

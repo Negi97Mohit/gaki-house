@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import {
   SceneState,

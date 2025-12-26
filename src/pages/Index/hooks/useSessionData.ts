@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import { RecordingSession } from "@/types/editor";
 import { GeneratedOverlay } from "@/types/caption";
 

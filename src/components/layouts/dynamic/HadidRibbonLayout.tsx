@@ -18,7 +18,7 @@ import * as THREE from "three";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus, Trash2, LayoutTemplate, Type } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { Panel } from "./core/Panel";
 
 // --- 1. Linear Path ---

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { X } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { ScrollArea } from "@/shared/ui/scroll-area";
 import { useTextDesigns } from "@/hooks/useTextDesigns";
 import { MultiLayerTextRenderer } from "@/components/MultiLayerTextRenderer";
 

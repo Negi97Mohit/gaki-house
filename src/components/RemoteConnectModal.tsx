@@ -6,7 +6,7 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/shared/ui/dialog";
 import { Loader2, Smartphone, CheckCircle2 } from "lucide-react";
 
 interface RemoteConnectModalProps {

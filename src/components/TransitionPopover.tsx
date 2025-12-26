@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/shared/ui/button";
+import { Slider } from "@/shared/ui/slider";
+import { Switch } from "@/shared/ui/switch";
+import { Label } from "@/shared/ui/label";
+import { ScrollArea } from "@/shared/ui/scroll-area";
 import {
   SceneTransition,
   TransitionType,
@@ -42,7 +42,7 @@ import {
   Circle,
   Play,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import {
   Select,
@@ -50,7 +50,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/shared/ui/select";
 
 interface TransitionCategory {
   name: string;

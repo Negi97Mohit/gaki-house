@@ -10,7 +10,7 @@ import {
 } from "@/types/caption";
 import { AssetResult } from "@/components/AssetLibrary";
 import { toast } from "sonner";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 
 // Helper to clone overlay with new ID
 const newOverlay = (overlay: GeneratedOverlay) => ({

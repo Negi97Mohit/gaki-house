@@ -1,13 +1,13 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { Search } from "lucide-react";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/shared/ui/popover";
 import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface SearchButtonProps {
     sectionId: string;

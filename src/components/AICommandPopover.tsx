@@ -5,9 +5,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+} from "@/shared/ui/popover";
+import { Textarea } from "@/shared/ui/textarea";
+import { Button } from "@/shared/ui/button";
 import {
   Sparkles,
   Send,
@@ -22,8 +22,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+} from "@/shared/ui/select";
+import { Label } from "@/shared/ui/label";
 import { GeneratedOverlay } from "@/types/caption";
 
 interface AICommandPopoverProps {

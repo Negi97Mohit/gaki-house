@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Peer from "peerjs";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { Camera, Mic, MicOff, Video, VideoOff, RefreshCw } from "lucide-react";
 
 const RemoteCamera = () => {

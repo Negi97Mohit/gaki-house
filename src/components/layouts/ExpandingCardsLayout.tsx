@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 import { EditableText } from "@/components/layouts/dynamic/core/EditableText";

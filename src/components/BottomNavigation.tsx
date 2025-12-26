@@ -19,14 +19,14 @@ import {
   RotateCcw,
   ScanFace,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+} from "@/shared/ui/dropdown-menu";
+import { cn } from "@/shared/lib/utils";
 import { AssetResult } from "@/components/AssetLibrary";
 import { LayoutMode, CameraShape } from "@/types/caption";
 import { useTheme } from "next-themes";

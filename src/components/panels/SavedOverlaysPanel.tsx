@@ -1,9 +1,9 @@
 // src/components/panels/SavedOverlaysPanel.tsx
 import React from "react";
 import { Sparkles, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { GeneratedOverlay } from "@/types/caption";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface SavedOverlaysPanelProps {
   savedOverlays: GeneratedOverlay[];

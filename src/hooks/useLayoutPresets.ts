@@ -2,7 +2,7 @@
 import { useState, useCallback } from "react";
 import { LayoutPreset } from "@/types/layoutPreset";
 import { useLocalStorage } from "./useLocalStorage";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 
 export const useLayoutPresets = () => {
   const [presets, setPresets] = useLocalStorage<LayoutPreset[]>(

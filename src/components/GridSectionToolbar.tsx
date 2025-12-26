@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Palette,
   Image,
@@ -23,17 +23,17 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/ui/dropdown-menu";
 import { CanvasSectionState, DEFAULT_CAMERA_STATE } from "@/types/caption";
-import { useCanvasPresets } from "@/hooks/useCanvasPresets";
+import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
 import { CanvasPreset } from "@/types/canvasPreset";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/shared/ui/popover";
 import { AssetLibrary, AssetResult } from "./AssetLibrary";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { SearchButton } from "./layouts/dynamic/core/SearchButton";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
 

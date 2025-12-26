@@ -2,7 +2,7 @@ import React from "react";
 import { useDynamicLayout } from "./DynamicLayoutContext";
 import { usePreviewMode } from "./PreviewModeContext";
 import { Plus, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { EditableText } from "./EditableText";
 
 export const DynamicDeleteButton: React.FC<{

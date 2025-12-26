@@ -8,10 +8,10 @@ import {
   Layers,
   User,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { ScrollArea } from "@/shared/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
+import { cn } from "@/shared/lib/utils";
 import { SocialBannerEditor } from "@/components/SocialBannerEditor";
 import {
   SocialBannerRenderer,

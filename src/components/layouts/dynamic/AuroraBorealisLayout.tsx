@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { CanvasSectionState, CanvasLayoutState } from "@/types/caption";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicDeleteButton } from "./core/LayoutButtons";

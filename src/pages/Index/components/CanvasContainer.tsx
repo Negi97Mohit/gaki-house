@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useRef, useMemo } from "react";
+import React, { useCallback, useRef, useMemo } from "react";
 import { toast } from "sonner";
 import { MainCanvasArea } from "./MainCanvasArea";
 import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
@@ -16,7 +16,7 @@ import {
 import { RecordingSession } from "@/types/editor";
 import { AssetResult } from "@/components/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 
 // Hooks
 import { useCanvasPaste } from "../hooks/useCanvasPaste";

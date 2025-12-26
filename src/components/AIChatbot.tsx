@@ -3,7 +3,7 @@ import { Send, X, Bot, User, RefreshCw, Sparkles, MessageSquare, Square, Check, 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { useToast } from "./ui/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import ReactMarkdown from "react-markdown";

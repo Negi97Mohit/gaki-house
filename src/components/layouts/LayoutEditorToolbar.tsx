@@ -11,13 +11,13 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/shared/ui/popover";
+import { ScrollArea } from "@/shared/ui/scroll-area";
 import { ALL_FONTS } from "@/lib/fonts";
 
 interface LayoutEditorToolbarProps {

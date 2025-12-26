@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { PictureInPicture } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { CameraShape } from "@/types/caption";
 import { PipCameraMenu } from "./pip-controls/PipCameraMenu";
 import { PipBackgroundMenu } from "./pip-controls/PipBackgroundMenu";

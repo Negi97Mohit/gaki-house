@@ -2,14 +2,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Bold, Italic, Minus, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/shared/ui/select";
 
 interface BannerTextToolbarProps {
   fontSize: number;

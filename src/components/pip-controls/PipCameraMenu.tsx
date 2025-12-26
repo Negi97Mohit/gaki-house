@@ -1,13 +1,13 @@
 import React from "react";
 import { Camera } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuTrigger,
     DropdownMenuCheckboxItem,
     DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/ui/dropdown-menu";
 
 interface PipCameraMenuProps {
     videoDevices: MediaDeviceInfo[];

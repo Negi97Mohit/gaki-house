@@ -12,9 +12,9 @@ import {
   Image,
   Minus
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Slider } from '@/components/ui/slider';
+import { Button } from '@/shared/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
+import { Slider } from '@/shared/ui/slider';
 import { BannerElementData } from './BannerElement';
 
 interface BannerCustomizationToolbarProps {

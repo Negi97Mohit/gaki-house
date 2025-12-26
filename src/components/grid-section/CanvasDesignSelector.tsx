@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
-import { useCanvasPresets } from "@/hooks/useCanvasPresets"; // --- ADDED
+import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets"; // --- ADDED
 import { CanvasPreset } from "@/types/canvasPreset";
-import { Button } from "@/components/ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { Button } from "@/shared/ui/button";
+import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
+import { cn } from "@/shared/lib/utils";
 import {
   LayoutGrid,
   Crown,

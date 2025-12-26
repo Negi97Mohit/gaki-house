@@ -1,10 +1,10 @@
 // src/components/AnimationGridItem.tsx
 import React, { memo } from "react";
 import { Play, Edit2, Trash2, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import { SmartTextAnimator } from "./SmartTextAnimator";
 import { AnimationPreset } from "@/types/animation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface AnimationGridItemProps {
   preset: AnimationPreset;

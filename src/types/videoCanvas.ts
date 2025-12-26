@@ -11,7 +11,7 @@ import {
     GeneratedLayout,
 } from "@/types/caption";
 import { AssetResult } from "@/components/AssetLibrary";
-import { BrowserOverlayState } from "@/components/DraggableBrowser";
+import { BrowserOverlayState } from "@/features/canvas/ui/DraggableBrowser";
 import { RecordingSession } from "@/types/editor";
 
 export interface VideoCanvasProps {

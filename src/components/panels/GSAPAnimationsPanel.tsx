@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { GSAP_PRESETS, GSAPPreset } from "@/lib/gsapAnimations";
 import { GSAPPresetPreview } from "@/components/GSAPAnimatedBanner";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { Sparkles, Zap, Box, Type, Paintbrush, Layers } from "lucide-react";
 
 interface GSAPAnimationsPanelProps {

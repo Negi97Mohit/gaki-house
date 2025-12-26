@@ -10,7 +10,7 @@ import {
   CameraShape,
 } from "@/types/caption";
 
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 
 interface RecordingState {
   isRecording: boolean;

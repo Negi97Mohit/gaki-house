@@ -1,14 +1,14 @@
 // src/components/GSAPAnimationEditor.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Slider } from "@/shared/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import { Switch } from "@/shared/ui/switch";
 import { X, Save, RotateCcw, Play, Copy } from "lucide-react";
 import { GSAPPreset, GSAPAnimationConfig, GSAPAnimationType } from "@/lib/gsapAnimations";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/shared/ui/scroll-area";
 import { ParticleEffectOverlay } from "./ParticleEffectOverlay";
 import { EffectType } from "@/lib/particleEffects";
 import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";

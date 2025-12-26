@@ -13,14 +13,14 @@ import {
   Move,
 } from "lucide-react";
 import { Rnd } from "react-rnd";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/ui/dropdown-menu";
 
 interface ExcalidrawOverlayProps {
   isVisible: boolean;

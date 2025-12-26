@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
-import { generateId } from "@/lib/id";
+import { generateId } from "@/shared/lib/id";
 import { SceneState, GeneratedOverlay } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 

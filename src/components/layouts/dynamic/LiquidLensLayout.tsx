@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useState, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { LiquidShaderMaterial } from "@/lib/webgl/shaders/liquidShader";
+import { LiquidShaderMaterial } from "@/kernel/engine/shaders/liquidShader";
 import { useTexture, Html, ScrollControls, useScroll } from "@react-three/drei";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";

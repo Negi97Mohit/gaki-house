@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/ui/button";
 import {
   Plus,
   X,
@@ -15,14 +15,14 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { SceneState, SceneTransition, SubSceneState } from "@/types/caption";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/ui/dropdown-menu";
 import { StreamStyleSelector } from "@/components/stream-scenes";
 import { StreamStylePreset } from "@/types/streamStyle";
 

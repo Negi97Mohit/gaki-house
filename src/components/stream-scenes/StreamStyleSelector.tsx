@@ -13,8 +13,8 @@ import {
   Check,
   Pause
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/shared/ui/button';
+import { Badge } from '@/shared/ui/badge';
 import { 
   Dialog,
   DialogContent,
@@ -22,15 +22,15 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter
-} from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@/shared/ui/dialog';
+import { ScrollArea } from '@/shared/ui/scroll-area';
 import { 
   STREAM_STYLE_PRESETS, 
   StreamStylePreset, 
   StreamSceneType,
   DEFAULT_STREAM_SCENES
 } from '@/types/streamStyle';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import { toast } from 'sonner';
 
 interface StreamStyleSelectorProps {
