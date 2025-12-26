@@ -3,18 +3,18 @@ import { Toaster as Sonner } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "next-themes";
 import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
-import { useEffect, useRef, useState } from "react";
-import EditPage from "./pages/Edit";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Loader from "@/shared/ui/Loader";
-import RemoteCamera from "./pages/RemoteCamera";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
 
-
+// Lazy Load Pages
+const Index = lazy(() => import("./pages/Index"));
+const EditPage = lazy(() => import("./pages/Edit"));
+const RemoteCamera = lazy(() => import("./pages/RemoteCamera"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -66,19 +66,21 @@ const App = () => {
             forcedTheme="dark"
             disableTransitionOnChange
           >
-            {/* ✅ Loader always visible at start */}
+            {/* ✅ Loader always visible at start (Global) */}
             <Loader visible={showLoader} />
 
             <TooltipProvider>
               <Toaster />
               <Sonner />
               <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/edit/:sessionId" element={<EditPage />} />
-                  <Route path="/remote-cam" element={<RemoteCamera />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <Suspense fallback={<Loader visible={true} />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/edit/:sessionId" element={<EditPage />} />
+                    <Route path="/remote-cam" element={<RemoteCamera />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
               </BrowserRouter>
             </TooltipProvider>
           </ThemeProvider>
