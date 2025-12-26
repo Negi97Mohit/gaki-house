@@ -1,6 +1,9 @@
-// src/components/MultiLayerTextRenderer.tsx
 import React, { useEffect, useId } from "react";
-import { TextDesignLayer, TextLayer, TextDesignPreset } from "@/types/textDesign";
+import {
+  TextDesignLayer,
+  TextLayer,
+  TextDesignPreset,
+} from "@/types/textDesign";
 
 interface MultiLayerTextRendererProps {
   text: string;
@@ -8,12 +11,18 @@ interface MultiLayerTextRendererProps {
   scale?: number;
   animation?: TextDesignPreset["animation"];
   animationCSS?: string;
+  fontSize?: number; // Override
+  color?: string; // Override
+  letterSpacing?: string; // Override (e.g., "10px")
 }
 
 // Helper function to generate CSS for a single layer
 const getLayerStyle = (
   layer: TextDesignLayer,
-  scale: number = 1
+  scale: number = 1,
+  overrideFontSize?: number,
+  overrideColor?: string,
+  overrideLetterSpacing?: string
 ): React.CSSProperties => {
   const style: React.CSSProperties = {
     position: "absolute",
@@ -28,61 +37,81 @@ const getLayerStyle = (
     pointerEvents: "none",
   };
 
+  const layerFontSize = overrideFontSize || (layer as any).fontSize || 60;
+
   switch (layer.type) {
     case "text":
       style.fontFamily = layer.fontFamily;
-      style.fontSize = `${layer.fontSize * scale}px`;
-      style.letterSpacing = layer.letterSpacing
-        ? `${parseFloat(layer.letterSpacing as string) * scale}px`
-        : undefined;
-      if (layer.color) {
-        style.color = layer.color;
+      style.fontSize = `${layerFontSize * scale}px`;
+
+      // LETTER SPACING OVERRIDE
+      if (overrideLetterSpacing) {
+        const spacingVal = parseFloat(overrideLetterSpacing);
+        style.letterSpacing = `${spacingVal * scale}px`;
+      } else if (layer.letterSpacing) {
+        style.letterSpacing = `${
+          parseFloat(layer.letterSpacing as string) * scale
+        }px`;
       }
-      if (layer.gradient) {
-        style.background = layer.gradient;
-        style.backgroundClip = "text";
-        style.WebkitBackgroundClip = "text";
-        style.WebkitTextFillColor = "transparent";
+
+      // COLOR OVERRIDE
+      if (overrideColor && overrideColor !== layer.color) {
+        style.color = overrideColor;
+        // Reset gradient backgrounds if solid color is enforced
+        style.background = "none";
+        style.backgroundClip = "border-box";
+        style.WebkitBackgroundClip = "border-box";
+        style.WebkitTextFillColor = "currentColor";
+      } else {
+        if (layer.color) {
+          style.color = layer.color;
+        }
+        if (layer.gradient) {
+          style.background = layer.gradient;
+          style.backgroundClip = "text";
+          style.WebkitBackgroundClip = "text";
+          style.WebkitTextFillColor = "transparent";
+        }
       }
       break;
 
     case "stroke":
       style.WebkitTextStroke = `${layer.width * scale}px ${layer.color}`;
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = layer.fontFamily;
       break;
 
     case "glow":
     case "outer-glow":
       style.textShadow = `0 0 ${layer.blur * scale}px ${layer.color}`;
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
 
     case "shadow":
-      style.textShadow = `${layer.offsetX * scale}px ${layer.offsetY * scale}px ${layer.blur * scale
-        }px ${layer.color}`;
-      style.color = "transparent";
-      break;
-
     case "inner-shadow":
-      // This is trickier and often requires a pseudo-element,
-      // but a simple text-shadow can fake it.
-      style.textShadow = `${layer.offsetX * scale}px ${layer.offsetY * scale}px ${layer.blur * scale
-        }px ${layer.color}`;
+      style.textShadow = `${layer.offsetX * scale}px ${
+        layer.offsetY * scale
+      }px ${layer.blur * scale}px ${layer.color}`;
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
 
     case "extrude":
-      // Fake 3D extrude using multiple text-shadows
       const shadows = [];
       const depth = Math.max(1, Math.round(layer.depth * scale));
       for (let i = 1; i <= depth; i++) {
-        // Simple angle logic (can be improved)
         const x = Math.cos(layer.angle * (Math.PI / 180)) * i;
         const y = Math.sin(layer.angle * (Math.PI / 180)) * i;
         shadows.push(`${x.toFixed(1)}px ${y.toFixed(1)}px 0 ${layer.color}`);
       }
       style.textShadow = shadows.join(", ");
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
 
     case "texture":
@@ -93,89 +122,127 @@ const getLayerStyle = (
       style.WebkitTextFillColor = "transparent";
       style.opacity = layer.opacity;
       style.mixBlendMode = layer.blendMode;
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
 
     case "offset-layer":
       style.color = layer.color;
-      style.transform = `translate(${layer.offsetX * scale}px, ${layer.offsetY * scale
-        }px)`;
-      style.mixBlendMode = "screen"; // Common for chromatic aberration
+      style.transform = `translate(${layer.offsetX * scale}px, ${
+        layer.offsetY * scale
+      }px)`;
+      style.mixBlendMode = "screen";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
 
     case "specular-highlight":
     case "gloss":
-      // This is a complex effect, often faked with a gradient overlay
       style.background = `linear-gradient(180deg, rgba(255,255,255,${layer.strength}) 0%, rgba(255,255,255,0) 50%)`;
       style.backgroundClip = "text";
       style.WebkitBackgroundClip = "text";
       style.WebkitTextFillColor = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
 
-    // --- PLACEHOLDERS FOR NEW ADVANCED EFFECTS ---
     case "inner-core":
       if ("color" in layer) {
-        style.textShadow = `0 0 ${2 * scale}px ${layer.color}, 0 0 ${5 * scale
-          }px ${layer.color}`;
+        style.textShadow = `0 0 ${2 * scale}px ${layer.color}, 0 0 ${
+          5 * scale
+        }px ${layer.color}`;
       }
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "ambient-bloom":
       if ("color" in layer && "opacity" in layer) {
         style.textShadow = `0 0 ${45 * scale}px ${layer.color}`;
         style.opacity = layer.opacity;
       }
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "bloom":
       if ("color" in layer) {
-        style.textShadow = `0 0 ${45 * scale}px ${layer.color || "rgba(255,255,255,0.5)"
-          }`;
+        style.textShadow = `0 0 ${45 * scale}px ${
+          layer.color || "rgba(255,255,255,0.5)"
+        }`;
       }
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "fog":
       if ("opacity" in layer) {
         style.textShadow = `0 0 ${45 * scale}px rgba(255,255,255,0.5)`;
         style.opacity = layer.opacity;
       }
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "refraction":
     case "prism-shift":
     case "rgb-shift":
-      style.textShadow = `${2 * scale}px ${2 * scale}px 0px #ff0000, -${2 * scale
-        }px -${2 * scale}px 0px #00ffff`;
+      style.textShadow = `${2 * scale}px ${2 * scale}px 0px #ff0000, -${
+        2 * scale
+      }px -${2 * scale}px 0px #00ffff`;
       style.color = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "3d-puff":
     case "jelly-3d":
     case "puff":
-      // Fake puff with a soft, inset shadow
       style.textShadow = `0px ${2 * scale}px ${5 * scale}px rgba(0,0,0,0.3)`;
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "grain":
-      style.backgroundImage = `url(/textures/grain.png)`; // You will need to add this texture
+      style.backgroundImage = `url(/textures/grain.png)`;
       style.mixBlendMode = "overlay";
       style.opacity = layer.opacity;
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "scanlines":
-      style.backgroundImage = `url(/textures/scanlines.png)`; // You will need to add this texture
+      style.backgroundImage = `url(/textures/scanlines.png)`;
       style.mixBlendMode = "multiply";
       style.opacity = layer.opacity;
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "dust":
-      style.backgroundImage = `url(/textures/dust.png)`; // You will need to add this texture
+      style.backgroundImage = `url(/textures/dust.png)`;
       style.mixBlendMode = "screen";
       style.opacity = layer.opacity;
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "gold-foil":
-      style.backgroundImage = `url(${layer.texture || "/textures/gold_foil.jpg"
-        })`;
+      style.backgroundImage = `url(${
+        layer.texture || "/textures/gold_foil.jpg"
+      })`;
       style.backgroundSize = "cover";
       style.backgroundClip = "text";
       style.WebkitBackgroundClip = "text";
       style.WebkitTextFillColor = "transparent";
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
+
     case "speedlines":
     case "halftone":
     case "drip":
@@ -186,14 +253,15 @@ const getLayerStyle = (
     case "dot-grid":
     case "emboss":
     case "chrome":
-      // Generic placeholder for complex effects
-      style.opacity = 0.8; // Just to show it's doing *something*
+      style.opacity = 0.8;
+      style.fontSize = `${layerFontSize * scale}px`;
+      style.fontFamily = (layer as any).fontFamily;
       break;
   }
   return style;
 };
 
-// Animation keyframes for various effects
+// Animation keyframes (Kept same as provided)
 const ANIMATION_KEYFRAMES: Record<string, string> = {
   fire: `
     @keyframes fire-flicker {
@@ -317,72 +385,47 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
   scale = 1,
   animation,
   animationCSS,
+  fontSize,
+  color,
+  letterSpacing,
 }) => {
   const uniqueId = useId();
   const animationName = animation?.type || "";
   const keyframes = animationCSS || ANIMATION_KEYFRAMES[animationName] || "";
-  
-  // Inject keyframes into document
+
   useEffect(() => {
     if (!keyframes) return;
-    
     const styleId = `text-anim-${uniqueId.replace(/:/g, "-")}`;
     let styleEl = document.getElementById(styleId) as HTMLStyleElement | null;
-    
     if (!styleEl) {
       styleEl = document.createElement("style");
       styleEl.id = styleId;
       document.head.appendChild(styleEl);
     }
-    
     styleEl.textContent = keyframes;
-    
     return () => {
       styleEl?.remove();
     };
   }, [keyframes, uniqueId]);
 
-  // Find the base text layer to set font size for the container
   const baseTextLayer = layers.find((l) => l.type === "text") as
     | TextLayer
     | undefined;
+  const finalFontSize = fontSize || baseTextLayer?.fontSize || 32;
 
-  // Get animation style
   const getAnimationStyle = (): React.CSSProperties => {
     if (!animation?.type) return {};
-    
-    const animMap: Record<string, string> = {
-      fire: "fire-flicker",
-      water: "water-wave",
-      snow: "snow-sparkle",
-      confetti: "confetti-bounce",
-      graffiti: "graffiti-shake",
-      neon: "neon-pulse",
-      electric: "electric-zap",
-      glitch: "glitch-effect",
-      rainbow: "rainbow-shift",
-      pulse: "text-pulse",
-      bounce: "text-bounce",
-      shake: "text-shake",
-      glow: "glow-pulse",
-      float: "text-float",
-      flame: "flame-dance",
-      ice: "ice-shimmer",
-    };
-    
-    const animName = animMap[animation.type] || animation.type;
-    const duration = animation.duration || 1;
-    const infinite = animation.infinite !== false ? "infinite" : "1";
-    
     return {
-      animation: `${animName} ${duration}s ease-in-out ${infinite}`,
+      animation: `${animation.type} ${animation.duration || 1}s ease-in-out ${
+        animation.infinite !== false ? "infinite" : "1"
+      }`,
     };
   };
 
   const containerStyle: React.CSSProperties = {
     position: "relative",
     fontFamily: baseTextLayer?.fontFamily || "Inter",
-    fontSize: `${(baseTextLayer?.fontSize || 32) * scale}px`,
+    fontSize: `${finalFontSize * scale}px`,
     fontWeight: "bold",
     textAlign: "center",
     width: "100%",
@@ -396,7 +439,6 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
     ...getAnimationStyle(),
   };
 
-  // Find the base text layer to render (it must be part of the stack)
   const baseText =
     layers.find((l): l is TextLayer => l.type === "text") ||
     (layers[0] as TextLayer);
@@ -404,20 +446,20 @@ export const MultiLayerTextRenderer: React.FC<MultiLayerTextRendererProps> = ({
 
   return (
     <div style={containerStyle}>
-      {/* Invisible spacer to define the size */}
       <span
         style={{
-          ...getLayerStyle(baseText, scale),
+          ...getLayerStyle(baseText, scale, fontSize, color, letterSpacing),
           position: "relative",
           visibility: "hidden",
         }}
       >
         {text}
       </span>
-
-      {/* Render all layers, absolutely positioned */}
       {layers.map((layer, index) => (
-        <div key={index} style={getLayerStyle(layer, scale)}>
+        <div
+          key={index}
+          style={getLayerStyle(layer, scale, fontSize, color, letterSpacing)}
+        >
           {text}
         </div>
       ))}

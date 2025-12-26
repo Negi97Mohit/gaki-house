@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useCallback } from "react";
 import { cn } from "@/shared/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import { TextEditingToolbar } from "./TextEditingToolbar";
@@ -48,7 +48,6 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
   const editorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Focus editor when entering edit mode
   useLayoutEffect(() => {
     if (isEditing && editorRef.current) {
       editorRef.current.focus();
@@ -61,26 +60,39 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
     }
   }, [isEditing]);
 
-  // PHASE 2 FIX: Auto-Resize & Center-Pivot Logic
-  // This ensures the container always fits the text tightly ("fit-content")
-  // and maintains the center position when the size changes ("No Jumping").
-  useLayoutEffect(() => {
-    // Determine which element to measure (editor or view mode renderer)
-    const elementToMeasure = isEditing ? editorRef.current : contentRef.current;
+  const updateSize = useCallback(
+    (element: HTMLElement) => {
+      if (!element || sceneSize.width === 0 || sceneSize.height === 0) return;
 
-    if (elementToMeasure && sceneSize.width > 0 && sceneSize.height > 0) {
-      // 1. Measure the natural size of the content
-      const { scrollWidth, scrollHeight } = elementToMeasure;
+      const hasBackground =
+        overlay.style.backgroundColor &&
+        overlay.style.backgroundColor !== "transparent";
 
-      // Add a small buffer for borders/shadows/cursor
-      const measuredWidth = scrollWidth + 4;
+      if (hasBackground) {
+        return;
+      }
+
+      const originalWidth = element.style.width;
+      const originalHeight = element.style.height;
+      const originalWhiteSpace = element.style.whiteSpace;
+
+      element.style.width = "max-content";
+      element.style.height = "auto";
+      element.style.whiteSpace = "pre-wrap";
+
+      const scrollWidth = element.scrollWidth;
+      const scrollHeight = element.scrollHeight;
+
+      element.style.width = originalWidth;
+      element.style.height = originalHeight;
+      element.style.whiteSpace = originalWhiteSpace;
+
+      const measuredWidth = scrollWidth + 10;
       const measuredHeight = scrollHeight + 4;
 
-      // 2. Convert to percentages
       const newWidthPct = (measuredWidth / sceneSize.width) * 100;
       const newHeightPct = (measuredHeight / sceneSize.height) * 100;
 
-      // 3. Check if size has changed significantly (> 0.5%) to avoid loops
       const currentWidth = overlay.layout.size.width;
       const currentHeight = overlay.layout.size.height;
 
@@ -88,20 +100,31 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
       const heightDiff = Math.abs(newHeightPct - currentHeight);
 
       if (widthDiff > 0.1 || heightDiff > 0.1) {
-        // 4. Center-Pivot Calculation:
-        // Adjust X/Y so the center point remains stationary
         const widthDelta = newWidthPct - currentWidth;
         const heightDelta = newHeightPct - currentHeight;
 
         const newX = overlay.layout.position.x - widthDelta / 2;
         const newY = overlay.layout.position.y - heightDelta / 2;
 
-        // 5. Update Layout
         onLayoutChange(overlay.id, {
           size: { width: newWidthPct, height: newHeightPct },
           position: { x: newX, y: newY },
         });
       }
+    },
+    [
+      sceneSize,
+      overlay.layout,
+      overlay.id,
+      onLayoutChange,
+      overlay.style.backgroundColor,
+    ]
+  );
+
+  useLayoutEffect(() => {
+    const elementToMeasure = isEditing ? editorRef.current : contentRef.current;
+    if (elementToMeasure) {
+      updateSize(elementToMeasure);
     }
   }, [
     overlay.content,
@@ -109,9 +132,13 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
     isEditing,
     sceneSize.width,
     sceneSize.height,
-    // Dependency on ID ensures we check when switching items
     overlay.id,
+    updateSize,
   ]);
+
+  const handleInput = (e: React.FormEvent<HTMLDivElement>) => {
+    updateSize(e.currentTarget);
+  };
 
   const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     setIsEditing(false);
@@ -130,6 +157,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
     fontStyle: overlay.style.italic ? "italic" : "normal",
     textDecoration: overlay.style.underline ? "underline" : "none",
     textAlign: (overlay.style as any).textAlign || "left",
+    letterSpacing: (overlay.style as any).letterSpacing || "0px",
     textShadow: overlay.style.textShadow
       ? overlay.style.textShadow.replace(
           /(-?\d*\.?\d+)px/g,
@@ -174,23 +202,27 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
               ref={editorRef}
               contentEditable={true}
               suppressContentEditableWarning={true}
+              onInput={handleInput}
               onBlur={handleBlur}
               className="w-full h-full outline-none focus:ring-0 whitespace-pre-wrap break-words p-1 bg-transparent"
               style={{
                 ...getStyleObject(),
-                // Use min-width to prevent collapse to 0
                 minWidth: "1em",
                 minHeight: "1em",
               }}
               dangerouslySetInnerHTML={{ __html: overlay.content }}
             />
           ) : (
-            // View Mode
             <div
               ref={contentRef}
               className="w-full h-full"
-              // Ensure container fits content for measurement
-              style={{ width: "fit-content", height: "fit-content" }}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                // Ensure background color is applied in view mode too
+                backgroundColor: overlay.style.backgroundColor || "transparent",
+              }}
             >
               {overlay.style.layers ? (
                 <MultiLayerTextRenderer
@@ -200,6 +232,9 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                   }
                   layers={overlay.style.layers}
                   scale={scale || 1}
+                  fontSize={overlay.style.fontSize}
+                  color={overlay.style.color}
+                  letterSpacing={(overlay.style as any).letterSpacing} // Pass the indent/spacing
                   animation={(overlay.style as any).animation}
                   animationCSS={(overlay.style as any).animationCSS}
                 />

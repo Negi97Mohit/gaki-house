@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { Button } from "@/shared/ui/button";
-import { Sparkles, RemoveFormatting, Layers } from "lucide-react";
+import { Sparkles, Layers } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import { TextFormattingControls } from "@/features/caption/ui/text-toolbar/TextFormattingControls";
@@ -15,8 +15,8 @@ interface TextEditingToolbarProps {
     style: Partial<TextOverlayState["style"]>
   ) => void;
   onLayoutChange: (
-    id: string, // ADDED
-    layout: Partial<TextOverlayState["layout"]> // ADDED
+    id: string,
+    layout: Partial<TextOverlayState["layout"]>
   ) => void;
   position: { x: number; y: number };
   containerRef?: React.RefObject<HTMLElement>;
@@ -27,7 +27,7 @@ interface TextEditingToolbarProps {
 export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   overlay,
   onStyleChange,
-  onLayoutChange, // ADDED
+  onLayoutChange,
   position,
   containerRef,
   elementHeight = 40,
@@ -37,29 +37,21 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
   const [showDesigns, setShowDesigns] = useState(false);
 
+  // Smart Positioning Logic
   useLayoutEffect(() => {
     if (toolbarRef.current && containerRef?.current) {
       const toolbarHeight = toolbarRef.current.offsetHeight;
       const toolbarWidth = toolbarRef.current.offsetWidth;
       const containerRect = containerRef.current.getBoundingClientRect();
 
-      const gap = 20;
       let x = position.x + elementWidth / 2 - toolbarWidth / 2;
       x = Math.max(8, Math.min(x, containerRect.width - toolbarWidth - 8));
 
-      let y: number;
-      const spaceAbove = position.y;
-      const spaceBelow = containerRect.height - (position.y + elementHeight);
-      const requiredSpaceAbove = toolbarHeight + gap;
-      const requiredSpaceBelow = toolbarHeight + gap + 45;
+      const gap = 12;
+      let y = position.y - toolbarHeight - gap;
 
-      if (spaceAbove >= requiredSpaceAbove) {
-        y = position.y - toolbarHeight - gap;
-      } else if (spaceBelow >= requiredSpaceBelow) {
-        y = position.y + elementHeight + 45;
-      } else {
-        y = Math.max(8, position.y - toolbarHeight - gap);
-        y = Math.max(8, Math.min(y, containerRect.height - toolbarHeight - 8));
+      if (y < 0) {
+        y = position.y + elementHeight + gap;
       }
 
       setToolbarPosition({ x, y });
@@ -70,71 +62,76 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
     <>
       <div
         ref={toolbarRef}
-        data-text-toolbar
-        className="absolute bg-background/95 backdrop-blur-md border-2 border-border rounded-xl shadow-2xl p-2"
+        className="absolute pointer-events-auto flex items-center gap-1 p-1.5 bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl animate-in fade-in zoom-in-95 duration-200 isolate"
         style={{
           left: `${toolbarPosition.x}px`,
           top: `${toolbarPosition.y}px`,
-          zIndex: "var(--z-text-toolbar)",
+          zIndex: 9999,
         }}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-1.5 flex-wrap max-w-[700px]">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 px-3 text-xs font-medium"
-            onClick={() => setShowDesigns(!showDesigns)}
-          >
-            <Sparkles className="w-3 h-3 mr-1" />
-            Designs
-          </Button>
+        <Button
+          variant={showDesigns ? "secondary" : "ghost"}
+          size="icon"
+          className="h-8 w-8 shrink-0"
+          onClick={() => setShowDesigns(!showDesigns)}
+          title="Text Designs & Animations"
+        >
+          <Sparkles className="w-4 h-4 text-indigo-400" />
+        </Button>
 
-          <div className="w-px h-6 bg-border" />
+        <div className="w-px h-5 bg-border mx-0.5" />
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "h-8 w-8",
-              overlay.layout.isBehindUser ? "bg-primary/20 text-primary" : "text-muted-foreground hover:text-foreground"
-            )}
-            title={overlay.layout.isBehindUser ? "Currently Behind User (Click to move front)" : "Currently In Front (Click to move behind)"}
-            onClick={() => onLayoutChange(overlay.id, { isBehindUser: !overlay.layout.isBehindUser })}
-          >
-            <Layers className="w-4 h-4" />
-          </Button>
+        <FontControls overlay={overlay} onStyleChange={onStyleChange} />
 
-          {overlay.style.layers ? (
-            <div className="flex items-center gap-2 p-2">
-              <span className="text-xs text-muted-foreground">
-                Design applied
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                title="Remove Design / Edit Manually"
-                onClick={() => onStyleChange(overlay.id, { layers: null })}
-              >
-                <RemoveFormatting className="w-4 h-4" />
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="w-px h-6 bg-border" />
-              <FontControls overlay={overlay} onStyleChange={onStyleChange} />
-              <div className="w-px h-6 bg-border" />
-              <ColorControls overlay={overlay} onStyleChange={onStyleChange} />
-              <div className="w-px h-6 bg-border" />
-              <TextFormattingControls
-                overlay={overlay}
-                onStyleChange={onStyleChange}
-              />
-            </>
+        <div className="w-px h-5 bg-border mx-0.5" />
+
+        {/* Color Controls ENABLED for designs now */}
+        <ColorControls overlay={overlay} onStyleChange={onStyleChange} />
+
+        <div className="w-px h-5 bg-border mx-0.5" />
+
+        <TextFormattingControls
+          overlay={overlay}
+          onStyleChange={onStyleChange}
+        />
+
+        {overlay.style.layers && (
+          <>
+            <div className="w-px h-5 bg-border mx-0.5" />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-[10px] text-destructive hover:bg-destructive/10"
+              onClick={() => onStyleChange(overlay.id, { layers: null })}
+              title="Remove Design"
+            >
+              Reset
+            </Button>
+          </>
+        )}
+
+        <div className="w-px h-5 bg-border mx-0.5" />
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-8 w-8 shrink-0",
+            overlay.layout.isBehindUser && "bg-primary/20 text-primary"
           )}
-        </div>
+          title={
+            overlay.layout.isBehindUser ? "Bring to Front" : "Send Behind User"
+          }
+          onClick={() =>
+            onLayoutChange(overlay.id, {
+              isBehindUser: !overlay.layout.isBehindUser,
+            })
+          }
+        >
+          <Layers className="w-4 h-4" />
+        </Button>
       </div>
 
       {showDesigns && (
@@ -142,7 +139,10 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           overlay={overlay}
           onStyleChange={onStyleChange}
           onClose={() => setShowDesigns(false)}
-          position={toolbarPosition}
+          position={{
+            x: toolbarPosition.x,
+            y: toolbarPosition.y + 50,
+          }}
         />
       )}
     </>
