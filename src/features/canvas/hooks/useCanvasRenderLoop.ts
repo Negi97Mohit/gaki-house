@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react";
-import { renderInteractiveFilters } from "@/lib/filterRenderer";
+import { GLRenderer } from "@/kernel/engine/GLRenderer";
+
+// Worker import (Vite syntax)
+import CanvasWorker from "../workers/canvas.worker?worker";
 
 interface UseCanvasRenderLoopProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -45,168 +48,46 @@ export const useCanvasRenderLoop = ({
   neonColor,
 }: UseCanvasRenderLoopProps) => {
   const animationFrameRef = useRef<number>();
-  const tempCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const workerRef = useRef<Worker | null>(null);
+  const rendererRef = useRef<GLRenderer | null>(null);
+  const isOffscreenTransferred = useRef(false);
 
-  // Zoom/Pan State Refs
-  const currentScale = useRef(1);
-  const currentXOffset = useRef(0);
-  const currentYOffset = useRef(0);
+  // 1. Sync options (Mutable Ref)
+  const optionsRef = useRef({
+    processedCanvas,
+    facePosition,
+    isAutoFramingEnabled,
+    isFaceTrackingEnabled,
+    zoomSensitivity,
+    trackingSpeed,
+    videoFilter,
+    activeInteractiveFilter,
+    filterIntensity,
+    filterColor,
+    filterTarget,
+    isNeonEdgeEnabled,
+    neonIntensity,
+    neonColor,
+  });
 
   useEffect(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas) return;
-
-    // Handle Stream Attachment
-    if (activeStream) {
-      if (video.srcObject !== activeStream) {
-        video.srcObject = activeStream;
-        video.play().catch(console.error);
-      }
-    } else {
-      if (video.srcObject) video.srcObject = null;
-    }
-
-    const renderFrame = () => {
-      if (
-        !video.srcObject ||
-        video.paused ||
-        video.ended ||
-        video.videoWidth === 0
-      ) {
-        currentScale.current = 1;
-        currentXOffset.current = 0;
-        currentYOffset.current = 0;
-        animationFrameRef.current = requestAnimationFrame(renderFrame);
-        return;
-      }
-
-      // FIX: Default context (alpha: true) allows transparency for backgrounds
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      // Sync Canvas Size
-      if (
-        canvas.width !== canvas.clientWidth ||
-        canvas.height !== canvas.clientHeight
-      ) {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const sourceElement = processedCanvas || video;
-      const sourceWidth = video.videoWidth || 1280;
-      const sourceHeight = video.videoHeight || 720;
-      const sourceAspect = sourceWidth / sourceHeight;
-      const canvasAspect = canvas.width / canvas.height;
-
-      // --- PAN/ZOOM CALCULATION ---
-      const baseScale =
-        canvasAspect > sourceAspect
-          ? canvas.width / sourceWidth
-          : canvas.height / sourceHeight;
-
-      let targetScale = 1.0;
-      let targetXOffset = 0.0;
-      let targetYOffset = 0.0;
-
-      if (isAutoFramingEnabled && facePosition) {
-        const faceWidthPx = (facePosition.width / 100) * sourceWidth;
-        const faceHeightPx = (facePosition.height / 100) * sourceHeight;
-        const faceSizePx = Math.max(faceWidthPx, faceHeightPx);
-        const faceScreenPercentage = 0.1 + (zoomSensitivity / 10) * 0.2;
-        const targetFaceSizePx =
-          Math.min(canvas.width, canvas.height) * faceScreenPercentage;
-
-        targetScale = Math.min(5, Math.max(1, targetFaceSizePx / faceSizePx));
-        targetXOffset = (50 - facePosition.x) / 100;
-        targetYOffset = (50 - facePosition.y) / 100;
-      } else if (isFaceTrackingEnabled && facePosition) {
-        targetScale = 1.0;
-        targetXOffset = (50 - facePosition.x) / 100;
-        targetYOffset = (50 - facePosition.y) / 100;
-      }
-
-      // Smooth Transitions
-      const zoomSpeed = 0.05;
-      currentScale.current += (targetScale - currentScale.current) * zoomSpeed;
-      currentXOffset.current +=
-        (targetXOffset - currentXOffset.current) * trackingSpeed;
-      currentYOffset.current +=
-        (targetYOffset - currentYOffset.current) * trackingSpeed;
-
-      // Final Draw Metrics
-      const finalScale = baseScale * currentScale.current;
-      const finalWidth = sourceWidth * finalScale;
-      const finalHeight = sourceHeight * finalScale;
-
-      let finalDrawX = (canvas.width - finalWidth) / 2;
-      let finalDrawY = (canvas.height - finalHeight) / 2;
-
-      const panAmountX = currentXOffset.current * finalWidth;
-      const panAmountY = currentYOffset.current * finalHeight;
-      const maxPanX = Math.max(0, (finalWidth - canvas.width) / 2);
-      const maxPanY = Math.max(0, (finalHeight - canvas.height) / 2);
-
-      finalDrawX += Math.max(-maxPanX, Math.min(maxPanX, panAmountX));
-      finalDrawY += Math.max(-maxPanY, Math.min(maxPanY, panAmountY));
-
-      // 1. Draw Base Video
-      ctx.filter = videoFilter;
-      ctx.drawImage(
-        sourceElement,
-        finalDrawX,
-        finalDrawY,
-        finalWidth,
-        finalHeight
-      );
-      ctx.filter = "none";
-
-      // 2. Draw Interactive Filters
-      if (
-        activeInteractiveFilter !== "none" ||
-        (isNeonEdgeEnabled && activeInteractiveFilter === "none")
-      ) {
-        if (!tempCanvasRef.current) {
-          tempCanvasRef.current = document.createElement("canvas");
-        }
-
-        renderInteractiveFilters({
-          ctx,
-          tempCanvas: tempCanvasRef.current,
-          video,
-          finalDrawX,
-          finalDrawY,
-          finalWidth,
-          finalHeight,
-          activeInteractiveFilter,
-          currentTime: Date.now(),
-          filterIntensity,
-          filterColor,
-          filterTarget,
-          neonIntensity,
-          neonColor,
-          isNeonEdgeEnabled,
-          processedCanvas,
-        });
-      }
-
-      animationFrameRef.current = requestAnimationFrame(renderFrame);
-    };
-
-    renderFrame();
-
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+    optionsRef.current = {
+      processedCanvas,
+      facePosition,
+      isAutoFramingEnabled,
+      isFaceTrackingEnabled,
+      zoomSensitivity,
+      trackingSpeed,
+      videoFilter,
+      activeInteractiveFilter,
+      filterIntensity,
+      filterColor,
+      filterTarget,
+      isNeonEdgeEnabled,
+      neonIntensity,
+      neonColor,
     };
   }, [
-    activeStream,
-    canvasRef,
-    videoRef,
     processedCanvas,
     facePosition,
     isAutoFramingEnabled,
@@ -222,4 +103,176 @@ export const useCanvasRenderLoop = ({
     neonIntensity,
     neonColor,
   ]);
+
+  // 2. Stream Attachment
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (activeStream) {
+      if (video.srcObject !== activeStream) {
+        video.srcObject = activeStream;
+        video.play().catch(console.error);
+      }
+    } else {
+      if (video.srcObject) video.srcObject = null;
+    }
+  }, [activeStream, videoRef]);
+
+  // 3. Render Loop (Worker or Main Thread)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Detect OffscreenCanvas support
+    const supportsOffscreen = !!canvas.transferControlToOffscreen;
+
+    // --- WORKER MODE (Fast) ---
+    if (supportsOffscreen && !rendererRef.current) {
+      if (!workerRef.current) {
+        workerRef.current = new CanvasWorker();
+      }
+
+      // Transfer control ONLY ONCE
+      if (!isOffscreenTransferred.current) {
+        const offscreen = canvas.transferControlToOffscreen();
+        workerRef.current.postMessage(
+          { type: "init", payload: { canvas: offscreen } },
+          [offscreen]
+        );
+        isOffscreenTransferred.current = true;
+      }
+
+      const renderWorkerFrame = async () => {
+        const video = videoRef.current;
+        const opts = optionsRef.current;
+        const worker = workerRef.current;
+
+        if (
+          !video ||
+          !worker ||
+          video.paused ||
+          video.ended ||
+          !video.videoWidth
+        ) {
+          animationFrameRef.current = requestAnimationFrame(renderWorkerFrame);
+          return;
+        }
+
+        // Logic preparation
+        let effectiveFilter = opts.activeInteractiveFilter || "none";
+        let effectiveColor = opts.filterColor;
+        let effectiveIntensity = opts.filterIntensity;
+
+        if (effectiveFilter === "none" && opts.isNeonEdgeEnabled) {
+          effectiveFilter = "neon-edge";
+          effectiveColor = opts.neonColor;
+          effectiveIntensity = opts.neonIntensity;
+        }
+
+        // Create bitmap (Fast, prevents main thread jank)
+        try {
+          const bitmap = await createImageBitmap(video);
+
+          // Send to worker
+          worker.postMessage(
+            {
+              type: "render",
+              payload: {
+                bitmap,
+                options: {
+                  videoFilter: opts.videoFilter,
+                  activeInteractiveFilter: effectiveFilter,
+                  filterIntensity: effectiveIntensity,
+                  filterColor: effectiveColor,
+                  // Note: processedCanvas (mask) usually can't be sent easily if it's a DOM element.
+                  // For advanced masking in workers, you'd need to bitmap that too.
+                  // For now, we assume basic video or worker-compatible masking.
+                  facePosition: opts.facePosition,
+                  isAutoFramingEnabled:
+                    opts.isAutoFramingEnabled || opts.isFaceTrackingEnabled,
+                  zoomSensitivity: opts.zoomSensitivity,
+                  trackingSpeed: opts.trackingSpeed,
+                  filterTarget: opts.filterTarget,
+                  isMasked:
+                    !!opts.processedCanvas && opts.filterTarget !== "both",
+                },
+              },
+            },
+            [bitmap] // Transfer bitmap ownership to worker
+          );
+        } catch (e) {
+          // Ignore bitmap creation errors (video might not be ready)
+        }
+
+        animationFrameRef.current = requestAnimationFrame(renderWorkerFrame);
+      };
+
+      renderWorkerFrame();
+    }
+    // --- FALLBACK MAIN THREAD MODE (Compatibility) ---
+    else if (!isOffscreenTransferred.current) {
+      if (!rendererRef.current) {
+        rendererRef.current = new GLRenderer(canvas);
+      }
+      const renderer = rendererRef.current;
+
+      const renderMainFrame = () => {
+        const video = videoRef.current;
+        const opts = optionsRef.current;
+
+        if (!video || video.paused || video.ended || !video.videoWidth) {
+          animationFrameRef.current = requestAnimationFrame(renderMainFrame);
+          return;
+        }
+
+        if (
+          canvas.width !== canvas.clientWidth ||
+          canvas.height !== canvas.clientHeight
+        ) {
+          renderer.resize();
+        }
+
+        let effectiveFilter = opts.activeInteractiveFilter || "none";
+        let effectiveColor = opts.filterColor;
+        let effectiveIntensity = opts.filterIntensity;
+
+        if (effectiveFilter === "none" && opts.isNeonEdgeEnabled) {
+          effectiveFilter = "neon-edge";
+          effectiveColor = opts.neonColor;
+          effectiveIntensity = opts.neonIntensity;
+        }
+
+        renderer.render(video, {
+          videoFilter: opts.videoFilter,
+          activeInteractiveFilter: effectiveFilter,
+          filterIntensity: effectiveIntensity,
+          filterColor: effectiveColor,
+          processedCanvas: opts.processedCanvas,
+          facePosition: opts.facePosition,
+          isAutoFramingEnabled:
+            opts.isAutoFramingEnabled || opts.isFaceTrackingEnabled,
+          zoomSensitivity: opts.zoomSensitivity,
+          trackingSpeed: opts.trackingSpeed,
+          isMasked: !!opts.processedCanvas && opts.filterTarget !== "both",
+          filterTarget: opts.filterTarget,
+        });
+
+        animationFrameRef.current = requestAnimationFrame(renderMainFrame);
+      };
+      renderMainFrame();
+    }
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      // Note: We generally don't terminate the worker immediately if we expect
+      // the component to remount often, but cleaner cleanup is good.
+      if (rendererRef.current) {
+        rendererRef.current.destroy();
+        rendererRef.current = null;
+      }
+    };
+  }, []); // Runs once
 };

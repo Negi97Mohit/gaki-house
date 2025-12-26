@@ -22,7 +22,7 @@ export interface VideoCanvasCameraProps {
   selectedVideoDevice: string | undefined;
   onVideoDeviceSelect: (deviceId: string) => void;
   onCameraShapeChange: (shape: CameraShape) => void;
-  portalContainer?: HTMLElement | null | undefined; // Changed to match CameraRenderer expected type
+  portalContainer?: HTMLElement | null | undefined;
   isMouseActive: boolean;
   sidebarProps: any;
   screenShareMode: "off" | "screen" | "canvas";
@@ -33,7 +33,8 @@ export interface VideoCanvasCameraProps {
   facePositionRef?: React.MutableRefObject<any>;
 }
 
-export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
+// 3. Wrap component in React.memo
+export const VideoCanvasCamera = React.memo<VideoCanvasCameraProps>((props) => {
   const {
     style: _unsafeStyle,
     width: _unsafeWidth,
@@ -89,4 +90,4 @@ export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
       />
     </div>
   );
-};
+});

@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from "react";
 import { Rnd } from "react-rnd";
 import { useTheme } from "next-themes";
 import { cn } from "@/shared/lib/utils";
+import { useShallow } from "zustand/react/shallow"; // Import useShallow
 import {
   LayoutMode,
   CameraShape,
@@ -38,8 +39,6 @@ import { ForegroundUserLayer } from "@/features/canvas/ui/ForegroundUserLayer";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { VideoCanvasProps } from "@/types/videoCanvas";
 import { CanvasContent } from "@/features/canvas/ui/CanvasContent";
-
-// VideoCanvasProps moved to @/types/videoCanvas
 import { OverlayLayer } from "@/features/canvas/ui/OverlayLayer";
 import { SnapLines } from "@/features/canvas/ui/SnapLines";
 
@@ -51,21 +50,20 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const sceneRef = useRef<HTMLDivElement>(null);
   const snapLinesRef = useRef<SnapLinesRef>(null);
 
-  // Store State
-  // Store State (Data)
-  const {
-    viewport,
-    setViewport,
-    sceneSize,
-    containerSize,
-  } = useCanvasStore();
+  // 1. Optimized Store Selectors (Prevents unnecessary re-renders)
+  const { viewport, setViewport, sceneSize, containerSize } = useCanvasStore(
+    useShallow((state) => ({
+      viewport: state.viewport,
+      setViewport: state.setViewport,
+      sceneSize: state.sceneSize,
+      containerSize: state.containerSize,
+    }))
+  );
 
-  // Store State (UI)
   const {
     isCanvasHovered,
     setIsCanvasHovered,
     isSpacePressed,
-    setIsSpacePressed,
     isDraggingDynamicSplitter,
     setIsDraggingDynamicSplitter,
     dynamicSplitRatio,
@@ -74,7 +72,21 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     setDynamicPipPosition,
     dynamicPipSize,
     setDynamicPipSize,
-  } = useUIStore();
+  } = useUIStore(
+    useShallow((state) => ({
+      isCanvasHovered: state.isCanvasHovered,
+      setIsCanvasHovered: state.setIsCanvasHovered,
+      isSpacePressed: state.isSpacePressed,
+      isDraggingDynamicSplitter: state.isDraggingDynamicSplitter,
+      setIsDraggingDynamicSplitter: state.setIsDraggingDynamicSplitter,
+      dynamicSplitRatio: state.dynamicSplitRatio,
+      setDynamicSplitRatio: state.setDynamicSplitRatio,
+      dynamicPipPosition: state.dynamicPipPosition,
+      setDynamicPipPosition: state.setDynamicPipPosition,
+      dynamicPipSize: state.dynamicPipSize,
+      setDynamicPipSize: state.setDynamicPipSize,
+    }))
+  );
 
   // Resize Logic
   useCanvasResize(canvasContainerRef, sceneRef, props.isFullscreen);
@@ -106,13 +118,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const [isTextDepthEnabled, setIsTextDepthEnabled] = React.useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Auto-disable depth mode REMOVED
-  // React.useEffect(() => {
-  //   if (props.layoutMode === 'pip' && isTextDepthEnabled) {
-  //     setIsTextDepthEnabled(false);
-  //   }
-  // }, [props.layoutMode]);
-
   const allOverlays: OverlayElement[] = useMemo(
     () => [
       ...textOverlays.map((o) => ({
@@ -139,15 +144,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     [textOverlays, browserOverlays, fileOverlays, generatedOverlays]
   );
 
-  // Check if any overlay is explicitly set to be behind the user
   const hasBehindUserOverlay = useMemo(() => {
-    return allOverlays.some(o => o.layout.isBehindUser);
+    return allOverlays.some((o) => o.layout.isBehindUser);
   }, [allOverlays]);
 
   const isSegmentationEnabled =
     isTextDepthEnabled ||
     hasBehindUserOverlay ||
-    (props.sidebarProps?.filterTarget && props.sidebarProps.filterTarget !== "both");
+    (props.sidebarProps?.filterTarget &&
+      props.sidebarProps.filterTarget !== "both");
 
   const { processedCanvas, facePositionRef } = useCameraEffects({
     videoElement: videoRef.current,
@@ -156,8 +161,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     onUserPositionChange: props.onUserPositionChange,
   });
 
-  // --- Hooks ---
-  // Check if any grid section requires screen sharing
   const hasScreenSection = props.canvasLayout?.sections.some(
     (s) => s.content.type === "screen"
   );
@@ -170,17 +173,16 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     selectedAudioDevice: selectedAudioDevice,
     onScreenShareEnd: () => {
       props.onScreenShareModeChange("off");
-      // If we were sharing for a grid section, clear it locally
       if (props.canvasLayout && props.onCanvasLayoutChange) {
         const updatedSections = props.canvasLayout.sections.map((s) =>
           s.content.type === "screen"
-            ? { ...s, content: { type: "empty" } as const } // Cast to const to satisfy strict union types if needed
+            ? { ...s, content: { type: "empty" } as const }
             : s
         );
-        // Only update if there was actually a screen section to clear
         if (
           updatedSections.some(
-            (s, i) => s.content.type !== props.canvasLayout!.sections[i].content.type
+            (s, i) =>
+              s.content.type !== props.canvasLayout!.sections[i].content.type
           )
         ) {
           props.onCanvasLayoutChange({
@@ -193,7 +195,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     remoteStream: props.remoteStream,
   });
 
-  // Calculate Default Mode: No active selections, not editing text/banner/etc., and NOT in a grid layout.
   const isDefaultMode =
     !props.selectedTextId &&
     !props.selectedBrowserId &&
@@ -245,10 +246,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       facePositionRef={facePositionRef}
     />
   );
-
-  // renderContent removed, replaced by CanvasContent
-
-
 
   const captionBaseStyle: React.CSSProperties = {
     fontFamily: props.liveCaptionStyle.fontFamily,
@@ -328,11 +325,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 default={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
@@ -340,11 +337,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}
@@ -353,7 +350,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onDragStop={(e, d) => {
                   const centerX = d.x + captionWidth / 2;
                   const centerY = d.y + captionHeight / 2;
-
                   const newXPercent = (centerX / sceneSize.width) * 100;
                   const newYPercent = (centerY / sceneSize.height) * 100;
 
@@ -438,19 +434,37 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                       sceneSize.height
                     }
                     onLayoutChange={(id: string, partialLayout: any) => {
-                      if (partialLayout.position) props.onOverlayLayoutChange(id, "position", partialLayout.position);
-                      if (partialLayout.size) props.onOverlayLayoutChange(id, "size", partialLayout.size);
-                      if (partialLayout.rotation !== undefined) props.onOverlayLayoutChange(id, "rotation", partialLayout.rotation);
+                      if (partialLayout.position)
+                        props.onOverlayLayoutChange(
+                          id,
+                          "position",
+                          partialLayout.position
+                        );
+                      if (partialLayout.size)
+                        props.onOverlayLayoutChange(
+                          id,
+                          "size",
+                          partialLayout.size
+                        );
+                      if (partialLayout.rotation !== undefined)
+                        props.onOverlayLayoutChange(
+                          id,
+                          "rotation",
+                          partialLayout.rotation
+                        );
                       if (partialLayout.isBehindUser !== undefined) {
-                        props.onOverlayLayoutChange(id, "isBehindUser", partialLayout.isBehindUser);
-                        // Also update metadata if available
+                        props.onOverlayLayoutChange(
+                          id,
+                          "isBehindUser",
+                          partialLayout.isBehindUser
+                        );
                         if (props.onUpdateOverlayMetadata) {
                           props.onUpdateOverlayMetadata(id, {
                             ...bannerOverlay.metadata,
                             data: {
                               ...bannerOverlay.metadata?.data,
-                              isBehindUser: partialLayout.isBehindUser
-                            }
+                              isBehindUser: partialLayout.isBehindUser,
+                            },
                           });
                         }
                       }
@@ -501,8 +515,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <SnapLines ref={snapLinesRef} containerSize={sceneSize} />
 
         {["below-video", "above-video"].map((order) => {
-          // We only apply the sandwich logic for 'above-video'. 
-          // 'below-video' is behind everything anyway.
           if (order === "below-video") {
             return (
               <div
@@ -520,7 +532,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   fileOverlays={fileOverlays}
                   textOverlays={textOverlays}
                   activeDynamicTargetId={
-                    dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
+                    dynamicLayout.isActive
+                      ? dynamicLayout.target?.id
+                      : undefined
                   }
                   onSetDynamicLayout={onSetDynamicLayout}
                   onOverlayLayoutChange={props.onOverlayLayoutChange}
@@ -529,9 +543,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
                   selectedGeneratedId={props.selectedGeneratedId}
                   onSelectGenerated={props.setSelectedGeneratedId}
-                  portalContainer={typeof props.portalContainer === 'function' ? null : props.portalContainer}
+                  portalContainer={
+                    typeof props.portalContainer === "function"
+                      ? null
+                      : props.portalContainer
+                  }
                   allOverlays={allOverlays}
-                  onSnapGuidesChange={(guides) => snapLinesRef.current?.setGuides(guides)}
+                  onSnapGuidesChange={(guides) =>
+                    snapLinesRef.current?.setGuides(guides)
+                  }
                   onRemoveBrowser={props.onRemoveBrowser}
                   onBrowserUrlChange={props.onBrowserUrlChange}
                   onBrowserLayoutChange={props.onBrowserLayoutChange}
@@ -552,19 +572,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onInternalDragStart={props.onInternalDragStart}
                   onInternalDragStop={props.onInternalDragStop}
                   onBannerDoubleClick={props.onBannerDoubleClick}
-                // No filtering for behind user here as it's already below video
                 />
               </div>
             );
           }
 
-          // --- ABOVE VIDEO (The Sandwich) ---
+          // --- ABOVE VIDEO ---
           return (
             <React.Fragment key="above-video-group">
               {/* 1. Overlays BEHIND User */}
               <div
                 className="absolute inset-0 pointer-events-none"
-                style={{ zIndex: "var(--z-overlays-above-video)" }} // z-index 150 (Below User 1000)
+                style={{ zIndex: "var(--z-overlays-above-video)" }}
               >
                 <OverlayLayer
                   layerOrder="above-video"
@@ -576,7 +595,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   fileOverlays={fileOverlays}
                   textOverlays={textOverlays}
                   activeDynamicTargetId={
-                    dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
+                    dynamicLayout.isActive
+                      ? dynamicLayout.target?.id
+                      : undefined
                   }
                   onSetDynamicLayout={onSetDynamicLayout}
                   onOverlayLayoutChange={props.onOverlayLayoutChange}
@@ -585,9 +606,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
                   selectedGeneratedId={props.selectedGeneratedId}
                   onSelectGenerated={props.setSelectedGeneratedId}
-                  portalContainer={typeof props.portalContainer === 'function' ? null : props.portalContainer}
+                  portalContainer={
+                    typeof props.portalContainer === "function"
+                      ? null
+                      : props.portalContainer
+                  }
                   allOverlays={allOverlays}
-                  onSnapGuidesChange={(guides) => snapLinesRef.current?.setGuides(guides)}
+                  onSnapGuidesChange={(guides) =>
+                    snapLinesRef.current?.setGuides(guides)
+                  }
                   onRemoveBrowser={props.onRemoveBrowser}
                   onBrowserUrlChange={props.onBrowserUrlChange}
                   onBrowserLayoutChange={props.onBrowserLayoutChange}
@@ -612,30 +639,32 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 />
               </div>
 
-              {/* 2. THE USER (Cutout Layer) - Hide when in PIP mode since camera is in PIP window */}
-              {(isTextDepthEnabled || hasBehindUserOverlay) && !props.canvasLayout && containerSize.width > 0 && (
-                <ForegroundUserLayer
-                  videoRef={videoRef}
-                  processedCanvas={processedCanvas}
-                  facePositionRef={facePositionRef}
-                  videoFilter={props.videoFilter}
-                  isAutoFramingEnabled={props.isAutoFramingEnabled}
-                  zoomSensitivity={props.zoomSensitivity}
-                  trackingSpeed={props.trackingSpeed}
-                  containerSize={containerSize}
-                  layoutMode={props.layoutMode}
-                  pipPosition={props.pipPosition}
-                  pipSize={props.pipSize}
-                  pipRotation={props.pipRotation}
-                  cameraShape={props.cameraShape}
-                  pipBorder={props.pipBorder}
-                  pipShadow={props.pipShadow}
-                  customMaskUrl={props.customMaskUrl}
-                  sidebarProps={props.sidebarProps}
-                />
-              )}
+              {/* 2. THE USER (Foreground Layer) */}
+              {(isTextDepthEnabled || hasBehindUserOverlay) &&
+                !props.canvasLayout &&
+                containerSize.width > 0 && (
+                  <ForegroundUserLayer
+                    videoRef={videoRef}
+                    processedCanvas={processedCanvas}
+                    facePositionRef={facePositionRef}
+                    videoFilter={props.videoFilter}
+                    isAutoFramingEnabled={props.isAutoFramingEnabled}
+                    zoomSensitivity={props.zoomSensitivity}
+                    trackingSpeed={props.trackingSpeed}
+                    containerSize={containerSize}
+                    layoutMode={props.layoutMode}
+                    pipPosition={props.pipPosition}
+                    pipSize={props.pipSize}
+                    pipRotation={props.pipRotation}
+                    cameraShape={props.cameraShape}
+                    pipBorder={props.pipBorder}
+                    pipShadow={props.pipShadow}
+                    customMaskUrl={props.customMaskUrl}
+                    sidebarProps={props.sidebarProps}
+                  />
+                )}
 
-              {/* 3. Overlays IN FRONT of User (Must be > 1000) */}
+              {/* 3. Overlays IN FRONT of User */}
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{ zIndex: 1500 }}
@@ -650,7 +679,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   fileOverlays={fileOverlays}
                   textOverlays={textOverlays}
                   activeDynamicTargetId={
-                    dynamicLayout.isActive ? dynamicLayout.target?.id : undefined
+                    dynamicLayout.isActive
+                      ? dynamicLayout.target?.id
+                      : undefined
                   }
                   onSetDynamicLayout={onSetDynamicLayout}
                   onOverlayLayoutChange={props.onOverlayLayoutChange}
@@ -659,9 +690,15 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
                   selectedGeneratedId={props.selectedGeneratedId}
                   onSelectGenerated={props.setSelectedGeneratedId}
-                  portalContainer={typeof props.portalContainer === 'function' ? null : props.portalContainer}
+                  portalContainer={
+                    typeof props.portalContainer === "function"
+                      ? null
+                      : props.portalContainer
+                  }
                   allOverlays={allOverlays}
-                  onSnapGuidesChange={(guides) => snapLinesRef.current?.setGuides(guides)}
+                  onSnapGuidesChange={(guides) =>
+                    snapLinesRef.current?.setGuides(guides)
+                  }
                   onRemoveBrowser={props.onRemoveBrowser}
                   onBrowserUrlChange={props.onBrowserUrlChange}
                   onBrowserLayoutChange={props.onBrowserLayoutChange}
@@ -694,15 +731,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         <Rnd
           style={{ zIndex: "var(--z-ai-popover-trigger)" }}
           cancel=".aicp-content"
-          // REDUCED SIZE: 64 -> 48 to be less obtrusive
           size={{ width: 48, height: 48 }}
           position={{
-            // REDUCED OFFSET: 32 -> 24 (half of 48) to keep it centered
             x: (props.aiButtonPosition.x / 100) * containerSize.width - 24,
             y: (props.aiButtonPosition.y / 100) * containerSize.height - 24,
           }}
           onDragStop={(e, d) => {
-            // REDUCED OFFSET: 32 -> 24
             const newX = ((d.x + 24) / containerSize.width) * 100;
             const newY = ((d.y + 24) / containerSize.height) * 100;
             props.onAiButtonPositionChange({ x: newX, y: newY });
