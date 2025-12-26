@@ -8,7 +8,7 @@ import { PopoverClose } from "@radix-ui/react-popover";
 import { Button } from "@/shared/ui/button";
 import { LayoutGrid as Apps, Type, Pencil, Sun, Moon } from "lucide-react";
 import { FloatingAssetSearch } from "@/features/assets/ui/FloatingAssetSearch";
-import { InstructionsDialog } from "@/components/InstructionsDialog";
+import { InstructionsDialog } from "@/features/studio/ui/InstructionsDialog";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 
 interface ToolsPopoverProps {

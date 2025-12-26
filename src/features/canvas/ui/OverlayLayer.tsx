@@ -17,7 +17,7 @@ import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { HybridDraggable } from "./HybridDraggable";
 import { SocialBannerRenderer } from "@/features/banners/ui/SocialBannerRenderer";
 import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
-import { BannerDesignSelectorToolbar } from "@/components/banner-editor/BannerDesignSelectorToolbar";
+import { BannerDesignSelectorToolbar } from "@/features/banners/ui/editor/components/BannerDesignSelectorToolbar";
 import { BannerDesign, isAnimatedBanner } from "@/types/banner";
 
 interface OverlayLayerProps {

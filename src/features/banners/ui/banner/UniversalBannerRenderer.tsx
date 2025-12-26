@@ -4,9 +4,9 @@ import { isStaticBanner, BannerDesign, BannerContentData, BannerElementState } f
 import { useBannerEditor } from "@/features/banners/hooks/useBannerEditor";
 import { StaticBannerBackground } from "./StaticBannerBackground";
 import { BannerBackgroundRenderer } from "@/features/banners/ui/animated-banners/BannerBackgroundRenderer";
-import { BannerInternalDraggable } from "@/components/banner-editor/BannerInternalDraggable";
-import { BannerTextToolbar } from "@/components/banner-editor/BannerTextToolbar";
-import { BannerCustomizationToolbar } from "@/components/banner-editor/BannerCustomizationToolbar";
+import { BannerInternalDraggable } from "@/features/banners/ui/editor/components/BannerInternalDraggable";
+import { BannerTextToolbar } from "@/features/banners/ui/editor/components/BannerTextToolbar";
+import { BannerCustomizationToolbar } from "@/features/banners/ui/editor/components/BannerCustomizationToolbar";
 import { getPlatformIcon } from "./PlatformIcons";
 import { User } from "lucide-react";
 

@@ -71,7 +71,7 @@ export class ImageProcessor {
     height: number,
     passes: number = 1
   ): Uint8Array {
-    let output = new Uint8Array(input);
+    const output = new Uint8Array(input);
     for (let pass = 0; pass < passes; pass++) {
       const temp = new Uint8Array(output);
       for (let y = 1; y < height - 1; y++) {

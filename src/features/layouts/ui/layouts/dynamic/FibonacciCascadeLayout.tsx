@@ -43,8 +43,8 @@ const FibonacciCanvas: React.FC<{ className?: string }> = ({ className }) => {
 
             const fibSequence = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
             let angle = 0;
-            let prevX = centerX;
-            let prevY = centerY;
+            const prevX = centerX;
+            const prevY = centerY;
 
             for (let i = 0; i < 400; i++) {
                 const r = Math.pow(PHI, (i * 0.05)) * 2;

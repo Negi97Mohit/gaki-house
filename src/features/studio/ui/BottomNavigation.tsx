@@ -30,7 +30,7 @@ import { cn } from "@/shared/lib/utils";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { LayoutMode, CameraShape } from "@/types/caption";
 import { useTheme } from "next-themes";
-import { ToolsPopover } from "@/components/ToolsPopover";
+import { ToolsPopover } from "@/features/studio/ui/ToolsPopover";
 
 interface BottomNavigationProps {
   onOpenSettings: () => void;

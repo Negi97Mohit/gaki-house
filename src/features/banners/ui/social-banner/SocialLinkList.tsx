@@ -17,7 +17,7 @@ import {
     PLATFORM_INFO,
 } from "@/types/socialBanner";
 import { cn } from "@/shared/lib/utils";
-import { getPlatformIcon } from "@/components/icons/SocialIcons";
+import { getPlatformIcon } from "@/shared/ui/icons/SocialIcons";
 
 const ALL_PLATFORMS: SocialPlatform[] = [
     "github",

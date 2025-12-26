@@ -233,8 +233,8 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     const wPx = parseInt(ref.style.width, 10);
     const hPx = parseInt(ref.style.height, 10);
 
-    let xPercent = (position.x / containerSize.width) * 100;
-    let yPercent = (position.y / containerSize.height) * 100;
+    const xPercent = (position.x / containerSize.width) * 100;
+    const yPercent = (position.y / containerSize.height) * 100;
     let wPercent = (wPx / containerSize.width) * 100;
     let hPercent = (hPx / containerSize.height) * 100;
 

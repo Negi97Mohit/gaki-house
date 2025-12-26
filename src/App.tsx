@@ -10,9 +10,9 @@ import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
 import { useEffect, useRef, useState } from "react";
 import EditPage from "./pages/Edit";
-import Loader from "./components/Loader";
+import Loader from "@/shared/ui/Loader";
 import RemoteCamera from "./pages/RemoteCamera";
-import { StyleSync } from "@/components/StyleSync";
+import { StyleSync } from "@/features/caption/ui/StyleSync";
 
 
 

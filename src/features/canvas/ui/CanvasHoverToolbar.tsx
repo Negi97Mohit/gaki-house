@@ -234,7 +234,7 @@ export const CanvasHoverToolbar = ({
 
     // Rotate the content assignments
     const rotatedSections = sectionIds.map((id, index) => {
-      let sourceIndex =
+      const sourceIndex =
         direction === "right"
           ? (index - 1 + sectionIds.length) % sectionIds.length
           : (index + 1) % sectionIds.length;

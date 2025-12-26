@@ -3,8 +3,8 @@ import { SceneTabs } from "@/features/stream/ui/SceneTabs";
 import { TransitionPopover } from "@/features/stream/ui/TransitionPopover";
 import { AnimationLibraryPanel } from "@/features/animation/ui/AnimationLibraryPanel";
 import { SavedSessionsPanel } from "@/features/stream/ui/SavedSessionsPanel";
-import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay";
-import { RemoteConnectModal } from "@/components/RemoteConnectModal";
+import { ExcalidrawOverlay } from "@/features/canvas/ui/ExcalidrawOverlay";
+import { RemoteConnectModal } from "@/features/studio/ui/RemoteConnectModal";
 import { toast } from "sonner";
 
 interface IndexOverlaysProps {

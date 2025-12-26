@@ -3,10 +3,10 @@ import { Button } from "@/shared/ui/button";
 import { Sparkles, RemoveFormatting, Layers } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { TextOverlayState } from "@/types/caption";
-import { TextFormattingControls } from "@/components/text-toolbar/TextFormattingControls";
-import { FontControls } from "@/components/text-toolbar/FontControls";
-import { ColorControls } from "@/components/text-toolbar/ColorControls";
-import { TextDesignSelector } from "@/components/text-toolbar/TextDesignSelector";
+import { TextFormattingControls } from "@/features/caption/ui/text-toolbar/TextFormattingControls";
+import { FontControls } from "@/features/caption/ui/text-toolbar/FontControls";
+import { ColorControls } from "@/features/caption/ui/text-toolbar/ColorControls";
+import { TextDesignSelector } from "@/features/caption/ui/text-toolbar/TextDesignSelector";
 
 interface TextEditingToolbarProps {
   overlay: TextOverlayState;

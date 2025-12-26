@@ -373,8 +373,8 @@ export function applyKaleidoscopeEffect(
 
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      let sourceX = x < halfW ? x : w - 1 - x;
-      let sourceY = y < halfH ? y : h - 1 - y;
+      const sourceX = x < halfW ? x : w - 1 - x;
+      const sourceY = y < halfH ? y : h - 1 - y;
 
       const srcIdx = (sourceY * w + sourceX) * 4;
       const dstIdx = (y * w + x) * 4;

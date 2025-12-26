@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useMemo } from "react";
 import { toast } from "sonner";
 import { MainCanvasArea } from "./MainCanvasArea";
 import { FloatingControlsPanel } from "@/features/studio/ui/FloatingControlsPanel";
-import { FloatingLogo } from "@/components/FloatingLogo";
+import { FloatingLogo } from "@/features/studio/ui/FloatingLogo";
 import { SocialBannerEditor } from "@/features/banners/ui/SocialBannerEditor";
 import {
   CaptionStyle,
