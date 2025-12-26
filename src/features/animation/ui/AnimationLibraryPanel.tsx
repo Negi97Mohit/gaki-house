@@ -19,12 +19,12 @@ import { AnimationEditor } from "./AnimationEditor";
 import { GSAPAnimationEditor } from "./GSAPAnimationEditor";
 import { AnimationPreset } from "@/types/animation";
 import { cn } from "@/shared/lib/utils";
-import { useAnimationLibrary } from "@/hooks/useAnimationLibrary";
+import { useAnimationLibrary } from "@/features/animation/hooks/useAnimationLibrary";
 import { ANIMATION_CATEGORIES } from "@/lib/animationLibrary";
 import { toast } from "sonner";
 import { AnimationGridItem } from "./AnimationGridItem";
 import { GSAPPresetPreview } from "@/features/banners/ui/GSAPAnimatedBanner";
-import { GSAP_PRESETS, GSAPPreset } from "@/lib/gsapAnimations";
+import { GSAP_PRESETS, GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 
 interface AnimationLibraryPanelProps {
   isOpen: boolean;

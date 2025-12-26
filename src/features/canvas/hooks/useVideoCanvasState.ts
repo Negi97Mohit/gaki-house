@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { SnapLinesRef } from "@/features/canvas/ui/SnapLines";
-import { useDeepgramSpeech } from "@/hooks/useDeepgramSpeech";
+import { useDeepgramSpeech } from "@/features/ai-assistant/hooks/useDeepgramSpeech";
 
 interface UseVideoCanvasStateProps {
     isFullscreen: boolean;

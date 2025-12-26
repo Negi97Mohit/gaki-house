@@ -8,7 +8,7 @@ import {
   CameraShape,
   CaptionStyle,
 } from "@/types/caption";
-import { AssetResult } from "@/components/AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { toast } from "sonner";
 import { generateId } from "@/shared/lib/id";
 

@@ -30,7 +30,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useSessionPlayback } from "@/hooks/useSessionPlayback";
+import { useSessionPlayback } from "@/features/stream/hooks/useSessionPlayback";
 import { cn } from "@/shared/lib/utils";
 
 const formatTime = (ms: number) => {

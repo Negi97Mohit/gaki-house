@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useDeepgramSpeech } from "@/hooks/useDeepgramSpeech";
+import { useDeepgramSpeech } from "@/features/ai-assistant/hooks/useDeepgramSpeech";
 
 export const useCanvasSpeech = ({
     isAudioOn,

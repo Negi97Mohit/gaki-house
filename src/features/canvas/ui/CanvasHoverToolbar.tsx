@@ -18,7 +18,7 @@ import {
   Layers,
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
-import { AIChatbot } from "@/components/AIChatbot";
+import { AIChatbot } from "@/features/ai-assistant/ui/AIChatbot";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
@@ -36,7 +36,7 @@ import {
   PopoverTrigger,
 } from "@/shared/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
+import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { CanvasLayoutState } from "@/types/caption";
 import { GridLayoutPreview } from "@/features/layouts/ui/GridLayoutPreview";
 import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";

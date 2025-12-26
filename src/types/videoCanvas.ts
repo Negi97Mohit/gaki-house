@@ -10,7 +10,7 @@ import {
     GeneratedOverlay,
     GeneratedLayout,
 } from "@/types/caption";
-import { AssetResult } from "@/components/AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { BrowserOverlayState } from "@/features/canvas/ui/DraggableBrowser";
 import { RecordingSession } from "@/types/editor";
 

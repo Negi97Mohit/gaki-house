@@ -5,7 +5,7 @@ import { zIndex } from "@/lib/zIndex";
 import { GeneratedOverlay } from "@/types/caption";
 
 // Components
-import { BottomNavigation } from "@/components/BottomNavigation";
+import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
 import { IndexOverlays } from "./Index/components/IndexOverlays";
 

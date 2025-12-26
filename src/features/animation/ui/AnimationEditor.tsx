@@ -26,10 +26,10 @@ import {
   Settings,
 } from "lucide-react";
 import { ALL_FONTS } from "@/lib/fonts"; // Assuming you have this from previous context
-import { EffectsControls } from "@/components/animation-editor/EffectsControls";
-import { MotionControls } from "@/components/animation-editor/MotionControls";
-import { SettingsControls } from "@/components/animation-editor/SettingsControls";
-import { StyleControls } from "@/components/animation-editor/StyleControls";
+import { EffectsControls } from "@/features/animation/ui/editor/EffectsControls";
+import { MotionControls } from "@/features/animation/ui/editor/MotionControls";
+import { SettingsControls } from "@/features/animation/ui/editor/SettingsControls";
+import { StyleControls } from "@/features/animation/ui/editor/StyleControls";
 
 interface AnimationEditorProps {
   initialPreset: AnimationPreset;

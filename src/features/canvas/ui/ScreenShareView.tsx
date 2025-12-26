@@ -10,7 +10,7 @@ import {
   LayoutMode,
   CameraShape,
 } from "@/types/caption";
-import { AssetResult } from "@/components/AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 
 interface ScreenShareViewProps {
   screenShareMode: "off" | "screen" | "canvas";

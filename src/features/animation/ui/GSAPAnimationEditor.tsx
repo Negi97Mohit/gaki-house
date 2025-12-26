@@ -7,7 +7,7 @@ import { Slider } from "@/shared/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
 import { X, Save, RotateCcw, Play, Copy } from "lucide-react";
-import { GSAPPreset, GSAPAnimationConfig, GSAPAnimationType } from "@/lib/gsapAnimations";
+import { GSAPPreset, GSAPAnimationConfig, GSAPAnimationType } from "@/features/animation/lib/gsapAnimations";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { ParticleEffectOverlay } from "./ParticleEffectOverlay";
 import { EffectType } from "@/lib/particleEffects";

@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useMemo } from "react";
 import { toast } from "sonner";
 import { MainCanvasArea } from "./MainCanvasArea";
-import { FloatingControlsPanel } from "@/components/FloatingControlsPanel";
+import { FloatingControlsPanel } from "@/features/studio/ui/FloatingControlsPanel";
 import { FloatingLogo } from "@/components/FloatingLogo";
 import { SocialBannerEditor } from "@/features/banners/ui/SocialBannerEditor";
 import {
@@ -14,7 +14,7 @@ import {
   TextOverlayState,
 } from "@/types/caption";
 import { RecordingSession } from "@/types/editor";
-import { AssetResult } from "@/components/AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
 import { generateId } from "@/shared/lib/id";
 

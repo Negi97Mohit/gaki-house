@@ -1,8 +1,8 @@
 import React from "react";
-import { SceneTabs } from "@/components/SceneTabs";
-import { TransitionPopover } from "@/components/TransitionPopover";
-import { AnimationLibraryPanel } from "@/components/AnimationLibraryPanel";
-import { SavedSessionsPanel } from "@/components/SavedSessionsPanel";
+import { SceneTabs } from "@/features/stream/ui/SceneTabs";
+import { TransitionPopover } from "@/features/stream/ui/TransitionPopover";
+import { AnimationLibraryPanel } from "@/features/animation/ui/AnimationLibraryPanel";
+import { SavedSessionsPanel } from "@/features/stream/ui/SavedSessionsPanel";
 import { ExcalidrawOverlay } from "@/components/ExcalidrawOverlay";
 import { RemoteConnectModal } from "@/components/RemoteConnectModal";
 import { toast } from "sonner";

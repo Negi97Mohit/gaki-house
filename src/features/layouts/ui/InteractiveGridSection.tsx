@@ -6,9 +6,9 @@ import {
   TextOverlayState,
   DEFAULT_CAMERA_STATE,
 } from "@/types/caption";
-import { CameraRenderer } from "@/components/CameraRenderer";
+import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
 import { DraggableTextOverlay } from "@/features/canvas/ui/DraggableTextOverlay";
-import { PipControlsToolbar } from "@/components/PipControlsToolbar";
+import { PipControlsToolbar } from "@/features/stream/ui/PipControlsToolbar";
 import { Button } from "@/shared/ui/button";
 import { Paintbrush, Plus, Type } from "lucide-react";
 import {

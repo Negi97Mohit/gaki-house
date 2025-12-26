@@ -5,7 +5,7 @@ import { zIndex } from "@/lib/zIndex";
 import { generateHtmlFromPreset } from "@/lib/animationGenerator";
 import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
 import { AnimationPreset } from "@/types/animation";
-import { GSAPPreset } from "@/lib/gsapAnimations";
+import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { GeneratedOverlay, TextOverlayState } from "@/types/caption";
 import { SceneState } from "@/types/editor";
 

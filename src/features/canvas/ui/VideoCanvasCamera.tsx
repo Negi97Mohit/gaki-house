@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/shared/lib/utils";
-import { CameraRenderer } from "@/components/CameraRenderer";
+import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
 import {
   getCameraShapeStyle,
   getVideoFilterStyle,

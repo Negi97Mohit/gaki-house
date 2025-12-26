@@ -15,7 +15,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/shared/ui/popover";
-import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
+import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { CanvasDesignSelector } from "./CanvasDesignSelector";
 import { CanvasSectionState, DEFAULT_CAMERA_STATE, CameraShape } from "@/types/caption";
 import { usePreviewMode } from "@/features/layouts/ui/layouts/dynamic/core/PreviewModeContext";

@@ -1,6 +1,6 @@
 import React from "react";
 import { CanvasSectionCameraState } from "@/types/caption";
-import { CameraRenderer } from "@/components/CameraRenderer";
+import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
 import { InteractiveGridSection } from "@/features/layouts/ui/InteractiveGridSection";
 
 interface CameraGridSectionProps {

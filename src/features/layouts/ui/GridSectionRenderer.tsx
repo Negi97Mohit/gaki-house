@@ -6,7 +6,7 @@ import {
   CanvasSectionCameraState,
 } from "@/types/caption";
 import { FileRenderer } from "@/features/canvas/ui/DraggableFileViewer";
-import { AssetResult } from "@/components/AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { EmptyGridSection } from "@/features/layouts/ui/grid-section/EmptyGridSection";
 import { CameraGridSection } from "@/features/layouts/ui/grid-section/CameraGridSection";
 

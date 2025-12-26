@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
-import { StreamStyleSelector } from "@/components/stream-scenes";
+import { StreamStyleSelector } from "@/features/stream/ui/scenes/StreamStyleSelector";
 import { StreamStylePreset } from "@/types/streamStyle";
 
 const TransitionIcon = () => (

@@ -22,12 +22,12 @@ import {
   getNumericAspectRatio,
   getCanvasAspectRatioStyle,
 } from "@/features/canvas/ui/VideoCanvasHelpers";
-import { useVideoStreams } from "@/hooks/useVideoStreams";
+import { useVideoStreams } from "@/features/stream/hooks/useVideoStreams";
 import { usePipGestures } from "@/hooks/usePipGestures";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { AICommandPopover } from "@/components/AICommandPopover";
-import { AssetResult } from "@/components/AssetLibrary";
+import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { CanvasHoverToolbar } from "@/features/canvas/ui/CanvasHoverToolbar";
 import { OverlayElement } from "@/hooks/useSnapGuides";
 import { CaptionRenderer } from "@/features/canvas/ui/CaptionRenderer";

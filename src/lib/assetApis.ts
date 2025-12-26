@@ -1,5 +1,5 @@
 // src/lib/assetApis.ts
-import { AssetResult } from "@/components/AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { toast } from "sonner";
 
 const PEXELS_KEY = import.meta.env.VITE_PEXELS_API_KEY;

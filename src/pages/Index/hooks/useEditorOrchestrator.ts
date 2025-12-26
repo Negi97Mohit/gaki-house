@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { useRecordingSession } from "@/hooks/useRecordingSession";
+import { useRecordingSession } from "@/features/stream/hooks/useRecordingSession";
 import { useLayerControls } from "@/hooks/useLayerControls";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useIndexUI } from "./useIndexUI";

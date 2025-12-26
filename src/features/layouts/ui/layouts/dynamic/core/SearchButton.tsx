@@ -6,7 +6,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/shared/ui/popover";
-import { AssetLibrary, AssetResult } from "@/components/AssetLibrary";
+import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { cn } from "@/shared/lib/utils";
 
 interface SearchButtonProps {

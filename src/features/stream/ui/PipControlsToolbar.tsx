@@ -3,10 +3,10 @@ import { Button } from "@/shared/ui/button";
 import { PictureInPicture } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CameraShape } from "@/types/caption";
-import { PipCameraMenu } from "./pip-controls/PipCameraMenu";
-import { PipBackgroundMenu } from "./pip-controls/PipBackgroundMenu";
-import { PipEffectsMenu } from "./pip-controls/PipEffectsMenu";
-import { PipStyleMenu } from "./pip-controls/PipStyleMenu";
+import { PipCameraMenu } from "./pip/PipCameraMenu";
+import { PipBackgroundMenu } from "./pip/PipBackgroundMenu";
+import { PipEffectsMenu } from "./pip/PipEffectsMenu";
+import { PipStyleMenu } from "./pip/PipStyleMenu";
 
 interface PipControlsToolbarProps {
   position: { x: number; y: number };
@@ -172,7 +172,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           className={cn(
             "h-9 w-9 rounded-xl hover:bg-background/60",
             props.isPipActive &&
-              "bg-primary/20 text-primary hover:bg-primary/30"
+            "bg-primary/20 text-primary hover:bg-primary/30"
           )}
           onClick={props.onTogglePip}
           title={props.isPipActive ? "Exit Pop-out" : "Pop-out Camera"}
