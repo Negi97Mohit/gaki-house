@@ -21,14 +21,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { AIChatbot } from "@/features/ai-assistant/ui/AIChatbot";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
 import { cn } from "@/shared/lib/utils";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu";
+import { DropdownMenuContent } from "@/shared/ui/dropdown-menu";
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
@@ -53,7 +47,7 @@ interface CanvasHoverToolbarProps {
   onToggleChatbot?: (open: boolean | ((prev: boolean) => boolean)) => void;
 }
 
-// NEW: Helper component to handle auto-scrolling
+// Helper component for auto-scrolling layouts
 interface LayoutListProps {
   layouts: CanvasLayoutTemplate[];
   activeId?: string;
@@ -131,7 +125,7 @@ export const CanvasHoverToolbar = ({
   blankCanvasColor,
   onBlankCanvasColorChange,
   isVisible,
-  isMouseActive = true,
+  isMouseActive = true, // Kept for prop compatibility, but logic is now proximity-based
   onCanvasBackgroundUpload,
   canvasLayout,
   onCanvasBackgroundAssetSelect,
@@ -144,7 +138,7 @@ export const CanvasHoverToolbar = ({
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { layoutTemplates, loading: templatesLoading } = useLayoutTemplates();
-  const [activeTab, setActiveTab] = useState("tools");
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -157,10 +151,7 @@ export const CanvasHoverToolbar = ({
     if (!onCanvasLayoutChange) return;
 
     const template = layoutTemplates.find((t) => t.id === templateId);
-    if (!template) {
-      console.error(`Layout template with id ${templateId} not found.`);
-      return;
-    }
+    if (!template) return;
 
     const newLayout: CanvasLayoutState = {
       templateId,
@@ -250,16 +241,13 @@ export const CanvasHoverToolbar = ({
 
   const transformLayout = (type: "rotate" | "flip" | "swap" | "reverse") => {
     if (!canvasLayout || !onCanvasLayoutChange) return;
-
     const template = layoutTemplates.find(
       (t) => t.id === canvasLayout.templateId
     );
     if (!template) return;
-
     const sectionIds = template.sections.map((s) => s.id);
     const currentSections = [...canvasLayout.sections];
     const contentMap = new Map(currentSections.map((s) => [s.id, s.content]));
-
     let transformedSections = [...currentSections];
 
     if (layoutId === "magazine-hero" && type === "swap") {
@@ -337,387 +325,403 @@ export const CanvasHoverToolbar = ({
         };
       });
     }
-
-    onCanvasLayoutChange({
-      ...canvasLayout,
-      sections: transformedSections,
-    });
+    onCanvasLayoutChange({ ...canvasLayout, sections: transformedSections });
   };
 
-  // PHASE 3 FIX: Improved Visibility Logic
-  // Show when mouse is active or chatbot is open, otherwise semi-transparent
-  const shouldShow = (isVisible && isMouseActive) || isChatbotOpen;
+  // Visibility Logic:
+  // Show if:
+  // 1. isVisible prop is true (global toggle)
+  // 2. AND (Chatbot is open OR User is hovering in the top zone)
+  const shouldShow = isVisible && (isChatbotOpen || isHovered);
 
   return (
-    <div
-      className={cn(
-        "absolute top-3 left-1/2 -translate-x-1/2 z-[20000]",
-        "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-lg",
-        "px-1.5 py-1 sm:px-2 sm:py-1.5 flex items-center gap-0.5 sm:gap-1",
-        "transition-all duration-300 ease-out",
-        // CHANGED: Instead of completely hiding it, we make it semi-transparent (50%)
-        // and only slightly offset, so it's always discoverable.
-        shouldShow
-          ? "opacity-100 translate-y-0"
-          : "opacity-50 -translate-y-1 hover:opacity-100 hover:translate-y-0"
-      )}
-    >
-      {!canvasLayout && (
-        <>
-          {/* Color Picker */}
-          <div className="relative group">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60 p-0 overflow-hidden"
-              title="Background Color"
-            >
-              <div
-                className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-border/50"
-                style={{ backgroundColor: blankCanvasColor }}
-              />
-            </Button>
-            <Input
-              id="canvas-color"
-              type="color"
-              value={blankCanvasColor}
-              onChange={(e) => onBlankCanvasColorChange(e.target.value)}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-            onClick={() => fileInputRef.current?.click()}
-            title="Upload Background"
-          >
-            <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          </Button>
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-                title="Search Assets"
-              >
-                <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-80 h-[400px] p-0 rounded-2xl overflow-hidden border-border/40"
-              style={{ zIndex: "var(--z-asset-popover)" }}
-              align="center"
-              side="bottom"
-              sideOffset={8}
-            >
-              <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
-            </PopoverContent>
-          </Popover>
-
-          {onTextDepthToggle && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn(
-                "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
-                isTextDepthEnabled && "bg-primary/20 text-primary"
-              )}
-              onClick={() => onTextDepthToggle(!isTextDepthEnabled)}
-              title="Toggle Text Behind User"
-            >
-              <Layers className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </Button>
-          )}
-
-          <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
-        </>
-      )}
-
-      {/* AIChatbot Toggle */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className={cn(
-          "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
-          isChatbotOpen && "bg-primary/20 text-primary"
-        )}
-        onClick={() => {
-          if (onToggleChatbot) onToggleChatbot((prev) => !prev);
-        }}
-        title="AI Chatbot"
-      >
-        <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-      </Button>
-      <AIChatbot
-        isOpen={!!isChatbotOpen}
-        onClose={() => {
-          if (onToggleChatbot) onToggleChatbot(false);
-        }}
+    <>
+      {/* TRIGGER ZONE: 
+        Invisible area at the top of the screen (height: 24 = 6rem = 96px).
+        Detects mouse entry to reveal the toolbar.
+      */}
+      <div
+        className="fixed top-0 left-0 w-full h-24 z-[19999] bg-transparent"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        // Ensure it doesn't block clicks to things underneath if not hovering strictly
+        // But for hover detection, it must be present.
+        // We use pointer-events-auto so it catches the hover.
       />
 
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
-              canvasLayout && "bg-primary/20 text-primary"
-            )}
-            title="Grid Layout"
-          >
-            <Grid3x3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-[480px] p-3 max-h-[500px] overflow-y-auto rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
-          style={{ zIndex: "var(--z-asset-popover)" }}
-          align="center"
-          side="bottom"
-          sideOffset={8}
-        >
-          {templatesLoading && (
-            <div className="text-sm text-muted-foreground p-3 text-center">
-              Loading layouts...
-            </div>
-          )}
-
-          {canvasLayout && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start text-destructive mb-3 rounded-xl hover:bg-destructive/10"
-              onClick={() => onCanvasLayoutChange?.(null as any)}
-            >
-              <X className="h-4 w-4 mr-2" />
-              Clear Grid
-            </Button>
-          )}
-
-          {/* Tabbed Layout Selection */}
-          {(() => {
-            const dynamicLayouts = layoutTemplates.filter(
-              (t) => t.category === "dynamic"
-            );
-            const staticLayouts = layoutTemplates.filter(
-              (t) => t.category !== "dynamic"
-            );
-
-            return (
-              <Tabs defaultValue="dynamic" className="w-full">
-                <TabsList className="w-full grid grid-cols-2 mb-3">
-                  <TabsTrigger value="dynamic" className="text-xs gap-1.5">
-                    <Zap className="h-3.5 w-3.5" />
-                    Dynamic
-                  </TabsTrigger>
-                  <TabsTrigger value="static" className="text-xs gap-1.5">
-                    <Layout className="h-3.5 w-3.5" />
-                    Static
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="dynamic" className="mt-0">
-                  <LayoutList
-                    layouts={dynamicLayouts}
-                    activeId={canvasLayout?.templateId}
-                    onSelect={handleLayoutSelect}
-                    emptyMessage="No dynamic layouts available"
-                  />
-                </TabsContent>
-
-                <TabsContent value="static" className="mt-0">
-                  <LayoutList
-                    layouts={staticLayouts}
-                    activeId={canvasLayout?.templateId}
-                    onSelect={handleLayoutSelect}
-                    emptyMessage="No static layouts available"
-                  />
-                </TabsContent>
-              </Tabs>
-            );
-          })()}
-        </PopoverContent>
-      </Popover>
-
-      {/* Dynamic Layout Transformation Controls */}
-      {hasTransformations && canvasLayout && (
-        <>
-          <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
-          {isCarouselLayout && (
-            <>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-                onClick={() => rotateCarousel("left")}
-                title="Rotate carousel left"
-              >
-                <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-                onClick={() => rotateCarousel("right")}
-                title="Rotate carousel right"
-              >
-                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              </Button>
-            </>
-          )}
-
-          {layoutId === "magazine-hero" && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-              onClick={() => transformLayout("swap")}
-              title="Swap hero and sidebar"
-            >
-              <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </Button>
-          )}
-
-          {(layoutId.includes("bento") || layoutId.includes("staircase")) && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-              onClick={() => transformLayout("rotate")}
-              title="Rotate sections"
-            >
-              <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </Button>
-          )}
-
-          {(layoutId === "spotlight-frame" || layoutId === "pip-creative") && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
-              onClick={() => transformLayout("rotate")}
-              title={
-                layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"
-              }
-            >
-              <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </Button>
-          )}
-        </>
-      )}
-
-      {/* Sequence Reorder Popup */}
-      {canvasLayout &&
-        canvasLayout.sectionOrder &&
-        canvasLayout.sectionOrder.length > 0 && (
+      {/* TOOLBAR */}
+      <div
+        className={cn(
+          "fixed top-4 left-1/2 -translate-x-1/2 z-[20000]",
+          "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-lg",
+          "px-1.5 py-1 sm:px-2 sm:py-1.5 flex items-center gap-0.5 sm:gap-1",
+          "transition-all duration-300 ease-out",
+          // Slide up and fade out when hidden
+          shouldShow
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-16 pointer-events-none"
+        )}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {!canvasLayout && (
           <>
-            <div className="w-px h-6 bg-border/40 mx-1" />
+            {/* Color Picker */}
+            <div className="relative group">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60 p-0 overflow-hidden"
+                title="Background Color"
+              >
+                <div
+                  className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-border/50"
+                  style={{ backgroundColor: blankCanvasColor }}
+                />
+              </Button>
+              <Input
+                id="canvas-color"
+                type="color"
+                value={blankCanvasColor}
+                onChange={(e) => onBlankCanvasColorChange(e.target.value)}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+              onClick={() => fileInputRef.current?.click()}
+              title="Upload Background"
+            >
+              <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            </Button>
+
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full h-10 w-10 hover:bg-background/60 relative"
-                  title="Sequence Order"
+                  className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                  title="Search Assets"
                 >
-                  <ListOrdered className="h-4 w-4" />
-                  <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[9px] rounded-full w-4 h-4 flex items-center justify-center font-medium">
-                    {canvasLayout.sectionOrder.length}
-                  </span>
+                  <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-64 p-2 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
+                className="w-80 h-[400px] p-0 rounded-2xl overflow-hidden border-border/40"
+                style={{ zIndex: "var(--z-asset-popover)" }}
                 align="center"
                 side="bottom"
                 sideOffset={8}
               >
-                <div className="space-y-2">
-                  <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
-                    Screen Order
-                  </h4>
-                  {canvasLayout.sectionOrder.map((sectionId, idx) => {
-                    const isActive = sectionId === activeSequenceId;
-                    return (
-                      <div
-                        key={sectionId}
-                        className={cn(
-                          "flex items-center justify-between p-2 rounded-md text-sm group transition-colors",
-                          isActive
-                            ? "bg-primary/10 border border-primary/20"
-                            : "bg-muted/30"
-                        )}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={cn(
-                              "font-bold w-4 text-center",
-                              isActive
-                                ? "text-primary"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {idx + 1}
-                          </span>
-                          <span className="truncate max-w-[100px]">
-                            {sectionId}
-                          </span>
-                          {isActive && (
-                            <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-[9px] font-bold text-white animate-pulse">
-                              LIVE
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6"
-                            disabled={idx === 0}
-                            onClick={() => moveItem(idx, "up")}
-                          >
-                            <ArrowUp className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6"
-                            disabled={
-                              idx === canvasLayout.sectionOrder!.length - 1
-                            }
-                            onClick={() => moveItem(idx, "down")}
-                          >
-                            <ArrowDown className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6 text-destructive hover:text-destructive"
-                            onClick={() => removeFromOrder(sectionId)}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <AssetLibrary onAssetSelect={onCanvasBackgroundAssetSelect} />
               </PopoverContent>
             </Popover>
+
+            {onTextDepthToggle && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
+                  isTextDepthEnabled && "bg-primary/20 text-primary"
+                )}
+                onClick={() => onTextDepthToggle(!isTextDepthEnabled)}
+                title="Toggle Text Behind User"
+              >
+                <Layers className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </Button>
+            )}
+
+            <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
           </>
         )}
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleFileSelect}
-      />
-    </div>
+        {/* AIChatbot Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
+            isChatbotOpen && "bg-primary/20 text-primary"
+          )}
+          onClick={() => {
+            if (onToggleChatbot) onToggleChatbot((prev) => !prev);
+          }}
+          title="AI Chatbot"
+        >
+          <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+        </Button>
+        <AIChatbot
+          isOpen={!!isChatbotOpen}
+          onClose={() => {
+            if (onToggleChatbot) onToggleChatbot(false);
+          }}
+        />
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
+                canvasLayout && "bg-primary/20 text-primary"
+              )}
+              title="Grid Layout"
+            >
+              <Grid3x3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-[480px] p-3 max-h-[500px] overflow-y-auto rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
+            style={{ zIndex: "var(--z-asset-popover)" }}
+            align="center"
+            side="bottom"
+            sideOffset={8}
+          >
+            {templatesLoading && (
+              <div className="text-sm text-muted-foreground p-3 text-center">
+                Loading layouts...
+              </div>
+            )}
+
+            {canvasLayout && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start text-destructive mb-3 rounded-xl hover:bg-destructive/10"
+                onClick={() => onCanvasLayoutChange?.(null as any)}
+              >
+                <X className="h-4 w-4 mr-2" />
+                Clear Grid
+              </Button>
+            )}
+
+            {/* Tabbed Layout Selection */}
+            {(() => {
+              const dynamicLayouts = layoutTemplates.filter(
+                (t) => t.category === "dynamic"
+              );
+              const staticLayouts = layoutTemplates.filter(
+                (t) => t.category !== "dynamic"
+              );
+
+              return (
+                <Tabs defaultValue="dynamic" className="w-full">
+                  <TabsList className="w-full grid grid-cols-2 mb-3">
+                    <TabsTrigger value="dynamic" className="text-xs gap-1.5">
+                      <Zap className="h-3.5 w-3.5" />
+                      Dynamic
+                    </TabsTrigger>
+                    <TabsTrigger value="static" className="text-xs gap-1.5">
+                      <Layout className="h-3.5 w-3.5" />
+                      Static
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="dynamic" className="mt-0">
+                    <LayoutList
+                      layouts={dynamicLayouts}
+                      activeId={canvasLayout?.templateId}
+                      onSelect={handleLayoutSelect}
+                      emptyMessage="No dynamic layouts available"
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="static" className="mt-0">
+                    <LayoutList
+                      layouts={staticLayouts}
+                      activeId={canvasLayout?.templateId}
+                      onSelect={handleLayoutSelect}
+                      emptyMessage="No static layouts available"
+                    />
+                  </TabsContent>
+                </Tabs>
+              );
+            })()}
+          </PopoverContent>
+        </Popover>
+
+        {/* Dynamic Layout Transformation Controls */}
+        {hasTransformations && canvasLayout && (
+          <>
+            <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
+            {isCarouselLayout && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                  onClick={() => rotateCarousel("left")}
+                  title="Rotate carousel left"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                  onClick={() => rotateCarousel("right")}
+                  title="Rotate carousel right"
+                >
+                  <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </Button>
+              </>
+            )}
+
+            {layoutId === "magazine-hero" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                onClick={() => transformLayout("swap")}
+                title="Swap hero and sidebar"
+              >
+                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </Button>
+            )}
+
+            {(layoutId.includes("bento") || layoutId.includes("staircase")) && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                onClick={() => transformLayout("rotate")}
+                title="Rotate sections"
+              >
+                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </Button>
+            )}
+
+            {(layoutId === "spotlight-frame" ||
+              layoutId === "pip-creative") && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                onClick={() => transformLayout("rotate")}
+                title={
+                  layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"
+                }
+              >
+                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              </Button>
+            )}
+          </>
+        )}
+
+        {/* Sequence Reorder Popup */}
+        {canvasLayout &&
+          canvasLayout.sectionOrder &&
+          canvasLayout.sectionOrder.length > 0 && (
+            <>
+              <div className="w-px h-6 bg-border/40 mx-1" />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full h-10 w-10 hover:bg-background/60 relative"
+                    title="Sequence Order"
+                  >
+                    <ListOrdered className="h-4 w-4" />
+                    <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[9px] rounded-full w-4 h-4 flex items-center justify-center font-medium">
+                      {canvasLayout.sectionOrder.length}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-64 p-2 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
+                  align="center"
+                  side="bottom"
+                  sideOffset={8}
+                >
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
+                      Screen Order
+                    </h4>
+                    {canvasLayout.sectionOrder.map((sectionId, idx) => {
+                      const isActive = sectionId === activeSequenceId;
+                      return (
+                        <div
+                          key={sectionId}
+                          className={cn(
+                            "flex items-center justify-between p-2 rounded-md text-sm group transition-colors",
+                            isActive
+                              ? "bg-primary/10 border border-primary/20"
+                              : "bg-muted/30"
+                          )}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                "font-bold w-4 text-center",
+                                isActive
+                                  ? "text-primary"
+                                  : "text-muted-foreground"
+                              )}
+                            >
+                              {idx + 1}
+                            </span>
+                            <span className="truncate max-w-[100px]">
+                              {sectionId}
+                            </span>
+                            {isActive && (
+                              <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-[9px] font-bold text-white animate-pulse">
+                                LIVE
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-6 w-6"
+                              disabled={idx === 0}
+                              onClick={() => moveItem(idx, "up")}
+                            >
+                              <ArrowUp className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-6 w-6"
+                              disabled={
+                                idx === canvasLayout.sectionOrder!.length - 1
+                              }
+                              onClick={() => moveItem(idx, "down")}
+                            >
+                              <ArrowDown className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-6 w-6 text-destructive hover:text-destructive"
+                              onClick={() => removeFromOrder(sectionId)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </>
+          )}
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileSelect}
+        />
+      </div>
+    </>
   );
 };
