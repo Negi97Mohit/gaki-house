@@ -29,6 +29,7 @@ interface UseWebGLRenderLoopProps {
   isMasked?: boolean;
 }
 
+// Store latest props in a ref to avoid restarting the loop
 export const useWebGLRenderLoop = ({
   canvasRef,
   videoRef,
@@ -44,6 +45,47 @@ export const useWebGLRenderLoop = ({
   trackingSpeed,
   isMasked,
 }: UseWebGLRenderLoopProps) => {
+  const propsRef = useRef(
+    {
+      videoFilter,
+      activeInteractiveFilter,
+      filterIntensity,
+      filterColor,
+      processedCanvas,
+      facePositionRef,
+      isAutoFramingEnabled,
+      zoomSensitivity,
+      trackingSpeed,
+      isMasked,
+    }
+  );
+
+  useEffect(() => {
+    propsRef.current = {
+      videoFilter,
+      activeInteractiveFilter,
+      filterIntensity,
+      filterColor,
+      processedCanvas,
+      facePositionRef,
+      isAutoFramingEnabled,
+      zoomSensitivity,
+      trackingSpeed,
+      isMasked,
+    };
+  }, [
+    videoFilter,
+    activeInteractiveFilter,
+    filterIntensity,
+    filterColor,
+    processedCanvas,
+    facePositionRef,
+    isAutoFramingEnabled,
+    zoomSensitivity,
+    trackingSpeed,
+    isMasked,
+  ]);
+
   const rendererRef = useRef<GLRenderer | null>(null);
   const animationFrameRef = useRef<number>();
 
@@ -103,18 +145,20 @@ export const useWebGLRenderLoop = ({
           renderer.resize();
         }
 
+        const currentProps = propsRef.current;
+
         try {
           renderer.render(video, {
-            videoFilter,
-            activeInteractiveFilter,
-            filterIntensity,
-            filterColor,
-            processedCanvas,
-            facePosition: facePositionRef?.current,
-            isAutoFramingEnabled,
-            zoomSensitivity,
-            trackingSpeed,
-            isMasked,
+            videoFilter: currentProps.videoFilter,
+            activeInteractiveFilter: currentProps.activeInteractiveFilter,
+            filterIntensity: currentProps.filterIntensity,
+            filterColor: currentProps.filterColor,
+            processedCanvas: currentProps.processedCanvas,
+            facePosition: currentProps.facePositionRef?.current,
+            isAutoFramingEnabled: currentProps.isAutoFramingEnabled,
+            zoomSensitivity: currentProps.zoomSensitivity,
+            trackingSpeed: currentProps.trackingSpeed,
+            isMasked: currentProps.isMasked,
           });
         } catch (e) {
           console.error("[WebGL] Render error:", e);
@@ -130,15 +174,5 @@ export const useWebGLRenderLoop = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [
-    videoFilter,
-    activeInteractiveFilter,
-    filterIntensity,
-    filterColor,
-    processedCanvas,
-    isAutoFramingEnabled,
-    zoomSensitivity,
-    trackingSpeed,
-    isMasked,
-  ]);
+  }, []); // Empty dependency array: loop runs continuously
 };

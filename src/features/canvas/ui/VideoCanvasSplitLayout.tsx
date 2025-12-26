@@ -23,6 +23,7 @@ interface VideoCanvasSplitLayoutProps {
   dynamicPipPosition: { x: number; y: number };
   setDynamicPipPosition: (pos: { x: number; y: number }) => void;
   dynamicSplitRatio: number;
+  setDynamicSplitRatio: (ratio: number) => void;
   setIsDraggingDynamicSplitter: (isDragging: boolean) => void;
   renderCamera: () => React.ReactNode;
   theme?: string;
@@ -39,6 +40,7 @@ export const VideoCanvasSplitLayout: React.FC<VideoCanvasSplitLayoutProps> = ({
   dynamicPipPosition,
   setDynamicPipPosition,
   dynamicSplitRatio,
+  setDynamicSplitRatio,
   setIsDraggingDynamicSplitter,
   renderCamera,
   theme,
@@ -98,17 +100,121 @@ export const VideoCanvasSplitLayout: React.FC<VideoCanvasSplitLayoutProps> = ({
 
   const isVertical = dynamicLayout.mode === "split-vertical";
 
+  // Refs for direct DOM manipulation (Transient State Pattern)
+  const leftPaneRef = React.useRef<HTMLDivElement>(null);
+  const rightPaneRef = React.useRef<HTMLDivElement>(null);
+  const isDraggingRef = React.useRef(false);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDraggingDynamicSplitter(true);
+    isDraggingRef.current = true;
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startRatio = dynamicSplitRatio;
+    const containerWidth = containerSize.width;
+    const containerHeight = containerSize.height;
+
+    const handleMouseMove = (mvEvent: MouseEvent) => {
+      if (!isDraggingRef.current) return;
+      const isVertical = dynamicLayout.mode === "split-vertical";
+
+      let newRatio = startRatio;
+
+      if (isVertical) {
+        const deltaY = mvEvent.clientY - startY;
+        const deltaRatio = deltaY / containerHeight;
+        newRatio = Math.max(0.1, Math.min(0.9, startRatio + deltaRatio));
+      } else {
+        const deltaX = mvEvent.clientX - startX;
+        const deltaRatio = deltaX / containerWidth;
+        newRatio = Math.max(0.1, Math.min(0.9, startRatio + deltaRatio));
+      }
+
+      // Direct DOM update (Transient State)
+      if (leftPaneRef.current && rightPaneRef.current) {
+        const pct = newRatio * 100;
+        if (isVertical) {
+          leftPaneRef.current.style.height = `${pct}%`;
+          rightPaneRef.current.style.height = `${100 - pct}%`;
+        } else {
+          leftPaneRef.current.style.width = `${pct}%`;
+          rightPaneRef.current.style.width = `${100 - pct}%`;
+        }
+      }
+    };
+
+    const handleMouseUp = (upEvent: MouseEvent) => {
+      setIsDraggingDynamicSplitter(false);
+      isDraggingRef.current = false;
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+
+      // Final State Sync
+      // Calculate final ratio based on the last mouse position or just read from DOM? 
+      // Better to recalculate to be precise.
+      const isVertical = dynamicLayout.mode === "split-vertical";
+      let finalRatio = startRatio;
+      if (isVertical) {
+        const deltaY = upEvent.clientY - startY;
+        finalRatio = Math.max(0.1, Math.min(0.9, startRatio + (deltaY / containerHeight)));
+      } else {
+        const deltaX = upEvent.clientX - startX;
+        finalRatio = Math.max(0.1, Math.min(0.9, startRatio + (deltaX / containerWidth)));
+      }
+
+      setDynamicSplitRatio(finalRatio);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  };
+
   return (
     <div
       className={cn(
-        "w-full h-full flex bg-black",
+        "w-full h-full flex overflow-hidden",
         isVertical ? "flex-col" : "flex-row"
       )}
     >
+      {/* Pane 1 (Camera) */}
       <div
-        className="relative flex items-center justify-center overflow-hidden"
+        ref={leftPaneRef}
+        className="relative overflow-hidden shrink-0"
         style={{
-          [isVertical ? "height" : "width"]: `${dynamicSplitRatio * 100}%`,
+          width: isVertical ? "100%" : `${dynamicSplitRatio * 100}%`,
+          height: isVertical ? `${dynamicSplitRatio * 100}%` : "100%",
+        }}
+      >
+        {renderCamera()}
+      </div>
+
+      {/* Splitter Handle */}
+      <div
+        onMouseDown={handleMouseDown}
+        className={cn(
+          "z-50 flex items-center justify-center bg-border hover:bg-primary/50 transition-colors relative",
+          isVertical
+            ? "h-2 w-full cursor-row-resize"
+            : "w-2 h-full cursor-col-resize"
+        )}
+      >
+        <div
+          className={cn(
+            "bg-muted-foreground/50 rounded-full absolute",
+            isVertical ? "w-8 h-1 top-1/2 -translate-y-1/2" : "w-1 h-8 left-1/2 -translate-x-1/2"
+          )}
+        />
+      </div>
+
+      {/* Pane 2 (Dynamic Content) */}
+      <div
+        ref={rightPaneRef}
+        className="relative overflow-hidden shrink-0 bg-background"
+        style={{
+          width: isVertical ? "100%" : `${(1 - dynamicSplitRatio) * 100}%`,
+          height: isVertical ? `${(1 - dynamicSplitRatio) * 100}%` : "100%",
         }}
       >
         <DynamicContentRenderer
@@ -119,32 +225,7 @@ export const VideoCanvasSplitLayout: React.FC<VideoCanvasSplitLayoutProps> = ({
           sidebarProps={sidebarProps}
         />
       </div>
-      <div
-        className={cn(
-          "bg-border hover:bg-primary transition-colors flex items-center justify-center group z-10",
-          isVertical
-            ? "h-2 w-full cursor-row-resize"
-            : "w-2 h-full cursor-col-resize"
-        )}
-        onMouseDown={() => setIsDraggingDynamicSplitter(true)}
-      >
-        <div
-          className={cn(
-            "bg-primary/50 group-hover:bg-primary rounded-full transition-colors",
-            isVertical ? "w-12 h-1" : "w-1 h-12"
-          )}
-        />
-      </div>
-      <div
-        className="relative flex items-center justify-center overflow-hidden"
-        style={{
-          [isVertical ? "height" : "width"]: `${
-            (1 - dynamicSplitRatio) * 100
-          }%`,
-        }}
-      >
-        {renderCamera()}
-      </div>
     </div>
   );
 };
+

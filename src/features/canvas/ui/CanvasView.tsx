@@ -15,6 +15,7 @@ import {
   GeneratedLayout,
 } from "@/types/caption";
 import { useCanvasStore } from "../model/canvas.store";
+import { useUIStore } from "../model/ui.store";
 import { useCanvasResize } from "../hooks/useCanvasResize";
 import { useCanvasSpeech } from "../hooks/useCanvasSpeech";
 import { SnapLinesRef } from "./SnapLines";
@@ -51,15 +52,20 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const snapLinesRef = useRef<SnapLinesRef>(null);
 
   // Store State
+  // Store State (Data)
   const {
     viewport,
     setViewport,
+    sceneSize,
+    containerSize,
+  } = useCanvasStore();
+
+  // Store State (UI)
+  const {
     isCanvasHovered,
     setIsCanvasHovered,
     isSpacePressed,
     setIsSpacePressed,
-    sceneSize,
-    containerSize,
     isDraggingDynamicSplitter,
     setIsDraggingDynamicSplitter,
     dynamicSplitRatio,
@@ -68,7 +74,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     setDynamicPipPosition,
     dynamicPipSize,
     setDynamicPipSize,
-  } = useCanvasStore();
+  } = useUIStore();
 
   // Resize Logic
   useCanvasResize(canvasContainerRef, sceneRef, props.isFullscreen);
@@ -299,6 +305,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           dynamicPipPosition={dynamicPipPosition}
           setDynamicPipPosition={setDynamicPipPosition}
           dynamicSplitRatio={dynamicSplitRatio}
+          setDynamicSplitRatio={setDynamicSplitRatio}
           setIsDraggingDynamicSplitter={setIsDraggingDynamicSplitter}
           renderCamera={() => renderCamera()}
           theme={theme}

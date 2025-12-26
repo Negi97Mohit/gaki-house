@@ -18,6 +18,7 @@ interface CanvasContentProps {
     dynamicPipPosition: { x: number; y: number };
     setDynamicPipPosition: (pos: { x: number; y: number }) => void;
     dynamicSplitRatio: number;
+    setDynamicSplitRatio: (ratio: number) => void;
     setIsDraggingDynamicSplitter: (isDragging: boolean) => void;
     renderCamera: () => React.ReactNode;
     theme?: string;
@@ -119,6 +120,7 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
                 dynamicPipPosition={dynamicPipPosition}
                 setDynamicPipPosition={setDynamicPipPosition}
                 dynamicSplitRatio={dynamicSplitRatio}
+                setDynamicSplitRatio={props.setDynamicSplitRatio}
                 setIsDraggingDynamicSplitter={setIsDraggingDynamicSplitter}
                 renderCamera={renderCamera}
                 theme={theme}

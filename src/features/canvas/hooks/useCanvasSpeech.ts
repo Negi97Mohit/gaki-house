@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useDeepgramSpeech } from "@/features/ai-assistant/hooks/useDeepgramSpeech";
+import { throttle } from "@/shared/lib/utils";
 
 export const useCanvasSpeech = ({
     isAudioOn,
@@ -23,9 +24,16 @@ export const useCanvasSpeech = ({
         transcriptTimerRef.current = setTimeout(() => setFullTranscript(""), 4000);
     }, []);
 
+    const throttledSetInterim = useCallback(
+        throttle((text: string) => {
+            setInterimTranscript(text);
+        }, 100),
+        []
+    );
+
     const { startRecognition, stopRecognition } = useDeepgramSpeech({
         onFinalTranscript: handleFinalTranscript,
-        onPartialTranscript: (text) => setInterimTranscript(text),
+        onPartialTranscript: throttledSetInterim,
         stream: audioStreamForSpeech,
     });
 

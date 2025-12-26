@@ -1,3 +1,4 @@
+import React from "react";
 import { X } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Slider } from "@/shared/ui/slider";
@@ -13,7 +14,7 @@ interface EditorControlsProps {
     setVolume: (val: number) => void;
 }
 
-export const EditorControls = ({
+export const EditorControls = React.memo(({
     show,
     onClose,
     volume,
@@ -114,4 +115,4 @@ export const EditorControls = ({
             </Tabs>
         </div>
     );
-};
+});

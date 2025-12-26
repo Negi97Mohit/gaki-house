@@ -1,13 +1,15 @@
 // src/components/FloatingAssetSearch.tsx
-import React from "react";
+import React, { Suspense } from "react";
 import { Button } from "@/shared/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover";
-import { Search } from "lucide-react";
-import { AssetLibrary, AssetResult } from "./AssetLibrary";
+import { Search, Loader2 } from "lucide-react";
+import { AssetResult } from "./AssetLibrary";
+
+const AssetLibrary = React.lazy(() => import("./AssetLibrary").then(module => ({ default: module.AssetLibrary })));
 
 interface FloatingAssetSearchProps {
   onAssetSelect: (asset: AssetResult) => void;
@@ -33,7 +35,9 @@ export const FloatingAssetSearch: React.FC<FloatingAssetSearchProps> = ({
         style={{ zIndex: "var(--z-asset-popover)" }}
         align="end"
       >
-        <AssetLibrary onAssetSelect={onAssetSelect} />
+        <Suspense fallback={<div className="flex items-center justify-center h-full"><Loader2 className="w-6 h-6 animate-spin text-muted-foreground" /></div>}>
+          <AssetLibrary onAssetSelect={onAssetSelect} />
+        </Suspense>
       </PopoverContent>
     </Popover>
   );

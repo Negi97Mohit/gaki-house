@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/shared/ui/button";
 import { RotateCcw, X } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
+import { cn, throttle } from "@/shared/lib/utils";
 import { CameraShape } from "@/types/caption";
 import { SmartDraggable } from "./SmartDraggable";
 
@@ -132,7 +132,7 @@ export const PipWindow: React.FC<PipWindowProps> = ({
       Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
     const initialRotation = pipRotation || 0;
 
-    const handleMouseMove = (moveEvent: MouseEvent) => {
+    const handleMouseMove = throttle((moveEvent: MouseEvent) => {
       const currentAngle =
         Math.atan2(moveEvent.clientY - centerY, moveEvent.clientX - centerX) *
         (180 / Math.PI);
@@ -141,7 +141,7 @@ export const PipWindow: React.FC<PipWindowProps> = ({
 
       // Optional: Snap to 15 degree increments if Shift is held (can add later)
       onPipRotationChange(newRotation);
-    };
+    }, 16);
 
     const handleMouseUp = () => {
       document.removeEventListener("mousemove", handleMouseMove);

@@ -1,11 +1,13 @@
 // src/pages/Edit.tsx - Professional Minimalist Video Editor
 import React from "react";
-import { Video } from "lucide-react";
+import { Video, Loader2 } from "lucide-react"; // Added Loader2
 import { useEditSession } from "./Edit/hooks/useEditSession";
 import { EditorHeader } from "./Edit/components/EditorHeader";
-import { EditorCanvas } from "./Edit/components/EditorCanvas";
-import { EditorControls } from "./Edit/components/EditorControls";
-import { EditorTimeline } from "./Edit/components/EditorTimeline";
+
+// Lazy Load Heavy Components
+const EditorCanvas = React.lazy(() => import("./Edit/components/EditorCanvas").then(module => ({ default: module.EditorCanvas })));
+const EditorControls = React.lazy(() => import("./Edit/components/EditorControls").then(module => ({ default: module.EditorControls })));
+const EditorTimeline = React.lazy(() => import("./Edit/components/EditorTimeline").then(module => ({ default: module.EditorTimeline })));
 
 const EditPage = () => {
   const {
@@ -50,37 +52,39 @@ const EditPage = () => {
         onExport={handleExport}
       />
 
-      <div className="flex-1 flex overflow-hidden relative">
-        <EditorCanvas
-          session={session}
-          videoRef={videoRef}
-          playbackState={playbackState}
-          zoom={zoom}
-        />
+      <React.Suspense fallback={<div className="flex-1 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
+        <div className="flex-1 flex overflow-hidden relative">
+          <EditorCanvas
+            session={session}
+            videoRef={videoRef}
+            playbackState={playbackState}
+            zoom={zoom}
+          />
 
-        <EditorControls
-          show={showControlPanel}
-          onClose={() => setShowControlPanel(false)}
+          <EditorControls
+            show={showControlPanel}
+            onClose={() => setShowControlPanel(false)}
+            volume={volume}
+            setVolume={setVolume}
+          />
+        </div>
+
+        <EditorTimeline
+          session={session}
+          currentTime={currentTime}
+          currentTimeMs={currentTimeMs}
+          duration={duration}
+          progress={progress}
+          isPlaying={isPlaying}
           volume={volume}
           setVolume={setVolume}
+          onTogglePlay={handleTogglePlay}
+          onSeek={handleSeek}
+          timelineRef={timelineRef}
+          onTimelineClick={handleTimelineClick}
+          playbackState={playbackState}
         />
-      </div>
-
-      <EditorTimeline
-        session={session}
-        currentTime={currentTime}
-        currentTimeMs={currentTimeMs}
-        duration={duration}
-        progress={progress}
-        isPlaying={isPlaying}
-        volume={volume}
-        setVolume={setVolume}
-        onTogglePlay={handleTogglePlay}
-        onSeek={handleSeek}
-        timelineRef={timelineRef}
-        onTimelineClick={handleTimelineClick}
-        playbackState={playbackState}
-      />
+      </React.Suspense>
     </div>
   );
 };
