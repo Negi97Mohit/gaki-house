@@ -125,7 +125,7 @@ export const CanvasHoverToolbar = ({
   blankCanvasColor,
   onBlankCanvasColorChange,
   isVisible,
-  isMouseActive = true, // Kept for prop compatibility, but logic is now proximity-based
+  isMouseActive = true,
   onCanvasBackgroundUpload,
   canvasLayout,
   onCanvasBackgroundAssetSelect,
@@ -139,6 +139,29 @@ export const CanvasHoverToolbar = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { layoutTemplates, loading: templatesLoading } = useLayoutTemplates();
   const [isHovered, setIsHovered] = useState(false);
+  const toolbarRef = useRef<HTMLDivElement>(null);
+
+  // Proximity detection to replace the blocking invisible div
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      // Check if mouse is within top 96px (matches previous h-24 trigger zone)
+      const isTopZone = e.clientY < 96;
+
+      // Check if interacting with toolbar or its popovers/dialogs
+      const target = e.target as HTMLElement;
+      const isInteracting =
+        toolbarRef.current?.contains(target) ||
+        target.closest('[role="dialog"]') !== null ||
+        target.closest("[data-radix-popper-content-wrapper]") !== null;
+
+      // Show toolbar if in top zone OR interacting with it
+      // This allows clicks to pass through to the canvas when not directly over the toolbar UI
+      setIsHovered(isTopZone || !!isInteracting);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -331,26 +354,18 @@ export const CanvasHoverToolbar = ({
   // Visibility Logic:
   // Show if:
   // 1. isVisible prop is true (global toggle)
-  // 2. AND (Chatbot is open OR User is hovering in the top zone)
+  // 2. AND (Chatbot is open OR User is hovering in the top zone/toolbar)
   const shouldShow = isVisible && (isChatbotOpen || isHovered);
 
   return (
     <>
-      {/* TRIGGER ZONE: 
-        Invisible area at the top of the screen (height: 24 = 6rem = 96px).
-        Detects mouse entry to reveal the toolbar.
+      {/* REMOVED: The blocking Trigger Zone div has been replaced by the window mousemove listener.
+        This fixes the issue where text under the top ~100px of the screen was unselectable.
       */}
-      <div
-        className="fixed top-0 left-0 w-full h-24 z-[19999] bg-transparent"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        // Ensure it doesn't block clicks to things underneath if not hovering strictly
-        // But for hover detection, it must be present.
-        // We use pointer-events-auto so it catches the hover.
-      />
 
       {/* TOOLBAR */}
       <div
+        ref={toolbarRef}
         className={cn(
           "fixed top-4 left-1/2 -translate-x-1/2 z-[20000]",
           "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-lg",
@@ -362,7 +377,7 @@ export const CanvasHoverToolbar = ({
             : "opacity-0 -translate-y-16 pointer-events-none"
         )}
         onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        // We rely on the window listener for un-hover logic to handle the zone correctly
       >
         {!canvasLayout && (
           <>

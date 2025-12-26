@@ -34,8 +34,11 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   elementWidth = 100,
 }) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
-  const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
+  // Initialize with the passed position to minimize initial jump
+  const [toolbarPosition, setToolbarPosition] = useState(position);
   const [showDesigns, setShowDesigns] = useState(false);
+  // Only show the toolbar after we've calculated its constrained position
+  const [isReady, setIsReady] = useState(false);
 
   // Smart Positioning Logic
   useLayoutEffect(() => {
@@ -56,13 +59,21 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
 
       setToolbarPosition({ x, y });
     }
+    // Mark as ready to trigger the appearance animation
+    setIsReady(true);
   }, [position, containerRef, elementHeight, elementWidth]);
 
   return (
     <>
       <div
         ref={toolbarRef}
-        className="absolute pointer-events-auto flex items-center gap-1 p-1.5 bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl animate-in fade-in zoom-in-95 duration-200 isolate"
+        className={cn(
+          "absolute pointer-events-auto flex items-center gap-1 p-1.5 bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl isolate",
+          // Only animate in when positioned correctly to avoid "flying" from 0,0
+          isReady
+            ? "animate-in fade-in zoom-in-95 duration-200"
+            : "opacity-0 pointer-events-none"
+        )}
         style={{
           left: `${toolbarPosition.x}px`,
           top: `${toolbarPosition.y}px`,
