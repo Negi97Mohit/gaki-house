@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/shared/lib/utils";
 import { FileOverlayState } from "@/types/caption";
-import { X, File as FileIcon, Loader2, Layers } from "lucide-react";
+import { X, File as FileIcon, Loader2, Layers, Box } from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
@@ -126,7 +126,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
     if (Math.abs(currentRatio - ratio) > 0.01) {
       // Calculate new height to match aspect ratio, keeping width constant
       // ratio = width / height  =>  height = width / ratio
-      const currentWidthPx = (overlay.layout.size.width / 100) * sceneSize.width;
+      const currentWidthPx =
+        (overlay.layout.size.width / 100) * sceneSize.width;
       const newHeightPx = currentWidthPx / ratio;
       const newHeightPercent = (newHeightPx / sceneSize.height) * 100;
 
@@ -174,7 +175,6 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       )}
     >
       <div className="w-full h-full flex flex-col relative">
-
         <div
           className={cn(
             "flex-grow w-full h-full relative overflow-hidden rounded-lg",
@@ -209,7 +209,9 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onLayoutChange(overlay.id, { isBehindUser: !overlay.layout.isBehindUser });
+                onLayoutChange(overlay.id, {
+                  isBehindUser: !overlay.layout.isBehindUser,
+                });
               }}
               onPointerDown={(e) => e.stopPropagation()}
               className={cn(
@@ -222,9 +224,29 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             >
               <Layers className="w-3 h-3" />
             </button>
+            {/* NEW: 3D Button (Only for Images) */}
+            {overlay.fileType === "image" && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Toggle the is3D property
+                  onLayoutChange(overlay.id, { is3D: !overlay.layout.is3D });
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+                className={cn(
+                  "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
+                  overlay.layout.is3D
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
+                )}
+                title={overlay.layout.is3D ? "Disable 3D" : "Enable 3D"}
+              >
+                <Box className="w-3 h-3" />
+              </button>
+            )}
           </div>
         )}
-
       </div>
     </HybridDraggable>
   );
