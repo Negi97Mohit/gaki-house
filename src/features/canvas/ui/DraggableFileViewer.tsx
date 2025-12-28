@@ -2,7 +2,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/shared/lib/utils";
 import { FileOverlayState } from "@/types/caption";
-import { X, File as FileIcon, Loader2, Layers, Move, Sparkles } from "lucide-react";
+import {
+  X,
+  File as FileIcon,
+  Loader2,
+  Layers,
+  Move,
+  Sparkles,
+} from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { ThreeDGSViewer } from "./ThreeDGSViewer";
@@ -99,7 +106,7 @@ export const FileRenderer: React.FC<{
         <ThreeDGSViewer
           url={overlay.fileUrl}
           fileName={overlay.fileName}
-          className="bg-black/90"
+          className="bg-transparent"
         />
       );
     default:
@@ -164,7 +171,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
     if (!apiUrl) {
       toast({
         title: "Configuration Required",
-        description: "Please add VITE_MLSHARP_API_URL to your .env.local file. See MLSHARP_CONFIG.md for details.",
+        description:
+          "Please add VITE_MLSHARP_API_URL to your .env.local file. See MLSHARP_CONFIG.md for details.",
         variant: "destructive",
       });
       return;
@@ -175,7 +183,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
     try {
       toast({
         title: "Generating 3D Model",
-        description: "Processing your image with ML-Sharp... This may take 30-60 seconds.",
+        description:
+          "Processing your image with ML-Sharp... This may take 30-60 seconds.",
       });
 
       // Convert the image to 3D
@@ -213,7 +222,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       console.error("3D generation failed:", error);
       toast({
         title: "3D Generation Failed",
-        description: error.message || "An error occurred while generating the 3D model.",
+        description:
+          error.message || "An error occurred while generating the 3D model.",
         variant: "destructive",
       });
     } finally {
@@ -252,7 +262,9 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       dragHandleSelector={is3DFile ? ".drag-handle" : undefined}
       className={cn(
         "group transition-all duration-200",
-        overlay.fileType === "image" ? "bg-transparent" : "bg-card",
+        overlay.fileType === "image" || overlay.fileType === "3d"
+          ? "bg-transparent"
+          : "bg-card",
         isSelected
           ? "shadow-lg border-2 border-primary"
           : "shadow-none border-2 border-transparent group-hover:border-primary/50"
@@ -262,7 +274,9 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         <div
           className={cn(
             "flex-grow w-full h-full relative overflow-hidden rounded-lg",
-            overlay.fileType !== "image" && "bg-background/50"
+            overlay.fileType !== "image" &&
+              overlay.fileType !== "3d" &&
+              "bg-background/50"
           )}
         >
           <FileRenderer
@@ -345,7 +359,11 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
                     ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
                     : "bg-background/80 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
                 )}
-                title={isGenerating3D ? "Generating 3D model..." : "Generate 3D model with ML-Sharp"}
+                title={
+                  isGenerating3D
+                    ? "Generating 3D model..."
+                    : "Generate 3D model with ML-Sharp"
+                }
               >
                 {isGenerating3D ? (
                   <Loader2 className="w-3 h-3 animate-spin" />
