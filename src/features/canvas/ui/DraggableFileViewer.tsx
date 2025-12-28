@@ -2,10 +2,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/shared/lib/utils";
 import { FileOverlayState } from "@/types/caption";
-import { X, File as FileIcon, Loader2, Layers, Box, Move } from "lucide-react";
+import { X, File as FileIcon, Loader2, Layers, Box, Move, Sparkles } from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { ThreeDGSViewer } from "./ThreeDGSViewer";
+import { convertImageTo3D } from "@/services/mlsharp-api";
+import { useToast } from "@/shared/ui/use-toast";
 
 interface DraggableFileViewerProps {
   overlay: FileOverlayState;
@@ -125,6 +127,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   onSnapGuidesChange,
 }) => {
   // Rotation now handled by HybridDraggable
+  const { toast } = useToast();
+  const [isGenerating3D, setIsGenerating3D] = useState(false);
 
   const handleAspectRatioDetermined = (ratio: number) => {
     // Check if current aspect ratio differs significantly
@@ -150,6 +154,64 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   };
 
   const is3DFile = overlay.fileType === "3d";
+
+  // Handle 3D generation from image using ML-Sharp
+  const handleGenerate3D = async () => {
+    const apiUrl = import.meta.env.VITE_MLSHARP_API_URL;
+
+    if (!apiUrl) {
+      toast({
+        title: "Configuration Required",
+        description: "Please add VITE_MLSHARP_API_URL to your .env.local file. See MLSHARP_CONFIG.md for details.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating3D(true);
+
+    try {
+      toast({
+        title: "Generating 3D Model",
+        description: "Processing your image with ML-Sharp... This may take 30-60 seconds.",
+      });
+
+      // Convert the image to 3D
+      const plyBlob = await convertImageTo3D(overlay.file, apiUrl);
+
+      // Create a file from the blob
+      const plyFile = new File(
+        [plyBlob],
+        overlay.fileName.replace(/\.[^/.]+$/, "") + ".ply",
+        { type: "application/octet-stream" }
+      );
+
+      // Create object URL for the PLY file
+      const plyUrl = URL.createObjectURL(plyFile);
+
+      // Add the PLY file to the canvas by updating the overlay
+      // We'll need to notify parent component to add it as a new overlay
+      // For now, we'll download it and show success message
+      const link = document.createElement("a");
+      link.href = plyUrl;
+      link.download = plyFile.name;
+      link.click();
+
+      toast({
+        title: "3D Model Generated!",
+        description: "Your PLY file has been downloaded. Drag it back to the canvas to view it.",
+      });
+    } catch (error: any) {
+      console.error("3D generation failed:", error);
+      toast({
+        title: "3D Generation Failed",
+        description: error.message || "An error occurred while generating the 3D model.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating3D(false);
+    }
+  };
 
   return (
     <HybridDraggable
@@ -261,24 +323,50 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             </button>
             {/* NEW: 3D Button (Only for Images) - Applies CSS 3D effect */}
             {overlay.fileType === "image" && (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  // Toggle the is3D property
-                  onLayoutChange(overlay.id, { is3D: !overlay.layout.is3D });
-                }}
-                onPointerDown={(e) => e.stopPropagation()}
-                className={cn(
-                  "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
-                  overlay.layout.is3D
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
-                )}
-                title={overlay.layout.is3D ? "Disable 3D" : "Enable 3D"}
-              >
-                <Box className="w-3 h-3" />
-              </button>
+              <>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Toggle the is3D property
+                    onLayoutChange(overlay.id, { is3D: !overlay.layout.is3D });
+                  }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  className={cn(
+                    "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
+                    overlay.layout.is3D
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
+                  )}
+                  title={overlay.layout.is3D ? "Disable 3D" : "Enable 3D"}
+                >
+                  <Box className="w-3 h-3" />
+                </button>
+
+                {/* ML-Sharp 3D Generation Button */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleGenerate3D();
+                  }}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  disabled={isGenerating3D}
+                  className={cn(
+                    "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
+                    isGenerating3D
+                      ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
+                      : "bg-background/80 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
+                  )}
+                  title={isGenerating3D ? "Generating 3D model..." : "Generate 3D model with ML-Sharp"}
+                >
+                  {isGenerating3D ? (
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3 h-3" />
+                  )}
+                </button>
+              </>
             )}
           </div>
         )}
