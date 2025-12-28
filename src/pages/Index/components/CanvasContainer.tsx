@@ -17,6 +17,7 @@ import { RecordingSession } from "@/types/editor";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
 import { generateId } from "@/shared/lib/id";
+import { FileType, FileOverlayState } from "@/types/caption";
 
 // Hooks
 import { useCanvasPaste } from "../hooks/useCanvasPaste";
@@ -224,19 +225,19 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       updateActiveScene((scene) => {
         const updatedCanvasLayout = scene.canvasLayout
           ? {
-              ...scene.canvasLayout,
-              sections: scene.canvasLayout.sections.map((s) =>
-                s.id === sectionId
-                  ? {
-                      ...s,
-                      content: {
-                        type: "image" as const,
-                        src: asset.downloadUrl,
-                      },
-                    }
-                  : s
-              ),
-            }
+            ...scene.canvasLayout,
+            sections: scene.canvasLayout.sections.map((s) =>
+              s.id === sectionId
+                ? {
+                  ...s,
+                  content: {
+                    type: "image" as const,
+                    src: asset.downloadUrl,
+                  },
+                }
+                : s
+            ),
+          }
           : scene.canvasLayout;
         return { ...scene, canvasLayout: updatedCanvasLayout };
       });
@@ -406,7 +407,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           o.id === id ? { ...o, metadata } : o
         ),
       })),
-    onPreviewGenerated: () => {},
+    onPreviewGenerated: () => { },
     onRemoveBrowser: (id: string) =>
       updateActiveScene((s) => ({
         ...s,
@@ -443,8 +444,51 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       })),
     selectedFileId: selection.selectedFileId,
     setSelectedFileId: selection.setSelectedFileId,
-    onInternalDragStart: () => {},
-    onInternalDragStop: () => {},
+    onAddFile: (file: File) => {
+      // Determine file type
+      let fileType: FileType = "unknown";
+      const name = file.name.toLowerCase();
+
+      if (
+        name.endsWith(".ply") ||
+        name.endsWith(".splat") ||
+        name.endsWith(".ksplat")
+      ) {
+        fileType = "3d";
+      } else if (file.type.startsWith("image/")) fileType = "image";
+      else if (file.type.startsWith("video/")) fileType = "video";
+      else if (file.type === "application/pdf") fileType = "pdf";
+      else if (file.type.startsWith("audio/")) fileType = "audio";
+      else if (file.type.startsWith("text/")) fileType = "text";
+
+      if (fileType !== "unknown") {
+        const url = URL.createObjectURL(file);
+        const newFileOverlay: FileOverlayState = {
+          id: generateId("file"),
+          file,
+          fileName: file.name,
+          fileType,
+          fileUrl: url,
+          layout: {
+            position: { x: 30, y: 30 },
+            size: { width: 40, height: 40 },
+            zIndex: zIndex.draggableElement,
+            rotation: 0,
+            layerOrder: "above-video",
+          },
+        };
+
+        updateActiveScene((prev) => ({
+          ...prev,
+          fileOverlays: [...prev.fileOverlays, newFileOverlay],
+        }));
+
+        selection.handleDeselectAll();
+        selection.setSelectedFileId(newFileOverlay.id);
+      }
+    },
+    onInternalDragStart: () => { },
+    onInternalDragStop: () => { },
     onDeselectAll: selection.handleDeselectAll,
     onSetDynamicLayout: (target: any, mode: any) => {
       if (mode === "reset") {
@@ -533,11 +577,10 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       />
 
       <div
-        className={`fixed top-6 left-6 z-[2015] transition-opacity duration-300 ${
-          uiState.isMouseActive
+        className={`fixed top-6 left-6 z-[2015] transition-opacity duration-300 ${uiState.isMouseActive
             ? "opacity-100"
             : "opacity-0 pointer-events-none"
-        }`}
+          }`}
       >
         <FloatingLogo />
       </div>

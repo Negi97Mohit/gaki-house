@@ -325,11 +325,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 default={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
@@ -337,11 +337,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}
@@ -559,6 +559,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onSelectBrowser={props.setSelectedBrowserId}
                   onRemoveFile={props.onRemoveFile}
                   onFileLayoutChange={props.onFileLayoutChange}
+                  onAddFile={props.onAddFile}
                   selectedFileId={props.selectedFileId}
                   onSelectFile={props.setSelectedFileId}
                   onRemoveTextOverlay={props.onRemoveTextOverlay}
@@ -622,6 +623,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onSelectBrowser={props.setSelectedBrowserId}
                   onRemoveFile={props.onRemoveFile}
                   onFileLayoutChange={props.onFileLayoutChange}
+                  onAddFile={props.onAddFile}
                   selectedFileId={props.selectedFileId}
                   onSelectFile={props.setSelectedFileId}
                   onRemoveTextOverlay={props.onRemoveTextOverlay}
@@ -706,6 +708,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   onSelectBrowser={props.setSelectedBrowserId}
                   onRemoveFile={props.onRemoveFile}
                   onFileLayoutChange={props.onFileLayoutChange}
+                  onAddFile={props.onAddFile}
                   selectedFileId={props.selectedFileId}
                   onSelectFile={props.setSelectedFileId}
                   onRemoveTextOverlay={props.onRemoveTextOverlay}

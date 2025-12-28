@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/shared/lib/utils";
 import { FileOverlayState } from "@/types/caption";
-import { X, File as FileIcon, Loader2, Layers, Box, Move, Sparkles } from "lucide-react";
+import { X, File as FileIcon, Loader2, Layers, Move, Sparkles } from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { ThreeDGSViewer } from "./ThreeDGSViewer";
@@ -16,6 +16,7 @@ interface DraggableFileViewerProps {
     layout: Partial<FileOverlayState["layout"]>
   ) => void;
   onRemove: (id: string) => void;
+  onAddFile?: (file: File) => void; // New: callback to add file to canvas
   sceneSize: { width: number; height: number };
   isSelected: boolean;
   onSetDynamicLayout: (
@@ -117,6 +118,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   overlay,
   onLayoutChange,
   onRemove,
+  onAddFile,
   sceneSize,
   isSelected,
   onSetDynamicLayout,
@@ -186,21 +188,27 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
         { type: "application/octet-stream" }
       );
 
-      // Create object URL for the PLY file
-      const plyUrl = URL.createObjectURL(plyFile);
+      // Auto-load the PLY file to canvas if callback is available
+      if (onAddFile) {
+        onAddFile(plyFile);
+        toast({
+          title: "3D Model Generated!",
+          description: "Your 3D model has been added to the canvas.",
+        });
+      } else {
+        // Fallback: download the file if no callback provided
+        const plyUrl = URL.createObjectURL(plyFile);
+        const link = document.createElement("a");
+        link.href = plyUrl;
+        link.download = plyFile.name;
+        link.click();
+        URL.revokeObjectURL(plyUrl);
 
-      // Add the PLY file to the canvas by updating the overlay
-      // We'll need to notify parent component to add it as a new overlay
-      // For now, we'll download it and show success message
-      const link = document.createElement("a");
-      link.href = plyUrl;
-      link.download = plyFile.name;
-      link.click();
-
-      toast({
-        title: "3D Model Generated!",
-        description: "Your PLY file has been downloaded. Drag it back to the canvas to view it.",
-      });
+        toast({
+          title: "3D Model Generated!",
+          description: "Your PLY file has been downloaded.",
+        });
+      }
     } catch (error: any) {
       console.error("3D generation failed:", error);
       toast({
@@ -321,52 +329,30 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             >
               <Layers className="w-3 h-3" />
             </button>
-            {/* NEW: 3D Button (Only for Images) - Applies CSS 3D effect */}
+            {/* ML-Sharp 3D Generation Button (Only for Images) */}
             {overlay.fileType === "image" && (
-              <>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    // Toggle the is3D property
-                    onLayoutChange(overlay.id, { is3D: !overlay.layout.is3D });
-                  }}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  className={cn(
-                    "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
-                    overlay.layout.is3D
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
-                  )}
-                  title={overlay.layout.is3D ? "Disable 3D" : "Enable 3D"}
-                >
-                  <Box className="w-3 h-3" />
-                </button>
-
-                {/* ML-Sharp 3D Generation Button */}
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleGenerate3D();
-                  }}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  disabled={isGenerating3D}
-                  className={cn(
-                    "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
-                    isGenerating3D
-                      ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
-                      : "bg-background/80 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
-                  )}
-                  title={isGenerating3D ? "Generating 3D model..." : "Generate 3D model with ML-Sharp"}
-                >
-                  {isGenerating3D ? (
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                  ) : (
-                    <Sparkles className="w-3 h-3" />
-                  )}
-                </button>
-              </>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleGenerate3D();
+                }}
+                onPointerDown={(e) => e.stopPropagation()}
+                disabled={isGenerating3D}
+                className={cn(
+                  "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
+                  isGenerating3D
+                    ? "bg-primary/50 text-primary-foreground cursor-not-allowed"
+                    : "bg-background/80 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
+                )}
+                title={isGenerating3D ? "Generating 3D model..." : "Generate 3D model with ML-Sharp"}
+              >
+                {isGenerating3D ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <Sparkles className="w-3 h-3" />
+                )}
+              </button>
             )}
           </div>
         )}

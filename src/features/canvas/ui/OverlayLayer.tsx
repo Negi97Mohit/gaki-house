@@ -55,6 +55,7 @@ interface OverlayLayerProps {
   // File handlers
   onRemoveFile: any;
   onFileLayoutChange: any;
+  onAddFile?: (file: File) => void;
   selectedFileId: string | null;
   onSelectFile: any;
 
@@ -104,6 +105,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
     onSelectBrowser,
     onRemoveFile,
     onFileLayoutChange,
+    onAddFile,
     selectedFileId,
     onSelectFile,
     onTextLayoutChange,
@@ -348,6 +350,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
               onSetDynamicLayout={onSetDynamicLayout}
               onRemove={onRemoveFile}
               onLayoutChange={onFileLayoutChange}
+              onAddFile={onAddFile}
               sceneSize={containerSize}
               isSelected={selectedFileId === file.id}
               onInternalDragStart={onInternalDragStart}
