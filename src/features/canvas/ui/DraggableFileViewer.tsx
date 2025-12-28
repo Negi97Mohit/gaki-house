@@ -198,21 +198,22 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       );
 
       // Auto-load the PLY file to canvas if callback is available
+      const plyUrl = URL.createObjectURL(plyFile);
+      const link = document.createElement("a");
+      link.href = plyUrl;
+      link.download = plyFile.name;
+      link.click();
+      URL.revokeObjectURL(plyUrl);
+
+      // Auto-load the PLY file to canvas if callback is available
       if (onAddFile) {
         onAddFile(plyFile);
         toast({
           title: "3D Model Generated!",
-          description: "Your 3D model has been added to the canvas.",
+          description:
+            "Your 3D model has been added to the canvas and downloaded.",
         });
       } else {
-        // Fallback: download the file if no callback provided
-        const plyUrl = URL.createObjectURL(plyFile);
-        const link = document.createElement("a");
-        link.href = plyUrl;
-        link.download = plyFile.name;
-        link.click();
-        URL.revokeObjectURL(plyUrl);
-
         toast({
           title: "3D Model Generated!",
           description: "Your PLY file has been downloaded.",
