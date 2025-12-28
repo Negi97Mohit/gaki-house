@@ -1,0 +1,10 @@
+input_images/
+output_splats/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.log
+.DS_Store
