@@ -1,10 +1,11 @@
-// src/components/DraggableFileViewer.tsx
+// src/features/canvas/ui/DraggableFileViewer.tsx
 import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/shared/lib/utils";
 import { FileOverlayState } from "@/types/caption";
-import { X, File as FileIcon, Loader2, Layers, Box } from "lucide-react";
+import { X, File as FileIcon, Loader2, Layers, Box, Move } from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
+import { ThreeDGSViewer } from "./ThreeDGSViewer";
 
 interface DraggableFileViewerProps {
   overlay: FileOverlayState;
@@ -90,6 +91,14 @@ export const FileRenderer: React.FC<{
           {textContent}
         </pre>
       );
+    case "3d":
+      return (
+        <ThreeDGSViewer
+          url={overlay.fileUrl}
+          fileName={overlay.fileName}
+          className="bg-black/90"
+        />
+      );
     default:
       return (
         <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-4">
@@ -140,6 +149,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
     }
   };
 
+  const is3DFile = overlay.fileType === "3d";
+
   return (
     <HybridDraggable
       id={overlay.id}
@@ -165,7 +176,10 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       enableResizing={true}
       enableRotation={true}
       lockAspectRatio={overlay.fileType === "image"}
-      cancelSelector="audio, video, iframe"
+      // Prevent drag when interacting with media controls or the 3D canvas
+      cancelSelector="audio, video, iframe, canvas"
+      // If 3D, only allow dragging via specific handles to avoid conflict with orbit controls
+      dragHandleSelector={is3DFile ? ".drag-handle" : undefined}
       className={cn(
         "group transition-all duration-200",
         overlay.fileType === "image" ? "bg-transparent" : "bg-card",
@@ -200,6 +214,27 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
           <X className="w-4 h-4" />
         </button>
 
+        {/* 3D File Specific Controls */}
+        {is3DFile && (
+          <>
+            {/* Center Drag Handle for 3D Views */}
+            {isSelected && (
+              <div
+                className="drag-handle absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 p-3 bg-black/50 backdrop-blur-md rounded-full cursor-move hover:bg-primary hover:text-white transition-colors group opacity-0 hover:opacity-100"
+                title="Drag to move"
+              >
+                <Move className="w-6 h-6 text-white" />
+              </div>
+            )}
+
+            {/* Top Bar Drag Handle for 3D Views */}
+            <div
+              className="drag-handle absolute top-0 left-0 w-full h-8 z-40 cursor-move hover:bg-white/10 transition-colors"
+              title="Drag to move window"
+            />
+          </>
+        )}
+
         {isSelected && (
           <div
             className="absolute top-2 left-2 z-50 flex gap-1 pointer-events-auto"
@@ -224,7 +259,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             >
               <Layers className="w-3 h-3" />
             </button>
-            {/* NEW: 3D Button (Only for Images) */}
+            {/* NEW: 3D Button (Only for Images) - Applies CSS 3D effect */}
             {overlay.fileType === "image" && (
               <button
                 onClick={(e) => {

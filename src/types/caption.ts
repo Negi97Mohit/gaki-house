@@ -204,7 +204,14 @@ export interface CaptionStyleDef {
   description?: string;
 }
 
-export type FileType = "image" | "video" | "pdf" | "audio" | "text" | "unknown";
+export type FileType =
+  | "image"
+  | "video"
+  | "pdf"
+  | "audio"
+  | "text"
+  | "3d"
+  | "unknown";
 
 export interface FileOverlayState {
   id: string;

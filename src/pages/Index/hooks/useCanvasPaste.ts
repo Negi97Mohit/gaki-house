@@ -1,3 +1,4 @@
+// src/pages/Index/hooks/useCanvasPaste.ts
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { generateId } from "@/shared/lib/id";
@@ -7,6 +8,7 @@ import {
   FileOverlayState,
   BrowserOverlayState,
   TextOverlayState,
+  FileType, // Import the updated type
 } from "@/types/caption";
 
 interface UseCanvasPasteProps {
@@ -46,21 +48,24 @@ export const useCanvasPaste = ({
 
       let hasHandled = false;
 
-      // 1. Handle Files (Images, Videos, PDFs)
+      // 1. Handle Files (Images, Videos, PDFs, 3D Models)
       if (e.clipboardData.files.length > 0) {
         e.preventDefault();
         hasHandled = true;
         const newFiles: FileOverlayState[] = [];
 
         Array.from(e.clipboardData.files).forEach((file) => {
-          let fileType:
-            | "image"
-            | "video"
-            | "pdf"
-            | "audio"
-            | "text"
-            | "unknown" = "unknown";
-          if (file.type.startsWith("image/")) fileType = "image";
+          let fileType: FileType = "unknown";
+          const name = file.name.toLowerCase();
+
+          // Check for 3D files first based on extension
+          if (
+            name.endsWith(".ply") ||
+            name.endsWith(".splat") ||
+            name.endsWith(".ksplat")
+          ) {
+            fileType = "3d";
+          } else if (file.type.startsWith("image/")) fileType = "image";
           else if (file.type.startsWith("video/")) fileType = "video";
           else if (file.type === "application/pdf") fileType = "pdf";
           else if (file.type.startsWith("audio/")) fileType = "audio";
