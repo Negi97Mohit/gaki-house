@@ -113,8 +113,8 @@ export const useLayoutEditor = ({
   const handleDeleteSection = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!onLayoutUpdate) return;
-    if (!confirm("Remove this panel?")) return;
 
+    // Removed native confirm() to allow custom UI handling
     const newSections = layout.sections.filter((s) => s.id !== id);
     onLayoutUpdate({
       ...layout,

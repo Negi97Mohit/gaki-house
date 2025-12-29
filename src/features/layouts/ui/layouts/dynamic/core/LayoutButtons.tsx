@@ -4,6 +4,17 @@ import { usePreviewMode } from "./PreviewModeContext";
 import { Plus, Trash2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { EditableText } from "./EditableText";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/shared/ui/alert-dialog";
 
 export const DynamicDeleteButton: React.FC<{
   sectionId: string;
@@ -16,7 +27,8 @@ export const DynamicDeleteButton: React.FC<{
   // Don't render in preview mode to avoid nested button issues
   if (isPreview) return null;
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleConfirmDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (onDelete) {
       onDelete(sectionId, e);
     } else {
@@ -31,13 +43,35 @@ export const DynamicDeleteButton: React.FC<{
         controlsVisible ? "opacity-100" : "opacity-0 pointer-events-none",
         className
       )}
+      onClick={(e) => e.stopPropagation()}
     >
-      <button
-        onClick={handleClick}
-        className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md transition-transform"
-      >
-        <Trash2 className="w-4 h-4" />
-      </button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="bg-red-500 text-white p-2 rounded-full hover:scale-110 shadow-md transition-transform">
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Panel</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove this panel? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={(e) => e.stopPropagation()}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmDelete}
+              className="bg-red-500 hover:bg-red-600 focus:ring-red-600"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
@@ -57,46 +91,45 @@ export const DynamicAddButton: React.FC<{
   style,
   onAdd,
 }) => {
-    const { editor, controlsVisible, colors } = useDynamicLayout();
-    const isPreview = usePreviewMode();
+  const { editor, controlsVisible, colors } = useDynamicLayout();
+  const isPreview = usePreviewMode();
 
-    // Don't render in preview mode to avoid nested button issues
-    if (isPreview) return null;
+  // Don't render in preview mode to avoid nested button issues
+  if (isPreview) return null;
 
-    const mergedStyle: React.CSSProperties = {
-      borderColor: colors.textColor,
-      color: colors.textColor,
-      ...style,
-    };
-
-    const handleClick = () => {
-      if (onAdd) {
-        onAdd();
-      } else {
-        editor.handleAddSection();
-      }
-    };
-
-    return (
-      <div
-        onClick={handleClick}
-        className={cn(
-          "cursor-pointer transition-all duration-300 flex flex-col items-center justify-center border-2 border-dashed rounded-lg opacity-50 hover:opacity-100",
-          controlsVisible ? "opacity-50" : "opacity-0 pointer-events-none",
-          className
-        )}
-        style={mergedStyle}
-      >
-        <Plus className="w-12 h-12 mb-2" />
-        <div onClick={(e) => e.stopPropagation()}>
-          <EditableText
-            sectionId={sectionId}
-            fieldId={fieldId}
-            defaultValue={defaultValue}
-            className="font-bold uppercase tracking-widest bg-transparent border-none text-center focus:outline-none w-full"
-          />
-        </div>
-      </div>
-    );
+  const mergedStyle: React.CSSProperties = {
+    borderColor: colors.textColor,
+    color: colors.textColor,
+    ...style,
   };
 
+  const handleClick = () => {
+    if (onAdd) {
+      onAdd();
+    } else {
+      editor.handleAddSection();
+    }
+  };
+
+  return (
+    <div
+      onClick={handleClick}
+      className={cn(
+        "cursor-pointer transition-all duration-300 flex flex-col items-center justify-center border-2 border-dashed rounded-lg opacity-50 hover:opacity-100",
+        controlsVisible ? "opacity-50" : "opacity-0 pointer-events-none",
+        className
+      )}
+      style={mergedStyle}
+    >
+      <Plus className="w-12 h-12 mb-2" />
+      <div onClick={(e) => e.stopPropagation()}>
+        <EditableText
+          sectionId={sectionId}
+          fieldId={fieldId}
+          defaultValue={defaultValue}
+          className="font-bold uppercase tracking-widest bg-transparent border-none text-center focus:outline-none w-full"
+        />
+      </div>
+    </div>
+  );
+};
