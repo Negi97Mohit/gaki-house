@@ -91,7 +91,7 @@ export const ThreeDGSViewer: React.FC<ThreeDGSViewerProps> = ({
               // Move camera along the Z axis relative to the object center
               const newPos = new THREE.Vector3()
                 .copy(center)
-                .add(new THREE.Vector3(0, 0, cameraDistance * 1.5));
+                .add(new THREE.Vector3(0, 0, -1 * cameraDistance * 1.5));
 
               // Access internal camera and controls
               // Note: viewer.camera is the Three.js camera
