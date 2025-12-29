@@ -262,7 +262,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       // If 3D, only allow dragging via specific handles to avoid conflict with orbit controls
       dragHandleSelector={is3DFile ? ".drag-handle" : undefined}
       className={cn(
-        "group transition-all duration-200",
+        "group transition-colors duration-200", // FIXED: Changed from transition-all to prevent drag lag
         overlay.fileType === "image" || overlay.fileType === "3d"
           ? "bg-transparent"
           : "bg-card",
