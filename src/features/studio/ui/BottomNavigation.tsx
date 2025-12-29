@@ -33,6 +33,8 @@ import { LayoutMode, CameraShape, GeneratedOverlay } from "@/types/caption";
 import { useTheme } from "next-themes";
 import { ToolsPopover } from "@/features/studio/ui/ToolsPopover";
 import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
+// Import the new modal
+import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
 
 interface BottomNavigationProps {
   onOpenSettings: () => void;
@@ -94,6 +96,9 @@ interface BottomNavigationProps {
   captionsEnabled?: boolean;
   onCaptionsToggle?: (enabled: boolean) => void;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
+
+  // Optional: Callback for saving stream settings
+  onStreamSettingsSave?: (url: string, key: string) => void;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -142,6 +147,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   captionsEnabled,
   onCaptionsToggle,
   hasAiPopoverAutoOpenedRef,
+  onStreamSettingsSave,
   ..._unusedProps
 }) => {
   const { theme, setTheme } = useTheme();
@@ -322,6 +328,15 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {/* --- Stream Button with Popup --- */}
+        <StreamConfigurationModal
+          isBroadcasting={isBroadcasting}
+          onSave={(url, key) => {
+            // Pass data up if handler exists, otherwise just console log or logic can be here
+            if (onStreamSettingsSave) onStreamSettingsSave(url, key);
+          }}
+        />
 
         {/* --- Smart Scene Switch Toggle --- */}
         <Button
