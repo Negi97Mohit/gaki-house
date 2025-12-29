@@ -325,11 +325,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 default={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
@@ -337,11 +337,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}
@@ -729,52 +729,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           );
         })}
       </div>
-
-      {containerSize.width > 0 && (
-        <Rnd
-          style={{ zIndex: "var(--z-ai-popover-trigger)" }}
-          cancel=".aicp-content"
-          size={{ width: 48, height: 48 }}
-          position={{
-            x: (props.aiButtonPosition.x / 100) * containerSize.width - 24,
-            y: (props.aiButtonPosition.y / 100) * containerSize.height - 24,
-          }}
-          onDragStop={(e, d) => {
-            const newX = ((d.x + 24) / containerSize.width) * 100;
-            const newY = ((d.y + 24) / containerSize.height) * 100;
-            props.onAiButtonPositionChange({ x: newX, y: newY });
-          }}
-          bounds="parent"
-          className={cn(
-            "pointer-events-auto transition-opacity duration-300",
-            props.isMouseActive || !props.isFullscreen
-              ? "opacity-100"
-              : "opacity-0"
-          )}
-        >
-          <AICommandPopover
-            onSubmit={props.onProcessTranscript}
-            isProcessing={props.isProcessingAi}
-            activeOverlays={generatedOverlays}
-            isFullscreen={props.isFullscreen}
-            isAiModeEnabled={props.isAiModeEnabled}
-            onAiModeToggle={props.onAiModeToggle}
-            captionsEnabled={captionsEnabled}
-            onCaptionsToggle={props.onCaptionsToggle}
-            portalContainer={canvasContainerRef.current}
-            hasAiPopoverAutoOpenedRef={props.hasAiPopoverAutoOpenedRef}
-            onAutoClose={props.onAiPopoverAutoClose}
-          >
-            <Button
-              size="icon"
-              variant="outline"
-              className="rounded-full h-12 w-12 shadow-lg bg-black border-2 border-yellow-400 hover:bg-black/80 hover:border-yellow-300 text-yellow-400"
-            >
-              <Sparkles className="h-6 w-6" />
-            </Button>
-          </AICommandPopover>
-        </Rnd>
-      )}
     </div>
   );
 };

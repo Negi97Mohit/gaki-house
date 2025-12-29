@@ -18,6 +18,7 @@ import {
   Redo2,
   RotateCcw,
   ScanFace,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -28,9 +29,10 @@ import {
 } from "@/shared/ui/dropdown-menu";
 import { cn } from "@/shared/lib/utils";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
-import { LayoutMode, CameraShape } from "@/types/caption";
+import { LayoutMode, CameraShape, GeneratedOverlay } from "@/types/caption";
 import { useTheme } from "next-themes";
 import { ToolsPopover } from "@/features/studio/ui/ToolsPopover";
+import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
 
 interface BottomNavigationProps {
   onOpenSettings: () => void;
@@ -79,9 +81,19 @@ interface BottomNavigationProps {
   onResetScene: () => void;
   canvasLayout: any;
 
-  // New Props
+  // Smart Switch Props
   isSmartSwitchEnabled: boolean;
   onSmartSwitchToggle: () => void;
+
+  // AI Props
+  onAiCommandSubmit: (text: string, targetId: string | null) => void;
+  isAiProcessing: boolean;
+  activeOverlays: GeneratedOverlay[];
+  isAiModeEnabled?: boolean;
+  onAiModeToggle?: (enabled: boolean) => void;
+  captionsEnabled?: boolean;
+  onCaptionsToggle?: (enabled: boolean) => void;
+  hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -121,6 +133,15 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   layoutMode,
   isSmartSwitchEnabled,
   onSmartSwitchToggle,
+  // Destructure AI props
+  onAiCommandSubmit,
+  isAiProcessing,
+  activeOverlays,
+  isAiModeEnabled,
+  onAiModeToggle,
+  captionsEnabled,
+  onCaptionsToggle,
+  hasAiPopoverAutoOpenedRef,
   ..._unusedProps
 }) => {
   const { theme, setTheme } = useTheme();
@@ -375,7 +396,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
-        {/* Dynamic Layout Controls Slot - This allows active layouts to inject buttons here */}
+        {/* Dynamic Layout Controls Slot */}
         <div
           id="layout-controls-slot"
           className="flex items-center gap-1"
@@ -389,6 +410,29 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           theme={theme}
           portalContainer={portalContainer}
         />
+
+        {/* --- AI Command Popover (Placed Here) --- */}
+        <AICommandPopover
+          onSubmit={onAiCommandSubmit}
+          isProcessing={isAiProcessing}
+          activeOverlays={activeOverlays}
+          isFullscreen={isFullscreen}
+          isAiModeEnabled={isAiModeEnabled}
+          onAiModeToggle={onAiModeToggle}
+          captionsEnabled={captionsEnabled}
+          onCaptionsToggle={onCaptionsToggle}
+          portalContainer={portalContainer}
+          hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10 hover:bg-background/60 text-yellow-500 hover:text-yellow-600"
+            title="AI Assistant"
+          >
+            <Sparkles className="w-4 h-4" />
+          </Button>
+        </AICommandPopover>
 
         <Button
           variant="ghost"

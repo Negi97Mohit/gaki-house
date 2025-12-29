@@ -1,9 +1,10 @@
+import React, { useRef } from "react"; // Added useRef
 import { toast } from "sonner";
 import { cn } from "@/shared/lib/utils";
 import { generateId } from "@/shared/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import { GeneratedOverlay } from "@/types/caption";
-import { Loader } from "lucide-react"; // Import Loader icon
+import { Loader } from "lucide-react";
 
 // Components
 import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
@@ -12,6 +13,7 @@ import { IndexOverlays } from "./Index/components/IndexOverlays";
 
 // Hooks
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
+import { useCanvasAi } from "./Index/hooks/useCanvasAi"; // Import the AI hook
 
 const Index = () => {
   // 1. Initialize all state logic in the orchestrator
@@ -36,8 +38,18 @@ const Index = () => {
     overlayHandlers,
   } = editor;
 
+  // 2. Initialize AI Hook
+  const { isProcessingAi, processTranscript } = useCanvasAi({
+    activeScene: activeScene!, // Use activeScene for source of truth
+    updateActiveScene: sceneManager.updateActiveScene,
+    recording,
+    setSavedOverlays: sessionData.setSavedOverlays,
+  });
+
+  // 3. Ref for AI Popover auto-open behavior
+  const hasAiPopoverAutoOpenedRef = useRef(false);
+
   // PHASE 3 FIX: Better Loading State
-  // Removed text-only loading for a centered spinner, ensuring immediate feedback
   if (!activeScene || !effectiveScene) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-background text-muted-foreground gap-4">
@@ -208,6 +220,19 @@ const Index = () => {
         canvasLayout={activeScene.canvasLayout}
         isSmartSwitchEnabled={broadcast.isSmartSwitchEnabled}
         onSmartSwitchToggle={broadcast.toggleSmartSwitch}
+        // AI Props
+        onAiCommandSubmit={processTranscript}
+        isAiProcessing={isProcessingAi}
+        activeOverlays={activeScene.activeOverlays}
+        isAiModeEnabled={activeScene.isAiModeEnabled}
+        onAiModeToggle={(val) =>
+          sceneManager.updateSceneProperty("isAiModeEnabled", val)
+        }
+        captionsEnabled={activeScene.captionsEnabled}
+        onCaptionsToggle={(val) =>
+          sceneManager.updateSceneProperty("captionsEnabled", val)
+        }
+        hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
       />
     </div>
   );
