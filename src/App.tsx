@@ -9,6 +9,7 @@ import { LogProvider } from "./context/LogContext";
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Loader from "@/shared/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
+import { StreamControls } from "./components/StreamControls";
 
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -57,36 +58,39 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <LogProvider>
-        <DebugProvider>
-          <StyleSync />
-          <ThemeProvider
-            attribute="class"
-            forcedTheme="dark"
-            disableTransitionOnChange
-          >
-            {/* ✅ Loader always visible at start (Global) */}
-            <Loader visible={showLoader} />
+    <>
+      <QueryClientProvider client={queryClient}>
+        <LogProvider>
+          <DebugProvider>
+            <StyleSync />
+            <ThemeProvider
+              attribute="class"
+              forcedTheme="dark"
+              disableTransitionOnChange
+            >
+              {/* ✅ Loader always visible at start (Global) */}
+              <Loader visible={showLoader} />
 
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                <Suspense fallback={<Loader visible={true} />}>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/edit/:sessionId" element={<EditPage />} />
-                    <Route path="/remote-cam" element={<RemoteCamera />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
-              </BrowserRouter>
-            </TooltipProvider>
-          </ThemeProvider>
-        </DebugProvider>
-      </LogProvider>
-    </QueryClientProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                  <Suspense fallback={<Loader visible={true} />}>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/edit/:sessionId" element={<EditPage />} />
+                      <Route path="/remote-cam" element={<RemoteCamera />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Suspense>
+                </BrowserRouter>
+              </TooltipProvider>
+            </ThemeProvider>
+          </DebugProvider>
+        </LogProvider>
+      </QueryClientProvider>
+      <StreamControls />
+    </>
   );
 };
 
