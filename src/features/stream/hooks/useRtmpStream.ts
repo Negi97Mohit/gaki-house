@@ -61,9 +61,7 @@ export const useRtmpStream = () => {
             // @ts-ignore
             const displayStream = await navigator.mediaDevices.getDisplayMedia({
                 video: {
-                    width: 1280,
-                    height: 720,
-                    frameRate: 24,
+                    frameRate: 30, // Increased for smoother stream
                     displaySurface: "browser",
                 },
                 audio: true,

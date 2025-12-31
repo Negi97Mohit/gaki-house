@@ -19,6 +19,7 @@ import { useCanvasStore } from "../model/canvas.store";
 import { useUIStore } from "../model/ui.store";
 import { useCanvasResize } from "../hooks/useCanvasResize";
 import { useCanvasSpeech } from "../hooks/useCanvasSpeech";
+import { useCanvasDimensionSync } from "../hooks/useCanvasDimensionSync";
 import { SnapLinesRef } from "./SnapLines";
 import {
   getNumericAspectRatio,
@@ -90,6 +91,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   // Resize Logic
   useCanvasResize(canvasContainerRef, sceneRef, props.isFullscreen);
+
+  // Canvas Dimension Sync (fixes streaming size issues)
+  useCanvasDimensionSync({
+    canvasRef: props.canvasRef,
+    sceneSize,
+  });
 
   // Speech/Captions
   const { fullTranscript, interimTranscript } = useCanvasSpeech({
@@ -325,11 +332,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 default={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
@@ -337,11 +344,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}

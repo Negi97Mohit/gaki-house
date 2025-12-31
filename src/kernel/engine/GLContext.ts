@@ -23,8 +23,16 @@ export class GLContext {
   }
 
   resize() {
-    const { width, height } = this.canvas;
-    this.gl.viewport(0, 0, width, height);
+    const dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1;
+    const displayWidth = Math.floor(this.canvas.clientWidth * dpr);
+    const displayHeight = Math.floor(this.canvas.clientHeight * dpr);
+
+    if (this.canvas.width !== displayWidth || this.canvas.height !== displayHeight) {
+      this.canvas.width = displayWidth;
+      this.canvas.height = displayHeight;
+    }
+
+    this.gl.viewport(0, 0, displayWidth, displayHeight);
   }
 
   private initQuad() {
