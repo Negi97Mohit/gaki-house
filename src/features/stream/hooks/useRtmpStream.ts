@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { toast } from 'sonner';
+import { notify } from '@/shared/lib/notify';
 
 const SERVER_URL = 'http://localhost:3000';
 
@@ -45,7 +45,7 @@ export const useRtmpStream = () => {
         const targetKey = key || streamKey;
 
         if (!targetUrl || !targetKey) {
-            toast.error('Please enter both RTMP URL and Stream Key');
+            notify.error('Please enter both RTMP URL and Stream Key');
             return;
         }
 
@@ -67,7 +67,7 @@ export const useRtmpStream = () => {
                     displaySurface: "browser",
                 },
                 audio: true,
-                preferCurrentTab: true,
+                // @ts-ignore
                 selfBrowserSurface: "include"
             });
             originalDisplayStreamRef.current = displayStream;
@@ -138,11 +138,11 @@ export const useRtmpStream = () => {
                 if (msg === 'started') {
                     setIsStreaming(true);
                     setIsConnecting(false);
-                    toast.success('Streaming started!');
+                    notify.success('Streaming started!');
                 } else if (msg.startsWith('error')) {
                     setIsStreaming(false);
                     setIsConnecting(false);
-                    toast.error(`Streaming Error: ${msg}`);
+                    notify.error(`Streaming Error: ${msg}`);
                     stopStreaming();
                 } else if (msg === 'stopped') {
                     setIsStreaming(false);
@@ -199,7 +199,7 @@ export const useRtmpStream = () => {
         } catch (err: any) {
             console.error('Error starting stream:', err);
             // If user cancels screen share selection, this error triggers
-            toast.error(`Failed to start: ${err.message}`);
+            notify.error(`Failed to start`, err);
             // Cleanup if we failed partway through
             stopStreaming();
             setIsConnecting(false);

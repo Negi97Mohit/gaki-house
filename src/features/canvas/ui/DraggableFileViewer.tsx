@@ -14,7 +14,7 @@ import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { ThreeDGSViewer } from "./ThreeDGSViewer";
 import { convertImageTo3D } from "@/services/mlsharp-api";
-import { useToast } from "@/shared/ui/use-toast";
+import { notify } from "@/shared/lib/notify";
 
 interface DraggableFileViewerProps {
   overlay: FileOverlayState;
@@ -136,7 +136,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   onSnapGuidesChange,
 }) => {
   // Rotation now handled by HybridDraggable
-  const { toast } = useToast();
+  // const { toast } = useToast(); -> Removed
   const [isGenerating3D, setIsGenerating3D] = useState(false);
 
   const handleAspectRatioDetermined = (ratio: number) => {
@@ -169,23 +169,20 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
     const apiUrl = import.meta.env.VITE_MLSHARP_API_URL;
 
     if (!apiUrl) {
-      toast({
-        title: "Configuration Required",
-        description:
-          "Please add VITE_MLSHARP_API_URL to your .env.local file. See MLSHARP_CONFIG.md for details.",
-        variant: "destructive",
-      });
+      notify.error(
+        "Configuration Required",
+        "Please add VITE_MLSHARP_API_URL to your .env.local file. See MLSHARP_CONFIG.md for details."
+      );
       return;
     }
 
     setIsGenerating3D(true);
 
     try {
-      toast({
-        title: "Generating 3D Model",
-        description:
-          "Processing your image with ML-Sharp... This may take 30-60 seconds.",
-      });
+      notify.info(
+        "Generating 3D Model",
+        "Processing your image with ML-Sharp... This may take 30-60 seconds."
+      );
 
       // Convert the image to 3D
       const plyBlob = await convertImageTo3D(overlay.file, apiUrl);
@@ -208,25 +205,22 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       // Auto-load the PLY file to canvas if callback is available
       if (onAddFile) {
         onAddFile(plyFile);
-        toast({
-          title: "3D Model Generated!",
-          description:
-            "Your 3D model has been added to the canvas and downloaded.",
-        });
+        notify.success(
+          "3D Model Generated!",
+          "Your 3D model has been added to the canvas and downloaded."
+        );
       } else {
-        toast({
-          title: "3D Model Generated!",
-          description: "Your PLY file has been downloaded.",
-        });
+        notify.success(
+          "3D Model Generated!",
+          "Your PLY file has been downloaded."
+        );
       }
     } catch (error: any) {
       console.error("3D generation failed:", error);
-      toast({
-        title: "3D Generation Failed",
-        description:
-          error.message || "An error occurred while generating the 3D model.",
-        variant: "destructive",
-      });
+      notify.error(
+        "3D Generation Failed",
+        error.message || "An error occurred while generating the 3D model."
+      );
     } finally {
       setIsGenerating3D(false);
     }
@@ -276,8 +270,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
           className={cn(
             "flex-grow w-full h-full relative overflow-hidden rounded-lg",
             overlay.fileType !== "image" &&
-              overlay.fileType !== "3d" &&
-              "bg-background/50"
+            overlay.fileType !== "3d" &&
+            "bg-background/50"
           )}
         >
           <FileRenderer

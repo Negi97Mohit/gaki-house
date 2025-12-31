@@ -11,6 +11,7 @@ import {
 } from "@/types/caption";
 
 import { generateId } from "@/shared/lib/id";
+import { notify } from "@/shared/lib/notify";
 
 interface RecordingState {
   isRecording: boolean;
@@ -83,6 +84,7 @@ export const useRecordingSession = () => {
       browserOverlayTracksRef.current.clear();
     } catch (error) {
       console.error("Failed to start recording:", error);
+      notify.error("Failed to start recording", error instanceof Error ? error : "Unknown error");
       throw error;
     }
   }, []);

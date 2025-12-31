@@ -4,7 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { cn } from "@/shared/lib/utils";
-import { useToast } from "@/shared/ui/use-toast";
+import { notify } from "@/shared/lib/notify";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -72,7 +72,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
     const [models, setModels] = useState<Model[]>([]);
     const [selectedModel, setSelectedModel] = useState<string>("swiss-ai/apertus-8b-instruct");
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-    const { toast } = useToast();
+    // const { toast } = useToast(); -> Removed
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -253,11 +253,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
                 return;
             }
             console.error("Error sending message:", error);
-            toast({
-                title: "Error",
-                description: error.message || "Something went wrong",
-                variant: "destructive",
-            });
+            notify.error("Error", error.message || "Something went wrong");
             setMessages(prev => [...prev, { role: "system", content: `Error: ${error.message}` }]);
         } finally {
             setIsLoading(false);

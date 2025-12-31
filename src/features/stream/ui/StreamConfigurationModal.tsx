@@ -93,7 +93,7 @@ export const StreamConfigurationModal: React.FC<
             <Radio className="w-4 h-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] bg-background/95 backdrop-blur-xl border-border">
+        <DialogContent className="sm:max-w-[425px] bg-background/95 backdrop-blur-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               Stream Configuration

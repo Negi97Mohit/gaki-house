@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { toast } from "sonner";
+import { notify } from "@/shared/lib/notify";
 import { generateId } from "@/shared/lib/id";
 import { SceneState, GeneratedOverlay } from "@/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
@@ -26,7 +26,7 @@ export const useCanvasAi = ({
 
       setPromptHistory((prev) => [...prev, transcript]);
       setIsProcessingAi(true);
-      const thinkingToast = toast.loading(
+      const thinkingToast = notify.loading(
         targetId ? "AI is updating..." : "AI is creating..."
       );
 
@@ -53,7 +53,7 @@ export const useCanvasAi = ({
               return o;
             }),
           }));
-          toast.success(`Updated overlay "${name}".`);
+          notify.success(`Updated overlay "${name}".`);
         } else {
           const { name, htmlContent } = await processCommandWithAgent(
             transcript
@@ -80,13 +80,18 @@ export const useCanvasAi = ({
             return { ...scene, activeOverlays: updated };
           });
 
-          toast.success(`AI generated "${name}".`);
+          // Check for error in name
+          if (name.toLowerCase().includes("error") || name.toLowerCase().includes("failed")) {
+            throw new Error(name);
+          }
+
+          notify.success(`AI generated "${name}".`);
         }
       } catch (error) {
-        toast.error("AI command failed: " + (error as Error).message);
+        notify.error("AI command failed", error instanceof Error ? error : "Unknown error");
       } finally {
         setIsProcessingAi(false);
-        toast.dismiss(thinkingToast);
+        notify.dismiss(thinkingToast);
       }
     },
     [

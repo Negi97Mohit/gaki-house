@@ -1,5 +1,5 @@
 import React, { useRef } from "react"; // Added useRef
-import { toast } from "sonner";
+import { notify } from "@/shared/lib/notify";
 import { cn } from "@/shared/lib/utils";
 import { generateId } from "@/shared/lib/id";
 import { zIndex } from "@/lib/zIndex";
@@ -182,7 +182,7 @@ const Index = () => {
           selection.handleDeselectAll();
           selection.setSelectedGeneratedId(newOverlay.id);
 
-          toast.success(`Added "${asset.alt}" to canvas`);
+          notify.success(`Added "${asset.alt}" to canvas`);
         }}
         setIsDrawing={drawing.setIsDrawing}
         onToggleFullscreen={ui.handleToggleFullscreen}

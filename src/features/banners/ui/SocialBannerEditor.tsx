@@ -64,7 +64,7 @@ export const SocialBannerEditor: React.FC<SocialBannerEditorProps> = ({
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent
-                className="sm:max-w-[500px] bg-background/95 backdrop-blur-xl border-border/50"
+                className="sm:max-w-[500px] bg-background/95 backdrop-blur-xl"
                 style={{ zIndex: 9999 }}
             >
                 <form onSubmit={handleFormSubmit}>

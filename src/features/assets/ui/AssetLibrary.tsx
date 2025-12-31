@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Search, Loader2, X } from "lucide-react";
-import { toast } from "sonner";
+import { notify } from "@/shared/lib/notify";
 import {
   searchImages as apiSearchImages,
   searchGifs as apiSearchGifs,
@@ -124,7 +124,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
         setHasMoreImages(result.hasMore);
       } catch (error) {
         console.error("Failed to search images:", error);
-        toast.error("Failed to search images.");
+        notify.error("Failed to search images.");
         if (page === 1) setImageResults([]);
       } finally {
         setIsImagesLoading(false);
@@ -149,7 +149,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
         setHasMoreGifs(result.hasMore);
       } catch (error) {
         console.error("Failed to search GIFs:", error);
-        toast.error("Failed to search GIFs.");
+        notify.error("Failed to search GIFs.");
         if (page === 1) setGifResults([]);
       } finally {
         setIsGifsLoading(false);
@@ -192,7 +192,7 @@ export const AssetLibrary: React.FC<AssetLibraryProps> = ({
 
 
   const handleAssetClick = (asset: AssetResult) => {
-    toast.info(`Adding ${asset.alt} to canvas...`);
+    notify.info(`Adding ${asset.alt} to canvas...`);
     onAssetSelect(asset);
   };
 
