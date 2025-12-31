@@ -104,6 +104,10 @@ export const useWebGLRenderLoop = ({
       }
     } else {
       video.srcObject = null;
+      // Clear the canvas to transparent so the background is visible
+      if (rendererRef.current) {
+        rendererRef.current.ctx.clear();
+      }
     }
   }, [activeStream, videoRef]);
 
