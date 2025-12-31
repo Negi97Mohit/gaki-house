@@ -68,7 +68,13 @@ export const useRtmpStream = () => {
                 },
                 audio: true,
                 // @ts-ignore
-                selfBrowserSurface: "include"
+                selfBrowserSurface: "include",
+                // @ts-ignore
+                preferCurrentTab: true,
+                // @ts-ignore
+                monitorTypeSurfaces: "exclude",
+                // @ts-ignore
+                surface: "browser"
             });
             originalDisplayStreamRef.current = displayStream;
 

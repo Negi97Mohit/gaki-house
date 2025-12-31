@@ -129,8 +129,21 @@ export const useVideoStreams = ({
       const getScreenStream = async () => {
         try {
           const stream = await navigator.mediaDevices.getDisplayMedia({
-            video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
-            audio: isAudioOn, // System audio might be desired for screen share
+            video: {
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+              // @ts-ignore - Valid in Chrome/Edge to filter out screens
+              displaySurface: "browser",
+            },
+            audio: isAudioOn,
+            // @ts-ignore - Modern API to set "This Tab" as default
+            preferCurrentTab: true,
+            // @ts-ignore - Ensure current tab is selectable
+            selfBrowserSurface: "include",
+            // @ts-ignore - Hide "Entire Screen" tab (Chrome/Edge)
+            monitorTypeSurfaces: "exclude",
+            // @ts-ignore - Hide "Window" tab (Chrome/Edge)
+            surface: "browser",
           });
           console.log("✅ Screen stream attached");
 
