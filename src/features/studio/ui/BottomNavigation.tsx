@@ -99,6 +99,10 @@ interface BottomNavigationProps {
 
   // Optional: Callback for saving stream settings
   onStreamSettingsSave?: (url: string, key: string) => void;
+  onStartStream?: (url: string, key: string) => void;
+  onStopStream?: () => void;
+  isConnecting?: boolean;
+  streamStatus?: string;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -148,6 +152,10 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onCaptionsToggle,
   hasAiPopoverAutoOpenedRef,
   onStreamSettingsSave,
+  onStartStream,
+  onStopStream,
+  isConnecting,
+  streamStatus,
   ..._unusedProps
 }) => {
   const { theme, setTheme } = useTheme();
@@ -332,8 +340,13 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         {/* --- Stream Button with Popup --- */}
         <StreamConfigurationModal
           isBroadcasting={isBroadcasting}
+          isConnecting={isConnecting}
+          status={streamStatus}
+          onStartStream={onStartStream}
+          onStopStream={onStopStream}
+          defaultStreamUrl={typeof window !== 'undefined' ? localStorage.getItem('stream_rtmpUrl') || undefined : undefined}
+          defaultStreamKey={typeof window !== 'undefined' ? localStorage.getItem('stream_key') || undefined : undefined}
           onSave={(url, key) => {
-            // Pass data up if handler exists, otherwise just console log or logic can be here
             if (onStreamSettingsSave) onStreamSettingsSave(url, key);
           }}
         />
@@ -345,7 +358,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           className={cn(
             "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
             isSmartSwitchEnabled &&
-              "text-primary bg-primary/10 hover:bg-primary/20"
+            "text-primary bg-primary/10 hover:bg-primary/20"
           )}
           onClick={onSmartSwitchToggle}
           title={

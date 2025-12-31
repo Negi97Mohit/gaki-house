@@ -9,7 +9,7 @@ import { LogProvider } from "./context/LogContext";
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Loader from "@/shared/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
-import { StreamControls } from "./components/StreamControls";
+
 
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -89,7 +89,6 @@ const App = () => {
           </DebugProvider>
         </LogProvider>
       </QueryClientProvider>
-      <StreamControls />
     </>
   );
 };

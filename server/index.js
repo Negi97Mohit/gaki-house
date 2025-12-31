@@ -23,16 +23,23 @@ io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
 
     let ffmpegProcess = null;
+    let chunkBuffer = [];
+    let isFfmpegReady = false;
 
     socket.on('start-stream', ({ rtmpUrl, key }) => {
         const streamUrl = `${rtmpUrl}/${key}`;
         console.log(`Starting stream to: ${rtmpUrl} (hidden key)`);
 
+        chunkBuffer = []; // Reset buffer
+        isFfmpegReady = false;
+
         // Input options for receiving raw WebM from browser
         // The browser sends webm clusters via socket
         ffmpegProcess = ffmpeg({ source: 'pipe:0' })
             .inputOptions([
-                '-re', // Read input at native frame rate
+                // '-re', // Do NOT use -re for live pipes
+                '-analyzeduration 100000', // Reduce analysis time
+                '-probesize 100000'
             ])
             .outputOptions([
                 '-c:v libx264', // H.264 video codec
@@ -51,6 +58,20 @@ io.on('connection', (socket) => {
             .on('start', (commandLine) => {
                 console.log('FFmpeg process started:', commandLine);
                 socket.emit('stream-status', 'started');
+                isFfmpegReady = true;
+
+                // Flush buffer
+                if (chunkBuffer.length > 0) {
+                    console.log(`Flushing ${chunkBuffer.length} buffered chunks`);
+                    chunkBuffer.forEach(data => {
+                        if (ffmpegProcess && ffmpegProcess.ffmpegProc) {
+                            try {
+                                ffmpegProcess.ffmpegProc.stdin.write(data);
+                            } catch (e) { console.error('Write error during flush', e); }
+                        }
+                    });
+                    chunkBuffer = [];
+                }
             })
             .on('error', (err, stdout, stderr) => {
                 console.error('FFmpeg error:', err.message);
@@ -67,12 +88,16 @@ io.on('connection', (socket) => {
     });
 
     socket.on('binary-stream', (data) => {
-        if (ffmpegProcess && ffmpegProcess.ffmpegProc && !ffmpegProcess.ffmpegProc.stdin.destroyed) {
+        if (isFfmpegReady && ffmpegProcess && ffmpegProcess.ffmpegProc && !ffmpegProcess.ffmpegProc.stdin.destroyed) {
             try {
                 ffmpegProcess.ffmpegProc.stdin.write(data);
             } catch (err) {
                 console.error('Error writing to ffmpeg stdin:', err);
             }
+        } else if (ffmpegProcess) {
+            // Buffer if stream is requested but not ready
+            console.log('Buffering chunk, ffmpeg not ready');
+            chunkBuffer.push(data);
         }
     });
 

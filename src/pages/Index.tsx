@@ -14,6 +14,7 @@ import { IndexOverlays } from "./Index/components/IndexOverlays";
 // Hooks
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
 import { useCanvasAi } from "./Index/hooks/useCanvasAi"; // Import the AI hook
+import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
 
 const Index = () => {
   // 1. Initialize all state logic in the orchestrator
@@ -46,7 +47,10 @@ const Index = () => {
     setSavedOverlays: sessionData.setSavedOverlays,
   });
 
-  // 3. Ref for AI Popover auto-open behavior
+  // 3. RTMP Streaming Hook
+  const rtmp = useRtmpStream();
+
+  // 4. Ref for AI Popover auto-open behavior
   const hasAiPopoverAutoOpenedRef = useRef(false);
 
   // PHASE 3 FIX: Better Loading State
@@ -147,9 +151,13 @@ const Index = () => {
           }));
         }}
         isRecording={recording.isRecording}
-        onRecordingToggle={() => {}}
-        isBroadcasting={broadcast.isVirtualCameraEnabled}
-        onBroadcastToggle={broadcast.toggleBroadcast}
+        onRecordingToggle={() => { }}
+        isBroadcasting={rtmp.isStreaming}
+        onBroadcastToggle={() => console.log("Toggle Clicked")} // Modal handles action now
+        onStartStream={rtmp.startStreaming}
+        onStopStream={rtmp.stopStreaming}
+        isConnecting={rtmp.isConnecting}
+        streamStatus={rtmp.status}
         onAddTextOverlay={overlayHandlers.handleAddTextOverlay}
         onAssetSelect={(asset) => {
           const newOverlay: GeneratedOverlay = {
