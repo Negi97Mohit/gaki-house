@@ -52,14 +52,32 @@ export const StreamConfigurationModal: React.FC<
 
     const handleAction = () => {
       if (isBroadcasting) {
+        setIsOpen(false); // Close immediately on stop to mimic "Stop Sharing" button feel
         if (onStopStream) onStopStream();
       } else {
+        // Don't close immediately. Wait for connection.
         if (onStartStream) onStartStream(streamUrl, streamKey);
       }
     };
 
+    // Auto-close when connection continues to countdown
+    useEffect(() => {
+      if (status === "Connected" || status.startsWith("Starting")) {
+        setIsOpen(false);
+      }
+    }, [status]);
+
     return (
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          // If user closes modal while connecting, abort the connection attempt
+          if (!open && isConnecting && onStopStream) {
+            onStopStream();
+          }
+        }}
+      >
         <DialogTrigger asChild>
           <Button
             variant="ghost"
@@ -134,7 +152,7 @@ export const StreamConfigurationModal: React.FC<
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline" disabled={isConnecting}>Cancel</Button>
+              <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button
               onClick={handleAction}

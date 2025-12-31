@@ -242,6 +242,26 @@ const Index = () => {
         }
         hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
       />
+
+      {/* --- RTMP Countdown Overlay --- */}
+      {rtmp.countdown !== null && (
+        <div
+          className="fixed inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-3xl z-[9999] animate-in fade-in duration-300"
+          style={{ zIndex: 9999 }}
+        >
+          <div className="flex flex-col items-center gap-8 animate-in zoom-in-95 duration-500">
+            <div className="relative">
+              <span className="text-[12rem] font-bold tracking-tighter tabular-nums leading-none text-foreground select-none">
+                {rtmp.countdown}
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-muted-foreground uppercase tracking-[0.5em] text-sm font-medium pl-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              Starting Stream
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
