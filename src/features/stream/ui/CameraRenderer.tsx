@@ -62,6 +62,8 @@ interface CameraRendererProps {
   onCameraDeviceChange?: (deviceId: string) => void;
   onEnterPipMode?: () => void;
   isMouseActive?: boolean;
+  screenShareMode?: "off" | "screen" | "window";
+  onScreenShareModeChange?: (mode: "off" | "screen" | "window") => void;
   externalVideoRef?: React.RefObject<HTMLVideoElement>;
   processedCanvas?: HTMLCanvasElement | null;
   facePositionRef?: React.MutableRefObject<any>;
@@ -136,11 +138,13 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     position: { x: 0, y: 0 },
     containerRef,
     ...props,
-    onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
+    onCameraDeviceChange: props.onCameraDeviceChange || (() => { }),
     onEnterPipMode: props.onEnterPipMode,
     isPipActive,
     onTogglePip: togglePiP,
     isCameraActive: !!activeStream,
+    screenShareMode: props.screenShareMode,
+    onScreenShareModeChange: props.onScreenShareModeChange,
   };
 
   return (

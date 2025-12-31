@@ -27,6 +27,8 @@ interface InteractiveGridSectionProps {
   videoDevices: MediaDeviceInfo[];
   isActive: boolean;
   onSelect: () => void;
+  screenShareMode?: "off" | "screen" | "window";
+  onScreenShareModeChange?: (mode: "off" | "screen" | "window") => void;
 }
 
 export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
@@ -37,6 +39,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
   videoDevices,
   isActive,
   onSelect,
+  screenShareMode,
+  onScreenShareModeChange,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
@@ -198,16 +202,16 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
   // Apply scale to border and shadow
   const scaledPipBorder = settings.pipBorder
     ? {
-        ...settings.pipBorder,
-        width: Math.max(1, settings.pipBorder.width * scale),
-      }
+      ...settings.pipBorder,
+      width: Math.max(1, settings.pipBorder.width * scale),
+    }
     : undefined;
 
   const scaledPipShadow = settings.pipShadow
     ? {
-        ...settings.pipShadow,
-        blur: settings.pipShadow.blur * scale,
-      }
+      ...settings.pipShadow,
+      blur: settings.pipShadow.blur * scale,
+    }
     : undefined;
 
   return (
@@ -310,8 +314,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                   settings.cameraShape === "circle"
                     ? "50%"
                     : settings.cameraShape === "rounded"
-                    ? "12px"
-                    : "0px",
+                      ? "12px"
+                      : "0px",
               }}
             >
               <CameraRenderer
@@ -322,8 +326,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                     settings.cameraShape === "circle"
                       ? "50%"
                       : settings.cameraShape === "rounded"
-                      ? "12px"
-                      : "0px",
+                        ? "12px"
+                        : "0px",
                 }}
                 portalContainer={null}
                 cameraShape={settings.cameraShape || "rectangle"}
@@ -502,6 +506,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               onCameraDeviceChange={(deviceId) =>
                 onUpdate({ selectedDeviceId: deviceId })
               }
+              screenShareMode={screenShareMode}
+              onScreenShareModeChange={onScreenShareModeChange}
             />
           )}
 
@@ -518,8 +524,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               containerRef={containerRef}
               isSelected={selectedTextId === textOverlay.id}
               onSelect={setSelectedTextId}
-              onInternalDragStart={() => {}}
-              onInternalDragStop={() => {}}
+              onInternalDragStart={() => { }}
+              onInternalDragStop={() => { }}
               isSpacePressed={false}
               scale={scale} // Pass scale
             />

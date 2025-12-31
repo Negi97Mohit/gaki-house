@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@/shared/ui/button";
-import { PictureInPicture } from "lucide-react";
+import { PictureInPicture, MonitorUp } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CameraShape } from "@/types/caption";
 import { PipCameraMenu } from "./pip/PipCameraMenu";
@@ -62,6 +62,9 @@ interface PipControlsToolbarProps {
   onTogglePip?: () => void;
   onEnterPipMode?: () => void;
   isCameraActive?: boolean;
+
+  screenShareMode?: "off" | "screen" | "window";
+  onScreenShareModeChange?: (mode: "off" | "screen" | "window") => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -157,6 +160,31 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         onNeonEdgeColorChange={props.onNeonEdgeColorChange}
       />
 
+      {/* Screen Share Button */}
+      {props.onScreenShareModeChange && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-9 w-9 rounded-xl hover:bg-background/60",
+            props.screenShareMode === "screen" &&
+            "bg-primary/20 text-primary hover:bg-primary/30"
+          )}
+          onClick={() => {
+            const newMode =
+              props.screenShareMode === "screen" ? "off" : "screen";
+            props.onScreenShareModeChange?.(newMode);
+          }}
+          title={
+            props.screenShareMode === "screen"
+              ? "Stop Sharing"
+              : "Share Screen"
+          }
+        >
+          <MonitorUp className="w-4 h-4" />
+        </Button>
+      )}
+
       {/* Pop-out Button - Only visible when camera is active */}
       {props.onTogglePip && props.isCameraActive && (
         <Button
@@ -165,7 +193,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           className={cn(
             "h-9 w-9 rounded-xl hover:bg-background/60",
             props.isPipActive &&
-              "bg-primary/20 text-primary hover:bg-primary/30"
+            "bg-primary/20 text-primary hover:bg-primary/30"
           )}
           onClick={props.onTogglePip}
           title={props.isPipActive ? "Exit Pop-out" : "Pop-out Camera"}
