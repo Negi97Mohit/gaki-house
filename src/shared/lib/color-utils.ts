@@ -186,3 +186,15 @@ export function darken(hex: string, percent: number): string {
         Math.round(rgb.b * factor)
     );
 }
+
+/**
+ * Get the correct CSS property for a color/gradient value
+ * Use 'background' for gradients, 'backgroundColor' for solid colors
+ */
+export function getBackgroundStyle(color: string): React.CSSProperties {
+    if (!color) return {};
+    if (isGradient(color)) {
+        return { background: color };
+    }
+    return { backgroundColor: color };
+}

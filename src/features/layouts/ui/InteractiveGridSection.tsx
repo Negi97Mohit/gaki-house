@@ -211,13 +211,16 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
     }
     : undefined;
 
+  const bgColor = settings.sectionBackgroundColor || "#000000";
+  const isGradientBg = bgColor?.includes('gradient');
+  
   return (
     <div
       ref={containerRef}
       className="relative w-full h-full overflow-hidden group/section"
       style={{
-        backgroundColor: settings.sectionBackgroundColor || "#000000",
-        backgroundImage: settings.sectionBackgroundImage
+        ...(isGradientBg ? { background: bgColor } : { backgroundColor: bgColor }),
+        backgroundImage: !isGradientBg && settings.sectionBackgroundImage
           ? `url(${settings.sectionBackgroundImage})`
           : undefined,
         backgroundSize: "cover",
