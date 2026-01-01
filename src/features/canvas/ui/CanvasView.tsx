@@ -244,6 +244,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       externalVideoRef={videoRef}
       processedCanvas={processedCanvas}
       facePositionRef={facePositionRef}
+      onPipPositionChange={props.onPipPositionChange}
+      onPipSizeChange={props.onPipSizeChange}
+      onCameraAspectRatioChange={props.sidebarProps?.onCameraAspectRatioChange}
     />
   );
 
