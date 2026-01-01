@@ -56,12 +56,12 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> = ({
 
   switch (content.type) {
     case "color":
+      const colorValue = content.color || blankCanvasColor;
+      const isGradientColor = colorValue?.includes('gradient');
       return (
         <div
           className="w-full h-full"
-          style={{
-            backgroundColor: content.color || blankCanvasColor,
-          }}
+          style={isGradientColor ? { background: colorValue } : { backgroundColor: colorValue }}
         />
       );
 
