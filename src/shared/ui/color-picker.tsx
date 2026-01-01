@@ -4,7 +4,6 @@ import { Button } from './button';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Slider } from './slider';
 import { Input } from './input';
-import { ScrollArea } from './scroll-area';
 import { Paintbrush, Palette, Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { 
@@ -72,10 +71,10 @@ interface PresetGridProps {
 }
 
 const PresetGrid: React.FC<PresetGridProps> = ({ presets, selectedValue, onSelect, isGradient = false }) => (
-    <ScrollArea className="w-full">
+    <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
         <div className={cn(
-            "flex gap-1.5 pb-2",
-            isGradient ? "flex-wrap" : ""
+            "flex gap-1.5 pb-2 min-w-max",
+            isGradient ? "flex-wrap max-w-full" : ""
         )}>
             {presets.map((preset, idx) => (
                 <button
@@ -88,11 +87,11 @@ const PresetGrid: React.FC<PresetGridProps> = ({ presets, selectedValue, onSelec
                             : 'border-border/30 hover:border-border'
                     )}
                     style={{ background: preset }}
-                    onClick={() => onSelect(preset)}
+                    onClick={() => onSelect(selectedValue === preset ? 'transparent' : preset)}
                 />
             ))}
         </div>
-    </ScrollArea>
+    </div>
 );
 
 // ============= COMPACT COLOR INPUT =============
@@ -254,8 +253,8 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
             {/* Pattern Type - Horizontal Scroll */}
             <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase mb-1.5">Pattern</p>
-                <ScrollArea className="w-full">
-                    <div className="flex gap-1 pb-1">
+                <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                    <div className="flex gap-1 pb-1 min-w-max">
                         {GRADIENT_PATTERNS.map((pattern) => (
                             <button
                                 key={pattern.id}
@@ -273,7 +272,7 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
                             </button>
                         ))}
                     </div>
-                </ScrollArea>
+                </div>
             </div>
 
             {/* Color Stops */}
@@ -326,8 +325,8 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
                     {!needsPosition && (
                         <div>
                             <p className="text-[10px] font-medium text-muted-foreground uppercase mb-1.5">Direction</p>
-                            <ScrollArea className="w-full">
-                                <div className="flex gap-1 pb-1">
+                            <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                                <div className="flex gap-1 pb-1 min-w-max">
                                     {GRADIENT_DIRECTIONS.map((dir) => (
                                         <button
                                             key={dir.value}
@@ -344,7 +343,7 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
                                         </button>
                                     ))}
                                 </div>
-                            </ScrollArea>
+                            </div>
                             <div className="flex items-center gap-2 mt-2">
                                 <Slider
                                     value={[angle]}
@@ -406,8 +405,8 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
             {/* Quick Presets */}
             <div>
                 <p className="text-[10px] font-medium text-muted-foreground uppercase mb-1.5">Presets</p>
-                <ScrollArea className="w-full">
-                    <div className="flex gap-1.5 pb-1">
+                <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                    <div className="flex gap-1.5 pb-1 min-w-max">
                         {GRADIENT_PRESETS.map((preset, idx) => (
                             <button
                                 key={idx}
@@ -418,11 +417,11 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
                                         : 'border-border/30 hover:border-border'
                                 )}
                                 style={{ background: preset }}
-                                onClick={() => onChange(preset)}
+                                onClick={() => onChange(value === preset ? 'transparent' : preset)}
                             />
                         ))}
                     </div>
-                </ScrollArea>
+                </div>
             </div>
         </div>
     );
@@ -452,14 +451,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     const [alpha, setAlpha] = useState(() => parseAlpha(value));
 
     const solidPresets = customSolidPresets || SOLID_COLOR_PRESETS;
-
-    const handleColorSelect = (color: string) => {
-        if (value === color) {
-            onChange('transparent');
-        } else {
-            onChange(color);
-        }
-    };
 
     const sizeClasses = {
         sm: 'h-7 px-2 gap-1.5',
@@ -594,69 +585,69 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     // ============= POPOVER CONTENT =============
 
     const renderContent = () => (
-        <ScrollArea className="max-h-[60vh]">
-            <div className={cn(
-                "w-64 p-3",
+        <div 
+            className={cn(
+                "w-64 p-3 max-h-[60vh] overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent",
                 darkMode && "bg-zinc-900 text-white"
-            )}>
-                {showGradients && (
-                    <div className="flex gap-1 mb-3">
-                        <button
-                            onClick={() => setActiveTab('solid')}
-                            className={cn(
-                                "flex-1 h-8 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-all",
-                                activeTab === 'solid'
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-muted/50 hover:bg-muted text-foreground"
-                            )}
-                        >
-                            <Paintbrush className="w-3 h-3" />
-                            Solid
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('gradient')}
-                            className={cn(
-                                "flex-1 h-8 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-all",
-                                activeTab === 'gradient'
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-muted/50 hover:bg-muted text-foreground"
-                            )}
-                        >
-                            <Palette className="w-3 h-3" />
-                            Gradient
-                        </button>
-                    </div>
+            )}
+        >
+            {showGradients && (
+                <div className="flex gap-1 mb-3">
+                    <button
+                        onClick={() => setActiveTab('solid')}
+                        className={cn(
+                            "flex-1 h-8 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-all",
+                            activeTab === 'solid'
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted/50 hover:bg-muted text-foreground"
+                        )}
+                    >
+                        <Paintbrush className="w-3 h-3" />
+                        Solid
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('gradient')}
+                        className={cn(
+                            "flex-1 h-8 rounded-md text-xs font-medium flex items-center justify-center gap-1.5 transition-all",
+                            activeTab === 'gradient'
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-muted/50 hover:bg-muted text-foreground"
+                        )}
+                    >
+                        <Palette className="w-3 h-3" />
+                        Gradient
+                    </button>
+                </div>
                 )}
 
-                {activeTab === 'solid' ? (
-                    <div className="space-y-3">
-                        <div>
-                            <p className="text-[10px] font-medium text-muted-foreground uppercase mb-1.5">Presets</p>
-                            <PresetGrid
-                                presets={solidPresets}
-                                selectedValue={value}
-                                onSelect={handleColorSelect}
-                            />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-medium text-muted-foreground uppercase mb-1.5">Custom</p>
-                            <CompactColorInput
-                                value={value}
-                                onChange={onChange}
-                                alpha={alpha}
-                                onAlphaChange={setAlpha}
-                                showAlpha={showAlpha}
-                            />
-                        </div>
+            {activeTab === 'solid' ? (
+                <div className="space-y-3">
+                    <div>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase mb-1.5">Presets</p>
+                        <PresetGrid
+                            presets={solidPresets}
+                            selectedValue={value}
+                            onSelect={onChange}
+                        />
                     </div>
-                ) : (
-                    <GradientEditor
-                        value={isGradient(value) ? value : GRADIENT_PRESETS[0]}
-                        onChange={onChange}
-                    />
-                )}
-            </div>
-        </ScrollArea>
+                    <div>
+                        <p className="text-[10px] font-medium text-muted-foreground uppercase mb-1.5">Custom</p>
+                        <CompactColorInput
+                            value={value}
+                            onChange={onChange}
+                            alpha={alpha}
+                            onAlphaChange={setAlpha}
+                            showAlpha={showAlpha}
+                        />
+                    </div>
+                </div>
+            ) : (
+                <GradientEditor
+                    value={isGradient(value) ? value : GRADIENT_PRESETS[0]}
+                    onChange={onChange}
+            />
+            )}
+        </div>
     );
 
     return (
@@ -712,7 +703,7 @@ export const InlineColorPicker: React.FC<InlineColorPickerProps> = ({
     };
 
     return (
-        <ScrollArea className={cn("max-h-[50vh]", className)}>
+        <div className={cn("max-h-[50vh] overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent", className)}>
             <div className="space-y-3 p-1">
                 {showGradients && (
                     <div className="flex gap-1">
@@ -748,7 +739,7 @@ export const InlineColorPicker: React.FC<InlineColorPickerProps> = ({
                         <PresetGrid
                             presets={SOLID_COLOR_PRESETS}
                             selectedValue={value}
-                            onSelect={handleColorSelect}
+                            onSelect={onChange}
                         />
                         <CompactColorInput
                             value={value}
@@ -765,7 +756,7 @@ export const InlineColorPicker: React.FC<InlineColorPickerProps> = ({
                     />
                 )}
             </div>
-        </ScrollArea>
+        </div>
     );
 };
 
