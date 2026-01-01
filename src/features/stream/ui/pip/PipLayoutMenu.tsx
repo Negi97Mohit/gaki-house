@@ -374,6 +374,142 @@ export const PIP_LAYOUT_PRESETS: PipLayoutPreset[] = [
       </div>
     ),
   },
+  // NEW: Overlay Layouts
+  {
+    id: "overlay-top-right",
+    name: "Overlay TR",
+    position: { x: 55, y: 5 },
+    size: { width: 42, height: 45 },
+    shape: "rounded",
+    aspectRatio: "16:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 right-1 w-7 h-4 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "overlay-bottom-left",
+    name: "Overlay BL",
+    position: { x: 3, y: 50 },
+    size: { width: 42, height: 45 },
+    shape: "rounded",
+    aspectRatio: "16:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1 left-1 w-7 h-4 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Pill/Capsule Layouts
+  {
+    id: "pill-bottom",
+    name: "Pill Bottom",
+    position: { x: 30, y: 75 },
+    size: { width: 40, height: 20 },
+    shape: "circle",
+    aspectRatio: "21:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-8 h-2 rounded-full bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "pill-top",
+    name: "Pill Top",
+    position: { x: 30, y: 5 },
+    size: { width: 40, height: 20 },
+    shape: "circle",
+    aspectRatio: "21:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 left-1/2 -translate-x-1/2 w-8 h-2 rounded-full bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Cinema/Letterbox Layouts
+  {
+    id: "cinema-bottom",
+    name: "Cinema Bottom",
+    position: { x: 5, y: 65 },
+    size: { width: 90, height: 30 },
+    shape: "rounded",
+    aspectRatio: "32:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1 left-1 right-1 h-2.5 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "cinema-top",
+    name: "Cinema Top",
+    position: { x: 5, y: 5 },
+    size: { width: 90, height: 30 },
+    shape: "rounded",
+    aspectRatio: "32:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 left-1 right-1 h-2.5 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Floating Diamond/Rotated Layouts
+  {
+    id: "diamond-br",
+    name: "Diamond BR",
+    position: { x: 70, y: 60 },
+    size: { width: 25, height: 32 },
+    shape: "rounded",
+    aspectRatio: "1:1",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1 right-1 w-4 h-4 rotate-45 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "diamond-tl",
+    name: "Diamond TL",
+    position: { x: 5, y: 8 },
+    size: { width: 25, height: 32 },
+    shape: "rounded",
+    aspectRatio: "1:1",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 left-1 w-4 h-4 rotate-45 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Triple/Multi-spot Layouts
+  {
+    id: "dual-corners",
+    name: "Dual Corners",
+    position: { x: 75, y: 70 },
+    size: { width: 20, height: 25 },
+    shape: "circle",
+    aspectRatio: "1:1",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1 right-1 w-3 h-3 rounded-full bg-primary/60" />
+        <div className="absolute top-1 left-1 w-3 h-3 rounded-full bg-primary/40" />
+      </div>
+    ),
+  },
+  {
+    id: "presenter-mode",
+    name: "Presenter",
+    position: { x: 3, y: 55 },
+    size: { width: 30, height: 40 },
+    shape: "rounded",
+    aspectRatio: "4:3",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1 left-1 w-5 h-5 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
 ];
 
 interface PipLayoutMenuProps {
