@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/shared/ui/popover";
 import { ScrollArea } from "@/shared/ui/scroll-area";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import { ALL_FONTS } from "@/lib/fonts";
 
 interface LayoutEditorToolbarProps {
@@ -91,24 +92,19 @@ export const LayoutEditorToolbar: React.FC<LayoutEditorToolbarProps> = ({
   };
 
   // --- POSITIONING LOGIC FIX ---
-  const TOOLBAR_HEIGHT = 60; // Estimated height including padding/shadow
-  const GAP = 12; // Gap between element and toolbar
-  const MIN_TOP_OFFSET = 10; // Minimum distance from window top
+  const TOOLBAR_HEIGHT = 60;
+  const GAP = 12;
+  const MIN_TOP_OFFSET = 10;
 
-  // Default: Place above the element
   let topPosition = focusedField.rect.top - TOOLBAR_HEIGHT - GAP;
-
-  // If there isn't enough space above, place it below the element
   if (topPosition < MIN_TOP_OFFSET) {
     topPosition = focusedField.rect.bottom + GAP;
   }
 
-  // Ensure it doesn't go off the left/right edges
   const leftPosition = Math.max(
     20,
     Math.min(window.innerWidth - 450, focusedField.rect.left)
   );
-  // -----------------------------
 
   return (
     <div
@@ -119,7 +115,7 @@ export const LayoutEditorToolbar: React.FC<LayoutEditorToolbarProps> = ({
         top: topPosition,
         left: leftPosition,
       }}
-      onMouseDown={(e) => e.stopPropagation()} // Prevent blur
+      onMouseDown={(e) => e.stopPropagation()}
     >
       {/* Font Family Selector */}
       <Popover>
@@ -190,21 +186,16 @@ export const LayoutEditorToolbar: React.FC<LayoutEditorToolbarProps> = ({
         </div>
       </div>
 
-      {/* Text Color Picker */}
-      <div className="flex items-center relative group">
-        <div className="w-6 h-6 rounded-full overflow-hidden border border-white/20 relative cursor-pointer hover:scale-110 transition-transform shadow-sm">
-          <input
-            type="color"
-            value={currentColor}
-            onChange={(e) => onUpdateStyle("color", e.target.value)}
-            className="absolute inset-0 w-[150%] h-[150%] -top-1/4 -left-1/4 p-0 m-0 cursor-pointer opacity-0"
-          />
-          <div
-            className="w-full h-full pointer-events-none"
-            style={{ backgroundColor: currentColor }}
-          />
-        </div>
-      </div>
+      {/* Text Color Picker - Using unified ColorPicker */}
+      <ColorPicker
+        value={currentColor}
+        onChange={(color) => onUpdateStyle("color", color)}
+        variant="circle"
+        size="sm"
+        showGradients={true}
+        showAlpha={false}
+        darkMode={true}
+      />
 
       <div className="w-px h-4 bg-white/20" />
 

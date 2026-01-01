@@ -1,7 +1,7 @@
 // src/components/banner-editor/BannerTextToolbar.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import { Bold, Italic, Minus, Plus } from "lucide-react";
+import { Bold, Minus, Plus } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   Select,
@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select";
+import { ColorPicker } from "@/shared/ui/color-picker";
 
 interface BannerTextToolbarProps {
   fontSize: number;
@@ -53,14 +54,14 @@ export const BannerTextToolbar: React.FC<BannerTextToolbarProps> = ({
       className="absolute bg-background/95 backdrop-blur-md border border-border rounded-lg shadow-xl p-2 flex items-center gap-2"
       style={{
         left: position.x,
-        top: position.y < 60 ? position.y + 20 : position.y - 50, // Flip down if too close to top
+        top: position.y < 60 ? position.y + 20 : position.y - 50,
         transform: "translateX(-50%)",
-        zIndex: 9999, // Ensure it sits on top of everything
+        zIndex: 9999,
         pointerEvents: "auto",
       }}
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
-      onPointerDown={(e) => e.stopPropagation()} // Critical: Prevents drag initiation
+      onPointerDown={(e) => e.stopPropagation()}
     >
       {/* Font Family */}
       <Select value={fontFamily} onValueChange={onFontFamilyChange}>
@@ -68,8 +69,6 @@ export const BannerTextToolbar: React.FC<BannerTextToolbarProps> = ({
           <SelectValue />
         </SelectTrigger>
         <SelectContent className="z-[9999]">
-          {" "}
-          {/* Ensure dropdown is on top */}
           {FONT_OPTIONS.map((font) => (
             <SelectItem
               key={font.value}
@@ -119,18 +118,15 @@ export const BannerTextToolbar: React.FC<BannerTextToolbarProps> = ({
         <Bold className="w-3 h-3" />
       </Button>
 
-      {/* Color */}
-      <div className="relative flex items-center justify-center">
-        <input
-          type="color"
-          value={color.startsWith("#") ? color : "#ffffff"}
-          onChange={(e) => onColorChange(e.target.value)}
-          className="w-6 h-6 p-0 border-0 rounded-full cursor-pointer overflow-hidden"
-          style={{ padding: 0 }}
-        />
-        {/* Custom ring to make the color picker look better */}
-        <div className="absolute inset-0 rounded-full border border-border pointer-events-none" />
-      </div>
+      {/* Color - Using unified ColorPicker */}
+      <ColorPicker
+        value={color}
+        onChange={onColorChange}
+        variant="circle"
+        size="sm"
+        showGradients={true}
+        showAlpha={false}
+      />
     </motion.div>
   );
 };
