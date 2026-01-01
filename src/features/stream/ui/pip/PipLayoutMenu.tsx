@@ -239,6 +239,141 @@ export const PIP_LAYOUT_PRESETS: PipLayoutPreset[] = [
       </div>
     ),
   },
+  // NEW: Floating Bubble Layouts
+  {
+    id: "br-bubble-large",
+    name: "Bubble Large",
+    position: { x: 60, y: 50 },
+    size: { width: 35, height: 40 },
+    shape: "circle",
+    aspectRatio: "1:1",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "center-circle",
+    name: "Center Circle",
+    position: { x: 35, y: 30 },
+    size: { width: 30, height: 40 },
+    shape: "circle",
+    aspectRatio: "1:1",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Picture Frame Layouts
+  {
+    id: "br-square-medium",
+    name: "Square Medium",
+    position: { x: 65, y: 55 },
+    size: { width: 30, height: 40 },
+    shape: "rounded",
+    aspectRatio: "4:3",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-1 right-1 w-5 h-5 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "tl-square-large",
+    name: "TL Square",
+    position: { x: 3, y: 3 },
+    size: { width: 35, height: 45 },
+    shape: "rounded",
+    aspectRatio: "4:3",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 left-1 w-6 h-6 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Wide Bar Layouts
+  {
+    id: "top-bar",
+    name: "Top Bar",
+    position: { x: 15, y: 3 },
+    size: { width: 70, height: 22 },
+    shape: "rounded",
+    aspectRatio: "21:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 left-2 right-2 h-2 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "center-wide",
+    name: "Center Wide",
+    position: { x: 10, y: 35 },
+    size: { width: 80, height: 30 },
+    shape: "rounded",
+    aspectRatio: "21:9",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1/2 -translate-y-1/2 left-1 right-1 h-3 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Minimalist Corner Layouts
+  {
+    id: "br-mini",
+    name: "Mini BR",
+    position: { x: 82, y: 78 },
+    size: { width: 15, height: 18 },
+    shape: "circle",
+    aspectRatio: "1:1",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute bottom-0.5 right-0.5 w-3 h-3 rounded-full bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "tl-mini",
+    name: "Mini TL",
+    position: { x: 3, y: 3 },
+    size: { width: 15, height: 18 },
+    shape: "circle",
+    aspectRatio: "1:1",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-primary/60" />
+      </div>
+    ),
+  },
+  // NEW: Tall Vertical Layouts
+  {
+    id: "center-portrait",
+    name: "Center Portrait",
+    position: { x: 35, y: 10 },
+    size: { width: 30, height: 80 },
+    shape: "rounded",
+    aspectRatio: "9:16",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 bottom-1 left-1/2 -translate-x-1/2 w-3 h-8 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
+  {
+    id: "br-portrait",
+    name: "BR Portrait",
+    position: { x: 72, y: 20 },
+    size: { width: 25, height: 70 },
+    shape: "rounded",
+    aspectRatio: "9:16",
+    thumbnail: (
+      <div className="w-full h-full bg-muted/30 relative">
+        <div className="absolute top-1 bottom-1 right-1 w-2.5 h-7 rounded-sm bg-primary/60" />
+      </div>
+    ),
+  },
 ];
 
 interface PipLayoutMenuProps {
