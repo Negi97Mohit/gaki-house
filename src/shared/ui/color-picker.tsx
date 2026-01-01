@@ -1,14 +1,24 @@
 // src/shared/ui/color-picker.tsx
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Button } from './button';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { Slider } from './slider';
 import { Input } from './input';
-import { Paintbrush, Palette, Pipette, RotateCcw } from 'lucide-react';
+import { Paintbrush, Palette, Plus, Trash2, RotateCcw, Settings2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { SOLID_COLOR_PRESETS, GRADIENT_PRESETS } from '@/shared/constants/color-presets';
-import { isGradient, addAlpha, hexToRgb } from '@/shared/lib/color-utils';
+import { 
+    SOLID_COLOR_PRESETS, 
+    GRADIENT_PRESETS,
+    GRADIENT_DIRECTIONS,
+    GRADIENT_PATTERNS,
+    RADIAL_POSITIONS,
+    parseGradient,
+    generateGradient,
+    GradientPatternType,
+    GradientOptions
+} from '@/shared/constants/color-presets';
+import { isGradient, addAlpha } from '@/shared/lib/color-utils';
 
 // ============= TYPES =============
 
@@ -24,12 +34,9 @@ export interface ColorPickerProps {
     variant?: ColorPickerVariant;
     size?: 'sm' | 'md' | 'lg';
     disabled?: boolean;
-    // For inline variant
     showLabel?: boolean;
-    // Custom presets
     customSolidPresets?: string[];
     customGradientPresets?: string[];
-    // For toolbar integrations
     darkMode?: boolean;
 }
 
@@ -177,6 +184,278 @@ const CustomColorInput: React.FC<CustomColorInputProps> = ({
         )}
     </div>
 );
+
+// ============= GRADIENT EDITOR COMPONENT =============
+
+interface GradientEditorProps {
+    value: string;
+    onChange: (gradient: string) => void;
+    darkMode?: boolean;
+}
+
+const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange, darkMode = false }) => {
+    const parsed = useMemo(() => parseGradient(value), [value]);
+    
+    const [colors, setColors] = useState<string[]>(parsed.colors.length >= 2 ? parsed.colors : ['#667eea', '#764ba2']);
+    const [patternType, setPatternType] = useState<GradientPatternType>(parsed.type);
+    const [angle, setAngle] = useState(parsed.angle);
+    const [position, setPosition] = useState(parsed.position || 'center');
+    const [spread, setSpread] = useState(20);
+    const [showAdvanced, setShowAdvanced] = useState(false);
+
+    const updateGradient = useCallback((
+        newColors?: string[],
+        newPattern?: GradientPatternType,
+        newAngle?: number,
+        newOptions?: GradientOptions
+    ) => {
+        const c = newColors || colors;
+        const p = newPattern || patternType;
+        const a = newAngle ?? angle;
+        const opts: GradientOptions = {
+            position: newOptions?.position || position,
+            spread: newOptions?.spread ?? spread,
+            intensity: newOptions?.intensity ?? 0.7
+        };
+        const gradient = generateGradient(p, c, a, opts);
+        onChange(gradient);
+    }, [colors, patternType, angle, position, spread, onChange]);
+
+    const handleColorChange = (index: number, color: string) => {
+        const newColors = [...colors];
+        newColors[index] = color;
+        setColors(newColors);
+        updateGradient(newColors);
+    };
+
+    const addColor = () => {
+        if (colors.length < 5) {
+            const newColors = [...colors, '#888888'];
+            setColors(newColors);
+            updateGradient(newColors);
+        }
+    };
+
+    const removeColor = (index: number) => {
+        if (colors.length > 2) {
+            const newColors = colors.filter((_, i) => i !== index);
+            setColors(newColors);
+            updateGradient(newColors);
+        }
+    };
+
+    const handlePatternChange = (newPattern: GradientPatternType) => {
+        setPatternType(newPattern);
+        updateGradient(undefined, newPattern);
+    };
+
+    const handleAngleChange = (newAngle: number) => {
+        setAngle(newAngle);
+        updateGradient(undefined, undefined, newAngle);
+    };
+
+    const handlePositionChange = (newPosition: string) => {
+        setPosition(newPosition);
+        updateGradient(undefined, undefined, undefined, { position: newPosition, spread });
+    };
+
+    const handleSpreadChange = (newSpread: number) => {
+        setSpread(newSpread);
+        updateGradient(undefined, undefined, undefined, { position, spread: newSpread });
+    };
+
+    const needsPosition = ['radial', 'conic', 'repeating-radial', 'spotlight'].includes(patternType);
+    const needsSpread = ['repeating-linear', 'repeating-radial', 'diagonal-stripes', 'horizontal-stripes', 'vertical-stripes'].includes(patternType);
+
+    return (
+        <div className="space-y-4">
+            {/* Preview */}
+            <div
+                className="w-full h-16 rounded-lg border border-border/50"
+                style={{ background: value }}
+            />
+
+            {/* Pattern Type Selector */}
+            <div>
+                <p className={cn(
+                    "text-xs font-medium mb-2 uppercase tracking-wide",
+                    darkMode ? "text-white/60" : "text-muted-foreground"
+                )}>Pattern</p>
+                <div className="grid grid-cols-5 gap-1">
+                    {GRADIENT_PATTERNS.map((pattern) => (
+                        <button
+                            key={pattern.id}
+                            onClick={() => handlePatternChange(pattern.id)}
+                            className={cn(
+                                "h-8 rounded text-xs flex items-center justify-center transition-all",
+                                patternType === pattern.id
+                                    ? "bg-primary text-primary-foreground"
+                                    : darkMode 
+                                        ? "bg-white/10 hover:bg-white/20 text-white"
+                                        : "bg-muted hover:bg-muted/80"
+                            )}
+                            title={pattern.label}
+                        >
+                            <span className="text-sm">{pattern.icon}</span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Colors */}
+            <div>
+                <div className="flex items-center justify-between mb-2">
+                    <p className={cn(
+                        "text-xs font-medium uppercase tracking-wide",
+                        darkMode ? "text-white/60" : "text-muted-foreground"
+                    )}>Colors</p>
+                    {colors.length < 5 && (
+                        <button
+                            onClick={addColor}
+                            className={cn(
+                                "p-1 rounded hover:bg-muted transition-colors",
+                                darkMode && "hover:bg-white/10"
+                            )}
+                        >
+                            <Plus className="w-3 h-3" />
+                        </button>
+                    )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {colors.map((color, index) => (
+                        <div key={index} className="relative group">
+                            <input
+                                type="color"
+                                value={parseColorValue(color)}
+                                onChange={(e) => handleColorChange(index, e.target.value)}
+                                className="w-10 h-10 rounded-lg cursor-pointer border-2 border-border/50 p-0"
+                            />
+                            {colors.length > 2 && (
+                                <button
+                                    onClick={() => removeColor(index)}
+                                    className="absolute -top-1 -right-1 w-4 h-4 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                >
+                                    <Trash2 className="w-2.5 h-2.5" />
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Direction (for linear gradients) */}
+            {!needsPosition && (
+                <div>
+                    <p className={cn(
+                        "text-xs font-medium mb-2 uppercase tracking-wide",
+                        darkMode ? "text-white/60" : "text-muted-foreground"
+                    )}>Direction</p>
+                    <div className="grid grid-cols-8 gap-1">
+                        {GRADIENT_DIRECTIONS.map((dir) => (
+                            <button
+                                key={dir.value}
+                                onClick={() => handleAngleChange(dir.value)}
+                                className={cn(
+                                    "h-8 rounded text-sm flex items-center justify-center transition-all",
+                                    angle === dir.value
+                                        ? "bg-primary text-primary-foreground"
+                                        : darkMode 
+                                            ? "bg-white/10 hover:bg-white/20 text-white"
+                                            : "bg-muted hover:bg-muted/80"
+                                )}
+                                title={dir.name}
+                            >
+                                {dir.label}
+                            </button>
+                        ))}
+                    </div>
+                    {/* Custom angle slider */}
+                    <div className="mt-2 flex items-center gap-2">
+                        <Slider
+                            value={[angle]}
+                            onValueChange={([val]) => handleAngleChange(val)}
+                            min={0}
+                            max={360}
+                            step={1}
+                            className="flex-1"
+                        />
+                        <span className={cn(
+                            "text-xs w-10 text-right",
+                            darkMode ? "text-white/60" : "text-muted-foreground"
+                        )}>{angle}°</span>
+                    </div>
+                </div>
+            )}
+
+            {/* Position (for radial gradients) */}
+            {needsPosition && (
+                <div>
+                    <p className={cn(
+                        "text-xs font-medium mb-2 uppercase tracking-wide",
+                        darkMode ? "text-white/60" : "text-muted-foreground"
+                    )}>Position</p>
+                    <div className="grid grid-cols-3 gap-1">
+                        {RADIAL_POSITIONS.map((pos) => (
+                            <button
+                                key={pos.value}
+                                onClick={() => handlePositionChange(pos.value)}
+                                className={cn(
+                                    "h-8 rounded text-sm flex items-center justify-center transition-all",
+                                    position === pos.value
+                                        ? "bg-primary text-primary-foreground"
+                                        : darkMode 
+                                            ? "bg-white/10 hover:bg-white/20 text-white"
+                                            : "bg-muted hover:bg-muted/80"
+                                )}
+                                title={pos.value}
+                            >
+                                {pos.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Spread (for repeating patterns) */}
+            {needsSpread && (
+                <div>
+                    <div className="flex items-center justify-between mb-2">
+                        <p className={cn(
+                            "text-xs font-medium uppercase tracking-wide",
+                            darkMode ? "text-white/60" : "text-muted-foreground"
+                        )}>Spread</p>
+                        <span className={cn(
+                            "text-xs",
+                            darkMode ? "text-white/60" : "text-muted-foreground"
+                        )}>{spread}px</span>
+                    </div>
+                    <Slider
+                        value={[spread]}
+                        onValueChange={([val]) => handleSpreadChange(val)}
+                        min={5}
+                        max={100}
+                        step={1}
+                        className="w-full"
+                    />
+                </div>
+            )}
+
+            {/* Quick Presets */}
+            <div>
+                <p className={cn(
+                    "text-xs font-medium mb-2 uppercase tracking-wide",
+                    darkMode ? "text-white/60" : "text-muted-foreground"
+                )}>Presets</p>
+                <PresetGrid
+                    presets={GRADIENT_PRESETS}
+                    selectedValue={value}
+                    onSelect={onChange}
+                    isGradient
+                />
+            </div>
+        </div>
+    );
+};
 
 // ============= MAIN COLOR PICKER COMPONENT =============
 
@@ -351,7 +630,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
 
     const renderContent = () => (
         <div className={cn(
-            "w-72",
+            "w-80",
             darkMode && "bg-zinc-900 text-white"
         )}>
             {showGradients ? (
@@ -398,19 +677,12 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                         />
                     </TabsContent>
 
-                    <TabsContent value="gradient" className="p-4 space-y-4 m-0">
-                        <div>
-                            <p className={cn(
-                                "text-xs font-medium mb-2 uppercase tracking-wide",
-                                darkMode ? "text-white/60" : "text-muted-foreground"
-                            )}>Gradient Presets</p>
-                            <PresetGrid
-                                presets={gradientPresets}
-                                selectedValue={value}
-                                onSelect={handleColorSelect}
-                                isGradient
-                            />
-                        </div>
+                    <TabsContent value="gradient" className="p-4 m-0">
+                        <GradientEditor
+                            value={isGradient(value) ? value : GRADIENT_PRESETS[0]}
+                            onChange={onChange}
+                            darkMode={darkMode}
+                        />
                     </TabsContent>
                 </Tabs>
             ) : (
@@ -523,12 +795,11 @@ export const InlineColorPicker: React.FC<InlineColorPickerProps> = ({
                         />
                     </TabsContent>
 
-                    <TabsContent value="gradient" className="space-y-4 mt-4">
-                        <PresetGrid
-                            presets={GRADIENT_PRESETS}
-                            selectedValue={value}
-                            onSelect={handleColorSelect}
-                            isGradient
+                    <TabsContent value="gradient" className="mt-4">
+                        <GradientEditor
+                            value={isGradient(value) ? value : GRADIENT_PRESETS[0]}
+                            onChange={onChange}
+                            darkMode={darkMode}
                         />
                     </TabsContent>
                 </Tabs>
