@@ -62,7 +62,34 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
         if (file.type.startsWith("audio/")) return "audio";
         if (file.type === "application/pdf") return "pdf";
         if (file.name.endsWith(".ply") || file.name.endsWith(".splat")) return "3d";
+
+        // Check if it's a text file by MIME type
         if (file.type.startsWith("text/")) return "text";
+
+        // Check for programming and markup files by extension
+        const textExtensions = [
+            // Programming languages
+            '.js', '.jsx', '.ts', '.tsx', '.py', '.java', '.c', '.cpp', '.cs', '.go',
+            '.rs', '.rb', '.php', '.swift', '.kt', '.scala', '.r', '.m', '.h', '.sh',
+            '.bash', '.zsh', '.fish', '.ps1', '.bat', '.cmd',
+            // Web
+            '.html', '.htm', '.css', '.scss', '.sass', '.less', '.vue', '.svelte',
+            // Data/Config
+            '.json', '.xml', '.yaml', '.yml', '.toml', '.ini', '.cfg', '.conf',
+            '.env', '.env.local', '.env.production', '.env.development',
+            // Documentation
+            '.md', '.markdown', '.txt', '.rst', '.adoc', '.tex',
+            // Database
+            '.sql', '.graphql', '.prisma',
+            // Other
+            '.log', '.csv', '.tsv', '.jsonl', '.ndjson'
+        ];
+
+        const fileNameLower = file.name.toLowerCase();
+        if (textExtensions.some(ext => fileNameLower.endsWith(ext))) {
+            return "text";
+        }
+
         return "unknown";
     };
 
@@ -328,3 +355,4 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
         </div>
     );
 };
+
