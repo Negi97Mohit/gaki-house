@@ -198,16 +198,16 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
   // Apply scale to border and shadow
   const scaledPipBorder = settings.pipBorder
     ? {
-        ...settings.pipBorder,
-        width: Math.max(1, settings.pipBorder.width * scale),
-      }
+      ...settings.pipBorder,
+      width: Math.max(1, settings.pipBorder.width * scale),
+    }
     : undefined;
 
   const scaledPipShadow = settings.pipShadow
     ? {
-        ...settings.pipShadow,
-        blur: settings.pipShadow.blur * scale,
-      }
+      ...settings.pipShadow,
+      blur: settings.pipShadow.blur * scale,
+    }
     : undefined;
 
   return (
@@ -280,13 +280,18 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
           <Rnd
             size={{
               width: `${settings.pipSize?.width || 30}%`,
-              height: `${settings.pipSize?.height || 30}%`,
+              height:
+                settings.cameraShape === "circle"
+                  ? (sceneSize.width * (settings.pipSize?.width || 30)) /
+                  100 /* Force height to match pixel width for circle */
+                  : `${settings.pipSize?.height || 30}%`,
             }}
             position={{
               x: (sceneSize.width * (settings.pipPosition?.x || 0)) / 100,
               y: (sceneSize.height * (settings.pipPosition?.y || 0)) / 100,
             }}
             bounds="parent"
+            lockAspectRatio={settings.cameraShape === "circle"}
             onDragStop={(e, d) => handlePipLayoutChange(d, null)}
             onResizeStop={(e, dir, ref, delta, pos) =>
               handlePipLayoutChange(null, ref, pos)
@@ -310,8 +315,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                   settings.cameraShape === "circle"
                     ? "50%"
                     : settings.cameraShape === "rounded"
-                    ? "12px"
-                    : "0px",
+                      ? "12px"
+                      : "0px",
               }}
             >
               <CameraRenderer
@@ -322,8 +327,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
                     settings.cameraShape === "circle"
                       ? "50%"
                       : settings.cameraShape === "rounded"
-                      ? "12px"
-                      : "0px",
+                        ? "12px"
+                        : "0px",
                 }}
                 portalContainer={null}
                 cameraShape={settings.cameraShape || "rectangle"}
@@ -518,8 +523,8 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               containerRef={containerRef}
               isSelected={selectedTextId === textOverlay.id}
               onSelect={setSelectedTextId}
-              onInternalDragStart={() => {}}
-              onInternalDragStop={() => {}}
+              onInternalDragStart={() => { }}
+              onInternalDragStop={() => { }}
               isSpacePressed={false}
               scale={scale} // Pass scale
             />
