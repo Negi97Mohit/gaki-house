@@ -148,23 +148,42 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
     }
   };
 
-  const getStyleObject = () => ({
-    fontFamily: overlay.style.fontFamily,
-    fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
-    color: overlay.style.color,
-    backgroundColor: overlay.style.backgroundColor || "transparent",
-    fontWeight: overlay.style.bold ? "bold" : "normal",
-    fontStyle: overlay.style.italic ? "italic" : "normal",
-    textDecoration: overlay.style.underline ? "underline" : "none",
-    textAlign: (overlay.style as any).textAlign || "left",
-    letterSpacing: (overlay.style as any).letterSpacing || "0px",
-    textShadow: overlay.style.textShadow
-      ? overlay.style.textShadow.replace(
+  const getStyleObject = () => {
+    const baseStyle: React.CSSProperties = {
+      fontFamily: overlay.style.fontFamily,
+      fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
+      fontWeight: overlay.style.bold ? "bold" : "normal",
+      fontStyle: overlay.style.italic ? "italic" : "normal",
+      textDecoration: overlay.style.underline ? "underline" : "none",
+      textAlign: (overlay.style as any).textAlign || "left",
+      letterSpacing: (overlay.style as any).letterSpacing || "0px",
+      textShadow: overlay.style.textShadow
+        ? overlay.style.textShadow.replace(
           /(-?\d*\.?\d+)px/g,
           (match, p1) => `${parseFloat(p1) * (scale || 1)}px`
         )
-      : undefined,
-  });
+        : undefined,
+    };
+
+    // Apply gradient to text if present
+    if (overlay.style.gradient) {
+      return {
+        ...baseStyle,
+        backgroundImage: overlay.style.gradient,
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+      };
+    }
+
+    // Otherwise use solid color for text
+    return {
+      ...baseStyle,
+      color: overlay.style.color,
+      // backgroundColor is NOT applied to text elements
+      // It's applied to the parent container instead (see below)
+    };
+  };
 
   return (
     <>
@@ -220,8 +239,8 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                // Ensure background color is applied in view mode too
-                backgroundColor: overlay.style.backgroundColor || "transparent",
+                // Use background property to support both solid colors and gradients
+                background: overlay.style.backgroundColor || "transparent",
               }}
             >
               {overlay.style.layers ? (
