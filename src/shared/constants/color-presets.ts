@@ -156,10 +156,18 @@ export const GRADIENT_PATTERNS: GradientPattern[] = [
         id: 'mesh',
         label: 'Mesh',
         icon: '▦',
-        generator: (colors, angle, options) => {
-            const intensity = options?.intensity || 0.5;
-            // Create a mesh-like gradient with multiple overlays
-            return `linear-gradient(${angle}deg, ${colors[0]} 0%, transparent 50%, ${colors[1] || colors[0]} 100%), linear-gradient(${angle + 90}deg, ${colors[1] || colors[0]}${Math.round(intensity * 255).toString(16).padStart(2, '0')} 0%, transparent 50%, ${colors[0]}${Math.round(intensity * 255).toString(16).padStart(2, '0')} 100%)`;
+        generator: (colors, angle) => {
+            // Create a mesh-like gradient with multiple overlays using rgba for proper alpha
+            const c1 = colors[0];
+            const c2 = colors[1] || colors[0];
+            // Parse hex to rgba with 50% opacity for overlay
+            const hexToRgba = (hex: string, alpha: number) => {
+                const r = parseInt(hex.slice(1, 3), 16);
+                const g = parseInt(hex.slice(3, 5), 16);
+                const b = parseInt(hex.slice(5, 7), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            };
+            return `linear-gradient(${angle}deg, ${c1} 0%, transparent 50%, ${c2} 100%), linear-gradient(${angle + 90}deg, ${hexToRgba(c2, 0.5)} 0%, transparent 50%, ${hexToRgba(c1, 0.5)} 100%)`;
         }
     },
     {
