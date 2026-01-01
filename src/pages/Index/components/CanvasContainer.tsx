@@ -222,23 +222,35 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
   const handleGridAssetSelect = useCallback(
     (sectionId: string, asset: AssetResult) => {
+      console.log(`handleGridAssetSelect called for section ${sectionId}`, asset);
       updateActiveScene((scene) => {
-        const updatedCanvasLayout = scene.canvasLayout
-          ? {
-            ...scene.canvasLayout,
-            sections: scene.canvasLayout.sections.map((s) =>
-              s.id === sectionId
-                ? {
-                  ...s,
-                  content: {
-                    type: "image" as const,
-                    src: asset.downloadUrl,
-                  },
-                }
-                : s
-            ),
-          }
-          : scene.canvasLayout;
+        if (!scene.canvasLayout) {
+          console.warn("No canvas layout found");
+          return scene;
+        }
+
+        const sectionExists = scene.canvasLayout.sections.some(s => s.id === sectionId);
+        if (!sectionExists) {
+          console.error(`Section ${sectionId} not found in layout sections`, scene.canvasLayout.sections.map(s => s.id));
+          toast.error(`Section ${sectionId} not found`);
+          return scene;
+        }
+
+        const updatedCanvasLayout = {
+          ...scene.canvasLayout,
+          sections: scene.canvasLayout.sections.map((s) =>
+            s.id === sectionId
+              ? {
+                ...s,
+                content: {
+                  type: "image" as const,
+                  src: asset.downloadUrl,
+                },
+              }
+              : s
+          ),
+        };
+        console.log("Section updated, new content type set to image");
         return { ...scene, canvasLayout: updatedCanvasLayout };
       });
       toast.success(`Added '${asset.alt}' to grid`);
@@ -578,8 +590,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
       <div
         className={`fixed top-6 left-6 z-[2015] transition-opacity duration-300 ${uiState.isMouseActive
-            ? "opacity-100"
-            : "opacity-0 pointer-events-none"
+          ? "opacity-100"
+          : "opacity-0 pointer-events-none"
           }`}
       >
         <FloatingLogo />

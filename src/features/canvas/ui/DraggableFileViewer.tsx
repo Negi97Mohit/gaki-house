@@ -9,6 +9,12 @@ import {
   Layers,
   Move,
   Sparkles,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Zap,
+  Repeat,
 } from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
@@ -76,11 +82,7 @@ export const FileRenderer: React.FC<{
         />
       );
     case "video":
-      return (
-        <div className="w-full h-full relative bg-black flex items-center justify-center">
-          <video src={overlay.fileUrl} controls className="w-full h-full" />
-        </div>
-      );
+      return <VideoPlayer src={overlay.fileUrl} />;
     case "audio":
       return (
         <div className="p-4">
@@ -119,6 +121,163 @@ export const FileRenderer: React.FC<{
         </div>
       );
   }
+};
+
+const VideoPlayer: React.FC<{ src: string }> = ({ src }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isLooping) {
+        videoRef.current.loop = true;
+      } else {
+        videoRef.current.loop = false;
+      }
+    }
+  }, [isLooping]);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const cycleSpeed = () => {
+    let newRate = 1;
+    if (playbackRate === 1) newRate = 1.5;
+    else if (playbackRate === 1.5) newRate = 2;
+    else if (playbackRate === 2) newRate = 0.5;
+    else newRate = 1;
+    setPlaybackRate(newRate);
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setProgress(progress);
+    }
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!videoRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = x / width;
+    videoRef.current.currentTime = percentage * videoRef.current.duration;
+  };
+
+  return (
+    <div
+      className="w-full h-full relative bg-black group"
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(false)}
+    >
+      <video
+        ref={videoRef}
+        src={src}
+        className="w-full h-full object-contain"
+        onTimeUpdate={handleTimeUpdate}
+        onEnded={() => !isLooping && setIsPlaying(false)}
+        onClick={togglePlay}
+        playsInline
+      />
+
+      {/* Controls Overlay */}
+      <div className={cn(
+        "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 transition-opacity duration-300",
+        showControls || !isPlaying ? "opacity-100" : "opacity-0"
+      )}>
+        {/* Progress Bar */}
+        <div
+          className="w-full h-1 bg-white/30 rounded-full mb-4 cursor-pointer hover:h-2 transition-all"
+          onClick={handleSeek}
+        >
+          <div
+            className="h-full bg-primary rounded-full relative"
+            style={{ width: `${progress}%` }}
+          >
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-sm scale-0 group-hover:scale-100 transition-transform" />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between text-white">
+          <div className="flex items-center gap-4">
+            <button onClick={togglePlay} className="hover:text-primary transition-colors">
+              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+            </button>
+
+            <div className="flex items-center gap-2 group/vol">
+              <button onClick={toggleMute} className="hover:text-primary transition-colors">
+                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={isMuted ? 0 : volume}
+                onChange={(e) => {
+                  const val = parseFloat(e.target.value);
+                  setVolume(val);
+                  setIsMuted(val === 0);
+                  if (videoRef.current) videoRef.current.volume = val;
+                }}
+                className="w-0 overflow-hidden group-hover/vol:w-20 transition-all h-1 bg-white/30 rounded-lg appearance-none cursor-pointer"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={cycleSpeed}
+              className="flex items-center gap-1 text-xs font-medium hover:text-primary transition-colors px-2 py-1 bg-white/10 rounded"
+              title="Playback Speed"
+            >
+              <Zap className="w-3 h-3" />
+              {playbackRate}x
+            </button>
+
+            <button
+              onClick={() => setIsLooping(!isLooping)}
+              className={cn(
+                "hover:text-primary transition-colors",
+                isLooping ? "text-primary" : "text-white/70"
+              )}
+              title="Loop"
+            >
+              <Repeat className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({

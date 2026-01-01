@@ -118,7 +118,25 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> = ({
       );
 
     case "file":
-      const fileOverlay = fileOverlays.find((f) => f.id === content.fileId);
+      let fileOverlay = fileOverlays?.find((f) => f.id === content.fileId);
+
+      // Construct temporary overlay if we have direct file data but no ID match
+      if (!fileOverlay && content.url && content.fileType) {
+        fileOverlay = {
+          id: section.id, // Use section ID as fallback
+          fileUrl: content.url,
+          fileType: content.fileType,
+          fileName: content.name || "File",
+          file: null as any, // File object might not be available for URL-based content
+          layout: {
+            position: { x: 0, y: 0 },
+            size: { width: 100, height: 100 },
+            zIndex: 0,
+            rotation: 0,
+          },
+        };
+      }
+
       if (!fileOverlay) return <div className="w-full h-full bg-muted" />;
       return (
         <div className="w-full h-full flex items-center justify-center">

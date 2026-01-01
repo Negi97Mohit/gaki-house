@@ -67,10 +67,10 @@ export const CanvasDesignSelector: React.FC<CanvasDesignSelectorProps> = ({
 
   const filteredPresets =
     selectedCategory === "all"
-      ? CANVAS_PRESETS
+      ? CANVAS_PRESETS.filter((p) => !p.canvasLayout) // Exclude grid layouts
       : selectedCategory === "community"
-        ? publicPresets
-        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+        ? publicPresets.filter((p) => !p.canvasLayout) // Exclude grid layouts from community too
+        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory) && !p.canvasLayout);
 
   return (
     <div className="space-y-3">
@@ -157,8 +157,8 @@ export const CanvasDesignSelector: React.FC<CanvasDesignSelectorProps> = ({
                       top: `${preset.pip?.pipPosition?.y || 0}%`,
                       width: `${preset.pip?.pipSize?.width || 30}%`,
                       height: `${preset.pip?.cameraShape === "circle"
-                          ? (preset.pip?.pipSize?.width || 30) * (16 / 9)
-                          : preset.pip?.pipSize?.height || 30
+                        ? (preset.pip?.pipSize?.width || 30) * (16 / 9)
+                        : preset.pip?.pipSize?.height || 30
                         }%`,
                       borderRadius:
                         preset.pip.cameraShape === "circle"

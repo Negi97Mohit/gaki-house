@@ -284,13 +284,18 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
           <Rnd
             size={{
               width: `${settings.pipSize?.width || 30}%`,
-              height: `${settings.pipSize?.height || 30}%`,
+              height:
+                settings.cameraShape === "circle"
+                  ? (sceneSize.width * (settings.pipSize?.width || 30)) /
+                  100 /* Force height to match pixel width for circle */
+                  : `${settings.pipSize?.height || 30}%`,
             }}
             position={{
               x: (sceneSize.width * (settings.pipPosition?.x || 0)) / 100,
               y: (sceneSize.height * (settings.pipPosition?.y || 0)) / 100,
             }}
             bounds="parent"
+            lockAspectRatio={settings.cameraShape === "circle"}
             onDragStop={(e, d) => handlePipLayoutChange(d, null)}
             onResizeStop={(e, dir, ref, delta, pos) =>
               handlePipLayoutChange(null, ref, pos)
