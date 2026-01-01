@@ -1,9 +1,9 @@
 import React from "react";
-import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Slider } from "@/shared/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { AnimationPreset } from "@/types/animation";
+import { ColorPicker } from "@/shared/ui/color-picker";
 // import { ALL_FONTS } from "@/lib/fonts"; // Ensuring this import is available or we default
 
 interface StyleControlsProps {
@@ -59,30 +59,23 @@ export const StyleControls: React.FC<StyleControlsProps> = ({ preset, updatePres
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <Label>Color</Label>
-                    <div className="flex gap-2">
-                        <Input
-                            type="color"
-                            value={preset.baseStyle.color}
-                            onChange={(e) => updatePreset("baseStyle", "color", e.target.value)}
-                            className="w-10 h-10 p-1 px-1"
-                        />
-                        <Input
-                            value={preset.baseStyle.color}
-                            onChange={(e) => updatePreset("baseStyle", "color", e.target.value)}
-                            className="flex-1"
-                        />
-                    </div>
+                    <ColorPicker
+                        value={preset.baseStyle.color}
+                        onChange={(color) => updatePreset("baseStyle", "color", color)}
+                        variant="inline"
+                        showGradients={true}
+                        label="Text"
+                    />
                 </div>
                 <div className="space-y-2">
                     <Label>Accent</Label>
-                    <div className="flex gap-2">
-                        <Input
-                            type="color"
-                            value={preset.baseStyle.accentColor || "#000000"}
-                            onChange={(e) => updatePreset("baseStyle", "accentColor", e.target.value)}
-                            className="w-10 h-10 p-1 px-1"
-                        />
-                    </div>
+                    <ColorPicker
+                        value={preset.baseStyle.accentColor || "#000000"}
+                        onChange={(color) => updatePreset("baseStyle", "accentColor", color)}
+                        variant="inline"
+                        showGradients={true}
+                        label="Accent"
+                    />
                 </div>
             </div>
 

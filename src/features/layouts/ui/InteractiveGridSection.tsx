@@ -11,6 +11,7 @@ import { DraggableTextOverlay } from "@/features/canvas/ui/DraggableTextOverlay"
 import { PipControlsToolbar } from "@/features/stream/ui/PipControlsToolbar";
 import { Button } from "@/shared/ui/button";
 import { Paintbrush, Plus, Type } from "lucide-react";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -252,13 +253,11 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               ))}
             </div>
             <div className="p-2 pt-0">
-              <input
-                type="color"
-                className="w-full h-8 cursor-pointer"
+              <ColorPicker
                 value={settings.sectionBackgroundColor || "#000000"}
-                onChange={(e) =>
-                  onUpdate({ sectionBackgroundColor: e.target.value })
-                }
+                onChange={(color) => onUpdate({ sectionBackgroundColor: color })}
+                variant="inline"
+                showGradients={true}
               />
             </div>
           </DropdownMenuContent>
@@ -306,7 +305,6 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               "z-10",
               isCameraSelected && "ring-2 ring-primary ring-offset-2"
             )}
-            lockAspectRatio={false}
           >
             <div
               className="w-full h-full pointer-events-none overflow-hidden"

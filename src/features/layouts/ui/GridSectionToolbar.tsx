@@ -32,7 +32,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/popover";
-import { AssetLibrary, AssetResult } from "./AssetLibrary";
+import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import { cn } from "@/shared/lib/utils";
 import { SearchButton } from "./layouts/dynamic/core/SearchButton";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
@@ -147,15 +148,13 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
               <Palette className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="z-[999] bg-background">
-            <div className="p-2">
-              <input
-                type="color"
+          <DropdownMenuContent className="z-[999] bg-background p-2">
+              <ColorPicker
                 value={content.color || "#000000"}
-                onChange={(e) => onColorChange(e.target.value)}
-                className="w-full h-8 cursor-pointer"
+                onChange={(color) => onColorChange && onColorChange(color)}
+                variant="inline"
+                showGradients={true}
               />
-            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       )}

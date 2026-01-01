@@ -5,6 +5,7 @@ import { Label } from "@/shared/ui/label";
 import { Slider } from "@/shared/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { AnimationPreset } from "@/types/animation";
+import { ColorPicker } from "@/shared/ui/color-picker";
 
 interface EffectsControlsProps {
     preset: AnimationPreset;
@@ -75,19 +76,14 @@ export const EffectsControls: React.FC<EffectsControlsProps> = ({ preset, update
                 </div>
                 <div className="space-y-2">
                     <Label className="text-xs">Background Color</Label>
-                    <div className="flex gap-2">
-                        <Input
-                            type="color"
-                            className="w-8 h-8 p-0 border-0"
-                            value={preset.baseStyle.backgroundColor || "#000000"}
-                            onChange={(e) => updatePreset("baseStyle", "backgroundColor", e.target.value)}
-                        />
-                        <Input
-                            value={preset.baseStyle.backgroundColor || ""}
-                            placeholder="rgba(0,0,0,0.5) or #000"
-                            onChange={(e) => updatePreset("baseStyle", "backgroundColor", e.target.value)}
-                        />
-                    </div>
+                    <ColorPicker
+                        value={preset.baseStyle.backgroundColor || "#000000"}
+                        onChange={(color) => updatePreset("baseStyle", "backgroundColor", color)}
+                        variant="inline"
+                        showGradients={true}
+                        showAlpha={true}
+                        label="BG"
+                    />
                 </div>
             </div>
 
