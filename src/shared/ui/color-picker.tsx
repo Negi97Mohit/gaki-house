@@ -1,10 +1,10 @@
 // src/shared/ui/color-picker.tsx
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { Button } from './button';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Slider } from './slider';
 import { Input } from './input';
-import { Paintbrush, Palette, Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Paintbrush, Palette, Plus, X, ChevronDown, ChevronUp, Save, Trash2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { 
     SOLID_COLOR_PRESETS, 
@@ -18,6 +18,36 @@ import {
     GradientOptions
 } from '@/shared/constants/color-presets';
 import { isGradient, addAlpha } from '@/shared/lib/color-utils';
+
+// ============= CUSTOM PRESETS STORAGE =============
+
+const CUSTOM_GRADIENTS_KEY = 'custom-gradient-presets';
+const MAX_CUSTOM_PRESETS = 12;
+
+const getCustomPresets = (): string[] => {
+    try {
+        const stored = localStorage.getItem(CUSTOM_GRADIENTS_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch {
+        return [];
+    }
+};
+
+const saveCustomPreset = (gradient: string): string[] => {
+    const existing = getCustomPresets();
+    // Avoid duplicates
+    if (existing.includes(gradient)) return existing;
+    const updated = [gradient, ...existing].slice(0, MAX_CUSTOM_PRESETS);
+    localStorage.setItem(CUSTOM_GRADIENTS_KEY, JSON.stringify(updated));
+    return updated;
+};
+
+const removeCustomPreset = (gradient: string): string[] => {
+    const existing = getCustomPresets();
+    const updated = existing.filter(g => g !== gradient);
+    localStorage.setItem(CUSTOM_GRADIENTS_KEY, JSON.stringify(updated));
+    return updated;
+};
 
 // ============= TYPES =============
 
@@ -177,6 +207,22 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
     const [position, setPosition] = useState(parsed.position || 'center');
     const [spread, setSpread] = useState(20);
     const [expanded, setExpanded] = useState(false);
+    const [customPresets, setCustomPresets] = useState<string[]>(() => getCustomPresets());
+    const [isManualEdit, setIsManualEdit] = useState(false);
+
+    // Sync colors when a preset is selected (value changes externally)
+    useEffect(() => {
+        if (!isManualEdit) {
+            const newParsed = parseGradient(value);
+            if (newParsed.colors.length >= 2) {
+                setColors(newParsed.colors);
+                setPatternType(newParsed.type);
+                setAngle(newParsed.angle);
+                if (newParsed.position) setPosition(newParsed.position);
+            }
+        }
+        setIsManualEdit(false);
+    }, [value]);
 
     const updateGradient = useCallback((
         newColors?: string[],
@@ -197,6 +243,7 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
     }, [colors, patternType, angle, position, spread, onChange]);
 
     const handleColorChange = (index: number, color: string) => {
+        setIsManualEdit(true);
         const newColors = [...colors];
         newColors[index] = color;
         setColors(newColors);
@@ -205,6 +252,7 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
 
     const addColor = () => {
         if (colors.length < 5) {
+            setIsManualEdit(true);
             const newColors = [...colors, '#888888'];
             setColors(newColors);
             updateGradient(newColors);
@@ -213,6 +261,7 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
 
     const removeColor = (index: number) => {
         if (colors.length > 2) {
+            setIsManualEdit(true);
             const newColors = colors.filter((_, i) => i !== index);
             setColors(newColors);
             updateGradient(newColors);
@@ -220,23 +269,37 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
     };
 
     const handlePatternChange = (newPattern: GradientPatternType) => {
+        setIsManualEdit(true);
         setPatternType(newPattern);
         updateGradient(undefined, newPattern);
     };
 
     const handleAngleChange = (newAngle: number) => {
+        setIsManualEdit(true);
         setAngle(newAngle);
         updateGradient(undefined, undefined, newAngle);
     };
 
     const handlePositionChange = (newPosition: string) => {
+        setIsManualEdit(true);
         setPosition(newPosition);
         updateGradient(undefined, undefined, undefined, { position: newPosition, spread });
     };
 
     const handleSpreadChange = (newSpread: number) => {
+        setIsManualEdit(true);
         setSpread(newSpread);
         updateGradient(undefined, undefined, undefined, { position, spread: newSpread });
+    };
+
+    const handleSaveCustomPreset = () => {
+        const updated = saveCustomPreset(value);
+        setCustomPresets(updated);
+    };
+
+    const handleRemoveCustomPreset = (gradient: string) => {
+        const updated = removeCustomPreset(gradient);
+        setCustomPresets(updated);
     };
 
     const needsPosition = ['radial', 'conic', 'repeating-radial', 'spotlight'].includes(patternType);
@@ -422,6 +485,55 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
                         ))}
                     </div>
                 </div>
+            </div>
+
+            {/* Custom Presets Section */}
+            <div>
+                <div className="flex items-center justify-between mb-1.5">
+                    <p className="text-[10px] font-medium text-muted-foreground uppercase">My Gradients</p>
+                    <button
+                        onClick={handleSaveCustomPreset}
+                        className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                        title="Save current gradient"
+                    >
+                        <Save className="w-3 h-3" />
+                        <span>Save</span>
+                    </button>
+                </div>
+                {customPresets.length > 0 ? (
+                    <div className="w-full overflow-x-auto overflow-y-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                        <div className="flex gap-1.5 pb-1 min-w-max">
+                            {customPresets.map((preset, idx) => (
+                                <div key={idx} className="relative group">
+                                    <button
+                                        className={cn(
+                                            "flex-shrink-0 w-10 h-8 rounded-md border transition-all hover:scale-105",
+                                            value === preset 
+                                                ? 'border-primary ring-1 ring-primary/50' 
+                                                : 'border-border/30 hover:border-border'
+                                        )}
+                                        style={{ background: preset }}
+                                        onClick={() => onChange(preset)}
+                                    />
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleRemoveCustomPreset(preset);
+                                        }}
+                                        className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                                        title="Remove preset"
+                                    >
+                                        <Trash2 className="w-2 h-2" />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-[10px] text-muted-foreground/50 italic">
+                        Edit colors and click Save to create custom presets
+                    </p>
+                )}
             </div>
         </div>
     );
