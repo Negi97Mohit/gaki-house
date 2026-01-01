@@ -10,6 +10,7 @@ import { EditableText } from "./core/EditableText";
 import { LayoutControlsPortal } from "./core/LayoutControlsPortal";
 import { Info, Plus, Settings2, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { ColorPicker } from "@/shared/ui/color-picker";
 
 // --- Helper: Hex to RGBA for Trail Effect ---
 const hexToRgba = (hex: string, alpha: number) => {
@@ -281,11 +282,12 @@ const AuroraBorealisContent: React.FC<{
                       Background
                     </span>
                     <div className="flex items-center gap-2">
-                      <input
-                        type="color"
+                      <ColorPicker
                         value={bgColor}
-                        onChange={(e) => handleColorChange(e.target.value)}
-                        className="w-6 h-6 rounded cursor-pointer bg-transparent border-none p-0"
+                        onChange={handleColorChange}
+                        variant="circle"
+                        showGradients={false}
+                        darkMode={true}
                       />
                       <span className="text-[10px] text-white/40 font-mono">
                         {bgColor}

@@ -16,6 +16,7 @@ import { Button } from '@/shared/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import { Slider } from '@/shared/ui/slider';
 import { BannerElementData } from './BannerElement';
+import { ColorPicker } from "@/shared/ui/color-picker";
 
 interface BannerCustomizationToolbarProps {
   elements: BannerElementData[];
@@ -188,7 +189,7 @@ export const BannerCustomizationToolbar: React.FC<BannerCustomizationToolbarProp
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-56 p-2" align="center">
-            <div className="grid grid-cols-5 gap-1">
+            <div className="grid grid-cols-5 gap-1 mb-2">
               {colorPresets.map((color) => (
                 <button
                   key={color}
@@ -199,11 +200,11 @@ export const BannerCustomizationToolbar: React.FC<BannerCustomizationToolbarProp
                 />
               ))}
             </div>
-            <input
-              type="color"
+            <ColorPicker
               value={selectedElement.style.color}
-              onChange={(e) => onElementStyleChange(selectedElement.id, { color: e.target.value })}
-              className="w-full h-8 mt-2 cursor-pointer rounded"
+              onChange={(color) => onElementStyleChange(selectedElement.id, { color })}
+              variant="inline"
+              showGradients={true}
             />
           </PopoverContent>
         </Popover>
