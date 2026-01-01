@@ -450,6 +450,11 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     );
     const [alpha, setAlpha] = useState(() => parseAlpha(value));
 
+    // Prevent wheel/touch events from bubbling to canvas/layout handlers (portals still bubble in React)
+    const stopPropagation = useCallback((e: React.SyntheticEvent) => {
+        e.stopPropagation();
+    }, []);
+
     const solidPresets = customSolidPresets || SOLID_COLOR_PRESETS;
 
     const sizeClasses = {
@@ -585,9 +590,15 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     // ============= POPOVER CONTENT =============
 
     const renderContent = () => (
-        <div 
+        <div
+            onWheel={stopPropagation}
+            onWheelCapture={stopPropagation}
+            onTouchMove={stopPropagation}
+            onTouchMoveCapture={stopPropagation}
+            onMouseDown={stopPropagation}
+            onPointerDown={stopPropagation}
             className={cn(
-                "w-64 p-3 max-h-[60vh] overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent",
+                "w-64 max-w-[90vw] p-3 max-h-[60vh] overflow-auto overscroll-contain touch-pan-x touch-pan-y scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent",
                 darkMode && "bg-zinc-900 text-white"
             )}
         >
@@ -694,6 +705,10 @@ export const InlineColorPicker: React.FC<InlineColorPickerProps> = ({
     );
     const [alpha, setAlpha] = useState(() => parseAlpha(value));
 
+    const stopPropagation = useCallback((e: React.SyntheticEvent) => {
+        e.stopPropagation();
+    }, []);
+
     const handleColorSelect = (color: string) => {
         if (value === color) {
             onChange('transparent');
@@ -703,7 +718,18 @@ export const InlineColorPicker: React.FC<InlineColorPickerProps> = ({
     };
 
     return (
-        <div className={cn("max-h-[50vh] overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent", className)}>
+        <div
+            onWheel={stopPropagation}
+            onWheelCapture={stopPropagation}
+            onTouchMove={stopPropagation}
+            onTouchMoveCapture={stopPropagation}
+            onMouseDown={stopPropagation}
+            onPointerDown={stopPropagation}
+            className={cn(
+                "max-h-[50vh] max-w-[90vw] overflow-auto overscroll-contain touch-pan-x touch-pan-y scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent",
+                className
+            )}
+        >
             <div className="space-y-3 p-1">
                 {showGradients && (
                     <div className="flex gap-1">
