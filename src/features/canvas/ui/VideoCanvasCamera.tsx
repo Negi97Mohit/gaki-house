@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
 import {
@@ -6,6 +6,7 @@ import {
   getVideoFilterStyle,
 } from "@/features/canvas/ui/VideoCanvasHelpers";
 import { CameraShape, LayoutMode } from "@/types/caption";
+import { PipLayoutPreset } from "@/features/stream/ui/pip/PipLayoutMenu";
 
 export interface VideoCanvasCameraProps {
   className?: string;
@@ -31,6 +32,10 @@ export interface VideoCanvasCameraProps {
   externalVideoRef?: React.RefObject<HTMLVideoElement>;
   processedCanvas?: HTMLCanvasElement | null;
   facePositionRef?: React.MutableRefObject<any>;
+  // PIP Layout props
+  onPipPositionChange?: (position: { x: number; y: number }) => void;
+  onPipSizeChange?: (size: { width: number; height: number }) => void;
+  onCameraAspectRatioChange?: (ratio: string) => void;
 }
 
 // 3. Wrap component in React.memo
@@ -43,12 +48,32 @@ export const VideoCanvasCamera = React.memo<VideoCanvasCameraProps>((props) => {
     ...safeSidebarProps
   } = props.sidebarProps || {};
 
+  const [currentPipLayoutId, setCurrentPipLayoutId] = useState<string>();
+
   const handleEnterPipMode = () => {
     if (props.screenShareMode === "off") {
       props.onScreenShareModeChange("canvas");
       props.onLayoutModeChange("pip");
     }
   };
+
+  const handlePipLayoutSelect = useCallback((preset: PipLayoutPreset) => {
+    setCurrentPipLayoutId(preset.id);
+    
+    // Apply the preset settings
+    if (props.onPipPositionChange) {
+      props.onPipPositionChange(preset.position);
+    }
+    if (props.onPipSizeChange) {
+      props.onPipSizeChange(preset.size);
+    }
+    if (props.onCameraShapeChange) {
+      props.onCameraShapeChange(preset.shape);
+    }
+    if (props.onCameraAspectRatioChange && preset.aspectRatio !== "free") {
+      props.onCameraAspectRatioChange(preset.aspectRatio);
+    }
+  }, [props.onPipPositionChange, props.onPipSizeChange, props.onCameraShapeChange, props.onCameraAspectRatioChange]);
 
   return (
     <div
@@ -86,6 +111,9 @@ export const VideoCanvasCamera = React.memo<VideoCanvasCameraProps>((props) => {
         externalVideoRef={props.externalVideoRef}
         processedCanvas={props.processedCanvas}
         facePositionRef={props.facePositionRef}
+        screenShareMode={props.screenShareMode}
+        currentPipLayoutId={currentPipLayoutId}
+        onPipLayoutSelect={handlePipLayoutSelect}
         {...safeSidebarProps}
       />
     </div>

@@ -7,6 +7,7 @@ import { PipCameraMenu } from "./pip/PipCameraMenu";
 import { PipBackgroundMenu } from "./pip/PipBackgroundMenu";
 import { PipEffectsMenu } from "./pip/PipEffectsMenu";
 import { PipStyleMenu } from "./pip/PipStyleMenu";
+import { PipLayoutMenu, PipLayoutPreset } from "./pip/PipLayoutMenu";
 
 interface PipControlsToolbarProps {
   position: { x: number; y: number };
@@ -62,6 +63,13 @@ interface PipControlsToolbarProps {
   onTogglePip?: () => void;
   onEnterPipMode?: () => void;
   isCameraActive?: boolean;
+
+  // Screen share mode to show PIP layout menu
+  screenShareMode?: "off" | "screen" | "canvas";
+
+  // PIP Layout preset props
+  currentPipLayoutId?: string;
+  onPipLayoutSelect?: (preset: PipLayoutPreset) => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -156,6 +164,18 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         neonEdgeColor={props.neonEdgeColor}
         onNeonEdgeColorChange={props.onNeonEdgeColorChange}
       />
+
+      {/* PIP Layout Menu - Only visible during screen sharing */}
+      {props.screenShareMode && props.screenShareMode !== "off" && props.onPipLayoutSelect && (
+        <PipLayoutMenu
+          currentPresetId={props.currentPipLayoutId}
+          onPresetSelect={props.onPipLayoutSelect}
+          onPositionChange={() => {}}
+          onSizeChange={() => {}}
+          onShapeChange={() => {}}
+          onAspectRatioChange={() => {}}
+        />
+      )}
 
       {/* Pop-out Button - Only visible when camera is active */}
       {props.onTogglePip && props.isCameraActive && (
