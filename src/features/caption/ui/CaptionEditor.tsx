@@ -3,6 +3,7 @@ import { Label } from "@/shared/ui/label";
 import { Slider } from "@/shared/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import { CaptionStyle } from "@/types/caption";
 
 interface CaptionEditorProps {
@@ -61,21 +62,24 @@ export const CaptionEditor = ({ style, onStyleChange }: CaptionEditorProps) => {
 
         <div className="space-y-2">
           <Label>Text Color</Label>
-          <input
-            type="color"
+          <ColorPicker
             value={style.color}
-            onChange={(e) => updateStyle({ color: e.target.value })}
-            className="w-full h-10 rounded-md cursor-pointer"
+            onChange={(color) => updateStyle({ color })}
+            variant="inline"
+            showGradients={true}
+            label="Text"
           />
         </div>
 
         <div className="space-y-2">
           <Label>Background Color</Label>
-          <input
-            type="color"
+          <ColorPicker
             value={style.backgroundColor}
-            onChange={(e) => updateStyle({ backgroundColor: e.target.value })}
-            className="w-full h-10 rounded-md cursor-pointer"
+            onChange={(color) => updateStyle({ backgroundColor: color })}
+            variant="inline"
+            showGradients={true}
+            showAlpha={true}
+            label="BG"
           />
         </div>
 

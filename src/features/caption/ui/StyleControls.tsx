@@ -10,20 +10,17 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { Slider } from "@/shared/ui/slider";
-import { Input } from "@/shared/ui/input";
 import { Switch } from "@/shared/ui/switch";
-import { cn } from "@/shared/lib/utils";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import { ALL_FONTS } from "@/lib/fonts";
+import { isTransparent } from "@/shared/lib/color-utils";
 
 interface StyleControlsProps {
   style: CaptionStyle;
   onStyleChange: (style: CaptionStyle) => void;
 }
 
-// --- REMOVED: FONTS array is now imported from "@/lib/fonts" ---
-
 export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
-  // A single, robust handler for all style property updates
   const handleValueChange = <K extends keyof CaptionStyle>(
     key: K,
     value: CaptionStyle[K]
@@ -31,32 +28,18 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
     onStyleChange({ ...style, [key]: value });
   };
 
-  const isTransparent =
-    style.backgroundColor.includes("transparent") ||
-    style.backgroundColor.endsWith("0)");
+  const isTransparentBg = isTransparent(style.backgroundColor);
+  
   const handleTransparentToggle = (checked: boolean) => {
     if (checked) {
-      // Store current color and set transparent
       handleValueChange("backgroundColor", "rgba(0,0,0,0)");
     } else {
-      // Revert to a non-transparent black color if it was fully transparent
       handleValueChange(
         "backgroundColor",
         style.backgroundColor === "rgba(0,0,0,0)"
           ? "#000000"
           : style.backgroundColor.replace(/,[01]\)/, ",0.8)")
       );
-    }
-  };
-  const handleBackgroundColorChange = (value: string) => {
-    // If setting a color with picker, ensure we have some opacity
-    if (isTransparent) {
-      handleValueChange(
-        "backgroundColor",
-        value.length === 7 ? `${value}80` : value
-      );
-    } else {
-      handleValueChange("backgroundColor", value);
     }
   };
 
@@ -122,66 +105,40 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
         />
       </div>
 
-      {/* Modern Color Pickers */}
+      {/* Color Pickers - Using unified ColorPicker */}
       <div className="space-y-3">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           Colors
         </Label>
         <div className="grid grid-cols-2 gap-3">
           {/* Text Color */}
-          <div className="relative group">
-            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl border border-border/50 transition-all hover:border-border hover:bg-muted/70">
-              <div className="relative">
-                <div
-                  className="w-10 h-10 rounded-lg border-2 border-border/50 shadow-sm transition-transform group-hover:scale-105"
-                  style={{ backgroundColor: style.color }}
-                />
-                <Input
-                  id="color"
-                  type="color"
-                  value={style.color}
-                  onChange={(e) => handleValueChange("color", e.target.value)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-medium">Text</span>
-                <span className="text-[10px] text-muted-foreground uppercase">{style.color}</span>
-              </div>
-            </div>
-          </div>
+          <ColorPicker
+            value={style.gradient || style.color}
+            onChange={(color) => {
+              if (color.includes('gradient')) {
+                handleValueChange("color", color);
+                handleValueChange("gradient", color);
+              } else {
+                handleValueChange("color", color);
+                handleValueChange("gradient", undefined);
+              }
+            }}
+            variant="inline"
+            label="Text"
+            showGradients={true}
+            showAlpha={false}
+          />
 
           {/* Background Color */}
-          <div className="relative group">
-            <div className={cn(
-              "flex items-center gap-3 p-3 bg-muted/50 rounded-xl border border-border/50 transition-all",
-              isTransparent ? "opacity-50" : "hover:border-border hover:bg-muted/70"
-            )}>
-              <div className="relative">
-                <div
-                  className={cn(
-                    "w-10 h-10 rounded-lg border-2 border-border/50 shadow-sm transition-transform",
-                    isTransparent ? "bg-[repeating-conic-gradient(#80808040_0%_25%,transparent_0%_50%)] bg-[length:8px_8px]" : "group-hover:scale-105"
-                  )}
-                  style={{ backgroundColor: isTransparent ? undefined : style.backgroundColor.substring(0, 7) }}
-                />
-                <Input
-                  id="bg-color"
-                  type="color"
-                  value={style.backgroundColor.substring(0, 7)}
-                  onChange={(e) => handleBackgroundColorChange(e.target.value)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  disabled={isTransparent}
-                />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-medium">BG</span>
-                <span className="text-[10px] text-muted-foreground uppercase">
-                  {isTransparent ? "None" : style.backgroundColor.substring(0, 7)}
-                </span>
-              </div>
-            </div>
-          </div>
+          <ColorPicker
+            value={style.backgroundColor}
+            onChange={(color) => handleValueChange("backgroundColor", color)}
+            variant="inline"
+            label="Background"
+            showGradients={true}
+            showAlpha={true}
+            disabled={isTransparentBg}
+          />
         </div>
       </div>
 
@@ -192,10 +149,11 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
         </Label>
         <Switch
           id="transparent-toggle"
-          checked={isTransparent}
+          checked={isTransparentBg}
           onCheckedChange={handleTransparentToggle}
         />
       </div>
+
       {/* Boolean Toggles */}
       <div className="space-y-3">
         <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
@@ -252,28 +210,15 @@ export const StyleControls = ({ style, onStyleChange }: StyleControlsProps) => {
 
         {style.border && (
           <div className="space-y-4 p-4 bg-muted/20 rounded-xl border border-border/50 animate-in fade-in slide-in-from-top-2 duration-200">
-            {/* Border Color */}
-            <div className="flex items-center gap-3">
-              <div className="relative group">
-                <div
-                  className="w-10 h-10 rounded-lg border-2 border-border/50 shadow-sm transition-transform group-hover:scale-105"
-                  style={{ backgroundColor: style.borderColor }}
-                />
-                <Input
-                  id="border-color"
-                  type="color"
-                  value={style.borderColor}
-                  onChange={(e) =>
-                    handleValueChange("borderColor", e.target.value)
-                  }
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-medium">Border Color</span>
-                <span className="text-[10px] text-muted-foreground uppercase">{style.borderColor}</span>
-              </div>
-            </div>
+            {/* Border Color - Using unified ColorPicker */}
+            <ColorPicker
+              value={style.borderColor}
+              onChange={(color) => handleValueChange("borderColor", color)}
+              variant="inline"
+              label="Border Color"
+              showGradients={false}
+              showAlpha={false}
+            />
 
             {/* Border Width */}
             <div className="space-y-2">

@@ -50,21 +50,70 @@ export const FileRenderer: React.FC<{
   onAspectRatioDetermined?: (ratio: number) => void;
 }> = ({ overlay, onAspectRatioDetermined }) => {
   const [textContent, setTextContent] = useState("");
+  const [isLoadingText, setIsLoadingText] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    if (overlay.fileType === "text") {
-      overlay.file
-        .text()
-        .then((text) => {
-          if (isMounted) setTextContent(text);
-        })
-        .catch(console.error);
+
+    // Load text content for text files and unknown files
+    if (overlay.fileType === "text" || overlay.fileType === "unknown") {
+      setIsLoadingText(true);
+      setLoadError(false);
+
+      // Try to read as text
+      const loadText = async () => {
+        try {
+          let text = "";
+          if (overlay.file) {
+            text = await overlay.file.text();
+          } else if (overlay.fileUrl) {
+            // For URL-based files, try to fetch
+            const response = await fetch(overlay.fileUrl);
+            if (!response.ok) {
+              throw new Error(`Failed to load file: ${response.statusText}`);
+            }
+            text = await response.text();
+          }
+
+          if (isMounted) {
+            setTextContent(text);
+            setIsLoadingText(false);
+            setLoadError(false);
+          }
+        } catch (error) {
+          console.error("Error loading file:", error);
+          if (isMounted) {
+            setLoadError(true);
+            setIsLoadingText(false);
+            setTextContent("");
+          }
+        }
+      };
+
+      loadText();
     }
+
     return () => {
       isMounted = false;
     };
-  }, [overlay.file, overlay.fileType]);
+  }, [overlay.file, overlay.fileUrl, overlay.fileType]);
+
+  const renderTextWithLineNumbers = (text: string) => {
+    const lines = text.split('\n');
+    return (
+      <div className="flex text-xs font-mono">
+        <div className="select-none text-muted-foreground pr-4 text-right border-r border-border/50">
+          {lines.map((_, i) => (
+            <div key={i}>{i + 1}</div>
+          ))}
+        </div>
+        <pre className="flex-1 pl-4 whitespace-pre-wrap overflow-auto">
+          {text}
+        </pre>
+      </div>
+    );
+  };
 
   switch (overlay.fileType) {
     case "image":
@@ -98,10 +147,33 @@ export const FileRenderer: React.FC<{
         />
       );
     case "text":
+      if (loadError) {
+        return (
+          <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-4">
+            <FileIcon className="w-16 h-16 text-red-400" />
+            <p className="mt-2 text-sm font-medium text-red-400">
+              File not supported
+            </p>
+            <p className="mt-1 text-xs text-center break-all max-w-md">
+              {overlay.fileName}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              This file type cannot be displayed
+            </p>
+          </div>
+        );
+      }
+
       return (
-        <pre className="w-full h-full p-4 text-xs whitespace-pre-wrap overflow-auto">
-          {textContent}
-        </pre>
+        <div className="w-full h-full p-4 overflow-auto bg-muted/20">
+          {isLoadingText ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
+            renderTextWithLineNumbers(textContent)
+          )}
+        </div>
       );
     case "3d":
       return (
@@ -111,12 +183,60 @@ export const FileRenderer: React.FC<{
           className="bg-transparent"
         />
       );
+    case "unknown":
     default:
+      // Show error if loading failed
+      if (loadError) {
+        return (
+          <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-4">
+            <FileIcon className="w-16 h-16 text-red-400" />
+            <p className="mt-2 text-sm font-medium text-red-400">
+              File not supported
+            </p>
+            <p className="mt-1 text-xs text-center break-all max-w-md">
+              {overlay.fileName}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              This file type cannot be displayed
+            </p>
+          </div>
+        );
+      }
+
+      // Try to display as text
+      if (textContent || isLoadingText) {
+        return (
+          <div className="w-full h-full p-4 overflow-auto bg-muted/20">
+            {isLoadingText ? (
+              <div className="flex items-center justify-center h-full">
+                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <div>
+                <div className="mb-2 pb-2 border-b border-border/50 flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground font-medium">
+                    {overlay.fileName}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    Text preview
+                  </span>
+                </div>
+                {renderTextWithLineNumbers(textContent)}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // Fallback: show file icon
       return (
         <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-4">
           <FileIcon className="w-16 h-16" />
           <p className="mt-2 text-sm text-center break-all">
             {overlay.fileName}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Unsupported file type
           </p>
         </div>
       );

@@ -20,8 +20,8 @@ import {
 import React, { useRef, useState, useEffect } from "react";
 import { AIChatbot } from "@/features/ai-assistant/ui/AIChatbot";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
 import { cn } from "@/shared/lib/utils";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import { DropdownMenuContent } from "@/shared/ui/dropdown-menu";
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
@@ -382,26 +382,12 @@ export const CanvasHoverToolbar = ({
         {!canvasLayout && (
           <>
             {/* Color Picker */}
-            <div className="relative group">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60 p-0 overflow-hidden"
-                title="Background Color"
-              >
-                <div
-                  className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-border/50"
-                  style={{ backgroundColor: blankCanvasColor }}
-                />
-              </Button>
-              <Input
-                id="canvas-color"
-                type="color"
-                value={blankCanvasColor}
-                onChange={(e) => onBlankCanvasColorChange(e.target.value)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </div>
+            <ColorPicker
+              value={blankCanvasColor}
+              onChange={onBlankCanvasColorChange}
+              variant="circle"
+              showGradients={true}
+            />
 
             <Button
               variant="ghost"

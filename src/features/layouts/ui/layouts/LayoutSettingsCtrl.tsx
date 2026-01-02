@@ -6,12 +6,11 @@ import {
   PopoverTrigger,
 } from "@/shared/ui/popover";
 import { Label } from "@/shared/ui/label";
-import { Input } from "@/shared/ui/input";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import { usePreviewMode } from "./dynamic/core/PreviewModeContext";
 
 interface LayoutSettingsCtrlProps {
   backgroundColor: string;
-  // textColor prop removed from interface
   onUpdate: (key: string, value: string) => void;
 }
 
@@ -35,27 +34,18 @@ export const LayoutSettingsCtrl: React.FC<LayoutSettingsCtrlProps> = ({
         <div className="space-y-4">
           <h4 className="font-medium leading-none">Layout Settings</h4>
           <div className="space-y-2">
-            <Label htmlFor="bgColor">Background Color</Label>
-            <div className="flex gap-2">
-              <Input
-                id="bgColor"
-                type="color"
-                className="w-10 h-10 p-1 cursor-pointer"
-                value={backgroundColor}
-                onChange={(e) => onUpdate("backgroundColor", e.target.value)}
-              />
-              <Input
-                type="text"
-                className="flex-1"
-                value={backgroundColor}
-                onChange={(e) => onUpdate("backgroundColor", e.target.value)}
-              />
-            </div>
+            <Label>Background Color</Label>
+            <ColorPicker
+              value={backgroundColor}
+              onChange={(color) => onUpdate("backgroundColor", color)}
+              variant="inline"
+              showGradients={true}
+              showAlpha={false}
+              label="Background"
+            />
           </div>
-          {/* Text Color Control Removed */}
         </div>
       </PopoverContent>
     </Popover>
   );
 };
-

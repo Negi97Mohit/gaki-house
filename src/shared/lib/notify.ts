@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { toast } from "sonner";
 
 export const notify = {
@@ -52,6 +53,36 @@ export const notify = {
             // but the default styling is usually sufficient. Customizing per-state border here is complex
             // without wrapping the promise logic significantly. We'll rely on default Sonner behavior for promises
             // or subsequent specific toast calls if stricness is needed.
+=======
+// src/shared/lib/notify.ts
+import { toast } from "@/shared/hooks/use-toast";
+
+/**
+ * Simple notification wrapper around toast
+ */
+export const notify = {
+    success: (message: string, description?: string) => {
+        toast({
+            title: message,
+            description,
+            variant: "default",
+        });
+    },
+
+    error: (message: string, description?: string) => {
+        toast({
+            title: message,
+            description,
+            variant: "destructive",
+        });
+    },
+
+    info: (message: string, description?: string) => {
+        toast({
+            title: message,
+            description,
+            variant: "default",
+>>>>>>> main
         });
     },
 };

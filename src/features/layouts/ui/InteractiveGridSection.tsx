@@ -11,6 +11,7 @@ import { DraggableTextOverlay } from "@/features/canvas/ui/DraggableTextOverlay"
 import { PipControlsToolbar } from "@/features/stream/ui/PipControlsToolbar";
 import { Button } from "@/shared/ui/button";
 import { Paintbrush, Plus, Type } from "lucide-react";
+import { ColorPicker } from "@/shared/ui/color-picker";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -214,13 +215,16 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
     }
     : undefined;
 
+  const bgColor = settings.sectionBackgroundColor || "#000000";
+  const isGradientBg = bgColor?.includes('gradient');
+  
   return (
     <div
       ref={containerRef}
       className="relative w-full h-full overflow-hidden group/section"
       style={{
-        backgroundColor: settings.sectionBackgroundColor || "#000000",
-        backgroundImage: settings.sectionBackgroundImage
+        ...(isGradientBg ? { background: bgColor } : { backgroundColor: bgColor }),
+        backgroundImage: !isGradientBg && settings.sectionBackgroundImage
           ? `url(${settings.sectionBackgroundImage})`
           : undefined,
         backgroundSize: "cover",
@@ -256,13 +260,11 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               ))}
             </div>
             <div className="p-2 pt-0">
-              <input
-                type="color"
-                className="w-full h-8 cursor-pointer"
+              <ColorPicker
                 value={settings.sectionBackgroundColor || "#000000"}
-                onChange={(e) =>
-                  onUpdate({ sectionBackgroundColor: e.target.value })
-                }
+                onChange={(color) => onUpdate({ sectionBackgroundColor: color })}
+                variant="inline"
+                showGradients={true}
               />
             </div>
           </DropdownMenuContent>
@@ -310,7 +312,6 @@ export const InteractiveGridSection: React.FC<InteractiveGridSectionProps> = ({
               "z-10",
               isCameraSelected && "ring-2 ring-primary ring-offset-2"
             )}
-            lockAspectRatio={false}
           >
             <div
               className="w-full h-full pointer-events-none overflow-hidden"

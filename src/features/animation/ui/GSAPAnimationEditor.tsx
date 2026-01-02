@@ -9,9 +9,10 @@ import { Switch } from "@/shared/ui/switch";
 import { X, Save, RotateCcw, Play, Copy } from "lucide-react";
 import { GSAPPreset, GSAPAnimationConfig, GSAPAnimationType } from "@/features/animation/lib/gsapAnimations";
 import { ScrollArea } from "@/shared/ui/scroll-area";
-import { ParticleEffectOverlay } from "./ParticleEffectOverlay";
+import { ParticleEffectOverlay } from "@/features/banners/ui/ParticleEffectOverlay";
 import { EffectType } from "@/lib/particleEffects";
 import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
+import { ColorPicker } from "@/shared/ui/color-picker";
 
 // Map effect animation types to particle effect types
 const EFFECT_TYPE_MAP: Record<string, EffectType> = {
@@ -199,19 +200,13 @@ export const GSAPAnimationEditor: React.FC<GSAPAnimationEditorProps> = ({
               </div>
               <div className="space-y-2">
                 <Label>Text Color</Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="color"
-                    value={textColor}
-                    onChange={(e) => setTextColor(e.target.value)}
-                    className="w-12 h-9 p-1 cursor-pointer"
-                  />
-                  <Input
-                    value={textColor}
-                    onChange={(e) => setTextColor(e.target.value)}
-                    className="flex-1"
-                  />
-                </div>
+                <ColorPicker
+                  value={textColor}
+                  onChange={setTextColor}
+                  variant="inline"
+                  showGradients={true}
+                  label="Text"
+                />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -384,19 +379,13 @@ export const GSAPAnimationEditor: React.FC<GSAPAnimationEditorProps> = ({
               </div>
               <div className="space-y-2">
                 <Label>Effect Color</Label>
-                <div className="flex gap-2">
-                  <Input
-                    type="color"
-                    value={preset.config.color || "#00ffff"}
-                    onChange={(e) => updateConfig("color", e.target.value)}
-                    className="w-12 h-9 p-1 cursor-pointer"
-                  />
-                  <Input
-                    value={preset.config.color || "#00ffff"}
-                    onChange={(e) => updateConfig("color", e.target.value)}
-                    className="flex-1"
-                  />
-                </div>
+                <ColorPicker
+                  value={preset.config.color || "#00ffff"}
+                  onChange={(color) => updateConfig("color", color)}
+                  variant="inline"
+                  showGradients={true}
+                  label="Effect"
+                />
               </div>
             </div>
 

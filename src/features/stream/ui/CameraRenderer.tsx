@@ -7,6 +7,7 @@ import { usePictureInPicture } from "@/hooks/usePictureInPicture";
 import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/shared/lib/utils";
 import { AmbientBackground } from "./AmbientBackground";
+import { PipLayoutPreset } from "./pip/PipLayoutMenu";
 
 interface CameraRendererProps {
   stream: MediaStream | null;
@@ -67,6 +68,11 @@ interface CameraRendererProps {
   externalVideoRef?: React.RefObject<HTMLVideoElement>;
   processedCanvas?: HTMLCanvasElement | null;
   facePositionRef?: React.MutableRefObject<any>;
+
+  // PIP Layout props
+  screenShareMode?: "off" | "screen" | "canvas";
+  currentPipLayoutId?: string;
+  onPipLayoutSelect?: (preset: PipLayoutPreset) => void;
 }
 
 export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {

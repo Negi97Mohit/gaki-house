@@ -20,9 +20,9 @@ import {
     DropdownMenuLabel,
 } from "@/shared/ui/dropdown-menu";
 import { Slider } from "@/shared/ui/slider";
-import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { CameraShape } from "@/types/caption";
+import { ColorPicker } from "@/shared/ui/color-picker";
 
 interface PipStyleMenuProps {
     cameraShape?: CameraShape;
@@ -146,11 +146,11 @@ export const PipStyleMenu: React.FC<PipStyleMenuProps> = ({
                         <div className="space-y-2">
                             <Label className="text-xs font-semibold">Border</Label>
                             <div className="flex gap-2 items-center">
-                                <Input
-                                    type="color"
-                                    className="w-12 h-9 p-1 rounded-lg cursor-pointer"
+                                <ColorPicker
                                     value={pipBorder.color}
-                                    onChange={handlePipBorderColor}
+                                    onChange={(color) => onPipBorderChange({ ...pipBorder, color })}
+                                    variant="circle"
+                                    showGradients={false}
                                 />
                                 <div className="flex-1 space-y-1">
                                     <Label className="text-[10px] text-muted-foreground">
@@ -169,11 +169,12 @@ export const PipStyleMenu: React.FC<PipStyleMenuProps> = ({
                         <div className="space-y-2">
                             <Label className="text-xs font-semibold">Shadow</Label>
                             <div className="flex gap-2 items-center">
-                                <Input
-                                    type="color"
-                                    className="w-12 h-9 p-1 rounded-lg cursor-pointer"
+                                <ColorPicker
                                     value={pipShadow.color}
-                                    onChange={handlePipShadowColor}
+                                    onChange={(color) => onPipShadowChange({ ...pipShadow, color })}
+                                    variant="circle"
+                                    showGradients={false}
+                                    showAlpha={true}
                                 />
                                 <div className="flex-1 space-y-1">
                                     <Label className="text-[10px] text-muted-foreground">
@@ -257,11 +258,11 @@ export const PipStyleMenu: React.FC<PipStyleMenuProps> = ({
                         <div className="p-3 space-y-3 bg-muted/30 rounded-lg m-2">
                             <div className="space-y-2">
                                 <Label className="text-xs font-semibold">Color</Label>
-                                <Input
-                                    type="color"
-                                    className="w-full h-9 p-1 rounded-lg cursor-pointer"
-                                    value={neonEdgeColor}
-                                    onChange={(e) => onNeonEdgeColorChange(e.target.value)}
+                                <ColorPicker
+                                    value={neonEdgeColor || "#00ffff"}
+                                    onChange={onNeonEdgeColorChange}
+                                    variant="inline"
+                                    showGradients={false}
                                 />
                             </div>
                             <div className="space-y-2">

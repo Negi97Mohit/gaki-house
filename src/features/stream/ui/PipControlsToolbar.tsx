@@ -7,6 +7,7 @@ import { PipCameraMenu } from "./pip/PipCameraMenu";
 import { PipBackgroundMenu } from "./pip/PipBackgroundMenu";
 import { PipEffectsMenu } from "./pip/PipEffectsMenu";
 import { PipStyleMenu } from "./pip/PipStyleMenu";
+import { PipLayoutMenu, PipLayoutPreset } from "./pip/PipLayoutMenu";
 
 interface PipControlsToolbarProps {
   position: { x: number; y: number };
@@ -63,8 +64,17 @@ interface PipControlsToolbarProps {
   onEnterPipMode?: () => void;
   isCameraActive?: boolean;
 
+<<<<<<< HEAD
   screenShareMode?: "off" | "screen" | "window";
   onScreenShareModeChange?: (mode: "off" | "screen" | "window") => void;
+=======
+  // Screen share mode to show PIP layout menu
+  screenShareMode?: "off" | "screen" | "canvas";
+
+  // PIP Layout preset props
+  currentPipLayoutId?: string;
+  onPipLayoutSelect?: (preset: PipLayoutPreset) => void;
+>>>>>>> main
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -160,6 +170,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         onNeonEdgeColorChange={props.onNeonEdgeColorChange}
       />
 
+<<<<<<< HEAD
       {/* Screen Share Button */}
       {props.onScreenShareModeChange && (
         <Button
@@ -183,6 +194,18 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         >
           <MonitorUp className="w-4 h-4" />
         </Button>
+=======
+      {/* PIP Layout Menu - Only visible during screen sharing */}
+      {props.screenShareMode && props.screenShareMode !== "off" && props.onPipLayoutSelect && (
+        <PipLayoutMenu
+          currentPresetId={props.currentPipLayoutId}
+          onPresetSelect={props.onPipLayoutSelect}
+          onPositionChange={() => {}}
+          onSizeChange={() => {}}
+          onShapeChange={() => {}}
+          onAspectRatioChange={() => {}}
+        />
+>>>>>>> main
       )}
 
       {/* Pop-out Button - Only visible when camera is active */}

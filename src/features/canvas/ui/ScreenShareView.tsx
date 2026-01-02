@@ -111,10 +111,11 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
         />
       );
     }
+    const isGradientBg = blankCanvasColor?.includes('gradient');
     return (
       <div
         className="w-full h-full"
-        style={{ backgroundColor: blankCanvasColor }}
+        style={isGradientBg ? { background: blankCanvasColor } : { backgroundColor: blankCanvasColor }}
       />
     );
   }
