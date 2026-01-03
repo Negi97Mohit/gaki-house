@@ -1,4 +1,4 @@
-import React, { useRef } from "react"; // Added useRef
+import React, { useRef, useCallback } from "react";
 import { notify } from "@/shared/lib/notify";
 import { cn } from "@/shared/lib/utils";
 import { generateId } from "@/shared/lib/id";
@@ -10,10 +10,11 @@ import { Loader } from "lucide-react";
 import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
 import { IndexOverlays } from "./Index/components/IndexOverlays";
+import { FileVaultModal, useFileVault, usePasteCapture } from "@/features/vault";
 
 // Hooks
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
-import { useCanvasAi } from "./Index/hooks/useCanvasAi"; // Import the AI hook
+import { useCanvasAi } from "./Index/hooks/useCanvasAi";
 import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
 
 const Index = () => {
@@ -52,6 +53,19 @@ const Index = () => {
 
   // 4. Ref for AI Popover auto-open behavior
   const hasAiPopoverAutoOpenedRef = useRef(false);
+
+  // 5. File Vault
+  const vault = useFileVault();
+  
+  // Handle paste capture for vault
+  const handlePastedFiles = useCallback((files: File[]) => {
+    vault.addFiles(files, 'paste');
+  }, [vault.addFiles]);
+  
+  usePasteCapture({
+    enabled: true,
+    onFilePaste: handlePastedFiles,
+  });
 
   // PHASE 3 FIX: Better Loading State
   if (!activeScene || !effectiveScene) {
@@ -241,6 +255,17 @@ const Index = () => {
           sceneManager.updateSceneProperty("captionsEnabled", val)
         }
         hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
+        onOpenVault={vault.openVault}
+      />
+
+      {/* --- File Vault Modal --- */}
+      <FileVaultModal
+        isOpen={vault.isOpen}
+        onClose={vault.closeVault}
+        files={vault.files}
+        onAddFiles={vault.addFiles}
+        onRemoveFile={vault.removeFile}
+        onClearVault={vault.clearVault}
       />
 
       {/* --- RTMP Countdown Overlay --- */}
