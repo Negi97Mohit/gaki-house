@@ -19,6 +19,7 @@ import {
   RotateCcw,
   ScanFace,
   Sparkles,
+  Archive,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -103,6 +104,7 @@ interface BottomNavigationProps {
   onStopStream?: () => void;
   isConnecting?: boolean;
   streamStatus?: string;
+  onOpenVault?: () => void;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -156,6 +158,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onStopStream,
   isConnecting,
   streamStatus,
+  onOpenVault,
   ..._unusedProps
 }) => {
   const { theme, setTheme } = useTheme();
@@ -423,6 +426,19 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         </DropdownMenu>
 
         <div className="w-px h-6 bg-border/40 mx-1" />
+
+        {/* File Vault Button */}
+        {onOpenVault && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10 hover:bg-background/60"
+            onClick={onOpenVault}
+            title="File Vault"
+          >
+            <Archive className="w-4 h-4" />
+          </Button>
+        )}
 
         {/* Dynamic Layout Controls Slot */}
         <div
