@@ -52,13 +52,19 @@ export const AnimationEditor: React.FC<AnimationEditorProps> = ({
     key: string,
     value: any
   ) => {
-    setPreset((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: value,
-      },
-    }));
+    setPreset((prev) => {
+      const sectionValue = prev[section];
+      if (sectionValue && typeof sectionValue === 'object') {
+        return {
+          ...prev,
+          [section]: {
+            ...sectionValue,
+            [key]: value,
+          },
+        };
+      }
+      return prev;
+    });
     // Small delay to let state settle before re-triggering animation
     setTimeout(() => setKey((k) => k + 1), 50);
   };

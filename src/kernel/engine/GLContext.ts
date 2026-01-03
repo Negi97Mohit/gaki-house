@@ -2,17 +2,17 @@
 
 export class GLContext {
   gl: WebGL2RenderingContext;
-  canvas: HTMLCanvasElement;
+  canvas: HTMLCanvasElement | OffscreenCanvas;
   private quadVao: WebGLVertexArrayObject | null = null;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement | OffscreenCanvas) {
     this.canvas = canvas;
     const gl = canvas.getContext("webgl2", {
       alpha: true,
       premultipliedAlpha: false,
       antialias: false,
       preserveDrawingBuffer: false,
-    });
+    }) as WebGL2RenderingContext | null;
 
     if (!gl) {
       throw new Error("WebGL2 not supported");
@@ -24,8 +24,20 @@ export class GLContext {
 
   resize() {
     const dpr = typeof window !== 'undefined' ? (window.devicePixelRatio || 1) : 1;
-    const displayWidth = Math.floor(this.canvas.clientWidth * dpr);
-    const displayHeight = Math.floor(this.canvas.clientHeight * dpr);
+    
+    // Handle both HTMLCanvasElement and OffscreenCanvas
+    let displayWidth: number;
+    let displayHeight: number;
+    
+    if ('clientWidth' in this.canvas) {
+      // HTMLCanvasElement
+      displayWidth = Math.floor(this.canvas.clientWidth * dpr);
+      displayHeight = Math.floor(this.canvas.clientHeight * dpr);
+    } else {
+      // OffscreenCanvas - use canvas dimensions directly
+      displayWidth = this.canvas.width;
+      displayHeight = this.canvas.height;
+    }
 
     if (this.canvas.width !== displayWidth || this.canvas.height !== displayHeight) {
       this.canvas.width = displayWidth;

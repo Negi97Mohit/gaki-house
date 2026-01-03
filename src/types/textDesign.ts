@@ -37,6 +37,7 @@ type StrokeLayer = {
   type: "stroke";
   color: string;
   width: number;
+  fontFamily?: string;
 };
 
 type GlowLayer = {

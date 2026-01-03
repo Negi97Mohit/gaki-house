@@ -3,9 +3,10 @@ import { Button } from "@/shared/ui/button";
 import { X, Ban } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
-import { useTextDesigns } from "@/hooks/useTextDesigns";
+import { useTextDesigns, TextDesign } from "@/hooks/useTextDesigns";
 import { MultiLayerTextRenderer } from "@/features/canvas/ui/MultiLayerTextRenderer";
-import { TextOverlayState, TextDesignPreset, TextLayer } from "@/types/caption";
+import { TextOverlayState } from "@/types/caption";
+import { TextLayer } from "@/types/textDesign";
 import { cn } from "@/shared/lib/utils";
 
 interface TextDesignSelectorProps {
@@ -74,7 +75,7 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
-  const handleApplyDesign = (design: TextDesignPreset) => {
+  const handleApplyDesign = (design: TextDesign) => {
     // 1. Capture CURRENT user settings we want to preserve
     const currentFontSize = overlay.style.fontSize;
     const currentTextAlign = (overlay.style as any).textAlign || "center";
@@ -199,7 +200,7 @@ export const TextDesignSelector: React.FC<TextDesignSelectorProps> = ({
               value={cat.value}
               className="absolute inset-0 m-0 data-[state=inactive]:hidden"
             >
-              <ScrollArea className="w-full h-full" orientation="horizontal">
+              <ScrollArea className="w-full h-full">
                 <div className="flex items-center gap-2 p-3 min-w-max">
                   {cat.value === "all" && (
                     <button

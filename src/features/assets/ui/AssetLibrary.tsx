@@ -47,7 +47,7 @@ const AssetGrid = ({
       endReached={loadMore}
       overscan={200}
       components={{
-        List: React.forwardRef(({ style, children, ...props }, ref) => (
+        List: React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ style, children, ...props }, ref) => (
           <div
             ref={ref}
             {...props}

@@ -123,14 +123,15 @@ export interface VideoCanvasProps {
     sidebarProps: any;
     selectedBrowserId: string | null;
     setSelectedBrowserId: (id: string | null) => void;
-    fileOverlays: FileOverlayState[];
-    onRemoveFile: (id: string) => void;
-    onFileLayoutChange: (
-        id: string,
-        layout: Partial<FileOverlayState["layout"]>
-    ) => void;
-    selectedFileId: string | null;
-    setSelectedFileId: (id: string | null) => void;
+  fileOverlays: FileOverlayState[];
+  onRemoveFile: (id: string) => void;
+  onFileLayoutChange: (
+    id: string,
+    layout: Partial<FileOverlayState["layout"]>
+  ) => void;
+  onAddFile?: (file: File) => void;
+  selectedFileId: string | null;
+  setSelectedFileId: (id: string | null) => void;
     onInternalDragStart: () => void;
     onInternalDragStop: () => void;
     onDeselectAll: () => void;

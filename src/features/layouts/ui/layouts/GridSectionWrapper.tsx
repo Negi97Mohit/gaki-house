@@ -6,7 +6,7 @@ import {
     TextOverlayState,
     CanvasSectionCameraState,
 } from "@/types/caption";
-import { AssetResult } from "../AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { GridSectionToolbar } from "../GridSectionToolbar";
 import { GridSectionRenderer } from "../GridSectionRenderer";
 

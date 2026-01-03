@@ -51,12 +51,12 @@ interface FloatingControlsPanelProps {
 
   onCanvasPresetSelect?: (preset: CanvasPreset) => void;
   customCanvasPresets?: CanvasPreset[];
-  onSaveCanvasPreset?: (name: string) => void;
+  onSaveCanvasPreset?: (name: string, layout?: any) => void;
   onDeleteCanvasPreset?: (id: string) => void;
   publicPresets?: CanvasPreset[];
   isLoadingPublic?: boolean;
-  onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
-  onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
+  onShareCanvasPreset?: (preset: CanvasPreset | string, authorName?: string) => void;
+  onUnshareCanvasPreset?: (preset: CanvasPreset | string) => void;
   onAddSocialBanner?: (
     design: SocialBannerDesign,
     data: SocialBannerData

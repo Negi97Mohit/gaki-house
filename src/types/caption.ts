@@ -1,6 +1,9 @@
 // src/types/caption.ts
 
-import type { TextDesignLayer } from "./textDesign";
+import type { TextDesignLayer, TextDesignPreset, TextLayer } from "./textDesign";
+
+// Re-export for convenience
+export type { TextDesignPreset, TextLayer };
 
 export type CaptionShape =
   | "rectangular"

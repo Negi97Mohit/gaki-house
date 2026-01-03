@@ -62,7 +62,7 @@ interface CanvasContainerProps {
     handleDeselectAll: () => void;
   };
   canvasRef: React.RefObject<HTMLCanvasElement>;
-  mainContainerRef: (node: HTMLDivElement) => void;
+  mainContainerRef: React.RefObject<HTMLDivElement> | ((node: HTMLDivElement) => void);
   isSettingsOpen: boolean;
   onSetSettingsOpen: (isOpen: boolean) => void;
   remoteStream?: MediaStream | null;

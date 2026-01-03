@@ -63,14 +63,13 @@ interface CameraRendererProps {
   onCameraDeviceChange?: (deviceId: string) => void;
   onEnterPipMode?: () => void;
   isMouseActive?: boolean;
-  screenShareMode?: "off" | "screen" | "window";
-  onScreenShareModeChange?: (mode: "off" | "screen" | "window") => void;
+  screenShareMode?: "off" | "screen" | "window" | "canvas";
+  onScreenShareModeChange?: (mode: "off" | "screen" | "window" | "canvas") => void;
   externalVideoRef?: React.RefObject<HTMLVideoElement>;
   processedCanvas?: HTMLCanvasElement | null;
   facePositionRef?: React.MutableRefObject<any>;
 
   // PIP Layout props
-  screenShareMode?: "off" | "screen" | "canvas";
   currentPipLayoutId?: string;
   onPipLayoutSelect?: (preset: PipLayoutPreset) => void;
 }
