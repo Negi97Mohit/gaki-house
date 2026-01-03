@@ -38,8 +38,10 @@ function findStateAtTime<T>(
 // --- MAIN PLAYBACK HOOK ---
 
 interface PlaybackState {
-  captionStyle: CaptionStyle | undefined;
-  layoutState:
+  currentTimeMs: number;
+  isPlaying: boolean;
+  captionStyle: CaptionStyle | null;
+  layout:
     | {
         mode: LayoutMode;
         cameraShape: CameraShape;
@@ -47,11 +49,13 @@ interface PlaybackState {
         pipPosition: { x: number; y: number };
         pipSize: { width: number; height: number };
       }
-    | undefined;
+    | null;
   activeHtmlOverlays: GeneratedOverlay[];
   activeFileOverlays: FileOverlayState[];
   activeBrowserOverlays: BrowserOverlayState[];
 }
+
+export type { PlaybackState };
 
 export const useSessionPlayback = (
   session: RecordingSession,
@@ -62,13 +66,13 @@ export const useSessionPlayback = (
     const captionStyle = findStateAtTime<CaptionStyle>(
       session.captionStyleTrack,
       currentTimeMs
-    );
+    ) ?? null;
 
     // 2. LAYOUT STATE
-    const layoutState = findStateAtTime<PlaybackState["layoutState"]>(
+    const layout = findStateAtTime<PlaybackState["layout"]>(
       session.layoutTrack,
       currentTimeMs
-    );
+    ) ?? null;
 
     // 3. HTML OVERLAYS
     // An overlay is active if its track exists AND it was present in the found keyframe state.
@@ -100,8 +104,10 @@ export const useSessionPlayback = (
         .filter((state): state is BrowserOverlayState => !!state);
 
     return {
+      currentTimeMs,
+      isPlaying: false,
       captionStyle,
-      layoutState,
+      layout,
       activeHtmlOverlays,
       activeFileOverlays,
       activeBrowserOverlays,

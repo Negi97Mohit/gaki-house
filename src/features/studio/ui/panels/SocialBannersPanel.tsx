@@ -1,8 +1,6 @@
 import React, { useState, useEffect, Suspense } from "react";
 import {
-  BadgeCheck,
   Edit3,
-  Plus,
   Check,
   Sparkles,
   Layers,
@@ -23,8 +21,11 @@ import {
   SocialBannerDesign,
   DEFAULT_BANNER_DATA,
 } from "@/types/socialBanner";
+import { AnimatedBannerDesign } from "@/types/animatedBanner";
 
 import { useSocialBanners } from "@/features/banners/hooks/useSocialBanners";
+
+type BannerDesign = SocialBannerDesign | AnimatedBannerDesign;
 
 const LOCAL_STORAGE_KEY = "social-banner-user-data";
 
@@ -325,7 +326,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
 
                       {/* Tech Badges */}
                       <div className="absolute top-2 left-2 flex gap-1 flex-wrap max-w-[80%]">
-                        {design.technologiesUsed.slice(0, 2).map((tech) => (
+                        {(design as AnimatedBannerDesign).technologiesUsed?.slice(0, 2).map((tech) => (
                           <span
                             key={tech}
                             className="px-1.5 py-0.5 text-[8px] font-mono font-medium bg-background/80 text-foreground border border-border"

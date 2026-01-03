@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { CanvasLayoutState, CanvasSectionState } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/types/layout";
 import { cn } from "@/shared/lib/utils";
-import { AssetResult } from "../AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { GridSectionRenderer } from "../GridSectionRenderer";
 import {
   Plus,

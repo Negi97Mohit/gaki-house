@@ -8,7 +8,7 @@ import {
   CanvasSectionCameraState,
 } from "@/types/caption";
 import { CanvasLayoutTemplate } from "@/types/layout";
-import { AssetResult } from "./AssetLibrary";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { Loader2 } from "lucide-react";
 import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";

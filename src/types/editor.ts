@@ -6,7 +6,37 @@ import {
   CameraShape,
   FileOverlayState,
   BrowserOverlayState,
+  TextOverlayState,
 } from "./caption";
+
+// --- SCENE STATE (for multi-scene management) ---
+export interface SceneState {
+  id: string;
+  name: string;
+  captionStyle: CaptionStyle;
+  textOverlays: TextOverlayState[];
+  fileOverlays: FileOverlayState[];
+  browserOverlays: BrowserOverlayState[];
+  activeOverlays: GeneratedOverlay[];
+  selectedVideoDevice?: string;
+}
+
+// --- SESSION PLAYBACK STATE (for editor) ---
+export interface SessionPlaybackState {
+  currentTimeMs: number;
+  isPlaying: boolean;
+  captionStyle: CaptionStyle | null;
+  activeHtmlOverlays: GeneratedOverlay[];
+  activeFileOverlays: FileOverlayState[];
+  activeBrowserOverlays: BrowserOverlayState[];
+  layout: {
+    mode: LayoutMode;
+    cameraShape: CameraShape;
+    splitRatio: number;
+    pipPosition: { x: number; y: number };
+    pipSize: { width: number; height: number };
+  } | null;
+}
 
 // --- CORE EDITING TYPES ---
 
