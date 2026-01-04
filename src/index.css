@@ -15,54 +15,193 @@
 
 @layer base {
 
-  /* Use light theme variables as the default in :root */
-  :root {
+  /* ===== DEFAULT THEME (Yellow/Gold) ===== */
+  :root,
+  .theme-default {
     --background: 0 0% 100%;
     --foreground: 0 0% 8%;
     --card: 0 0% 98%;
     --card-foreground: 0 0% 8%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 8%;
-    --primary: 50 100% 50%;
+    --primary: 45 93% 47%;
     --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 20%;
     --muted: 0 0% 94%;
     --muted-foreground: 0 0% 40%;
-    --accent: 50 100% 50%;
+    --accent: 45 93% 47%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 75%;
+    --border: 0 0% 85%;
     --input: 0 0% 90%;
-    --ring: 50 100% 50%;
-    --radius: 0rem;
+    --ring: 45 93% 47%;
+    --radius: 0.5rem;
   }
 
-  /* Define dark theme variables under the .dark class */
-  .dark {
+  .dark.theme-default,
+  .theme-default.dark {
     --background: 0 0% 6%;
     --foreground: 0 0% 98%;
     --card: 0 0% 10%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 50 100% 50%;
+    --primary: 48 96% 53%;
     --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 14%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14%;
     --muted-foreground: 0 0% 60%;
-    --accent: 50 100% 50%;
+    --accent: 48 96% 53%;
     --accent-foreground: 0 0% 0%;
     --destructive: 0 63% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 25%;
-    --input: 0 0% 20%;
-    --ring: 50 100% 50%;
+    --border: 0 0% 20%;
+    --input: 0 0% 18%;
+    --ring: 48 96% 53%;
   }
 
-  /* Add z-index stack to both :root and .dark */
+  /* ===== OCEAN THEME (Blue) ===== */
+  .theme-ocean {
+    --background: 200 20% 98%;
+    --foreground: 200 20% 10%;
+    --card: 200 20% 96%;
+    --card-foreground: 200 20% 10%;
+    --popover: 200 20% 98%;
+    --popover-foreground: 200 20% 10%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 200 15% 92%;
+    --secondary-foreground: 200 20% 20%;
+    --muted: 200 15% 90%;
+    --muted-foreground: 200 10% 45%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 200 15% 80%;
+    --input: 200 15% 88%;
+    --ring: 199 89% 48%;
+  }
+
+  .dark.theme-ocean,
+  .theme-ocean.dark {
+    --background: 210 25% 8%;
+    --foreground: 200 15% 95%;
+    --card: 210 25% 12%;
+    --card-foreground: 200 15% 95%;
+    --popover: 210 25% 10%;
+    --popover-foreground: 200 15% 95%;
+    --primary: 199 89% 65%;
+    --primary-foreground: 210 25% 8%;
+    --secondary: 210 20% 18%;
+    --secondary-foreground: 200 15% 90%;
+    --muted: 210 20% 16%;
+    --muted-foreground: 200 10% 55%;
+    --accent: 199 89% 65%;
+    --accent-foreground: 210 25% 8%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 20% 22%;
+    --input: 210 20% 20%;
+    --ring: 199 89% 65%;
+  }
+
+  /* ===== FOREST THEME (Green) ===== */
+  .theme-forest {
+    --background: 140 20% 98%;
+    --foreground: 140 20% 10%;
+    --card: 140 20% 96%;
+    --card-foreground: 140 20% 10%;
+    --popover: 140 20% 98%;
+    --popover-foreground: 140 20% 10%;
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 140 15% 92%;
+    --secondary-foreground: 140 20% 20%;
+    --muted: 140 15% 90%;
+    --muted-foreground: 140 10% 45%;
+    --accent: 142 71% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 140 15% 80%;
+    --input: 140 15% 88%;
+    --ring: 142 71% 45%;
+  }
+
+  .dark.theme-forest,
+  .theme-forest.dark {
+    --background: 150 25% 7%;
+    --foreground: 140 15% 95%;
+    --card: 150 25% 11%;
+    --card-foreground: 140 15% 95%;
+    --popover: 150 25% 9%;
+    --popover-foreground: 140 15% 95%;
+    --primary: 142 71% 60%;
+    --primary-foreground: 150 25% 7%;
+    --secondary: 150 20% 16%;
+    --secondary-foreground: 140 15% 90%;
+    --muted: 150 20% 14%;
+    --muted-foreground: 140 10% 55%;
+    --accent: 142 71% 60%;
+    --accent-foreground: 150 25% 7%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 150 20% 20%;
+    --input: 150 20% 18%;
+    --ring: 142 71% 60%;
+  }
+
+  /* ===== SUNSET THEME (Orange) ===== */
+  .theme-sunset {
+    --background: 30 30% 98%;
+    --foreground: 20 25% 12%;
+    --card: 30 25% 96%;
+    --card-foreground: 20 25% 12%;
+    --popover: 30 30% 98%;
+    --popover-foreground: 20 25% 12%;
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 30 20% 92%;
+    --secondary-foreground: 20 20% 25%;
+    --muted: 30 18% 90%;
+    --muted-foreground: 20 15% 45%;
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 18% 80%;
+    --input: 30 18% 88%;
+    --ring: 25 95% 53%;
+  }
+
+  .dark.theme-sunset,
+  .theme-sunset.dark {
+    --background: 15 30% 7%;
+    --foreground: 30 20% 95%;
+    --card: 15 28% 11%;
+    --card-foreground: 30 20% 95%;
+    --popover: 15 28% 9%;
+    --popover-foreground: 30 20% 95%;
+    --primary: 24 95% 60%;
+    --primary-foreground: 15 30% 7%;
+    --secondary: 15 22% 16%;
+    --secondary-foreground: 30 18% 90%;
+    --muted: 15 22% 14%;
+    --muted-foreground: 30 15% 55%;
+    --accent: 24 95% 60%;
+    --accent-foreground: 15 30% 7%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 15 22% 20%;
+    --input: 15 22% 18%;
+    --ring: 24 95% 60%;
+  }
+
+  /* z-index stack - shared across all themes */
   :root,
   .dark {
     --z-base: 1;

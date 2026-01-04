@@ -2,13 +2,13 @@ import { Toaster } from "@/shared/ui/toaster";
 import { Toaster as Sonner } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom"; // Added HashRouter
-import { ThemeProvider } from "next-themes";
+import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Loader from "@/shared/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
+import { useThemeStore } from "@/features/theme";
 
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -17,6 +17,23 @@ const RemoteCamera = lazy(() => import("./pages/RemoteCamera"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+// Initialize theme from persisted store on app load
+function ThemeInitializer() {
+  const theme = useThemeStore((s) => s.theme);
+  const mode = useThemeStore((s) => s.mode);
+  
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("theme-default", "theme-ocean", "theme-forest", "theme-sunset", "dark", "light");
+    root.classList.add(`theme-${theme}`);
+    if (mode === "dark") {
+      root.classList.add("dark");
+    }
+  }, [theme, mode]);
+  
+  return null;
+}
 
 const App = () => {
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
@@ -73,29 +90,24 @@ const App = () => {
         <LogProvider>
           <DebugProvider>
             <StyleSync />
-            <ThemeProvider
-              attribute="class"
-              forcedTheme="dark"
-              disableTransitionOnChange
-            >
-              <Loader visible={showLoader} />
+            <ThemeInitializer />
+            <Loader visible={showLoader} />
 
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                {/* Router is now dynamic */}
-                <Router>
-                  <Suspense fallback={<Loader visible={true} />}>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/edit/:sessionId" element={<EditPage />} />
-                      <Route path="/remote-cam" element={<RemoteCamera />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </Router>
-              </TooltipProvider>
-            </ThemeProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              {/* Router is now dynamic */}
+              <Router>
+                <Suspense fallback={<Loader visible={true} />}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/edit/:sessionId" element={<EditPage />} />
+                    <Route path="/remote-cam" element={<RemoteCamera />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </Router>
+            </TooltipProvider>
           </DebugProvider>
         </LogProvider>
       </QueryClientProvider>
