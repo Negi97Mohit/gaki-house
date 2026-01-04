@@ -2,11 +2,6 @@ import { app, BrowserWindow, shell, session, ipcMain } from "electron";
 import path from "path";
 import { startRtmpServer } from "./rtmp-server";
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require("electron-squirrel-startup")) {
-  app.quit();
-}
-
 // Ignore certificate errors for self-signed certs (Vite HTTPS)
 app.commandLine.appendSwitch("ignore-certificate-errors");
 
