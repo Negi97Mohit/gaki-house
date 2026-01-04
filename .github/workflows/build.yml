@@ -2,9 +2,9 @@ name: Build/Release
 
 on:
   workflow_dispatch:
-    push:
-      tags:
-        - "v*" # Trigger only when you push a tag like v1.0.0
+  push:
+    tags:
+      - "v*"
 
 jobs:
   release:
@@ -18,25 +18,32 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
+      # --- FIX 1: Use Node 20 (Required by your dependencies) ---
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
+          cache: "npm"
 
+      # --- FIX 2: Use npm ci for cleaner, faster installs ---
       - name: Install Dependencies
-        run: npm install
+        run: npm ci --legacy-peer-deps
 
-      # Linux-specific setup (needed for snap/appimage)
       - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y libarchive-tools
 
-      - name: Compile Electron Source
+      - name: Build Web App
+        run: npm run build
+
+      - name: Compile Electron
         run: npm run electron:compile
 
+      # --- FIX 3: Increase timeout and debug output ---
       - name: Build & Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run electron:build -- --publish always
+        timeout-minutes: 45
