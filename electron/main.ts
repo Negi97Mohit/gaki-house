@@ -1,99 +1,73 @@
-import { app, BrowserWindow, shell, session, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
-import { startRtmpServer } from "./rtmp-server";
-
-// Ignore certificate errors for self-signed certs (Vite HTTPS)
-app.commandLine.appendSwitch("ignore-certificate-errors");
+import { RtmpServer } from "./rtmp-server"; // Make sure this path is correct
 
 let mainWindow: BrowserWindow | null = null;
-let rtmpSession: any = null;
+let rtmpService: RtmpServer | null = null;
 
-const createWindow = () => {
+function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
     webPreferences: {
-      nodeIntegration: false,
+      nodeIntegration: true,
       contextIsolation: true,
       preload: path.join(__dirname, "preload.js"),
     },
-    titleBarStyle: "hidden",
-    titleBarOverlay: {
-      color: "#00000000",
-      symbolColor: "#ffffff",
-    },
   });
 
-  // Handle Permissions (Camera/Mic)
-  session.defaultSession.setPermissionRequestHandler(
-    (webContents, permission, callback) => {
-      const allowedPermissions = [
-        "media",
-        "mediaKeySystem",
-        "accessibility",
-        "notifications",
-      ];
-      if (allowedPermissions.includes(permission)) {
-        callback(true);
-      } else {
-        callback(false);
-      }
-    }
-  );
-
-  // Load the App
-  if (app.isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
+  // Load your app
+  if (process.env.VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadURL("https://localhost:5173");
-    mainWindow.webContents.openDevTools();
+    mainWindow.loadFile(path.join(__dirname, "../../dist/index.html"));
   }
+}
 
-  // Handle External Links
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith("http")) {
-      shell.openExternal(url);
-      return { action: "deny" };
-    }
-    return { action: "allow" };
-  });
-};
-
-// --- IPC Listeners ---
-ipcMain.on("toggle-fullscreen", () => {
-  if (mainWindow) {
-    mainWindow.setFullScreen(!mainWindow.isFullScreen());
-  }
-});
-
-// --- App Lifecycle ---
-app.on("ready", () => {
+app.whenReady().then(() => {
   createWindow();
 
-  // Start the internal RTMP Server
-  try {
-    console.log("Starting RTMP Server...");
-    rtmpSession = startRtmpServer();
-  } catch (err) {
-    console.error("Failed to start RTMP server:", err);
-  }
-});
+  // --- RTMP SERVER HANDLERS ---
 
-app.on("will-quit", () => {
-  // Stop the server gracefully
-  if (rtmpSession) {
-    rtmpSession.stop();
-  }
+  ipcMain.on("start-server", () => {
+    try {
+      if (!rtmpService) {
+        rtmpService = new RtmpServer();
+        rtmpService.start();
+      }
+    } catch (error) {
+      console.error("Failed to start RTMP server:", error);
+    }
+  });
+
+  ipcMain.on("stop-server", () => {
+    try {
+      if (rtmpService) {
+        // This checks if the stop method exists before calling it
+        if (typeof rtmpService.stop === "function") {
+          rtmpService.stop();
+        }
+        rtmpService = null;
+      }
+    } catch (error) {
+      console.error("Failed to stop RTMP server:", error);
+    }
+  });
+
+  // Handle App Quit
+  app.on("before-quit", () => {
+    if (rtmpService) {
+      try {
+        rtmpService.stop();
+      } catch (e) {
+        console.log("Error stopping server on quit", e);
+      }
+    }
+  });
 });
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
-  }
-});
-
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
   }
 });

@@ -2,14 +2,13 @@ import { Toaster } from "@/shared/ui/toaster";
 import { Toaster as Sonner } from "@/shared/ui/sonner";
 import { TooltipProvider } from "@/shared/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom"; // Added HashRouter
 import { ThemeProvider } from "next-themes";
 import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Loader from "@/shared/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
-
 
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -21,9 +20,18 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
-  const [showLoader, setShowLoader] = useState(true); // ✅ Start visible
+  const [showLoader, setShowLoader] = useState(true);
+  const [isElectron, setIsElectron] = useState(false);
 
-  // Cursor inactivity logic (your existing)
+  // Detect Electron Environment
+  useEffect(() => {
+    const checkElectron = window.navigator.userAgent
+      .toLowerCase()
+      .includes("electron");
+    setIsElectron(checkElectron);
+  }, []);
+
+  // Cursor inactivity logic
   useEffect(() => {
     const handleActivity = () => {
       document.body.classList.remove("cursor-inactive");
@@ -39,16 +47,14 @@ const App = () => {
     };
   }, []);
 
-  // ✅ Loader logic (runs after everything fully loads)
+  // Loader logic
   useEffect(() => {
     const handleWindowLoad = () => {
-      // keep loader for 2.5s after load
       setTimeout(() => {
         setShowLoader(false);
       }, 2000);
     };
 
-    // If window already loaded (for hot reloads)
     if (document.readyState === "complete") {
       handleWindowLoad();
     } else {
@@ -56,6 +62,10 @@ const App = () => {
       return () => window.removeEventListener("load", handleWindowLoad);
     }
   }, []);
+
+  // Choose the correct Router based on environment
+  // Electron needs HashRouter (file://), Web uses BrowserRouter (https://)
+  const Router = isElectron ? HashRouter : BrowserRouter;
 
   return (
     <>
@@ -68,13 +78,13 @@ const App = () => {
               forcedTheme="dark"
               disableTransitionOnChange
             >
-              {/* ✅ Loader always visible at start (Global) */}
               <Loader visible={showLoader} />
 
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
-                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                {/* Router is now dynamic */}
+                <Router>
                   <Suspense fallback={<Loader visible={true} />}>
                     <Routes>
                       <Route path="/" element={<Index />} />
@@ -83,7 +93,7 @@ const App = () => {
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
-                </BrowserRouter>
+                </Router>
               </TooltipProvider>
             </ThemeProvider>
           </DebugProvider>

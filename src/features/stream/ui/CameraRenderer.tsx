@@ -64,7 +64,9 @@ interface CameraRendererProps {
   onEnterPipMode?: () => void;
   isMouseActive?: boolean;
   screenShareMode?: "off" | "screen" | "window" | "canvas";
-  onScreenShareModeChange?: (mode: "off" | "screen" | "window" | "canvas") => void;
+  onScreenShareModeChange?: (
+    mode: "off" | "screen" | "window" | "canvas"
+  ) => void;
   externalVideoRef?: React.RefObject<HTMLVideoElement>;
   processedCanvas?: HTMLCanvasElement | null;
   facePositionRef?: React.MutableRefObject<any>;
@@ -143,7 +145,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     position: { x: 0, y: 0 },
     containerRef,
     ...props,
-    onCameraDeviceChange: props.onCameraDeviceChange || (() => { }),
+    onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
     onEnterPipMode: props.onEnterPipMode,
     isPipActive,
     onTogglePip: togglePiP,
@@ -173,7 +175,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
           <AmbientBackground />
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
             <img
-              src="/icon.png"
+              src="./icon.png"
               alt="GAKI Logo"
               className="w-[10%] min-w-[20px] max-w-[50px] h-auto object-contain drop-shadow-2xl mb-4"
             />

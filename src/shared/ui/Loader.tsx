@@ -13,7 +13,7 @@ const Loader: React.FC<LoaderProps> = ({ visible }) => {
       style={{ zIndex: "var(--z-loader)" }}
     >
       <img
-        src="/loader.gif" // must be in `public/loader.gif`
+        src="./loader.gif" // must be in `public/loader.gif`
         alt="Loading animation"
         className="w-[60vw] max-w-[400px] h-auto object-contain"
       />
