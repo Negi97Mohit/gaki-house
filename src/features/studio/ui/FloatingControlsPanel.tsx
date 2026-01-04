@@ -8,6 +8,8 @@ import {
   Sparkles,
   BadgeCheck,
   X,
+  Library,
+  Archive,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
@@ -30,6 +32,10 @@ import { StaticPresetsPanel } from "./panels/StaticPresetsPanel";
 import { TextStylePanel } from "./panels/TextStylePanel";
 import { SavedOverlaysPanel } from "./panels/SavedOverlaysPanel";
 import { SocialBannersPanel } from "./panels/SocialBannersPanel";
+import { GSAPAnimationsPanel } from "./panels/GSAPAnimationsPanel";
+import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
+import { ToolsPopover } from "./ToolsPopover";
+import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;
@@ -65,6 +71,16 @@ interface FloatingControlsPanelProps {
     design: AnimatedBannerDesign,
     data: SocialBannerData
   ) => void;
+
+  // New props for moved buttons
+  onOpenAnimationLibrary?: () => void;
+  onOpenVault?: () => void;
+  onAddTextOverlay?: () => void;
+  onAssetSelect?: (asset: AssetResult) => void;
+  setIsDrawing?: (isDrawing: boolean) => void;
+  portalContainer?: HTMLElement | null;
+  onSelectGSAPPreset?: (preset: GSAPPreset) => void;
+  selectedGSAPPresetId?: string;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -101,6 +117,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       icon: LayoutGrid,
       title: "DESIGNS",
       shortTitle: "DSN",
+    },
+    {
+      id: "animation-library",
+      icon: Library,
+      title: "ANIMATIONS",
+      shortTitle: "ANI",
     },
     {
       id: "dynamic-styles",
@@ -191,6 +213,40 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 </TooltipContent>
               </Tooltip>
             ))}
+
+            {/* Spacer */}
+            <div className="flex-1" />
+
+            {/* Action Buttons at bottom of sidebar */}
+            {props.onOpenVault && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={props.onOpenVault}
+                    className="w-full h-12 flex flex-col items-center justify-center transition-all duration-150 text-muted-foreground hover:text-primary hover:bg-primary/10 border-t border-border"
+                  >
+                    <Archive className="w-4 h-4 mb-1" strokeWidth={2} />
+                    <span className="font-mono text-[9px] tracking-wider font-bold">VLT</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" sideOffset={10} className="font-mono text-xs">
+                  FILE VAULT
+                </TooltipContent>
+              </Tooltip>
+            )}
+
+            {props.onAddTextOverlay && props.onAssetSelect && props.setIsDrawing && (
+              <div className="w-full h-12 flex items-center justify-center border-t border-border">
+                <ToolsPopover
+                  onAddTextOverlay={props.onAddTextOverlay}
+                  onAssetSelect={props.onAssetSelect}
+                  setIsDrawing={props.setIsDrawing}
+                  setTheme={() => {}}
+                  theme="dark"
+                  portalContainer={props.portalContainer}
+                />
+              </div>
+            )}
           </TooltipProvider>
         </div>
 
@@ -234,6 +290,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               />
             )}
 
+            {activeSection === "animation-library" && props.onSelectGSAPPreset && (
+              <GSAPAnimationsPanel 
+                onSelectPreset={props.onSelectGSAPPreset}
+                selectedPresetId={props.selectedGSAPPresetId}
+              />
+            )}
             {activeSection === "dynamic-styles" && (
               <DynamicStylesPanel
                 dynamicStyle={props.dynamicStyle}

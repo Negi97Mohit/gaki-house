@@ -1,9 +1,5 @@
 import React, { useRef, useCallback } from "react";
-import { notify } from "@/shared/lib/notify";
 import { cn } from "@/shared/lib/utils";
-import { generateId } from "@/shared/lib/id";
-import { zIndex } from "@/lib/zIndex";
-import { GeneratedOverlay } from "@/types/caption";
 import { Loader } from "lucide-react";
 
 // Components
@@ -107,6 +103,7 @@ const Index = () => {
           isMouseActive: ui.isMouseActive,
           onOpenSessions: () => ui.setShowSessionsPanel(true),
           isDrawing: drawing.isDrawing,
+          setIsDrawing: drawing.setIsDrawing,
         }}
         savedOverlays={sessionData.savedOverlays}
         setSavedOverlays={sessionData.setSavedOverlays}
@@ -120,6 +117,7 @@ const Index = () => {
         remoteStream={remote.remoteStream}
         isChatbotOpen={ui.isChatbotOpen}
         onChatbotToggle={ui.setIsChatbotOpen}
+        onOpenVault={vault.openVault}
       />
 
       <IndexOverlays editor={editor} />
@@ -172,33 +170,6 @@ const Index = () => {
         onStopStream={rtmp.stopStreaming}
         isConnecting={rtmp.isConnecting}
         streamStatus={rtmp.status}
-        onAddTextOverlay={overlayHandlers.handleAddTextOverlay}
-        onAssetSelect={(asset) => {
-          const newOverlay: GeneratedOverlay = {
-            id: generateId("overlay"),
-            name: asset.alt || "Asset",
-            htmlContent: `<img src="${asset.downloadUrl}" alt="${asset.alt}" style="width: 100%; height: 100%; object-fit: contain;" />`,
-            layout: {
-              position: { x: 50, y: 50 },
-              size: { width: 30, height: 30 },
-              zIndex: zIndex.draggableElement,
-              rotation: 0,
-              layerOrder: "above-video",
-            },
-            preview: asset.previewUrl,
-          };
-          sceneManager.updateActiveScene((scene) => ({
-            ...scene,
-            activeOverlays: [...scene.activeOverlays, newOverlay],
-          }));
-          if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
-
-          selection.handleDeselectAll();
-          selection.setSelectedGeneratedId(newOverlay.id);
-
-          notify.success(`Added "${asset.alt}" to canvas`);
-        }}
-        setIsDrawing={drawing.setIsDrawing}
         onToggleFullscreen={ui.handleToggleFullscreen}
         isFullscreen={ui.isFullscreen}
         layoutMode={activeScene.layoutMode}
@@ -255,7 +226,6 @@ const Index = () => {
           sceneManager.updateSceneProperty("captionsEnabled", val)
         }
         hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
-        onOpenVault={vault.openVault}
       />
 
       {/* --- File Vault Modal --- */}

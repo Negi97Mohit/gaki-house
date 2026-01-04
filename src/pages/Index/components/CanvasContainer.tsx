@@ -45,6 +45,7 @@ interface CanvasContainerProps {
     isMouseActive: boolean;
     onOpenSessions: () => void;
     isDrawing: boolean;
+    setIsDrawing: (isDrawing: boolean) => void;
   };
   savedOverlays: GeneratedOverlay[];
   setSavedOverlays: React.Dispatch<React.SetStateAction<GeneratedOverlay[]>>;
@@ -68,6 +69,8 @@ interface CanvasContainerProps {
   remoteStream?: MediaStream | null;
   isChatbotOpen: boolean;
   onChatbotToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  // Vault props
+  onOpenVault?: () => void;
 }
 
 export const CanvasContainer: React.FC<CanvasContainerProps> = ({
@@ -95,6 +98,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   remoteStream,
   isChatbotOpen,
   onChatbotToggle,
+  onOpenVault,
 }) => {
   const hasAiPopoverAutoOpenedRef = useRef(false);
 
@@ -309,6 +313,30 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     selection.setSelectedTextId(newTextOverlay.id);
     toast.info("Text element added. Click to edit!");
   }, [activeScene.captionStyle, updateActiveScene, selection]);
+
+  const handleAssetSelect = useCallback((asset: AssetResult) => {
+    const newOverlay: GeneratedOverlay = {
+      id: generateId("overlay"),
+      name: asset.alt || "Asset",
+      htmlContent: `<img src="${asset.downloadUrl}" alt="${asset.alt}" style="width: 100%; height: 100%; object-fit: contain;" />`,
+      layout: {
+        position: { x: 50, y: 50 },
+        size: { width: 30, height: 30 },
+        zIndex: zIndex.draggableElement,
+        rotation: 0,
+        layerOrder: "above-video",
+      },
+      preview: asset.previewUrl,
+    };
+    updateActiveScene((scene) => ({
+      ...scene,
+      activeOverlays: [...scene.activeOverlays, newOverlay],
+    }));
+    if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
+    selection.handleDeselectAll();
+    selection.setSelectedGeneratedId(newOverlay.id);
+    toast.success(`Added "${asset.alt}" to canvas`);
+  }, [updateActiveScene, recording, selection]);
 
   // --- Props Construction (Using Utility) ---
 
@@ -586,6 +614,11 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         {...activeSceneProps?.sidebarProps}
         onAddSocialBanner={bannerLogic.handleAddSocialBanner}
         onAddAnimatedBanner={bannerLogic.handleAddAnimatedBanner}
+        onOpenVault={onOpenVault}
+        onAddTextOverlay={handleAddTextOverlay}
+        onAssetSelect={handleAssetSelect}
+        setIsDrawing={uiState.setIsDrawing}
+        portalContainer={typeof mainContainerRef === 'object' ? mainContainerRef?.current : undefined}
       />
 
       <div
