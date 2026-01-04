@@ -18,6 +18,7 @@ import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
 import { generateId } from "@/shared/lib/id";
 import { FileType, FileOverlayState } from "@/types/caption";
+import { VaultFile } from "@/types/vault";
 
 // Hooks
 import { useCanvasPaste } from "../hooks/useCanvasPaste";
@@ -70,7 +71,10 @@ interface CanvasContainerProps {
   isChatbotOpen: boolean;
   onChatbotToggle: React.Dispatch<React.SetStateAction<boolean>>;
   // Vault props
-  onOpenVault?: () => void;
+  vaultFiles: VaultFile[];
+  onAddVaultFiles: (files: FileList | File[], source: VaultFile['source']) => void;
+  onRemoveVaultFile: (id: string) => void;
+  onClearVault: () => void;
 }
 
 export const CanvasContainer: React.FC<CanvasContainerProps> = ({
@@ -98,7 +102,10 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   remoteStream,
   isChatbotOpen,
   onChatbotToggle,
-  onOpenVault,
+  vaultFiles,
+  onAddVaultFiles,
+  onRemoveVaultFile,
+  onClearVault,
 }) => {
   const hasAiPopoverAutoOpenedRef = useRef(false);
 
@@ -614,7 +621,10 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         {...activeSceneProps?.sidebarProps}
         onAddSocialBanner={bannerLogic.handleAddSocialBanner}
         onAddAnimatedBanner={bannerLogic.handleAddAnimatedBanner}
-        onOpenVault={onOpenVault}
+        vaultFiles={vaultFiles}
+        onAddVaultFiles={onAddVaultFiles}
+        onRemoveVaultFile={onRemoveVaultFile}
+        onClearVault={onClearVault}
         onAddTextOverlay={handleAddTextOverlay}
         onAssetSelect={handleAssetSelect}
         setIsDrawing={uiState.setIsDrawing}

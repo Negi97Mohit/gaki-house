@@ -10,12 +10,14 @@ import {
   X,
   Library,
   Archive,
+  Wrench,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
 import { CanvasPreset } from "@/types/canvasPreset";
 import { SocialBannerDesign, SocialBannerData } from "@/types/socialBanner";
 import { AnimatedBannerDesign } from "@/types/animatedBanner";
+import { VaultFile } from "@/types/vault";
 
 // PHASE 3 FIX: Tooltips for Sidebar
 import {
@@ -33,8 +35,9 @@ import { TextStylePanel } from "./panels/TextStylePanel";
 import { SavedOverlaysPanel } from "./panels/SavedOverlaysPanel";
 import { SocialBannersPanel } from "./panels/SocialBannersPanel";
 import { GSAPAnimationsPanel } from "./panels/GSAPAnimationsPanel";
+import { FileVaultPanel } from "./panels/FileVaultPanel";
+import { ToolsPanel } from "./panels/ToolsPanel";
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
-import { ToolsPopover } from "./ToolsPopover";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 
 interface FloatingControlsPanelProps {
@@ -74,13 +77,18 @@ interface FloatingControlsPanelProps {
 
   // New props for moved buttons
   onOpenAnimationLibrary?: () => void;
-  onOpenVault?: () => void;
   onAddTextOverlay?: () => void;
   onAssetSelect?: (asset: AssetResult) => void;
   setIsDrawing?: (isDrawing: boolean) => void;
   portalContainer?: HTMLElement | null;
   onSelectGSAPPreset?: (preset: GSAPPreset) => void;
   selectedGSAPPresetId?: string;
+  
+  // Vault props
+  vaultFiles?: VaultFile[];
+  onAddVaultFiles?: (files: FileList | File[], source: VaultFile['source']) => void;
+  onRemoveVaultFile?: (id: string) => void;
+  onClearVault?: () => void;
 }
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
@@ -154,6 +162,18 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       title: "BANNERS",
       shortTitle: "BNR",
     },
+    {
+      id: "file-vault",
+      icon: Archive,
+      title: "FILE VAULT",
+      shortTitle: "VLT",
+    },
+    {
+      id: "tools",
+      icon: Wrench,
+      title: "TOOLS",
+      shortTitle: "TLS",
+    },
   ];
 
   const activeTab = sections.find((s) => s.id === activeSection);
@@ -214,39 +234,6 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               </Tooltip>
             ))}
 
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Action Buttons at bottom of sidebar */}
-            {props.onOpenVault && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={props.onOpenVault}
-                    className="w-full h-12 flex flex-col items-center justify-center transition-all duration-150 text-muted-foreground hover:text-primary hover:bg-primary/10 border-t border-border"
-                  >
-                    <Archive className="w-4 h-4 mb-1" strokeWidth={2} />
-                    <span className="font-mono text-[9px] tracking-wider font-bold">VLT</span>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right" sideOffset={10} className="font-mono text-xs">
-                  FILE VAULT
-                </TooltipContent>
-              </Tooltip>
-            )}
-
-            {props.onAddTextOverlay && props.onAssetSelect && props.setIsDrawing && (
-              <div className="w-full h-12 flex items-center justify-center border-t border-border">
-                <ToolsPopover
-                  onAddTextOverlay={props.onAddTextOverlay}
-                  onAssetSelect={props.onAssetSelect}
-                  setIsDrawing={props.setIsDrawing}
-                  setTheme={() => {}}
-                  theme="dark"
-                  portalContainer={props.portalContainer}
-                />
-              </div>
-            )}
           </TooltipProvider>
         </div>
 
@@ -329,6 +316,23 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               <SocialBannersPanel
                 onAddBanner={props.onAddSocialBanner}
                 onAddAnimatedBanner={props.onAddAnimatedBanner}
+              />
+            )}
+
+            {activeSection === "file-vault" && props.vaultFiles && props.onAddVaultFiles && props.onRemoveVaultFile && props.onClearVault && (
+              <FileVaultPanel
+                files={props.vaultFiles}
+                onAddFiles={props.onAddVaultFiles}
+                onRemoveFile={props.onRemoveVaultFile}
+                onClearVault={props.onClearVault}
+              />
+            )}
+
+            {activeSection === "tools" && props.onAddTextOverlay && props.onAssetSelect && props.setIsDrawing && (
+              <ToolsPanel
+                onAddTextOverlay={props.onAddTextOverlay}
+                onAssetSelect={props.onAssetSelect}
+                setIsDrawing={props.setIsDrawing}
               />
             )}
           </div>

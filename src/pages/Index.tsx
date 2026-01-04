@@ -117,7 +117,10 @@ const Index = () => {
         remoteStream={remote.remoteStream}
         isChatbotOpen={ui.isChatbotOpen}
         onChatbotToggle={ui.setIsChatbotOpen}
-        onOpenVault={vault.openVault}
+        vaultFiles={vault.files}
+        onAddVaultFiles={vault.addFiles}
+        onRemoveVaultFile={vault.removeFile}
+        onClearVault={vault.clearVault}
       />
 
       <IndexOverlays editor={editor} />
