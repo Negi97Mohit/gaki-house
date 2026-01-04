@@ -30,10 +30,12 @@
     ],
     "mac": {
       "category": "public.app-category.video",
-      "target": [
-        "dmg",
-        "zip"
-      ],
+      "target": {
+        "target": "dmg",
+        "arch": [
+          "universal"
+        ]
+      },
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
@@ -41,8 +43,13 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
       ]
     },
     "linux": {
