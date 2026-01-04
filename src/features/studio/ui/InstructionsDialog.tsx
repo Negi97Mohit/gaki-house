@@ -1,5 +1,5 @@
 // src/components/InstructionsDialog.tsx
-
+import React from "react";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -21,19 +21,30 @@ import {
   Search,
 } from "lucide-react";
 
-export const InstructionsDialog = () => (
-  <Dialog>
-    <DialogTrigger asChild>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="text-muted-foreground hover:text-foreground transition-colors"
-        title="How to use"
-      >
-        <Info className="h-5 w-5" />
-        <span className="sr-only">Show Instructions</span>
-      </Button>
-    </DialogTrigger>
+interface InstructionsDialogProps {
+  renderTrigger?: (onClick: () => void) => React.ReactNode;
+}
+
+export const InstructionsDialog: React.FC<InstructionsDialogProps> = ({ renderTrigger }) => {
+  const [open, setOpen] = React.useState(false);
+
+  const defaultTrigger = (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="text-muted-foreground hover:text-foreground transition-colors"
+      title="How to use"
+    >
+      <Info className="h-5 w-5" />
+      <span className="sr-only">Show Instructions</span>
+    </Button>
+  );
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {renderTrigger ? renderTrigger(() => setOpen(true)) : defaultTrigger}
+      </DialogTrigger>
 
     <DialogContent className="sm:max-w-[520px] rounded-xl p-4">
       <DialogHeader className="mb-1">
@@ -134,3 +145,4 @@ export const InstructionsDialog = () => (
     </DialogContent>
   </Dialog>
 );
+};
