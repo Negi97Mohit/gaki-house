@@ -2,9 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
   LayoutGrid,
-  Zap,
-  Paintbrush,
-  Palette,
+  Type,
   Sparkles,
   BadgeCheck,
   X,
@@ -29,9 +27,7 @@ import {
 
 // Sub-components
 import { CanvasDesignsPanel } from "./panels/CanvasDesignsPanel";
-import { DynamicStylesPanel } from "./panels/DynamicStylesPanel";
-import { StaticPresetsPanel } from "./panels/StaticPresetsPanel";
-import { TextStylePanel } from "./panels/TextStylePanel";
+import { TextPresetsPanel } from "./panels/TextPresetsPanel";
 import { SavedOverlaysPanel } from "./panels/SavedOverlaysPanel";
 import { SocialBannersPanel } from "./panels/SocialBannersPanel";
 import { GSAPAnimationsPanel } from "./panels/GSAPAnimationsPanel";
@@ -133,21 +129,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       shortTitle: "ANI",
     },
     {
-      id: "dynamic-styles",
-      icon: Zap,
-      title: "DYNAMIC",
-      shortTitle: "DYN",
-    },
-    {
-      id: "static-presets",
-      icon: Paintbrush,
-      title: "PRESETS",
-      shortTitle: "PRE",
-    },
-    {
-      id: "base-text",
-      icon: Palette,
-      title: "TEXT",
+      id: "text-presets",
+      icon: Type,
+      title: "TEXT & PRESETS",
       shortTitle: "TXT",
     },
     {
@@ -283,24 +267,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 selectedPresetId={props.selectedGSAPPresetId}
               />
             )}
-            {activeSection === "dynamic-styles" && (
-              <DynamicStylesPanel
-                dynamicStyle={props.dynamicStyle}
-                onDynamicStyleChange={props.onDynamicStyleChange}
-              />
-            )}
-
-            {activeSection === "static-presets" && (
-              <StaticPresetsPanel
-                currentStyle={props.style}
-                onStyleChange={props.onStyleChange}
-              />
-            )}
-
-            {activeSection === "base-text" && (
-              <TextStylePanel
+            {activeSection === "text-presets" && (
+              <TextPresetsPanel
                 style={props.style}
                 onStyleChange={props.onStyleChange}
+                dynamicStyle={props.dynamicStyle}
+                onDynamicStyleChange={props.onDynamicStyleChange}
               />
             )}
 
