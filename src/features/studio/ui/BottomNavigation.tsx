@@ -7,7 +7,6 @@ import {
   ScreenShare,
   ChevronUp,
   Check,
-  Library,
   Expand,
   Shrink,
   SlidersHorizontal,
@@ -19,7 +18,6 @@ import {
   RotateCcw,
   ScanFace,
   Sparkles,
-  Archive,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -29,10 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 import { cn } from "@/shared/lib/utils";
-import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { LayoutMode, CameraShape, GeneratedOverlay } from "@/types/caption";
-import { useTheme } from "next-themes";
-import { ToolsPopover } from "@/features/studio/ui/ToolsPopover";
 import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
 // Import the new modal
 import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
@@ -58,9 +53,6 @@ interface BottomNavigationProps {
   onRecordingToggle: () => void;
   isBroadcasting: boolean;
   onBroadcastToggle: () => void;
-  onAddTextOverlay: () => void;
-  onAssetSelect: (asset: AssetResult) => void;
-  setIsDrawing: (isDrawing: boolean) => void;
   onToggleFullscreen: () => void;
   isFullscreen: boolean;
   layoutMode: LayoutMode;
@@ -104,7 +96,6 @@ interface BottomNavigationProps {
   onStopStream?: () => void;
   isConnecting?: boolean;
   streamStatus?: string;
-  onOpenVault?: () => void;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -129,9 +120,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onRecordingToggle,
   isBroadcasting,
   onBroadcastToggle,
-  onAddTextOverlay,
-  onAssetSelect,
-  setIsDrawing,
   onToggleFullscreen,
   isFullscreen,
   portalContainer,
@@ -158,10 +146,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onStopStream,
   isConnecting,
   streamStatus,
-  onOpenVault,
   ..._unusedProps
 }) => {
-  const { theme, setTheme } = useTheme();
 
   return (
     <div
@@ -183,16 +169,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           data-floating-trigger="true"
         >
           <SlidersHorizontal className="w-4 h-4" />
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full h-10 w-10 hover:bg-background/60 text-primary hover:text-primary"
-          onClick={onOpenAnimationLibrary}
-          title="Animation Library"
-        >
-          <Library className="w-4 h-4" />
         </Button>
 
         <div className="w-px h-6 bg-border/40 mx-1" />
@@ -427,33 +403,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
-        {/* File Vault Button */}
-        {onOpenVault && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-10 w-10 hover:bg-background/60"
-            onClick={onOpenVault}
-            title="File Vault"
-          >
-            <Archive className="w-4 h-4" />
-          </Button>
-        )}
-
         {/* Dynamic Layout Controls Slot */}
         <div
           id="layout-controls-slot"
           className="flex items-center gap-1"
         ></div>
-
-        <ToolsPopover
-          onAddTextOverlay={onAddTextOverlay}
-          onAssetSelect={onAssetSelect}
-          setIsDrawing={setIsDrawing}
-          setTheme={setTheme}
-          theme={theme}
-          portalContainer={portalContainer}
-        />
 
         {/* --- AI Command Popover (Placed Here) --- */}
         <AICommandPopover
