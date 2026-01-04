@@ -290,9 +290,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               />
             )}
 
-            {activeSection === "animation-library" && props.onSelectGSAPPreset && (
+            {activeSection === "animation-library" && (
               <GSAPAnimationsPanel 
-                onSelectPreset={props.onSelectGSAPPreset}
+                onSelectPreset={props.onSelectGSAPPreset || (() => {})}
                 selectedPresetId={props.selectedGSAPPresetId}
               />
             )}
