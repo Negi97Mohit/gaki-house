@@ -100,7 +100,7 @@ export const FileRenderer: React.FC<{
   }, [overlay.file, overlay.fileUrl, overlay.fileType]);
 
   const renderTextWithLineNumbers = (text: string) => {
-    const lines = text.split('\n');
+    const lines = text.split("\n");
     return (
       <div className="flex text-xs font-mono">
         <div className="select-none text-muted-foreground pr-4 text-right border-r border-border/50">
@@ -298,7 +298,8 @@ const VideoPlayer: React.FC<{ src: string }> = ({ src }) => {
 
   const handleTimeUpdate = () => {
     if (videoRef.current) {
-      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      const progress =
+        (videoRef.current.currentTime / videoRef.current.duration) * 100;
       setProgress(progress);
     }
   };
@@ -326,13 +327,16 @@ const VideoPlayer: React.FC<{ src: string }> = ({ src }) => {
         onEnded={() => !isLooping && setIsPlaying(false)}
         onClick={togglePlay}
         playsInline
+        draggable={false} // Prevents "ghost" drag which causes the jump
       />
 
       {/* Controls Overlay */}
-      <div className={cn(
-        "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 transition-opacity duration-300",
-        showControls || !isPlaying ? "opacity-100" : "opacity-0"
-      )}>
+      <div
+        className={cn(
+          "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 transition-opacity duration-300",
+          showControls || !isPlaying ? "opacity-100" : "opacity-0"
+        )}
+      >
         {/* Progress Bar */}
         <div
           className="w-full h-1 bg-white/30 rounded-full mb-4 cursor-pointer hover:h-2 transition-all"
@@ -348,13 +352,27 @@ const VideoPlayer: React.FC<{ src: string }> = ({ src }) => {
 
         <div className="flex items-center justify-between text-white">
           <div className="flex items-center gap-4">
-            <button onClick={togglePlay} className="hover:text-primary transition-colors">
-              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+            <button
+              onClick={togglePlay}
+              className="hover:text-primary transition-colors"
+            >
+              {isPlaying ? (
+                <Pause className="w-5 h-5" />
+              ) : (
+                <Play className="w-5 h-5" />
+              )}
             </button>
 
             <div className="flex items-center gap-2 group/vol">
-              <button onClick={toggleMute} className="hover:text-primary transition-colors">
-                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              <button
+                onClick={toggleMute}
+                className="hover:text-primary transition-colors"
+              >
+                {isMuted ? (
+                  <VolumeX className="w-5 h-5" />
+                ) : (
+                  <Volume2 className="w-5 h-5" />
+                )}
               </button>
               <input
                 type="range"
@@ -531,7 +549,9 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       enableRotation={true}
       lockAspectRatio={overlay.fileType === "image"}
       // Prevent drag when interacting with media controls or the 3D canvas
-      cancelSelector="audio, video, iframe, canvas"
+      // REMOVED 'video' from cancelSelector to allow dragging by clicking the video
+      // ADDED 'input, button' to ensure controls still work
+      cancelSelector="audio, iframe, canvas, input, button"
       // If 3D, only allow dragging via specific handles to avoid conflict with orbit controls
       dragHandleSelector={is3DFile ? ".drag-handle" : undefined}
       className={cn(
@@ -549,8 +569,8 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
           className={cn(
             "flex-grow w-full h-full relative overflow-hidden rounded-lg",
             overlay.fileType !== "image" &&
-            overlay.fileType !== "3d" &&
-            "bg-background/50"
+              overlay.fileType !== "3d" &&
+              "bg-background/50"
           )}
         >
           <FileRenderer
