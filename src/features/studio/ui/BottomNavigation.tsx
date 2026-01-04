@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Mic,
   MicOff,
@@ -17,6 +17,7 @@ import {
   Redo2,
   RotateCcw,
   ScanFace,
+  Download,
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
@@ -29,7 +30,6 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { LayoutMode, CameraShape, GeneratedOverlay } from "@/types/caption";
 import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
-// Import the new modal
 import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
 
 interface BottomNavigationProps {
@@ -132,7 +132,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   layoutMode,
   isSmartSwitchEnabled,
   onSmartSwitchToggle,
-  // Destructure AI props
   onAiCommandSubmit,
   isAiProcessing,
   activeOverlays,
@@ -148,6 +147,30 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   streamStatus,
   ..._unusedProps
 }) => {
+  const [isElectron, setIsElectron] = useState(false);
+
+  useEffect(() => {
+    const checkElectron =
+      (window as any).electron?.isElectron ||
+      /Electron/.test(navigator.userAgent);
+    setIsElectron(!!checkElectron);
+  }, []);
+
+  const handleDownloadApp = () => {
+    window.open(
+      "https://github.com/your-username/your-repo/releases",
+      "_blank"
+    );
+  };
+
+  // --- CHANGED: Handle Fullscreen Logic for Electron vs Web ---
+  const handleFullscreenToggle = () => {
+    if (isElectron && (window as any).electron?.toggleFullscreen) {
+      (window as any).electron.toggleFullscreen();
+    } else {
+      onToggleFullscreen(); // Fallback to standard web behavior
+    }
+  };
 
   return (
     <div
@@ -160,6 +183,21 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       style={{ zIndex: "var(--z-floating-controls)" }}
     >
       <div className="flex items-center gap-1 px-2 py-2">
+        {!isElectron && (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-10 w-10 hover:bg-background/60 text-blue-500 hover:text-blue-400"
+              onClick={handleDownloadApp}
+              title="Download Desktop App"
+            >
+              <Download className="w-4 h-4" />
+            </Button>
+            <div className="w-px h-6 bg-border/40 mx-1" />
+          </>
+        )}
+
         <Button
           variant="ghost"
           size="icon"
@@ -316,28 +354,34 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           </DropdownMenu>
         </div>
 
-        {/* --- Stream Button with Popup --- */}
         <StreamConfigurationModal
           isBroadcasting={isBroadcasting}
           isConnecting={isConnecting}
           status={streamStatus}
           onStartStream={onStartStream}
           onStopStream={onStopStream}
-          defaultStreamUrl={typeof window !== 'undefined' ? localStorage.getItem('stream_rtmpUrl') || undefined : undefined}
-          defaultStreamKey={typeof window !== 'undefined' ? localStorage.getItem('stream_key') || undefined : undefined}
+          defaultStreamUrl={
+            typeof window !== "undefined"
+              ? localStorage.getItem("stream_rtmpUrl") || undefined
+              : undefined
+          }
+          defaultStreamKey={
+            typeof window !== "undefined"
+              ? localStorage.getItem("stream_key") || undefined
+              : undefined
+          }
           onSave={(url, key) => {
             if (onStreamSettingsSave) onStreamSettingsSave(url, key);
           }}
         />
 
-        {/* --- Smart Scene Switch Toggle --- */}
         <Button
           variant="ghost"
           size="icon"
           className={cn(
             "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
             isSmartSwitchEnabled &&
-            "text-primary bg-primary/10 hover:bg-primary/20"
+              "text-primary bg-primary/10 hover:bg-primary/20"
           )}
           onClick={onSmartSwitchToggle}
           title={
@@ -403,13 +447,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
         <div className="w-px h-6 bg-border/40 mx-1" />
 
-        {/* Dynamic Layout Controls Slot */}
         <div
           id="layout-controls-slot"
           className="flex items-center gap-1"
         ></div>
 
-        {/* --- AI Command Popover (Placed Here) --- */}
         <AICommandPopover
           onSubmit={onAiCommandSubmit}
           isProcessing={isAiProcessing}
@@ -436,7 +478,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           variant="ghost"
           size="icon"
           className="rounded-full h-10 w-10 hover:bg-background/60"
-          onClick={onToggleFullscreen}
+          onClick={handleFullscreenToggle} // <--- UPDATED HERE
           title={isFullscreen ? "Exit" : "Fullscreen"}
         >
           {isFullscreen ? (

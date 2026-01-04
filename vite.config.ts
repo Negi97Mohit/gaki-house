@@ -7,6 +7,7 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: "./",
   server: {
     host: "::",
     port: 8080,
@@ -18,7 +19,11 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  plugins: [react(), basicSsl(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    basicSsl(),
+    mode === "development" && componentTagger(),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
