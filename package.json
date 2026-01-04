@@ -2,6 +2,8 @@
   "name": "vite_react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
+  "description": "GAKI - A powerful studio for streaming and captions",
+  "author": "Mohit enji Negi <mohitenji@gmail.com>",              
   "type": "module",
   "main": "electron/dist/main.js",
   "scripts": {
