@@ -1,5 +1,5 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "gaki-studio",
   "private": true,
   "version": "0.0.0",
   "description": "GAKI - A powerful studio for streaming and captions",
@@ -19,8 +19,9 @@
   },
   "build": {
     "compression": "store",
-    "appId": "com.captioncam.studio",
-    "productName": "CaptionCam Studio",
+    "appId": "com.gaki.studio",
+    "productName": "Gaki - House of Video Creation",
+    "artifactName": "Gaki-House-of-Video-Creation-${version}.${ext}",
     "directories": {
       "output": "release"
     },
