@@ -9,6 +9,7 @@ import {
   Library,
   Archive,
   Wrench,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
@@ -33,6 +34,7 @@ import { SocialBannersPanel } from "./panels/SocialBannersPanel";
 import { GSAPAnimationsPanel } from "./panels/GSAPAnimationsPanel";
 import { FileVaultPanel } from "./panels/FileVaultPanel";
 import { ToolsPanel } from "./panels/ToolsPanel";
+import { SettingsPanel } from "./panels/SettingsPanel";
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 
@@ -157,6 +159,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       icon: Wrench,
       title: "TOOLS",
       shortTitle: "TLS",
+    },
+    {
+      id: "settings",
+      icon: Settings,
+      title: "SETTINGS",
+      shortTitle: "SET",
     },
   ];
 
@@ -306,6 +314,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 onAssetSelect={props.onAssetSelect}
                 setIsDrawing={props.setIsDrawing}
               />
+            )}
+
+            {activeSection === "settings" && (
+              <SettingsPanel />
             )}
           </div>
         </div>
