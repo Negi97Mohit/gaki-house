@@ -263,7 +263,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
       <div
         className={cn(
-          "fixed bottom-4 left-1/2 -translate-x-1/2 bg-background/40 backdrop-blur-xl border border-border/40 rounded-full transition-all duration-300 ease-out shadow-2xl",
+          "fixed bottom-4 left-1/2 -translate-x-1/2 backdrop-blur-xl rounded-full transition-all duration-300 ease-out shadow-2xl",
+          "bg-card/80 border border-border/60 dark:bg-card/70 dark:border-border/40",
           isMouseActive
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-8 pointer-events-none"

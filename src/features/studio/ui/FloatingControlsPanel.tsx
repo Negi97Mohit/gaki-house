@@ -178,7 +178,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
           "fixed bottom-16 left-6 overflow-hidden",
-          "bg-background border-2 border-primary shadow-[0_0_30px_hsl(50,100%,50%,0.15)]",
+          "bg-card/95 backdrop-blur-xl border border-border shadow-lg",
+          "dark:bg-card/90 dark:border-border/50 dark:shadow-[0_0_30px_hsl(var(--primary)/0.1)]",
           "transition-all duration-200 ease-out flex",
           isOpen && (props.isMouseActive || isHovered)
             ? "opacity-100 translate-y-0 pointer-events-auto"
@@ -191,7 +192,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         }}
       >
         {/* Sharp Sidebar Navigation */}
-        <div className="w-14 bg-card border-r-2 border-primary flex flex-col items-center py-2 gap-0.5">
+        <div className="w-14 bg-muted/50 dark:bg-muted/30 border-r border-border flex flex-col items-center py-2 gap-0.5">
           <TooltipProvider delayDuration={100}>
             {sections.map((section) => (
               <Tooltip key={section.id}>
@@ -230,9 +231,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         </div>
 
         {/* Content Area */}
-        <div className="flex flex-col w-[420px] h-full bg-background">
+        <div className="flex flex-col w-[420px] h-full bg-background dark:bg-background/95">
           {/* Header Bar */}
-          <div className="h-10 border-b-2 border-primary flex items-center justify-between px-4 bg-card shrink-0">
+          <div className="h-10 border-b border-border flex items-center justify-between px-4 bg-muted/30 dark:bg-muted/20 shrink-0">
             <div className="flex items-center gap-2">
               {activeTab && (
                 <>

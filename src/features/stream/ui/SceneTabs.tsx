@@ -324,7 +324,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
       style={{ zIndex: "var(--z-scene-tabs)" }}
     >
       {/* Main Container */}
-      <div className="bg-background/95 backdrop-blur-sm border border-border rounded-lg w-52 max-h-[70vh] flex flex-col pointer-events-auto shadow-lg">
+      <div className="bg-card/95 dark:bg-card/90 backdrop-blur-xl border border-border/60 dark:border-border/40 rounded-lg w-52 max-h-[70vh] flex flex-col pointer-events-auto shadow-lg">
         {/* Header */}
         <div className="flex-shrink-0 flex items-center justify-between px-3 py-2.5 border-b border-border">
           <div className="flex items-center gap-2">
