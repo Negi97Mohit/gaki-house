@@ -272,22 +272,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         style={{ zIndex: "var(--z-floating-controls)" }}
       >
         <div className="flex items-center gap-1 px-2 py-2">
-          {/* --- DOWNLOAD BUTTON (Triggers Modal) --- */}
-          {!isElectron && (
-            <>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60 text-blue-500 hover:text-blue-400"
-                onClick={() => setIsDownloadOpen(true)}
-                title="Download Desktop App"
-              >
-                <Download className="w-4 h-4" />
-              </Button>
-              <div className="w-px h-6 bg-border/40 mx-1" />
-            </>
-          )}
-
           <Button
             variant="ghost"
             size="icon"
@@ -544,6 +528,19 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             id="layout-controls-slot"
             className="flex items-center gap-1"
           ></div>
+
+          {/* --- DOWNLOAD BUTTON (Triggers Modal) --- */}
+          {!isElectron && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-10 w-10 hover:bg-background/60 text-blue-500 hover:text-blue-400"
+              onClick={() => setIsDownloadOpen(true)}
+              title="Download Desktop App"
+            >
+              <Download className="w-4 h-4" />
+            </Button>
+          )}
 
           <AICommandPopover
             onSubmit={onAiCommandSubmit}
