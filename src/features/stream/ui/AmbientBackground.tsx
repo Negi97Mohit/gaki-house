@@ -1,7 +1,8 @@
-// src/components/AmbientBackground.tsx
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useMemo } from "react";
+import { useThemeStore, themes } from "@/features/theme/model/theme.store";
+import { motion } from "framer-motion";
 
-// Minimal Simplex Noise implementation to avoid external dependencies
+// Minimal Simplex Noise implementation
 class SimplexNoise {
   private p: Uint8Array;
   private perm: Uint8Array;
@@ -25,10 +26,6 @@ class SimplexNoise {
     }
   }
 
-  dot(g: Float32Array, x: number, y: number) {
-    return g[0] * x + g[1] * y;
-  }
-
   noise2D(xin: number, yin: number) {
     let n0, n1, n2;
     const F2 = 0.5 * (Math.sqrt(3.0) - 1.0);
@@ -42,13 +39,8 @@ class SimplexNoise {
     const x0 = xin - X0;
     const y0 = yin - Y0;
     let i1, j1;
-    if (x0 > y0) {
-      i1 = 1;
-      j1 = 0;
-    } else {
-      i1 = 0;
-      j1 = 1;
-    }
+    if (x0 > y0) { i1 = 1; j1 = 0; } 
+    else { i1 = 0; j1 = 1; }
     const x1 = x0 - i1 + G2;
     const y1 = y0 - j1 + G2;
     const x2 = x0 - 1.0 + 2.0 * G2;
@@ -80,20 +72,53 @@ class SimplexNoise {
   }
 }
 
+// Convert hex to HSL components
+function hexToHsl(hex: string): { h: number; s: number; l: number } {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
 interface Circle {
   x: number;
   y: number;
-  r: number; // radius
+  r: number;
   xOff: number;
   yOff: number;
   step: number;
+  colorIndex: number;
 }
 
-export const AmbientBackground: React.FC = () => {
+interface AmbientBackgroundProps {
+  className?: string;
+}
+
+export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className = "" }) => {
+  const { theme, mode } = useThemeStore();
+  const themeConfig = useMemo(() => themes[theme], [theme]);
+  const { ambient } = themeConfig;
+  
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number>();
 
+  // Canvas-based animation for particles/blobs
   useEffect(() => {
+    if (ambient.type !== "particles" && ambient.type !== "gradient") return;
+    
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
@@ -106,11 +131,10 @@ export const AmbientBackground: React.FC = () => {
     let height = 0;
     let circles: Circle[] = [];
 
-    // --- Configuration ---
     const circleCount = 10;
     const baseRadius = 200;
-    const speed = 0.0015; // Movement speed
-    const colorSpeed = 0.002; // Color shift speed
+    const speed = 0.0015 * ambient.speed;
+    const colorSpeed = 0.002 * ambient.speed;
 
     const initCircles = () => {
       circles = [];
@@ -122,6 +146,7 @@ export const AmbientBackground: React.FC = () => {
           xOff: Math.random() * 1000,
           yOff: Math.random() * 1000,
           step: Math.random() * 1000,
+          colorIndex: i % ambient.colors.length,
         });
       }
     };
@@ -130,26 +155,18 @@ export const AmbientBackground: React.FC = () => {
       if (!container) return;
       width = container.offsetWidth;
       height = container.offsetHeight;
-
-      // Update canvas dimensions to match container
       canvas.width = width;
       canvas.height = height;
-
-      // Re-distribute circles to fit new size
       initCircles();
     };
 
-    let animationFrameId: number;
     let time = 0;
 
     const render = () => {
       time += colorSpeed;
-
-      // Clear the canvas
       ctx.clearRect(0, 0, width, height);
 
       circles.forEach((c) => {
-        // Update position with noise
         c.xOff += speed;
         c.yOff += speed;
 
@@ -159,27 +176,21 @@ export const AmbientBackground: React.FC = () => {
         c.x += vx;
         c.y += vy;
 
-        // Wrap around screen
         if (c.x < -c.r) c.x = width + c.r;
         if (c.x > width + c.r) c.x = -c.r;
         if (c.y < -c.r) c.y = height + c.r;
         if (c.y > height + c.r) c.y = -c.r;
 
-        // --- UPDATED COLOR SCHEME ---
-        // Strictly #2596be (hsl: 196, 67%, 45%)
-        const h = 196;
-        const s = "67%";
-
-        // Optional: Slight lightness breathe to keep the "organic" feel
+        // Use theme colors
+        const color = ambient.colors[c.colorIndex];
+        const hsl = hexToHsl(color);
         const lightNoise = noise.noise2D(c.step, c.step + time);
-        const l = `${45 + lightNoise * 5}%`;
+        const l = hsl.l + lightNoise * 10;
 
         ctx.beginPath();
         const gradient = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
-
-        // Gradient from color to transparent (soft blob)
-        gradient.addColorStop(0, `hsla(${h}, ${s}, ${l}, 0.8)`);
-        gradient.addColorStop(1, `hsla(${h}, ${s}, ${l}, 0)`);
+        gradient.addColorStop(0, `hsla(${hsl.h}, ${hsl.s}%, ${l}%, ${ambient.intensity})`);
+        gradient.addColorStop(1, `hsla(${hsl.h}, ${hsl.s}%, ${l}%, 0)`);
 
         ctx.fillStyle = gradient;
         ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
@@ -187,41 +198,202 @@ export const AmbientBackground: React.FC = () => {
         ctx.closePath();
       });
 
-      animationFrameId = requestAnimationFrame(render);
+      animationRef.current = requestAnimationFrame(render);
     };
 
-    // --- NEW: ResizeObserver Logic ---
-    // This detects when the CONTAINER changes size (PiP, Grid, etc.)
-    const resizeObserver = new ResizeObserver(() => {
-      resize();
-    });
-
+    const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(container);
 
-    // Initial call
     resize();
     render();
 
     return () => {
       resizeObserver.disconnect();
-      cancelAnimationFrame(animationFrameId);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, []);
+  }, [ambient, theme]);
+
+  // Render different ambient effects based on type
+  const renderAmbientEffect = () => {
+    switch (ambient.type) {
+      case "particles":
+      case "gradient":
+        return (
+          <canvas
+            ref={canvasRef}
+            className="block w-full h-full"
+            style={{ filter: "blur(80px)" }}
+          />
+        );
+
+      case "waves":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(${90 + i * 30}deg, ${ambient.colors[i % ambient.colors.length]}30, transparent, ${ambient.colors[(i + 1) % ambient.colors.length]}30)`,
+                }}
+                animate={{
+                  x: ["-10%", "10%", "-10%"],
+                  y: ["-5%", "5%", "-5%"],
+                }}
+                transition={{
+                  duration: 8 / ambient.speed + i * 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "aurora":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {ambient.colors.map((color, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  left: `${i * 20}%`,
+                  top: "-50%",
+                  width: "60%",
+                  height: "200%",
+                  background: `linear-gradient(180deg, transparent 0%, ${color}40 30%, ${color}50 50%, ${color}40 70%, transparent 100%)`,
+                  filter: "blur(60px)",
+                  transformOrigin: "center",
+                }}
+                animate={{
+                  x: ["-20%", "20%", "-20%"],
+                  scaleX: [1, 1.2, 1],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 10 / ambient.speed + i * 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.5,
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "mesh":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `
+                  radial-gradient(ellipse 80% 80% at 20% 20%, ${ambient.colors[0]}30 0%, transparent 50%),
+                  radial-gradient(ellipse 60% 60% at 80% 30%, ${ambient.colors[1]}30 0%, transparent 50%),
+                  radial-gradient(ellipse 70% 70% at 30% 80%, ${ambient.colors[2]}30 0%, transparent 50%),
+                  radial-gradient(ellipse 50% 50% at 70% 70%, ${ambient.colors[3] || ambient.colors[0]}30 0%, transparent 50%)
+                `,
+              }}
+              animate={{
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, 0],
+              }}
+              transition={{
+                duration: 15 / ambient.speed,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <div 
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `linear-gradient(${ambient.colors[0]}15 1px, transparent 1px), linear-gradient(90deg, ${ambient.colors[0]}15 1px, transparent 1px)`,
+                backgroundSize: "50px 50px",
+                opacity: 0.4,
+              }}
+            />
+          </div>
+        );
+
+      case "glow":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: "40%",
+                  height: "40%",
+                  left: `${20 + i * 25}%`,
+                  top: `${30 + (i % 2) * 20}%`,
+                  background: `radial-gradient(circle, ${ambient.colors[i % ambient.colors.length]}50 0%, transparent 70%)`,
+                  filter: "blur(40px)",
+                }}
+                animate={{
+                  scale: [1, 1.3, 1],
+                  opacity: [0.5, 0.8, 0.5],
+                  x: ["-10%", "10%", "-10%"],
+                }}
+                transition={{
+                  duration: 6 / ambient.speed + i,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.8,
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "noise":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(135deg, ${ambient.colors[0]}25 0%, transparent 50%, ${ambient.colors[1]}25 100%)`,
+              }}
+              animate={{ opacity: [0.4, 0.6, 0.4] }}
+              transition={{
+                duration: 8 / ambient.speed,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+            <div 
+              className="absolute inset-0 opacity-[0.05]"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+              }}
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-full overflow-hidden bg-black"
+      className={`absolute inset-0 w-full h-full overflow-hidden transition-colors duration-500 ${className}`}
+      style={{ backgroundColor: mode === "dark" ? "#0a0a0a" : "#fafafa" }}
     >
-      <canvas
-        ref={canvasRef}
-        className="block w-full h-full"
-        style={{ filter: "blur(80px)" }}
+      {renderAmbientEffect()}
+      
+      {/* Vignette overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at center, transparent 0%, ${mode === "dark" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.3)"} 100%)`,
+        }}
       />
-      <div
-        className="absolute inset-0 opacity-20 pointer-events-none"
-        // style={{ backgroundImage: 'url("...")' }} // optional noise
-      />
+      
+      {/* Subtle noise texture */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none" />
     </div>
   );
 };
