@@ -25,10 +25,6 @@ const Loader: React.FC<LoaderProps> = ({ visible }) => {
           style={{ animationDuration: "1.2s" }}
         />
       </div>
-      
-      <span className="mt-8 text-sm font-medium tracking-widest uppercase text-muted-foreground animate-pulse">
-        Loading
-      </span>
     </div>
   );
 };
