@@ -6,7 +6,11 @@ import { Loader } from "lucide-react";
 import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
 import { IndexOverlays } from "./Index/components/IndexOverlays";
-import { FileVaultModal, useFileVault, usePasteCapture } from "@/features/vault";
+import {
+  FileVaultModal,
+  useFileVault,
+  usePasteCapture,
+} from "@/features/vault";
 
 // Hooks
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
@@ -54,9 +58,12 @@ const Index = () => {
   const vault = useFileVault();
 
   // Handle paste capture for vault
-  const handlePastedFiles = useCallback((files: File[]) => {
-    vault.addFiles(files, 'paste');
-  }, [vault.addFiles]);
+  const handlePastedFiles = useCallback(
+    (files: File[]) => {
+      vault.addFiles(files, "paste");
+    },
+    [vault.addFiles]
+  );
 
   usePasteCapture({
     enabled: true,
@@ -107,6 +114,8 @@ const Index = () => {
         onUndo={sceneManager.undo}
         onRedo={sceneManager.redo}
         onResetScene={sceneManager.resetScene}
+        // CHANGE 5: Pass the working full-screen handler here
+        onToggleFullscreen={ui.handleToggleFullscreen}
       />
 
       {/* --- File Vault Modal --- */}
