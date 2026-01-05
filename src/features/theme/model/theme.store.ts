@@ -1,8 +1,40 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type ThemeName = "default" | "ocean" | "forest" | "sunset";
+export type ThemeName = 
+  | "default" 
+  | "ocean" 
+  | "forest" 
+  | "sunset"
+  | "cyberpunk"
+  | "aurora"
+  | "midnight"
+  | "sakura"
+  | "volcanic"
+  | "arctic"
+  | "neon"
+  | "ethereal"
+  | "retro"
+  | "monochrome";
+
 export type ThemeMode = "light" | "dark";
+
+export interface ThemeConfig {
+  name: string;
+  description: string;
+  colors: {
+    light: string;
+    dark: string;
+  };
+  ambient: {
+    type: "gradient" | "particles" | "waves" | "mesh" | "aurora" | "noise" | "glow";
+    colors: string[];
+    intensity: number;
+    speed: number;
+  };
+  accent: string;
+  glow: string;
+}
 
 interface ThemeState {
   theme: ThemeName;
@@ -46,8 +78,8 @@ function applyTheme(theme: ThemeName, mode: ThemeMode) {
   const root = document.documentElement;
   
   // Remove all theme classes
-  root.classList.remove("theme-default", "theme-ocean", "theme-forest", "theme-sunset");
-  root.classList.remove("dark", "light");
+  const themeClasses = Object.keys(themes).map(t => `theme-${t}`);
+  root.classList.remove(...themeClasses, "dark", "light");
   
   // Apply new theme and mode
   root.classList.add(`theme-${theme}`);
@@ -56,22 +88,188 @@ function applyTheme(theme: ThemeName, mode: ThemeMode) {
   }
 }
 
-// Theme metadata for UI
-export const themes: Record<ThemeName, { name: string; colors: { light: string; dark: string } }> = {
+// Enhanced theme configurations with ambient settings
+export const themes: Record<ThemeName, ThemeConfig> = {
   default: {
-    name: "Default",
-    colors: { light: "#fbbf24", dark: "#facc15" }, // Yellow/Gold
+    name: "Golden Hour",
+    description: "Warm amber tones with elegant gold accents",
+    colors: { light: "#fbbf24", dark: "#facc15" },
+    ambient: {
+      type: "gradient",
+      colors: ["#fbbf24", "#f59e0b", "#d97706"],
+      intensity: 0.3,
+      speed: 1,
+    },
+    accent: "#fbbf24",
+    glow: "rgba(251, 191, 36, 0.4)",
   },
   ocean: {
-    name: "Ocean",
-    colors: { light: "#0ea5e9", dark: "#38bdf8" }, // Blue
+    name: "Deep Ocean",
+    description: "Calming ocean depths with bioluminescent highlights",
+    colors: { light: "#0ea5e9", dark: "#38bdf8" },
+    ambient: {
+      type: "waves",
+      colors: ["#0ea5e9", "#0284c7", "#0369a1", "#075985"],
+      intensity: 0.5,
+      speed: 0.8,
+    },
+    accent: "#0ea5e9",
+    glow: "rgba(14, 165, 233, 0.4)",
   },
   forest: {
-    name: "Forest",
-    colors: { light: "#22c55e", dark: "#4ade80" }, // Green
+    name: "Enchanted Forest",
+    description: "Mystical greens with dappled light effects",
+    colors: { light: "#22c55e", dark: "#4ade80" },
+    ambient: {
+      type: "particles",
+      colors: ["#22c55e", "#16a34a", "#15803d", "#86efac"],
+      intensity: 0.4,
+      speed: 0.5,
+    },
+    accent: "#22c55e",
+    glow: "rgba(34, 197, 94, 0.4)",
   },
   sunset: {
-    name: "Sunset",
-    colors: { light: "#f97316", dark: "#fb923c" }, // Orange
+    name: "Burning Sunset",
+    description: "Fiery oranges fading into purple twilight",
+    colors: { light: "#f97316", dark: "#fb923c" },
+    ambient: {
+      type: "gradient",
+      colors: ["#f97316", "#ea580c", "#c2410c", "#9a3412"],
+      intensity: 0.5,
+      speed: 0.6,
+    },
+    accent: "#f97316",
+    glow: "rgba(249, 115, 22, 0.4)",
+  },
+  cyberpunk: {
+    name: "Cyberpunk",
+    description: "Neon-drenched dystopia with electric accents",
+    colors: { light: "#f0abfc", dark: "#e879f9" },
+    ambient: {
+      type: "mesh",
+      colors: ["#f0abfc", "#e879f9", "#06b6d4", "#22d3ee"],
+      intensity: 0.7,
+      speed: 1.2,
+    },
+    accent: "#e879f9",
+    glow: "rgba(232, 121, 249, 0.5)",
+  },
+  aurora: {
+    name: "Northern Lights",
+    description: "Dancing aurora borealis with ethereal movements",
+    colors: { light: "#34d399", dark: "#6ee7b7" },
+    ambient: {
+      type: "aurora",
+      colors: ["#34d399", "#2dd4bf", "#a78bfa", "#c084fc", "#22d3ee"],
+      intensity: 0.6,
+      speed: 0.4,
+    },
+    accent: "#34d399",
+    glow: "rgba(52, 211, 153, 0.4)",
+  },
+  midnight: {
+    name: "Midnight Blue",
+    description: "Deep midnight with starlight sparkles",
+    colors: { light: "#6366f1", dark: "#818cf8" },
+    ambient: {
+      type: "particles",
+      colors: ["#6366f1", "#4f46e5", "#4338ca", "#818cf8"],
+      intensity: 0.4,
+      speed: 0.3,
+    },
+    accent: "#6366f1",
+    glow: "rgba(99, 102, 241, 0.4)",
+  },
+  sakura: {
+    name: "Sakura Bloom",
+    description: "Delicate cherry blossom pink with soft petals",
+    colors: { light: "#f472b6", dark: "#f9a8d4" },
+    ambient: {
+      type: "particles",
+      colors: ["#f472b6", "#ec4899", "#db2777", "#fce7f3"],
+      intensity: 0.5,
+      speed: 0.6,
+    },
+    accent: "#f472b6",
+    glow: "rgba(244, 114, 182, 0.4)",
+  },
+  volcanic: {
+    name: "Volcanic Ember",
+    description: "Molten lava flows with intense heat radiating",
+    colors: { light: "#ef4444", dark: "#f87171" },
+    ambient: {
+      type: "glow",
+      colors: ["#ef4444", "#dc2626", "#b91c1c", "#f97316"],
+      intensity: 0.6,
+      speed: 0.8,
+    },
+    accent: "#ef4444",
+    glow: "rgba(239, 68, 68, 0.5)",
+  },
+  arctic: {
+    name: "Arctic Frost",
+    description: "Crystalline ice with frozen shimmer effects",
+    colors: { light: "#67e8f9", dark: "#a5f3fc" },
+    ambient: {
+      type: "noise",
+      colors: ["#67e8f9", "#22d3ee", "#06b6d4", "#e0f2fe"],
+      intensity: 0.3,
+      speed: 0.2,
+    },
+    accent: "#67e8f9",
+    glow: "rgba(103, 232, 249, 0.4)",
+  },
+  neon: {
+    name: "Neon Nights",
+    description: "Electric neon signs glowing in darkness",
+    colors: { light: "#a3e635", dark: "#bef264" },
+    ambient: {
+      type: "glow",
+      colors: ["#a3e635", "#84cc16", "#65a30d", "#f0abfc"],
+      intensity: 0.7,
+      speed: 1.0,
+    },
+    accent: "#a3e635",
+    glow: "rgba(163, 230, 53, 0.5)",
+  },
+  ethereal: {
+    name: "Ethereal Dream",
+    description: "Soft pastels floating in a dreamlike haze",
+    colors: { light: "#c4b5fd", dark: "#ddd6fe" },
+    ambient: {
+      type: "aurora",
+      colors: ["#c4b5fd", "#a78bfa", "#8b5cf6", "#f0abfc", "#fce7f3"],
+      intensity: 0.4,
+      speed: 0.3,
+    },
+    accent: "#c4b5fd",
+    glow: "rgba(196, 181, 253, 0.4)",
+  },
+  retro: {
+    name: "Retro Wave",
+    description: "80s synthwave with grid lines and chrome",
+    colors: { light: "#fb7185", dark: "#fda4af" },
+    ambient: {
+      type: "mesh",
+      colors: ["#fb7185", "#f43f5e", "#06b6d4", "#8b5cf6"],
+      intensity: 0.6,
+      speed: 0.9,
+    },
+    accent: "#fb7185",
+    glow: "rgba(251, 113, 133, 0.5)",
+  },
+  monochrome: {
+    name: "Monochrome",
+    description: "Elegant grayscale with subtle silver accents",
+    colors: { light: "#a1a1aa", dark: "#d4d4d8" },
+    ambient: {
+      type: "noise",
+      colors: ["#a1a1aa", "#71717a", "#52525b", "#e4e4e7"],
+      intensity: 0.2,
+      speed: 0.4,
+    },
+    accent: "#a1a1aa",
+    glow: "rgba(161, 161, 170, 0.3)",
   },
 };
