@@ -2,6 +2,7 @@
 import React, { memo } from "react";
 import { VideoCanvas } from "@/features/canvas/ui/CanvasView";
 import { SceneState, SceneTransition } from "@/types/caption";
+import { AmbientBackground } from "@/features/stream/ui/AmbientBackground";
 
 // Memoize VideoCanvas to prevent unnecessary re-renders
 const MemoizedVideoCanvas = memo(VideoCanvas);
@@ -27,9 +28,12 @@ export const MainCanvasArea: React.FC<MainCanvasAreaProps> = ({
 }) => {
   return (
     <div className="flex-1 relative overflow-hidden">
+      {/* Ambient Background - Always visible behind everything */}
+      <AmbientBackground className="z-0" />
+      
       {previousScene && previousSceneProps && (
         <div
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full z-10"
           style={{ display: isTransitioning ? "block" : "none" }}
         >
           <MemoizedVideoCanvas
@@ -44,13 +48,15 @@ export const MainCanvasArea: React.FC<MainCanvasAreaProps> = ({
         </div>
       )}
 
-      <MemoizedVideoCanvas
-        key={`active-scene-canvas-${activeScene.id}`}
-        {...activeSceneProps}
-        {...globalCanvasProps}
-        isTransitioningIn={isTransitioning}
-        transition={activeTransition}
-      />
+      <div className="absolute inset-0 z-10">
+        <MemoizedVideoCanvas
+          key={`active-scene-canvas-${activeScene.id}`}
+          {...activeSceneProps}
+          {...globalCanvasProps}
+          isTransitioningIn={isTransitioning}
+          transition={activeTransition}
+        />
+      </div>
     </div>
   );
 };
