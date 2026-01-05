@@ -189,7 +189,10 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
 
         ctx.beginPath();
         const gradient = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
-        gradient.addColorStop(0, `hsla(${hsl.h}, ${hsl.s}%, ${l}%, ${ambient.intensity})`);
+        // Increased intensity for better visibility
+        const adjustedIntensity = Math.min(ambient.intensity * 2, 1);
+        gradient.addColorStop(0, `hsla(${hsl.h}, ${hsl.s}%, ${l}%, ${adjustedIntensity})`);
+        gradient.addColorStop(0.5, `hsla(${hsl.h}, ${hsl.s}%, ${l}%, ${adjustedIntensity * 0.5})`);
         gradient.addColorStop(1, `hsla(${hsl.h}, ${hsl.s}%, ${l}%, 0)`);
 
         ctx.fillStyle = gradient;
@@ -234,7 +237,7 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
                 key={i}
                 className="absolute inset-0"
                 style={{
-                  background: `linear-gradient(${90 + i * 30}deg, ${ambient.colors[i % ambient.colors.length]}30, transparent, ${ambient.colors[(i + 1) % ambient.colors.length]}30)`,
+                  background: `linear-gradient(${90 + i * 30}deg, ${ambient.colors[i % ambient.colors.length]}60, transparent, ${ambient.colors[(i + 1) % ambient.colors.length]}60)`,
                 }}
                 animate={{
                   x: ["-10%", "10%", "-10%"],
@@ -262,14 +265,14 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
                   top: "-50%",
                   width: "60%",
                   height: "200%",
-                  background: `linear-gradient(180deg, transparent 0%, ${color}40 30%, ${color}50 50%, ${color}40 70%, transparent 100%)`,
+                  background: `linear-gradient(180deg, transparent 0%, ${color}70 30%, ${color}90 50%, ${color}70 70%, transparent 100%)`,
                   filter: "blur(60px)",
                   transformOrigin: "center",
                 }}
                 animate={{
                   x: ["-20%", "20%", "-20%"],
                   scaleX: [1, 1.2, 1],
-                  opacity: [0.3, 0.6, 0.3],
+                  opacity: [0.5, 0.9, 0.5],
                 }}
                 transition={{
                   duration: 10 / ambient.speed + i * 2,
@@ -289,10 +292,10 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
               className="absolute inset-0"
               style={{
                 background: `
-                  radial-gradient(ellipse 80% 80% at 20% 20%, ${ambient.colors[0]}30 0%, transparent 50%),
-                  radial-gradient(ellipse 60% 60% at 80% 30%, ${ambient.colors[1]}30 0%, transparent 50%),
-                  radial-gradient(ellipse 70% 70% at 30% 80%, ${ambient.colors[2]}30 0%, transparent 50%),
-                  radial-gradient(ellipse 50% 50% at 70% 70%, ${ambient.colors[3] || ambient.colors[0]}30 0%, transparent 50%)
+                  radial-gradient(ellipse 80% 80% at 20% 20%, ${ambient.colors[0]}60 0%, transparent 50%),
+                  radial-gradient(ellipse 60% 60% at 80% 30%, ${ambient.colors[1]}60 0%, transparent 50%),
+                  radial-gradient(ellipse 70% 70% at 30% 80%, ${ambient.colors[2]}60 0%, transparent 50%),
+                  radial-gradient(ellipse 50% 50% at 70% 70%, ${ambient.colors[3] || ambient.colors[0]}60 0%, transparent 50%)
                 `,
               }}
               animate={{
@@ -308,9 +311,9 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
             <div 
               className="absolute inset-0"
               style={{
-                backgroundImage: `linear-gradient(${ambient.colors[0]}15 1px, transparent 1px), linear-gradient(90deg, ${ambient.colors[0]}15 1px, transparent 1px)`,
+                backgroundImage: `linear-gradient(${ambient.colors[0]}25 1px, transparent 1px), linear-gradient(90deg, ${ambient.colors[0]}25 1px, transparent 1px)`,
                 backgroundSize: "50px 50px",
-                opacity: 0.4,
+                opacity: 0.5,
               }}
             />
           </div>
@@ -324,16 +327,16 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
                 key={i}
                 className="absolute rounded-full"
                 style={{
-                  width: "40%",
-                  height: "40%",
-                  left: `${20 + i * 25}%`,
-                  top: `${30 + (i % 2) * 20}%`,
-                  background: `radial-gradient(circle, ${ambient.colors[i % ambient.colors.length]}50 0%, transparent 70%)`,
-                  filter: "blur(40px)",
+                  width: "50%",
+                  height: "50%",
+                  left: `${15 + i * 25}%`,
+                  top: `${25 + (i % 2) * 20}%`,
+                  background: `radial-gradient(circle, ${ambient.colors[i % ambient.colors.length]}80 0%, ${ambient.colors[i % ambient.colors.length]}40 40%, transparent 70%)`,
+                  filter: "blur(50px)",
                 }}
                 animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.5, 0.8, 0.5],
+                  scale: [1, 1.4, 1],
+                  opacity: [0.6, 1, 0.6],
                   x: ["-10%", "10%", "-10%"],
                 }}
                 transition={{
@@ -353,9 +356,9 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
             <motion.div
               className="absolute inset-0"
               style={{
-                background: `linear-gradient(135deg, ${ambient.colors[0]}25 0%, transparent 50%, ${ambient.colors[1]}25 100%)`,
+                background: `linear-gradient(135deg, ${ambient.colors[0]}50 0%, transparent 50%, ${ambient.colors[1]}50 100%)`,
               }}
-              animate={{ opacity: [0.4, 0.6, 0.4] }}
+              animate={{ opacity: [0.5, 0.8, 0.5] }}
               transition={{
                 duration: 8 / ambient.speed,
                 repeat: Infinity,
@@ -363,7 +366,7 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
               }}
             />
             <div 
-              className="absolute inset-0 opacity-[0.05]"
+              className="absolute inset-0 opacity-[0.08]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
               }}
@@ -380,20 +383,17 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
     <div
       ref={containerRef}
       className={`absolute inset-0 w-full h-full overflow-hidden transition-colors duration-500 ${className}`}
-      style={{ backgroundColor: mode === "dark" ? "#0a0a0a" : "#fafafa" }}
+      style={{ backgroundColor: mode === "dark" ? "#0a0a0a" : "#f5f5f5" }}
     >
       {renderAmbientEffect()}
       
-      {/* Vignette overlay */}
+      {/* Softer vignette that doesn't obscure the effect */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at center, transparent 0%, ${mode === "dark" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.3)"} 100%)`,
+          background: `radial-gradient(ellipse at center, transparent 40%, ${mode === "dark" ? "rgba(0,0,0,0.3)" : "rgba(255,255,255,0.15)"} 100%)`,
         }}
       />
-      
-      {/* Subtle noise texture */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none" />
     </div>
   );
 };
