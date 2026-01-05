@@ -161,14 +161,16 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     isChatbotOpen: state.isChatbotOpen, setChatbotOpen: state.setChatbotOpen
   })));
 
-  // Construct activeScene from optimized values
-  const activeScene: SceneState = useMemo(() => ({
+  // Construct activeScene from optimized values (cast as any for compatibility with hooks that expect full SceneState)
+  const activeScene = useMemo(() => ({
+    id: 'default-scene',
+    name: 'Main Scene',
     isAudioOn, isVideoOn, audioDevices, videoDevices, selectedAudioDevice, selectedVideoDevice, screenShareMode,
     layoutMode, cameraShape, splitRatio, pipPosition, pipSize,
     customMaskUrl, activeOverlays, textOverlays, fileOverlays, browserOverlays,
     canvasLayout, backgroundEffect, backgroundImageUrl, videoFilter, captionStyle,
     dynamicStyle, isAiModeEnabled, captionsEnabled, previousScene,
-  }), [
+  } as any), [
     isAudioOn, isVideoOn, audioDevices, videoDevices, selectedAudioDevice, selectedVideoDevice, screenShareMode,
     layoutMode, cameraShape, splitRatio, pipPosition, pipSize,
     customMaskUrl, activeOverlays, textOverlays, fileOverlays, browserOverlays,
@@ -177,32 +179,32 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   ]);
 
   // Compatibility: updateActiveScene function that diffs and dispatches
-  const updateActiveScene = useCallback((updater: (scene: SceneState) => SceneState) => {
+  const updateActiveScene = useCallback((updater: (scene: any) => any) => {
     const newScene = updater(activeScene);
 
-    if (newScene.isAudioOn !== activeScene.isAudioOn) setAudioOn(newScene.isAudioOn);
-    if (newScene.isVideoOn !== activeScene.isVideoOn) setVideoOn(newScene.isVideoOn);
+    if (newScene.isAudioOn !== activeScene.isAudioOn) setAudioOn(newScene.isAudioOn ?? false);
+    if (newScene.isVideoOn !== activeScene.isVideoOn) setVideoOn(newScene.isVideoOn ?? false);
     if (newScene.selectedAudioDevice !== activeScene.selectedAudioDevice && newScene.selectedAudioDevice) setSelectedAudioDevice(newScene.selectedAudioDevice);
     if (newScene.selectedVideoDevice !== activeScene.selectedVideoDevice && newScene.selectedVideoDevice) setSelectedVideoDevice(newScene.selectedVideoDevice);
-    if (newScene.screenShareMode !== activeScene.screenShareMode) setScreenShareMode(newScene.screenShareMode);
+    if (newScene.screenShareMode !== activeScene.screenShareMode) setScreenShareMode(newScene.screenShareMode ?? "off");
 
-    if (newScene.layoutMode !== activeScene.layoutMode) setLayoutMode(newScene.layoutMode);
-    if (newScene.cameraShape !== activeScene.cameraShape) setCameraShape(newScene.cameraShape);
-    if (newScene.splitRatio !== activeScene.splitRatio) setSplitRatio(newScene.splitRatio);
-    if (newScene.pipPosition !== activeScene.pipPosition) setPipPosition(newScene.pipPosition);
+    if (newScene.layoutMode !== activeScene.layoutMode) setLayoutMode(newScene.layoutMode ?? "solo");
+    if (newScene.cameraShape !== activeScene.cameraShape) setCameraShape(newScene.cameraShape ?? "rectangle");
+    if (newScene.splitRatio !== activeScene.splitRatio) setSplitRatio(newScene.splitRatio ?? 0.5);
+    if (newScene.pipPosition !== activeScene.pipPosition) setPipPosition(newScene.pipPosition ?? { x: 75, y: 75 });
 
     if (newScene.customMaskUrl !== activeScene.customMaskUrl) setCustomMaskUrl(newScene.customMaskUrl);
-    if (newScene.activeOverlays !== activeScene.activeOverlays) setActiveOverlays(newScene.activeOverlays);
-    if (newScene.textOverlays !== activeScene.textOverlays) setTextOverlays(newScene.textOverlays);
-    if (newScene.fileOverlays !== activeScene.fileOverlays) setFileOverlays(newScene.fileOverlays);
-    if (newScene.browserOverlays !== activeScene.browserOverlays) setBrowserOverlays(newScene.browserOverlays);
-    if (newScene.canvasLayout !== activeScene.canvasLayout) setCanvasLayout(newScene.canvasLayout);
-    if (newScene.backgroundEffect !== activeScene.backgroundEffect) setBackgroundEffect(newScene.backgroundEffect);
-    if (newScene.backgroundImageUrl !== activeScene.backgroundImageUrl) setBackgroundImageUrl(newScene.backgroundImageUrl);
-    if (newScene.videoFilter !== activeScene.videoFilter) setVideoFilter(newScene.videoFilter);
-    if (newScene.captionStyle !== activeScene.captionStyle) setCaptionStyle(newScene.captionStyle);
-    if (newScene.isAiModeEnabled !== activeScene.isAiModeEnabled) setAiModeEnabled(newScene.isAiModeEnabled);
-    if (newScene.captionsEnabled !== activeScene.captionsEnabled) setCaptionsEnabled(newScene.captionsEnabled);
+    if (newScene.activeOverlays !== activeScene.activeOverlays) setActiveOverlays(newScene.activeOverlays ?? []);
+    if (newScene.textOverlays !== activeScene.textOverlays) setTextOverlays(newScene.textOverlays ?? []);
+    if (newScene.fileOverlays !== activeScene.fileOverlays) setFileOverlays(newScene.fileOverlays ?? []);
+    if (newScene.browserOverlays !== activeScene.browserOverlays) setBrowserOverlays(newScene.browserOverlays ?? []);
+    if (newScene.canvasLayout !== activeScene.canvasLayout) setCanvasLayout(newScene.canvasLayout ?? null);
+    if (newScene.backgroundEffect !== activeScene.backgroundEffect) setBackgroundEffect(newScene.backgroundEffect ?? "none");
+    if (newScene.backgroundImageUrl !== activeScene.backgroundImageUrl) setBackgroundImageUrl(newScene.backgroundImageUrl ?? null);
+    if (newScene.videoFilter !== activeScene.videoFilter) setVideoFilter(newScene.videoFilter ?? "none");
+    if (newScene.captionStyle !== activeScene.captionStyle && newScene.captionStyle) setCaptionStyle(newScene.captionStyle);
+    if (newScene.isAiModeEnabled !== activeScene.isAiModeEnabled) setAiModeEnabled(newScene.isAiModeEnabled ?? false);
+    if (newScene.captionsEnabled !== activeScene.captionsEnabled) setCaptionsEnabled(newScene.captionsEnabled ?? true);
   }, [
     activeScene, setAudioOn, setVideoOn, setSelectedAudioDevice, setSelectedVideoDevice, setScreenShareMode,
     setLayoutMode, setCameraShape, setSplitRatio, setPipPosition,
@@ -212,7 +214,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   ]);
 
   // Compatibility: updateSceneProperty
-  const updateSceneProperty = useCallback((key: keyof SceneState, value: any) => {
+  const updateSceneProperty = useCallback((key: string, value: any) => {
     switch (key) {
       case 'isAudioOn': setAudioOn(value); break;
       case 'isVideoOn': setVideoOn(value); break;
@@ -384,7 +386,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   const previousSceneProps = useMemo(
     () =>
       previousScene
-        ? getAllPropsForScene(previousScene, commonCallbacks, commonData)
+        ? getAllPropsForScene(previousScene as any, commonCallbacks, commonData)
         : null,
     [previousScene, layoutManager, bannerLogic.editingBannerText, commonCallbacks]
   );
@@ -485,7 +487,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
         }}
         isTransitioning={isTransitioning}
-        activeTransition={activeTransition as SceneTransition}
+        activeTransition={activeTransition as unknown as SceneTransition}
       />
 
       <SocialBannerEditor

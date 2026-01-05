@@ -1,15 +1,36 @@
 // src/pages/index/hooks/useSceneManager.ts
-import { useState, useCallback, useMemo, useEffect, useRef } from "react"; // Added useRef, useEffect
-// ... imports
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+// Types
+import {
+  SceneState,
+  SceneTransition,
+  SubSceneState,
+  TextOverlayState,
+  CaptionShape,
+  CaptionAnimation,
+  CanvasLayoutState,
+  LayoutMode,
+  CameraShape,
+} from "@/types/caption";
+import { StreamStylePreset } from "@/types/streamStyle";
+import { GeneratedSceneDesign, generateAllSceneDesigns } from "@/lib/streamSceneDesigns";
 
 // Stores
 import { useCanvasStore } from "@/stores/canvas.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
 
-// ... (keep existing imports)
+// Props interface
+export interface UseSceneManagerProps {
+  recording: any;
+}
 
-import { v4 as uuidv4 } from "uuid";
+// Helper ID generators
+const generateSceneId = () => `scene-${uuidv4()}`;
+const generateSubsceneId = () => `subscene-${uuidv4()}`;
+const generateTransitionId = () => `transition-${uuidv4()}`;
 
 // Helper to create a pristine default scene
 const createDefaultScene = (name: string): SceneState => ({
@@ -928,14 +949,10 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
               blankCanvasColor: design.blankCanvasColor,
               backgroundEffect: design.backgroundEffect,
               backgroundImageUrl: design.backgroundGradient, // Use gradient as background
-              // Map layoutMode to valid caption LayoutMode type
-              layoutMode:
-                design.layoutMode === "corner-floating" ||
-                design.layoutMode === "diagonal-split" ||
-                design.layoutMode === "grid-3x3" ||
-                design.layoutMode === "overlay-full"
-                  ? ("pip" as LayoutMode)
-                  : (design.layoutMode as LayoutMode),
+              // Map layoutMode - use pip as fallback for unsupported modes
+              layoutMode: (["solo", "split-vertical", "split-horizontal", "pip"].includes(design.layoutMode) 
+                ? design.layoutMode 
+                : "pip") as LayoutMode,
               cameraShape: design.cameraShape as CameraShape,
               pipPosition: design.pipPosition,
               pipSize: design.pipSize,

@@ -7,9 +7,13 @@ import { AmbientBackground } from "@/features/stream/ui/AmbientBackground";
 // Memoize VideoCanvas to prevent unnecessary re-renders
 const MemoizedVideoCanvas = memo(VideoCanvas);
 
+// Partial scene type for canvas container compatibility
+// Allows most fields to be optional but keeps required structure
+export type PartialSceneState = Partial<SceneState> & { id?: string };
+
 interface MainCanvasAreaProps {
-  activeScene: SceneState;
-  previousScene: SceneState | null;
+  activeScene: PartialSceneState;
+  previousScene: PartialSceneState | null;
   activeSceneProps: any;
   previousSceneProps: any;
   globalCanvasProps: any;
