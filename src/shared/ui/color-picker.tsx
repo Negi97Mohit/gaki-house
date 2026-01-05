@@ -6,8 +6,8 @@ import { Slider } from './slider';
 import { Input } from './input';
 import { Paintbrush, Palette, Plus, X, ChevronDown, ChevronUp, Save, Trash2 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
-import { 
-    SOLID_COLOR_PRESETS, 
+import {
+    SOLID_COLOR_PRESETS,
     GRADIENT_PRESETS,
     GRADIENT_DIRECTIONS,
     GRADIENT_PATTERNS,
@@ -84,6 +84,7 @@ const parseColorValue = (color: string): string => {
 };
 
 const parseAlpha = (color: string): number => {
+    if (!color) return 1;
     if (color.includes('rgba')) {
         const match = color.match(/[\d.]+\)$/);
         if (match) return parseFloat(match[0]);
@@ -112,8 +113,8 @@ const PresetGrid: React.FC<PresetGridProps> = ({ presets, selectedValue, onSelec
                     className={cn(
                         "flex-shrink-0 transition-all hover:scale-105 rounded-md border",
                         isGradient ? "w-12 h-8" : "w-6 h-6",
-                        selectedValue === preset 
-                            ? 'border-primary ring-1 ring-primary/50' 
+                        selectedValue === preset
+                            ? 'border-primary ring-1 ring-primary/50'
                             : 'border-border/30 hover:border-border'
                     )}
                     style={{ background: preset }}
@@ -200,7 +201,7 @@ interface GradientEditorProps {
 
 const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
     const parsed = useMemo(() => parseGradient(value), [value]);
-    
+
     const [colors, setColors] = useState<string[]>(parsed.colors.length >= 2 ? parsed.colors : ['#667eea', '#764ba2']);
     const [patternType, setPatternType] = useState<GradientPatternType>(parsed.type);
     const [angle, setAngle] = useState(parsed.angle);
@@ -475,8 +476,8 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
                                 key={idx}
                                 className={cn(
                                     "flex-shrink-0 w-10 h-8 rounded-md border transition-all hover:scale-105",
-                                    value === preset 
-                                        ? 'border-primary ring-1 ring-primary/50' 
+                                    value === preset
+                                        ? 'border-primary ring-1 ring-primary/50'
                                         : 'border-border/30 hover:border-border'
                                 )}
                                 style={{ background: preset }}
@@ -508,8 +509,8 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
                                     <button
                                         className={cn(
                                             "flex-shrink-0 w-10 h-8 rounded-md border transition-all hover:scale-105",
-                                            value === preset 
-                                                ? 'border-primary ring-1 ring-primary/50' 
+                                            value === preset
+                                                ? 'border-primary ring-1 ring-primary/50'
                                                 : 'border-border/30 hover:border-border'
                                         )}
                                         style={{ background: preset }}
@@ -639,8 +640,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                 return (
                     <div className={cn(
                         "flex items-center gap-2 p-2 rounded-md border transition-all group cursor-pointer",
-                        darkMode 
-                            ? "bg-white/5 border-white/10 hover:bg-white/10" 
+                        darkMode
+                            ? "bg-white/5 border-white/10 hover:bg-white/10"
                             : "bg-muted/30 border-border/30 hover:border-border hover:bg-muted/50",
                         className
                     )}>
@@ -678,8 +679,8 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                         disabled={disabled}
                         className={cn(
                             'border transition-colors',
-                            darkMode 
-                                ? 'bg-white/10 border-white/20 hover:bg-white/20 text-white' 
+                            darkMode
+                                ? 'bg-white/10 border-white/20 hover:bg-white/20 text-white'
                                 : 'border-border hover:bg-accent',
                             sizeClasses[size],
                             className
@@ -741,7 +742,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                         Gradient
                     </button>
                 </div>
-                )}
+            )}
 
             {activeTab === 'solid' ? (
                 <div className="space-y-3">
@@ -768,7 +769,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
                 <GradientEditor
                     value={isGradient(value) ? value : GRADIENT_PRESETS[0]}
                     onChange={onChange}
-            />
+                />
             )}
         </div>
     );
@@ -778,11 +779,11 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
             <PopoverTrigger asChild>
                 {renderTrigger()}
             </PopoverTrigger>
-            <PopoverContent 
+            <PopoverContent
                 className={cn(
                     "p-0 w-auto z-[10001]",
                     darkMode && "bg-zinc-900 border-white/10"
-                )} 
+                )}
                 align="start"
                 side="bottom"
                 sideOffset={4}

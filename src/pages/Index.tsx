@@ -52,12 +52,12 @@ const Index = () => {
 
   // 5. File Vault
   const vault = useFileVault();
-  
+
   // Handle paste capture for vault
   const handlePastedFiles = useCallback((files: File[]) => {
     vault.addFiles(files, 'paste');
   }, [vault.addFiles]);
-  
+
   usePasteCapture({
     enabled: true,
     onFilePaste: handlePastedFiles,
@@ -84,39 +84,10 @@ const Index = () => {
       )}
     >
       <CanvasContainer
-        activeScene={effectiveScene}
-        previousScene={sceneManager.previousScene}
-        activeTransition={sceneManager.activeTransition}
-        isTransitioning={sceneManager.isTransitioning}
-        updateActiveScene={sceneManager.updateActiveScene}
-        updateSceneProperty={sceneManager.updateSceneProperty}
-        audioDevices={mediaManager.audioDevices}
-        videoDevices={mediaManager.videoDevices}
         layoutManager={layoutManager}
         recording={recording}
         onRecordingComplete={sessionData.handleRecordingComplete}
-        uiState={{
-          isFullscreen: ui.isFullscreen,
-          onToggleFullscreen: ui.handleToggleFullscreen,
-          isFsSidebarOpen: ui.isFsSidebarOpen,
-          onFsSidebarToggle: ui.setIsFsSidebarOpen,
-          isMouseActive: ui.isMouseActive,
-          onOpenSessions: () => ui.setShowSessionsPanel(true),
-          isDrawing: drawing.isDrawing,
-          setIsDrawing: drawing.setIsDrawing,
-        }}
-        savedOverlays={sessionData.savedOverlays}
-        setSavedOverlays={sessionData.setSavedOverlays}
-        dynamicLayout={dynamicLayout}
-        setDynamicLayout={setDynamicLayout}
-        selection={selection}
-        canvasRef={ui.canvasRef}
-        mainContainerRef={ui.mainContainerRef}
-        isSettingsOpen={ui.showSettings}
-        onSetSettingsOpen={ui.setShowSettings}
         remoteStream={remote.remoteStream}
-        isChatbotOpen={ui.isChatbotOpen}
-        onChatbotToggle={ui.setIsChatbotOpen}
         vaultFiles={vault.files}
         onAddVaultFiles={vault.addFiles}
         onRemoveVaultFile={vault.removeFile}
@@ -126,109 +97,16 @@ const Index = () => {
       <IndexOverlays editor={editor} />
 
       <BottomNavigation
-        isMouseActive={ui.isBottomNavVisible}
-        onOpenSettings={() => ui.setShowSettings((prev) => !prev)}
-        onOpenSessions={() => ui.setShowSessionsPanel(true)}
         onSaveLayout={layoutManager.handleSaveLayout}
-        onOpenAnimationLibrary={() => ui.setShowAnimationLibrary(true)}
-        isAudioOn={activeScene.isAudioOn}
-        onAudioToggle={(val) =>
-          sceneManager.updateSceneProperty("isAudioOn", val)
-        }
-        audioDevices={mediaManager.audioDevices}
-        onAudioDeviceSelect={(val) =>
-          sceneManager.updateSceneProperty("selectedAudioDevice", val)
-        }
-        selectedAudioDevice={activeScene.selectedAudioDevice}
-        isVideoOn={activeScene.isVideoOn}
-        onVideoToggle={(val) => {
-          if (
-            val &&
-            activeScene.selectedVideoDevice === "remote-peer" &&
-            !remote.isRemoteConnected
-          ) {
-            remote.setHasDismissedRemoteModal(false);
-            remote.setIsRemoteModalOpen(true);
-          }
-          sceneManager.updateSceneProperty("isVideoOn", val);
-        }}
-        videoDevices={mediaManager.videoDevices}
-        onVideoDeviceSelect={(val) =>
-          sceneManager.updateSceneProperty("selectedVideoDevice", val)
-        }
-        selectedVideoDevice={activeScene.selectedVideoDevice}
-        screenShareMode={activeScene.screenShareMode}
-        onScreenShareModeChange={(val) => {
-          sceneManager.updateActiveScene((scene) => ({
-            ...scene,
-            screenShareMode: val,
-            layoutMode: val !== "off" ? "pip" : "solo",
-          }));
-        }}
-        isRecording={recording.isRecording}
-        onRecordingToggle={() => { }}
-        isBroadcasting={rtmp.isStreaming}
-        onBroadcastToggle={() => console.log("Toggle Clicked")} // Modal handles action now
-        onStartStream={rtmp.startStreaming}
-        onStopStream={rtmp.stopStreaming}
-        isConnecting={rtmp.isConnecting}
-        streamStatus={rtmp.status}
-        onToggleFullscreen={ui.handleToggleFullscreen}
-        isFullscreen={ui.isFullscreen}
-        layoutMode={activeScene.layoutMode}
-        cameraShape={activeScene.cameraShape}
-        onLayoutModeChange={(val) =>
-          sceneManager.updateSceneProperty("layoutMode", val)
-        }
-        onCameraShapeChange={(val) =>
-          sceneManager.updateSceneProperty("cameraShape", val)
-        }
-        onCustomMaskUpload={(file) => {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            if (typeof e.target?.result === "string")
-              sceneManager.updateSceneProperty(
-                "customMaskUrl",
-                e.target.result
-              );
-          };
-          reader.readAsDataURL(file);
-        }}
-        portalContainer={ui.mainContainerRef.current || undefined}
-        splitRatio={activeScene.splitRatio}
-        pipPosition={activeScene.pipPosition}
-        pipSize={activeScene.pipSize}
-        onSplitRatioChange={(val) =>
-          sceneManager.updateSceneProperty("splitRatio", val)
-        }
-        onPipPositionChange={(val) =>
-          sceneManager.updateSceneProperty("pipPosition", val)
-        }
-        onPipSizeChange={(val) =>
-          sceneManager.updateSceneProperty("pipSize", val)
-        }
-        customMaskUrl={activeScene.customMaskUrl}
-        onUndo={sceneManager.undo}
-        onRedo={sceneManager.redo}
-        canUndo={sceneManager.canUndo}
-        canRedo={sceneManager.canRedo}
-        onResetScene={sceneManager.resetScene}
-        canvasLayout={activeScene.canvasLayout}
-        isSmartSwitchEnabled={broadcast.isSmartSwitchEnabled}
-        onSmartSwitchToggle={broadcast.toggleSmartSwitch}
-        // AI Props
         onAiCommandSubmit={processTranscript}
         isAiProcessing={isProcessingAi}
-        activeOverlays={activeScene.activeOverlays}
-        isAiModeEnabled={activeScene.isAiModeEnabled}
-        onAiModeToggle={(val) =>
-          sceneManager.updateSceneProperty("isAiModeEnabled", val)
-        }
-        captionsEnabled={activeScene.captionsEnabled}
-        onCaptionsToggle={(val) =>
-          sceneManager.updateSceneProperty("captionsEnabled", val)
-        }
         hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
+        portalContainer={ui.mainContainerRef.current || undefined}
+        onStartStream={rtmp.startStreaming}
+        onStopStream={rtmp.stopStreaming}
+        onUndo={sceneManager.undo}
+        onRedo={sceneManager.redo}
+        onResetScene={sceneManager.resetScene}
       />
 
       {/* --- File Vault Modal --- */}

@@ -208,7 +208,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     !props.selectedFileId &&
     !props.selectedGeneratedId &&
     !props.editingBannerText &&
-    !props.dynamicLayout.isActive &&
+    !props.dynamicLayout?.isActive &&
     !props.canvasLayout;
 
   usePipGestures({
@@ -542,7 +542,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   fileOverlays={fileOverlays}
                   textOverlays={textOverlays}
                   activeDynamicTargetId={
-                    dynamicLayout.isActive
+                    dynamicLayout?.isActive
                       ? dynamicLayout.target?.id
                       : undefined
                   }
@@ -606,7 +606,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   fileOverlays={fileOverlays}
                   textOverlays={textOverlays}
                   activeDynamicTargetId={
-                    dynamicLayout.isActive
+                    dynamicLayout?.isActive
                       ? dynamicLayout.target?.id
                       : undefined
                   }
@@ -691,7 +691,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   fileOverlays={fileOverlays}
                   textOverlays={textOverlays}
                   activeDynamicTargetId={
-                    dynamicLayout.isActive
+                    dynamicLayout?.isActive
                       ? dynamicLayout.target?.id
                       : undefined
                   }

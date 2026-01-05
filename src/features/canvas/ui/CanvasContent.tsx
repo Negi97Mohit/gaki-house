@@ -113,7 +113,7 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
     browserOverlays,
   } = props;
 
-  if (dynamicLayout.isActive && dynamicLayout.target) {
+  if (dynamicLayout?.isActive && dynamicLayout.target) {
     return (
       <VideoCanvasSplitLayout
         dynamicLayout={dynamicLayout as DynamicLayoutConfig}
@@ -183,7 +183,7 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
           screenShareMode={screenShareMode}
           onPipPositionChange={onPipPositionChange}
           onPipSizeChange={onPipSizeChange}
-          onPipRotationChange={onPipRotationChange || (() => {})}
+          onPipRotationChange={onPipRotationChange || (() => { })}
           pipRotation={pipRotation}
           onInternalDragStart={onInternalDragStart}
           onInternalDragStop={onInternalDragStop}
@@ -194,10 +194,10 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
             cameraShape === "circle"
               ? 1
               : (getNumericAspectRatio(
-                  cameraShape,
-                  sidebarProps.cameraAspectRatio,
-                  sidebarProps.customAspectRatio
-                ) as number)
+                cameraShape,
+                sidebarProps.cameraAspectRatio,
+                sidebarProps.customAspectRatio
+              ) as number)
           }
         />
       )}

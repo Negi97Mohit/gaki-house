@@ -1,101 +1,92 @@
 // src/pages/index/hooks/useSceneManager.ts
-import { useState, useCallback, useMemo } from "react";
-import {
-  SceneState,
-  SceneTransition,
-  SubSceneState,
-  CaptionStyle,
-  CaptionShape,
-  CaptionAnimation,
-  TextOverlayState,
-  LayoutMode,
-  CameraShape,
-  DEFAULT_LAYOUT_STATE,
-  DEFAULT_CAMERA_STATE,
-  CanvasLayoutState,
-} from "@/types/caption";
-import { zIndex } from "@/lib/zIndex";
-import { StreamStylePreset, DEFAULT_STREAM_SCENES } from "@/types/streamStyle";
-import { generateAllSceneDesigns, GeneratedSceneDesign } from "@/lib/streamSceneDesigns";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react"; // Added useRef, useEffect
+// ... imports
 
-const generateSceneId = () => `scene-${Date.now()}`;
-const generateSubsceneId = () => `subscene-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-const generateTransitionId = () => `trans-${Date.now()}`;
+// Stores
+import { useCanvasStore } from "@/stores/canvas.store";
+import { useMediaStore } from "@/stores/media.store";
+import { useSceneStore } from "@/stores/scene.store";
 
-export const DEFAULT_CAPTION_STYLE: CaptionStyle = {
-  fontFamily: "Inter",
-  fontSize: 32,
-  color: "#FFFFFF",
-  backgroundColor: "rgba(0,0,0,0.8)",
-  position: { x: 50, y: 50 },
-  shape: "rounded",
-  animation: "fade",
-  outline: false,
-  shadow: true,
-  bold: false,
-  italic: false,
-  underline: false,
-  rotation: 0,
-  border: false,
-  borderColor: "#FFFFFF",
-  borderWidth: 2,
-  width: 60,
-};
+// ... (keep existing imports)
 
-export const createDefaultScene = (name: string): SceneState => ({
-  id: generateSceneId(),
+import { v4 as uuidv4 } from 'uuid';
+
+// Helper to create a pristine default scene
+const createDefaultScene = (name: string): SceneState => ({
+  id: uuidv4(),
   name,
   canvasLayout: null,
   textOverlays: [],
   browserOverlays: [],
   fileOverlays: [],
   activeOverlays: [],
+
   selectedVideoDevice: undefined,
   selectedAudioDevice: undefined,
-  isAudioOn: false,
-  isVideoOn: false,
+  isAudioOn: true,
+  isVideoOn: true,
   captionsEnabled: true,
   screenShareMode: "off",
-  isAiModeEnabled: true,
-  aiButtonPosition: { x: 90, y: 90 },
-  captionStyle: DEFAULT_CAPTION_STYLE,
-  dynamicStyle: "none",
-  layoutMode: DEFAULT_LAYOUT_STATE.mode,
-  cameraShape: DEFAULT_LAYOUT_STATE.cameraShape,
-  splitRatio: DEFAULT_LAYOUT_STATE.splitRatio,
-  pipPosition: DEFAULT_LAYOUT_STATE.pipPosition,
-  pipSize: DEFAULT_LAYOUT_STATE.pipSize,
-  pipRotation: DEFAULT_LAYOUT_STATE.pipRotation,
-  pipBorder: DEFAULT_LAYOUT_STATE.pipBorder,
-  pipShadow: DEFAULT_LAYOUT_STATE.pipShadow,
-  customMaskUrl: undefined,
+  isAiModeEnabled: false,
+  aiButtonPosition: { x: 20, y: 20 },
+
+  layoutMode: "solo",
+  cameraShape: "rectangle",
+  splitRatio: 0.5,
+  pipPosition: { x: 75, y: 75 },
+  pipSize: { width: 20, height: 20 },
+  pipRotation: 0,
+  pipBorder: { color: "#FFFFFF", width: 0 },
+  pipShadow: { blur: 0, color: "rgba(0,0,0,0.5)" },
+
   videoFilter: "none",
-  blankCanvasColor: "#1A1A1A",
   backgroundEffect: "none",
   backgroundImageUrl: null,
+  blankCanvasColor: "#000000",
+
+  captionStyle: {
+    fontFamily: "Inter",
+    fontSize: 24,
+    color: "#FFFFFF",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    position: { x: 50, y: 90 },
+    shape: "rounded",
+    animation: "fade",
+    outline: false,
+    shadow: true,
+    bold: false,
+    italic: false,
+    underline: false,
+    rotation: 0,
+    border: false,
+    borderColor: "#000000",
+    borderWidth: 2,
+    textAlign: "center"
+  },
+  dynamicStyle: "none",
+
+  activeInteractiveFilter: "none",
+  filterIntensity: 0.5,
+  filterColor: "#22d3ee",
+  filterTarget: "both",
+
   isAutoFramingEnabled: false,
-  zoomSensitivity: 4.0,
-  trackingSpeed: 0.08,
+  zoomSensitivity: 0.5,
+  trackingSpeed: 0.5,
   isBeautifyEnabled: false,
   isLowLightEnabled: false,
   isNeonEdgeEnabled: false,
-  neonIntensity: 20,
-  neonColor: "cyan",
+  neonIntensity: 0.8,
+  neonColor: "#00ff00",
+
   cameraBackground: "none",
   customBackgroundUrl: null,
+  activeSequenceId: null,
   cameraAspectRatio: "16:9",
   canvasAspectRatio: "16:9",
   customAspectRatio: "",
   isFaceTrackingEnabled: false,
-  activeInteractiveFilter: "none",
-  filterIntensity: 1.0,
-  filterColor: "#00ffff",
-  filterTarget: "both",
 });
-
-interface UseSceneManagerProps {
-  recording: any; // Type from useRecordingSession
-}
 
 export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
   const [scenes, setScenes] = useState<SceneState[]>(() => [
@@ -114,6 +105,134 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     () => scenes.find((s) => s.id === activeSceneId)!,
     [scenes, activeSceneId]
   );
+
+  // --- STORE SYNC ---
+  const canvasStore = useCanvasStore();
+  const mediaStore = useMediaStore();
+  const sceneStore = useSceneStore();
+
+  const isSyncingFromStore = useRef(false);
+  const isSyncingFromScene = useRef(false);
+
+  // 1. Sync SCENE -> STORE (Hydration)
+  useEffect(() => {
+    if (isSyncingFromStore.current) return;
+
+    isSyncingFromScene.current = true;
+
+    // Media
+    if (mediaStore.isAudioOn !== activeScene.isAudioOn) mediaStore.setAudioOn(activeScene.isAudioOn);
+    if (mediaStore.isVideoOn !== activeScene.isVideoOn) mediaStore.setVideoOn(activeScene.isVideoOn);
+    if (mediaStore.selectedAudioDevice !== activeScene.selectedAudioDevice) mediaStore.setSelectedAudioDevice(activeScene.selectedAudioDevice ?? '');
+    if (mediaStore.selectedVideoDevice !== activeScene.selectedVideoDevice) mediaStore.setSelectedVideoDevice(activeScene.selectedVideoDevice ?? '');
+    if (mediaStore.screenShareMode !== activeScene.screenShareMode) mediaStore.setScreenShareMode(activeScene.screenShareMode);
+
+    // Canvas
+    if (canvasStore.layoutMode !== activeScene.layoutMode) canvasStore.setLayoutMode(activeScene.layoutMode);
+    if (canvasStore.cameraShape !== activeScene.cameraShape) canvasStore.setCameraShape(activeScene.cameraShape);
+    if (canvasStore.splitRatio !== activeScene.splitRatio) canvasStore.setSplitRatio(activeScene.splitRatio);
+    // Deep checks for objects might be needed or accept slight redundancy
+    if (JSON.stringify(canvasStore.pipPosition) !== JSON.stringify(activeScene.pipPosition)) canvasStore.setPipPosition(activeScene.pipPosition);
+    if (JSON.stringify(canvasStore.pipSize) !== JSON.stringify(activeScene.pipSize)) canvasStore.setPipSize(activeScene.pipSize);
+
+    // Scene
+    if (sceneStore.customMaskUrl !== activeScene.customMaskUrl) sceneStore.setCustomMaskUrl(activeScene.customMaskUrl);
+    if (sceneStore.activeOverlays !== activeScene.activeOverlays) sceneStore.setActiveOverlays(activeScene.activeOverlays);
+    if (sceneStore.textOverlays !== activeScene.textOverlays) sceneStore.setTextOverlays(activeScene.textOverlays);
+    if (sceneStore.fileOverlays !== activeScene.fileOverlays) sceneStore.setFileOverlays(activeScene.fileOverlays);
+    if (sceneStore.browserOverlays !== activeScene.browserOverlays) sceneStore.setBrowserOverlays(activeScene.browserOverlays);
+    if (sceneStore.canvasLayout !== activeScene.canvasLayout) sceneStore.setCanvasLayout(activeScene.canvasLayout);
+    if (sceneStore.backgroundEffect !== activeScene.backgroundEffect) sceneStore.setBackgroundEffect(activeScene.backgroundEffect);
+    if (sceneStore.backgroundImageUrl !== activeScene.backgroundImageUrl) sceneStore.setBackgroundImageUrl(activeScene.backgroundImageUrl);
+    if (sceneStore.videoFilter !== activeScene.videoFilter) sceneStore.setVideoFilter(activeScene.videoFilter);
+    if (sceneStore.captionStyle !== activeScene.captionStyle) sceneStore.setCaptionStyle(activeScene.captionStyle);
+    if (sceneStore.isAiModeEnabled !== activeScene.isAiModeEnabled) sceneStore.setAiModeEnabled(activeScene.isAiModeEnabled);
+    if (sceneStore.captionsEnabled !== activeScene.captionsEnabled) sceneStore.setCaptionsEnabled(activeScene.captionsEnabled);
+
+    // Reset flag after render cycle (timeout helps with React batching)
+    setTimeout(() => { isSyncingFromScene.current = false; }, 0);
+  }, [activeScene]); // Dependency on activeScene ensures update on switch or legacy change
+
+  // 2. Sync STORE -> SCENE (Updates from Store UI)
+  // We need to listen to all relevant store values.
+  const storeValues = {
+    isAudioOn: mediaStore.isAudioOn,
+    isVideoOn: mediaStore.isVideoOn,
+    selectedAudioDevice: mediaStore.selectedAudioDevice,
+    selectedVideoDevice: mediaStore.selectedVideoDevice,
+    screenShareMode: mediaStore.screenShareMode,
+    layoutMode: canvasStore.layoutMode,
+    cameraShape: canvasStore.cameraShape,
+    splitRatio: canvasStore.splitRatio,
+    pipPosition: canvasStore.pipPosition,
+    pipSize: canvasStore.pipSize,
+    customMaskUrl: sceneStore.customMaskUrl,
+    activeOverlays: sceneStore.activeOverlays,
+    textOverlays: sceneStore.textOverlays,
+    fileOverlays: sceneStore.fileOverlays,
+    browserOverlays: sceneStore.browserOverlays,
+    canvasLayout: sceneStore.canvasLayout,
+    backgroundEffect: sceneStore.backgroundEffect,
+    backgroundImageUrl: sceneStore.backgroundImageUrl,
+    videoFilter: sceneStore.videoFilter,
+    captionStyle: sceneStore.captionStyle,
+    isAiModeEnabled: sceneStore.isAiModeEnabled,
+    captionsEnabled: sceneStore.captionsEnabled,
+  };
+
+  useEffect(() => {
+    if (isSyncingFromScene.current) return;
+
+    // Check if anything actually changed to avoid loop
+    // This is expensive but necessary for massive sync object
+    let changed = false;
+    // ... complex check or just rely on 'updateActiveScene's internal check?
+    // updateActiveScene has inner check.
+
+    isSyncingFromStore.current = true;
+
+    updateActiveScene(prev => {
+      const next = { ...prev };
+      let modified = false;
+
+      if (next.isAudioOn !== storeValues.isAudioOn) { next.isAudioOn = storeValues.isAudioOn; modified = true; }
+      if (next.isVideoOn !== storeValues.isVideoOn) { next.isVideoOn = storeValues.isVideoOn; modified = true; }
+      if (next.selectedAudioDevice !== storeValues.selectedAudioDevice) { next.selectedAudioDevice = storeValues.selectedAudioDevice; modified = true; }
+      if (next.selectedVideoDevice !== storeValues.selectedVideoDevice) { next.selectedVideoDevice = storeValues.selectedVideoDevice; modified = true; }
+      if (next.screenShareMode !== storeValues.screenShareMode) { next.screenShareMode = storeValues.screenShareMode; modified = true; }
+
+      if (next.layoutMode !== storeValues.layoutMode) { next.layoutMode = storeValues.layoutMode; modified = true; }
+      if (next.cameraShape !== storeValues.cameraShape) { next.cameraShape = storeValues.cameraShape; modified = true; }
+      if (next.splitRatio !== storeValues.splitRatio) { next.splitRatio = storeValues.splitRatio; modified = true; }
+      if (JSON.stringify(next.pipPosition) !== JSON.stringify(storeValues.pipPosition)) { next.pipPosition = storeValues.pipPosition; modified = true; }
+      if (JSON.stringify(next.pipSize) !== JSON.stringify(storeValues.pipSize)) { next.pipSize = storeValues.pipSize; modified = true; }
+
+      if (next.customMaskUrl !== storeValues.customMaskUrl) { next.customMaskUrl = storeValues.customMaskUrl; modified = true; }
+      if (next.activeOverlays !== storeValues.activeOverlays) { next.activeOverlays = storeValues.activeOverlays; modified = true; }
+      if (next.textOverlays !== storeValues.textOverlays) { next.textOverlays = storeValues.textOverlays; modified = true; }
+      if (next.fileOverlays !== storeValues.fileOverlays) { next.fileOverlays = storeValues.fileOverlays; modified = true; }
+      if (next.browserOverlays !== storeValues.browserOverlays) { next.browserOverlays = storeValues.browserOverlays; modified = true; }
+      if (next.canvasLayout !== storeValues.canvasLayout) { next.canvasLayout = storeValues.canvasLayout; modified = true; }
+      if (next.backgroundEffect !== storeValues.backgroundEffect) { next.backgroundEffect = storeValues.backgroundEffect; modified = true; }
+      if (next.backgroundImageUrl !== storeValues.backgroundImageUrl) { next.backgroundImageUrl = storeValues.backgroundImageUrl; modified = true; }
+      if (next.videoFilter !== storeValues.videoFilter) { next.videoFilter = storeValues.videoFilter; modified = true; }
+      if (next.captionStyle !== storeValues.captionStyle) { next.captionStyle = storeValues.captionStyle; modified = true; }
+      if (next.isAiModeEnabled !== storeValues.isAiModeEnabled) { next.isAiModeEnabled = storeValues.isAiModeEnabled; modified = true; }
+      if (next.captionsEnabled !== storeValues.captionsEnabled) { next.captionsEnabled = storeValues.captionsEnabled; modified = true; }
+
+      return modified ? next : prev;
+    });
+
+    setTimeout(() => { isSyncingFromStore.current = false; }, 0);
+  }, [
+    // Flatten dependency array for storeValues
+    storeValues.isAudioOn, storeValues.isVideoOn, storeValues.selectedAudioDevice, storeValues.selectedVideoDevice, storeValues.screenShareMode,
+    storeValues.layoutMode, storeValues.cameraShape, storeValues.splitRatio, storeValues.pipPosition, storeValues.pipSize,
+    storeValues.customMaskUrl, storeValues.activeOverlays, storeValues.textOverlays, storeValues.fileOverlays, storeValues.browserOverlays,
+    storeValues.canvasLayout, storeValues.backgroundEffect, storeValues.backgroundImageUrl, storeValues.videoFilter, storeValues.captionStyle,
+    storeValues.isAiModeEnabled, storeValues.captionsEnabled
+  ]);
+
 
   // --- History Management ---
   // We store history per scene ID to allow independent undo/redo
@@ -361,7 +480,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     setScenes((prev) =>
       prev.map((scene) => {
         if (scene.id !== sceneId) return scene;
-        
+
         const defaultScene = createDefaultScene(scene.name);
         return {
           ...defaultScene,
@@ -415,16 +534,16 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
   const effectiveScene = useMemo(() => {
     const scene = scenes.find((s) => s.id === activeSceneId);
     if (!scene) return scene!;
-    
+
     // If no active subscene, return scene as-is
     if (!activeSubsceneId) return scene;
-    
+
     // Find the active subscene
     const subscene = scene.subscenes?.find(s => s.id === activeSubsceneId);
     if (!subscene || !subscene.canvasPreset) return scene;
-    
+
     const preset = subscene.canvasPreset;
-    
+
     // Apply full canvas preset to scene
     return {
       ...scene,
@@ -451,7 +570,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     setScenes((prev) => {
       return prev.map((scene) => {
         if (scene.id !== parentId) return scene;
-        
+
         const currentSubscenes = scene.subscenes || [];
         const newSubscene: SubSceneState = {
           id: generateSubsceneId(),
@@ -459,7 +578,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
           parentId,
           order: currentSubscenes.length,
         };
-        
+
         return {
           ...scene,
           subscenes: [...currentSubscenes, newSubscene],
@@ -473,21 +592,21 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     setScenes((prev) => {
       return prev.map((scene) => {
         if (scene.id !== parentId || !scene.subscenes) return scene;
-        
+
         const newSubscenes = scene.subscenes
           .filter((s) => s.id !== subsceneId)
           .map((s, idx) => ({ ...s, order: idx }));
-        
+
         return {
           ...scene,
           subscenes: newSubscenes,
-          activeSubsceneId: scene.activeSubsceneId === subsceneId 
-            ? undefined 
+          activeSubsceneId: scene.activeSubsceneId === subsceneId
+            ? undefined
             : scene.activeSubsceneId,
         };
       });
     });
-    
+
     if (activeSubsceneId === subsceneId) {
       setActiveSubsceneId(undefined);
     }
@@ -495,15 +614,15 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
 
   const handleSubsceneReorder = useCallback((parentId: string, fromIndex: number, toIndex: number) => {
     if (fromIndex === toIndex) return;
-    
+
     setScenes((prev) => {
       return prev.map((scene) => {
         if (scene.id !== parentId || !scene.subscenes) return scene;
-        
+
         const newSubscenes = [...scene.subscenes].sort((a, b) => a.order - b.order);
         const [moved] = newSubscenes.splice(fromIndex, 1);
         newSubscenes.splice(toIndex, 0, moved);
-        
+
         return {
           ...scene,
           subscenes: newSubscenes.map((s, idx) => ({ ...s, order: idx })),
@@ -516,7 +635,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
     setScenes((prev) => {
       return prev.map((scene) => {
         if (scene.id !== parentId || !scene.subscenes) return scene;
-        
+
         return {
           ...scene,
           subscenes: scene.subscenes.map((s) =>
@@ -582,13 +701,13 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
 
   const handleSceneSelectWithSubscene = useCallback((sceneId: string, subsceneId?: string) => {
     if (sceneId === activeSceneId && subsceneId === activeSubsceneId) return;
-    
+
     // If just changing subscene within same scene
     if (sceneId === activeSceneId && subsceneId !== activeSubsceneId) {
       setActiveSubsceneId(subsceneId);
       return;
     }
-    
+
     // Otherwise do full scene transition
     handleSceneSelect(sceneId);
     setActiveSubsceneId(subsceneId);
@@ -610,13 +729,13 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
   const createScenesFromStreamStyle = useCallback((preset: StreamStylePreset) => {
     // Generate unique designs for this theme
     const generatedDesigns = generateAllSceneDesigns(preset.theme, preset.id);
-    
+
     const newSubscenes: SubSceneState[] = [];
-    
+
     // Create a subscene for each generated design
     generatedDesigns.forEach((design: GeneratedSceneDesign, index: number) => {
       const subsceneId = generateSubsceneId();
-      
+
       // Convert GeneratedSceneDesign text overlays to TextOverlayState
       const textOverlays: TextOverlayState[] = design.textOverlays.map((overlay, i) => ({
         id: `${subsceneId}-text-${i}-${Date.now()}`,
@@ -650,7 +769,7 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
           rotation: overlay.layout.rotation,
         },
       }));
-      
+
       const newSubscene: SubSceneState = {
         id: subsceneId,
         name: design.name,
@@ -663,30 +782,30 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
           backgroundEffect: design.backgroundEffect,
           backgroundImageUrl: design.backgroundGradient, // Use gradient as background
           // Map layoutMode to valid caption LayoutMode type
-          layoutMode: (design.layoutMode === 'corner-floating' || design.layoutMode === 'diagonal-split' || design.layoutMode === 'grid-3x3' || design.layoutMode === 'overlay-full') 
-            ? 'pip' as LayoutMode 
+          layoutMode: (design.layoutMode === 'corner-floating' || design.layoutMode === 'diagonal-split' || design.layoutMode === 'grid-3x3' || design.layoutMode === 'overlay-full')
+            ? 'pip' as LayoutMode
             : design.layoutMode as LayoutMode,
           cameraShape: design.cameraShape as CameraShape,
           pipPosition: design.pipPosition,
           pipSize: design.pipSize,
           pipBorder: design.pipBorder,
           // Convert pipShadow string to object format if needed
-          pipShadow: design.pipShadow 
-            ? { blur: 20, color: design.pipShadow } 
+          pipShadow: design.pipShadow
+            ? { blur: 20, color: design.pipShadow }
             : undefined,
           videoFilter: design.videoFilter,
           textOverlays,
           canvasAspectRatio: design.canvasAspectRatio,
         },
       };
-      
+
       newSubscenes.push(newSubscene);
     });
-    
+
     // Add subscenes to the active scene
     setScenes(prev => prev.map(scene => {
       if (scene.id !== activeSceneId) return scene;
-      
+
       const existingSubscenes = scene.subscenes || [];
       return {
         ...scene,
@@ -694,12 +813,12 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
         isExpanded: true,
       };
     }));
-    
+
     // Select the first new subscene
     if (newSubscenes.length > 0) {
       setActiveSubsceneId(newSubscenes[0].id);
     }
-    
+
     return newSubscenes;
   }, [activeSceneId]);
 

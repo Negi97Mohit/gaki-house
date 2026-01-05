@@ -9,6 +9,7 @@ import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Loader from "@/shared/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
 import { useThemeStore } from "@/features/theme";
+import { useUiStore } from "@/stores/ui.store";
 
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -22,7 +23,7 @@ const queryClient = new QueryClient();
 function ThemeInitializer() {
   const theme = useThemeStore((s) => s.theme);
   const mode = useThemeStore((s) => s.mode);
-  
+
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove("theme-default", "theme-ocean", "theme-forest", "theme-sunset", "dark", "light");
@@ -31,7 +32,7 @@ function ThemeInitializer() {
       root.classList.add("dark");
     }
   }, [theme, mode]);
-  
+
   return null;
 }
 
@@ -52,9 +53,11 @@ const App = () => {
   useEffect(() => {
     const handleActivity = () => {
       document.body.classList.remove("cursor-inactive");
+      useUiStore.getState().setMouseActive(true);
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       inactivityTimer.current = setTimeout(() => {
         document.body.classList.add("cursor-inactive");
+        useUiStore.getState().setMouseActive(false);
       }, 5000);
     };
     window.addEventListener("mousemove", handleActivity);
