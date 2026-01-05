@@ -2,8 +2,7 @@
 // Unique, hand-crafted canvas designs for each stream scene type
 
 import { StreamStyleTheme, StreamSceneType } from '@/types/streamStyle';
-import { LayoutMode, CameraShape } from '@/types/layout';
-import { CaptionStyle, CaptionShape, CaptionAnimation } from '@/types/caption';
+import { CaptionStyle, CaptionShape, CaptionAnimation, LayoutMode, CameraShape } from '@/types/caption';
 
 export interface GeneratedSceneDesign {
   id: string;
