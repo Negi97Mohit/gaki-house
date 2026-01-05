@@ -241,6 +241,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                 justifyContent: "center",
                 // Use background property to support both solid colors and gradients
                 background: overlay.style.backgroundColor || "transparent",
+                borderRadius: `${(overlay.style.borderRadius || 0) * (scale || 1)}px`,
               }}
             >
               {overlay.style.layers ? (

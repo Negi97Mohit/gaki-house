@@ -32,8 +32,8 @@ export const TextFormattingControls: React.FC<TextFormattingControlsProps> = ({
       alignment === "left"
         ? "justifyLeft"
         : alignment === "center"
-        ? "justifyCenter"
-        : "justifyRight";
+          ? "justifyCenter"
+          : "justifyRight";
     document.execCommand(command);
     onStyleChange(overlay.id, { textAlign: alignment } as any);
   };
@@ -53,7 +53,7 @@ export const TextFormattingControls: React.FC<TextFormattingControlsProps> = ({
         variant="ghost"
         size="icon"
         className={cn("h-8 w-8", overlay.style.bold && "bg-accent")}
-        onClick={() => document.execCommand("bold")}
+        onClick={() => onStyleChange(overlay.id, { bold: !overlay.style.bold })}
       >
         <Bold className="w-4 h-4" />
       </Button>
@@ -62,7 +62,9 @@ export const TextFormattingControls: React.FC<TextFormattingControlsProps> = ({
         variant="ghost"
         size="icon"
         className={cn("h-8 w-8", overlay.style.italic && "bg-accent")}
-        onClick={() => document.execCommand("italic")}
+        onClick={() =>
+          onStyleChange(overlay.id, { italic: !overlay.style.italic })
+        }
       >
         <Italic className="w-4 h-4" />
       </Button>
@@ -71,7 +73,9 @@ export const TextFormattingControls: React.FC<TextFormattingControlsProps> = ({
         variant="ghost"
         size="icon"
         className={cn("h-8 w-8", overlay.style.underline && "bg-accent")}
-        onClick={() => document.execCommand("underline")}
+        onClick={() =>
+          onStyleChange(overlay.id, { underline: !overlay.style.underline })
+        }
       >
         <Underline className="w-4 h-4" />
       </Button>
@@ -107,6 +111,45 @@ export const TextFormattingControls: React.FC<TextFormattingControlsProps> = ({
               max={50}
               step={1}
               onValueChange={handleLetterSpacingChange}
+            />
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <div className="w-px h-6 bg-border" />
+
+      {/* Corner Radius */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "h-8 w-8",
+              (overlay.style.borderRadius || 0) > 0 &&
+              "bg-accent text-accent-foreground"
+            )}
+            title="Corner Radius"
+          >
+            <div className="w-4 h-4 border-2 border-current rounded-md" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-64 p-3" side="top">
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <Label className="text-xs font-medium">Corner Radius</Label>
+              <span className="text-xs text-muted-foreground">
+                {overlay.style.borderRadius || 0}px
+              </span>
+            </div>
+            <Slider
+              defaultValue={[overlay.style.borderRadius || 0]}
+              min={0}
+              max={50}
+              step={1}
+              onValueChange={(val) =>
+                onStyleChange(overlay.id, { borderRadius: val[0] })
+              }
             />
           </div>
         </PopoverContent>

@@ -39,6 +39,7 @@ export interface CaptionStyle {
   borderColor: string;
   borderWidth: number;
   letterSpacing?: string;
+  borderRadius?: number; // ADD THIS LINE
   padding?: string;
   layers?: TextDesignLayer[] | null;
   textAlign?: "left" | "center" | "right" | "justify";
