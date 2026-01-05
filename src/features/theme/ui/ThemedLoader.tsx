@@ -5,6 +5,16 @@ const loaderColors: Record<ThemeName, { primary: string; secondary: string }> = 
   ocean: { primary: "#38bdf8", secondary: "#0ea5e9" },
   forest: { primary: "#4ade80", secondary: "#22c55e" },
   sunset: { primary: "#fb923c", secondary: "#f97316" },
+  cyberpunk: { primary: "#e879f9", secondary: "#f0abfc" },
+  aurora: { primary: "#34d399", secondary: "#6ee7b7" },
+  midnight: { primary: "#818cf8", secondary: "#6366f1" },
+  sakura: { primary: "#f472b6", secondary: "#f9a8d4" },
+  volcanic: { primary: "#ef4444", secondary: "#f87171" },
+  arctic: { primary: "#67e8f9", secondary: "#a5f3fc" },
+  neon: { primary: "#a3e635", secondary: "#bef264" },
+  ethereal: { primary: "#c4b5fd", secondary: "#ddd6fe" },
+  retro: { primary: "#fb7185", secondary: "#fda4af" },
+  monochrome: { primary: "#a1a1aa", secondary: "#d4d4d8" },
 };
 
 interface ThemedLoaderProps {
