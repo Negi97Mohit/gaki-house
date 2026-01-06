@@ -60,6 +60,131 @@ function createWindow() {
 
 // --- STREAMING SERVER ---
 
+// --- STREAMING LOGIC (SHARED) ---
+
+const createFfmpegCommand = (
+  input: string | any,
+  rtmpUrl: string,
+  key: string,
+  onStart: (cmd: string) => void,
+  onError: (err: Error) => void,
+  onEnd: () => void
+) => {
+  const fullUrl = key ? `${rtmpUrl}/${key}` : rtmpUrl;
+  console.log("Initializing stream to:", fullUrl);
+
+  const command = ffmpeg()
+    .input(input)
+    .inputFormat("webm") // Explicitly tell FFmpeg this is WebM stream
+    .videoCodec("libx264")
+    .audioCodec("aac")
+    .outputOptions([
+      "-preset veryfast", // CHANGED: ultrafast -> veryfast (better quality)
+      "-tune zerolatency",
+      "-b:v 4500k", // Increased bitrate for 1080p
+      "-maxrate 4500k",
+      "-bufsize 9000k",
+      "-g 60",
+      "-r 30", // Enforce 30fps
+      "-vf scale=1920:-1", // Downscale/Upscale to 1080p width, auto height
+      "-pix_fmt yuv420p",
+      "-f flv",
+    ])
+    .output(fullUrl);
+
+  command.on("start", (cmd) => {
+    console.log("FFmpeg spawned:", cmd);
+    onStart(cmd);
+  });
+
+  command.on("error", (err, stdout, stderr) => {
+    // Ignore "SIGKILL" error which we cause intentionally on stop
+    if (err.message.includes("SIGKILL")) return;
+    console.error("FFmpeg Error:", err.message);
+    if (stderr) console.error("FFmpeg Stderr:", stderr);
+    onError(err);
+  });
+
+  command.on("end", () => {
+    console.log("Stream ended successfully");
+    onEnd();
+  });
+
+  return command;
+};
+
+// --- IPC STREAMING (NEW - FAST) ---
+
+function setupIpcHandlers() {
+  let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
+
+  ipcMain.on("stream:start", (event, { rtmpUrl, key }) => {
+    if (ffmpegCommand) {
+      try {
+        ffmpegCommand.kill("SIGKILL");
+      } catch (e) { }
+    }
+
+    try {
+      ffmpegCommand = createFfmpegCommand(
+        "pipe:0",
+        rtmpUrl,
+        key,
+        () => {
+          event.sender.send("stream:status", { status: "started" });
+          event.sender.send("stream:ffmpeg-ready"); // Signal ready for data
+        },
+        (err) => {
+          event.sender.send("stream:status", {
+            status: "error",
+            error: err.message,
+          });
+        },
+        () => {
+          event.sender.send("stream:status", { status: "stopped" });
+        }
+      );
+      ffmpegCommand.run();
+    } catch (error: any) {
+      event.sender.send("stream:status", {
+        status: "error",
+        error: error.message,
+      });
+    }
+  });
+
+  ipcMain.on("stream:data", (event, data) => {
+    if (ffmpegCommand && (ffmpegCommand as any).ffmpegProc) {
+      const proc = (ffmpegCommand as any).ffmpegProc;
+      if (proc.stdin && proc.stdin.writable && !proc.killed) {
+        try {
+          proc.stdin.write(Buffer.from(data)); // Ensure Buffer
+        } catch (err) {
+          console.error("Write failed:", err);
+        }
+
+        // Error handler to prevent crashes
+        if (!proc.stdin.listeners("error").length) {
+          proc.stdin.on("error", (err: any) => {
+            console.log("Stdin Error (ipc):", err.code);
+          });
+        }
+      }
+    }
+  });
+
+  ipcMain.on("stream:stop", (event) => {
+    if (ffmpegCommand) {
+      console.log("Stopping IPC stream...");
+      ffmpegCommand.kill("SIGKILL");
+      ffmpegCommand = null;
+      event.sender.send("stream:status", { status: "stopped" });
+    }
+  });
+}
+
+// --- SOCKET STREAMING SERVER (LEGACY / WEB SUPPORT) ---
+
 function startStreamingServer() {
   server = http.createServer();
   io = new SocketIOServer(server, {
@@ -73,94 +198,47 @@ function startStreamingServer() {
     console.log("Frontend connected to streaming engine:", socket.id);
     let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
 
-    // EVENT: START STREAM INITIALIZATION
     socket.on("start-stream", ({ rtmpUrl, key }) => {
-      const fullUrl = key ? `${rtmpUrl}/${key}` : rtmpUrl;
-      console.log("Initializing stream to:", fullUrl);
-
       if (!rtmpUrl || !key) {
         socket.emit("stream-status", "error: Missing RTMP URL or Key");
         return;
       }
-
-      // Kill any existing process first
       if (ffmpegCommand) {
         try {
           ffmpegCommand.kill("SIGKILL");
-        } catch (e) {
-          /* ignore */
-        }
+        } catch (e) { }
       }
 
-      ffmpegCommand = ffmpeg()
-        .input("pipe:0")
-        .inputFormat("webm") // Explicitly tell FFmpeg this is WebM stream
-        .videoCodec("libx264")
-        .audioCodec("aac")
-        .outputOptions([
-          "-preset veryfast",
-          "-tune zerolatency",
-          "-b:v 2500k",
-          "-maxrate 2500k",
-          "-bufsize 5000k",
-          "-g 60",
-          "-pix_fmt yuv420p",
-          "-f flv",
-        ])
-        .output(fullUrl);
-
-      // --- EVENT HANDLERS ---
-
-      ffmpegCommand.on("start", (commandLine) => {
-        console.log("FFmpeg spawned:", commandLine);
-        // CRITICAL: Tell frontend we are ready for the FIRST CHUNK (Header)
-        socket.emit("ffmpeg-ready");
-        socket.emit("stream-status", "started");
-      });
-
-      ffmpegCommand.on("error", (err, stdout, stderr) => {
-        // Ignore "SIGKILL" error which we cause intentionally on stop
-        if (err.message.includes("SIGKILL")) return;
-
-        console.error("FFmpeg Error:", err.message);
-        if (stderr) console.error("FFmpeg Stderr:", stderr);
-        socket.emit("stream-status", `error: ${err.message}`);
-      });
-
-      ffmpegCommand.on("end", () => {
-        console.log("Stream ended successfully");
-        socket.emit("stream-status", "stopped");
-      });
-
-      // Run
+      ffmpegCommand = createFfmpegCommand(
+        "pipe:0",
+        rtmpUrl,
+        key,
+        () => {
+          socket.emit("ffmpeg-ready");
+          socket.emit("stream-status", "started");
+        },
+        (err) => {
+          socket.emit("stream-status", `error: ${err.message}`);
+        },
+        () => {
+          socket.emit("stream-status", "stopped");
+        }
+      );
       ffmpegCommand.run();
     });
 
-    // EVENT: BINARY DATA CHUNKS
     socket.on("binary-stream", (data) => {
       if (ffmpegCommand && (ffmpegCommand as any).ffmpegProc) {
         const proc = (ffmpegCommand as any).ffmpegProc;
-
-        // Safety check: is the pipe open?
         if (proc.stdin && proc.stdin.writable && !proc.killed) {
-          // SAFE WRITE: Catch 'write EOF' error to prevent main process crash
           try {
-            const result = proc.stdin.write(data);
-            if (!result) {
-              // If buffer full, we could wait for drain, but for live stream we might drop or pause
-              // console.log("FFmpeg buffer full");
-            }
+            proc.stdin.write(data);
           } catch (err) {
             console.log("Write failed (stream likely closed):", err);
           }
-
-          // Attach error listener once to prevent crash on future writes
           if (!proc.stdin.listeners("error").length) {
             proc.stdin.on("error", (err: any) => {
-              console.log(
-                "Stdin Error (safe to ignore if stopping):",
-                err.code
-              );
+              console.log("Stdin Error (socket):", err.code);
             });
           }
         }
@@ -192,6 +270,7 @@ function startStreamingServer() {
 
 app.whenReady().then(() => {
   createWindow();
+  setupIpcHandlers(); // <--- Initialize IPC handlers
   startStreamingServer();
 
   // Screen Capture Permission Handler

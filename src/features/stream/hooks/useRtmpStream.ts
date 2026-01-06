@@ -4,6 +4,19 @@ import { notify } from "@/shared/lib/notify";
 
 const SERVER_URL = "http://localhost:3000";
 
+// Define Electron Window Interface locally to avoid global type mess
+interface ElectronWindow extends Window {
+  electron?: {
+    stream: {
+      start: (config: { rtmpUrl: string; key: string }) => void;
+      sendData: (chunk: ArrayBuffer) => void;
+      stop: () => void;
+      onStatus: (callback: (data: { status: string; error?: string }) => void) => void;
+      onFfmpegReady: (callback: () => void) => void;
+    };
+  };
+}
+
 export const useRtmpStream = () => {
   const [rtmpUrl, setRtmpUrl] = useState("");
   const [streamKey, setStreamKey] = useState("");
@@ -17,6 +30,8 @@ export const useRtmpStream = () => {
   const streamRef = useRef<MediaStream | null>(null);
   const originalDisplayStreamRef = useRef<MediaStream | null>(null);
   const originalUserStreamRef = useRef<MediaStream | null>(null);
+
+  const isElectron = !!(window as ElectronWindow).electron;
 
   // Persistence
   useEffect(() => {
@@ -40,6 +55,21 @@ export const useRtmpStream = () => {
     };
   }, []);
 
+  const handleStreamOutput = async (event: BlobEvent) => {
+    if (event.data.size > 0) {
+      if (isElectron) {
+        // Electron: Send as ArrayBuffer via IPC
+        const buffer = await event.data.arrayBuffer();
+        (window as ElectronWindow).electron?.stream.sendData(buffer);
+      } else {
+        // Web: Send as Blob/Buffer via Socket.io
+        if (socketRef.current && socketRef.current.connected) {
+          socketRef.current.emit("binary-stream", event.data);
+        }
+      }
+    }
+  };
+
   const startStreaming = async (url?: string, key?: string) => {
     const targetUrl = url || rtmpUrl;
     const targetKey = key || streamKey;
@@ -58,9 +88,12 @@ export const useRtmpStream = () => {
       setStatus("Initializing...");
 
       // 1. Capture Screen
-      // Using simpler constraints supported by Electron
       const displayStream = await navigator.mediaDevices.getDisplayMedia({
-        video: { frameRate: 30 },
+        video: {
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 30, max: 60 },
+        },
         audio: false,
       });
       originalDisplayStreamRef.current = displayStream;
@@ -97,26 +130,7 @@ export const useRtmpStream = () => {
         stopStreaming();
       };
 
-      // 3. Connect to Socket Server
-      setStatus("Connecting to server...");
-      socketRef.current = io(SERVER_URL);
-
-      await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => {
-          reject(new Error("Socket connection timed out"));
-        }, 10000);
-
-        if (!socketRef.current) return;
-
-        socketRef.current.on("connect", () => {
-          clearTimeout(timeout);
-          console.log("DEBUG: Socket Connected");
-          setStatus("Connected");
-          resolve();
-        });
-      });
-
-      // 4. Setup MediaRecorder (But DO NOT START yet)
+      // 3. Setup MediaRecorder
       const mimeType = "video/webm; codecs=vp9";
       const options = MediaRecorder.isTypeSupported(mimeType)
         ? { mimeType }
@@ -124,52 +138,96 @@ export const useRtmpStream = () => {
 
       const mediaRecorder = new MediaRecorder(combinedStream, options);
       mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.ondataavailable = handleStreamOutput;
 
-      mediaRecorder.ondataavailable = (event) => {
-        if (
-          event.data.size > 0 &&
-          socketRef.current &&
-          socketRef.current.connected
-        ) {
-          socketRef.current.emit("binary-stream", event.data);
-        }
-      };
+      // 4. Connect & Start (Electron vs Web Branch)
+      if (isElectron) {
+        setStatus("Connecting to background process...");
+        const electron = (window as ElectronWindow).electron!;
 
-      // 5. Setup Status Listeners
-      socketRef.current.on("stream-status", (msg: string) => {
-        console.log("DEBUG: Server Msg:", msg);
-        if (msg.startsWith("error")) {
-          notify.error(`Streaming Error: ${msg}`);
-          stopStreaming();
-        } else if (msg === "stopped") {
-          setIsStreaming(false);
-          setIsConnecting(false);
-          setStatus("Stopped");
-        }
-      });
+        // Listeners
+        electron.stream.onStatus((data) => {
+          console.log("DEBUG: IPC Status:", data.status);
+          if (data.status === "error") {
+            notify.error(`Streaming Error: ${data.error}`);
+            stopStreaming();
+          } else if (data.status === "stopped") {
+            setIsStreaming(false);
+            setIsConnecting(false);
+            setStatus("Stopped");
+          } else if (data.status === "started") {
+            // Main process confirmed start command received
+            // Wait for ffmpeg-ready to actually send data
+          }
+        });
 
-      // --- CRITICAL CHANGE: Wait for FFmpeg Ready Signal ---
-      socketRef.current.on("ffmpeg-ready", () => {
-        console.log("DEBUG: FFmpeg is ready! Starting recorder...");
+        electron.stream.onFfmpegReady(() => {
+          console.log("DEBUG: FFmpeg (IPC) ready! Starting recorder...");
+          if (mediaRecorderRef.current && mediaRecorderRef.current.state === "inactive") {
+            mediaRecorderRef.current.start(1000);
+            setIsStreaming(true);
+            setIsConnecting(false);
+            notify.success("Streaming started (Desktop Mode)!");
+          }
+        });
 
-        // Now it's safe to start sending the header
-        if (
-          mediaRecorderRef.current &&
-          mediaRecorderRef.current.state === "inactive"
-        ) {
-          mediaRecorderRef.current.start(1000); // 1s chunks
-          setIsStreaming(true);
-          setIsConnecting(false);
-          notify.success("Streaming started!");
-        }
-      });
+        // Start Signal
+        electron.stream.start({ rtmpUrl: targetUrl, key: targetKey });
 
-      // 6. Signal Server to Start FFmpeg
-      console.log("DEBUG: Signaling server to spawn FFmpeg...");
-      socketRef.current.emit("start-stream", {
-        rtmpUrl: targetUrl,
-        key: targetKey,
-      });
+      } else {
+        // --- WEB / LEGACY SOCKET.IO MODE ---
+        setStatus("Connecting to server...");
+        socketRef.current = io(SERVER_URL);
+
+        await new Promise<void>((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error("Socket connection timed out"));
+          }, 10000);
+
+          if (!socketRef.current) return;
+
+          socketRef.current.on("connect", () => {
+            clearTimeout(timeout);
+            console.log("DEBUG: Socket Connected");
+            setStatus("Connected");
+            resolve();
+          });
+        });
+
+        // Listeners
+        socketRef.current.on("stream-status", (msg: string) => {
+          console.log("DEBUG: Server Msg:", msg);
+          if (msg.startsWith("error")) {
+            notify.error(`Streaming Error: ${msg}`);
+            stopStreaming();
+          } else if (msg === "stopped") {
+            setIsStreaming(false);
+            setIsConnecting(false);
+            setStatus("Stopped");
+          }
+        });
+
+        socketRef.current.on("ffmpeg-ready", () => {
+          console.log("DEBUG: FFmpeg is ready! Starting recorder...");
+          if (
+            mediaRecorderRef.current &&
+            mediaRecorderRef.current.state === "inactive"
+          ) {
+            mediaRecorderRef.current.start(1000); // 1s chunks
+            setIsStreaming(true);
+            setIsConnecting(false);
+            notify.success("Streaming started!");
+          }
+        });
+
+        // Signal Server
+        console.log("DEBUG: Signaling server to spawn FFmpeg...");
+        socketRef.current.emit("start-stream", {
+          rtmpUrl: targetUrl,
+          key: targetKey,
+        });
+      }
+
     } catch (err: any) {
       console.error("--- FATAL ERROR ---", err);
       notify.error(`Failed to start: ${err.message}`);
@@ -207,11 +265,16 @@ export const useRtmpStream = () => {
       originalUserStreamRef.current = null;
     }
 
-    if (socketRef.current) {
-      socketRef.current.emit("stop-stream");
-      socketRef.current.disconnect();
-      socketRef.current = null;
+    if (isElectron) {
+      (window as ElectronWindow).electron?.stream.stop();
+    } else {
+      if (socketRef.current) {
+        socketRef.current.emit("stop-stream");
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
     }
+
     setIsStreaming(false);
     setIsConnecting(false);
     setStatus("Stopped");
