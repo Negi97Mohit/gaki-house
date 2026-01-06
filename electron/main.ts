@@ -34,6 +34,7 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     backgroundColor: "#000000",
+    icon: path.join(__dirname, "../../build/icon.png"),
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
@@ -122,7 +123,7 @@ function setupIpcHandlers() {
     if (ffmpegCommand) {
       try {
         ffmpegCommand.kill("SIGKILL");
-      } catch (e) { }
+      } catch (e) {}
     }
 
     try {
@@ -206,7 +207,7 @@ function startStreamingServer() {
       if (ffmpegCommand) {
         try {
           ffmpegCommand.kill("SIGKILL");
-        } catch (e) { }
+        } catch (e) {}
       }
 
       ffmpegCommand = createFfmpegCommand(
@@ -277,7 +278,6 @@ ipcMain.handle("get-desktop-sources", async (event, options) => {
     appIcon: source.appIcon ? source.appIcon.toDataURL() : null,
   }));
 });
-
 
 // --- APP LIFECYCLE ---
 

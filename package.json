@@ -35,7 +35,8 @@
         "target": "dmg",
         "arch": [
           "universal"
-        ]
+        ],
+        "icon": "build/icon.icns"
       },
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
@@ -46,6 +47,7 @@
       "target": [
         {
           "target": "nsis",
+          "icon": "build/icon.ico",
           "arch": [
             "x64",
             "ia32"
@@ -57,7 +59,8 @@
       "target": [
         "AppImage",
         "deb"
-      ]
+      ],
+      "icon": "build/icon.png"
     }
   },
   "dependencies": {
