@@ -266,6 +266,19 @@ function startStreamingServer() {
   });
 }
 
+// --- DESKTOP CAPTURER HANDLER ---
+ipcMain.handle("get-desktop-sources", async (event, options) => {
+  const sources = await desktopCapturer.getSources(options);
+  // Serializable sources
+  return sources.map((source) => ({
+    id: source.id,
+    name: source.name,
+    thumbnail: source.thumbnail.toDataURL(),
+    appIcon: source.appIcon ? source.appIcon.toDataURL() : null,
+  }));
+});
+
+
 // --- APP LIFECYCLE ---
 
 app.whenReady().then(() => {

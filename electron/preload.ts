@@ -23,4 +23,8 @@ contextBridge.exposeInMainWorld("electron", {
     onFfmpegReady: (callback: () => void) =>
       ipcRenderer.on("stream:ffmpeg-ready", () => callback()),
   },
+
+  // Desktop Capturer
+  getDesktopSources: (options: any) =>
+    ipcRenderer.invoke("get-desktop-sources", options),
 });

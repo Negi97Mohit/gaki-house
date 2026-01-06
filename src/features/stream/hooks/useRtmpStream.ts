@@ -14,6 +14,7 @@ interface ElectronWindow extends Window {
       onStatus: (callback: (data: { status: string; error?: string }) => void) => void;
       onFfmpegReady: (callback: () => void) => void;
     };
+    getDesktopSources: (options: any) => Promise<any[]>;
   };
 }
 
@@ -87,15 +88,63 @@ export const useRtmpStream = () => {
       setIsConnecting(true);
       setStatus("Initializing...");
 
-      // 1. Capture Screen
-      const displayStream = await navigator.mediaDevices.getDisplayMedia({
-        video: {
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-          frameRate: { ideal: 30, max: 60 },
-        },
-        audio: false,
-      });
+      setStatus("Initializing...");
+
+      let displayStream: MediaStream;
+
+      if (isElectron) {
+        // Electron: Auto-select app window
+        try {
+          const electron = (window as ElectronWindow).electron!;
+          const sources = await electron.getDesktopSources({ types: ["window", "screen"] });
+
+          // Find our app window
+          const appSource = sources.find((s: any) =>
+            s.name.includes("GAKI") || s.name.includes("caption-cam")
+          );
+
+          if (appSource) {
+            displayStream = await navigator.mediaDevices.getUserMedia({
+              audio: false, // System audio often not supported via this API on all OS, handled via mic mix below
+              video: {
+                // @ts-ignore - Electron specific constraint
+                mandatory: {
+                  chromeMediaSource: 'desktop',
+                  chromeMediaSourceId: appSource.id,
+                  minWidth: 1280,
+                  maxWidth: 1920,
+                  minHeight: 720,
+                  maxHeight: 1080
+                }
+              }
+            } as any);
+          } else {
+            // Fallback if window not found
+            console.warn("App window not found, falling back to picker");
+            displayStream = await navigator.mediaDevices.getDisplayMedia({
+              video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
+              audio: false,
+            });
+          }
+        } catch (err) {
+          console.error("Window capture failed:", err);
+          displayStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { width: { ideal: 1920 }, height: { ideal: 1080 } },
+            audio: false,
+          });
+        }
+      } else {
+        // Web: Standard Picker
+        displayStream = await navigator.mediaDevices.getDisplayMedia({
+          video: {
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            frameRate: { ideal: 30, max: 60 },
+          },
+          audio: false,
+        });
+      }
+
       originalDisplayStreamRef.current = displayStream;
 
       // 2. Capture Mic
