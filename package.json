@@ -31,12 +31,12 @@
     ],
     "mac": {
       "category": "public.app-category.video",
+      "icon": "build/icon.icns",
       "target": {
         "target": "dmg",
         "arch": [
           "universal"
-        ],
-        "icon": "build/icon.icns"
+        ]
       },
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
@@ -44,23 +44,23 @@
       "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         {
           "target": "nsis",
           "arch": [
             "x64",
             "ia32"
-          ],
-          "icon": "build/icon.ico"
+          ]
         }
       ]
     },
     "linux": {
+      "icon": "build/icon.png",
       "target": [
         "AppImage",
         "deb"
-      ],
-      "icon": "build/icon.png"
+      ]
     }
   },
   "dependencies": {
