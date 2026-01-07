@@ -1,3 +1,4 @@
+// electron/preload.ts
 import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electron", {
@@ -6,7 +7,7 @@ contextBridge.exposeInMainWorld("electron", {
   // UI Controls
   toggleFullscreen: () => ipcRenderer.send("toggle-fullscreen"),
 
-  // Server Controls (Optional: useful for debugging or manual restarts)
+  // Server Controls
   restartServer: () => ipcRenderer.send("restart-server"),
 
   // System Info
@@ -14,8 +15,8 @@ contextBridge.exposeInMainWorld("electron", {
 
   // Stream Controls
   stream: {
-    start: (config: { rtmpUrl: string; key: string }) =>
-      ipcRenderer.send("stream:start", config),
+    // UPDATED: Accepts an object with targets
+    start: (config: any) => ipcRenderer.send("stream:start", config),
     sendData: (chunk: any) => ipcRenderer.send("stream:data", chunk),
     stop: () => ipcRenderer.send("stream:stop"),
     onStatus: (callback: (data: any) => void) =>

@@ -1,3 +1,4 @@
+// src/features/stream/hooks/useRtmpStream.ts
 import { useState, useRef, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import { notify } from "@/shared/lib/notify";
@@ -5,23 +6,32 @@ import { useMediaStore } from "@/stores/media.store";
 
 const SERVER_URL = "http://localhost:3000";
 
-// Define Electron Window Interface locally to avoid global type mess
+// Define Electron Window Interface locally
 interface ElectronWindow extends Window {
   electron?: {
     stream: {
-      start: (config: { rtmpUrl: string; key: string }) => void;
+      start: (config: { targets: { url: string; key: string }[] }) => void;
       sendData: (chunk: ArrayBuffer) => void;
       stop: () => void;
-      onStatus: (callback: (data: { status: string; error?: string }) => void) => void;
+      onStatus: (
+        callback: (data: { status: string; error?: string }) => void
+      ) => void;
       onFfmpegReady: (callback: () => void) => void;
     };
     getDesktopSources: (options: any) => Promise<any[]>;
   };
 }
 
+interface StreamTarget {
+  url: string;
+  key: string;
+}
+
 export const useRtmpStream = () => {
+  // Legacy single-target state (can still be used for display)
   const [rtmpUrl, setRtmpUrl] = useState("");
   const [streamKey, setStreamKey] = useState("");
+
   const [isStreaming, setIsStreaming] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [status, setStatus] = useState<string>("Idle");
@@ -37,13 +47,10 @@ export const useRtmpStream = () => {
 
   // Tracks
   const streamRef = useRef<MediaStream | null>(null); // The final canvas stream
-  const activeSourceStreamRef = useRef<MediaStream | null>(null); // The current source (Screen or Window)
+  const activeSourceStreamRef = useRef<MediaStream | null>(null); // The current source
   const originalUserStreamRef = useRef<MediaStream | null>(null); // Mic
 
   const isElectron = !!(window as ElectronWindow).electron;
-
-  // Subscribe to store changes WITHOUT triggering re-renders for the whole hook if possible,
-  // but we need it for the useEffect dependency.
   const screenShareMode = useMediaStore((state) => state.screenShareMode);
 
   // Persistence
@@ -87,20 +94,29 @@ export const useRtmpStream = () => {
   // --- Dynamic Switch Logic ---
   useEffect(() => {
     if (isStreaming) {
-      console.log(`[Stream] Detect Mode Change -> ${screenShareMode}. Switching Source...`);
+      console.log(
+        `[Stream] Detect Mode Change -> ${screenShareMode}. Switching Source...`
+      );
       switchSource();
     }
   }, [screenShareMode]);
 
   // --- Render Loop ---
   const startDrawLoop = () => {
-    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+    if (animationFrameRef.current)
+      cancelAnimationFrame(animationFrameRef.current);
 
     const draw = () => {
       if (canvasRef.current && proxyVideoRef.current) {
         const ctx = canvasRef.current.getContext("2d");
         if (ctx) {
-          ctx.drawImage(proxyVideoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+          ctx.drawImage(
+            proxyVideoRef.current,
+            0,
+            0,
+            canvasRef.current.width,
+            canvasRef.current.height
+          );
         }
       }
       animationFrameRef.current = requestAnimationFrame(draw);
@@ -119,29 +135,34 @@ export const useRtmpStream = () => {
   const getSourceStream = async (): Promise<MediaStream> => {
     if (isElectron) {
       try {
-        // Re-fetch state to be sure, though prop is robust
         const currentMode = useMediaStore.getState().screenShareMode;
         const electron = (window as ElectronWindow).electron!;
-        const sources = await electron.getDesktopSources({ types: ["window", "screen"] });
+        const sources = await electron.getDesktopSources({
+          types: ["window", "screen"],
+        });
 
         let selectedSource: any = null;
 
         if (currentMode === "off") {
           // Mode OFF -> Capture Desktop
           selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
-          console.log("[Stream] Selecting Desktop Source:", selectedSource?.name);
+          console.log(
+            "[Stream] Selecting Desktop Source:",
+            selectedSource?.name
+          );
         } else {
           // Mode ON -> Capture App Window
-          // Search for our app name. "caption-cam" or "GAKI"
-          selectedSource = sources.find((s: any) =>
-            (s.name.includes("caption-cam") || s.name.includes("GAKI"))
+          selectedSource = sources.find(
+            (s: any) =>
+              s.name.includes("caption-cam") || s.name.includes("GAKI")
           );
-          console.log("[Stream] Selecting App Window Source:", selectedSource?.name);
+          console.log(
+            "[Stream] Selecting App Window Source:",
+            selectedSource?.name
+          );
         }
 
         if (!selectedSource && currentMode !== "off") {
-          // Fallback: If we can't find app window, maybe try screen?
-          // For now, let's try screen 1 as safety net logic
           console.warn("[Stream] App Window not found! Fallback to screen 1.");
           selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
         }
@@ -152,12 +173,14 @@ export const useRtmpStream = () => {
             video: {
               // @ts-ignore
               mandatory: {
-                chromeMediaSource: 'desktop',
+                chromeMediaSource: "desktop",
                 chromeMediaSourceId: selectedSource.id,
-                minWidth: 1280, maxWidth: 1920,
-                minHeight: 720, maxHeight: 1080
-              }
-            }
+                minWidth: 1280,
+                maxWidth: 1920,
+                minHeight: 720,
+                maxHeight: 1080,
+              },
+            },
           } as any);
         }
       } catch (e) {
@@ -168,21 +191,17 @@ export const useRtmpStream = () => {
     // Fallback / Web Mode
     return await navigator.mediaDevices.getDisplayMedia({
       video: { width: 1920, height: 1080 },
-      audio: false
+      audio: false,
     });
   };
 
   const switchSource = async () => {
     try {
       const newStream = await getSourceStream();
-
-      // Stop old tracks (important to release resource)
       if (activeSourceStreamRef.current) {
-        activeSourceStreamRef.current.getTracks().forEach(t => t.stop());
+        activeSourceStreamRef.current.getTracks().forEach((t) => t.stop());
       }
-
       activeSourceStreamRef.current = newStream;
-
       if (proxyVideoRef.current) {
         proxyVideoRef.current.srcObject = newStream;
         await proxyVideoRef.current.play();
@@ -192,7 +211,6 @@ export const useRtmpStream = () => {
       notify.error("Failed to switch stream source.");
     }
   };
-
 
   const handleStreamOutput = async (event: BlobEvent) => {
     if (event.data.size > 0) {
@@ -207,23 +225,24 @@ export const useRtmpStream = () => {
     }
   };
 
-  const startStreaming = async (url?: string, key?: string) => {
-    const targetUrl = url || rtmpUrl;
-    const targetKey = key || streamKey;
+  // UPDATED: Now accepts generic input (Single target OR Array of targets)
+  const startStreaming = async (input: StreamTarget | StreamTarget[]) => {
+    // Normalize input to array
+    const targets = Array.isArray(input) ? input : [input];
 
-    if (!targetUrl || !targetKey) {
-      notify.error("Please enter both RTMP URL and Stream Key");
+    if (targets.length === 0) {
+      notify.error("No stream targets provided");
       return;
     }
 
-    setRtmpUrl(targetUrl);
-    setStreamKey(targetKey);
+    // Update Legacy State (just use the first one for display purposes)
+    setRtmpUrl(targets[0].url);
+    setStreamKey(targets[0].key);
 
     try {
-      console.log("--- DEBUG: Starting Stream Process (Canvas Proxy Mode) ---");
+      console.log("--- DEBUG: Starting Stream Process ---", targets);
       setIsConnecting(true);
       setStatus("Initializing...");
-
 
       // 1. Get Initial Source
       const initialSourceStream = await getSourceStream();
@@ -236,7 +255,7 @@ export const useRtmpStream = () => {
       }
       startDrawLoop();
 
-      // 3. Get Canvas Stream (The Constant Stream)
+      // 3. Get Canvas Stream
       if (!canvasRef.current) throw new Error("Canvas Proxy not initialized");
       const canvasStream = canvasRef.current.captureStream(30);
 
@@ -252,20 +271,17 @@ export const useRtmpStream = () => {
         console.warn("Mic access denied or not found");
       }
 
-      // 5. Combine (Canvas Video + Mic Audio)
+      // 5. Combine
       const audioContext = new AudioContext();
       const dest = audioContext.createMediaStreamDestination();
-
       if (userStream && userStream.getAudioTracks().length > 0) {
         const micSource = audioContext.createMediaStreamSource(userStream);
         micSource.connect(dest);
       }
-
       const combinedStream = new MediaStream([
         ...canvasStream.getVideoTracks(),
         ...dest.stream.getAudioTracks(),
       ]);
-
       streamRef.current = combinedStream;
 
       // 6. Setup MediaRecorder
@@ -297,7 +313,10 @@ export const useRtmpStream = () => {
 
         electron.stream.onFfmpegReady(() => {
           console.log("DEBUG: FFmpeg (IPC) ready! Starting recorder...");
-          if (mediaRecorderRef.current && mediaRecorderRef.current.state === "inactive") {
+          if (
+            mediaRecorderRef.current &&
+            mediaRecorderRef.current.state === "inactive"
+          ) {
             mediaRecorderRef.current.start(1000);
             setIsStreaming(true);
             setIsConnecting(false);
@@ -305,16 +324,27 @@ export const useRtmpStream = () => {
           }
         });
 
-        electron.stream.start({ rtmpUrl: targetUrl, key: targetKey });
-
+        // SEND TARGETS ARRAY
+        electron.stream.start({ targets });
       } else {
         // --- WEB MODE ---
         setStatus("Connecting to server...");
         socketRef.current = io(SERVER_URL);
-        // ... (simplified web logic same as before, essentially) ...
+
         socketRef.current.on("connect", () => {
           setStatus("Connected");
-          socketRef.current?.emit("start-stream", { rtmpUrl: targetUrl, key: targetKey });
+          // SEND TARGETS ARRAY
+          socketRef.current?.emit("start-stream", { targets });
+        });
+
+        socketRef.current.on("stream-status", (msg: string) => {
+          if (msg.startsWith("error")) {
+            notify.error(msg);
+            stopStreaming();
+          } else if (msg === "stopped") {
+            setIsStreaming(false);
+            setStatus("Stopped");
+          }
         });
 
         socketRef.current.on("ffmpeg-ready", () => {
@@ -326,7 +356,6 @@ export const useRtmpStream = () => {
           }
         });
       }
-
     } catch (err: any) {
       console.error("--- FATAL ERROR ---", err);
       notify.error(`Failed to start: ${err.message}`);
@@ -338,29 +367,28 @@ export const useRtmpStream = () => {
     setCountdown(null);
     cancelDrawLoop();
 
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
       mediaRecorderRef.current.stop();
     }
 
-    // Stop Final Stream
+    // Cleanup Tracks
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
-
-    // Stop Active Source Stream
     if (activeSourceStreamRef.current) {
-      activeSourceStreamRef.current.getTracks().forEach(t => t.stop());
+      activeSourceStreamRef.current.getTracks().forEach((t) => t.stop());
       activeSourceStreamRef.current = null;
     }
-
-    // Stop Mic
     if (originalUserStreamRef.current) {
-      originalUserStreamRef.current.getTracks().forEach((track) => track.stop());
+      originalUserStreamRef.current
+        .getTracks()
+        .forEach((track) => track.stop());
       originalUserStreamRef.current = null;
     }
-
-    // Clear Proxy Video
     if (proxyVideoRef.current) {
       proxyVideoRef.current.srcObject = null;
     }

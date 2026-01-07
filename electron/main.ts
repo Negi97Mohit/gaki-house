@@ -1,3 +1,4 @@
+// electron/main.ts
 import {
   app,
   BrowserWindow,
@@ -59,39 +60,63 @@ function createWindow() {
   });
 }
 
-// --- STREAMING SERVER ---
+// --- STREAMING LOGIC ---
 
-// --- STREAMING LOGIC (SHARED) ---
+// Helper: Build tee payload for multiple targets
+const buildTeePayload = (targets: { url: string; key: string }[]) => {
+  return targets
+    .map((t) => {
+      // Handle cases where key is part of URL or separate
+      const sep = t.url.endsWith("/") ? "" : "/";
+      const fullUrl = t.key ? `${t.url}${sep}${t.key}` : t.url;
+      // [f=flv] forces the format for each leg of the tee
+      return `[f=flv]${fullUrl}`;
+    })
+    .join("|");
+};
 
 const createFfmpegCommand = (
   input: string | any,
-  rtmpUrl: string,
-  key: string,
+  targets: { url: string; key: string }[],
   onStart: (cmd: string) => void,
   onError: (err: Error) => void,
   onEnd: () => void
 ) => {
-  const fullUrl = key ? `${rtmpUrl}/${key}` : rtmpUrl;
-  console.log("Initializing stream to:", fullUrl);
+  console.log(`Initializing stream to ${targets.length} targets`);
 
   const command = ffmpeg()
     .input(input)
-    .inputFormat("webm") // Explicitly tell FFmpeg this is WebM stream
+    .inputFormat("webm")
     .videoCodec("libx264")
     .audioCodec("aac")
     .outputOptions([
-      "-preset veryfast", // CHANGED: ultrafast -> veryfast (better quality)
+      "-preset veryfast",
       "-tune zerolatency",
-      "-b:v 4500k", // Increased bitrate for 1080p
+      "-b:v 4500k",
       "-maxrate 4500k",
       "-bufsize 9000k",
       "-g 60",
-      "-r 30", // Enforce 30fps
-      "-vf scale=1920:-1", // Downscale/Upscale to 1080p width, auto height
+      "-r 30",
+      "-vf scale=1920:-1",
       "-pix_fmt yuv420p",
-      "-f flv",
-    ])
-    .output(fullUrl);
+      "-map 0:v", // Map video from input 0
+      "-map 0:a", // Map audio from input 0
+    ]);
+
+  // LOGIC: If 1 target -> Standard FLV. If > 1 -> Tee Muxer.
+  if (targets.length === 1) {
+    const t = targets[0];
+    const sep = t.url.endsWith("/") ? "" : "/";
+    const fullUrl = t.key ? `${t.url}${sep}${t.key}` : t.url;
+    command.format("flv").output(fullUrl);
+  } else {
+    // Multi-stream using Tee Muxer
+    const teePayload = buildTeePayload(targets);
+    command
+      .outputOptions(["-flags +global_header"]) // Critical for tee
+      .format("tee")
+      .output(teePayload);
+  }
 
   command.on("start", (cmd) => {
     console.log("FFmpeg spawned:", cmd);
@@ -99,7 +124,6 @@ const createFfmpegCommand = (
   });
 
   command.on("error", (err, stdout, stderr) => {
-    // Ignore "SIGKILL" error which we cause intentionally on stop
     if (err.message.includes("SIGKILL")) return;
     console.error("FFmpeg Error:", err.message);
     if (stderr) console.error("FFmpeg Stderr:", stderr);
@@ -114,12 +138,21 @@ const createFfmpegCommand = (
   return command;
 };
 
-// --- IPC STREAMING (NEW - FAST) ---
+// --- IPC STREAMING (Electron Branch) ---
 
 function setupIpcHandlers() {
   let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
 
-  ipcMain.on("stream:start", (event, { rtmpUrl, key }) => {
+  ipcMain.on("stream:start", (event, config) => {
+    // Determine targets
+    let targets: { url: string; key: string }[] = [];
+    if (config.targets && Array.isArray(config.targets)) {
+      targets = config.targets;
+    } else if (config.rtmpUrl) {
+      // Legacy fallback
+      targets = [{ url: config.rtmpUrl, key: config.key }];
+    }
+
     if (ffmpegCommand) {
       try {
         ffmpegCommand.kill("SIGKILL");
@@ -129,11 +162,10 @@ function setupIpcHandlers() {
     try {
       ffmpegCommand = createFfmpegCommand(
         "pipe:0",
-        rtmpUrl,
-        key,
+        targets,
         () => {
           event.sender.send("stream:status", { status: "started" });
-          event.sender.send("stream:ffmpeg-ready"); // Signal ready for data
+          event.sender.send("stream:ffmpeg-ready");
         },
         (err) => {
           event.sender.send("stream:status", {
@@ -159,12 +191,10 @@ function setupIpcHandlers() {
       const proc = (ffmpegCommand as any).ffmpegProc;
       if (proc.stdin && proc.stdin.writable && !proc.killed) {
         try {
-          proc.stdin.write(Buffer.from(data)); // Ensure Buffer
+          proc.stdin.write(Buffer.from(data));
         } catch (err) {
           console.error("Write failed:", err);
         }
-
-        // Error handler to prevent crashes
         if (!proc.stdin.listeners("error").length) {
           proc.stdin.on("error", (err: any) => {
             console.log("Stdin Error (ipc):", err.code);
@@ -184,7 +214,7 @@ function setupIpcHandlers() {
   });
 }
 
-// --- SOCKET STREAMING SERVER (LEGACY / WEB SUPPORT) ---
+// --- SOCKET STREAMING SERVER (Web Branch) ---
 
 function startStreamingServer() {
   server = http.createServer();
@@ -199,11 +229,19 @@ function startStreamingServer() {
     console.log("Frontend connected to streaming engine:", socket.id);
     let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
 
-    socket.on("start-stream", ({ rtmpUrl, key }) => {
-      if (!rtmpUrl || !key) {
-        socket.emit("stream-status", "error: Missing RTMP URL or Key");
+    socket.on("start-stream", (data) => {
+      let targets: { url: string; key: string }[] = [];
+      if (data.targets && Array.isArray(data.targets)) {
+        targets = data.targets;
+      } else if (data.rtmpUrl) {
+        targets = [{ url: data.rtmpUrl, key: data.key }];
+      }
+
+      if (targets.length === 0) {
+        socket.emit("stream-status", "error: No targets");
         return;
       }
+
       if (ffmpegCommand) {
         try {
           ffmpegCommand.kill("SIGKILL");
@@ -212,8 +250,7 @@ function startStreamingServer() {
 
       ffmpegCommand = createFfmpegCommand(
         "pipe:0",
-        rtmpUrl,
-        key,
+        targets,
         () => {
           socket.emit("ffmpeg-ready");
           socket.emit("stream-status", "started");
@@ -235,7 +272,7 @@ function startStreamingServer() {
           try {
             proc.stdin.write(data);
           } catch (err) {
-            console.log("Write failed (stream likely closed):", err);
+            console.log("Write failed:", err);
           }
           if (!proc.stdin.listeners("error").length) {
             proc.stdin.on("error", (err: any) => {
@@ -270,7 +307,6 @@ function startStreamingServer() {
 // --- DESKTOP CAPTURER HANDLER ---
 ipcMain.handle("get-desktop-sources", async (event, options) => {
   const sources = await desktopCapturer.getSources(options);
-  // Serializable sources
   return sources.map((source) => ({
     id: source.id,
     name: source.name,
@@ -283,10 +319,9 @@ ipcMain.handle("get-desktop-sources", async (event, options) => {
 
 app.whenReady().then(() => {
   createWindow();
-  setupIpcHandlers(); // <--- Initialize IPC handlers
+  setupIpcHandlers();
   startStreamingServer();
 
-  // Screen Capture Permission Handler
   session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
     desktopCapturer
       .getSources({ types: ["screen"] })

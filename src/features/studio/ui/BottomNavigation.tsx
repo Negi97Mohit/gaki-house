@@ -26,7 +26,8 @@ interface BottomNavigationProps {
   portalContainer?: HTMLElement | null;
 
   // Streaming callbacks (passed to MediaControls)
-  onStartStream?: (url: string, key: string) => void;
+  // UPDATED: Changed from (url, key) to (config: any) to support multi-target array
+  onStartStream?: (config: any) => void;
   onStopStream?: () => void;
   onStreamSettingsSave?: (url: string, key: string) => void;
 
@@ -35,7 +36,7 @@ interface BottomNavigationProps {
   onRedo: () => void;
   onResetScene: () => void;
 
-  // CHANGE 2: Add this prop
+  // Fullscreen toggle
   onToggleFullscreen?: () => void;
 }
 
@@ -51,7 +52,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onUndo,
   onRedo,
   onResetScene,
-  // CHANGE 3: Destructure the prop
   onToggleFullscreen,
 }) => {
   const { isMouseActive, isFullscreen, setFullscreen, setShowSettings } =
@@ -76,7 +76,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   }, []);
 
   const handleFullscreenToggle = () => {
-    // CHANGE 4: Use the passed handler if available (this fixes the button)
+    // Use the passed handler if available (fixes the button in some contexts)
     if (onToggleFullscreen) {
       onToggleFullscreen();
       return;
