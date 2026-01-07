@@ -1,4 +1,3 @@
-// electron/main.ts
 import {
   app,
   BrowserWindow,
@@ -14,10 +13,10 @@ import ffmpeg from "fluent-ffmpeg";
 import ffmpegPath from "ffmpeg-static";
 import fixPath from "fix-path";
 
-// 1. Fix Path for macOS/Linux
+// 1. Fix Path for macOS/Linux environment variables
 fixPath();
 
-// 2. Configure FFmpeg
+// 2. Configure FFmpeg path
 if (ffmpegPath) {
   ffmpeg.setFfmpegPath(ffmpegPath.replace("app.asar", "app.asar.unpacked"));
 }
@@ -38,9 +37,11 @@ function createWindow() {
     icon: path.join(__dirname, "../../build/icon.png"),
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: true,
+      contextIsolation: true, // Recommended security practice
       preload: path.join(__dirname, "preload.js"),
+      // CRITICAL FIX: Prevents the stream from freezing when the window is in the background/minimized
       backgroundThrottling: false,
+      webSecurity: false, // Often needed for local media resources in development
     },
   });
 
@@ -58,290 +59,125 @@ function createWindow() {
     }
     return { action: "deny" };
   });
+
+  // Track window focus state for UI adjustments if needed
+  mainWindow.on("focus", () => {
+    mainWindow?.webContents.send("window-focus-changed", true);
+  });
+
+  mainWindow.on("blur", () => {
+    mainWindow?.webContents.send("window-focus-changed", false);
+  });
 }
 
 // --- STREAMING LOGIC ---
 
-// Helper: Build tee payload for multiple targets
-const buildTeePayload = (targets: { url: string; key: string }[]) => {
-  return targets
-    .map((t) => {
-      // Handle cases where key is part of URL or separate
-      const sep = t.url.endsWith("/") ? "" : "/";
-      const fullUrl = t.key ? `${t.url}${sep}${t.key}` : t.url;
-      // [f=flv] forces the format for each leg of the tee
-      return `[f=flv]${fullUrl}`;
-    })
-    .join("|");
-};
+// Helper to manage the FFmpeg process
+let ffmpegCommand: any = null;
 
-const createFfmpegCommand = (
-  input: string | any,
-  targets: { url: string; key: string }[],
-  onStart: (cmd: string) => void,
-  onError: (err: Error) => void,
-  onEnd: () => void
-) => {
-  console.log(`Initializing stream to ${targets.length} targets`);
-
-  const command = ffmpeg()
-    .input(input)
-    .inputFormat("webm")
-    .videoCodec("libx264")
-    .audioCodec("aac")
-    .outputOptions([
-      "-preset veryfast",
-      "-tune zerolatency",
-      "-b:v 4500k",
-      "-maxrate 4500k",
-      "-bufsize 9000k",
-      "-g 60",
-      "-r 30",
-      "-vf scale=1920:-1",
-      "-pix_fmt yuv420p",
-      "-map 0:v", // Map video from input 0
-      "-map 0:a", // Map audio from input 0
-    ]);
-
-  // LOGIC: If 1 target -> Standard FLV. If > 1 -> Tee Muxer.
-  if (targets.length === 1) {
-    const t = targets[0];
-    const sep = t.url.endsWith("/") ? "" : "/";
-    const fullUrl = t.key ? `${t.url}${sep}${t.key}` : t.url;
-    command.format("flv").output(fullUrl);
-  } else {
-    // Multi-stream using Tee Muxer
-    const teePayload = buildTeePayload(targets);
-    command
-      .outputOptions(["-flags +global_header"]) // Critical for tee
-      .format("tee")
-      .output(teePayload);
-  }
-
-  command.on("start", (cmd) => {
-    console.log("FFmpeg spawned:", cmd);
-    onStart(cmd);
-  });
-
-  command.on("error", (err, stdout, stderr) => {
-    if (err.message.includes("SIGKILL")) return;
-    console.error("FFmpeg Error:", err.message);
-    if (stderr) console.error("FFmpeg Stderr:", stderr);
-    onError(err);
-  });
-
-  command.on("end", () => {
-    console.log("Stream ended successfully");
-    onEnd();
-  });
-
-  return command;
-};
-
-// --- IPC STREAMING (Electron Branch) ---
+// --- IPC HANDLERS ---
 
 function setupIpcHandlers() {
-  let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
-
-  ipcMain.on("stream:start", (event, config) => {
-    // Determine targets
-    let targets: { url: string; key: string }[] = [];
-    if (config.targets && Array.isArray(config.targets)) {
-      targets = config.targets;
-    } else if (config.rtmpUrl) {
-      // Legacy fallback
-      targets = [{ url: config.rtmpUrl, key: config.key }];
-    }
-
-    if (ffmpegCommand) {
-      try {
-        ffmpegCommand.kill("SIGKILL");
-      } catch (e) {}
-    }
-
+  // Handler 1: Get Desktop Sources (Windows & Screens)
+  ipcMain.handle("get-desktop-sources", async (event, options) => {
     try {
-      ffmpegCommand = createFfmpegCommand(
-        "pipe:0",
-        targets,
-        () => {
-          event.sender.send("stream:status", { status: "started" });
-          event.sender.send("stream:ffmpeg-ready");
-        },
-        (err) => {
-          event.sender.send("stream:status", {
-            status: "error",
-            error: err.message,
-          });
-        },
-        () => {
-          event.sender.send("stream:status", { status: "stopped" });
-        }
-      );
-      ffmpegCommand.run();
-    } catch (error: any) {
-      event.sender.send("stream:status", {
-        status: "error",
-        error: error.message,
-      });
+      const finalOptions = {
+        types: ["window", "screen"],
+        thumbnailSize: { width: 400, height: 400 }, // High-res thumbnails for the picker
+        fetchWindowIcons: true,
+        ...options,
+      };
+
+      const sources = await desktopCapturer.getSources(finalOptions);
+
+      // Map to a serializable format
+      return sources.map((source) => ({
+        id: source.id,
+        name: source.name,
+        thumbnail: source.thumbnail.toDataURL(),
+        appIcon: source.appIcon ? source.appIcon.toDataURL() : null,
+      }));
+    } catch (error) {
+      console.error("Error getting desktop sources:", error);
+      return [];
     }
   });
 
-  ipcMain.on("stream:data", (event, data) => {
-    if (ffmpegCommand && (ffmpegCommand as any).ffmpegProc) {
-      const proc = (ffmpegCommand as any).ffmpegProc;
-      if (proc.stdin && proc.stdin.writable && !proc.killed) {
-        try {
-          proc.stdin.write(Buffer.from(data));
-        } catch (err) {
-          console.error("Write failed:", err);
+  // Handler 2: Start Stream
+  ipcMain.on("stream:start", (event, config) => {
+    const { targets } = config;
+    if (!targets || targets.length === 0) return;
+
+    // Use the first target for now (multi-stream can be expanded here)
+    const rtmpUrl = targets[0].url + "/" + targets[0].key;
+
+    console.log("Starting FFmpeg stream to:", rtmpUrl);
+
+    if (ffmpegCommand) {
+      ffmpegCommand.kill("SIGKILL");
+    }
+
+    // Input via Stdin (binary data from renderer)
+    ffmpegCommand = ffmpeg()
+      .input("pipe:0")
+      .inputFormat("webm") // Chrome sends webm chunks
+      .videoCodec("libx264")
+      .audioCodec("aac")
+      // Low-latency flags
+      .addOption("-preset", "ultrafast")
+      .addOption("-tune", "zerolatency")
+      .addOption("-g", "60") // Keyframe interval
+      .addOption("-b:v", "4000k") // Bitrate
+      .addOption("-bufsize", "8000k")
+      .addOption("-maxrate", "4500k")
+      .output(rtmpUrl)
+      .on("start", () => {
+        console.log("FFmpeg process started");
+        event.reply("stream:status", { status: "started" });
+        event.reply("ffmpeg:ready");
+      })
+      .on("error", (err, stdout, stderr) => {
+        console.error("FFmpeg Error:", err.message);
+        console.error("FFmpeg Stderr:", stderr);
+        event.reply("stream:status", { status: "error", error: err.message });
+      })
+      .on("end", () => {
+        console.log("FFmpeg process ended");
+        event.reply("stream:status", { status: "stopped" });
+      });
+
+    ffmpegCommand.run();
+  });
+
+  // Handler 3: Receive Video Data chunks
+  ipcMain.on("stream:data", (event, buffer) => {
+    if (ffmpegCommand && ffmpegCommand.ffmpegProc) {
+      try {
+        const stream = ffmpegCommand.ffmpegProc.stdin;
+        if (stream.writable) {
+          stream.write(Buffer.from(buffer));
         }
-        if (!proc.stdin.listeners("error").length) {
-          proc.stdin.on("error", (err: any) => {
-            console.log("Stdin Error (ipc):", err.code);
-          });
-        }
+      } catch (e) {
+        console.error("Error writing to FFmpeg stdin:", e);
       }
     }
   });
 
-  ipcMain.on("stream:stop", (event) => {
+  // Handler 4: Stop Stream
+  ipcMain.on("stream:stop", () => {
     if (ffmpegCommand) {
-      console.log("Stopping IPC stream...");
       ffmpegCommand.kill("SIGKILL");
       ffmpegCommand = null;
-      event.sender.send("stream:status", { status: "stopped" });
     }
+    mainWindow?.webContents.send("stream:status", { status: "stopped" });
   });
 }
-
-// --- SOCKET STREAMING SERVER (Web Branch) ---
-
-function startStreamingServer() {
-  server = http.createServer();
-  io = new SocketIOServer(server, {
-    cors: {
-      origin: "*",
-      methods: ["GET", "POST"],
-    },
-  });
-
-  io.on("connection", (socket) => {
-    console.log("Frontend connected to streaming engine:", socket.id);
-    let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
-
-    socket.on("start-stream", (data) => {
-      let targets: { url: string; key: string }[] = [];
-      if (data.targets && Array.isArray(data.targets)) {
-        targets = data.targets;
-      } else if (data.rtmpUrl) {
-        targets = [{ url: data.rtmpUrl, key: data.key }];
-      }
-
-      if (targets.length === 0) {
-        socket.emit("stream-status", "error: No targets");
-        return;
-      }
-
-      if (ffmpegCommand) {
-        try {
-          ffmpegCommand.kill("SIGKILL");
-        } catch (e) {}
-      }
-
-      ffmpegCommand = createFfmpegCommand(
-        "pipe:0",
-        targets,
-        () => {
-          socket.emit("ffmpeg-ready");
-          socket.emit("stream-status", "started");
-        },
-        (err) => {
-          socket.emit("stream-status", `error: ${err.message}`);
-        },
-        () => {
-          socket.emit("stream-status", "stopped");
-        }
-      );
-      ffmpegCommand.run();
-    });
-
-    socket.on("binary-stream", (data) => {
-      if (ffmpegCommand && (ffmpegCommand as any).ffmpegProc) {
-        const proc = (ffmpegCommand as any).ffmpegProc;
-        if (proc.stdin && proc.stdin.writable && !proc.killed) {
-          try {
-            proc.stdin.write(data);
-          } catch (err) {
-            console.log("Write failed:", err);
-          }
-          if (!proc.stdin.listeners("error").length) {
-            proc.stdin.on("error", (err: any) => {
-              console.log("Stdin Error (socket):", err.code);
-            });
-          }
-        }
-      }
-    });
-
-    socket.on("stop-stream", () => {
-      if (ffmpegCommand) {
-        console.log("Stopping stream...");
-        ffmpegCommand.kill("SIGKILL");
-        ffmpegCommand = null;
-        socket.emit("stream-status", "stopped");
-      }
-    });
-
-    socket.on("disconnect", () => {
-      if (ffmpegCommand) {
-        ffmpegCommand.kill("SIGKILL");
-      }
-    });
-  });
-
-  server.listen(3000, () => {
-    console.log("Streaming Engine running on port 3000");
-  });
-}
-
-// --- DESKTOP CAPTURER HANDLER ---
-ipcMain.handle("get-desktop-sources", async (event, options) => {
-  const sources = await desktopCapturer.getSources(options);
-  return sources.map((source) => ({
-    id: source.id,
-    name: source.name,
-    thumbnail: source.thumbnail.toDataURL(),
-    appIcon: source.appIcon ? source.appIcon.toDataURL() : null,
-  }));
-});
 
 // --- APP LIFECYCLE ---
 
 app.whenReady().then(() => {
   createWindow();
   setupIpcHandlers();
-  startStreamingServer();
-
-  session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
-    desktopCapturer
-      .getSources({ types: ["screen"] })
-      .then((sources) => {
-        if (sources.length > 0) {
-          callback({ video: sources[0], audio: "loopback" });
-        } else {
-          console.error("No screen sources found");
-        }
-      })
-      .catch((err) => {
-        console.error("Error getting screen sources:", err);
-      });
-  });
-
-  ipcMain.on("toggle-fullscreen", () => {
-    if (mainWindow) {
-      mainWindow.setFullScreen(!mainWindow.isFullScreen());
-    }
-  });
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -354,9 +190,4 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
-});
-
-app.on("before-quit", () => {
-  if (io) io.close();
-  if (server) server.close();
 });

@@ -1,3 +1,4 @@
+// src/pages/Index.tsx
 import React, { useRef, useCallback } from "react";
 import { cn } from "@/shared/lib/utils";
 import { Loader } from "lucide-react";
@@ -11,6 +12,9 @@ import {
   useFileVault,
   usePasteCapture,
 } from "@/features/vault";
+
+// NEW: Import Screen Picker
+import { ScreenSharePicker } from "@/features/stream/ui/ScreenSharePicker";
 
 // Hooks
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
@@ -117,6 +121,9 @@ const Index = () => {
         // CHANGE 5: Pass the working full-screen handler here
         onToggleFullscreen={ui.handleToggleFullscreen}
       />
+
+      {/* --- NEW: Screen Share Picker UI --- */}
+      <ScreenSharePicker />
 
       {/* --- File Vault Modal --- */}
       <FileVaultModal

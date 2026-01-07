@@ -1,6 +1,7 @@
-// src/hooks/useVideoStreams.ts
+// src/features/stream/hooks/useVideoStreams.ts
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
+import { useStreamStore } from "@/stores/stream.store";
 
 interface UseVideoStreamsProps {
   isCameraOn: boolean;
@@ -25,6 +26,10 @@ export const useVideoStreams = ({
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
   const isRequestingScreen = useRef(false);
 
+  // NEW: Connect to the stream store to get the selected source ID
+  const { activeSourceId, captureMode } = useStreamStore();
+  const isElectron = !!(window as any).electron;
+
   // Keep refs to the active streams for cleanup
   const activeCameraStreamRef = useRef<MediaStream | null>(null);
   const activeScreenStreamRef = useRef<MediaStream | null>(null);
@@ -35,9 +40,8 @@ export const useVideoStreams = ({
     }
   }, []);
 
-  // --- Camera Logic ---
+  // --- Camera Logic (Unchanged) ---
   useEffect(() => {
-    // 1. If camera is off, cleanup and exit
     if (!isCameraOn) {
       if (activeCameraStreamRef.current) {
         stopTracks(activeCameraStreamRef.current);
@@ -47,20 +51,17 @@ export const useVideoStreams = ({
       return;
     }
 
-    // 2. If camera is on, request stream
     let isCancelled = false;
     const getCameraStream = async () => {
       try {
         const constraints: MediaStreamConstraints = {
           video: selectedCameraDevice
             ? {
-              deviceId: { exact: selectedCameraDevice },
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-            }
+                deviceId: { exact: selectedCameraDevice },
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+              }
             : { width: { ideal: 1280 }, height: { ideal: 720 } },
-          // Explicitly disable audio for camera stream to avoid feedback/conflict
-          // Audio is handled separately in VideoCanvas
           audio: false,
         };
 
@@ -68,9 +69,6 @@ export const useVideoStreams = ({
           if (remoteStream) {
             console.log("✅ Using Remote Stream");
             setCameraStream(remoteStream);
-            // We don't set activeCameraStreamRef here because we don't want to stop the remote tracks
-            // when switching devices (we want to keep the connection alive).
-            // But we do need to clear the previous local stream if any.
             if (activeCameraStreamRef.current) {
               stopTracks(activeCameraStreamRef.current);
               activeCameraStreamRef.current = null;
@@ -90,7 +88,6 @@ export const useVideoStreams = ({
 
         console.log("✅ Camera stream active:", stream.id);
 
-        // Stop previous stream if any (double check)
         if (activeCameraStreamRef.current) {
           stopTracks(activeCameraStreamRef.current);
         }
@@ -116,59 +113,124 @@ export const useVideoStreams = ({
 
     return () => {
       isCancelled = true;
-      // We don't stop tracks here on re-render because we want smooth transitions,
-      // but we do stop them if isCameraOn becomes false (handled at start of effect)
-      // or if the component unmounts (handled by separate effect).
     };
   }, [isCameraOn, selectedCameraDevice, stopTracks, remoteStream]);
 
-  // --- Screen Share Logic ---
+  // --- REFACTORED: Screen Share Logic ---
   useEffect(() => {
-    if (isScreenSharing && !screenStream && !isRequestingScreen.current) {
-      isRequestingScreen.current = true;
-      const getScreenStream = async () => {
-        try {
-          const stream = await navigator.mediaDevices.getDisplayMedia({
+    // 1. If screen sharing is disabled, cleanup
+    if (!isScreenSharing) {
+      if (screenStream) {
+        if (activeScreenStreamRef.current) {
+          stopTracks(activeScreenStreamRef.current);
+          activeScreenStreamRef.current = null;
+        }
+        setScreenStream(null);
+      }
+      return;
+    }
+
+    // 2. Prevent redundant requests or loops
+    if (isRequestingScreen.current) return;
+
+    // If we already have a stream AND the source ID hasn't changed (or we are in Web mode), skip
+    // NOTE: In Electron, if activeSourceId changes, we re-run this effect to fetch the new source
+    if (
+      screenStream &&
+      (!isElectron ||
+        (activeScreenStreamRef.current as any)?._sourceId === activeSourceId)
+    ) {
+      return;
+    }
+
+    isRequestingScreen.current = true;
+
+    const getScreenStream = async () => {
+      try {
+        let stream: MediaStream;
+
+        if (isElectron) {
+          // ELECTRON MODE: Use activeSourceId from store
+          if (!activeSourceId) {
+            console.log("[useVideoStreams] Waiting for source selection...");
+            isRequestingScreen.current = false;
+            return; // Wait for the picker (controlled by useRtmpStream) to set the ID
+          }
+
+          console.log(`[useVideoStreams] Fetching source: ${activeSourceId}`);
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
             video: {
+              // @ts-ignore
+              mandatory: {
+                chromeMediaSource: "desktop",
+                chromeMediaSourceId: activeSourceId,
+                minWidth: 1280,
+                maxWidth: 1920,
+                minHeight: 720,
+                maxHeight: 1080,
+              },
+            },
+          } as any);
+
+          // Tag the stream with the ID so we know not to re-fetch it
+          (stream as any)._sourceId = activeSourceId;
+        } else {
+          // WEB MODE: Standard Browser Picker
+          stream = await navigator.mediaDevices.getDisplayMedia({
+            video: {
+              displaySurface: "browser",
               width: { ideal: 1920 },
               height: { ideal: 1080 },
               frameRate: 30,
             },
             audio: isAudioOn,
+            // @ts-ignore
+            preferCurrentTab: true,
           });
-          console.log("✅ Screen stream attached");
-
-          const videoTrack = stream.getVideoTracks()[0];
-          videoTrack.onended = () => {
-            console.log("🛑 Screen share ended");
-            onScreenShareEnd();
-            stopTracks(stream);
-            toast.info("Screen sharing stopped");
-          };
-
-          activeScreenStreamRef.current = stream;
-          setScreenStream(stream);
-        } catch (err) {
-          console.error("Screen share error:", err);
-          if ((err as Error).name === "NotAllowedError") {
-            toast.error("Screen share permission denied.");
-          } else {
-            toast.error(`Screen share error: ${(err as Error).message}`);
-          }
-          onScreenShareEnd();
-        } finally {
-          isRequestingScreen.current = false;
         }
-      };
-      getScreenStream();
-    } else if (!isScreenSharing && screenStream) {
-      if (activeScreenStreamRef.current) {
-        stopTracks(activeScreenStreamRef.current);
-        activeScreenStreamRef.current = null;
+
+        console.log("✅ Screen stream attached");
+
+        const videoTrack = stream.getVideoTracks()[0];
+        videoTrack.onended = () => {
+          console.log("🛑 Screen share ended");
+          onScreenShareEnd();
+          stopTracks(stream);
+          toast.info("Screen sharing stopped");
+        };
+
+        // Stop previous
+        if (activeScreenStreamRef.current) {
+          stopTracks(activeScreenStreamRef.current);
+        }
+
+        activeScreenStreamRef.current = stream;
+        setScreenStream(stream);
+      } catch (err) {
+        console.error("Screen share error:", err);
+        if ((err as Error).name === "NotAllowedError") {
+          // Only show error if it wasn't a programmatic switch
+          if (!isElectron) toast.error("Screen share permission denied.");
+        } else {
+          toast.error(`Screen share error: ${(err as Error).message}`);
+        }
+        onScreenShareEnd();
+      } finally {
+        isRequestingScreen.current = false;
       }
-      setScreenStream(null);
-    }
-  }, [isScreenSharing, onScreenShareEnd, stopTracks, isAudioOn, screenStream]);
+    };
+
+    getScreenStream();
+  }, [
+    isScreenSharing,
+    onScreenShareEnd,
+    stopTracks,
+    isAudioOn,
+    screenStream,
+    activeSourceId,
+    isElectron,
+  ]);
 
   // --- Cleanup on Unmount ---
   useEffect(() => {

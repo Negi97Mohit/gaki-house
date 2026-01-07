@@ -1,8 +1,8 @@
-// src/features/stream/hooks/useRtmpStream.ts
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { notify } from "@/shared/lib/notify";
 import { useMediaStore } from "@/stores/media.store";
+import { useStreamStore, DesktopSource } from "@/stores/stream.store";
 
 const SERVER_URL = "http://localhost:3000";
 
@@ -18,7 +18,13 @@ interface ElectronWindow extends Window {
       ) => void;
       onFfmpegReady: (callback: () => void) => void;
     };
-    getDesktopSources: (options: any) => Promise<any[]>;
+    getDesktopSources: (options: {
+      types: string[];
+      thumbnailSize?: { width: number; height: number };
+    }) => Promise<DesktopSource[]>;
+    onWindowFocusChanged: (
+      callback: (isFocused: boolean) => void
+    ) => (() => void) | undefined;
   };
 }
 
@@ -28,10 +34,8 @@ interface StreamTarget {
 }
 
 export const useRtmpStream = () => {
-  // Legacy single-target state (can still be used for display)
   const [rtmpUrl, setRtmpUrl] = useState("");
   const [streamKey, setStreamKey] = useState("");
-
   const [isStreaming, setIsStreaming] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [status, setStatus] = useState<string>("Idle");
@@ -43,24 +47,35 @@ export const useRtmpStream = () => {
   // --- Canvas Proxy Refs ---
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const proxyVideoRef = useRef<HTMLVideoElement | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
+
+  // FIX: Use interval ref instead of animation frame for background persistence
+  const drawIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Tracks
-  const streamRef = useRef<MediaStream | null>(null); // The final canvas stream
-  const activeSourceStreamRef = useRef<MediaStream | null>(null); // The current source
-  const originalUserStreamRef = useRef<MediaStream | null>(null); // Mic
+  const streamRef = useRef<MediaStream | null>(null);
+  const activeSourceStreamRef = useRef<MediaStream | null>(null);
+  const originalUserStreamRef = useRef<MediaStream | null>(null);
 
-  const isElectron = !!(window as ElectronWindow).electron;
+  const isElectron = !!(window as any).electron;
   const screenShareMode = useMediaStore((state) => state.screenShareMode);
 
-  // Persistence
+  // Store Integration
+  const {
+    activeSourceId,
+    setActiveSourceId,
+    setPickerOpen,
+    setAvailableSources,
+    isPickerOpen,
+  } = useStreamStore();
+
+  // --- Persistence & Initialization ---
   useEffect(() => {
     const savedUrl = localStorage.getItem("stream_rtmpUrl");
     const savedKey = localStorage.getItem("stream_key");
     if (savedUrl) setRtmpUrl(savedUrl);
     if (savedKey) setStreamKey(savedKey);
 
-    // Initialize hidden Proxy Elements
+    // Create hidden elements
     if (!canvasRef.current) {
       const canvas = document.createElement("canvas");
       canvas.width = 1920;
@@ -84,97 +99,126 @@ export const useRtmpStream = () => {
   useEffect(() => {
     return () => {
       if (isStreaming) stopStreaming();
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-      }
+      if (socketRef.current) socketRef.current.disconnect();
       cancelDrawLoop();
     };
   }, []);
 
-  // --- Dynamic Switch Logic ---
-  useEffect(() => {
-    if (isStreaming) {
-      console.log(
-        `[Stream] Detect Mode Change -> ${screenShareMode}. Switching Source...`
-      );
-      switchSource();
+  // --- HELPER: Open Source Picker ---
+  const openSourcePicker = useCallback(async () => {
+    if (!isElectron) return;
+    try {
+      const electron = (window as ElectronWindow).electron!;
+      const sources = await electron.getDesktopSources({
+        types: ["window", "screen"],
+        thumbnailSize: { width: 400, height: 225 },
+      });
+      setAvailableSources(sources);
+      setPickerOpen(true);
+    } catch (e) {
+      console.error("Failed to get sources", e);
+      notify.error("Failed to load screen sources");
     }
-  }, [screenShareMode]);
+  }, [isElectron, setAvailableSources, setPickerOpen]);
 
-  // --- Render Loop ---
+  // --- EFFECT: Handle Screen Share Mode Changes ---
+  useEffect(() => {
+    if (!isStreaming) return;
+
+    const handleModeChange = async () => {
+      // 1. If screen sharing is OFF -> Background Mode
+      if (screenShareMode === "off") {
+        if (
+          isElectron &&
+          (!activeSourceId || !activeSourceId.startsWith("screen"))
+        ) {
+          // Auto-switch to Main Screen to ensure the background isn't black
+          try {
+            const electron = (window as ElectronWindow).electron!;
+            const sources = await electron.getDesktopSources({
+              types: ["screen"],
+            });
+            const mainScreen = sources[0];
+            if (mainScreen && activeSourceId !== mainScreen.id) {
+              console.log("[Stream] Auto-switching to Background Screen");
+              await switchSource(mainScreen.id);
+            }
+          } catch (e) {
+            console.warn(e);
+          }
+        }
+        return;
+      }
+
+      // 2. If screen sharing is ON
+      // If no valid source selected, open picker.
+      if (!activeSourceId) {
+        openSourcePicker();
+      }
+    };
+
+    handleModeChange();
+  }, [screenShareMode, isStreaming, activeSourceId, openSourcePicker]);
+
+  // --- CRITICAL FIX: Loop Replacement ---
+  // Replaces requestAnimationFrame with setInterval to ensure background execution
   const startDrawLoop = () => {
-    if (animationFrameRef.current)
-      cancelAnimationFrame(animationFrameRef.current);
+    if (drawIntervalRef.current) clearInterval(drawIntervalRef.current);
 
-    const draw = () => {
+    // 30 FPS target
+    const INTERVAL = 1000 / 30;
+
+    drawIntervalRef.current = setInterval(() => {
       if (canvasRef.current && proxyVideoRef.current) {
-        const ctx = canvasRef.current.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(
-            proxyVideoRef.current,
-            0,
-            0,
-            canvasRef.current.width,
-            canvasRef.current.height
-          );
+        if (proxyVideoRef.current.readyState >= 2) {
+          // HAVE_CURRENT_DATA
+          const ctx = canvasRef.current.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(
+              proxyVideoRef.current,
+              0,
+              0,
+              canvasRef.current.width,
+              canvasRef.current.height
+            );
+          }
         }
       }
-      animationFrameRef.current = requestAnimationFrame(draw);
-    };
-    draw();
+    }, INTERVAL);
   };
 
   const cancelDrawLoop = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
+    if (drawIntervalRef.current) {
+      clearInterval(drawIntervalRef.current);
+      drawIntervalRef.current = null;
     }
   };
 
   // --- Source Acquisition ---
-  const getSourceStream = async (): Promise<MediaStream> => {
+  const getSourceStream = async (
+    specificSourceId?: string
+  ): Promise<MediaStream> => {
     if (isElectron) {
       try {
-        const currentMode = useMediaStore.getState().screenShareMode;
         const electron = (window as ElectronWindow).electron!;
-        const sources = await electron.getDesktopSources({
-          types: ["window", "screen"],
-        });
+        let sourceId = specificSourceId;
 
-        let selectedSource: any = null;
-
-        if (currentMode === "off") {
-          // Mode OFF -> Capture Desktop
-          selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
-          console.log(
-            "[Stream] Selecting Desktop Source:",
-            selectedSource?.name
-          );
-        } else {
-          // Mode ON -> Capture App Window
-          selectedSource = sources.find(
-            (s: any) =>
-              s.name.includes("caption-cam") || s.name.includes("GAKI")
-          );
-          console.log(
-            "[Stream] Selecting App Window Source:",
-            selectedSource?.name
-          );
+        // Fallback to first screen if no specific ID provided
+        if (!sourceId) {
+          const sources = await electron.getDesktopSources({
+            types: ["screen"],
+          });
+          sourceId = sources[0]?.id;
         }
 
-        if (!selectedSource && currentMode !== "off") {
-          console.warn("[Stream] App Window not found! Fallback to screen 1.");
-          selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
-        }
-
-        if (selectedSource) {
+        if (sourceId) {
           return await navigator.mediaDevices.getUserMedia({
             audio: false,
             video: {
               // @ts-ignore
               mandatory: {
                 chromeMediaSource: "desktop",
-                chromeMediaSourceId: selectedSource.id,
+                chromeMediaSourceId: sourceId,
                 minWidth: 1280,
                 maxWidth: 1920,
                 minHeight: 720,
@@ -185,23 +229,26 @@ export const useRtmpStream = () => {
         }
       } catch (e) {
         console.error("Electron Capture Failed", e);
+        throw e;
       }
     }
-
-    // Fallback / Web Mode
+    // Web Fallback
     return await navigator.mediaDevices.getDisplayMedia({
-      video: { width: 1920, height: 1080 },
+      video: true,
       audio: false,
     });
   };
 
-  const switchSource = async () => {
+  const switchSource = async (sourceId: string) => {
     try {
-      const newStream = await getSourceStream();
+      const newStream = await getSourceStream(sourceId);
+
       if (activeSourceStreamRef.current) {
         activeSourceStreamRef.current.getTracks().forEach((t) => t.stop());
       }
       activeSourceStreamRef.current = newStream;
+      setActiveSourceId(sourceId); // Sync with store
+
       if (proxyVideoRef.current) {
         proxyVideoRef.current.srcObject = newStream;
         await proxyVideoRef.current.play();
@@ -210,6 +257,12 @@ export const useRtmpStream = () => {
       console.error("[Stream] Switch Source Failed:", err);
       notify.error("Failed to switch stream source.");
     }
+  };
+
+  // Exposed for UI
+  const handleSourceSelect = async (id: string) => {
+    await switchSource(id);
+    setPickerOpen(false);
   };
 
   const handleStreamOutput = async (event: BlobEvent) => {
@@ -225,27 +278,24 @@ export const useRtmpStream = () => {
     }
   };
 
-  // UPDATED: Now accepts generic input (Single target OR Array of targets)
   const startStreaming = async (input: StreamTarget | StreamTarget[]) => {
-    // Normalize input to array
     const targets = Array.isArray(input) ? input : [input];
-
     if (targets.length === 0) {
-      notify.error("No stream targets provided");
+      notify.error("No targets");
       return;
     }
 
-    // Update Legacy State (just use the first one for display purposes)
     setRtmpUrl(targets[0].url);
     setStreamKey(targets[0].key);
 
     try {
-      console.log("--- DEBUG: Starting Stream Process ---", targets);
       setIsConnecting(true);
       setStatus("Initializing...");
 
-      // 1. Get Initial Source
-      const initialSourceStream = await getSourceStream();
+      // 1. Get Source (defaults to screen if none selected)
+      const initialSourceStream = await getSourceStream(
+        activeSourceId || undefined
+      );
       activeSourceStreamRef.current = initialSourceStream;
 
       // 2. Setup Proxy
@@ -253,28 +303,27 @@ export const useRtmpStream = () => {
         proxyVideoRef.current.srcObject = initialSourceStream;
         await proxyVideoRef.current.play();
       }
+
+      // Start robust draw loop
       startDrawLoop();
 
-      // 3. Get Canvas Stream
+      // 3. Canvas Stream
       if (!canvasRef.current) throw new Error("Canvas Proxy not initialized");
       const canvasStream = canvasRef.current.captureStream(30);
 
-      // 4. Capture Mic
+      // 4. Mic
       let userStream: MediaStream | null = null;
       try {
-        userStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: false,
-        });
+        userStream = await navigator.mediaDevices.getUserMedia({ audio: true });
         originalUserStreamRef.current = userStream;
       } catch (e) {
-        console.warn("Mic access denied or not found");
+        console.warn("Mic not found");
       }
 
       // 5. Combine
       const audioContext = new AudioContext();
       const dest = audioContext.createMediaStreamDestination();
-      if (userStream && userStream.getAudioTracks().length > 0) {
+      if (userStream) {
         const micSource = audioContext.createMediaStreamSource(userStream);
         micSource.connect(dest);
       }
@@ -284,128 +333,68 @@ export const useRtmpStream = () => {
       ]);
       streamRef.current = combinedStream;
 
-      // 6. Setup MediaRecorder
-      const mimeType = "video/webm; codecs=vp9";
-      const options = MediaRecorder.isTypeSupported(mimeType)
-        ? { mimeType }
-        : { mimeType: "video/webm" };
-
-      const mediaRecorder = new MediaRecorder(combinedStream, options);
+      // 6. Recorder
+      const mediaRecorder = new MediaRecorder(combinedStream, {
+        mimeType: "video/webm; codecs=vp9",
+      });
       mediaRecorderRef.current = mediaRecorder;
       mediaRecorder.ondataavailable = handleStreamOutput;
 
-      // 7. Connect & Start (Electron vs Web Branch)
+      // 7. Connect
       if (isElectron) {
-        setStatus("Connecting to background process...");
+        setStatus("Connecting...");
         const electron = (window as ElectronWindow).electron!;
-
-        electron.stream.onStatus((data) => {
-          console.log("DEBUG: IPC Status:", data.status);
-          if (data.status === "error") {
-            notify.error(`Streaming Error: ${data.error}`);
+        electron.stream.onStatus((d) => {
+          if (d.status === "error") {
             stopStreaming();
-          } else if (data.status === "stopped") {
-            setIsStreaming(false);
-            setIsConnecting(false);
-            setStatus("Stopped");
+            notify.error(d.error || "Unknown Error");
           }
         });
-
         electron.stream.onFfmpegReady(() => {
-          console.log("DEBUG: FFmpeg (IPC) ready! Starting recorder...");
-          if (
-            mediaRecorderRef.current &&
-            mediaRecorderRef.current.state === "inactive"
-          ) {
-            mediaRecorderRef.current.start(1000);
+          if (mediaRecorder.state === "inactive") {
+            mediaRecorder.start(1000);
             setIsStreaming(true);
             setIsConnecting(false);
-            notify.success("Streaming started!");
           }
         });
-
-        // SEND TARGETS ARRAY
         electron.stream.start({ targets });
       } else {
-        // --- WEB MODE ---
-        setStatus("Connecting to server...");
         socketRef.current = io(SERVER_URL);
-
-        socketRef.current.on("connect", () => {
-          setStatus("Connected");
-          // SEND TARGETS ARRAY
-          socketRef.current?.emit("start-stream", { targets });
-        });
-
-        socketRef.current.on("stream-status", (msg: string) => {
-          if (msg.startsWith("error")) {
-            notify.error(msg);
-            stopStreaming();
-          } else if (msg === "stopped") {
-            setIsStreaming(false);
-            setStatus("Stopped");
-          }
-        });
-
+        socketRef.current.on("connect", () =>
+          socketRef.current?.emit("start-stream", { targets })
+        );
         socketRef.current.on("ffmpeg-ready", () => {
-          if (mediaRecorderRef.current?.state === "inactive") {
-            mediaRecorderRef.current.start(1000);
+          if (mediaRecorder.state === "inactive") {
+            mediaRecorder.start(1000);
             setIsStreaming(true);
             setIsConnecting(false);
-            notify.success("Streaming started!");
           }
         });
       }
     } catch (err: any) {
-      console.error("--- FATAL ERROR ---", err);
-      notify.error(`Failed to start: ${err.message}`);
+      console.error(err);
       stopStreaming();
     }
   };
 
   const stopStreaming = () => {
-    setCountdown(null);
     cancelDrawLoop();
+    if (mediaRecorderRef.current?.state !== "inactive")
+      mediaRecorderRef.current?.stop();
 
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state !== "inactive"
-    ) {
-      mediaRecorderRef.current.stop();
-    }
+    [streamRef, activeSourceStreamRef, originalUserStreamRef].forEach((ref) => {
+      if (ref.current) ref.current.getTracks().forEach((t) => t.stop());
+      ref.current = null;
+    });
+    if (proxyVideoRef.current) proxyVideoRef.current.srcObject = null;
 
-    // Cleanup Tracks
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-    }
-    if (activeSourceStreamRef.current) {
-      activeSourceStreamRef.current.getTracks().forEach((t) => t.stop());
-      activeSourceStreamRef.current = null;
-    }
-    if (originalUserStreamRef.current) {
-      originalUserStreamRef.current
-        .getTracks()
-        .forEach((track) => track.stop());
-      originalUserStreamRef.current = null;
-    }
-    if (proxyVideoRef.current) {
-      proxyVideoRef.current.srcObject = null;
-    }
-
-    if (isElectron) {
-      (window as ElectronWindow).electron?.stream.stop();
-    } else {
-      if (socketRef.current) {
-        socketRef.current.emit("stop-stream");
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
-    }
+    if (isElectron) (window as ElectronWindow).electron?.stream.stop();
+    else socketRef.current?.disconnect();
 
     setIsStreaming(false);
     setIsConnecting(false);
     setStatus("Stopped");
+    setActiveSourceId(null); // Reset source on stop
   };
 
   return {
@@ -419,5 +408,7 @@ export const useRtmpStream = () => {
     countdown,
     startStreaming,
     stopStreaming,
+    handleSourceSelect,
+    openSourcePicker,
   };
 };

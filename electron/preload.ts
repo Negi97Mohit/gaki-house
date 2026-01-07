@@ -28,4 +28,11 @@ contextBridge.exposeInMainWorld("electron", {
   // Desktop Capturer
   getDesktopSources: (options: any) =>
     ipcRenderer.invoke("get-desktop-sources", options),
+
+  // Window Focus Tracking (NEW)
+  onWindowFocusChanged: (callback: (isFocused: boolean) => void) => {
+    const listener = (_: any, isFocused: boolean) => callback(isFocused);
+    ipcRenderer.on("window-focus-changed", listener);
+    return () => ipcRenderer.removeListener("window-focus-changed", listener);
+  },
 });
