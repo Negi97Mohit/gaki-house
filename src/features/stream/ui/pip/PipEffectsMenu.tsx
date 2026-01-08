@@ -115,12 +115,11 @@ export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
                         ? "border-primary shadow-md ring-2 ring-primary/30"
                         : "border-border/40 hover:border-border"
                     )}
-                    title={`${filter.name}${
-                      isSelected ? " (click to remove)" : ""
-                    }`}
+                    title={`${filter.name}${isSelected ? " (click to remove)" : ""
+                      }`}
                   >
                     <img
-                      src="/placeholder.jpeg"
+                      src="placeholder.jpeg"
                       alt={filter.name}
                       className="w-full h-full object-cover"
                       style={{ filter: filter.style }}
@@ -162,9 +161,8 @@ export const PipEffectsMenu: React.FC<PipEffectsMenuProps> = ({
                         ? "border-primary shadow-md ring-2 ring-primary/30"
                         : "border-border/40 hover:border-border"
                     )}
-                    title={`${filter.name}${
-                      isSelected ? " (click to remove)" : ""
-                    }`}
+                    title={`${filter.name}${isSelected ? " (click to remove)" : ""
+                      }`}
                   >
                     <img
                       src={filter.thumbnailUrl}

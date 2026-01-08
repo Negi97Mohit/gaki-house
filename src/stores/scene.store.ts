@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GeneratedOverlay, TextOverlayState, FileOverlayState, CaptionStyle } from '@/types/caption';
+import { GeneratedOverlay, TextOverlayState, FileOverlayState, CaptionStyle, SceneState as GlobalSceneState } from '@/types/caption';
 
 interface SceneState {
     customMaskUrl: string | undefined;
@@ -27,6 +27,29 @@ interface SceneState {
     selectedFileId: string | null;
     selectedTextId: string | null;
     selectedGeneratedId: string | null;
+
+    // Added State
+    pipRotation: number;
+    pipBorder: { color: string; width: number };
+    pipShadow: { blur: number; color: string };
+    cameraAspectRatio: string;
+    customAspectRatio: string;
+    activeInteractiveFilter: GlobalSceneState['activeInteractiveFilter'];
+    filterIntensity: number;
+    filterColor: string;
+    filterTarget: "both" | "background" | "person";
+    isAutoFramingEnabled: boolean;
+    isBeautifyEnabled: boolean;
+    isLowLightEnabled: boolean;
+    isNeonEdgeEnabled: boolean;
+    neonIntensity: number;
+    neonColor: string;
+    cameraBackground: "none" | "blur" | "image";
+    customBackgroundUrl: string | null;
+    zoomSensitivity: number;
+    trackingSpeed: number;
+    isFaceTrackingEnabled: boolean;
+    canvasAspectRatio: string;
 
     // Undo/Redo state
     canUndo: boolean;
@@ -60,6 +83,29 @@ interface SceneState {
 
     setCanUndo: (canUndo: boolean) => void;
     setCanRedo: (canRedo: boolean) => void;
+
+    // Added Actions
+    setPipRotation: (rotation: number) => void;
+    setPipBorder: (border: { color: string; width: number }) => void;
+    setPipShadow: (shadow: { blur: number; color: string }) => void;
+    setCameraAspectRatio: (ratio: string) => void;
+    setCustomAspectRatio: (ratio: string) => void;
+    setActiveInteractiveFilter: (filter: GlobalSceneState['activeInteractiveFilter']) => void;
+    setFilterIntensity: (intensity: number) => void;
+    setFilterColor: (color: string) => void;
+    setFilterTarget: (target: "both" | "background" | "person") => void;
+    setIsAutoFramingEnabled: (enabled: boolean) => void;
+    setIsBeautifyEnabled: (enabled: boolean) => void;
+    setIsLowLightEnabled: (enabled: boolean) => void;
+    setIsNeonEdgeEnabled: (enabled: boolean) => void;
+    setNeonIntensity: (intensity: number) => void;
+    setNeonColor: (color: string) => void;
+    setCameraBackground: (bg: "none" | "blur" | "image") => void;
+    setCustomBackgroundUrl: (url: string | null) => void;
+    setZoomSensitivity: (sensitivity: number) => void;
+    setTrackingSpeed: (speed: number) => void;
+    setIsFaceTrackingEnabled: (enabled: boolean) => void;
+    setCanvasAspectRatio: (ratio: string) => void;
 
     triggerUndo: () => void;
     triggerRedo: () => void;
@@ -126,6 +172,51 @@ export const useSceneStore = create<SceneState>((set) => ({
 
     setCanUndo: (canUndo) => set({ canUndo }),
     setCanRedo: (canRedo) => set({ canRedo }),
+
+    // Added fields
+    pipRotation: 0,
+    pipBorder: { color: "#FFFFFF", width: 0 },
+    pipShadow: { blur: 0, color: "rgba(0,0,0,0.5)" },
+    cameraAspectRatio: "16:9",
+    customAspectRatio: "",
+    activeInteractiveFilter: "none",
+    filterIntensity: 0.5,
+    filterColor: "#000000",
+    filterTarget: "both",
+    isAutoFramingEnabled: false,
+    isBeautifyEnabled: false,
+    isLowLightEnabled: false,
+    isNeonEdgeEnabled: false,
+    neonIntensity: 50,
+    neonColor: "#00FFFF",
+    cameraBackground: "none",
+    customBackgroundUrl: null,
+    zoomSensitivity: 0.5,
+    trackingSpeed: 0.5,
+    isFaceTrackingEnabled: false,
+    canvasAspectRatio: "16:9",
+
+    setPipRotation: (pipRotation) => set({ pipRotation }),
+    setPipBorder: (pipBorder) => set({ pipBorder }),
+    setPipShadow: (pipShadow) => set({ pipShadow }),
+    setCameraAspectRatio: (cameraAspectRatio) => set({ cameraAspectRatio }),
+    setCustomAspectRatio: (customAspectRatio) => set({ customAspectRatio }),
+    setActiveInteractiveFilter: (activeInteractiveFilter) => set({ activeInteractiveFilter }),
+    setFilterIntensity: (filterIntensity) => set({ filterIntensity }),
+    setFilterColor: (filterColor) => set({ filterColor }),
+    setFilterTarget: (filterTarget) => set({ filterTarget }),
+    setIsAutoFramingEnabled: (isAutoFramingEnabled) => set({ isAutoFramingEnabled }),
+    setIsBeautifyEnabled: (isBeautifyEnabled) => set({ isBeautifyEnabled }),
+    setIsLowLightEnabled: (isLowLightEnabled) => set({ isLowLightEnabled }),
+    setIsNeonEdgeEnabled: (isNeonEdgeEnabled) => set({ isNeonEdgeEnabled }),
+    setNeonIntensity: (neonIntensity) => set({ neonIntensity }),
+    setNeonColor: (neonColor) => set({ neonColor }),
+    setCameraBackground: (cameraBackground) => set({ cameraBackground }),
+    setCustomBackgroundUrl: (customBackgroundUrl) => set({ customBackgroundUrl }),
+    setZoomSensitivity: (zoomSensitivity) => set({ zoomSensitivity }),
+    setTrackingSpeed: (trackingSpeed) => set({ trackingSpeed }),
+    setIsFaceTrackingEnabled: (isFaceTrackingEnabled) => set({ isFaceTrackingEnabled }),
+    setCanvasAspectRatio: (canvasAspectRatio) => set({ canvasAspectRatio }),
 
     triggerUndo: () => { },
     triggerRedo: () => { },

@@ -121,7 +121,30 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     selectedFileId, setSelectedFileId,
     selectedTextId, setSelectedTextId,
     selectedGeneratedId, setSelectedGeneratedId,
-    deselectAll
+    deselectAll,
+
+    // Added State
+    pipRotation, setPipRotation,
+    pipBorder, setPipBorder,
+    pipShadow, setPipShadow,
+    cameraAspectRatio, setCameraAspectRatio,
+    customAspectRatio, setCustomAspectRatio,
+    activeInteractiveFilter, setActiveInteractiveFilter,
+    filterIntensity, setFilterIntensity,
+    filterColor, setFilterColor,
+    filterTarget, setFilterTarget,
+    isAutoFramingEnabled, setIsAutoFramingEnabled,
+    isBeautifyEnabled, setIsBeautifyEnabled,
+    isLowLightEnabled, setIsLowLightEnabled,
+    isNeonEdgeEnabled, setIsNeonEdgeEnabled,
+    neonIntensity, setNeonIntensity,
+    neonColor, setNeonColor,
+    cameraBackground, setCameraBackground,
+    customBackgroundUrl, setCustomBackgroundUrl,
+    zoomSensitivity, setZoomSensitivity,
+    trackingSpeed, setTrackingSpeed,
+    isFaceTrackingEnabled, setIsFaceTrackingEnabled,
+    canvasAspectRatio, setCanvasAspectRatio
   } = useSceneStore(useShallow(state => ({
     customMaskUrl: state.customMaskUrl, setCustomMaskUrl: state.setCustomMaskUrl,
     activeOverlays: state.activeOverlays, setActiveOverlays: state.setActiveOverlays,
@@ -141,7 +164,30 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     selectedFileId: state.selectedFileId, setSelectedFileId: state.setSelectedFileId,
     selectedTextId: state.selectedTextId, setSelectedTextId: state.setSelectedTextId,
     selectedGeneratedId: state.selectedGeneratedId, setSelectedGeneratedId: state.setSelectedGeneratedId,
-    deselectAll: state.deselectAll
+    deselectAll: state.deselectAll,
+
+    // Added State
+    pipRotation: state.pipRotation, setPipRotation: state.setPipRotation,
+    pipBorder: state.pipBorder, setPipBorder: state.setPipBorder,
+    pipShadow: state.pipShadow, setPipShadow: state.setPipShadow,
+    cameraAspectRatio: state.cameraAspectRatio, setCameraAspectRatio: state.setCameraAspectRatio,
+    customAspectRatio: state.customAspectRatio, setCustomAspectRatio: state.setCustomAspectRatio,
+    activeInteractiveFilter: state.activeInteractiveFilter, setActiveInteractiveFilter: state.setActiveInteractiveFilter,
+    filterIntensity: state.filterIntensity, setFilterIntensity: state.setFilterIntensity,
+    filterColor: state.filterColor, setFilterColor: state.setFilterColor,
+    filterTarget: state.filterTarget, setFilterTarget: state.setFilterTarget,
+    isAutoFramingEnabled: state.isAutoFramingEnabled, setIsAutoFramingEnabled: state.setIsAutoFramingEnabled,
+    isBeautifyEnabled: state.isBeautifyEnabled, setIsBeautifyEnabled: state.setIsBeautifyEnabled,
+    isLowLightEnabled: state.isLowLightEnabled, setIsLowLightEnabled: state.setIsLowLightEnabled,
+    isNeonEdgeEnabled: state.isNeonEdgeEnabled, setIsNeonEdgeEnabled: state.setIsNeonEdgeEnabled,
+    neonIntensity: state.neonIntensity, setNeonIntensity: state.setNeonIntensity,
+    neonColor: state.neonColor, setNeonColor: state.setNeonColor,
+    cameraBackground: state.cameraBackground, setCameraBackground: state.setCameraBackground,
+    customBackgroundUrl: state.customBackgroundUrl, setCustomBackgroundUrl: state.setCustomBackgroundUrl,
+    zoomSensitivity: state.zoomSensitivity, setZoomSensitivity: state.setZoomSensitivity,
+    trackingSpeed: state.trackingSpeed, setTrackingSpeed: state.setTrackingSpeed,
+    isFaceTrackingEnabled: state.isFaceTrackingEnabled, setIsFaceTrackingEnabled: state.setIsFaceTrackingEnabled,
+    canvasAspectRatio: state.canvasAspectRatio, setCanvasAspectRatio: state.setCanvasAspectRatio
   })));
 
   // UI Store
@@ -170,12 +216,26 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     customMaskUrl, activeOverlays, textOverlays, fileOverlays, browserOverlays,
     canvasLayout, backgroundEffect, backgroundImageUrl, videoFilter, captionStyle,
     dynamicStyle, isAiModeEnabled, captionsEnabled, previousScene,
+    // Add new props to activeScene
+    pipRotation, pipBorder, pipShadow, cameraAspectRatio, customAspectRatio,
+    activeInteractiveFilter, filterIntensity, filterColor, filterTarget,
+    isAutoFramingEnabled, isBeautifyEnabled, isLowLightEnabled,
+    isNeonEdgeEnabled, neonIntensity, neonColor,
+    cameraBackground, customBackgroundUrl, zoomSensitivity, trackingSpeed, isFaceTrackingEnabled,
+    canvasAspectRatio
   } as any), [
     isAudioOn, isVideoOn, audioDevices, videoDevices, selectedAudioDevice, selectedVideoDevice, screenShareMode,
     layoutMode, cameraShape, splitRatio, pipPosition, pipSize,
     customMaskUrl, activeOverlays, textOverlays, fileOverlays, browserOverlays,
     canvasLayout, backgroundEffect, backgroundImageUrl, videoFilter, captionStyle,
-    dynamicStyle, isAiModeEnabled, captionsEnabled, previousScene
+    dynamicStyle, isAiModeEnabled, captionsEnabled, previousScene,
+    // Add new dependencies
+    pipRotation, pipBorder, pipShadow, cameraAspectRatio, customAspectRatio,
+    activeInteractiveFilter, filterIntensity, filterColor, filterTarget,
+    isAutoFramingEnabled, isBeautifyEnabled, isLowLightEnabled,
+    isNeonEdgeEnabled, neonIntensity, neonColor,
+    cameraBackground, customBackgroundUrl, zoomSensitivity, trackingSpeed, isFaceTrackingEnabled,
+    canvasAspectRatio
   ]);
 
   // Compatibility: updateActiveScene function that diffs and dispatches
@@ -205,12 +265,42 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     if (newScene.captionStyle !== activeScene.captionStyle && newScene.captionStyle) setCaptionStyle(newScene.captionStyle);
     if (newScene.isAiModeEnabled !== activeScene.isAiModeEnabled) setAiModeEnabled(newScene.isAiModeEnabled ?? false);
     if (newScene.captionsEnabled !== activeScene.captionsEnabled) setCaptionsEnabled(newScene.captionsEnabled ?? true);
+
+    // New setters
+    if (newScene.pipRotation !== activeScene.pipRotation) setPipRotation(newScene.pipRotation ?? 0);
+    if (newScene.pipBorder !== activeScene.pipBorder) setPipBorder(newScene.pipBorder ?? { color: "#FFFFFF", width: 0 });
+    if (newScene.pipShadow !== activeScene.pipShadow) setPipShadow(newScene.pipShadow ?? { blur: 0, color: "rgba(0,0,0,0.5)" });
+    if (newScene.cameraAspectRatio !== activeScene.cameraAspectRatio) setCameraAspectRatio(newScene.cameraAspectRatio ?? "16:9");
+    if (newScene.customAspectRatio !== activeScene.customAspectRatio) setCustomAspectRatio(newScene.customAspectRatio ?? "");
+    if (newScene.activeInteractiveFilter !== activeScene.activeInteractiveFilter) setActiveInteractiveFilter(newScene.activeInteractiveFilter ?? "none");
+    if (newScene.filterIntensity !== activeScene.filterIntensity) setFilterIntensity(newScene.filterIntensity ?? 0.5);
+    if (newScene.filterColor !== activeScene.filterColor) setFilterColor(newScene.filterColor ?? "#000000");
+    if (newScene.filterTarget !== activeScene.filterTarget) setFilterTarget(newScene.filterTarget ?? "both");
+    if (newScene.isAutoFramingEnabled !== activeScene.isAutoFramingEnabled) setIsAutoFramingEnabled(newScene.isAutoFramingEnabled ?? false);
+    if (newScene.isBeautifyEnabled !== activeScene.isBeautifyEnabled) setIsBeautifyEnabled(newScene.isBeautifyEnabled ?? false);
+    if (newScene.isLowLightEnabled !== activeScene.isLowLightEnabled) setIsLowLightEnabled(newScene.isLowLightEnabled ?? false);
+    if (newScene.isNeonEdgeEnabled !== activeScene.isNeonEdgeEnabled) setIsNeonEdgeEnabled(newScene.isNeonEdgeEnabled ?? false);
+    if (newScene.neonIntensity !== activeScene.neonIntensity) setNeonIntensity(newScene.neonIntensity ?? 50);
+    if (newScene.neonColor !== activeScene.neonColor) setNeonColor(newScene.neonColor ?? "#00FFFF");
+    if (newScene.cameraBackground !== activeScene.cameraBackground) setCameraBackground(newScene.cameraBackground ?? "none");
+    if (newScene.customBackgroundUrl !== activeScene.customBackgroundUrl) setCustomBackgroundUrl(newScene.customBackgroundUrl ?? null);
+    if (newScene.zoomSensitivity !== activeScene.zoomSensitivity) setZoomSensitivity(newScene.zoomSensitivity ?? 0.5);
+    if (newScene.trackingSpeed !== activeScene.trackingSpeed) setTrackingSpeed(newScene.trackingSpeed ?? 0.5);
+    if (newScene.isFaceTrackingEnabled !== activeScene.isFaceTrackingEnabled) setIsFaceTrackingEnabled(newScene.isFaceTrackingEnabled ?? false);
+    if (newScene.canvasAspectRatio !== activeScene.canvasAspectRatio) setCanvasAspectRatio(newScene.canvasAspectRatio ?? "16:9");
+
   }, [
     activeScene, setAudioOn, setVideoOn, setSelectedAudioDevice, setSelectedVideoDevice, setScreenShareMode,
     setLayoutMode, setCameraShape, setSplitRatio, setPipPosition,
     setCustomMaskUrl, setActiveOverlays, setTextOverlays, setFileOverlays, setBrowserOverlays,
     setCanvasLayout, setBackgroundEffect, setBackgroundImageUrl, setVideoFilter, setCaptionStyle,
-    setAiModeEnabled, setCaptionsEnabled
+    setAiModeEnabled, setCaptionsEnabled,
+    // Add new dependencies
+    setPipRotation, setPipBorder, setPipShadow, setCameraAspectRatio, setCustomAspectRatio,
+    setActiveInteractiveFilter, setFilterIntensity, setFilterColor, setFilterTarget,
+    setIsAutoFramingEnabled, setIsBeautifyEnabled, setIsLowLightEnabled, setIsNeonEdgeEnabled,
+    setNeonIntensity, setNeonColor, setCameraBackground, setCustomBackgroundUrl,
+    setZoomSensitivity, setTrackingSpeed, setIsFaceTrackingEnabled, setCanvasAspectRatio
   ]);
 
   // Compatibility: updateSceneProperty
@@ -233,13 +323,48 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       case 'captionStyle': setCaptionStyle(value); break;
       case 'isAiModeEnabled': setAiModeEnabled(value); break;
       case 'captionsEnabled': setCaptionsEnabled(value); break;
+
+      // START ADDED CASES
+      case 'pipRotation': setPipRotation(value); break;
+      case 'pipBorder': setPipBorder(value); break;
+      case 'pipShadow': setPipShadow(value); break;
+      case 'cameraAspectRatio': setCameraAspectRatio(value); break;
+      case 'customAspectRatio': setCustomAspectRatio(value); break;
+      case 'activeInteractiveFilter': setActiveInteractiveFilter(value); break;
+      case 'filterIntensity': setFilterIntensity(value); break;
+      case 'filterColor': setFilterColor(value); break;
+      case 'filterTarget': setFilterTarget(value); break;
+      case 'isAutoFramingEnabled': setIsAutoFramingEnabled(value); break;
+      case 'isBeautifyEnabled': setIsBeautifyEnabled(value); break;
+      case 'isLowLightEnabled': setIsLowLightEnabled(value); break;
+      case 'isNeonEdgeEnabled': setIsNeonEdgeEnabled(value); break;
+      case 'neonIntensity': setNeonIntensity(value); break;
+      case 'neonColor': setNeonColor(value); break;
+      case 'cameraBackground': setCameraBackground(value); break;
+      case 'customBackgroundUrl': setCustomBackgroundUrl(value); break;
+      case 'zoomSensitivity': setZoomSensitivity(value); break;
+      case 'trackingSpeed': setTrackingSpeed(value); break;
+      case 'isFaceTrackingEnabled': setIsFaceTrackingEnabled(value); break;
+      case 'canvasAspectRatio': setCanvasAspectRatio(value); break;
+      case 'videoFilter': setVideoFilter(value); break;
+      case 'backgroundEffect': setBackgroundEffect(value); break;
+      case 'backgroundImageUrl': setBackgroundImageUrl(value); break;
+      // END ADDED CASES
+
       default: console.warn(`updateSceneProperty: Unhandled key ${String(key)}`);
     }
   }, [
     setAudioOn, setVideoOn, setSelectedAudioDevice, setSelectedVideoDevice, setScreenShareMode,
     setLayoutMode, setCameraShape, setSplitRatio, setPipPosition, setPipSize,
     setCustomMaskUrl, setActiveOverlays, setTextOverlays, setCanvasLayout, setCaptionStyle,
-    setAiModeEnabled, setCaptionsEnabled
+    setAiModeEnabled, setCaptionsEnabled,
+    // Add new dependencies
+    setPipRotation, setPipBorder, setPipShadow, setCameraAspectRatio, setCustomAspectRatio,
+    setActiveInteractiveFilter, setFilterIntensity, setFilterColor, setFilterTarget,
+    setIsAutoFramingEnabled, setIsBeautifyEnabled, setIsLowLightEnabled, setIsNeonEdgeEnabled,
+    setNeonIntensity, setNeonColor, setCameraBackground, setCustomBackgroundUrl,
+    setZoomSensitivity, setTrackingSpeed, setIsFaceTrackingEnabled, setCanvasAspectRatio,
+    setVideoFilter, setBackgroundEffect, setBackgroundImageUrl
   ]);
 
   // Selection object wrapper
