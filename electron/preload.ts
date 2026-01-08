@@ -14,7 +14,7 @@ contextBridge.exposeInMainWorld("electron", {
 
   // Stream Controls
   stream: {
-    start: (config: { rtmpUrl: string; key: string }) =>
+    start: (config: { rtmpUrl: string; key: string; mimeType?: string }) =>
       ipcRenderer.send("stream:start", config),
     sendData: (chunk: any) => ipcRenderer.send("stream:data", chunk),
     stop: () => ipcRenderer.send("stream:stop"),

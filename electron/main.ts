@@ -65,33 +65,67 @@ function createWindow() {
 
 const createFfmpegCommand = (
   input: string | any,
-  rtmpUrl: string,
-  key: string,
+  options: {
+    rtmpUrl: string;
+    key: string;
+    mimeType?: string;
+  },
   onStart: (cmd: string) => void,
   onError: (err: Error) => void,
   onEnd: () => void
 ) => {
+  const { rtmpUrl, key, mimeType } = options;
   const fullUrl = key ? `${rtmpUrl}/${key}` : rtmpUrl;
-  console.log("Initializing stream to:", fullUrl);
+  console.log(`Initializing stream to: ${fullUrl} (Input: ${mimeType || "unknown"})`);
 
-  const command = ffmpeg()
-    .input(input)
-    .inputFormat("webm") // Explicitly tell FFmpeg this is WebM stream
-    .videoCodec("libx264")
-    .audioCodec("aac")
-    .outputOptions([
-      "-preset veryfast", // CHANGED: ultrafast -> veryfast (better quality)
+  const isH264Input = mimeType?.includes("h264");
+
+  const command = ffmpeg().input(input);
+
+  // Input Format Logic
+  command.inputFormat("webm"); // MediaRecorder ALWAYS sends WebM container (even if H.264 inside)
+
+  // Audio Codec (Always AAC for RTMP)
+  command.audioCodec("aac");
+
+  // Video Codec Logic
+  if (isH264Input) {
+    console.log("--- STREAM MODE: PASS-THROUGH (CPU OPTIMIZED) ---");
+    // Pass-through H.264 video directly provided by MediaRecorder
+    command.videoCodec("copy");
+    // FLV container needs h264_mp4toannexb for H.264
+    // from WebM to FLV/RTMP, we typically need this to ensure Annex B format
+    command.outputOptions("-bsf:v h264_mp4toannexb");
+  } else {
+    console.log("--- STREAM MODE: TRANSCODE (HARDWARE/SOFTWARE) ---");
+
+    // Try Hardware Acceleration (Best Effort)
+    // Note: We can't easily "try" and fallback in one go without complex probing.
+    // For now, we sticking to a highly optimized Software Preset to ensure stability across all user PCs without crashes.
+    // If user has GPU, standard libx264 is still CPU bound.
+    // FUTURE TODO: Add explicit "Hardware Encoder" option in UI to select 'h264_nvenc'.
+
+    // SW ENCODING OPTIMIZED
+    command.videoCodec("libx264");
+    command.outputOptions([
+      "-preset ultrafast", // CHANGED: veryfast -> ultrafast (Lowest CPU usage)
       "-tune zerolatency",
-      "-b:v 4500k", // Increased bitrate for 1080p
+      "-b:v 4500k",
       "-maxrate 4500k",
       "-bufsize 9000k",
-      "-g 60",
-      "-r 30", // Enforce 30fps
-      "-vf scale=1920:-1", // Downscale/Upscale to 1080p width, auto height
+      "-g 60", // Keyframe interval 2s (30fps)
+      "-r 30",
+      "-vf scale=1920:-1",
       "-pix_fmt yuv420p",
-      "-f flv",
-    ])
-    .output(fullUrl);
+    ]);
+  }
+
+  // Common Output Options
+  command.outputOptions([
+    "-f flv",
+  ]);
+
+  command.output(fullUrl);
 
   command.on("start", (cmd) => {
     console.log("FFmpeg spawned:", cmd);
@@ -99,7 +133,6 @@ const createFfmpegCommand = (
   });
 
   command.on("error", (err, stdout, stderr) => {
-    // Ignore "SIGKILL" error which we cause intentionally on stop
     if (err.message.includes("SIGKILL")) return;
     console.error("FFmpeg Error:", err.message);
     if (stderr) console.error("FFmpeg Stderr:", stderr);
@@ -119,21 +152,20 @@ const createFfmpegCommand = (
 function setupIpcHandlers() {
   let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
 
-  ipcMain.on("stream:start", (event, { rtmpUrl, key }) => {
+  ipcMain.on("stream:start", (event, config) => { // Config now includes mimeType
     if (ffmpegCommand) {
       try {
         ffmpegCommand.kill("SIGKILL");
-      } catch (e) {}
+      } catch (e) { }
     }
 
     try {
       ffmpegCommand = createFfmpegCommand(
         "pipe:0",
-        rtmpUrl,
-        key,
+        config,
         () => {
           event.sender.send("stream:status", { status: "started" });
-          event.sender.send("stream:ffmpeg-ready"); // Signal ready for data
+          event.sender.send("stream:ffmpeg-ready");
         },
         (err) => {
           event.sender.send("stream:status", {
@@ -207,13 +239,12 @@ function startStreamingServer() {
       if (ffmpegCommand) {
         try {
           ffmpegCommand.kill("SIGKILL");
-        } catch (e) {}
+        } catch (e) { }
       }
 
       ffmpegCommand = createFfmpegCommand(
         "pipe:0",
-        rtmpUrl,
-        key,
+        { rtmpUrl, key },
         () => {
           socket.emit("ffmpeg-ready");
           socket.emit("stream-status", "started");

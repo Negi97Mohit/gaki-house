@@ -9,7 +9,7 @@ const SERVER_URL = "http://localhost:3000";
 interface ElectronWindow extends Window {
   electron?: {
     stream: {
-      start: (config: { rtmpUrl: string; key: string }) => void;
+      start: (config: { rtmpUrl: string; key: string; mimeType?: string }) => void;
       sendData: (chunk: ArrayBuffer) => void;
       stop: () => void;
       onStatus: (callback: (data: { status: string; error?: string }) => void) => void;
@@ -269,10 +269,27 @@ export const useRtmpStream = () => {
       streamRef.current = combinedStream;
 
       // 6. Setup MediaRecorder
-      const mimeType = "video/webm; codecs=vp9";
-      const options = MediaRecorder.isTypeSupported(mimeType)
-        ? { mimeType }
-        : { mimeType: "video/webm" };
+      const getMimeType = () => {
+        const types = [
+          "video/webm; codecs=h264",
+          "video/webm; codecs=vp9",
+          "video/webm; codecs=vp8",
+          "video/webm"
+        ];
+        for (const type of types) {
+          if (MediaRecorder.isTypeSupported(type)) {
+            console.log(`[Stream] Using codec: ${type}`);
+            return type;
+          }
+        }
+        return "video/webm";
+      };
+
+      const mimeType = getMimeType();
+      const options: MediaRecorderOptions = {
+        mimeType,
+        videoBitsPerSecond: 4500000 // 4.5 Mbps target for recorder
+      };
 
       const mediaRecorder = new MediaRecorder(combinedStream, options);
       mediaRecorderRef.current = mediaRecorder;
@@ -305,7 +322,7 @@ export const useRtmpStream = () => {
           }
         });
 
-        electron.stream.start({ rtmpUrl: targetUrl, key: targetKey });
+        electron.stream.start({ rtmpUrl: targetUrl, key: targetKey, mimeType });
 
       } else {
         // --- WEB MODE ---
