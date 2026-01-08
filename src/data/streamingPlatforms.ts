@@ -44,7 +44,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#000000',
     icon: 'tiktok',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'instagram',
@@ -53,7 +52,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#E4405F',
     icon: 'instagram',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'x',
@@ -62,7 +60,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#000000',
     icon: 'x',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'linkedin',
@@ -71,7 +68,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#0A66C2',
     icon: 'linkedin',
     requiresOAuth: true,
-    comingSoon: true,
   },
 
   // Gaming Platforms
@@ -92,7 +88,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     icon: 'rumble',
     rtmpUrl: 'rtmp://live.rumble.com/live/',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'dlive',
@@ -102,7 +97,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     icon: 'dlive',
     rtmpUrl: 'rtmp://stream.dlive.tv/live/',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'trovo',
@@ -112,7 +106,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     icon: 'trovo',
     rtmpUrl: 'rtmp://livepush.trovo.live/live/',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'bilibili',
@@ -121,7 +114,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#00A1D6',
     icon: 'bilibili',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'nimotv',
@@ -130,7 +122,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#EE3C49',
     icon: 'nimotv',
     requiresOAuth: true,
-    comingSoon: true,
   },
 
   // Professional Platforms
@@ -141,7 +132,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#1AB7EA',
     icon: 'vimeo',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'vk',
@@ -150,7 +140,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#0077FF',
     icon: 'vk',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'mixcloud',
@@ -159,7 +148,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#5000FF',
     icon: 'mixcloud',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'brightcove',
@@ -168,7 +156,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#FF6B00',
     icon: 'brightcove',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'jwplayer',
@@ -177,7 +164,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#FF0046',
     icon: 'jwplayer',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'kaltura',
@@ -186,7 +172,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#00B4E8',
     icon: 'kaltura',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'ibm',
@@ -195,7 +180,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#054ADA',
     icon: 'ibm',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'wowza',
@@ -204,7 +188,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#F37021',
     icon: 'wowza',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'mux',
@@ -213,7 +196,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#FF2D55',
     icon: 'mux',
     requiresOAuth: true,
-    comingSoon: true,
   },
   {
     id: 'aws',
@@ -222,7 +204,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#FF9900',
     icon: 'aws',
     requiresOAuth: true,
-    comingSoon: true,
   },
 
   // Self-Hosted
@@ -232,7 +213,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'selfhosted',
     color: '#7C3AED',
     icon: 'owncast',
-    comingSoon: true,
   },
   {
     id: 'peertube',
@@ -240,7 +220,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'selfhosted',
     color: '#F1680D',
     icon: 'peertube',
-    comingSoon: true,
   },
   {
     id: 'nginx',
@@ -248,7 +227,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'selfhosted',
     color: '#009639',
     icon: 'nginx',
-    comingSoon: true,
   },
   {
     id: 'wowzaserver',
@@ -256,7 +234,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'selfhosted',
     color: '#F37021',
     icon: 'wowza',
-    comingSoon: true,
   },
   {
     id: 'antmedia',
@@ -264,7 +241,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'selfhosted',
     color: '#00D4FF',
     icon: 'antmedia',
-    comingSoon: true,
   },
   {
     id: 'red5',
@@ -272,7 +248,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'selfhosted',
     color: '#D32F2F',
     icon: 'red5',
-    comingSoon: true,
   },
   {
     id: 'mediasoup',
@@ -280,7 +255,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'selfhosted',
     color: '#4CAF50',
     icon: 'mediasoup',
-    comingSoon: true,
   },
 ];
 
