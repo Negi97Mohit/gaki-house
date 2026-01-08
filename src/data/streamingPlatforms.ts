@@ -20,6 +20,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#FF0000',
     icon: 'youtube',
     requiresOAuth: true,
+    rtmpUrl: 'rtmp://a.rtmp.youtube.com/live2',
   },
   {
     id: 'twitch',
@@ -28,6 +29,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#9146FF',
     icon: 'twitch',
     requiresOAuth: true,
+    rtmpUrl: 'rtmp://live.twitch.tv/app/',
   },
   {
     id: 'facebook',
@@ -36,6 +38,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#1877F2',
     icon: 'facebook',
     requiresOAuth: true,
+    rtmpUrl: 'rtmps://live-api-s.facebook.com:443/rtmp/',
   },
   {
     id: 'tiktok',
@@ -52,6 +55,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#E4405F',
     icon: 'instagram',
     requiresOAuth: true,
+    rtmpUrl: 'rtmps://live-upload.instagram.com:443/rtmp/',
   },
   {
     id: 'x',
@@ -60,6 +64,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#000000',
     icon: 'x',
     requiresOAuth: true,
+    rtmpUrl: 'rtmps://va.pscp.tv:443/x/',
   },
   {
     id: 'linkedin',
@@ -77,7 +82,6 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     category: 'gaming',
     color: '#53FC18',
     icon: 'kick',
-    rtmpUrl: 'rtmps://fa723fc1b171.global-contribute.live-video.net/app/',
     requiresOAuth: true,
   },
   {
@@ -114,6 +118,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#00A1D6',
     icon: 'bilibili',
     requiresOAuth: true,
+    rtmpUrl: 'rtmp://live-push.bilivideo.com/live/',
   },
   {
     id: 'nimotv',
@@ -132,6 +137,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#1AB7EA',
     icon: 'vimeo',
     requiresOAuth: true,
+    rtmpUrl: 'rtmps://rtmp-global.cloud.vimeo.com/live',
   },
   {
     id: 'vk',
@@ -140,6 +146,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#0077FF',
     icon: 'vk',
     requiresOAuth: true,
+    rtmpUrl: 'rtmp://ovsu.mycdn.me/input/',
   },
   {
     id: 'mixcloud',
@@ -148,6 +155,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#5000FF',
     icon: 'mixcloud',
     requiresOAuth: true,
+    rtmpUrl: 'rtmp://rtmp.mixcloud.com/broadcast',
   },
   {
     id: 'brightcove',
@@ -196,6 +204,7 @@ export const STREAMING_PLATFORMS: StreamingPlatform[] = [
     color: '#FF2D55',
     icon: 'mux',
     requiresOAuth: true,
+    rtmpUrl: 'rtmps://global-live.mux.com:443/app',
   },
   {
     id: 'aws',
