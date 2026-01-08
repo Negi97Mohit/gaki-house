@@ -29,6 +29,9 @@ interface BottomNavigationProps {
   onStartStream?: (url: string, key: string) => void;
   onStopStream?: () => void;
   onStreamSettingsSave?: (url: string, key: string) => void;
+  streamStatus?: string;
+  isStreamConnecting?: boolean;
+  isStreamBroadcasting?: boolean;
 
   // Scene triggers (passed to SceneControls)
   onUndo: () => void;
@@ -48,6 +51,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onStartStream,
   onStopStream,
   onStreamSettingsSave,
+  streamStatus,
+  isStreamConnecting,
+  isStreamBroadcasting,
   onUndo,
   onRedo,
   onResetScene,
@@ -219,6 +225,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             onStartStream={onStartStream}
             onStopStream={onStopStream}
             onStreamSettingsSave={onStreamSettingsSave}
+            streamStatus={streamStatus}
+            isConnecting={isStreamConnecting}
+            isBroadcasting={isStreamBroadcasting}
           />
 
           <div className="w-px h-6 bg-border/40 mx-1" />

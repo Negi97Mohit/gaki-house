@@ -34,6 +34,7 @@ export const useRtmpStream = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const proxyVideoRef = useRef<HTMLVideoElement | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null); // Safety ref for countdown
 
   // Tracks
   const streamRef = useRef<MediaStream | null>(null); // The final canvas stream
@@ -207,18 +208,7 @@ export const useRtmpStream = () => {
     }
   };
 
-  const startStreaming = async (url?: string, key?: string) => {
-    const targetUrl = url || rtmpUrl;
-    const targetKey = key || streamKey;
-
-    if (!targetUrl || !targetKey) {
-      notify.error("Please enter both RTMP URL and Stream Key");
-      return;
-    }
-
-    setRtmpUrl(targetUrl);
-    setStreamKey(targetKey);
-
+  const initiateStream = async (targetUrl: string, targetKey: string) => {
     try {
       console.log("--- DEBUG: Starting Stream Process (Canvas Proxy Mode) ---");
       setIsConnecting(true);
@@ -351,7 +341,43 @@ export const useRtmpStream = () => {
     }
   };
 
+  const startStreaming = async (url?: string, key?: string) => {
+    const targetUrl = url || rtmpUrl;
+    const targetKey = key || streamKey;
+
+    if (!targetUrl || !targetKey) {
+      notify.error("Please enter both RTMP URL and Stream Key");
+      return;
+    }
+
+    setRtmpUrl(targetUrl);
+    setStreamKey(targetKey);
+
+    // Initial Status to close modal immediately
+    setStatus("Starting...");
+    setCountdown(3);
+
+    // Clear any existing interval just in case
+    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+
+    let count = 3;
+    countdownIntervalRef.current = setInterval(() => {
+      count -= 1;
+      if (count > 0) {
+        setCountdown(count);
+      } else {
+        if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+        setCountdown(null);
+        initiateStream(targetUrl, targetKey);
+      }
+    }, 1000);
+  };
+
   const stopStreaming = () => {
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
     setCountdown(null);
     cancelDrawLoop();
 

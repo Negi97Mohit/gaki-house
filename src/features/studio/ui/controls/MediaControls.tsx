@@ -29,12 +29,18 @@ interface MediaControlsProps {
     onStartStream?: (url: string, key: string) => void;
     onStopStream?: () => void;
     onStreamSettingsSave?: (url: string, key: string) => void;
+    streamStatus?: string;
+    isConnecting?: boolean;
+    isBroadcasting?: boolean;
 }
 
 export const MediaControls: React.FC<MediaControlsProps> = ({
     onStartStream,
     onStopStream,
     onStreamSettingsSave,
+    streamStatus: propStreamStatus,
+    isConnecting: propIsConnecting,
+    isBroadcasting: propIsBroadcasting,
 }) => {
     // Local state for Smart Switch
     const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
@@ -71,6 +77,10 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         isConnecting: state.isConnecting,
         streamStatus: state.streamStatus,
     })));
+
+    const activeStatus = propStreamStatus ?? streamStatus;
+    const activeConnecting = propIsConnecting ?? isConnecting;
+    const activeBroadcasting = propIsBroadcasting ?? isBroadcasting;
 
     return (
         <>
@@ -192,9 +202,9 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             </div>
 
             <StreamConfigurationModal
-                isBroadcasting={isBroadcasting}
-                isConnecting={isConnecting}
-                status={streamStatus}
+                isBroadcasting={activeBroadcasting}
+                isConnecting={activeConnecting}
+                status={activeStatus}
                 onStartStream={onStartStream}
                 onStopStream={onStopStream}
                 defaultStreamUrl={

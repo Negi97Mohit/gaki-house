@@ -111,6 +111,9 @@ const Index = () => {
         portalContainer={ui.mainContainerRef.current || undefined}
         onStartStream={rtmp.startStreaming}
         onStopStream={rtmp.stopStreaming}
+        streamStatus={rtmp.status}
+        isStreamConnecting={rtmp.isConnecting}
+        isStreamBroadcasting={rtmp.isStreaming}
         onUndo={sceneManager.undo}
         onRedo={sceneManager.redo}
         onResetScene={sceneManager.resetScene}
@@ -131,8 +134,8 @@ const Index = () => {
       {/* --- RTMP Countdown Overlay --- */}
       {rtmp.countdown !== null && (
         <div
-          className="fixed inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-3xl z-[9999] animate-in fade-in duration-300"
-          style={{ zIndex: 9999 }}
+          className="fixed inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-3xl z-[10000] animate-in fade-in duration-300"
+          style={{ zIndex: 10000 }}
         >
           <div className="flex flex-col items-center gap-8 animate-in zoom-in-95 duration-500">
             <div className="relative">
