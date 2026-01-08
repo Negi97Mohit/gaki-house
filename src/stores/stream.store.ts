@@ -1,11 +1,22 @@
 import { create } from 'zustand';
 
+export interface StreamDestination {
+    id: string;
+    platform: string; // 'youtube', 'twitch', 'custom', etc.
+    url: string;
+    key: string;
+    enabled: boolean;
+    status: 'idle' | 'starting' | 'live' | 'error';
+    error?: string;
+}
+
 interface StreamState {
     isRecording: boolean;
     isBroadcasting: boolean;
     isConnecting: boolean;
     streamStatus: string;
     countdown: number | null;
+    destinations: StreamDestination[];
 
     // Actions
     setRecording: (isRecording: boolean) => void;
@@ -13,6 +24,12 @@ interface StreamState {
     setConnecting: (isConnecting: boolean) => void;
     setStreamStatus: (status: string) => void;
     setCountdown: (countdown: number | null) => void;
+
+    // Destination Actions
+    addDestination: (destination: StreamDestination) => void;
+    removeDestination: (id: string) => void;
+    updateDestination: (id: string, updates: Partial<StreamDestination>) => void;
+    setDestinationStatus: (id: string, status: StreamDestination['status'], error?: string) => void;
 }
 
 export const useStreamStore = create<StreamState>((set) => ({
@@ -21,10 +38,20 @@ export const useStreamStore = create<StreamState>((set) => ({
     isConnecting: false,
     streamStatus: 'idle',
     countdown: null,
+    destinations: [],
 
     setRecording: (isRecording) => set({ isRecording }),
     setBroadcasting: (isBroadcasting) => set({ isBroadcasting }),
     setConnecting: (isConnecting) => set({ isConnecting }),
     setStreamStatus: (streamStatus) => set({ streamStatus }),
     setCountdown: (countdown) => set({ countdown }),
+
+    addDestination: (destination) => set((state) => ({ destinations: [...state.destinations, destination] })),
+    removeDestination: (id) => set((state) => ({ destinations: state.destinations.filter(d => d.id !== id) })),
+    updateDestination: (id, updates) => set((state) => ({
+        destinations: state.destinations.map(d => d.id === id ? { ...d, ...updates } : d)
+    })),
+    setDestinationStatus: (id, status, error) => set((state) => ({
+        destinations: state.destinations.map(d => d.id === id ? { ...d, status, error } : d)
+    })),
 }));

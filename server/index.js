@@ -22,20 +22,33 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
 
-    let ffmpegProcess = null;
-    let chunkBuffer = [];
-    let isFfmpegReady = false;
+    const ffmpegProcesses = new Map(); // id -> { process, buffer, isReady }
 
-    socket.on('start-stream', ({ rtmpUrl, key }) => {
+    // Helper to get or create stream state
+    const getStreamState = (id) => {
+        if (!ffmpegProcesses.has(id)) {
+            ffmpegProcesses.set(id, { process: null, buffer: [], isReady: false });
+        }
+        return ffmpegProcesses.get(id);
+    };
+
+    socket.on('start-stream', ({ id, rtmpUrl, key }) => {
         const streamUrl = `${rtmpUrl}/${key}`;
-        console.log(`Starting stream to: ${rtmpUrl} (hidden key)`);
+        console.log(`Starting stream [${id}] to: ${rtmpUrl} (hidden key)`);
 
-        chunkBuffer = []; // Reset buffer
-        isFfmpegReady = false;
+        // Clean up existing if any
+        const existing = ffmpegProcesses.get(id);
+        if (existing && existing.process) {
+            try { existing.process.kill('SIGKILL'); } catch (e) { }
+        }
+
+        // Reset state for this ID
+        const state = { process: null, buffer: [], isReady: false };
+        ffmpegProcesses.set(id, state);
 
         // Input options for receiving raw WebM from browser
         // The browser sends webm clusters via socket
-        ffmpegProcess = ffmpeg({ source: 'pipe:0' })
+        state.process = ffmpeg({ source: 'pipe:0' })
             .inputOptions([
                 // '-re', // Do NOT use -re for live pipes
                 '-analyzeduration 100000', // Reduce analysis time
@@ -56,66 +69,85 @@ io.on('connection', (socket) => {
             ])
             .output(streamUrl)
             .on('start', (commandLine) => {
-                console.log('FFmpeg process started:', commandLine);
-                socket.emit('stream-status', 'started');
-                isFfmpegReady = true;
+                console.log(`FFmpeg process [${id}] started:`, commandLine);
+                socket.emit('stream-status', { id, status: 'started' });
+                // Also emit ffmpeg-ready so frontend knows at least one is ready
+                socket.emit('ffmpeg-ready', { id });
+                state.isReady = true;
 
                 // Flush buffer
-                if (chunkBuffer.length > 0) {
-                    console.log(`Flushing ${chunkBuffer.length} buffered chunks`);
-                    chunkBuffer.forEach(data => {
-                        if (ffmpegProcess && ffmpegProcess.ffmpegProc) {
+                if (state.buffer.length > 0) {
+                    console.log(`Flushing ${state.buffer.length} buffered chunks to [${id}]`);
+                    state.buffer.forEach(data => {
+                        if (state.process && state.process.ffmpegProc) {
                             try {
-                                ffmpegProcess.ffmpegProc.stdin.write(data);
-                            } catch (e) { console.error('Write error during flush', e); }
+                                state.process.ffmpegProc.stdin.write(data);
+                            } catch (e) { console.error(`Write error during flush [${id}]`, e); }
                         }
                     });
-                    chunkBuffer = [];
+                    state.buffer = [];
                 }
             })
             .on('error', (err, stdout, stderr) => {
-                console.error('FFmpeg error:', err.message);
-                console.error('FFmpeg stderr:', stderr);
-                socket.emit('stream-status', `error: ${err.message}`);
+                console.error(`FFmpeg error [${id}]:`, err.message);
+                // console.error('FFmpeg stderr:', stderr);
+                socket.emit('stream-status', { id, status: 'error', error: err.message });
+                ffmpegProcesses.delete(id);
             })
             .on('end', () => {
-                console.log('FFmpeg process ended');
-                socket.emit('stream-status', 'ended');
+                console.log(`FFmpeg process [${id}] ended`);
+                socket.emit('stream-status', { id, status: 'ended' });
+                ffmpegProcesses.delete(id);
             });
 
         // Start the process
-        ffmpegProcess.run();
+        state.process.run();
     });
 
     socket.on('binary-stream', (data) => {
-        if (isFfmpegReady && ffmpegProcess && ffmpegProcess.ffmpegProc && !ffmpegProcess.ffmpegProc.stdin.destroyed) {
-            try {
-                ffmpegProcess.ffmpegProc.stdin.write(data);
-            } catch (err) {
-                console.error('Error writing to ffmpeg stdin:', err);
+        // Broadcast to ALL active streams
+        ffmpegProcesses.forEach((state, id) => {
+            if (state.isReady && state.process && state.process.ffmpegProc && !state.process.ffmpegProc.stdin.destroyed) {
+                try {
+                    state.process.ffmpegProc.stdin.write(data);
+                } catch (err) {
+                    console.error(`Error writing to ffmpeg stdin [${id}]:`, err);
+                }
+            } else if (state.process) {
+                // Buffer if stream is requested but not ready
+                // Only buffer if process exists (meaning it's starting)
+                // console.log(`Buffering chunk for [${id}], ffmpeg not ready`);
+                state.buffer.push(data);
             }
-        } else if (ffmpegProcess) {
-            // Buffer if stream is requested but not ready
-            console.log('Buffering chunk, ffmpeg not ready');
-            chunkBuffer.push(data);
-        }
+        });
     });
 
-    socket.on('stop-stream', () => {
-        if (ffmpegProcess) {
-            console.log('Stopping stream manually');
-            ffmpegProcess.kill('SIGKILL');
-            ffmpegProcess = null;
-            socket.emit('stream-status', 'stopped');
+    socket.on('stop-stream', ({ id } = {}) => {
+        if (id) {
+            const state = ffmpegProcesses.get(id);
+            if (state && state.process) {
+                console.log(`Stopping stream [${id}] manually`);
+                state.process.kill('SIGKILL');
+                ffmpegProcesses.delete(id);
+                socket.emit('stream-status', { id, status: 'stopped' });
+            }
+        } else {
+            // Stop ALL
+            console.log('Stopping ALL streams manually');
+            ffmpegProcesses.forEach((state, sId) => {
+                if (state.process) state.process.kill('SIGKILL');
+                socket.emit('stream-status', { id: sId, status: 'stopped' });
+            });
+            ffmpegProcesses.clear();
         }
     });
 
     socket.on('disconnect', () => {
         console.log('Client disconnected:', socket.id);
-        if (ffmpegProcess) {
-            ffmpegProcess.kill('SIGKILL');
-            ffmpegProcess = null;
-        }
+        ffmpegProcesses.forEach((state) => {
+            if (state.process) state.process.kill('SIGKILL');
+        });
+        ffmpegProcesses.clear();
     });
 });
 

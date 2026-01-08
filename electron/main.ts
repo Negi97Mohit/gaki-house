@@ -150,36 +150,52 @@ const createFfmpegCommand = (
 // --- IPC STREAMING (NEW - FAST) ---
 
 function setupIpcHandlers() {
-  let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
+  const ffmpegCommands = new Map<string, ffmpeg.FfmpegCommand>();
 
-  ipcMain.on("stream:start", (event, config) => { // Config now includes mimeType
-    if (ffmpegCommand) {
+  ipcMain.on("stream:start", (event, config) => { // Config: { id, rtmpUrl, key, mimeType }
+    const { id, rtmpUrl, key } = config;
+
+    if (ffmpegCommands.has(id)) {
       try {
-        ffmpegCommand.kill("SIGKILL");
+        ffmpegCommands.get(id)?.kill("SIGKILL");
+        ffmpegCommands.delete(id);
       } catch (e) { }
     }
 
     try {
-      ffmpegCommand = createFfmpegCommand(
+      const command = createFfmpegCommand(
         "pipe:0",
         config,
         () => {
-          event.sender.send("stream:status", { status: "started" });
-          event.sender.send("stream:ffmpeg-ready");
+          event.sender.send("stream:status", { id, status: "started" });
+          // Only send ffmpeg-ready once if needed, or track it per stream? 
+          // For simplicity, we can treat "started" as ready. 
+          // But the frontend waits for "stream:ffmpeg-ready" to start recording.
+          // We should probably emit ready if it's the first one, or just assume ready if others are running.
+          // Actually, the recorder is shared. If it's already running, we just need to pipe to this new process.
+          // Let's send it anyway.
+          event.sender.send("stream:ffmpeg-ready", { id });
         },
         (err) => {
           event.sender.send("stream:status", {
+            id,
             status: "error",
             error: err.message,
           });
+          ffmpegCommands.delete(id);
         },
         () => {
-          event.sender.send("stream:status", { status: "stopped" });
+          event.sender.send("stream:status", { id, status: "stopped" });
+          ffmpegCommands.delete(id);
         }
       );
-      ffmpegCommand.run();
+
+      ffmpegCommands.set(id, command);
+      command.run();
+
     } catch (error: any) {
       event.sender.send("stream:status", {
+        id,
         status: "error",
         error: error.message,
       });
@@ -187,31 +203,53 @@ function setupIpcHandlers() {
   });
 
   ipcMain.on("stream:data", (event, data) => {
-    if (ffmpegCommand && (ffmpegCommand as any).ffmpegProc) {
-      const proc = (ffmpegCommand as any).ffmpegProc;
-      if (proc.stdin && proc.stdin.writable && !proc.killed) {
-        try {
-          proc.stdin.write(Buffer.from(data)); // Ensure Buffer
-        } catch (err) {
-          console.error("Write failed:", err);
-        }
+    // Broadcast data to ALL active ffmpeg processes
+    ffmpegCommands.forEach((command, id) => {
+      if ((command as any).ffmpegProc) {
+        const proc = (command as any).ffmpegProc;
+        if (proc.stdin && proc.stdin.writable && !proc.killed) {
+          try {
+            proc.stdin.write(Buffer.from(data)); // Ensure Buffer
+          } catch (err) {
+            console.error(`Write failed for stream ${id}:`, err);
+          }
 
-        // Error handler to prevent crashes
-        if (!proc.stdin.listeners("error").length) {
-          proc.stdin.on("error", (err: any) => {
-            console.log("Stdin Error (ipc):", err.code);
-          });
+          // Error handler to prevent crashes
+          if (!proc.stdin.listeners("error").length) {
+            proc.stdin.on("error", (err: any) => {
+              console.log(`Stdin Error (ipc) for ${id}:`, err.code);
+            });
+          }
         }
       }
-    }
+    });
   });
 
-  ipcMain.on("stream:stop", (event) => {
-    if (ffmpegCommand) {
-      console.log("Stopping IPC stream...");
-      ffmpegCommand.kill("SIGKILL");
-      ffmpegCommand = null;
-      event.sender.send("stream:status", { status: "stopped" });
+  ipcMain.on("stream:stop", (event, config) => {
+    // Safety check for config
+    const id = config?.id;
+
+    if (id) {
+      // Stop specific stream
+      const command = ffmpegCommands.get(id);
+      if (command) {
+        console.log(`Stopping IPC stream: ${id}`);
+        try {
+          command.kill("SIGKILL");
+        } catch (e) { }
+        ffmpegCommands.delete(id);
+        event.sender.send("stream:status", { id, status: "stopped" });
+      }
+    } else {
+      // Stop ALL streams
+      console.log("Stopping ALL IPC streams...");
+      ffmpegCommands.forEach((command, streamId) => {
+        try {
+          command.kill("SIGKILL");
+        } catch (e) { }
+        event.sender.send("stream:status", { id: streamId, status: "stopped" });
+      });
+      ffmpegCommands.clear();
     }
   });
 }

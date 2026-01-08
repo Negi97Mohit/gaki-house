@@ -14,14 +14,19 @@ contextBridge.exposeInMainWorld("electron", {
 
   // Stream Controls
   stream: {
-    start: (config: { rtmpUrl: string; key: string; mimeType?: string }) =>
-      ipcRenderer.send("stream:start", config),
+    start: (config: { id: string; rtmpUrl: string; key: string; mimeType?: string }) => {
+      console.log("[Preload] Starting stream:", config);
+      ipcRenderer.send("stream:start", config);
+    },
     sendData: (chunk: any) => ipcRenderer.send("stream:data", chunk),
-    stop: () => ipcRenderer.send("stream:stop"),
+    stop: (config?: { id?: string }) => ipcRenderer.send("stream:stop", config),
     onStatus: (callback: (data: any) => void) =>
-      ipcRenderer.on("stream:status", (_, data) => callback(data)),
-    onFfmpegReady: (callback: () => void) =>
-      ipcRenderer.on("stream:ffmpeg-ready", () => callback()),
+      ipcRenderer.on("stream:status", (_, data) => {
+        console.log("[Preload] Received status:", data);
+        if (data) callback(data);
+      }),
+    onFfmpegReady: (callback: (data: { id: string }) => void) =>
+      ipcRenderer.on("stream:ffmpeg-ready", (_, data) => callback(data)),
   },
 
   // Desktop Capturer

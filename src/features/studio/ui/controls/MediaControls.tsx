@@ -26,8 +26,8 @@ import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 
 interface MediaControlsProps {
-    onStartStream?: (url: string, key: string) => void;
-    onStopStream?: () => void;
+    onStartStream?: (id?: string) => void;
+    onStopStream?: (id?: string) => void;
     onStreamSettingsSave?: (url: string, key: string) => void;
     streamStatus?: string;
     isConnecting?: boolean;
@@ -202,24 +202,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             </div>
 
             <StreamConfigurationModal
-                isBroadcasting={activeBroadcasting}
-                isConnecting={activeConnecting}
-                status={activeStatus}
                 onStartStream={onStartStream}
                 onStopStream={onStopStream}
-                defaultStreamUrl={
-                    typeof window !== "undefined"
-                        ? localStorage.getItem("stream_rtmpUrl") || undefined
-                        : undefined
-                }
-                defaultStreamKey={
-                    typeof window !== "undefined"
-                        ? localStorage.getItem("stream_key") || undefined
-                        : undefined
-                }
-                onSave={(url, key) => {
-                    if (onStreamSettingsSave) onStreamSettingsSave(url, key);
-                }}
             />
 
             <Button
