@@ -210,6 +210,10 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           </Button>
 
           <div className="w-px h-6 bg-border/40 mx-1" />
+          <div id="layout-controls-slot" className="flex items-center gap-1" />
+
+          {/* Optional: Add a separator after if you want visual separation */}
+          <div className="w-px h-6 bg-border/40 mx-1" />
 
           {/* Decomposed Scene Controls */}
           <SceneControls
