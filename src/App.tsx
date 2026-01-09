@@ -13,7 +13,7 @@ import { useUiStore } from "@/stores/ui.store";
 
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
-const EditPage = lazy(() => import("./pages/Edit"));
+
 const RemoteCamera = lazy(() => import("./pages/RemoteCamera"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
@@ -104,7 +104,7 @@ const App = () => {
                 <Suspense fallback={<Loader visible={true} />}>
                   <Routes>
                     <Route path="/" element={<Index />} />
-                    <Route path="/edit/:sessionId" element={<EditPage />} />
+
                     <Route path="/remote-cam" element={<RemoteCamera />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

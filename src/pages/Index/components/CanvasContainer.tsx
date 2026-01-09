@@ -15,7 +15,7 @@ import {
   FileOverlayState,
   FileType,
 } from "@/types/caption";
-import { RecordingSession } from "@/types/editor";
+
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
 import { generateId } from "@/shared/lib/id";
@@ -37,8 +37,7 @@ import { useUiStore } from "@/stores/ui.store";
 
 interface CanvasContainerProps {
   layoutManager: any;
-  recording: any;
-  onRecordingComplete: (session: RecordingSession) => void;
+
   vaultFiles: VaultFile[];
   onAddVaultFiles: (files: FileList | File[], source: VaultFile['source']) => void;
   onRemoveVaultFile: (id: string) => void;
@@ -48,8 +47,7 @@ interface CanvasContainerProps {
 
 export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   layoutManager,
-  recording,
-  onRecordingComplete,
+
   vaultFiles,
   onAddVaultFiles,
   onRemoveVaultFile,
@@ -388,7 +386,6 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   const { isProcessingAi, processTranscript } = useCanvasAi({
     activeScene,
     updateActiveScene,
-    recording,
     setSavedOverlays: () => { },
   });
 
@@ -411,35 +408,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
 
   const handleSetCaptionStyle = (val: CaptionStyle) => {
     setCaptionStyle(val);
-    if (recording.isRecording) recording.recordCaptionStyle(val);
   };
 
-  const handleRecordingToggle = useCallback(
-    async (
-      isCurrentlyRecording: boolean,
-      stream: MediaStream,
-      containerSize: { width: number; height: number }
-    ) => {
-      if (!isCurrentlyRecording) {
-        await recording.startRecording(canvasRef.current);
-        toast.info("Recording started!");
-      } else {
-        const session = await recording.stopRecording(
-          containerSize.width,
-          containerSize.height,
-          {
-            dynamicStyle: activeScene.dynamicStyle,
-            videoFilter: activeScene.videoFilter,
-            backgroundEffect: activeScene.backgroundEffect,
-            backgroundImageUrl: activeScene.backgroundImageUrl,
-          }
-        );
-        onRecordingComplete(session);
-        toast.success("Recording saved!");
-      }
-    },
-    [recording, activeScene, onRecordingComplete]
-  );
+
 
   const handleCustomMaskUpload = (file: File) => {
     const reader = new FileReader();

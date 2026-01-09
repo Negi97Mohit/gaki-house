@@ -67,8 +67,7 @@ export const IndexOverlays: React.FC<IndexOverlaysProps> = ({ editor }) => {
       />
 
       <SavedSessionsPanel
-        sessions={sessionData.allSessions}
-        onDeleteSession={sessionData.handleDeleteSession}
+
         presets={layoutManager.presets}
         onDeletePreset={layoutManager.handleDeletePreset}
         onLoadPreset={layoutManager.handleLoadPreset}

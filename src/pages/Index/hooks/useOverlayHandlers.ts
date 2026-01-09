@@ -7,12 +7,12 @@ import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
 import { AnimationPreset } from "@/types/animation";
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { GeneratedOverlay, TextOverlayState } from "@/types/caption";
-import { SceneState } from "@/types/editor";
+import { SceneState } from "@/types/caption";
 
 interface UseOverlayHandlersProps {
   activeScene: SceneState;
   updateActiveScene: (updater: (prev: SceneState) => SceneState) => void;
-  recording: any; // Ideally strictly typed
+
   selection: {
     selectedTextId: string | null;
     setSelectedTextId: (id: string | null) => void;
@@ -33,7 +33,7 @@ interface UseOverlayHandlersProps {
 export const useOverlayHandlers = ({
   activeScene,
   updateActiveScene,
-  recording,
+
   selection,
   setShowAnimationLibrary,
   bringToFront,
@@ -138,7 +138,7 @@ export const useOverlayHandlers = ({
         ...scene,
         activeOverlays: [...scene.activeOverlays, newOverlay],
       }));
-      if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
+
 
       setSelectedBrowserId(null);
       setSelectedFileId(null);
@@ -150,7 +150,7 @@ export const useOverlayHandlers = ({
     },
     [
       updateActiveScene,
-      recording,
+
       setSelectedBrowserId,
       setSelectedFileId,
       setSelectedTextId,
@@ -192,7 +192,7 @@ export const useOverlayHandlers = ({
         ...scene,
         activeOverlays: [...scene.activeOverlays, newOverlay],
       }));
-      if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
+
 
       setSelectedBrowserId(null);
       setSelectedFileId(null);
@@ -203,7 +203,7 @@ export const useOverlayHandlers = ({
     },
     [
       updateActiveScene,
-      recording,
+
       setSelectedBrowserId,
       setSelectedFileId,
       setSelectedTextId,

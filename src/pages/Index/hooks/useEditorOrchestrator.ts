@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { useRecordingSession } from "@/features/stream/hooks/useRecordingSession";
+
 import { useLayerControls } from "@/hooks/useLayerControls";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useIndexUI } from "./useIndexUI";
@@ -15,7 +15,7 @@ import { useDrawingController } from "./useDrawingController";
 import { useDynamicLayoutState } from "./useDynamicLayoutState";
 
 export const useEditorOrchestrator = () => {
-  const recording = useRecordingSession();
+
   const ui = useIndexUI();
   const selection = useSelectionState();
   const sessionData = useSessionData();
@@ -23,7 +23,7 @@ export const useEditorOrchestrator = () => {
   const { dynamicLayout, setDynamicLayout } = useDynamicLayoutState();
 
   // --- SCENE & MEDIA ---
-  const sceneManager = useSceneManager({ recording });
+  const sceneManager = useSceneManager({});
   const { activeScene, effectiveScene, activeSceneId } = sceneManager;
 
   const mediaManager = useMediaManager({
@@ -49,7 +49,7 @@ export const useEditorOrchestrator = () => {
   const layoutManager = useLayoutManager({
     activeScene,
     updateActiveScene: sceneManager.updateActiveScene,
-    recording,
+
     setSelectedTextId: selection.setSelectedTextId,
     setSelectedFileId: selection.setSelectedFileId,
     setSelectedBrowserId: selection.setSelectedBrowserId,
@@ -64,7 +64,7 @@ export const useEditorOrchestrator = () => {
   const overlayHandlers = useOverlayHandlers({
     activeScene: effectiveScene!,
     updateActiveScene: sceneManager.updateActiveScene,
-    recording,
+
     selection,
     setShowAnimationLibrary: ui.setShowAnimationLibrary,
     ...layerControls,
@@ -83,14 +83,7 @@ export const useEditorOrchestrator = () => {
     onSendToBack: overlayHandlers.handleSendToBack,
     onBringForward: overlayHandlers.handleBringForward,
     onSendBackward: overlayHandlers.handleSendBackward,
-    onToggleRecording: () => {
-      if (recording.isRecording) {
-        // Stop logic handled in canvas via refs usually, or specific method
-      } else if (ui.canvasRef.current) {
-        recording.startRecording(ui.canvasRef.current);
-        toast.info("Recording started via shortcut!");
-      }
-    },
+
     onToggleMic: () =>
       sceneManager.updateSceneProperty("isAudioOn", !activeScene?.isAudioOn),
     onToggleCamera: () =>
@@ -103,7 +96,7 @@ export const useEditorOrchestrator = () => {
   });
 
   return {
-    recording,
+
     ui,
     selection,
     sessionData,

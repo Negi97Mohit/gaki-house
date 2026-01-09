@@ -24,7 +24,7 @@ import { useSceneStore } from "@/stores/scene.store";
 
 // Props interface
 export interface UseSceneManagerProps {
-  recording: any;
+  // recording prop removed
 }
 
 // Helper ID generators
@@ -109,7 +109,7 @@ const createDefaultScene = (name: string): SceneState => ({
   isFaceTrackingEnabled: false,
 });
 
-export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
+export const useSceneManager = ({ }: UseSceneManagerProps) => {
   const [scenes, setScenes] = useState<SceneState[]>(() => [
     createDefaultScene("Scene 1"),
   ]);
@@ -506,29 +506,11 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
       updateActiveScene((scene) => {
         const updatedScene = { ...scene, [key]: value };
         // Record layout changes if recording
-        if (
-          [
-            "layoutMode",
-            "cameraShape",
-            "splitRatio",
-            "pipPosition",
-            "pipSize",
-          ].includes(key as string)
-        ) {
-          if (recording.isRecording) {
-            recording.recordLayoutChange({
-              mode: updatedScene.layoutMode,
-              cameraShape: updatedScene.cameraShape,
-              splitRatio: updatedScene.splitRatio,
-              pipPosition: updatedScene.pipPosition,
-              pipSize: updatedScene.pipSize,
-            });
-          }
-        }
+
         return updatedScene;
       });
     },
-    [updateActiveScene, recording]
+    [updateActiveScene]
   );
 
   const handleAddScene = () => {
@@ -950,8 +932,8 @@ export const useSceneManager = ({ recording }: UseSceneManagerProps) => {
               backgroundEffect: design.backgroundEffect,
               backgroundImageUrl: design.backgroundGradient, // Use gradient as background
               // Map layoutMode - use pip as fallback for unsupported modes
-              layoutMode: (["solo", "split-vertical", "split-horizontal", "pip"].includes(design.layoutMode) 
-                ? design.layoutMode 
+              layoutMode: (["solo", "split-vertical", "split-horizontal", "pip"].includes(design.layoutMode)
+                ? design.layoutMode
                 : "pip") as LayoutMode,
               cameraShape: design.cameraShape as CameraShape,
               pipPosition: design.pipPosition,

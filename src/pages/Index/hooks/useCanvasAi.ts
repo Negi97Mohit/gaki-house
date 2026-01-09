@@ -7,14 +7,14 @@ import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 interface UseCanvasAiProps {
   activeScene: SceneState;
   updateActiveScene: (updater: (scene: SceneState) => SceneState) => void;
-  recording: any;
+
   setSavedOverlays: React.Dispatch<React.SetStateAction<GeneratedOverlay[]>>;
 }
 
 export const useCanvasAi = ({
   activeScene,
   updateActiveScene,
-  recording,
+
   setSavedOverlays,
 }: UseCanvasAiProps) => {
   const [isProcessingAi, setIsProcessingAi] = useState(false);
@@ -47,7 +47,7 @@ export const useCanvasAi = ({
             activeOverlays: scene.activeOverlays.map((o) => {
               if (o.id === targetId) {
                 const updated = { ...o, name, htmlContent, preview: "" };
-                if (recording.isRecording) recording.recordHtmlOverlay(updated);
+
                 return updated;
               }
               return o;
@@ -76,7 +76,7 @@ export const useCanvasAi = ({
 
           updateActiveScene((scene) => {
             const updated = [...scene.activeOverlays, newOverlay];
-            if (recording.isRecording) recording.recordHtmlOverlay(newOverlay);
+
             return { ...scene, activeOverlays: updated };
           });
 
@@ -97,7 +97,7 @@ export const useCanvasAi = ({
     [
       isProcessingAi,
       activeScene,
-      recording,
+
       updateActiveScene,
       setSavedOverlays,
     ]

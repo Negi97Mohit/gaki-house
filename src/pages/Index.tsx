@@ -27,7 +27,7 @@ const Index = () => {
     effectiveScene,
     sceneManager,
     ui,
-    recording,
+
     sessionData,
     layoutManager,
     dynamicLayout,
@@ -44,7 +44,7 @@ const Index = () => {
   const { isProcessingAi, processTranscript } = useCanvasAi({
     activeScene: activeScene!, // Use activeScene for source of truth
     updateActiveScene: sceneManager.updateActiveScene,
-    recording,
+
     setSavedOverlays: sessionData.setSavedOverlays,
   });
 
@@ -92,8 +92,7 @@ const Index = () => {
     >
       <CanvasContainer
         layoutManager={layoutManager}
-        recording={recording}
-        onRecordingComplete={sessionData.handleRecordingComplete}
+
         remoteStream={remote.remoteStream}
         vaultFiles={vault.files}
         onAddVaultFiles={vault.addFiles}

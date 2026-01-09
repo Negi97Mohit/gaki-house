@@ -27,7 +27,7 @@ import { generateId } from "@/shared/lib/id";
 interface UseLayoutManagerProps {
   activeScene: SceneState;
   updateActiveScene: (updates: (scene: SceneState) => SceneState) => void;
-  recording: any;
+
   // For UI state resetting
   setSelectedTextId: (id: string | null) => void;
   setSelectedFileId: (id: string | null) => void;
@@ -37,7 +37,7 @@ interface UseLayoutManagerProps {
 export const useLayoutManager = ({
   activeScene,
   updateActiveScene,
-  recording,
+
   setSelectedTextId,
   setSelectedFileId,
   setSelectedBrowserId,
@@ -248,32 +248,12 @@ export const useLayoutManager = ({
       setSelectedBrowserId(null);
 
       // Record change if recording
-      setTimeout(() => {
-        if (recording.isRecording) {
-          const { pipPosition, pipSize, layoutMode } = getResponsivePipLayout(
-            preset,
-            screenSize
-          );
-          recording.recordLayoutChange({
-            mode: layoutMode,
-            cameraShape: preset.pip.cameraShape,
-            splitRatio:
-              preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
-            pipPosition,
-            pipSize,
-            pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
-            pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
-          });
-        }
-      }, 50);
+
 
       toast.success(`"${preset.name}" preset applied!`);
     },
     [
       updateActiveScene,
-      recording,
-      setSelectedTextId,
-      setSelectedFileId,
       setSelectedBrowserId,
     ]
   );
