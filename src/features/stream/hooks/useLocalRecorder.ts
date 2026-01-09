@@ -1,6 +1,7 @@
 import { useRef, useCallback } from "react";
 import { useStreamStore } from "@/stores/stream.store";
 import { notify } from "@/shared/lib/notify";
+import fixWebmDuration from "fix-webm-duration";
 
 // Define Electron Interface for Recorder IPC
 interface ElectronWindow extends Window {
@@ -8,7 +9,7 @@ interface ElectronWindow extends Window {
     recorder: {
       start: () => Promise<{ filePath: string }>;
       write: (chunk: ArrayBuffer) => Promise<void>;
-      stop: () => Promise<{ filePath: string }>;
+      stop: (durationMs?: number) => Promise<{ filePath: string }>;
     };
   };
 }
@@ -42,7 +43,7 @@ export const useLocalRecorder = () => {
       clearInterval(timerIntervalRef.current);
       timerIntervalRef.current = null;
     }
-    startTimeRef.current = null;
+    // We do NOT clear startTimeRef here, we need it for calculation
   }, []);
 
   // --- Actions ---
@@ -77,12 +78,22 @@ export const useLocalRecorder = () => {
     try {
       console.log("[Recorder] Stopping local recording...");
       if (setRecordingStatus) setRecordingStatus("stopping");
+
       stopTimer();
 
+      // Calculate Duration
+      const endTime = Date.now();
+      const durationMs = startTimeRef.current
+        ? endTime - startTimeRef.current
+        : 0;
+      startTimeRef.current = null; // Reset start time
+
+      console.log(`[Recorder] Recording finished. Duration: ${durationMs}ms`);
+
       if (isElectron) {
-        // Electron: Close file stream
+        // Electron: Close file stream and trigger MP4 conversion
         const electron = (window as ElectronWindow).electron!;
-        const { filePath } = await electron.recorder.stop();
+        const { filePath } = await electron.recorder.stop(durationMs);
         notify.success(`Saved to: ${filePath}`);
       } else {
         // Web: Download Blob
@@ -93,23 +104,30 @@ export const useLocalRecorder = () => {
           return;
         }
 
-        const blob = new Blob(recordedBlobsRef.current, { type: "video/webm" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = url;
-        a.download = `recording-${new Date().toISOString()}.webm`;
-        document.body.appendChild(a);
-        a.click();
+        const rawBlob = new Blob(recordedBlobsRef.current, {
+          type: "video/webm",
+        });
 
-        // Cleanup
-        setTimeout(() => {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-          recordedBlobsRef.current = []; // Free memory
-        }, 100);
+        // Patch WebM Duration Header for Web Download
+        console.log("[Recorder] Patching WebM duration for download...");
+        fixWebmDuration(rawBlob, durationMs, (fixedBlob) => {
+          const url = URL.createObjectURL(fixedBlob);
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          a.download = `recording-${new Date().toISOString()}.webm`;
+          document.body.appendChild(a);
+          a.click();
 
-        notify.success("Recording downloaded!");
+          // Cleanup
+          setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            recordedBlobsRef.current = [];
+          }, 100);
+
+          notify.success("Recording downloaded!");
+        });
       }
 
       if (setRecordingStatus) setRecordingStatus("saved");

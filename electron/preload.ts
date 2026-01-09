@@ -5,40 +5,27 @@ contextBridge.exposeInMainWorld("electron", {
 
   // UI Controls
   toggleFullscreen: () => ipcRenderer.send("toggle-fullscreen"),
-
-  // Server Controls
   restartServer: () => ipcRenderer.send("restart-server"),
-
-  // System Info
   getAppVersion: () => ipcRenderer.invoke("get-app-version"),
 
-  // Stream Controls (Existing)
+  // Stream Controls
   stream: {
-    start: (config: {
-      id: string;
-      rtmpUrl: string;
-      key: string;
-      mimeType?: string;
-    }) => {
-      console.log("[Preload] Starting stream:", config);
-      ipcRenderer.send("stream:start", config);
-    },
+    start: (config: any) => ipcRenderer.send("stream:start", config),
     sendData: (chunk: any) => ipcRenderer.send("stream:data", chunk),
-    stop: (config?: { id?: string }) => ipcRenderer.send("stream:stop", config),
-    onStatus: (callback: (data: any) => void) =>
-      ipcRenderer.on("stream:status", (_, data) => {
-        console.log("[Preload] Received status:", data);
-        if (data) callback(data);
-      }),
-    onFfmpegReady: (callback: (data: { id: string }) => void) =>
+    stop: (config: any) => ipcRenderer.send("stream:stop", config),
+    onStatus: (callback: any) =>
+      ipcRenderer.on("stream:status", (_, data) => callback(data)),
+    onFfmpegReady: (callback: any) =>
       ipcRenderer.on("stream:ffmpeg-ready", (_, data) => callback(data)),
   },
 
-  // Recorder Controls (New - Phase 3)
+  // Recorder Controls
   recorder: {
     start: () => ipcRenderer.invoke("recorder:start"),
     write: (chunk: ArrayBuffer) => ipcRenderer.invoke("recorder:write", chunk),
-    stop: () => ipcRenderer.invoke("recorder:stop"),
+    // Updated to accept duration argument
+    stop: (durationMs?: number) =>
+      ipcRenderer.invoke("recorder:stop", durationMs),
   },
 
   // Desktop Capturer

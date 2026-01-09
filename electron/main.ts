@@ -9,13 +9,13 @@ import {
 } from "electron";
 import path from "path";
 import http from "http";
-import fs from "fs"; // Import File System
+import fs from "fs";
 import { Server as SocketIOServer } from "socket.io";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegPath from "ffmpeg-static";
 import fixPath from "fix-path";
 
-// 1. Fix Path for macOS/Linux
+// 1. Fix Path for macOS/Linux environment variables
 fixPath();
 
 // 2. Configure FFmpeg
@@ -65,7 +65,7 @@ function createWindow() {
   });
 }
 
-// --- STREAMING LOGIC (SHARED) ---
+// --- STREAMING LOGIC (RTMP) ---
 
 const createFfmpegCommand = (
   input: string | any,
@@ -87,20 +87,13 @@ const createFfmpegCommand = (
   const isH264Input = mimeType?.includes("h264");
 
   const command = ffmpeg().input(input);
-
-  // Input Format Logic
   command.inputFormat("webm");
-
-  // Audio Codec (Always AAC for RTMP)
   command.audioCodec("aac");
 
-  // Video Codec Logic
   if (isH264Input) {
-    console.log("--- STREAM MODE: PASS-THROUGH (CPU OPTIMIZED) ---");
     command.videoCodec("copy");
     command.outputOptions("-bsf:v h264_mp4toannexb");
   } else {
-    console.log("--- STREAM MODE: TRANSCODE (HARDWARE/SOFTWARE) ---");
     command.videoCodec("libx264");
     command.outputOptions([
       "-preset ultrafast",
@@ -115,9 +108,7 @@ const createFfmpegCommand = (
     ]);
   }
 
-  // Common Output Options
   command.outputOptions(["-f flv"]);
-
   command.output(fullUrl);
 
   command.on("start", (cmd) => {
@@ -137,6 +128,39 @@ const createFfmpegCommand = (
   });
 
   return command;
+};
+
+// --- HELPER: CONVERT TO MP4 (FIXES DURATION) ---
+const convertToMp4 = (inputPath: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const outputPath = inputPath.replace(".webm", ".mp4");
+    console.log(`[Recorder] Converting to MP4: ${inputPath} -> ${outputPath}`);
+
+    ffmpeg(inputPath)
+      .outputOptions([
+        "-c:v copy", // Copy video stream (Fast, no re-encoding)
+        "-c:a aac", // Ensure audio is AAC (Standard for MP4)
+        "-strict experimental",
+        "-movflags +faststart", // Move metadata to beginning for fast playback
+      ])
+      .save(outputPath)
+      .on("end", () => {
+        console.log("[Recorder] Conversion complete.");
+        // Cleanup: Delete the raw WebM file
+        try {
+          if (fs.existsSync(inputPath)) fs.unlinkSync(inputPath);
+          resolve(outputPath);
+        } catch (e) {
+          console.error("Cleanup error:", e);
+          resolve(outputPath);
+        }
+      })
+      .on("error", (err) => {
+        console.error("[Recorder] Conversion failed:", err);
+        // Return original file if conversion fails so user doesn't lose data
+        resolve(inputPath);
+      });
+  });
 };
 
 // --- IPC HANDLERS ---
@@ -189,7 +213,6 @@ function setupIpcHandlers() {
   });
 
   ipcMain.on("stream:data", (event, data) => {
-    // Broadcast data to ALL active ffmpeg processes
     ffmpegCommands.forEach((command, id) => {
       if ((command as any).ffmpegProc) {
         const proc = (command as any).ffmpegProc;
@@ -234,17 +257,15 @@ function setupIpcHandlers() {
     }
   });
 
-  // 2. RECORDER HANDLERS (NEW - PHASE 3)
+  // 2. RECORDER HANDLERS
 
   ipcMain.handle("recorder:start", async () => {
     try {
-      // 1. Determine Path (User's Videos Folder)
       const videosPath = app.getPath("videos");
       const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const filename = `GAKI_Recording_${timestamp}.webm`;
+      const filename = `GAKI_Recording_${timestamp}.webm`; // Start as WebM
       const filePath = path.join(videosPath, filename);
 
-      // 2. Create Write Stream
       if (recorderStream) {
         recorderStream.end();
       }
@@ -266,20 +287,31 @@ function setupIpcHandlers() {
 
   ipcMain.handle("recorder:write", async (event, buffer) => {
     if (recorderStream && !recorderStream.destroyed) {
-      // Write buffer directly to disk
-      // We use Buffer.from because data comes from IPC
       recorderStream.write(Buffer.from(buffer));
     }
   });
 
-  ipcMain.handle("recorder:stop", async () => {
+  ipcMain.handle("recorder:stop", async (event, durationMs) => {
     return new Promise((resolve, reject) => {
       if (recorderStream) {
-        console.log("[Recorder] Closing file stream...");
-        recorderStream.end(() => {
+        console.log(`[Recorder] Closing stream. UI Duration: ${durationMs}ms`);
+        const rawPath = currentRecordingPath;
+
+        recorderStream.end(async () => {
           recorderStream = null;
-          console.log("[Recorder] File saved.");
-          resolve({ filePath: currentRecordingPath });
+
+          if (rawPath) {
+            try {
+              // Convert to MP4 to fix duration and ensure compatibility
+              const finalPath = await convertToMp4(rawPath);
+              resolve({ filePath: finalPath });
+            } catch (e) {
+              console.error("[Recorder] Fix failed:", e);
+              resolve({ filePath: rawPath });
+            }
+          } else {
+            resolve({ filePath: null });
+          }
         });
       } else {
         resolve({ filePath: null });
@@ -288,7 +320,7 @@ function setupIpcHandlers() {
   });
 }
 
-// --- SOCKET STREAMING SERVER (LEGACY) ---
+// --- SERVER & APP LIFECYCLE ---
 
 function startStreamingServer() {
   server = http.createServer();
@@ -358,7 +390,6 @@ function startStreamingServer() {
   });
 }
 
-// --- DESKTOP CAPTURER HANDLER ---
 ipcMain.handle("get-desktop-sources", async (event, options) => {
   const sources = await desktopCapturer.getSources(options);
   return sources.map((source) => ({
@@ -368,8 +399,6 @@ ipcMain.handle("get-desktop-sources", async (event, options) => {
     appIcon: source.appIcon ? source.appIcon.toDataURL() : null,
   }));
 });
-
-// --- APP LIFECYCLE ---
 
 app.whenReady().then(() => {
   createWindow();
