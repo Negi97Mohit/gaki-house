@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import {
-    Mic,
-    MicOff,
-    Webcam,
-    VideoOff,
-    ChevronUp,
-    Check,
-    ScanFace,
-    ScreenShare,
-    Monitor,
-    Paintbrush,
-    X,
+  Mic,
+  MicOff,
+  Webcam,
+  VideoOff,
+  ChevronUp,
+  Check,
+  ScanFace,
+  ScreenShare,
+  Monitor,
+  Paintbrush,
+  X,
+  Circle,
+  Square,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 import { cn } from "@/shared/lib/utils";
 import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
@@ -26,262 +28,316 @@ import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 
 interface MediaControlsProps {
-    onStartStream?: (id?: string) => void;
-    onStopStream?: (id?: string) => void;
-    onStreamSettingsSave?: (url: string, key: string) => void;
-    streamStatus?: string;
-    isConnecting?: boolean;
-    isBroadcasting?: boolean;
+  onStartStream?: (id?: string) => void;
+  onStopStream?: (id?: string) => void;
+  onToggleRecord?: () => void;
+  onStreamSettingsSave?: (url: string, key: string) => void;
+  streamStatus?: string;
+  isConnecting?: boolean;
+  isBroadcasting?: boolean;
 }
 
+const formatDuration = (seconds: number) => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s
+    .toString()
+    .padStart(2, "0")}`;
+};
+
 export const MediaControls: React.FC<MediaControlsProps> = ({
-    onStartStream,
-    onStopStream,
-    onStreamSettingsSave,
-    streamStatus: propStreamStatus,
-    isConnecting: propIsConnecting,
-    isBroadcasting: propIsBroadcasting,
+  onStartStream,
+  onStopStream,
+  onToggleRecord,
+  onStreamSettingsSave,
+  streamStatus: propStreamStatus,
+  isConnecting: propIsConnecting,
+  isBroadcasting: propIsBroadcasting,
 }) => {
-    // Local state for Smart Switch
-    const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
-    const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
+  // Local state for Smart Switch
+  const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
+  const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
 
-    // Store hooks
-    const {
-        isAudioOn, setAudioOn,
-        audioDevices, selectedAudioDevice, setSelectedAudioDevice,
-        isVideoOn, setVideoOn,
-        videoDevices, selectedVideoDevice, setSelectedVideoDevice,
-        screenShareMode, setScreenShareMode
-    } = useMediaStore(useShallow((state) => ({
-        isAudioOn: state.isAudioOn,
-        setAudioOn: state.setAudioOn,
-        audioDevices: state.audioDevices,
-        selectedAudioDevice: state.selectedAudioDevice,
-        setSelectedAudioDevice: state.setSelectedAudioDevice,
-        isVideoOn: state.isVideoOn,
-        setVideoOn: state.setVideoOn,
-        videoDevices: state.videoDevices,
-        selectedVideoDevice: state.selectedVideoDevice,
-        setSelectedVideoDevice: state.setSelectedVideoDevice,
-        screenShareMode: state.screenShareMode,
-        setScreenShareMode: state.setScreenShareMode,
-    })));
+  // Store hooks
+  const {
+    isAudioOn,
+    setAudioOn,
+    audioDevices,
+    selectedAudioDevice,
+    setSelectedAudioDevice,
+    isVideoOn,
+    setVideoOn,
+    videoDevices,
+    selectedVideoDevice,
+    setSelectedVideoDevice,
+    screenShareMode,
+    setScreenShareMode,
+  } = useMediaStore(
+    useShallow((state) => ({
+      isAudioOn: state.isAudioOn,
+      setAudioOn: state.setAudioOn,
+      audioDevices: state.audioDevices,
+      selectedAudioDevice: state.selectedAudioDevice,
+      setSelectedAudioDevice: state.setSelectedAudioDevice,
+      isVideoOn: state.isVideoOn,
+      setVideoOn: state.setVideoOn,
+      videoDevices: state.videoDevices,
+      selectedVideoDevice: state.selectedVideoDevice,
+      setSelectedVideoDevice: state.setSelectedVideoDevice,
+      screenShareMode: state.screenShareMode,
+      setScreenShareMode: state.setScreenShareMode,
+    }))
+  );
 
-    const {
-        isBroadcasting,
-        isConnecting,
-        streamStatus,
-    } = useStreamStore(useShallow((state) => ({
-        isBroadcasting: state.isBroadcasting,
-        isConnecting: state.isConnecting,
-        streamStatus: state.streamStatus,
-    })));
+  const {
+    isBroadcasting,
+    isConnecting,
+    streamStatus,
+    isRecording,
+    recordingDuration,
+  } = useStreamStore(
+    useShallow((state) => ({
+      isBroadcasting: state.isBroadcasting,
+      isConnecting: state.isConnecting,
+      streamStatus: state.streamStatus,
+      isRecording: state.isRecording,
+      recordingDuration: state.recordingDuration,
+    }))
+  );
 
-    const activeStatus = propStreamStatus ?? streamStatus;
-    const activeConnecting = propIsConnecting ?? isConnecting;
-    const activeBroadcasting = propIsBroadcasting ?? isBroadcasting;
+  // --- DEBUG HANDLER ---
+  const handleRecordClick = () => {
+    console.log("--- DEBUG: Record Button Clicked ---");
+    console.log("isRecording State:", isRecording);
 
-    return (
-        <>
-            <div className="flex items-center gap-0.5" role="group" aria-label="Microphone Controls">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full h-10 w-10 hover:bg-background/60"
-                    onClick={() => setAudioOn(!isAudioOn)}
-                    title={isAudioOn ? "Mute Microphone" : "Unmute Microphone"}
-                    aria-label={isAudioOn ? "Mute Microphone" : "Unmute Microphone"}
-                    aria-pressed={isAudioOn}
-                >
-                    {isAudioOn ? (
-                        <Mic className="h-4 w-4" />
-                    ) : (
-                        <MicOff className="h-4 w-4 text-red-500" />
-                    )}
-                </Button>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="rounded-full h-7 w-7 hover:bg-background/60"
-                            aria-label="Microphone Selection"
-                        >
-                            <ChevronUp className="w-3 h-3" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        side="top"
-                        align="center"
-                        className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
-                        style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
-                    >
-                        {audioDevices.length === 0 ? (
-                            <DropdownMenuItem
-                                disabled
-                                className="text-xs text-muted-foreground"
-                            >
-                                No microphones found
-                            </DropdownMenuItem>
-                        ) : (
-                            audioDevices.map((device, i) => (
-                                <DropdownMenuItem
-                                    key={device.deviceId}
-                                    onClick={() => setSelectedAudioDevice(device.deviceId)}
-                                    className="text-sm"
-                                >
-                                    {device.deviceId === selectedAudioDevice && (
-                                        <Check className="w-3.5 h-3.5 mr-2" />
-                                    )}
-                                    {device.label || `Microphone ${i + 1}`}
-                                </DropdownMenuItem>
-                            ))
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
+    if (onToggleRecord) {
+      console.log("onToggleRecord prop exists. Calling it...");
+      onToggleRecord();
+    } else {
+      console.error(
+        "ERROR: onToggleRecord prop is UNDEFINED. Check parent component!"
+      );
+    }
+  };
 
-            {/* Video Controls */}
-            <div className="flex items-center gap-0.5" role="group" aria-label="Camera Controls">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full h-10 w-10 hover:bg-background/60"
-                    onClick={() => setVideoOn(!isVideoOn)}
-                    title={isVideoOn ? "Turn Camera Off" : "Turn Camera On"}
-                    aria-label={isVideoOn ? "Turn Camera Off" : "Turn Camera On"}
-                    aria-pressed={isVideoOn}
-                >
-                    {isVideoOn ? (
-                        <Webcam className="h-4 w-4" />
-                    ) : (
-                        <VideoOff className="h-4 w-4 text-red-500" />
-                    )}
-                </Button>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="rounded-full h-7 w-7 hover:bg-background/60"
-                            aria-label="Camera Selection"
-                        >
-                            <ChevronUp className="w-3 h-3" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        side="top"
-                        align="center"
-                        className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
-                        style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
-                    >
-                        {videoDevices.length === 0 ? (
-                            <DropdownMenuItem
-                                disabled
-                                className="text-xs text-muted-foreground"
-                            >
-                                No cameras found
-                            </DropdownMenuItem>
-                        ) : (
-                            videoDevices.map((device, i) => (
-                                <DropdownMenuItem
-                                    key={device.deviceId}
-                                    onClick={() => setSelectedVideoDevice(device.deviceId)}
-                                    className="text-sm"
-                                >
-                                    {device.deviceId === selectedVideoDevice && (
-                                        <Check className="w-3.5 h-3.5 mr-2" />
-                                    )}
-                                    {device.label || `Camera ${i + 1}`}
-                                </DropdownMenuItem>
-                            ))
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-
-            <StreamConfigurationModal
-                onStartStream={onStartStream}
-                onStopStream={onStopStream}
-            />
-
+  return (
+    <>
+      <div
+        className="flex items-center gap-0.5"
+        role="group"
+        aria-label="Microphone Controls"
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full h-10 w-10 hover:bg-background/60"
+          onClick={() => setAudioOn(!isAudioOn)}
+          title={isAudioOn ? "Mute Microphone" : "Unmute Microphone"}
+        >
+          {isAudioOn ? (
+            <Mic className="h-4 w-4" />
+          ) : (
+            <MicOff className="h-4 w-4 text-red-500" />
+          )}
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button
-                variant="ghost"
-                size="icon"
-                className={cn(
-                    "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
-                    isSmartSwitchEnabled &&
-                    "text-primary bg-primary/10 hover:bg-primary/20"
-                )}
-                onClick={onSmartSwitchToggle}
-                title={
-                    isSmartSwitchEnabled
-                        ? "Smart Scene Switch: ON"
-                        : "Smart Scene Switch: OFF"
-                }
-                aria-label={
-                    isSmartSwitchEnabled
-                        ? "Disable Smart Scene Switch"
-                        : "Enable Smart Scene Switch"
-                }
-                aria-pressed={isSmartSwitchEnabled}
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-7 w-7 hover:bg-background/60"
             >
-                <ScanFace className="w-4 h-4" />
+              <ChevronUp className="w-3 h-3" />
             </Button>
-
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className={cn(
-                            "rounded-full h-10 w-10 hover:bg-background/60",
-                            screenShareMode !== "off" && "bg-primary/20 text-primary"
-                        )}
-                        title="Share Screen or Canvas"
-                        aria-label="Screen Share Options"
-                    >
-                        <ScreenShare className="h-4 w-4" />
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                    side="top"
-                    align="center"
-                    className="bg-background/95 backdrop-blur-xl border-border/40"
-                    style={{ zIndex: "var(--z-floating-controls-dropdown)" }}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="top"
+            align="center"
+            className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
+          >
+            {audioDevices.length === 0 ? (
+              <DropdownMenuItem
+                disabled
+                className="text-xs text-muted-foreground"
+              >
+                No microphones found
+              </DropdownMenuItem>
+            ) : (
+              audioDevices.map((device, i) => (
+                <DropdownMenuItem
+                  key={device.deviceId}
+                  onClick={() => setSelectedAudioDevice(device.deviceId)}
+                  className="text-sm"
                 >
-                    <DropdownMenuItem
-                        onClick={() => setScreenShareMode("screen")}
-                        className="text-sm"
-                    >
-                        <Monitor className="w-3.5 h-3.5 mr-2" />
-                        Screen
-                        {screenShareMode === "screen" && (
-                            <Check className="w-3.5 h-3.5 ml-auto" />
-                        )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        onClick={() => setScreenShareMode("canvas")}
-                        className="text-sm"
-                    >
-                        <Paintbrush className="w-3.5 h-3.5 mr-2" />
-                        Canvas
-                        {screenShareMode === "canvas" && (
-                            <Check className="w-3.5 h-3.5 ml-auto" />
-                        )}
-                    </DropdownMenuItem>
-                    {screenShareMode !== "off" && (
-                        <DropdownMenuItem
-                            className="text-red-500 text-sm"
-                            onClick={() => setScreenShareMode("off")}
-                        >
-                            <X className="w-3.5 h-3.5 mr-2" />
-                            Stop Sharing
-                        </DropdownMenuItem>
-                    )}
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </>
-    );
+                  {device.deviceId === selectedAudioDevice && (
+                    <Check className="w-3.5 h-3.5 mr-2" />
+                  )}
+                  {device.label || `Microphone ${i + 1}`}
+                </DropdownMenuItem>
+              ))
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Video Controls */}
+      <div
+        className="flex items-center gap-0.5"
+        role="group"
+        aria-label="Camera Controls"
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full h-10 w-10 hover:bg-background/60"
+          onClick={() => setVideoOn(!isVideoOn)}
+          title={isVideoOn ? "Turn Camera Off" : "Turn Camera On"}
+        >
+          {isVideoOn ? (
+            <Webcam className="h-4 w-4" />
+          ) : (
+            <VideoOff className="h-4 w-4 text-red-500" />
+          )}
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-7 w-7 hover:bg-background/60"
+            >
+              <ChevronUp className="w-3 h-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="top"
+            align="center"
+            className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
+          >
+            {videoDevices.length === 0 ? (
+              <DropdownMenuItem
+                disabled
+                className="text-xs text-muted-foreground"
+              >
+                No cameras found
+              </DropdownMenuItem>
+            ) : (
+              videoDevices.map((device, i) => (
+                <DropdownMenuItem
+                  key={device.deviceId}
+                  onClick={() => setSelectedVideoDevice(device.deviceId)}
+                  className="text-sm"
+                >
+                  {device.deviceId === selectedVideoDevice && (
+                    <Check className="w-3.5 h-3.5 mr-2" />
+                  )}
+                  {device.label || `Camera ${i + 1}`}
+                </DropdownMenuItem>
+              ))
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="w-px h-6 bg-border mx-1" />
+
+      {/* --- RECORDING CONTROL --- */}
+      <Button
+        variant={isRecording ? "destructive" : "ghost"}
+        size={isRecording ? "default" : "icon"}
+        onClick={handleRecordClick} // CHANGED to debug handler
+        className={cn(
+          "rounded-full transition-all duration-300",
+          isRecording
+            ? "px-3"
+            : "h-10 w-10 hover:bg-red-500/10 text-red-500 hover:text-red-600"
+        )}
+        title={isRecording ? "Stop Recording" : "Start Local Recording"}
+      >
+        {isRecording ? (
+          <>
+            <Square className="w-3.5 h-3.5 mr-2 fill-current" />
+            <span className="font-mono text-xs tabular-nums">
+              {formatDuration(recordingDuration)}
+            </span>
+          </>
+        ) : (
+          <Circle className="w-4 h-4" />
+        )}
+      </Button>
+
+      <StreamConfigurationModal
+        onStartStream={onStartStream}
+        onStopStream={onStopStream}
+      />
+
+      <div className="w-px h-6 bg-border mx-1" />
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn(
+          "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
+          isSmartSwitchEnabled &&
+            "text-primary bg-primary/10 hover:bg-primary/20"
+        )}
+        onClick={onSmartSwitchToggle}
+        title="Smart Scene Switch"
+      >
+        <ScanFace className="w-4 h-4" />
+      </Button>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "rounded-full h-10 w-10 hover:bg-background/60",
+              screenShareMode !== "off" && "bg-primary/20 text-primary"
+            )}
+            title="Share Screen or Canvas"
+          >
+            <ScreenShare className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          side="top"
+          align="center"
+          className="bg-background/95 backdrop-blur-xl border-border/40"
+        >
+          <DropdownMenuItem
+            onClick={() => setScreenShareMode("screen")}
+            className="text-sm"
+          >
+            <Monitor className="w-3.5 h-3.5 mr-2" />
+            Screen
+            {screenShareMode === "screen" && (
+              <Check className="w-3.5 h-3.5 ml-auto" />
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setScreenShareMode("canvas")}
+            className="text-sm"
+          >
+            <Paintbrush className="w-3.5 h-3.5 mr-2" />
+            Canvas
+            {screenShareMode === "canvas" && (
+              <Check className="w-3.5 h-3.5 ml-auto" />
+            )}
+          </DropdownMenuItem>
+          {screenShareMode !== "off" && (
+            <DropdownMenuItem
+              className="text-red-500 text-sm"
+              onClick={() => setScreenShareMode("off")}
+            >
+              <X className="w-3.5 h-3.5 mr-2" />
+              Stop Sharing
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
 };

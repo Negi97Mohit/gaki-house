@@ -5,9 +5,11 @@ import {
   shell,
   session,
   desktopCapturer,
+  dialog,
 } from "electron";
 import path from "path";
 import http from "http";
+import fs from "fs"; // Import File System
 import { Server as SocketIOServer } from "socket.io";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegPath from "ffmpeg-static";
@@ -24,6 +26,10 @@ if (ffmpegPath) {
 let mainWindow: BrowserWindow | null = null;
 let io: SocketIOServer | null = null;
 let server: http.Server | null = null;
+
+// --- RECORDER STATE ---
+let recorderStream: fs.WriteStream | null = null;
+let currentRecordingPath: string | null = null;
 
 // --- WINDOW MANAGEMENT ---
 
@@ -59,8 +65,6 @@ function createWindow() {
   });
 }
 
-// --- STREAMING SERVER ---
-
 // --- STREAMING LOGIC (SHARED) ---
 
 const createFfmpegCommand = (
@@ -76,14 +80,16 @@ const createFfmpegCommand = (
 ) => {
   const { rtmpUrl, key, mimeType } = options;
   const fullUrl = key ? `${rtmpUrl}/${key}` : rtmpUrl;
-  console.log(`Initializing stream to: ${fullUrl} (Input: ${mimeType || "unknown"})`);
+  console.log(
+    `Initializing stream to: ${fullUrl} (Input: ${mimeType || "unknown"})`
+  );
 
   const isH264Input = mimeType?.includes("h264");
 
   const command = ffmpeg().input(input);
 
   // Input Format Logic
-  command.inputFormat("webm"); // MediaRecorder ALWAYS sends WebM container (even if H.264 inside)
+  command.inputFormat("webm");
 
   // Audio Codec (Always AAC for RTMP)
   command.audioCodec("aac");
@@ -91,29 +97,18 @@ const createFfmpegCommand = (
   // Video Codec Logic
   if (isH264Input) {
     console.log("--- STREAM MODE: PASS-THROUGH (CPU OPTIMIZED) ---");
-    // Pass-through H.264 video directly provided by MediaRecorder
     command.videoCodec("copy");
-    // FLV container needs h264_mp4toannexb for H.264
-    // from WebM to FLV/RTMP, we typically need this to ensure Annex B format
     command.outputOptions("-bsf:v h264_mp4toannexb");
   } else {
     console.log("--- STREAM MODE: TRANSCODE (HARDWARE/SOFTWARE) ---");
-
-    // Try Hardware Acceleration (Best Effort)
-    // Note: We can't easily "try" and fallback in one go without complex probing.
-    // For now, we sticking to a highly optimized Software Preset to ensure stability across all user PCs without crashes.
-    // If user has GPU, standard libx264 is still CPU bound.
-    // FUTURE TODO: Add explicit "Hardware Encoder" option in UI to select 'h264_nvenc'.
-
-    // SW ENCODING OPTIMIZED
     command.videoCodec("libx264");
     command.outputOptions([
-      "-preset ultrafast", // CHANGED: veryfast -> ultrafast (Lowest CPU usage)
+      "-preset ultrafast",
       "-tune zerolatency",
       "-b:v 4500k",
       "-maxrate 4500k",
       "-bufsize 9000k",
-      "-g 60", // Keyframe interval 2s (30fps)
+      "-g 60",
       "-r 30",
       "-vf scale=1920:-1",
       "-pix_fmt yuv420p",
@@ -121,9 +116,7 @@ const createFfmpegCommand = (
   }
 
   // Common Output Options
-  command.outputOptions([
-    "-f flv",
-  ]);
+  command.outputOptions(["-f flv"]);
 
   command.output(fullUrl);
 
@@ -135,7 +128,6 @@ const createFfmpegCommand = (
   command.on("error", (err, stdout, stderr) => {
     if (err.message.includes("SIGKILL")) return;
     console.error("FFmpeg Error:", err.message);
-    if (stderr) console.error("FFmpeg Stderr:", stderr);
     onError(err);
   });
 
@@ -147,19 +139,20 @@ const createFfmpegCommand = (
   return command;
 };
 
-// --- IPC STREAMING (NEW - FAST) ---
+// --- IPC HANDLERS ---
 
 function setupIpcHandlers() {
   const ffmpegCommands = new Map<string, ffmpeg.FfmpegCommand>();
 
-  ipcMain.on("stream:start", (event, config) => { // Config: { id, rtmpUrl, key, mimeType }
+  // 1. STREAMING HANDLERS
+  ipcMain.on("stream:start", (event, config) => {
     const { id, rtmpUrl, key } = config;
 
     if (ffmpegCommands.has(id)) {
       try {
         ffmpegCommands.get(id)?.kill("SIGKILL");
         ffmpegCommands.delete(id);
-      } catch (e) { }
+      } catch (e) {}
     }
 
     try {
@@ -168,12 +161,6 @@ function setupIpcHandlers() {
         config,
         () => {
           event.sender.send("stream:status", { id, status: "started" });
-          // Only send ffmpeg-ready once if needed, or track it per stream? 
-          // For simplicity, we can treat "started" as ready. 
-          // But the frontend waits for "stream:ffmpeg-ready" to start recording.
-          // We should probably emit ready if it's the first one, or just assume ready if others are running.
-          // Actually, the recorder is shared. If it's already running, we just need to pipe to this new process.
-          // Let's send it anyway.
           event.sender.send("stream:ffmpeg-ready", { id });
         },
         (err) => {
@@ -192,7 +179,6 @@ function setupIpcHandlers() {
 
       ffmpegCommands.set(id, command);
       command.run();
-
     } catch (error: any) {
       event.sender.send("stream:status", {
         id,
@@ -209,16 +195,14 @@ function setupIpcHandlers() {
         const proc = (command as any).ffmpegProc;
         if (proc.stdin && proc.stdin.writable && !proc.killed) {
           try {
-            proc.stdin.write(Buffer.from(data)); // Ensure Buffer
+            proc.stdin.write(Buffer.from(data));
           } catch (err) {
             console.error(`Write failed for stream ${id}:`, err);
           }
-
-          // Error handler to prevent crashes
           if (!proc.stdin.listeners("error").length) {
-            proc.stdin.on("error", (err: any) => {
-              console.log(`Stdin Error (ipc) for ${id}:`, err.code);
-            });
+            proc.stdin.on("error", (err: any) =>
+              console.log(`Stdin Error (ipc) for ${id}:`, err.code)
+            );
           }
         }
       }
@@ -226,43 +210,90 @@ function setupIpcHandlers() {
   });
 
   ipcMain.on("stream:stop", (event, config) => {
-    // Safety check for config
     const id = config?.id;
 
     if (id) {
-      // Stop specific stream
       const command = ffmpegCommands.get(id);
       if (command) {
         console.log(`Stopping IPC stream: ${id}`);
         try {
           command.kill("SIGKILL");
-        } catch (e) { }
+        } catch (e) {}
         ffmpegCommands.delete(id);
         event.sender.send("stream:status", { id, status: "stopped" });
       }
     } else {
-      // Stop ALL streams
       console.log("Stopping ALL IPC streams...");
       ffmpegCommands.forEach((command, streamId) => {
         try {
           command.kill("SIGKILL");
-        } catch (e) { }
+        } catch (e) {}
         event.sender.send("stream:status", { id: streamId, status: "stopped" });
       });
       ffmpegCommands.clear();
     }
   });
+
+  // 2. RECORDER HANDLERS (NEW - PHASE 3)
+
+  ipcMain.handle("recorder:start", async () => {
+    try {
+      // 1. Determine Path (User's Videos Folder)
+      const videosPath = app.getPath("videos");
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const filename = `GAKI_Recording_${timestamp}.webm`;
+      const filePath = path.join(videosPath, filename);
+
+      // 2. Create Write Stream
+      if (recorderStream) {
+        recorderStream.end();
+      }
+
+      console.log(`[Recorder] Starting file stream: ${filePath}`);
+      recorderStream = fs.createWriteStream(filePath);
+      currentRecordingPath = filePath;
+
+      recorderStream.on("error", (err) => {
+        console.error("[Recorder] File Write Error:", err);
+      });
+
+      return { filePath };
+    } catch (error: any) {
+      console.error("[Recorder] Start Error:", error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle("recorder:write", async (event, buffer) => {
+    if (recorderStream && !recorderStream.destroyed) {
+      // Write buffer directly to disk
+      // We use Buffer.from because data comes from IPC
+      recorderStream.write(Buffer.from(buffer));
+    }
+  });
+
+  ipcMain.handle("recorder:stop", async () => {
+    return new Promise((resolve, reject) => {
+      if (recorderStream) {
+        console.log("[Recorder] Closing file stream...");
+        recorderStream.end(() => {
+          recorderStream = null;
+          console.log("[Recorder] File saved.");
+          resolve({ filePath: currentRecordingPath });
+        });
+      } else {
+        resolve({ filePath: null });
+      }
+    });
+  });
 }
 
-// --- SOCKET STREAMING SERVER (LEGACY / WEB SUPPORT) ---
+// --- SOCKET STREAMING SERVER (LEGACY) ---
 
 function startStreamingServer() {
   server = http.createServer();
   io = new SocketIOServer(server, {
-    cors: {
-      origin: "*",
-      methods: ["GET", "POST"],
-    },
+    cors: { origin: "*", methods: ["GET", "POST"] },
   });
 
   io.on("connection", (socket) => {
@@ -270,15 +301,11 @@ function startStreamingServer() {
     let ffmpegCommand: ffmpeg.FfmpegCommand | null = null;
 
     socket.on("start-stream", ({ rtmpUrl, key }) => {
-      if (!rtmpUrl || !key) {
-        socket.emit("stream-status", "error: Missing RTMP URL or Key");
-        return;
-      }
-      if (ffmpegCommand) {
+      if (!rtmpUrl || !key) return;
+      if (ffmpegCommand)
         try {
           ffmpegCommand.kill("SIGKILL");
-        } catch (e) { }
-      }
+        } catch (e) {}
 
       ffmpegCommand = createFfmpegCommand(
         "pipe:0",
@@ -303,13 +330,11 @@ function startStreamingServer() {
         if (proc.stdin && proc.stdin.writable && !proc.killed) {
           try {
             proc.stdin.write(data);
-          } catch (err) {
-            console.log("Write failed (stream likely closed):", err);
-          }
+          } catch (err) {}
           if (!proc.stdin.listeners("error").length) {
-            proc.stdin.on("error", (err: any) => {
-              console.log("Stdin Error (socket):", err.code);
-            });
+            proc.stdin.on("error", (err: any) =>
+              console.log("Stdin Error:", err.code)
+            );
           }
         }
       }
@@ -317,7 +342,6 @@ function startStreamingServer() {
 
     socket.on("stop-stream", () => {
       if (ffmpegCommand) {
-        console.log("Stopping stream...");
         ffmpegCommand.kill("SIGKILL");
         ffmpegCommand = null;
         socket.emit("stream-status", "stopped");
@@ -325,9 +349,7 @@ function startStreamingServer() {
     });
 
     socket.on("disconnect", () => {
-      if (ffmpegCommand) {
-        ffmpegCommand.kill("SIGKILL");
-      }
+      if (ffmpegCommand) ffmpegCommand.kill("SIGKILL");
     });
   });
 
@@ -339,7 +361,6 @@ function startStreamingServer() {
 // --- DESKTOP CAPTURER HANDLER ---
 ipcMain.handle("get-desktop-sources", async (event, options) => {
   const sources = await desktopCapturer.getSources(options);
-  // Serializable sources
   return sources.map((source) => ({
     id: source.id,
     name: source.name,
@@ -352,42 +373,31 @@ ipcMain.handle("get-desktop-sources", async (event, options) => {
 
 app.whenReady().then(() => {
   createWindow();
-  setupIpcHandlers(); // <--- Initialize IPC handlers
+  setupIpcHandlers();
   startStreamingServer();
 
-  // Screen Capture Permission Handler
   session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
     desktopCapturer
       .getSources({ types: ["screen"] })
       .then((sources) => {
-        if (sources.length > 0) {
+        if (sources.length > 0)
           callback({ video: sources[0], audio: "loopback" });
-        } else {
-          console.error("No screen sources found");
-        }
+        else console.error("No screen sources found");
       })
-      .catch((err) => {
-        console.error("Error getting screen sources:", err);
-      });
+      .catch((err) => console.error("Error getting screen sources:", err));
   });
 
   ipcMain.on("toggle-fullscreen", () => {
-    if (mainWindow) {
-      mainWindow.setFullScreen(!mainWindow.isFullScreen());
-    }
+    if (mainWindow) mainWindow.setFullScreen(!mainWindow.isFullScreen());
   });
 
   app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  if (process.platform !== "darwin") app.quit();
 });
 
 app.on("before-quit", () => {

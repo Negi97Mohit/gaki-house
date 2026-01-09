@@ -92,7 +92,6 @@ const Index = () => {
     >
       <CanvasContainer
         layoutManager={layoutManager}
-
         remoteStream={remote.remoteStream}
         vaultFiles={vault.files}
         onAddVaultFiles={vault.addFiles}
@@ -110,6 +109,7 @@ const Index = () => {
         portalContainer={ui.mainContainerRef.current || undefined}
         onStartStream={rtmp.startStreaming}
         onStopStream={rtmp.stopStreaming}
+        onToggleRecord={rtmp.toggleRecording}
         streamStatus={rtmp.status}
         isStreamConnecting={rtmp.isConnecting}
         isStreamBroadcasting={rtmp.isStreaming}

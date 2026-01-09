@@ -6,15 +6,20 @@ contextBridge.exposeInMainWorld("electron", {
   // UI Controls
   toggleFullscreen: () => ipcRenderer.send("toggle-fullscreen"),
 
-  // Server Controls (Optional: useful for debugging or manual restarts)
+  // Server Controls
   restartServer: () => ipcRenderer.send("restart-server"),
 
   // System Info
   getAppVersion: () => ipcRenderer.invoke("get-app-version"),
 
-  // Stream Controls
+  // Stream Controls (Existing)
   stream: {
-    start: (config: { id: string; rtmpUrl: string; key: string; mimeType?: string }) => {
+    start: (config: {
+      id: string;
+      rtmpUrl: string;
+      key: string;
+      mimeType?: string;
+    }) => {
       console.log("[Preload] Starting stream:", config);
       ipcRenderer.send("stream:start", config);
     },
@@ -27,6 +32,13 @@ contextBridge.exposeInMainWorld("electron", {
       }),
     onFfmpegReady: (callback: (data: { id: string }) => void) =>
       ipcRenderer.on("stream:ffmpeg-ready", (_, data) => callback(data)),
+  },
+
+  // Recorder Controls (New - Phase 3)
+  recorder: {
+    start: () => ipcRenderer.invoke("recorder:start"),
+    write: (chunk: ArrayBuffer) => ipcRenderer.invoke("recorder:write", chunk),
+    stop: () => ipcRenderer.invoke("recorder:stop"),
   },
 
   // Desktop Capturer
