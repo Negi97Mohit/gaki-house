@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import {
   LayoutGrid,
   Loader2,
@@ -6,15 +6,6 @@ import {
   Share2,
   Trash2,
   Check,
-} from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
-import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
-import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
-import { CanvasPreset, CanvasPresetTextOverlay } from "@/types/canvasPreset";
-import { cn } from "@/shared/lib/utils";
-import {
   Crown,
   Zap as ZapIcon,
   Minus,
@@ -24,6 +15,14 @@ import {
   Clock,
   Users,
 } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
+import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
+import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
+import { CanvasPreset } from "@/types/canvasPreset";
+import { cn } from "@/shared/lib/utils";
+
 // Import the actual renderer for dynamic layouts
 import { CanvasGridLayout } from "@/features/layouts/ui/CanvasGridLayout";
 import { PreviewModeProvider } from "@/features/layouts/ui/layouts/dynamic/core/PreviewModeContext";
@@ -40,37 +39,121 @@ interface CanvasDesignsPanelProps {
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
 }
 
-// --- EXACT PREVIEW RENDERER ---
-
+// --- EXACT PREVIEW RENDERER (Memoized) ---
 const BASE_WIDTH = 1920;
 const BASE_HEIGHT = 1080;
 
-const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0.15); // Initial safe guess
+const PresetPreview = memo(
+  ({ preset }: { preset: CanvasPreset }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [scale, setScale] = useState(0.15); // Initial safe guess
 
-  useEffect(() => {
-    const updateScale = () => {
-      if (containerRef.current) {
-        const { width } = containerRef.current.getBoundingClientRect();
-        // Calculate scale to fit 1920 into the current container width
-        setScale(width / BASE_WIDTH);
-      }
+    useEffect(() => {
+      // Debounce the resize observer to prevent thrashing
+      let frameId: number;
+      const updateScale = () => {
+        if (containerRef.current) {
+          const { width } = containerRef.current.getBoundingClientRect();
+          setScale(width / BASE_WIDTH);
+        }
+      };
+
+      updateScale();
+
+      const observer = new ResizeObserver(() => {
+        cancelAnimationFrame(frameId);
+        frameId = requestAnimationFrame(updateScale);
+      });
+
+      if (containerRef.current) observer.observe(containerRef.current);
+
+      return () => {
+        observer.disconnect();
+        cancelAnimationFrame(frameId);
+      };
+    }, []);
+
+    // --- 1. Dynamic Layout Preview ---
+    if (preset.canvasLayout) {
+      return (
+        <div
+          ref={containerRef}
+          className="w-full aspect-video relative overflow-hidden bg-muted/20"
+        >
+          <div
+            style={{
+              width: BASE_WIDTH,
+              height: BASE_HEIGHT,
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+              pointerEvents: "none", // Critical for performance in lists
+            }}
+          >
+            {/* PreviewModeProvider stops interactive elements from hijacking events */}
+            <PreviewModeProvider isPreview={true}>
+              <CanvasGridLayout
+                layout={preset.canvasLayout}
+                cameraStream={null} // No real stream for previews (heavy)
+                screenStream={null}
+                fileOverlays={[]}
+                textOverlays={[]}
+                blankCanvasColor={preset.background.blankCanvasColor || "#000"}
+                backgroundImageUrl={preset.background.backgroundImageUrl}
+                onSectionContentChange={() => {}}
+                onGridAssetSelect={() => {}}
+                layoutMode="pip"
+                cameraShape="rectangle"
+                pipSize={{ width: 20, height: 20 }}
+                backgroundEffect="none"
+                onSectionCameraSettingsChange={() => {}}
+                // Force low-power mode if available in your renderer
+                videoDevices={[]}
+              />
+            </PreviewModeProvider>
+          </div>
+        </div>
+      );
+    }
+
+    // --- 2. Static (PIP + Overlay) Preview ---
+    const bgStyle: React.CSSProperties = {
+      backgroundColor: preset.background.blankCanvasColor || "#000000",
     };
 
-    updateScale();
-    const observer = new ResizeObserver(updateScale);
-    if (containerRef.current) observer.observe(containerRef.current);
+    if (preset.background.backgroundImageUrl) {
+      bgStyle.backgroundImage = `url(${preset.background.backgroundImageUrl})`;
+      bgStyle.backgroundSize = "cover";
+      bgStyle.backgroundPosition = "center";
+    }
 
-    return () => observer.disconnect();
-  }, []);
+    const pip = preset.pip || {
+      layoutMode: "pip",
+      pipPosition: { x: 0, y: 0 },
+      pipSize: { width: 0, height: 0 },
+    };
+    const pipStyle: React.CSSProperties = {
+      left: `${pip.pipPosition?.x || 0}%`,
+      top: `${pip.pipPosition?.y || 0}%`,
+      width: `${pip.pipSize?.width || 0}%`,
+      height: `${pip.pipSize?.height || 0}%`,
+      position: "absolute",
+      overflow: "hidden",
+      boxShadow: pip.pipShadow
+        ? `0 0 ${pip.pipShadow.blur}px ${pip.pipShadow.color}`
+        : "none",
+      border: pip.pipBorder
+        ? `${pip.pipBorder.width}px solid ${pip.pipBorder.color}`
+        : "none",
+    };
 
-  // --- 1. Dynamic Layout Preview ---
-  if (preset.canvasLayout) {
+    if (pip.cameraShape === "circle") pipStyle.borderRadius = "50%";
+    else if (pip.cameraShape === "rounded") pipStyle.borderRadius = "24px";
+    else pipStyle.borderRadius = "0px";
+
     return (
       <div
         ref={containerRef}
-        className="w-full aspect-video relative overflow-hidden bg-muted/20"
+        className="w-full aspect-video relative overflow-hidden bg-card"
       >
         <div
           style={{
@@ -78,159 +161,175 @@ const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
             height: BASE_HEIGHT,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
-            pointerEvents: "none", // Disable interactions
+            ...bgStyle,
           }}
+          className="relative"
         >
-          <PreviewModeProvider isPreview={true}>
-            <CanvasGridLayout
-              layout={preset.canvasLayout}
-              // Mock Props for Preview
-              cameraStream={null}
-              screenStream={null}
-              fileOverlays={[]}
-              textOverlays={[]} // Grid layouts usually manage their own text or use the global ones differently
-              blankCanvasColor={preset.background.blankCanvasColor || "#000"}
-              backgroundImageUrl={preset.background.backgroundImageUrl}
-              onSectionContentChange={() => {}}
-              onGridAssetSelect={() => {}}
-              layoutMode="pip"
-              cameraShape="rectangle"
-              pipSize={{ width: 20, height: 20 }}
-              backgroundEffect="none"
-              onSectionCameraSettingsChange={() => {}}
-            />
-          </PreviewModeProvider>
+          {pip.layoutMode === "pip" && (
+            <div style={pipStyle}>
+              <div className="w-full h-full bg-gradient-to-br from-neutral-800 to-neutral-900 flex items-center justify-center relative">
+                <div className="text-white/10">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-32 h-32"
+                  >
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {preset.textOverlays?.map((text) => (
+            <div
+              key={text.id}
+              style={{
+                position: "absolute",
+                left: `${text.layout.position.x}%`,
+                top: `${text.layout.position.y}%`,
+                width: `${text.layout.size.width}%`,
+                height: `${text.layout.size.height}%`,
+                transform: `rotate(${text.layout.rotation || 0}deg)`,
+                zIndex: text.layout.zIndex,
+                display: "flex",
+                alignItems: "center",
+                justifyContent:
+                  text.style.textAlign === "right"
+                    ? "flex-end"
+                    : text.style.textAlign === "center"
+                    ? "center"
+                    : "flex-start",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: text.style.fontFamily,
+                  fontSize: `${text.style.fontSize}px`,
+                  color: text.style.color,
+                  fontWeight: text.style.fontWeight,
+                  fontStyle: text.style.fontStyle,
+                  textDecoration: text.style.textDecoration,
+                  textAlign: text.style.textAlign as any,
+                  backgroundColor: text.style.backgroundColor,
+                  textShadow: text.style.textShadow,
+                  lineHeight: 1.2,
+                  whiteSpace: "pre-wrap",
+                  width: "100%",
+                }}
+                dangerouslySetInnerHTML={{ __html: text.content }}
+              />
+            </div>
+          ))}
         </div>
       </div>
     );
-  }
+  },
+  (prev, next) => prev.preset.id === next.preset.id
+); // Strict equality check for performance
 
-  // --- 2. Static (PIP + Overlay) Preview ---
+// --- ISOLATED CARD COMPONENT ---
+// This prevents re-rendering the whole list when parent state changes
+interface PreviewCardProps {
+  preset: CanvasPreset;
+  isSelected: boolean;
+  isCustom?: boolean;
+  onSelect: (preset: CanvasPreset) => void;
+  onShare?: (preset: CanvasPreset, name: string) => void;
+  onUnshare?: (preset: CanvasPreset) => void;
+  onDelete?: (id: string) => void;
+  setRef?: (el: HTMLDivElement | null) => void;
+}
 
-  // Reconstruct styles exactly as they appear in the editor
-  const bgStyle: React.CSSProperties = {
-    backgroundColor: preset.background.blankCanvasColor || "#000000",
-  };
+const PreviewCard = memo(
+  ({
+    preset,
+    isSelected,
+    isCustom = false,
+    onSelect,
+    onShare,
+    onUnshare,
+    onDelete,
+    setRef,
+  }: PreviewCardProps) => {
+    return (
+      <div ref={setRef} className="relative group">
+        <button
+          onClick={() => onSelect(preset)}
+          className={cn(
+            "w-full overflow-hidden transition-all duration-200 bg-card rounded-md",
+            "border-2",
+            isSelected
+              ? "border-primary shadow-[0_0_0_2px_rgba(var(--primary),0.2)]"
+              : "border-border hover:border-primary/60"
+          )}
+        >
+          <PresetPreview preset={preset} />
 
-  if (preset.background.backgroundImageUrl) {
-    bgStyle.backgroundImage = `url(${preset.background.backgroundImageUrl})`;
-    bgStyle.backgroundSize = "cover";
-    bgStyle.backgroundPosition = "center";
-  }
-
-  // PIP Style
-  const pip = preset.pip || {
-    layoutMode: "pip",
-    pipPosition: { x: 0, y: 0 },
-    pipSize: { width: 0, height: 0 },
-  };
-  const pipStyle: React.CSSProperties = {
-    left: `${pip.pipPosition?.x || 0}%`,
-    top: `${pip.pipPosition?.y || 0}%`,
-    width: `${pip.pipSize?.width || 0}%`,
-    height: `${pip.pipSize?.height || 0}%`,
-    position: "absolute",
-    overflow: "hidden",
-    boxShadow: pip.pipShadow
-      ? `0 0 ${pip.pipShadow.blur}px ${pip.pipShadow.color}`
-      : "none",
-    border: pip.pipBorder
-      ? `${pip.pipBorder.width}px solid ${pip.pipBorder.color}`
-      : "none",
-  };
-
-  // Shape
-  if (pip.cameraShape === "circle") pipStyle.borderRadius = "50%";
-  else if (pip.cameraShape === "rounded") pipStyle.borderRadius = "24px";
-  else pipStyle.borderRadius = "0px";
-
-  // Filter Simulation (Basic)
-  const containerFilter = preset.effects?.videoFilter || "none";
-
-  return (
-    <div
-      ref={containerRef}
-      className="w-full aspect-video relative overflow-hidden bg-card"
-    >
-      <div
-        style={{
-          width: BASE_WIDTH,
-          height: BASE_HEIGHT,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-          ...bgStyle,
-        }}
-        className="relative"
-      >
-        {/* PIP Placeholder */}
-        {pip.layoutMode === "pip" && (
-          <div style={pipStyle}>
-            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
-              {/* Mock Camera Feed Look */}
-              <div className="text-white/20">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-32 h-32"
-                >
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-              </div>
-
-              {/* Apply video filters to the "feed" only */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ backdropFilter: containerFilter }}
+          {isSelected && (
+            <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-md z-10">
+              <Check
+                className="w-3.5 h-3.5 text-primary-foreground"
+                strokeWidth={3}
               />
             </div>
+          )}
+
+          <div className="px-3 py-2 bg-card/95 border-t border-border">
+            <p className="text-[10px] font-bold text-foreground truncate tracking-wider text-left">
+              {preset.name.toUpperCase()}
+            </p>
+          </div>
+        </button>
+
+        {isCustom && (
+          <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            {preset.publicId ? (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (confirm("Unshare?")) onUnshare?.(preset);
+                }}
+              >
+                <CloudOff className="h-3 w-3" />
+              </Button>
+            ) : (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-primary hover:text-primary-foreground rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const name = prompt("Your name:") || "Anonymous";
+                  onShare?.(preset, name);
+                }}
+              >
+                <Share2 className="h-3 w-3" />
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-destructive hover:text-destructive-foreground rounded-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(preset.id);
+                }}
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            )}
           </div>
         )}
-
-        {/* Text Overlays */}
-        {preset.textOverlays?.map((text) => (
-          <div
-            key={text.id}
-            style={{
-              position: "absolute",
-              left: `${text.layout.position.x}%`,
-              top: `${text.layout.position.y}%`,
-              width: `${text.layout.size.width}%`,
-              height: `${text.layout.size.height}%`,
-              transform: `rotate(${text.layout.rotation || 0}deg)`,
-              zIndex: text.layout.zIndex,
-              display: "flex",
-              alignItems: "center", // Text renderer usually centers vertically
-              justifyContent:
-                text.style.textAlign === "right"
-                  ? "flex-end"
-                  : text.style.textAlign === "center"
-                  ? "center"
-                  : "flex-start",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: text.style.fontFamily,
-                fontSize: `${text.style.fontSize}px`, // Render true size (scaled by container)
-                color: text.style.color,
-                fontWeight: text.style.fontWeight,
-                fontStyle: text.style.fontStyle,
-                textDecoration: text.style.textDecoration,
-                textAlign: text.style.textAlign as any,
-                backgroundColor: text.style.backgroundColor,
-                textShadow: text.style.textShadow,
-                lineHeight: 1.2,
-                whiteSpace: "pre-wrap",
-                width: "100%", // Ensure text aligns within the box
-              }}
-              dangerouslySetInnerHTML={{ __html: text.content }}
-            />
-          </div>
-        ))}
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
+PreviewCard.displayName = "PreviewCard";
 
 // --- MAIN PANEL COMPONENT ---
 
@@ -256,13 +355,42 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
   const { systemPresets: CANVAS_PRESETS } = useCanvasPresets();
 
-  // Sync local state with parent prop (including clearing when reset)
+  // Sync local state with parent prop
   useEffect(() => {
     setSelectedPresetId(activePresetId || null);
   }, [activePresetId]);
 
-  // Refs for scroll-to-selected
   const presetRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // Memoized Handlers to prevent card re-renders
+  const handleSelect = useCallback(
+    (preset: CanvasPreset) => {
+      setSelectedPresetId(preset.id);
+      onCanvasPresetSelect?.(preset);
+    },
+    [onCanvasPresetSelect]
+  );
+
+  const handleShare = useCallback(
+    (preset: CanvasPreset, name: string) => {
+      onShareCanvasPreset?.(preset, name);
+    },
+    [onShareCanvasPreset]
+  );
+
+  const handleUnshare = useCallback(
+    (preset: CanvasPreset) => {
+      onUnshareCanvasPreset?.(preset);
+    },
+    [onUnshareCanvasPreset]
+  );
+
+  const handleDelete = useCallback(
+    (id: string) => {
+      onDeleteCanvasPreset?.(id);
+    },
+    [onDeleteCanvasPreset]
+  );
 
   // Scroll effect
   useEffect(() => {
@@ -297,104 +425,6 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
       : selectedCategory === "community"
       ? publicPresets || []
       : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
-
-  const handlePresetSelect = (preset: CanvasPreset) => {
-    setSelectedPresetId(preset.id);
-    onCanvasPresetSelect?.(preset);
-  };
-
-  const PreviewCard = ({
-    preset,
-    isCustom = false,
-  }: {
-    preset: CanvasPreset;
-    isCustom?: boolean;
-  }) => {
-    const isSelected = selectedPresetId === preset.id;
-
-    return (
-      <div
-        ref={(el) => (presetRefs.current[preset.id] = el)}
-        className="relative group"
-      >
-        <button
-          onClick={() => handlePresetSelect(preset)}
-          className={cn(
-            "w-full overflow-hidden transition-all duration-200 bg-card rounded-md",
-            "border-2",
-            isSelected
-              ? "border-primary shadow-[0_0_0_2px_rgba(var(--primary),0.2)]"
-              : "border-border hover:border-primary/60"
-          )}
-        >
-          {/* Use the new Exact Renderer */}
-          <PresetPreview preset={preset} />
-
-          {/* Selection Indicator */}
-          {isSelected && (
-            <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-md z-10">
-              <Check
-                className="w-3.5 h-3.5 text-primary-foreground"
-                strokeWidth={3}
-              />
-            </div>
-          )}
-
-          {/* Label */}
-          <div className="px-3 py-2 bg-card/95 border-t border-border">
-            <p className="text-[10px] font-bold text-foreground truncate tracking-wider text-left">
-              {preset.name.toUpperCase()}
-            </p>
-          </div>
-        </button>
-
-        {/* Action Buttons for Custom Presets */}
-        {isCustom && (
-          <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-            {preset.publicId ? (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-destructive hover:text-destructive-foreground rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (confirm("Unshare?")) onUnshareCanvasPreset?.(preset);
-                }}
-              >
-                <CloudOff className="h-3 w-3" />
-              </Button>
-            ) : (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-primary hover:text-primary-foreground rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const name = prompt("Your name:") || "Anonymous";
-                  onShareCanvasPreset?.(preset, name);
-                }}
-              >
-                <Share2 className="h-3 w-3" />
-              </Button>
-            )}
-            {onDeleteCanvasPreset && (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-destructive hover:text-destructive-foreground rounded-full"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteCanvasPreset(preset.id);
-                }}
-              >
-                <Trash2 className="h-3 w-3" />
-              </Button>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="flex flex-col h-full font-mono gap-3">
@@ -487,7 +517,17 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
           </h4>
           <div className="grid grid-cols-2 gap-3">
             {customCanvasPresets.map((preset) => (
-              <PreviewCard key={preset.id} preset={preset} isCustom />
+              <PreviewCard
+                key={preset.id}
+                preset={preset}
+                isCustom={true}
+                isSelected={selectedPresetId === preset.id}
+                onSelect={handleSelect}
+                onShare={handleShare}
+                onUnshare={handleUnshare}
+                onDelete={handleDelete}
+                setRef={(el) => (presetRefs.current[preset.id] = el)}
+              />
             ))}
           </div>
         </div>
@@ -505,7 +545,14 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
         <div className="grid grid-cols-2 gap-3 pb-4">
           {!(selectedCategory === "community" && isLoadingPublic) &&
             filteredCanvasPresets.map((preset) => (
-              <PreviewCard key={preset.id} preset={preset} />
+              <PreviewCard
+                key={preset.id}
+                preset={preset}
+                isCustom={false}
+                isSelected={selectedPresetId === preset.id}
+                onSelect={handleSelect}
+                setRef={(el) => (presetRefs.current[preset.id] = el)}
+              />
             ))}
         </div>
 
