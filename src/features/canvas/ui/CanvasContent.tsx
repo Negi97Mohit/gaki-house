@@ -8,6 +8,7 @@ import { PipWindow } from "@/features/canvas/ui/PipWindow";
 import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
 import { getNumericAspectRatio } from "@/features/canvas/ui/VideoCanvasHelpers";
 import { VideoCanvasProps } from "@/types/videoCanvas";
+import { ExcalidrawOverlay } from "@/features/canvas/ui/ExcalidrawOverlay";
 
 interface CanvasContentProps {
   dynamicLayout: {
@@ -61,6 +62,12 @@ interface CanvasContentProps {
   onScreenShareModeChange: VideoCanvasProps["onScreenShareModeChange"];
   onRemoveBrowser: VideoCanvasProps["onRemoveBrowser"];
   browserOverlays: VideoCanvasProps["browserOverlays"];
+
+  // Excalidraw Props
+  isDrawing: boolean;
+  setIsDrawing: (isDrawing: boolean) => void;
+  excalidrawElements: readonly any[];
+  setExcalidrawElements: (elements: readonly any[]) => void;
 }
 
 export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
@@ -111,6 +118,12 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
     onScreenShareModeChange,
     onRemoveBrowser,
     browserOverlays,
+
+    // Destructure Excalidraw props
+    isDrawing,
+    setIsDrawing,
+    excalidrawElements,
+    setExcalidrawElements,
   } = props;
 
   if (dynamicLayout?.isActive && dynamicLayout.target) {
@@ -170,6 +183,13 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
     <div className="w-full h-full relative">
       <div className="relative w-full h-full">{mainContent}</div>
 
+      <ExcalidrawOverlay
+        isVisible={isDrawing}
+        onClose={() => setIsDrawing(false)}
+        initialElements={excalidrawElements}
+        onElementsChange={setExcalidrawElements}
+      />
+
       {showPipMode && !isGridActive && layoutMode === "pip" && (
         <PipWindow
           sceneId={sceneId}
@@ -183,7 +203,7 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
           screenShareMode={screenShareMode}
           onPipPositionChange={onPipPositionChange}
           onPipSizeChange={onPipSizeChange}
-          onPipRotationChange={onPipRotationChange || (() => { })}
+          onPipRotationChange={onPipRotationChange || (() => {})}
           pipRotation={pipRotation}
           onInternalDragStart={onInternalDragStart}
           onInternalDragStop={onInternalDragStop}
@@ -194,10 +214,10 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
             cameraShape === "circle"
               ? 1
               : (getNumericAspectRatio(
-                cameraShape,
-                sidebarProps.cameraAspectRatio,
-                sidebarProps.customAspectRatio
-              ) as number)
+                  cameraShape,
+                  sidebarProps.cameraAspectRatio,
+                  sidebarProps.customAspectRatio
+                ) as number)
           }
         />
       )}
