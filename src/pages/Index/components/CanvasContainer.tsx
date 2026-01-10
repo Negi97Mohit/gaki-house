@@ -153,6 +153,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     canvasLayout: state.canvasLayout, setCanvasLayout: state.setCanvasLayout,
     backgroundEffect: state.backgroundEffect, setBackgroundEffect: state.setBackgroundEffect,
     backgroundImageUrl: state.backgroundImageUrl, setBackgroundImageUrl: state.setBackgroundImageUrl,
+    blankCanvasColor: state.blankCanvasColor, setBlankCanvasColor: state.setBlankCanvasColor,
     videoFilter: state.videoFilter, setVideoFilter: state.setVideoFilter,
     captionStyle: state.captionStyle, setCaptionStyle: state.setCaptionStyle,
     dynamicStyle: state.dynamicStyle,
