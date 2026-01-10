@@ -10,7 +10,7 @@ export interface StreamDestination {
   error?: string;
 }
 
-export type RecordingStatus = "idle" | "recording" | "stopping" | "saved";
+export type RecordingStatus = "idle" | "recording" | "stopping" | "saved" | "error";
 
 interface StreamState {
   // Broadcast State

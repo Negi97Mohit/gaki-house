@@ -152,7 +152,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             variant="ghost"
             size="icon"
             className="rounded-full h-10 w-10 hover:bg-background/60"
-            onClick={() => setShowSettings(true)}
+            onClick={() => setShowSettings((prev) => !prev)}
             title="Settings"
             data-floating-trigger="true"
           >

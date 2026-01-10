@@ -18,11 +18,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Switch } from "@/shared/ui/switch";
 import { useStreamStore, StreamDestination } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
-import { nanoid } from 'nanoid';
+import { v4 as uuidv4 } from 'uuid';
 
 interface StreamConfigurationModalProps {
-  onStartStream?: (id?: string) => void;
-  onStopStream?: (id?: string) => void;
+  onStartStream?: (url: string, key: string) => void;
+  onStopStream?: () => void;
 }
 
 // Platform Icon Component with colored SVGs
@@ -107,7 +107,7 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
     // Actually our UI logic below handles pre-fill.
 
     const dest: StreamDestination = {
-      id: nanoid(),
+      id: uuidv4(),
       platform: selectedPlatform ? selectedPlatform.name : 'Custom',
       url: newUrl,
       key: newKey,
@@ -248,7 +248,7 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                                 size="sm"
                                 variant="outline"
                                 className="h-7 text-xs"
-                                onClick={() => onStartStream?.(dest.id)}
+                                onClick={() => onStartStream?.(dest.url, dest.key)}
                                 disabled={!dest.enabled}
                               >
                                 Start
@@ -266,7 +266,7 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                               size="sm"
                               variant="destructive"
                               className="h-7 text-xs"
-                              onClick={() => onStopStream?.(dest.id)}
+                              onClick={() => onStopStream?.()}
                             >
                               Stop
                             </Button>
@@ -295,7 +295,13 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                 <Button
                   className="w-full font-semibold"
                   size="lg"
-                  onClick={() => onStartStream?.()}
+                  onClick={() => {
+                    // Start all enabled destinations - pick first or handle batch
+                    const firstEnabled = destinations.find(d => d.enabled);
+                    if (firstEnabled) {
+                      onStartStream?.(firstEnabled.url, firstEnabled.key);
+                    }
+                  }}
                   disabled={isConnecting || activeCount === 0}
                 >
                   {isConnecting ? (

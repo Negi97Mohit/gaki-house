@@ -7,10 +7,27 @@ export const useIndexUI = () => {
   const [isFsSidebarOpen, setIsFsSidebarOpen] = useState(false);
   const [isMouseActive, setIsMouseActive] = useState(true);
   const [isBottomNavVisible, setIsBottomNavVisible] = useState(false);
-  const [showSessionsPanel, setShowSessionsPanel] = useState(false);
-  const [showAnimationLibrary, setShowAnimationLibrary] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const [showSessionsPanel, setShowSessionsPanelRaw] = useState(false);
+  const [showAnimationLibrary, setShowAnimationLibraryRaw] = useState(false);
+  const [showSettings, setShowSettingsRaw] = useState(false);
+  const [isChatbotOpen, setIsChatbotOpenRaw] = useState(false);
+
+  // Toggle-aware setters
+  const setShowSessionsPanel = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    setShowSessionsPanelRaw(prev => typeof value === 'function' ? value(prev) : value);
+  }, []);
+
+  const setShowAnimationLibrary = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    setShowAnimationLibraryRaw(prev => typeof value === 'function' ? value(prev) : value);
+  }, []);
+
+  const setShowSettings = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    setShowSettingsRaw(prev => typeof value === 'function' ? value(prev) : value);
+  }, []);
+
+  const setIsChatbotOpen = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    setIsChatbotOpenRaw(prev => typeof value === 'function' ? value(prev) : value);
+  }, []);
 
   // Refs
   const mouseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
