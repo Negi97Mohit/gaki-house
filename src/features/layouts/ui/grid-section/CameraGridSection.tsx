@@ -56,8 +56,9 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
   onUserPositionChange,
   backgroundImageUrl,
 }) => {
-  // Safety check: Use defaults if settings are undefined
-  const safeSettings = settings || DEFAULT_SETTINGS;
+  // CHANGED: Use spread to merge defaults with actual settings.
+  // This ensures properties like 'videoFilter' are never undefined if missing from 'settings'.
+  const safeSettings = { ...DEFAULT_SETTINGS, ...settings };
 
   if (safeSettings.layoutMode === "pip") {
     return (

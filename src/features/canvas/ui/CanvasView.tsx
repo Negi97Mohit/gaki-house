@@ -321,6 +321,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           sidebarProps={props.sidebarProps}
           screenStream={screenStream}
           cameraStream={cameraStream}
+          // FIX: Use props.blankCanvasColor to correctly pass the background color
+          blankCanvasColor={props.blankCanvasColor}
         />
 
         {captionsEnabled &&
@@ -335,11 +337,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 default={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                   width: captionWidth,
                   height: captionHeight,
@@ -347,11 +349,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
+                      100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
+                      100 -
                     captionHeight / 2,
                 }}
                 enableResizing={false}

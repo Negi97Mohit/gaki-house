@@ -1,121 +1,166 @@
 import React, { useCallback, useState } from "react";
-import { cn } from "@/shared/lib/utils";
 import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
-import {
-  getCameraShapeStyle,
-  getVideoFilterStyle,
-} from "@/features/canvas/ui/VideoCanvasHelpers";
-import { CameraShape, LayoutMode } from "@/types/caption";
-import { PipLayoutPreset } from "@/features/stream/ui/pip/PipLayoutMenu";
+import { CanvasSectionCameraState } from "@/types/caption";
+import { CanvasHoverToolbar } from "./CanvasHoverToolbar";
 
-export interface VideoCanvasCameraProps {
-  className?: string;
-  style?: React.CSSProperties;
+interface VideoCanvasCameraProps {
   stream: MediaStream | null;
-  cameraShape: CameraShape;
+  cameraSettings: CanvasSectionCameraState;
+  onCameraSettingsChange: (settings: Partial<CanvasSectionCameraState>) => void;
+  pipSize?: { width: number; height: number };
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
-  videoFilter: string;
-  isBeautifyEnabled: boolean;
-  isLowLightEnabled: boolean;
-  isAutoFramingEnabled: boolean;
-  videoDevices: MediaDeviceInfo[];
-  selectedVideoDevice: string | undefined;
-  onVideoDeviceSelect: (deviceId: string) => void;
-  onCameraShapeChange: (shape: CameraShape) => void;
-  portalContainer?: HTMLElement | null | undefined;
-  isMouseActive: boolean;
-  sidebarProps: any;
-  screenShareMode: "off" | "screen" | "canvas";
-  onScreenShareModeChange: (mode: "off" | "screen" | "canvas") => void;
-  onLayoutModeChange: (mode: LayoutMode) => void;
-  externalVideoRef?: React.RefObject<HTMLVideoElement>;
-  processedCanvas?: HTMLCanvasElement | null;
-  facePositionRef?: React.MutableRefObject<any>;
-  // PIP Layout props
-  onPipPositionChange?: (position: { x: number; y: number }) => void;
-  onPipSizeChange?: (size: { width: number; height: number }) => void;
-  onCameraAspectRatioChange?: (ratio: string) => void;
+  videoDevices?: MediaDeviceInfo[];
+  activeSequenceId?: string | null;
+  onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
+  isActive?: boolean;
 }
 
-// 3. Wrap component in React.memo
-export const VideoCanvasCamera = React.memo<VideoCanvasCameraProps>((props) => {
-  const {
-    style: _unsafeStyle,
-    width: _unsafeWidth,
-    height: _unsafeHeight,
-    className: _unsafeClassName,
-    ...safeSidebarProps
-  } = props.sidebarProps || {};
+const DEFAULT_CAMERA_SETTINGS: Partial<CanvasSectionCameraState> = {
+  videoFilter: "none",
+  isBeautifyEnabled: false,
+  isLowLightEnabled: false,
+  isAutoFramingEnabled: false,
+  isNeonEdgeEnabled: false,
+  neonIntensity: 50,
+  neonColor: "#00FFFF",
+  zoomSensitivity: 1,
+  trackingSpeed: 0.5,
+  cameraAspectRatio: "16:9",
+  customAspectRatio: "",
+  isFaceTrackingEnabled: false,
+  activeInteractiveFilter: "none",
+  filterIntensity: 100,
+  filterColor: "#000",
+  filterTarget: "background",
+  cameraBackground: "none",
+  pipBorder: { color: "#FFF", width: 0 },
+  pipShadow: { blur: 0, color: "transparent" },
+};
 
-  const [currentPipLayoutId, setCurrentPipLayoutId] = useState<string>();
+export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = ({
+  stream,
+  cameraSettings,
+  onCameraSettingsChange,
+  pipSize,
+  pipBorder,
+  pipShadow,
+  videoDevices,
+  activeSequenceId,
+  onUserPositionChange,
+  isActive = false,
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
 
-  const handleEnterPipMode = () => {
-    if (props.screenShareMode === "off") {
-      props.onScreenShareModeChange("canvas");
-      props.onLayoutModeChange("pip");
-    }
-  };
+  // Deep merge settings with defaults to prevent undefined props
+  const safeSettings = { ...DEFAULT_CAMERA_SETTINGS, ...cameraSettings };
 
-  const handlePipLayoutSelect = useCallback((preset: PipLayoutPreset) => {
-    setCurrentPipLayoutId(preset.id);
-    
-    // Apply the preset settings
-    if (props.onPipPositionChange) {
-      props.onPipPositionChange(preset.position);
-    }
-    if (props.onPipSizeChange) {
-      props.onPipSizeChange(preset.size);
-    }
-    if (props.onCameraShapeChange) {
-      props.onCameraShapeChange(preset.shape);
-    }
-    if (props.onCameraAspectRatioChange && preset.aspectRatio !== "free") {
-      props.onCameraAspectRatioChange(preset.aspectRatio);
-    }
-  }, [props.onPipPositionChange, props.onPipSizeChange, props.onCameraShapeChange, props.onCameraAspectRatioChange]);
+  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
+  const handleMouseLeave = useCallback(() => setIsHovered(false), []);
 
   return (
     <div
-      className={cn("w-full h-full", props.className)}
-      style={{
-        ...getCameraShapeStyle(
-          props.cameraShape,
-          props.pipBorder,
-          props.pipShadow
-        ),
-        ...props.style,
-      }}
+      className="w-full h-full relative group"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <CameraRenderer
-        stream={props.stream}
-        className="w-full h-full"
-        portalContainer={props.portalContainer}
-        style={props.style}
-        videoFilter={getVideoFilterStyle(
-          props.videoFilter,
-          props.isBeautifyEnabled,
-          props.isLowLightEnabled
-        )}
-        cameraShape={props.cameraShape}
-        onCameraShapeChange={props.onCameraShapeChange}
-        isAutoFramingEnabled={props.isAutoFramingEnabled}
-        videoDevices={props.videoDevices}
-        selectedDeviceId={props.selectedVideoDevice}
-        onCameraDeviceChange={props.onVideoDeviceSelect}
-        pipBorder={props.pipBorder}
-        pipShadow={props.pipShadow}
-        showAspectRatio={true}
-        onEnterPipMode={handleEnterPipMode}
-        isMouseActive={props.isMouseActive}
-        externalVideoRef={props.externalVideoRef}
-        processedCanvas={props.processedCanvas}
-        facePositionRef={props.facePositionRef}
-        screenShareMode={props.screenShareMode}
-        currentPipLayoutId={currentPipLayoutId}
-        onPipLayoutSelect={handlePipLayoutSelect}
-        {...safeSidebarProps}
-      />
+      <div className="w-full h-full" style={{ overflow: "hidden" }}>
+        <CameraRenderer
+          stream={stream}
+          className="w-full h-full object-cover"
+          selectedDeviceId={safeSettings.selectedDeviceId}
+          videoDevices={videoDevices}
+          onCameraDeviceChange={(id) =>
+            onCameraSettingsChange({ selectedDeviceId: id })
+          }
+          // Pass safe settings to ensure filters apply
+          isBeautifyEnabled={safeSettings.isBeautifyEnabled}
+          isLowLightEnabled={safeSettings.isLowLightEnabled}
+          isAutoFramingEnabled={safeSettings.isAutoFramingEnabled}
+          videoFilter={safeSettings.videoFilter}
+          isNeonEdgeEnabled={safeSettings.isNeonEdgeEnabled}
+          neonIntensity={safeSettings.neonIntensity}
+          neonColor={safeSettings.neonColor}
+          zoomSensitivity={safeSettings.zoomSensitivity}
+          trackingSpeed={safeSettings.trackingSpeed}
+          cameraAspectRatio={safeSettings.cameraAspectRatio}
+          customAspectRatio={safeSettings.customAspectRatio}
+          isFaceTrackingEnabled={safeSettings.isFaceTrackingEnabled}
+          activeInteractiveFilter={safeSettings.activeInteractiveFilter}
+          filterIntensity={safeSettings.filterIntensity}
+          filterColor={safeSettings.filterColor}
+          filterTarget={safeSettings.filterTarget}
+          cameraBackground={safeSettings.cameraBackground}
+          // Callbacks
+          onBeautifyToggle={(enabled) =>
+            onCameraSettingsChange({ isBeautifyEnabled: enabled })
+          }
+          onLowLightToggle={(enabled) =>
+            onCameraSettingsChange({ isLowLightEnabled: enabled })
+          }
+          onAutoFramingChange={(enabled) =>
+            onCameraSettingsChange({ isAutoFramingEnabled: enabled })
+          }
+          onVideoFilterChange={(filter) =>
+            onCameraSettingsChange({
+              videoFilter: filter,
+              activeInteractiveFilter: "none",
+            })
+          }
+          onNeonEdgeToggle={(enabled) =>
+            onCameraSettingsChange({ isNeonEdgeEnabled: enabled })
+          }
+          onNeonIntensityChange={(val) =>
+            onCameraSettingsChange({ neonIntensity: val })
+          }
+          onNeonEdgeColorChange={(col) =>
+            onCameraSettingsChange({ neonColor: col })
+          }
+          onZoomSensitivityChange={(val) =>
+            onCameraSettingsChange({ zoomSensitivity: val })
+          }
+          onTrackingSpeedChange={(val) =>
+            onCameraSettingsChange({ trackingSpeed: val })
+          }
+          onCameraAspectRatioChange={(ratio) =>
+            onCameraSettingsChange({ cameraAspectRatio: ratio })
+          }
+          onCustomAspectRatioChange={(ratio) =>
+            onCameraSettingsChange({ customAspectRatio: ratio })
+          }
+          onFaceTrackingToggle={(enabled) =>
+            onCameraSettingsChange({ isFaceTrackingEnabled: enabled })
+          }
+          onInteractiveFilterChange={(filter) =>
+            onCameraSettingsChange({
+              activeInteractiveFilter: filter as any,
+              videoFilter: "none",
+            })
+          }
+          onFilterIntensityChange={(val) =>
+            onCameraSettingsChange({ filterIntensity: val })
+          }
+          onFilterColorChange={(col) =>
+            onCameraSettingsChange({ filterColor: col })
+          }
+          onFilterTargetChange={(target) =>
+            onCameraSettingsChange({ filterTarget: target })
+          }
+          pipBorder={pipBorder || safeSettings.pipBorder}
+          pipShadow={pipShadow || safeSettings.pipShadow}
+          onPipBorderChange={(b) => onCameraSettingsChange({ pipBorder: b })}
+          onPipShadowChange={(s) => onCameraSettingsChange({ pipShadow: s })}
+          onUserPositionChange={
+            activeSequenceId ? onUserPositionChange : undefined
+          }
+        />
+      </div>
+
+      {isHovered && isActive && (
+        <div className="absolute top-2 right-2 z-50">
+          {/* Controls can go here if not using the floating toolbar */}
+        </div>
+      )}
     </div>
   );
-});
+};

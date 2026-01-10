@@ -63,7 +63,7 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
   onSetSectionDefault,
   onUserPositionChange,
 }) => {
-  // Fix: Treat existence of layout as active canvas mode
+  // 1. If we have a Grid Layout, render it
   if (canvasLayout) {
     return (
       <CanvasGridLayout
@@ -85,13 +85,35 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
             });
           }
         }}
+        // FIX: Ensure grid section setting changes (e.g. filters) actually update the layout state
+        onSectionCameraSettingsChange={(sectionId, settings) => {
+          if (onCanvasLayoutChange) {
+            const updatedSections = canvasLayout.sections.map((s) => {
+              if (s.id === sectionId && s.content.type === "camera") {
+                return {
+                  ...s,
+                  content: {
+                    ...s.content,
+                    settings: { ...s.content.settings, ...settings },
+                  },
+                };
+              }
+              return s;
+            });
+            onCanvasLayoutChange({
+              ...canvasLayout,
+              sections: updatedSections,
+            });
+          }
+          // Also call original prop if needed for side effects (like updating global camera prefs)
+          onSectionCameraSettingsChange?.(sectionId, settings);
+        }}
         layoutMode={layoutMode}
         cameraShape={cameraShape}
         pipSize={pipSize}
         pipBorder={pipBorder}
         pipShadow={pipShadow}
         onGridAssetSelect={onGridAssetSelect}
-        onSectionCameraSettingsChange={onSectionCameraSettingsChange}
         backgroundEffect={backgroundEffect}
         onLayoutUpdate={onCanvasLayoutChange}
         onSetSectionDefault={onSetSectionDefault}
@@ -102,7 +124,13 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
     );
   }
 
-  if (screenShareMode === "canvas") {
+  // 2. Logic for Standard Canvas / PIP Background
+  // If mode is 'canvas' OR we are in PIP mode (but screen share is technically 'off'), we show the background.
+  if (
+    screenShareMode === "canvas" ||
+    (layoutMode === "pip" && screenShareMode === "off")
+  ) {
+    // Handle Image Background
     if (backgroundEffect === "image" && backgroundImageUrl) {
       return (
         <div
@@ -111,19 +139,30 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
         />
       );
     }
-    const isGradientBg = blankCanvasColor?.includes('gradient');
+
+    // Handle Color Background (Gradient or Solid)
+    // Fallback to black if blankCanvasColor is undefined to prevent transparent/empty div
+    const effectiveColor = blankCanvasColor || "#000000";
+    const isGradientBg = effectiveColor.includes("gradient");
+
     return (
       <div
         className="w-full h-full"
-        style={isGradientBg ? { background: blankCanvasColor } : { backgroundColor: blankCanvasColor }}
+        style={
+          isGradientBg
+            ? { background: effectiveColor }
+            : { backgroundColor: effectiveColor }
+        }
       />
     );
   }
 
+  // 3. Screen Share Mode
   if (screenShareMode === "screen" && screenStream) {
     return <VideoPlayer stream={screenStream} />;
   }
 
+  // 4. Default / Empty State
   return (
     <div className="w-full h-full flex items-center justify-center text-center text-muted-foreground bg-black">
       <div>
