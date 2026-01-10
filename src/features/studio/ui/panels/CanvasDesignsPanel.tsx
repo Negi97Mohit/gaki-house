@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   LayoutGrid,
   Loader2,
@@ -11,7 +11,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
 import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
-import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets"; // --- MODIFIED
+import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
 import { CanvasPreset, CanvasPresetTextOverlay } from "@/types/canvasPreset";
 import { cn } from "@/shared/lib/utils";
 import {
@@ -24,9 +24,11 @@ import {
   Clock,
   Users,
 } from "lucide-react";
+// Import the actual renderer for dynamic layouts
+import { CanvasGridLayout } from "@/features/layouts/ui/CanvasGridLayout";
+import { PreviewModeProvider } from "@/features/layouts/ui/layouts/dynamic/core/PreviewModeContext";
 
 interface CanvasDesignsPanelProps {
-  // NEW: Accept the currently active ID from parent
   activePresetId?: string;
   onCanvasPresetSelect?: (preset: CanvasPreset) => void;
   onSaveCanvasPreset?: (name: string) => void;
@@ -38,134 +40,202 @@ interface CanvasDesignsPanelProps {
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
 }
 
-// Accurate preview renderer component
+// --- EXACT PREVIEW RENDERER ---
+
+const BASE_WIDTH = 1920;
+const BASE_HEIGHT = 1080;
+
 const PresetPreview = ({ preset }: { preset: CanvasPreset }) => {
-  return (
-    <div
-      className="w-full aspect-video relative overflow-hidden"
-      style={{
-        background: preset.background.blankCanvasColor || "#1a1a1a",
-      }}
-    >
-      {/* Background image if exists */}
-      {preset.background.backgroundImageUrl && (
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-50"
-          style={{
-            backgroundImage: `url(${preset.background.backgroundImageUrl})`,
-          }}
-        />
-      )}
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.15); // Initial safe guess
 
-      {/* PIP Camera Preview - Accurate position and size */}
+  useEffect(() => {
+    const updateScale = () => {
+      if (containerRef.current) {
+        const { width } = containerRef.current.getBoundingClientRect();
+        // Calculate scale to fit 1920 into the current container width
+        setScale(width / BASE_WIDTH);
+      }
+    };
+
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    if (containerRef.current) observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
+  // --- 1. Dynamic Layout Preview ---
+  if (preset.canvasLayout) {
+    return (
       <div
-        className="absolute"
-        style={{
-          left: `${preset.pip.pipPosition?.x || 50}%`,
-          top: `${preset.pip.pipPosition?.y || 50}%`,
-          width: `${preset.pip.pipSize?.width || 40}%`,
-          height: `${preset.pip.cameraShape === "circle"
-              ? (preset.pip.pipSize?.width || 40) * (16 / 9)
-              : preset.pip.pipSize?.height || 40
-            }%`,
-          transform: "translate(-50%, -50%)",
-          borderRadius:
-            preset.pip.cameraShape === "circle"
-              ? "50%"
-              : preset.pip.cameraShape === "rounded"
-                ? "8%"
-                : "0",
-          border: preset.pip.pipBorder
-            ? `${Math.max(1, preset.pip.pipBorder.width * 0.5)}px solid ${preset.pip.pipBorder.color
-            }`
-            : "1px solid rgba(255,255,255,0.3)",
-          boxShadow: preset.pip.pipShadow
-            ? `0 0 ${preset.pip.pipShadow.blur * 0.3}px ${preset.pip.pipShadow.color
-            }`
-            : "none",
-          background: "linear-gradient(145deg, #444 0%, #222 100%)",
-        }}
+        ref={containerRef}
+        className="w-full aspect-video relative overflow-hidden bg-muted/20"
       >
-        {/* Camera icon indicator */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-40">
-          <svg
-            viewBox="0 0 24 24"
-            className="w-1/3 h-1/3"
-            fill="currentColor"
-            style={{ color: "rgba(255,255,255,0.5)" }}
-          >
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-          </svg>
-        </div>
-      </div>
-
-      {/* Text Overlays - Accurate rendering */}
-      {preset.textOverlays.map((text: CanvasPresetTextOverlay) => (
         <div
-          key={text.id}
-          className="absolute overflow-hidden pointer-events-none"
           style={{
-            left: `${text.layout.position.x}%`,
-            top: `${text.layout.position.y}%`,
-            width: `${text.layout.size.width}%`,
-            height: `${text.layout.size.height}%`,
-            transform: `translate(-50%, -50%) rotate(${text.layout.rotation || 0
-              }deg)`,
-            zIndex: text.layout.zIndex || 1,
+            width: BASE_WIDTH,
+            height: BASE_HEIGHT,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            pointerEvents: "none", // Disable interactions
           }}
         >
-          <div
-            className="w-full h-full flex items-center overflow-hidden"
-            style={{
-              fontFamily: text.style.fontFamily || "sans-serif",
-              fontSize: `${Math.max(
-                6,
-                Math.min(text.style.fontSize * 0.08, 12)
-              )}px`,
-              color: text.style.color || "#fff",
-              backgroundColor: text.style.backgroundColor || "transparent",
-              textAlign: text.style.textAlign || "center",
-              justifyContent:
-                text.style.textAlign === "left"
-                  ? "flex-start"
-                  : text.style.textAlign === "right"
-                    ? "flex-end"
-                    : "center",
-              fontWeight: text.style.fontWeight || 400,
-              letterSpacing: text.style.letterSpacing || "normal",
-              textTransform: (text.style.textTransform as any) || "none",
-              textShadow: text.style.textShadow || "none",
-              border: text.style.border || "none",
-              backdropFilter: text.style.backdropFilter || "none",
-              padding: "2px 4px",
-              lineHeight: 1.1,
-            }}
-          >
-            <span className="truncate">
-              {text.content
-                .replace(/<[^>]+>/g, "")
-                .replace(/\s+/g, " ")
-                .trim()
-                .substring(0, 30)}
-            </span>
-          </div>
+          <PreviewModeProvider isPreview={true}>
+            <CanvasGridLayout
+              layout={preset.canvasLayout}
+              // Mock Props for Preview
+              cameraStream={null}
+              screenStream={null}
+              fileOverlays={[]}
+              textOverlays={[]} // Grid layouts usually manage their own text or use the global ones differently
+              blankCanvasColor={preset.background.blankCanvasColor || "#000"}
+              backgroundImageUrl={preset.background.backgroundImageUrl}
+              onSectionContentChange={() => {}}
+              onGridAssetSelect={() => {}}
+              layoutMode="pip"
+              cameraShape="rectangle"
+              pipSize={{ width: 20, height: 20 }}
+              backgroundEffect="none"
+              onSectionCameraSettingsChange={() => {}}
+            />
+          </PreviewModeProvider>
         </div>
-      ))}
+      </div>
+    );
+  }
 
-      {/* Effects indicator */}
-      {(preset.effects.isNeonEdgeEnabled ||
-        preset.effects.interactiveFilter) && (
-          <div className="absolute bottom-1 right-1 px-1 py-0.5 bg-primary/80 text-[6px] font-bold text-primary-foreground">
-            FX
+  // --- 2. Static (PIP + Overlay) Preview ---
+
+  // Reconstruct styles exactly as they appear in the editor
+  const bgStyle: React.CSSProperties = {
+    backgroundColor: preset.background.blankCanvasColor || "#000000",
+  };
+
+  if (preset.background.backgroundImageUrl) {
+    bgStyle.backgroundImage = `url(${preset.background.backgroundImageUrl})`;
+    bgStyle.backgroundSize = "cover";
+    bgStyle.backgroundPosition = "center";
+  }
+
+  // PIP Style
+  const pip = preset.pip || {
+    layoutMode: "pip",
+    pipPosition: { x: 0, y: 0 },
+    pipSize: { width: 0, height: 0 },
+  };
+  const pipStyle: React.CSSProperties = {
+    left: `${pip.pipPosition?.x || 0}%`,
+    top: `${pip.pipPosition?.y || 0}%`,
+    width: `${pip.pipSize?.width || 0}%`,
+    height: `${pip.pipSize?.height || 0}%`,
+    position: "absolute",
+    overflow: "hidden",
+    boxShadow: pip.pipShadow
+      ? `0 0 ${pip.pipShadow.blur}px ${pip.pipShadow.color}`
+      : "none",
+    border: pip.pipBorder
+      ? `${pip.pipBorder.width}px solid ${pip.pipBorder.color}`
+      : "none",
+  };
+
+  // Shape
+  if (pip.cameraShape === "circle") pipStyle.borderRadius = "50%";
+  else if (pip.cameraShape === "rounded") pipStyle.borderRadius = "24px";
+  else pipStyle.borderRadius = "0px";
+
+  // Filter Simulation (Basic)
+  const containerFilter = preset.effects?.videoFilter || "none";
+
+  return (
+    <div
+      ref={containerRef}
+      className="w-full aspect-video relative overflow-hidden bg-card"
+    >
+      <div
+        style={{
+          width: BASE_WIDTH,
+          height: BASE_HEIGHT,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
+          ...bgStyle,
+        }}
+        className="relative"
+      >
+        {/* PIP Placeholder */}
+        {pip.layoutMode === "pip" && (
+          <div style={pipStyle}>
+            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative">
+              {/* Mock Camera Feed Look */}
+              <div className="text-white/20">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-32 h-32"
+                >
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              </div>
+
+              {/* Apply video filters to the "feed" only */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{ backdropFilter: containerFilter }}
+              />
+            </div>
           </div>
         )}
+
+        {/* Text Overlays */}
+        {preset.textOverlays?.map((text) => (
+          <div
+            key={text.id}
+            style={{
+              position: "absolute",
+              left: `${text.layout.position.x}%`,
+              top: `${text.layout.position.y}%`,
+              width: `${text.layout.size.width}%`,
+              height: `${text.layout.size.height}%`,
+              transform: `rotate(${text.layout.rotation || 0}deg)`,
+              zIndex: text.layout.zIndex,
+              display: "flex",
+              alignItems: "center", // Text renderer usually centers vertically
+              justifyContent:
+                text.style.textAlign === "right"
+                  ? "flex-end"
+                  : text.style.textAlign === "center"
+                  ? "center"
+                  : "flex-start",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: text.style.fontFamily,
+                fontSize: `${text.style.fontSize}px`, // Render true size (scaled by container)
+                color: text.style.color,
+                fontWeight: text.style.fontWeight,
+                fontStyle: text.style.fontStyle,
+                textDecoration: text.style.textDecoration,
+                textAlign: text.style.textAlign as any,
+                backgroundColor: text.style.backgroundColor,
+                textShadow: text.style.textShadow,
+                lineHeight: 1.2,
+                whiteSpace: "pre-wrap",
+                width: "100%", // Ensure text aligns within the box
+              }}
+              dangerouslySetInnerHTML={{ __html: text.content }}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
+// --- MAIN PANEL COMPONENT ---
+
 export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
-  activePresetId, // Destructure new prop
+  activePresetId,
   onCanvasPresetSelect,
   onSaveCanvasPreset,
   customCanvasPresets,
@@ -184,31 +254,30 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     activePresetId || null
   );
 
-  const { systemPresets: CANVAS_PRESETS } = useCanvasPresets(); // --- ADDED
+  const { systemPresets: CANVAS_PRESETS } = useCanvasPresets();
 
   // Sync local state with parent prop (including clearing when reset)
   useEffect(() => {
     setSelectedPresetId(activePresetId || null);
   }, [activePresetId]);
 
-  // NEW: Refs for scroll-to-selected
+  // Refs for scroll-to-selected
   const presetRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  // NEW: Scroll effect
+  // Scroll effect
   useEffect(() => {
     if (selectedPresetId && presetRefs.current[selectedPresetId]) {
       const element = presetRefs.current[selectedPresetId];
       if (element) {
-        // Small timeout to allow render paint
         setTimeout(() => {
           element.scrollIntoView({
             behavior: "smooth",
-            block: "center", // Center it for better visibility in a grid
+            block: "center",
           });
         }, 100);
       }
     }
-  }, [selectedPresetId, selectedCategory]); // Run when selection changes OR category switches
+  }, [selectedPresetId, selectedCategory]);
 
   const categoryIcons: Record<string, React.ElementType> = {
     LayoutGrid,
@@ -226,15 +295,14 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     selectedCategory === "all"
       ? CANVAS_PRESETS
       : selectedCategory === "community"
-        ? publicPresets || []
-        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+      ? publicPresets || []
+      : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
 
   const handlePresetSelect = (preset: CanvasPreset) => {
     setSelectedPresetId(preset.id);
     onCanvasPresetSelect?.(preset);
   };
 
-  // Modified PreviewCard to accept ref
   const PreviewCard = ({
     preset,
     isCustom = false,
@@ -246,35 +314,34 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
     return (
       <div
-        // NEW: Attach ref here
         ref={(el) => (presetRefs.current[preset.id] = el)}
         className="relative group"
       >
         <button
           onClick={() => handlePresetSelect(preset)}
           className={cn(
-            "w-full overflow-hidden transition-all duration-200 bg-card",
+            "w-full overflow-hidden transition-all duration-200 bg-card rounded-md",
             "border-2",
             isSelected
-              ? "border-primary shadow-[0_0_20px_hsl(50,100%,50%,0.4)]"
+              ? "border-primary shadow-[0_0_0_2px_rgba(var(--primary),0.2)]"
               : "border-border hover:border-primary/60"
           )}
         >
-          {/* Accurate Preview */}
+          {/* Use the new Exact Renderer */}
           <PresetPreview preset={preset} />
 
           {/* Selection Indicator */}
           {isSelected && (
-            <div className="absolute top-1 right-1 w-5 h-5 bg-primary flex items-center justify-center">
+            <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center shadow-md z-10">
               <Check
-                className="w-3 h-3 text-primary-foreground"
+                className="w-3.5 h-3.5 text-primary-foreground"
                 strokeWidth={3}
               />
             </div>
           )}
 
           {/* Label */}
-          <div className="px-2 py-1.5 bg-card border-t border-border">
+          <div className="px-3 py-2 bg-card/95 border-t border-border">
             <p className="text-[10px] font-bold text-foreground truncate tracking-wider text-left">
               {preset.name.toUpperCase()}
             </p>
@@ -283,44 +350,44 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
         {/* Action Buttons for Custom Presets */}
         {isCustom && (
-          <div className="absolute top-1 left-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
             {preset.publicId ? (
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-5 w-5 bg-card/90 border border-border hover:bg-destructive hover:text-destructive-foreground"
+                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-destructive hover:text-destructive-foreground rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (confirm("Unshare?")) onUnshareCanvasPreset?.(preset);
                 }}
               >
-                <CloudOff className="h-2.5 w-2.5" />
+                <CloudOff className="h-3 w-3" />
               </Button>
             ) : (
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-5 w-5 bg-card/90 border border-border hover:bg-primary hover:text-primary-foreground"
+                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-primary hover:text-primary-foreground rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   const name = prompt("Your name:") || "Anonymous";
                   onShareCanvasPreset?.(preset, name);
                 }}
               >
-                <Share2 className="h-2.5 w-2.5" />
+                <Share2 className="h-3 w-3" />
               </Button>
             )}
             {onDeleteCanvasPreset && (
               <Button
                 size="icon"
                 variant="ghost"
-                className="h-5 w-5 bg-card/90 border border-border hover:bg-destructive hover:text-destructive-foreground"
+                className="h-6 w-6 bg-background/80 backdrop-blur-sm border border-border hover:bg-destructive hover:text-destructive-foreground rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   onDeleteCanvasPreset(preset.id);
                 }}
               >
-                <Trash2 className="h-2.5 w-2.5" />
+                <Trash2 className="h-3 w-3" />
               </Button>
             )}
           </div>
@@ -343,10 +410,10 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-bold tracking-wider uppercase transition-all duration-150 whitespace-nowrap",
+                    "flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-bold tracking-wider uppercase transition-all duration-150 whitespace-nowrap rounded-sm",
                     "border-2",
                     isActive
-                      ? "bg-primary text-primary-foreground border-primary"
+                      ? "bg-primary text-primary-foreground border-primary shadow-sm"
                       : "bg-transparent text-muted-foreground border-border hover:border-primary hover:text-primary"
                   )}
                 >
@@ -368,17 +435,17 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
           {!showSaveInput ? (
             <button
               onClick={() => setShowSaveInput(true)}
-              className="w-full py-1.5 text-[10px] font-bold tracking-wider uppercase border-2 border-dashed border-primary/40 text-primary/70 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+              className="w-full py-2 text-[10px] font-bold tracking-wider uppercase border-2 border-dashed border-primary/40 text-primary/70 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all rounded-sm"
             >
-              + SAVE CURRENT
+              + SAVE CURRENT LOOK
             </button>
           ) : (
-            <div className="flex gap-2 p-2 bg-card border-2 border-primary">
+            <div className="flex gap-2 p-2 bg-muted/20 border-2 border-primary/50 rounded-sm">
               <Input
-                placeholder="Name..."
+                placeholder="Name your preset..."
                 value={savePresetName}
                 onChange={(e) => setSavePresetName(e.target.value)}
-                className="flex-1 h-7 text-[10px] font-mono border-2 border-border bg-background"
+                className="flex-1 h-7 text-[10px] font-mono border-border bg-background"
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && savePresetName.trim()) {
@@ -404,7 +471,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
                 disabled={!savePresetName.trim()}
                 className="h-7 px-3 text-[9px] font-bold"
               >
-                OK
+                SAVE
               </Button>
             </div>
           )}
@@ -414,10 +481,11 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
       {/* Custom Presets */}
       {customCanvasPresets && customCanvasPresets.length > 0 && (
         <div className="shrink-0">
-          <h4 className="text-[9px] font-bold mb-2 text-primary/80 tracking-widest uppercase">
-            YOUR PRESETS
+          <h4 className="text-[9px] font-bold mb-2 text-primary/80 tracking-widest uppercase flex items-center gap-2">
+            <span className="w-1 h-1 rounded-full bg-primary" />
+            YOUR SAVED PRESETS
           </h4>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {customCanvasPresets.map((preset) => (
               <PreviewCard key={preset.id} preset={preset} isCustom />
             ))}
@@ -427,14 +495,14 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
       {/* Loading */}
       {selectedCategory === "community" && isLoadingPublic && (
-        <div className="flex items-center justify-center py-8 border-2 border-dashed border-primary/30">
-          <Loader2 className="w-5 h-5 animate-spin text-primary" />
+        <div className="flex items-center justify-center py-12 border-2 border-dashed border-border rounded-lg bg-muted/10">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </div>
       )}
 
       {/* Presets Grid */}
-      <div className="flex-1 overflow-y-auto sharp-scrollbar min-h-0">
-        <div className="grid grid-cols-2 gap-2 pb-2">
+      <div className="flex-1 overflow-y-auto sharp-scrollbar min-h-0 pr-1">
+        <div className="grid grid-cols-2 gap-3 pb-4">
           {!(selectedCategory === "community" && isLoadingPublic) &&
             filteredCanvasPresets.map((preset) => (
               <PreviewCard key={preset.id} preset={preset} />
@@ -442,8 +510,11 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
         </div>
 
         {filteredCanvasPresets.length === 0 && !isLoadingPublic && (
-          <div className="text-center py-8 text-muted-foreground text-[10px] font-bold tracking-wider border-2 border-dashed border-border">
-            EMPTY
+          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground border-2 border-dashed border-border rounded-lg bg-muted/5">
+            <LayoutGrid className="w-8 h-8 mb-2 opacity-20" />
+            <p className="text-[10px] font-bold tracking-wider">
+              NO PRESETS FOUND
+            </p>
           </div>
         )}
       </div>
