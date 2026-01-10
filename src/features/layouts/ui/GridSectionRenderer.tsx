@@ -9,6 +9,8 @@ import { FileRenderer } from "@/features/canvas/ui/DraggableFileViewer";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { EmptyGridSection } from "@/features/layouts/ui/grid-section/EmptyGridSection";
 import { CameraGridSection } from "@/features/layouts/ui/grid-section/CameraGridSection";
+import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
+import { Video } from "lucide-react";
 
 export interface GridSectionRendererProps {
   section: CanvasSectionState;
@@ -53,15 +55,20 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> = ({
   backgroundEffect,
 }) => {
   const { content } = section;
+  const isPreview = usePreviewMode();
 
   switch (content.type) {
     case "color":
       const colorValue = content.color || blankCanvasColor;
-      const isGradientColor = colorValue?.includes('gradient');
+      const isGradientColor = colorValue?.includes("gradient");
       return (
         <div
           className="w-full h-full"
-          style={isGradientColor ? { background: colorValue } : { backgroundColor: colorValue }}
+          style={
+            isGradientColor
+              ? { background: colorValue }
+              : { backgroundColor: colorValue }
+          }
         />
       );
 
@@ -88,6 +95,18 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> = ({
       );
 
     case "camera":
+      // IMPORTANT FIX: Prevent starting heavy camera/AI graph in preview mode
+      if (isPreview) {
+        return (
+          <div className="w-full h-full bg-muted/30 flex flex-col items-center justify-center border-2 border-dashed border-white/10">
+            <Video className="w-8 h-8 text-white/20 mb-2" />
+            <span className="text-[10px] font-bold text-white/30 tracking-widest">
+              CAMERA FEED
+            </span>
+          </div>
+        );
+      }
+
       return (
         <CameraGridSection
           sectionId={section.id}

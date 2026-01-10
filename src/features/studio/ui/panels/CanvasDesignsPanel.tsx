@@ -254,10 +254,18 @@ const PreviewCard = memo(
   }: PreviewCardProps) => {
     return (
       <div ref={setRef} className="relative group">
-        <button
+        {/* CHANGED: Used div instead of button to avoid DOM nesting issues */}
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => onSelect(preset)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              onSelect(preset);
+            }
+          }}
           className={cn(
-            "w-full overflow-hidden transition-all duration-200 bg-card rounded-md",
+            "w-full overflow-hidden transition-all duration-200 bg-card rounded-md cursor-pointer",
             "border-2",
             isSelected
               ? "border-primary shadow-[0_0_0_2px_rgba(var(--primary),0.2)]"
@@ -280,7 +288,7 @@ const PreviewCard = memo(
               {preset.name.toUpperCase()}
             </p>
           </div>
-        </button>
+        </div>
 
         {isCustom && (
           <div className="absolute top-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
