@@ -94,21 +94,32 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
   const [mode, setMode] = useState<InteractionMode>("idle");
   const [resizeHandle, setResizeHandle] = useState<ResizeHandle | null>(null);
 
-  // Local state for smooth visual updates (pixels) - ONLY updated at end of interaction or prop change
+  // Calculate initial values from props to prevent animation from (0,0)
+  const initialPixels = containerSize.width > 0 && containerSize.height > 0
+    ? percentToPixels(position, containerSize)
+    : { x: 0, y: 0 };
+  const initialWidth = containerSize.width > 0 
+    ? (size.width / 100) * containerSize.width 
+    : 0;
+  const initialHeight = containerSize.height > 0 
+    ? (size.height / 100) * containerSize.height 
+    : 0;
+
+  // Local state for smooth visual updates (pixels) - initialized from props to prevent animation
   const [localTransform, setLocalTransform] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
+    x: initialPixels.x,
+    y: initialPixels.y,
+    width: initialWidth,
+    height: initialHeight,
     rotation,
   });
 
-  // Mutable ref for high-frequency updates during interaction
+  // Mutable ref for high-frequency updates during interaction - initialized from props
   const currentTransformRef = useRef({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
+    x: initialPixels.x,
+    y: initialPixels.y,
+    width: initialWidth,
+    height: initialHeight,
     rotation,
   });
 

@@ -125,11 +125,15 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
   }
 
   // 2. Logic for Standard Canvas / PIP Background
-  // If mode is 'canvas' OR we are in PIP mode (but screen share is technically 'off'), we show the background.
-  if (
-    screenShareMode === "canvas" ||
-    (layoutMode === "pip" && screenShareMode === "off")
-  ) {
+  // Show background for:
+  // - Mode is 'canvas' (explicit canvas mode)
+  // - PIP mode where we need a background behind the camera
+  // - Solo mode still shows camera fullscreen (no background needed)
+  const isCanvasMode = screenShareMode === "canvas";
+  const isPipWithBackground = layoutMode === "pip";
+  const shouldShowBackground = isCanvasMode || isPipWithBackground;
+
+  if (shouldShowBackground) {
     // Handle Image Background
     if (backgroundEffect === "image" && backgroundImageUrl) {
       return (
