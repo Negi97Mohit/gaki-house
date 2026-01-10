@@ -1,4 +1,5 @@
-import React, { useRef, useLayoutEffect } from "react";
+import React, { useRef, useLayoutEffect, useState, useCallback } from "react";
+import { motion, useDragControls } from "framer-motion";
 import { useDynamicLayout } from "./DynamicLayoutContext";
 import { cn } from "@/shared/lib/utils";
 
@@ -9,6 +10,7 @@ export interface EditableTextProps {
   className?: string;
   multiline?: boolean;
   style?: React.CSSProperties;
+  draggable?: boolean;
 }
 
 export const EditableText: React.FC<EditableTextProps> = ({
@@ -18,36 +20,37 @@ export const EditableText: React.FC<EditableTextProps> = ({
   className,
   multiline = false,
   style,
+  draggable = true,
 }) => {
-  const { layout, editor, colors, controlsVisible } = useDynamicLayout();
+  const { layout, editor, colors } = useDynamicLayout();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const dragControls = useDragControls();
+  const [isDragging, setIsDragging] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const uniqueId = `${sectionId}_${fieldId}`;
   const value =
     layout.customSectionData?.[sectionId]?.[fieldId] ?? defaultValue;
 
-  // CHANGED: Passed `style` now overrides the default color
   const combinedStyle = editor.getFieldStyle(uniqueId, {
     color: colors.textColor,
     ...style,
   });
 
-  // Check if this specific field is currently selected in the editor
   const isFocused = editor.focusedField?.id === uniqueId;
 
-  // Auto-resize logic for textarea
+  // Get stored position or default to 0,0
+  const storedPosition = layout.customSectionData?.[sectionId]?.[`${fieldId}_position`] || { x: 0, y: 0 };
+
   useLayoutEffect(() => {
     if (multiline && textareaRef.current) {
-      // Reset height to auto to correctly calculate new scrollHeight
       textareaRef.current.style.height = "auto";
       const scrollHeight = textareaRef.current.scrollHeight;
       textareaRef.current.style.height = `${scrollHeight}px`;
 
-      // Check if we've hit the max-height limit defined in CSS/Style
       const computedStyle = window.getComputedStyle(textareaRef.current);
       const maxHeight = parseInt(computedStyle.maxHeight);
 
-      // If content exceeds max-height, show scrollbar, otherwise hide it
       if (maxHeight && scrollHeight > maxHeight) {
         textareaRef.current.style.overflowY = "auto";
       } else {
@@ -56,32 +59,84 @@ export const EditableText: React.FC<EditableTextProps> = ({
     }
   }, [value, multiline, style]);
 
-  const commonProps = {
+  const handleDragEnd = useCallback((_: any, info: { offset: { x: number; y: number } }) => {
+    setIsDragging(false);
+    // Store new position
+    const newPosition = {
+      x: storedPosition.x + info.offset.x,
+      y: storedPosition.y + info.offset.y,
+    };
+    editor.handleUpdateText(sectionId, `${fieldId}_position`, newPosition as any);
+  }, [editor, sectionId, fieldId, storedPosition]);
+
+  const handleDoubleClick = useCallback(() => {
+    setIsEditing(true);
+  }, []);
+
+  const handleBlur = useCallback(() => {
+    setIsEditing(false);
+  }, []);
+
+  const commonInputProps = {
     value,
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       editor.handleUpdateText(sectionId, fieldId, e.target.value),
     onFocus: (e: React.FocusEvent<HTMLElement>) =>
       editor.handleFocus(uniqueId, e),
-    // STOP PROPAGATION HERE: Prevents the parent card from receiving the pointer down event
-    onPointerDown: (e: React.PointerEvent) => e.stopPropagation(),
+    onBlur: handleBlur,
     style: combinedStyle,
     className: cn(
-      "bg-transparent border-none w-full pointer-events-auto transition-all duration-200 rounded-sm px-1 -mx-1",
-      // Remove browser default outline
+      "bg-transparent border-none w-full transition-all duration-200 rounded-sm px-1 -mx-1",
       "focus:outline-none",
-      // Apply dashed border if focused
       isFocused && "ring-1 ring-dashed ring-primary/50 bg-white/5",
-      // Hide resize handle always for multiline
-      multiline && "resize-none",
-      // Default hidden scrollbar (handled dynamically above for overflow)
-      multiline && "overflow-hidden",
+      multiline && "resize-none overflow-hidden",
       className
     ),
   };
 
-  if (multiline) {
-    return <textarea ref={textareaRef} rows={1} {...commonProps} />;
+  if (!draggable) {
+    // Non-draggable version (original behavior)
+    if (multiline) {
+      return <textarea ref={textareaRef} rows={1} {...commonInputProps} />;
+    }
+    return <input {...commonInputProps} />;
   }
 
-  return <input {...commonProps} />;
+  // Draggable version
+  return (
+    <motion.div
+      drag={!isEditing}
+      dragControls={dragControls}
+      dragMomentum={false}
+      dragElastic={0}
+      onDragStart={() => setIsDragging(true)}
+      onDragEnd={handleDragEnd}
+      onDoubleClick={handleDoubleClick}
+      initial={{ x: storedPosition.x, y: storedPosition.y }}
+      animate={{ x: storedPosition.x, y: storedPosition.y }}
+      whileDrag={{ scale: 1.02, zIndex: 100 }}
+      className={cn(
+        "inline-block pointer-events-auto",
+        !isEditing && "cursor-grab active:cursor-grabbing",
+        isDragging && "z-50"
+      )}
+      style={{ position: "relative" }}
+    >
+      {multiline ? (
+        <textarea
+          ref={textareaRef}
+          rows={1}
+          {...commonInputProps}
+          onPointerDown={(e) => isEditing && e.stopPropagation()}
+          className={cn(commonInputProps.className, isEditing ? "cursor-text" : "cursor-grab pointer-events-none")}
+        />
+      ) : (
+        <input
+          {...commonInputProps}
+          onPointerDown={(e) => isEditing && e.stopPropagation()}
+          className={cn(commonInputProps.className, isEditing ? "cursor-text" : "cursor-grab pointer-events-none")}
+        />
+      )}
+    </motion.div>
+  );
 };
