@@ -12,6 +12,7 @@ interface SceneState {
 
     backgroundEffect: 'none' | 'blur' | 'image';
     backgroundImageUrl: string | undefined;
+    blankCanvasColor: string;
     videoFilter: string | undefined;
     captionStyle: CaptionStyle;
     dynamicStyle: any;
@@ -66,6 +67,7 @@ interface SceneState {
 
     setBackgroundEffect: (effect: 'none' | 'blur' | 'image') => void;
     setBackgroundImageUrl: (url: string | undefined) => void;
+    setBlankCanvasColor: (color: string) => void;
     setVideoFilter: (filter: string | undefined) => void;
     setCaptionStyle: (style: CaptionStyle) => void;
     setDynamicStyle: (style: any) => void;
@@ -123,6 +125,7 @@ export const useSceneStore = create<SceneState>((set) => ({
 
     backgroundEffect: 'none',
     backgroundImageUrl: undefined,
+    blankCanvasColor: "#000000",
     videoFilter: undefined,
     captionStyle: {} as CaptionStyle,
     dynamicStyle: {},
@@ -150,6 +153,7 @@ export const useSceneStore = create<SceneState>((set) => ({
 
     setBackgroundEffect: (backgroundEffect) => set({ backgroundEffect }),
     setBackgroundImageUrl: (backgroundImageUrl) => set({ backgroundImageUrl }),
+    setBlankCanvasColor: (blankCanvasColor) => set({ blankCanvasColor }),
     setVideoFilter: (videoFilter) => set({ videoFilter }),
     setCaptionStyle: (captionStyle) => set({ captionStyle }),
     setDynamicStyle: (dynamicStyle) => set({ dynamicStyle }),

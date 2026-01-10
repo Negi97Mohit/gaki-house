@@ -109,6 +109,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     canvasLayout, setCanvasLayout,
     backgroundEffect, setBackgroundEffect,
     backgroundImageUrl, setBackgroundImageUrl,
+    blankCanvasColor, setBlankCanvasColor,
     videoFilter, setVideoFilter,
     captionStyle, setCaptionStyle,
     dynamicStyle,
@@ -212,7 +213,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     isAudioOn, isVideoOn, audioDevices, videoDevices, selectedAudioDevice, selectedVideoDevice, screenShareMode,
     layoutMode, cameraShape, splitRatio, pipPosition, pipSize,
     customMaskUrl, activeOverlays, textOverlays, fileOverlays, browserOverlays,
-    canvasLayout, backgroundEffect, backgroundImageUrl, videoFilter, captionStyle,
+    canvasLayout, backgroundEffect, backgroundImageUrl, blankCanvasColor, videoFilter, captionStyle,
     dynamicStyle, isAiModeEnabled, captionsEnabled, previousScene,
     // Add new props to activeScene
     pipRotation, pipBorder, pipShadow, cameraAspectRatio, customAspectRatio,
@@ -225,7 +226,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     isAudioOn, isVideoOn, audioDevices, videoDevices, selectedAudioDevice, selectedVideoDevice, screenShareMode,
     layoutMode, cameraShape, splitRatio, pipPosition, pipSize,
     customMaskUrl, activeOverlays, textOverlays, fileOverlays, browserOverlays,
-    canvasLayout, backgroundEffect, backgroundImageUrl, videoFilter, captionStyle,
+    canvasLayout, backgroundEffect, backgroundImageUrl, blankCanvasColor, videoFilter, captionStyle,
     dynamicStyle, isAiModeEnabled, captionsEnabled, previousScene,
     // Add new dependencies
     pipRotation, pipBorder, pipShadow, cameraAspectRatio, customAspectRatio,
@@ -259,6 +260,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     if (newScene.canvasLayout !== activeScene.canvasLayout) setCanvasLayout(newScene.canvasLayout ?? null);
     if (newScene.backgroundEffect !== activeScene.backgroundEffect) setBackgroundEffect(newScene.backgroundEffect ?? "none");
     if (newScene.backgroundImageUrl !== activeScene.backgroundImageUrl) setBackgroundImageUrl(newScene.backgroundImageUrl ?? null);
+    if (newScene.blankCanvasColor !== activeScene.blankCanvasColor) setBlankCanvasColor(newScene.blankCanvasColor ?? "#000000");
     if (newScene.videoFilter !== activeScene.videoFilter) setVideoFilter(newScene.videoFilter ?? "none");
     if (newScene.captionStyle !== activeScene.captionStyle && newScene.captionStyle) setCaptionStyle(newScene.captionStyle);
     if (newScene.isAiModeEnabled !== activeScene.isAiModeEnabled) setAiModeEnabled(newScene.isAiModeEnabled ?? false);
@@ -347,6 +349,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       case 'videoFilter': setVideoFilter(value); break;
       case 'backgroundEffect': setBackgroundEffect(value); break;
       case 'backgroundImageUrl': setBackgroundImageUrl(value); break;
+      case 'blankCanvasColor': setBlankCanvasColor(value); break;
       // END ADDED CASES
 
       default: console.warn(`updateSceneProperty: Unhandled key ${String(key)}`);
