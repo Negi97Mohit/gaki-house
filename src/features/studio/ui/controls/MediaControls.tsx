@@ -28,8 +28,8 @@ import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 
 interface MediaControlsProps {
-  onStartStream?: (id?: string) => void;
-  onStopStream?: (id?: string) => void;
+  onStartStream?: (url: string, key: string) => void;
+  onStopStream?: () => void;
   onToggleRecord?: () => void;
   onStreamSettingsSave?: (url: string, key: string) => void;
   streamStatus?: string;
