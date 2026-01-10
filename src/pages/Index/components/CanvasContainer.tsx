@@ -294,7 +294,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     activeScene, setAudioOn, setVideoOn, setSelectedAudioDevice, setSelectedVideoDevice, setScreenShareMode,
     setLayoutMode, setCameraShape, setSplitRatio, setPipPosition,
     setCustomMaskUrl, setActiveOverlays, setTextOverlays, setFileOverlays, setBrowserOverlays,
-    setCanvasLayout, setBackgroundEffect, setBackgroundImageUrl, setVideoFilter, setCaptionStyle,
+    setCanvasLayout, setBackgroundEffect, setBackgroundImageUrl, setBlankCanvasColor, setVideoFilter, setCaptionStyle,
     setAiModeEnabled, setCaptionsEnabled,
     // Add new dependencies
     setPipRotation, setPipBorder, setPipShadow, setCameraAspectRatio, setCustomAspectRatio,
