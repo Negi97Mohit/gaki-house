@@ -32,6 +32,9 @@ interface ForegroundUserLayerProps {
   pipShadow?: { blur: number; color: string };
   customMaskUrl?: string;
   sidebarProps?: any;
+
+  // FIX: Add isCameraOn prop to control visibility
+  isCameraOn?: boolean;
 }
 
 export const ForegroundUserLayer: React.FC<ForegroundUserLayerProps> = ({
@@ -52,6 +55,8 @@ export const ForegroundUserLayer: React.FC<ForegroundUserLayerProps> = ({
   pipShadow,
   customMaskUrl,
   sidebarProps,
+  // FIX: Default to true for backward compatibility, but parent should pass this
+  isCameraOn = true,
 }) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -126,6 +131,12 @@ export const ForegroundUserLayer: React.FC<ForegroundUserLayerProps> = ({
     containerSize,
     sidebarProps,
   ]);
+
+  // FIX: Early return if camera is off.
+  // This unmounts the canvas, ensuring no stale shadow/mask remains.
+  if (!isCameraOn) {
+    return null;
+  }
 
   const isPip = layoutMode === "pip";
 

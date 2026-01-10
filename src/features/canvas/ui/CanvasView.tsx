@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from "react";
 import { Rnd } from "react-rnd";
 import { useTheme } from "next-themes";
 import { cn } from "@/shared/lib/utils";
-import { useShallow } from "zustand/react/shallow"; // Import useShallow
+import { useShallow } from "zustand/react/shallow";
 import {
   LayoutMode,
   CameraShape,
@@ -51,7 +51,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const sceneRef = useRef<HTMLDivElement>(null);
   const snapLinesRef = useRef<SnapLinesRef>(null);
 
-  // 1. Optimized Store Selectors (Prevents unnecessary re-renders)
+  // 1. Optimized Store Selectors
   const { viewport, setViewport, sceneSize, containerSize } = useCanvasStore(
     useShallow((state) => ({
       viewport: state.viewport,
@@ -92,7 +92,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   // Resize Logic
   useCanvasResize(canvasContainerRef, sceneRef, props.isFullscreen);
 
-  // Canvas Dimension Sync (fixes streaming size issues)
+  // Canvas Dimension Sync
   useCanvasDimensionSync({
     canvasRef: props.canvasRef,
     sceneSize,
@@ -321,7 +321,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           sidebarProps={props.sidebarProps}
           screenStream={screenStream}
           cameraStream={cameraStream}
-          // FIX: Use props.blankCanvasColor to correctly pass the background color
           blankCanvasColor={props.blankCanvasColor}
         />
 
@@ -675,6 +674,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                     pipShadow={props.pipShadow}
                     customMaskUrl={props.customMaskUrl}
                     sidebarProps={props.sidebarProps}
+                    isCameraOn={isVideoOn} // FIX: Pass camera state to handle unmounting
                   />
                 )}
 
