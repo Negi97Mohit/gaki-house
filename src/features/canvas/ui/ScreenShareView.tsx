@@ -124,14 +124,17 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
     );
   }
 
-  // 2. Logic for Standard Canvas / PIP Background
-  // Show background for:
-  // - Mode is 'canvas' (explicit canvas mode)
-  // - PIP mode where we need a background behind the camera
-  // - Solo mode still shows camera fullscreen (no background needed)
-  const isCanvasMode = screenShareMode === "canvas";
-  const isPipWithBackground = layoutMode === "pip";
-  const shouldShowBackground = isCanvasMode || isPipWithBackground;
+  // 2. Screen Share Mode
+  if (screenShareMode === "screen" && screenStream) {
+    return <VideoPlayer stream={screenStream} />;
+  }
+
+  // 3. Logic for Standard Canvas / PIP Background
+  // - 'canvas' mode should show background
+  // - 'pip' layout needs a background behind the camera even if screenShareMode is 'off'
+  const effectiveColor = blankCanvasColor || "#000000";
+  const isGradientBg = effectiveColor.includes("gradient");
+  const shouldShowBackground = screenShareMode === "canvas" || layoutMode === "pip";
 
   if (shouldShowBackground) {
     // Handle Image Background
@@ -144,26 +147,12 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
       );
     }
 
-    // Handle Color Background (Gradient or Solid)
-    // Fallback to black if blankCanvasColor is undefined to prevent transparent/empty div
-    const effectiveColor = blankCanvasColor || "#000000";
-    const isGradientBg = effectiveColor.includes("gradient");
-
     return (
       <div
         className="w-full h-full"
-        style={
-          isGradientBg
-            ? { background: effectiveColor }
-            : { backgroundColor: effectiveColor }
-        }
+        style={isGradientBg ? { background: effectiveColor } : { backgroundColor: effectiveColor }}
       />
     );
-  }
-
-  // 3. Screen Share Mode
-  if (screenShareMode === "screen" && screenStream) {
-    return <VideoPlayer stream={screenStream} />;
   }
 
   // 4. Default / Empty State
