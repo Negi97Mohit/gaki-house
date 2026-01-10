@@ -197,8 +197,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             {sections.map((section) => (
               <Tooltip key={section.id}>
                 <TooltipTrigger asChild>
-                  <button
-                    onClick={() => setActiveSection(section.id)}
+                <button
+                    onClick={() => setActiveSection(prev => prev === section.id ? null : section.id)}
                     className={cn(
                       "w-full h-14 flex flex-col items-center justify-center transition-all duration-150 relative group",
                       "font-mono text-[9px] tracking-wider border-b border-border",
