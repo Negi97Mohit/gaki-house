@@ -90,6 +90,12 @@ export const useEditorOrchestrator = () => {
       sceneManager.updateSceneProperty("isVideoOn", !activeScene?.isVideoOn),
     onToggleBroadcast: broadcast.toggleBroadcast,
     onToggleSmartSwitch: broadcast.toggleSmartSwitch,
+    onToggleScreenShare: () => {
+      const { screenShareMode, setScreenShareMode } = require("@/stores/media.store").useMediaStore.getState();
+      setScreenShareMode(screenShareMode === "off" ? "screen" : "off");
+    },
+    onAddScene: sceneManager.handleAddScene,
+    onToggleGridLayout: () => ui.setIsSceneTabsHidden((prev) => !prev),
     onAddText: overlayHandlers.handleAddTextOverlay,
     onOpenAssetLibrary: () => ui.setShowAnimationLibrary(true),
     onToggleDrawing: drawing.toggleDrawing,

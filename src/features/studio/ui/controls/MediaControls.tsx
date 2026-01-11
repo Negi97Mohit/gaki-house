@@ -294,7 +294,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       </ShortcutTooltip>
 
       <DropdownMenu>
-        <ShortcutTooltip label="Share Screen or Canvas">
+        <ShortcutTooltip label="Share Screen or Canvas" shortcut="screenShare">
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
