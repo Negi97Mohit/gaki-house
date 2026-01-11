@@ -96,7 +96,8 @@ export const getAllPropsForScene = (
       const updatedStyle = {
         ...scene.captionStyle,
         position: layout.position ?? scene.captionStyle.position,
-        width: layout.size?.width ?? scene.captionStyle.width,
+        // Check for layout.width (direct) OR layout.size.width (nested)
+        width: layout.width ?? layout.size?.width ?? scene.captionStyle.width,
       };
       callbacks.handleSetCaptionStyle(updatedStyle);
     },

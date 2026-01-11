@@ -160,6 +160,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     captionStyle,
     setCaptionStyle,
     dynamicStyle,
+    setDynamicStyle,
     isAiModeEnabled,
     setAiModeEnabled,
     captionsEnabled,
@@ -243,6 +244,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       captionStyle: state.captionStyle,
       setCaptionStyle: state.setCaptionStyle,
       dynamicStyle: state.dynamicStyle,
+      setDynamicStyle: state.setDynamicStyle,
       isAiModeEnabled: state.isAiModeEnabled,
       setAiModeEnabled: state.setAiModeEnabled,
       captionsEnabled: state.captionsEnabled,
@@ -496,6 +498,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         newScene.captionStyle
       )
         setCaptionStyle(newScene.captionStyle);
+      if (newScene.dynamicStyle !== activeScene.dynamicStyle)
+        setDynamicStyle(newScene.dynamicStyle ?? "none");
       if (newScene.isAiModeEnabled !== activeScene.isAiModeEnabled)
         setAiModeEnabled(newScene.isAiModeEnabled ?? false);
       if (newScene.captionsEnabled !== activeScene.captionsEnabled)
@@ -573,6 +577,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       setCaptionStyle,
       setAiModeEnabled,
       setCaptionsEnabled,
+      setDynamicStyle,
       // Add new dependencies
       setPipRotation,
       setPipBorder,
@@ -646,6 +651,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           break;
         case "captionStyle":
           setCaptionStyle(value);
+          break;
+        case "dynamicStyle":
+          setDynamicStyle(value);
           break;
         case "isAiModeEnabled":
           setAiModeEnabled(value);
@@ -750,6 +758,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       setTextOverlays,
       setCanvasLayout,
       setCaptionStyle,
+      setDynamicStyle,
       setAiModeEnabled,
       setCaptionsEnabled,
       // Add new dependencies

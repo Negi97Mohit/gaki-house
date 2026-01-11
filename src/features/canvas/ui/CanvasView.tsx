@@ -267,8 +267,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     textShadow: props.liveCaptionStyle.textShadow,
   };
 
-  const captionWidth = 600;
-  const captionHeight = 100;
+  // Allow width to be dynamic based on style, default to ~50% or 600px equivalent
+  const captionWidthPercent = props.liveCaptionStyle.width || 50;
+  const captionWidth = (sceneSize.width * captionWidthPercent) / 100;
+  const captionHeight = "auto"; // Allow height to grow with text
 
   return (
     <div
@@ -332,18 +334,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
               style={{ zIndex: "var(--z-caption)" }}
             >
               <Rnd
-                key={sceneSize.width}
-                default={{
-                  x:
-                    (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
-                    captionWidth / 2,
-                  y:
-                    (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
-                    captionHeight / 2,
+                key={`${sceneSize.width}-${captionWidthPercent}`}
+                size={{
                   width: captionWidth,
-                  height: captionHeight,
+                  height: "auto",
                 }}
                 position={{
                   x:
@@ -353,18 +347,47 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
                       100 -
-                    captionHeight / 2,
+                    50, // Approx vertical centering offset since height is auto
                 }}
-                enableResizing={false}
-                className="pointer-events-auto"
+                enableResizing={{
+                  top: false,
+                  right: true,
+                  bottom: false,
+                  left: true,
+                  topRight: false,
+                  bottomRight: false,
+                  bottomLeft: false,
+                  topLeft: false,
+                }}
+                className="pointer-events-auto border-2 border-transparent hover:border-primary/50 transition-colors rounded-lg"
                 style={{ position: "absolute" }}
                 onDragStop={(e, d) => {
+                  const rect = d.node.getBoundingClientRect();
                   const centerX = d.x + captionWidth / 2;
-                  const centerY = d.y + captionHeight / 2;
+                  const centerY = d.y + rect.height / 2;
+
                   const newXPercent = (centerX / sceneSize.width) * 100;
                   const newYPercent = (centerY / sceneSize.height) * 100;
 
                   props.onCaptionLayoutChange({
+                    position: { x: newXPercent, y: newYPercent },
+                  });
+                }}
+                onResizeStop={(e, direction, ref, delta, position) => {
+                  const newWidthPx = parseInt(ref.style.width, 10);
+                  const newWidthPercent = (newWidthPx / sceneSize.width) * 100;
+
+                  // Update position (center) based on new width and new top-left (position)
+                  const newCenterX = position.x + newWidthPx / 2;
+                  const newXPercent = (newCenterX / sceneSize.width) * 100;
+
+                  // Maintain Y center
+                  const rect = ref.getBoundingClientRect();
+                  const newCenterY = position.y + rect.height / 2;
+                  const newYPercent = (newCenterY / sceneSize.height) * 100;
+
+                  props.onCaptionLayoutChange({
+                    width: newWidthPercent,
                     position: { x: newXPercent, y: newYPercent },
                   });
                 }}

@@ -46,6 +46,7 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
 
   const combinedStyle: React.CSSProperties = {
     backgroundColor: captionStyle.backgroundColor,
+    transform: `rotate(${captionStyle.rotation || 0}deg)`,
   };
   if (captionStyle.border) {
     combinedStyle.border = `${captionStyle.borderWidth}px solid ${captionStyle.borderColor}`;
