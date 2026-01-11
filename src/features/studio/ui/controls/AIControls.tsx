@@ -6,6 +6,8 @@ import { useSceneStore } from "@/stores/scene.store";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "@/stores/ui.store";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
+import { AIChatbot } from "@/features/ai-assistant/ui/AIChatbot";
+import { cn } from "@/shared/lib/utils";
 
 interface AIControlsProps {
     onAiCommandSubmit: (text: string, targetId: string | null) => void;
@@ -32,31 +34,37 @@ export const AIControls: React.FC<AIControlsProps> = ({
         setCaptionsEnabled: state.setCaptionsEnabled,
     })));
 
-    const isFullscreen = useUiStore(s => s.isFullscreen);
+    const { isFullscreen, isChatbotOpen, setChatbotOpen } = useUiStore(useShallow(s => ({
+        isFullscreen: s.isFullscreen,
+        isChatbotOpen: s.isChatbotOpen,
+        setChatbotOpen: s.setChatbotOpen
+    })));
+
+    const handleAIClick = () => {
+        setChatbotOpen(prev => !prev);
+    };
 
     return (
-        <AICommandPopover
-            onSubmit={onAiCommandSubmit}
-            isProcessing={isAiProcessing}
-            activeOverlays={activeOverlays}
-            isFullscreen={isFullscreen}
-            isAiModeEnabled={isAiModeEnabled}
-            onAiModeToggle={setAiModeEnabled}
-            captionsEnabled={captionsEnabled}
-            onCaptionsToggle={setCaptionsEnabled}
-            portalContainer={portalContainer}
-            hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
-        >
+        <>
             <ShortcutTooltip label="AI Assistant" shortcut="aiAssistant">
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 text-primary hover:text-primary transition-all duration-200"
+                    className={cn(
+                        "rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200",
+                        isChatbotOpen && "bg-primary/15 text-primary"
+                    )}
                     aria-label="Open AI Assistant"
+                    onClick={handleAIClick}
                 >
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Sparkles className="w-3.5 h-3.5 text-primary" />
                 </Button>
             </ShortcutTooltip>
-        </AICommandPopover>
+            
+            <AIChatbot 
+                isOpen={isChatbotOpen} 
+                onClose={() => setChatbotOpen(false)} 
+            />
+        </>
     );
 };
