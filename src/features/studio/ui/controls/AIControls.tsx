@@ -51,10 +51,10 @@ export const AIControls: React.FC<AIControlsProps> = ({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-10 w-10 hover:bg-background/60 text-yellow-500 hover:text-yellow-600"
+                    className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 text-primary hover:text-primary transition-all duration-200"
                     aria-label="Open AI Assistant"
                 >
-                    <Sparkles className="w-4 h-4" />
+                    <Sparkles className="w-3.5 h-3.5" />
                 </Button>
             </ShortcutTooltip>
         </AICommandPopover>
