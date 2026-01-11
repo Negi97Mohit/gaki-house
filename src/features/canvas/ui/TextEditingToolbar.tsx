@@ -65,7 +65,10 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       <div
         ref={toolbarRef}
         className={cn(
-          "absolute pointer-events-auto flex items-center gap-1 p-1.5 bg-background/95 backdrop-blur-md border border-border/50 rounded-xl shadow-xl isolate",
+          "absolute pointer-events-auto flex items-center gap-0.5 px-2 py-1",
+          "bg-background/70 dark:bg-background/50 backdrop-blur-2xl",
+          "border border-border/20 dark:border-white/10 rounded-2xl",
+          "shadow-2xl shadow-black/10 dark:shadow-black/30 isolate",
           isReady
             ? "animate-in fade-in zoom-in-95 duration-200"
             : "opacity-0 pointer-events-none"
@@ -78,25 +81,28 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
       >
+        {/* Subtle inner glow */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
+        
         <Button
           variant={showDesigns ? "secondary" : "ghost"}
           size="icon"
-          className="h-8 w-8 shrink-0"
+          className="relative h-6 w-6 shrink-0 rounded-xl hover:bg-foreground/5 dark:hover:bg-white/10"
           onClick={() => setShowDesigns(!showDesigns)}
           title="Text Designs & Animations"
         >
-          <Sparkles className="w-4 h-4 text-indigo-400" />
+          <Sparkles className="w-3 h-3 text-primary/80" />
         </Button>
 
-        <div className="w-px h-5 bg-border mx-0.5" />
+        <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
 
         <FontControls overlay={overlay} onStyleChange={onStyleChange} />
 
-        <div className="w-px h-5 bg-border mx-0.5" />
+        <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
 
         <ColorControls overlay={overlay} onStyleChange={onStyleChange} />
 
-        <div className="w-px h-5 bg-border mx-0.5" />
+        <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
 
         <TextFormattingControls
           overlay={overlay}
@@ -105,11 +111,11 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
 
         {overlay.style.layers && (
           <>
-            <div className="w-px h-5 bg-border mx-0.5" />
+            <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 px-2 text-[10px] text-destructive hover:bg-destructive/10"
+              className="relative h-5 px-1.5 text-[9px] text-destructive/80 hover:text-destructive hover:bg-destructive/10 rounded-lg"
               onClick={() => onStyleChange(overlay.id, { layers: null })}
               title="Remove Design"
             >
@@ -118,14 +124,14 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           </>
         )}
 
-        <div className="w-px h-5 bg-border mx-0.5" />
+        <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
 
         <Button
           variant="ghost"
           size="icon"
           className={cn(
-            "h-8 w-8 shrink-0",
-            overlay.layout.isBehindUser && "bg-primary/20 text-primary"
+            "relative h-6 w-6 shrink-0 rounded-xl hover:bg-foreground/5 dark:hover:bg-white/10",
+            overlay.layout.isBehindUser && "bg-primary/15 text-primary"
           )}
           title={
             overlay.layout.isBehindUser ? "Bring to Front" : "Send Behind User"
@@ -136,7 +142,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
             })
           }
         >
-          <Layers className="w-4 h-4" />
+          <Layers className="w-3 h-3" />
         </Button>
       </div>
 
