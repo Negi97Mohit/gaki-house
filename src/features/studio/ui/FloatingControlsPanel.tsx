@@ -185,26 +185,14 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
       {/* Content Area */}
       <div className="relative flex flex-col w-[380px] h-full">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border/10 dark:border-white/5">
-          <div className="flex items-center gap-2.5">
-            {activeTab && (
-              <>
-                <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <activeTab.icon className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold tracking-tight">{activeTab.label}</h3>
-                  <p className="text-[9px] text-muted-foreground/50">Customize your canvas</p>
-                </div>
-              </>
-            )}
-          </div>
+        {/* Minimal Header - just close button */}
+        <div className="flex items-center justify-between px-3 py-2 border-b border-border/10 dark:border-white/5">
+          <span className="text-[10px] font-medium text-muted-foreground/70">{activeTab?.label}</span>
           <button
             onClick={() => setIsOpen()}
-            className="w-6 h-6 flex items-center justify-center rounded-lg text-muted-foreground/50 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5 transition-all"
+            className="w-5 h-5 flex items-center justify-center rounded-lg text-muted-foreground/40 hover:text-foreground hover:bg-foreground/5 transition-all"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-3 h-3" />
           </button>
         </div>
 
