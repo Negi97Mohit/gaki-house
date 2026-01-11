@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Send, X, Bot, User, RefreshCw, Sparkles, MessageSquare, Square, Check, Copy } from "lucide-react";
+import { Send, X, Bot, User, Sparkles, MessageSquare, Square, Check, Copy, ChevronDown } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { ScrollArea } from "@/shared/ui/scroll-area";
@@ -39,19 +39,19 @@ const CodeBlock = ({ inline, className, children, ...props }: any) => {
 
     if (!inline && match) {
         return (
-            <div className="relative group my-2 rounded-md overflow-hidden bg-muted/50 border border-border/50">
-                <div className="flex items-center justify-between px-3 py-1.5 bg-muted/80 border-b border-border/50 text-xs text-muted-foreground">
-                    <span>{match[1]}</span>
+            <div className="relative group my-2 rounded-xl overflow-hidden bg-foreground/[0.03] dark:bg-white/[0.03] border border-border/10">
+                <div className="flex items-center justify-between px-3 py-1.5 bg-foreground/[0.02] dark:bg-white/[0.02] border-b border-border/10 text-[10px] text-muted-foreground/60">
+                    <span className="uppercase tracking-wider font-medium">{match[1]}</span>
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6 rounded-md hover:bg-background/80"
+                        className="h-5 w-5 rounded-lg hover:bg-foreground/5"
                         onClick={handleCopy}
                     >
-                        {isCopied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+                        {isCopied ? <Check className="h-2.5 w-2.5 text-green-500" /> : <Copy className="h-2.5 w-2.5" />}
                     </Button>
                 </div>
-                <div className="p-3 overflow-x-auto text-sm font-mono">
+                <div className="p-3 overflow-x-auto text-[11px] font-mono leading-relaxed">
                     {children}
                 </div>
             </div>
@@ -59,7 +59,7 @@ const CodeBlock = ({ inline, className, children, ...props }: any) => {
     }
 
     return (
-        <code className={cn("bg-muted/50 px-1.5 py-0.5 rounded text-sm font-mono", className)} {...props}>
+        <code className={cn("bg-foreground/[0.04] dark:bg-white/[0.06] px-1.5 py-0.5 rounded-md text-[11px] font-mono", className)} {...props}>
             {children}
         </code>
     );
@@ -72,7 +72,6 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
     const [models, setModels] = useState<Model[]>([]);
     const [selectedModel, setSelectedModel] = useState<string>("swiss-ai/apertus-8b-instruct");
     const scrollAreaRef = useRef<HTMLDivElement>(null);
-    // const { toast } = useToast(); -> Removed
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
@@ -81,14 +80,12 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
     const API_KEY = import.meta.env.VITE_PUBLIC_AI_KEY;
     const API_BASE_URL = "/api/apertus";
 
-    // Initial fetch on open
     useEffect(() => {
         if (isOpen) {
             fetchModels();
         }
     }, [isOpen]);
 
-    // Auto-focus input when opened or after response
     useEffect(() => {
         if (isOpen && !isLoading) {
             setTimeout(() => {
@@ -101,7 +98,6 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
         scrollToBottom();
     }, [messages]);
 
-    // Click outside to close
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -122,7 +118,6 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
         };
     }, [isOpen, onClose]);
 
-    // Handle Escape key
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Escape" && isOpen) {
@@ -137,7 +132,6 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [isOpen, isLoading, onClose]);
-
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -278,61 +272,88 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
         <div
             ref={chatbotRef}
             data-no-pip-gesture
-            className="fixed top-20 right-4 w-80 sm:w-96 max-h-[600px] h-[calc(100vh-120px)] bg-background/95 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden animate-in fade-in slide-in-from-top-5 duration-300"
+            className={cn(
+                "fixed top-16 right-4 w-80 sm:w-[340px] max-h-[520px] h-[calc(100vh-100px)]",
+                "bg-background/70 dark:bg-background/50 backdrop-blur-2xl",
+                "border border-border/20 dark:border-white/10 rounded-2xl",
+                "shadow-2xl shadow-black/10 dark:shadow-black/40",
+                "flex flex-col z-50 overflow-hidden",
+                "animate-in fade-in slide-in-from-top-3 duration-300"
+            )}
             onWheel={stopPropagation}
             onTouchMove={stopPropagation}
             onTouchStart={stopPropagation}
             onTouchEnd={stopPropagation}
             onMouseDown={(e) => e.stopPropagation()}
         >
+            {/* Subtle inner glow */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
+
             {/* Header */}
-            <div className="flex items-center justify-between p-3 border-b border-border/40 bg-muted/20">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <Sparkles className="w-4 h-4" />
+            <div className="relative flex items-center justify-between px-4 py-3 border-b border-border/10 dark:border-white/5">
+                <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Sparkles className="w-3.5 h-3.5 text-primary" />
                     </div>
                     <div>
-                        <h3 className="font-semibold text-sm">AI Assistant</h3>
+                        <h3 className="text-sm font-semibold tracking-tight">AI Assistant</h3>
                         <Popover>
                             <PopoverTrigger asChild>
-                                <Button variant="link" className="h-4 p-0 text-[10px] text-muted-foreground hover:text-foreground">
-                                    {selectedModel}
-                                </Button>
+                                <button className="flex items-center gap-1 text-[9px] text-muted-foreground/60 hover:text-muted-foreground transition-colors">
+                                    <span className="truncate max-w-[120px]">{selectedModel.split('/').pop()}</span>
+                                    <ChevronDown className="w-2.5 h-2.5" />
+                                </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-60 p-1">
-                                <ScrollArea className="h-48">
+                            <PopoverContent 
+                                className="w-56 p-1 rounded-xl border-border/20 dark:border-white/10 bg-background/95 backdrop-blur-2xl"
+                                align="start"
+                            >
+                                <ScrollArea className="h-40" style={{ scrollbarWidth: 'none' }}>
                                     {models.map(model => (
-                                        <Button
+                                        <button
                                             key={model.id}
-                                            variant="ghost"
-                                            className={cn("w-full justify-start text-xs h-7", selectedModel === model.id && "bg-muted")}
+                                            className={cn(
+                                                "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-[10px] text-left transition-colors",
+                                                selectedModel === model.id 
+                                                    ? "bg-primary/10 text-primary" 
+                                                    : "hover:bg-foreground/[0.03]"
+                                            )}
                                             onClick={() => setSelectedModel(model.id)}
                                         >
-                                            {model.id}
-                                        </Button>
+                                            {selectedModel === model.id && <Check className="w-2.5 h-2.5 flex-shrink-0" />}
+                                            <span className="truncate">{model.id}</span>
+                                        </button>
                                     ))}
                                 </ScrollArea>
                             </PopoverContent>
                         </Popover>
                     </div>
                 </div>
-                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full hover:bg-destructive/10 hover:text-destructive" onClick={onClose}>
-                    <X className="h-4 w-4" />
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-6 w-6 rounded-lg hover:bg-foreground/5 dark:hover:bg-white/10" 
+                    onClick={onClose}
+                >
+                    <X className="h-3 w-3" />
                 </Button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-hidden p-0 relative">
+            <div className="flex-1 overflow-hidden relative">
                 <ScrollArea className="h-full px-4 py-4" ref={scrollAreaRef} onWheel={(e) => e.stopPropagation()}>
                     {messages.length === 0 && (
-                        <div className="flex flex-col items-center justify-center h-full opacity-50 space-y-2 mt-10">
-                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                                <MessageSquare className="w-6 h-6 text-primary" />
+                        <div className="flex flex-col items-center justify-center h-full opacity-60 space-y-3 mt-16">
+                            <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center">
+                                <MessageSquare className="w-6 h-6 text-primary/40" />
                             </div>
-                            <p className="text-sm text-muted-foreground">How can I help you today?</p>
+                            <div className="text-center">
+                                <p className="text-sm font-medium text-muted-foreground/70">How can I help?</p>
+                                <p className="text-[10px] text-muted-foreground/40 mt-0.5">Ask me anything about your stream</p>
+                            </div>
                         </div>
                     )}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {messages.map((msg, index) => (
                             <div
                                 key={index}
@@ -342,16 +363,16 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
                                 )}
                             >
                                 {msg.role !== "user" && (
-                                    <div className="w-6 h-6 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center mt-1">
-                                        <Bot className="w-3.5 h-3.5 text-primary" />
+                                    <div className="w-5 h-5 rounded-lg bg-primary/10 flex-shrink-0 flex items-center justify-center mt-0.5">
+                                        <Bot className="w-2.5 h-2.5 text-primary" />
                                     </div>
                                 )}
                                 <div
                                     className={cn(
-                                        "max-w-[80%] rounded-2xl px-3 py-2 text-sm",
+                                        "max-w-[85%] rounded-2xl px-3 py-2 text-[12px] leading-relaxed",
                                         msg.role === "user"
-                                            ? "bg-primary text-primary-foreground rounded-br-none"
-                                            : "bg-muted rounded-bl-none"
+                                            ? "bg-primary text-primary-foreground rounded-br-md"
+                                            : "bg-foreground/[0.03] dark:bg-white/[0.04] rounded-bl-md"
                                     )}
                                 >
                                     {msg.role === "user" ? (
@@ -371,8 +392,8 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
                                     )}
                                 </div>
                                 {msg.role === "user" && (
-                                    <div className="w-6 h-6 rounded-full bg-muted flex-shrink-0 flex items-center justify-center mt-1">
-                                        <User className="w-3.5 h-3.5 text-muted-foreground" />
+                                    <div className="w-5 h-5 rounded-lg bg-foreground/[0.05] dark:bg-white/[0.05] flex-shrink-0 flex items-center justify-center mt-0.5">
+                                        <User className="w-2.5 h-2.5 text-muted-foreground/70" />
                                     </div>
                                 )}
                             </div>
@@ -383,40 +404,46 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
             </div>
 
             {/* Input */}
-            <div className="p-3 border-t border-border/40 bg-background/50">
+            <div className="relative px-3 py-3 border-t border-border/10 dark:border-white/5">
                 <div className="relative">
                     <Input
                         ref={inputRef}
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Type a message..."
+                        placeholder="Ask anything..."
                         disabled={isLoading}
-                        className="pr-10 rounded-full bg-muted/50 border-transparent focus-visible:bg-background focus-visible:border-primary/30"
+                        className={cn(
+                            "pr-10 h-9 rounded-xl text-[12px]",
+                            "bg-foreground/[0.03] dark:bg-white/[0.04]",
+                            "border-border/10 dark:border-white/5",
+                            "focus-visible:bg-background focus-visible:border-primary/20",
+                            "placeholder:text-muted-foreground/40"
+                        )}
                     />
                     {isLoading ? (
                         <Button
                             size="icon"
-                            className="absolute right-1 top-1 h-7 w-7 rounded-full bg-destructive/10 text-destructive hover:bg-destructive/20"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20"
                             onClick={stopGeneration}
                             title="Stop generation"
                         >
-                            <Square className="h-3 w-3 fill-current" />
+                            <Square className="h-2.5 w-2.5 fill-current" />
                         </Button>
                     ) : (
                         <Button
                             size="icon"
-                            className="absolute right-1 top-1 h-7 w-7 rounded-full"
+                            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 rounded-lg"
                             onClick={handleSend}
                             disabled={!input.trim()}
                         >
-                            <Send className="h-3.5 w-3.5" />
+                            <Send className="h-3 w-3" />
                         </Button>
                     )}
                 </div>
-                <div className="text-[10px] text-center text-muted-foreground mt-2 opacity-60">
-                    AI can make mistakes. Check important info.
-                </div>
+                <p className="text-[8px] text-center text-muted-foreground/40 mt-2">
+                    AI can make mistakes. Verify important information.
+                </p>
             </div>
         </div>
     );

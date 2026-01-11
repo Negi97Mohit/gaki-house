@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Radio, Eye, EyeOff, Loader2, AlertCircle, Settings2, ChevronRight, Wifi, WifiOff, Plus, Trash2, Globe, MonitorPlay, Copy } from "lucide-react";
+import React, { useState } from "react";
+import { Radio, Eye, EyeOff, Loader2, Wifi, WifiOff, Plus, Trash2, Globe, Check } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { cn } from "@/shared/lib/utils";
 import { ScrollArea } from "@/shared/ui/scroll-area";
-import { STREAMING_PLATFORMS, StreamingPlatform } from "@/data/streamingPlatforms";
+import { STREAMING_PLATFORMS } from "@/data/streamingPlatforms";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Switch } from "@/shared/ui/switch";
 import { useStreamStore, StreamDestination } from "@/stores/stream.store";
@@ -25,15 +23,7 @@ interface StreamConfigurationModalProps {
   onStopStream?: () => void;
 }
 
-// Platform Icon Component with colored SVGs
 const PlatformIcon: React.FC<{ platformIconName: string; color?: string; size?: number }> = ({ platformIconName, color = '#fff', size = 24 }) => {
-  // Basic mapping or lookup from data if available. 
-  // Since we don't have the full objects passed here easily without lookup, we'll try to match by name or string.
-  // Ideally we pass the full platform object.
-
-  // For now, let's reuse the SVG logic but simplified or copied if needed. 
-  // Or better, we can assume the platformIconName is the key.
-
   const iconMap: Record<string, React.ReactNode> = {
     youtube: (
       <svg viewBox="0 0 24 24" fill={color} width={size} height={size}>
@@ -50,10 +40,9 @@ const PlatformIcon: React.FC<{ platformIconName: string; color?: string; size?: 
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
       </svg>
     ),
-    // ... Add others if needed or fallback
     default: (
       <div
-        className="rounded-full flex items-center justify-center text-white font-bold text-xs"
+        className="rounded-full flex items-center justify-center text-white font-bold text-[8px]"
         style={{ backgroundColor: color, width: size, height: size }}
       >
         {platformIconName ? platformIconName.charAt(0).toUpperCase() : '?'}
@@ -64,7 +53,6 @@ const PlatformIcon: React.FC<{ platformIconName: string; color?: string; size?: 
   return <>{iconMap[platformIconName] || iconMap.default}</>;
 };
 
-
 export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> = ({
   onStartStream,
   onStopStream,
@@ -72,13 +60,11 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'manage' | 'add'>('manage');
 
-  // Add New Form State
   const [selectedPlatformId, setSelectedPlatformId] = useState<string>('custom');
   const [newUrl, setNewUrl] = useState('');
   const [newKey, setNewKey] = useState('');
   const [showKey, setShowKey] = useState(false);
 
-  // Store
   const {
     destinations,
     addDestination,
@@ -95,16 +81,10 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
     isConnecting: state.isConnecting
   })));
 
-  // Derived
   const selectedPlatform = STREAMING_PLATFORMS.find(p => p.id === selectedPlatformId);
-  const isCustom = selectedPlatformId === 'custom';
 
-  // Handlers
   const handleAddDestination = () => {
-    if (!newKey && !newUrl) return; // Basic validation
-
-    // For platforms with preset URLs, use them if user didn't override (or if we hid the input)
-    // Actually our UI logic below handles pre-fill.
+    if (!newKey && !newUrl) return;
 
     const dest: StreamDestination = {
       id: uuidv4(),
@@ -116,8 +96,6 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
     };
 
     addDestination(dest);
-
-    // Reset Form
     setNewUrl('');
     setNewKey('');
     setActiveTab('manage');
@@ -137,149 +115,168 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "rounded-full h-10 w-10 hover:bg-background/60",
-            isBroadcasting && "bg-red-500/10 text-red-500 hover:bg-red-500/20 hover:text-red-600 animate-pulse",
-            !isBroadcasting && isOpen && "bg-primary/20 text-primary"
-          )}
-          title="Stream Settings"
-        >
-          {isBroadcasting ? <Wifi className="w-4 h-4" /> : <Radio className="w-4 h-4" />}
-        </Button>
-      </DialogTrigger>
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn(
+          "rounded-xl h-7 w-7 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
+          isBroadcasting && "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
+        )}
+        title="Stream Settings"
+        onClick={() => setIsOpen(true)}
+      >
+        {isBroadcasting ? <Wifi className="w-3 h-3" /> : <Radio className="w-3 h-3" />}
+      </Button>
 
-      <DialogContent className="sm:max-w-[600px] p-0 gap-0 bg-background/95 backdrop-blur-xl border-border/50 overflow-hidden">
+      <DialogContent className={cn(
+        "sm:max-w-[480px] p-0 gap-0 overflow-hidden",
+        "bg-background/80 dark:bg-background/60 backdrop-blur-2xl",
+        "border-border/20 dark:border-white/10 rounded-2xl",
+        "shadow-2xl shadow-black/10 dark:shadow-black/40"
+      )}>
+        {/* Subtle inner glow */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
+
         {/* Header */}
-        <DialogHeader className="px-6 pt-6 pb-4 border-b border-border/50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className={cn(
-                "w-10 h-10 rounded-xl flex items-center justify-center",
-                isBroadcasting ? "bg-red-500/20" : "bg-primary/10"
-              )}>
-                {isBroadcasting ? (
-                  <Wifi className="w-5 h-5 text-red-500 animate-pulse" />
-                ) : (
-                  <Radio className="w-5 h-5 text-primary" />
+        <DialogHeader className="relative px-5 pt-5 pb-4 border-b border-border/10 dark:border-white/5">
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              "w-8 h-8 rounded-xl flex items-center justify-center",
+              isBroadcasting ? "bg-red-500/15" : "bg-primary/10"
+            )}>
+              {isBroadcasting ? (
+                <Wifi className="w-4 h-4 text-red-500 animate-pulse" />
+              ) : (
+                <Radio className="w-4 h-4 text-primary" />
+              )}
+            </div>
+            <div>
+              <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
+                Multi-Stream
+                {isBroadcasting && (
+                  <span className="text-red-500 text-[8px] uppercase border border-red-500/50 px-1.5 py-0.5 rounded-md font-semibold animate-pulse">
+                    Live
+                  </span>
                 )}
-              </div>
-              <div>
-                <DialogTitle className="flex items-center gap-2 text-lg">
-                  Multi-Stream
-                  {isBroadcasting && (
-                    <span className="text-red-500 text-[10px] uppercase border border-red-500 px-2 py-0.5 rounded-full font-semibold animate-pulse">
-                      Live
-                    </span>
-                  )}
-                </DialogTitle>
-                <DialogDescription className="text-xs mt-0.5">
-                  Manage your streaming destinations
-                </DialogDescription>
-              </div>
+              </DialogTitle>
+              <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                Manage streaming destinations
+              </p>
             </div>
           </div>
         </DialogHeader>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="flex-1">
-          <div className="px-6 pt-4">
-            <TabsList className="w-full grid grid-cols-2 h-9 bg-muted/50">
-              <TabsTrigger value="manage" className="text-xs">
+          <div className="px-5 pt-4">
+            <TabsList className="w-full grid grid-cols-2 h-8 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.04] p-0.5">
+              <TabsTrigger 
+                value="manage" 
+                className="text-[10px] font-medium rounded-lg h-7 transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+              >
                 Destinations ({destinations.length})
               </TabsTrigger>
-              <TabsTrigger value="add" className="text-xs flex items-center gap-1.5">
-                <Plus className="w-3 h-3" />
+              <TabsTrigger 
+                value="add" 
+                className="text-[10px] font-medium rounded-lg h-7 transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm flex items-center gap-1"
+              >
+                <Plus className="w-2.5 h-2.5" />
                 Add New
               </TabsTrigger>
             </TabsList>
           </div>
 
           {/* Manage Tab */}
-          <TabsContent value="manage" className="m-0 px-6 py-4 space-y-4">
+          <TabsContent value="manage" className="m-0 p-5 space-y-4">
             {destinations.length === 0 ? (
-              <div className="text-center py-10 text-muted-foreground">
-                <p className="text-sm">No destinations added.</p>
-                <Button variant="link" onClick={() => setActiveTab('add')} className="text-xs">
+              <div className="text-center py-12">
+                <div className="w-12 h-12 rounded-2xl bg-foreground/[0.03] dark:bg-white/[0.03] flex items-center justify-center mx-auto mb-3">
+                  <Radio className="w-5 h-5 text-muted-foreground/30" />
+                </div>
+                <p className="text-[11px] text-muted-foreground/60 mb-2">No destinations added</p>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setActiveTab('add')} 
+                  className="text-[10px] h-7 text-primary hover:text-primary"
+                >
                   Add your first destination
                 </Button>
               </div>
             ) : (
-              <ScrollArea className="h-[300px] pr-2">
-                <div className="space-y-3">
+              <ScrollArea className="h-[240px] pr-1" style={{ scrollbarWidth: 'none' }}>
+                <div className="space-y-2">
                   {destinations.map(dest => {
                     const platformData = STREAMING_PLATFORMS.find(p => p.name === dest.platform) || { color: '#888', icon: 'default' };
                     return (
-                      <div key={dest.id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/50">
-                        {/* Icon */}
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center bg-background/50 shrink-0">
-                          <PlatformIcon platformIconName={platformData.icon} color={platformData.color} />
+                      <div 
+                        key={dest.id} 
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-xl transition-all",
+                          "bg-foreground/[0.02] dark:bg-white/[0.02]",
+                          "border border-border/10 dark:border-white/5",
+                          "hover:bg-foreground/[0.03] dark:hover:bg-white/[0.03]"
+                        )}
+                      >
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-background/50 shrink-0">
+                          <PlatformIcon platformIconName={platformData.icon} color={platformData.color} size={16} />
                         </div>
 
-                        {/* Info */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4 className="text-sm font-medium truncate">{dest.platform}</h4>
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="text-[11px] font-medium truncate">{dest.platform}</h4>
                             {dest.status === 'live' && (
-                              <span className="text-[10px] bg-green-500/20 text-green-500 px-1.5 py-0.5 rounded">LIVE</span>
+                              <span className="text-[7px] bg-green-500/20 text-green-500 px-1 py-0.5 rounded font-semibold">LIVE</span>
                             )}
                             {dest.status === 'starting' && (
-                              <span className="text-[10px] bg-yellow-500/20 text-yellow-500 px-1.5 py-0.5 rounded">STARTING</span>
+                              <span className="text-[7px] bg-yellow-500/20 text-yellow-500 px-1 py-0.5 rounded font-semibold">STARTING</span>
                             )}
                             {dest.status === 'error' && (
-                              <span className="text-[10px] bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded">ERROR</span>
+                              <span className="text-[7px] bg-red-500/20 text-red-500 px-1 py-0.5 rounded font-semibold">ERROR</span>
                             )}
                           </div>
-                          <p className="text-[10px] text-muted-foreground truncate font-mono mt-0.5">
+                          <p className="text-[9px] text-muted-foreground/50 truncate font-mono mt-0.5">
                             {dest.url}
                           </p>
                         </div>
 
-                        {/* Controls */}
-                        <div className="flex items-center gap-2">
-                          {/* Individual Toggle / Start Button */}
+                        <div className="flex items-center gap-1.5">
                           {dest.status === 'idle' || dest.status === 'error' ? (
                             isBroadcasting ? (
-                              // If we are broadly live, allow starting this individual stream
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="h-7 text-xs"
+                                className="h-6 text-[9px] px-2 rounded-lg"
                                 onClick={() => onStartStream?.(dest.url, dest.key)}
                                 disabled={!dest.enabled}
                               >
                                 Start
                               </Button>
                             ) : (
-                              // Global toggle for "Next Batch"
                               <Switch
                                 checked={dest.enabled}
                                 onCheckedChange={(checked) => updateDestination(dest.id, { enabled: checked })}
+                                className="scale-75"
                               />
                             )
                           ) : (
-                            // It is live or starting
                             <Button
                               size="sm"
                               variant="destructive"
-                              className="h-7 text-xs"
+                              className="h-6 text-[9px] px-2 rounded-lg"
                               onClick={() => onStopStream?.()}
                             >
                               Stop
                             </Button>
                           )}
 
-                          {/* Delete */}
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                            className="h-6 w-6 rounded-lg text-muted-foreground/50 hover:text-destructive"
                             onClick={() => removeDestination(dest.id)}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3 h-3" />
                           </Button>
                         </div>
                       </div>
@@ -290,13 +287,11 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
             )}
 
             {/* Master Controls */}
-            <div className="pt-2 border-t border-border/50">
+            <div className="pt-3 border-t border-border/10 dark:border-white/5">
               {!isBroadcasting ? (
                 <Button
-                  className="w-full font-semibold"
-                  size="lg"
+                  className="w-full h-10 rounded-xl font-medium text-[11px]"
                   onClick={() => {
-                    // Start all enabled destinations - pick first or handle batch
                     const firstEnabled = destinations.find(d => d.enabled);
                     if (firstEnabled) {
                       onStartStream?.(firstEnabled.url, firstEnabled.key);
@@ -305,20 +300,19 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                   disabled={isConnecting || activeCount === 0}
                 >
                   {isConnecting ? (
-                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
                   ) : (
-                    <Wifi className="w-5 h-5 mr-2" />
+                    <Wifi className="w-4 h-4 mr-2" />
                   )}
                   Go Live to {activeCount} Destination{activeCount !== 1 ? 's' : ''}
                 </Button>
               ) : (
                 <Button
                   variant="destructive"
-                  className="w-full font-semibold"
-                  size="lg"
+                  className="w-full h-10 rounded-xl font-medium text-[11px]"
                   onClick={() => onStopStream?.()}
                 >
-                  <WifiOff className="w-5 h-5 mr-2" />
+                  <WifiOff className="w-4 h-4 mr-2" />
                   End All Broadcasts
                 </Button>
               )}
@@ -326,42 +320,44 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
           </TabsContent>
 
           {/* Add Tab */}
-          <TabsContent value="add" className="m-0 px-6 py-4">
+          <TabsContent value="add" className="m-0 p-5">
             <div className="space-y-4">
               {/* Platform Grid */}
               <div>
-                <Label className="text-xs mb-2 block">Choose Platform</Label>
-                <ScrollArea className="h-[120px] rounded-lg border border-border/50 bg-muted/20 p-2">
-                  <div className="grid grid-cols-4 gap-2">
+                <Label className="text-[10px] mb-2 block text-muted-foreground/70">Choose Platform</Label>
+                <ScrollArea className="h-[100px] rounded-xl border border-border/10 dark:border-white/5 bg-foreground/[0.01] dark:bg-white/[0.01] p-2" style={{ scrollbarWidth: 'none' }}>
+                  <div className="grid grid-cols-5 gap-1.5">
                     <button
                       onClick={() => handlePlatformSelect('custom')}
                       className={cn(
-                        "flex flex-col items-center gap-2 p-2 rounded-lg border transition-all",
+                        "flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all",
+                        "border border-transparent",
                         selectedPlatformId === 'custom'
-                          ? "bg-primary/10 border-primary text-primary"
-                          : "bg-background border-transparent hover:bg-muted"
+                          ? "bg-primary/10 border-primary/30 text-primary"
+                          : "hover:bg-foreground/[0.03] dark:hover:bg-white/[0.03]"
                       )}
                     >
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                        <Globe className="w-4 h-4" />
+                      <div className="w-6 h-6 rounded-lg bg-foreground/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                        <Globe className="w-3 h-3" />
                       </div>
-                      <span className="text-[10px] font-medium">Custom</span>
+                      <span className="text-[8px] font-medium">Custom</span>
                     </button>
-                    {STREAMING_PLATFORMS.filter(p => !p.comingSoon).map(p => (
+                    {STREAMING_PLATFORMS.filter(p => !p.comingSoon).slice(0, 9).map(p => (
                       <button
                         key={p.id}
                         onClick={() => handlePlatformSelect(p.id)}
                         className={cn(
-                          "flex flex-col items-center gap-2 p-2 rounded-lg border transition-all",
+                          "flex flex-col items-center gap-1.5 p-2 rounded-xl transition-all",
+                          "border border-transparent",
                           selectedPlatformId === p.id
-                            ? "bg-primary/10 border-primary text-primary"
-                            : "bg-background border-transparent hover:bg-muted"
+                            ? "bg-primary/10 border-primary/30 text-primary"
+                            : "hover:bg-foreground/[0.03] dark:hover:bg-white/[0.03]"
                         )}
                       >
-                        <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                          <PlatformIcon platformIconName={p.icon} color={p.color} size={16} />
+                        <div className="w-6 h-6 rounded-lg bg-foreground/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                          <PlatformIcon platformIconName={p.icon} color={p.color} size={12} />
                         </div>
-                        <span className="text-[10px] font-medium truncate w-full text-center">{p.name}</span>
+                        <span className="text-[8px] font-medium truncate w-full text-center">{p.name}</span>
                       </button>
                     ))}
                   </div>
@@ -369,22 +365,30 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
               </div>
 
               <div className="space-y-3">
-                <div className="space-y-1">
-                  <Label htmlFor="stream-url" className="text-xs font-medium">Stream URL</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="stream-url" className="text-[10px] font-medium text-muted-foreground/70">Stream URL</Label>
                   <Input
                     id="stream-url"
                     value={newUrl}
                     onChange={(e) => setNewUrl(e.target.value)}
                     placeholder="rtmp://..."
-                    className="h-9 text-sm bg-muted/30"
+                    className={cn(
+                      "h-8 text-[11px] rounded-xl",
+                      "bg-foreground/[0.02] dark:bg-white/[0.02]",
+                      "border-border/10 dark:border-white/5",
+                      "focus-visible:border-primary/20"
+                    )}
                   />
-                  {!isCustom && selectedPlatform?.rtmpUrl && (
-                    <p className="text-[10px] text-muted-foreground">Default server for {selectedPlatform.name}</p>
+                  {selectedPlatform?.rtmpUrl && (
+                    <p className="text-[9px] text-muted-foreground/40 flex items-center gap-1">
+                      <Check className="w-2.5 h-2.5 text-green-500" />
+                      Default server for {selectedPlatform.name}
+                    </p>
                   )}
                 </div>
 
-                <div className="space-y-1">
-                  <Label htmlFor="stream-key" className="text-xs font-medium">Stream Key</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="stream-key" className="text-[10px] font-medium text-muted-foreground/70">Stream Key</Label>
                   <div className="relative">
                     <Input
                       id="stream-key"
@@ -392,25 +396,29 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                       value={newKey}
                       onChange={(e) => setNewKey(e.target.value)}
                       placeholder="live_..."
-                      className="h-9 text-sm pr-10 bg-muted/30"
+                      className={cn(
+                        "h-8 text-[11px] pr-9 rounded-xl",
+                        "bg-foreground/[0.02] dark:bg-white/[0.02]",
+                        "border-border/10 dark:border-white/5",
+                        "focus-visible:border-primary/20"
+                      )}
                     />
                     <button
                       type="button"
                       onClick={() => setShowKey(!showKey)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-muted-foreground transition-colors"
                     >
-                      {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showKey ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </button>
                   </div>
                 </div>
 
                 <Button
-                  variant="default"
-                  className="w-full mt-2"
+                  className="w-full h-9 rounded-xl font-medium text-[11px] mt-2"
                   disabled={!newUrl || !newKey}
                   onClick={handleAddDestination}
                 >
-                  <Plus className="w-4 h-4 mr-2" />
+                  <Plus className="w-3 h-3 mr-1.5" />
                   Add Destination
                 </Button>
               </div>
