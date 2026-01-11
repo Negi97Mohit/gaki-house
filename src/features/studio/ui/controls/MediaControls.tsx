@@ -122,6 +122,23 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
     }
   };
 
+  // Helper to toggle device selection (select if new, deselect if same)
+  const handleAudioSelect = (deviceId: string) => {
+    if (selectedAudioDevice === deviceId) {
+      setSelectedAudioDevice(undefined as unknown as string); // Cast to allow undefined if strict
+    } else {
+      setSelectedAudioDevice(deviceId);
+    }
+  };
+
+  const handleVideoSelect = (deviceId: string) => {
+    if (selectedVideoDevice === deviceId) {
+      setSelectedVideoDevice(undefined as unknown as string); // Cast to allow undefined if strict
+    } else {
+      setSelectedVideoDevice(deviceId);
+    }
+  };
+
   return (
     <>
       {/* Audio Controls */}
@@ -130,7 +147,10 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         role="group"
         aria-label="Microphone Controls"
       >
-        <ShortcutTooltip label={isAudioOn ? "Mute Microphone" : "Unmute Microphone"} shortcut="toggleMic">
+        <ShortcutTooltip
+          label={isAudioOn ? "Mute Microphone" : "Unmute Microphone"}
+          shortcut="toggleMic"
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -158,6 +178,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             side="top"
             align="center"
             className="bg-background/95 backdrop-blur-2xl border-border/20 dark:border-white/10 rounded-xl shadow-xl max-h-64 overflow-y-auto"
+            style={{ zIndex: 2015 }}
           >
             {audioDevices.length === 0 ? (
               <DropdownMenuItem
@@ -170,7 +191,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
               audioDevices.map((device, i) => (
                 <DropdownMenuItem
                   key={device.deviceId}
-                  onClick={() => setSelectedAudioDevice(device.deviceId)}
+                  onClick={() => handleAudioSelect(device.deviceId)}
                   className="text-xs"
                 >
                   {device.deviceId === selectedAudioDevice && (
@@ -190,7 +211,10 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         role="group"
         aria-label="Camera Controls"
       >
-        <ShortcutTooltip label={isVideoOn ? "Turn Camera Off" : "Turn Camera On"} shortcut="toggleCamera">
+        <ShortcutTooltip
+          label={isVideoOn ? "Turn Camera Off" : "Turn Camera On"}
+          shortcut="toggleCamera"
+        >
           <Button
             variant="ghost"
             size="icon"
@@ -218,6 +242,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             side="top"
             align="center"
             className="bg-background/95 backdrop-blur-2xl border-border/20 dark:border-white/10 rounded-xl shadow-xl max-h-64 overflow-y-auto"
+            style={{ zIndex: 2015 }}
           >
             {videoDevices.length === 0 ? (
               <DropdownMenuItem
@@ -230,7 +255,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
               videoDevices.map((device, i) => (
                 <DropdownMenuItem
                   key={device.deviceId}
-                  onClick={() => setSelectedVideoDevice(device.deviceId)}
+                  onClick={() => handleVideoSelect(device.deviceId)}
                   className="text-xs"
                 >
                   {device.deviceId === selectedVideoDevice && (
@@ -247,7 +272,9 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
       {/* Recording Control */}
-      <ShortcutTooltip label={isRecording ? "Stop Recording" : "Start Recording"}>
+      <ShortcutTooltip
+        label={isRecording ? "Stop Recording" : "Start Recording"}
+      >
         <Button
           variant={isRecording ? "destructive" : "ghost"}
           size={isRecording ? "sm" : "icon"}
@@ -315,6 +342,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           side="top"
           align="center"
           className="bg-background/95 backdrop-blur-2xl border-border/20 dark:border-white/10 rounded-xl shadow-xl"
+          style={{ zIndex: 2015 }}
         >
           <DropdownMenuItem
             onClick={() => setScreenShareMode("screen")}

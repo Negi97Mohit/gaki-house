@@ -1,8 +1,6 @@
 import React, { useRef, useCallback } from "react";
 import { cn } from "@/shared/lib/utils";
 import { Loader } from "lucide-react";
-
-// Components
 import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
 import { IndexOverlays } from "./Index/components/IndexOverlays";
@@ -11,23 +9,18 @@ import {
   useFileVault,
   usePasteCapture,
 } from "@/features/vault";
-
-// Hooks
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
 import { useCanvasAi } from "./Index/hooks/useCanvasAi";
 import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
 
 const Index = () => {
-  // 1. Initialize all state logic in the orchestrator
   const editor = useEditorOrchestrator();
 
-  // Destructure for easier access in the render below
   const {
     activeScene,
     effectiveScene,
     sceneManager,
     ui,
-
     sessionData,
     layoutManager,
     dynamicLayout,
@@ -40,24 +33,16 @@ const Index = () => {
     overlayHandlers,
   } = editor;
 
-  // 2. Initialize AI Hook
   const { isProcessingAi, processTranscript } = useCanvasAi({
-    activeScene: activeScene!, // Use activeScene for source of truth
+    activeScene: activeScene!,
     updateActiveScene: sceneManager.updateActiveScene,
-
     setSavedOverlays: sessionData.setSavedOverlays,
   });
 
-  // 3. RTMP Streaming Hook
   const rtmp = useRtmpStream();
-
-  // 4. Ref for AI Popover auto-open behavior
   const hasAiPopoverAutoOpenedRef = useRef(false);
-
-  // 5. File Vault
   const vault = useFileVault();
 
-  // Handle paste capture for vault
   const handlePastedFiles = useCallback(
     (files: File[]) => {
       vault.addFiles(files, "paste");
@@ -70,7 +55,6 @@ const Index = () => {
     onFilePaste: handlePastedFiles,
   });
 
-  // PHASE 3 FIX: Better Loading State
   if (!activeScene || !effectiveScene) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-background text-muted-foreground gap-4">
@@ -116,11 +100,11 @@ const Index = () => {
         onUndo={sceneManager.undo}
         onRedo={sceneManager.redo}
         onResetScene={sceneManager.resetScene}
-        // CHANGE 5: Pass the working full-screen handler here
         onToggleFullscreen={ui.handleToggleFullscreen}
+        // ADD THIS: Wire up the remote connect button
+        onConnectRemote={() => remote.setIsRemoteModalOpen(true)}
       />
 
-      {/* --- File Vault Modal --- */}
       <FileVaultModal
         isOpen={vault.isOpen}
         onClose={vault.closeVault}
@@ -130,7 +114,6 @@ const Index = () => {
         onClearVault={vault.clearVault}
       />
 
-      {/* --- RTMP Countdown Overlay --- */}
       {rtmp.countdown !== null && (
         <div
           className="fixed inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-3xl z-[10000] animate-in fade-in duration-300"

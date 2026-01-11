@@ -1,23 +1,35 @@
 import { useState, useEffect } from "react";
 import { useRemotePeer } from "@/hooks/useRemotePeer";
-import { SceneState } from "@/types/editor"; // Assuming this type exists or similar
+import { SceneState } from "@/types/editor";
+import { useMediaStore } from "@/stores/media.store"; // Import store
 
 export const useRemoteConnection = (activeScene: SceneState | null) => {
   const { peerId, remoteStream, isConnected } = useRemotePeer();
   const [isRemoteModalOpen, setIsRemoteModalOpen] = useState(false);
   const [hasDismissedRemoteModal, setHasDismissedRemoteModal] = useState(false);
 
+  // Get selected device from global store as well
+  const selectedVideoDevice = useMediaStore((s) => s.selectedVideoDevice);
+
   // Reset dismissal when switching AWAY from remote peer
   useEffect(() => {
-    if (activeScene?.selectedVideoDevice !== "remote-peer") {
+    if (
+      activeScene?.selectedVideoDevice !== "remote-peer" &&
+      selectedVideoDevice !== "remote-peer"
+    ) {
       setHasDismissedRemoteModal(false);
     }
-  }, [activeScene?.selectedVideoDevice]);
+  }, [activeScene?.selectedVideoDevice, selectedVideoDevice]);
 
   // Auto-open modal logic
   useEffect(() => {
+    // Trigger if scene has it saved OR if user just selected it in store
+    const isRemoteSelected =
+      activeScene?.selectedVideoDevice === "remote-peer" ||
+      selectedVideoDevice === "remote-peer";
+
     if (
-      activeScene?.selectedVideoDevice === "remote-peer" &&
+      isRemoteSelected &&
       !isConnected &&
       !isRemoteModalOpen &&
       !hasDismissedRemoteModal
@@ -28,6 +40,7 @@ export const useRemoteConnection = (activeScene: SceneState | null) => {
     }
   }, [
     activeScene?.selectedVideoDevice,
+    selectedVideoDevice,
     isConnected,
     isRemoteModalOpen,
     hasDismissedRemoteModal,

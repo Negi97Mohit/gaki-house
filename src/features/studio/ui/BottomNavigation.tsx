@@ -9,24 +9,18 @@ import {
 } from "@/shared/ui/dialog";
 import { cn } from "@/shared/lib/utils";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
-
-// Decomposed Controls
 import { MediaControls } from "./controls/MediaControls";
 import { SceneControls } from "./controls/SceneControls";
 import { AIControls } from "./controls/AIControls";
-
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "@/stores/ui.store";
 
 interface BottomNavigationProps {
-  // Complex callbacks and refs
   onSaveLayout: () => void;
   onAiCommandSubmit: (text: string, targetId: string | null) => void;
   isAiProcessing: boolean;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
   portalContainer?: HTMLElement | null;
-
-  // Streaming callbacks
   onStartStream?: (url: string, key: string) => void;
   onStopStream?: () => void;
   onToggleRecord?: () => void;
@@ -34,12 +28,11 @@ interface BottomNavigationProps {
   streamStatus?: string;
   isStreamConnecting?: boolean;
   isStreamBroadcasting?: boolean;
-
-  // Scene triggers
   onUndo: () => void;
   onRedo: () => void;
   onResetScene: () => void;
   onToggleFullscreen?: () => void;
+  onConnectRemote?: () => void; // New prop
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -59,6 +52,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onRedo,
   onResetScene,
   onToggleFullscreen,
+  onConnectRemote, // Destructure
 }) => {
   const { isMouseActive, isFullscreen, setFullscreen, setShowSettings } =
     useUiStore(
@@ -70,7 +64,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       }))
     );
 
-  // Local state
   const [isElectron, setIsElectron] = useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
 
@@ -86,7 +79,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       onToggleFullscreen();
       return;
     }
-
     if (isElectron && (window as any).electron?.toggleFullscreen) {
       (window as any).electron.toggleFullscreen();
     } else {
@@ -94,7 +86,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     }
   };
 
-  // --- DOWNLOAD LINKS ---
   const BASE_URL =
     "https://github.com/Negi97Mohit/caption-cam/releases/latest/download";
   const downloads = {
@@ -105,7 +96,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
   return (
     <>
-      {/* Download Dialog */}
       <Dialog open={isDownloadOpen} onOpenChange={setIsDownloadOpen}>
         <DialogContent className="sm:max-w-sm bg-background border-border/30 p-6">
           <DialogHeader className="pb-4">
@@ -142,40 +132,34 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           "backdrop-blur-2xl rounded-2xl",
           "bg-background/60 dark:bg-background/40",
           "border border-border/20 dark:border-white/[0.08]",
-          "shadow-[0_8px_32px_-8px_hsl(var(--foreground)/0.15),0_0_0_1px_hsl(var(--border)/0.1)]",
-          "dark:shadow-[0_8px_32px_-8px_hsl(0_0%_0%/0.5),0_0_0_1px_hsl(var(--border)/0.05),inset_0_1px_0_0_hsl(0_0%_100%/0.05)]",
+          "shadow-2xl",
           isMouseActive
             ? "opacity-100 translate-y-0 scale-100"
             : "opacity-0 translate-y-4 scale-95 pointer-events-none"
         )}
         style={{ zIndex: "var(--z-floating-controls)" }}
       >
-        {/* Subtle glow effect */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
-        
+
         <div className="relative flex items-center gap-0.5 px-1.5 py-1.5">
-          {/* Settings */}
           <ShortcutTooltip label="Settings" shortcut="settings">
             <Button
               variant="ghost"
               size="icon"
               className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
               onClick={() => setShowSettings((prev) => !prev)}
-              data-floating-trigger="true"
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
             </Button>
           </ShortcutTooltip>
 
-          {/* Elegant divider */}
           <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
-          
-          {/* Layout slot */}
-          <div id="layout-controls-slot" className="flex items-center gap-0.5 [&>button]:h-8 [&>button]:w-8 [&>button]:rounded-xl" />
-          
+          <div
+            id="layout-controls-slot"
+            className="flex items-center gap-0.5 [&>button]:h-8 [&>button]:w-8 [&>button]:rounded-xl"
+          />
           <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
-          {/* Scene Controls */}
           <SceneControls
             onUndo={onUndo}
             onRedo={onRedo}
@@ -184,7 +168,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
           <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
-          {/* Media Controls */}
           <MediaControls
             onStartStream={onStartStream}
             onStopStream={onStopStream}
@@ -193,11 +176,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             streamStatus={streamStatus}
             isConnecting={isStreamConnecting}
             isBroadcasting={isStreamBroadcasting}
+            onConnectRemote={onConnectRemote} // Pass down
           />
 
           <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
-          {/* Action buttons */}
           <div className="flex items-center gap-0.5">
             {!isElectron && (
               <ShortcutTooltip label="Download Desktop App">
@@ -219,7 +202,10 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               portalContainer={portalContainer}
             />
 
-            <ShortcutTooltip label={isFullscreen ? "Exit Fullscreen" : "Fullscreen"} shortcut="fullscreen">
+            <ShortcutTooltip
+              label={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+              shortcut="fullscreen"
+            >
               <Button
                 variant="ghost"
                 size="icon"

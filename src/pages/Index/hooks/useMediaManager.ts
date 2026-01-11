@@ -1,5 +1,6 @@
 // src/pages/index/hooks/useMediaManager.ts
 import { useState, useEffect } from "react";
+import { useMediaStore } from "@/stores/media.store";
 
 interface UseMediaManagerProps {
   isAudioOn: boolean;
@@ -14,16 +15,26 @@ export const useMediaManager = ({
   sceneId,
   onAudioToggle,
 }: UseMediaManagerProps) => {
-  const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
-  const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
+  // We can keep local state if needed, but primarily we must sync with the store
+  const [audioDevices, setLocalAudioDevices] = useState<MediaDeviceInfo[]>([]);
+  const [videoDevices, setLocalVideoDevices] = useState<MediaDeviceInfo[]>([]);
+
+  // Access store actions to populate the global state
+  const setStoreAudioDevices = useMediaStore((s) => s.setAudioDevices);
+  const setStoreVideoDevices = useMediaStore((s) => s.setVideoDevices);
 
   // Enumerate Devices
   useEffect(() => {
     const getDevices = async () => {
       try {
         // First enumeration
-        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-          console.warn("Media Devices API not available (requires HTTPS or localhost)");
+        if (
+          !navigator.mediaDevices ||
+          !navigator.mediaDevices.enumerateDevices
+        ) {
+          console.warn(
+            "Media Devices API not available (requires HTTPS or localhost)"
+          );
           return;
         }
         let devices = await navigator.mediaDevices.enumerateDevices();
@@ -44,8 +55,9 @@ export const useMediaManager = ({
           }
         }
 
-        setAudioDevices(devices.filter((d) => d.kind === "audioinput"));
+        const aDevices = devices.filter((d) => d.kind === "audioinput");
         const vDevices = devices.filter((d) => d.kind === "videoinput");
+
         // Add Remote Camera option
         vDevices.push({
           deviceId: "remote-peer",
@@ -55,7 +67,13 @@ export const useMediaManager = ({
           toJSON: () => ({}),
         } as MediaDeviceInfo);
 
-        setVideoDevices(vDevices);
+        // Update Local State
+        setLocalAudioDevices(aDevices);
+        setLocalVideoDevices(vDevices);
+
+        // Update Global Store (This fixes the empty list in MediaControls)
+        setStoreAudioDevices(aDevices);
+        setStoreVideoDevices(vDevices);
       } catch (err) {
         console.warn("Could not enumerate devices:", err);
       }
@@ -69,18 +87,21 @@ export const useMediaManager = ({
     };
 
     if (navigator.mediaDevices) {
-      navigator.mediaDevices.addEventListener("devicechange", handleDeviceChange);
+      navigator.mediaDevices.addEventListener(
+        "devicechange",
+        handleDeviceChange
+      );
     }
 
     return () => {
       if (navigator.mediaDevices) {
-        navigator.mediaDevices.removeEventListener("devicechange", handleDeviceChange);
+        navigator.mediaDevices.removeEventListener(
+          "devicechange",
+          handleDeviceChange
+        );
       }
     };
-  }, []);
-
-  // Note: Actual stream management is now handled centrally in VideoCanvas
-  // to avoid race conditions and duplicate streams.
+  }, [setStoreAudioDevices, setStoreVideoDevices]);
 
   return {
     audioDevices,
