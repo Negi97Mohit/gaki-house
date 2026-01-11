@@ -32,23 +32,9 @@ export const GSAPAnimationsPanel: React.FC<GSAPAnimationsPanelProps> = ({
       : GSAP_PRESETS.filter((p) => p.category === activeCategory);
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-border/50">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-foreground">Pro Animations</h3>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
-            GSAP
-          </span>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          Professional-grade animations powered by GSAP. Hover to preview.
-        </p>
-      </div>
-
-      {/* Category Tabs */}
-      <div className="flex gap-1 p-2 overflow-x-auto border-b border-border/30">
+    <div className="flex flex-col h-full -m-4">
+      {/* Category Tabs - Compact */}
+      <div className="flex gap-1 p-2 overflow-x-auto border-b border-border/10" style={{ scrollbarWidth: 'none' }}>
         {CATEGORIES.map((cat) => {
           const Icon = cat.icon;
           return (
@@ -56,22 +42,22 @@ export const GSAPAnimationsPanel: React.FC<GSAPAnimationsPanelProps> = ({
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all",
+                "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap transition-all",
                 activeCategory === cat.id
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5"
               )}
             >
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className="w-3 h-3" />
               {cat.name}
             </button>
           );
         })}
       </div>
 
-      {/* Presets Grid */}
-      <div className="flex-1 overflow-y-auto p-3">
-        <div className="grid grid-cols-2 gap-3">
+      {/* Presets Grid - Full content area */}
+      <div className="flex-1 overflow-y-auto p-2" style={{ scrollbarWidth: 'none' }}>
+        <div className="grid grid-cols-2 gap-2">
           {filteredPresets.map((preset) => (
             <GSAPPresetPreview
               key={preset.id}
@@ -83,18 +69,11 @@ export const GSAPAnimationsPanel: React.FC<GSAPAnimationsPanelProps> = ({
         </div>
 
         {filteredPresets.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
-            <Sparkles className="w-8 h-8 mb-2 opacity-50" />
-            <p className="text-sm">No animations in this category</p>
+          <div className="flex flex-col items-center justify-center h-32 text-muted-foreground/50">
+            <Sparkles className="w-6 h-6 mb-2" />
+            <p className="text-xs">No animations</p>
           </div>
         )}
-      </div>
-
-      {/* Footer Info */}
-      <div className="p-3 border-t border-border/30 bg-muted/30">
-        <p className="text-xs text-muted-foreground text-center">
-          {filteredPresets.length} animation{filteredPresets.length !== 1 && "s"} available
-        </p>
       </div>
     </div>
   );

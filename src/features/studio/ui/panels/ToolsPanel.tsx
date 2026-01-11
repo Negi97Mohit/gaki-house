@@ -18,64 +18,54 @@ export const ToolsPanel: React.FC<ToolsPanelProps> = ({
   setIsDrawing,
 }) => {
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-xs text-muted-foreground font-mono">
-        Quick access to common tools
-      </p>
+    <div className="grid grid-cols-2 gap-2">
+      <Button
+        onClick={onAddTextOverlay}
+        variant="outline"
+        className="h-16 flex flex-col items-center justify-center gap-1.5 border hover:border-primary hover:bg-primary/5"
+      >
+        <Type className="h-5 w-5" />
+        <span className="text-[10px]">Text</span>
+      </Button>
 
-      <div className="grid grid-cols-2 gap-3">
-        {/* Add Text */}
-        <Button
-          onClick={onAddTextOverlay}
-          variant="outline"
-          className="h-20 flex flex-col items-center justify-center gap-2 border-2 hover:border-primary hover:bg-primary/10"
-        >
-          <Type className="h-6 w-6" />
-          <span className="text-xs font-mono">Add Text</span>
-        </Button>
+      <Button
+        onClick={() => setIsDrawing(true)}
+        variant="outline"
+        className="h-16 flex flex-col items-center justify-center gap-1.5 border hover:border-primary hover:bg-primary/5"
+      >
+        <Pencil className="h-5 w-5" />
+        <span className="text-[10px]">Draw</span>
+      </Button>
 
-        {/* Draw */}
-        <Button
-          onClick={() => setIsDrawing(true)}
-          variant="outline"
-          className="h-20 flex flex-col items-center justify-center gap-2 border-2 hover:border-primary hover:bg-primary/10"
-        >
-          <Pencil className="h-6 w-6" />
-          <span className="text-xs font-mono">Draw</span>
-        </Button>
+      <div className="col-span-2">
+        <FloatingAssetSearch 
+          onAssetSelect={onAssetSelect}
+          renderTrigger={(onClick) => (
+            <Button
+              onClick={onClick}
+              variant="outline"
+              className="w-full h-11 flex items-center justify-center gap-2 border hover:border-primary hover:bg-primary/5"
+            >
+              <Search className="h-4 w-4" />
+              <span className="text-[10px]">Search Assets</span>
+            </Button>
+          )}
+        />
+      </div>
 
-        {/* Asset Search - wrapped to fit */}
-        <div className="col-span-2">
-          <FloatingAssetSearch 
-            onAssetSelect={onAssetSelect}
-            renderTrigger={(onClick) => (
-              <Button
-                onClick={onClick}
-                variant="outline"
-                className="w-full h-14 flex items-center justify-center gap-2 border-2 hover:border-primary hover:bg-primary/10"
-              >
-                <Search className="h-5 w-5" />
-                <span className="text-xs font-mono">Search Assets (GIFs, Images, Icons)</span>
-              </Button>
-            )}
-          />
-        </div>
-
-        {/* Instructions */}
-        <div className="col-span-2">
-          <InstructionsDialog
-            renderTrigger={(onClick) => (
-              <Button
-                onClick={onClick}
-                variant="outline"
-                className="w-full h-14 flex items-center justify-center gap-2 border-2 hover:border-primary hover:bg-primary/10"
-              >
-                <HelpCircle className="h-5 w-5" />
-                <span className="text-xs font-mono">View Instructions & Shortcuts</span>
-              </Button>
-            )}
-          />
-        </div>
+      <div className="col-span-2">
+        <InstructionsDialog
+          renderTrigger={(onClick) => (
+            <Button
+              onClick={onClick}
+              variant="outline"
+              className="w-full h-11 flex items-center justify-center gap-2 border hover:border-primary hover:bg-primary/5"
+            >
+              <HelpCircle className="h-4 w-4" />
+              <span className="text-[10px]">Shortcuts</span>
+            </Button>
+          )}
+        />
       </div>
     </div>
   );

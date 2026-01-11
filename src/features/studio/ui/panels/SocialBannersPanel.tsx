@@ -137,64 +137,43 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full space-y-3 font-mono">
-      {/* Header & User Info Combined */}
-      <div className="flex flex-col gap-2 shrink-0">
-        <div className="flex items-center justify-between pb-2 border-b border-border">
-          <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
-            Social Banners
-          </span>
-          {!hasUserInfo && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setIsEditorOpen(true)}
-              className="h-7 text-[10px] px-3 font-mono tracking-wide border-border hover:bg-primary hover:text-primary-foreground hover:border-primary"
-            >
-              SETUP PROFILE
-            </Button>
-          )}
-        </div>
-
-        {/* Compact User Info Card */}
-        {hasUserInfo && (
-          <div className="flex items-center justify-between p-2.5 bg-card border border-border group hover:border-primary/50 transition-colors">
-            <div className="flex-1 min-w-0 mr-2">
-              <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-5 h-5 bg-primary/10 flex items-center justify-center shrink-0">
-                  <User className="w-3 h-3 text-primary" />
-                </div>
-                <span className="font-medium text-xs tracking-wide truncate">
-                  {userData.name.toUpperCase()}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 overflow-hidden pl-7">
-                {userData.links.slice(0, 6).map((link, i) => {
-                  const Icon = getPlatformIcon(link.platform);
-                  return (
-                    <div
-                      key={i}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                      title={link.platform}
-                    >
-                      <Icon className="w-3 h-3" />
-                    </div>
-                  );
-                })}
-              </div>
+    <div className="flex flex-col h-full -m-4">
+      {/* Compact User Info */}
+      {hasUserInfo ? (
+        <div className="flex items-center justify-between p-2 border-b border-border/10">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-5 h-5 bg-primary/10 rounded flex items-center justify-center">
+              <User className="w-3 h-3 text-primary" />
             </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setIsEditorOpen(true)}
-              className="h-6 w-6 text-muted-foreground hover:text-primary opacity-60 group-hover:opacity-100 transition-all"
-              title="Edit Info"
-            >
-              <Edit3 className="w-3 h-3" />
-            </Button>
+            <span className="text-[10px] font-medium truncate">{userData.name}</span>
+            <div className="flex gap-1">
+              {userData.links.slice(0, 4).map((link, i) => {
+                const Icon = getPlatformIcon(link.platform);
+                return <Icon key={i} className="w-2.5 h-2.5 text-muted-foreground" />;
+              })}
+            </div>
           </div>
-        )}
-      </div>
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => setIsEditorOpen(true)}
+            className="h-5 w-5 text-muted-foreground/50 hover:text-foreground"
+          >
+            <Edit3 className="w-2.5 h-2.5" />
+          </Button>
+        </div>
+      ) : (
+        <div className="p-2 border-b border-border/10">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setIsEditorOpen(true)}
+            className="w-full h-7 text-[9px]"
+          >
+            Setup Profile
+          </Button>
+        </div>
+      )}
 
       {/* Banner Type Tabs */}
       <Tabs
@@ -202,22 +181,32 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
         onValueChange={(v) => setActiveTab(v as "static" | "animated")}
         className="flex-1 flex flex-col min-h-0"
       >
-        <TabsList className="w-full grid grid-cols-2 mb-3 shrink-0 h-8 p-0 bg-card border border-border">
-          <TabsTrigger
-            value="static"
-            className="gap-1.5 text-[10px] font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-none"
+        <div className="flex gap-1 p-2 border-b border-border/10">
+          <button
+            onClick={() => setActiveTab("static")}
+            className={cn(
+              "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all",
+              activeTab === "static"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5"
+            )}
           >
             <Layers className="w-3 h-3" />
-            STATIC
-          </TabsTrigger>
-          <TabsTrigger
-            value="animated"
-            className="gap-1.5 text-[10px] font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-none"
+            Static
+          </button>
+          <button
+            onClick={() => setActiveTab("animated")}
+            className={cn(
+              "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all",
+              activeTab === "animated"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5"
+            )}
           >
             <Sparkles className="w-3 h-3" />
-            ANIMATED
-          </TabsTrigger>
-        </TabsList>
+            Animated
+          </button>
+        </div>
 
         <div className="flex-1 min-h-0 relative">
           <TabsContent value="static" className="absolute inset-0 mt-0">

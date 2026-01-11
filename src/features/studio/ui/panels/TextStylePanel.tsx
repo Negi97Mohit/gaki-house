@@ -12,16 +12,5 @@ export const TextStylePanel: React.FC<TextStylePanelProps> = ({
   style,
   onStyleChange,
 }) => {
-  return (
-    <div className="space-y-4 font-mono">
-      {/* Section Label */}
-      <div className="pb-3 border-b border-border">
-        <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
-          Customize Text Style
-        </span>
-      </div>
-      
-      <StyleControls style={style} onStyleChange={onStyleChange} />
-    </div>
-  );
+  return <StyleControls style={style} onStyleChange={onStyleChange} />;
 };
