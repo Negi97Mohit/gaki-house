@@ -123,48 +123,56 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       icon: LayoutGrid,
       title: "DESIGNS",
       shortTitle: "DSN",
+      shortcutHint: null,
     },
     {
       id: "animation-library",
       icon: Library,
       title: "ANIMATIONS",
       shortTitle: "ANI",
+      shortcutHint: "L",
     },
     {
       id: "text-presets",
       icon: Type,
       title: "TEXT & PRESETS",
       shortTitle: "TXT",
+      shortcutHint: "T",
     },
     {
       id: "saved-overlays",
       icon: Sparkles,
       title: "OVERLAYS",
       shortTitle: "OVR",
+      shortcutHint: null,
     },
     {
       id: "social-banners",
       icon: BadgeCheck,
       title: "BANNERS",
       shortTitle: "BNR",
+      shortcutHint: null,
     },
     {
       id: "file-vault",
       icon: Archive,
       title: "FILE VAULT",
       shortTitle: "VLT",
+      shortcutHint: null,
     },
     {
       id: "tools",
       icon: Wrench,
       title: "TOOLS",
       shortTitle: "TLS",
+      shortcutHint: "D",
     },
     {
       id: "settings",
       icon: Settings,
       title: "SETTINGS",
       shortTitle: "SET",
+      shortcutHint: ",",
     },
   ];
 
@@ -220,9 +228,14 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 <TooltipContent
                   side="right"
                   sideOffset={10}
-                  className="font-mono text-xs"
+                  className="font-mono text-xs flex items-center gap-2"
                 >
-                  {section.title}
+                  <span>{section.title}</span>
+                  {section.shortcutHint && (
+                    <kbd className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-muted/80 border border-border/60 rounded text-[10px] font-mono font-medium text-muted-foreground">
+                      {section.shortcutHint}
+                    </kbd>
+                  )}
                 </TooltipContent>
               </Tooltip>
             ))}

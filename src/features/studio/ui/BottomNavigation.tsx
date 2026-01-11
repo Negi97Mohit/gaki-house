@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/shared/ui/dialog";
 import { cn } from "@/shared/lib/utils";
+import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 
 // Decomposed Controls
 import { MediaControls } from "./controls/MediaControls";
@@ -28,7 +29,7 @@ interface BottomNavigationProps {
   // Streaming callbacks
   onStartStream?: (url: string, key: string) => void;
   onStopStream?: () => void;
-  onToggleRecord?: () => void; // <--- NEW PROP ADDED HERE
+  onToggleRecord?: () => void;
   onStreamSettingsSave?: (url: string, key: string) => void;
   streamStatus?: string;
   isStreamConnecting?: boolean;
@@ -49,7 +50,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   portalContainer,
   onStartStream,
   onStopStream,
-  onToggleRecord, // <--- DESTRUCTURE PROP
+  onToggleRecord,
   onStreamSettingsSave,
   streamStatus,
   isStreamConnecting,
@@ -104,7 +105,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
   return (
     <>
-      {/* Download Dialog (unchanged) */}
+      {/* Download Dialog */}
       <Dialog open={isDownloadOpen} onOpenChange={setIsDownloadOpen}>
         <DialogContent className="sm:max-w-sm bg-background border-border/30 p-6">
           <DialogHeader className="pb-4">
@@ -112,7 +113,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               Download for Desktop
             </DialogTitle>
           </DialogHeader>
-          {/* ... download buttons (omitted for brevity, assume same as before) ... */}
           <div className="flex justify-center gap-6 py-6">
             <button
               onClick={() => window.open(downloads.windows, "_blank")}
@@ -132,7 +132,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 <div className="text-[10px] text-muted-foreground">.exe</div>
               </div>
             </button>
-            {/* ... other buttons ... */}
           </div>
         </DialogContent>
       </Dialog>
@@ -148,16 +147,17 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         style={{ zIndex: "var(--z-floating-controls)" }}
       >
         <div className="flex items-center gap-1 px-2 py-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full h-10 w-10 hover:bg-background/60"
-            onClick={() => setShowSettings((prev) => !prev)}
-            title="Settings"
-            data-floating-trigger="true"
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-          </Button>
+          <ShortcutTooltip label="Settings" shortcut="settings">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full h-10 w-10 hover:bg-background/60"
+              onClick={() => setShowSettings((prev) => !prev)}
+              data-floating-trigger="true"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+            </Button>
+          </ShortcutTooltip>
 
           <div className="w-px h-6 bg-border/40 mx-1" />
           <div id="layout-controls-slot" className="flex items-center gap-1" />
@@ -176,7 +176,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           <MediaControls
             onStartStream={onStartStream}
             onStopStream={onStopStream}
-            onToggleRecord={onToggleRecord} // <--- PASS PROP HERE
+            onToggleRecord={onToggleRecord}
             onStreamSettingsSave={onStreamSettingsSave}
             streamStatus={streamStatus}
             isConnecting={isStreamConnecting}
@@ -187,15 +187,16 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
           <div className="flex items-center gap-0.5">
             {!isElectron && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60 text-blue-500 hover:text-blue-400"
-                onClick={() => setIsDownloadOpen(true)}
-                title="Download Desktop App"
-              >
-                <Download className="w-4 h-4" />
-              </Button>
+              <ShortcutTooltip label="Download Desktop App">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full h-10 w-10 hover:bg-background/60 text-blue-500 hover:text-blue-400"
+                  onClick={() => setIsDownloadOpen(true)}
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+              </ShortcutTooltip>
             )}
 
             <AIControls
@@ -205,19 +206,20 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               portalContainer={portalContainer}
             />
 
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full h-10 w-10 hover:bg-background/60"
-              onClick={handleFullscreenToggle}
-              title={isFullscreen ? "Exit" : "Fullscreen"}
-            >
-              {isFullscreen ? (
-                <Shrink className="h-4 w-4" />
-              ) : (
-                <Expand className="h-4 w-4" />
-              )}
-            </Button>
+            <ShortcutTooltip label={isFullscreen ? "Exit Fullscreen" : "Fullscreen"} shortcut="fullscreen">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-10 w-10 hover:bg-background/60"
+                onClick={handleFullscreenToggle}
+              >
+                {isFullscreen ? (
+                  <Shrink className="h-4 w-4" />
+                ) : (
+                  <Expand className="h-4 w-4" />
+                )}
+              </Button>
+            </ShortcutTooltip>
           </div>
         </div>
       </div>

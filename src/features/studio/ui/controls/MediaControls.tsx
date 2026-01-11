@@ -26,6 +26,7 @@ import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurati
 import { useMediaStore } from "@/stores/media.store";
 import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
+import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 
 interface MediaControlsProps {
   onStartStream?: (url: string, key: string) => void;
@@ -128,19 +129,20 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         role="group"
         aria-label="Microphone Controls"
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full h-10 w-10 hover:bg-background/60"
-          onClick={() => setAudioOn(!isAudioOn)}
-          title={isAudioOn ? "Mute Microphone" : "Unmute Microphone"}
-        >
-          {isAudioOn ? (
-            <Mic className="h-4 w-4" />
-          ) : (
-            <MicOff className="h-4 w-4 text-red-500" />
-          )}
-        </Button>
+        <ShortcutTooltip label={isAudioOn ? "Mute Microphone" : "Unmute Microphone"} shortcut="toggleMic">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10 hover:bg-background/60"
+            onClick={() => setAudioOn(!isAudioOn)}
+          >
+            {isAudioOn ? (
+              <Mic className="h-4 w-4" />
+            ) : (
+              <MicOff className="h-4 w-4 text-red-500" />
+            )}
+          </Button>
+        </ShortcutTooltip>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -187,19 +189,20 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         role="group"
         aria-label="Camera Controls"
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full h-10 w-10 hover:bg-background/60"
-          onClick={() => setVideoOn(!isVideoOn)}
-          title={isVideoOn ? "Turn Camera Off" : "Turn Camera On"}
-        >
-          {isVideoOn ? (
-            <Webcam className="h-4 w-4" />
-          ) : (
-            <VideoOff className="h-4 w-4 text-red-500" />
-          )}
-        </Button>
+        <ShortcutTooltip label={isVideoOn ? "Turn Camera Off" : "Turn Camera On"} shortcut="toggleCamera">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10 hover:bg-background/60"
+            onClick={() => setVideoOn(!isVideoOn)}
+          >
+            {isVideoOn ? (
+              <Webcam className="h-4 w-4" />
+            ) : (
+              <VideoOff className="h-4 w-4 text-red-500" />
+            )}
+          </Button>
+        </ShortcutTooltip>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -243,29 +246,30 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       <div className="w-px h-6 bg-border mx-1" />
 
       {/* --- RECORDING CONTROL --- */}
-      <Button
-        variant={isRecording ? "destructive" : "ghost"}
-        size={isRecording ? "default" : "icon"}
-        onClick={handleRecordClick} // CHANGED to debug handler
-        className={cn(
-          "rounded-full transition-all duration-300",
-          isRecording
-            ? "px-3"
-            : "h-10 w-10 hover:bg-red-500/10 text-red-500 hover:text-red-600"
-        )}
-        title={isRecording ? "Stop Recording" : "Start Local Recording"}
-      >
-        {isRecording ? (
-          <>
-            <Square className="w-3.5 h-3.5 mr-2 fill-current" />
-            <span className="font-mono text-xs tabular-nums">
-              {formatDuration(recordingDuration)}
-            </span>
-          </>
-        ) : (
-          <Circle className="w-4 h-4" />
-        )}
-      </Button>
+      <ShortcutTooltip label={isRecording ? "Stop Recording" : "Start Recording"}>
+        <Button
+          variant={isRecording ? "destructive" : "ghost"}
+          size={isRecording ? "default" : "icon"}
+          onClick={handleRecordClick}
+          className={cn(
+            "rounded-full transition-all duration-300",
+            isRecording
+              ? "px-3"
+              : "h-10 w-10 hover:bg-red-500/10 text-red-500 hover:text-red-600"
+          )}
+        >
+          {isRecording ? (
+            <>
+              <Square className="w-3.5 h-3.5 mr-2 fill-current" />
+              <span className="font-mono text-xs tabular-nums">
+                {formatDuration(recordingDuration)}
+              </span>
+            </>
+          ) : (
+            <Circle className="w-4 h-4" />
+          )}
+        </Button>
+      </ShortcutTooltip>
 
       <StreamConfigurationModal
         onStartStream={onStartStream}
@@ -274,34 +278,36 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
 
       <div className="w-px h-6 bg-border mx-1" />
 
-      <Button
-        variant="ghost"
-        size="icon"
-        className={cn(
-          "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
-          isSmartSwitchEnabled &&
-            "text-primary bg-primary/10 hover:bg-primary/20"
-        )}
-        onClick={onSmartSwitchToggle}
-        title="Smart Scene Switch"
-      >
-        <ScanFace className="w-4 h-4" />
-      </Button>
+      <ShortcutTooltip label="Smart Scene Switch" shortcut="smartSwitch">
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
+            isSmartSwitchEnabled &&
+              "text-primary bg-primary/10 hover:bg-primary/20"
+          )}
+          onClick={onSmartSwitchToggle}
+        >
+          <ScanFace className="w-4 h-4" />
+        </Button>
+      </ShortcutTooltip>
 
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "rounded-full h-10 w-10 hover:bg-background/60",
-              screenShareMode !== "off" && "bg-primary/20 text-primary"
-            )}
-            title="Share Screen or Canvas"
-          >
-            <ScreenShare className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
+        <ShortcutTooltip label="Share Screen or Canvas">
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "rounded-full h-10 w-10 hover:bg-background/60",
+                screenShareMode !== "off" && "bg-primary/20 text-primary"
+              )}
+            >
+              <ScreenShare className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+        </ShortcutTooltip>
         <DropdownMenuContent
           side="top"
           align="center"

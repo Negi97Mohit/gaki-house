@@ -5,6 +5,7 @@ import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
 import { useSceneStore } from "@/stores/scene.store";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "@/stores/ui.store";
+import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 
 interface AIControlsProps {
     onAiCommandSubmit: (text: string, targetId: string | null) => void;
@@ -46,15 +47,16 @@ export const AIControls: React.FC<AIControlsProps> = ({
             portalContainer={portalContainer}
             hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
         >
-            <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60 text-yellow-500 hover:text-yellow-600"
-                title="AI Assistant"
-                aria-label="Open AI Assistant"
-            >
-                <Sparkles className="w-4 h-4" />
-            </Button>
+            <ShortcutTooltip label="AI Assistant" shortcut="aiAssistant">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full h-10 w-10 hover:bg-background/60 text-yellow-500 hover:text-yellow-600"
+                    aria-label="Open AI Assistant"
+                >
+                    <Sparkles className="w-4 h-4" />
+                </Button>
+            </ShortcutTooltip>
         </AICommandPopover>
     );
 };
