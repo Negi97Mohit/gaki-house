@@ -316,7 +316,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   return (
     <div
       className={cn(
-        "fixed top-1/2 right-4 -translate-y-1/2",
+        "fixed top-1/2 right-3 -translate-y-1/2",
         "transition-all duration-300 ease-in-out",
         effectivelyHidden
           ? "translate-x-full opacity-0 pointer-events-none"
@@ -324,30 +324,33 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
       )}
       style={{ zIndex: "var(--z-scene-tabs)" }}
     >
-      {/* Main Container */}
-      <div className="bg-card/95 dark:bg-card/90 backdrop-blur-xl border border-border/60 dark:border-border/40 rounded-lg w-52 max-h-[70vh] flex flex-col pointer-events-auto shadow-lg">
-        {/* Header */}
-        <div className="flex-shrink-0 flex items-center justify-between px-3 py-2.5 border-b border-border">
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-muted-foreground" />
-            <span className="text-xs font-semibold text-foreground">
+      {/* Main Container - Sleek glass island */}
+      <div className="relative bg-background/80 dark:bg-background/60 backdrop-blur-2xl border border-border/20 dark:border-white/10 rounded-2xl w-44 max-h-[60vh] flex flex-col pointer-events-auto shadow-2xl shadow-black/10 dark:shadow-black/30">
+        {/* Subtle inner glow */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
+        
+        {/* Header - Compact */}
+        <div className="relative flex-shrink-0 flex items-center justify-between px-2.5 py-2 border-b border-border/10 dark:border-white/5">
+          <div className="flex items-center gap-1.5">
+            <Layers className="w-3 h-3 text-muted-foreground/70" />
+            <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
               Scenes
             </span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <button
-              className="w-6 h-6 flex items-center justify-center text-primary hover:text-primary/80 rounded hover:bg-primary/10 transition-colors"
+              className="w-5 h-5 flex items-center justify-center text-primary/80 hover:text-primary rounded-lg hover:bg-primary/10 transition-all"
               onClick={() => setIsStreamStyleSelectorOpen(true)}
               title="Stream Styles"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3 h-3" />
             </button>
             <ShortcutTooltip label="Hide Scenes" shortcut="toggleGridLayout" side="left">
               <button
-                className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors"
+                className="w-5 h-5 flex items-center justify-center text-muted-foreground/60 hover:text-foreground rounded-lg hover:bg-foreground/5 transition-all"
                 onClick={onHide}
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3 h-3" />
               </button>
             </ShortcutTooltip>
           </div>
@@ -356,18 +359,18 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         {/* Scroll Up */}
         {showTopScroll && (
           <button
-            className="flex-shrink-0 w-full py-1 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors border-b border-border/50"
+            className="relative flex-shrink-0 w-full py-0.5 flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-foreground/5 transition-all"
             onClick={() => scroll("up")}
           >
-            <ChevronUp className="w-4 h-4" />
+            <ChevronUp className="w-3 h-3" />
           </button>
         )}
 
         {/* Scenes List */}
         <div
           ref={scrollContainerRef}
-          className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden py-1"
-          style={{ scrollbarWidth: "thin" }}
+          className="relative flex-1 min-h-0 overflow-y-auto overflow-x-hidden py-1 px-1"
+          style={{ scrollbarWidth: "none" }}
         >
           {scenes.map((scene, index) => {
             const isActive = scene.id === activeSceneId && !activeSubsceneId;
@@ -394,12 +397,11 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
               <React.Fragment key={scene.id}>
                 {/* Drop indicator before */}
                 {isDropBefore && (
-                  <div className="h-0.5 bg-accent mx-2 rounded-full" />
+                  <div className="h-0.5 bg-primary/50 mx-1.5 rounded-full" />
                 )}
 
-                {/* Scene Tab */}
+                {/* Scene Tab - Minimal pill style */}
                 <div
-                  // NEW: Attach ref here
                   ref={(el) => (tabsRef.current[scene.id] = el)}
                   draggable
                   onDragStart={(e) => handleDragStart(e, "scene", index)}
@@ -407,15 +409,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   onDrop={handleDrop}
                   onDragEnd={handleDragEnd}
                   className={cn(
-                    "group flex items-center h-9 px-2 mx-1 rounded-md cursor-pointer transition-all duration-150",
+                    "group flex items-center h-7 px-2 rounded-xl cursor-pointer transition-all duration-200",
                     isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "hover:bg-muted/60",
+                      ? "bg-primary/15 dark:bg-primary/20 text-foreground"
+                      : "hover:bg-foreground/5 dark:hover:bg-white/5",
                     isDragging && "opacity-40"
                   )}
                   onClick={(e) => {
                     if (editingId) return;
-                    // Check if clicking on expand/collapse area
                     const target = e.target as HTMLElement;
                     if (target.closest("[data-expand-toggle]")) return;
                     onSceneSelect(scene.id);
@@ -423,7 +424,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   onDoubleClick={() => handleDoubleClick(scene.id, scene.name)}
                 >
                   {/* Expand/Collapse or dot indicator */}
-                  <div className="w-5 flex items-center justify-center flex-shrink-0">
+                  <div className="w-4 flex items-center justify-center flex-shrink-0">
                     {hasSubscenes ? (
                       <button
                         data-expand-toggle
@@ -432,31 +433,29 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                           e.preventDefault();
                           onToggleExpand?.(scene.id);
                         }}
-                        className="hover:bg-background/30 rounded p-0.5 transition-colors"
+                        className="hover:bg-foreground/10 rounded-md p-0.5 transition-all"
                       >
                         {isExpanded ? (
-                          <ChevronDown className="w-3.5 h-3.5" />
+                          <ChevronDown className="w-2.5 h-2.5" />
                         ) : (
-                          <ChevronRight className="w-3.5 h-3.5" />
+                          <ChevronRight className="w-2.5 h-2.5" />
                         )}
                       </button>
                     ) : (
                       <div
                         className={cn(
-                          "w-1.5 h-1.5 rounded-full",
+                          "w-1 h-1 rounded-full transition-colors",
                           isActive
-                            ? "bg-accent-foreground/60"
-                            : "bg-muted-foreground/40"
+                            ? "bg-primary"
+                            : "bg-muted-foreground/30"
                         )}
                       />
                     )}
                   </div>
 
-                  {/* Drag Handle */}
+                  {/* Drag Handle - Hidden until hover */}
                   <GripVertical
-                    className={cn(
-                      "w-3 h-3 mr-1 opacity-0 group-hover:opacity-60 transition-opacity flex-shrink-0 cursor-grab"
-                    )}
+                    className="w-2.5 h-2.5 mr-0.5 opacity-0 group-hover:opacity-40 transition-opacity flex-shrink-0 cursor-grab"
                   />
 
                   {/* Tab Name or Input */}
@@ -468,14 +467,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       onChange={handleNameChange}
                       onBlur={() => handleNameSubmit(scene.id)}
                       onKeyDown={(e) => handleKeyDown(e, scene.id)}
-                      className="flex-1 bg-transparent border-b border-accent-foreground/50 outline-none text-xs min-w-0"
+                      className="flex-1 bg-transparent border-b border-primary/50 outline-none text-[11px] min-w-0"
                       onClick={(e) => e.stopPropagation()}
                     />
                   ) : (
                     <span
                       className={cn(
-                        "flex-1 text-xs truncate min-w-0",
-                        isActive ? "font-semibold" : "font-medium"
+                        "flex-1 text-[11px] truncate min-w-0",
+                        isActive ? "font-medium text-foreground" : "font-normal text-muted-foreground"
                       )}
                     >
                       {scene.name}
@@ -488,55 +487,56 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className={cn(
-                          "h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity",
-                          isActive && "hover:bg-accent-foreground/20"
-                        )}
+                        className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all rounded-md hover:bg-foreground/10"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <MoreHorizontal className="h-3 h-3" />
+                        <MoreHorizontal className="h-2.5 w-2.5" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      className="w-36 z-[9999] bg-popover border border-border shadow-lg"
+                      className="w-32 z-[9999] bg-popover/95 backdrop-blur-2xl border border-border/20 dark:border-white/10 shadow-xl rounded-xl"
                     >
                       <DropdownMenuItem
                         onClick={() => handleDoubleClick(scene.id, scene.name)}
+                        className="text-[11px] py-1.5"
                       >
                         Rename
                       </DropdownMenuItem>
                       {onDuplicateScene && (
                         <DropdownMenuItem
                           onClick={() => onDuplicateScene(scene.id)}
+                          className="text-[11px] py-1.5"
                         >
-                          <Copy className="w-3 h-3 mr-2" />
+                          <Copy className="w-2.5 h-2.5 mr-1.5" />
                           Duplicate
                         </DropdownMenuItem>
                       )}
                       {onSubsceneAdd && (
                         <DropdownMenuItem
                           onClick={() => onSubsceneAdd(scene.id)}
+                          className="text-[11px] py-1.5"
                         >
-                          <GitBranch className="w-3 h-3 mr-2" />
-                          Add Subscene
+                          <GitBranch className="w-2.5 h-2.5 mr-1.5" />
+                          Subscene
                         </DropdownMenuItem>
                       )}
-                      <DropdownMenuSeparator />
+                      <DropdownMenuSeparator className="bg-border/20" />
                       {onResetScene && (
                         <DropdownMenuItem
                           onClick={() => onResetScene(scene.id)}
+                          className="text-[11px] py-1.5"
                         >
-                          <RotateCcw className="w-3 h-3 mr-2" />
-                          Reset to Default
+                          <RotateCcw className="w-2.5 h-2.5 mr-1.5" />
+                          Reset
                         </DropdownMenuItem>
                       )}
                       {scenes.length > 1 && (
                         <DropdownMenuItem
                           onClick={() => onSceneClose(scene.id)}
-                          className="text-destructive focus:text-destructive"
+                          className="text-destructive focus:text-destructive text-[11px] py-1.5"
                         >
-                          <X className="w-3 h-3 mr-2" />
+                          <X className="w-2.5 h-2.5 mr-1.5" />
                           Delete
                         </DropdownMenuItem>
                       )}
@@ -546,14 +546,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
 
                 {/* Drop indicator after */}
                 {isDropAfter && !hasSubscenes && (
-                  <div className="h-0.5 bg-accent mx-2 rounded-full" />
+                  <div className="h-0.5 bg-primary/50 mx-1.5 rounded-full" />
                 )}
 
                 {/* Subscenes with git-tree visualization */}
                 {hasSubscenes && isExpanded && (
-                  <div className="ml-4 relative">
+                  <div className="ml-3 relative">
                     {/* Vertical git line */}
-                    <div className="absolute left-2.5 top-0 bottom-2 w-px bg-border" />
+                    <div className="absolute left-2 top-0 bottom-2 w-px bg-border/30" />
 
                     {scene
                       .subscenes!.sort((a, b) => a.order - b.order)
@@ -580,25 +580,24 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         return (
                           <div key={subscene.id} className="relative">
                             {/* Horizontal branch line */}
-                            <div className="absolute left-2.5 top-[14px] w-2.5 h-px bg-border" />
+                            <div className="absolute left-2 top-[11px] w-2 h-px bg-border/30" />
 
                             {/* Branch node */}
                             <div
                               className={cn(
-                                "absolute left-[7px] top-[11px] w-2 h-2 rounded-full border-2",
+                                "absolute left-[5px] top-[8px] w-1.5 h-1.5 rounded-full",
                                 isSubActive
-                                  ? "bg-accent border-accent"
-                                  : "bg-background border-muted-foreground/40"
+                                  ? "bg-primary"
+                                  : "bg-muted-foreground/30"
                               )}
                             />
 
                             {/* Drop indicator before */}
                             {isSubDropBefore && (
-                              <div className="h-0.5 bg-accent ml-5 mr-1 rounded-full" />
+                              <div className="h-0.5 bg-primary/50 ml-4 mr-0.5 rounded-full" />
                             )}
 
                             <div
-                              // NEW: Attach ref here for Subscene
                               ref={(el) => (tabsRef.current[subscene.id] = el)}
                               draggable
                               onDragStart={(e) =>
@@ -620,10 +619,10 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                               onDrop={handleDrop}
                               onDragEnd={handleDragEnd}
                               className={cn(
-                                "group flex items-center gap-1 h-7 px-2 ml-5 mr-1 rounded cursor-pointer transition-all",
+                                "group flex items-center gap-0.5 h-6 px-1.5 ml-4 rounded-lg cursor-pointer transition-all duration-200",
                                 isSubActive
-                                  ? "bg-accent/80 text-accent-foreground"
-                                  : "hover:bg-muted/40",
+                                  ? "bg-primary/10 dark:bg-primary/15 text-foreground"
+                                  : "hover:bg-foreground/5 dark:hover:bg-white/5",
                                 isSubDragging && "opacity-40"
                               )}
                               onClick={() =>
@@ -633,7 +632,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                 handleDoubleClick(subscene.id, subscene.name)
                               }
                             >
-                              <GripVertical className="w-2.5 h-2.5 opacity-0 group-hover:opacity-50 flex-shrink-0 cursor-grab" />
+                              <GripVertical className="w-2 h-2 opacity-0 group-hover:opacity-30 flex-shrink-0 cursor-grab" />
 
                               {editingId === subscene.id ? (
                                 <input
@@ -646,16 +645,16 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                   onKeyDown={(e) =>
                                     handleKeyDown(e, scene.id, subscene.id)
                                   }
-                                  className="flex-1 bg-transparent border-b border-accent-foreground/50 text-[11px] outline-none min-w-0"
+                                  className="flex-1 bg-transparent border-b border-primary/50 text-[10px] outline-none min-w-0"
                                   onClick={(e) => e.stopPropagation()}
                                 />
                               ) : (
                                 <span
                                   className={cn(
-                                    "flex-1 text-[11px] truncate",
+                                    "flex-1 text-[10px] truncate",
                                     isSubActive
-                                      ? "font-medium"
-                                      : "text-muted-foreground"
+                                      ? "font-medium text-foreground"
+                                      : "text-muted-foreground/70"
                                   )}
                                 >
                                   {subscene.name}
@@ -666,34 +665,34 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-4 w-4 opacity-0 group-hover:opacity-100"
+                                  className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 rounded-md hover:bg-foreground/10"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     onSubsceneClose(scene.id, subscene.id);
                                   }}
                                 >
-                                  <X className="h-2.5 w-2.5" />
+                                  <X className="h-2 w-2" />
                                 </Button>
                               )}
                             </div>
 
                             {/* Drop indicator after */}
                             {isSubDropAfter && (
-                              <div className="h-0.5 bg-accent ml-5 mr-1 rounded-full" />
+                              <div className="h-0.5 bg-primary/50 ml-4 mr-0.5 rounded-full" />
                             )}
 
                             {/* Transition between subscenes */}
                             {nextSubscene && (
-                              <div className="flex items-center ml-7 py-0.5">
-                                <div className="flex-1 h-px bg-border/20" />
+                              <div className="flex items-center ml-5 py-0.5">
+                                <div className="flex-1 h-px bg-border/10" />
                                 <Button
                                   variant="ghost"
                                   size="icon"
                                   className={cn(
-                                    "h-4 w-4 mx-0.5 transition-all",
+                                    "h-3.5 w-3.5 mx-0.5 transition-all rounded-md",
                                     subscene.transitionToNext
-                                      ? "text-muted-foreground hover:text-accent"
-                                      : "text-muted-foreground/30 hover:text-accent"
+                                      ? "text-muted-foreground/60 hover:text-primary"
+                                      : "text-muted-foreground/20 hover:text-primary"
                                   )}
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -702,7 +701,6 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                         subscene.transitionToNext
                                       );
                                     } else {
-                                      // Create default subscene transition
                                       const newTransition: SceneTransition = {
                                         id: `subtrans-${Date.now()}`,
                                         fromSceneId: subscene.id,
@@ -725,10 +723,10 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                   {subscene.transitionToNext ? (
                                     <TransitionIcon />
                                   ) : (
-                                    <Plus className="w-2.5 h-2.5" />
+                                    <Plus className="w-2 h-2" />
                                   )}
                                 </Button>
-                                <div className="flex-1 h-px bg-border/20" />
+                                <div className="flex-1 h-px bg-border/10" />
                               </div>
                             )}
                           </div>
@@ -738,12 +736,12 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                     {/* Add subscene at end */}
                     {onSubsceneAdd && (
                       <div className="relative">
-                        <div className="absolute left-2.5 top-2 w-2.5 h-px bg-border/50" />
+                        <div className="absolute left-2 top-2 w-2 h-px bg-border/20" />
                         <button
                           onClick={() => onSubsceneAdd(scene.id)}
-                          className="ml-5 mr-1 px-2 py-1 text-[10px] text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted/30 rounded flex items-center gap-1 transition-colors"
+                          className="ml-4 px-1.5 py-0.5 text-[9px] text-muted-foreground/40 hover:text-muted-foreground hover:bg-foreground/5 rounded-md flex items-center gap-0.5 transition-all"
                         >
-                          <Plus className="w-2.5 h-2.5" />
+                          <Plus className="w-2 h-2" />
                           <span>Add</span>
                         </button>
                       </div>
@@ -753,23 +751,22 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
 
                 {/* Transition Button between scenes */}
                 {index < scenes.length - 1 && (
-                  <div className="flex items-center justify-center py-1 mx-2">
-                    <div className="flex-1 h-px bg-border/30" />
+                  <div className="flex items-center justify-center py-0.5 mx-1.5">
+                    <div className="flex-1 h-px bg-border/10" />
                     <Button
                       variant="ghost"
                       size="icon"
                       className={cn(
-                        "h-5 w-5 mx-1 border transition-all",
+                        "h-4 w-4 mx-0.5 rounded-md transition-all",
                         transitionToNext
-                          ? "text-muted-foreground hover:text-accent border-transparent hover:border-accent/30"
-                          : "text-muted-foreground/30 border-dashed border-border/50 hover:border-accent/50 hover:text-accent"
+                          ? "text-muted-foreground/50 hover:text-primary border-transparent"
+                          : "text-muted-foreground/20 border-dashed border-border/20 hover:border-primary/30 hover:text-primary"
                       )}
                       onClick={(e) => {
                         e.stopPropagation();
                         if (transitionToNext) {
                           onTransitionClick(transitionToNext);
                         } else {
-                          // Create default transition
                           const newTransition: SceneTransition = {
                             id: `trans-${Date.now()}`,
                             fromSceneId: scene.id,
@@ -792,10 +789,10 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       {transitionToNext ? (
                         <TransitionIcon />
                       ) : (
-                        <Plus className="w-3 h-3" />
+                        <Plus className="w-2.5 h-2.5" />
                       )}
                     </Button>
-                    <div className="flex-1 h-px bg-border/30" />
+                    <div className="flex-1 h-px bg-border/10" />
                   </div>
                 )}
               </React.Fragment>
@@ -806,24 +803,24 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         {/* Scroll Down */}
         {showBottomScroll && (
           <button
-            className="flex-shrink-0 w-full py-1 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors border-t border-border/50"
+            className="relative flex-shrink-0 w-full py-0.5 flex items-center justify-center text-muted-foreground/50 hover:text-foreground hover:bg-foreground/5 transition-all"
             onClick={() => scroll("down")}
           >
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="w-3 h-3" />
           </button>
         )}
 
-        {/* Add Button */}
-        <div className="flex-shrink-0 border-t border-border p-2">
+        {/* Add Button - Compact */}
+        <div className="relative flex-shrink-0 border-t border-border/10 dark:border-white/5 p-1.5">
           <ShortcutTooltip label="Add Scene" shortcut="addScene" side="left">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
-              className="w-full text-xs gap-1.5"
+              className="w-full h-6 text-[10px] gap-1 rounded-lg hover:bg-foreground/5 dark:hover:bg-white/5 text-muted-foreground hover:text-foreground transition-all"
               onClick={onSceneAdd}
             >
-              <Plus className="w-3.5 h-3.5" />
-              Add Scene
+              <Plus className="w-2.5 h-2.5" />
+              Add
             </Button>
           </ShortcutTooltip>
         </div>
