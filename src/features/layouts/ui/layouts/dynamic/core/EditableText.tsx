@@ -22,7 +22,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
   style,
   draggable = true,
 }) => {
-  const { layout, editor, colors, controlsVisible } = useDynamicLayout();
+  const { layout, editor, colors } = useDynamicLayout();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dragControls = useDragControls();
   const [isDragging, setIsDragging] = useState(false);
@@ -102,10 +102,10 @@ export const EditableText: React.FC<EditableTextProps> = ({
     return <input {...commonInputProps} />;
   }
 
-  // Draggable version - only show and allow interaction when controlsVisible is true
+  // Draggable version
   return (
     <motion.div
-      drag={!isEditing && controlsVisible}
+      drag={!isEditing}
       dragControls={dragControls}
       dragMomentum={false}
       dragElastic={0}
@@ -116,9 +116,8 @@ export const EditableText: React.FC<EditableTextProps> = ({
       animate={{ x: storedPosition.x, y: storedPosition.y }}
       whileDrag={{ scale: 1.02, zIndex: 100 }}
       className={cn(
-        "inline-block transition-opacity duration-200",
-        controlsVisible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
-        !isEditing && controlsVisible && "cursor-grab active:cursor-grabbing",
+        "inline-block pointer-events-auto",
+        !isEditing && "cursor-grab active:cursor-grabbing",
         isDragging && "z-50"
       )}
       style={{ position: "relative" }}
