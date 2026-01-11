@@ -124,8 +124,9 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
 
   return (
     <>
+      {/* Audio Controls */}
       <div
-        className="flex items-center gap-0.5"
+        className="flex items-center"
         role="group"
         aria-label="Microphone Controls"
       >
@@ -133,13 +134,13 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10 hover:bg-background/60"
+            className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
             onClick={() => setAudioOn(!isAudioOn)}
           >
             {isAudioOn ? (
-              <Mic className="h-4 w-4" />
+              <Mic className="h-3.5 w-3.5" />
             ) : (
-              <MicOff className="h-4 w-4 text-red-500" />
+              <MicOff className="h-3.5 w-3.5 text-destructive" />
             )}
           </Button>
         </ShortcutTooltip>
@@ -148,15 +149,15 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full h-7 w-7 hover:bg-background/60"
+              className="rounded-lg h-5 w-5 hover:bg-foreground/5 dark:hover:bg-white/10 -ml-1"
             >
-              <ChevronUp className="w-3 h-3" />
+              <ChevronUp className="w-2.5 h-2.5 opacity-50" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             side="top"
             align="center"
-            className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
+            className="bg-background/95 backdrop-blur-2xl border-border/20 dark:border-white/10 rounded-xl shadow-xl max-h-64 overflow-y-auto"
           >
             {audioDevices.length === 0 ? (
               <DropdownMenuItem
@@ -170,10 +171,10 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 <DropdownMenuItem
                   key={device.deviceId}
                   onClick={() => setSelectedAudioDevice(device.deviceId)}
-                  className="text-sm"
+                  className="text-xs"
                 >
                   {device.deviceId === selectedAudioDevice && (
-                    <Check className="w-3.5 h-3.5 mr-2" />
+                    <Check className="w-3 h-3 mr-2" />
                   )}
                   {device.label || `Microphone ${i + 1}`}
                 </DropdownMenuItem>
@@ -185,7 +186,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
 
       {/* Video Controls */}
       <div
-        className="flex items-center gap-0.5"
+        className="flex items-center"
         role="group"
         aria-label="Camera Controls"
       >
@@ -193,13 +194,13 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10 hover:bg-background/60"
+            className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
             onClick={() => setVideoOn(!isVideoOn)}
           >
             {isVideoOn ? (
-              <Webcam className="h-4 w-4" />
+              <Webcam className="h-3.5 w-3.5" />
             ) : (
-              <VideoOff className="h-4 w-4 text-red-500" />
+              <VideoOff className="h-3.5 w-3.5 text-destructive" />
             )}
           </Button>
         </ShortcutTooltip>
@@ -208,15 +209,15 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full h-7 w-7 hover:bg-background/60"
+              className="rounded-lg h-5 w-5 hover:bg-foreground/5 dark:hover:bg-white/10 -ml-1"
             >
-              <ChevronUp className="w-3 h-3" />
+              <ChevronUp className="w-2.5 h-2.5 opacity-50" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             side="top"
             align="center"
-            className="bg-background/95 backdrop-blur-xl border-border/40 max-h-64 overflow-y-auto"
+            className="bg-background/95 backdrop-blur-2xl border-border/20 dark:border-white/10 rounded-xl shadow-xl max-h-64 overflow-y-auto"
           >
             {videoDevices.length === 0 ? (
               <DropdownMenuItem
@@ -230,10 +231,10 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 <DropdownMenuItem
                   key={device.deviceId}
                   onClick={() => setSelectedVideoDevice(device.deviceId)}
-                  className="text-sm"
+                  className="text-xs"
                 >
                   {device.deviceId === selectedVideoDevice && (
-                    <Check className="w-3.5 h-3.5 mr-2" />
+                    <Check className="w-3 h-3 mr-2" />
                   )}
                   {device.label || `Camera ${i + 1}`}
                 </DropdownMenuItem>
@@ -243,30 +244,30 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         </DropdownMenu>
       </div>
 
-      <div className="w-px h-6 bg-border mx-1" />
+      <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
-      {/* --- RECORDING CONTROL --- */}
+      {/* Recording Control */}
       <ShortcutTooltip label={isRecording ? "Stop Recording" : "Start Recording"}>
         <Button
           variant={isRecording ? "destructive" : "ghost"}
-          size={isRecording ? "default" : "icon"}
+          size={isRecording ? "sm" : "icon"}
           onClick={handleRecordClick}
           className={cn(
-            "rounded-full transition-all duration-300",
+            "rounded-xl transition-all duration-300",
             isRecording
-              ? "px-3"
-              : "h-10 w-10 hover:bg-red-500/10 text-red-500 hover:text-red-600"
+              ? "h-8 px-2.5 gap-1.5"
+              : "h-8 w-8 hover:bg-destructive/10 text-destructive hover:text-destructive"
           )}
         >
           {isRecording ? (
             <>
-              <Square className="w-3.5 h-3.5 mr-2 fill-current" />
-              <span className="font-mono text-xs tabular-nums">
+              <Square className="w-3 h-3 fill-current" />
+              <span className="font-mono text-[10px] tabular-nums">
                 {formatDuration(recordingDuration)}
               </span>
             </>
           ) : (
-            <Circle className="w-4 h-4" />
+            <Circle className="w-3.5 h-3.5" />
           )}
         </Button>
       </ShortcutTooltip>
@@ -276,23 +277,25 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         onStopStream={onStopStream}
       />
 
-      <div className="w-px h-6 bg-border mx-1" />
+      <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
+      {/* Smart Switch */}
       <ShortcutTooltip label="Smart Scene Switch" shortcut="smartSwitch">
         <Button
           variant="ghost"
           size="icon"
           className={cn(
-            "rounded-full h-10 w-10 hover:bg-background/60 transition-colors",
+            "rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200",
             isSmartSwitchEnabled &&
-              "text-primary bg-primary/10 hover:bg-primary/20"
+              "text-primary bg-primary/15 hover:bg-primary/20"
           )}
           onClick={onSmartSwitchToggle}
         >
-          <ScanFace className="w-4 h-4" />
+          <ScanFace className="w-3.5 h-3.5" />
         </Button>
       </ShortcutTooltip>
 
+      {/* Screen Share */}
       <DropdownMenu>
         <ShortcutTooltip label="Share Screen or Canvas" shortcut="screenShare">
           <DropdownMenuTrigger asChild>
@@ -300,45 +303,45 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
               variant="ghost"
               size="icon"
               className={cn(
-                "rounded-full h-10 w-10 hover:bg-background/60",
-                screenShareMode !== "off" && "bg-primary/20 text-primary"
+                "rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200",
+                screenShareMode !== "off" && "bg-primary/15 text-primary"
               )}
             >
-              <ScreenShare className="h-4 w-4" />
+              <ScreenShare className="h-3.5 w-3.5" />
             </Button>
           </DropdownMenuTrigger>
         </ShortcutTooltip>
         <DropdownMenuContent
           side="top"
           align="center"
-          className="bg-background/95 backdrop-blur-xl border-border/40"
+          className="bg-background/95 backdrop-blur-2xl border-border/20 dark:border-white/10 rounded-xl shadow-xl"
         >
           <DropdownMenuItem
             onClick={() => setScreenShareMode("screen")}
-            className="text-sm"
+            className="text-xs"
           >
-            <Monitor className="w-3.5 h-3.5 mr-2" />
+            <Monitor className="w-3 h-3 mr-2" />
             Screen
             {screenShareMode === "screen" && (
-              <Check className="w-3.5 h-3.5 ml-auto" />
+              <Check className="w-3 h-3 ml-auto" />
             )}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setScreenShareMode("canvas")}
-            className="text-sm"
+            className="text-xs"
           >
-            <Paintbrush className="w-3.5 h-3.5 mr-2" />
+            <Paintbrush className="w-3 h-3 mr-2" />
             Canvas
             {screenShareMode === "canvas" && (
-              <Check className="w-3.5 h-3.5 ml-auto" />
+              <Check className="w-3 h-3 ml-auto" />
             )}
           </DropdownMenuItem>
           {screenShareMode !== "off" && (
             <DropdownMenuItem
-              className="text-red-500 text-sm"
+              className="text-destructive text-xs"
               onClick={() => setScreenShareMode("off")}
             >
-              <X className="w-3.5 h-3.5 mr-2" />
+              <X className="w-3 h-3 mr-2" />
               Stop Sharing
             </DropdownMenuItem>
           )}

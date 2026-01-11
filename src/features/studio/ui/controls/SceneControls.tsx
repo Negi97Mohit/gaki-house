@@ -29,13 +29,13 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-10 w-10 hover:bg-background/60 disabled:opacity-30"
+                    className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 disabled:opacity-30 transition-all duration-200"
                     onClick={onUndo}
                     disabled={!canUndo}
                     aria-label="Undo last action"
                     aria-disabled={!canUndo}
                 >
-                    <Undo2 className="w-4 h-4" />
+                    <Undo2 className="w-3.5 h-3.5" />
                 </Button>
             </ShortcutTooltip>
             
@@ -43,13 +43,13 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-10 w-10 hover:bg-background/60 disabled:opacity-30"
+                    className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 disabled:opacity-30 transition-all duration-200"
                     onClick={onRedo}
                     disabled={!canRedo}
                     aria-label="Redo last action"
                     aria-disabled={!canRedo}
                 >
-                    <Redo2 className="w-4 h-4" />
+                    <Redo2 className="w-3.5 h-3.5" />
                 </Button>
             </ShortcutTooltip>
 
@@ -57,11 +57,11 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-10 w-10 hover:bg-background/60 text-destructive hover:text-destructive"
+                    className="rounded-xl h-8 w-8 hover:bg-destructive/10 text-destructive hover:text-destructive transition-all duration-200"
                     onClick={onResetScene}
                     aria-label="Reset Scene to Default"
                 >
-                    <RotateCcw className="w-4 h-4" />
+                    <RotateCcw className="w-3.5 h-3.5" />
                 </Button>
             </ShortcutTooltip>
         </div>

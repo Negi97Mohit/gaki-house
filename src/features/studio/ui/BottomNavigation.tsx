@@ -138,41 +138,53 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
       <div
         className={cn(
-          "fixed bottom-4 left-1/2 -translate-x-1/2 backdrop-blur-xl rounded-full transition-all duration-300 ease-out shadow-2xl",
-          "bg-card/80 border border-border/60 dark:bg-card/70 dark:border-border/40",
+          "fixed bottom-6 left-1/2 -translate-x-1/2 transition-all duration-500 ease-out",
+          "backdrop-blur-2xl rounded-2xl",
+          "bg-background/60 dark:bg-background/40",
+          "border border-border/20 dark:border-white/[0.08]",
+          "shadow-[0_8px_32px_-8px_hsl(var(--foreground)/0.15),0_0_0_1px_hsl(var(--border)/0.1)]",
+          "dark:shadow-[0_8px_32px_-8px_hsl(0_0%_0%/0.5),0_0_0_1px_hsl(var(--border)/0.05),inset_0_1px_0_0_hsl(0_0%_100%/0.05)]",
           isMouseActive
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-8 pointer-events-none"
+            ? "opacity-100 translate-y-0 scale-100"
+            : "opacity-0 translate-y-4 scale-95 pointer-events-none"
         )}
         style={{ zIndex: "var(--z-floating-controls)" }}
       >
-        <div className="flex items-center gap-1 px-2 py-2">
+        {/* Subtle glow effect */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
+        
+        <div className="relative flex items-center gap-0.5 px-1.5 py-1.5">
+          {/* Settings */}
           <ShortcutTooltip label="Settings" shortcut="settings">
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full h-10 w-10 hover:bg-background/60"
+              className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
               onClick={() => setShowSettings((prev) => !prev)}
               data-floating-trigger="true"
             >
-              <SlidersHorizontal className="w-4 h-4" />
+              <SlidersHorizontal className="w-3.5 h-3.5" />
             </Button>
           </ShortcutTooltip>
 
-          <div className="w-px h-6 bg-border/40 mx-1" />
-          <div id="layout-controls-slot" className="flex items-center gap-1" />
-          <div className="w-px h-6 bg-border/40 mx-1" />
+          {/* Elegant divider */}
+          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
+          
+          {/* Layout slot */}
+          <div id="layout-controls-slot" className="flex items-center gap-0.5 [&>button]:h-8 [&>button]:w-8 [&>button]:rounded-xl" />
+          
+          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
-          {/* Decomposed Scene Controls */}
+          {/* Scene Controls */}
           <SceneControls
             onUndo={onUndo}
             onRedo={onRedo}
             onResetScene={onResetScene}
           />
 
-          <div className="w-px h-6 bg-border/40 mx-1" />
+          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
-          {/* Decomposed Media Controls */}
+          {/* Media Controls */}
           <MediaControls
             onStartStream={onStartStream}
             onStopStream={onStopStream}
@@ -183,18 +195,19 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             isBroadcasting={isStreamBroadcasting}
           />
 
-          <div className="w-px h-6 bg-border/40 mx-1" />
+          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
 
+          {/* Action buttons */}
           <div className="flex items-center gap-0.5">
             {!isElectron && (
               <ShortcutTooltip label="Download Desktop App">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full h-10 w-10 hover:bg-background/60 text-blue-500 hover:text-blue-400"
+                  className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 text-primary hover:text-primary transition-all duration-200"
                   onClick={() => setIsDownloadOpen(true)}
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-3.5 h-3.5" />
                 </Button>
               </ShortcutTooltip>
             )}
@@ -210,13 +223,13 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-10 w-10 hover:bg-background/60"
+                className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
                 onClick={handleFullscreenToggle}
               >
                 {isFullscreen ? (
-                  <Shrink className="h-4 w-4" />
+                  <Shrink className="h-3.5 w-3.5" />
                 ) : (
-                  <Expand className="h-4 w-4" />
+                  <Expand className="h-3.5 w-3.5" />
                 )}
               </Button>
             </ShortcutTooltip>
