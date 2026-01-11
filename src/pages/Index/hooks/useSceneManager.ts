@@ -383,6 +383,17 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     };
   }>({});
 
+  // Computed canUndo/canRedo values
+  const computedCanUndo = (history[activeSceneId]?.past.length || 0) > 0;
+  const computedCanRedo = (history[activeSceneId]?.future.length || 0) > 0;
+
+  // Sync canUndo/canRedo to the global store so buttons update
+  const { setCanUndo, setCanRedo } = useSceneStore.getState();
+  useEffect(() => {
+    setCanUndo(computedCanUndo);
+    setCanRedo(computedCanRedo);
+  }, [computedCanUndo, computedCanRedo, setCanUndo, setCanRedo]);
+
   const getSceneHistory = useCallback(
     (sceneId: string) => {
       return (
@@ -1012,7 +1023,7 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     redo,
     resetScene,
     resetLayout,
-    canUndo: (history[activeSceneId]?.past.length || 0) > 0,
-    canRedo: (history[activeSceneId]?.future.length || 0) > 0,
+    canUndo: computedCanUndo,
+    canRedo: computedCanRedo,
   };
 };
