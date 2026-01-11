@@ -26,6 +26,11 @@ export interface UseKeyboardShortcutsProps {
     onToggleCamera?: () => void;
     onToggleBroadcast?: () => void;
     onToggleSmartSwitch?: () => void;
+    onToggleScreenShare?: () => void;
+
+    // Scenes & Layouts
+    onAddScene?: () => void;
+    onToggleGridLayout?: () => void;
 
     // Element Creation
     onAddText?: () => void;
@@ -50,6 +55,9 @@ export const useKeyboardShortcuts = ({
     onToggleCamera,
     onToggleBroadcast,
     onToggleSmartSwitch,
+    onToggleScreenShare,
+    onAddScene,
+    onToggleGridLayout,
     onAddText,
     onOpenAssetLibrary,
     onToggleDrawing,
@@ -148,21 +156,35 @@ export const useKeyboardShortcuts = ({
                 e.preventDefault();
                 onToggleBroadcast?.();
             }
-            if (e.key.toLowerCase() === "s") {
+            if (e.key.toLowerCase() === "s" && !isCmdOrCtrl) {
                 e.preventDefault();
                 onToggleSmartSwitch?.();
             }
+            if (isCmdOrCtrl && e.key.toLowerCase() === "p") {
+                e.preventDefault();
+                onToggleScreenShare?.();
+            }
+
+            // --- Scenes & Layouts ---
+            if (isCmdOrCtrl && e.key.toLowerCase() === "n") {
+                e.preventDefault();
+                onAddScene?.();
+            }
+            if (e.key.toLowerCase() === "g" && !isCmdOrCtrl) {
+                e.preventDefault();
+                onToggleGridLayout?.();
+            }
 
             // --- Element Creation ---
-            if (e.key.toLowerCase() === "t") {
+            if (e.key.toLowerCase() === "t" && !isCmdOrCtrl) {
                 e.preventDefault();
                 onAddText?.();
             }
-            if (e.key.toLowerCase() === "l") {
+            if (e.key.toLowerCase() === "l" && !isCmdOrCtrl) {
                 e.preventDefault();
                 onOpenAssetLibrary?.();
             }
-            if (e.key.toLowerCase() === "d") {
+            if (e.key.toLowerCase() === "d" && !isCmdOrCtrl) {
                 e.preventDefault();
                 onToggleDrawing?.();
             }
@@ -187,6 +209,9 @@ export const useKeyboardShortcuts = ({
         onToggleCamera,
         onToggleBroadcast,
         onToggleSmartSwitch,
+        onToggleScreenShare,
+        onAddScene,
+        onToggleGridLayout,
         onAddText,
         onOpenAssetLibrary,
         onToggleDrawing,

@@ -25,6 +25,7 @@ import {
 } from "@/shared/ui/dropdown-menu";
 import { StreamStyleSelector } from "@/features/stream/ui/scenes/StreamStyleSelector";
 import { StreamStylePreset } from "@/types/streamStyle";
+import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 
 const TransitionIcon = () => (
   <svg
@@ -341,13 +342,14 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
             >
               <Sparkles className="w-4 h-4" />
             </button>
-            <button
-              className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors"
-              onClick={onHide}
-              title="Hide Scenes"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            <ShortcutTooltip label="Hide Scenes" shortcut="toggleGridLayout" side="left">
+              <button
+                className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground rounded hover:bg-muted transition-colors"
+                onClick={onHide}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </ShortcutTooltip>
           </div>
         </div>
 
@@ -813,15 +815,17 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
 
         {/* Add Button */}
         <div className="flex-shrink-0 border-t border-border p-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full text-xs gap-1.5"
-            onClick={onSceneAdd}
-          >
-            <Plus className="w-3.5 h-3.5" />
-            Add Scene
-          </Button>
+          <ShortcutTooltip label="Add Scene" shortcut="addScene" side="left">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full text-xs gap-1.5"
+              onClick={onSceneAdd}
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add Scene
+            </Button>
+          </ShortcutTooltip>
         </div>
       </div>
 

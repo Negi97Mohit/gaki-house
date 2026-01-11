@@ -8,10 +8,10 @@ export const getShiftKey = () => isMac ? '⇧' : 'Shift';
 export const SHORTCUTS = {
   // System & View
   fullscreen: { key: 'F', display: 'F' },
+  settings: { key: ',', display: ',' },
   
   // AI Assistant
   aiAssistant: { key: 'K', modifier: true, display: `${getModifierKey()}+K` },
-  settings: { key: ',', display: ',' },
   
   // Canvas & History
   undo: { key: 'Z', modifier: true, display: `${getModifierKey()}+Z` },
@@ -30,6 +30,11 @@ export const SHORTCUTS = {
   toggleCamera: { key: 'E', modifier: true, display: `${getModifierKey()}+E` },
   toggleBroadcast: { key: 'B', modifier: true, display: `${getModifierKey()}+B` },
   smartSwitch: { key: 'S', display: 'S' },
+  screenShare: { key: 'P', modifier: true, display: `${getModifierKey()}+P` },
+  
+  // Scenes & Layouts
+  addScene: { key: 'N', modifier: true, display: `${getModifierKey()}+N` },
+  toggleGridLayout: { key: 'G', display: 'G' },
   
   // Element Creation
   addText: { key: 'T', display: 'T' },
