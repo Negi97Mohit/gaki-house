@@ -113,10 +113,12 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
     <div
       ref={toolbarRef}
       className={cn(
-        "absolute left-1/2 -translate-x-1/2 flex items-center gap-0.5 p-1.5",
-        "bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl shadow-2xl",
-        "transition-all duration-200 ease-out pointer-events-auto",
-        isFlipped ? "top-4" : isFullScreen ? "bottom-24" : "bottom-4"
+        "absolute left-1/2 -translate-x-1/2 flex items-center gap-0.5 px-2 py-1",
+        "bg-background/60 dark:bg-background/40 backdrop-blur-2xl",
+        "border border-border/20 dark:border-white/10 rounded-2xl",
+        "shadow-2xl shadow-black/10 dark:shadow-black/30",
+        "transition-all duration-300 ease-out pointer-events-auto",
+        isFlipped ? "top-3" : isFullScreen ? "bottom-20" : "bottom-3"
       )}
       style={{
         zIndex: "var(--z-text-toolbar)",
@@ -126,6 +128,8 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
       onClick={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
+      {/* Subtle inner glow */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
       <PipCameraMenu
         videoDevices={props.videoDevices}
         selectedDeviceId={props.selectedDeviceId}
@@ -181,9 +185,9 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           variant="ghost"
           size="icon"
           className={cn(
-            "h-9 w-9 rounded-xl hover:bg-background/60",
+            "h-7 w-7 rounded-xl hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
             props.screenShareMode === "screen" &&
-              "bg-primary/20 text-primary hover:bg-primary/30"
+              "bg-primary/15 text-primary hover:bg-primary/20"
           )}
           onClick={() => {
             const next = props.screenShareMode === "screen" ? "off" : "screen";
@@ -193,7 +197,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             props.screenShareMode === "screen" ? "Stop Sharing" : "Share Screen"
           }
         >
-          <MonitorUp className="h-4 w-4" />
+          <MonitorUp className="h-3.5 w-3.5" />
         </Button>
       )}
 
@@ -215,14 +219,14 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
           variant="ghost"
           size="icon"
           className={cn(
-            "h-9 w-9 rounded-xl hover:bg-background/60",
+            "h-7 w-7 rounded-xl hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
             props.isPipActive &&
-              "bg-primary/20 text-primary hover:bg-primary/30"
+              "bg-primary/15 text-primary hover:bg-primary/20"
           )}
           onClick={props.onTogglePip}
           title={props.isPipActive ? "Exit Pop-out" : "Pop-out Camera"}
         >
-          <PictureInPicture className="h-4 w-4" />
+          <PictureInPicture className="h-3.5 w-3.5" />
         </Button>
       )}
     </div>

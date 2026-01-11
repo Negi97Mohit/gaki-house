@@ -367,18 +367,20 @@ export const CanvasHoverToolbar = ({
       <div
         ref={toolbarRef}
         className={cn(
-          "fixed top-4 left-1/2 -translate-x-1/2 z-[20000]",
-          "bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-lg",
-          "px-1.5 py-1 sm:px-2 sm:py-1.5 flex items-center gap-0.5 sm:gap-1",
+          "fixed top-3 left-1/2 -translate-x-1/2 z-[20000]",
+          "bg-background/60 dark:bg-background/40 backdrop-blur-2xl",
+          "border border-border/20 dark:border-white/10 rounded-2xl",
+          "shadow-2xl shadow-black/10 dark:shadow-black/30",
+          "px-2 py-1 flex items-center gap-0.5",
           "transition-all duration-300 ease-out",
-          // Slide up and fade out when hidden
           shouldShow
             ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-16 pointer-events-none"
+            : "opacity-0 -translate-y-12 pointer-events-none"
         )}
         onMouseEnter={() => setIsHovered(true)}
-        // We rely on the window listener for un-hover logic to handle the zone correctly
       >
+        {/* Subtle inner glow */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
         {!canvasLayout && (
           <>
             {/* Color Picker */}
@@ -392,11 +394,11 @@ export const CanvasHoverToolbar = ({
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+              className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
               onClick={() => fileInputRef.current?.click()}
               title="Upload Background"
             >
-              <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <Upload className="h-3 w-3" />
             </Button>
 
             <Popover>
@@ -404,14 +406,14 @@ export const CanvasHoverToolbar = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                  className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
                   title="Search Assets"
                 >
-                  <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <Search className="h-3 w-3" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-80 h-[400px] p-0 rounded-2xl overflow-hidden border-border/40"
+                className="w-72 h-[360px] p-0 rounded-2xl overflow-hidden border-border/20 dark:border-white/10 bg-background/95 backdrop-blur-2xl"
                 style={{ zIndex: "var(--z-asset-popover)" }}
                 align="center"
                 side="bottom"
@@ -426,17 +428,17 @@ export const CanvasHoverToolbar = ({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
-                  isTextDepthEnabled && "bg-primary/20 text-primary"
+                  "relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
+                  isTextDepthEnabled && "bg-primary/15 text-primary"
                 )}
                 onClick={() => onTextDepthToggle(!isTextDepthEnabled)}
                 title="Toggle Text Behind User"
               >
-                <Layers className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <Layers className="h-3 w-3" />
               </Button>
             )}
 
-            <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
+            <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
           </>
         )}
 
@@ -445,15 +447,15 @@ export const CanvasHoverToolbar = ({
           variant="ghost"
           size="icon"
           className={cn(
-            "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
-            isChatbotOpen && "bg-primary/20 text-primary"
+            "relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
+            isChatbotOpen && "bg-primary/15 text-primary"
           )}
           onClick={() => {
             if (onToggleChatbot) onToggleChatbot((prev) => !prev);
           }}
           title="AI Chatbot"
         >
-          <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <Sparkles className="h-3 w-3" />
         </Button>
         <AIChatbot
           isOpen={!!isChatbotOpen}
@@ -468,23 +470,23 @@ export const CanvasHoverToolbar = ({
               variant="ghost"
               size="icon"
               className={cn(
-                "rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60",
-                canvasLayout && "bg-primary/20 text-primary"
+                "relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
+                canvasLayout && "bg-primary/15 text-primary"
               )}
               title="Grid Layout"
             >
-              <Grid3x3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <Grid3x3 className="h-3 w-3" />
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-[480px] p-3 max-h-[500px] overflow-y-auto rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
+            className="w-[420px] p-2.5 max-h-[450px] overflow-y-auto rounded-2xl border-border/20 dark:border-white/10 bg-background/95 backdrop-blur-2xl"
             style={{ zIndex: "var(--z-asset-popover)" }}
             align="center"
             side="bottom"
             sideOffset={8}
           >
             {templatesLoading && (
-              <div className="text-sm text-muted-foreground p-3 text-center">
+              <div className="text-[11px] text-muted-foreground/70 p-2.5 text-center">
                 Loading layouts...
               </div>
             )}
@@ -493,15 +495,14 @@ export const CanvasHoverToolbar = ({
               <Button
                 variant="ghost"
                 size="sm"
-                className="w-full justify-start text-destructive mb-3 rounded-xl hover:bg-destructive/10"
+                className="w-full justify-start text-destructive/80 hover:text-destructive mb-2 rounded-xl hover:bg-destructive/10 text-[11px] h-7"
                 onClick={() => onCanvasLayoutChange?.(null as any)}
               >
-                <X className="h-4 w-4 mr-2" />
+                <X className="h-3 w-3 mr-1.5" />
                 Clear Grid
               </Button>
             )}
 
-            {/* Tabbed Layout Selection */}
             {(() => {
               const dynamicLayouts = layoutTemplates.filter(
                 (t) => t.category === "dynamic"
@@ -512,13 +513,13 @@ export const CanvasHoverToolbar = ({
 
               return (
                 <Tabs defaultValue="dynamic" className="w-full">
-                  <TabsList className="w-full grid grid-cols-2 mb-3">
-                    <TabsTrigger value="dynamic" className="text-xs gap-1.5">
-                      <Zap className="h-3.5 w-3.5" />
+                  <TabsList className="w-full grid grid-cols-2 mb-2 h-7 rounded-xl bg-muted/30">
+                    <TabsTrigger value="dynamic" className="text-[10px] gap-1 rounded-lg h-5 data-[state=active]:bg-background/80">
+                      <Zap className="h-2.5 w-2.5" />
                       Dynamic
                     </TabsTrigger>
-                    <TabsTrigger value="static" className="text-xs gap-1.5">
-                      <Layout className="h-3.5 w-3.5" />
+                    <TabsTrigger value="static" className="text-[10px] gap-1 rounded-lg h-5 data-[state=active]:bg-background/80">
+                      <Layout className="h-2.5 w-2.5" />
                       Static
                     </TabsTrigger>
                   </TabsList>
@@ -549,26 +550,26 @@ export const CanvasHoverToolbar = ({
         {/* Dynamic Layout Transformation Controls */}
         {hasTransformations && canvasLayout && (
           <>
-            <div className="w-px h-5 sm:h-6 bg-border/40 mx-0.5 sm:mx-1" />
+            <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
             {isCarouselLayout && (
               <>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                  className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
                   onClick={() => rotateCarousel("left")}
                   title="Rotate carousel left"
                 >
-                  <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <ChevronLeft className="h-3 w-3" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                  className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
                   onClick={() => rotateCarousel("right")}
                   title="Rotate carousel right"
                 >
-                  <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <ChevronRight className="h-3 w-3" />
                 </Button>
               </>
             )}
@@ -577,11 +578,11 @@ export const CanvasHoverToolbar = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
                 onClick={() => transformLayout("swap")}
                 title="Swap hero and sidebar"
               >
-                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <RotateCw className="h-3 w-3" />
               </Button>
             )}
 
@@ -589,11 +590,11 @@ export const CanvasHoverToolbar = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
                 onClick={() => transformLayout("rotate")}
                 title="Rotate sections"
               >
-                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <RotateCw className="h-3 w-3" />
               </Button>
             )}
 
@@ -602,13 +603,13 @@ export const CanvasHoverToolbar = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-full h-7 w-7 sm:h-8 sm:w-8 hover:bg-background/60"
+                className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
                 onClick={() => transformLayout("rotate")}
                 title={
                   layoutId === "spotlight-frame" ? "Rotate frame" : "Cycle PiP"
                 }
               >
-                <RotateCw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <RotateCw className="h-3 w-3" />
               </Button>
             )}
           </>
@@ -619,29 +620,29 @@ export const CanvasHoverToolbar = ({
           canvasLayout.sectionOrder &&
           canvasLayout.sectionOrder.length > 0 && (
             <>
-              <div className="w-px h-6 bg-border/40 mx-1" />
+              <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full h-10 w-10 hover:bg-background/60 relative"
+                    className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
                     title="Sequence Order"
                   >
-                    <ListOrdered className="h-4 w-4" />
-                    <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[9px] rounded-full w-4 h-4 flex items-center justify-center font-medium">
+                    <ListOrdered className="h-3 w-3" />
+                    <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-[8px] rounded-full w-3 h-3 flex items-center justify-center font-medium">
                       {canvasLayout.sectionOrder.length}
                     </span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
-                  className="w-64 p-2 rounded-2xl border-border/40 bg-background/95 backdrop-blur-xl"
+                  className="w-56 p-1.5 rounded-2xl border-border/20 dark:border-white/10 bg-background/95 backdrop-blur-2xl"
                   align="center"
                   side="bottom"
                   sideOffset={8}
                 >
-                  <div className="space-y-2">
-                    <h4 className="font-medium text-xs text-muted-foreground px-2 mb-2">
+                  <div className="space-y-1">
+                    <h4 className="font-medium text-[10px] text-muted-foreground/70 px-1.5 mb-1.5 uppercase tracking-wider">
                       Screen Order
                     </h4>
                     {canvasLayout.sectionOrder.map((sectionId, idx) => {
@@ -650,60 +651,60 @@ export const CanvasHoverToolbar = ({
                         <div
                           key={sectionId}
                           className={cn(
-                            "flex items-center justify-between p-2 rounded-md text-sm group transition-colors",
+                            "flex items-center justify-between p-1.5 rounded-lg text-[11px] group transition-all",
                             isActive
                               ? "bg-primary/10 border border-primary/20"
-                              : "bg-muted/30"
+                              : "bg-muted/20 hover:bg-muted/30"
                           )}
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
                             <span
                               className={cn(
-                                "font-bold w-4 text-center",
+                                "font-bold w-3 text-center text-[10px]",
                                 isActive
                                   ? "text-primary"
-                                  : "text-muted-foreground"
+                                  : "text-muted-foreground/60"
                               )}
                             >
                               {idx + 1}
                             </span>
-                            <span className="truncate max-w-[100px]">
+                            <span className="truncate max-w-[80px]">
                               {sectionId}
                             </span>
                             {isActive && (
-                              <span className="ml-2 px-1.5 py-0.5 rounded-full bg-red-500 text-[9px] font-bold text-white animate-pulse">
+                              <span className="ml-1 px-1 py-0.5 rounded-full bg-red-500 text-[7px] font-bold text-white animate-pulse">
                                 LIVE
                               </span>
                             )}
                           </div>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-6 w-6"
+                              className="h-5 w-5 rounded-md hover:bg-foreground/10"
                               disabled={idx === 0}
                               onClick={() => moveItem(idx, "up")}
                             >
-                              <ArrowUp className="h-3 w-3" />
+                              <ArrowUp className="h-2.5 w-2.5" />
                             </Button>
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-6 w-6"
+                              className="h-5 w-5 rounded-md hover:bg-foreground/10"
                               disabled={
                                 idx === canvasLayout.sectionOrder!.length - 1
                               }
                               onClick={() => moveItem(idx, "down")}
                             >
-                              <ArrowDown className="h-3 w-3" />
+                              <ArrowDown className="h-2.5 w-2.5" />
                             </Button>
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-6 w-6 text-destructive hover:text-destructive"
+                              className="h-5 w-5 rounded-md text-destructive/70 hover:text-destructive hover:bg-destructive/10"
                               onClick={() => removeFromOrder(sectionId)}
                             >
-                              <X className="h-3 w-3" />
+                              <X className="h-2.5 w-2.5" />
                             </Button>
                           </div>
                         </div>
