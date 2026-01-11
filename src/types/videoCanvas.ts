@@ -179,4 +179,10 @@ export interface VideoCanvasProps {
     onBannerTextClose?: () => void;
     isChatbotOpen?: boolean;
     onChatbotToggle?: (open: boolean | ((prev: boolean) => boolean)) => void;
+    
+    // Excalidraw Props
+    isDrawing: boolean;
+    setIsDrawing: (isDrawing: boolean) => void;
+    excalidrawElements: readonly any[];
+    setExcalidrawElements: (elements: readonly any[]) => void;
 }

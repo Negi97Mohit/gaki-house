@@ -131,6 +131,10 @@ const PresetPreview = memo(
       pipPosition: { x: 0, y: 0 },
       pipSize: { width: 0, height: 0 },
     };
+    const pipShadow = 'pipShadow' in pip ? pip.pipShadow : undefined;
+    const pipBorder = 'pipBorder' in pip ? pip.pipBorder : undefined;
+    const cameraShape = 'cameraShape' in pip ? pip.cameraShape : 'rectangle';
+    
     const pipStyle: React.CSSProperties = {
       left: `${pip.pipPosition?.x || 0}%`,
       top: `${pip.pipPosition?.y || 0}%`,
@@ -138,16 +142,16 @@ const PresetPreview = memo(
       height: `${pip.pipSize?.height || 0}%`,
       position: "absolute",
       overflow: "hidden",
-      boxShadow: pip.pipShadow
-        ? `0 0 ${pip.pipShadow.blur}px ${pip.pipShadow.color}`
+      boxShadow: pipShadow
+        ? `0 0 ${pipShadow.blur}px ${pipShadow.color}`
         : "none",
-      border: pip.pipBorder
-        ? `${pip.pipBorder.width}px solid ${pip.pipBorder.color}`
+      border: pipBorder
+        ? `${pipBorder.width}px solid ${pipBorder.color}`
         : "none",
     };
 
-    if (pip.cameraShape === "circle") pipStyle.borderRadius = "50%";
-    else if (pip.cameraShape === "rounded") pipStyle.borderRadius = "24px";
+    if (cameraShape === "circle") pipStyle.borderRadius = "50%";
+    else if (cameraShape === "rounded") pipStyle.borderRadius = "24px";
     else pipStyle.borderRadius = "0px";
 
     return (
@@ -208,8 +212,8 @@ const PresetPreview = memo(
                   fontSize: `${text.style.fontSize}px`,
                   color: text.style.color,
                   fontWeight: text.style.fontWeight,
-                  fontStyle: text.style.fontStyle,
-                  textDecoration: text.style.textDecoration,
+                  fontStyle: ('fontStyle' in text.style ? text.style.fontStyle : 'normal') as React.CSSProperties['fontStyle'],
+                  textDecoration: ('textDecoration' in text.style ? text.style.textDecoration : 'none') as React.CSSProperties['textDecoration'],
                   textAlign: text.style.textAlign as any,
                   backgroundColor: text.style.backgroundColor,
                   textShadow: text.style.textShadow,
