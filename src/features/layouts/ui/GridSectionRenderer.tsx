@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   CanvasSectionState,
   FileOverlayState,
@@ -11,6 +11,8 @@ import { EmptyGridSection } from "@/features/layouts/ui/grid-section/EmptyGridSe
 import { CameraGridSection } from "@/features/layouts/ui/grid-section/CameraGridSection";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
 import { Video } from "lucide-react";
+// 1. Import the optimized VideoPlayer
+import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
 
 export interface GridSectionRendererProps {
   section: CanvasSectionState;
@@ -37,162 +39,165 @@ export interface GridSectionRendererProps {
   [key: string]: any;
 }
 
-export const GridSectionRenderer: React.FC<GridSectionRendererProps> = ({
-  section,
-  cameraStream,
-  screenStream,
-  fileOverlays,
-  textOverlays,
-  blankCanvasColor,
-  backgroundImageUrl,
-  onSectionContentChange,
-  onGridAssetSelect,
-  onSectionCameraSettingsChange,
-  videoDevices = [],
-  activeSequenceId,
-  onUserPositionChange,
-  cameraShape,
-  backgroundEffect,
-}) => {
-  const { content } = section;
-  const isPreview = usePreviewMode();
+// 2. Wrap in React.memo to prevent unnecessary re-renders from parent layout updates
+export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
+  React.memo(
+    ({
+      section,
+      cameraStream,
+      screenStream,
+      fileOverlays,
+      textOverlays,
+      blankCanvasColor,
+      backgroundImageUrl,
+      onSectionContentChange,
+      onGridAssetSelect,
+      onSectionCameraSettingsChange,
+      videoDevices = [],
+      activeSequenceId,
+      onUserPositionChange,
+      cameraShape,
+      backgroundEffect,
+    }) => {
+      const { content } = section;
+      const isPreview = usePreviewMode();
 
-  switch (content.type) {
-    case "color":
-      const colorValue = content.color || blankCanvasColor;
-      const isGradientColor = colorValue?.includes("gradient");
-      return (
-        <div
-          className="w-full h-full"
-          style={
-            isGradientColor
-              ? { background: colorValue }
-              : { backgroundColor: colorValue }
+      switch (content.type) {
+        case "color":
+          const colorValue = content.color || blankCanvasColor;
+          const isGradientColor = colorValue?.includes("gradient");
+          return (
+            <div
+              className="w-full h-full"
+              style={
+                isGradientColor
+                  ? { background: colorValue }
+                  : { backgroundColor: colorValue }
+              }
+            />
+          );
+
+        case "image":
+          if (!content.src && !backgroundImageUrl) {
+            return (
+              <EmptyGridSection
+                sectionId={section.id}
+                blankCanvasColor={blankCanvasColor}
+                backgroundImageUrl={backgroundImageUrl}
+                onSectionContentChange={onSectionContentChange}
+                onGridAssetSelect={onGridAssetSelect}
+              />
+            );
           }
-        />
-      );
+          return (
+            <div
+              className="w-full h-full bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${content.src || backgroundImageUrl})`,
+              }}
+            />
+          );
 
-    case "image":
-      // Fix: If no src is provided, show empty controls instead of broken image
-      if (!content.src && !backgroundImageUrl) {
-        return (
-          <EmptyGridSection
-            sectionId={section.id}
-            blankCanvasColor={blankCanvasColor}
-            backgroundImageUrl={backgroundImageUrl}
-            onSectionContentChange={onSectionContentChange}
-            onGridAssetSelect={onGridAssetSelect}
-          />
-        );
+        case "camera":
+          if (isPreview) {
+            return (
+              <div className="w-full h-full bg-muted/30 flex flex-col items-center justify-center border-2 border-dashed border-white/10">
+                <Video className="w-8 h-8 text-white/20 mb-2" />
+                <span className="text-[10px] font-bold text-white/30 tracking-widest">
+                  CAMERA FEED
+                </span>
+              </div>
+            );
+          }
+
+          return (
+            <CameraGridSection
+              sectionId={section.id}
+              settings={content.settings}
+              cameraStream={cameraStream}
+              videoDevices={videoDevices}
+              onSectionCameraSettingsChange={onSectionCameraSettingsChange}
+              cameraShape={cameraShape}
+              backgroundEffect={backgroundEffect}
+              activeSequenceId={activeSequenceId}
+              onUserPositionChange={onUserPositionChange}
+              backgroundImageUrl={backgroundImageUrl}
+            />
+          );
+
+        case "screen":
+          if (!screenStream) return <div className="w-full h-full bg-muted" />;
+          // 3. FIX: Use VideoPlayer component to handle stream lifecycle efficiently
+          // This prevents the video element from being destroyed/recreated on every render
+          return (
+            <VideoPlayer
+              stream={screenStream}
+              muted={true}
+              className="w-full h-full object-cover"
+            />
+          );
+
+        case "file":
+          let fileOverlay = fileOverlays?.find((f) => f.id === content.fileId);
+
+          if (!fileOverlay && content.url && content.fileType) {
+            fileOverlay = {
+              id: section.id,
+              fileUrl: content.url,
+              fileType: content.fileType,
+              fileName: content.name || "File",
+              file: null as any,
+              layout: {
+                position: { x: 0, y: 0 },
+                size: { width: 100, height: 100 },
+                zIndex: 0,
+                rotation: 0,
+              },
+            };
+          }
+
+          if (!fileOverlay) return <div className="w-full h-full bg-muted" />;
+          return (
+            <div className="w-full h-full flex items-center justify-center">
+              <FileRenderer overlay={fileOverlay} />
+            </div>
+          );
+
+        case "text":
+          const textOverlay = textOverlays?.find(
+            (t) => t.id === content.textId
+          );
+          if (!textOverlay) return <div className="w-full h-full bg-muted" />;
+          return (
+            <div
+              className="w-full h-full flex items-center justify-center p-4"
+              style={{
+                fontFamily: textOverlay.style.fontFamily,
+                fontSize: `${textOverlay.style.fontSize}px`,
+                color: textOverlay.style.color,
+                backgroundColor: textOverlay.style.backgroundColor,
+                fontWeight: textOverlay.style.bold ? "bold" : "normal",
+                fontStyle: textOverlay.style.italic ? "italic" : "normal",
+                textDecoration: textOverlay.style.underline
+                  ? "underline"
+                  : "none",
+              }}
+            >
+              {textOverlay.content}
+            </div>
+          );
+
+        case "empty":
+        default:
+          return (
+            <EmptyGridSection
+              sectionId={section.id}
+              blankCanvasColor={blankCanvasColor}
+              backgroundImageUrl={backgroundImageUrl}
+              onSectionContentChange={onSectionContentChange}
+              onGridAssetSelect={onGridAssetSelect}
+            />
+          );
       }
-      return (
-        <div
-          className="w-full h-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url(${content.src || backgroundImageUrl})`,
-          }}
-        />
-      );
-
-    case "camera":
-      // IMPORTANT FIX: Prevent starting heavy camera/AI graph in preview mode
-      if (isPreview) {
-        return (
-          <div className="w-full h-full bg-muted/30 flex flex-col items-center justify-center border-2 border-dashed border-white/10">
-            <Video className="w-8 h-8 text-white/20 mb-2" />
-            <span className="text-[10px] font-bold text-white/30 tracking-widest">
-              CAMERA FEED
-            </span>
-          </div>
-        );
-      }
-
-      return (
-        <CameraGridSection
-          sectionId={section.id}
-          settings={content.settings}
-          cameraStream={cameraStream}
-          videoDevices={videoDevices}
-          onSectionCameraSettingsChange={onSectionCameraSettingsChange}
-          cameraShape={cameraShape}
-          backgroundEffect={backgroundEffect}
-          activeSequenceId={activeSequenceId}
-          onUserPositionChange={onUserPositionChange}
-          backgroundImageUrl={backgroundImageUrl}
-        />
-      );
-
-    case "screen":
-      if (!screenStream) return <div className="w-full h-full bg-muted" />;
-      return (
-        <video
-          autoPlay
-          playsInline
-          muted
-          ref={(video) => {
-            if (video && screenStream) video.srcObject = screenStream;
-          }}
-          className="w-full h-full object-cover"
-        />
-      );
-
-    case "file":
-      let fileOverlay = fileOverlays?.find((f) => f.id === content.fileId);
-
-      // Construct temporary overlay if we have direct file data but no ID match
-      if (!fileOverlay && content.url && content.fileType) {
-        fileOverlay = {
-          id: section.id, // Use section ID as fallback
-          fileUrl: content.url,
-          fileType: content.fileType,
-          fileName: content.name || "File",
-          file: null as any, // File object might not be available for URL-based content
-          layout: {
-            position: { x: 0, y: 0 },
-            size: { width: 100, height: 100 },
-            zIndex: 0,
-            rotation: 0,
-          },
-        };
-      }
-
-      if (!fileOverlay) return <div className="w-full h-full bg-muted" />;
-      return (
-        <div className="w-full h-full flex items-center justify-center">
-          <FileRenderer overlay={fileOverlay} />
-        </div>
-      );
-
-    case "text":
-      const textOverlay = textOverlays.find((t) => t.id === content.textId);
-      if (!textOverlay) return <div className="w-full h-full bg-muted" />;
-      return (
-        <div
-          className="w-full h-full flex items-center justify-center p-4"
-          style={{
-            fontFamily: textOverlay.style.fontFamily,
-            fontSize: `${textOverlay.style.fontSize}px`,
-            color: textOverlay.style.color,
-            backgroundColor: textOverlay.style.backgroundColor,
-            fontWeight: textOverlay.style.bold ? "bold" : "normal",
-            fontStyle: textOverlay.style.italic ? "italic" : "normal",
-            textDecoration: textOverlay.style.underline ? "underline" : "none",
-          }}
-        >
-          {textOverlay.content}
-        </div>
-      );
-
-    case "empty":
-    default:
-      return (
-        <EmptyGridSection
-          sectionId={section.id}
-          blankCanvasColor={blankCanvasColor}
-          backgroundImageUrl={backgroundImageUrl}
-          onSectionContentChange={onSectionContentChange}
-          onGridAssetSelect={onGridAssetSelect}
-        />
-      );
-  }
-};
+    }
+  );

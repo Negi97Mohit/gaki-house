@@ -9,11 +9,6 @@ interface ElectronWindow extends Window {
 }
 
 export const useMediaPipeline = () => {
-  // Refs for Media Composition
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const proxyVideoRef = useRef<HTMLVideoElement | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
-
   // Stream References
   const mixedStreamRef = useRef<MediaStream | null>(null); // The final Output
   const activeSourceStreamRef = useRef<MediaStream | null>(null); // Screen/Window Capture (Video + System Audio)
@@ -30,29 +25,7 @@ export const useMediaPipeline = () => {
   const isElectron = !!(window as ElectronWindow).electron;
   const screenShareMode = useMediaStore((state) => state.screenShareMode);
 
-  // 1. Initialize Proxy Elements (Hidden Canvas & Video)
-  useEffect(() => {
-    if (!canvasRef.current) {
-      const canvas = document.createElement("canvas");
-      canvas.width = 1920;
-      canvas.height = 1080;
-      canvasRef.current = canvas;
-    }
-    if (!proxyVideoRef.current) {
-      const video = document.createElement("video");
-      video.muted = true; // Mute the proxy video element itself to prevent feedback loop
-      video.autoplay = true;
-      // @ts-ignore
-      video.playsInline = true;
-      proxyVideoRef.current = video;
-    }
-
-    return () => {
-      stopPipeline();
-    };
-  }, []);
-
-  // 2. React to Screen Share Mode Changes
+  // React to Screen Share Mode Changes
   useEffect(() => {
     if (isPipelineReady) {
       console.log(
@@ -62,35 +35,12 @@ export const useMediaPipeline = () => {
     }
   }, [screenShareMode]);
 
-  // --- Internal Logic: Drawing Loop ---
-  const startDrawLoop = () => {
-    if (animationFrameRef.current)
-      cancelAnimationFrame(animationFrameRef.current);
-
-    const draw = () => {
-      if (canvasRef.current && proxyVideoRef.current) {
-        const ctx = canvasRef.current.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(
-            proxyVideoRef.current,
-            0,
-            0,
-            canvasRef.current.width,
-            canvasRef.current.height
-          );
-        }
-      }
-      animationFrameRef.current = requestAnimationFrame(draw);
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopPipeline();
     };
-    draw();
-  };
-
-  const stopDrawLoop = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-  };
+  }, []);
 
   // --- Internal Logic: Source Capture (Video + System Audio) ---
   const getSourceStream = async (): Promise<MediaStream> => {
@@ -141,6 +91,7 @@ export const useMediaPipeline = () => {
                 maxWidth: 1920,
                 minHeight: 720,
                 maxHeight: 1080,
+                frameRate: { ideal: 30, max: 60 }, // Optimize FPS constraints
               },
             },
           } as any);
@@ -151,9 +102,8 @@ export const useMediaPipeline = () => {
     }
 
     // Web Mode Fallback
-    // getDisplayMedia handles prompting for "Share Audio" automatically
     return await navigator.mediaDevices.getDisplayMedia({
-      video: { width: 1920, height: 1080 },
+      video: { width: 1920, height: 1080, frameRate: 30 },
       audio: true, // Request Audio
     });
   };
@@ -169,9 +119,15 @@ export const useMediaPipeline = () => {
 
       activeSourceStreamRef.current = newStream;
 
-      if (proxyVideoRef.current) {
-        proxyVideoRef.current.srcObject = newStream;
-        await proxyVideoRef.current.play();
+      // Update the video track in the active mixed stream without killing connection
+      if (mixedStreamRef.current) {
+        const oldVideoTrack = mixedStreamRef.current.getVideoTracks()[0];
+        const newVideoTrack = newStream.getVideoTracks()[0];
+
+        if (oldVideoTrack && newVideoTrack) {
+          mixedStreamRef.current.removeTrack(oldVideoTrack);
+          mixedStreamRef.current.addTrack(newVideoTrack);
+        }
       }
 
       // Re-connect audio mixing if pipeline is running
@@ -196,11 +152,9 @@ export const useMediaPipeline = () => {
       userMicStreamRef.current.getAudioTracks().length > 0
     ) {
       try {
-        // Create new source (this might throw if track already associated, handle gracefully)
         const micSource = ctx.createMediaStreamSource(userMicStreamRef.current);
-        // Optional: Gain node for mic volume control
         const micGain = ctx.createGain();
-        micGain.gain.value = 1.0; // Default unity gain
+        micGain.gain.value = 1.0;
         micSource.connect(micGain);
         micGain.connect(dest);
       } catch (e) {
@@ -218,15 +172,12 @@ export const useMediaPipeline = () => {
           activeSourceStreamRef.current
         );
         const sysGain = ctx.createGain();
-        sysGain.gain.value = 0.8; // Slightly lower system audio to prioritize voice
+        sysGain.gain.value = 0.8;
         sysSource.connect(sysGain);
         sysGain.connect(dest);
-        console.log("[Pipeline] System Audio Mixed");
       } catch (e) {
         console.warn("[Pipeline] Error attaching system audio:", e);
       }
-    } else {
-      console.log("[Pipeline] No System Audio Detected on Source");
     }
   };
 
@@ -236,23 +187,13 @@ export const useMediaPipeline = () => {
       return mixedStreamRef.current;
     }
 
-    console.log("[Pipeline] Starting Media Pipeline (Video + Audio Mix)...");
+    console.log("[Pipeline] Starting Efficient Media Pipeline...");
 
-    // 1. Get Visual Source (Video + Potential System Audio)
+    // 1. Get Visual Source
     const visualStream = await getSourceStream();
     activeSourceStreamRef.current = visualStream;
 
-    if (proxyVideoRef.current) {
-      proxyVideoRef.current.srcObject = visualStream;
-      await proxyVideoRef.current.play();
-    }
-    startDrawLoop();
-
-    // 2. Get Canvas Stream (Constant FPS Video)
-    if (!canvasRef.current) throw new Error("Pipeline not initialized");
-    const canvasStream = canvasRef.current.captureStream(30);
-
-    // 3. Get Mic Audio
+    // 2. Get Mic Audio
     try {
       const micStream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -267,21 +208,22 @@ export const useMediaPipeline = () => {
       console.warn("[Pipeline] Mic access denied or not found");
     }
 
-    // 4. Initialize Audio Mixer
+    // 3. Initialize Audio Mixer
     const audioContext = new AudioContext();
     const audioDest = audioContext.createMediaStreamDestination();
     audioContextRef.current = audioContext;
     audioDestinationRef.current = audioDest;
 
-    // 5. Perform Mix
+    // 4. Perform Mix
     mixAudioSources();
 
-    // 6. Combine Final Stream (Canvas Video + Mixed Audio)
-    // If no audio tracks exist (no mic, no system), we just send video.
+    // 5. Combine Final Stream (Direct Video Track + Mixed Audio)
+    // This effectively "passes through" the video without re-rendering
     const mixedAudioTracks = audioDest.stream.getAudioTracks();
+    const videoTracks = visualStream.getVideoTracks();
 
     const combinedStream = new MediaStream([
-      ...canvasStream.getVideoTracks(),
+      ...videoTracks,
       ...mixedAudioTracks,
     ]);
 
@@ -294,7 +236,6 @@ export const useMediaPipeline = () => {
   // --- Public: Stop Pipeline ---
   const stopPipeline = () => {
     console.log("[Pipeline] Stopping...");
-    stopDrawLoop();
 
     // Stop Final Mixed Stream
     if (mixedStreamRef.current) {
@@ -302,7 +243,7 @@ export const useMediaPipeline = () => {
       mixedStreamRef.current = null;
     }
 
-    // Stop Source (Screen/Window)
+    // Stop Source
     if (activeSourceStreamRef.current) {
       activeSourceStreamRef.current.getTracks().forEach((t) => t.stop());
       activeSourceStreamRef.current = null;
@@ -319,11 +260,6 @@ export const useMediaPipeline = () => {
       audioContextRef.current.close();
       audioContextRef.current = null;
       audioDestinationRef.current = null;
-    }
-
-    // Clear Video Element
-    if (proxyVideoRef.current) {
-      proxyVideoRef.current.srcObject = null;
     }
 
     setIsPipelineReady(false);

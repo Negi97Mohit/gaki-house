@@ -130,7 +130,7 @@ export const useRtmpStream = () => {
     // 3. Setup Recorder
     const options: MediaRecorderOptions = {
       mimeType,
-      videoBitsPerSecond: 6000000, // 6 Mbps target for high quality local recording
+      videoBitsPerSecond: 3000000, // 6 Mbps target for high quality local recording
     };
 
     const mediaRecorder = new MediaRecorder(combinedStream, options);
