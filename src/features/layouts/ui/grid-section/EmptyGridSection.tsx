@@ -170,8 +170,8 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
     return (
         <div
             className={cn(
-                "w-full h-full flex items-center justify-center p-4 transition-colors duration-200",
-                isDragging ? "bg-primary/10 border-2 border-dashed border-primary" : "bg-muted/20"
+                "w-full h-full flex items-center justify-center p-4 transition-colors duration-200 group",
+                isDragging ? "bg-primary/10 border-2 border-dashed border-primary" : ""
             )}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
