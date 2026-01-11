@@ -75,48 +75,69 @@ const LayoutList = ({
 
   if (layouts.length === 0) {
     return (
-      <div className="col-span-2 text-center text-sm text-muted-foreground py-4">
+      <div className="col-span-3 text-center text-[11px] text-muted-foreground/60 py-8">
         {emptyMessage}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {layouts.map((template) => (
-        <div
-          key={template.id}
-          ref={(el) => (itemRefs.current[template.id] = el)}
-          className={cn(
-            "flex flex-col items-center gap-2 p-3 h-auto cursor-pointer rounded-xl border border-transparent transition-all",
-            activeId === template.id
-              ? "bg-primary/10 border-primary/50"
-              : "hover:bg-muted/70 hover:border-border"
-          )}
-          onClick={() => onSelect(template.id)}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onSelect(template.id);
-            }
-          }}
-        >
-          <GridLayoutPreview
-            sections={template.sections}
-            templateId={template.id}
-          />
-          <div className="flex items-center gap-1.5 w-full justify-center">
-            <span className="text-xs font-medium truncate">
-              {template.name}
-            </span>
-            {activeId === template.id && (
-              <Check className="w-3.5 h-3.5 text-primary shrink-0" />
+    <div className="grid grid-cols-3 gap-1.5">
+      {layouts.map((template) => {
+        const isActive = activeId === template.id;
+        return (
+          <div
+            key={template.id}
+            ref={(el) => (itemRefs.current[template.id] = el)}
+            className={cn(
+              "group relative flex flex-col items-center gap-1 p-1.5 cursor-pointer rounded-xl transition-all duration-200",
+              "border border-transparent",
+              isActive
+                ? "bg-primary/8 border-primary/30 shadow-[0_0_12px_-4px] shadow-primary/20"
+                : "hover:bg-foreground/[0.03] dark:hover:bg-white/[0.04] hover:border-border/30"
             )}
+            onClick={() => onSelect(template.id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelect(template.id);
+              }
+            }}
+          >
+            {/* Preview container with subtle hover effect */}
+            <div className={cn(
+              "relative w-full overflow-hidden rounded-lg transition-transform duration-200",
+              "group-hover:scale-[1.02]"
+            )}>
+              <GridLayoutPreview
+                sections={template.sections}
+                templateId={template.id}
+              />
+              {/* Active indicator overlay */}
+              {isActive && (
+                <div className="absolute inset-0 rounded-lg ring-1 ring-primary/40 pointer-events-none" />
+              )}
+            </div>
+            
+            {/* Label */}
+            <div className="flex items-center gap-1 w-full justify-center px-0.5">
+              <span className={cn(
+                "text-[9px] font-medium truncate transition-colors",
+                isActive ? "text-primary" : "text-muted-foreground/70 group-hover:text-foreground/80"
+              )}>
+                {template.name}
+              </span>
+              {isActive && (
+                <div className="flex-shrink-0 w-3 h-3 rounded-full bg-primary/15 flex items-center justify-center">
+                  <Check className="w-2 h-2 text-primary" />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
@@ -479,28 +500,42 @@ export const CanvasHoverToolbar = ({
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            className="w-[420px] p-2.5 max-h-[450px] overflow-y-auto rounded-2xl border-border/20 dark:border-white/10 bg-background/95 backdrop-blur-2xl"
+            className="w-[380px] p-0 max-h-[420px] overflow-hidden rounded-2xl border-border/20 dark:border-white/10 bg-background/80 dark:bg-background/60 backdrop-blur-2xl shadow-2xl shadow-black/10 dark:shadow-black/40"
             style={{ zIndex: "var(--z-asset-popover)" }}
             align="center"
             side="bottom"
             sideOffset={8}
           >
+            {/* Subtle inner glow */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
+            
+            {/* Header */}
+            <div className="relative px-3 py-2.5 border-b border-border/10 dark:border-white/5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Grid3x3 className="w-2.5 h-2.5 text-primary" />
+                  </div>
+                  <span className="text-[11px] font-semibold tracking-wide">Layouts</span>
+                </div>
+                {canvasLayout && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 px-2 text-[10px] text-destructive/70 hover:text-destructive hover:bg-destructive/10 rounded-lg"
+                    onClick={() => onCanvasLayoutChange?.(null as any)}
+                  >
+                    <X className="h-2.5 w-2.5 mr-1" />
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
+
             {templatesLoading && (
-              <div className="text-[11px] text-muted-foreground/70 p-2.5 text-center">
+              <div className="text-[10px] text-muted-foreground/50 p-6 text-center">
                 Loading layouts...
               </div>
-            )}
-
-            {canvasLayout && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start text-destructive/80 hover:text-destructive mb-2 rounded-xl hover:bg-destructive/10 text-[11px] h-7"
-                onClick={() => onCanvasLayoutChange?.(null as any)}
-              >
-                <X className="h-3 w-3 mr-1.5" />
-                Clear Grid
-              </Button>
             )}
 
             {(() => {
@@ -513,34 +548,44 @@ export const CanvasHoverToolbar = ({
 
               return (
                 <Tabs defaultValue="dynamic" className="w-full">
-                  <TabsList className="w-full grid grid-cols-2 mb-2 h-7 rounded-xl bg-muted/30">
-                    <TabsTrigger value="dynamic" className="text-[10px] gap-1 rounded-lg h-5 data-[state=active]:bg-background/80">
-                      <Zap className="h-2.5 w-2.5" />
-                      Dynamic
-                    </TabsTrigger>
-                    <TabsTrigger value="static" className="text-[10px] gap-1 rounded-lg h-5 data-[state=active]:bg-background/80">
-                      <Layout className="h-2.5 w-2.5" />
-                      Static
-                    </TabsTrigger>
-                  </TabsList>
+                  <div className="px-3 pt-2">
+                    <TabsList className="w-full grid grid-cols-2 h-7 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.04] p-0.5">
+                      <TabsTrigger 
+                        value="dynamic" 
+                        className="text-[10px] gap-1.5 rounded-lg h-6 font-medium transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+                      >
+                        <Zap className="h-2.5 w-2.5" />
+                        Dynamic
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="static" 
+                        className="text-[10px] gap-1.5 rounded-lg h-6 font-medium transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
+                      >
+                        <Layout className="h-2.5 w-2.5" />
+                        Static
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
 
-                  <TabsContent value="dynamic" className="mt-0">
-                    <LayoutList
-                      layouts={dynamicLayouts}
-                      activeId={canvasLayout?.templateId}
-                      onSelect={handleLayoutSelect}
-                      emptyMessage="No dynamic layouts available"
-                    />
-                  </TabsContent>
+                  <div className="p-2 max-h-[320px] overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+                    <TabsContent value="dynamic" className="mt-0">
+                      <LayoutList
+                        layouts={dynamicLayouts}
+                        activeId={canvasLayout?.templateId}
+                        onSelect={handleLayoutSelect}
+                        emptyMessage="No dynamic layouts available"
+                      />
+                    </TabsContent>
 
-                  <TabsContent value="static" className="mt-0">
-                    <LayoutList
-                      layouts={staticLayouts}
-                      activeId={canvasLayout?.templateId}
-                      onSelect={handleLayoutSelect}
-                      emptyMessage="No static layouts available"
-                    />
-                  </TabsContent>
+                    <TabsContent value="static" className="mt-0">
+                      <LayoutList
+                        layouts={staticLayouts}
+                        activeId={canvasLayout?.templateId}
+                        onSelect={handleLayoutSelect}
+                        emptyMessage="No static layouts available"
+                      />
+                    </TabsContent>
+                  </div>
                 </Tabs>
               );
             })()}

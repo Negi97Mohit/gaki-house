@@ -67,7 +67,7 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
     <PreviewModeProvider isPreview={true}>
       <div
         ref={wrapperRef}
-        className="relative w-full aspect-video rounded-md bg-[#f8fafc] border border-border/50 overflow-hidden group isolate"
+        className="relative w-full aspect-video rounded-lg bg-gradient-to-br from-muted/30 to-muted/50 dark:from-white/[0.03] dark:to-white/[0.06] border border-border/20 dark:border-white/[0.06] overflow-hidden group isolate shadow-sm"
       >
         {/* 
           Scaled Inner Container 
@@ -111,8 +111,8 @@ export const GridLayoutPreview: React.FC<GridLayoutPreviewProps> = ({
           />
         </div>
 
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+        {/* Subtle shine effect on hover */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/0 group-hover:via-white/[0.03] group-hover:to-white/[0.08] transition-all duration-500 pointer-events-none" />
       </div>
     </PreviewModeProvider>
   );
