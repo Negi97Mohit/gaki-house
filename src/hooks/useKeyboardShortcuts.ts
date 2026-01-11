@@ -93,8 +93,8 @@ export const useKeyboardShortcuts = ({
                 e.preventDefault();
                 onToggleAiAssistant?.();
             }
-            if (e.key === ",") {
-                // "Comma" usually opens settings
+            // Settings: Cmd+,
+            if (isCmdOrCtrl && e.key === ",") {
                 e.preventDefault();
                 onToggleSettings?.();
             }

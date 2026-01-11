@@ -8,7 +8,7 @@ export const getShiftKey = () => isMac ? '⇧' : 'Shift';
 export const SHORTCUTS = {
   // System & View
   fullscreen: { key: 'F', display: 'F' },
-  settings: { key: ',', display: ',' },
+  settings: { key: ',', modifier: true, display: `${getModifierKey()}+,` },
   
   // AI Assistant
   aiAssistant: { key: 'K', modifier: true, display: `${getModifierKey()}+K` },
