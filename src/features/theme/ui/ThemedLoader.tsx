@@ -15,6 +15,14 @@ const loaderColors: Record<ThemeName, { primary: string; secondary: string }> = 
   ethereal: { primary: "#c4b5fd", secondary: "#ddd6fe" },
   retro: { primary: "#fb7185", secondary: "#fda4af" },
   monochrome: { primary: "#a1a1aa", secondary: "#d4d4d8" },
+  obsidian: { primary: "#e5e5e7", secondary: "#a1a1a3" },
+  champagne: { primary: "#f7e7a3", secondary: "#c9a962" },
+  emeraldNoir: { primary: "#2ecc71", secondary: "#0d4f3c" },
+  roseGold: { primary: "#e8b4bc", secondary: "#b76e79" },
+  ultraviolet: { primary: "#a78bfa", secondary: "#7c3aed" },
+  caramelLatte: { primary: "#d4a574", secondary: "#8b5a2b" },
+  iceQueen: { primary: "#38bdf8", secondary: "#e2e8f0" },
+  midnightTokyo: { primary: "#ff6eb4", secondary: "#ff2d92" },
 };
 
 interface ThemedLoaderProps {
