@@ -24,7 +24,7 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
     );
 
     return (
-        <div className="flex items-center gap-0.5" role="group" aria-label="Scene History Controls">
+        <div className="flex items-center gap-1" role="group" aria-label="Scene History Controls">
             <ShortcutTooltip label="Undo" shortcut="undo">
                 <Button
                     variant="ghost"

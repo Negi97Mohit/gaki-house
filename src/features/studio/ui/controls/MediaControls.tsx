@@ -269,7 +269,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         </DropdownMenu>
       </div>
 
-      <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
+      <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
       {/* Recording Control */}
       <ShortcutTooltip
@@ -304,7 +304,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         onStopStream={onStopStream}
       />
 
-      <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
+      <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
       {/* Smart Switch */}
       <ShortcutTooltip label="Smart Scene Switch" shortcut="smartSwitch">
