@@ -21,7 +21,6 @@ import {
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
 import { cn } from "@/shared/lib/utils";
-import { ScrollArea } from "@/shared/ui/scroll-area";
 import { STREAMING_PLATFORMS } from "@/data/streamingPlatforms";
 import { Switch } from "@/shared/ui/switch";
 import { useStreamStore, StreamDestination } from "@/stores/stream.store";
@@ -67,14 +66,13 @@ const PlatformIcon: React.FC<{
   return <>{iconMap[platformIconName] || iconMap.default}</>;
 };
 
-export const StreamConfigurationModal: React.FC<
-  StreamConfigurationModalProps
-> = ({ onStartStream, onStopStream }) => {
+export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> = ({
+  onStartStream,
+  onStopStream,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"list" | "add">("list");
-
-  const [selectedPlatformId, setSelectedPlatformId] =
-    useState<string>("custom");
+  const [selectedPlatformId, setSelectedPlatformId] = useState<string>("custom");
   const [newUrl, setNewUrl] = useState("");
   const [newKey, setNewKey] = useState("");
   const [showKey, setShowKey] = useState(false);
@@ -235,78 +233,76 @@ export const StreamConfigurationModal: React.FC<
                   </p>
                 </div>
               ) : (
-                <ScrollArea className="max-h-[180px]">
-                  <div className="space-y-2">
-                    {destinations.map((dest) => {
-                      const platformData = STREAMING_PLATFORMS.find(
-                        (p) => p.name === dest.platform
-                      ) || { color: "#666", icon: "default" };
+                <div className="max-h-[180px] overflow-y-auto overflow-x-hidden space-y-2">
+                  {destinations.map((dest) => {
+                    const platformData = STREAMING_PLATFORMS.find(
+                      (p) => p.name === dest.platform
+                    ) || { color: "#666", icon: "default" };
 
-                      return (
+                    return (
+                      <div
+                        key={dest.id}
+                        className={cn(
+                          "group flex items-center gap-3 p-3 rounded-xl",
+                          "bg-foreground/[0.02] dark:bg-white/[0.02]",
+                          "border border-transparent",
+                          "hover:border-border/20 dark:hover:border-white/10",
+                          "transition-all duration-200"
+                        )}
+                      >
                         <div
-                          key={dest.id}
-                          className={cn(
-                            "group flex items-center gap-3 p-3 rounded-xl",
-                            "bg-foreground/[0.02] dark:bg-white/[0.02]",
-                            "border border-transparent",
-                            "hover:border-border/20 dark:hover:border-white/10",
-                            "transition-all duration-200"
-                          )}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                          style={{ backgroundColor: `${platformData.color}15` }}
                         >
-                          <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                            style={{ backgroundColor: `${platformData.color}15` }}
-                          >
-                            <PlatformIcon
-                              platformIconName={platformData.icon}
-                              color={platformData.color}
-                              size={14}
-                            />
-                          </div>
-
-                          <div className="flex-1 min-w-0 overflow-hidden">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-medium truncate">
-                                {dest.platform}
-                              </span>
-                              {dest.status === "live" && (
-                                <span className="shrink-0 text-[8px] bg-emerald-500/15 text-emerald-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
-                                  Live
-                                </span>
-                              )}
-                              {dest.status === "error" && (
-                                <span className="shrink-0 text-[8px] bg-red-500/15 text-red-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
-                                  Error
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-[10px] text-muted-foreground/40 truncate mt-0.5 font-mono max-w-full">
-                              {dest.url || "No URL set"}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <Switch
-                              checked={dest.enabled}
-                              onCheckedChange={(checked) =>
-                                updateDestination(dest.id, { enabled: checked })
-                              }
-                              className="scale-[0.7] data-[state=checked]:bg-emerald-500"
-                            />
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 rounded-lg text-muted-foreground/30 hover:text-red-500 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity"
-                              onClick={() => removeDestination(dest.id)}
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </div>
+                          <PlatformIcon
+                            platformIconName={platformData.icon}
+                            color={platformData.color}
+                            size={14}
+                          />
                         </div>
-                      );
-                    })}
-                  </div>
-                </ScrollArea>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-medium truncate block max-w-[100px]">
+                              {dest.platform}
+                            </span>
+                            {dest.status === "live" && (
+                              <span className="shrink-0 text-[8px] bg-emerald-500/15 text-emerald-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
+                                Live
+                              </span>
+                            )}
+                            {dest.status === "error" && (
+                              <span className="shrink-0 text-[8px] bg-red-500/15 text-red-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
+                                Error
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground/40 truncate mt-0.5 font-mono block max-w-[160px]">
+                            {dest.url || "No URL set"}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <Switch
+                            checked={dest.enabled}
+                            onCheckedChange={(checked) =>
+                              updateDestination(dest.id, { enabled: checked })
+                            }
+                            className="scale-[0.7] data-[state=checked]:bg-emerald-500"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 rounded-lg text-muted-foreground/30 hover:text-red-500 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => removeDestination(dest.id)}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
 
               {/* Add Destination Button */}
