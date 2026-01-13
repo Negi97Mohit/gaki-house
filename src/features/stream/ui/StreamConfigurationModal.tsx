@@ -10,6 +10,7 @@ import {
   Trash2,
   Globe,
   Check,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -19,11 +20,9 @@ import {
   DialogTitle,
 } from "@/shared/ui/dialog";
 import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
 import { cn } from "@/shared/lib/utils";
 import { ScrollArea } from "@/shared/ui/scroll-area";
 import { STREAMING_PLATFORMS } from "@/data/streamingPlatforms";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Switch } from "@/shared/ui/switch";
 import { useStreamStore, StreamDestination } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
@@ -72,7 +71,7 @@ export const StreamConfigurationModal: React.FC<
   StreamConfigurationModalProps
 > = ({ onStartStream, onStopStream }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"manage" | "add">("manage");
+  const [view, setView] = useState<"list" | "add">("list");
 
   const [selectedPlatformId, setSelectedPlatformId] =
     useState<string>("custom");
@@ -117,7 +116,7 @@ export const StreamConfigurationModal: React.FC<
     addDestination(dest);
     setNewUrl("");
     setNewKey("");
-    setActiveTab("manage");
+    setView("list");
   };
 
   const handlePlatformSelect = (id: string) => {
@@ -132,8 +131,21 @@ export const StreamConfigurationModal: React.FC<
 
   const activeCount = destinations.filter((d) => d.enabled).length;
 
+  const resetAndClose = () => {
+    setView("list");
+    setNewUrl("");
+    setNewKey("");
+    setSelectedPlatformId("custom");
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) resetAndClose();
+      }}
+    >
       <Button
         variant="ghost"
         size="icon"
@@ -154,334 +166,358 @@ export const StreamConfigurationModal: React.FC<
 
       <DialogContent
         className={cn(
-          "sm:max-w-[420px] max-h-[85vh] p-0 gap-0 overflow-hidden",
-          "bg-background/80 dark:bg-background/60 backdrop-blur-2xl",
-          "border-border/20 dark:border-white/10 rounded-2xl",
-          "shadow-2xl shadow-black/10 dark:shadow-black/40"
+          "w-[360px] max-w-[90vw] p-0 gap-0",
+          "bg-background dark:bg-zinc-950",
+          "border border-border/40 dark:border-white/10",
+          "rounded-2xl shadow-2xl",
+          "overflow-hidden"
         )}
       >
-        {/* Subtle inner glow */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
-
         {/* Header */}
-        <DialogHeader className="relative px-5 pt-5 pb-4 border-b border-border/10 dark:border-white/5">
-          <div className="flex items-center gap-3">
-            <div
-              className={cn(
-                "w-8 h-8 rounded-xl flex items-center justify-center",
-                isBroadcasting ? "bg-red-500/15" : "bg-primary/10"
-              )}
-            >
-              {isBroadcasting ? (
-                <Wifi className="w-4 h-4 text-red-500 animate-pulse" />
-              ) : (
-                <Radio className="w-4 h-4 text-primary" />
-              )}
-            </div>
-            <div>
-              <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
-                Stream
-                {isBroadcasting && (
-                  <span className="text-red-500 text-[8px] uppercase border border-red-500/50 px-1.5 py-0.5 rounded-md font-medium animate-pulse">
-                    Live
-                  </span>
+        <DialogHeader className="px-5 pt-5 pb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className={cn(
+                  "w-9 h-9 rounded-full flex items-center justify-center",
+                  isBroadcasting
+                    ? "bg-red-500/10 ring-1 ring-red-500/20"
+                    : "bg-foreground/5 dark:bg-white/5 ring-1 ring-border/10 dark:ring-white/5"
                 )}
-              </DialogTitle>
-              <p className="text-[10px] text-muted-foreground/50 mt-0.5">
-                {destinations.length} destination
-                {destinations.length !== 1 ? "s" : ""} configured
-              </p>
+              >
+                {isBroadcasting ? (
+                  <div className="relative">
+                    <Wifi className="w-4 h-4 text-red-500" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                  </div>
+                ) : (
+                  <Radio className="w-4 h-4 text-muted-foreground" />
+                )}
+              </div>
+              <div>
+                <DialogTitle className="text-sm font-semibold tracking-tight">
+                  {view === "add" ? "New Destination" : "Stream"}
+                </DialogTitle>
+                <p className="text-[10px] text-muted-foreground mt-0.5">
+                  {view === "add"
+                    ? "Configure your stream endpoint"
+                    : isBroadcasting
+                      ? "Currently broadcasting"
+                      : `${destinations.length} destination${destinations.length !== 1 ? "s" : ""}`}
+                </p>
+              </div>
             </div>
+            {isBroadcasting && (
+              <span className="text-[9px] uppercase tracking-wider font-semibold text-red-500 bg-red-500/10 px-2 py-1 rounded-full">
+                Live
+              </span>
+            )}
           </div>
         </DialogHeader>
 
+        <div className="h-px bg-border/30 dark:bg-white/5" />
+
         {/* Content */}
-        <Tabs
-          value={activeTab}
-          onValueChange={(v) => setActiveTab(v as any)}
-          className="flex-1"
-        >
-          <div className="px-5 pt-4">
-            <TabsList className="w-full grid grid-cols-2 h-9 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.03] p-1">
-              <TabsTrigger
-                value="manage"
-                className="text-[11px] font-medium rounded-lg transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm"
-              >
-                Destinations
-              </TabsTrigger>
-              <TabsTrigger
-                value="add"
-                className="text-[11px] font-medium rounded-lg transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-white/10 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5"
-              >
-                <Plus className="w-3 h-3" />
-                Add
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          {/* Manage Tab */}
-          <TabsContent value="manage" className="m-0 p-5 space-y-4">
-            {destinations.length === 0 ? (
-              <div className="text-center py-10">
-                <div className="w-12 h-12 rounded-2xl bg-foreground/[0.02] dark:bg-white/[0.02] flex items-center justify-center mx-auto mb-3">
-                  <Radio className="w-5 h-5 text-muted-foreground/20" />
+        <div className="p-4">
+          {view === "list" ? (
+            <div className="space-y-3">
+              {/* Destinations List */}
+              {destinations.length === 0 ? (
+                <div className="py-8 text-center">
+                  <div className="w-12 h-12 rounded-full bg-foreground/5 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
+                    <Radio className="w-5 h-5 text-muted-foreground/30" />
+                  </div>
+                  <p className="text-xs text-muted-foreground/60 mb-1">
+                    No destinations
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/40">
+                    Add a stream destination to get started
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground/50 mb-3">
-                  No destinations yet
-                </p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setActiveTab("add")}
-                  className="text-[11px] h-8 text-primary hover:text-primary hover:bg-primary/10"
-                >
-                  <Plus className="w-3 h-3 mr-1.5" />
-                  Add destination
-                </Button>
-              </div>
-            ) : (
-              <ScrollArea
-                className="h-[200px]"
-                style={{ scrollbarWidth: "none" }}
-              >
-                <div className="space-y-2">
-                  {destinations.map((dest) => {
-                    const platformData = STREAMING_PLATFORMS.find(
-                      (p) => p.name === dest.platform
-                    ) || { color: "#888", icon: "default" };
-                    return (
-                      <div
-                        key={dest.id}
-                        className={cn(
-                          "flex items-center gap-3 p-3 rounded-xl transition-all",
-                          "bg-foreground/[0.02] dark:bg-white/[0.02]",
-                          "border border-border/5 dark:border-white/5",
-                          "hover:border-border/10 dark:hover:border-white/10"
-                        )}
-                      >
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-foreground/[0.03] dark:bg-white/[0.03] shrink-0">
-                          <PlatformIcon
-                            platformIconName={platformData.icon}
-                            color={platformData.color}
-                            size={14}
-                          />
-                        </div>
+              ) : (
+                <ScrollArea className="max-h-[180px]">
+                  <div className="space-y-2">
+                    {destinations.map((dest) => {
+                      const platformData = STREAMING_PLATFORMS.find(
+                        (p) => p.name === dest.platform
+                      ) || { color: "#666", icon: "default" };
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[11px] font-medium truncate">
-                              {dest.platform}
-                            </span>
-                            {dest.status === "live" && (
-                              <span className="text-[7px] bg-green-500/20 text-green-500 px-1.5 py-0.5 rounded font-medium">
-                                LIVE
-                              </span>
-                            )}
-                            {dest.status === "starting" && (
-                              <span className="text-[7px] bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded font-medium">
-                                STARTING
-                              </span>
-                            )}
-                            {dest.status === "error" && (
-                              <span className="text-[7px] bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded font-medium">
-                                ERROR
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[9px] text-muted-foreground/40 truncate font-mono mt-0.5">
-                            {dest.url}
-                          </p>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <Switch
-                            checked={dest.enabled}
-                            onCheckedChange={(checked) =>
-                              updateDestination(dest.id, { enabled: checked })
-                            }
-                            className="scale-75"
-                          />
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 rounded-lg text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => removeDestination(dest.id)}
+                      return (
+                        <div
+                          key={dest.id}
+                          className={cn(
+                            "group flex items-center gap-3 p-3 rounded-xl",
+                            "bg-foreground/[0.02] dark:bg-white/[0.02]",
+                            "border border-transparent",
+                            "hover:border-border/20 dark:hover:border-white/10",
+                            "transition-all duration-200"
+                          )}
+                        >
+                          <div
+                            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                            style={{ backgroundColor: `${platformData.color}15` }}
                           >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
+                            <PlatformIcon
+                              platformIconName={platformData.icon}
+                              color={platformData.color}
+                              size={14}
+                            />
+                          </div>
+
+                          <div className="flex-1 min-w-0 overflow-hidden">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-medium truncate">
+                                {dest.platform}
+                              </span>
+                              {dest.status === "live" && (
+                                <span className="shrink-0 text-[8px] bg-emerald-500/15 text-emerald-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
+                                  Live
+                                </span>
+                              )}
+                              {dest.status === "error" && (
+                                <span className="shrink-0 text-[8px] bg-red-500/15 text-red-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
+                                  Error
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-muted-foreground/40 truncate mt-0.5 font-mono max-w-full">
+                              {dest.url || "No URL set"}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <Switch
+                              checked={dest.enabled}
+                              onCheckedChange={(checked) =>
+                                updateDestination(dest.id, { enabled: checked })
+                              }
+                              className="scale-[0.7] data-[state=checked]:bg-emerald-500"
+                            />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 rounded-lg text-muted-foreground/30 hover:text-red-500 hover:bg-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeDestination(dest.id)}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
-            )}
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              )}
 
-            {/* Go Live Button */}
-            {destinations.length > 0 && (
-              <div className="pt-2">
-                {!isBroadcasting ? (
-                  <Button
-                    className="w-full h-10 rounded-xl font-medium text-[11px] bg-primary hover:bg-primary/90"
-                    onClick={() => {
-                      const firstEnabled = destinations.find((d) => d.enabled);
-                      if (firstEnabled) {
-                        onStartStream?.(firstEnabled.url, firstEnabled.key);
-                      }
-                    }}
-                    disabled={isConnecting || activeCount === 0}
-                  >
-                    {isConnecting ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin mr-2" />
-                    ) : (
-                      <Wifi className="w-3.5 h-3.5 mr-2" />
-                    )}
-                    Go Live ({activeCount})
-                  </Button>
-                ) : (
-                  <Button
-                    variant="destructive"
-                    className="w-full h-10 rounded-xl font-medium text-[11px]"
-                    onClick={() => onStopStream?.()}
-                  >
-                    <WifiOff className="w-3.5 h-3.5 mr-2" />
-                    End Broadcast
-                  </Button>
+              {/* Add Destination Button */}
+              <button
+                onClick={() => setView("add")}
+                className={cn(
+                  "w-full flex items-center justify-between p-3 rounded-xl",
+                  "border border-dashed border-border/30 dark:border-white/10",
+                  "hover:border-primary/30 hover:bg-primary/[0.02]",
+                  "transition-all duration-200 group"
                 )}
-              </div>
-            )}
-          </TabsContent>
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Plus className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                    Add destination
+                  </span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary transition-colors" />
+              </button>
 
-          {/* Add Tab */}
-          <TabsContent value="add" className="m-0 p-5 space-y-4">
-            {/* Platform Selection */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-[10px] font-medium text-muted-foreground/60">
-                Platform
-              </Label>
-              <ScrollArea className="h-[180px] w-full rounded-xl border border-border/10 bg-foreground/[0.02] p-2">
-                <div className="grid grid-cols-4 gap-2">
+              {/* Go Live Button */}
+              {destinations.length > 0 && (
+                <div className="pt-2">
+                  {!isBroadcasting ? (
+                    <Button
+                      className={cn(
+                        "w-full h-11 rounded-xl font-medium text-xs",
+                        "bg-foreground text-background dark:bg-white dark:text-black",
+                        "hover:opacity-90 transition-opacity"
+                      )}
+                      onClick={() => {
+                        const firstEnabled = destinations.find((d) => d.enabled);
+                        if (firstEnabled) {
+                          onStartStream?.(firstEnabled.url, firstEnabled.key);
+                        }
+                      }}
+                      disabled={isConnecting || activeCount === 0}
+                    >
+                      {isConnecting ? (
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      ) : (
+                        <Wifi className="w-4 h-4 mr-2" />
+                      )}
+                      Go Live
+                      {activeCount > 0 && (
+                        <span className="ml-1.5 text-[10px] opacity-60">
+                          ({activeCount})
+                        </span>
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      className={cn(
+                        "w-full h-11 rounded-xl font-medium text-xs",
+                        "bg-red-500 hover:bg-red-600 text-white"
+                      )}
+                      onClick={() => onStopStream?.()}
+                    >
+                      <WifiOff className="w-4 h-4 mr-2" />
+                      End Broadcast
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Add View */
+            <div className="space-y-4">
+              {/* Platform Grid */}
+              <div className="space-y-2">
+                <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
+                  Platform
+                </p>
+                <div className="grid grid-cols-5 gap-1.5">
                   <button
                     onClick={() => handlePlatformSelect("custom")}
                     className={cn(
-                      "flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all",
-                      "border",
+                      "flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all",
                       selectedPlatformId === "custom"
-                        ? "border-primary/30 bg-primary/10"
-                        : "border-transparent hover:bg-foreground/[0.03] dark:hover:bg-white/[0.03]"
+                        ? "bg-foreground/10 dark:bg-white/10 ring-1 ring-foreground/20 dark:ring-white/20"
+                        : "hover:bg-foreground/5 dark:hover:bg-white/5"
                     )}
                   >
-                    <div className="w-7 h-7 rounded-lg bg-foreground/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-md bg-foreground/10 dark:bg-white/10 flex items-center justify-center">
                       <Globe className="w-3.5 h-3.5" />
                     </div>
-                    <span className="text-[8px] font-medium">Custom</span>
+                    <span className="text-[8px] font-medium text-muted-foreground">
+                      Custom
+                    </span>
                   </button>
-                  {STREAMING_PLATFORMS.filter((p) => !p.comingSoon).map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() => handlePlatformSelect(p.id)}
-                      className={cn(
-                        "flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all",
-                        "border",
-                        selectedPlatformId === p.id
-                          ? "border-primary/30 bg-primary/10"
-                          : "border-transparent hover:bg-foreground/[0.03] dark:hover:bg-white/[0.03]"
-                      )}
-                    >
-                      <div className="w-7 h-7 rounded-lg bg-foreground/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
-                        <PlatformIcon
-                          platformIconName={p.icon}
-                          color={p.color}
-                          size={14}
-                        />
-                      </div>
-                      <span className="text-[8px] font-medium truncate w-full text-center">
-                        {p.name}
-                      </span>
-                    </button>
-                  ))}
+                  {STREAMING_PLATFORMS.filter((p) => !p.comingSoon)
+                    .slice(0, 4)
+                    .map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => handlePlatformSelect(p.id)}
+                        className={cn(
+                          "flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all",
+                          selectedPlatformId === p.id
+                            ? "bg-foreground/10 dark:bg-white/10 ring-1 ring-foreground/20 dark:ring-white/20"
+                            : "hover:bg-foreground/5 dark:hover:bg-white/5"
+                        )}
+                      >
+                        <div
+                          className="w-7 h-7 rounded-md flex items-center justify-center"
+                          style={{ backgroundColor: `${p.color}20` }}
+                        >
+                          <PlatformIcon
+                            platformIconName={p.icon}
+                            color={p.color}
+                            size={14}
+                          />
+                        </div>
+                        <span className="text-[8px] font-medium text-muted-foreground truncate w-full text-center">
+                          {p.name}
+                        </span>
+                      </button>
+                    ))}
                 </div>
-              </ScrollArea>
-            </div>
+              </div>
 
-            {/* URL & Key */}
-            <div className="space-y-3">
+              {/* URL Input */}
               <div className="space-y-1.5">
-                <Label
-                  htmlFor="stream-url"
-                  className="text-[10px] font-medium text-muted-foreground/60"
-                >
-                  Stream URL
-                </Label>
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
+                    Stream URL
+                  </p>
+                  {selectedPlatform?.rtmpUrl && (
+                    <span className="text-[9px] text-emerald-500 flex items-center gap-1">
+                      <Check className="w-2.5 h-2.5" />
+                      Auto-filled
+                    </span>
+                  )}
+                </div>
                 <Input
-                  id="stream-url"
                   value={newUrl}
                   onChange={(e) => setNewUrl(e.target.value)}
                   placeholder="rtmp://..."
                   className={cn(
-                    "h-9 text-[11px] rounded-xl truncate",
-                    "bg-foreground/[0.02] dark:bg-white/[0.02]",
-                    "border-border/10 dark:border-white/5",
-                    "focus-visible:border-primary/30 focus-visible:ring-0"
+                    "h-10 text-xs rounded-lg font-mono",
+                    "bg-foreground/[0.03] dark:bg-white/[0.03]",
+                    "border-border/20 dark:border-white/10",
+                    "focus-visible:ring-1 focus-visible:ring-foreground/20 focus-visible:border-transparent",
+                    "placeholder:text-muted-foreground/30"
                   )}
                 />
-                {selectedPlatform?.rtmpUrl && (
-                  <p className="text-[9px] text-muted-foreground/40 flex items-center gap-1">
-                    <Check className="w-2.5 h-2.5 text-green-500" />
-                    {selectedPlatform.name} server
-                  </p>
-                )}
               </div>
 
+              {/* Key Input */}
               <div className="space-y-1.5">
-                <Label
-                  htmlFor="stream-key"
-                  className="text-[10px] font-medium text-muted-foreground/60"
-                >
+                <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
                   Stream Key
-                </Label>
+                </p>
                 <div className="relative">
                   <Input
-                    id="stream-key"
                     type={showKey ? "text" : "password"}
                     value={newKey}
                     onChange={(e) => setNewKey(e.target.value)}
                     placeholder="Enter your stream key"
                     className={cn(
-                      "h-9 text-[11px] rounded-xl pr-9 truncate",
-                      "bg-foreground/[0.02] dark:bg-white/[0.02]",
-                      "border-border/10 dark:border-white/5",
-                      "focus-visible:border-primary/30 focus-visible:ring-0"
+                      "h-10 text-xs rounded-lg pr-10 font-mono",
+                      "bg-foreground/[0.03] dark:bg-white/[0.03]",
+                      "border-border/20 dark:border-white/10",
+                      "focus-visible:ring-1 focus-visible:ring-foreground/20 focus-visible:border-transparent",
+                      "placeholder:text-muted-foreground/30"
                     )}
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 rounded-lg hover:bg-foreground/5"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-md hover:bg-foreground/5"
                     onClick={() => setShowKey(!showKey)}
                   >
                     {showKey ? (
-                      <EyeOff className="w-3 h-3" />
+                      <EyeOff className="w-3.5 h-3.5 text-muted-foreground/50" />
                     ) : (
-                      <Eye className="w-3 h-3" />
+                      <Eye className="w-3.5 h-3.5 text-muted-foreground/50" />
                     )}
                   </Button>
                 </div>
               </div>
-            </div>
 
-            {/* Add Button */}
-            <Button
-              onClick={handleAddDestination}
-              disabled={!newKey && !newUrl}
-              className="w-full h-10 rounded-xl font-medium text-[11px]"
-            >
-              <Plus className="w-3.5 h-3.5 mr-2" />
-              Add Destination
-            </Button>
-          </TabsContent>
-        </Tabs>
+              {/* Actions */}
+              <div className="flex gap-2 pt-2">
+                <Button
+                  variant="ghost"
+                  className="flex-1 h-10 rounded-lg text-xs font-medium"
+                  onClick={() => setView("list")}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleAddDestination}
+                  disabled={!newKey && !newUrl}
+                  className={cn(
+                    "flex-1 h-10 rounded-lg text-xs font-medium",
+                    "bg-foreground text-background dark:bg-white dark:text-black",
+                    "hover:opacity-90 disabled:opacity-40"
+                  )}
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1.5" />
+                  Add
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
