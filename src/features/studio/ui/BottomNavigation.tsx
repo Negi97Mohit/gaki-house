@@ -143,7 +143,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
 
-        <div className="relative flex items-center gap-0.5 px-1.5 py-1.5">
+        <div className="relative flex items-center gap-1.5 px-3 py-2">
           <ShortcutTooltip label="Settings" shortcut="settings">
             <Button
               variant="ghost"
@@ -155,12 +155,12 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             </Button>
           </ShortcutTooltip>
 
-          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
+          <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
           <div
             id="layout-controls-slot"
-            className="flex items-center gap-0.5 [&>button]:h-8 [&>button]:w-8 [&>button]:rounded-xl"
+            className="flex items-center gap-1.5 [&>button]:h-8 [&>button]:w-8 [&>button]:rounded-xl"
           />
-          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
+          <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
           <SceneControls
             onUndo={onUndo}
@@ -168,7 +168,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             onResetScene={onResetScene}
           />
 
-          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
+          <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
           <MediaControls
             onStartStream={onStartStream}
@@ -180,9 +180,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             isBroadcasting={isStreamBroadcasting}
           />
 
-          <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
+          <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1.5">
             {!isElectron && (
               <ShortcutTooltip label="Download Desktop App">
                 <Button
