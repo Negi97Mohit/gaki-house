@@ -387,7 +387,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                   const newYPercent = (newCenterY / sceneSize.height) * 100;
 
                   props.onCaptionLayoutChange({
-                    width: newWidthPercent,
+                    size: { width: newWidthPercent, height: 0 },
                     position: { x: newXPercent, y: newYPercent },
                   });
                 }}

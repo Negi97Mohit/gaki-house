@@ -176,7 +176,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             streamStatus={streamStatus}
             isConnecting={isStreamConnecting}
             isBroadcasting={isStreamBroadcasting}
-            onConnectRemote={onConnectRemote} // Pass down
           />
 
           <div className="w-px h-4 bg-border/30 dark:bg-white/10 mx-0.5" />
