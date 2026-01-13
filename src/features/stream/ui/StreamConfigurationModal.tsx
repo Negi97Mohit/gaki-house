@@ -381,26 +381,26 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                 <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
                   Platform
                 </p>
-                <div className="grid grid-cols-5 gap-1.5">
-                  <button
-                    onClick={() => handlePlatformSelect("custom")}
-                    className={cn(
-                      "flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all",
-                      selectedPlatformId === "custom"
-                        ? "bg-foreground/10 dark:bg-white/10 ring-1 ring-foreground/20 dark:ring-white/20"
-                        : "hover:bg-foreground/5 dark:hover:bg-white/5"
-                    )}
-                  >
-                    <div className="w-7 h-7 rounded-md bg-foreground/10 dark:bg-white/10 flex items-center justify-center">
-                      <Globe className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="text-[8px] font-medium text-muted-foreground">
-                      Custom
-                    </span>
-                  </button>
-                  {STREAMING_PLATFORMS.filter((p) => !p.comingSoon)
-                    .slice(0, 4)
-                    .map((p) => (
+                <div className="max-h-[240px] overflow-y-auto pr-1 sharp-scrollbar">
+                  <div className="grid grid-cols-5 gap-1.5">
+                    <button
+                      onClick={() => handlePlatformSelect("custom")}
+                      className={cn(
+                        "flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all",
+                        selectedPlatformId === "custom"
+                          ? "bg-foreground/10 dark:bg-white/10 ring-1 ring-foreground/20 dark:ring-white/20"
+                          : "hover:bg-foreground/5 dark:hover:bg-white/5"
+                      )}
+                    >
+                      <div className="w-7 h-7 rounded-md bg-foreground/10 dark:bg-white/10 flex items-center justify-center">
+                        <Globe className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-[8px] font-medium text-muted-foreground">
+                        Custom
+                      </span>
+                    </button>
+
+                    {availablePlatforms.map((p) => (
                       <button
                         key={p.id}
                         onClick={() => handlePlatformSelect(p.id)}
@@ -426,6 +426,7 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                         </span>
                       </button>
                     ))}
+                  </div>
                 </div>
               </div>
 
@@ -449,8 +450,8 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                   className={cn(
                     "h-10 text-xs rounded-lg font-mono",
                     "bg-foreground/[0.03] dark:bg-white/[0.03]",
-                    "border-border/20 dark:border-white/10",
-                    "focus-visible:ring-1 focus-visible:ring-foreground/20 focus-visible:border-transparent",
+                    "border-2 border-primary/60",
+                    "focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:border-primary",
                     "placeholder:text-muted-foreground/30"
                   )}
                 />
@@ -470,8 +471,8 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                     className={cn(
                       "h-10 text-xs rounded-lg pr-10 font-mono",
                       "bg-foreground/[0.03] dark:bg-white/[0.03]",
-                      "border-border/20 dark:border-white/10",
-                      "focus-visible:ring-1 focus-visible:ring-foreground/20 focus-visible:border-transparent",
+                      "border-2 border-primary/60",
+                      "focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:border-primary",
                       "placeholder:text-muted-foreground/30"
                     )}
                   />
@@ -479,7 +480,7 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-md hover:bg-foreground/5"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-md hover:bg-foreground/5 focus-visible:ring-1 focus-visible:ring-primary/30"
                     onClick={() => setShowKey(!showKey)}
                   >
                     {showKey ? (
