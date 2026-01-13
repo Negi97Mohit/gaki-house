@@ -97,7 +97,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   return (
     <>
       <Dialog open={isDownloadOpen} onOpenChange={setIsDownloadOpen}>
-        <DialogContent className="sm:max-w-sm bg-background border-border/30 p-6">
+        <DialogContent className="sm:max-w-sm bg-background/70 dark:bg-background/50 backdrop-blur-2xl border border-border/20 dark:border-white/10 rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/40 p-6 overflow-hidden">
+          {/* Subtle inner glow */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
           <DialogHeader className="pb-4">
             <DialogTitle className="text-lg font-medium tracking-tight">
               Download for Desktop

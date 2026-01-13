@@ -166,12 +166,14 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
           "w-[360px] max-w-[90vw] p-0 gap-0",
           "max-h-[85vh]",
           "flex flex-col",
-          "bg-background dark:bg-zinc-950",
-          "border border-border/40 dark:border-white/10",
-          "rounded-2xl shadow-2xl",
+          "bg-background/70 dark:bg-background/50 backdrop-blur-2xl",
+          "border border-border/20 dark:border-white/10",
+          "rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/40",
           "overflow-hidden"
         )}
       >
+        {/* Subtle inner glow */}
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
         {/* Header */}
         <DialogHeader className="px-5 pt-5 pb-4">
           <div className="flex items-center justify-between">
