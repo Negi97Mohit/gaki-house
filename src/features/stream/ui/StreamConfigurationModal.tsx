@@ -154,7 +154,7 @@ export const StreamConfigurationModal: React.FC<
 
       <DialogContent
         className={cn(
-          "sm:max-w-[420px] p-0 gap-0 overflow-hidden",
+          "sm:max-w-[420px] max-h-[85vh] p-0 gap-0 overflow-hidden",
           "bg-background/80 dark:bg-background/60 backdrop-blur-2xl",
           "border-border/20 dark:border-white/10 rounded-2xl",
           "shadow-2xl shadow-black/10 dark:shadow-black/40"
@@ -419,7 +419,7 @@ export const StreamConfigurationModal: React.FC<
                   onChange={(e) => setNewUrl(e.target.value)}
                   placeholder="rtmp://..."
                   className={cn(
-                    "h-9 text-[11px] rounded-xl",
+                    "h-9 text-[11px] rounded-xl truncate",
                     "bg-foreground/[0.02] dark:bg-white/[0.02]",
                     "border-border/10 dark:border-white/5",
                     "focus-visible:border-primary/30 focus-visible:ring-0"
@@ -448,7 +448,7 @@ export const StreamConfigurationModal: React.FC<
                     onChange={(e) => setNewKey(e.target.value)}
                     placeholder="Enter your stream key"
                     className={cn(
-                      "h-9 text-[11px] rounded-xl pr-9",
+                      "h-9 text-[11px] rounded-xl pr-9 truncate",
                       "bg-foreground/[0.02] dark:bg-white/[0.02]",
                       "border-border/10 dark:border-white/5",
                       "focus-visible:border-primary/30 focus-visible:ring-0"
