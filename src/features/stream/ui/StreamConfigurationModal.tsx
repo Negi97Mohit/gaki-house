@@ -95,9 +95,8 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
     }))
   );
 
-  const selectedPlatform = STREAMING_PLATFORMS.find(
-    (p) => p.id === selectedPlatformId
-  );
+  const selectedPlatform = STREAMING_PLATFORMS.find((p) => p.id === selectedPlatformId);
+  const availablePlatforms = STREAMING_PLATFORMS.filter((p) => !p.comingSoon);
 
   const handleAddDestination = () => {
     if (!newKey && !newUrl) return;
@@ -165,6 +164,8 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
       <DialogContent
         className={cn(
           "w-[360px] max-w-[90vw] p-0 gap-0",
+          "max-h-[85vh]",
+          "flex flex-col",
           "bg-background dark:bg-zinc-950",
           "border border-border/40 dark:border-white/10",
           "rounded-2xl shadow-2xl",
@@ -216,10 +217,11 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
         <div className="h-px bg-border/30 dark:bg-white/5" />
 
         {/* Content */}
-        <div className="p-4">
-          {view === "list" ? (
-            <div className="space-y-3">
-              {/* Destinations List */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-4">
+            {view === "list" ? (
+              <div className="space-y-3">
+                {/* Destinations List */}
               {destinations.length === 0 ? (
                 <div className="py-8 text-center">
                   <div className="w-12 h-12 rounded-full bg-foreground/5 dark:bg-white/5 flex items-center justify-center mx-auto mb-3">
@@ -513,6 +515,7 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
               </div>
             </div>
           )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
