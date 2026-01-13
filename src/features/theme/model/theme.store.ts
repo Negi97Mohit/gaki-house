@@ -15,7 +15,15 @@ export type ThemeName =
   | "neon"
   | "ethereal"
   | "retro"
-  | "monochrome";
+  | "monochrome"
+  | "obsidian"
+  | "champagne"
+  | "emeraldNoir"
+  | "roseGold"
+  | "ultraviolet"
+  | "caramelLatte"
+  | "iceQueen"
+  | "midnightTokyo";
 
 export type ThemeMode = "light" | "dark";
 
@@ -271,5 +279,109 @@ export const themes: Record<ThemeName, ThemeConfig> = {
     },
     accent: "#a1a1aa",
     glow: "rgba(161, 161, 170, 0.3)",
+  },
+  obsidian: {
+    name: "Obsidian Luxe",
+    description: "Ultra-dark elegance with platinum highlights",
+    colors: { light: "#1c1c1e", dark: "#e5e5e7" },
+    ambient: {
+      type: "mesh",
+      colors: ["#1c1c1e", "#2c2c2e", "#3c3c3e", "#e5e5e7"],
+      intensity: 0.15,
+      speed: 0.2,
+    },
+    accent: "#e5e5e7",
+    glow: "rgba(229, 229, 231, 0.2)",
+  },
+  champagne: {
+    name: "Champagne Toast",
+    description: "Effervescent gold with warm ivory undertones",
+    colors: { light: "#c9a962", dark: "#f7e7a3" },
+    ambient: {
+      type: "particles",
+      colors: ["#c9a962", "#e8d5a3", "#f7e7a3", "#fff8e1"],
+      intensity: 0.4,
+      speed: 0.5,
+    },
+    accent: "#c9a962",
+    glow: "rgba(201, 169, 98, 0.4)",
+  },
+  emeraldNoir: {
+    name: "Emerald Noir",
+    description: "Deep forest green with art deco gold accents",
+    colors: { light: "#0d4f3c", dark: "#2ecc71" },
+    ambient: {
+      type: "gradient",
+      colors: ["#0d4f3c", "#1a7a5c", "#2ecc71", "#c9a962"],
+      intensity: 0.5,
+      speed: 0.4,
+    },
+    accent: "#2ecc71",
+    glow: "rgba(46, 204, 113, 0.4)",
+  },
+  roseGold: {
+    name: "Rosé Gold",
+    description: "Blush pink meets metallic warmth for timeless glamour",
+    colors: { light: "#b76e79", dark: "#e8b4bc" },
+    ambient: {
+      type: "aurora",
+      colors: ["#b76e79", "#d4a5a5", "#e8b4bc", "#fce4ec"],
+      intensity: 0.45,
+      speed: 0.35,
+    },
+    accent: "#b76e79",
+    glow: "rgba(183, 110, 121, 0.4)",
+  },
+  ultraviolet: {
+    name: "Ultraviolet",
+    description: "Electric purple with holographic shimmer",
+    colors: { light: "#7c3aed", dark: "#a78bfa" },
+    ambient: {
+      type: "mesh",
+      colors: ["#7c3aed", "#8b5cf6", "#a78bfa", "#c4b5fd", "#06b6d4"],
+      intensity: 0.65,
+      speed: 1.1,
+    },
+    accent: "#8b5cf6",
+    glow: "rgba(139, 92, 246, 0.5)",
+  },
+  caramelLatte: {
+    name: "Caramel Latte",
+    description: "Warm espresso browns with creamy caramel swirls",
+    colors: { light: "#8b5a2b", dark: "#d4a574" },
+    ambient: {
+      type: "gradient",
+      colors: ["#8b5a2b", "#a67c52", "#d4a574", "#f5e6d3"],
+      intensity: 0.35,
+      speed: 0.3,
+    },
+    accent: "#d4a574",
+    glow: "rgba(212, 165, 116, 0.4)",
+  },
+  iceQueen: {
+    name: "Ice Queen",
+    description: "Frozen crystalline whites with icy blue reflections",
+    colors: { light: "#94a3b8", dark: "#e2e8f0" },
+    ambient: {
+      type: "aurora",
+      colors: ["#e2e8f0", "#cbd5e1", "#94a3b8", "#38bdf8"],
+      intensity: 0.3,
+      speed: 0.25,
+    },
+    accent: "#38bdf8",
+    glow: "rgba(56, 189, 248, 0.3)",
+  },
+  midnightTokyo: {
+    name: "Midnight Tokyo",
+    description: "Neon-lit streets with deep indigo shadows",
+    colors: { light: "#ff2d92", dark: "#ff6eb4" },
+    ambient: {
+      type: "glow",
+      colors: ["#ff2d92", "#ff6eb4", "#00d4ff", "#7c3aed"],
+      intensity: 0.7,
+      speed: 1.3,
+    },
+    accent: "#ff2d92",
+    glow: "rgba(255, 45, 146, 0.5)",
   },
 };
