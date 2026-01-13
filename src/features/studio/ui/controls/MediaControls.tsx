@@ -28,8 +28,9 @@ import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 
+
 interface MediaControlsProps {
-  onStartStream?: (url: string, key: string) => void;
+  onStartStream?: () => void;
   onStopStream?: () => void;
   onToggleRecord?: () => void;
   onStreamSettingsSave?: (url: string, key: string) => void;
@@ -106,6 +107,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       recordingDuration: state.recordingDuration,
     }))
   );
+
 
   // --- DEBUG HANDLER ---
   const handleRecordClick = () => {
@@ -314,7 +316,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           className={cn(
             "rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200",
             isSmartSwitchEnabled &&
-              "text-primary bg-primary/15 hover:bg-primary/20"
+            "text-primary bg-primary/15 hover:bg-primary/20"
           )}
           onClick={onSmartSwitchToggle}
         >

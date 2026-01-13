@@ -70,18 +70,28 @@ export const useStreamStore = create<StreamState>((set) => ({
   setRecordingStatus: (recordingStatus) => set({ recordingStatus }),
   setRecordingDuration: (recordingDuration) => set({ recordingDuration }),
 
-  addDestination: (destination) =>
-    set((state) => ({ destinations: [...state.destinations, destination] })),
+  addDestination: (destination) => {
+    console.log("[StreamStore] Adding destination:", destination);
+    set((state) => {
+      const newDestinations = [...state.destinations, destination];
+      console.log("[StreamStore] New destinations array:", newDestinations);
+      return { destinations: newDestinations };
+    });
+  },
   removeDestination: (id) =>
     set((state) => ({
       destinations: state.destinations.filter((d) => d.id !== id),
     })),
-  updateDestination: (id, updates) =>
-    set((state) => ({
-      destinations: state.destinations.map((d) =>
+  updateDestination: (id, updates) => {
+    console.log("[StreamStore] Updating destination", id, "with:", updates);
+    set((state) => {
+      const newDestinations = state.destinations.map((d) =>
         d.id === id ? { ...d, ...updates } : d
-      ),
-    })),
+      );
+      console.log("[StreamStore] Updated destinations array:", newDestinations);
+      return { destinations: newDestinations };
+    });
+  },
   setDestinationStatus: (id, status, error) =>
     set((state) => ({
       destinations: state.destinations.map((d) =>

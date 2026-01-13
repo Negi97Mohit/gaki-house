@@ -21,7 +21,7 @@ interface BottomNavigationProps {
   isAiProcessing: boolean;
   hasAiPopoverAutoOpenedRef: React.RefObject<boolean>;
   portalContainer?: HTMLElement | null;
-  onStartStream?: (url: string, key: string) => void;
+  onStartStream?: () => void;
   onStopStream?: () => void;
   onToggleRecord?: () => void;
   onStreamSettingsSave?: (url: string, key: string) => void;

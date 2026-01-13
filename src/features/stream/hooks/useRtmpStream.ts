@@ -188,25 +188,36 @@ export const useRtmpStream = () => {
 
   // --- Public Action: Start Broadcast ---
   const initiateStreams = async (targetDestinations: typeof destinations) => {
+    console.log("[StreamEngine] ========== INITIATE STREAMS CALLED ==========");
+    console.log("[StreamEngine] Target destinations:", targetDestinations.length);
+
     try {
       setConnecting(true);
       setStreamStatus("Initializing...");
 
       // 1. Ensure Engine is Running
       const mimeType = await ensureMediaRecorder();
+      console.log("[StreamEngine] MediaRecorder ensured, mimeType:", mimeType);
 
-      // 2. Auto-Start Local Recording (User Requirement: "automatically toggles on")
+      // 2. Manual Recording Control
+      // Users can now start/stop recording independently using the record button
+      // Recording no longer auto-starts with streaming
+      /*
       if (!useStreamStore.getState().isRecording) {
+        console.log("[StreamEngine] Auto-starting local recording...");
         await startLocalRecording();
       }
+      */
 
       // 3. Connect RTMP
       if (isElectron) {
+        console.log("[StreamEngine] ELECTRON MODE - Connecting to ffmpeg process...");
         setStreamStatus("Connecting to process...");
         const electron = (window as ElectronWindow).electron!;
 
         // Attach Status Listener
         electron.stream.onStatus((data) => {
+          console.log("[StreamEngine] RTMP Status Update:", data);
           if (data.id) {
             setDestinationStatus(data.id, data.status as any, data.error);
           }
@@ -220,6 +231,7 @@ export const useRtmpStream = () => {
         // Start Targets
         targetDestinations.forEach((dest) => {
           if (dest.enabled) {
+            console.log("[StreamEngine] Starting RTMP stream for:", dest.platform, dest.url);
             setDestinationStatus(dest.id, "starting");
             electron.stream.start({
               id: dest.id,
@@ -227,9 +239,11 @@ export const useRtmpStream = () => {
               key: dest.key,
               mimeType: mimeType as string,
             });
+            console.log("[StreamEngine] electron.stream.start() called");
           }
         });
       } else {
+        console.log("[StreamEngine] WEB MODE - Connecting to server...");
         // --- WEB MODE ---
         setStreamStatus("Connecting to server...");
         if (!socketRef.current) {
@@ -278,16 +292,34 @@ export const useRtmpStream = () => {
   };
 
   const startStreaming = async (specificDestId?: string) => {
+    console.log("[StreamEngine] ========== START STREAMING CALLED ==========");
+    console.log("[StreamEngine] specificDestId:", specificDestId);
+    console.log("[StreamEngine] Total destinations in store:", destinations.length);
+    console.log("[StreamEngine] All destinations:", JSON.stringify(destinations, null, 2));
+
     const targets = specificDestId
       ? destinations.filter((d) => d.id === specificDestId)
       : destinations.filter((d) => d.enabled);
 
+    console.log("[StreamEngine] Filtered targets:", targets.length);
+    console.log("[StreamEngine] Targets:", JSON.stringify(targets, null, 2));
+
     if (targets.length === 0) {
-      notify.error("No enabled destinations found.");
+      // No destinations configured - notify UI to open configuration
+      console.error("[StreamEngine] ❌ No enabled destinations found!");
+      console.error("[StreamEngine] Destinations breakdown:");
+      destinations.forEach((d, i) => {
+        console.error(`  [${i}] ${d.platform} - enabled: ${d.enabled}, url: ${d.url}`);
+      });
+      notify.info("Please add and enable a stream destination first.");
       return;
     }
 
+    console.log("[StreamEngine] ✅ Proceeding with streaming to", targets.length, "destination(s)");
+
+
     // Countdown Logic
+    console.log("[StreamEngine] Starting 3-second countdown...");
     setLocalCountdown(3);
     setCountdown(3);
     if (countdownIntervalRef.current)
@@ -296,10 +328,12 @@ export const useRtmpStream = () => {
     let count = 3;
     countdownIntervalRef.current = setInterval(() => {
       count -= 1;
+      console.log("[StreamEngine] Countdown:", count);
       setLocalCountdown(count);
       setCountdown(count);
 
       if (count <= 0) {
+        console.log("[StreamEngine] Countdown complete! Calling initiateStreams...");
         if (countdownIntervalRef.current)
           clearInterval(countdownIntervalRef.current);
         setLocalCountdown(null);
