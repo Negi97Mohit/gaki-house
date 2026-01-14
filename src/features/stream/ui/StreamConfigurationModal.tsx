@@ -11,6 +11,7 @@ import {
   Globe,
   Check,
   ChevronRight,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -68,15 +69,14 @@ const PlatformIcon: React.FC<{
   return <>{iconMap[platformIconName] || iconMap.default}</>;
 };
 
-export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> = ({
-  onStartStream,
-  onStopStream,
-  externalOpen,
-  onOpenChange,
-}) => {
+export const StreamConfigurationModal: React.FC<
+  StreamConfigurationModalProps
+> = ({ onStartStream, onStopStream, externalOpen, onOpenChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"list" | "add">("list");
-  const [selectedPlatformId, setSelectedPlatformId] = useState<string>("custom");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [selectedPlatformId, setSelectedPlatformId] =
+    useState<string>("custom");
   const [newUrl, setNewUrl] = useState("");
   const [newKey, setNewKey] = useState("");
   const [showKey, setShowKey] = useState(false);
@@ -99,27 +99,61 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
     }))
   );
 
-  const selectedPlatform = STREAMING_PLATFORMS.find((p) => p.id === selectedPlatformId);
+  const selectedPlatform = STREAMING_PLATFORMS.find(
+    (p) => p.id === selectedPlatformId
+  );
   const availablePlatforms = STREAMING_PLATFORMS.filter((p) => !p.comingSoon);
 
-  const handleAddDestination = () => {
-    if (!newKey && !newUrl) return;
+  const handleSaveDestination = () => {
+    console.log(
+      "[StreamModal] handleSaveDestination clicked. Mode:",
+      editingId ? "Edit" : "Add"
+    );
 
-    const dest: StreamDestination = {
-      id: uuidv4(),
-      platform: selectedPlatform ? selectedPlatform.name : "Custom",
-      url: newUrl,
-      key: newKey,
-      enabled: true,
-      status: "idle",
-    };
+    if (!newKey && !newUrl) {
+      console.warn("[StreamModal] Cannot save: URL and Key are empty");
+      return;
+    }
 
-    console.log("[StreamModal] Adding destination:", dest);
-    addDestination(dest);
-    console.log("[StreamModal] Destination added. Current destinations count:", destinations.length + 1);
+    if (editingId) {
+      // Update existing
+      console.log("[StreamModal] Updating existing destination:", editingId);
+      updateDestination(editingId, {
+        platform: selectedPlatform ? selectedPlatform.name : "Custom",
+        url: newUrl,
+        key: newKey,
+      });
+    } else {
+      // Add new
+      const dest: StreamDestination = {
+        id: uuidv4(),
+        platform: selectedPlatform ? selectedPlatform.name : "Custom",
+        url: newUrl,
+        key: newKey,
+        enabled: true,
+        status: "idle",
+      };
+      console.log("[StreamModal] Adding new destination:", dest);
+      addDestination(dest);
+    }
+
     setNewUrl("");
     setNewKey("");
+    setEditingId(null);
     setView("list");
+  };
+
+  const handleEditDestination = (dest: StreamDestination) => {
+    console.log("[StreamModal] Edit requested for:", dest.id);
+    setEditingId(dest.id);
+    setNewUrl(dest.url);
+    setNewKey(dest.key);
+
+    // Find platform ID based on name to pre-select icon
+    const platform = STREAMING_PLATFORMS.find((p) => p.name === dest.platform);
+    setSelectedPlatformId(platform ? platform.id : "custom");
+
+    setView("add");
   };
 
   const handlePlatformSelect = (id: string) => {
@@ -134,21 +168,20 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
 
   const activeCount = destinations.filter((d) => d.enabled).length;
 
-  // Sync external open state with internal state
   React.useEffect(() => {
     if (externalOpen !== undefined && externalOpen !== isOpen) {
       setIsOpen(externalOpen);
-      // Auto-switch to "add" view if opened externally with no destinations
       if (externalOpen && destinations.length === 0) {
         setView("add");
       }
     }
-  }, [externalOpen]); // Only depend on externalOpen changes
+  }, [externalOpen]);
 
   const resetAndClose = () => {
     setView("list");
     setNewUrl("");
     setNewKey("");
+    setEditingId(null);
     setSelectedPlatformId("custom");
   };
 
@@ -159,17 +192,14 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
   };
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={handleOpenChange}
-    >
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <Button
         variant="ghost"
         size="icon"
         className={cn(
           "rounded-xl h-7 w-7 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
           isBroadcasting &&
-          "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
+            "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
         )}
         title="Stream Settings"
         onClick={() => setIsOpen(true)}
@@ -192,7 +222,6 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
           "overflow-hidden"
         )}
       >
-        {/* Subtle inner glow */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
         {/* Header */}
         <DialogHeader className="px-5 pt-5 pb-4">
@@ -217,14 +246,20 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
               </div>
               <div>
                 <DialogTitle className="text-sm font-semibold tracking-tight">
-                  {view === "add" ? "New Destination" : "Stream"}
+                  {view === "add"
+                    ? editingId
+                      ? "Edit Destination"
+                      : "New Destination"
+                    : "Stream"}
                 </DialogTitle>
                 <p className="text-[10px] text-muted-foreground mt-0.5">
                   {view === "add"
                     ? "Configure your stream endpoint"
                     : isBroadcasting
-                      ? "Currently broadcasting"
-                      : `${destinations.length} destination${destinations.length !== 1 ? "s" : ""}`}
+                    ? "Currently broadcasting"
+                    : `${destinations.length} destination${
+                        destinations.length !== 1 ? "s" : ""
+                      }`}
                 </p>
               </div>
             </div>
@@ -276,7 +311,9 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                         >
                           <div
                             className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                            style={{ backgroundColor: `${platformData.color}15` }}
+                            style={{
+                              backgroundColor: `${platformData.color}15`,
+                            }}
                           >
                             <PlatformIcon
                               platformIconName={platformData.icon}
@@ -293,6 +330,16 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                               {dest.status === "live" && (
                                 <span className="shrink-0 text-[8px] bg-emerald-500/15 text-emerald-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
                                   Live
+                                </span>
+                              )}
+                              {dest.status === "connected" && (
+                                <span className="shrink-0 text-[8px] bg-blue-500/15 text-blue-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
+                                  Ready
+                                </span>
+                              )}
+                              {dest.status === "starting" && (
+                                <span className="shrink-0 text-[8px] bg-yellow-500/15 text-yellow-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
+                                  Connecting...
                                 </span>
                               )}
                               {dest.status === "error" && (
@@ -314,6 +361,16 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                               }
                               className="scale-[0.7] data-[state=checked]:bg-emerald-500"
                             />
+                            {/* Edit Button */}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 rounded-lg text-muted-foreground/30 hover:text-foreground hover:bg-foreground/5 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => handleEditDestination(dest)}
+                            >
+                              <Pencil className="w-3 h-3" />
+                            </Button>
+                            {/* Remove Button */}
                             <Button
                               variant="ghost"
                               size="icon"
@@ -331,7 +388,13 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
 
                 {/* Add Destination Button */}
                 <button
-                  onClick={() => setView("add")}
+                  onClick={() => {
+                    setEditingId(null);
+                    setNewUrl("");
+                    setNewKey("");
+                    setSelectedPlatformId("custom");
+                    setView("add");
+                  }}
                   className={cn(
                     "w-full flex items-center justify-between p-3 rounded-xl",
                     "border border-dashed border-border/30 dark:border-white/10",
@@ -353,7 +416,7 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                 {/* Go Live Button */}
                 {destinations.length > 0 && (
                   <div className="pt-2">
-                    {!isBroadcasting ? (
+                    {!isBroadcasting && !isConnecting ? (
                       <Button
                         className={cn(
                           "w-full h-11 rounded-xl font-medium text-xs",
@@ -361,26 +424,21 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                           "hover:opacity-90 transition-opacity"
                         )}
                         onClick={() => {
-                          console.log("[StreamModal] Go Live clicked!");
-                          console.log("[StreamModal] Total destinations:", destinations.length);
-                          console.log("[StreamModal] All destinations:", JSON.stringify(destinations, null, 2));
-                          const firstEnabled = destinations.find((d) => d.enabled);
-                          console.log("[StreamModal] First enabled destination:", firstEnabled);
+                          console.log("[StreamModal] Go Live clicked.");
+                          const firstEnabled = destinations.find(
+                            (d) => d.enabled
+                          );
                           if (firstEnabled) {
-                            console.log("[StreamModal] Calling onStartStream() - will use all enabled destinations");
-                            // Call without arguments - startStreaming will filter enabled destinations itself
                             onStartStream?.();
                           } else {
-                            console.warn("[StreamModal] No enabled destination found!");
+                            console.warn(
+                              "[StreamModal] No enabled destinations!"
+                            );
                           }
                         }}
                         disabled={isConnecting || activeCount === 0}
                       >
-                        {isConnecting ? (
-                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        ) : (
-                          <Wifi className="w-4 h-4 mr-2" />
-                        )}
+                        <Wifi className="w-4 h-4 mr-2" />
                         Go Live
                         {activeCount > 0 && (
                           <span className="ml-1.5 text-[10px] opacity-60">
@@ -392,19 +450,33 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                       <Button
                         className={cn(
                           "w-full h-11 rounded-xl font-medium text-xs",
-                          "bg-red-500 hover:bg-red-600 text-white"
+                          isConnecting && !isBroadcasting
+                            ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                            : "bg-red-500 hover:bg-red-600 text-white"
                         )}
-                        onClick={() => onStopStream?.()}
+                        onClick={() => {
+                          console.log("[StreamModal] End Broadcast clicked.");
+                          onStopStream?.();
+                        }}
                       >
-                        <WifiOff className="w-4 h-4 mr-2" />
-                        End Broadcast
+                        {isConnecting && !isBroadcasting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                            Connecting...
+                          </>
+                        ) : (
+                          <>
+                            <WifiOff className="w-4 h-4 mr-2" />
+                            End Broadcast
+                          </>
+                        )}
                       </Button>
                     )}
                   </div>
                 )}
               </div>
             ) : (
-              /* Add View */
+              /* Add/Edit View */
               <div className="space-y-4">
                 {/* Platform Grid */}
                 <div className="space-y-2">
@@ -527,12 +599,15 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                   <Button
                     variant="ghost"
                     className="flex-1 h-10 rounded-lg text-xs font-medium"
-                    onClick={() => setView("list")}
+                    onClick={() => {
+                      setView("list");
+                      setEditingId(null);
+                    }}
                   >
                     Cancel
                   </Button>
                   <Button
-                    onClick={handleAddDestination}
+                    onClick={handleSaveDestination}
                     disabled={!newKey && !newUrl}
                     className={cn(
                       "flex-1 h-10 rounded-lg text-xs font-medium",
@@ -540,8 +615,12 @@ export const StreamConfigurationModal: React.FC<StreamConfigurationModalProps> =
                       "hover:opacity-90 disabled:opacity-40"
                     )}
                   >
-                    <Plus className="w-3.5 h-3.5 mr-1.5" />
-                    Add
+                    {editingId ? (
+                      <Check className="w-3.5 h-3.5 mr-1.5" />
+                    ) : (
+                      <Plus className="w-3.5 h-3.5 mr-1.5" />
+                    )}
+                    {editingId ? "Update" : "Add"}
                   </Button>
                 </div>
               </div>

@@ -6,11 +6,16 @@ export interface StreamDestination {
   url: string;
   key: string;
   enabled: boolean;
-  status: "idle" | "starting" | "live" | "error";
+  status: "idle" | "starting" | "connected" | "live" | "error";
   error?: string;
 }
 
-export type RecordingStatus = "idle" | "recording" | "stopping" | "saved" | "error";
+export type RecordingStatus =
+  | "idle"
+  | "recording"
+  | "stopping"
+  | "saved"
+  | "error";
 
 interface StreamState {
   // Broadcast State
@@ -20,7 +25,7 @@ interface StreamState {
   countdown: number | null;
   destinations: StreamDestination[];
 
-  // Recording State (Phase 1 Additions)
+  // Recording State
   isRecording: boolean;
   recordingStatus: RecordingStatus;
   recordingDuration: number;
@@ -61,9 +66,18 @@ export const useStreamStore = create<StreamState>((set) => ({
   recordingDuration: 0,
 
   // Actions
-  setBroadcasting: (isBroadcasting) => set({ isBroadcasting }),
-  setConnecting: (isConnecting) => set({ isConnecting }),
-  setStreamStatus: (streamStatus) => set({ streamStatus }),
+  setBroadcasting: (isBroadcasting) => {
+    console.log("[StreamStore] setBroadcasting:", isBroadcasting);
+    set({ isBroadcasting });
+  },
+  setConnecting: (isConnecting) => {
+    console.log("[StreamStore] setConnecting:", isConnecting);
+    set({ isConnecting });
+  },
+  setStreamStatus: (streamStatus) => {
+    console.log("[StreamStore] setStreamStatus:", streamStatus);
+    set({ streamStatus });
+  },
   setCountdown: (countdown) => set({ countdown }),
 
   setRecording: (isRecording) => set({ isRecording }),
@@ -74,7 +88,6 @@ export const useStreamStore = create<StreamState>((set) => ({
     console.log("[StreamStore] Adding destination:", destination);
     set((state) => {
       const newDestinations = [...state.destinations, destination];
-      console.log("[StreamStore] New destinations array:", newDestinations);
       return { destinations: newDestinations };
     });
   },
@@ -88,14 +101,18 @@ export const useStreamStore = create<StreamState>((set) => ({
       const newDestinations = state.destinations.map((d) =>
         d.id === id ? { ...d, ...updates } : d
       );
-      console.log("[StreamStore] Updated destinations array:", newDestinations);
       return { destinations: newDestinations };
     });
   },
-  setDestinationStatus: (id, status, error) =>
+  setDestinationStatus: (id, status, error) => {
+    console.log(
+      `[StreamStore] setDestinationStatus [${id}]: ${status}`,
+      error ? `Error: ${error}` : ""
+    );
     set((state) => ({
       destinations: state.destinations.map((d) =>
         d.id === id ? { ...d, status, error } : d
       ),
-    })),
+    }));
+  },
 }));
