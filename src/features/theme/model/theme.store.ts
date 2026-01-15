@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type ThemeName = 
-  | "default" 
-  | "ocean" 
-  | "forest" 
+export type ThemeName =
+  | "default"
+  | "ocean"
+  | "forest"
   | "sunset"
   | "cyberpunk"
   | "aurora"
@@ -35,7 +35,14 @@ export interface ThemeConfig {
     dark: string;
   };
   ambient: {
-    type: "gradient" | "particles" | "waves" | "mesh" | "aurora" | "noise" | "glow";
+    type:
+      | "gradient"
+      | "particles"
+      | "waves"
+      | "mesh"
+      | "aurora"
+      | "noise"
+      | "glow";
     colors: string[];
     intensity: number;
     speed: number;
@@ -55,7 +62,8 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      theme: "default",
+      // CHANGE: Set default theme to 'iceQueen'
+      theme: "iceQueen",
       mode: "dark",
       setTheme: (theme) => {
         set({ theme });
@@ -84,11 +92,11 @@ export const useThemeStore = create<ThemeState>()(
 
 function applyTheme(theme: ThemeName, mode: ThemeMode) {
   const root = document.documentElement;
-  
+
   // Remove all theme classes
-  const themeClasses = Object.keys(themes).map(t => `theme-${t}`);
+  const themeClasses = Object.keys(themes).map((t) => `theme-${t}`);
   root.classList.remove(...themeClasses, "dark", "light");
-  
+
   // Apply new theme and mode
   root.classList.add(`theme-${theme}`);
   if (mode === "dark") {

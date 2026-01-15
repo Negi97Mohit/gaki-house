@@ -49,6 +49,9 @@ function createWindow() {
     },
   });
 
+  // CHANGE: Maximize window on startup
+  mainWindow.maximize();
+
   mainWindow.setMenuBarVisibility(false);
 
   if (process.env.VITE_DEV_SERVER_URL) {
