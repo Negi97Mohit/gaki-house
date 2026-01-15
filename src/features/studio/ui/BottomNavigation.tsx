@@ -86,12 +86,12 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     }
   };
 
-  const BASE_URL =
-    "https://github.com/Negi97Mohit/caption-cam/releases/latest/download";
+  // UPDATED: New GitHub Release URL
   const downloads = {
-    windows: `${BASE_URL}/CaptionCam-Studio-Setup-0.0.0.exe`,
-    mac: `${BASE_URL}/CaptionCam-Studio-0.0.0-arm64.dmg`,
-    linux: `${BASE_URL}/CaptionCam-Studio-0.0.0.AppImage`,
+    windows:
+      "https://github.com/Negi97Mohit/gakiVersion/releases/download/v1.0.0/Gaki-House-of-Video-Creation-0.0.0.exe",
+    mac: "#",
+    linux: "#",
   };
 
   return (
@@ -106,8 +106,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             </DialogTitle>
           </DialogHeader>
           <div className="flex justify-center gap-6 py-6">
-            <button
-              onClick={() => window.open(downloads.windows, "_blank")}
+            {/* UPDATED: Changed to <a> tag for better direct download behavior */}
+            <a
+              href={downloads.windows}
               className="group flex flex-col items-center gap-3 p-4 rounded-xl hover:bg-muted/50 transition-colors"
             >
               <div className="w-12 h-12 flex items-center justify-center">
@@ -123,7 +124,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 <div className="text-sm font-medium">Windows</div>
                 <div className="text-[10px] text-muted-foreground">.exe</div>
               </div>
-            </button>
+            </a>
           </div>
         </DialogContent>
       </Dialog>
