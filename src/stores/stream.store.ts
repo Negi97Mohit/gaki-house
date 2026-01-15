@@ -25,6 +25,9 @@ interface StreamState {
   countdown: number | null;
   destinations: StreamDestination[];
 
+  // NEW: Fatal Error State
+  fatalError: string | null;
+
   // Recording State
   isRecording: boolean;
   recordingStatus: RecordingStatus;
@@ -35,6 +38,7 @@ interface StreamState {
   setConnecting: (isConnecting: boolean) => void;
   setStreamStatus: (status: string) => void;
   setCountdown: (countdown: number | null) => void;
+  setFatalError: (error: string | null) => void;
 
   // Recording Actions
   setRecording: (isRecording: boolean) => void;
@@ -59,6 +63,7 @@ export const useStreamStore = create<StreamState>((set) => ({
   streamStatus: "idle",
   countdown: null,
   destinations: [],
+  fatalError: null,
 
   // Recording Defaults
   isRecording: false,
@@ -79,6 +84,11 @@ export const useStreamStore = create<StreamState>((set) => ({
     set({ streamStatus });
   },
   setCountdown: (countdown) => set({ countdown }),
+
+  setFatalError: (fatalError) => {
+    console.error("[StreamStore] Fatal Error Triggered:", fatalError);
+    set({ fatalError });
+  },
 
   setRecording: (isRecording) => set({ isRecording }),
   setRecordingStatus: (recordingStatus) => set({ recordingStatus }),

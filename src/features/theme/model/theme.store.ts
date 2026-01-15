@@ -62,7 +62,7 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      // CHANGE: Set default theme to 'iceQueen'
+      // UPDATED: Default theme is now "iceQueen"
       theme: "iceQueen",
       mode: "dark",
       setTheme: (theme) => {

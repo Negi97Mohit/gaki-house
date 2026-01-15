@@ -12,6 +12,7 @@ import {
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
 import { useCanvasAi } from "./Index/hooks/useCanvasAi";
 import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
+import { FatalErrorDialog } from "@/features/stream/ui/FatalErrorDialog"; // NEW IMPORT
 
 const Index = () => {
   const editor = useEditorOrchestrator();
@@ -101,7 +102,6 @@ const Index = () => {
         onRedo={sceneManager.redo}
         onResetScene={sceneManager.resetScene}
         onToggleFullscreen={ui.handleToggleFullscreen}
-        // ADD THIS: Wire up the remote connect button
         onConnectRemote={() => remote.setIsRemoteModalOpen(true)}
       />
 
@@ -113,6 +113,9 @@ const Index = () => {
         onRemoveFile={vault.removeFile}
         onClearVault={vault.clearVault}
       />
+
+      {/* NEW: Fatal Error Popup */}
+      <FatalErrorDialog />
 
       {rtmp.countdown !== null && (
         <div
