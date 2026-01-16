@@ -43,7 +43,17 @@ export type ThemeName =
   | "hexGridCyber"
   | "hexGridNeon"
   | "hexGridOrbit"
-  | "hexGridVortex";
+  | "hexGridVortex"
+  | "plasmaStorm"
+  | "laserGrid"
+  | "particleNova"
+  | "waveformPulse"
+  | "holographicShift"
+  | "starfieldWarp"
+  | "electricArc"
+  | "fluidDynamics"
+  | "fractalBloom"
+  | "gravitationalLens";
 
 export type ThemeMode = "light" | "dark";
 
@@ -82,7 +92,17 @@ export interface ThemeConfig {
       | "hexCyber"
       | "hexNeon"
       | "hexOrbit"
-      | "hexVortex";
+      | "hexVortex"
+      | "plasmaStorm"
+      | "laserGrid"
+      | "particleNova"
+      | "waveformPulse"
+      | "holographicShift"
+      | "starfieldWarp"
+      | "electricArc"
+      | "fluidDynamics"
+      | "fractalBloom"
+      | "gravitationalLens";
     colors: string[];
     intensity: number;
     speed: number;
@@ -693,5 +713,136 @@ export const themes: Record<ThemeName, ThemeConfig> = {
     },
     accent: "#ef4444",
     glow: "rgba(239, 68, 68, 0.5)",
+  },
+  // NEW ANIMATED THEMES
+  plasmaStorm: {
+    name: "Plasma Storm",
+    description: "Chaotic plasma energy with electric discharges",
+    colors: { light: "#8b5cf6", dark: "#a78bfa" },
+    ambient: {
+      type: "plasmaStorm",
+      colors: ["#8b5cf6", "#7c3aed", "#ec4899", "#06b6d4", "#fbbf24"],
+      intensity: 0.8,
+      speed: 1.4,
+    },
+    accent: "#8b5cf6",
+    glow: "rgba(139, 92, 246, 0.55)",
+  },
+  laserGrid: {
+    name: "Laser Grid",
+    description: "Precision laser beams forming a dynamic 3D grid",
+    colors: { light: "#ef4444", dark: "#f87171" },
+    ambient: {
+      type: "laserGrid",
+      colors: ["#ef4444", "#22c55e", "#3b82f6", "#fbbf24"],
+      intensity: 0.7,
+      speed: 0.8,
+    },
+    accent: "#ef4444",
+    glow: "rgba(239, 68, 68, 0.5)",
+  },
+  particleNova: {
+    name: "Particle Nova",
+    description: "Explosive particle bursts radiating from center",
+    colors: { light: "#f97316", dark: "#fb923c" },
+    ambient: {
+      type: "particleNova",
+      colors: ["#f97316", "#fbbf24", "#ef4444", "#ec4899"],
+      intensity: 0.75,
+      speed: 1.0,
+    },
+    accent: "#f97316",
+    glow: "rgba(249, 115, 22, 0.55)",
+  },
+  waveformPulse: {
+    name: "Waveform Pulse",
+    description: "Audio-reactive waveform visualizations",
+    colors: { light: "#22c55e", dark: "#4ade80" },
+    ambient: {
+      type: "waveformPulse",
+      colors: ["#22c55e", "#06b6d4", "#8b5cf6", "#ec4899"],
+      intensity: 0.65,
+      speed: 1.2,
+    },
+    accent: "#22c55e",
+    glow: "rgba(34, 197, 94, 0.5)",
+  },
+  holographicShift: {
+    name: "Holographic Shift",
+    description: "Iridescent holographic surface with color shifting",
+    colors: { light: "#06b6d4", dark: "#22d3ee" },
+    ambient: {
+      type: "holographicShift",
+      colors: ["#06b6d4", "#8b5cf6", "#ec4899", "#22c55e", "#fbbf24"],
+      intensity: 0.6,
+      speed: 0.7,
+    },
+    accent: "#06b6d4",
+    glow: "rgba(6, 182, 212, 0.45)",
+  },
+  starfieldWarp: {
+    name: "Starfield Warp",
+    description: "Hyperspace star trails with motion blur",
+    colors: { light: "#f8fafc", dark: "#e2e8f0" },
+    ambient: {
+      type: "starfieldWarp",
+      colors: ["#f8fafc", "#94a3b8", "#3b82f6", "#8b5cf6"],
+      intensity: 0.7,
+      speed: 1.5,
+    },
+    accent: "#3b82f6",
+    glow: "rgba(59, 130, 246, 0.4)",
+  },
+  electricArc: {
+    name: "Electric Arc",
+    description: "High voltage lightning arcs with crackling energy",
+    colors: { light: "#3b82f6", dark: "#60a5fa" },
+    ambient: {
+      type: "electricArc",
+      colors: ["#3b82f6", "#06b6d4", "#f8fafc", "#8b5cf6"],
+      intensity: 0.8,
+      speed: 1.6,
+    },
+    accent: "#3b82f6",
+    glow: "rgba(59, 130, 246, 0.55)",
+  },
+  fluidDynamics: {
+    name: "Fluid Dynamics",
+    description: "Smooth flowing liquid with physics simulation",
+    colors: { light: "#ec4899", dark: "#f472b6" },
+    ambient: {
+      type: "fluidDynamics",
+      colors: ["#ec4899", "#8b5cf6", "#06b6d4", "#22c55e"],
+      intensity: 0.55,
+      speed: 0.5,
+    },
+    accent: "#ec4899",
+    glow: "rgba(236, 72, 153, 0.45)",
+  },
+  fractalBloom: {
+    name: "Fractal Bloom",
+    description: "Recursive fractal patterns blooming outward",
+    colors: { light: "#14b8a6", dark: "#2dd4bf" },
+    ambient: {
+      type: "fractalBloom",
+      colors: ["#14b8a6", "#06b6d4", "#8b5cf6", "#fbbf24"],
+      intensity: 0.6,
+      speed: 0.6,
+    },
+    accent: "#14b8a6",
+    glow: "rgba(20, 184, 166, 0.45)",
+  },
+  gravitationalLens: {
+    name: "Gravitational Lens",
+    description: "Space-time distortion with light bending effects",
+    colors: { light: "#1e1b4b", dark: "#312e81" },
+    ambient: {
+      type: "gravitationalLens",
+      colors: ["#1e1b4b", "#4c1d95", "#7c3aed", "#06b6d4", "#fbbf24"],
+      intensity: 0.7,
+      speed: 0.4,
+    },
+    accent: "#7c3aed",
+    glow: "rgba(124, 58, 237, 0.5)",
   },
 };
