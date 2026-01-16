@@ -569,6 +569,466 @@
     --ring: 330 85% 65%;
   }
 
+  /* ===== COSMIC RING THEME (Deep space with orbital rings) ===== */
+  .theme-cosmicRing {
+    --background: 250 25% 97%;
+    --foreground: 250 30% 12%;
+    --card: 250 22% 95%;
+    --card-foreground: 250 30% 12%;
+    --popover: 250 25% 97%;
+    --popover-foreground: 250 30% 12%;
+    --primary: 260 80% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 250 18% 92%;
+    --secondary-foreground: 250 25% 25%;
+    --muted: 250 15% 90%;
+    --muted-foreground: 250 12% 45%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 250 30% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 250 18% 82%;
+    --input: 250 18% 88%;
+    --ring: 260 80% 65%;
+  }
+
+  .dark.theme-cosmicRing,
+  .theme-cosmicRing.dark {
+    --background: 255 45% 4%;
+    --foreground: 250 20% 94%;
+    --card: 255 40% 8%;
+    --card-foreground: 250 20% 94%;
+    --popover: 255 40% 6%;
+    --popover-foreground: 250 20% 94%;
+    --primary: 260 85% 72%;
+    --primary-foreground: 255 45% 4%;
+    --secondary: 255 30% 14%;
+    --secondary-foreground: 250 18% 90%;
+    --muted: 255 25% 12%;
+    --muted-foreground: 250 12% 70%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 255 45% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 255 25% 24%;
+    --input: 255 25% 20%;
+    --ring: 260 85% 72%;
+  }
+
+  /* ===== HEX GRID THEME (Cyberpunk honeycomb) ===== */
+  .theme-hexGrid {
+    --background: 165 25% 97%;
+    --foreground: 165 30% 12%;
+    --card: 165 22% 95%;
+    --card-foreground: 165 30% 12%;
+    --popover: 165 25% 97%;
+    --popover-foreground: 165 30% 12%;
+    --primary: 160 100% 45%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 165 18% 92%;
+    --secondary-foreground: 165 25% 25%;
+    --muted: 165 15% 90%;
+    --muted-foreground: 165 12% 45%;
+    --accent: 60 100% 50%;
+    --accent-foreground: 165 30% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 165 18% 82%;
+    --input: 165 18% 88%;
+    --ring: 160 100% 45%;
+  }
+
+  .dark.theme-hexGrid,
+  .theme-hexGrid.dark {
+    --background: 170 40% 4%;
+    --foreground: 165 20% 94%;
+    --card: 170 35% 8%;
+    --card-foreground: 165 20% 94%;
+    --popover: 170 35% 6%;
+    --popover-foreground: 165 20% 94%;
+    --primary: 160 100% 50%;
+    --primary-foreground: 170 40% 4%;
+    --secondary: 170 30% 14%;
+    --secondary-foreground: 165 18% 90%;
+    --muted: 170 25% 12%;
+    --muted-foreground: 165 12% 70%;
+    --accent: 60 100% 55%;
+    --accent-foreground: 170 40% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 170 25% 22%;
+    --input: 170 25% 18%;
+    --ring: 160 100% 50%;
+  }
+
+  /* ===== PRISM WAVE THEME (Holographic rainbow) ===== */
+  .theme-prismWave {
+    --background: 280 25% 97%;
+    --foreground: 280 30% 12%;
+    --card: 280 22% 95%;
+    --card-foreground: 280 30% 12%;
+    --popover: 280 25% 97%;
+    --popover-foreground: 280 30% 12%;
+    --primary: 300 75% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 280 18% 92%;
+    --secondary-foreground: 280 25% 25%;
+    --muted: 280 15% 90%;
+    --muted-foreground: 280 12% 45%;
+    --accent: 180 85% 55%;
+    --accent-foreground: 280 30% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 280 18% 82%;
+    --input: 280 18% 88%;
+    --ring: 300 75% 55%;
+  }
+
+  .dark.theme-prismWave,
+  .theme-prismWave.dark {
+    --background: 285 40% 5%;
+    --foreground: 280 20% 94%;
+    --card: 285 35% 9%;
+    --card-foreground: 280 20% 94%;
+    --popover: 285 35% 7%;
+    --popover-foreground: 280 20% 94%;
+    --primary: 300 80% 68%;
+    --primary-foreground: 285 40% 5%;
+    --secondary: 285 28% 15%;
+    --secondary-foreground: 280 18% 90%;
+    --muted: 285 25% 13%;
+    --muted-foreground: 280 12% 70%;
+    --accent: 180 90% 55%;
+    --accent-foreground: 285 40% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 285 25% 25%;
+    --input: 285 25% 21%;
+    --ring: 300 80% 68%;
+  }
+
+  /* ===== NEBULA DUST THEME (Cosmic purple clouds) ===== */
+  .theme-nebulaDust {
+    --background: 290 25% 97%;
+    --foreground: 290 30% 12%;
+    --card: 290 22% 95%;
+    --card-foreground: 290 30% 12%;
+    --popover: 290 25% 97%;
+    --popover-foreground: 290 30% 12%;
+    --primary: 280 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 290 18% 92%;
+    --secondary-foreground: 290 25% 25%;
+    --muted: 290 15% 90%;
+    --muted-foreground: 290 12% 45%;
+    --accent: 340 80% 60%;
+    --accent-foreground: 290 30% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 290 18% 82%;
+    --input: 290 18% 88%;
+    --ring: 280 70% 50%;
+  }
+
+  .dark.theme-nebulaDust,
+  .theme-nebulaDust.dark {
+    --background: 280 50% 4%;
+    --foreground: 290 20% 94%;
+    --card: 280 45% 8%;
+    --card-foreground: 290 20% 94%;
+    --popover: 280 45% 6%;
+    --popover-foreground: 290 20% 94%;
+    --primary: 280 75% 65%;
+    --primary-foreground: 280 50% 4%;
+    --secondary: 280 35% 14%;
+    --secondary-foreground: 290 18% 90%;
+    --muted: 280 30% 12%;
+    --muted-foreground: 290 12% 70%;
+    --accent: 340 85% 65%;
+    --accent-foreground: 280 50% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 280 30% 24%;
+    --input: 280 30% 20%;
+    --ring: 280 75% 65%;
+  }
+
+  /* ===== MATRIX CODE THEME (Digital rain green) ===== */
+  .theme-matrixCode {
+    --background: 120 25% 97%;
+    --foreground: 120 30% 12%;
+    --card: 120 22% 95%;
+    --card-foreground: 120 30% 12%;
+    --popover: 120 25% 97%;
+    --popover-foreground: 120 30% 12%;
+    --primary: 120 100% 40%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 120 18% 92%;
+    --secondary-foreground: 120 25% 25%;
+    --muted: 120 15% 90%;
+    --muted-foreground: 120 12% 45%;
+    --accent: 120 100% 40%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 120 18% 82%;
+    --input: 120 18% 88%;
+    --ring: 120 100% 40%;
+  }
+
+  .dark.theme-matrixCode,
+  .theme-matrixCode.dark {
+    --background: 120 100% 2%;
+    --foreground: 120 60% 70%;
+    --card: 120 80% 4%;
+    --card-foreground: 120 60% 70%;
+    --popover: 120 80% 3%;
+    --popover-foreground: 120 60% 70%;
+    --primary: 120 100% 50%;
+    --primary-foreground: 120 100% 2%;
+    --secondary: 120 50% 10%;
+    --secondary-foreground: 120 50% 65%;
+    --muted: 120 40% 8%;
+    --muted-foreground: 120 40% 50%;
+    --accent: 120 100% 50%;
+    --accent-foreground: 120 100% 2%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 120 60% 15%;
+    --input: 120 50% 12%;
+    --ring: 120 100% 50%;
+  }
+
+  /* ===== LIQUID METAL THEME (Chrome mercury) ===== */
+  .theme-liquidMetal {
+    --background: 220 15% 97%;
+    --foreground: 220 20% 12%;
+    --card: 220 12% 95%;
+    --card-foreground: 220 20% 12%;
+    --popover: 220 15% 97%;
+    --popover-foreground: 220 20% 12%;
+    --primary: 220 10% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 10% 92%;
+    --secondary-foreground: 220 15% 25%;
+    --muted: 220 8% 90%;
+    --muted-foreground: 220 8% 45%;
+    --accent: 200 50% 60%;
+    --accent-foreground: 220 20% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 10% 82%;
+    --input: 220 10% 88%;
+    --ring: 220 10% 50%;
+  }
+
+  .dark.theme-liquidMetal,
+  .theme-liquidMetal.dark {
+    --background: 220 15% 6%;
+    --foreground: 220 10% 85%;
+    --card: 220 12% 10%;
+    --card-foreground: 220 10% 85%;
+    --popover: 220 12% 8%;
+    --popover-foreground: 220 10% 85%;
+    --primary: 220 15% 70%;
+    --primary-foreground: 220 15% 6%;
+    --secondary: 220 10% 16%;
+    --secondary-foreground: 220 8% 78%;
+    --muted: 220 8% 14%;
+    --muted-foreground: 220 8% 55%;
+    --accent: 200 50% 65%;
+    --accent-foreground: 220 15% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 10% 26%;
+    --input: 220 10% 22%;
+    --ring: 220 15% 70%;
+  }
+
+  /* ===== CRYSTAL CAVE THEME (Amethyst geode) ===== */
+  .theme-crystalCave {
+    --background: 270 25% 97%;
+    --foreground: 270 30% 12%;
+    --card: 270 22% 95%;
+    --card-foreground: 270 30% 12%;
+    --popover: 270 25% 97%;
+    --popover-foreground: 270 30% 12%;
+    --primary: 280 60% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 18% 92%;
+    --secondary-foreground: 270 25% 25%;
+    --muted: 270 15% 90%;
+    --muted-foreground: 270 12% 45%;
+    --accent: 200 70% 60%;
+    --accent-foreground: 270 30% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 18% 82%;
+    --input: 270 18% 88%;
+    --ring: 280 60% 55%;
+  }
+
+  .dark.theme-crystalCave,
+  .theme-crystalCave.dark {
+    --background: 275 40% 5%;
+    --foreground: 270 20% 90%;
+    --card: 275 35% 9%;
+    --card-foreground: 270 20% 90%;
+    --popover: 275 35% 7%;
+    --popover-foreground: 270 20% 90%;
+    --primary: 280 65% 68%;
+    --primary-foreground: 275 40% 5%;
+    --secondary: 275 28% 15%;
+    --secondary-foreground: 270 18% 85%;
+    --muted: 275 25% 13%;
+    --muted-foreground: 270 12% 65%;
+    --accent: 200 75% 65%;
+    --accent-foreground: 275 40% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 275 25% 24%;
+    --input: 275 25% 20%;
+    --ring: 280 65% 68%;
+  }
+
+  /* ===== SOLAR FLARE THEME (Burning orange plasma) ===== */
+  .theme-solarFlare {
+    --background: 30 30% 97%;
+    --foreground: 20 35% 12%;
+    --card: 30 25% 95%;
+    --card-foreground: 20 35% 12%;
+    --popover: 30 30% 97%;
+    --popover-foreground: 20 35% 12%;
+    --primary: 25 100% 55%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 30 20% 92%;
+    --secondary-foreground: 20 28% 25%;
+    --muted: 30 18% 90%;
+    --muted-foreground: 20 15% 45%;
+    --accent: 45 100% 55%;
+    --accent-foreground: 20 35% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 18% 82%;
+    --input: 30 18% 88%;
+    --ring: 25 100% 55%;
+  }
+
+  .dark.theme-solarFlare,
+  .theme-solarFlare.dark {
+    --background: 15 50% 4%;
+    --foreground: 30 30% 92%;
+    --card: 15 45% 8%;
+    --card-foreground: 30 30% 92%;
+    --popover: 15 45% 6%;
+    --popover-foreground: 30 30% 92%;
+    --primary: 25 100% 60%;
+    --primary-foreground: 15 50% 4%;
+    --secondary: 15 35% 14%;
+    --secondary-foreground: 30 25% 88%;
+    --muted: 15 30% 12%;
+    --muted-foreground: 30 20% 65%;
+    --accent: 45 100% 60%;
+    --accent-foreground: 15 50% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 15 30% 22%;
+    --input: 15 30% 18%;
+    --ring: 25 100% 60%;
+  }
+
+  /* ===== QUANTUM FIELD THEME (Electric blue energy) ===== */
+  .theme-quantumField {
+    --background: 210 25% 97%;
+    --foreground: 210 30% 12%;
+    --card: 210 22% 95%;
+    --card-foreground: 210 30% 12%;
+    --popover: 210 25% 97%;
+    --popover-foreground: 210 30% 12%;
+    --primary: 200 100% 55%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 210 18% 92%;
+    --secondary-foreground: 210 25% 25%;
+    --muted: 210 15% 90%;
+    --muted-foreground: 210 12% 45%;
+    --accent: 280 80% 60%;
+    --accent-foreground: 210 30% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 18% 82%;
+    --input: 210 18% 88%;
+    --ring: 200 100% 55%;
+  }
+
+  .dark.theme-quantumField,
+  .theme-quantumField.dark {
+    --background: 215 50% 4%;
+    --foreground: 210 25% 92%;
+    --card: 215 45% 8%;
+    --card-foreground: 210 25% 92%;
+    --popover: 215 45% 6%;
+    --popover-foreground: 210 25% 92%;
+    --primary: 200 100% 60%;
+    --primary-foreground: 215 50% 4%;
+    --secondary: 215 35% 14%;
+    --secondary-foreground: 210 20% 88%;
+    --muted: 215 30% 12%;
+    --muted-foreground: 210 15% 65%;
+    --accent: 280 85% 65%;
+    --accent-foreground: 215 50% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 30% 22%;
+    --input: 215 30% 18%;
+    --ring: 200 100% 60%;
+  }
+
+  /* ===== ABYSSAL DEPTH THEME (Deep ocean darkness) ===== */
+  .theme-abyssalDepth {
+    --background: 210 30% 97%;
+    --foreground: 215 35% 12%;
+    --card: 210 25% 95%;
+    --card-foreground: 215 35% 12%;
+    --popover: 210 30% 97%;
+    --popover-foreground: 215 35% 12%;
+    --primary: 200 70% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 20% 92%;
+    --secondary-foreground: 215 28% 25%;
+    --muted: 210 18% 90%;
+    --muted-foreground: 215 15% 45%;
+    --accent: 180 80% 50%;
+    --accent-foreground: 215 35% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 18% 82%;
+    --input: 210 18% 88%;
+    --ring: 200 70% 45%;
+  }
+
+  .dark.theme-abyssalDepth,
+  .theme-abyssalDepth.dark {
+    --background: 220 60% 3%;
+    --foreground: 210 25% 85%;
+    --card: 220 55% 6%;
+    --card-foreground: 210 25% 85%;
+    --popover: 220 55% 4%;
+    --popover-foreground: 210 25% 85%;
+    --primary: 200 80% 55%;
+    --primary-foreground: 220 60% 3%;
+    --secondary: 220 40% 12%;
+    --secondary-foreground: 210 20% 80%;
+    --muted: 220 35% 10%;
+    --muted-foreground: 210 15% 55%;
+    --accent: 180 90% 45%;
+    --accent-foreground: 220 60% 3%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 35% 18%;
+    --input: 220 35% 14%;
+    --ring: 200 80% 55%;
+  }
+
   /* z-index stack - shared across all themes */
   :root,
   .dark {
