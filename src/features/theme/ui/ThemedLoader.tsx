@@ -33,6 +33,18 @@ const loaderColors: Record<ThemeName, { primary: string; secondary: string }> = 
   solarFlare: { primary: "#fbbf24", secondary: "#f59e0b" },
   quantumField: { primary: "#38bdf8", secondary: "#0ea5e9" },
   abyssalDepth: { primary: "#0284c7", secondary: "#0369a1" },
+  // Cosmic Ring Variations
+  cosmicRingPulse: { primary: "#f9a8d4", secondary: "#ec4899" },
+  cosmicRingDouble: { primary: "#67e8f9", secondary: "#06b6d4" },
+  cosmicRingSpiral: { primary: "#c4b5fd", secondary: "#8b5cf6" },
+  cosmicRingEclipse: { primary: "#fcd34d", secondary: "#f59e0b" },
+  cosmicRingAurora: { primary: "#6ee7b7", secondary: "#10b981" },
+  // Hex Grid Variations
+  hexGridHoneycomb: { primary: "#fbbf24", secondary: "#d97706" },
+  hexGridCyber: { primary: "#22d3ee", secondary: "#0891b2" },
+  hexGridNeon: { primary: "#f0abfc", secondary: "#d946ef" },
+  hexGridOrbit: { primary: "#94a3b8", secondary: "#475569" },
+  hexGridVortex: { primary: "#f87171", secondary: "#dc2626" },
 };
 
 interface ThemedLoaderProps {

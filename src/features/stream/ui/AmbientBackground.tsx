@@ -538,6 +538,354 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
           </div>
         );
 
+      // COSMIC RING VARIATIONS
+      case "ringPulse":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full border-4"
+                style={{
+                  width: `${20 + i * 15}%`,
+                  height: `${20 + i * 15}%`,
+                  borderColor: ambient.colors[i % ambient.colors.length],
+                  boxShadow: `0 0 30px ${ambient.colors[i % ambient.colors.length]}80, inset 0 0 30px ${ambient.colors[i % ambient.colors.length]}40`,
+                }}
+                animate={{
+                  scale: [1, 1.15, 1],
+                  opacity: [0.4, 0.9, 0.4],
+                }}
+                transition={{
+                  duration: 2 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.2,
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "ringDouble":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* First ring system */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={`a-${i}`}
+                className="absolute rounded-full border-2"
+                style={{
+                  width: `${35 + i * 15}%`,
+                  height: `${35 + i * 15}%`,
+                  borderColor: ambient.colors[i % ambient.colors.length],
+                  transform: "rotateX(70deg)",
+                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 15 / ambient.speed + i * 3, repeat: Infinity, ease: "linear" }}
+              />
+            ))}
+            {/* Second ring system - perpendicular */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={`b-${i}`}
+                className="absolute rounded-full border-2"
+                style={{
+                  width: `${30 + i * 12}%`,
+                  height: `${30 + i * 12}%`,
+                  borderColor: ambient.colors[(i + 1) % ambient.colors.length],
+                  transform: "rotateY(70deg)",
+                }}
+                animate={{ rotate: -360 }}
+                transition={{ duration: 12 / ambient.speed + i * 2, repeat: Infinity, ease: "linear" }}
+              />
+            ))}
+          </div>
+        );
+
+      case "ringSpiral":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: `${10 + i * 8}%`,
+                  height: `${10 + i * 8}%`,
+                  border: `2px solid ${ambient.colors[i % ambient.colors.length]}`,
+                  borderRadius: "50%",
+                  borderTopColor: "transparent",
+                  borderLeftColor: "transparent",
+                }}
+                animate={{ rotate: 360, scale: [1, 1.05, 1] }}
+                transition={{
+                  rotate: { duration: 8 / ambient.speed + i, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.1 },
+                }}
+              />
+            ))}
+            {/* Center glow */}
+            <motion.div
+              className="absolute w-16 h-16 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${ambient.colors[0]}80 0%, transparent 70%)`,
+                filter: "blur(10px)",
+              }}
+              animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "ringEclipse":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Dark core */}
+            <div className="absolute w-32 h-32 rounded-full bg-black z-10" />
+            {/* Corona rings */}
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${35 + i * 10}%`,
+                  height: `${35 + i * 10}%`,
+                  border: `${3 - i * 0.4}px solid ${ambient.colors[i % ambient.colors.length]}`,
+                  boxShadow: `0 0 ${40 - i * 5}px ${ambient.colors[i % ambient.colors.length]}`,
+                  opacity: 1 - i * 0.12,
+                }}
+                animate={{
+                  scale: [1, 1.02, 1],
+                  opacity: [0.8 - i * 0.1, 1 - i * 0.1, 0.8 - i * 0.1],
+                }}
+                transition={{
+                  duration: 4 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.15,
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "ringAurora":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Aurora bands wrapping around rings */}
+            {ambient.colors.map((color, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${40 + i * 12}%`,
+                  height: `${40 + i * 12}%`,
+                  background: `conic-gradient(from ${i * 45}deg, transparent, ${color}60, transparent, ${color}40, transparent)`,
+                  filter: "blur(15px)",
+                }}
+                animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
+                transition={{ duration: 20 / ambient.speed + i * 5, repeat: Infinity, ease: "linear" }}
+              />
+            ))}
+            {/* Inner rings */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={`ring-${i}`}
+                className="absolute rounded-full border"
+                style={{
+                  width: `${25 + i * 10}%`,
+                  height: `${25 + i * 10}%`,
+                  borderColor: `${ambient.colors[i]}80`,
+                }}
+                animate={{ rotate: 360, scale: [1, 1.05, 1] }}
+                transition={{
+                  rotate: { duration: 15 / ambient.speed, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      // HEX GRID VARIATIONS
+      case "hexHoneycomb":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath fill='${encodeURIComponent(ambient.colors[0])}' fill-opacity='0.25' d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100'/%3E%3Cpath fill='none' stroke='${encodeURIComponent(ambient.colors[1])}' stroke-opacity='0.4' d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34'/%3E%3C/svg%3E")`,
+              }}
+              animate={{ opacity: [0.4, 0.7, 0.4] }}
+              transition={{ duration: 4 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Honey drip effect */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: "30%", height: "30%",
+                  left: `${15 + i * 25}%`, top: `${20 + i * 15}%`,
+                  background: `radial-gradient(circle, ${ambient.colors[3]}70 0%, ${ambient.colors[0]}40 50%, transparent 70%)`,
+                  filter: "blur(30px)",
+                }}
+                animate={{ y: ["0%", "10%", "0%"], opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 5 / ambient.speed, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+              />
+            ))}
+          </div>
+        );
+
+      case "hexCyber":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Glowing hex grid */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='${encodeURIComponent(ambient.colors[0])}' fill-opacity='0.2'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+              animate={{ opacity: [0.3, 0.7, 0.3] }}
+              transition={{ duration: 2 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Scanning lines */}
+            <motion.div
+              className="absolute left-0 right-0 h-1"
+              style={{
+                background: `linear-gradient(90deg, transparent, ${ambient.colors[0]}, transparent)`,
+                boxShadow: `0 0 20px ${ambient.colors[0]}`,
+              }}
+              animate={{ top: ["-5%", "105%"] }}
+              transition={{ duration: 3 / ambient.speed, repeat: Infinity, ease: "linear" }}
+            />
+            {/* Neural nodes */}
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute w-3 h-3 rounded-full"
+                style={{
+                  left: `${20 + i * 20}%`, top: `${25 + (i % 2) * 40}%`,
+                  background: ambient.colors[i % ambient.colors.length],
+                  boxShadow: `0 0 15px ${ambient.colors[i % ambient.colors.length]}`,
+                }}
+                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+              />
+            ))}
+          </div>
+        );
+
+      case "hexNeon":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Neon hex pattern */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg stroke='${encodeURIComponent(ambient.colors[0])}' stroke-width='2' fill='none'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                filter: `drop-shadow(0 0 5px ${ambient.colors[0]})`,
+              }}
+              animate={{ opacity: [0.4, 0.8, 0.4] }}
+              transition={{ duration: 1.5 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Neon glow spots */}
+            {ambient.colors.slice(0, 3).map((color, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: "25%", height: "25%",
+                  left: `${10 + i * 30}%`, top: `${20 + i * 20}%`,
+                  background: `radial-gradient(circle, ${color}80 0%, transparent 70%)`,
+                  filter: "blur(40px)",
+                }}
+                animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: 2 / ambient.speed, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
+              />
+            ))}
+          </div>
+        );
+
+      case "hexOrbit":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Orbital hex stations */}
+            {[0, 1, 2].map((ring) => (
+              <motion.div
+                key={ring}
+                className="absolute"
+                style={{ width: `${50 + ring * 20}%`, height: `${50 + ring * 20}%` }}
+                animate={{ rotate: ring % 2 === 0 ? 360 : -360 }}
+                transition={{ duration: 30 / ambient.speed + ring * 10, repeat: Infinity, ease: "linear" }}
+              >
+                {[0, 1, 2, 3, 4, 5].map((hex) => (
+                  <div
+                    key={hex}
+                    className="absolute w-4 h-4"
+                    style={{
+                      left: `${50 + 45 * Math.cos((hex * Math.PI * 2) / 6)}%`,
+                      top: `${50 + 45 * Math.sin((hex * Math.PI * 2) / 6)}%`,
+                      transform: "translate(-50%, -50%)",
+                      background: ambient.colors[hex % ambient.colors.length],
+                      clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                      boxShadow: `0 0 10px ${ambient.colors[hex % ambient.colors.length]}`,
+                    }}
+                  />
+                ))}
+              </motion.div>
+            ))}
+            {/* Center station */}
+            <motion.div
+              className="absolute w-8 h-8"
+              style={{
+                background: ambient.colors[4] || ambient.colors[0],
+                clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                boxShadow: `0 0 30px ${ambient.colors[4] || ambient.colors[0]}`,
+              }}
+              animate={{ scale: [1, 1.2, 1], rotate: 360 }}
+              transition={{
+                scale: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+              }}
+            />
+          </div>
+        );
+
+      case "hexVortex":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Vortex layers */}
+            {Array.from({ length: 6 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: `${80 - i * 10}%`,
+                  height: `${80 - i * 10}%`,
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='${encodeURIComponent(ambient.colors[i % ambient.colors.length])}' fill-opacity='${0.3 - i * 0.04}'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                }}
+                animate={{ rotate: i % 2 === 0 ? 360 : -360, scale: [1, 1.1, 1] }}
+                transition={{
+                  rotate: { duration: 10 / ambient.speed + i * 2, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.2 },
+                }}
+              />
+            ))}
+            {/* Center pull */}
+            <motion.div
+              className="absolute w-24 h-24 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${ambient.colors[0]}90 0%, ${ambient.colors[1]}60 40%, transparent 70%)`,
+                filter: "blur(20px)",
+              }}
+              animate={{ scale: [0.8, 1.2, 0.8] }}
+              transition={{ duration: 2 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
       default:
         return null;
     }
