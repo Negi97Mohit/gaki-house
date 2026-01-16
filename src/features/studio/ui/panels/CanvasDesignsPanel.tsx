@@ -440,11 +440,31 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
 
   return (
     <div className="flex flex-col h-full font-mono gap-3">
+      {/* Community Section - Prominent at Top */}
+      <div className="shrink-0">
+        <button
+          onClick={() => setSelectedCategory("community")}
+          className={cn(
+            "w-full flex items-center justify-center gap-2 px-4 py-2.5 text-[10px] font-bold tracking-wider uppercase transition-all duration-150 rounded-sm",
+            "border-2",
+            selectedCategory === "community"
+              ? "bg-primary text-primary-foreground border-primary shadow-md"
+              : "bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-primary/50 hover:border-primary hover:bg-primary/20"
+          )}
+        >
+          <Users className="w-4 h-4" strokeWidth={2} />
+          COMMUNITY DESIGNS
+          {isLoadingPublic && selectedCategory === "community" && (
+            <Loader2 className="w-3 h-3 animate-spin ml-1" />
+          )}
+        </button>
+      </div>
+
       {/* Horizontally Scrollable Categories */}
       <div className="shrink-0">
         <ScrollArea className="w-full">
           <div className="flex gap-1.5 pb-2">
-            {CANVAS_PRESET_CATEGORIES.map((cat) => {
+            {CANVAS_PRESET_CATEGORIES.filter(cat => cat.id !== "community").map((cat) => {
               const IconComponent = categoryIcons[cat.icon];
               const isActive = selectedCategory === cat.id;
               return (
@@ -520,28 +540,32 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
         </div>
       )}
 
-      {/* Custom Presets */}
+      {/* Custom Presets - Horizontally Scrollable */}
       {customCanvasPresets && customCanvasPresets.length > 0 && (
         <div className="shrink-0">
           <h4 className="text-[9px] font-bold mb-2 text-primary/80 tracking-widest uppercase flex items-center gap-2">
             <span className="w-1 h-1 rounded-full bg-primary" />
             YOUR SAVED PRESETS
           </h4>
-          <div className="grid grid-cols-2 gap-3">
-            {customCanvasPresets.map((preset) => (
-              <PreviewCard
-                key={preset.id}
-                preset={preset}
-                isCustom={true}
-                isSelected={selectedPresetId === preset.id}
-                onSelect={handleSelect}
-                onShare={handleShare}
-                onUnshare={handleUnshare}
-                onDelete={handleDelete}
-                setRef={(el) => (presetRefs.current[preset.id] = el)}
-              />
-            ))}
-          </div>
+          <ScrollArea className="w-full">
+            <div className="flex gap-3 pb-2">
+              {customCanvasPresets.map((preset) => (
+                <div key={preset.id} className="w-40 shrink-0">
+                  <PreviewCard
+                    preset={preset}
+                    isCustom={true}
+                    isSelected={selectedPresetId === preset.id}
+                    onSelect={handleSelect}
+                    onShare={handleShare}
+                    onUnshare={handleUnshare}
+                    onDelete={handleDelete}
+                    setRef={(el) => (presetRefs.current[preset.id] = el)}
+                  />
+                </div>
+              ))}
+            </div>
+            <ScrollBar orientation="horizontal" className="h-1.5" />
+          </ScrollArea>
         </div>
       )}
 
