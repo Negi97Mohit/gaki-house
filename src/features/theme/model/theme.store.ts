@@ -43,7 +43,18 @@ export type ThemeName =
   | "hexGridCyber"
   | "hexGridNeon"
   | "hexGridOrbit"
-  | "hexGridVortex";
+  | "hexGridVortex"
+  // New animated themes
+  | "auroraWaves"
+  | "neonRain"
+  | "particleNebula"
+  | "geometricPulse"
+  | "electricStorm"
+  | "floatingOrbs"
+  | "fireflies"
+  | "waveformAudio"
+  | "plasmaField"
+  | "starfield";
 
 export type ThemeMode = "light" | "dark";
 
@@ -82,7 +93,18 @@ export interface ThemeConfig {
       | "hexCyber"
       | "hexNeon"
       | "hexOrbit"
-      | "hexVortex";
+      | "hexVortex"
+      // New animated effects
+      | "auroraWaves"
+      | "neonRain"
+      | "particleNebula"
+      | "geometricPulse"
+      | "electricStorm"
+      | "floatingOrbs"
+      | "fireflies"
+      | "waveformAudio"
+      | "plasmaField"
+      | "starfield";
     colors: string[];
     intensity: number;
     speed: number;
@@ -693,5 +715,136 @@ export const themes: Record<ThemeName, ThemeConfig> = {
     },
     accent: "#ef4444",
     glow: "rgba(239, 68, 68, 0.5)",
+  },
+  // New animated themes
+  auroraWaves: {
+    name: "Aurora Waves",
+    description: "Flowing northern lights with gradient waves",
+    colors: { light: "#00ff88", dark: "#00ffcc" },
+    ambient: {
+      type: "auroraWaves",
+      colors: ["#00ff88", "#00ffcc", "#00ccff", "#8800ff", "#ff00ff"],
+      intensity: 0.6,
+      speed: 0.8,
+    },
+    accent: "#00ffcc",
+    glow: "rgba(0, 255, 204, 0.4)",
+  },
+  neonRain: {
+    name: "Neon Rain",
+    description: "Cyberpunk rain drops with neon glow trails",
+    colors: { light: "#00ffff", dark: "#ff00ff" },
+    ambient: {
+      type: "neonRain",
+      colors: ["#00ffff", "#ff00ff", "#00ff00", "#ffff00"],
+      intensity: 0.7,
+      speed: 1.2,
+    },
+    accent: "#00ffff",
+    glow: "rgba(0, 255, 255, 0.5)",
+  },
+  particleNebula: {
+    name: "Particle Nebula",
+    description: "Cosmic dust particles floating in space",
+    colors: { light: "#ff6b6b", dark: "#4ecdc4" },
+    ambient: {
+      type: "particleNebula",
+      colors: ["#ff6b6b", "#4ecdc4", "#45b7d1", "#96c93d", "#f9ca24"],
+      intensity: 0.65,
+      speed: 0.5,
+    },
+    accent: "#4ecdc4",
+    glow: "rgba(78, 205, 196, 0.45)",
+  },
+  geometricPulse: {
+    name: "Geometric Pulse",
+    description: "Pulsating geometric shapes with rhythm",
+    colors: { light: "#667eea", dark: "#764ba2" },
+    ambient: {
+      type: "geometricPulse",
+      colors: ["#667eea", "#764ba2", "#f093fb", "#f5576c"],
+      intensity: 0.6,
+      speed: 0.7,
+    },
+    accent: "#764ba2",
+    glow: "rgba(118, 75, 162, 0.45)",
+  },
+  electricStorm: {
+    name: "Electric Storm",
+    description: "Lightning bolts and electric arcs",
+    colors: { light: "#00d4ff", dark: "#7b2cbf" },
+    ambient: {
+      type: "electricStorm",
+      colors: ["#00d4ff", "#7b2cbf", "#e0aaff", "#ffffff"],
+      intensity: 0.75,
+      speed: 1.5,
+    },
+    accent: "#00d4ff",
+    glow: "rgba(0, 212, 255, 0.5)",
+  },
+  floatingOrbs: {
+    name: "Floating Orbs",
+    description: "Translucent orbs drifting peacefully",
+    colors: { light: "#ff6b6b", dark: "#4ecdc4" },
+    ambient: {
+      type: "floatingOrbs",
+      colors: ["#ff6b6b", "#4ecdc4", "#45b7d1", "#ffeaa7", "#dfe6e9"],
+      intensity: 0.5,
+      speed: 0.4,
+    },
+    accent: "#4ecdc4",
+    glow: "rgba(78, 205, 196, 0.4)",
+  },
+  fireflies: {
+    name: "Fireflies",
+    description: "Magical glowing fireflies in twilight",
+    colors: { light: "#ffd700", dark: "#ffec8b" },
+    ambient: {
+      type: "fireflies",
+      colors: ["#ffd700", "#ffec8b", "#fff8dc", "#fffacd"],
+      intensity: 0.6,
+      speed: 0.6,
+    },
+    accent: "#ffd700",
+    glow: "rgba(255, 215, 0, 0.45)",
+  },
+  waveformAudio: {
+    name: "Waveform Audio",
+    description: "Reactive audio waveform visualization",
+    colors: { light: "#667eea", dark: "#764ba2" },
+    ambient: {
+      type: "waveformAudio",
+      colors: ["#667eea", "#764ba2", "#00d4ff", "#f5576c"],
+      intensity: 0.7,
+      speed: 1.0,
+    },
+    accent: "#667eea",
+    glow: "rgba(102, 126, 234, 0.5)",
+  },
+  plasmaField: {
+    name: "Plasma Field",
+    description: "Flowing plasma energy with magnetic distortions",
+    colors: { light: "#ff6b35", dark: "#f7931e" },
+    ambient: {
+      type: "plasmaField",
+      colors: ["#ff6b35", "#f7931e", "#ffcc00", "#00ff88", "#00ccff"],
+      intensity: 0.7,
+      speed: 0.9,
+    },
+    accent: "#f7931e",
+    glow: "rgba(247, 147, 30, 0.5)",
+  },
+  starfield: {
+    name: "Starfield",
+    description: "Infinite stars rushing past at warp speed",
+    colors: { light: "#ffffff", dark: "#e0e0e0" },
+    ambient: {
+      type: "starfield",
+      colors: ["#ffffff", "#e0e0e0", "#c0c0c0", "#a0a0a0", "#88ccff"],
+      intensity: 0.65,
+      speed: 1.0,
+    },
+    accent: "#ffffff",
+    glow: "rgba(255, 255, 255, 0.4)",
   },
 };
