@@ -23,7 +23,17 @@ export type ThemeName =
   | "ultraviolet"
   | "caramelLatte"
   | "iceQueen"
-  | "midnightTokyo";
+  | "midnightTokyo"
+  | "cosmicRing"
+  | "hexGrid"
+  | "prismWave"
+  | "nebulaDust"
+  | "matrixCode"
+  | "liquidMetal"
+  | "crystalCave"
+  | "solarFlare"
+  | "quantumField"
+  | "abyssalDepth";
 
 export type ThemeMode = "light" | "dark";
 
@@ -42,7 +52,17 @@ export interface ThemeConfig {
       | "mesh"
       | "aurora"
       | "noise"
-      | "glow";
+      | "glow"
+      | "ring"
+      | "hexagon"
+      | "prism"
+      | "nebula"
+      | "matrix"
+      | "liquid"
+      | "crystal"
+      | "flare"
+      | "quantum"
+      | "abyss";
     colors: string[];
     intensity: number;
     speed: number;
@@ -391,5 +411,135 @@ export const themes: Record<ThemeName, ThemeConfig> = {
     },
     accent: "#ff2d92",
     glow: "rgba(255, 45, 146, 0.5)",
+  },
+  cosmicRing: {
+    name: "Cosmic Ring",
+    description: "Orbital rings of light with cosmic energy",
+    colors: { light: "#6366f1", dark: "#a5b4fc" },
+    ambient: {
+      type: "ring",
+      colors: ["#6366f1", "#8b5cf6", "#a855f7", "#22d3ee"],
+      intensity: 0.6,
+      speed: 0.8,
+    },
+    accent: "#8b5cf6",
+    glow: "rgba(139, 92, 246, 0.5)",
+  },
+  hexGrid: {
+    name: "Hex Grid",
+    description: "Geometric honeycomb patterns with tech vibes",
+    colors: { light: "#10b981", dark: "#34d399" },
+    ambient: {
+      type: "hexagon",
+      colors: ["#10b981", "#059669", "#047857", "#6ee7b7"],
+      intensity: 0.5,
+      speed: 0.6,
+    },
+    accent: "#10b981",
+    glow: "rgba(16, 185, 129, 0.4)",
+  },
+  prismWave: {
+    name: "Prism Wave",
+    description: "Refracted light with rainbow spectrum waves",
+    colors: { light: "#f472b6", dark: "#f9a8d4" },
+    ambient: {
+      type: "prism",
+      colors: ["#ef4444", "#f97316", "#eab308", "#22c55e", "#06b6d4", "#8b5cf6"],
+      intensity: 0.55,
+      speed: 0.7,
+    },
+    accent: "#ec4899",
+    glow: "rgba(236, 72, 153, 0.4)",
+  },
+  nebulaDust: {
+    name: "Nebula Dust",
+    description: "Cosmic clouds with scattered stardust particles",
+    colors: { light: "#c084fc", dark: "#e879f9" },
+    ambient: {
+      type: "nebula",
+      colors: ["#c084fc", "#a855f7", "#7c3aed", "#ec4899", "#06b6d4"],
+      intensity: 0.65,
+      speed: 0.4,
+    },
+    accent: "#a855f7",
+    glow: "rgba(168, 85, 247, 0.5)",
+  },
+  matrixCode: {
+    name: "Matrix Code",
+    description: "Digital rain with flowing code streams",
+    colors: { light: "#22c55e", dark: "#4ade80" },
+    ambient: {
+      type: "matrix",
+      colors: ["#22c55e", "#16a34a", "#15803d", "#86efac"],
+      intensity: 0.7,
+      speed: 1.5,
+    },
+    accent: "#22c55e",
+    glow: "rgba(34, 197, 94, 0.5)",
+  },
+  liquidMetal: {
+    name: "Liquid Metal",
+    description: "Molten chrome with fluid mercury reflections",
+    colors: { light: "#71717a", dark: "#a1a1aa" },
+    ambient: {
+      type: "liquid",
+      colors: ["#71717a", "#a1a1aa", "#d4d4d8", "#52525b"],
+      intensity: 0.5,
+      speed: 0.5,
+    },
+    accent: "#a1a1aa",
+    glow: "rgba(161, 161, 170, 0.4)",
+  },
+  crystalCave: {
+    name: "Crystal Cave",
+    description: "Amethyst caverns with prismatic crystal formations",
+    colors: { light: "#a855f7", dark: "#c084fc" },
+    ambient: {
+      type: "crystal",
+      colors: ["#a855f7", "#7c3aed", "#6366f1", "#ec4899"],
+      intensity: 0.55,
+      speed: 0.35,
+    },
+    accent: "#a855f7",
+    glow: "rgba(168, 85, 247, 0.45)",
+  },
+  solarFlare: {
+    name: "Solar Flare",
+    description: "Explosive solar energy with plasma bursts",
+    colors: { light: "#f59e0b", dark: "#fbbf24" },
+    ambient: {
+      type: "flare",
+      colors: ["#f59e0b", "#f97316", "#ef4444", "#fbbf24"],
+      intensity: 0.75,
+      speed: 1.2,
+    },
+    accent: "#f59e0b",
+    glow: "rgba(245, 158, 11, 0.55)",
+  },
+  quantumField: {
+    name: "Quantum Field",
+    description: "Subatomic particles with probability wave patterns",
+    colors: { light: "#0ea5e9", dark: "#38bdf8" },
+    ambient: {
+      type: "quantum",
+      colors: ["#0ea5e9", "#06b6d4", "#14b8a6", "#8b5cf6"],
+      intensity: 0.6,
+      speed: 0.9,
+    },
+    accent: "#0ea5e9",
+    glow: "rgba(14, 165, 233, 0.45)",
+  },
+  abyssalDepth: {
+    name: "Abyssal Depth",
+    description: "Deep ocean trenches with bioluminescent creatures",
+    colors: { light: "#0369a1", dark: "#0284c7" },
+    ambient: {
+      type: "abyss",
+      colors: ["#0369a1", "#0c4a6e", "#164e63", "#22d3ee"],
+      intensity: 0.5,
+      speed: 0.3,
+    },
+    accent: "#0284c7",
+    glow: "rgba(2, 132, 199, 0.4)",
   },
 };
