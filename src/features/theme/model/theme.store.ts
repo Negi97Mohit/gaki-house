@@ -53,7 +53,18 @@ export type ThemeName =
   | "electricArc"
   | "fluidDynamics"
   | "fractalBloom"
-  | "gravitationalLens";
+  | "gravitationalLens"
+  // New Vogue & Chic Themes
+  | "marbleVeins"
+  | "silkRipple"
+  | "moireElegance"
+  | "goldLeaf"
+  | "inkWash"
+  | "pearlEssence"
+  | "velvetNight"
+  | "crystalFacets"
+  | "linearGrace"
+  | "zenGarden";
 
 export type ThemeMode = "light" | "dark";
 
@@ -102,7 +113,17 @@ export interface ThemeConfig {
       | "electricArc"
       | "fluidDynamics"
       | "fractalBloom"
-      | "gravitationalLens";
+      | "gravitationalLens"
+      | "marbleVeins"
+      | "silkRipple"
+      | "moireElegance"
+      | "goldLeaf"
+      | "inkWash"
+      | "pearlEssence"
+      | "velvetNight"
+      | "crystalFacets"
+      | "linearGrace"
+      | "zenGarden";
     colors: string[];
     intensity: number;
     speed: number;
@@ -844,5 +865,136 @@ export const themes: Record<ThemeName, ThemeConfig> = {
     },
     accent: "#7c3aed",
     glow: "rgba(124, 58, 237, 0.5)",
+  },
+  // NEW VOGUE & CHIC MINIMALIST THEMES
+  marbleVeins: {
+    name: "Marble Veins",
+    description: "Elegant marble patterns with flowing gold veins",
+    colors: { light: "#d4d4d8", dark: "#e4e4e7" },
+    ambient: {
+      type: "marbleVeins",
+      colors: ["#e4e4e7", "#a1a1aa", "#c9a962", "#f5f5f5", "#71717a"],
+      intensity: 0.35,
+      speed: 0.25,
+    },
+    accent: "#c9a962",
+    glow: "rgba(201, 169, 98, 0.3)",
+  },
+  silkRipple: {
+    name: "Silk Ripple",
+    description: "Luxurious silk fabric with gentle undulating waves",
+    colors: { light: "#fce7f3", dark: "#fbcfe8" },
+    ambient: {
+      type: "silkRipple",
+      colors: ["#fce7f3", "#fbcfe8", "#f9a8d4", "#f5d0fe", "#fdf2f8"],
+      intensity: 0.4,
+      speed: 0.3,
+    },
+    accent: "#ec4899",
+    glow: "rgba(236, 72, 153, 0.25)",
+  },
+  moireElegance: {
+    name: "Moiré Elegance",
+    description: "Sophisticated moiré interference patterns",
+    colors: { light: "#18181b", dark: "#27272a" },
+    ambient: {
+      type: "moireElegance",
+      colors: ["#27272a", "#3f3f46", "#52525b", "#18181b", "#71717a"],
+      intensity: 0.5,
+      speed: 0.2,
+    },
+    accent: "#a1a1aa",
+    glow: "rgba(161, 161, 170, 0.3)",
+  },
+  goldLeaf: {
+    name: "Gold Leaf",
+    description: "Delicate gold leaf fragments with subtle shimmer",
+    colors: { light: "#fef3c7", dark: "#fcd34d" },
+    ambient: {
+      type: "goldLeaf",
+      colors: ["#fcd34d", "#fbbf24", "#f59e0b", "#fef3c7", "#d97706"],
+      intensity: 0.45,
+      speed: 0.35,
+    },
+    accent: "#f59e0b",
+    glow: "rgba(245, 158, 11, 0.35)",
+  },
+  inkWash: {
+    name: "Ink Wash",
+    description: "Japanese sumi-e inspired flowing ink gradients",
+    colors: { light: "#f5f5f5", dark: "#18181b" },
+    ambient: {
+      type: "inkWash",
+      colors: ["#18181b", "#27272a", "#3f3f46", "#71717a", "#f5f5f5"],
+      intensity: 0.55,
+      speed: 0.2,
+    },
+    accent: "#52525b",
+    glow: "rgba(82, 82, 91, 0.35)",
+  },
+  pearlEssence: {
+    name: "Pearl Essence",
+    description: "Iridescent pearl with soft rainbow reflections",
+    colors: { light: "#f8fafc", dark: "#e2e8f0" },
+    ambient: {
+      type: "pearlEssence",
+      colors: ["#f8fafc", "#e2e8f0", "#fce7f3", "#dbeafe", "#dcfce7"],
+      intensity: 0.3,
+      speed: 0.25,
+    },
+    accent: "#cbd5e1",
+    glow: "rgba(203, 213, 225, 0.3)",
+  },
+  velvetNight: {
+    name: "Velvet Night",
+    description: "Deep velvet textures with subtle depth variations",
+    colors: { light: "#1e1b4b", dark: "#312e81" },
+    ambient: {
+      type: "velvetNight",
+      colors: ["#1e1b4b", "#312e81", "#3730a3", "#4c1d95", "#581c87"],
+      intensity: 0.5,
+      speed: 0.2,
+    },
+    accent: "#6366f1",
+    glow: "rgba(99, 102, 241, 0.35)",
+  },
+  crystalFacets: {
+    name: "Crystal Facets",
+    description: "Geometric crystal cuts with prismatic light",
+    colors: { light: "#f0f9ff", dark: "#e0f2fe" },
+    ambient: {
+      type: "crystalFacets",
+      colors: ["#e0f2fe", "#bae6fd", "#7dd3fc", "#38bdf8", "#f0f9ff"],
+      intensity: 0.4,
+      speed: 0.35,
+    },
+    accent: "#0ea5e9",
+    glow: "rgba(14, 165, 233, 0.3)",
+  },
+  linearGrace: {
+    name: "Linear Grace",
+    description: "Minimalist parallel lines with graceful motion",
+    colors: { light: "#fafafa", dark: "#f5f5f5" },
+    ambient: {
+      type: "linearGrace",
+      colors: ["#e5e5e5", "#d4d4d4", "#a3a3a3", "#737373", "#525252"],
+      intensity: 0.35,
+      speed: 0.3,
+    },
+    accent: "#737373",
+    glow: "rgba(115, 115, 115, 0.25)",
+  },
+  zenGarden: {
+    name: "Zen Garden",
+    description: "Serene sand ripples with mindful tranquility",
+    colors: { light: "#fef7ed", dark: "#fefce8" },
+    ambient: {
+      type: "zenGarden",
+      colors: ["#fef7ed", "#fde68a", "#d4d4d8", "#a8a29e", "#78716c"],
+      intensity: 0.3,
+      speed: 0.15,
+    },
+    accent: "#a8a29e",
+    glow: "rgba(168, 162, 158, 0.25)",
   },
 };
