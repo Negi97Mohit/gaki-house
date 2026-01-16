@@ -7,6 +7,7 @@ import { Label } from "@/shared/ui/label";
 import { Slider } from "@/shared/ui/slider";
 import { Switch } from "@/shared/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+import gakiLogo from "/logo_256x256.png";
 
 type SettingsSection = "appearance" | "display" | "audio" | "shortcuts" | "about";
 
@@ -251,7 +252,7 @@ export function SettingsPanel() {
             {/* Logo & Title */}
             <div className="p-4 rounded-xl bg-foreground/[0.02] border border-border/10">
               <div className="flex items-center gap-3 mb-3">
-                <img src="/logo_256x256.png" alt="GAKI Logo" className="w-10 h-10 rounded-lg" />
+                <img src={gakiLogo} alt="GAKI Logo" className="w-10 h-10 rounded-lg" />
                 <div>
                   <h3 className="text-sm font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">GAKI</h3>
                   <p className="text-[10px] text-muted-foreground">House of Video Creation</p>
