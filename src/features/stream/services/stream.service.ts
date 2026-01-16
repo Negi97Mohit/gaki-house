@@ -39,6 +39,7 @@ class StreamService {
   private verifyingTimers = new Map<string, NodeJS.Timeout>();
   private retryCounts = new Map<string, number>();
   private MAX_RETRIES = 3;
+  private isIntentionalStop = false; // Track if user explicitly stopped the stream
 
   private constructor() {
     // Singleton
@@ -184,6 +185,9 @@ class StreamService {
 
   public async startStreaming(targets: any[]) {
     try {
+      // Reset the intentional stop flag when starting a new stream
+      this.isIntentionalStop = false;
+
       useStreamStore.getState().setConnecting(true);
       useStreamStore.getState().setStreamStatus("Initializing...");
 
@@ -374,6 +378,13 @@ class StreamService {
       store.setCountdown(null);
     }
 
+    // Skip retry logic if this was an intentional stop
+    if (this.isIntentionalStop) {
+      console.log(`[StreamService] Skipping retry for ${id} - intentional stop`);
+      store.setDestinationStatus(id, "idle");
+      return;
+    }
+
     // 2. CHECK RETRY LOGIC
     const currentRetries = this.retryCounts.get(id) || 0;
 
@@ -447,6 +458,9 @@ class StreamService {
   public stopStreaming(specificId?: string) {
     console.log("[StreamService] Stop Streaming:", specificId || "ALL");
 
+    // Set flag to prevent retry logic from triggering
+    this.isIntentionalStop = true;
+
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
       this.countdownInterval = null;
@@ -481,6 +495,11 @@ class StreamService {
         store.setDestinationStatus(d.id, "idle")
       );
     }
+
+    // Reset the flag after a short delay to allow for any pending status updates
+    setTimeout(() => {
+      this.isIntentionalStop = false;
+    }, 1000);
   }
 
   private cleanupPipeline() {

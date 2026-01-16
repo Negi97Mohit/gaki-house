@@ -199,7 +199,7 @@ export const StreamConfigurationModal: React.FC<
         className={cn(
           "rounded-xl h-7 w-7 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
           isBroadcasting &&
-            "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
+          "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
         )}
         title="Stream Settings"
         onClick={() => setIsOpen(true)}
@@ -256,9 +256,8 @@ export const StreamConfigurationModal: React.FC<
                   {view === "add"
                     ? "Configure your stream endpoint"
                     : isBroadcasting
-                    ? "Currently broadcasting"
-                    : `${destinations.length} destination${
-                        destinations.length !== 1 ? "s" : ""
+                      ? "Currently broadcasting"
+                      : `${destinations.length} destination${destinations.length !== 1 ? "s" : ""
                       }`}
                 </p>
               </div>
@@ -480,24 +479,24 @@ export const StreamConfigurationModal: React.FC<
               <div className="space-y-4">
                 {/* Platform Grid */}
                 <div className="space-y-2">
-                  <p className="text-[10px] font-medium text-muted-foreground/60 uppercase tracking-wider">
+                  <p className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wider">
                     Platform
                   </p>
-                  <div className="max-h-[240px] overflow-y-auto pr-1 sharp-scrollbar">
-                    <div className="grid grid-cols-5 gap-1.5">
+                  <div className="overflow-x-auto overflow-y-hidden pb-2" style={{ maxWidth: '100%' }}>
+                    <div className="inline-grid grid-rows-2 grid-flow-col gap-2" style={{ minWidth: 'max-content' }}>
                       <button
                         onClick={() => handlePlatformSelect("custom")}
                         className={cn(
-                          "flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all",
+                          "flex flex-col items-center gap-2 p-3 rounded-xl transition-all min-w-[80px] h-[85px]",
                           selectedPlatformId === "custom"
-                            ? "bg-foreground/10 dark:bg-white/10 ring-1 ring-foreground/20 dark:ring-white/20"
+                            ? "bg-foreground/10 dark:bg-white/10 ring-2 ring-foreground/20 dark:ring-white/20"
                             : "hover:bg-foreground/5 dark:hover:bg-white/5"
                         )}
                       >
-                        <div className="w-7 h-7 rounded-md bg-foreground/10 dark:bg-white/10 flex items-center justify-center">
-                          <Globe className="w-3.5 h-3.5" />
+                        <div className="w-9 h-9 rounded-lg bg-foreground/10 dark:bg-white/10 flex items-center justify-center">
+                          <Globe className="w-5 h-5" />
                         </div>
-                        <span className="text-[8px] font-medium text-muted-foreground">
+                        <span className="text-[11px] font-medium text-muted-foreground">
                           Custom
                         </span>
                       </button>
@@ -507,23 +506,23 @@ export const StreamConfigurationModal: React.FC<
                           key={p.id}
                           onClick={() => handlePlatformSelect(p.id)}
                           className={cn(
-                            "flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all",
+                            "flex flex-col items-center gap-2 p-3 rounded-xl transition-all min-w-[80px] h-[85px]",
                             selectedPlatformId === p.id
-                              ? "bg-foreground/10 dark:bg-white/10 ring-1 ring-foreground/20 dark:ring-white/20"
+                              ? "bg-foreground/10 dark:bg-white/10 ring-2 ring-foreground/20 dark:ring-white/20"
                               : "hover:bg-foreground/5 dark:hover:bg-white/5"
                           )}
                         >
                           <div
-                            className="w-7 h-7 rounded-md flex items-center justify-center"
+                            className="w-9 h-9 rounded-lg flex items-center justify-center"
                             style={{ backgroundColor: `${p.color}20` }}
                           >
                             <PlatformIcon
                               platformIconName={p.icon}
                               color={p.color}
-                              size={14}
+                              size={24}
                             />
                           </div>
-                          <span className="text-[8px] font-medium text-muted-foreground truncate w-full text-center">
+                          <span className="text-[11px] font-medium text-muted-foreground truncate max-w-[72px] text-center">
                             {p.name}
                           </span>
                         </button>
