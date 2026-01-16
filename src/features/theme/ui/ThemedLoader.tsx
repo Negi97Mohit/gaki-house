@@ -56,6 +56,17 @@ const loaderColors: Record<ThemeName, { primary: string; secondary: string }> = 
   fluidDynamics: { primary: "#f472b6", secondary: "#ec4899" },
   fractalBloom: { primary: "#2dd4bf", secondary: "#14b8a6" },
   gravitationalLens: { primary: "#a78bfa", secondary: "#7c3aed" },
+  // New Vogue & Chic Themes
+  marbleVeins: { primary: "#c9a962", secondary: "#a1a1aa" },
+  silkRipple: { primary: "#fbcfe8", secondary: "#ec4899" },
+  moireElegance: { primary: "#71717a", secondary: "#27272a" },
+  goldLeaf: { primary: "#fcd34d", secondary: "#f59e0b" },
+  inkWash: { primary: "#52525b", secondary: "#18181b" },
+  pearlEssence: { primary: "#e2e8f0", secondary: "#cbd5e1" },
+  velvetNight: { primary: "#6366f1", secondary: "#312e81" },
+  crystalFacets: { primary: "#7dd3fc", secondary: "#0ea5e9" },
+  linearGrace: { primary: "#a3a3a3", secondary: "#525252" },
+  zenGarden: { primary: "#fde68a", secondary: "#a8a29e" },
 };
 
 interface ThemedLoaderProps {

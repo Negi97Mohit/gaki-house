@@ -1327,6 +1327,417 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
           </div>
         );
 
+      // NEW VOGUE & CHIC MINIMALIST EFFECTS
+      case "marbleVeins":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Base marble texture */}
+            <div 
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(135deg, ${ambient.colors[0]}20, ${ambient.colors[3]}40, ${ambient.colors[0]}20)`,
+              }}
+            />
+            {/* Flowing veins */}
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: "200%",
+                  height: "2px",
+                  left: "-50%",
+                  top: `${20 + i * 20}%`,
+                  background: `linear-gradient(90deg, transparent, ${ambient.colors[2]}60, ${ambient.colors[2]}80, ${ambient.colors[2]}60, transparent)`,
+                  filter: "blur(1px)",
+                  transformOrigin: "center",
+                }}
+                animate={{
+                  x: ["-20%", "20%", "-20%"],
+                  rotate: [-2 + i, 2 - i, -2 + i],
+                  opacity: [0.3, 0.7, 0.3],
+                }}
+                transition={{
+                  duration: 15 / ambient.speed + i * 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+            {/* Subtle shimmer spots */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={`shimmer-${i}`}
+                className="absolute rounded-full"
+                style={{
+                  width: "30%",
+                  height: "30%",
+                  left: `${15 + i * 25}%`,
+                  top: `${20 + i * 20}%`,
+                  background: `radial-gradient(circle, ${ambient.colors[2]}20 0%, transparent 70%)`,
+                  filter: "blur(40px)",
+                }}
+                animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.1, 1] }}
+                transition={{ duration: 8 / ambient.speed, repeat: Infinity, delay: i * 2 }}
+              />
+            ))}
+          </div>
+        );
+
+      case "silkRipple":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Silk waves */}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: "120%",
+                  height: `${25 + i * 5}%`,
+                  left: "-10%",
+                  top: `${i * 20}%`,
+                  background: `linear-gradient(180deg, transparent, ${ambient.colors[i % ambient.colors.length]}50, transparent)`,
+                  filter: "blur(30px)",
+                  borderRadius: "50%",
+                }}
+                animate={{
+                  x: ["-5%", "5%", "-5%"],
+                  y: ["-2%", "2%", "-2%"],
+                  scaleY: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 8 / ambient.speed + i,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.5,
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "moireElegance":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* First line pattern */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(0deg, ${ambient.colors[0]}30 0px, transparent 1px, transparent 8px)`,
+              }}
+              animate={{ rotate: [0, 3, 0] }}
+              transition={{ duration: 20 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Second overlapping pattern */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(90deg, ${ambient.colors[1]}25 0px, transparent 1px, transparent 8px)`,
+              }}
+              animate={{ rotate: [0, -3, 0] }}
+              transition={{ duration: 25 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Third diagonal pattern */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(45deg, ${ambient.colors[2]}20 0px, transparent 1px, transparent 12px)`,
+              }}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 15 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "goldLeaf":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Gold fragments */}
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: `${15 + Math.random() * 20}%`,
+                  height: `${10 + Math.random() * 15}%`,
+                  left: `${(i % 4) * 25}%`,
+                  top: `${Math.floor(i / 4) * 50 + 10}%`,
+                  background: `linear-gradient(${45 + i * 20}deg, ${ambient.colors[i % 3]}60, ${ambient.colors[(i + 1) % 3]}30, transparent)`,
+                  filter: "blur(20px)",
+                  borderRadius: "30% 70% 70% 30% / 30% 30% 70% 70%",
+                }}
+                animate={{
+                  opacity: [0.3, 0.7, 0.3],
+                  rotate: [-5, 5, -5],
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 6 / ambient.speed + i,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.3,
+                }}
+              />
+            ))}
+            {/* Shimmer overlay */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(135deg, transparent 30%, ${ambient.colors[0]}15 50%, transparent 70%)`,
+              }}
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{ duration: 8 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "inkWash":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Ink blobs */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: "80%",
+                  height: "50%",
+                  left: `${-20 + i * 30}%`,
+                  top: `${10 + i * 25}%`,
+                  background: `radial-gradient(ellipse, ${ambient.colors[i]}70 0%, ${ambient.colors[i]}40 30%, transparent 70%)`,
+                  filter: "blur(60px)",
+                }}
+                animate={{
+                  x: ["-10%", "10%", "-10%"],
+                  y: ["-5%", "5%", "-5%"],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  duration: 20 / ambient.speed + i * 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+            {/* Water edge effect */}
+            <motion.div
+              className="absolute bottom-0 left-0 right-0 h-1/3"
+              style={{
+                background: `linear-gradient(0deg, ${ambient.colors[0]}40 0%, transparent 100%)`,
+              }}
+              animate={{ opacity: [0.5, 0.8, 0.5] }}
+              transition={{ duration: 10 / ambient.speed, repeat: Infinity }}
+            />
+          </div>
+        );
+
+      case "pearlEssence":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Iridescent layers */}
+            {ambient.colors.map((color, i) => (
+              <motion.div
+                key={i}
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(${i * 72}deg, transparent 40%, ${color}25 50%, transparent 60%)`,
+                  mixBlendMode: "overlay",
+                }}
+                animate={{
+                  rotate: [i * 30, i * 30 + 15, i * 30],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 12 / ambient.speed + i * 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+            {/* Soft glow center */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `radial-gradient(ellipse at 50% 50%, ${ambient.colors[0]}30 0%, transparent 70%)`,
+              }}
+              animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+              transition={{ duration: 8 / ambient.speed, repeat: Infinity }}
+            />
+          </div>
+        );
+
+      case "velvetNight":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Deep velvet texture */}
+            <div 
+              className="absolute inset-0"
+              style={{ background: `linear-gradient(180deg, ${ambient.colors[0]} 0%, ${ambient.colors[1]} 100%)` }}
+            />
+            {/* Subtle depth variations */}
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: "50%",
+                  height: "50%",
+                  left: `${i * 15}%`,
+                  top: `${10 + (i % 2) * 30}%`,
+                  background: `radial-gradient(circle, ${ambient.colors[(i + 2) % ambient.colors.length]}30 0%, transparent 70%)`,
+                  filter: "blur(50px)",
+                }}
+                animate={{
+                  scale: [1, 1.15, 1],
+                  opacity: [0.3, 0.5, 0.3],
+                }}
+                transition={{
+                  duration: 10 / ambient.speed + i * 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "crystalFacets":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Crystal planes */}
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: "60%",
+                  height: "40%",
+                  left: `${(i % 3) * 20}%`,
+                  top: `${Math.floor(i / 3) * 40}%`,
+                  background: `linear-gradient(${60 * i}deg, transparent, ${ambient.colors[i % ambient.colors.length]}40, transparent)`,
+                  clipPath: `polygon(${20 + i * 5}% 0%, 100% ${30 + i * 5}%, ${80 - i * 5}% 100%, 0% ${70 - i * 5}%)`,
+                }}
+                animate={{
+                  opacity: [0.3, 0.6, 0.3],
+                  rotate: [0, 2, 0],
+                }}
+                transition={{
+                  duration: 8 / ambient.speed + i,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.4,
+                }}
+              />
+            ))}
+            {/* Light refraction */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `conic-gradient(from 0deg at 50% 50%, transparent, ${ambient.colors[0]}20, transparent, ${ambient.colors[2]}20, transparent)`,
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 30 / ambient.speed, repeat: Infinity, ease: "linear" }}
+            />
+          </div>
+        );
+
+      case "linearGrace":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Parallel lines */}
+            {Array.from({ length: 12 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: "120%",
+                  height: "1px",
+                  left: "-10%",
+                  top: `${8 + i * 8}%`,
+                  background: `linear-gradient(90deg, transparent 10%, ${ambient.colors[i % ambient.colors.length]}${40 + (i % 3) * 20} 50%, transparent 90%)`,
+                }}
+                animate={{
+                  x: i % 2 === 0 ? ["-5%", "5%", "-5%"] : ["5%", "-5%", "5%"],
+                  opacity: [0.4, 0.8, 0.4],
+                }}
+                transition={{
+                  duration: 10 / ambient.speed + (i % 3),
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.1,
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "zenGarden":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Sand base */}
+            <div 
+              className="absolute inset-0"
+              style={{ background: `linear-gradient(180deg, ${ambient.colors[0]} 0%, ${ambient.colors[1]}30 100%)` }}
+            />
+            {/* Raked sand lines */}
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: "100%",
+                  height: "2px",
+                  left: 0,
+                  top: `${12 + i * 12}%`,
+                  background: `linear-gradient(90deg, transparent 5%, ${ambient.colors[2]}40 50%, transparent 95%)`,
+                  borderRadius: "50%",
+                }}
+                animate={{
+                  scaleX: [0.95, 1, 0.95],
+                  opacity: [0.3, 0.5, 0.3],
+                }}
+                transition={{
+                  duration: 15 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.2,
+                }}
+              />
+            ))}
+            {/* Stone accent */}
+            <motion.div
+              className="absolute rounded-full"
+              style={{
+                width: "8%",
+                height: "8%",
+                right: "25%",
+                top: "40%",
+                background: `radial-gradient(circle, ${ambient.colors[3]} 0%, ${ambient.colors[4]} 100%)`,
+                boxShadow: `10px 10px 30px ${ambient.colors[4]}40`,
+              }}
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Concentric ripples around stone */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={`ripple-${i}`}
+                className="absolute rounded-full border"
+                style={{
+                  width: `${12 + i * 6}%`,
+                  height: `${12 + i * 6}%`,
+                  right: `${22 - i * 3}%`,
+                  top: `${37 - i * 3}%`,
+                  borderColor: `${ambient.colors[2]}30`,
+                }}
+                animate={{ scale: [1, 1.02, 1], opacity: [0.3, 0.5, 0.3] }}
+                transition={{ duration: 12, repeat: Infinity, delay: i * 0.5 }}
+              />
+            ))}
+          </div>
+        );
+
       default:
         return null;
     }
