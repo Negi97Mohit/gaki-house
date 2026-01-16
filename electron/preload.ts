@@ -28,6 +28,13 @@ contextBridge.exposeInMainWorld("electron", {
       ipcRenderer.invoke("recorder:stop", durationMs),
   },
 
+  // Storage Controls (for persistent settings)
+  storage: {
+    get: (key: string) => ipcRenderer.invoke("storage:get", key),
+    set: (key: string, value: any) => ipcRenderer.invoke("storage:set", key, value),
+    delete: (key: string) => ipcRenderer.invoke("storage:delete", key),
+  },
+
   // Desktop Capturer
   getDesktopSources: (options: any) =>
     ipcRenderer.invoke("get-desktop-sources", options),

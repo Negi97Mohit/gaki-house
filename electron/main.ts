@@ -14,9 +14,13 @@ import { Server as SocketIOServer } from "socket.io";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegPath from "ffmpeg-static";
 import fixPath from "fix-path";
+import Store from "electron-store";
 
 // 1. Fix Path for macOS/Linux environment variables
 fixPath();
+
+// Initialize persistent storage
+const store = new Store();
 
 // 2. Configure FFmpeg
 if (ffmpegPath) {
@@ -179,7 +183,7 @@ function setupIpcHandlers() {
       try {
         ffmpegCommands.get(id)?.kill("SIGKILL");
         ffmpegCommands.delete(id);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     try {
@@ -244,7 +248,7 @@ function setupIpcHandlers() {
         console.log(`Stopping IPC stream: ${id}`);
         try {
           command.kill("SIGKILL");
-        } catch (e) {}
+        } catch (e) { }
         ffmpegCommands.delete(id);
         event.sender.send("stream:status", { id, status: "stopped" });
       }
@@ -253,7 +257,7 @@ function setupIpcHandlers() {
       ffmpegCommands.forEach((command, streamId) => {
         try {
           command.kill("SIGKILL");
-        } catch (e) {}
+        } catch (e) { }
         event.sender.send("stream:status", { id: streamId, status: "stopped" });
       });
       ffmpegCommands.clear();
@@ -321,6 +325,21 @@ function setupIpcHandlers() {
       }
     });
   });
+
+  // 3. STORAGE HANDLERS
+  ipcMain.handle("storage:get", (_, key: string) => {
+    return store.get(key);
+  });
+
+  ipcMain.handle("storage:set", (_, key: string, value: any) => {
+    store.set(key, value);
+    return true;
+  });
+
+  ipcMain.handle("storage:delete", (_, key: string) => {
+    store.delete(key);
+    return true;
+  });
 }
 
 // --- SERVER & APP LIFECYCLE ---
@@ -340,7 +359,7 @@ function startStreamingServer() {
       if (ffmpegCommand)
         try {
           ffmpegCommand.kill("SIGKILL");
-        } catch (e) {}
+        } catch (e) { }
 
       ffmpegCommand = createFfmpegCommand(
         "pipe:0",
@@ -365,7 +384,7 @@ function startStreamingServer() {
         if (proc.stdin && proc.stdin.writable && !proc.killed) {
           try {
             proc.stdin.write(data);
-          } catch (err) {}
+          } catch (err) { }
           if (!proc.stdin.listeners("error").length) {
             proc.stdin.on("error", (err: any) =>
               console.log("Stdin Error:", err.code)

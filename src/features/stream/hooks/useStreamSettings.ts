@@ -11,6 +11,17 @@ export interface StreamSettings {
   fps: 30 | 60;
 }
 
+interface ElectronWindow extends Window {
+  electron?: {
+    isElectron: boolean;
+    storage?: {
+      get: (key: string) => Promise<any>;
+      set: (key: string, value: any) => Promise<boolean>;
+      delete: (key: string) => Promise<boolean>;
+    };
+  };
+}
+
 const STORAGE_KEY = 'stream-settings';
 
 const defaultSettings: StreamSettings = {
@@ -24,28 +35,63 @@ const defaultSettings: StreamSettings = {
   fps: 30,
 };
 
-export function useStreamSettings() {
-  const [settings, setSettings] = useState<StreamSettings>(() => {
-    try {
+// Helper to check if we're in Electron
+const isElectron = (): boolean => {
+  return !!(window as ElectronWindow).electron?.isElectron;
+};
+
+// Helper to get storage (electron or localStorage)
+const getStoredSettings = async (): Promise<StreamSettings> => {
+  try {
+    if (isElectron() && (window as ElectronWindow).electron?.storage) {
+      const saved = await (window as ElectronWindow).electron!.storage!.get(STORAGE_KEY);
+      if (saved) {
+        return { ...defaultSettings, ...saved };
+      }
+    } else {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
         return { ...defaultSettings, ...parsed };
       }
-    } catch (error) {
-      console.error('Failed to load stream settings:', error);
     }
-    return defaultSettings;
-  });
+  } catch (error) {
+    console.error('Failed to load stream settings:', error);
+  }
+  return defaultSettings;
+};
 
-  // Save settings to localStorage whenever they change
-  useEffect(() => {
-    try {
+// Helper to save settings
+const saveSettings = async (settings: StreamSettings): Promise<void> => {
+  try {
+    if (isElectron() && (window as ElectronWindow).electron?.storage) {
+      await (window as ElectronWindow).electron!.storage!.set(STORAGE_KEY, settings);
+    } else {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-    } catch (error) {
-      console.error('Failed to save stream settings:', error);
     }
-  }, [settings]);
+  } catch (error) {
+    console.error('Failed to save stream settings:', error);
+  }
+};
+
+export function useStreamSettings() {
+  const [settings, setSettings] = useState<StreamSettings>(defaultSettings);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load settings on mount (async for electron)
+  useEffect(() => {
+    getStoredSettings().then((loadedSettings) => {
+      setSettings(loadedSettings);
+      setIsLoaded(true);
+    });
+  }, []);
+
+  // Save settings whenever they change (after initial load)
+  useEffect(() => {
+    if (isLoaded) {
+      saveSettings(settings);
+    }
+  }, [settings, isLoaded]);
 
   const updateSettings = useCallback((updates: Partial<StreamSettings>) => {
     setSettings(prev => ({ ...prev, ...updates }));
