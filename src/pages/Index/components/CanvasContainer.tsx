@@ -955,7 +955,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     <>
       <FloatingControlsPanel
         isOpen={showSettings}
-        onClose={() => setShowSettings((prev) => !prev)}
+        onClose={() => setShowSettings(false)}
         isMouseActive={isMouseActive}
         {...activeSceneProps?.sidebarProps}
         onAddSocialBanner={bannerLogic.handleAddSocialBanner}

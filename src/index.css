@@ -2048,4 +2048,464 @@ body.cursor-inactive * {
     --input: 0 20% 20%;
     --ring: 0 91% 71%;
   }
+
+  /* ===== PLASMA STORM THEME ===== */
+  .theme-plasmaStorm {
+    --background: 263 20% 98%;
+    --foreground: 263 20% 10%;
+    --card: 263 20% 96%;
+    --card-foreground: 263 20% 10%;
+    --popover: 263 20% 98%;
+    --popover-foreground: 263 20% 10%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 263 15% 92%;
+    --secondary-foreground: 263 20% 20%;
+    --muted: 263 15% 90%;
+    --muted-foreground: 263 10% 45%;
+    --accent: 263 70% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 263 15% 80%;
+    --input: 263 15% 88%;
+    --ring: 263 70% 50%;
+  }
+
+  .dark.theme-plasmaStorm,
+  .theme-plasmaStorm.dark {
+    --background: 263 30% 6%;
+    --foreground: 263 15% 95%;
+    --card: 263 30% 10%;
+    --card-foreground: 263 15% 95%;
+    --popover: 263 30% 8%;
+    --popover-foreground: 263 15% 95%;
+    --primary: 263 84% 73%;
+    --primary-foreground: 263 30% 6%;
+    --secondary: 263 20% 18%;
+    --secondary-foreground: 263 15% 92%;
+    --muted: 263 20% 16%;
+    --muted-foreground: 263 10% 65%;
+    --accent: 263 84% 73%;
+    --accent-foreground: 263 30% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 263 20% 25%;
+    --input: 263 20% 20%;
+    --ring: 263 84% 73%;
+  }
+
+  /* ===== LASER GRID THEME ===== */
+  .theme-laserGrid {
+    --background: 0 20% 98%;
+    --foreground: 0 20% 10%;
+    --card: 0 20% 96%;
+    --card-foreground: 0 20% 10%;
+    --popover: 0 20% 98%;
+    --popover-foreground: 0 20% 10%;
+    --primary: 0 84% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 15% 92%;
+    --secondary-foreground: 0 20% 20%;
+    --muted: 0 15% 90%;
+    --muted-foreground: 0 10% 45%;
+    --accent: 0 84% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 15% 80%;
+    --input: 0 15% 88%;
+    --ring: 0 84% 60%;
+  }
+
+  .dark.theme-laserGrid,
+  .theme-laserGrid.dark {
+    --background: 0 10% 4%;
+    --foreground: 0 15% 95%;
+    --card: 0 10% 8%;
+    --card-foreground: 0 15% 95%;
+    --popover: 0 10% 6%;
+    --popover-foreground: 0 15% 95%;
+    --primary: 0 91% 71%;
+    --primary-foreground: 0 10% 4%;
+    --secondary: 0 15% 15%;
+    --secondary-foreground: 0 15% 92%;
+    --muted: 0 15% 12%;
+    --muted-foreground: 0 10% 65%;
+    --accent: 0 91% 71%;
+    --accent-foreground: 0 10% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 15% 20%;
+    --input: 0 15% 15%;
+    --ring: 0 91% 71%;
+  }
+
+  /* ===== PARTICLE NOVA THEME ===== */
+  .theme-particleNova {
+    --background: 24 20% 98%;
+    --foreground: 24 20% 10%;
+    --card: 24 20% 96%;
+    --card-foreground: 24 20% 10%;
+    --popover: 24 20% 98%;
+    --popover-foreground: 24 20% 10%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 24 15% 92%;
+    --secondary-foreground: 24 20% 20%;
+    --muted: 24 15% 90%;
+    --muted-foreground: 24 10% 45%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 24 15% 80%;
+    --input: 24 15% 88%;
+    --ring: 24 95% 53%;
+  }
+
+  .dark.theme-particleNova,
+  .theme-particleNova.dark {
+    --background: 24 25% 6%;
+    --foreground: 24 15% 95%;
+    --card: 24 25% 10%;
+    --card-foreground: 24 15% 95%;
+    --popover: 24 25% 8%;
+    --popover-foreground: 24 15% 95%;
+    --primary: 24 94% 64%;
+    --primary-foreground: 24 25% 6%;
+    --secondary: 24 20% 18%;
+    --secondary-foreground: 24 15% 92%;
+    --muted: 24 20% 16%;
+    --muted-foreground: 24 10% 65%;
+    --accent: 24 94% 64%;
+    --accent-foreground: 24 25% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 24 20% 25%;
+    --input: 24 20% 20%;
+    --ring: 24 94% 64%;
+  }
+
+  /* ===== WAVEFORM PULSE THEME ===== */
+  .theme-waveformPulse {
+    --background: 142 20% 98%;
+    --foreground: 142 20% 10%;
+    --card: 142 20% 96%;
+    --card-foreground: 142 20% 10%;
+    --popover: 142 20% 98%;
+    --popover-foreground: 142 20% 10%;
+    --primary: 142 71% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 142 15% 92%;
+    --secondary-foreground: 142 20% 20%;
+    --muted: 142 15% 90%;
+    --muted-foreground: 142 10% 45%;
+    --accent: 142 71% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 142 15% 80%;
+    --input: 142 15% 88%;
+    --ring: 142 71% 45%;
+  }
+
+  .dark.theme-waveformPulse,
+  .theme-waveformPulse.dark {
+    --background: 142 25% 6%;
+    --foreground: 142 15% 95%;
+    --card: 142 25% 10%;
+    --card-foreground: 142 15% 95%;
+    --popover: 142 25% 8%;
+    --popover-foreground: 142 15% 95%;
+    --primary: 142 69% 58%;
+    --primary-foreground: 142 25% 6%;
+    --secondary: 142 20% 18%;
+    --secondary-foreground: 142 15% 92%;
+    --muted: 142 20% 16%;
+    --muted-foreground: 142 10% 65%;
+    --accent: 142 69% 58%;
+    --accent-foreground: 142 25% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 142 20% 25%;
+    --input: 142 20% 20%;
+    --ring: 142 69% 58%;
+  }
+
+  /* ===== HOLOGRAPHIC SHIFT THEME ===== */
+  .theme-holographicShift {
+    --background: 187 20% 98%;
+    --foreground: 187 20% 10%;
+    --card: 187 20% 96%;
+    --card-foreground: 187 20% 10%;
+    --popover: 187 20% 98%;
+    --popover-foreground: 187 20% 10%;
+    --primary: 187 100% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 187 15% 92%;
+    --secondary-foreground: 187 20% 20%;
+    --muted: 187 15% 90%;
+    --muted-foreground: 187 10% 45%;
+    --accent: 187 100% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 187 15% 80%;
+    --input: 187 15% 88%;
+    --ring: 187 100% 42%;
+  }
+
+  .dark.theme-holographicShift,
+  .theme-holographicShift.dark {
+    --background: 187 30% 6%;
+    --foreground: 187 15% 95%;
+    --card: 187 30% 10%;
+    --card-foreground: 187 15% 95%;
+    --popover: 187 30% 8%;
+    --popover-foreground: 187 15% 95%;
+    --primary: 187 100% 60%;
+    --primary-foreground: 187 30% 6%;
+    --secondary: 187 20% 18%;
+    --secondary-foreground: 187 15% 92%;
+    --muted: 187 20% 16%;
+    --muted-foreground: 187 10% 65%;
+    --accent: 187 100% 60%;
+    --accent-foreground: 187 30% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 187 20% 25%;
+    --input: 187 20% 20%;
+    --ring: 187 100% 60%;
+  }
+
+  /* ===== STARFIELD WARP THEME ===== */
+  .theme-starfieldWarp {
+    --background: 210 20% 98%;
+    --foreground: 210 20% 10%;
+    --card: 210 20% 96%;
+    --card-foreground: 210 20% 10%;
+    --popover: 210 20% 98%;
+    --popover-foreground: 210 20% 10%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 15% 92%;
+    --secondary-foreground: 210 20% 20%;
+    --muted: 210 15% 90%;
+    --muted-foreground: 210 10% 45%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 15% 80%;
+    --input: 210 15% 88%;
+    --ring: 217 91% 60%;
+  }
+
+  .dark.theme-starfieldWarp,
+  .theme-starfieldWarp.dark {
+    --background: 220 30% 4%;
+    --foreground: 210 15% 95%;
+    --card: 220 30% 8%;
+    --card-foreground: 210 15% 95%;
+    --popover: 220 30% 6%;
+    --popover-foreground: 210 15% 95%;
+    --primary: 217 91% 65%;
+    --primary-foreground: 220 30% 4%;
+    --secondary: 210 20% 15%;
+    --secondary-foreground: 210 15% 92%;
+    --muted: 210 20% 12%;
+    --muted-foreground: 210 10% 65%;
+    --accent: 217 91% 65%;
+    --accent-foreground: 220 30% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 20% 20%;
+    --input: 210 20% 15%;
+    --ring: 217 91% 65%;
+  }
+
+  /* ===== ELECTRIC ARC THEME ===== */
+  .theme-electricArc {
+    --background: 217 20% 98%;
+    --foreground: 217 20% 10%;
+    --card: 217 20% 96%;
+    --card-foreground: 217 20% 10%;
+    --popover: 217 20% 98%;
+    --popover-foreground: 217 20% 10%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 15% 92%;
+    --secondary-foreground: 217 20% 20%;
+    --muted: 217 15% 90%;
+    --muted-foreground: 217 10% 45%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 15% 80%;
+    --input: 217 15% 88%;
+    --ring: 217 91% 60%;
+  }
+
+  .dark.theme-electricArc,
+  .theme-electricArc.dark {
+    --background: 220 35% 5%;
+    --foreground: 217 15% 95%;
+    --card: 220 35% 9%;
+    --card-foreground: 217 15% 95%;
+    --popover: 220 35% 7%;
+    --popover-foreground: 217 15% 95%;
+    --primary: 217 91% 69%;
+    --primary-foreground: 220 35% 5%;
+    --secondary: 217 20% 16%;
+    --secondary-foreground: 217 15% 92%;
+    --muted: 217 20% 14%;
+    --muted-foreground: 217 10% 65%;
+    --accent: 217 91% 69%;
+    --accent-foreground: 220 35% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 20% 22%;
+    --input: 217 20% 18%;
+    --ring: 217 91% 69%;
+  }
+
+  /* ===== FLUID DYNAMICS THEME ===== */
+  .theme-fluidDynamics {
+    --background: 328 20% 98%;
+    --foreground: 328 20% 10%;
+    --card: 328 20% 96%;
+    --card-foreground: 328 20% 10%;
+    --popover: 328 20% 98%;
+    --popover-foreground: 328 20% 10%;
+    --primary: 328 83% 66%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 328 15% 92%;
+    --secondary-foreground: 328 20% 20%;
+    --muted: 328 15% 90%;
+    --muted-foreground: 328 10% 45%;
+    --accent: 328 83% 66%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 328 15% 80%;
+    --input: 328 15% 88%;
+    --ring: 328 83% 66%;
+  }
+
+  .dark.theme-fluidDynamics,
+  .theme-fluidDynamics.dark {
+    --background: 328 30% 6%;
+    --foreground: 328 15% 95%;
+    --card: 328 30% 10%;
+    --card-foreground: 328 15% 95%;
+    --popover: 328 30% 8%;
+    --popover-foreground: 328 15% 95%;
+    --primary: 328 76% 72%;
+    --primary-foreground: 328 30% 6%;
+    --secondary: 328 20% 18%;
+    --secondary-foreground: 328 15% 92%;
+    --muted: 328 20% 16%;
+    --muted-foreground: 328 10% 65%;
+    --accent: 328 76% 72%;
+    --accent-foreground: 328 30% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 328 20% 25%;
+    --input: 328 20% 20%;
+    --ring: 328 76% 72%;
+  }
+
+  /* ===== FRACTAL BLOOM THEME ===== */
+  .theme-fractalBloom {
+    --background: 168 20% 98%;
+    --foreground: 168 20% 10%;
+    --card: 168 20% 96%;
+    --card-foreground: 168 20% 10%;
+    --popover: 168 20% 98%;
+    --popover-foreground: 168 20% 10%;
+    --primary: 168 76% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 168 15% 92%;
+    --secondary-foreground: 168 20% 20%;
+    --muted: 168 15% 90%;
+    --muted-foreground: 168 10% 45%;
+    --accent: 168 76% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 168 15% 80%;
+    --input: 168 15% 88%;
+    --ring: 168 76% 42%;
+  }
+
+  .dark.theme-fractalBloom,
+  .theme-fractalBloom.dark {
+    --background: 168 30% 6%;
+    --foreground: 168 15% 95%;
+    --card: 168 30% 10%;
+    --card-foreground: 168 15% 95%;
+    --popover: 168 30% 8%;
+    --popover-foreground: 168 15% 95%;
+    --primary: 168 84% 55%;
+    --primary-foreground: 168 30% 6%;
+    --secondary: 168 20% 18%;
+    --secondary-foreground: 168 15% 92%;
+    --muted: 168 20% 16%;
+    --muted-foreground: 168 10% 65%;
+    --accent: 168 84% 55%;
+    --accent-foreground: 168 30% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 168 20% 25%;
+    --input: 168 20% 20%;
+    --ring: 168 84% 55%;
+  }
+
+  /* ===== GRAVITATIONAL LENS THEME ===== */
+  .theme-gravitationalLens {
+    --background: 243 20% 98%;
+    --foreground: 243 20% 10%;
+    --card: 243 20% 96%;
+    --card-foreground: 243 20% 10%;
+    --popover: 243 20% 98%;
+    --popover-foreground: 243 20% 10%;
+    --primary: 263 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 243 15% 92%;
+    --secondary-foreground: 243 20% 20%;
+    --muted: 243 15% 90%;
+    --muted-foreground: 243 10% 45%;
+    --accent: 263 70% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 243 15% 80%;
+    --input: 243 15% 88%;
+    --ring: 263 70% 50%;
+  }
+
+  .dark.theme-gravitationalLens,
+  .theme-gravitationalLens.dark {
+    --background: 243 45% 5%;
+    --foreground: 243 15% 95%;
+    --card: 243 45% 9%;
+    --card-foreground: 243 15% 95%;
+    --popover: 243 45% 7%;
+    --popover-foreground: 243 15% 95%;
+    --primary: 263 84% 68%;
+    --primary-foreground: 243 45% 5%;
+    --secondary: 243 25% 16%;
+    --secondary-foreground: 243 15% 92%;
+    --muted: 243 25% 14%;
+    --muted-foreground: 243 10% 65%;
+    --accent: 263 84% 68%;
+    --accent-foreground: 243 45% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 243 25% 22%;
+    --input: 243 25% 18%;
+    --ring: 263 84% 68%;
+  }
 }

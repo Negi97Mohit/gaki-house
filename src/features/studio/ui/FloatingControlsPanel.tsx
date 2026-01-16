@@ -94,7 +94,8 @@ const sections = [
 ];
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
-  const [isOpen, setIsOpen] = [props.isOpen, props.onClose];
+  const isOpen = props.isOpen;
+  const closePanel = props.onClose;
   const [activeSection, setActiveSection] = useState<string | null>("canvas-designs");
   const [isHovered, setIsHovered] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -109,14 +110,14 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       ) {
         const target = e.target as HTMLElement;
         if (!target.closest("[data-floating-trigger]")) {
-          setIsOpen();
+          closePanel();
         }
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen, setIsOpen]);
+  }, [isOpen, closePanel]);
 
   const activeTab = sections.find((s) => s.id === activeSection);
 
@@ -189,7 +190,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         <div className="flex items-center justify-between px-3 py-2 border-b border-border/10 dark:border-white/5">
           <span className="text-[10px] font-medium text-muted-foreground/70">{activeTab?.label}</span>
           <button
-            onClick={() => setIsOpen()}
+            onClick={closePanel}
             className="w-5 h-5 flex items-center justify-center rounded-lg text-muted-foreground/40 hover:text-foreground hover:bg-foreground/5 transition-all"
           >
             <X className="w-3 h-3" />

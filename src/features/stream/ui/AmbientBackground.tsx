@@ -886,6 +886,447 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
           </div>
         );
 
+      // NEW ANIMATED EFFECTS
+      case "plasmaStorm":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Chaotic plasma blobs */}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${40 + i * 10}%`,
+                  height: `${40 + i * 10}%`,
+                  left: `${10 + (i % 3) * 20}%`,
+                  top: `${5 + (i % 2) * 30}%`,
+                  background: `radial-gradient(circle, ${ambient.colors[i % ambient.colors.length]}90 0%, transparent 70%)`,
+                  filter: "blur(40px)",
+                }}
+                animate={{
+                  x: ["-20%", "20%", "-10%", "15%", "-20%"],
+                  y: ["-10%", "15%", "-15%", "10%", "-10%"],
+                  scale: [1, 1.3, 0.9, 1.2, 1],
+                }}
+                transition={{
+                  duration: 4 / ambient.speed + i,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+            {/* Electric discharges */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(${Math.random() * 360}deg, transparent, ${ambient.colors[0]}30, transparent)`,
+              }}
+              animate={{ opacity: [0, 0.8, 0], rotate: [0, 180, 360] }}
+              transition={{ duration: 2 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "laserGrid":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Horizontal lasers */}
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={`h-${i}`}
+                className="absolute left-0 right-0 h-[2px]"
+                style={{
+                  top: `${20 + i * 20}%`,
+                  background: `linear-gradient(90deg, transparent, ${ambient.colors[i % ambient.colors.length]}, transparent)`,
+                  boxShadow: `0 0 20px ${ambient.colors[i % ambient.colors.length]}, 0 0 40px ${ambient.colors[i % ambient.colors.length]}`,
+                }}
+                animate={{ scaleX: [0, 1, 0], x: ["-100%", "0%", "100%"] }}
+                transition={{
+                  duration: 3 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "linear",
+                  delay: i * 0.3,
+                }}
+              />
+            ))}
+            {/* Vertical lasers */}
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={`v-${i}`}
+                className="absolute top-0 bottom-0 w-[2px]"
+                style={{
+                  left: `${20 + i * 20}%`,
+                  background: `linear-gradient(180deg, transparent, ${ambient.colors[(i + 2) % ambient.colors.length]}, transparent)`,
+                  boxShadow: `0 0 20px ${ambient.colors[(i + 2) % ambient.colors.length]}`,
+                }}
+                animate={{ scaleY: [0, 1, 0], y: ["-100%", "0%", "100%"] }}
+                transition={{
+                  duration: 2.5 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "linear",
+                  delay: i * 0.25,
+                }}
+              />
+            ))}
+            {/* Intersection glows */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={`glow-${i}`}
+                className="absolute w-8 h-8 rounded-full"
+                style={{
+                  left: `${30 + i * 20}%`,
+                  top: `${30 + i * 15}%`,
+                  background: `radial-gradient(circle, ${ambient.colors[0]}ff 0%, transparent 70%)`,
+                }}
+                animate={{ scale: [0, 1.5, 0], opacity: [0, 1, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.5 }}
+              />
+            ))}
+          </div>
+        );
+
+      case "particleNova":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Radiating particles */}
+            {Array.from({ length: 12 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-3 h-3 rounded-full"
+                style={{
+                  background: ambient.colors[i % ambient.colors.length],
+                  boxShadow: `0 0 15px ${ambient.colors[i % ambient.colors.length]}`,
+                }}
+                animate={{
+                  x: [0, Math.cos((i * Math.PI * 2) / 12) * 200, 0],
+                  y: [0, Math.sin((i * Math.PI * 2) / 12) * 200, 0],
+                  scale: [0.5, 1.5, 0.5],
+                  opacity: [0.3, 1, 0.3],
+                }}
+                transition={{
+                  duration: 3 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                  delay: i * 0.1,
+                }}
+              />
+            ))}
+            {/* Central burst */}
+            <motion.div
+              className="absolute w-32 h-32 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${ambient.colors[0]}ff 0%, ${ambient.colors[1]}80 40%, transparent 70%)`,
+                filter: "blur(10px)",
+              }}
+              animate={{ scale: [0.8, 1.5, 0.8], opacity: [0.8, 0.3, 0.8] }}
+              transition={{ duration: 2 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "waveformPulse":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center">
+            {/* Waveform lines */}
+            {Array.from({ length: 20 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1"
+                style={{
+                  left: `${i * 5}%`,
+                  background: `linear-gradient(180deg, transparent, ${ambient.colors[i % ambient.colors.length]}, transparent)`,
+                  boxShadow: `0 0 10px ${ambient.colors[i % ambient.colors.length]}`,
+                }}
+                animate={{
+                  height: ["20%", `${30 + Math.sin(i * 0.5) * 40}%`, "20%"],
+                  top: ["40%", `${35 - Math.sin(i * 0.5) * 20}%`, "40%"],
+                }}
+                transition={{
+                  duration: 1.5 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.05,
+                }}
+              />
+            ))}
+            {/* Bass glow */}
+            <motion.div
+              className="absolute inset-x-0 h-1/3 top-1/3"
+              style={{
+                background: `linear-gradient(180deg, transparent, ${ambient.colors[0]}40, transparent)`,
+              }}
+              animate={{ opacity: [0.3, 0.8, 0.3] }}
+              transition={{ duration: 0.5 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "holographicShift":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Shifting holographic planes */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(${45 + i * 60}deg, ${ambient.colors[i]}40, transparent 50%, ${ambient.colors[(i + 2) % ambient.colors.length]}40)`,
+                  mixBlendMode: "screen",
+                }}
+                animate={{
+                  opacity: [0.5, 0.9, 0.5],
+                  rotate: [0, 10, -10, 0],
+                }}
+                transition={{
+                  duration: 5 / ambient.speed + i,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+            {/* Iridescent shimmer */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `conic-gradient(from 0deg, ${ambient.colors.join(", ")}, ${ambient.colors[0]})`,
+                opacity: 0.15,
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20 / ambient.speed, repeat: Infinity, ease: "linear" }}
+            />
+          </div>
+        );
+
+      case "starfieldWarp":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Warp stars */}
+            {Array.from({ length: 30 }).map((_, i) => {
+              const angle = (i * Math.PI * 2) / 30;
+              return (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 rounded-full"
+                  style={{
+                    height: "2px",
+                    background: ambient.colors[i % ambient.colors.length],
+                    boxShadow: `0 0 5px ${ambient.colors[i % ambient.colors.length]}`,
+                    left: "50%",
+                    top: "50%",
+                    transformOrigin: "left center",
+                    rotate: `${(angle * 180) / Math.PI}deg`,
+                  }}
+                  animate={{
+                    width: ["0px", "150px", "0px"],
+                    opacity: [0, 1, 0],
+                    x: [0, Math.cos(angle) * 100, Math.cos(angle) * 300],
+                    y: [0, Math.sin(angle) * 100, Math.sin(angle) * 300],
+                  }}
+                  transition={{
+                    duration: 2 / ambient.speed,
+                    repeat: Infinity,
+                    ease: "easeIn",
+                    delay: i * 0.08,
+                  }}
+                />
+              );
+            })}
+            {/* Center glow */}
+            <motion.div
+              className="absolute w-16 h-16 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${ambient.colors[2]}80 0%, transparent 70%)`,
+              }}
+              animate={{ scale: [1, 1.5, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "electricArc":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Lightning bolts */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  left: `${20 + i * 25}%`,
+                  top: 0,
+                  width: "4px",
+                  height: "100%",
+                  background: `linear-gradient(180deg, ${ambient.colors[i % ambient.colors.length]}, transparent, ${ambient.colors[i % ambient.colors.length]}, transparent, ${ambient.colors[i % ambient.colors.length]})`,
+                  filter: `blur(2px)`,
+                  boxShadow: `0 0 30px ${ambient.colors[i % ambient.colors.length]}, 0 0 60px ${ambient.colors[i % ambient.colors.length]}`,
+                }}
+                animate={{
+                  opacity: [0, 1, 0, 0.8, 0],
+                  scaleX: [1, 2, 1, 1.5, 1],
+                  x: ["-10px", "10px", "-5px", "8px", "-10px"],
+                }}
+                transition={{
+                  duration: 0.5 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "linear",
+                  delay: i * 0.2,
+                }}
+              />
+            ))}
+            {/* Ambient charge */}
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `radial-gradient(ellipse at 50% 50%, ${ambient.colors[0]}30 0%, transparent 50%)`,
+              }}
+              animate={{ opacity: [0.2, 0.6, 0.2] }}
+              transition={{ duration: 0.3, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "fluidDynamics":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {/* Flowing fluid blobs */}
+            {ambient.colors.slice(0, 4).map((color, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: "60%",
+                  height: "60%",
+                  left: `${i * 15}%`,
+                  top: `${10 + (i % 2) * 20}%`,
+                  background: `radial-gradient(ellipse, ${color}80 0%, transparent 70%)`,
+                  filter: "blur(50px)",
+                  borderRadius: "40% 60% 60% 40% / 60% 30% 70% 40%",
+                }}
+                animate={{
+                  borderRadius: [
+                    "40% 60% 60% 40% / 60% 30% 70% 40%",
+                    "60% 40% 30% 70% / 40% 60% 40% 60%",
+                    "30% 70% 70% 30% / 50% 50% 50% 50%",
+                    "40% 60% 60% 40% / 60% 30% 70% 40%",
+                  ],
+                  x: ["-5%", "5%", "-3%", "4%", "-5%"],
+                  y: ["-3%", "4%", "-5%", "3%", "-3%"],
+                }}
+                transition={{
+                  duration: 10 / ambient.speed + i * 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "fractalBloom":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Fractal layers */}
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  width: `${70 - i * 10}%`,
+                  height: `${70 - i * 10}%`,
+                  border: `2px solid ${ambient.colors[i % ambient.colors.length]}`,
+                  borderRadius: `${30 + i * 5}% ${70 - i * 5}% ${40 + i * 3}% ${60 - i * 3}% / ${50 + i * 4}% ${50 - i * 4}% ${50 + i * 2}% ${50 - i * 2}%`,
+                  opacity: 0.6 - i * 0.08,
+                }}
+                animate={{
+                  rotate: i % 2 === 0 ? 360 : -360,
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  rotate: { duration: 20 / ambient.speed + i * 3, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 4 + i, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+            ))}
+            {/* Central bloom */}
+            <motion.div
+              className="absolute w-20 h-20 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${ambient.colors[0]}90 0%, ${ambient.colors[1]}50 50%, transparent 70%)`,
+                filter: "blur(15px)",
+              }}
+              animate={{ scale: [0.8, 1.3, 0.8], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "gravitationalLens":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {/* Warped light rings */}
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${50 + i * 15}%`,
+                  height: `${30 + i * 10}%`,
+                  border: `1px solid ${ambient.colors[i % ambient.colors.length]}`,
+                  opacity: 0.5 - i * 0.1,
+                  transform: `perspective(500px) rotateX(${60 - i * 10}deg)`,
+                }}
+                animate={{
+                  rotateZ: i % 2 === 0 ? 360 : -360,
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  rotateZ: { duration: 30 / ambient.speed + i * 5, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+            ))}
+            {/* Singularity */}
+            <motion.div
+              className="absolute w-24 h-24 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${ambient.colors[0]} 0%, ${ambient.colors[1]}80 30%, transparent 70%)`,
+                boxShadow: `0 0 60px ${ambient.colors[2]}, 0 0 100px ${ambient.colors[1]}`,
+              }}
+              animate={{
+                scale: [1, 1.2, 1],
+                boxShadow: [
+                  `0 0 60px ${ambient.colors[2]}, 0 0 100px ${ambient.colors[1]}`,
+                  `0 0 100px ${ambient.colors[3]}, 0 0 150px ${ambient.colors[2]}`,
+                  `0 0 60px ${ambient.colors[2]}, 0 0 100px ${ambient.colors[1]}`,
+                ],
+              }}
+              transition={{ duration: 4 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Lensed background streaks */}
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={`streak-${i}`}
+                className="absolute w-full h-2"
+                style={{
+                  top: `${40 + i * 10}%`,
+                  background: `linear-gradient(90deg, transparent, ${ambient.colors[4]}40, transparent)`,
+                  filter: "blur(3px)",
+                }}
+                animate={{
+                  scaleY: [1, 3, 1],
+                  opacity: [0.3, 0.7, 0.3],
+                }}
+                transition={{
+                  duration: 3 / ambient.speed,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.3,
+                }}
+              />
+            ))}
+          </div>
+        );
+
       default:
         return null;
     }
