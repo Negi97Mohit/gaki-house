@@ -33,7 +33,17 @@ export type ThemeName =
   | "crystalCave"
   | "solarFlare"
   | "quantumField"
-  | "abyssalDepth";
+  | "abyssalDepth"
+  | "cosmicRingPulse"
+  | "cosmicRingDouble"
+  | "cosmicRingSpiral"
+  | "cosmicRingEclipse"
+  | "cosmicRingAurora"
+  | "hexGridHoneycomb"
+  | "hexGridCyber"
+  | "hexGridNeon"
+  | "hexGridOrbit"
+  | "hexGridVortex";
 
 export type ThemeMode = "light" | "dark";
 
@@ -62,7 +72,17 @@ export interface ThemeConfig {
       | "crystal"
       | "flare"
       | "quantum"
-      | "abyss";
+      | "abyss"
+      | "ringPulse"
+      | "ringDouble"
+      | "ringSpiral"
+      | "ringEclipse"
+      | "ringAurora"
+      | "hexHoneycomb"
+      | "hexCyber"
+      | "hexNeon"
+      | "hexOrbit"
+      | "hexVortex";
     colors: string[];
     intensity: number;
     speed: number;
