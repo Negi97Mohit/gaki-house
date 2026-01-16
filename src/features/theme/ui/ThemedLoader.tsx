@@ -45,6 +45,17 @@ const loaderColors: Record<ThemeName, { primary: string; secondary: string }> = 
   hexGridNeon: { primary: "#f0abfc", secondary: "#d946ef" },
   hexGridOrbit: { primary: "#94a3b8", secondary: "#475569" },
   hexGridVortex: { primary: "#f87171", secondary: "#dc2626" },
+  // New Animated Themes
+  auroraWaves: { primary: "#00ffcc", secondary: "#00ff88" },
+  neonRain: { primary: "#00ffff", secondary: "#ff00ff" },
+  particleNebula: { primary: "#4ecdc4", secondary: "#ff6b6b" },
+  geometricPulse: { primary: "#764ba2", secondary: "#667eea" },
+  electricStorm: { primary: "#00d4ff", secondary: "#7b2cbf" },
+  floatingOrbs: { primary: "#4ecdc4", secondary: "#ff6b6b" },
+  fireflies: { primary: "#ffd700", secondary: "#ffec8b" },
+  waveformAudio: { primary: "#667eea", secondary: "#764ba2" },
+  plasmaField: { primary: "#f7931e", secondary: "#ff6b35" },
+  starfield: { primary: "#ffffff", secondary: "#88ccff" },
 };
 
 interface ThemedLoaderProps {
