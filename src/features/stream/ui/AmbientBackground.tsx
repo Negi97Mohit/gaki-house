@@ -374,6 +374,170 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ className 
           </div>
         );
 
+      case "ring":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full border-2"
+                style={{
+                  width: `${30 + i * 20}%`,
+                  height: `${30 + i * 20}%`,
+                  borderColor: ambient.colors[i % ambient.colors.length],
+                  opacity: 0.4,
+                }}
+                animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+                transition={{
+                  rotate: { duration: 20 / ambient.speed + i * 5, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 4 + i, repeat: Infinity, ease: "easeInOut" },
+                }}
+              />
+            ))}
+          </div>
+        );
+
+      case "hexagon":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='${encodeURIComponent(ambient.colors[0])}' fill-opacity='0.15'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 5 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {[0, 1].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: "40%", height: "40%",
+                  left: i === 0 ? "10%" : "50%", top: i === 0 ? "20%" : "40%",
+                  background: `radial-gradient(circle, ${ambient.colors[i + 1]}50 0%, transparent 70%)`,
+                  filter: "blur(40px)",
+                }}
+                animate={{ scale: [1, 1.3, 1], opacity: [0.4, 0.7, 0.4] }}
+                transition={{ duration: 6 / ambient.speed, repeat: Infinity, ease: "easeInOut", delay: i }}
+              />
+            ))}
+          </div>
+        );
+
+      case "prism":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {ambient.colors.map((color, i) => (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  left: `${i * 16}%`, top: 0, width: "20%", height: "100%",
+                  background: `linear-gradient(180deg, transparent, ${color}60, transparent)`,
+                  filter: "blur(20px)",
+                }}
+                animate={{ x: ["-50%", "50%", "-50%"], opacity: [0.3, 0.7, 0.3] }}
+                transition={{ duration: 8 / ambient.speed, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+              />
+            ))}
+          </div>
+        );
+
+      case "nebula":
+      case "crystal":
+      case "quantum":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            {ambient.colors.slice(0, 4).map((color, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: `${35 + i * 10}%`, height: `${35 + i * 10}%`,
+                  left: `${10 + i * 20}%`, top: `${15 + (i % 2) * 30}%`,
+                  background: `radial-gradient(circle, ${color}70 0%, ${color}30 50%, transparent 70%)`,
+                  filter: "blur(60px)",
+                }}
+                animate={{ scale: [1, 1.2, 1], x: ["-5%", "5%", "-5%"], y: ["-5%", "5%", "-5%"] }}
+                transition={{ duration: 10 / ambient.speed + i * 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+              />
+            ))}
+          </div>
+        );
+
+      case "matrix":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `repeating-linear-gradient(0deg, ${ambient.colors[0]}10 0px, transparent 1px, transparent 20px)`,
+              }}
+              animate={{ backgroundPosition: ["0 0", "0 100px"] }}
+              transition={{ duration: 2 / ambient.speed, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              className="absolute inset-0"
+              style={{ background: `radial-gradient(ellipse at center, ${ambient.colors[0]}30 0%, transparent 70%)` }}
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "liquid":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute inset-0"
+              style={{
+                background: `linear-gradient(135deg, ${ambient.colors[0]}40, ${ambient.colors[1]}40, ${ambient.colors[2]}40)`,
+                backgroundSize: "200% 200%",
+              }}
+              animate={{ backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"] }}
+              transition={{ duration: 10 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "flare":
+        return (
+          <div className="absolute inset-0 overflow-hidden flex items-center justify-center">
+            <motion.div
+              className="absolute"
+              style={{
+                width: "60%", height: "60%",
+                background: `radial-gradient(circle, ${ambient.colors[0]}80 0%, ${ambient.colors[1]}50 30%, ${ambient.colors[2]}30 60%, transparent 70%)`,
+                filter: "blur(40px)",
+              }}
+              animate={{ scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 4 / ambient.speed, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        );
+
+      case "abyss":
+        return (
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, ${ambient.colors[0]}20 0%, ${ambient.colors[1]}60 100%)` }} />
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  width: "8px", height: "8px",
+                  left: `${20 + i * 30}%`, top: `${30 + i * 20}%`,
+                  background: ambient.colors[3],
+                  boxShadow: `0 0 20px ${ambient.colors[3]}, 0 0 40px ${ambient.colors[3]}`,
+                }}
+                animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.5, 1] }}
+                transition={{ duration: 3 + i, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+              />
+            ))}
+          </div>
+        );
+
       default:
         return null;
     }

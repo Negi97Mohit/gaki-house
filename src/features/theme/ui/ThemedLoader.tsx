@@ -23,6 +23,16 @@ const loaderColors: Record<ThemeName, { primary: string; secondary: string }> = 
   caramelLatte: { primary: "#d4a574", secondary: "#8b5a2b" },
   iceQueen: { primary: "#38bdf8", secondary: "#e2e8f0" },
   midnightTokyo: { primary: "#ff6eb4", secondary: "#ff2d92" },
+  cosmicRing: { primary: "#a5b4fc", secondary: "#6366f1" },
+  hexGrid: { primary: "#34d399", secondary: "#10b981" },
+  prismWave: { primary: "#f9a8d4", secondary: "#ec4899" },
+  nebulaDust: { primary: "#e879f9", secondary: "#a855f7" },
+  matrixCode: { primary: "#4ade80", secondary: "#22c55e" },
+  liquidMetal: { primary: "#a1a1aa", secondary: "#71717a" },
+  crystalCave: { primary: "#c084fc", secondary: "#a855f7" },
+  solarFlare: { primary: "#fbbf24", secondary: "#f59e0b" },
+  quantumField: { primary: "#38bdf8", secondary: "#0ea5e9" },
+  abyssalDepth: { primary: "#0284c7", secondary: "#0369a1" },
 };
 
 interface ThemedLoaderProps {
