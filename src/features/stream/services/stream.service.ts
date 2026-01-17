@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { notify } from "@/shared/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
+import fixWebmDuration from "fix-webm-duration";
 
 const SERVER_URL = "http://localhost:3000";
 
@@ -265,13 +266,37 @@ class StreamService {
       if (!this.isPipelineActive) return;
 
       if (this.ctx && this.videoElement && this.canvas) {
+        const { width: canvasWidth, height: canvasHeight } = this.canvas;
+
         // Draw Black Background
         this.ctx.fillStyle = "#000000";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-        // Draw Video Source
+        // Draw Video Source with Letterboxing (Fit)
         if (this.videoElement.readyState >= 2) { // HAVE_CURRENT_DATA
-          this.ctx.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
+          const videoWidth = this.videoElement.videoWidth;
+          const videoHeight = this.videoElement.videoHeight;
+
+          if (videoWidth && videoHeight) {
+            const scale = Math.min(
+              canvasWidth / videoWidth,
+              canvasHeight / videoHeight
+            );
+
+            const drawWidth = videoWidth * scale;
+            const drawHeight = videoHeight * scale;
+
+            const offsetX = (canvasWidth - drawWidth) / 2;
+            const offsetY = (canvasHeight - drawHeight) / 2;
+
+            this.ctx.drawImage(
+              this.videoElement,
+              offsetX,
+              offsetY,
+              drawWidth,
+              drawHeight
+            );
+          }
         }
       }
 
@@ -612,6 +637,13 @@ class StreamService {
   }
 
   private cleanupPipeline() {
+    // Determine if we should really cleanup
+    // If either broadcasting OR recording is active, we must keep pipeline
+    if (useStreamStore.getState().isBroadcasting || useStreamStore.getState().isRecording) {
+      console.log("[StreamService] Pipeline kept alive for other process");
+      return;
+    }
+
     this.isPipelineActive = false;
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     if (this.unsubMediaStore) this.unsubMediaStore();
@@ -638,6 +670,135 @@ class StreamService {
     this.micStream = null;
     this.audioContext = null;
     this.audioDestination = null;
+  }
+
+  // --- 4. LOCAL RECORDING LOGIC ---
+
+  // Separate recorder for local file download
+  private localRecorder: MediaRecorder | null = null;
+  private recordedChunks: Blob[] = [];
+  private recordingStartTime: number | null = null;
+
+  public async startRecording() {
+    try {
+      console.log("[StreamService] Starting Recording...");
+      useStreamStore.getState().setRecording(true);
+
+      // Ensure pipeline is running (mixer, audio, etc.)
+      await this.startPipeline();
+
+      if (!this.activeStream) throw new Error("No active stream for recording");
+
+      this.recordedChunks = [];
+      const mimeType = this.getSupportedMimeType();
+
+      this.localRecorder = new MediaRecorder(this.activeStream, {
+        mimeType,
+        videoBitsPerSecond: 8000000, // Higher quality for local (8Mbps)
+      });
+
+      this.localRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          this.recordedChunks.push(e.data);
+        }
+      };
+
+      this.localRecorder.onstop = () => {
+        this.downloadRecording();
+        useStreamStore.getState().setRecording(false);
+        // Only cleanup if not broadcasting
+        if (!useStreamStore.getState().isBroadcasting) {
+          this.cleanupPipeline();
+        }
+      };
+
+      this.localRecorder.start(1000); // chunk every 1s
+
+      this.recordingStartTime = Date.now();
+      // Start duration timer
+      this.startRecordingTimer();
+
+    } catch (err: any) {
+      console.error("[StreamService] Start Recording Failed:", err);
+      notify.error(`Recording failed: ${err.message}`);
+      useStreamStore.getState().setRecording(false);
+    }
+  }
+
+  public stopRecording() {
+    console.log("[StreamService] Stopping Recording...");
+    if (this.localRecorder && this.localRecorder.state !== "inactive") {
+      this.localRecorder.stop();
+    }
+    this.stopRecordingTimer();
+  }
+
+  private async downloadRecording() {
+    if (this.recordedChunks.length === 0) return;
+
+    try {
+      const blob = new Blob(this.recordedChunks, {
+        type: this.localRecorder?.mimeType || "video/webm",
+      });
+
+      // Calculate duration
+      const duration = this.recordingStartTime
+        ? Date.now() - this.recordingStartTime
+        : 0;
+
+      // Fix metadata
+      const fixedBlob = await new Promise<Blob>((resolve) => {
+        fixWebmDuration(blob, duration, (fixed) => {
+          resolve(fixed);
+        });
+      });
+
+      // Electron specific save or Web download
+      const isElectron = !!(window as ElectronWindow).electron;
+
+      if (isElectron) {
+        this.triggerBrowserDownload(fixedBlob);
+      } else {
+        this.triggerBrowserDownload(fixedBlob);
+      }
+
+      this.recordedChunks = [];
+    } catch (e) {
+      console.error("Failed to download recording", e);
+      notify.error("Failed to save recording");
+    }
+  }
+
+  private triggerBrowserDownload(blob: Blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style.display = "none";
+    a.href = url;
+    a.download = `recording-${new Date().toISOString().replace(/:/g, '-')}.webm`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    notify.success("Recording saved!");
+  }
+
+  private recordingTimer: NodeJS.Timeout | null = null;
+  private startRecordingTimer() {
+    if (this.recordingTimer) clearInterval(this.recordingTimer);
+    const startTime = Date.now();
+    this.recordingTimer = setInterval(() => {
+      useStreamStore.getState().setRecordingDuration(
+        Math.floor((Date.now() - startTime) / 1000)
+      );
+    }, 1000);
+  }
+
+  private stopRecordingTimer() {
+    if (this.recordingTimer) {
+      clearInterval(this.recordingTimer);
+      this.recordingTimer = null;
+      useStreamStore.getState().setRecordingDuration(0);
+    }
   }
 
   // --- Utils ---

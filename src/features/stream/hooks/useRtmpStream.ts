@@ -31,10 +31,11 @@ export const useRtmpStream = () => {
   };
 
   const toggleRecording = () => {
-    // Local recording logic can be added to the service or kept here if simple
-    notify.info(
-      "Local recording toggle currently managed by standalone recorder"
-    );
+    if (isRecording) {
+      streamService.stopRecording();
+    } else {
+      streamService.startRecording();
+    }
   };
 
   return {
