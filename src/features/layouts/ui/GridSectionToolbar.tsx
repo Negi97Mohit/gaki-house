@@ -181,7 +181,22 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
             variant="secondary"
             size="icon"
             className={buttonClass}
-            onClick={() => setIsSourceSelectorOpen(true)}
+            onClick={() => {
+              const isElectron = !!(window as any).electron;
+              if (isElectron) {
+                setIsSourceSelectorOpen(true);
+              } else {
+                // Web: Re-trigger screen share (native picker)
+                // By setting type to screen again (or verify if we need to clear sourceId)
+                if (onSectionContentChange) {
+                  onSectionContentChange(section.id, {
+                    ...content,
+                    type: "screen",
+                    sourceId: undefined // Clear ID for native picker
+                  });
+                }
+              }
+            }}
             title="Change Screen Source"
           >
             <Monitor className="h-4 w-4" />

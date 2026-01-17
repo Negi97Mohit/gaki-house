@@ -140,39 +140,53 @@ export const useVideoStreams = ({
       isRequestingScreen.current = false; // Reset requesting flag to allow new request
     }
 
-    // CHANGE: require selectedScreenSourceId if trying to share
+    // CHANGE: logic to support both Electron (sourceId required) and Web (native picker)
     if (isScreenSharing && (!screenStream || hasSourceChanged) && !isRequestingScreen.current) {
-      // If no source ID, wait for selection
-      if (!selectedScreenSourceId) {
-        // console.log("Waiting for screen source selection..."); // reduce log spam
+
+      const isElectron = !!(window as any).electron;
+
+      // Electron: Wait for source selection
+      if (isElectron && !selectedScreenSourceId) {
         return;
       }
 
       isRequestingScreen.current = true;
       const getScreenStream = async () => {
         try {
-          const constraints = {
-            audio: isAudioOn ? {
-              mandatory: {
-                chromeMediaSource: 'desktop'
-              }
-            } : false,
-            video: {
-              mandatory: {
-                chromeMediaSource: 'desktop',
-                chromeMediaSourceId: selectedScreenSourceId,
-                maxWidth: 1920,
-                maxHeight: 1080,
-                maxFrameRate: 30
-              }
-            }
-          } as any;
+          let stream: MediaStream;
 
-          const stream = await navigator.mediaDevices.getUserMedia(constraints);
-          console.log("✅ Screen stream attached via sourceId:", selectedScreenSourceId);
+          if (isElectron) {
+            // --- Electron Logic ---
+            const constraints = {
+              audio: isAudioOn ? {
+                mandatory: {
+                  chromeMediaSource: 'desktop'
+                }
+              } : false,
+              video: {
+                mandatory: {
+                  chromeMediaSource: 'desktop',
+                  chromeMediaSourceId: selectedScreenSourceId,
+                  maxWidth: 1920,
+                  maxHeight: 1080,
+                  maxFrameRate: 30
+                }
+              }
+            } as any;
+            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            // Tag with source ID
+            if (selectedScreenSourceId) (stream as any)._sourceId = selectedScreenSourceId;
+            console.log("✅ Electron Screen stream attached:", stream.id);
 
-          // Tag the stream with the source ID so we know what it is
-          (stream as any)._sourceId = selectedScreenSourceId;
+          } else {
+            // --- Web Logic ---
+            console.log("🌍 Requesting Web Display Media...");
+            stream = await navigator.mediaDevices.getDisplayMedia({
+              video: true,
+              audio: isAudioOn
+            });
+            console.log("✅ Web Display Media attached:", stream.id);
+          }
 
           const videoTrack = stream.getVideoTracks()[0];
           videoTrack.onended = () => {

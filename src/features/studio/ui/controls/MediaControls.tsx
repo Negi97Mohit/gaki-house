@@ -351,7 +351,14 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           style={{ zIndex: 2015 }}
         >
           <DropdownMenuItem
-            onClick={() => setIsSourceSelectorOpen(true)}
+            onClick={() => {
+              const isElectron = !!(window as any).electron;
+              if (isElectron) {
+                setIsSourceSelectorOpen(true);
+              } else {
+                setScreenShareMode("screen");
+              }
+            }}
             className="text-xs"
           >
             <Monitor className="w-3 h-3 mr-2" />

@@ -243,7 +243,18 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
                             Camera
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                            onClick={() => setIsSourceSelectorOpen(true)}
+                            onClick={() => {
+                                // Check for Electron environment
+                                const isElectron = !!(window as any).electron;
+                                if (isElectron) {
+                                    setIsSourceSelectorOpen(true);
+                                } else {
+                                    // Web mode: Direct switch to screen type, will trigger native picker via hooks
+                                    onSectionContentChange(sectionId, {
+                                        type: "screen",
+                                    });
+                                }
+                            }}
                         >
                             <Monitor className="h-4 w-4 mr-2" />
                             Share Screen
