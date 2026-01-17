@@ -426,7 +426,11 @@ export type CanvasSectionContent =
     name?: string;
   }
   | { type: "text"; textId?: string }
-  | { type: "screen" }
+  | {
+    type: "screen";
+    sourceId?: string;
+    displayMode?: "fit" | "fill" | "stretch" | "center" | "span";
+  }
   | { type: "empty" }
   // +++ MODIFIED: Camera type now holds its own settings +++
   | {
@@ -532,6 +536,7 @@ export interface SceneState {
   // Device & Media State
   selectedVideoDevice: string | undefined;
   selectedAudioDevice: string | undefined;
+  selectedScreenSourceId?: string; // ADDED
   isAudioOn: boolean;
   isVideoOn: boolean;
   captionsEnabled: boolean;

@@ -27,6 +27,7 @@ import { useMediaStore } from "@/stores/media.store";
 import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
+import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";
 
 
 interface MediaControlsProps {
@@ -59,6 +60,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
 }) => {
   // Local state for Smart Switch
   const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
+  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false); // ADDED
   const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
 
   // Store hooks
@@ -75,6 +77,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
     setSelectedVideoDevice,
     screenShareMode,
     setScreenShareMode,
+    setSelectedScreenSourceId, // ADDED
   } = useMediaStore(
     useShallow((state) => ({
       isAudioOn: state.isAudioOn,
@@ -89,6 +92,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       setSelectedVideoDevice: state.setSelectedVideoDevice,
       screenShareMode: state.screenShareMode,
       setScreenShareMode: state.setScreenShareMode,
+      setSelectedScreenSourceId: state.setSelectedScreenSourceId, // ADDED
     }))
   );
 
@@ -347,7 +351,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           style={{ zIndex: 2015 }}
         >
           <DropdownMenuItem
-            onClick={() => setScreenShareMode("screen")}
+            onClick={() => setIsSourceSelectorOpen(true)}
             className="text-xs"
           >
             <Monitor className="w-3 h-3 mr-2" />
@@ -377,6 +381,16 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <ScreenSourceSelector
+        isOpen={isSourceSelectorOpen}
+        onOpenChange={setIsSourceSelectorOpen}
+        onSelect={(sourceId) => {
+          setSelectedScreenSourceId(sourceId);
+          setScreenShareMode("screen");
+          setIsSourceSelectorOpen(false);
+        }}
+      />
     </>
   );
 };

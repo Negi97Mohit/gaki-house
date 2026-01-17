@@ -11,6 +11,8 @@ import { EmptyGridSection } from "@/features/layouts/ui/grid-section/EmptyGridSe
 import { CameraGridSection } from "@/features/layouts/ui/grid-section/CameraGridSection";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
 import { Video } from "lucide-react";
+import { useStreamManagerStore } from "@/stores/stream-manager.store";
+import { useScreenStream } from "@/features/stream/hooks/useScreenStream";
 // 1. Import the optimized VideoPlayer
 import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
 
@@ -126,14 +128,24 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
           );
 
         case "screen":
-          if (!screenStream) return <div className="w-full h-full bg-muted" />;
-          // 3. FIX: Use VideoPlayer component to handle stream lifecycle efficiently
-          // This prevents the video element from being destroyed/recreated on every render
+          // Use the hook to ensure stream is created/retrieved
+          const managedStream = useScreenStream(content.sourceId);
+          // Fallback to older prop if no managed stream
+          const streamToRender = managedStream || screenStream;
+
+          if (!streamToRender) return <div className="w-full h-full bg-muted" />;
+
           return (
             <VideoPlayer
-              stream={screenStream}
+              stream={streamToRender}
               muted={true}
-              className="w-full h-full object-cover"
+              className="w-full h-full"
+              style={{
+                objectFit: (content.displayMode === "fit" ? "contain" :
+                  content.displayMode === "stretch" ? "fill" :
+                    content.displayMode === "center" ? "none" :
+                      "cover") as React.CSSProperties["objectFit"]
+              }}
             />
           );
 

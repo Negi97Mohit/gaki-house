@@ -178,6 +178,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isScreenSharing: screenShareMode === "screen" || !!hasScreenSection,
     selectedCameraDevice: selectedVideoDevice,
     selectedAudioDevice: selectedAudioDevice,
+    selectedScreenSourceId: props.selectedScreenSourceId, // ADDED
     onScreenShareEnd: () => {
       props.onScreenShareModeChange("off");
       if (props.canvasLayout && props.onCanvasLayoutChange) {
@@ -342,11 +343,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 position={{
                   x:
                     (sceneSize.width * props.liveCaptionStyle.position.x) /
-                      100 -
+                    100 -
                     captionWidth / 2,
                   y:
                     (sceneSize.height * props.liveCaptionStyle.position.y) /
-                      100 -
+                    100 -
                     50, // Approx vertical centering offset since height is auto
                 }}
                 enableResizing={{

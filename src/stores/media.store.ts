@@ -7,6 +7,7 @@ interface MediaState {
   videoDevices: MediaDeviceInfo[];
   selectedAudioDevice: string | undefined;
   selectedVideoDevice: string | undefined;
+  selectedScreenSourceId: string | undefined;
   screenShareMode: "off" | "screen" | "canvas";
 
   // Actions
@@ -16,6 +17,7 @@ interface MediaState {
   setVideoDevices: (devices: MediaDeviceInfo[]) => void;
   setSelectedAudioDevice: (id: string) => void;
   setSelectedVideoDevice: (id: string) => void;
+  setSelectedScreenSourceId: (id: string) => void;
   setScreenShareMode: (mode: "off" | "screen" | "canvas") => void;
 }
 
@@ -27,6 +29,7 @@ export const useMediaStore = create<MediaState>((set) => ({
   videoDevices: [],
   selectedAudioDevice: undefined,
   selectedVideoDevice: undefined,
+  selectedScreenSourceId: undefined, // Default to undefined (will trigger selector if needed)
   screenShareMode: "off",
 
   setAudioOn: (isAudioOn) => set({ isAudioOn }),
@@ -35,5 +38,6 @@ export const useMediaStore = create<MediaState>((set) => ({
   setVideoDevices: (videoDevices) => set({ videoDevices }),
   setSelectedAudioDevice: (selectedAudioDevice) => set({ selectedAudioDevice }),
   setSelectedVideoDevice: (selectedVideoDevice) => set({ selectedVideoDevice }),
+  setSelectedScreenSourceId: (selectedScreenSourceId) => set({ selectedScreenSourceId }),
   setScreenShareMode: (screenShareMode) => set({ screenShareMode }),
 }));

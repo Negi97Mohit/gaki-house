@@ -31,6 +31,7 @@ import { CanvasDesignSelector } from "./CanvasDesignSelector";
 import { CanvasSectionState, DEFAULT_CAMERA_STATE, CameraShape, FileType } from "@/types/caption";
 import { usePreviewMode } from "@/features/layouts/ui/layouts/dynamic/core/PreviewModeContext";
 import { cn } from "@/shared/lib/utils";
+import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";
 
 interface EmptyGridSectionProps {
     sectionId: string;
@@ -55,6 +56,7 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
     const [fileUrlInput, setFileUrlInput] = useState("");
     const [isDragging, setIsDragging] = useState(false);
     const [activeTab, setActiveTab] = useState("upload");
+    const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
 
     const getFileType = (file: File): FileType => {
         if (file.type.startsWith("image/")) return "image";
@@ -241,11 +243,7 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
                             Camera
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                            onClick={() =>
-                                onSectionContentChange(sectionId, {
-                                    type: "screen",
-                                })
-                            }
+                            onClick={() => setIsSourceSelectorOpen(true)}
                         >
                             <Monitor className="h-4 w-4 mr-2" />
                             Share Screen
@@ -352,6 +350,17 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
                     </DialogContent>
                 </Dialog>
             </div>
+            <ScreenSourceSelector
+                isOpen={isSourceSelectorOpen}
+                onOpenChange={setIsSourceSelectorOpen}
+                onSelect={(sourceId) => {
+                    onSectionContentChange(sectionId, {
+                        type: "screen",
+                        sourceId,
+                    });
+                    setIsSourceSelectorOpen(false);
+                }}
+            />
         </div>
     );
 };

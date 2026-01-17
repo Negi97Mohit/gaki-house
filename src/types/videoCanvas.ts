@@ -52,6 +52,7 @@ export interface VideoCanvasProps {
     selectedAudioDevice: string | undefined;
     onAudioDeviceSelect: (deviceId: string) => void;
     selectedVideoDevice: string | undefined;
+    selectedScreenSourceId?: string; // ADDED
     onVideoDeviceSelect: (deviceId: string) => void;
     audioDevices: MediaDeviceInfo[];
     videoDevices: MediaDeviceInfo[];
@@ -123,15 +124,15 @@ export interface VideoCanvasProps {
     sidebarProps: any;
     selectedBrowserId: string | null;
     setSelectedBrowserId: (id: string | null) => void;
-  fileOverlays: FileOverlayState[];
-  onRemoveFile: (id: string) => void;
-  onFileLayoutChange: (
-    id: string,
-    layout: Partial<FileOverlayState["layout"]>
-  ) => void;
-  onAddFile?: (file: File) => void;
-  selectedFileId: string | null;
-  setSelectedFileId: (id: string | null) => void;
+    fileOverlays: FileOverlayState[];
+    onRemoveFile: (id: string) => void;
+    onFileLayoutChange: (
+        id: string,
+        layout: Partial<FileOverlayState["layout"]>
+    ) => void;
+    onAddFile?: (file: File) => void;
+    selectedFileId: string | null;
+    setSelectedFileId: (id: string | null) => void;
     onInternalDragStart: () => void;
     onInternalDragStop: () => void;
     onDeselectAll: () => void;
@@ -179,7 +180,7 @@ export interface VideoCanvasProps {
     onBannerTextClose?: () => void;
     isChatbotOpen?: boolean;
     onChatbotToggle?: (open: boolean | ((prev: boolean) => boolean)) => void;
-    
+
     // Excalidraw Props
     isDrawing: boolean;
     setIsDrawing: (isDrawing: boolean) => void;

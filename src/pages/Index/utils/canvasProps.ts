@@ -136,6 +136,7 @@ export const getAllPropsForScene = (
     neonIntensity: scene.neonIntensity,
     neonColor: scene.neonColor,
     screenShareMode: scene.screenShareMode as "off" | "screen" | "canvas",
+    selectedScreenSourceId: scene.selectedScreenSourceId,
     onScreenShareModeChange: callbacks.handleSetScreenShareMode,
     canvasLayout: scene.canvasLayout,
     activeSequenceId: scene.activeSequenceId,
@@ -148,7 +149,7 @@ export const getAllPropsForScene = (
         return { ...s, canvasLayout: { ...s.canvasLayout, sections } };
       });
     },
-    onUserPositionChange: () => {},
+    onUserPositionChange: () => { },
     onCanvasLayoutChange: (layout: CanvasLayoutState | null) => {
       callbacks.updateActiveScene((s) => ({ ...s, canvasLayout: layout }));
     },

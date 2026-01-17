@@ -37,6 +37,7 @@ import { ColorPicker } from "@/shared/ui/color-picker";
 import { cn } from "@/shared/lib/utils";
 import { SearchButton } from "./layouts/dynamic/core/SearchButton";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
+import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";
 
 interface GridSectionToolbarProps {
   section: CanvasSectionState;
@@ -122,6 +123,7 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
 }) => {
   const { content } = section;
   const isPreview = usePreviewMode();
+  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = React.useState(false);
 
   // Don't render any toolbar controls in preview mode to avoid nested button issues
   if (isPreview) return null;
@@ -149,12 +151,12 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="z-[999] bg-background p-2">
-              <ColorPicker
-                value={content.color || "#000000"}
-                onChange={(color) => onColorChange && onColorChange(color)}
-                variant="inline"
-                showGradients={true}
-              />
+            <ColorPicker
+              value={content.color || "#000000"}
+              onChange={(color) => onColorChange && onColorChange(color)}
+              variant="inline"
+              showGradients={true}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       )}
@@ -171,6 +173,46 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
         >
           <Image className="h-4 w-4" />
         </Button>
+      )}
+
+      {content.type === "screen" && (
+        <>
+          <Button
+            variant="secondary"
+            size="icon"
+            className={buttonClass}
+            onClick={() => setIsSourceSelectorOpen(true)}
+            title="Change Screen Source"
+          >
+            <Monitor className="h-4 w-4" />
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="icon" className={buttonClass} title="Display Mode">
+                <LayoutTemplate className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="z-[999] bg-background">
+              {["fit", "fill", "stretch", "center", "span"].map((mode) => (
+                <DropdownMenuItem
+                  key={mode}
+                  onClick={() =>
+                    onSectionContentChange &&
+                    onSectionContentChange(section.id, {
+                      ...content,
+                      displayMode: mode as any,
+                    })
+                  }
+                  className="capitalize"
+                >
+                  {mode}
+                  {content.displayMode === mode && <Check className="w-3 h-3 ml-auto" />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
       )}
 
       {content.type === "file" && availableFiles.length > 0 && onFileSelect && (
@@ -273,6 +315,21 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
           <MinusCircle className="h-4 w-4" />
         </Button>
       )}
+
+      <ScreenSourceSelector
+        isOpen={isSourceSelectorOpen}
+        onOpenChange={setIsSourceSelectorOpen}
+        onSelect={(sourceId) => {
+          if (onSectionContentChange) {
+            onSectionContentChange(section.id, {
+              ...content,
+              type: "screen",
+              sourceId,
+            });
+          }
+          setIsSourceSelectorOpen(false);
+        }}
+      />
     </div>
   );
 };

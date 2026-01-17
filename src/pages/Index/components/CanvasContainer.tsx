@@ -116,6 +116,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     videoDevices,
     selectedVideoDevice,
     setSelectedVideoDevice,
+    selectedScreenSourceId,
+    setSelectedScreenSourceId,
     screenShareMode,
     setScreenShareMode,
   } = useMediaStore(
@@ -130,6 +132,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       videoDevices: state.videoDevices,
       selectedVideoDevice: state.selectedVideoDevice,
       setSelectedVideoDevice: state.setSelectedVideoDevice,
+      selectedScreenSourceId: state.selectedScreenSourceId,
+      setSelectedScreenSourceId: state.setSelectedScreenSourceId,
       screenShareMode: state.screenShareMode,
       setScreenShareMode: state.setScreenShareMode,
     }))
@@ -336,59 +340,60 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   // Construct activeScene
   const activeScene = useMemo(
     () =>
-      ({
-        id: "default-scene",
-        name: "Main Scene",
-        isAudioOn,
-        isVideoOn,
-        audioDevices,
-        videoDevices,
-        selectedAudioDevice,
-        selectedVideoDevice,
-        screenShareMode,
-        layoutMode,
-        cameraShape,
-        splitRatio,
-        pipPosition,
-        pipSize,
-        customMaskUrl,
-        activeOverlays,
-        textOverlays,
-        fileOverlays,
-        browserOverlays,
-        canvasLayout,
-        backgroundEffect,
-        backgroundImageUrl,
-        blankCanvasColor,
-        videoFilter,
-        captionStyle,
-        dynamicStyle,
-        isAiModeEnabled,
-        captionsEnabled,
-        previousScene,
-        // Add new props to activeScene
-        pipRotation,
-        pipBorder,
-        pipShadow,
-        cameraAspectRatio,
-        customAspectRatio,
-        activeInteractiveFilter,
-        filterIntensity,
-        filterColor,
-        filterTarget,
-        isAutoFramingEnabled,
-        isBeautifyEnabled,
-        isLowLightEnabled,
-        isNeonEdgeEnabled,
-        neonIntensity,
-        neonColor,
-        cameraBackground,
-        customBackgroundUrl,
-        zoomSensitivity,
-        trackingSpeed,
-        isFaceTrackingEnabled,
-        canvasAspectRatio,
-      } as any),
+    ({
+      id: "default-scene",
+      name: "Main Scene",
+      isAudioOn,
+      isVideoOn,
+      audioDevices,
+      videoDevices,
+      selectedAudioDevice,
+      selectedVideoDevice,
+      selectedScreenSourceId,
+      screenShareMode,
+      layoutMode,
+      cameraShape,
+      splitRatio,
+      pipPosition,
+      pipSize,
+      customMaskUrl,
+      activeOverlays,
+      textOverlays,
+      fileOverlays,
+      browserOverlays,
+      canvasLayout,
+      backgroundEffect,
+      backgroundImageUrl,
+      blankCanvasColor,
+      videoFilter,
+      captionStyle,
+      dynamicStyle,
+      isAiModeEnabled,
+      captionsEnabled,
+      previousScene,
+      // Add new props to activeScene
+      pipRotation,
+      pipBorder,
+      pipShadow,
+      cameraAspectRatio,
+      customAspectRatio,
+      activeInteractiveFilter,
+      filterIntensity,
+      filterColor,
+      filterTarget,
+      isAutoFramingEnabled,
+      isBeautifyEnabled,
+      isLowLightEnabled,
+      isNeonEdgeEnabled,
+      neonIntensity,
+      neonColor,
+      cameraBackground,
+      customBackgroundUrl,
+      zoomSensitivity,
+      trackingSpeed,
+      isFaceTrackingEnabled,
+      canvasAspectRatio,
+    } as any),
     [
       isAudioOn,
       isVideoOn,
@@ -396,6 +401,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       videoDevices,
       selectedAudioDevice,
       selectedVideoDevice,
+      selectedScreenSourceId,
       screenShareMode,
       layoutMode,
       cameraShape,
@@ -461,6 +467,11 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         newScene.selectedVideoDevice
       )
         setSelectedVideoDevice(newScene.selectedVideoDevice);
+      if (
+        newScene.selectedScreenSourceId !== activeScene.selectedScreenSourceId &&
+        newScene.selectedScreenSourceId
+      )
+        setSelectedScreenSourceId(newScene.selectedScreenSourceId);
       if (newScene.screenShareMode !== activeScene.screenShareMode)
         setScreenShareMode(newScene.screenShareMode ?? "off");
 
@@ -619,6 +630,9 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         case "selectedVideoDevice":
           setSelectedVideoDevice(value);
           break;
+        case "selectedScreenSourceId":
+          setSelectedScreenSourceId(value);
+          break;
         case "screenShareMode":
           setScreenShareMode(value);
           break;
@@ -748,6 +762,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       setSelectedAudioDevice,
       setSelectedVideoDevice,
       setScreenShareMode,
+      setSelectedScreenSourceId,
       setLayoutMode,
       setCameraShape,
       setSplitRatio,
@@ -826,7 +841,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   const { isProcessingAi, processTranscript } = useCanvasAi({
     activeScene,
     updateActiveScene,
-    setSavedOverlays: () => {},
+    setSavedOverlays: () => { },
   });
 
   const bannerLogic = useCanvasBanners({
@@ -902,7 +917,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         { ...overlay, id: generateId("overlay") },
       ]);
     },
-    onDeleteSavedOverlay: (id: string) => {},
+    onDeleteSavedOverlay: (id: string) => { },
     onBannerTextStyleChange: bannerLogic.handleBannerTextStyleChange,
     onBannerTextClose: bannerLogic.onBannerTextClose,
   };
@@ -948,7 +963,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     activeSceneProps.sidebarProps.onAddAnimatedBanner =
       bannerLogic.handleAddAnimatedBanner;
     // @ts-ignore
-    activeSceneProps.sidebarProps.onAddTextOverlay = () => {};
+    activeSceneProps.sidebarProps.onAddTextOverlay = () => { };
   }
 
   return (
@@ -975,9 +990,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       />
 
       <div
-        className={`fixed top-6 left-6 z-[2015] transition-opacity duration-300 ${
-          isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed top-6 left-6 z-[2015] transition-opacity duration-300 ${isMouseActive ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
       >
         <FloatingLogo />
       </div>

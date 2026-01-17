@@ -8,6 +8,7 @@ interface UseVideoStreamsProps {
   isScreenSharing: boolean;
   selectedCameraDevice?: string;
   selectedAudioDevice?: string;
+  selectedScreenSourceId?: string; // ADDED
   onScreenShareEnd: () => void;
   remoteStream?: MediaStream | null;
 }
@@ -18,6 +19,7 @@ export const useVideoStreams = ({
   isScreenSharing,
   selectedCameraDevice,
   selectedAudioDevice,
+  selectedScreenSourceId, // ADDED
   onScreenShareEnd,
   remoteStream,
 }: UseVideoStreamsProps) => {
@@ -124,19 +126,53 @@ export const useVideoStreams = ({
 
   // --- Screen Share Logic ---
   useEffect(() => {
-    if (isScreenSharing && !screenStream && !isRequestingScreen.current) {
+    // Determine if we need to switch sources
+    const hasSourceChanged = activeScreenStreamRef.current &&
+      (activeScreenStreamRef.current as any)._sourceId !== selectedScreenSourceId;
+
+    if (hasSourceChanged) {
+      console.log("Source changed, stopping old stream...");
+      if (activeScreenStreamRef.current) {
+        stopTracks(activeScreenStreamRef.current);
+        activeScreenStreamRef.current = null;
+        setScreenStream(null);
+      }
+      isRequestingScreen.current = false; // Reset requesting flag to allow new request
+    }
+
+    // CHANGE: require selectedScreenSourceId if trying to share
+    if (isScreenSharing && (!screenStream || hasSourceChanged) && !isRequestingScreen.current) {
+      // If no source ID, wait for selection
+      if (!selectedScreenSourceId) {
+        // console.log("Waiting for screen source selection..."); // reduce log spam
+        return;
+      }
+
       isRequestingScreen.current = true;
       const getScreenStream = async () => {
         try {
-          const stream = await navigator.mediaDevices.getDisplayMedia({
+          const constraints = {
+            audio: isAudioOn ? {
+              mandatory: {
+                chromeMediaSource: 'desktop'
+              }
+            } : false,
             video: {
-              width: { ideal: 1920 },
-              height: { ideal: 1080 },
-              frameRate: 30,
-            },
-            audio: isAudioOn,
-          });
-          console.log("✅ Screen stream attached");
+              mandatory: {
+                chromeMediaSource: 'desktop',
+                chromeMediaSourceId: selectedScreenSourceId,
+                maxWidth: 1920,
+                maxHeight: 1080,
+                maxFrameRate: 30
+              }
+            }
+          } as any;
+
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          console.log("✅ Screen stream attached via sourceId:", selectedScreenSourceId);
+
+          // Tag the stream with the source ID so we know what it is
+          (stream as any)._sourceId = selectedScreenSourceId;
 
           const videoTrack = stream.getVideoTracks()[0];
           videoTrack.onended = () => {
@@ -168,7 +204,7 @@ export const useVideoStreams = ({
       }
       setScreenStream(null);
     }
-  }, [isScreenSharing, onScreenShareEnd, stopTracks, isAudioOn, screenStream]);
+  }, [isScreenSharing, onScreenShareEnd, stopTracks, isAudioOn, screenStream, selectedScreenSourceId]);
 
   // --- Cleanup on Unmount ---
   useEffect(() => {
