@@ -27,8 +27,17 @@ class StreamService {
   private audioContext: AudioContext | null = null;
   private audioDestination: MediaStreamAudioDestinationNode | null = null;
 
+  // Internal Pipeline (The "Mixer")
+  // We use an intermediate canvas to ensure the stream never "breaks" 
+  // when we switch input sources (e.g. from Screen -> App Window)
+  private canvas: HTMLCanvasElement | null = null;
+  private ctx: CanvasRenderingContext2D | null = null;
+  private videoElement: HTMLVideoElement | null = null;
+  private animationFrameId: number | null = null;
+  private unsubMediaStore: (() => void) | null = null;
+
   // Refs to source streams for cleanup
-  private sourceStream: MediaStream | null = null;
+  private currentVideoSource: MediaStream | null = null;
   private micStream: MediaStream | null = null;
 
   // State flags
@@ -39,7 +48,7 @@ class StreamService {
   private verifyingTimers = new Map<string, NodeJS.Timeout>();
   private retryCounts = new Map<string, number>();
   private MAX_RETRIES = 3;
-  private isIntentionalStop = false; // Track if user explicitly stopped the stream
+  private isIntentionalStop = false;
 
   private constructor() {
     // Singleton
@@ -61,10 +70,17 @@ class StreamService {
 
     console.log("[StreamService] Starting Pipeline...");
 
-    // 1. Get Visual Source (Screen/Window)
-    this.sourceStream = await this.getSourceStream();
+    // 1. Initialize the Mixer (Canvas + Video Element)
+    this.initMixer();
 
-    // 2. Get Mic Audio
+    // 2. Start Source Management (Auto-Switching logic)
+    // This will fetch the initial video source (Screen or App)
+    await this.updateVideoSource();
+
+    // Start listening for state changes to trigger switches
+    this.startObservingState();
+
+    // 3. Get Mic Audio
     try {
       this.micStream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -78,33 +94,78 @@ class StreamService {
       console.warn("[StreamService] Mic access denied or not found", e);
     }
 
-    // 3. Audio Mixing
+    // 4. Audio Mixing Setup
     this.audioContext = new AudioContext();
     this.audioDestination = this.audioContext.createMediaStreamDestination();
     this.mixAudioSources();
 
-    // 4. Combine
-    const videoTracks = this.sourceStream.getVideoTracks();
+    // 5. Create the Final Output Stream from the Mixer Canvas
+    // This 'activeStream' is what gets sent to RTMP/Recording
+    if (!this.canvas) throw new Error("Canvas mixer failed to initialize");
+
+    const canvasStream = this.canvas.captureStream(30);
+    const videoTracks = canvasStream.getVideoTracks();
     const audioTracks = this.audioDestination.stream.getAudioTracks();
 
     this.activeStream = new MediaStream([...videoTracks, ...audioTracks]);
     this.isPipelineActive = true;
 
-    // Handle Source Ending (e.g. user stops sharing)
-    videoTracks[0].onended = () => {
-      console.log("[StreamService] Source track ended. Stopping pipeline.");
-      this.stopStreaming();
-    };
+    // Start the render loop to paint video -> canvas
+    this.startRenderLoop();
 
     return this.activeStream;
   }
 
-  private async getSourceStream(): Promise<MediaStream> {
-    const isElectron = !!(window as ElectronWindow).electron;
+  /**
+   * Creates the invisible HTML elements needed to mix the video
+   */
+  private initMixer() {
+    // Create an invisible canvas to act as our stable stream source
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = 1920;
+    this.canvas.height = 1080;
+    this.ctx = this.canvas.getContext("2d", { alpha: false });
 
-    if (isElectron) {
-      try {
-        const currentMode = useMediaStore.getState().screenShareMode;
+    // Create a video element to play the incoming source (Screen or App)
+    this.videoElement = document.createElement("video");
+    this.videoElement.muted = true; // Prevent feedback loop
+    this.videoElement.autoplay = true;
+    this.videoElement.playsInline = true;
+    this.videoElement.style.display = "none";
+    document.body.appendChild(this.videoElement);
+  }
+
+  /**
+   * Listens to the MediaStore. When 'screenShareMode' changes (User shares screen),
+   * we trigger the logic to swap the video source.
+   */
+  private startObservingState() {
+    if (this.unsubMediaStore) this.unsubMediaStore();
+
+    this.unsubMediaStore = useMediaStore.subscribe(
+      (state, prevState) => {
+        if (state.screenShareMode !== prevState.screenShareMode) {
+          console.log("[StreamService] Screen share mode changed. Updating source...");
+          // We add a small delay to ensure windows have resized/focused
+          setTimeout(() => this.updateVideoSource(), 500);
+        }
+      }
+    );
+  }
+
+  /**
+   * THE CORE LOGIC: Determines whether to capture "Raw Screen" or "App Window"
+   */
+  private async updateVideoSource() {
+    try {
+      const isElectron = !!(window as ElectronWindow).electron;
+      const mediaStore = useMediaStore.getState();
+      const isSharingInternally = mediaStore.screenShareMode !== "off";
+
+      let newStream: MediaStream | null = null;
+
+      if (isElectron) {
+        // --- ELECTRON LOGIC (Automatic) ---
         const electron = (window as ElectronWindow).electron!;
         const sources = await electron.getDesktopSources({
           types: ["window", "screen"],
@@ -112,28 +173,27 @@ class StreamService {
 
         let selectedSource: any = null;
 
-        if (currentMode === "off") {
-          selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
-        } else {
+        if (isSharingInternally) {
+          // CASE 1: User is sharing content -> Capture the APP WINDOW
+          // This allows us to show the "OBS-like" layout
+          console.log("[StreamService] Mode: Internal Share Active -> Target: App Window");
           selectedSource = sources.find(
             (s: any) =>
-              s.name.includes("caption-cam") || s.name.includes("GAKI")
+              s.name.includes("caption-cam") ||
+              s.name.includes("GAKI") ||
+              s.name.includes("Vite + React")
           );
         }
 
         if (!selectedSource) {
+          // CASE 2: User is NOT sharing (or App not found) -> Capture RAW SCREEN
+          console.log("[StreamService] Mode: Default -> Target: Raw Screen");
           selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
         }
 
         if (selectedSource) {
-          return await navigator.mediaDevices.getUserMedia({
-            audio: {
-              // @ts-ignore
-              mandatory: {
-                chromeMediaSource: "desktop",
-                chromeMediaSourceId: selectedSource.id,
-              },
-            },
+          newStream = await navigator.mediaDevices.getUserMedia({
+            audio: false, // Audio handled by mixer
             video: {
               // @ts-ignore
               mandatory: {
@@ -148,20 +208,85 @@ class StreamService {
             },
           } as any);
         }
-      } catch (e) {
-        console.error("[StreamService] Electron Capture Failed", e);
+      } else {
+        // --- WEB LOGIC (Manual/Fallback) ---
+        // On Web, we cannot swap sources without a popup.
+        // If we don't have a stream yet, we ask for "Entire Screen".
+        // If we already have one, we keep it (seamless).
+        if (!this.currentVideoSource) {
+          console.log("[StreamService] Web Mode: Requesting Display Media");
+          newStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { width: 1920, height: 1080 },
+            audio: false,
+          });
+        } else {
+          // Keep existing stream
+          return;
+        }
       }
-    }
 
-    return await navigator.mediaDevices.getDisplayMedia({
-      video: { width: 1920, height: 1080 },
-      audio: true,
-    });
+      // Apply the new stream to our mixer
+      if (newStream) {
+        // 1. Stop old tracks
+        if (this.currentVideoSource) {
+          this.currentVideoSource.getTracks().forEach(t => t.stop());
+        }
+
+        this.currentVideoSource = newStream;
+
+        // 2. Handle stream ending (User clicks "Stop Sharing" in system UI)
+        newStream.getVideoTracks()[0].onended = () => {
+          console.log("[StreamService] Source track ended externally.");
+          this.stopStreaming();
+        };
+
+        // 3. Play stream in hidden video element (which feeds the canvas)
+        if (this.videoElement) {
+          this.videoElement.srcObject = newStream;
+          await this.videoElement.play().catch(e => console.error("Video play failed", e));
+        }
+
+        // 4. Re-mix audio (in case new source has system audio)
+        this.mixAudioSources();
+      }
+
+    } catch (e) {
+      console.error("[StreamService] Failed to update video source", e);
+      notify.error("Failed to switch stream source");
+    }
+  }
+
+  /**
+   * Renders the video element onto the canvas at 30/60fps.
+   * This is what creates the seamless stream.
+   */
+  private startRenderLoop() {
+    const loop = () => {
+      if (!this.isPipelineActive) return;
+
+      if (this.ctx && this.videoElement && this.canvas) {
+        // Draw Black Background
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Draw Video Source
+        if (this.videoElement.readyState >= 2) { // HAVE_CURRENT_DATA
+          this.ctx.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height);
+        }
+      }
+
+      this.animationFrameId = requestAnimationFrame(loop);
+    };
+    loop();
   }
 
   private mixAudioSources() {
     if (!this.audioContext || !this.audioDestination) return;
 
+    // Resetting context connections is complex, so we just append.
+    // In a production app, you might want to disconnect old nodes first.
+
+    // 1. Mic Input
     if (this.micStream && this.micStream.getAudioTracks().length > 0) {
       const source = this.audioContext.createMediaStreamSource(this.micStream);
       const gain = this.audioContext.createGain();
@@ -170,10 +295,9 @@ class StreamService {
       gain.connect(this.audioDestination);
     }
 
-    if (this.sourceStream && this.sourceStream.getAudioTracks().length > 0) {
-      const source = this.audioContext.createMediaStreamSource(
-        this.sourceStream
-      );
+    // 2. System Audio (from the captured screen/window)
+    if (this.currentVideoSource && this.currentVideoSource.getAudioTracks().length > 0) {
+      const source = this.audioContext.createMediaStreamSource(this.currentVideoSource);
       const gain = this.audioContext.createGain();
       gain.gain.value = 0.8;
       source.connect(gain);
@@ -181,13 +305,11 @@ class StreamService {
     }
   }
 
-  // --- 2. STREAMING LOGIC ---
+  // --- 2. STREAMING CONNECTION LOGIC ---
 
   public async startStreaming(targets: any[]) {
     try {
-      // Reset the intentional stop flag when starting a new stream
       this.isIntentionalStop = false;
-
       useStreamStore.getState().setConnecting(true);
       useStreamStore.getState().setStreamStatus("Initializing...");
 
@@ -238,7 +360,7 @@ class StreamService {
       }
     };
 
-    this.mediaRecorder.start(1000);
+    this.mediaRecorder.start(1000); // Send chunks every 1s
     return mimeType;
   }
 
@@ -321,7 +443,6 @@ class StreamService {
   }
 
   private startVerification(id: string) {
-    // Immediate UI update
     useStreamStore.getState().setDestinationStatus(id, "starting");
     useStreamStore.getState().setStreamStatus("Verifying Connection...");
 
@@ -330,22 +451,15 @@ class StreamService {
     }
 
     const timer = setTimeout(() => {
-      // FIX: Get FRESH state inside the timeout callback
       const store = useStreamStore.getState();
-
       const currentDest = store.destinations.find((d) => d.id === id);
 
-      // If we are still starting (didn't error out or stop)
       if (currentDest && currentDest.status === "starting") {
         console.log(`[StreamService] Verification passed for ${id}`);
-
-        // Update status in store
         store.setDestinationStatus(id, "connected");
         this.retryCounts.set(id, 0);
 
-        // FIX: Get FRESH state AGAIN to verify "allConnected" against the update we just made
         const updatedStore = useStreamStore.getState();
-
         const allConnected = updatedStore.destinations
           .filter((d) => d.enabled)
           .every((d) => d.status === "connected" || d.status === "live");
@@ -409,18 +523,16 @@ class StreamService {
         }, retryDelay);
       }
     } else {
-      // 3. FINAL FAILURE -> TRIGGER FATAL ERROR DIALOG
+      // 3. FINAL FAILURE
       console.error(`[StreamService] Max retries exceeded for ${id}`);
       store.setDestinationStatus(id, "error", errorMsg);
       store.setStreamStatus("Connection Failed");
       store.setConnecting(false);
       store.setBroadcasting(false);
 
-      // TRIGGER THE DIALOG
       if (store.setFatalError) {
         store.setFatalError(errorMsg);
       } else {
-        // Fallback if setFatalError isn't in store yet
         notify.error("Critical Stream Error: " + errorMsg);
       }
     }
@@ -457,8 +569,6 @@ class StreamService {
 
   public stopStreaming(specificId?: string) {
     console.log("[StreamService] Stop Streaming:", specificId || "ALL");
-
-    // Set flag to prevent retry logic from triggering
     this.isIntentionalStop = true;
 
     if (this.countdownInterval) {
@@ -496,24 +606,38 @@ class StreamService {
       );
     }
 
-    // Reset the flag after a short delay to allow for any pending status updates
     setTimeout(() => {
       this.isIntentionalStop = false;
     }, 1000);
   }
 
   private cleanupPipeline() {
-    this.activeStream?.getTracks().forEach((t) => t.stop());
-    this.sourceStream?.getTracks().forEach((t) => t.stop());
-    this.micStream?.getTracks().forEach((t) => t.stop());
-    this.audioContext?.close();
+    this.isPipelineActive = false;
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+    if (this.unsubMediaStore) this.unsubMediaStore();
 
+    // Stop internal mixer sources
+    this.activeStream?.getTracks().forEach((t) => t.stop());
+    this.currentVideoSource?.getTracks().forEach((t) => t.stop());
+    this.micStream?.getTracks().forEach((t) => t.stop());
+
+    // Clean up DOM elements
+    if (this.videoElement) {
+      this.videoElement.pause();
+      this.videoElement.srcObject = null;
+      this.videoElement.remove();
+      this.videoElement = null;
+    }
+    if (this.canvas) {
+      this.canvas = null;
+    }
+
+    this.audioContext?.close();
     this.activeStream = null;
-    this.sourceStream = null;
+    this.currentVideoSource = null;
     this.micStream = null;
     this.audioContext = null;
     this.audioDestination = null;
-    this.isPipelineActive = false;
   }
 
   // --- Utils ---
