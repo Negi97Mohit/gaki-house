@@ -55,15 +55,18 @@ interface FloatingControlsPanelProps {
   onDeleteCanvasPreset?: (id: string) => void;
   publicPresets?: CanvasPreset[];
   isLoadingPublic?: boolean;
-  onShareCanvasPreset?: (preset: CanvasPreset | string, authorName?: string) => void;
+  onShareCanvasPreset?: (
+    preset: CanvasPreset | string,
+    authorName?: string,
+  ) => void;
   onUnshareCanvasPreset?: (preset: CanvasPreset | string) => void;
   onAddSocialBanner?: (
     design: SocialBannerDesign,
-    data: SocialBannerData
+    data: SocialBannerData,
   ) => void;
   onAddAnimatedBanner?: (
     design: AnimatedBannerDesign,
-    data: SocialBannerData
+    data: SocialBannerData,
   ) => void;
 
   // New props for moved buttons
@@ -74,10 +77,13 @@ interface FloatingControlsPanelProps {
   portalContainer?: HTMLElement | null;
   onSelectGSAPPreset?: (preset: GSAPPreset) => void;
   selectedGSAPPresetId?: string;
-  
+
   // Vault props
   vaultFiles?: VaultFile[];
-  onAddVaultFiles?: (files: FileList | File[], source: VaultFile['source']) => void;
+  onAddVaultFiles?: (
+    files: FileList | File[],
+    source: VaultFile["source"],
+  ) => void;
   onRemoveVaultFile?: (id: string) => void;
   onClearVault?: () => void;
 }
@@ -96,7 +102,9 @@ const sections = [
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
   const isOpen = props.isOpen;
   const closePanel = props.onClose;
-  const [activeSection, setActiveSection] = useState<string | null>("canvas-designs");
+  const [activeSection, setActiveSection] = useState<string | null>(
+    "canvas-designs",
+  );
   const [isHovered, setIsHovered] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -133,8 +141,8 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         "shadow-2xl shadow-black/10 dark:shadow-black/40",
         "transition-all duration-300 ease-out flex",
         isOpen && (props.isMouseActive || isHovered)
-          ? "opacity-100 translate-y-0 pointer-events-auto"
-          : "opacity-0 translate-y-4 pointer-events-none"
+          ? "opacity-100 translate-y-0 pointer-events-auto visible" // Added visible
+          : "opacity-0 translate-y-4 pointer-events-none invisible", // Added invisible
       )}
       style={{
         zIndex: "var(--z-floating-panel)",
@@ -150,33 +158,39 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         {sections.map((section) => {
           const Icon = section.icon;
           const isActive = activeSection === section.id;
-          
+
           return (
             <button
               key={section.id}
-              onClick={() => setActiveSection(prev => prev === section.id ? null : section.id)}
+              onClick={() =>
+                setActiveSection((prev) =>
+                  prev === section.id ? null : section.id,
+                )
+              }
               className={cn(
                 "group relative w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200",
                 isActive
                   ? "bg-primary/15 text-primary"
-                  : "text-muted-foreground/60 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5"
+                  : "text-muted-foreground/60 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5",
               )}
               title={section.label}
             >
               <Icon className="w-4 h-4" strokeWidth={1.5} />
-              
+
               {/* Active indicator */}
               {isActive && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" />
               )}
-              
+
               {/* Tooltip */}
-              <div className={cn(
-                "absolute left-full ml-2 px-2 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap",
-                "bg-foreground text-background dark:bg-white dark:text-black",
-                "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100",
-                "transition-all duration-150 pointer-events-none"
-              )}>
+              <div
+                className={cn(
+                  "absolute left-full ml-2 px-2 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap",
+                  "bg-foreground text-background dark:bg-white dark:text-black",
+                  "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100",
+                  "transition-all duration-150 pointer-events-none",
+                )}
+              >
                 {section.label}
               </div>
             </button>
@@ -188,7 +202,9 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       <div className="relative flex flex-col w-[380px] h-full">
         {/* Minimal Header - just close button */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-border/10 dark:border-white/5">
-          <span className="text-[10px] font-medium text-muted-foreground/70">{activeTab?.label}</span>
+          <span className="text-[10px] font-medium text-muted-foreground/70">
+            {activeTab?.label}
+          </span>
           <button
             onClick={closePanel}
             className="w-5 h-5 flex items-center justify-center rounded-lg text-muted-foreground/40 hover:text-foreground hover:bg-foreground/5 transition-all"
@@ -198,7 +214,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4" style={{ scrollbarWidth: 'none' }}>
+        <div
+          className="flex-1 overflow-y-auto p-4"
+          style={{ scrollbarWidth: "none" }}
+        >
           {activeSection === "canvas-designs" && (
             <CanvasDesignsPanel
               onCanvasPresetSelect={props.onCanvasPresetSelect}
@@ -213,12 +232,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
           )}
 
           {activeSection === "animation-library" && (
-            <GSAPAnimationsPanel 
+            <GSAPAnimationsPanel
               onSelectPreset={props.onSelectGSAPPreset || (() => {})}
               selectedPresetId={props.selectedGSAPPresetId}
             />
           )}
-          
+
           {activeSection === "text-presets" && (
             <TextPresetsPanel
               style={props.style}
@@ -243,26 +262,31 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
             />
           )}
 
-          {activeSection === "file-vault" && props.vaultFiles && props.onAddVaultFiles && props.onRemoveVaultFile && props.onClearVault && (
-            <FileVaultPanel
-              files={props.vaultFiles}
-              onAddFiles={props.onAddVaultFiles}
-              onRemoveFile={props.onRemoveVaultFile}
-              onClearVault={props.onClearVault}
-            />
-          )}
+          {activeSection === "file-vault" &&
+            props.vaultFiles &&
+            props.onAddVaultFiles &&
+            props.onRemoveVaultFile &&
+            props.onClearVault && (
+              <FileVaultPanel
+                files={props.vaultFiles}
+                onAddFiles={props.onAddVaultFiles}
+                onRemoveFile={props.onRemoveVaultFile}
+                onClearVault={props.onClearVault}
+              />
+            )}
 
-          {activeSection === "tools" && props.onAddTextOverlay && props.onAssetSelect && props.setIsDrawing && (
-            <ToolsPanel
-              onAddTextOverlay={props.onAddTextOverlay}
-              onAssetSelect={props.onAssetSelect}
-              setIsDrawing={props.setIsDrawing}
-            />
-          )}
+          {activeSection === "tools" &&
+            props.onAddTextOverlay &&
+            props.onAssetSelect &&
+            props.setIsDrawing && (
+              <ToolsPanel
+                onAddTextOverlay={props.onAddTextOverlay}
+                onAssetSelect={props.onAssetSelect}
+                setIsDrawing={props.setIsDrawing}
+              />
+            )}
 
-          {activeSection === "settings" && (
-            <SettingsPanel />
-          )}
+          {activeSection === "settings" && <SettingsPanel />}
         </div>
       </div>
     </div>
