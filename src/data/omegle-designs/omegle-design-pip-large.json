@@ -1,0 +1,88 @@
+{
+    "id": "omegle-pip-large",
+    "name": "PiP Large",
+    "description": "Stranger fullscreen with you in bottom-right corner",
+    "styleTags": [
+        "omegle",
+        "pip",
+        "immersive",
+        "focus"
+    ],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#000000",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "size": {
+                "width": 75,
+                "height": 100
+            },
+            "zIndex": 1
+        },
+        "localVideo": {
+            "position": {
+                "x": 76,
+                "y": 72
+            },
+            "size": {
+                "width": 22,
+                "height": 26
+            },
+            "zIndex": 3,
+            "mirror": true,
+            "shape": "rounded",
+            "borderRadius": 16,
+            "border": {
+                "color": "rgba(255, 255, 255, 0.2)",
+                "width": 2
+            },
+            "shadow": {
+                "blur": 20,
+                "color": "rgba(0, 0, 0, 0.6)"
+            }
+        },
+        "chatBox": {
+            "position": {
+                "x": 75,
+                "y": 0
+            },
+            "size": {
+                "width": 25,
+                "height": 70
+            },
+            "zIndex": 2,
+            "style": {
+                "backgroundColor": "rgba(15, 15, 15, 0.85)",
+                "backdropFilter": "blur(20px)",
+                "borderLeft": "1px solid rgba(255, 255, 255, 0.08)"
+            }
+        },
+        "controls": {
+            "position": "top-left",
+            "zIndex": 10,
+            "style": {
+                "backgroundColor": "rgba(0, 0, 0, 0.5)",
+                "backdropFilter": "blur(10px)",
+                "padding": "8px",
+                "borderRadius": "12px",
+                "margin": "12px"
+            }
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.08) contrast(1.1) saturate(1.05)",
+        "transition": "slide-left",
+        "transitionDuration": 400
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 13,
+        "color": "#E5E5E5"
+    }
+}

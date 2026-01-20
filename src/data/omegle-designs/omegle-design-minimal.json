@@ -1,0 +1,113 @@
+{
+    "id": "omegle-minimal",
+    "name": "Minimal",
+    "description": "Maximum video space with floating chat bubbles",
+    "styleTags": [
+        "omegle",
+        "minimal",
+        "clean",
+        "immersive"
+    ],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#000000",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "size": {
+                "width": 100,
+                "height": 100
+            },
+            "zIndex": 1
+        },
+        "localVideo": {
+            "position": {
+                "x": 85,
+                "y": 5
+            },
+            "size": {
+                "width": 12,
+                "height": 16
+            },
+            "zIndex": 3,
+            "mirror": true,
+            "shape": "circle",
+            "border": {
+                "color": "rgba(255, 255, 255, 0.25)",
+                "width": 2
+            },
+            "shadow": {
+                "blur": 25,
+                "color": "rgba(0, 0, 0, 0.7)"
+            }
+        },
+        "chatBox": {
+            "position": {
+                "x": 5,
+                "y": 75
+            },
+            "size": {
+                "width": 40,
+                "height": 8
+            },
+            "zIndex": 2,
+            "floating": true,
+            "collapsible": true,
+            "expandOnNewMessage": true,
+            "expandedSize": {
+                "width": 45,
+                "height": 30
+            },
+            "autoCollapseDelay": 5000,
+            "style": {
+                "backgroundColor": "rgba(0, 0, 0, 0.7)",
+                "backdropFilter": "blur(25px)",
+                "border": "1px solid rgba(255, 255, 255, 0.08)",
+                "borderRadius": "20px",
+                "padding": "12px"
+            }
+        },
+        "controls": {
+            "position": "bottom-center",
+            "zIndex": 10,
+            "autoHide": true,
+            "autoHideDelay": 2500,
+            "showOnHover": true,
+            "style": {
+                "backgroundColor": "rgba(0, 0, 0, 0.5)",
+                "backdropFilter": "blur(15px)",
+                "padding": "10px 20px",
+                "borderRadius": "30px",
+                "margin": "0 auto 20px"
+            }
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.1) contrast(1.08)",
+        "transition": "fade",
+        "transitionDuration": 250
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 13,
+        "color": "#FFFFFF",
+        "lineHeight": 1.5
+    },
+    "animations": {
+        "chatBubbleEntry": {
+            "type": "slide-up",
+            "duration": 200,
+            "easing": "ease-out"
+        },
+        "chatBubbleExit": {
+            "type": "fade-out",
+            "duration": 150,
+            "easing": "ease-in"
+        }
+    }
+}

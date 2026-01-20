@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SlidersHorizontal, Expand, Shrink, Download } from "lucide-react";
+import { SlidersHorizontal, Expand, Shrink, Download, Users } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -33,6 +33,7 @@ interface BottomNavigationProps {
   onResetScene: () => void;
   onToggleFullscreen?: () => void;
   onConnectRemote?: () => void; // New prop
+  onToggleOmegle?: () => void; // Omegle mode prop
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -53,6 +54,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onResetScene,
   onToggleFullscreen,
   onConnectRemote, // Destructure
+  onToggleOmegle, // Destructure Omegle handler
 }) => {
   const { isMouseActive, isFullscreen, setFullscreen, setShowSettings } =
     useUiStore(
@@ -181,6 +183,23 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             isConnecting={isStreamConnecting}
             isBroadcasting={isStreamBroadcasting}
           />
+
+          <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
+
+          {/* Omegle Mode Button */}
+          {onToggleOmegle && (
+            <ShortcutTooltip label="Random Chat (Omegle)">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
+                onClick={onToggleOmegle}
+                data-floating-trigger
+              >
+                <Users className="w-3.5 h-3.5" />
+              </Button>
+            </ShortcutTooltip>
+          )}
 
           <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 

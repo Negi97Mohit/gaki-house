@@ -1,0 +1,70 @@
+{
+    "id": "omegle-split-view",
+    "name": "Split View",
+    "description": "Equal vertical split with stranger on left, you on right",
+    "styleTags": [
+        "omegle",
+        "split",
+        "balanced",
+        "modern"
+    ],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#0F0F0F",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "size": {
+                "width": 50,
+                "height": 70
+            },
+            "zIndex": 1
+        },
+        "localVideo": {
+            "position": {
+                "x": 50,
+                "y": 0
+            },
+            "size": {
+                "width": 50,
+                "height": 70
+            },
+            "zIndex": 1,
+            "mirror": true
+        },
+        "chatBox": {
+            "position": {
+                "x": 0,
+                "y": 70
+            },
+            "size": {
+                "width": 100,
+                "height": 30
+            },
+            "zIndex": 2,
+            "style": {
+                "backgroundColor": "rgba(15, 15, 15, 0.95)",
+                "borderTop": "1px solid rgba(255, 255, 255, 0.1)"
+            }
+        },
+        "controls": {
+            "position": "top-right",
+            "zIndex": 10
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.05) contrast(1.05)",
+        "transition": "fade",
+        "transitionDuration": 300
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}

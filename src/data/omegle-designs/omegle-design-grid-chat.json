@@ -1,0 +1,98 @@
+{
+    "id": "omegle-grid-chat",
+    "name": "Grid Chat",
+    "description": "Equal video grid with prominent chat interface",
+    "styleTags": [
+        "omegle",
+        "grid",
+        "balanced",
+        "professional"
+    ],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#121212",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": {
+                "x": 2,
+                "y": 5
+            },
+            "size": {
+                "width": 45,
+                "height": 50
+            },
+            "zIndex": 1,
+            "shape": "rounded",
+            "borderRadius": 12,
+            "border": {
+                "color": "rgba(255, 255, 255, 0.1)",
+                "width": 2
+            }
+        },
+        "localVideo": {
+            "position": {
+                "x": 53,
+                "y": 5
+            },
+            "size": {
+                "width": 45,
+                "height": 50
+            },
+            "zIndex": 1,
+            "mirror": true,
+            "shape": "rounded",
+            "borderRadius": 12,
+            "border": {
+                "color": "rgba(59, 130, 246, 0.3)",
+                "width": 2
+            }
+        },
+        "chatBox": {
+            "position": {
+                "x": 2,
+                "y": 58
+            },
+            "size": {
+                "width": 96,
+                "height": 40
+            },
+            "zIndex": 2,
+            "style": {
+                "backgroundColor": "rgba(26, 26, 26, 0.95)",
+                "border": "1px solid rgba(255, 255, 255, 0.08)",
+                "borderRadius": "12px"
+            }
+        },
+        "controls": {
+            "position": "top-center",
+            "zIndex": 10,
+            "style": {
+                "backgroundColor": "rgba(18, 18, 18, 0.9)",
+                "backdropFilter": "blur(12px)",
+                "padding": "8px 16px",
+                "borderRadius": "12px",
+                "margin": "12px auto"
+            }
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.05) contrast(1.05)",
+        "transition": "scale",
+        "transitionDuration": 350
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF",
+        "lineHeight": 1.6
+    },
+    "theme": {
+        "primary": "#3B82F6",
+        "secondary": "#1E293B",
+        "text": "#FFFFFF",
+        "textMuted": "#94A3B8",
+        "border": "rgba(255, 255, 255, 0.08)"
+    }
+}
