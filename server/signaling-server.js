@@ -144,7 +144,7 @@ io.on("connection", (socket) => {
     }
 
     const partnerId = room.user1 === socket.id ? room.user2 : room.user1;
-    
+
     socket.to(partnerId).emit("ice-candidate", {
       candidate,
       senderId: socket.id,
@@ -160,7 +160,7 @@ io.on("connection", (socket) => {
     }
 
     const partnerId = room.user1 === socket.id ? room.user2 : room.user1;
-    
+
     // Send message to partner
     socket.to(partnerId).emit("receive-message", {
       message,
@@ -288,7 +288,7 @@ app.get("/stats", (req, res) => {
   });
 });
 
-const PORT = process.env.SIGNALING_PORT || 3001;
+const PORT = process.env.PORT || 3001;
 httpServer.listen(PORT, () => {
   console.log(`\n🎉 Omegle Signaling Server running on port ${PORT}`);
   console.log(`📊 Stats: http://localhost:${PORT}/stats`);
