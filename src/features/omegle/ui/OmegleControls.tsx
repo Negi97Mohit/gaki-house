@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { OmegleDesign } from '@/types/omegle';
 import { useOmegleStore } from '@/stores/omegle.store';
 import { getOmegleDesignNames } from '@/data/omegleDesigns';
+import { chatThemes } from '@/data/chatThemes';
 import {
     Video,
     VideoOff,
@@ -10,6 +11,7 @@ import {
     SkipForward,
     X,
     Palette,
+    MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
@@ -41,6 +43,8 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
         toggleMic,
         selectedDesign,
         setSelectedDesign,
+        selectedChatTheme,
+        setChatTheme,
     } = useOmegleStore();
 
     const [isVisible, setIsVisible] = useState(true);
@@ -191,13 +195,14 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     )}
                 </Button>
 
-                {/* Design Picker */}
+                {/* Layout Design Picker */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
                             size="sm"
                             variant="ghost"
                             className="h-8 w-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+                            title="Change Layout"
                         >
                             <Palette className="w-4 h-4" />
                         </Button>
@@ -213,6 +218,34 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                                 )}
                             >
                                 {d.name}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Chat Theme Picker */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 w-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
+                            title="Change Chat Theme"
+                        >
+                            <MessageSquare className="w-4 h-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                        {chatThemes.map((t) => (
+                            <DropdownMenuItem
+                                key={t.id}
+                                onClick={() => setChatTheme(t.id)}
+                                className={cn(
+                                    'cursor-pointer',
+                                    selectedChatTheme === t.id && 'bg-blue-600 text-white'
+                                )}
+                            >
+                                {t.name}
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>

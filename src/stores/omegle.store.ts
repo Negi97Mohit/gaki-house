@@ -34,6 +34,10 @@ interface OmegleState {
         };
     };
 
+    // Chat themes
+    selectedChatTheme: string;
+    setChatTheme: (themeId: string) => void;
+
     // Actions
     enterOmegleMode: () => void;
     exitOmegleMode: () => void;
@@ -70,6 +74,7 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     // Initial state
     isOmegleMode: false,
     selectedDesign: 'omegle-split-view',
+    selectedChatTheme: 'dark', // Default theme
     connection: initialConnection,
     messages: [],
     isCameraEnabled: true,
@@ -124,6 +129,11 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     setSelectedDesign: (designId: string) => {
         console.log('[OmegleStore] Setting design:', designId);
         set({ selectedDesign: designId });
+    },
+
+    setChatTheme: (themeId: string) => {
+        console.log('[OmegleStore] Setting chat theme:', themeId);
+        set({ selectedChatTheme: themeId });
     },
 
     setMatchStatus: (status: MatchStatus) => {
