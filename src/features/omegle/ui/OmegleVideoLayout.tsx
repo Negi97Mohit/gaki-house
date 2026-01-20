@@ -19,6 +19,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
         setZoom,
         toggleLock,
         setAspectRatio,
+        isCameraEnabled: isLocalCameraEnabled,
     } = useOmegleStore();
     const strangerVideoRef = useRef<HTMLVideoElement>(null);
     const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -27,6 +28,48 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
     // Track video positions and sizes (independent of design for now)
     const [strangerBounds, setStrangerBounds] = useState({ x: 0, y: 0, width: 0, height: 0 });
     const [localBounds, setLocalBounds] = useState({ x: 0, y: 0, width: 0, height: 0 });
+
+    // Remote camera state
+    const [isRemoteCameraEnabled, setIsRemoteCameraEnabled] = useState(true);
+
+    // Monitor remote stream track state
+    useEffect(() => {
+        if (!connection.remoteStream) {
+            setIsRemoteCameraEnabled(false);
+            return;
+        }
+
+        const videoTracks = connection.remoteStream.getVideoTracks();
+        if (videoTracks.length === 0) {
+            setIsRemoteCameraEnabled(false);
+            return;
+        }
+
+        const videoTrack = videoTracks[0];
+
+        // Initial state
+        setIsRemoteCameraEnabled(videoTrack.enabled && videoTrack.readyState === 'live');
+
+        const handleMute = () => setIsRemoteCameraEnabled(false);
+        const handleUnmute = () => setIsRemoteCameraEnabled(true);
+        const handleEnded = () => setIsRemoteCameraEnabled(false);
+
+        // Listen for track events
+        videoTrack.addEventListener('mute', handleMute);
+        videoTrack.addEventListener('unmute', handleUnmute);
+        videoTrack.addEventListener('ended', handleEnded);
+
+        // Also check periodically because some browsers don't fire mute/unmute reliably for enabled property changes
+        // But usually setting enabled=false on sender side results in black frames or 'mute' on receiver.
+        // If it sends black frames, we can't easily detect that without canvas analysis.
+        // Assuming standard WebRTC behavior where disabled track results in 'mute' or empty frames.
+
+        return () => {
+            videoTrack.removeEventListener('mute', handleMute);
+            videoTrack.removeEventListener('unmute', handleUnmute);
+            videoTrack.removeEventListener('ended', handleEnded);
+        };
+    }, [connection.remoteStream]);
 
     // Attach remote stream to stranger video element
     useEffect(() => {
@@ -78,6 +121,9 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
         return transforms.length > 0 ? transforms.join(' ') : undefined;
     };
 
+    const hasRemoteVideo = connection.remoteStream && isRemoteCameraEnabled;
+    const hasLocalVideo = connection.localStream && isLocalCameraEnabled;
+
     return (
         <div ref={containerRef} className="absolute inset-0">
             {/* Stranger's Video - Draggable */}
@@ -106,53 +152,58 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                 disableDragging={videoTransforms.stranger.locked}
                 enableResizing={!videoTransforms.stranger.locked}
             >
-                <video
-                    ref={strangerVideoRef}
-                    autoPlay
-                    playsInline
-                    className={cn(
-                        "w-full h-full object-cover",
-                        !connection.remoteStream && "hidden"
-                    )}
+                <div className="relative w-full h-full overflow-hidden"
                     style={{
                         borderRadius: strangerVideo.borderRadius ? `${strangerVideo.borderRadius}px` : undefined,
                         border: strangerVideo.border ? `${strangerVideo.border.width}px solid ${strangerVideo.border.color}` : undefined,
                         boxShadow: strangerVideo.shadow ? `0 0 ${strangerVideo.shadow.blur}px ${strangerVideo.shadow.color}` : undefined,
-                        filter: design.effects.videoFilter,
-                        objectFit: strangerVideo.objectFit || 'cover',
-                        transform: getTransformStyle('stranger'),
                     }}
-                />
+                >
+                    <video
+                        ref={strangerVideoRef}
+                        autoPlay
+                        playsInline
+                        className={cn(
+                            "w-full h-full object-cover transition-opacity duration-300",
+                            !hasRemoteVideo && "opacity-0"
+                        )}
+                        style={{
+                            filter: design.effects.videoFilter,
+                            objectFit: strangerVideo.objectFit || 'cover',
+                            transform: getTransformStyle('stranger'),
+                        }}
+                    />
 
-                {/* Camera Off Placeholder for Stranger */}
-                {!connection.remoteStream && (
-                    <div className="absolute inset-0 w-full h-full">
-                        <AmbientBackground />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
-                            <img
-                                src="./icon.png"
-                                alt="GAKI Logo"
-                                className="w-[10%] min-w-[20px] max-w-[50px] h-auto object-contain drop-shadow-2xl mb-4"
-                            />
-                            <p className="text-white/80 text-sm">Stranger's camera off</p>
+                    {/* Camera Off Placeholder for Stranger */}
+                    {!hasRemoteVideo && (
+                        <div className="absolute inset-0 w-full h-full">
+                            <AmbientBackground />
+                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+                                <img
+                                    src="./icon.png"
+                                    alt="GAKI Logo"
+                                    className="w-[10%] min-w-[20px] max-w-[50px] h-auto object-contain drop-shadow-2xl mb-4"
+                                />
+                                <p className="text-white/80 text-sm">Stranger's camera off</p>
+                            </div>
                         </div>
+                    )}
+
+                    {/* PIP Toolbar for Stranger */}
+                    <OmeglePipToolbar
+                        target="stranger"
+                        onFlipHorizontal={() => toggleFlipH('stranger')}
+                        onFlipVertical={() => toggleFlipV('stranger')}
+                        onZoomIn={() => setZoom('stranger', videoTransforms.stranger.zoom + 0.1)}
+                        onZoomOut={() => setZoom('stranger', videoTransforms.stranger.zoom - 0.1)}
+                        onToggleLock={() => toggleLock('stranger')}
+                        isLocked={videoTransforms.stranger.locked}
+                    />
+
+                    {/* Resize indicator */}
+                    <div className="absolute bottom-1 right-1 text-xs text-white/50 bg-black/30 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        {videoTransforms.stranger.locked ? 'Locked' : 'Drag/Resize'}
                     </div>
-                )}
-
-                {/* PIP Toolbar for Stranger */}
-                <OmeglePipToolbar
-                    target="stranger"
-                    onFlipHorizontal={() => toggleFlipH('stranger')}
-                    onFlipVertical={() => toggleFlipV('stranger')}
-                    onZoomIn={() => setZoom('stranger', videoTransforms.stranger.zoom + 0.1)}
-                    onZoomOut={() => setZoom('stranger', videoTransforms.stranger.zoom - 0.1)}
-                    onToggleLock={() => toggleLock('stranger')}
-                    isLocked={videoTransforms.stranger.locked}
-                />
-
-                {/* Resize indicator */}
-                <div className="absolute bottom-1 right-1 text-xs text-white/50 bg-black/30 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    {videoTransforms.stranger.locked ? 'Locked' : 'Drag/Resize'}
                 </div>
             </Rnd>
 
@@ -182,54 +233,59 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                 disableDragging={videoTransforms.local.locked}
                 enableResizing={!videoTransforms.local.locked}
             >
-                <video
-                    ref={localVideoRef}
-                    autoPlay
-                    playsInline
-                    muted
-                    className={cn(
-                        "w-full h-full object-cover",
-                        !connection.localStream && "hidden"
-                    )}
+                <div className="relative w-full h-full overflow-hidden"
                     style={{
                         borderRadius: localVideo.shape === 'circle' ? '50%' : localVideo.borderRadius ? `${localVideo.borderRadius}px` : undefined,
                         border: localVideo.border ? `${localVideo.border.width}px solid ${localVideo.border.color}` : undefined,
                         boxShadow: localVideo.shadow ? `0 0 ${localVideo.shadow.blur}px ${localVideo.shadow.color}` : undefined,
-                        filter: design.effects.videoFilter,
-                        objectFit: localVideo.objectFit || 'cover',
-                        transform: getTransformStyle('local'),
                     }}
-                />
+                >
+                    <video
+                        ref={localVideoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        className={cn(
+                            "w-full h-full object-cover transition-opacity duration-300",
+                            !hasLocalVideo && "opacity-0"
+                        )}
+                        style={{
+                            filter: design.effects.videoFilter,
+                            objectFit: localVideo.objectFit || 'cover',
+                            transform: getTransformStyle('local'),
+                        }}
+                    />
 
-                {/* Camera Off Placeholder for Local */}
-                {!connection.localStream && (
-                    <div className="absolute inset-0 w-full h-full">
-                        <AmbientBackground />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
-                            <img
-                                src="./icon.png"
-                                alt="GAKI Logo"
-                                className="w-[15%] min-w-[15px] max-w-[30px] h-auto object-contain drop-shadow-2xl mb-2"
-                            />
-                            <p className="text-white/70 text-xs">Camera off</p>
+                    {/* Camera Off Placeholder for Local */}
+                    {!hasLocalVideo && (
+                        <div className="absolute inset-0 w-full h-full">
+                            <AmbientBackground />
+                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+                                <img
+                                    src="./icon.png"
+                                    alt="GAKI Logo"
+                                    className="w-[15%] min-w-[15px] max-w-[30px] h-auto object-contain drop-shadow-2xl mb-2"
+                                />
+                                <p className="text-white/70 text-xs">Camera off</p>
+                            </div>
                         </div>
+                    )}
+
+                    {/* PIP Toolbar for Local */}
+                    <OmeglePipToolbar
+                        target="local"
+                        onFlipHorizontal={() => toggleFlipH('local')}
+                        onFlipVertical={() => toggleFlipV('local')}
+                        onZoomIn={() => setZoom('local', videoTransforms.local.zoom + 0.1)}
+                        onZoomOut={() => setZoom('local', videoTransforms.local.zoom - 0.1)}
+                        onToggleLock={() => toggleLock('local')}
+                        isLocked={videoTransforms.local.locked}
+                    />
+
+                    {/* Resize indicator */}
+                    <div className="absolute bottom-1 right-1 text-xs text-white/50 bg-black/30 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                        {videoTransforms.local.locked ? 'Locked' : 'Drag/Resize'}
                     </div>
-                )}
-
-                {/* PIP Toolbar for Local */}
-                <OmeglePipToolbar
-                    target="local"
-                    onFlipHorizontal={() => toggleFlipH('local')}
-                    onFlipVertical={() => toggleFlipV('local')}
-                    onZoomIn={() => setZoom('local', videoTransforms.local.zoom + 0.1)}
-                    onZoomOut={() => setZoom('local', videoTransforms.local.zoom - 0.1)}
-                    onToggleLock={() => toggleLock('local')}
-                    isLocked={videoTransforms.local.locked}
-                />
-
-                {/* Resize indicator */}
-                <div className="absolute bottom-1 right-1 text-xs text-white/50 bg-black/30 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    {videoTransforms.local.locked ? 'Locked' : 'Drag/Resize'}
                 </div>
             </Rnd>
 

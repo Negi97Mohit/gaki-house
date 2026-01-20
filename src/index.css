@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+.font-pixel {
+  font-family: 'Press Start 2P', cursive;
+}
+
 @font-face {
   font-family: geist-sans;
   src: url("https://cdn.jsdelivr.net/npm/@fontsource/geist-sans@5.0.1/files/geist-sans-latin-400-normal.woff2");

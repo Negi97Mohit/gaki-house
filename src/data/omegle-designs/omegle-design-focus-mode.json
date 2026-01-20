@@ -1,0 +1,71 @@
+{
+    "id": "omegle-focus-mode",
+    "name": "Focus Mode",
+    "description": "Stranger centered, you in corner, floating chat",
+    "styleTags": [
+        "omegle",
+        "focus",
+        "immersive"
+    ],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#000000",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": {
+                "x": 10,
+                "y": 5
+            },
+            "size": {
+                "width": 80,
+                "height": 80
+            },
+            "zIndex": 1
+        },
+        "localVideo": {
+            "position": {
+                "x": 75,
+                "y": 70
+            },
+            "size": {
+                "width": 20,
+                "height": 25
+            },
+            "zIndex": 10,
+            "mirror": true
+        },
+        "chatBox": {
+            "position": {
+                "x": 10,
+                "y": 75
+            },
+            "size": {
+                "width": 30,
+                "height": 20
+            },
+            "zIndex": 200,
+            "style": {
+                "backgroundColor": "rgba(0, 0, 0, 0.6)",
+                "backdropFilter": "blur(5px)",
+                "borderRadius": "12px",
+                "border": "1px solid rgba(255, 255, 255, 0.1)"
+            }
+        },
+        "controls": {
+            "position": "top-right",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "none",
+        "transition": "zoom",
+        "transitionDuration": 400
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}

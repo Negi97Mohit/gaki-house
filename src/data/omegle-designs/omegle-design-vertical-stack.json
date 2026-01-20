@@ -1,0 +1,69 @@
+{
+    "id": "omegle-vertical-stack",
+    "name": "Vertical Stack",
+    "description": "Vertical arrangement with stranger on top and you on bottom",
+    "styleTags": [
+        "omegle",
+        "vertical",
+        "mobile-style"
+    ],
+    "canvasAspectRatio": "9:16",
+    "background": {
+        "blankCanvasColor": "#0F0F0F",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "size": {
+                "width": 100,
+                "height": 45
+            },
+            "zIndex": 1
+        },
+        "localVideo": {
+            "position": {
+                "x": 0,
+                "y": 45
+            },
+            "size": {
+                "width": 100,
+                "height": 45
+            },
+            "zIndex": 1,
+            "mirror": true
+        },
+        "chatBox": {
+            "position": {
+                "x": 0,
+                "y": 90
+            },
+            "size": {
+                "width": 100,
+                "height": 10
+            },
+            "zIndex": 200,
+            "style": {
+                "backgroundColor": "rgba(15, 15, 15, 0.95)",
+                "borderTop": "1px solid rgba(255, 255, 255, 0.1)"
+            }
+        },
+        "controls": {
+            "position": "top-right",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "none",
+        "transition": "slide",
+        "transitionDuration": 300
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}
