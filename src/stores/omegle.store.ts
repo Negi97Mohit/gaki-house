@@ -16,6 +16,24 @@ interface OmegleState {
     isSearching: boolean;
     error: string | null;
 
+    // Video transform state
+    videoTransforms: {
+        stranger: {
+            flipH: boolean;
+            flipV: boolean;
+            zoom: number;
+            locked: boolean;
+            aspectRatio: string;
+        };
+        local: {
+            flipH: boolean;
+            flipV: boolean;
+            zoom: number;
+            locked: boolean;
+            aspectRatio: string;
+        };
+    };
+
     // Actions
     enterOmegleMode: () => void;
     exitOmegleMode: () => void;
@@ -30,6 +48,13 @@ interface OmegleState {
     toggleMic: () => void;
     setError: (error: string | null) => void;
     resetConnection: () => void;
+
+    // Video transform actions
+    toggleFlipH: (target: 'stranger' | 'local') => void;
+    toggleFlipV: (target: 'stranger' | 'local') => void;
+    setZoom: (target: 'stranger' | 'local', zoom: number) => void;
+    toggleLock: (target: 'stranger' | 'local') => void;
+    setAspectRatio: (target: 'stranger' | 'local', ratio: string) => void;
 }
 
 const initialConnection: OmegleConnection = {
@@ -51,6 +76,23 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     isMicEnabled: true,
     isSearching: false,
     error: null,
+
+    videoTransforms: {
+        stranger: {
+            flipH: false,
+            flipV: false,
+            zoom: 1,
+            locked: false,
+            aspectRatio: 'free',
+        },
+        local: {
+            flipH: false,
+            flipV: false,
+            zoom: 1,
+            locked: false,
+            aspectRatio: 'free',
+        },
+    },
 
     // Actions
     enterOmegleMode: () => {
@@ -158,5 +200,66 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
             messages: [],
             error: null,
         });
+    },
+
+    // Video transform actions
+    toggleFlipH: (target) => {
+        set(state => ({
+            videoTransforms: {
+                ...state.videoTransforms,
+                [target]: {
+                    ...state.videoTransforms[target],
+                    flipH: !state.videoTransforms[target].flipH,
+                },
+            },
+        }));
+    },
+
+    toggleFlipV: (target) => {
+        set(state => ({
+            videoTransforms: {
+                ...state.videoTransforms,
+                [target]: {
+                    ...state.videoTransforms[target],
+                    flipV: !state.videoTransforms[target].flipV,
+                },
+            },
+        }));
+    },
+
+    setZoom: (target, zoom) => {
+        set(state => ({
+            videoTransforms: {
+                ...state.videoTransforms,
+                [target]: {
+                    ...state.videoTransforms[target],
+                    zoom: Math.max(0.5, Math.min(3, zoom)), // Clamp between 0.5x and 3x
+                },
+            },
+        }));
+    },
+
+    toggleLock: (target) => {
+        set(state => ({
+            videoTransforms: {
+                ...state.videoTransforms,
+                [target]: {
+                    ...state.videoTransforms[target],
+                    locked: !state.videoTransforms[target].locked,
+                },
+            },
+        }));
+    },
+
+    setAspectRatio: (target, ratio) => {
+        set(state => ({
+            videoTransforms: {
+                ...state.videoTransforms,
+                [target]: {
+                    ...state.videoTransforms[target],
+                    aspectRatio: ratio,
+                },
+            },
+        }));
     },
 }));

@@ -41,32 +41,32 @@ export const OmegleMode: React.FC = () => {
                 await signaling.connect();
                 console.log('[OmegleMode] Connected to signaling server');
 
-                // Get local media stream
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: true,
-                });
+                // Try to get local media stream (optional - user can use text-only)
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: true,
+                    });
 
-                console.log('[OmegleMode] Got local media stream');
-                localStreamRef.current = stream; // Store in ref immediately
-                setLocalStream(stream); // Also update store for UI
+                    console.log('[OmegleMode] Got local media stream');
+                    localStreamRef.current = stream;
+                    setLocalStream(stream);
+                } catch (mediaError) {
+                    console.warn('[OmegleMode] Camera/mic access denied or unavailable - proceeding with text-only mode');
+                    toast.info('Camera/mic unavailable. You can still chat via text!');
+                    // Continue without media - text chat still works
+                }
 
-                // Setup signaling event listeners with the stream
-                setupSignalingListeners(signaling, stream);
+                // Setup signaling event listeners with the stream (may be null)
+                setupSignalingListeners(signaling, localStreamRef.current);
 
                 setIsInitializing(false);
                 toast.success('Connected! Click "Find Stranger" to start.');
             } catch (error) {
                 console.error('[OmegleMode] Failed to initialize:', error);
                 const message = error instanceof Error ? error.message : 'Failed to initialize';
-
-                if (message.includes('Permission denied') || message.includes('NotAllowed')) {
-                    toast.error('Camera/microphone access denied. Please allow permissions and try again.');
-                } else {
-                    toast.error('Failed to initialize: ' + message);
-                }
-
                 setError(message);
+                toast.error('Failed to connect to server: ' + message);
                 setIsInitializing(false);
             }
         };
@@ -79,7 +79,7 @@ export const OmegleMode: React.FC = () => {
         };
     }, []);
 
-    const setupSignalingListeners = (signaling: SignalingClient, localStream: MediaStream) => {
+    const setupSignalingListeners = (signaling: SignalingClient, localStream: MediaStream | null) => {
         signaling.onMatchStatus((status) => {
             setMatchStatus(status as any);
 
@@ -150,17 +150,15 @@ export const OmegleMode: React.FC = () => {
         isInitiator: boolean,
         roomId: string,
         signaling: SignalingClient,
-        localStream: MediaStream
+        localStream: MediaStream | null
     ) => {
         try {
-            if (!localStream) {
-                throw new Error('No local stream available');
-            }
-
-            console.log('[OmegleMode] Setting up WebRTC with local stream');
+            console.log('[OmegleMode] Setting up WebRTC', { hasLocalStream: !!localStream });
             const webrtc = new WebRTCConnection();
             webrtcRef.current = webrtc;
 
+            // Initialize connection with or without local stream
+            // If no local stream, we can still receive remote video
             await webrtc.initializeConnection(localStream);
 
             // Setup WebRTC event listeners

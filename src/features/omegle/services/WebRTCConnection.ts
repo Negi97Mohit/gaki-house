@@ -23,20 +23,24 @@ export class WebRTCConnection {
         };
     }
 
-    async initializeConnection(localStream: MediaStream): Promise<void> {
+    async initializeConnection(localStream: MediaStream | null): Promise<void> {
         try {
-            console.log('[WebRTC] Initializing peer connection...');
+            console.log('[WebRTC] Initializing peer connection...', { hasLocalStream: !!localStream });
 
             this.localStream = localStream;
             this.peerConnection = new RTCPeerConnection(this.config);
 
-            // Add local tracks to peer connection
-            localStream.getTracks().forEach(track => {
-                if (this.peerConnection && this.localStream) {
-                    console.log(`[WebRTC] Adding ${track.kind} track to peer connection`);
-                    this.peerConnection.addTrack(track, this.localStream);
-                }
-            });
+            // Add local tracks to peer connection if stream exists
+            if (localStream) {
+                localStream.getTracks().forEach(track => {
+                    if (this.peerConnection && this.localStream) {
+                        console.log(`[WebRTC] Adding ${track.kind} track to peer connection`);
+                        this.peerConnection.addTrack(track, this.localStream);
+                    }
+                });
+            } else {
+                console.log('[WebRTC] No local stream - will receive-only mode');
+            }
 
             // Handle remote stream
             this.peerConnection.ontrack = (event) => {
