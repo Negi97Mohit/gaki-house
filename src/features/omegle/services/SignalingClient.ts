@@ -16,7 +16,11 @@ export class SignalingClient {
     private onErrorCallback?: (error: string) => void;
 
     constructor(serverUrl?: string) {
-        this.serverUrl = serverUrl || 'http://localhost:3001';
+        // Use provided URL, or environment variable, or default to localhost
+        this.serverUrl = serverUrl ||
+            import.meta.env.VITE_SIGNALING_URL ||
+            'http://localhost:3001';
+        console.log('[SignalingClient] Connecting to:', this.serverUrl);
     }
 
     connect(): Promise<void> {
@@ -29,8 +33,9 @@ export class SignalingClient {
             this.socket = io(this.serverUrl, {
                 transports: ['websocket', 'polling'],
                 reconnection: true,
-                reconnectionAttempts: 5,
-                reconnectionDelay: 1000,
+                reconnectionAttempts: 10, // More attempts for free tier wake-up
+                reconnectionDelay: 2000, // Wait longer between attempts
+                timeout: 60000, // 60 second timeout for free tier server wake-up
             });
 
             this.socket.on('connect', () => {
