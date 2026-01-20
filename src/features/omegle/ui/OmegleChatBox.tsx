@@ -106,15 +106,15 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                                 key={msg.id}
                                 className={cn(
                                     'flex flex-col',
-                                    msg.sender === 'local' ? 'items-end' : 'items-start'
+                                    msg.isLocal ? 'items-end' : 'items-start'
                                 )}
                             >
                                 <div
                                     className={cn(
                                         'px-3 py-2 rounded-lg max-w-[80%] break-words',
-                                        msg.sender === 'local'
+                                        msg.isLocal
                                             ? 'bg-blue-600 text-white'
-                                            : 'bg-white/10 text-white/90'
+                                            : 'bg-gray-700 text-white'
                                     )}
                                 >
                                     <p className="text-sm">{msg.text}</p>
