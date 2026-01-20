@@ -103,9 +103,23 @@ export const OmegleMode: React.FC = () => {
         signaling.onWebRTCOffer(async ({ offer }) => {
             console.log('[OmegleMode] Received WebRTC offer');
 
-            if (webrtcRef.current && connection.roomId) {
-                const answer = await webrtcRef.current.createAnswer(offer);
-                signaling.sendWebRTCAnswer(answer, connection.roomId);
+            if (webrtcRef.current) {
+                try {
+                    console.log('[OmegleMode] Creating answer for received offer...');
+                    const answer = await webrtcRef.current.createAnswer(offer);
+                    console.log('[OmegleMode] Answer created, sending to peer');
+                    // Use the roomId from the current connection state
+                    const roomId = useOmegleStore.getState().connection.roomId;
+                    if (roomId) {
+                        signaling.sendWebRTCAnswer(answer, roomId);
+                    } else {
+                        console.error('[OmegleMode] No roomId available to send answer!');
+                    }
+                } catch (error) {
+                    console.error('[OmegleMode] Failed to create/send answer:', error);
+                }
+            } else {
+                console.error('[OmegleMode] No WebRTC connection available!');
             }
         });
 
@@ -163,7 +177,10 @@ export const OmegleMode: React.FC = () => {
 
             // Setup WebRTC event listeners
             webrtc.onRemoteStream((stream) => {
-                console.log('[OmegleMode] Received remote stream');
+                console.log('[OmegleMode] 🎥 Received remote stream with', stream.getTracks().length, 'tracks');
+                stream.getTracks().forEach(track => {
+                    console.log(`[OmegleMode] Track: ${track.kind}, enabled: ${track.enabled}, state: ${track.readyState}`);
+                });
                 setRemoteStream(stream);
                 toast.success('Connected to stranger!');
             });
@@ -280,7 +297,7 @@ export const OmegleMode: React.FC = () => {
 
     return (
         <div
-            className="absolute inset-0"
+            className="fixed inset-0 z-50"
             style={{ backgroundColor: design.background.blankCanvasColor }}
         >
             <OmegleVideoLayout design={design} />

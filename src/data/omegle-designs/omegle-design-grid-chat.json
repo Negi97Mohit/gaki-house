@@ -58,7 +58,7 @@
                 "width": 96,
                 "height": 40
             },
-            "zIndex": 2,
+            "zIndex": 200,
             "style": {
                 "backgroundColor": "rgba(26, 26, 26, 0.95)",
                 "border": "1px solid rgba(255, 255, 255, 0.08)",
@@ -67,7 +67,7 @@
         },
         "controls": {
             "position": "top-center",
-            "zIndex": 10,
+            "zIndex": 200,
             "style": {
                 "backgroundColor": "rgba(18, 18, 18, 0.9)",
                 "backdropFilter": "blur(12px)",

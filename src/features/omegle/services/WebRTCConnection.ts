@@ -5,6 +5,7 @@ export class WebRTCConnection {
     private localStream: MediaStream | null = null;
     private remoteStream: MediaStream | null = null;
     private config: WebRTCConfig;
+    private pendingCandidates: RTCIceCandidateInit[] = []; // Queue for candidates received before remote description
 
     // Event callbacks
     private onRemoteStreamCallback?: (stream: MediaStream) => void;
@@ -97,6 +98,8 @@ export class WebRTCConnection {
 
         try {
             console.log('[WebRTC] Creating offer...');
+            // Always set offerToReceive to true so we can receive remote media
+            // even if we don't have local media to send
             const offer = await this.peerConnection.createOffer({
                 offerToReceiveAudio: true,
                 offerToReceiveVideo: true,
@@ -120,6 +123,20 @@ export class WebRTCConnection {
         try {
             console.log('[WebRTC] Setting remote description (offer)...');
             await this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            console.log('[WebRTC] Remote description set successfully');
+
+            // Process any queued ICE candidates now that remote description is set
+            if (this.pendingCandidates.length > 0) {
+                console.log(`[WebRTC] Processing ${this.pendingCandidates.length} queued ICE candidates`);
+                for (const candidate of this.pendingCandidates) {
+                    try {
+                        await this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                    } catch (error) {
+                        console.error('[WebRTC] Failed to add queued ICE candidate:', error);
+                    }
+                }
+                this.pendingCandidates = [];
+            }
 
             console.log('[WebRTC] Creating answer...');
             const answer = await this.peerConnection.createAnswer();
@@ -143,6 +160,19 @@ export class WebRTCConnection {
             console.log('[WebRTC] Setting remote description (answer)...');
             await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
             console.log('[WebRTC] Remote description set successfully');
+
+            // Process any queued ICE candidates now that remote description is set
+            if (this.pendingCandidates.length > 0) {
+                console.log(`[WebRTC] Processing ${this.pendingCandidates.length} queued ICE candidates`);
+                for (const candidate of this.pendingCandidates) {
+                    try {
+                        await this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                    } catch (error) {
+                        console.error('[WebRTC] Failed to add queued ICE candidate:', error);
+                    }
+                }
+                this.pendingCandidates = [];
+            }
         } catch (error) {
             console.error('[WebRTC] Failed to set remote answer:', error);
             throw error;
@@ -155,8 +185,16 @@ export class WebRTCConnection {
             return;
         }
 
+        // If remote description isn't set yet, queue the candidate
+        if (!this.peerConnection.remoteDescription) {
+            console.log('[WebRTC] Remote description not set yet, queuing ICE candidate');
+            this.pendingCandidates.push(candidate);
+            return;
+        }
+
         try {
             await this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+            console.log('[WebRTC] ICE candidate added successfully');
         } catch (error) {
             console.error('[WebRTC] Failed to add ICE candidate:', error);
             // Don't throw - ICE candidate failures are often non-fatal
@@ -211,6 +249,7 @@ export class WebRTCConnection {
         }
 
         this.remoteStream = null;
+        this.pendingCandidates = []; // Clear queued candidates
 
         console.log('[WebRTC] Peer connection closed');
     }

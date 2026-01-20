@@ -55,7 +55,7 @@
                 "width": 40,
                 "height": 8
             },
-            "zIndex": 2,
+            "zIndex": 200,
             "floating": true,
             "collapsible": true,
             "expandOnNewMessage": true,
@@ -74,7 +74,7 @@
         },
         "controls": {
             "position": "bottom-center",
-            "zIndex": 10,
+            "zIndex": 200,
             "autoHide": true,
             "autoHideDelay": 2500,
             "showOnHover": true,

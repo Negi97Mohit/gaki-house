@@ -54,7 +54,7 @@
                 "width": 25,
                 "height": 10
             },
-            "zIndex": 2,
+            "zIndex": 200,
             "collapsed": true,
             "expandOnInteraction": true,
             "expandedSize": {
@@ -70,7 +70,7 @@
         },
         "controls": {
             "position": "top-right",
-            "zIndex": 10,
+            "zIndex": 200,
             "autoHide": true,
             "autoHideDelay": 3000,
             "style": {

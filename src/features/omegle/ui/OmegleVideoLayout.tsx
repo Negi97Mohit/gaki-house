@@ -4,6 +4,7 @@ import { OmegleDesign } from '@/types/omegle';
 import { useOmegleStore } from '@/stores/omegle.store';
 import { OmeglePipToolbar } from './OmeglePipToolbar';
 import { cn } from '@/shared/lib/utils';
+import { AmbientBackground } from '@/features/stream/ui/AmbientBackground';
 
 interface OmegleVideoLayoutProps {
     design: OmegleDesign;
@@ -125,26 +126,15 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
 
                 {/* Camera Off Placeholder for Stranger */}
                 {!connection.remoteStream && (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-pink-900/30 backdrop-blur-xl relative overflow-hidden">
-                        {/* Animated ambient background */}
-                        <div className="absolute inset-0">
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-pink-500/10 animate-pulse"></div>
-                            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-bounce" style={{ animationDuration: '8s' }}></div>
-                            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl animate-bounce" style={{ animationDelay: '2s', animationDuration: '10s' }}></div>
-                        </div>
-
-                        {/* Logo and Text */}
-                        <div className="relative z-10 text-center">
-                            <div className="w-24 h-24 mx-auto mb-6 relative">
-                                <img
-                                    src="/logo_256x256.png"
-                                    alt="Logo"
-                                    className="w-full h-full object-contain opacity-60"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-full"></div>
-                            </div>
-                            <p className="text-lg font-medium text-white/90 mb-2">Stranger's Camera Off</p>
-                            <p className="text-sm text-white/60">Text chat available - waiting for video...</p>
+                    <div className="absolute inset-0 w-full h-full">
+                        <AmbientBackground />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+                            <img
+                                src="./icon.png"
+                                alt="GAKI Logo"
+                                className="w-[10%] min-w-[20px] max-w-[50px] h-auto object-contain drop-shadow-2xl mb-4"
+                            />
+                            <p className="text-white/80 text-sm">Stranger's camera off</p>
                         </div>
                     </div>
                 )}
@@ -213,23 +203,15 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
 
                 {/* Camera Off Placeholder for Local */}
                 {!connection.localStream && (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden rounded">
-                        {/* Ambient glow */}
-                        <div className="absolute inset-0">
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
-                        </div>
-
-                        {/* Logo and Text */}
-                        <div className="relative z-10 text-center">
-                            <div className="w-16 h-16 mx-auto mb-3 relative">
-                                <img
-                                    src="/logo_256x256.png"
-                                    alt="Logo"
-                                    className="w-full h-full object-contain opacity-40"
-                                />
-                            </div>
-                            <p className="text-xs font-medium text-white/70">Camera Off</p>
-                            <p className="text-[10px] text-white/40 mt-1">Text chat available</p>
+                    <div className="absolute inset-0 w-full h-full">
+                        <AmbientBackground />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
+                            <img
+                                src="./icon.png"
+                                alt="GAKI Logo"
+                                className="w-[15%] min-w-[15px] max-w-[30px] h-auto object-contain drop-shadow-2xl mb-2"
+                            />
+                            <p className="text-white/70 text-xs">Camera off</p>
                         </div>
                     </div>
                 )}
