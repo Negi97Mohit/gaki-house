@@ -11,7 +11,7 @@ export interface StreamSettings {
   fps: 30 | 60;
 }
 
-interface ElectronWindow extends Window {
+interface ElectronWindow {
   electron?: {
     isElectron: boolean;
     storage?: {
