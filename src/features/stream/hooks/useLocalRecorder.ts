@@ -4,14 +4,16 @@ import { notify } from "@/shared/lib/notify";
 import fixWebmDuration from "fix-webm-duration";
 
 // Define Electron Interface for Recorder IPC
-interface ElectronWindow extends Window {
-  electron?: {
-    recorder: {
-      start: () => Promise<{ filePath: string }>;
-      write: (chunk: ArrayBuffer) => Promise<void>;
-      stop: (durationMs?: number) => Promise<{ filePath: string }>;
-    };
+interface ElectronApi {
+  recorder: {
+    start: () => Promise<{ filePath: string }>;
+    write: (chunk: ArrayBuffer) => Promise<void>;
+    stop: (durationMs?: number) => Promise<{ filePath: string }>;
   };
+}
+
+interface ElectronWindow {
+  electron?: ElectronApi;
 }
 
 export const useLocalRecorder = () => {

@@ -6,7 +6,7 @@ import fixWebmDuration from "fix-webm-duration";
 
 const SERVER_URL = "http://localhost:3000";
 
-interface ElectronWindow extends Window {
+interface ElectronWindow {
   electron?: {
     getDesktopSources: (options: any) => Promise<any[]>;
     stream: {
