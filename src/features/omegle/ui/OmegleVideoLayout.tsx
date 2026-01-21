@@ -154,7 +154,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
     const hasRemoteVideo = connection.remoteStream && isRemoteCameraEnabled;
     const hasLocalVideo = connection.localStream && isLocalCameraEnabled;
 
-    // Minimalist camera off placeholder
+    // Themed camera off placeholder
     const CameraOffPlaceholder = ({ isLocal }: { isLocal: boolean }) => (
         <div className="absolute inset-0 w-full h-full">
             <AmbientBackground />
@@ -163,16 +163,28 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                     "flex flex-col items-center gap-3",
                     "animate-fade-in"
                 )}>
-                    <div className={cn(
-                        "w-14 h-14 rounded-full flex items-center justify-center",
-                        "bg-white/[0.05] backdrop-blur-sm border border-white/[0.08]"
-                    )}>
-                        <VideoOff className={cn(
-                            "opacity-40",
-                            isLocal ? "w-5 h-5" : "w-6 h-6"
-                        )} />
+                    <div 
+                        className={cn(
+                            "w-14 h-14 rounded-full flex items-center justify-center",
+                            "backdrop-blur-sm"
+                        )}
+                        style={{
+                            background: 'var(--omegle-video-overlay)',
+                            border: '1px solid var(--omegle-video-border)',
+                        }}
+                    >
+                        <VideoOff 
+                            className={cn(
+                                "opacity-60",
+                                isLocal ? "w-5 h-5" : "w-6 h-6"
+                            )} 
+                            style={{ color: 'var(--omegle-text-muted)' }}
+                        />
                     </div>
-                    <p className="text-white/40 text-xs font-medium tracking-wide">
+                    <p 
+                        className="text-xs font-medium tracking-wide"
+                        style={{ color: 'var(--omegle-text-muted)' }}
+                    >
                         {isLocal ? 'Camera off' : 'Waiting for video'}
                     </p>
                 </div>
@@ -208,14 +220,18 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                 disableDragging={videoTransforms.stranger.locked}
                 enableResizing={!videoTransforms.stranger.locked}
             >
-                <div className={cn(
-                    "relative w-full h-full overflow-hidden",
-                    "transition-shadow duration-300",
-                    "ring-1 ring-white/[0.05]"
-                )}
+                <div 
+                    className={cn(
+                        "relative w-full h-full overflow-hidden",
+                        "transition-shadow duration-300"
+                    )}
                     style={{
-                        borderRadius: strangerVideo.borderRadius ? `${strangerVideo.borderRadius}px` : '16px',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                        borderRadius: strangerVideo.borderRadius 
+                            ? `${strangerVideo.borderRadius}px` 
+                            : 'var(--omegle-border-radius)',
+                        boxShadow: 'var(--omegle-shadow)',
+                        border: 'var(--omegle-border-width) solid var(--omegle-video-border)',
+                        background: 'var(--omegle-video-background)',
                     }}
                 >
                     <video
@@ -246,13 +262,19 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                     />
 
                     {/* Minimal resize hint */}
-                    <div className={cn(
-                        "absolute bottom-2 right-2 px-2 py-1 rounded-full",
-                        "text-[10px] text-white/30 font-medium",
-                        "bg-black/30 backdrop-blur-sm",
-                        "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                        "pointer-events-none"
-                    )}>
+                    <div 
+                        className={cn(
+                            "absolute bottom-2 right-2 px-2 py-1 rounded-full",
+                            "text-[10px] font-medium",
+                            "backdrop-blur-sm",
+                            "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                            "pointer-events-none"
+                        )}
+                        style={{
+                            background: 'var(--omegle-video-overlay)',
+                            color: 'var(--omegle-text-muted)',
+                        }}
+                    >
                         {videoTransforms.stranger.locked ? '🔒' : '↔'}
                     </div>
                 </div>
@@ -284,15 +306,20 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                 disableDragging={videoTransforms.local.locked}
                 enableResizing={!videoTransforms.local.locked}
             >
-                <div className={cn(
-                    "relative w-full h-full overflow-hidden",
-                    "transition-all duration-300",
-                    "ring-1 ring-white/[0.08]",
-                    "hover:ring-white/[0.15]"
-                )}
+                <div 
+                    className={cn(
+                        "relative w-full h-full overflow-hidden",
+                        "transition-all duration-300"
+                    )}
                     style={{
-                        borderRadius: localVideo.shape === 'circle' ? '50%' : localVideo.borderRadius ? `${localVideo.borderRadius}px` : '12px',
-                        boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+                        borderRadius: localVideo.shape === 'circle' 
+                            ? '50%' 
+                            : localVideo.borderRadius 
+                                ? `${localVideo.borderRadius}px` 
+                                : 'var(--omegle-border-radius)',
+                        boxShadow: 'var(--omegle-shadow)',
+                        border: 'var(--omegle-border-width) solid var(--omegle-video-border)',
+                        background: 'var(--omegle-video-background)',
                     }}
                 >
                     <video
@@ -324,69 +351,137 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                     />
 
                     {/* Minimal resize hint */}
-                    <div className={cn(
-                        "absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded-full",
-                        "text-[9px] text-white/30 font-medium",
-                        "bg-black/30 backdrop-blur-sm",
-                        "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                        "pointer-events-none"
-                    )}>
+                    <div 
+                        className={cn(
+                            "absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded-full",
+                            "text-[9px] font-medium",
+                            "backdrop-blur-sm",
+                            "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                            "pointer-events-none"
+                        )}
+                        style={{
+                            background: 'var(--omegle-video-overlay)',
+                            color: 'var(--omegle-text-muted)',
+                        }}
+                    >
                         {videoTransforms.local.locked ? '🔒' : '↔'}
                     </div>
                 </div>
             </Rnd>
 
-            {/* Connection Status Overlay - Modern & Minimal */}
+            {/* Connection Status Overlay - Themed */}
             {connection.matchStatus !== 'connected' && (
-                <div className={cn(
-                    "absolute inset-0 flex items-center justify-center z-10",
-                    "bg-black/60 backdrop-blur-md"
-                )}>
-                    <div className={cn(
-                        "text-center text-white p-8 rounded-3xl",
-                        "bg-white/[0.03] backdrop-blur-xl border border-white/[0.05]",
-                        "shadow-2xl shadow-black/50",
-                        "animate-scale-in"
-                    )}>
+                <div 
+                    className={cn(
+                        "absolute inset-0 flex items-center justify-center z-10",
+                        "backdrop-blur-md"
+                    )}
+                    style={{ background: 'var(--omegle-video-overlay)' }}
+                >
+                    <div 
+                        className={cn(
+                            "text-center p-8 rounded-3xl",
+                            "backdrop-blur-xl",
+                            "animate-scale-in"
+                        )}
+                        style={{
+                            background: 'var(--omegle-controls-background)',
+                            border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                            boxShadow: 'var(--omegle-shadow)',
+                            borderRadius: 'var(--omegle-border-radius)',
+                        }}
+                    >
                         {connection.matchStatus === 'searching' && (
                             <div className="flex flex-col items-center gap-4">
                                 <div className="relative">
-                                    <Loader2 className="w-10 h-10 animate-spin text-white/60" />
+                                    <Loader2 
+                                        className="w-10 h-10 animate-spin" 
+                                        style={{ color: 'var(--omegle-primary)' }}
+                                    />
                                     <div className="absolute inset-0 animate-ping opacity-20">
-                                        <Loader2 className="w-10 h-10 text-white" />
+                                        <Loader2 
+                                            className="w-10 h-10" 
+                                            style={{ color: 'var(--omegle-primary)' }}
+                                        />
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-lg font-medium text-white/90">Finding someone</p>
-                                    <p className="text-sm text-white/40">This won't take long...</p>
+                                    <p 
+                                        className="text-lg font-medium"
+                                        style={{ color: 'var(--omegle-text)' }}
+                                    >
+                                        Finding someone
+                                    </p>
+                                    <p 
+                                        className="text-sm"
+                                        style={{ color: 'var(--omegle-text-muted)' }}
+                                    >
+                                        This won't take long...
+                                    </p>
                                 </div>
                             </div>
                         )}
                         {connection.matchStatus === 'idle' && (
                             <div className="flex flex-col items-center gap-4">
-                                <div className={cn(
-                                    "w-16 h-16 rounded-full flex items-center justify-center",
-                                    "bg-white/[0.05] border border-white/[0.08]"
-                                )}>
-                                    <Users className="w-7 h-7 text-white/50" />
+                                <div 
+                                    className={cn(
+                                        "w-16 h-16 rounded-full flex items-center justify-center"
+                                    )}
+                                    style={{
+                                        background: 'var(--omegle-secondary)',
+                                        border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                                    }}
+                                >
+                                    <Users 
+                                        className="w-7 h-7" 
+                                        style={{ color: 'var(--omegle-text-muted)' }}
+                                    />
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-lg font-medium text-white/90">Ready to connect</p>
-                                    <p className="text-sm text-white/40">Click Connect to start</p>
+                                    <p 
+                                        className="text-lg font-medium"
+                                        style={{ color: 'var(--omegle-text)' }}
+                                    >
+                                        Ready to connect
+                                    </p>
+                                    <p 
+                                        className="text-sm"
+                                        style={{ color: 'var(--omegle-text-muted)' }}
+                                    >
+                                        Click Connect to start
+                                    </p>
                                 </div>
                             </div>
                         )}
                         {connection.matchStatus === 'disconnected' && (
                             <div className="flex flex-col items-center gap-4">
-                                <div className={cn(
-                                    "w-16 h-16 rounded-full flex items-center justify-center",
-                                    "bg-amber-500/10 border border-amber-500/20"
-                                )}>
-                                    <Users className="w-7 h-7 text-amber-400/70" />
+                                <div 
+                                    className={cn(
+                                        "w-16 h-16 rounded-full flex items-center justify-center"
+                                    )}
+                                    style={{
+                                        background: 'var(--omegle-warning)',
+                                        opacity: 0.15,
+                                    }}
+                                >
+                                    <Users 
+                                        className="w-7 h-7" 
+                                        style={{ color: 'var(--omegle-warning)' }}
+                                    />
                                 </div>
                                 <div className="space-y-1">
-                                    <p className="text-lg font-medium text-white/90">They left</p>
-                                    <p className="text-sm text-white/40">Click Next to find someone new</p>
+                                    <p 
+                                        className="text-lg font-medium"
+                                        style={{ color: 'var(--omegle-text)' }}
+                                    >
+                                        They left
+                                    </p>
+                                    <p 
+                                        className="text-sm"
+                                        style={{ color: 'var(--omegle-text-muted)' }}
+                                    >
+                                        Click Next to find someone new
+                                    </p>
                                 </div>
                             </div>
                         )}

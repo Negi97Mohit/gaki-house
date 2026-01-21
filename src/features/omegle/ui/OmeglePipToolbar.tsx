@@ -33,23 +33,27 @@ export const OmeglePipToolbar: React.FC<PipToolbarProps> = ({
 
     const toolbarButtonBase = cn(
         "h-7 w-7 rounded-full transition-all duration-200",
-        "hover:bg-white/20 active:scale-90",
-        "focus-visible:ring-1 focus-visible:ring-white/30 focus-visible:ring-offset-0"
+        "active:scale-90",
+        "focus-visible:ring-1 focus-visible:ring-offset-0"
     );
 
     return (
         <div
             className={cn(
                 'absolute top-3 left-3 flex items-center gap-0.5',
-                'bg-black/50 backdrop-blur-xl rounded-full',
-                'p-1 border border-white/[0.08]',
+                'backdrop-blur-xl rounded-full',
+                'p-1',
                 'transition-all duration-300 ease-out z-50',
-                'shadow-lg shadow-black/30',
                 isVisible 
                     ? 'opacity-100 translate-y-0' 
                     : 'opacity-0 -translate-y-1 pointer-events-none',
                 'group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto'
             )}
+            style={{
+                background: 'var(--omegle-controls-background)',
+                border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                boxShadow: 'var(--omegle-shadow)',
+            }}
             onMouseEnter={() => setIsVisible(true)}
             onMouseLeave={() => setIsVisible(false)}
         >
@@ -57,7 +61,11 @@ export const OmeglePipToolbar: React.FC<PipToolbarProps> = ({
             <Button
                 variant="ghost"
                 size="icon"
-                className={cn(toolbarButtonBase, "text-white/70 hover:text-white")}
+                className={toolbarButtonBase}
+                style={{
+                    color: 'var(--omegle-controls-icon)',
+                    opacity: 0.7,
+                }}
                 onClick={onFlipHorizontal}
                 title="Flip Horizontal"
             >
@@ -68,7 +76,11 @@ export const OmeglePipToolbar: React.FC<PipToolbarProps> = ({
             <Button
                 variant="ghost"
                 size="icon"
-                className={cn(toolbarButtonBase, "text-white/70 hover:text-white")}
+                className={toolbarButtonBase}
+                style={{
+                    color: 'var(--omegle-controls-icon)',
+                    opacity: 0.7,
+                }}
                 onClick={onFlipVertical}
                 title="Flip Vertical"
             >
@@ -76,13 +88,20 @@ export const OmeglePipToolbar: React.FC<PipToolbarProps> = ({
             </Button>
 
             {/* Divider */}
-            <div className="w-px h-4 bg-white/10 mx-0.5" />
+            <div 
+                className="w-px h-4 mx-0.5"
+                style={{ background: 'var(--omegle-controls-border)' }}
+            />
 
             {/* Zoom In */}
             <Button
                 variant="ghost"
                 size="icon"
-                className={cn(toolbarButtonBase, "text-white/70 hover:text-white")}
+                className={toolbarButtonBase}
+                style={{
+                    color: 'var(--omegle-controls-icon)',
+                    opacity: 0.7,
+                }}
                 onClick={onZoomIn}
                 title="Zoom In"
             >
@@ -93,7 +112,11 @@ export const OmeglePipToolbar: React.FC<PipToolbarProps> = ({
             <Button
                 variant="ghost"
                 size="icon"
-                className={cn(toolbarButtonBase, "text-white/70 hover:text-white")}
+                className={toolbarButtonBase}
+                style={{
+                    color: 'var(--omegle-controls-icon)',
+                    opacity: 0.7,
+                }}
                 onClick={onZoomOut}
                 title="Zoom Out"
             >
@@ -101,18 +124,21 @@ export const OmeglePipToolbar: React.FC<PipToolbarProps> = ({
             </Button>
 
             {/* Divider */}
-            <div className="w-px h-4 bg-white/10 mx-0.5" />
+            <div 
+                className="w-px h-4 mx-0.5"
+                style={{ background: 'var(--omegle-controls-border)' }}
+            />
 
             {/* Lock/Unlock Position */}
             <Button
                 variant="ghost"
                 size="icon"
-                className={cn(
-                    toolbarButtonBase,
-                    isLocked 
-                        ? 'text-amber-400 bg-amber-500/20 hover:bg-amber-500/30' 
-                        : 'text-white/70 hover:text-white'
-                )}
+                className={toolbarButtonBase}
+                style={{
+                    color: isLocked ? 'var(--omegle-warning)' : 'var(--omegle-controls-icon)',
+                    background: isLocked ? 'var(--omegle-warning)' : 'transparent',
+                    opacity: isLocked ? 0.3 : 0.7,
+                }}
                 onClick={onToggleLock}
                 title={isLocked ? 'Unlock Position' : 'Lock Position'}
             >
@@ -124,11 +150,16 @@ export const OmeglePipToolbar: React.FC<PipToolbarProps> = ({
             </Button>
 
             {/* Target Label */}
-            <div className={cn(
-                "ml-1 px-2.5 py-1 rounded-full",
-                "text-[10px] font-medium uppercase tracking-wider",
-                "bg-white/[0.08] text-white/50"
-            )}>
+            <div 
+                className={cn(
+                    "ml-1 px-2.5 py-1 rounded-full",
+                    "text-[10px] font-medium uppercase tracking-wider"
+                )}
+                style={{
+                    background: 'var(--omegle-secondary)',
+                    color: 'var(--omegle-text-muted)',
+                }}
+            >
                 {target === 'stranger' ? 'Them' : 'You'}
             </div>
         </div>
