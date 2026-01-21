@@ -32,18 +32,42 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
             const parent = document.querySelector('.fixed.inset-0.z-50') || document.body;
             const rect = parent.getBoundingClientRect();
 
+            const padding = 10; // Minimum padding from edges
+            const minWidth = 280;
+            const minHeight = 200;
+
+            // Calculate dimensions from percentages
             let newWidth = (chatBox.size.width / 100) * rect.width;
             let newHeight = (chatBox.size.height / 100) * rect.height;
             let newX = (chatBox.position.x / 100) * rect.width;
             let newY = (chatBox.position.y / 100) * rect.height;
 
-            if (newWidth > rect.width) newWidth = rect.width - 20;
-            if (newHeight > rect.height) newHeight = rect.height - 20;
-            if (newX + newWidth > rect.width) newX = rect.width - newWidth - 10;
-            if (newY + newHeight > rect.height) newY = rect.height - newHeight - 10;
+            // Enforce minimum dimensions
+            newWidth = Math.max(minWidth, newWidth);
+            newHeight = Math.max(minHeight, newHeight);
 
-            newX = Math.max(0, newX);
-            newY = Math.max(0, newY);
+            // Ensure dimensions don't exceed container (with padding)
+            const maxWidth = rect.width - padding * 2;
+            const maxHeight = rect.height - padding * 2;
+            newWidth = Math.min(newWidth, maxWidth);
+            newHeight = Math.min(newHeight, maxHeight);
+
+            // Clamp position to ensure fully visible within bounds
+            // First ensure x >= padding
+            newX = Math.max(padding, newX);
+            // Then ensure right edge doesn't exceed container
+            if (newX + newWidth > rect.width - padding) {
+                newX = rect.width - newWidth - padding;
+            }
+            // Ensure x is still at least padding after adjustment
+            newX = Math.max(padding, newX);
+
+            // Same for Y
+            newY = Math.max(padding, newY);
+            if (newY + newHeight > rect.height - padding) {
+                newY = rect.height - newHeight - padding;
+            }
+            newY = Math.max(padding, newY);
 
             setChatBounds({
                 x: newX,
@@ -53,7 +77,9 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
             });
         };
 
-        const timer = setTimeout(updateBounds, 100);
+        // Run immediately and after a short delay to ensure container is ready
+        updateBounds();
+        const timer = setTimeout(updateBounds, 50);
         window.addEventListener('resize', updateBounds);
 
         return () => {
