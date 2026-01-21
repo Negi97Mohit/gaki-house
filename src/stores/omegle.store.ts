@@ -34,7 +34,11 @@ interface OmegleState {
         };
     };
 
-    // Chat themes
+    // Global Omegle themes (affects entire mode)
+    selectedOmegleTheme: string;
+    setOmegleTheme: (themeId: string) => void;
+
+    // Chat themes (legacy, for chatbox-specific styling)
     selectedChatTheme: string;
     setChatTheme: (themeId: string) => void;
 
@@ -74,6 +78,7 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     // Initial state
     isOmegleMode: false,
     selectedDesign: 'omegle-split-view',
+    selectedOmegleTheme: 'midnight-dark', // Default global theme
     selectedChatTheme: 'chic', // Default to chic modern theme
     connection: initialConnection,
     messages: [],
@@ -129,6 +134,11 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     setSelectedDesign: (designId: string) => {
         console.log('[OmegleStore] Setting design:', designId);
         set({ selectedDesign: designId });
+    },
+
+    setOmegleTheme: (themeId: string) => {
+        console.log('[OmegleStore] Setting global Omegle theme:', themeId);
+        set({ selectedOmegleTheme: themeId });
     },
 
     setChatTheme: (themeId: string) => {
