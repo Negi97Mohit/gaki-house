@@ -3,7 +3,6 @@ import { OmegleDesign } from '@/types/omegle';
 import { useOmegleStore } from '@/stores/omegle.store';
 import { getOmegleDesignNames } from '@/data/omegleDesigns';
 import { omegleThemes } from '@/data/omegleThemes';
-import { chatThemes } from '@/data/chatThemes';
 import {
     Video,
     VideoOff,
@@ -12,7 +11,6 @@ import {
     SkipForward,
     X,
     Layout,
-    MessageSquare,
     Sparkles,
     Sun,
 } from 'lucide-react';
@@ -48,8 +46,6 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
         toggleMic,
         selectedDesign,
         setSelectedDesign,
-        selectedChatTheme,
-        setChatTheme,
         selectedOmegleTheme,
         setOmegleTheme,
     } = useOmegleStore();
@@ -95,29 +91,6 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
         onFindStranger();
     };
 
-    // Shared button styles for chic minimalist look
-    const controlButtonBase = cn(
-        "h-10 w-10 rounded-full backdrop-blur-xl transition-all duration-300",
-        "border border-white/[0.08] shadow-lg shadow-black/20",
-        "hover:scale-105 hover:shadow-xl hover:shadow-black/30",
-        "active:scale-95 focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0"
-    );
-
-    const glassButton = cn(
-        controlButtonBase,
-        "bg-white/[0.06] hover:bg-white/[0.12] text-white/80 hover:text-white"
-    );
-
-    const dangerButton = cn(
-        controlButtonBase,
-        "bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border-red-500/20"
-    );
-
-    const offButton = cn(
-        controlButtonBase,
-        "bg-red-500/30 text-red-300 border-red-500/30 hover:bg-red-500/40"
-    );
-
     return (
         <div
             className="fixed top-1/2 right-4 -translate-y-1/2 z-[100]"
@@ -132,23 +105,34 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
             }}
         >
             {/* Single Vertical Island */}
-            <div className={cn(
-                "flex flex-col items-center gap-2 p-3 rounded-2xl",
-                "bg-black/40 backdrop-blur-2xl border border-white/[0.08]",
-                "shadow-2xl shadow-black/40 transition-all duration-500 ease-out",
-                !isVisible && hasStarted && 'opacity-0 translate-x-4 pointer-events-none'
-            )}>
+            <div 
+                className={cn(
+                    "flex flex-col items-center gap-2 p-3 rounded-2xl",
+                    "backdrop-blur-2xl transition-all duration-500 ease-out",
+                    !isVisible && hasStarted && 'opacity-0 translate-x-4 pointer-events-none'
+                )}
+                style={{
+                    background: 'var(--omegle-controls-background)',
+                    border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                    boxShadow: 'var(--omegle-shadow)',
+                    borderRadius: 'var(--omegle-border-radius)',
+                }}
+            >
                 {/* Find Stranger Button (only when idle) */}
                 {connection.matchStatus === 'idle' && (
                     <Button
                         onClick={handleFindStranger}
                         className={cn(
                             "h-10 w-10 rounded-full font-medium",
-                            "bg-emerald-500/90 hover:bg-emerald-400 text-white",
-                            "border border-emerald-400/30 backdrop-blur-xl",
-                            "shadow-lg shadow-emerald-500/25 hover:shadow-emerald-400/40",
+                            "border backdrop-blur-xl",
+                            "shadow-lg",
                             "transition-all duration-300 hover:scale-105 active:scale-95"
                         )}
+                        style={{
+                            background: 'var(--omegle-success)',
+                            color: 'var(--omegle-primary-foreground)',
+                            borderColor: 'var(--omegle-success)',
+                        }}
                         title="Find Stranger"
                     >
                         <Sparkles className="w-4 h-4" />
@@ -161,11 +145,15 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                         onClick={onNext}
                         className={cn(
                             "h-10 w-10 rounded-full font-medium",
-                            "bg-amber-500/90 hover:bg-amber-400 text-white",
-                            "border border-amber-400/30 backdrop-blur-xl",
-                            "shadow-lg shadow-amber-500/25 hover:shadow-amber-400/40",
+                            "border backdrop-blur-xl",
+                            "shadow-lg",
                             "transition-all duration-300 hover:scale-105 active:scale-95"
                         )}
+                        style={{
+                            background: 'var(--omegle-warning)',
+                            color: 'var(--omegle-text-inverse)',
+                            borderColor: 'var(--omegle-warning)',
+                        }}
                         title="Next Stranger"
                     >
                         <SkipForward className="w-4 h-4" />
@@ -173,14 +161,29 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                 )}
 
                 {/* Divider */}
-                <div className="w-6 h-px bg-white/10" />
+                <div 
+                    className="w-6 h-px"
+                    style={{ background: 'var(--omegle-controls-border)' }}
+                />
 
                 {/* Camera Toggle */}
                 <Button
                     onClick={toggleCamera}
                     size="icon"
                     variant="ghost"
-                    className={isCameraEnabled ? glassButton : offButton}
+                    className={cn(
+                        "h-10 w-10 rounded-full backdrop-blur-xl transition-all duration-300",
+                        "hover:scale-105 active:scale-95"
+                    )}
+                    style={{
+                        background: isCameraEnabled 
+                            ? 'var(--omegle-controls-button)' 
+                            : 'var(--omegle-error)',
+                        color: isCameraEnabled 
+                            ? 'var(--omegle-controls-icon)' 
+                            : 'var(--omegle-primary-foreground)',
+                        border: `var(--omegle-border-width) solid ${isCameraEnabled ? 'var(--omegle-controls-border)' : 'var(--omegle-error)'}`,
+                    }}
                     disabled={isSearching}
                     title={isCameraEnabled ? 'Turn off camera' : 'Turn on camera'}
                 >
@@ -196,7 +199,19 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     onClick={toggleMic}
                     size="icon"
                     variant="ghost"
-                    className={isMicEnabled ? glassButton : offButton}
+                    className={cn(
+                        "h-10 w-10 rounded-full backdrop-blur-xl transition-all duration-300",
+                        "hover:scale-105 active:scale-95"
+                    )}
+                    style={{
+                        background: isMicEnabled 
+                            ? 'var(--omegle-controls-button)' 
+                            : 'var(--omegle-error)',
+                        color: isMicEnabled 
+                            ? 'var(--omegle-controls-icon)' 
+                            : 'var(--omegle-primary-foreground)',
+                        border: `var(--omegle-border-width) solid ${isMicEnabled ? 'var(--omegle-controls-border)' : 'var(--omegle-error)'}`,
+                    }}
                     disabled={isSearching}
                     title={isMicEnabled ? 'Mute mic' : 'Unmute mic'}
                 >
@@ -208,7 +223,10 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                 </Button>
 
                 {/* Divider */}
-                <div className="w-6 h-px bg-white/10" />
+                <div 
+                    className="w-6 h-px"
+                    style={{ background: 'var(--omegle-controls-border)' }}
+                />
 
                 {/* Global Theme Picker */}
                 <DropdownMenu>
@@ -216,7 +234,15 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                         <Button
                             size="icon"
                             variant="ghost"
-                            className={glassButton}
+                            className={cn(
+                                "h-10 w-10 rounded-full backdrop-blur-xl transition-all duration-300",
+                                "hover:scale-105 active:scale-95"
+                            )}
+                            style={{
+                                background: 'var(--omegle-controls-button)',
+                                color: 'var(--omegle-controls-icon)',
+                                border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                            }}
                             title="Change Theme"
                         >
                             <Sun className="w-4 h-4" />
@@ -225,9 +251,17 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     <DropdownMenuContent 
                         side="left"
                         align="center"
-                        className="w-56 bg-black/95 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl z-[200]"
+                        className="w-56 rounded-xl shadow-2xl z-[200]"
+                        style={{
+                            background: 'var(--omegle-controls-background)',
+                            border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                            backdropFilter: 'blur(24px)',
+                        }}
                     >
-                        <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal px-3 py-2">
+                        <DropdownMenuLabel 
+                            className="text-xs uppercase tracking-wider font-normal px-3 py-2"
+                            style={{ color: 'var(--omegle-text-muted)' }}
+                        >
                             Theme
                         </DropdownMenuLabel>
                         <ScrollArea className="h-64">
@@ -237,14 +271,24 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                                         key={t.id}
                                         onClick={() => setOmegleTheme(t.id)}
                                         className={cn(
-                                            'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors px-3 py-2 mx-1',
-                                            selectedOmegleTheme === t.id && 'bg-white/15 text-white'
+                                            'cursor-pointer rounded-lg transition-colors px-3 py-2 mx-1'
                                         )}
+                                        style={{
+                                            color: selectedOmegleTheme === t.id 
+                                                ? 'var(--omegle-text)' 
+                                                : 'var(--omegle-text-muted)',
+                                            background: selectedOmegleTheme === t.id 
+                                                ? 'var(--omegle-secondary)' 
+                                                : 'transparent',
+                                        }}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div 
-                                                className="w-4 h-4 rounded-full border border-white/20"
-                                                style={{ background: t.colors.primary }}
+                                                className="w-4 h-4 rounded-full"
+                                                style={{ 
+                                                    background: t.colors.primary,
+                                                    border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                                                }}
                                             />
                                             <span>{t.name}</span>
                                         </div>
@@ -261,7 +305,15 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                         <Button
                             size="icon"
                             variant="ghost"
-                            className={glassButton}
+                            className={cn(
+                                "h-10 w-10 rounded-full backdrop-blur-xl transition-all duration-300",
+                                "hover:scale-105 active:scale-95"
+                            )}
+                            style={{
+                                background: 'var(--omegle-controls-button)',
+                                color: 'var(--omegle-controls-icon)',
+                                border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                            }}
                             title="Change Layout"
                         >
                             <Layout className="w-4 h-4" />
@@ -270,9 +322,17 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     <DropdownMenuContent 
                         side="left"
                         align="center"
-                        className="w-56 bg-black/95 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl z-[200]"
+                        className="w-56 rounded-xl shadow-2xl z-[200]"
+                        style={{
+                            background: 'var(--omegle-controls-background)',
+                            border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                            backdropFilter: 'blur(24px)',
+                        }}
                     >
-                        <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal px-3 py-2">
+                        <DropdownMenuLabel 
+                            className="text-xs uppercase tracking-wider font-normal px-3 py-2"
+                            style={{ color: 'var(--omegle-text-muted)' }}
+                        >
                             Layout
                         </DropdownMenuLabel>
                         <ScrollArea className="h-64">
@@ -282,9 +342,16 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                                         key={d.id}
                                         onClick={() => setSelectedDesign(d.id)}
                                         className={cn(
-                                            'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors px-3 py-2 mx-1',
-                                            selectedDesign === d.id && 'bg-white/15 text-white'
+                                            'cursor-pointer rounded-lg transition-colors px-3 py-2 mx-1'
                                         )}
+                                        style={{
+                                            color: selectedDesign === d.id 
+                                                ? 'var(--omegle-text)' 
+                                                : 'var(--omegle-text-muted)',
+                                            background: selectedDesign === d.id 
+                                                ? 'var(--omegle-secondary)' 
+                                                : 'transparent',
+                                        }}
                                     >
                                         {d.name}
                                     </DropdownMenuItem>
@@ -294,73 +361,62 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Chat Theme Picker */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            size="icon"
-                            variant="ghost"
-                            className={glassButton}
-                            title="Change Chat Theme"
-                        >
-                            <MessageSquare className="w-4 h-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent 
-                        side="left"
-                        align="center"
-                        className="w-56 bg-black/95 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl z-[200]"
-                    >
-                        <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal px-3 py-2">
-                            Chat Theme
-                        </DropdownMenuLabel>
-                        <ScrollArea className="h-64">
-                            <div className="px-1">
-                                {chatThemes.map((t) => (
-                                    <DropdownMenuItem
-                                        key={t.id}
-                                        onClick={() => setChatTheme(t.id)}
-                                        className={cn(
-                                            'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors px-3 py-2 mx-1',
-                                            selectedChatTheme === t.id && 'bg-white/15 text-white'
-                                        )}
-                                    >
-                                        {t.name}
-                                    </DropdownMenuItem>
-                                ))}
-                            </div>
-                        </ScrollArea>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
                 {/* Divider */}
-                <div className="w-6 h-px bg-white/10" />
+                <div 
+                    className="w-6 h-px"
+                    style={{ background: 'var(--omegle-controls-border)' }}
+                />
 
                 {/* Stop/Exit Button */}
                 <Button
                     onClick={onStop}
                     size="icon"
                     variant="ghost"
-                    className={dangerButton}
+                    className={cn(
+                        "h-10 w-10 rounded-full backdrop-blur-xl transition-all duration-300",
+                        "hover:scale-105 active:scale-95"
+                    )}
+                    style={{
+                        background: 'var(--omegle-error)',
+                        color: 'var(--omegle-primary-foreground)',
+                        border: 'var(--omegle-border-width) solid var(--omegle-error)',
+                        opacity: 0.8,
+                    }}
                     title="Exit Omegle Mode"
                 >
                     <X className="w-4 h-4" />
                 </Button>
 
                 {/* Connection Status Indicator */}
-                <div className={cn(
-                    "flex items-center justify-center w-full px-2 py-1.5 rounded-full",
-                    "bg-black/30 border border-white/[0.05]",
-                    "transition-all duration-300"
-                )}>
-                    <div className={cn(
-                        'w-1.5 h-1.5 rounded-full transition-colors duration-300 mr-1.5',
-                        isConnected && 'bg-emerald-400 shadow-sm shadow-emerald-400/50',
-                        isSearching && 'bg-amber-400 animate-pulse shadow-sm shadow-amber-400/50',
-                        connection.matchStatus === 'idle' && 'bg-white/30',
-                        connection.matchStatus === 'disconnected' && 'bg-white/20'
-                    )} />
-                    <span className="text-[10px] text-white/60 font-medium tracking-wide">
+                <div 
+                    className={cn(
+                        "flex items-center justify-center w-full px-2 py-1.5 rounded-full",
+                        "transition-all duration-300"
+                    )}
+                    style={{
+                        background: 'var(--omegle-secondary)',
+                        border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
+                    }}
+                >
+                    <div 
+                        className={cn(
+                            'w-1.5 h-1.5 rounded-full transition-colors duration-300 mr-1.5'
+                        )}
+                        style={{
+                            background: isConnected 
+                                ? 'var(--omegle-success)' 
+                                : isSearching 
+                                    ? 'var(--omegle-warning)' 
+                                    : 'var(--omegle-text-muted)',
+                            boxShadow: isConnected || isSearching 
+                                ? `0 0 6px ${isConnected ? 'var(--omegle-success)' : 'var(--omegle-warning)'}` 
+                                : 'none',
+                        }}
+                    />
+                    <span 
+                        className="text-[10px] font-medium tracking-wide"
+                        style={{ color: 'var(--omegle-text-muted)' }}
+                    >
                         {isConnected && 'Live'}
                         {isSearching && '...'}
                         {connection.matchStatus === 'idle' && 'Ready'}

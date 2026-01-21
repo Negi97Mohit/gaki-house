@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { useOmegleStore } from '@/stores/omegle.store';
 import { OmegleDesign } from '@/types/omegle';
-import { getChatTheme } from '@/data/chatThemes';
 import { cn } from '@/shared/lib/utils';
 import { Send, GripHorizontal } from 'lucide-react';
 
@@ -12,11 +11,10 @@ interface OmegleChatBoxProps {
 }
 
 export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMessage }) => {
-    const { messages, selectedChatTheme } = useOmegleStore();
+    const { messages } = useOmegleStore();
     const [inputValue, setInputValue] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
-    const theme = getChatTheme(selectedChatTheme);
 
     const [chatBounds, setChatBounds] = useState({
         x: 0,
@@ -32,37 +30,29 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
             const parent = document.querySelector('.fixed.inset-0.z-50') || document.body;
             const rect = parent.getBoundingClientRect();
 
-            const padding = 10; // Minimum padding from edges
+            const padding = 10;
             const minWidth = 280;
             const minHeight = 200;
 
-            // Calculate dimensions from percentages
             let newWidth = (chatBox.size.width / 100) * rect.width;
             let newHeight = (chatBox.size.height / 100) * rect.height;
             let newX = (chatBox.position.x / 100) * rect.width;
             let newY = (chatBox.position.y / 100) * rect.height;
 
-            // Enforce minimum dimensions
             newWidth = Math.max(minWidth, newWidth);
             newHeight = Math.max(minHeight, newHeight);
 
-            // Ensure dimensions don't exceed container (with padding)
             const maxWidth = rect.width - padding * 2;
             const maxHeight = rect.height - padding * 2;
             newWidth = Math.min(newWidth, maxWidth);
             newHeight = Math.min(newHeight, maxHeight);
 
-            // Clamp position to ensure fully visible within bounds
-            // First ensure x >= padding
             newX = Math.max(padding, newX);
-            // Then ensure right edge doesn't exceed container
             if (newX + newWidth > rect.width - padding) {
                 newX = rect.width - newWidth - padding;
             }
-            // Ensure x is still at least padding after adjustment
             newX = Math.max(padding, newX);
 
-            // Same for Y
             newY = Math.max(padding, newY);
             if (newY + newHeight > rect.height - padding) {
                 newY = rect.height - newHeight - padding;
@@ -77,7 +67,6 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
             });
         };
 
-        // Run immediately and after a short delay to ensure container is ready
         updateBounds();
         const timer = setTimeout(updateBounds, 50);
         window.addEventListener('resize', updateBounds);
@@ -157,24 +146,46 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
             <div
                 className={cn(
                     "flex flex-col h-full overflow-hidden transition-all duration-300",
-                    theme.containerClass
+                    "backdrop-blur-xl"
                 )}
-                style={chatBox.style}
+                style={{
+                    ...chatBox.style,
+                    background: 'var(--omegle-chat-background)',
+                    border: 'var(--omegle-border-width) solid var(--omegle-chat-border)',
+                    borderRadius: 'var(--omegle-border-radius)',
+                    boxShadow: 'var(--omegle-shadow)',
+                }}
             >
                 {/* Chat Header - Drag handle */}
-                <div className={cn(
-                    "px-4 py-3 flex items-center justify-between cursor-move chat-drag-handle select-none",
-                    "border-b border-white/[0.05]",
-                    theme.headerClass
-                )}>
+                <div 
+                    className={cn(
+                        "px-4 py-3 flex items-center justify-between cursor-move chat-drag-handle select-none"
+                    )}
+                    style={{
+                        borderBottom: 'var(--omegle-border-width) solid var(--omegle-chat-border)',
+                    }}
+                >
                     <div className="flex items-center gap-3">
-                        <GripHorizontal className="w-4 h-4 opacity-30" />
-                        <span className="text-xs font-medium tracking-wide opacity-80">Messages</span>
+                        <GripHorizontal 
+                            className="w-4 h-4" 
+                            style={{ color: 'var(--omegle-text-muted)', opacity: 0.5 }}
+                        />
+                        <span 
+                            className="text-xs font-medium tracking-wide"
+                            style={{ color: 'var(--omegle-chat-text)', opacity: 0.8 }}
+                        >
+                            Messages
+                        </span>
                     </div>
-                    <div className={cn(
-                        "px-2 py-0.5 rounded-full text-[10px] font-medium",
-                        "bg-white/[0.06] text-white/50"
-                    )}>
+                    <div 
+                        className={cn(
+                            "px-2 py-0.5 rounded-full text-[10px] font-medium"
+                        )}
+                        style={{
+                            background: 'var(--omegle-secondary)',
+                            color: 'var(--omegle-text-muted)',
+                        }}
+                    >
                         {messages.length}
                     </div>
                 </div>
@@ -182,17 +193,32 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                 {/* Messages Area */}
                 <div className={cn(
                     "flex-1 overflow-y-auto px-4 py-3 space-y-3",
-                    "scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent",
-                    theme.messageListClass
+                    "scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
                 )}>
                     {messages.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center space-y-3 py-8">
-                            <div className="w-12 h-12 rounded-full bg-white/[0.03] flex items-center justify-center">
-                                <Send className="w-5 h-5 opacity-20" />
+                            <div 
+                                className="w-12 h-12 rounded-full flex items-center justify-center"
+                                style={{ background: 'var(--omegle-secondary)' }}
+                            >
+                                <Send 
+                                    className="w-5 h-5" 
+                                    style={{ color: 'var(--omegle-text-muted)', opacity: 0.4 }}
+                                />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-sm font-medium opacity-40">No messages yet</p>
-                                <p className="text-xs opacity-25">Start the conversation</p>
+                                <p 
+                                    className="text-sm font-medium"
+                                    style={{ color: 'var(--omegle-text-muted)' }}
+                                >
+                                    No messages yet
+                                </p>
+                                <p 
+                                    className="text-xs"
+                                    style={{ color: 'var(--omegle-text-muted)', opacity: 0.6 }}
+                                >
+                                    Start the conversation
+                                </p>
                             </div>
                         </div>
                     ) : (
@@ -209,13 +235,24 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                                         'px-4 py-2.5 text-sm break-words leading-relaxed',
                                         'transition-all duration-200',
                                         msg.isLocal
-                                            ? `rounded-2xl rounded-br-md ${theme.localBubbleClass}`
-                                            : `rounded-2xl rounded-bl-md ${theme.remoteBubbleClass}`
+                                            ? 'rounded-2xl rounded-br-md'
+                                            : 'rounded-2xl rounded-bl-md'
                                     )}
+                                    style={{
+                                        background: msg.isLocal 
+                                            ? 'var(--omegle-chat-message-local)' 
+                                            : 'var(--omegle-chat-message-stranger)',
+                                        color: msg.isLocal 
+                                            ? 'var(--omegle-primary-foreground)' 
+                                            : 'var(--omegle-chat-text)',
+                                    }}
                                 >
                                     {msg.text}
                                 </div>
-                                <span className="text-[10px] mt-1.5 px-1 opacity-30 select-none font-medium">
+                                <span 
+                                    className="text-[10px] mt-1.5 px-1 select-none font-medium"
+                                    style={{ color: 'var(--omegle-text-muted)', opacity: 0.5 }}
+                                >
                                     {new Date(msg.timestamp).toLocaleTimeString([], {
                                         hour: '2-digit',
                                         minute: '2-digit',
@@ -228,10 +265,12 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                 </div>
 
                 {/* Input Area */}
-                <div className={cn(
-                    "p-3 border-t border-white/[0.05]",
-                    theme.inputAreaClass
-                )}>
+                <div 
+                    className="p-3"
+                    style={{
+                        borderTop: 'var(--omegle-border-width) solid var(--omegle-chat-border)',
+                    }}
+                >
                     <div className="flex gap-2 items-center">
                         <input
                             type="text"
@@ -242,9 +281,13 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                             className={cn(
                                 "flex-1 h-10 rounded-full px-4 text-sm",
                                 "transition-all duration-200",
-                                "focus:outline-none focus:ring-2 focus:ring-white/10 focus:ring-offset-0",
-                                theme.inputClass
+                                "focus:outline-none focus:ring-2 focus:ring-offset-0"
                             )}
+                            style={{
+                                background: 'var(--omegle-chat-input-background)',
+                                border: 'var(--omegle-border-width) solid var(--omegle-chat-input-border)',
+                                color: 'var(--omegle-chat-text)',
+                            }}
                         />
                         <button
                             onClick={handleSend}
@@ -253,9 +296,12 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                                 "h-10 w-10 rounded-full flex items-center justify-center",
                                 "transition-all duration-200",
                                 "disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100",
-                                "hover:scale-105 active:scale-95",
-                                theme.buttonClass
+                                "hover:scale-105 active:scale-95"
                             )}
+                            style={{
+                                background: 'var(--omegle-primary)',
+                                color: 'var(--omegle-primary-foreground)',
+                            }}
                         >
                             <Send className="w-4 h-4" />
                         </button>
