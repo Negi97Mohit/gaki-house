@@ -262,11 +262,14 @@ export const OmegleMode: React.FC = () => {
     };
 
     const handleNextStranger = () => {
+        if (signalingRef.current) {
+            signalingRef.current.nextStranger();
+        }
+
         handleDisconnect();
         setMatchStatus('searching');
 
         if (signalingRef.current) {
-            signalingRef.current.nextStranger();
             signalingRef.current.requestMatch();
         }
     };

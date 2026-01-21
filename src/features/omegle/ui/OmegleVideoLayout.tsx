@@ -43,11 +43,37 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
         }
 
         const videoTrack = videoTracks[0];
-        setIsRemoteCameraEnabled(videoTrack.enabled && videoTrack.readyState === 'live');
 
-        const handleMute = () => setIsRemoteCameraEnabled(false);
-        const handleUnmute = () => setIsRemoteCameraEnabled(true);
-        const handleEnded = () => setIsRemoteCameraEnabled(false);
+        // Initial state check - check if enabled AND not muted
+        // Notes: 
+        // - 'enabled' is the local switch (sender side)
+        // - 'muted' can be true on receiver side if no data is flowing or sender disabled it
+        const checkStatus = () => {
+            const isEnabled = videoTrack.enabled;
+            const isLive = videoTrack.readyState === 'live';
+            const isMuted = videoTrack.muted;
+
+            console.log('[OmegleVideoLayout] Track status:', { isEnabled, isLive, isMuted });
+            setIsRemoteCameraEnabled(isEnabled && isLive && !isMuted);
+        };
+
+        checkStatus();
+
+        const handleMute = () => {
+            console.log('[OmegleVideoLayout] Remote track muted');
+            setIsRemoteCameraEnabled(false);
+        };
+
+        const handleUnmute = () => {
+            console.log('[OmegleVideoLayout] Remote track unmuted');
+            // Re-verify status on unmute
+            checkStatus();
+        };
+
+        const handleEnded = () => {
+            console.log('[OmegleVideoLayout] Remote track ended');
+            setIsRemoteCameraEnabled(false);
+        };
 
         videoTrack.addEventListener('mute', handleMute);
         videoTrack.addEventListener('unmute', handleUnmute);
@@ -163,7 +189,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                     "flex flex-col items-center gap-3",
                     "animate-fade-in"
                 )}>
-                    <div 
+                    <div
                         className={cn(
                             "w-14 h-14 rounded-full flex items-center justify-center",
                             "backdrop-blur-sm"
@@ -173,15 +199,15 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                             border: '1px solid var(--omegle-video-border)',
                         }}
                     >
-                        <VideoOff 
+                        <VideoOff
                             className={cn(
                                 "opacity-60",
                                 isLocal ? "w-5 h-5" : "w-6 h-6"
-                            )} 
+                            )}
                             style={{ color: 'var(--omegle-text-muted)' }}
                         />
                     </div>
-                    <p 
+                    <p
                         className="text-xs font-medium tracking-wide"
                         style={{ color: 'var(--omegle-text-muted)' }}
                     >
@@ -220,14 +246,14 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                 disableDragging={videoTransforms.stranger.locked}
                 enableResizing={!videoTransforms.stranger.locked}
             >
-                <div 
+                <div
                     className={cn(
                         "relative w-full h-full overflow-hidden",
                         "transition-shadow duration-300"
                     )}
                     style={{
-                        borderRadius: strangerVideo.borderRadius 
-                            ? `${strangerVideo.borderRadius}px` 
+                        borderRadius: strangerVideo.borderRadius
+                            ? `${strangerVideo.borderRadius}px`
                             : 'var(--omegle-border-radius)',
                         boxShadow: 'var(--omegle-shadow)',
                         border: 'var(--omegle-border-width) solid var(--omegle-video-border)',
@@ -262,7 +288,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                     />
 
                     {/* Minimal resize hint */}
-                    <div 
+                    <div
                         className={cn(
                             "absolute bottom-2 right-2 px-2 py-1 rounded-full",
                             "text-[10px] font-medium",
@@ -306,16 +332,16 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                 disableDragging={videoTransforms.local.locked}
                 enableResizing={!videoTransforms.local.locked}
             >
-                <div 
+                <div
                     className={cn(
                         "relative w-full h-full overflow-hidden",
                         "transition-all duration-300"
                     )}
                     style={{
-                        borderRadius: localVideo.shape === 'circle' 
-                            ? '50%' 
-                            : localVideo.borderRadius 
-                                ? `${localVideo.borderRadius}px` 
+                        borderRadius: localVideo.shape === 'circle'
+                            ? '50%'
+                            : localVideo.borderRadius
+                                ? `${localVideo.borderRadius}px`
                                 : 'var(--omegle-border-radius)',
                         boxShadow: 'var(--omegle-shadow)',
                         border: 'var(--omegle-border-width) solid var(--omegle-video-border)',
@@ -351,7 +377,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                     />
 
                     {/* Minimal resize hint */}
-                    <div 
+                    <div
                         className={cn(
                             "absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded-full",
                             "text-[9px] font-medium",
@@ -371,14 +397,14 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
 
             {/* Connection Status Overlay - Themed */}
             {connection.matchStatus !== 'connected' && (
-                <div 
+                <div
                     className={cn(
                         "absolute inset-0 flex items-center justify-center z-10",
                         "backdrop-blur-md"
                     )}
                     style={{ background: 'var(--omegle-video-overlay)' }}
                 >
-                    <div 
+                    <div
                         className={cn(
                             "text-center p-8 rounded-3xl",
                             "backdrop-blur-xl",
@@ -394,25 +420,25 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                         {connection.matchStatus === 'searching' && (
                             <div className="flex flex-col items-center gap-4">
                                 <div className="relative">
-                                    <Loader2 
-                                        className="w-10 h-10 animate-spin" 
+                                    <Loader2
+                                        className="w-10 h-10 animate-spin"
                                         style={{ color: 'var(--omegle-primary)' }}
                                     />
                                     <div className="absolute inset-0 animate-ping opacity-20">
-                                        <Loader2 
-                                            className="w-10 h-10" 
+                                        <Loader2
+                                            className="w-10 h-10"
                                             style={{ color: 'var(--omegle-primary)' }}
                                         />
                                     </div>
                                 </div>
                                 <div className="space-y-1">
-                                    <p 
+                                    <p
                                         className="text-lg font-medium"
                                         style={{ color: 'var(--omegle-text)' }}
                                     >
                                         Finding someone
                                     </p>
-                                    <p 
+                                    <p
                                         className="text-sm"
                                         style={{ color: 'var(--omegle-text-muted)' }}
                                     >
@@ -423,7 +449,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                         )}
                         {connection.matchStatus === 'idle' && (
                             <div className="flex flex-col items-center gap-4">
-                                <div 
+                                <div
                                     className={cn(
                                         "w-16 h-16 rounded-full flex items-center justify-center"
                                     )}
@@ -432,19 +458,19 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                                         border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
                                     }}
                                 >
-                                    <Users 
-                                        className="w-7 h-7" 
+                                    <Users
+                                        className="w-7 h-7"
                                         style={{ color: 'var(--omegle-text-muted)' }}
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <p 
+                                    <p
                                         className="text-lg font-medium"
                                         style={{ color: 'var(--omegle-text)' }}
                                     >
                                         Ready to connect
                                     </p>
-                                    <p 
+                                    <p
                                         className="text-sm"
                                         style={{ color: 'var(--omegle-text-muted)' }}
                                     >
@@ -455,7 +481,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                         )}
                         {connection.matchStatus === 'disconnected' && (
                             <div className="flex flex-col items-center gap-4">
-                                <div 
+                                <div
                                     className={cn(
                                         "w-16 h-16 rounded-full flex items-center justify-center"
                                     )}
@@ -464,19 +490,19 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
                                         opacity: 0.15,
                                     }}
                                 >
-                                    <Users 
-                                        className="w-7 h-7" 
+                                    <Users
+                                        className="w-7 h-7"
                                         style={{ color: 'var(--omegle-warning)' }}
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <p 
+                                    <p
                                         className="text-lg font-medium"
                                         style={{ color: 'var(--omegle-text)' }}
                                     >
                                         They left
                                     </p>
-                                    <p 
+                                    <p
                                         className="text-sm"
                                         style={{ color: 'var(--omegle-text-muted)' }}
                                     >
