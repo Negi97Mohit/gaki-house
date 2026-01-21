@@ -76,20 +76,65 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
         if (containerRef.current) {
             const rect = containerRef.current.getBoundingClientRect();
             const { strangerVideo, localVideo } = design.layout;
+            const padding = 8;
 
-            setStrangerBounds({
-                x: (strangerVideo.position.x / 100) * rect.width,
-                y: (strangerVideo.position.y / 100) * rect.height,
-                width: (strangerVideo.size.width / 100) * rect.width,
-                height: (strangerVideo.size.height / 100) * rect.height,
-            });
+            // Helper to clamp bounds within container
+            const clampBounds = (
+                posX: number,
+                posY: number,
+                w: number,
+                h: number,
+                minW: number,
+                minH: number
+            ) => {
+                let width = (w / 100) * rect.width;
+                let height = (h / 100) * rect.height;
+                let x = (posX / 100) * rect.width;
+                let y = (posY / 100) * rect.height;
 
-            setLocalBounds({
-                x: (localVideo.position.x / 100) * rect.width,
-                y: (localVideo.position.y / 100) * rect.height,
-                width: (localVideo.size.width / 100) * rect.width,
-                height: (localVideo.size.height / 100) * rect.height,
-            });
+                // Enforce minimums
+                width = Math.max(minW, width);
+                height = Math.max(minH, height);
+
+                // Clamp to container bounds
+                const maxWidth = rect.width - padding * 2;
+                const maxHeight = rect.height - padding * 2;
+                width = Math.min(width, maxWidth);
+                height = Math.min(height, maxHeight);
+
+                // Ensure position keeps element fully visible
+                x = Math.max(padding, x);
+                if (x + width > rect.width - padding) {
+                    x = rect.width - width - padding;
+                }
+                x = Math.max(padding, x);
+
+                y = Math.max(padding, y);
+                if (y + height > rect.height - padding) {
+                    y = rect.height - height - padding;
+                }
+                y = Math.max(padding, y);
+
+                return { x, y, width, height };
+            };
+
+            setStrangerBounds(clampBounds(
+                strangerVideo.position.x,
+                strangerVideo.position.y,
+                strangerVideo.size.width,
+                strangerVideo.size.height,
+                200,
+                150
+            ));
+
+            setLocalBounds(clampBounds(
+                localVideo.position.x,
+                localVideo.position.y,
+                localVideo.size.width,
+                localVideo.size.height,
+                100,
+                75
+            ));
         }
     }, [design]);
 
