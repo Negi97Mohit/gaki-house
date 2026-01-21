@@ -4,7 +4,7 @@ import { useOmegleStore } from '@/stores/omegle.store';
 import { OmegleDesign } from '@/types/omegle';
 import { getChatTheme } from '@/data/chatThemes';
 import { cn } from '@/shared/lib/utils';
-import { Send } from 'lucide-react';
+import { Send, GripHorizontal } from 'lucide-react';
 
 interface OmegleChatBoxProps {
     design: OmegleDesign;
@@ -18,7 +18,6 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
     const containerRef = useRef<HTMLDivElement>(null);
     const theme = getChatTheme(selectedChatTheme);
 
-    // Track chat position and size
     const [chatBounds, setChatBounds] = useState({
         x: 0,
         y: 0,
@@ -28,26 +27,21 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
 
     const { chatBox } = design.layout;
 
-    // Initialize chat position from design with boundary checks
     useEffect(() => {
         const updateBounds = () => {
-            // Get view dimensions (fallback to window if parent not found immediately)
             const parent = document.querySelector('.fixed.inset-0.z-50') || document.body;
             const rect = parent.getBoundingClientRect();
 
-            // Calculate initial dimensions based on percentage
             let newWidth = (chatBox.size.width / 100) * rect.width;
             let newHeight = (chatBox.size.height / 100) * rect.height;
             let newX = (chatBox.position.x / 100) * rect.width;
             let newY = (chatBox.position.y / 100) * rect.height;
 
-            // Constrain constraints
             if (newWidth > rect.width) newWidth = rect.width - 20;
             if (newHeight > rect.height) newHeight = rect.height - 20;
             if (newX + newWidth > rect.width) newX = rect.width - newWidth - 10;
             if (newY + newHeight > rect.height) newY = rect.height - newHeight - 10;
 
-            // Ensure non-negative
             newX = Math.max(0, newX);
             newY = Math.max(0, newY);
 
@@ -59,7 +53,6 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
             });
         };
 
-        // Delay slightly to ensure parent is ready
         const timer = setTimeout(updateBounds, 100);
         window.addEventListener('resize', updateBounds);
 
@@ -69,7 +62,6 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
         };
     }, [chatBox]);
 
-    // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
@@ -93,18 +85,14 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
             position={{ x: chatBounds.x, y: chatBounds.y }}
             size={{ width: chatBounds.width, height: chatBounds.height }}
             onDragStop={(e, d) => {
-                // Ensure drag stays within bounds
                 const parent = document.querySelector('.fixed.inset-0.z-50') || document.body;
                 const rect = parent.getBoundingClientRect();
 
                 let newX = d.x;
                 let newY = d.y;
 
-                // Clamp X
                 if (newX < 0) newX = 0;
                 if (newX + chatBounds.width > rect.width) newX = rect.width - chatBounds.width;
-
-                // Clamp Y
                 if (newY < 0) newY = 0;
                 if (newY + chatBounds.height > rect.height) newY = rect.height - chatBounds.height;
 
@@ -114,17 +102,13 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                 const parent = document.querySelector('.fixed.inset-0.z-50') || document.body;
                 const rect = parent.getBoundingClientRect();
 
-                // Parse new dimensions
                 let newWidth = parseInt(ref.style.width);
                 let newHeight = parseInt(ref.style.height);
                 let newX = position.x;
                 let newY = position.y;
 
-                // Constraint Logic
                 if (newWidth > rect.width) newWidth = rect.width;
                 if (newHeight > rect.height) newHeight = rect.height;
-
-                // If resize pushes out of bounds, adjust position or size
                 if (newX < 0) newX = 0;
                 if (newY < 0) newY = 0;
                 if (newX + newWidth > rect.width) newX = rect.width - newWidth;
@@ -137,66 +121,75 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                     height: newHeight,
                 });
             }}
-            bounds=".fixed.inset-0.z-50" // Constrain to the main container
+            bounds=".fixed.inset-0.z-50"
             minWidth={280}
             minHeight={200}
             style={{ zIndex: chatBox.zIndex }}
-            enableResizing={!chatBox.collapsed} // Disable resize if collapsed (future feature)
+            enableResizing={!chatBox.collapsed}
             dragHandleClassName="chat-drag-handle"
         >
             <div
                 className={cn(
-                    "flex flex-col h-full overflow-hidden transition-colors duration-300",
+                    "flex flex-col h-full overflow-hidden transition-all duration-300",
                     theme.containerClass
                 )}
                 style={chatBox.style}
             >
                 {/* Chat Header - Drag handle */}
                 <div className={cn(
-                    "px-3 py-2.5 flex items-center justify-between cursor-move chat-drag-handle select-none",
+                    "px-4 py-3 flex items-center justify-between cursor-move chat-drag-handle select-none",
+                    "border-b border-white/[0.05]",
                     theme.headerClass
                 )}>
-                    <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium opacity-90">💬 Chat</span>
-                        <span className="text-[10px] opacity-50 px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10">
-                            {messages.length}
-                        </span>
+                    <div className="flex items-center gap-3">
+                        <GripHorizontal className="w-4 h-4 opacity-30" />
+                        <span className="text-xs font-medium tracking-wide opacity-80">Messages</span>
+                    </div>
+                    <div className={cn(
+                        "px-2 py-0.5 rounded-full text-[10px] font-medium",
+                        "bg-white/[0.06] text-white/50"
+                    )}>
+                        {messages.length}
                     </div>
                 </div>
 
                 {/* Messages Area */}
                 <div className={cn(
-                    "flex-1 overflow-y-auto px-3 py-2 space-y-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent",
+                    "flex-1 overflow-y-auto px-4 py-3 space-y-3",
+                    "scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent",
                     theme.messageListClass
                 )}>
                     {messages.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full text-center opacity-40 text-sm space-y-2 p-4">
-                            <p>No messages yet.</p>
-                            <p className="text-xs">Say hello to break the ice! 👋</p>
+                        <div className="flex flex-col items-center justify-center h-full text-center space-y-3 py-8">
+                            <div className="w-12 h-12 rounded-full bg-white/[0.03] flex items-center justify-center">
+                                <Send className="w-5 h-5 opacity-20" />
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium opacity-40">No messages yet</p>
+                                <p className="text-xs opacity-25">Start the conversation</p>
+                            </div>
                         </div>
                     ) : (
                         messages.map((msg) => (
                             <div
                                 key={msg.id}
                                 className={cn(
-                                    'flex flex-col max-w-[85%]',
+                                    'flex flex-col max-w-[80%] animate-fade-in',
                                     msg.isLocal ? 'ml-auto items-end' : 'mr-auto items-start'
                                 )}
                             >
                                 <div
                                     className={cn(
-                                        'px-3 py-2 text-sm break-words shadow-sm',
+                                        'px-4 py-2.5 text-sm break-words leading-relaxed',
+                                        'transition-all duration-200',
                                         msg.isLocal
-                                            ? `rounded-2xl rounded-tr-none ${theme.localBubbleClass}`
-                                            : `rounded-2xl rounded-tl-none ${theme.remoteBubbleClass}`
+                                            ? `rounded-2xl rounded-br-md ${theme.localBubbleClass}`
+                                            : `rounded-2xl rounded-bl-md ${theme.remoteBubbleClass}`
                                     )}
                                 >
                                     {msg.text}
                                 </div>
-                                <span className={cn(
-                                    "text-[10px] mt-1 px-1 opacity-40 select-none",
-                                    theme.messageListClass.includes('transparent') ? 'text-current mix-blend-plus-lighter' : 'text-gray-400'
-                                )}>
+                                <span className="text-[10px] mt-1.5 px-1 opacity-30 select-none font-medium">
                                     {new Date(msg.timestamp).toLocaleTimeString([], {
                                         hour: '2-digit',
                                         minute: '2-digit',
@@ -209,8 +202,11 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                 </div>
 
                 {/* Input Area */}
-                <div className={cn("p-3 backdrop-blur-sm", theme.inputAreaClass)}>
-                    <div className="flex gap-2 relative">
+                <div className={cn(
+                    "p-3 border-t border-white/[0.05]",
+                    theme.inputAreaClass
+                )}>
+                    <div className="flex gap-2 items-center">
                         <input
                             type="text"
                             value={inputValue}
@@ -218,7 +214,9 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                             onKeyPress={handleKeyPress}
                             placeholder="Type a message..."
                             className={cn(
-                                "flex-1 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-inner",
+                                "flex-1 h-10 rounded-full px-4 text-sm",
+                                "transition-all duration-200",
+                                "focus:outline-none focus:ring-2 focus:ring-white/10 focus:ring-offset-0",
                                 theme.inputClass
                             )}
                         />
@@ -226,7 +224,10 @@ export const OmegleChatBox: React.FC<OmegleChatBoxProps> = ({ design, onSendMess
                             onClick={handleSend}
                             disabled={!inputValue.trim()}
                             className={cn(
-                                "px-3 py-2 rounded-lg transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed",
+                                "h-10 w-10 rounded-full flex items-center justify-center",
+                                "transition-all duration-200",
+                                "disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100",
+                                "hover:scale-105 active:scale-95",
                                 theme.buttonClass
                             )}
                         >

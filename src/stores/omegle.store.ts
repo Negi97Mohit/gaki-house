@@ -74,7 +74,7 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     // Initial state
     isOmegleMode: false,
     selectedDesign: 'omegle-split-view',
-    selectedChatTheme: 'dark', // Default theme
+    selectedChatTheme: 'chic', // Default to chic modern theme
     connection: initialConnection,
     messages: [],
     isCameraEnabled: true,
