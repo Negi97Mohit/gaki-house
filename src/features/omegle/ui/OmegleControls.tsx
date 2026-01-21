@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { OmegleDesign } from '@/types/omegle';
 import { useOmegleStore } from '@/stores/omegle.store';
 import { getOmegleDesignNames } from '@/data/omegleDesigns';
+import { omegleThemes } from '@/data/omegleThemes';
 import { chatThemes } from '@/data/chatThemes';
 import {
     Video,
@@ -10,9 +11,10 @@ import {
     MicOff,
     SkipForward,
     X,
-    Palette,
+    Layout,
     MessageSquare,
     Sparkles,
+    Sun,
 } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
@@ -21,9 +23,9 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-    DropdownMenuSeparator,
     DropdownMenuLabel,
 } from '@/shared/ui/dropdown-menu';
+import { ScrollArea } from '@/shared/ui/scroll-area';
 
 interface OmegleControlsProps {
     design: OmegleDesign;
@@ -48,6 +50,8 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
         setSelectedDesign,
         selectedChatTheme,
         setChatTheme,
+        selectedOmegleTheme,
+        setOmegleTheme,
     } = useOmegleStore();
 
     const [isVisible, setIsVisible] = useState(true);
@@ -91,28 +95,9 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
         onFindStranger();
     };
 
-    const getPositionClasses = () => {
-        const base = 'absolute flex flex-col items-center gap-1.5 transition-all duration-500 ease-out';
-
-        switch (controls.position) {
-            case 'top-left':
-                return `${base} top-4 left-4`;
-            case 'top-right':
-                return `${base} top-4 right-4`;
-            case 'top-center':
-                return `${base} top-4 right-4`;
-            case 'bottom-left':
-                return `${base} bottom-4 left-4`;
-            case 'bottom-right':
-                return `${base} bottom-4 right-4`;
-            default:
-                return `${base} top-4 right-4`;
-        }
-    };
-
     // Shared button styles for chic minimalist look
     const controlButtonBase = cn(
-        "h-9 w-9 rounded-full backdrop-blur-xl transition-all duration-300",
+        "h-10 w-10 rounded-full backdrop-blur-xl transition-all duration-300",
         "border border-white/[0.08] shadow-lg shadow-black/20",
         "hover:scale-105 hover:shadow-xl hover:shadow-black/30",
         "active:scale-95 focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-0"
@@ -128,11 +113,6 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
         "bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border-red-500/20"
     );
 
-    const activeButton = cn(
-        controlButtonBase,
-        "bg-white/[0.12] text-white border-white/20"
-    );
-
     const offButton = cn(
         controlButtonBase,
         "bg-red-500/30 text-red-300 border-red-500/30 hover:bg-red-500/40"
@@ -140,14 +120,7 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
 
     return (
         <div
-            className={cn(
-                getPositionClasses(),
-                "p-3"
-            )}
-            style={{
-                zIndex: 100,
-                ...controls.style,
-            }}
+            className="fixed top-1/2 right-4 -translate-y-1/2 z-[100]"
             onMouseEnter={() => {
                 clearHideTimer();
                 setIsVisible(true);
@@ -158,8 +131,11 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                 }
             }}
         >
+            {/* Single Vertical Island */}
             <div className={cn(
-                "flex flex-col items-center gap-2 transition-all duration-500 ease-out",
+                "flex flex-col items-center gap-2 p-3 rounded-2xl",
+                "bg-black/40 backdrop-blur-2xl border border-white/[0.08]",
+                "shadow-2xl shadow-black/40 transition-all duration-500 ease-out",
                 !isVisible && hasStarted && 'opacity-0 translate-x-4 pointer-events-none'
             )}>
                 {/* Find Stranger Button (only when idle) */}
@@ -167,15 +143,15 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     <Button
                         onClick={handleFindStranger}
                         className={cn(
-                            "h-10 px-5 rounded-full font-medium text-sm tracking-wide",
+                            "h-10 w-10 rounded-full font-medium",
                             "bg-emerald-500/90 hover:bg-emerald-400 text-white",
                             "border border-emerald-400/30 backdrop-blur-xl",
                             "shadow-lg shadow-emerald-500/25 hover:shadow-emerald-400/40",
                             "transition-all duration-300 hover:scale-105 active:scale-95"
                         )}
+                        title="Find Stranger"
                     >
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        Connect
+                        <Sparkles className="w-4 h-4" />
                     </Button>
                 )}
 
@@ -184,150 +160,211 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     <Button
                         onClick={onNext}
                         className={cn(
-                            "h-10 px-5 rounded-full font-medium text-sm tracking-wide",
+                            "h-10 w-10 rounded-full font-medium",
                             "bg-amber-500/90 hover:bg-amber-400 text-white",
                             "border border-amber-400/30 backdrop-blur-xl",
                             "shadow-lg shadow-amber-500/25 hover:shadow-amber-400/40",
                             "transition-all duration-300 hover:scale-105 active:scale-95"
                         )}
+                        title="Next Stranger"
                     >
-                        <SkipForward className="w-4 h-4 mr-2" />
-                        Next
+                        <SkipForward className="w-4 h-4" />
                     </Button>
                 )}
 
-                {/* Media Controls Row */}
-                <div className="flex items-center gap-1.5 p-1 rounded-full bg-black/20 backdrop-blur-xl border border-white/[0.05]">
-                    {/* Camera Toggle */}
-                    <Button
-                        onClick={toggleCamera}
-                        size="icon"
-                        variant="ghost"
-                        className={isCameraEnabled ? glassButton : offButton}
-                        disabled={isSearching}
-                    >
-                        {isCameraEnabled ? (
-                            <Video className="w-4 h-4" />
-                        ) : (
-                            <VideoOff className="w-4 h-4" />
-                        )}
-                    </Button>
+                {/* Divider */}
+                <div className="w-6 h-px bg-white/10" />
 
-                    {/* Mic Toggle */}
-                    <Button
-                        onClick={toggleMic}
-                        size="icon"
-                        variant="ghost"
-                        className={isMicEnabled ? glassButton : offButton}
-                        disabled={isSearching}
-                    >
-                        {isMicEnabled ? (
-                            <Mic className="w-4 h-4" />
-                        ) : (
-                            <MicOff className="w-4 h-4" />
-                        )}
-                    </Button>
-                </div>
+                {/* Camera Toggle */}
+                <Button
+                    onClick={toggleCamera}
+                    size="icon"
+                    variant="ghost"
+                    className={isCameraEnabled ? glassButton : offButton}
+                    disabled={isSearching}
+                    title={isCameraEnabled ? 'Turn off camera' : 'Turn on camera'}
+                >
+                    {isCameraEnabled ? (
+                        <Video className="w-4 h-4" />
+                    ) : (
+                        <VideoOff className="w-4 h-4" />
+                    )}
+                </Button>
 
-                {/* Settings Row */}
-                <div className="flex items-center gap-1.5 p-1 rounded-full bg-black/20 backdrop-blur-xl border border-white/[0.05]">
-                    {/* Layout Design Picker */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                size="icon"
-                                variant="ghost"
-                                className={glassButton}
-                                title="Change Layout"
-                            >
-                                <Palette className="w-4 h-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent 
-                            align="end" 
-                            className="w-52 bg-black/90 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl"
+                {/* Mic Toggle */}
+                <Button
+                    onClick={toggleMic}
+                    size="icon"
+                    variant="ghost"
+                    className={isMicEnabled ? glassButton : offButton}
+                    disabled={isSearching}
+                    title={isMicEnabled ? 'Mute mic' : 'Unmute mic'}
+                >
+                    {isMicEnabled ? (
+                        <Mic className="w-4 h-4" />
+                    ) : (
+                        <MicOff className="w-4 h-4" />
+                    )}
+                </Button>
+
+                {/* Divider */}
+                <div className="w-6 h-px bg-white/10" />
+
+                {/* Global Theme Picker */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            className={glassButton}
+                            title="Change Theme"
                         >
-                            <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal">
-                                Layout
-                            </DropdownMenuLabel>
-                            {designs.map((d) => (
-                                <DropdownMenuItem
-                                    key={d.id}
-                                    onClick={() => setSelectedDesign(d.id)}
-                                    className={cn(
-                                        'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors',
-                                        selectedDesign === d.id && 'bg-white/10 text-white'
-                                    )}
-                                >
-                                    {d.name}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    {/* Chat Theme Picker */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                size="icon"
-                                variant="ghost"
-                                className={glassButton}
-                                title="Change Chat Theme"
-                            >
-                                <MessageSquare className="w-4 h-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent 
-                            align="end" 
-                            className="w-52 max-h-80 overflow-y-auto bg-black/90 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl scrollbar-thin scrollbar-thumb-white/10"
-                        >
-                            <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal">
-                                Chat Theme
-                            </DropdownMenuLabel>
-                            {chatThemes.map((t) => (
-                                <DropdownMenuItem
-                                    key={t.id}
-                                    onClick={() => setChatTheme(t.id)}
-                                    className={cn(
-                                        'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors',
-                                        selectedChatTheme === t.id && 'bg-white/10 text-white'
-                                    )}
-                                >
-                                    {t.name}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    {/* Stop/Exit Button */}
-                    <Button
-                        onClick={onStop}
-                        size="icon"
-                        variant="ghost"
-                        className={dangerButton}
+                            <Sun className="w-4 h-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                        side="left"
+                        align="center"
+                        className="w-56 bg-black/95 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl z-[200]"
                     >
-                        <X className="w-4 h-4" />
-                    </Button>
-                </div>
+                        <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal px-3 py-2">
+                            Theme
+                        </DropdownMenuLabel>
+                        <ScrollArea className="h-64">
+                            <div className="px-1">
+                                {omegleThemes.map((t) => (
+                                    <DropdownMenuItem
+                                        key={t.id}
+                                        onClick={() => setOmegleTheme(t.id)}
+                                        className={cn(
+                                            'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors px-3 py-2 mx-1',
+                                            selectedOmegleTheme === t.id && 'bg-white/15 text-white'
+                                        )}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div 
+                                                className="w-4 h-4 rounded-full border border-white/20"
+                                                style={{ background: t.colors.primary }}
+                                            />
+                                            <span>{t.name}</span>
+                                        </div>
+                                    </DropdownMenuItem>
+                                ))}
+                            </div>
+                        </ScrollArea>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Layout Design Picker */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            className={glassButton}
+                            title="Change Layout"
+                        >
+                            <Layout className="w-4 h-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                        side="left"
+                        align="center"
+                        className="w-56 bg-black/95 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl z-[200]"
+                    >
+                        <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal px-3 py-2">
+                            Layout
+                        </DropdownMenuLabel>
+                        <ScrollArea className="h-64">
+                            <div className="px-1">
+                                {designs.map((d) => (
+                                    <DropdownMenuItem
+                                        key={d.id}
+                                        onClick={() => setSelectedDesign(d.id)}
+                                        className={cn(
+                                            'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors px-3 py-2 mx-1',
+                                            selectedDesign === d.id && 'bg-white/15 text-white'
+                                        )}
+                                    >
+                                        {d.name}
+                                    </DropdownMenuItem>
+                                ))}
+                            </div>
+                        </ScrollArea>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Chat Theme Picker */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            size="icon"
+                            variant="ghost"
+                            className={glassButton}
+                            title="Change Chat Theme"
+                        >
+                            <MessageSquare className="w-4 h-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                        side="left"
+                        align="center"
+                        className="w-56 bg-black/95 backdrop-blur-xl border-white/10 rounded-xl shadow-2xl z-[200]"
+                    >
+                        <DropdownMenuLabel className="text-white/50 text-xs uppercase tracking-wider font-normal px-3 py-2">
+                            Chat Theme
+                        </DropdownMenuLabel>
+                        <ScrollArea className="h-64">
+                            <div className="px-1">
+                                {chatThemes.map((t) => (
+                                    <DropdownMenuItem
+                                        key={t.id}
+                                        onClick={() => setChatTheme(t.id)}
+                                        className={cn(
+                                            'cursor-pointer rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors px-3 py-2 mx-1',
+                                            selectedChatTheme === t.id && 'bg-white/15 text-white'
+                                        )}
+                                    >
+                                        {t.name}
+                                    </DropdownMenuItem>
+                                ))}
+                            </div>
+                        </ScrollArea>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Divider */}
+                <div className="w-6 h-px bg-white/10" />
+
+                {/* Stop/Exit Button */}
+                <Button
+                    onClick={onStop}
+                    size="icon"
+                    variant="ghost"
+                    className={dangerButton}
+                    title="Exit Omegle Mode"
+                >
+                    <X className="w-4 h-4" />
+                </Button>
 
                 {/* Connection Status Indicator */}
                 <div className={cn(
-                    "flex items-center gap-2 px-3 py-1.5 rounded-full",
-                    "bg-black/30 backdrop-blur-xl border border-white/[0.05]",
+                    "flex items-center justify-center w-full px-2 py-1.5 rounded-full",
+                    "bg-black/30 border border-white/[0.05]",
                     "transition-all duration-300"
                 )}>
                     <div className={cn(
-                        'w-1.5 h-1.5 rounded-full transition-colors duration-300',
+                        'w-1.5 h-1.5 rounded-full transition-colors duration-300 mr-1.5',
                         isConnected && 'bg-emerald-400 shadow-sm shadow-emerald-400/50',
                         isSearching && 'bg-amber-400 animate-pulse shadow-sm shadow-amber-400/50',
                         connection.matchStatus === 'idle' && 'bg-white/30',
                         connection.matchStatus === 'disconnected' && 'bg-white/20'
                     )} />
-                    <span className="text-[11px] text-white/60 font-medium tracking-wide">
-                        {isConnected && 'Connected'}
-                        {isSearching && 'Searching'}
+                    <span className="text-[10px] text-white/60 font-medium tracking-wide">
+                        {isConnected && 'Live'}
+                        {isSearching && '...'}
                         {connection.matchStatus === 'idle' && 'Ready'}
-                        {connection.matchStatus === 'disconnected' && 'Offline'}
+                        {connection.matchStatus === 'disconnected' && 'Off'}
                     </span>
                 </div>
             </div>

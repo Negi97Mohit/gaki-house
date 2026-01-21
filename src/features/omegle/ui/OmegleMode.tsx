@@ -3,6 +3,7 @@ import { useOmegleStore } from '@/stores/omegle.store';
 import { SignalingClient } from '../services/SignalingClient';
 import { WebRTCConnection } from '../services/WebRTCConnection';
 import { getOmegleDesign } from '@/data/omegleDesigns';
+import { getOmegleTheme, getOmegleThemeStyles } from '@/data/omegleThemes';
 import { OmegleVideoLayout } from './OmegleVideoLayout';
 import { OmegleChatBox } from './OmegleChatBox';
 import { OmegleControls } from './OmegleControls';
@@ -11,6 +12,7 @@ import { toast } from 'sonner';
 export const OmegleMode: React.FC = () => {
     const {
         selectedDesign,
+        selectedOmegleTheme,
         connection,
         setConnection,
         setMatchStatus,
@@ -27,6 +29,8 @@ export const OmegleMode: React.FC = () => {
     const [isInitializing, setIsInitializing] = useState(true);
 
     const design = getOmegleDesign(selectedDesign);
+    const theme = getOmegleTheme(selectedOmegleTheme);
+    const themeStyles = getOmegleThemeStyles(theme);
 
     // Initialize signaling client and get local media on mount
     useEffect(() => {
@@ -297,8 +301,11 @@ export const OmegleMode: React.FC = () => {
 
     return (
         <div
-            className="fixed inset-0 z-50"
-            style={{ backgroundColor: design.background.blankCanvasColor }}
+            className="fixed inset-0 z-50 transition-colors duration-500"
+            style={{ 
+                ...themeStyles,
+                backgroundColor: theme.colors.background,
+            }}
         >
             <OmegleVideoLayout design={design} />
             <OmegleChatBox design={design} onSendMessage={handleSendMessage} />
