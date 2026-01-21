@@ -254,9 +254,11 @@ export const OmegleMode: React.FC = () => {
 
     const handleNextStranger = () => {
         handleDisconnect();
+        setMatchStatus('searching');
 
         if (signalingRef.current) {
             signalingRef.current.nextStranger();
+            signalingRef.current.requestMatch();
         }
     };
 
@@ -302,7 +304,7 @@ export const OmegleMode: React.FC = () => {
     return (
         <div
             className="fixed inset-0 z-50 transition-colors duration-500"
-            style={{ 
+            style={{
                 ...themeStyles,
                 backgroundColor: theme.colors.background,
             }}

@@ -244,7 +244,7 @@ export class WebRTCConnection {
         }
 
         if (this.localStream) {
-            this.localStream.getTracks().forEach(track => track.stop());
+            // Do not stop tracks here as the stream is managed by the parent component
             this.localStream = null;
         }
 

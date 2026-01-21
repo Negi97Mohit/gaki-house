@@ -199,7 +199,8 @@ io.on("connection", (socket) => {
     }
 
     // Automatically re-enter matchmaking
-    socket.emit("request-match");
+    // Client will automatically request a new match
+    // socket.emit("request-match");
   });
 
   // User disconnects or exits Omegle mode
