@@ -1,0 +1,50 @@
+{
+    "id": "omegle-duo",
+    "name": "Duo",
+    "description": "Side by side equal circles for intimate chat",
+    "styleTags": ["omegle", "circles", "intimate", "unique"],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#0d0d0d",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": { "x": 8, "y": 15 },
+            "size": { "width": 38, "height": 70 },
+            "zIndex": 1,
+            "shape": "circle",
+            "border": { "color": "rgba(255,255,255,0.1)", "width": 2 },
+            "shadow": { "blur": 50, "color": "rgba(0,0,0,0.6)" }
+        },
+        "localVideo": {
+            "position": { "x": 54, "y": 15 },
+            "size": { "width": 38, "height": 70 },
+            "zIndex": 1,
+            "mirror": true,
+            "shape": "circle",
+            "border": { "color": "rgba(255,255,255,0.1)", "width": 2 },
+            "shadow": { "blur": 50, "color": "rgba(0,0,0,0.6)" }
+        },
+        "chatBox": {
+            "position": { "x": 30, "y": 75 },
+            "size": { "width": 40, "height": 23 },
+            "zIndex": 200,
+            "floating": true
+        },
+        "controls": {
+            "position": "top-center",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.05) saturate(1.05)",
+        "transition": "fade",
+        "transitionDuration": 350
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}

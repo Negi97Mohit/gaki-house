@@ -1,0 +1,51 @@
+{
+    "id": "omegle-diamond",
+    "name": "Diamond",
+    "description": "Videos arranged diagonally with artistic overlap",
+    "styleTags": ["omegle", "artistic", "creative", "unique"],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#111111",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": { "x": 5, "y": 5 },
+            "size": { "width": 55, "height": 65 },
+            "zIndex": 1,
+            "shape": "rounded",
+            "borderRadius": 20,
+            "shadow": { "blur": 30, "color": "rgba(0,0,0,0.6)" }
+        },
+        "localVideo": {
+            "position": { "x": 45, "y": 35 },
+            "size": { "width": 50, "height": 60 },
+            "zIndex": 2,
+            "mirror": true,
+            "shape": "rounded",
+            "borderRadius": 20,
+            "border": { "color": "rgba(255,255,255,0.1)", "width": 1 },
+            "shadow": { "blur": 30, "color": "rgba(0,0,0,0.6)" }
+        },
+        "chatBox": {
+            "position": { "x": 2, "y": 72 },
+            "size": { "width": 40, "height": 26 },
+            "zIndex": 200,
+            "floating": true
+        },
+        "controls": {
+            "position": "top-right",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.05) saturate(1.1)",
+        "transition": "fade",
+        "transitionDuration": 400
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}

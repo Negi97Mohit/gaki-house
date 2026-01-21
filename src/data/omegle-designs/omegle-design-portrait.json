@@ -1,0 +1,48 @@
+{
+    "id": "omegle-portrait",
+    "name": "Portrait",
+    "description": "Vertical mobile-style layout with stacked videos",
+    "styleTags": ["omegle", "portrait", "mobile", "vertical"],
+    "canvasAspectRatio": "9:16",
+    "background": {
+        "blankCanvasColor": "#000000",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": { "x": 5, "y": 2 },
+            "size": { "width": 90, "height": 45 },
+            "zIndex": 1,
+            "shape": "rounded",
+            "borderRadius": 20
+        },
+        "localVideo": {
+            "position": { "x": 5, "y": 49 },
+            "size": { "width": 90, "height": 30 },
+            "zIndex": 1,
+            "mirror": true,
+            "shape": "rounded",
+            "borderRadius": 20
+        },
+        "chatBox": {
+            "position": { "x": 3, "y": 81 },
+            "size": { "width": 94, "height": 17 },
+            "zIndex": 200,
+            "floating": false
+        },
+        "controls": {
+            "position": "top-center",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.05)",
+        "transition": "fade",
+        "transitionDuration": 300
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}

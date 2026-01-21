@@ -6,6 +6,17 @@ import omegleMinimal from './omegle-designs/omegle-design-minimal.json';
 import omegleVerticalStack from './omegle-designs/omegle-design-vertical-stack.json';
 import omegleSidebarRight from './omegle-designs/omegle-design-sidebar-right.json';
 import omegleFocusMode from './omegle-designs/omegle-design-focus-mode.json';
+// New designs
+import omegleCornerPip from './omegle-designs/omegle-design-corner-pip.json';
+import omegleHorizontalStack from './omegle-designs/omegle-design-horizontal-stack.json';
+import omegleDiamond from './omegle-designs/omegle-design-diamond.json';
+import omegleCinema from './omegle-designs/omegle-design-cinema.json';
+import omegleSpotlight from './omegle-designs/omegle-design-spotlight.json';
+import omegleCards from './omegle-designs/omegle-design-cards.json';
+import omegleDuo from './omegle-designs/omegle-design-duo.json';
+import omeglePresenter from './omegle-designs/omegle-design-presenter.json';
+import omegleAsymmetric from './omegle-designs/omegle-design-asymmetric.json';
+import omeglePortrait from './omegle-designs/omegle-design-portrait.json';
 import { OmegleDesign } from '@/types/omegle';
 
 export const omegleDesigns: OmegleDesign[] = [
@@ -17,6 +28,17 @@ export const omegleDesigns: OmegleDesign[] = [
     omegleVerticalStack as OmegleDesign,
     omegleSidebarRight as OmegleDesign,
     omegleFocusMode as OmegleDesign,
+    // New designs
+    omegleCornerPip as OmegleDesign,
+    omegleHorizontalStack as OmegleDesign,
+    omegleDiamond as OmegleDesign,
+    omegleCinema as OmegleDesign,
+    omegleSpotlight as OmegleDesign,
+    omegleCards as OmegleDesign,
+    omegleDuo as OmegleDesign,
+    omeglePresenter as OmegleDesign,
+    omegleAsymmetric as OmegleDesign,
+    omeglePortrait as OmegleDesign,
 ];
 
 export const getOmegleDesign = (id: string): OmegleDesign | undefined => {

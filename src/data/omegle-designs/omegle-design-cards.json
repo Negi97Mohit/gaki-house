@@ -1,0 +1,52 @@
+{
+    "id": "omegle-cards",
+    "name": "Cards",
+    "description": "Video feeds as floating cards with shadows",
+    "styleTags": ["omegle", "cards", "floating", "modern"],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#1a1a1a",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": { "x": 3, "y": 8 },
+            "size": { "width": 45, "height": 84 },
+            "zIndex": 1,
+            "shape": "rounded",
+            "borderRadius": 20,
+            "border": { "color": "rgba(255,255,255,0.08)", "width": 1 },
+            "shadow": { "blur": 40, "color": "rgba(0,0,0,0.5)" }
+        },
+        "localVideo": {
+            "position": { "x": 52, "y": 8 },
+            "size": { "width": 45, "height": 54 },
+            "zIndex": 1,
+            "mirror": true,
+            "shape": "rounded",
+            "borderRadius": 20,
+            "border": { "color": "rgba(255,255,255,0.08)", "width": 1 },
+            "shadow": { "blur": 40, "color": "rgba(0,0,0,0.5)" }
+        },
+        "chatBox": {
+            "position": { "x": 52, "y": 64 },
+            "size": { "width": 45, "height": 32 },
+            "zIndex": 200,
+            "floating": true
+        },
+        "controls": {
+            "position": "top-center",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "none",
+        "transition": "fade",
+        "transitionDuration": 300
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}

@@ -1,0 +1,47 @@
+{
+    "id": "omegle-asymmetric",
+    "name": "Asymmetric",
+    "description": "Bold asymmetric layout with offset videos",
+    "styleTags": ["omegle", "asymmetric", "bold", "artistic"],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#0a0a0a",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": { "x": 0, "y": 0 },
+            "size": { "width": 70, "height": 100 },
+            "zIndex": 1
+        },
+        "localVideo": {
+            "position": { "x": 72, "y": 55 },
+            "size": { "width": 26, "height": 43 },
+            "zIndex": 10,
+            "mirror": true,
+            "shape": "rounded",
+            "borderRadius": 16,
+            "shadow": { "blur": 30, "color": "rgba(0,0,0,0.6)" }
+        },
+        "chatBox": {
+            "position": { "x": 72, "y": 2 },
+            "size": { "width": 26, "height": 50 },
+            "zIndex": 200,
+            "floating": true
+        },
+        "controls": {
+            "position": "bottom-left",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "contrast(1.05)",
+        "transition": "fade",
+        "transitionDuration": 300
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 13,
+        "color": "#FFFFFF"
+    }
+}
