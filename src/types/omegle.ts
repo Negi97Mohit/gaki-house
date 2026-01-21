@@ -130,3 +130,61 @@ export interface OmegleStats {
     messagesExchanged: number;
     connectionQuality: 'excellent' | 'good' | 'fair' | 'poor';
 }
+
+// Global Omegle Theme type
+export interface OmegleTheme {
+    id: string;
+    name: string;
+    description: string;
+    colors: {
+        // Main background
+        background: string;
+        backgroundSecondary: string;
+        // Video panel colors
+        videoBorder: string;
+        videoBackground: string;
+        videoOverlay: string;
+        // Chat colors
+        chatBackground: string;
+        chatBorder: string;
+        chatMessageLocal: string;
+        chatMessageStranger: string;
+        chatText: string;
+        chatTextMuted: string;
+        chatInputBackground: string;
+        chatInputBorder: string;
+        // Controls colors
+        controlsBackground: string;
+        controlsBorder: string;
+        controlsButton: string;
+        controlsButtonHover: string;
+        controlsButtonActive: string;
+        controlsIcon: string;
+        // Accent colors
+        primary: string;
+        primaryForeground: string;
+        secondary: string;
+        secondaryForeground: string;
+        accent: string;
+        accentForeground: string;
+        // Status colors
+        success: string;
+        warning: string;
+        error: string;
+        // Text colors
+        text: string;
+        textMuted: string;
+        textInverse: string;
+    };
+    effects: {
+        borderRadius: string;
+        borderWidth: string;
+        shadowIntensity: 'none' | 'subtle' | 'medium' | 'strong';
+        glassEffect: boolean;
+        gradientOverlay: boolean;
+    };
+    typography: {
+        fontFamily: string;
+        fontWeight: 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
+    };
+}
