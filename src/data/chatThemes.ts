@@ -13,6 +13,18 @@ export interface ChatTheme {
 
 export const chatThemes: ChatTheme[] = [
     {
+        id: 'chic',
+        name: 'Chic Modern',
+        containerClass: 'bg-black/80 backdrop-blur-2xl rounded-2xl border border-white/[0.06] shadow-2xl shadow-black/50',
+        headerClass: 'bg-transparent text-white/80',
+        messageListClass: 'bg-transparent text-white/90',
+        inputAreaClass: 'bg-white/[0.02]',
+        inputClass: 'bg-white/[0.05] hover:bg-white/[0.08] text-white border-transparent placeholder:text-white/30 rounded-full',
+        buttonClass: 'bg-white text-black hover:bg-white/90 rounded-full shadow-lg shadow-white/10',
+        localBubbleClass: 'bg-white text-black font-medium shadow-lg shadow-white/5',
+        remoteBubbleClass: 'bg-white/[0.08] text-white/90 border border-white/[0.05]'
+    },
+    {
         id: 'classic',
         name: 'Classic',
         containerClass: 'bg-white rounded-lg border border-gray-300 shadow-lg',
@@ -194,4 +206,4 @@ export const chatThemes: ChatTheme[] = [
     }
 ];
 
-export const getChatTheme = (id: string) => chatThemes.find(t => t.id === id) || chatThemes[1]; // Default to dark
+export const getChatTheme = (id: string) => chatThemes.find(t => t.id === id) || chatThemes[0]; // Default to chic
