@@ -1,0 +1,50 @@
+{
+    "id": "omegle-spotlight",
+    "name": "Spotlight",
+    "description": "Large stranger video with small floating local",
+    "styleTags": ["omegle", "spotlight", "focus", "clean"],
+    "canvasAspectRatio": "16:9",
+    "background": {
+        "blankCanvasColor": "#080808",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": { "x": 5, "y": 5 },
+            "size": { "width": 90, "height": 90 },
+            "zIndex": 1,
+            "shape": "rounded",
+            "borderRadius": 24
+        },
+        "localVideo": {
+            "position": { "x": 3, "y": 70 },
+            "size": { "width": 18, "height": 24 },
+            "zIndex": 10,
+            "mirror": true,
+            "shape": "circle",
+            "border": { "color": "rgba(255,255,255,0.15)", "width": 3 },
+            "shadow": { "blur": 25, "color": "rgba(0,0,0,0.7)" }
+        },
+        "chatBox": {
+            "position": { "x": 60, "y": 60 },
+            "size": { "width": 38, "height": 38 },
+            "zIndex": 200,
+            "floating": true,
+            "collapsible": true
+        },
+        "controls": {
+            "position": "top-right",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "brightness(1.05)",
+        "transition": "fade",
+        "transitionDuration": 300
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}

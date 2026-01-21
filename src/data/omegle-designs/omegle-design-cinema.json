@@ -1,0 +1,51 @@
+{
+    "id": "omegle-cinema",
+    "name": "Cinema",
+    "description": "Ultrawide cinematic view with letterbox bars",
+    "styleTags": ["omegle", "cinematic", "widescreen", "immersive"],
+    "canvasAspectRatio": "21:9",
+    "background": {
+        "blankCanvasColor": "#000000",
+        "backgroundEffect": "none"
+    },
+    "layout": {
+        "strangerVideo": {
+            "position": { "x": 0, "y": 15 },
+            "size": { "width": 65, "height": 70 },
+            "zIndex": 1,
+            "aspectRatio": "21:9"
+        },
+        "localVideo": {
+            "position": { "x": 67, "y": 25 },
+            "size": { "width": 30, "height": 50 },
+            "zIndex": 1,
+            "mirror": true,
+            "shape": "rounded",
+            "borderRadius": 8
+        },
+        "chatBox": {
+            "position": { "x": 67, "y": 2 },
+            "size": { "width": 31, "height": 20 },
+            "zIndex": 200,
+            "collapsed": true,
+            "expandOnNewMessage": true,
+            "expandedSize": { "width": 31, "height": 45 }
+        },
+        "controls": {
+            "position": "bottom-center",
+            "zIndex": 200
+        }
+    },
+    "effects": {
+        "videoFilter": "contrast(1.1) brightness(0.95)",
+        "transition": "fade",
+        "transitionDuration": 500,
+        "letterbox": true,
+        "letterboxColor": "#000000"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "fontSize": 14,
+        "color": "#FFFFFF"
+    }
+}
