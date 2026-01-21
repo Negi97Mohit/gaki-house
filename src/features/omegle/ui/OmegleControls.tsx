@@ -79,7 +79,7 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
         clearHideTimer();
         setIsVisible(true);
 
-        if (hasStarted && controls.autoHide !== false) {
+        if (hasStarted) {
             hideTimerRef.current = setTimeout(() => {
                 setIsVisible(false);
             }, 3000);
@@ -93,7 +93,8 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
 
     return (
         <div
-            className="fixed top-1/2 right-4 -translate-y-1/2 z-[100]"
+            className="fixed top-1/2 right-4 -translate-y-1/2"
+            style={{ zIndex: 9000 }}
             onMouseEnter={() => {
                 clearHideTimer();
                 setIsVisible(true);
@@ -251,8 +252,9 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     <DropdownMenuContent 
                         side="left"
                         align="center"
-                        className="w-56 rounded-xl shadow-2xl z-[200]"
+                        className="w-56 rounded-xl shadow-2xl"
                         style={{
+                            zIndex: 9100,
                             background: 'var(--omegle-controls-background)',
                             border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
                             backdropFilter: 'blur(24px)',
@@ -322,8 +324,9 @@ export const OmegleControls: React.FC<OmegleControlsProps> = ({
                     <DropdownMenuContent 
                         side="left"
                         align="center"
-                        className="w-56 rounded-xl shadow-2xl z-[200]"
+                        className="w-56 rounded-xl shadow-2xl"
                         style={{
+                            zIndex: 9100,
                             background: 'var(--omegle-controls-background)',
                             border: 'var(--omegle-border-width) solid var(--omegle-controls-border)',
                             backdropFilter: 'blur(24px)',
