@@ -153,8 +153,17 @@ export const OmegleMode: React.FC = () => {
 
         signaling.onPartnerDisconnected(({ reason }) => {
             console.log('[OmegleMode] Partner disconnected:', reason);
-            toast.info('Stranger disconnected');
-            handleDisconnect();
+
+            // If partner clicked "Next", automatically search for new partner
+            if (reason === 'next-clicked') {
+                toast.info('Stranger disconnected, finding new partner...');
+                handleDisconnect();
+                setMatchStatus('searching');
+                signaling.requestMatch();
+            } else {
+                toast.info('Stranger disconnected');
+                handleDisconnect();
+            }
         });
 
         signaling.onError((error) => {

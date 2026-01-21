@@ -47,11 +47,20 @@ export class WebRTCConnection {
             this.peerConnection.ontrack = (event) => {
                 console.log('[WebRTC] Received remote track:', event.track.kind);
 
-                if (!this.remoteStream) {
-                    this.remoteStream = new MediaStream();
+                // Always create a new MediaStream to ensure state updates trigger re-renders
+                // If we already have tracks, we need to preserve them
+                const newStream = new MediaStream();
+
+                if (this.remoteStream) {
+                    this.remoteStream.getTracks().forEach(track => {
+                        newStream.addTrack(track);
+                    });
                 }
 
-                this.remoteStream.addTrack(event.track);
+                // Add the new track
+                newStream.addTrack(event.track);
+
+                this.remoteStream = newStream;
                 this.onRemoteStreamCallback?.(this.remoteStream);
             };
 
