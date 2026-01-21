@@ -111,6 +111,10 @@ export interface OmegleConnection {
     matchStatus: MatchStatus;
     remoteStream: MediaStream | null;
     localStream: MediaStream | null;
+    remoteMediaState: {
+        video: boolean;
+        audio: boolean;
+    };
 }
 
 export interface WebRTCConfig {

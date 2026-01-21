@@ -151,6 +151,22 @@ io.on("connection", (socket) => {
     });
   });
 
+  // Media state signaling: Forward camera/mic toggle state
+  socket.on("media-state-changed", ({ state, roomId }) => {
+    const room = activeRooms.get(roomId);
+    if (!room) {
+      return;
+    }
+
+    const partnerId = room.user1 === socket.id ? room.user2 : room.user1;
+    console.log(`🎥 Media state changed for ${socket.id}:`, state);
+
+    socket.to(partnerId).emit("media-state-changed", {
+      state,
+      senderId: socket.id,
+    });
+  });
+
   // Text chat message relay
   socket.on("send-message", ({ message, roomId }) => {
     const room = activeRooms.get(roomId);

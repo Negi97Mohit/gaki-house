@@ -12,6 +12,7 @@ export class SignalingClient {
     private onWebRTCAnswerCallback?: (data: { answer: RTCSessionDescriptionInit; senderId: string }) => void;
     private onICECandidateCallback?: (data: { candidate: RTCIceCandidateInit; senderId: string }) => void;
     private onMessageCallback?: (data: { message: string; senderId: string; timestamp: number }) => void;
+    private onMediaStateChangedCallback?: (state: { video: boolean; audio: boolean }) => void;
     private onPartnerDisconnectedCallback?: (data: { reason: string }) => void;
     private onErrorCallback?: (error: string) => void;
 
@@ -87,6 +88,11 @@ export class SignalingClient {
         this.socket.on('receive-message', (data) => {
             console.log('[SignalingClient] Received message');
             this.onMessageCallback?.(data);
+        });
+
+        this.socket.on('media-state-changed', (data) => {
+            console.log('[SignalingClient] Partner media state changed:', data.state);
+            this.onMediaStateChangedCallback?.(data.state);
         });
 
         this.socket.on('partner-disconnected', (data) => {
@@ -174,6 +180,14 @@ export class SignalingClient {
 
     onPartnerDisconnected(callback: (data: { reason: string }) => void) {
         this.onPartnerDisconnectedCallback = callback;
+    }
+
+    onMediaStateChanged(callback: (state: { video: boolean; audio: boolean }) => void) {
+        this.onMediaStateChangedCallback = callback;
+    }
+
+    sendMediaState(state: { video: boolean; audio: boolean }, roomId: string) {
+        this.socket?.emit('media-state-changed', { state, roomId });
     }
 
     onError(callback: (error: string) => void) {

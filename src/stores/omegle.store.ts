@@ -50,6 +50,7 @@ interface OmegleState {
     setConnection: (connection: Partial<OmegleConnection>) => void;
     setRemoteStream: (stream: MediaStream | null) => void;
     setLocalStream: (stream: MediaStream | null) => void;
+    setRemoteMediaState: (mediaState: { video: boolean; audio: boolean }) => void;
     addMessage: (message: ChatMessage) => void;
     clearMessages: () => void;
     toggleCamera: () => void;
@@ -72,6 +73,7 @@ const initialConnection: OmegleConnection = {
     matchStatus: 'idle',
     remoteStream: null,
     localStream: null,
+    remoteMediaState: { video: true, audio: true },
 };
 
 export const useOmegleStore = create<OmegleState>((set, get) => ({
@@ -169,6 +171,15 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     setLocalStream: (stream: MediaStream | null) => {
         set(state => ({
             connection: { ...state.connection, localStream: stream },
+        }));
+    },
+
+    setRemoteMediaState: (mediaState: { video: boolean; audio: boolean }) => {
+        set(state => ({
+            connection: {
+                ...state.connection,
+                remoteMediaState: mediaState
+            },
         }));
     },
 

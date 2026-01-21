@@ -17,10 +17,13 @@ export const OmegleMode: React.FC = () => {
         setConnection,
         setMatchStatus,
         setRemoteStream,
+        setRemoteMediaState, // Destructure new action
         setLocalStream,
         addMessage,
         resetConnection,
         setError,
+        isCameraEnabled: isLocalCameraEnabled, // Alias for clarity
+        isMicEnabled: isLocalMicEnabled,
     } = useOmegleStore();
 
     const signalingRef = useRef<SignalingClient | null>(null);
@@ -83,6 +86,18 @@ export const OmegleMode: React.FC = () => {
         };
     }, []);
 
+    // Broadcast local media state changes
+    useEffect(() => {
+        const { isCameraEnabled, isMicEnabled, connection } = useOmegleStore.getState();
+        if (signalingRef.current && connection.roomId) {
+            console.log('[OmegleMode] Broadcasting media state:', { video: isCameraEnabled, audio: isMicEnabled });
+            signalingRef.current.sendMediaState({
+                video: isCameraEnabled,
+                audio: isMicEnabled,
+            }, connection.roomId);
+        }
+    }, [isLocalCameraEnabled, useOmegleStore.getState().isMicEnabled, connection.roomId]);
+
     const setupSignalingListeners = (signaling: SignalingClient, localStream: MediaStream | null) => {
         signaling.onMatchStatus((status) => {
             setMatchStatus(status as any);
@@ -139,6 +154,11 @@ export const OmegleMode: React.FC = () => {
             if (webrtcRef.current) {
                 await webrtcRef.current.addICECandidate(candidate);
             }
+        });
+
+        signaling.onMediaStateChanged((state) => {
+            console.log('[OmegleMode] Remote media state changed:', state);
+            useOmegleStore.getState().setRemoteMediaState(state);
         });
 
         signaling.onMessage(({ message, senderId, timestamp }) => {

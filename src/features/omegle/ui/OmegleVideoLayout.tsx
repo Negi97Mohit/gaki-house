@@ -84,7 +84,7 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
             videoTrack.removeEventListener('unmute', handleUnmute);
             videoTrack.removeEventListener('ended', handleEnded);
         };
-    }, [connection.remoteStream]);
+    }, [connection.remoteStream, connection.remoteMediaState.video]);
 
     useEffect(() => {
         if (strangerVideoRef.current && connection.remoteStream) {
