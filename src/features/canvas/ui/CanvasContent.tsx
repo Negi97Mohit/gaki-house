@@ -9,6 +9,9 @@ import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
 import { getNumericAspectRatio } from "@/features/canvas/ui/VideoCanvasHelpers";
 import { VideoCanvasProps } from "@/types/videoCanvas";
 import { ExcalidrawOverlay } from "@/features/canvas/ui/ExcalidrawOverlay";
+import { useCameraOpacity } from "@/features/canvas/hooks/useCameraOpacity";
+import { CameraOpacityOverlay } from "@/features/canvas/ui/CameraOpacityOverlay";
+import { OpacityToolbar } from "@/features/canvas/ui/OpacityToolbar";
 
 interface CanvasContentProps {
   dynamicLayout: {
@@ -71,6 +74,8 @@ interface CanvasContentProps {
 }
 
 export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
+  const cameraOpacity = useCameraOpacity();
+
   const {
     dynamicLayout,
     containerSize,
@@ -151,6 +156,13 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
   const showPipMode =
     screenShareMode !== "off" || isGridActive || layoutMode === "pip";
 
+  // Camera opacity overlay is only relevant during screen share (not grid layouts)
+  const showCameraOpacityOverlay =
+    cameraOpacity.isEnabled &&
+    screenShareMode === "screen" &&
+    !isGridActive &&
+    !!cameraStream;
+
   const mainContent = showPipMode ? (
     <ScreenShareView
       screenShareMode={isGridActive ? "canvas" : screenShareMode}
@@ -181,6 +193,29 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
 
   return (
     <div className="w-full h-full relative">
+      {/* Camera Opacity Overlay */}
+      {showCameraOpacityOverlay && (
+        <CameraOpacityOverlay
+          cameraStream={cameraStream}
+          opacity={cameraOpacity.opacity}
+          pattern={cameraOpacity.pattern}
+        />
+      )}
+
+      {/* Opacity Toolbar - show during screen share */}
+      {screenShareMode === "screen" && !isGridActive && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+          <OpacityToolbar
+            isEnabled={cameraOpacity.isEnabled}
+            opacity={cameraOpacity.opacity}
+            pattern={cameraOpacity.pattern}
+            onToggle={cameraOpacity.toggle}
+            onOpacityChange={cameraOpacity.setOpacity}
+            onPatternChange={cameraOpacity.setPattern}
+          />
+        </div>
+      )}
+
       <div className="relative w-full h-full">{mainContent}</div>
 
       <ExcalidrawOverlay
