@@ -1,5 +1,4 @@
 import React from "react";
-import { Slider } from "@/shared/ui/slider";
 import {
   OpacityPattern,
   PATTERN_LABELS,
@@ -37,31 +36,34 @@ const PATTERNS: OpacityPattern[] = [
   "diagonal-tr-bl",
 ];
 
-/** Small preview gradient thumbnails for each pattern */
-function getPatternPreview(p: OpacityPattern): string {
+/** Pattern preview using opacity gradients (no color, just transparency) */
+function getPatternPreview(p: OpacityPattern): React.CSSProperties {
+  const base = "hsl(var(--foreground))";
+  const transparent = "transparent";
+  
   switch (p) {
     case "none":
-      return "rgba(255,255,255,0.7)";
+      return { backgroundColor: base, opacity: 0.8 };
     case "uniform":
-      return "rgba(255,255,255,0.5)";
+      return { backgroundColor: base, opacity: 0.5 };
     case "left-to-right":
-      return "linear-gradient(to right, white, transparent)";
+      return { background: `linear-gradient(to right, ${base}, ${transparent})` };
     case "right-to-left":
-      return "linear-gradient(to left, white, transparent)";
+      return { background: `linear-gradient(to left, ${base}, ${transparent})` };
     case "top-to-bottom":
-      return "linear-gradient(to bottom, white, transparent)";
+      return { background: `linear-gradient(to bottom, ${base}, ${transparent})` };
     case "bottom-to-top":
-      return "linear-gradient(to top, white, transparent)";
+      return { background: `linear-gradient(to top, ${base}, ${transparent})` };
     case "center-to-edge":
-      return "radial-gradient(ellipse at center, white 20%, transparent 80%)";
+      return { background: `radial-gradient(ellipse at center, ${base} 20%, ${transparent} 80%)` };
     case "edge-to-center":
-      return "radial-gradient(ellipse at center, transparent 20%, white 80%)";
+      return { background: `radial-gradient(ellipse at center, ${transparent} 20%, ${base} 80%)` };
     case "diagonal-tl-br":
-      return "linear-gradient(to bottom right, white, transparent)";
+      return { background: `linear-gradient(to bottom right, ${base}, ${transparent})` };
     case "diagonal-tr-bl":
-      return "linear-gradient(to bottom left, white, transparent)";
+      return { background: `linear-gradient(to bottom left, ${base}, ${transparent})` };
     default:
-      return "transparent";
+      return { backgroundColor: transparent };
   }
 }
 
@@ -83,11 +85,11 @@ export const OpacityToolbar: React.FC<OpacityToolbarProps> = ({
     <TooltipProvider delayDuration={200}>
       <div
         className={cn(
-          "flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-500 ease-out",
-          "backdrop-blur-2xl",
-          "bg-background/60 dark:bg-background/40",
-          "border border-border/20 dark:border-white/[0.08]",
-          "shadow-lg",
+          "flex items-center gap-3 px-4 py-2.5 rounded-full transition-all duration-500 ease-out",
+          "backdrop-blur-xl",
+          "bg-background/70 dark:bg-background/50",
+          "border border-border/10 dark:border-border/5",
+          "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.1)]",
           isMouseActive
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-4 pointer-events-none"
@@ -99,20 +101,20 @@ export const OpacityToolbar: React.FC<OpacityToolbarProps> = ({
             <button
               onClick={onToggle}
               className={cn(
-                "p-1.5 rounded-lg transition-all duration-200",
+                "p-2 rounded-full transition-all duration-200",
                 isEnabled
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
               )}
             >
               {isEnabled ? (
-                <Eye className="w-3.5 h-3.5" />
+                <Eye className="w-4 h-4" />
               ) : (
-                <EyeOff className="w-3.5 h-3.5" />
+                <EyeOff className="w-4 h-4" />
               )}
             </button>
           </TooltipTrigger>
-          <TooltipContent side="top" className="text-xs">
+          <TooltipContent side="top" className="text-xs font-medium">
             {isEnabled ? "Disable" : "Enable"} camera overlay
           </TooltipContent>
         </Tooltip>
@@ -120,43 +122,65 @@ export const OpacityToolbar: React.FC<OpacityToolbarProps> = ({
         {isEnabled && (
           <>
             {/* Separator */}
-            <div className="w-px h-4 bg-border/30 dark:bg-white/10" />
+            <div className="w-px h-5 bg-border/20" />
 
-            {/* Opacity slider */}
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-muted-foreground tabular-nums w-6 text-right">
+            {/* Opacity slider - custom chic design */}
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium text-muted-foreground tabular-nums min-w-[2.5rem] text-right">
                 {opacity}%
               </span>
-              <Slider
-                value={[opacity]}
-                min={0}
-                max={100}
-                step={1}
-                onValueChange={([v]) => onOpacityChange(v)}
-                className="w-20"
-              />
+              <div className="relative w-24 h-6 flex items-center group">
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={opacity}
+                  onChange={(e) => onOpacityChange(Number(e.target.value))}
+                  className={cn(
+                    "w-full h-1 appearance-none bg-muted/50 rounded-full cursor-pointer",
+                    "focus:outline-none",
+                    "[&::-webkit-slider-thumb]:appearance-none",
+                    "[&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4",
+                    "[&::-webkit-slider-thumb]:rounded-full",
+                    "[&::-webkit-slider-thumb]:bg-foreground",
+                    "[&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.15)]",
+                    "[&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-150",
+                    "[&::-webkit-slider-thumb]:hover:scale-110",
+                    "[&::-moz-range-thumb]:appearance-none",
+                    "[&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4",
+                    "[&::-moz-range-thumb]:rounded-full",
+                    "[&::-moz-range-thumb]:bg-foreground",
+                    "[&::-moz-range-thumb]:border-0",
+                    "[&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.15)]"
+                  )}
+                  style={{
+                    background: `linear-gradient(to right, hsl(var(--foreground)) 0%, hsl(var(--foreground)) ${opacity}%, hsl(var(--muted) / 0.5) ${opacity}%, hsl(var(--muted) / 0.5) 100%)`,
+                  }}
+                />
+              </div>
             </div>
 
             {/* Separator */}
-            <div className="w-px h-4 bg-border/30 dark:bg-white/10" />
+            <div className="w-px h-5 bg-border/20" />
 
-            {/* Pattern selector */}
-            <div className="flex items-center gap-0.5">
+            {/* Pattern selector - refined thumbnails */}
+            <div className="flex items-center gap-1">
               {PATTERNS.map((p) => (
                 <Tooltip key={p}>
                   <TooltipTrigger asChild>
                     <button
                       onClick={() => onPatternChange(p)}
                       className={cn(
-                        "w-5 h-5 rounded transition-all duration-200 overflow-hidden",
+                        "w-5 h-5 rounded-md transition-all duration-200 overflow-hidden",
+                        "border border-border/10",
                         pattern === p
-                          ? "ring-1 ring-primary ring-offset-1 ring-offset-background scale-110"
-                          : "opacity-60 hover:opacity-100 hover:scale-105"
+                          ? "ring-2 ring-foreground/80 ring-offset-1 ring-offset-background scale-110"
+                          : "opacity-50 hover:opacity-100 hover:scale-105"
                       )}
-                      style={{ background: getPatternPreview(p) }}
+                      style={getPatternPreview(p)}
                     />
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="text-xs">
+                  <TooltipContent side="top" className="text-xs font-medium">
                     {PATTERN_LABELS[p]}
                   </TooltipContent>
                 </Tooltip>
