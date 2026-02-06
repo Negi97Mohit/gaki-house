@@ -202,9 +202,12 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
         />
       )}
 
-      {/* Opacity Toolbar - show during screen share */}
+      {/* Opacity Toolbar - show during screen share, positioned above bottom nav */}
       {screenShareMode === "screen" && !isGridActive && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+        <div 
+          className="absolute bottom-20 left-1/2 -translate-x-1/2"
+          style={{ zIndex: "var(--z-floating-controls)" }}
+        >
           <OpacityToolbar
             isEnabled={cameraOpacity.isEnabled}
             opacity={cameraOpacity.opacity}

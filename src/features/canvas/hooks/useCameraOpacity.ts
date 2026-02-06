@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 
 export type OpacityPattern =
+  | "none"
   | "uniform"
   | "left-to-right"
   | "right-to-left"
@@ -18,6 +19,7 @@ export interface CameraOpacityState {
 }
 
 const PATTERN_LABELS: Record<OpacityPattern, string> = {
+  none: "No Gradient",
   uniform: "Uniform",
   "left-to-right": "Left → Right",
   "right-to-left": "Right → Left",
@@ -35,7 +37,7 @@ export const useCameraOpacity = () => {
   const [state, setState] = useState<CameraOpacityState>({
     isEnabled: false,
     opacity: 50,
-    pattern: "uniform",
+    pattern: "none",
   });
 
   const toggle = useCallback(() => {
