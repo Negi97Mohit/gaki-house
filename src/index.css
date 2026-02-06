@@ -1035,6 +1035,466 @@
     --ring: 200 80% 55%;
   }
 
+  /* ===== CYBERPUNK THEME (Neon pink & cyan) ===== */
+  .theme-cyberpunk {
+    --background: 310 25% 97%;
+    --foreground: 310 30% 8%;
+    --card: 310 22% 95%;
+    --card-foreground: 310 30% 8%;
+    --popover: 310 25% 97%;
+    --popover-foreground: 310 30% 8%;
+    --primary: 310 85% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 310 18% 92%;
+    --secondary-foreground: 310 25% 15%;
+    --muted: 310 15% 90%;
+    --muted-foreground: 310 12% 40%;
+    --accent: 185 90% 48%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 310 18% 60%;
+    --input: 310 18% 65%;
+    --ring: 310 85% 65%;
+  }
+
+  .dark.theme-cyberpunk,
+  .theme-cyberpunk.dark {
+    --background: 280 50% 4%;
+    --foreground: 310 25% 94%;
+    --card: 280 45% 8%;
+    --card-foreground: 310 25% 94%;
+    --popover: 280 45% 6%;
+    --popover-foreground: 310 25% 94%;
+    --primary: 310 85% 68%;
+    --primary-foreground: 280 50% 4%;
+    --secondary: 280 35% 15%;
+    --secondary-foreground: 310 22% 90%;
+    --muted: 280 30% 12%;
+    --muted-foreground: 310 15% 65%;
+    --accent: 185 90% 55%;
+    --accent-foreground: 280 50% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 280 30% 25%;
+    --input: 280 30% 20%;
+    --ring: 310 85% 68%;
+  }
+
+  /* ===== AURORA THEME (Northern lights greens/teals) ===== */
+  .theme-aurora {
+    --background: 160 25% 97%;
+    --foreground: 165 30% 8%;
+    --card: 160 22% 95%;
+    --card-foreground: 165 30% 8%;
+    --popover: 160 25% 97%;
+    --popover-foreground: 165 30% 8%;
+    --primary: 160 70% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 18% 92%;
+    --secondary-foreground: 165 25% 15%;
+    --muted: 160 15% 90%;
+    --muted-foreground: 165 12% 40%;
+    --accent: 280 65% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 160 18% 60%;
+    --input: 160 18% 65%;
+    --ring: 160 70% 45%;
+  }
+
+  .dark.theme-aurora,
+  .theme-aurora.dark {
+    --background: 170 40% 5%;
+    --foreground: 160 22% 94%;
+    --card: 170 35% 9%;
+    --card-foreground: 160 22% 94%;
+    --popover: 170 35% 7%;
+    --popover-foreground: 160 22% 94%;
+    --primary: 160 70% 55%;
+    --primary-foreground: 170 40% 5%;
+    --secondary: 170 28% 14%;
+    --secondary-foreground: 160 18% 90%;
+    --muted: 170 25% 12%;
+    --muted-foreground: 160 12% 65%;
+    --accent: 280 70% 65%;
+    --accent-foreground: 170 40% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 170 25% 24%;
+    --input: 170 25% 19%;
+    --ring: 160 70% 55%;
+  }
+
+  /* ===== MIDNIGHT THEME (Deep indigo blues) ===== */
+  .theme-midnight {
+    --background: 240 25% 97%;
+    --foreground: 245 30% 8%;
+    --card: 240 22% 95%;
+    --card-foreground: 245 30% 8%;
+    --popover: 240 25% 97%;
+    --popover-foreground: 245 30% 8%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 18% 92%;
+    --secondary-foreground: 245 25% 15%;
+    --muted: 240 15% 90%;
+    --muted-foreground: 245 12% 40%;
+    --accent: 239 84% 67%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 18% 60%;
+    --input: 240 18% 65%;
+    --ring: 239 84% 67%;
+  }
+
+  .dark.theme-midnight,
+  .theme-midnight.dark {
+    --background: 245 50% 5%;
+    --foreground: 240 22% 94%;
+    --card: 245 45% 9%;
+    --card-foreground: 240 22% 94%;
+    --popover: 245 45% 7%;
+    --popover-foreground: 240 22% 94%;
+    --primary: 239 84% 72%;
+    --primary-foreground: 245 50% 5%;
+    --secondary: 245 35% 14%;
+    --secondary-foreground: 240 18% 90%;
+    --muted: 245 30% 12%;
+    --muted-foreground: 240 12% 65%;
+    --accent: 239 84% 72%;
+    --accent-foreground: 245 50% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 245 30% 24%;
+    --input: 245 30% 19%;
+    --ring: 239 84% 72%;
+  }
+
+  /* ===== SAKURA THEME (Cherry blossom pink) ===== */
+  .theme-sakura {
+    --background: 340 30% 98%;
+    --foreground: 340 25% 8%;
+    --card: 340 25% 96%;
+    --card-foreground: 340 25% 8%;
+    --popover: 340 30% 98%;
+    --popover-foreground: 340 25% 8%;
+    --primary: 340 75% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 340 20% 92%;
+    --secondary-foreground: 340 22% 15%;
+    --muted: 340 16% 90%;
+    --muted-foreground: 340 12% 40%;
+    --accent: 340 75% 65%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 340 18% 60%;
+    --input: 340 18% 65%;
+    --ring: 340 75% 65%;
+  }
+
+  .dark.theme-sakura,
+  .theme-sakura.dark {
+    --background: 340 35% 6%;
+    --foreground: 340 22% 94%;
+    --card: 340 32% 10%;
+    --card-foreground: 340 22% 94%;
+    --popover: 340 32% 8%;
+    --popover-foreground: 340 22% 94%;
+    --primary: 340 80% 72%;
+    --primary-foreground: 340 35% 6%;
+    --secondary: 340 25% 16%;
+    --secondary-foreground: 340 18% 90%;
+    --muted: 340 22% 14%;
+    --muted-foreground: 340 12% 65%;
+    --accent: 340 80% 72%;
+    --accent-foreground: 340 35% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 340 22% 25%;
+    --input: 340 22% 20%;
+    --ring: 340 80% 72%;
+  }
+
+  /* ===== VOLCANIC THEME (Molten reds/oranges) ===== */
+  .theme-volcanic {
+    --background: 10 30% 97%;
+    --foreground: 5 35% 8%;
+    --card: 10 25% 95%;
+    --card-foreground: 5 35% 8%;
+    --popover: 10 30% 97%;
+    --popover-foreground: 5 35% 8%;
+    --primary: 0 85% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 10 20% 92%;
+    --secondary-foreground: 5 28% 15%;
+    --muted: 10 16% 90%;
+    --muted-foreground: 5 15% 40%;
+    --accent: 25 100% 55%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 10 18% 60%;
+    --input: 10 18% 65%;
+    --ring: 0 85% 55%;
+  }
+
+  .dark.theme-volcanic,
+  .theme-volcanic.dark {
+    --background: 5 50% 4%;
+    --foreground: 10 25% 94%;
+    --card: 5 45% 8%;
+    --card-foreground: 10 25% 94%;
+    --popover: 5 45% 6%;
+    --popover-foreground: 10 25% 94%;
+    --primary: 0 85% 60%;
+    --primary-foreground: 5 50% 4%;
+    --secondary: 5 35% 14%;
+    --secondary-foreground: 10 20% 90%;
+    --muted: 5 30% 12%;
+    --muted-foreground: 10 15% 65%;
+    --accent: 25 100% 60%;
+    --accent-foreground: 5 50% 4%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 5 30% 22%;
+    --input: 5 30% 18%;
+    --ring: 0 85% 60%;
+  }
+
+  /* ===== ARCTIC THEME (Icy cyan/white) ===== */
+  .theme-arctic {
+    --background: 190 30% 98%;
+    --foreground: 195 25% 8%;
+    --card: 190 25% 96%;
+    --card-foreground: 195 25% 8%;
+    --popover: 190 30% 98%;
+    --popover-foreground: 195 25% 8%;
+    --primary: 185 80% 50%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 190 20% 92%;
+    --secondary-foreground: 195 22% 15%;
+    --muted: 190 16% 90%;
+    --muted-foreground: 195 12% 40%;
+    --accent: 185 80% 50%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 190 18% 60%;
+    --input: 190 18% 65%;
+    --ring: 185 80% 50%;
+  }
+
+  .dark.theme-arctic,
+  .theme-arctic.dark {
+    --background: 195 40% 5%;
+    --foreground: 190 25% 95%;
+    --card: 195 35% 9%;
+    --card-foreground: 190 25% 95%;
+    --popover: 195 35% 7%;
+    --popover-foreground: 190 25% 95%;
+    --primary: 185 85% 65%;
+    --primary-foreground: 195 40% 5%;
+    --secondary: 195 28% 14%;
+    --secondary-foreground: 190 20% 90%;
+    --muted: 195 25% 12%;
+    --muted-foreground: 190 15% 68%;
+    --accent: 185 85% 65%;
+    --accent-foreground: 195 40% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 195 25% 24%;
+    --input: 195 25% 19%;
+    --ring: 185 85% 65%;
+  }
+
+  /* ===== NEON THEME (Electric lime green) ===== */
+  .theme-neon {
+    --background: 80 25% 97%;
+    --foreground: 75 30% 8%;
+    --card: 80 22% 95%;
+    --card-foreground: 75 30% 8%;
+    --popover: 80 25% 97%;
+    --popover-foreground: 75 30% 8%;
+    --primary: 80 100% 45%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 80 18% 92%;
+    --secondary-foreground: 75 25% 15%;
+    --muted: 80 15% 90%;
+    --muted-foreground: 75 12% 40%;
+    --accent: 300 75% 60%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 80 18% 60%;
+    --input: 80 18% 65%;
+    --ring: 80 100% 45%;
+  }
+
+  .dark.theme-neon,
+  .theme-neon.dark {
+    --background: 75 50% 3%;
+    --foreground: 80 35% 92%;
+    --card: 75 45% 7%;
+    --card-foreground: 80 35% 92%;
+    --popover: 75 45% 5%;
+    --popover-foreground: 80 35% 92%;
+    --primary: 80 100% 50%;
+    --primary-foreground: 75 50% 3%;
+    --secondary: 75 35% 12%;
+    --secondary-foreground: 80 30% 88%;
+    --muted: 75 30% 10%;
+    --muted-foreground: 80 20% 60%;
+    --accent: 300 80% 65%;
+    --accent-foreground: 75 50% 3%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 75 30% 20%;
+    --input: 75 30% 16%;
+    --ring: 80 100% 50%;
+  }
+
+  /* ===== ETHEREAL THEME (Soft pastels/lavender) ===== */
+  .theme-ethereal {
+    --background: 270 30% 98%;
+    --foreground: 270 20% 12%;
+    --card: 270 25% 96%;
+    --card-foreground: 270 20% 12%;
+    --popover: 270 30% 98%;
+    --popover-foreground: 270 20% 12%;
+    --primary: 270 60% 75%;
+    --primary-foreground: 270 20% 15%;
+    --secondary: 270 20% 93%;
+    --secondary-foreground: 270 18% 20%;
+    --muted: 270 16% 91%;
+    --muted-foreground: 270 12% 45%;
+    --accent: 310 55% 75%;
+    --accent-foreground: 310 20% 15%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 18% 82%;
+    --input: 270 18% 88%;
+    --ring: 270 60% 75%;
+  }
+
+  .dark.theme-ethereal,
+  .theme-ethereal.dark {
+    --background: 270 30% 7%;
+    --foreground: 270 22% 94%;
+    --card: 270 28% 11%;
+    --card-foreground: 270 22% 94%;
+    --popover: 270 28% 9%;
+    --popover-foreground: 270 22% 94%;
+    --primary: 270 60% 78%;
+    --primary-foreground: 270 30% 7%;
+    --secondary: 270 22% 16%;
+    --secondary-foreground: 270 18% 90%;
+    --muted: 270 20% 14%;
+    --muted-foreground: 270 12% 65%;
+    --accent: 310 60% 78%;
+    --accent-foreground: 270 30% 7%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 20% 25%;
+    --input: 270 20% 20%;
+    --ring: 270 60% 78%;
+  }
+
+  /* ===== RETRO THEME (80s synthwave pinks/cyans) ===== */
+  .theme-retro {
+    --background: 350 25% 97%;
+    --foreground: 345 28% 10%;
+    --card: 350 22% 95%;
+    --card-foreground: 345 28% 10%;
+    --popover: 350 25% 97%;
+    --popover-foreground: 345 28% 10%;
+    --primary: 345 80% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 350 18% 92%;
+    --secondary-foreground: 345 25% 18%;
+    --muted: 350 15% 90%;
+    --muted-foreground: 345 12% 42%;
+    --accent: 185 90% 48%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 350 18% 60%;
+    --input: 350 18% 65%;
+    --ring: 345 80% 60%;
+  }
+
+  .dark.theme-retro,
+  .theme-retro.dark {
+    --background: 270 40% 5%;
+    --foreground: 350 25% 94%;
+    --card: 270 36% 9%;
+    --card-foreground: 350 25% 94%;
+    --popover: 270 36% 7%;
+    --popover-foreground: 350 25% 94%;
+    --primary: 345 82% 68%;
+    --primary-foreground: 270 40% 5%;
+    --secondary: 270 28% 15%;
+    --secondary-foreground: 350 20% 90%;
+    --muted: 270 25% 13%;
+    --muted-foreground: 350 15% 65%;
+    --accent: 185 95% 55%;
+    --accent-foreground: 270 40% 5%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 270 25% 25%;
+    --input: 270 25% 20%;
+    --ring: 345 82% 68%;
+  }
+
+  /* ===== MONOCHROME THEME (Elegant grayscale) ===== */
+  .theme-monochrome {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 8%;
+    --card: 0 0% 96%;
+    --card-foreground: 0 0% 8%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 8%;
+    --primary: 0 0% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 18%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 0 0% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 80%;
+    --input: 0 0% 85%;
+    --ring: 0 0% 45%;
+  }
+
+  .dark.theme-monochrome,
+  .theme-monochrome.dark {
+    --background: 0 0% 6%;
+    --foreground: 0 0% 94%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 94%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 94%;
+    --primary: 0 0% 72%;
+    --primary-foreground: 0 0% 6%;
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 88%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 72%;
+    --accent-foreground: 0 0% 6%;
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 24%;
+    --input: 0 0% 19%;
+    --ring: 0 0% 72%;
+  }
+
   /* z-index stack - shared across all themes */
   :root,
   .dark {
