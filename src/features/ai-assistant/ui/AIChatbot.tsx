@@ -273,7 +273,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
             ref={chatbotRef}
             data-no-pip-gesture
             className={cn(
-                "fixed top-16 right-4 w-80 sm:w-[340px] max-h-[520px] h-[calc(100vh-100px)]",
+                "fixed bottom-20 right-4 w-80 sm:w-[340px] max-h-[520px] h-[calc(100vh-100px)]",
                 "bg-background/70 dark:bg-background/50 backdrop-blur-2xl",
                 "border border-border/20 dark:border-white/10 rounded-2xl",
                 "shadow-2xl shadow-black/10 dark:shadow-black/40",

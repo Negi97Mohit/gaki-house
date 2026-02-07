@@ -18,7 +18,7 @@ import {
   Layers,
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
-import { AIChatbot } from "@/features/ai-assistant/ui/AIChatbot";
+
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 import { ColorPicker } from "@/shared/ui/color-picker";
@@ -478,12 +478,6 @@ export const CanvasHoverToolbar = ({
         >
           <Sparkles className="h-3 w-3" />
         </Button>
-        <AIChatbot
-          isOpen={!!isChatbotOpen}
-          onClose={() => {
-            if (onToggleChatbot) onToggleChatbot(false);
-          }}
-        />
 
         <Popover>
           <PopoverTrigger asChild>
