@@ -9,6 +9,7 @@ import { FileRenderer } from "@/features/canvas/ui/DraggableFileViewer";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { EmptyGridSection } from "@/features/layouts/ui/grid-section/EmptyGridSection";
 import { CameraGridSection } from "@/features/layouts/ui/grid-section/CameraGridSection";
+import { ScreenShareGridSection } from "@/features/layouts/ui/grid-section/ScreenShareGridSection";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
 import { Video } from "lucide-react";
 import { useStreamManagerStore } from "@/stores/stream-manager.store";
@@ -136,16 +137,12 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
           if (!streamToRender) return <div className="w-full h-full bg-muted" />;
 
           return (
-            <VideoPlayer
+            <ScreenShareGridSection
               stream={streamToRender}
-              muted={true}
-              className="w-full h-full"
-              style={{
-                objectFit: (content.displayMode === "fit" ? "contain" :
-                  content.displayMode === "stretch" ? "fill" :
-                    content.displayMode === "center" ? "none" :
-                      "cover") as React.CSSProperties["objectFit"]
-              }}
+              cameraStream={cameraStream}
+              displayMode={
+                (content.displayMode as "cover" | "fit" | "stretch" | "center") || "cover"
+              }
             />
           );
 
