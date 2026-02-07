@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
 import { CameraOpacityOverlay } from "@/features/canvas/ui/CameraOpacityOverlay";
-import { OpacityToolbar } from "@/features/canvas/ui/OpacityToolbar";
+import { PanelOpacityToolbar } from "@/features/canvas/ui/PanelOpacityToolbar";
 import { useCameraOpacity } from "@/features/canvas/hooks/useCameraOpacity";
 
 interface ScreenShareGridSectionProps {
@@ -10,11 +10,6 @@ interface ScreenShareGridSectionProps {
   displayMode?: "cover" | "fit" | "stretch" | "center";
 }
 
-/**
- * Renders a screen share inside a grid panel with an optional
- * camera opacity overlay and a compact toolbar positioned at the
- * bottom-center of the panel.
- */
 export const ScreenShareGridSection: React.FC<ScreenShareGridSectionProps> = ({
   stream,
   cameraStream,
@@ -32,8 +27,7 @@ export const ScreenShareGridSection: React.FC<ScreenShareGridSectionProps> = ({
       : "cover";
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
-      {/* Screen share video */}
+    <div className="relative w-full h-full overflow-hidden group/panel-opacity">
       <VideoPlayer
         stream={stream}
         muted
@@ -41,7 +35,6 @@ export const ScreenShareGridSection: React.FC<ScreenShareGridSectionProps> = ({
         style={{ objectFit }}
       />
 
-      {/* Camera opacity overlay */}
       {cameraOpacity.isEnabled && cameraStream && (
         <CameraOpacityOverlay
           cameraStream={cameraStream}
@@ -50,12 +43,12 @@ export const ScreenShareGridSection: React.FC<ScreenShareGridSectionProps> = ({
         />
       )}
 
-      {/* Compact toolbar inside the panel */}
+      {/* Compact toolbar – appears on hover */}
       <div
-        className="absolute bottom-3 left-1/2 -translate-x-1/2"
-        style={{ zIndex: "var(--z-floating-controls, 50)" }}
+        className="absolute bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/panel-opacity:opacity-100 transition-opacity duration-300"
+        style={{ zIndex: 50 }}
       >
-        <OpacityToolbar
+        <PanelOpacityToolbar
           isEnabled={cameraOpacity.isEnabled}
           opacity={cameraOpacity.opacity}
           pattern={cameraOpacity.pattern}
