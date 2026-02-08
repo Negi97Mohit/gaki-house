@@ -358,6 +358,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
               onSelect={onSelectFile}
               allOverlays={allOverlays}
               onSnapGuidesChange={onSnapGuidesChange}
+              containerRef={containerRef}
             />
           ))}
 

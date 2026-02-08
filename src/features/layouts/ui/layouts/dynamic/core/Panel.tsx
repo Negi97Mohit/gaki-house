@@ -27,6 +27,7 @@ export const Panel: React.FC<PanelProps> = ({
 
     return (
         <div
+            data-section-id={section.id}
             className={cn("relative group", className)}
             style={style}
             onMouseEnter={() => {
