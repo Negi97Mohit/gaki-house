@@ -15,6 +15,8 @@ import {
   VolumeX,
   Zap,
   Repeat,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
@@ -435,6 +437,36 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   // Rotation now handled by HybridDraggable
   // const { toast } = useToast(); -> Removed
   const [isGenerating3D, setIsGenerating3D] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [savedLayout, setSavedLayout] = useState<{
+    position: { x: number; y: number };
+    size: { width: number; height: number };
+  } | null>(null);
+
+  const handleExpandToggle = () => {
+    if (isExpanded) {
+      // Restore original layout
+      if (savedLayout) {
+        onLayoutChange(overlay.id, {
+          position: savedLayout.position,
+          size: savedLayout.size,
+        });
+      }
+      setSavedLayout(null);
+      setIsExpanded(false);
+    } else {
+      // Save current layout and expand to fill canvas
+      setSavedLayout({
+        position: { ...overlay.layout.position },
+        size: { ...overlay.layout.size },
+      });
+      onLayoutChange(overlay.id, {
+        position: { x: 0, y: 0 },
+        size: { width: 100, height: 100 },
+      });
+      setIsExpanded(true);
+    }
+  };
 
   const handleAspectRatioDetermined = (ratio: number) => {
     // Check if current aspect ratio differs significantly
@@ -618,6 +650,28 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             className="absolute top-2 left-2 z-50 flex gap-1 pointer-events-auto"
             onMouseDown={(e) => e.stopPropagation()}
           >
+            {/* Expand/Collapse toggle */}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleExpandToggle();
+              }}
+              onPointerDown={(e) => e.stopPropagation()}
+              className={cn(
+                "p-1.5 rounded-full shadow-md border border-border/50 backdrop-blur-sm transition-colors cursor-pointer",
+                isExpanded
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background/80 text-muted-foreground hover:bg-background hover:text-foreground"
+              )}
+              title={isExpanded ? "Restore size" : "Expand to fill panel"}
+            >
+              {isExpanded ? (
+                <Minimize2 className="w-3 h-3" />
+              ) : (
+                <Maximize2 className="w-3 h-3" />
+              )}
+            </button>
             <button
               onClick={(e) => {
                 e.preventDefault();
