@@ -100,6 +100,7 @@ export const GridSectionWrapper: React.FC<GridSectionWrapperProps> = ({
 
   return (
     <div
+      data-section-id={section.id}
       className="relative w-full h-full group"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

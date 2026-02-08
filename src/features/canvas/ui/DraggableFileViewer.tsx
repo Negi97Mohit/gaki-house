@@ -44,6 +44,7 @@ interface DraggableFileViewerProps {
   viewport: { scale: number; x: number; y: number };
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
+  containerRef?: React.RefObject<HTMLElement>;
 }
 
 // FileRenderer (kept inline for simplicity, or import if separate)
@@ -433,6 +434,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   onInternalDragStop,
   allOverlays,
   onSnapGuidesChange,
+  containerRef,
 }) => {
   // Rotation now handled by HybridDraggable
   // const { toast } = useToast(); -> Removed
@@ -455,15 +457,64 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       setSavedLayout(null);
       setIsExpanded(false);
     } else {
-      // Save current layout and expand to fill canvas
+      // Save current layout
       setSavedLayout({
         position: { ...overlay.layout.position },
         size: { ...overlay.layout.size },
       });
-      onLayoutChange(overlay.id, {
-        position: { x: 0, y: 0 },
-        size: { width: 100, height: 100 },
-      });
+
+      // Find the containing panel via DOM measurement
+      const container = containerRef?.current;
+      if (container) {
+        const containerRect = container.getBoundingClientRect();
+        const panels = container.querySelectorAll("[data-section-id]");
+        
+        // Calculate overlay center in pixels
+        const overlayCenterX = (overlay.layout.position.x + overlay.layout.size.width / 2) / 100 * containerRect.width;
+        const overlayCenterY = (overlay.layout.position.y + overlay.layout.size.height / 2) / 100 * containerRect.height;
+        
+        let targetBounds: { x: number; y: number; width: number; height: number } | null = null;
+        
+        panels.forEach((panel) => {
+          const panelRect = panel.getBoundingClientRect();
+          const relX = panelRect.left - containerRect.left;
+          const relY = panelRect.top - containerRect.top;
+          
+          if (
+            overlayCenterX >= relX &&
+            overlayCenterX <= relX + panelRect.width &&
+            overlayCenterY >= relY &&
+            overlayCenterY <= relY + panelRect.height
+          ) {
+            // Convert to percentage of canvas
+            targetBounds = {
+              x: (relX / containerRect.width) * 100,
+              y: (relY / containerRect.height) * 100,
+              width: (panelRect.width / containerRect.width) * 100,
+              height: (panelRect.height / containerRect.height) * 100,
+            };
+          }
+        });
+        
+        if (targetBounds) {
+          onLayoutChange(overlay.id, {
+            position: { x: targetBounds.x, y: targetBounds.y },
+            size: { width: targetBounds.width, height: targetBounds.height },
+          });
+        } else {
+          // Fallback: fill entire canvas
+          onLayoutChange(overlay.id, {
+            position: { x: 0, y: 0 },
+            size: { width: 100, height: 100 },
+          });
+        }
+      } else {
+        // No container ref, fill entire canvas
+        onLayoutChange(overlay.id, {
+          position: { x: 0, y: 0 },
+          size: { width: 100, height: 100 },
+        });
+      }
       setIsExpanded(true);
     }
   };
