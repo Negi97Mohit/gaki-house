@@ -69,9 +69,8 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
           "bg-background/70 dark:bg-background/50 backdrop-blur-2xl",
           "border border-border/20 dark:border-white/10 rounded-2xl",
           "shadow-2xl shadow-black/10 dark:shadow-black/30 isolate",
-          isReady
-            ? "animate-in fade-in zoom-in-95 duration-200"
-            : "opacity-0 pointer-events-none"
+          "transition-opacity duration-150",
+          isReady ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         style={{
           left: `${toolbarPosition.x}px`,
