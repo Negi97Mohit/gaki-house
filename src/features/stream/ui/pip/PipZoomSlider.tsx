@@ -71,7 +71,7 @@ export const PipZoomSlider: React.FC<PipZoomSliderProps> = ({
             <ZoomOut className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
             <Slider
               value={[manualZoom]}
-              min={0.5}
+              min={1.0}
               max={3.0}
               step={0.05}
               onValueChange={([v]) => onManualZoomChange(v)}
@@ -80,7 +80,7 @@ export const PipZoomSlider: React.FC<PipZoomSliderProps> = ({
             <ZoomIn className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
           </div>
           <div className="flex gap-1">
-            {[0.5, 1.0, 1.5, 2.0, 3.0].map((preset) => (
+            {[1.0, 1.25, 1.5, 2.0, 3.0].map((preset) => (
               <Button
                 key={preset}
                 variant={manualZoom === preset ? "default" : "outline"}
