@@ -8,6 +8,8 @@ import { PipControlsToolbar } from "./PipControlsToolbar";
 import { cn } from "@/shared/lib/utils";
 import { AmbientBackground } from "./AmbientBackground";
 import { PipLayoutPreset } from "./pip/PipLayoutMenu";
+import { CinematicOverlay } from "./CinematicOverlay";
+import { CinematicEffect } from "./pip/PipCinematicMenu";
 
 interface CameraRendererProps {
   stream: MediaStream | null;
@@ -83,6 +85,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [isHovered, setIsHovered] = useState(false);
+  const [cinematicEffect, setCinematicEffect] = useState<CinematicEffect>("none");
+  const [manualZoom, setManualZoom] = useState(1.0);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
   const activeStream = props.stream;
 
@@ -108,13 +112,18 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const facePositionRef =
     props.facePositionRef || internalEffects.facePositionRef;
 
+  // Combine manual zoom with auto-framing zoom
+  const effectiveZoom = props.isAutoFramingEnabled
+    ? (props.zoomSensitivity ?? 1) * manualZoom
+    : manualZoom;
+
   useWebGLRenderLoop({
     canvasRef,
     videoRef,
     activeStream,
-    isAutoFramingEnabled: props.isAutoFramingEnabled,
+    isAutoFramingEnabled: props.isAutoFramingEnabled || manualZoom !== 1.0,
     isFaceTrackingEnabled: props.isFaceTrackingEnabled || false,
-    zoomSensitivity: props.zoomSensitivity,
+    zoomSensitivity: effectiveZoom,
     trackingSpeed: props.trackingSpeed,
     videoFilter: props.videoFilter,
     activeInteractiveFilter: props.activeInteractiveFilter,
@@ -152,6 +161,10 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     isCameraActive: !!activeStream,
     screenShareMode: props.screenShareMode,
     onScreenShareModeChange: props.onScreenShareModeChange,
+    activeCinematicEffect: cinematicEffect,
+    onCinematicEffectChange: setCinematicEffect,
+    manualZoom,
+    onManualZoomChange: setManualZoom,
   };
 
   return (
@@ -189,6 +202,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
       )}
 
       <canvas ref={canvasRef} className="w-full h-full relative z-0" />
+
+      <CinematicOverlay effect={cinematicEffect} />
 
       {isHovered &&
         (props.isMouseActive ?? true) &&
