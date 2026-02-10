@@ -137,20 +137,23 @@ export class GLRenderer {
     let targetScale = 1.0;
     let targetOffset: [number, number] = [0.0, 0.0];
 
-    if (options.isAutoFramingEnabled && options.facePosition) {
-      const faceX = options.facePosition.x / 100;
-      const faceY = options.facePosition.y / 100;
+    if (options.isAutoFramingEnabled) {
       targetScale = options.zoomSensitivity ?? 1.2;
-      targetOffset = [faceX - 0.5, faceY - 0.5];
-      const maxOffset = 0.5 - 0.5 / targetScale;
-      targetOffset[0] = Math.max(
-        -maxOffset,
-        Math.min(maxOffset, targetOffset[0])
-      );
-      targetOffset[1] = Math.max(
-        -maxOffset,
-        Math.min(maxOffset, targetOffset[1])
-      );
+
+      if (options.facePosition) {
+        const faceX = options.facePosition.x / 100;
+        const faceY = options.facePosition.y / 100;
+        targetOffset = [faceX - 0.5, faceY - 0.5];
+        const maxOffset = 0.5 - 0.5 / targetScale;
+        targetOffset[0] = Math.max(
+          -maxOffset,
+          Math.min(maxOffset, targetOffset[0])
+        );
+        targetOffset[1] = Math.max(
+          -maxOffset,
+          Math.min(maxOffset, targetOffset[1])
+        );
+      }
     }
 
     const speed = (options.trackingSpeed || 0.1) * 0.5;
