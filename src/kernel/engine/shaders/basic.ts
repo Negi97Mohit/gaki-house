@@ -22,6 +22,11 @@ vec3 adjustContrast(vec3 color, float adjustment) {
 }
 
 void main() {
+    // Black out-of-bounds areas when zoomed out
+    if (v_uv.x < 0.0 || v_uv.x > 1.0 || v_uv.y < 0.0 || v_uv.y > 1.0) {
+        outColor = vec4(0.0, 0.0, 0.0, 1.0);
+        return;
+    }
     vec4 texColor = texture(u_video, v_uv);
     vec3 color = texColor.rgb;
 

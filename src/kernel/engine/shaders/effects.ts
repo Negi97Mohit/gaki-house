@@ -268,6 +268,11 @@ vec4 applyXRay(vec2 uv) {
 }
 
 void main() {
+    // Black out-of-bounds areas when zoomed out
+    if (v_uv.x < 0.0 || v_uv.x > 1.0 || v_uv.y < 0.0 || v_uv.y > 1.0) {
+        outColor = vec4(0.0, 0.0, 0.0, 1.0);
+        return;
+    }
     if (u_filter_type == 1) outColor = applyPixelate(v_uv);
     else if (u_filter_type == 2) outColor = applyHologram(v_uv);
     else if (u_filter_type == 3) outColor = applyNeonEdge(v_uv);
