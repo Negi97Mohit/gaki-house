@@ -8,6 +8,8 @@ import { PipBackgroundMenu } from "./pip/PipBackgroundMenu";
 import { PipEffectsMenu } from "./pip/PipEffectsMenu";
 import { PipStyleMenu } from "./pip/PipStyleMenu";
 import { PipLayoutMenu, PipLayoutPreset } from "./pip/PipLayoutMenu";
+import { PipCinematicMenu, CinematicEffect } from "./pip/PipCinematicMenu";
+import { PipZoomSlider } from "./pip/PipZoomSlider";
 
 interface PipControlsToolbarProps {
   position: { x: number; y: number };
@@ -88,6 +90,12 @@ interface PipControlsToolbarProps {
   // PIP Layout presets (visible during screen share)
   currentPipLayoutId?: string;
   onPipLayoutSelect?: (preset: PipLayoutPreset) => void;
+
+  // Cinematic & Zoom
+  activeCinematicEffect?: CinematicEffect;
+  onCinematicEffectChange?: (effect: CinematicEffect) => void;
+  manualZoom?: number;
+  onManualZoomChange?: (zoom: number) => void;
 }
 
 export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
@@ -153,6 +161,20 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         activeInteractiveFilter={props.activeInteractiveFilter}
         onInteractiveFilterChange={props.onInteractiveFilterChange}
       />
+
+      {props.onCinematicEffectChange && (
+        <PipCinematicMenu
+          activeCinematicEffect={props.activeCinematicEffect || "none"}
+          onCinematicEffectChange={props.onCinematicEffectChange}
+        />
+      )}
+
+      {props.onManualZoomChange && (
+        <PipZoomSlider
+          manualZoom={props.manualZoom ?? 1.0}
+          onManualZoomChange={props.onManualZoomChange}
+        />
+      )}
 
       <PipStyleMenu
         cameraShape={props.cameraShape}
