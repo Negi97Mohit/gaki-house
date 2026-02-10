@@ -24,6 +24,16 @@ export const CinematicOverlay: React.FC<CinematicOverlayProps> = ({ effect }) =>
       {effect === "teal-orange" && <TealOrangeOverlay />}
       {effect === "bleach-bypass" && <BleachBypassOverlay />}
       {effect === "dolly-zoom" && <DollyZoomOverlay />}
+      {effect === "cinemascope" && <CinemascopeOverlay />}
+      {effect === "pillarbox" && <PillarboxOverlay />}
+      {effect === "windowbox" && <WindowboxOverlay />}
+      {effect === "soft-letterbox" && <SoftLetterboxOverlay />}
+      {effect === "color-letterbox" && <ColorLetterboxOverlay />}
+      {effect === "animated-letterbox" && <AnimatedLetterboxOverlay />}
+      {effect === "gradient-letterbox" && <GradientLetterboxOverlay />}
+      {effect === "neon-letterbox" && <NeonLetterboxOverlay />}
+      {effect === "vintage-letterbox" && <VintageLetterboxOverlay />}
+      {effect === "asymmetric-letterbox" && <AsymmetricLetterboxOverlay />}
     </div>
   );
 };
@@ -148,4 +158,133 @@ const DollyZoomOverlay = () => (
       background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.15) 100%)",
     }}
   />
+);
+
+// ── Letterbox Variations ──
+
+const CinemascopeOverlay = () => (
+  <>
+    <div className="absolute top-0 left-0 right-0 h-[18%] bg-black" />
+    <div className="absolute bottom-0 left-0 right-0 h-[18%] bg-black" />
+  </>
+);
+
+const PillarboxOverlay = () => (
+  <>
+    <div className="absolute top-0 left-0 bottom-0 w-[12%] bg-black" />
+    <div className="absolute top-0 right-0 bottom-0 w-[12%] bg-black" />
+  </>
+);
+
+const WindowboxOverlay = () => (
+  <>
+    <div className="absolute top-0 left-0 right-0 h-[10%] bg-black" />
+    <div className="absolute bottom-0 left-0 right-0 h-[10%] bg-black" />
+    <div className="absolute top-0 left-0 bottom-0 w-[8%] bg-black" />
+    <div className="absolute top-0 right-0 bottom-0 w-[8%] bg-black" />
+  </>
+);
+
+const SoftLetterboxOverlay = () => (
+  <>
+    <div
+      className="absolute top-0 left-0 right-0 h-[15%]"
+      style={{ background: "linear-gradient(to bottom, black 40%, transparent)" }}
+    />
+    <div
+      className="absolute bottom-0 left-0 right-0 h-[15%]"
+      style={{ background: "linear-gradient(to top, black 40%, transparent)" }}
+    />
+  </>
+);
+
+const ColorLetterboxOverlay = () => (
+  <>
+    <div
+      className="absolute top-0 left-0 right-0 h-[12%]"
+      style={{ background: "linear-gradient(135deg, #1a0a2e, #0a1a2e)" }}
+    />
+    <div
+      className="absolute bottom-0 left-0 right-0 h-[12%]"
+      style={{ background: "linear-gradient(135deg, #0a1a2e, #1a0a2e)" }}
+    />
+  </>
+);
+
+const AnimatedLetterboxOverlay = () => (
+  <>
+    <div
+      className="absolute top-0 left-0 right-0 bg-black"
+      style={{ height: "12%", animation: "letterbox-breathe 3s ease-in-out infinite" }}
+    />
+    <div
+      className="absolute bottom-0 left-0 right-0 bg-black"
+      style={{ height: "12%", animation: "letterbox-breathe 3s ease-in-out infinite" }}
+    />
+  </>
+);
+
+const GradientLetterboxOverlay = () => (
+  <>
+    <div
+      className="absolute top-0 left-0 right-0 h-[14%]"
+      style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(40,10,10,0.6), transparent)" }}
+    />
+    <div
+      className="absolute bottom-0 left-0 right-0 h-[14%]"
+      style={{ background: "linear-gradient(to top, rgba(0,0,0,0.95), rgba(40,10,10,0.6), transparent)" }}
+    />
+  </>
+);
+
+const NeonLetterboxOverlay = () => (
+  <>
+    <div className="absolute top-0 left-0 right-0 h-[11%] bg-black" />
+    <div className="absolute bottom-0 left-0 right-0 h-[11%] bg-black" />
+    <div
+      className="absolute left-0 right-0"
+      style={{
+        top: "11%",
+        height: "2px",
+        background: "linear-gradient(90deg, transparent, #00ff88, #00ffff, #00ff88, transparent)",
+        boxShadow: "0 0 8px #00ff88, 0 0 20px #00ff8844",
+      }}
+    />
+    <div
+      className="absolute left-0 right-0"
+      style={{
+        bottom: "11%",
+        height: "2px",
+        background: "linear-gradient(90deg, transparent, #00ff88, #00ffff, #00ff88, transparent)",
+        boxShadow: "0 0 8px #00ff88, 0 0 20px #00ff8844",
+      }}
+    />
+  </>
+);
+
+const VintageLetterboxOverlay = () => (
+  <>
+    <div
+      className="absolute top-0 left-0 right-0 h-[13%]"
+      style={{ background: "linear-gradient(to bottom, #1a1408, #0d0a04, transparent)" }}
+    />
+    <div
+      className="absolute bottom-0 left-0 right-0 h-[13%]"
+      style={{ background: "linear-gradient(to top, #1a1408, #0d0a04, transparent)" }}
+    />
+    <div
+      className="absolute inset-0 opacity-15"
+      style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E")`,
+        backgroundSize: "100px 100px",
+      }}
+    />
+  </>
+);
+
+const AsymmetricLetterboxOverlay = () => (
+  <>
+    <div className="absolute top-0 left-0 right-0 h-[8%] bg-black" />
+    <div className="absolute bottom-0 left-0 right-0 h-[18%] bg-black" />
+  </>
 );

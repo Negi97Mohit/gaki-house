@@ -2057,6 +2057,11 @@ body.cursor-inactive * {
     100% { transform: scale(1.08); }
   }
 
+  @keyframes letterbox-breathe {
+    0%, 100% { height: 12%; }
+    50% { height: 15%; }
+  }
+
   /* ===== COSMIC RING PULSE THEME ===== */
   .theme-cosmicRingPulse {
     --background: 330 20% 98%;
