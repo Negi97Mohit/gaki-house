@@ -673,6 +673,20 @@ export interface SceneState {
   filterTarget: "both" | "background" | "person";
 }
 
+// --- SCENE AUDIO TRACK ---
+export interface SceneAudioTrack {
+  id: string;
+  name: string;
+  /** "file" = uploaded file, "url" = stream/URL */
+  sourceType: "file" | "url";
+  /** Object URL for uploaded files, or a remote URL/stream */
+  sourceUrl: string;
+  volume: number; // 0-100
+  isMuted: boolean;
+  isLooping: boolean;
+  isPlaying: boolean;
+}
+
 // +++ ADDED: Default state for a new grid camera section +++
 export const DEFAULT_CAMERA_STATE: CanvasSectionCameraState = {
   videoFilter: "none",
