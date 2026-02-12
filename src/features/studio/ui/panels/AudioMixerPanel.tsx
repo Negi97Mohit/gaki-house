@@ -94,27 +94,52 @@ interface TrackRowProps {
 
 const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [loadProgress, setLoadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const togglePlay = useCallback(() => {
-    if (!audioRef.current) {
-      const el = new Audio(track.sourceUrl);
-      el.loop = track.isLooping;
-      el.volume = track.volume / 100;
-      audioRef.current = el;
-    }
-    const el = audioRef.current;
-    if (track.isPlaying) {
-      el.pause();
+  // Initialize audio element once
+  React.useEffect(() => {
+    const el = new Audio();
+    el.preload = "auto";
+    el.crossOrigin = "anonymous";
+
+    el.addEventListener("progress", () => {
+      if (el.buffered.length > 0 && el.duration > 0) {
+        const pct = (el.buffered.end(el.buffered.length - 1) / el.duration) * 100;
+        setLoadProgress(Math.round(pct));
+      }
+    });
+    el.addEventListener("canplaythrough", () => {
+      setIsLoading(false);
+      setLoadProgress(100);
+    });
+    el.addEventListener("loadstart", () => {
+      setIsLoading(true);
+      setError(null);
+      setLoadProgress(0);
+    });
+    el.addEventListener("error", () => {
+      setIsLoading(false);
+      setError("Failed to load audio");
       onUpdate(track.id, { isPlaying: false });
-    } else {
-      el.volume = track.isMuted ? 0 : track.volume / 100;
-      el.loop = track.isLooping;
-      el.play().catch(() => {});
-      onUpdate(track.id, { isPlaying: true });
-    }
-  }, [track, onUpdate]);
+    });
+    el.addEventListener("ended", () => {
+      if (!el.loop) onUpdate(track.id, { isPlaying: false });
+    });
 
-  // Sync volume/mute/loop to the audio element
+    el.src = track.sourceUrl;
+    audioRef.current = el;
+
+    return () => {
+      el.pause();
+      el.removeAttribute("src");
+      el.load();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [track.sourceUrl]);
+
+  // Sync volume/mute/loop
   React.useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = track.isMuted ? 0 : track.volume / 100;
@@ -122,20 +147,29 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
     }
   }, [track.volume, track.isMuted, track.isLooping]);
 
-  // Cleanup on unmount
-  React.useEffect(() => {
-    return () => {
-      audioRef.current?.pause();
-      audioRef.current = null;
-    };
-  }, []);
+  const togglePlay = useCallback(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (track.isPlaying) {
+      el.pause();
+      onUpdate(track.id, { isPlaying: false });
+    } else {
+      el.volume = track.isMuted ? 0 : track.volume / 100;
+      el.loop = track.isLooping;
+      el.play().catch((err) => {
+        console.error("Playback failed:", err);
+        setError("Playback blocked – click again");
+      });
+      onUpdate(track.id, { isPlaying: true });
+    }
+  }, [track, onUpdate]);
 
   return (
     <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-2">
       <div className="flex items-center gap-2">
-        <Music className="w-3.5 h-3.5 text-primary/60" />
-        <span className="text-[10px] font-medium truncate flex-1">
-          {track.name}
+        <Music className={cn("w-3.5 h-3.5", error ? "text-destructive/60" : "text-primary/60")} />
+        <span className="text-[10px] font-medium truncate flex-1" title={error || track.name}>
+          {error || track.name}
         </span>
         <button
           onClick={togglePlay}
@@ -189,6 +223,20 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
           <Trash2 className="w-3 h-3" />
         </button>
       </div>
+      {/* Loading progress */}
+      {isLoading && (
+        <div className="flex items-center gap-2">
+          <div className="flex-1 h-1 rounded-full bg-muted overflow-hidden">
+            <div
+              className="h-full bg-primary/60 transition-all duration-300 rounded-full"
+              style={{ width: `${loadProgress}%` }}
+            />
+          </div>
+          <span className="text-[9px] text-muted-foreground w-7 text-right tabular-nums">
+            {loadProgress}%
+          </span>
+        </div>
+      )}
       <div className="flex items-center gap-2">
         <Slider
           value={[track.isMuted ? 0 : track.volume]}
@@ -393,7 +441,7 @@ export function AudioMixerPanel() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="audio/*"
+                  accept="audio/*,.mp3,.wav,.ogg,.flac,.aac,.m4a,.wma,.opus,.webm,.aiff,.mid,.midi"
                   multiple
                   className="hidden"
                   onChange={handleFileUpload}
