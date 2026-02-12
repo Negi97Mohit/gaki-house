@@ -8,8 +8,13 @@ import {
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
-import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+import { auth } from "@/lib/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "firebase/auth";
 import { Loader, Eye, EyeOff, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/shared/lib/utils";
@@ -41,18 +46,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleGoogleSignIn = useCallback(async () => {
     setGoogleLoading(true);
     try {
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-      });
-      if (result.error) {
-        toast.error("Google sign-in failed");
-      }
-    } catch {
-      toast.error("Google sign-in failed");
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      toast.success("Signed in successfully with Google!");
+      onClose();
+    } catch (error: any) {
+      console.error("Google sign in error:", error);
+      toast.error(error.message || "Google sign-in failed");
     } finally {
       setGoogleLoading(false);
     }
-  }, []);
+  }, [onClose]);
 
   const handleEmailAuth = useCallback(async () => {
     if (!email || !password) {
@@ -68,19 +72,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: window.location.origin },
-        });
-        if (error) throw error;
-        toast.success("Check your email for a confirmation link!");
+        await createUserWithEmailAndPassword(auth, email, password);
+        toast.success("Account created successfully!");
+        onClose();
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
+        await signInWithEmailAndPassword(auth, email, password);
         toast.success("Signed in successfully!");
         onClose();
       }
@@ -101,6 +97,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <DialogTitle className="text-lg font-medium tracking-tight">
             {mode === "signin" ? "Sign In" : "Create Account"}
           </DialogTitle>
+          <div className="sr-only">
+            Authentication modal for signing in or creating an account
+          </div>
         </DialogHeader>
 
         <div className="space-y-4 relative">
@@ -171,7 +170,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   return (
                     <div
                       key={rule.label}
-                    className={cn(
+                      className={cn(
                         "flex items-center gap-1.5 text-[11px] transition-colors",
                         passed ? "text-primary" : "text-muted-foreground/60"
                       )}
