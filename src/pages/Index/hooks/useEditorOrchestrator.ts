@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 import { useLayerControls } from "@/hooks/useLayerControls";
@@ -13,6 +14,7 @@ import { useBroadcastController } from "./useBroadcastController";
 import { useSessionData } from "./useSessionData";
 import { useDrawingController } from "./useDrawingController";
 import { useDynamicLayoutState } from "./useDynamicLayoutState";
+import { useSceneAudioStore } from "@/stores/sceneAudio.store";
 
 export const useEditorOrchestrator = () => {
 
@@ -25,6 +27,16 @@ export const useEditorOrchestrator = () => {
   // --- SCENE & MEDIA ---
   const sceneManager = useSceneManager({});
   const { activeScene, effectiveScene, activeSceneId } = sceneManager;
+
+  // Sync scene info to audio store
+  const setSceneAudioScenes = useSceneAudioStore((s) => s.setScenes);
+  const setSceneAudioActiveId = useSceneAudioStore((s) => s.setActiveSceneId);
+  useEffect(() => {
+    setSceneAudioScenes(sceneManager.scenes.map((s) => ({ id: s.id, name: s.name })));
+  }, [sceneManager.scenes, setSceneAudioScenes]);
+  useEffect(() => {
+    setSceneAudioActiveId(activeSceneId);
+  }, [activeSceneId, setSceneAudioActiveId]);
 
   const mediaManager = useMediaManager({
     isAudioOn: activeScene?.isAudioOn || false,

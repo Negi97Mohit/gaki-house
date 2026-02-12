@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   Volume2,
   VolumeX,
@@ -12,17 +12,18 @@ import {
   Link,
   Upload,
   Music,
+  Tag,
+  Check,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { Label } from "@/shared/ui/label";
 import { Slider } from "@/shared/ui/slider";
-import { Switch } from "@/shared/ui/switch";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { useMediaStore } from "@/stores/media.store";
+import { useSceneAudioStore } from "@/stores/sceneAudio.store";
 import { SceneAudioTrack } from "@/types/caption";
 
-/* ─── Fader Strip ─── */
+/* ─── Fader Strip (for mic/master) ─── */
 interface FaderStripProps {
   label: string;
   icon: React.ReactNode;
@@ -85,25 +86,137 @@ const FaderStrip: React.FC<FaderStripProps> = ({
   </div>
 );
 
+/* ─── Format seconds to mm:ss ─── */
+const formatTime = (seconds: number): string => {
+  if (!isFinite(seconds) || seconds < 0) return "0:00";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+};
+
+/* ─── Scene Assignment Popover ─── */
+interface SceneAssignmentProps {
+  track: SceneAudioTrack;
+  scenes: { id: string; name: string }[];
+  onUpdate: (id: string, patch: Partial<SceneAudioTrack>) => void;
+}
+
+const SceneAssignment: React.FC<SceneAssignmentProps> = ({ track, scenes, onUpdate }) => {
+  const [open, setOpen] = useState(false);
+
+  const toggleScene = (sceneId: string) => {
+    const current = track.assignedSceneIds;
+    const isAssigned = current.includes(sceneId);
+
+    let newIds: string[];
+    if (isAssigned) {
+      newIds = current.filter((id) => id !== sceneId);
+    } else {
+      newIds = [...current, sceneId];
+    }
+    onUpdate(track.id, { assignedSceneIds: newIds });
+  };
+
+  const assignAll = () => {
+    onUpdate(track.id, { assignedSceneIds: [] });
+  };
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className={cn(
+          "flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] transition-colors",
+          track.assignedSceneIds.length === 0
+            ? "text-muted-foreground/60 hover:bg-foreground/5"
+            : "text-primary bg-primary/10"
+        )}
+        title="Assign to scenes"
+      >
+        <Tag className="w-2.5 h-2.5" />
+        {track.assignedSceneIds.length === 0
+          ? "All scenes"
+          : `${track.assignedSceneIds.length} scene${track.assignedSceneIds.length > 1 ? "s" : ""}`}
+      </button>
+    );
+  }
+
+  return (
+    <div className="p-2 rounded-lg bg-foreground/[0.03] border border-border/10 space-y-1.5">
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
+          Assign to Scenes
+        </span>
+        <button
+          onClick={() => setOpen(false)}
+          className="text-[9px] text-primary hover:underline"
+        >
+          Done
+        </button>
+      </div>
+      <button
+        onClick={assignAll}
+        className={cn(
+          "w-full flex items-center gap-1.5 px-2 py-1 rounded-md text-[9px] transition-colors text-left",
+          track.assignedSceneIds.length === 0
+            ? "bg-primary/10 text-primary"
+            : "text-muted-foreground hover:bg-foreground/5"
+        )}
+      >
+        {track.assignedSceneIds.length === 0 && <Check className="w-2.5 h-2.5" />}
+        <span>All scenes</span>
+      </button>
+      {scenes.map((scene) => {
+        const isAssigned =
+          track.assignedSceneIds.length === 0 || track.assignedSceneIds.includes(scene.id);
+        const isExplicit = track.assignedSceneIds.includes(scene.id);
+        return (
+          <button
+            key={scene.id}
+            onClick={() => {
+              // If currently "all scenes", switch to explicit mode with all except this one toggled
+              if (track.assignedSceneIds.length === 0) {
+                // Switch to explicit: assign only this scene
+                onUpdate(track.id, { assignedSceneIds: [scene.id] });
+              } else {
+                toggleScene(scene.id);
+              }
+            }}
+            className={cn(
+              "w-full flex items-center gap-1.5 px-2 py-1 rounded-md text-[9px] transition-colors text-left",
+              isExplicit
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-foreground/5"
+            )}
+          >
+            {isExplicit && <Check className="w-2.5 h-2.5" />}
+            <span>{scene.name}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+};
+
 /* ─── Scene Audio Track Row ─── */
 interface TrackRowProps {
   track: SceneAudioTrack;
+  scenes: { id: string; name: string }[];
   onUpdate: (id: string, patch: Partial<SceneAudioTrack>) => void;
   onRemove: (id: string) => void;
 }
 
-const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
+const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [loadProgress, setLoadProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const seekTimerRef = useRef<number | null>(null);
 
-  // Initialize audio element once
-  React.useEffect(() => {
+  // Initialize audio element
+  useEffect(() => {
     const el = new Audio();
     el.preload = "auto";
-    // Only set crossOrigin for blob/data URLs or known CORS-friendly sources
-    // Don't set it for arbitrary URLs as it triggers CORS preflight failures
     if (track.sourceUrl.startsWith("blob:") || track.sourceUrl.startsWith("data:")) {
       el.crossOrigin = "anonymous";
     }
@@ -117,6 +230,14 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
     el.addEventListener("canplaythrough", () => {
       setIsLoading(false);
       setLoadProgress(100);
+      if (el.duration && isFinite(el.duration)) {
+        onUpdate(track.id, { duration: el.duration });
+      }
+    });
+    el.addEventListener("loadedmetadata", () => {
+      if (el.duration && isFinite(el.duration)) {
+        onUpdate(track.id, { duration: el.duration });
+      }
     });
     el.addEventListener("loadstart", () => {
       setIsLoading(true);
@@ -129,34 +250,66 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
       onUpdate(track.id, { isPlaying: false });
     });
     el.addEventListener("ended", () => {
-      if (!el.loop) onUpdate(track.id, { isPlaying: false });
+      if (!el.loop) onUpdate(track.id, { isPlaying: false, currentTime: 0 });
     });
 
+    // Restore position
+    if (track.currentTime > 0) {
+      el.currentTime = track.currentTime;
+    }
     el.src = track.sourceUrl;
     audioRef.current = el;
 
+    // Start time tracking
+    const updateTime = () => {
+      if (audioRef.current && !audioRef.current.paused) {
+        onUpdate(track.id, { currentTime: audioRef.current.currentTime });
+      }
+      seekTimerRef.current = requestAnimationFrame(updateTime);
+    };
+    seekTimerRef.current = requestAnimationFrame(updateTime);
+
     return () => {
+      if (seekTimerRef.current) cancelAnimationFrame(seekTimerRef.current);
       el.pause();
+      // Save position before cleanup
+      if (el.currentTime > 0) {
+        onUpdate(track.id, { currentTime: el.currentTime, isPlaying: false });
+      }
       el.removeAttribute("src");
       el.load();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track.sourceUrl]);
 
   // Sync volume/mute/loop
-  React.useEffect(() => {
+  useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = track.isMuted ? 0 : track.volume / 100;
       audioRef.current.loop = track.isLooping;
     }
   }, [track.volume, track.isMuted, track.isLooping]);
 
+  // Sync play state from store (for scene switching resume)
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (track.isPlaying && el.paused) {
+      el.volume = track.isMuted ? 0 : track.volume / 100;
+      el.loop = track.isLooping;
+      el.play().catch(() => {});
+    } else if (!track.isPlaying && !el.paused) {
+      el.pause();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [track.isPlaying]);
+
   const togglePlay = useCallback(() => {
     const el = audioRef.current;
     if (!el) return;
     if (track.isPlaying) {
       el.pause();
-      onUpdate(track.id, { isPlaying: false });
+      onUpdate(track.id, { isPlaying: false, currentTime: el.currentTime });
     } else {
       el.volume = track.isMuted ? 0 : track.volume / 100;
       el.loop = track.isLooping;
@@ -168,8 +321,23 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
     }
   }, [track, onUpdate]);
 
+  const handleSeek = useCallback(
+    ([value]: number[]) => {
+      const el = audioRef.current;
+      if (!el || !isFinite(track.duration)) return;
+      const newTime = (value / 100) * track.duration;
+      el.currentTime = newTime;
+      onUpdate(track.id, { currentTime: newTime });
+    },
+    [track.id, track.duration, onUpdate]
+  );
+
+  const seekPercent =
+    track.duration > 0 ? (track.currentTime / track.duration) * 100 : 0;
+
   return (
     <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-2">
+      {/* Header row */}
       <div className="flex items-center gap-2">
         <Music className={cn("w-3.5 h-3.5", error ? "text-destructive/60" : "text-primary/60")} />
         <span className="text-[10px] font-medium truncate flex-1" title={error || track.name}>
@@ -180,11 +348,7 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
           className="p-1 rounded-lg hover:bg-foreground/5 text-muted-foreground"
           title={track.isPlaying ? "Pause" : "Play"}
         >
-          {track.isPlaying ? (
-            <Pause className="w-3 h-3" />
-          ) : (
-            <Play className="w-3 h-3" />
-          )}
+          {track.isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
         </button>
         <button
           onClick={() => onUpdate(track.id, { isLooping: !track.isLooping })}
@@ -199,9 +363,7 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
           <Repeat className="w-3 h-3" />
         </button>
         <button
-          onClick={() =>
-            onUpdate(track.id, { isMuted: !track.isMuted })
-          }
+          onClick={() => onUpdate(track.id, { isMuted: !track.isMuted })}
           className={cn(
             "p-1 rounded-lg transition-colors",
             track.isMuted
@@ -210,11 +372,7 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
           )}
           title={track.isMuted ? "Unmute" : "Mute"}
         >
-          {track.isMuted ? (
-            <VolumeX className="w-3 h-3" />
-          ) : (
-            <Volume2 className="w-3 h-3" />
-          )}
+          {track.isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
         </button>
         <button
           onClick={() => {
@@ -227,6 +385,7 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
           <Trash2 className="w-3 h-3" />
         </button>
       </div>
+
       {/* Loading progress */}
       {isLoading && (
         <div className="flex items-center gap-2">
@@ -241,6 +400,28 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
           </span>
         </div>
       )}
+
+      {/* Seek slider */}
+      {track.duration > 0 && (
+        <div className="flex items-center gap-2">
+          <span className="text-[8px] text-muted-foreground tabular-nums w-8 text-right">
+            {formatTime(track.currentTime)}
+          </span>
+          <Slider
+            value={[seekPercent]}
+            onValueChange={handleSeek}
+            min={0}
+            max={100}
+            step={0.1}
+            className="flex-1"
+          />
+          <span className="text-[8px] text-muted-foreground tabular-nums w-8">
+            {formatTime(track.duration)}
+          </span>
+        </div>
+      )}
+
+      {/* Volume slider */}
       <div className="flex items-center gap-2">
         <Slider
           value={[track.isMuted ? 0 : track.volume]}
@@ -254,6 +435,11 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
           {track.isMuted ? "0" : track.volume}%
         </span>
       </div>
+
+      {/* Scene assignment */}
+      {scenes.length > 1 && (
+        <SceneAssignment track={track} scenes={scenes} onUpdate={onUpdate} />
+      )}
     </div>
   );
 };
@@ -263,7 +449,20 @@ export function AudioMixerPanel() {
   const audioDevices = useMediaStore((s) => s.audioDevices);
   const isAudioOn = useMediaStore((s) => s.isAudioOn);
 
-  // Per-device volumes (local state for now)
+  // Scene audio store
+  const activeSceneId = useSceneAudioStore((s) => s.activeSceneId);
+  const scenes = useSceneAudioStore((s) => s.scenes);
+  const allTracks = useSceneAudioStore((s) => s.tracks);
+  const addTrack = useSceneAudioStore((s) => s.addTrack);
+  const updateTrack = useSceneAudioStore((s) => s.updateTrack);
+  const removeTrack = useSceneAudioStore((s) => s.removeTrack);
+
+  // Filter tracks for current scene
+  const sceneTracks = allTracks.filter(
+    (t) => t.assignedSceneIds.length === 0 || t.assignedSceneIds.includes(activeSceneId)
+  );
+
+  // Per-device volumes (local state)
   const [deviceVolumes, setDeviceVolumes] = useState<
     Record<string, { volume: number; muted: boolean }>
   >({});
@@ -271,9 +470,6 @@ export function AudioMixerPanel() {
   // Master output volume
   const [masterVolume, setMasterVolume] = useState(80);
   const [masterMuted, setMasterMuted] = useState(false);
-
-  // Scene audio tracks
-  const [sceneTracks, setSceneTracks] = useState<SceneAudioTrack[]>([]);
 
   // Add track dialog
   const [showAddTrack, setShowAddTrack] = useState(false);
@@ -314,8 +510,11 @@ export function AudioMixerPanel() {
         isMuted: false,
         isLooping: false,
         isPlaying: false,
+        currentTime: 0,
+        duration: 0,
+        assignedSceneIds: activeSceneId ? [activeSceneId] : [],
       };
-      setSceneTracks((prev) => [...prev, track]);
+      addTrack(track);
     });
     setShowAddTrack(false);
     e.target.value = "";
@@ -340,7 +539,9 @@ export function AudioMixerPanel() {
     if (!urlInput.trim()) return;
     const blocked = isUnsupportedUrl(urlInput.trim());
     if (blocked) {
-      setUrlError(`${blocked} links aren't direct audio files. Use a direct .mp3/.ogg/.wav URL instead.`);
+      setUrlError(
+        `${blocked} links aren't direct audio files. Use a direct .mp3/.ogg/.wav URL instead.`
+      );
       return;
     }
     setUrlError(null);
@@ -353,20 +554,13 @@ export function AudioMixerPanel() {
       isMuted: false,
       isLooping: false,
       isPlaying: false,
+      currentTime: 0,
+      duration: 0,
+      assignedSceneIds: activeSceneId ? [activeSceneId] : [],
     };
-    setSceneTracks((prev) => [...prev, track]);
+    addTrack(track);
     setUrlInput("");
     setShowAddTrack(false);
-  };
-
-  const updateTrack = (id: string, patch: Partial<SceneAudioTrack>) => {
-    setSceneTracks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, ...patch } : t))
-    );
-  };
-
-  const removeTrack = (id: string) => {
-    setSceneTracks((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
@@ -487,7 +681,10 @@ export function AudioMixerPanel() {
                 <div className="flex gap-1.5">
                   <Input
                     value={urlInput}
-                    onChange={(e) => { setUrlInput(e.target.value); setUrlError(null); }}
+                    onChange={(e) => {
+                      setUrlInput(e.target.value);
+                      setUrlError(null);
+                    }}
                     placeholder="https://example.com/audio.mp3"
                     className={cn("h-7 text-[10px] flex-1", urlError && "border-destructive")}
                     onKeyDown={(e) => e.key === "Enter" && handleAddUrl()}
@@ -519,6 +716,7 @@ export function AudioMixerPanel() {
             <TrackRow
               key={track.id}
               track={track}
+              scenes={scenes}
               onUpdate={updateTrack}
               onRemove={removeTrack}
             />
