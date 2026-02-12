@@ -10,7 +10,6 @@ import {
   Archive,
   Wrench,
   Settings,
-  ChevronRight,
   AudioLines,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
@@ -32,6 +31,7 @@ import { SettingsPanel } from "./panels/SettingsPanel";
 import { AudioMixerPanel } from "./panels/AudioMixerPanel";
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
+import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;
@@ -163,40 +163,29 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
           const isActive = activeSection === section.id;
 
           return (
-            <button
-              key={section.id}
-              onClick={() =>
-                setActiveSection((prev) =>
-                  prev === section.id ? null : section.id,
-                )
-              }
-              className={cn(
-                "group relative w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200",
-                isActive
-                  ? "bg-primary/15 text-primary"
-                  : "text-muted-foreground/60 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5",
-              )}
-              title={section.label}
-            >
-              <Icon className="w-4 h-4" strokeWidth={1.5} />
-
-              {/* Active indicator */}
-              {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" />
-              )}
-
-              {/* Tooltip */}
-              <div
+            <ShortcutTooltip label={section.label} side="right">
+              <button
+                key={section.id}
+                onClick={() =>
+                  setActiveSection((prev) =>
+                    prev === section.id ? null : section.id,
+                  )
+                }
                 className={cn(
-                  "absolute left-full ml-2 px-2 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap",
-                  "bg-foreground text-background dark:bg-white dark:text-black",
-                  "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100",
-                  "transition-all duration-150 pointer-events-none",
+                  "group relative w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200",
+                  isActive
+                    ? "bg-primary/15 text-primary"
+                    : "text-muted-foreground/60 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5",
                 )}
               >
-                {section.label}
-              </div>
-            </button>
+                <Icon className="w-4 h-4" strokeWidth={1.5} />
+
+                {/* Active indicator */}
+                {isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" />
+                )}
+              </button>
+            </ShortcutTooltip>
           );
         })}
       </div>
