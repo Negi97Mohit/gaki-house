@@ -260,6 +260,17 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
     el.src = track.sourceUrl;
     audioRef.current = el;
 
+    // Auto-resume if track was playing before remount (e.g. scene switch)
+    if (track.isPlaying) {
+      el.addEventListener("canplaythrough", function autoResume() {
+        el.removeEventListener("canplaythrough", autoResume);
+        el.volume = track.isMuted ? 0 : track.volume / 100;
+        el.loop = track.isLooping;
+        if (track.currentTime > 0) el.currentTime = track.currentTime;
+        el.play().catch(() => {});
+      }, { once: true });
+    }
+
     // Start time tracking
     const updateTime = () => {
       if (audioRef.current && !audioRef.current.paused) {
