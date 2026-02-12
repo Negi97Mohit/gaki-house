@@ -14,6 +14,7 @@ import {
   Music,
   Tag,
   Check,
+  AudioLines,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Slider } from "@/shared/ui/slider";
@@ -212,6 +213,97 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const seekTimerRef = useRef<number | null>(null);
+  const [showDucking, setShowDucking] = useState(false);
+  const isAudioOn = useMediaStore((s) => s.isAudioOn);
+
+  // Smart ducking: monitor mic input level and reduce track volume when speaking
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const duckingStreamRef = useRef<MediaStream | null>(null);
+  const duckingRafRef = useRef<number | null>(null);
+  const isDuckedRef = useRef(false);
+
+  useEffect(() => {
+    if (!track.duckingEnabled || !isAudioOn) {
+      // Restore volume when ducking is disabled
+      if (isDuckedRef.current && audioRef.current) {
+        audioRef.current.volume = track.isMuted ? 0 : track.volume / 100;
+        isDuckedRef.current = false;
+      }
+      // Cleanup
+      if (duckingRafRef.current) cancelAnimationFrame(duckingRafRef.current);
+      if (duckingStreamRef.current) {
+        duckingStreamRef.current.getTracks().forEach((t) => t.stop());
+        duckingStreamRef.current = null;
+      }
+      analyserRef.current = null;
+      return;
+    }
+
+    let cancelled = false;
+
+    const setupDucking = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
+        duckingStreamRef.current = stream;
+
+        const ctx = new AudioContext();
+        const source = ctx.createMediaStreamSource(stream);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.8;
+        source.connect(analyser);
+        analyserRef.current = analyser;
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        const SPEECH_THRESHOLD = 25; // RMS threshold to consider "speaking"
+
+        const monitorLevel = () => {
+          if (cancelled) return;
+          analyser.getByteTimeDomainData(dataArray);
+          // Calculate RMS
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            const val = (dataArray[i] - 128) / 128;
+            sum += val * val;
+          }
+          const rms = Math.sqrt(sum / dataArray.length) * 100;
+
+          const el = audioRef.current;
+          if (el) {
+            const baseVolume = track.isMuted ? 0 : track.volume / 100;
+            if (rms > SPEECH_THRESHOLD) {
+              // Duck: reduce to duckingLevel % of original
+              const duckedVolume = baseVolume * (track.duckingLevel / 100);
+              el.volume = duckedVolume;
+              isDuckedRef.current = true;
+            } else if (isDuckedRef.current) {
+              // Restore gradually
+              el.volume = baseVolume;
+              isDuckedRef.current = false;
+            }
+          }
+
+          duckingRafRef.current = requestAnimationFrame(monitorLevel);
+        };
+        duckingRafRef.current = requestAnimationFrame(monitorLevel);
+      } catch (err) {
+        console.error("[Ducking] Failed to get mic:", err);
+      }
+    };
+
+    setupDucking();
+
+    return () => {
+      cancelled = true;
+      if (duckingRafRef.current) cancelAnimationFrame(duckingRafRef.current);
+      if (duckingStreamRef.current) {
+        duckingStreamRef.current.getTracks().forEach((t) => t.stop());
+        duckingStreamRef.current = null;
+      }
+      analyserRef.current = null;
+    };
+  }, [track.duckingEnabled, isAudioOn, track.volume, track.isMuted, track.duckingLevel]);
 
   // Initialize audio element
   useEffect(() => {
@@ -447,6 +539,57 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
         </span>
       </div>
 
+      {/* Smart Ducking */}
+      <div className="space-y-1.5">
+        <button
+          onClick={() => setShowDucking(!showDucking)}
+          className={cn(
+            "flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] transition-colors",
+            track.duckingEnabled
+              ? "text-primary bg-primary/10"
+              : "text-muted-foreground/60 hover:bg-foreground/5"
+          )}
+        >
+          <AudioLines className="w-2.5 h-2.5" />
+          Smart Ducking {track.duckingEnabled ? "On" : "Off"}
+        </button>
+        {showDucking && (
+          <div className="p-2 rounded-lg bg-foreground/[0.03] border border-border/10 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] text-muted-foreground">
+                Auto-lower when speaking
+              </span>
+              <button
+                onClick={() => onUpdate(track.id, { duckingEnabled: !track.duckingEnabled })}
+                className={cn(
+                  "px-2 py-0.5 rounded-md text-[9px] font-medium transition-colors",
+                  track.duckingEnabled
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-foreground/5 text-muted-foreground"
+                )}
+              >
+                {track.duckingEnabled ? "Enabled" : "Disabled"}
+              </button>
+            </div>
+            {track.duckingEnabled && (
+              <div className="space-y-1">
+                <span className="text-[8px] text-muted-foreground">
+                  Volume when speaking: {track.duckingLevel}%
+                </span>
+                <Slider
+                  value={[track.duckingLevel]}
+                  onValueChange={([v]) => onUpdate(track.id, { duckingLevel: v })}
+                  min={0}
+                  max={100}
+                  step={5}
+                  className="flex-1"
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Scene assignment */}
       {scenes.length > 1 && (
         <SceneAssignment track={track} scenes={scenes} onUpdate={onUpdate} />
@@ -524,6 +667,8 @@ export function AudioMixerPanel() {
         currentTime: 0,
         duration: 0,
         assignedSceneIds: activeSceneId ? [activeSceneId] : [],
+        duckingEnabled: false,
+        duckingLevel: 30,
       };
       addTrack(track);
     });
@@ -568,6 +713,8 @@ export function AudioMixerPanel() {
       currentTime: 0,
       duration: 0,
       assignedSceneIds: activeSceneId ? [activeSceneId] : [],
+      duckingEnabled: false,
+      duckingLevel: 30,
     };
     addTrack(track);
     setUrlInput("");

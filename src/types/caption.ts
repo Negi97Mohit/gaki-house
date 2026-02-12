@@ -691,6 +691,10 @@ export interface SceneAudioTrack {
   duration: number;
   /** Scene IDs this track is assigned to. Empty = all scenes */
   assignedSceneIds: string[];
+  /** Smart ducking: auto-lower volume when mic input is detected */
+  duckingEnabled: boolean;
+  /** How much to reduce volume (0-100, percentage of original volume to keep) */
+  duckingLevel: number;
 }
 
 // +++ ADDED: Default state for a new grid camera section +++
