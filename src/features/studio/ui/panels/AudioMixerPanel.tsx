@@ -102,7 +102,11 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, onUpdate, onRemove }) => {
   React.useEffect(() => {
     const el = new Audio();
     el.preload = "auto";
-    el.crossOrigin = "anonymous";
+    // Only set crossOrigin for blob/data URLs or known CORS-friendly sources
+    // Don't set it for arbitrary URLs as it triggers CORS preflight failures
+    if (track.sourceUrl.startsWith("blob:") || track.sourceUrl.startsWith("data:")) {
+      el.crossOrigin = "anonymous";
+    }
 
     el.addEventListener("progress", () => {
       if (el.buffered.length > 0 && el.duration > 0) {
@@ -275,6 +279,7 @@ export function AudioMixerPanel() {
   const [showAddTrack, setShowAddTrack] = useState(false);
   const [addMode, setAddMode] = useState<"file" | "url">("file");
   const [urlInput, setUrlInput] = useState("");
+  const [urlError, setUrlError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const getDeviceVolume = (deviceId: string) =>
@@ -316,8 +321,29 @@ export function AudioMixerPanel() {
     e.target.value = "";
   };
 
+  const isUnsupportedUrl = (url: string): string | null => {
+    const lower = url.toLowerCase();
+    const blocked = [
+      { pattern: /youtube\.com|youtu\.be/, name: "YouTube" },
+      { pattern: /spotify\.com/, name: "Spotify" },
+      { pattern: /soundcloud\.com/, name: "SoundCloud" },
+      { pattern: /music\.apple\.com/, name: "Apple Music" },
+      { pattern: /tidal\.com/, name: "Tidal" },
+    ];
+    for (const { pattern, name } of blocked) {
+      if (pattern.test(lower)) return name;
+    }
+    return null;
+  };
+
   const handleAddUrl = () => {
     if (!urlInput.trim()) return;
+    const blocked = isUnsupportedUrl(urlInput.trim());
+    if (blocked) {
+      setUrlError(`${blocked} links aren't direct audio files. Use a direct .mp3/.ogg/.wav URL instead.`);
+      return;
+    }
+    setUrlError(null);
     const track: SceneAudioTrack = {
       id: crypto.randomUUID(),
       name: urlInput.split("/").pop() || "Stream",
@@ -457,23 +483,28 @@ export function AudioMixerPanel() {
                 </Button>
               </>
             ) : (
-              <div className="flex gap-1.5">
-                <Input
-                  value={urlInput}
-                  onChange={(e) => setUrlInput(e.target.value)}
-                  placeholder="https://stream.example.com/audio.mp3"
-                  className="h-7 text-[10px] flex-1"
-                  onKeyDown={(e) => e.key === "Enter" && handleAddUrl()}
-                />
-                <Button
-                  variant="default"
-                  size="sm"
-                  className="h-7 px-3 text-[10px]"
-                  onClick={handleAddUrl}
-                  disabled={!urlInput.trim()}
-                >
-                  Add
-                </Button>
+              <div className="space-y-1.5">
+                <div className="flex gap-1.5">
+                  <Input
+                    value={urlInput}
+                    onChange={(e) => { setUrlInput(e.target.value); setUrlError(null); }}
+                    placeholder="https://example.com/audio.mp3"
+                    className={cn("h-7 text-[10px] flex-1", urlError && "border-destructive")}
+                    onKeyDown={(e) => e.key === "Enter" && handleAddUrl()}
+                  />
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="h-7 px-3 text-[10px]"
+                    onClick={handleAddUrl}
+                    disabled={!urlInput.trim()}
+                  >
+                    Add
+                  </Button>
+                </div>
+                {urlError && (
+                  <p className="text-[9px] text-destructive px-1">{urlError}</p>
+                )}
               </div>
             )}
           </div>
