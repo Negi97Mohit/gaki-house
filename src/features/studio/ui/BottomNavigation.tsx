@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SlidersHorizontal, Expand, Shrink, Download, Users } from "lucide-react";
+import { SlidersHorizontal, Expand, Shrink, Download, Users, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -32,8 +32,11 @@ interface BottomNavigationProps {
   onRedo: () => void;
   onResetScene: () => void;
   onToggleFullscreen?: () => void;
-  onConnectRemote?: () => void; // New prop
-  onToggleOmegle?: () => void; // Omegle mode prop
+  onConnectRemote?: () => void;
+  onToggleOmegle?: () => void;
+  onOpenAuth?: () => void;
+  onSignOut?: () => void;
+  isSignedIn?: boolean;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -53,8 +56,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onRedo,
   onResetScene,
   onToggleFullscreen,
-  onConnectRemote, // Destructure
-  onToggleOmegle, // Destructure Omegle handler
+  onConnectRemote,
+  onToggleOmegle,
+  onOpenAuth,
+  onSignOut,
+  isSignedIn,
 }) => {
   const { isMouseActive, isFullscreen, setFullscreen, setShowSettings } =
     useUiStore(
@@ -197,6 +203,35 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 data-floating-trigger
               >
                 <Users className="w-3.5 h-3.5" />
+              </Button>
+            </ShortcutTooltip>
+          )}
+
+          <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
+
+          {/* Auth Button */}
+          {isSignedIn ? (
+            <ShortcutTooltip label="Sign Out">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
+                onClick={onSignOut}
+                data-floating-trigger
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </Button>
+            </ShortcutTooltip>
+          ) : (
+            <ShortcutTooltip label="Sign In / Sign Up">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 text-primary hover:text-primary transition-all duration-200"
+                onClick={onOpenAuth}
+                data-floating-trigger
+              >
+                <LogIn className="w-3.5 h-3.5" />
               </Button>
             </ShortcutTooltip>
           )}

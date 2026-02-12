@@ -9,6 +9,8 @@ import {
   useFileVault,
   usePasteCapture,
 } from "@/features/vault";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { AuthModal } from "@/features/auth/ui/AuthModal";
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
 import { useCanvasAi } from "./Index/hooks/useCanvasAi";
 import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
@@ -45,6 +47,7 @@ const Index = () => {
   const rtmp = useRtmpStream();
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const vault = useFileVault();
+  const auth = useAuth();
 
   const handlePastedFiles = useCallback(
     (files: File[]) => {
@@ -121,6 +124,9 @@ const Index = () => {
             onToggleFullscreen={ui.handleToggleFullscreen}
             onConnectRemote={() => remote.setIsRemoteModalOpen(true)}
             onToggleOmegle={handleToggleOmegle}
+            onOpenAuth={() => auth.setIsAuthModalOpen(true)}
+            onSignOut={auth.signOut}
+            isSignedIn={!!auth.user}
           />
 
           <FileVaultModal
@@ -132,7 +138,13 @@ const Index = () => {
             onClearVault={vault.clearVault}
           />
 
-          {/* NEW: Fatal Error Popup */}
+          {/* Auth Modal */}
+          <AuthModal
+            isOpen={auth.isAuthModalOpen}
+            onClose={() => auth.setIsAuthModalOpen(false)}
+          />
+
+          {/* Fatal Error Popup */}
           <FatalErrorDialog />
 
           {rtmp.countdown !== null && (
