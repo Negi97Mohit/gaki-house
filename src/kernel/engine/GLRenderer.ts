@@ -3,6 +3,7 @@ import { VideoTexture } from "./VideoTexture";
 import { ShaderManager } from "./ShaderManager";
 import { parseFilterString } from "./utils";
 import { AnimeStyles } from "@/lib/animeStyles";
+import { TimeWarpBuffer } from "./TimeWarp";
 
 export interface RenderOptions {
   videoFilter?: string;
@@ -64,6 +65,13 @@ const FILTER_TYPE_MAP: Record<string, number> = {
   "infrared-fx": 14,
 };
 
+/** Speed multipliers for time-manipulation cinematic effects */
+const TIME_WARP_SPEEDS: Record<string, number> = {
+  "slow-motion": 0.5,
+  "hyperlapse": 2.0,
+  "timelapse": 4.0,
+};
+
 export class GLRenderer {
   ctx: GLContext;
   videoTexture: VideoTexture;
@@ -74,6 +82,11 @@ export class GLRenderer {
   private currentScale: number = 1.0;
   private currentOffset: [number, number] = [0.0, 0.0];
   private colorCache = new Map<string, [number, number, number]>();
+
+  /** Ring buffer for time-manipulation effects */
+  private timeWarp: TimeWarpBuffer | null = null;
+  /** Track which effect was active last frame so we can reset on change */
+  private lastTimeWarpEffect: string | null = null;
 
   // Constructor accepts HTMLCanvasElement OR OffscreenCanvas
   constructor(canvas: HTMLCanvasElement | OffscreenCanvas) {
@@ -105,7 +118,42 @@ export class GLRenderer {
   render(source: TexImageSource, options: RenderOptions = {}) {
     const { gl } = this.ctx;
 
-    this.videoTexture.update(source);
+    // --- TimeWarp (slow-motion / hyperlapse) ---
+    const timeSpeed = TIME_WARP_SPEEDS[options.cinematicEffect ?? ""] ?? 0;
+    const isTimeWarpActive = timeSpeed > 0 && timeSpeed !== 1;
+
+    if (isTimeWarpActive) {
+      // Lazily create buffer
+      if (!this.timeWarp) {
+        this.timeWarp = new TimeWarpBuffer(gl as WebGL2RenderingContext, 120);
+      }
+      // Reset when switching between time-warp effects
+      if (this.lastTimeWarpEffect !== options.cinematicEffect) {
+        this.timeWarp.reset();
+        this.lastTimeWarpEffect = options.cinematicEffect ?? null;
+      }
+      // Ensure buffer textures match canvas size
+      this.timeWarp.ensureSize(this.ctx.canvas.width, this.ctx.canvas.height);
+      // Push the live frame
+      this.timeWarp.push(source);
+      // Read back at modified speed
+      const warpedTex = this.timeWarp.read(timeSpeed);
+      if (warpedTex) {
+        // Bind the warped texture to unit 0 (replaces live video)
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, warpedTex);
+      } else {
+        this.videoTexture.update(source);
+      }
+    } else {
+      // Not a time-warp effect — reset buffer if we were using one
+      if (this.lastTimeWarpEffect) {
+        this.timeWarp?.reset();
+        this.lastTimeWarpEffect = null;
+      }
+      this.videoTexture.update(source);
+    }
+
     this.ctx.clear();
 
     const canvasWidth = this.ctx.canvas.width;
@@ -271,6 +319,7 @@ export class GLRenderer {
   destroy() {
     this.videoTexture.destroy();
     this.maskTexture.destroy();
+    this.timeWarp?.destroy();
     this.colorCache.clear();
   }
 }

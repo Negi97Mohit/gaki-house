@@ -153,16 +153,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!videoRef.current) return;
-
-    let rate = 1.0;
-    if (cinematicEffect === "slow-motion") rate = 0.5;
-    else if (cinematicEffect === "hyperlapse") rate = 2.0;
-    else if (cinematicEffect === "timelapse") rate = 4.0;
-
-    videoRef.current.playbackRate = rate;
-  }, [cinematicEffect, videoRef]);
+  // Time warp (slow-motion / hyperlapse) is now handled by the
+  // TimeWarpBuffer inside GLRenderer — no playbackRate needed.
 
   const toolbarProps = {
     position: { x: 0, y: 0 },
