@@ -9,7 +9,7 @@ import { cn } from "@/shared/lib/utils";
 import { AmbientBackground } from "./AmbientBackground";
 import { PipLayoutPreset } from "./pip/PipLayoutMenu";
 import { CinematicOverlay } from "./CinematicOverlay";
-import { CinematicEffect } from "./pip/PipCinematicMenu";
+import { CinematicEffect } from "./pip/cinematicShotData";
 
 interface CameraRendererProps {
   stream: MediaStream | null;

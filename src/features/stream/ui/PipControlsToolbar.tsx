@@ -8,7 +8,8 @@ import { PipBackgroundMenu } from "./pip/PipBackgroundMenu";
 import { PipEffectsMenu } from "./pip/PipEffectsMenu";
 import { PipStyleMenu } from "./pip/PipStyleMenu";
 import { PipLayoutMenu, PipLayoutPreset } from "./pip/PipLayoutMenu";
-import { PipCinematicMenu, CinematicEffect } from "./pip/PipCinematicMenu";
+import { PipCinematicMenu } from "./pip/PipCinematicMenu";
+import { CinematicEffect } from "./pip/cinematicShotData";
 import { PipZoomSlider } from "./pip/PipZoomSlider";
 
 interface PipControlsToolbarProps {
