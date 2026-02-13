@@ -11,6 +11,7 @@ import { PipLayoutPreset } from "./pip/PipLayoutMenu";
 import { CinematicOverlay } from "./CinematicOverlay";
 import { CinematicEffect } from "./pip/cinematicShotData";
 import { getCinematicCanvasStyles } from "./pip/cinematicCanvasStyles";
+import { CinematicFilters } from "./pip/CinematicFilters";
 
 interface CameraRendererProps {
   stream: MediaStream | null;
@@ -132,6 +133,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     filterColor: props.filterColor,
     processedCanvas,
     facePositionRef,
+    cinematicEffect, // Pass the current cinematic effect (e.g., "fisheye")
   });
 
   const handleMouseEnter = () => {
@@ -151,11 +153,22 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!videoRef.current) return;
+
+    let rate = 1.0;
+    if (cinematicEffect === "slow-motion") rate = 0.5;
+    else if (cinematicEffect === "hyperlapse") rate = 2.0;
+    else if (cinematicEffect === "timelapse") rate = 4.0;
+
+    videoRef.current.playbackRate = rate;
+  }, [cinematicEffect, videoRef]);
+
   const toolbarProps = {
     position: { x: 0, y: 0 },
     containerRef,
     ...props,
-    onCameraDeviceChange: props.onCameraDeviceChange || (() => {}),
+    onCameraDeviceChange: props.onCameraDeviceChange || (() => { }),
     onEnterPipMode: props.onEnterPipMode,
     isPipActive,
     onTogglePip: togglePiP,
@@ -203,20 +216,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
       )}
 
       {/* SVG filter definitions for cinematic effects */}
-      <svg width="0" height="0" style={{ position: "absolute" }}>
-        <defs>
-          <filter id="svgf-barrel" colorInterpolationFilters="sRGB">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="clean" />
-            <feComponentTransfer in="clean" result="barrel">
-              <feFuncR type="identity" />
-              <feFuncG type="identity" />
-              <feFuncB type="identity" />
-            </feComponentTransfer>
-            <feMorphology operator="dilate" radius="0.5" in="barrel" result="expand" />
-            <feComposite in="SourceGraphic" in2="expand" operator="in" />
-          </filter>
-        </defs>
-      </svg>
+      <CinematicFilters />
 
       {(() => {
         const cinematicStyles = getCinematicCanvasStyles(cinematicEffect);

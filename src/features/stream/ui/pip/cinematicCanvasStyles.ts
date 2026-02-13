@@ -16,26 +16,21 @@ export function getCinematicCanvasStyles(effect: CinematicEffect): CinematicCanv
       return {
         container: { borderRadius: "50%", overflow: "hidden" },
         canvas: {
-          transform: "scale(1.25)",
-          filter: "url(#svgf-barrel)",
+          // WebGL handled
         },
       };
     case "security-fisheye":
       return {
         container: { borderRadius: "50%", overflow: "hidden" },
         canvas: {
-          transform: "scale(1.25)",
-          filter: "url(#svgf-barrel) saturate(0) contrast(1.1)",
+          // WebGL handles distortion; CSS handles color
+          filter: "saturate(0) contrast(1.1)",
         },
       };
     case "ultra-wide":
-      return {
-        canvas: { transform: "scaleX(1.08) scaleY(0.96)" },
-      };
+      return {};
     case "wide-angle":
-      return {
-        canvas: { transform: "scaleX(1.04) scaleY(0.98)" },
-      };
+      return {};
     case "dutch-angle":
       return {
         container: { overflow: "hidden" },

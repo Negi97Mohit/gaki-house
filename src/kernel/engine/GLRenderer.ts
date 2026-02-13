@@ -17,6 +17,7 @@ export interface RenderOptions {
   trackingSpeed?: number;
   isMasked?: boolean;
   filterTarget?: "both" | "background" | "person";
+  cinematicEffect?: string;
 }
 
 const DEFAULT_MID_COLOR: [number, number, number] = [0.5, 0.5, 0.5];
@@ -176,8 +177,8 @@ export class GLRenderer {
         options.filterTarget === "background"
           ? 1
           : options.filterTarget === "person"
-          ? 2
-          : 0;
+            ? 2
+            : 0;
       this.shaderManager.setUniform1i("u_mode", mode);
       this.shaderManager.setUniform1f("u_scale", this.currentScale);
       this.shaderManager.setUniform2fv("u_offset", this.currentOffset);
@@ -224,6 +225,29 @@ export class GLRenderer {
       this.shaderManager.setUniform3fv("u_color", uColor);
       this.shaderManager.setUniform3fv("u_color_mid", uColorMid);
       this.shaderManager.setUniform3fv("u_color_high", uColorHigh);
+      this.shaderManager.setUniform1f("u_scale", this.currentScale);
+      this.shaderManager.setUniform2fv("u_offset", this.currentOffset);
+
+      this.videoTexture.bind(0);
+    } else if (
+      (options.cinematicEffect === "fisheye" ||
+        options.cinematicEffect === "wide-angle" ||
+        options.cinematicEffect === "ultra-wide" ||
+        options.cinematicEffect === "security-fisheye")
+    ) {
+      this.shaderManager.activate("cinematic");
+
+      let strength = 0.0;
+      let cylindricalRatio = 1.0;
+
+      if (options.cinematicEffect === "fisheye") strength = 0.4;
+      else if (options.cinematicEffect === "security-fisheye") strength = 0.8;
+      else if (options.cinematicEffect === "wide-angle") strength = 0.15;
+      else if (options.cinematicEffect === "ultra-wide") strength = 0.25;
+
+      this.shaderManager.setUniform1i("u_video", 0);
+      this.shaderManager.setUniform1f("u_strength", strength);
+      this.shaderManager.setUniform1f("u_cylindrical_ratio", cylindricalRatio);
       this.shaderManager.setUniform1f("u_scale", this.currentScale);
       this.shaderManager.setUniform2fv("u_offset", this.currentOffset);
 

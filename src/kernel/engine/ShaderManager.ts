@@ -4,6 +4,7 @@ import { VERTEX_SHADER_SOURCE } from "./shaders/vertex";
 import { BASIC_FRAGMENT_SHADER_SOURCE } from "./shaders/basic";
 import { EFFECTS_FRAGMENT_SHADER_SOURCE } from "./shaders/effects";
 import { MASKED_FRAGMENT_SHADER_SOURCE } from "./shaders/masked";
+import { CINEMATIC_FRAGMENT_SHADER_SOURCE } from "./shaders/cinematic";
 
 type ProgramInfo = {
   program: WebGLProgram;
@@ -60,6 +61,14 @@ export class ShaderManager {
       VERTEX_SHADER_SOURCE,
       MASKED_FRAGMENT_SHADER_SOURCE,
       ["u_video", "u_mask", "u_scale", "u_offset"]
+    );
+
+    // 4. Cinematic (Distortion/Fisheye)
+    this.createProgram(
+      "cinematic",
+      VERTEX_SHADER_SOURCE,
+      CINEMATIC_FRAGMENT_SHADER_SOURCE,
+      ["u_video", "u_strength", "u_cylindrical_ratio", "u_scale", "u_offset"]
     );
   }
 

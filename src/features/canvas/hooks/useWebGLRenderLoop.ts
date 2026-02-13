@@ -27,6 +27,7 @@ interface UseWebGLRenderLoopProps {
   zoomSensitivity?: number;
   trackingSpeed?: number;
   isMasked?: boolean;
+  cinematicEffect?: string;
 }
 
 // Store latest props in a ref to avoid restarting the loop
@@ -44,6 +45,7 @@ export const useWebGLRenderLoop = ({
   zoomSensitivity,
   trackingSpeed,
   isMasked,
+  cinematicEffect,
 }: UseWebGLRenderLoopProps) => {
   const propsRef = useRef(
     {
@@ -57,6 +59,7 @@ export const useWebGLRenderLoop = ({
       zoomSensitivity,
       trackingSpeed,
       isMasked,
+      cinematicEffect,
     }
   );
 
@@ -72,6 +75,7 @@ export const useWebGLRenderLoop = ({
       zoomSensitivity,
       trackingSpeed,
       isMasked,
+      cinematicEffect,
     };
   }, [
     videoFilter,
@@ -84,6 +88,7 @@ export const useWebGLRenderLoop = ({
     zoomSensitivity,
     trackingSpeed,
     isMasked,
+    cinematicEffect,
   ]);
 
   const rendererRef = useRef<GLRenderer | null>(null);
@@ -163,6 +168,7 @@ export const useWebGLRenderLoop = ({
             zoomSensitivity: currentProps.zoomSensitivity,
             trackingSpeed: currentProps.trackingSpeed,
             isMasked: currentProps.isMasked,
+            cinematicEffect: currentProps.cinematicEffect,
           });
         } catch (e) {
           console.error("[WebGL] Render error:", e);
