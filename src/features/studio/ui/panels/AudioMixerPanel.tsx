@@ -8,6 +8,7 @@ import {
   Trash2,
   Play,
   Pause,
+  Square,
   Repeat,
   Link,
   Upload,
@@ -86,6 +87,215 @@ const FaderStrip: React.FC<FaderStripProps> = ({
     </div>
   </div>
 );
+
+/* ─── Output Sound Test ─── */
+const OutputSoundTest: React.FC<{ volume: number; muted: boolean }> = ({ volume, muted }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const oscRef = useRef<OscillatorNode | null>(null);
+  const ctxRef = useRef<AudioContext | null>(null);
+
+  const playTestTone = useCallback(() => {
+    if (isPlaying) {
+      oscRef.current?.stop();
+      oscRef.current = null;
+      ctxRef.current?.close();
+      ctxRef.current = null;
+      setIsPlaying(false);
+      return;
+    }
+
+    const ctx = new AudioContext();
+    ctxRef.current = ctx;
+    const gainNode = ctx.createGain();
+    gainNode.gain.value = muted ? 0 : volume / 100;
+    gainNode.connect(ctx.destination);
+
+    // Play a pleasant ascending tone sequence
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    let time = ctx.currentTime;
+
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      const noteGain = ctx.createGain();
+      noteGain.gain.setValueAtTime(0, time + i * 0.3);
+      noteGain.gain.linearRampToValueAtTime(0.3, time + i * 0.3 + 0.05);
+      noteGain.gain.linearRampToValueAtTime(0, time + i * 0.3 + 0.25);
+      osc.connect(noteGain);
+      noteGain.connect(gainNode);
+      osc.start(time + i * 0.3);
+      osc.stop(time + i * 0.3 + 0.3);
+      if (i === notes.length - 1) {
+        osc.onended = () => {
+          setIsPlaying(false);
+          ctx.close();
+          ctxRef.current = null;
+        };
+      }
+    });
+
+    setIsPlaying(true);
+  }, [isPlaying, volume, muted]);
+
+  useEffect(() => {
+    return () => {
+      oscRef.current?.stop();
+      ctxRef.current?.close();
+    };
+  }, []);
+
+  return (
+    <button
+      onClick={playTestTone}
+      className={cn(
+        "flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-medium transition-colors",
+        isPlaying
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-foreground/5 border border-border/20"
+      )}
+      title="Play a test tone to check your speakers"
+    >
+      {isPlaying ? <Square className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+      {isPlaying ? "Stop" : "Test Sound"}
+    </button>
+  );
+};
+
+/* ─── Input Sound Test (Record & Playback) ─── */
+const InputSoundTest: React.FC<{ deviceId: string }> = ({ deviceId }) => {
+  const [state, setState] = useState<"idle" | "recording" | "playing">("idle");
+  const [countdown, setCountdown] = useState(0);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const MAX_DURATION = 5;
+
+  const cleanup = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (recorderRef.current && recorderRef.current.state !== "inactive") {
+      recorderRef.current.stop();
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => () => cleanup(), [cleanup]);
+
+  const startRecording = useCallback(async () => {
+    cleanup();
+    chunksRef.current = [];
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: deviceId === "default" ? true : { deviceId: { exact: deviceId } },
+      });
+      streamRef.current = stream;
+      const recorder = new MediaRecorder(stream);
+      recorderRef.current = recorder;
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        stream.getTracks().forEach((t) => t.stop());
+        if (chunksRef.current.length > 0) {
+          const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audioRef.current = audio;
+          audio.onended = () => {
+            setState("idle");
+            setCountdown(0);
+            URL.revokeObjectURL(url);
+          };
+          audio.play().catch(() => setState("idle"));
+          setState("playing");
+          setCountdown(0);
+        } else {
+          setState("idle");
+        }
+      };
+
+      recorder.start();
+      setState("recording");
+      setCountdown(MAX_DURATION);
+
+      let remaining = MAX_DURATION;
+      timerRef.current = setInterval(() => {
+        remaining -= 1;
+        setCountdown(remaining);
+        if (remaining <= 0) {
+          if (timerRef.current) clearInterval(timerRef.current);
+          if (recorderRef.current && recorderRef.current.state !== "inactive") {
+            recorderRef.current.stop();
+          }
+        }
+      }, 1000);
+    } catch (err) {
+      console.error("[SoundTest] Mic access failed:", err);
+      setState("idle");
+    }
+  }, [deviceId, cleanup]);
+
+  const stop = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    if (state === "recording" && recorderRef.current?.state !== "inactive") {
+      recorderRef.current?.stop();
+    } else if (state === "playing") {
+      audioRef.current?.pause();
+      setState("idle");
+      setCountdown(0);
+    }
+  }, [state]);
+
+  return (
+    <button
+      onClick={state === "idle" ? startRecording : stop}
+      className={cn(
+        "flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-medium transition-colors shrink-0",
+        state === "recording"
+          ? "bg-destructive text-destructive-foreground animate-pulse"
+          : state === "playing"
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-foreground/5 border border-border/20"
+      )}
+      title={
+        state === "idle"
+          ? "Record a short clip and play it back"
+          : state === "recording"
+          ? "Recording... click to stop"
+          : "Playing back..."
+      }
+    >
+      {state === "recording" ? (
+        <>
+          <Square className="w-2.5 h-2.5" />
+          Rec {countdown}s
+        </>
+      ) : state === "playing" ? (
+        <>
+          <Square className="w-2.5 h-2.5" />
+          Playing...
+        </>
+      ) : (
+        <>
+          <Mic className="w-2.5 h-2.5" />
+          Test Mic
+        </>
+      )}
+    </button>
+  );
+};
 
 /* ─── Format seconds to mm:ss ─── */
 const formatTime = (seconds: number): string => {
@@ -744,6 +954,9 @@ export function AudioMixerPanel() {
           onVolumeChange={setMasterVolume}
           onMuteToggle={() => setMasterMuted(!masterMuted)}
         />
+        <div className="px-1">
+          <OutputSoundTest volume={masterVolume} muted={masterMuted} />
+        </div>
       </div>
 
       <div className="h-px bg-border/10" />
@@ -769,16 +982,20 @@ export function AudioMixerPanel() {
           audioDevices.map((device) => {
             const dv = getDeviceVolume(device.deviceId);
             return (
-              <FaderStrip
-                key={device.deviceId}
-                label={device.label || `Mic ${device.deviceId.slice(0, 6)}`}
-                icon={<Mic className="w-3.5 h-3.5" />}
-                volume={dv.volume}
-                isMuted={dv.muted}
-                onVolumeChange={(v) => updateDeviceVolume(device.deviceId, v)}
-                onMuteToggle={() => toggleDeviceMute(device.deviceId)}
-                isActive={isAudioOn}
-              />
+              <div key={device.deviceId} className="space-y-1.5">
+                <FaderStrip
+                  label={device.label || `Mic ${device.deviceId.slice(0, 6)}`}
+                  icon={<Mic className="w-3.5 h-3.5" />}
+                  volume={dv.volume}
+                  isMuted={dv.muted}
+                  onVolumeChange={(v) => updateDeviceVolume(device.deviceId, v)}
+                  onMuteToggle={() => toggleDeviceMute(device.deviceId)}
+                  isActive={isAudioOn}
+                />
+                <div className="px-1">
+                  <InputSoundTest deviceId={device.deviceId} />
+                </div>
+              </div>
             );
           })
         )}
