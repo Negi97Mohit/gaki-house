@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Clapperboard, X, Search } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -30,6 +30,21 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
   const hasEffect = activeCinematicEffect !== "none";
   const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Autoscroll to selected shot when menu opens or effect changes
+  useEffect(() => {
+    if (!isOpen || activeCinematicEffect === "none") return;
+    const timer = setTimeout(() => {
+      const el = gridRef.current?.querySelector(`[data-shot-id="${activeCinematicEffect}"]`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [isOpen, activeCinematicEffect]);
 
   const filtered = CINEMATIC_PRESETS.filter((p) => {
     if (search) {
@@ -40,8 +55,17 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
     return p.category === activeCategory;
   });
 
+  const handleSelectShot = (preset: CinematicPreset) => {
+    const isActive = activeCinematicEffect === preset.id;
+    onCinematicEffectChange(isActive ? "none" : preset.id);
+    // Auto-focus search input after selecting
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 0);
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -69,7 +93,10 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onCinematicEffectChange("none")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCinematicEffectChange("none");
+                }}
                 className="w-full text-xs gap-2"
               >
                 <X className="w-3.5 h-3.5" />
@@ -79,9 +106,11 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
             <div className="relative">
               <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
               <Input
+                ref={searchInputRef}
                 placeholder="Search shots..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
                 className="h-7 pl-7 text-xs bg-muted/50 border-border/30"
               />
             </div>
@@ -93,7 +122,10 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
               {CINEMATIC_CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveCategory(cat.id);
+                  }}
                   className={cn(
                     "text-[9px] font-medium px-2 py-1 rounded-md whitespace-nowrap transition-colors",
                     activeCategory === cat.id
@@ -108,16 +140,18 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
           )}
 
           {/* Preset grid */}
-          <div className="overflow-y-auto p-2 flex-1">
+          <div ref={gridRef} className="overflow-y-auto p-2 flex-1">
             <div className="grid grid-cols-2 gap-1.5">
               {filtered.map((preset) => {
                 const isActive = activeCinematicEffect === preset.id;
                 return (
                   <button
                     key={preset.id}
-                    onClick={() =>
-                      onCinematicEffectChange(isActive ? "none" : preset.id)
-                    }
+                    data-shot-id={preset.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectShot(preset);
+                    }}
                     className={cn(
                       "flex flex-col items-start gap-0.5 p-2 rounded-lg border transition-all text-left",
                       isActive
