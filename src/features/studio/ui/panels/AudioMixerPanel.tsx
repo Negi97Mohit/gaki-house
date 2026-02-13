@@ -16,14 +16,67 @@ import {
   Tag,
   Check,
   AudioLines,
+  ChevronDown,
+  ChevronRight,
+  Info,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { Slider } from "@/shared/ui/slider";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/shared/ui/tooltip";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneAudioStore } from "@/stores/sceneAudio.store";
 import { SceneAudioTrack } from "@/types/caption";
+
+/* ─── Section Card wrapper ─── */
+const MixerSection: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  badge?: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}> = ({ icon, title, description, badge, action, children, defaultOpen = true }) => {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div className="rounded-xl border border-border/30 bg-card/50 overflow-hidden">
+      {/* Section header */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2.5 px-3.5 py-2.5 hover:bg-accent/5 transition-colors"
+      >
+        <span className="text-primary/80">{icon}</span>
+        <div className="flex-1 text-left">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-foreground">{title}</span>
+            {badge && (
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
+                {badge}
+              </span>
+            )}
+          </div>
+          <p className="text-[10px] text-muted-foreground/70 leading-snug mt-0.5">{description}</p>
+        </div>
+        {open ? (
+          <ChevronDown className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0" />
+        ) : (
+          <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0" />
+        )}
+      </button>
+
+      {/* Section content */}
+      {open && (
+        <div className="px-3 pb-3 space-y-2">
+          {action && <div className="flex justify-end">{action}</div>}
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
 
 /* ─── Fader Strip (for mic/master) ─── */
 interface FaderStripProps {
@@ -34,6 +87,7 @@ interface FaderStripProps {
   onVolumeChange: (v: number) => void;
   onMuteToggle: () => void;
   isActive?: boolean;
+  extra?: React.ReactNode;
 }
 
 const FaderStrip: React.FC<FaderStripProps> = ({
@@ -44,34 +98,31 @@ const FaderStrip: React.FC<FaderStripProps> = ({
   onVolumeChange,
   onMuteToggle,
   isActive = true,
+  extra,
 }) => (
   <div
     className={cn(
-      "p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-2",
-      !isActive && "opacity-50"
+      "p-3 rounded-lg bg-background/60 border border-border/20 space-y-2.5 transition-opacity",
+      !isActive && "opacity-40 pointer-events-none"
     )}
   >
-    <div className="flex items-center gap-2">
-      <span className="text-muted-foreground">{icon}</span>
-      <span className="text-[11px] font-medium truncate flex-1">{label}</span>
+    <div className="flex items-center gap-2.5">
+      <span className="text-muted-foreground/80">{icon}</span>
+      <span className="text-[11px] font-medium text-foreground/90 truncate flex-1">{label}</span>
       <button
         onClick={onMuteToggle}
         className={cn(
-          "p-1 rounded-lg transition-colors",
+          "p-1.5 rounded-md transition-all",
           isMuted
-            ? "text-destructive bg-destructive/10"
-            : "text-muted-foreground hover:bg-foreground/5"
+            ? "text-destructive bg-destructive/15 hover:bg-destructive/25"
+            : "text-muted-foreground/60 hover:bg-muted/80 hover:text-foreground/80"
         )}
         title={isMuted ? "Unmute" : "Mute"}
       >
-        {isMuted ? (
-          <VolumeX className="w-3.5 h-3.5" />
-        ) : (
-          <Volume2 className="w-3.5 h-3.5" />
-        )}
+        {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
       </button>
     </div>
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <Slider
         value={[isMuted ? 0 : volume]}
         onValueChange={([v]) => onVolumeChange(v)}
@@ -81,10 +132,11 @@ const FaderStrip: React.FC<FaderStripProps> = ({
         className="flex-1"
         disabled={!isActive}
       />
-      <span className="text-[9px] text-muted-foreground w-7 text-right tabular-nums">
+      <span className="text-[10px] text-muted-foreground font-medium w-8 text-right tabular-nums">
         {isMuted ? "0" : volume}%
       </span>
     </div>
+    {extra && <div className="pt-0.5">{extra}</div>}
   </div>
 );
 
@@ -110,8 +162,7 @@ const OutputSoundTest: React.FC<{ volume: number; muted: boolean }> = ({ volume,
     gainNode.gain.value = muted ? 0 : volume / 100;
     gainNode.connect(ctx.destination);
 
-    // Play a pleasant ascending tone sequence
-    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    const notes = [523.25, 659.25, 783.99, 1046.5];
     let time = ctx.currentTime;
 
     notes.forEach((freq, i) => {
@@ -146,19 +197,18 @@ const OutputSoundTest: React.FC<{ volume: number; muted: boolean }> = ({ volume,
   }, []);
 
   return (
-    <button
+    <Button
       onClick={playTestTone}
+      variant={isPlaying ? "default" : "outline"}
+      size="sm"
       className={cn(
-        "flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-medium transition-colors",
-        isPlaying
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-foreground/5 border border-border/20"
+        "h-7 text-[10px] gap-1.5",
+        isPlaying && "animate-pulse"
       )}
-      title="Play a test tone to check your speakers"
     >
-      {isPlaying ? <Square className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
-      {isPlaying ? "Stop" : "Test Sound"}
-    </button>
+      {isPlaying ? <Square className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+      {isPlaying ? "Stop Test" : "Test Speakers"}
+    </Button>
   );
 };
 
@@ -259,41 +309,32 @@ const InputSoundTest: React.FC<{ deviceId: string }> = ({ deviceId }) => {
   }, [state]);
 
   return (
-    <button
+    <Button
       onClick={state === "idle" ? startRecording : stop}
+      variant={state === "idle" ? "outline" : state === "recording" ? "destructive" : "default"}
+      size="sm"
       className={cn(
-        "flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-medium transition-colors shrink-0",
-        state === "recording"
-          ? "bg-destructive text-destructive-foreground animate-pulse"
-          : state === "playing"
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-foreground/5 border border-border/20"
+        "h-7 text-[10px] gap-1.5",
+        state === "recording" && "animate-pulse"
       )}
-      title={
-        state === "idle"
-          ? "Record a short clip and play it back"
-          : state === "recording"
-          ? "Recording... click to stop"
-          : "Playing back..."
-      }
     >
       {state === "recording" ? (
         <>
-          <Square className="w-2.5 h-2.5" />
-          Rec {countdown}s
+          <Square className="w-3 h-3" />
+          Recording {countdown}s
         </>
       ) : state === "playing" ? (
         <>
-          <Square className="w-2.5 h-2.5" />
-          Playing...
+          <Square className="w-3 h-3" />
+          Playing back…
         </>
       ) : (
         <>
-          <Mic className="w-2.5 h-2.5" />
+          <Mic className="w-3 h-3" />
           Test Mic
         </>
       )}
-    </button>
+    </Button>
   );
 };
 
@@ -318,7 +359,6 @@ const SceneAssignment: React.FC<SceneAssignmentProps> = ({ track, scenes, onUpda
   const toggleScene = (sceneId: string) => {
     const current = track.assignedSceneIds;
     const isAssigned = current.includes(sceneId);
-
     let newIds: string[];
     if (isAssigned) {
       newIds = current.filter((id) => id !== sceneId);
@@ -337,14 +377,14 @@ const SceneAssignment: React.FC<SceneAssignmentProps> = ({ track, scenes, onUpda
       <button
         onClick={() => setOpen(true)}
         className={cn(
-          "flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] transition-colors",
+          "flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-medium transition-colors",
           track.assignedSceneIds.length === 0
-            ? "text-muted-foreground/60 hover:bg-foreground/5"
-            : "text-primary bg-primary/10"
+            ? "text-muted-foreground/60 hover:bg-muted/50 border border-border/20"
+            : "text-primary bg-primary/10 border border-primary/20"
         )}
         title="Assign to scenes"
       >
-        <Tag className="w-2.5 h-2.5" />
+        <Tag className="w-3 h-3" />
         {track.assignedSceneIds.length === 0
           ? "All scenes"
           : `${track.assignedSceneIds.length} scene${track.assignedSceneIds.length > 1 ? "s" : ""}`}
@@ -353,54 +393,45 @@ const SceneAssignment: React.FC<SceneAssignmentProps> = ({ track, scenes, onUpda
   }
 
   return (
-    <div className="p-2 rounded-lg bg-foreground/[0.03] border border-border/10 space-y-1.5">
+    <div className="p-2.5 rounded-lg bg-muted/30 border border-border/20 space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">
-          Assign to Scenes
-        </span>
-        <button
-          onClick={() => setOpen(false)}
-          className="text-[9px] text-primary hover:underline"
-        >
+        <span className="text-[10px] font-semibold text-muted-foreground">Assign to Scenes</span>
+        <button onClick={() => setOpen(false)} className="text-[10px] text-primary hover:underline font-medium">
           Done
         </button>
       </div>
       <button
         onClick={assignAll}
         className={cn(
-          "w-full flex items-center gap-1.5 px-2 py-1 rounded-md text-[9px] transition-colors text-left",
+          "w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] transition-colors text-left",
           track.assignedSceneIds.length === 0
-            ? "bg-primary/10 text-primary"
-            : "text-muted-foreground hover:bg-foreground/5"
+            ? "bg-primary/10 text-primary font-medium"
+            : "text-muted-foreground hover:bg-muted/50"
         )}
       >
-        {track.assignedSceneIds.length === 0 && <Check className="w-2.5 h-2.5" />}
+        {track.assignedSceneIds.length === 0 && <Check className="w-3 h-3" />}
         <span>All scenes</span>
       </button>
       {scenes.map((scene) => {
-        const isAssigned =
-          track.assignedSceneIds.length === 0 || track.assignedSceneIds.includes(scene.id);
         const isExplicit = track.assignedSceneIds.includes(scene.id);
         return (
           <button
             key={scene.id}
             onClick={() => {
-              // If currently "all scenes", switch to explicit mode with all except this one toggled
               if (track.assignedSceneIds.length === 0) {
-                // Switch to explicit: assign only this scene
                 onUpdate(track.id, { assignedSceneIds: [scene.id] });
               } else {
                 toggleScene(scene.id);
               }
             }}
             className={cn(
-              "w-full flex items-center gap-1.5 px-2 py-1 rounded-md text-[9px] transition-colors text-left",
+              "w-full flex items-center gap-1.5 px-2 py-1.5 rounded-md text-[10px] transition-colors text-left",
               isExplicit
-                ? "bg-primary/10 text-primary"
-                : "text-muted-foreground hover:bg-foreground/5"
+                ? "bg-primary/10 text-primary font-medium"
+                : "text-muted-foreground hover:bg-muted/50"
             )}
           >
-            {isExplicit && <Check className="w-2.5 h-2.5" />}
+            {isExplicit && <Check className="w-3 h-3" />}
             <span>{scene.name}</span>
           </button>
         );
@@ -426,7 +457,6 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
   const [showDucking, setShowDucking] = useState(false);
   const isAudioOn = useMediaStore((s) => s.isAudioOn);
 
-  // Smart ducking: monitor mic input level and reduce track volume when speaking
   const analyserRef = useRef<AnalyserNode | null>(null);
   const duckingStreamRef = useRef<MediaStream | null>(null);
   const duckingRafRef = useRef<number | null>(null);
@@ -434,12 +464,10 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
 
   useEffect(() => {
     if (!track.duckingEnabled || !isAudioOn) {
-      // Restore volume when ducking is disabled
       if (isDuckedRef.current && audioRef.current) {
         audioRef.current.volume = track.isMuted ? 0 : track.volume / 100;
         isDuckedRef.current = false;
       }
-      // Cleanup
       if (duckingRafRef.current) cancelAnimationFrame(duckingRafRef.current);
       if (duckingStreamRef.current) {
         duckingStreamRef.current.getTracks().forEach((t) => t.stop());
@@ -466,12 +494,11 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
         analyserRef.current = analyser;
 
         const dataArray = new Uint8Array(analyser.frequencyBinCount);
-        const SPEECH_THRESHOLD = 25; // RMS threshold to consider "speaking"
+        const SPEECH_THRESHOLD = 25;
 
         const monitorLevel = () => {
           if (cancelled) return;
           analyser.getByteTimeDomainData(dataArray);
-          // Calculate RMS
           let sum = 0;
           for (let i = 0; i < dataArray.length; i++) {
             const val = (dataArray[i] - 128) / 128;
@@ -483,12 +510,10 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
           if (el) {
             const baseVolume = track.isMuted ? 0 : track.volume / 100;
             if (rms > SPEECH_THRESHOLD) {
-              // Duck: reduce to duckingLevel % of original
               const duckedVolume = baseVolume * (track.duckingLevel / 100);
               el.volume = duckedVolume;
               isDuckedRef.current = true;
             } else if (isDuckedRef.current) {
-              // Restore gradually
               el.volume = baseVolume;
               isDuckedRef.current = false;
             }
@@ -555,14 +580,12 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
       if (!el.loop) onUpdate(track.id, { isPlaying: false, currentTime: 0 });
     });
 
-    // Restore position
     if (track.currentTime > 0) {
       el.currentTime = track.currentTime;
     }
     el.src = track.sourceUrl;
     audioRef.current = el;
 
-    // Auto-resume if track was playing before remount (e.g. scene switch)
     if (track.isPlaying) {
       el.addEventListener("canplaythrough", function autoResume() {
         el.removeEventListener("canplaythrough", autoResume);
@@ -573,7 +596,6 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
       }, { once: true });
     }
 
-    // Start time tracking
     const updateTime = () => {
       if (audioRef.current && !audioRef.current.paused) {
         onUpdate(track.id, { currentTime: audioRef.current.currentTime });
@@ -585,7 +607,6 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
     return () => {
       if (seekTimerRef.current) cancelAnimationFrame(seekTimerRef.current);
       el.pause();
-      // Save position before cleanup
       if (el.currentTime > 0) {
         onUpdate(track.id, { currentTime: el.currentTime, isPlaying: false });
       }
@@ -595,7 +616,6 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track.sourceUrl]);
 
-  // Sync volume/mute/loop
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = track.isMuted ? 0 : track.volume / 100;
@@ -603,7 +623,6 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
     }
   }, [track.volume, track.isMuted, track.isLooping]);
 
-  // Sync play state from store (for scene switching resume)
   useEffect(() => {
     const el = audioRef.current;
     if (!el) return;
@@ -645,97 +664,99 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
     [track.id, track.duration, onUpdate]
   );
 
-  const seekPercent =
-    track.duration > 0 ? (track.currentTime / track.duration) * 100 : 0;
+  const seekPercent = track.duration > 0 ? (track.currentTime / track.duration) * 100 : 0;
 
   return (
-    <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-2">
-      {/* Header row */}
+    <div className="p-3 rounded-lg bg-background/60 border border-border/20 space-y-2.5">
+      {/* Header */}
       <div className="flex items-center gap-2">
-        <Music className={cn("w-3.5 h-3.5", error ? "text-destructive/60" : "text-primary/60")} />
-        <span className="text-[10px] font-medium truncate flex-1" title={error || track.name}>
+        <Music className={cn("w-4 h-4 shrink-0", error ? "text-destructive" : "text-primary/70")} />
+        <span className="text-[11px] font-medium text-foreground/90 truncate flex-1" title={error || track.name}>
           {error || track.name}
         </span>
-        <button
-          onClick={togglePlay}
-          className="p-1 rounded-lg hover:bg-foreground/5 text-muted-foreground"
-          title={track.isPlaying ? "Pause" : "Play"}
-        >
-          {track.isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-        </button>
-        <button
-          onClick={() => onUpdate(track.id, { isLooping: !track.isLooping })}
-          className={cn(
-            "p-1 rounded-lg transition-colors",
-            track.isLooping
-              ? "text-primary bg-primary/10"
-              : "text-muted-foreground hover:bg-foreground/5"
-          )}
-          title="Loop"
-        >
-          <Repeat className="w-3 h-3" />
-        </button>
-        <button
-          onClick={() => onUpdate(track.id, { isMuted: !track.isMuted })}
-          className={cn(
-            "p-1 rounded-lg transition-colors",
-            track.isMuted
-              ? "text-destructive bg-destructive/10"
-              : "text-muted-foreground hover:bg-foreground/5"
-          )}
-          title={track.isMuted ? "Unmute" : "Mute"}
-        >
-          {track.isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
-        </button>
-        <button
-          onClick={() => {
-            audioRef.current?.pause();
-            onRemove(track.id);
-          }}
-          className="p-1 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-          title="Remove"
-        >
-          <Trash2 className="w-3 h-3" />
-        </button>
+
+        {/* Transport controls */}
+        <div className="flex items-center gap-0.5 shrink-0">
+          <button
+            onClick={togglePlay}
+            className={cn(
+              "p-1.5 rounded-md transition-all",
+              track.isPlaying
+                ? "text-primary bg-primary/15"
+                : "text-muted-foreground/60 hover:bg-muted/80 hover:text-foreground/80"
+            )}
+            title={track.isPlaying ? "Pause" : "Play"}
+          >
+            {track.isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={() => onUpdate(track.id, { isLooping: !track.isLooping })}
+            className={cn(
+              "p-1.5 rounded-md transition-all",
+              track.isLooping
+                ? "text-primary bg-primary/15"
+                : "text-muted-foreground/60 hover:bg-muted/80 hover:text-foreground/80"
+            )}
+            title={track.isLooping ? "Disable loop" : "Enable loop"}
+          >
+            <Repeat className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => onUpdate(track.id, { isMuted: !track.isMuted })}
+            className={cn(
+              "p-1.5 rounded-md transition-all",
+              track.isMuted
+                ? "text-destructive bg-destructive/15"
+                : "text-muted-foreground/60 hover:bg-muted/80 hover:text-foreground/80"
+            )}
+            title={track.isMuted ? "Unmute" : "Mute"}
+          >
+            {track.isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={() => {
+              audioRef.current?.pause();
+              onRemove(track.id);
+            }}
+            className="p-1.5 rounded-md text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-all"
+            title="Remove track"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
       {/* Loading progress */}
       {isLoading && (
-        <div className="flex items-center gap-2">
-          <div className="flex-1 h-1 rounded-full bg-muted overflow-hidden">
+        <div className="flex items-center gap-2.5">
+          <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
             <div
               className="h-full bg-primary/60 transition-all duration-300 rounded-full"
               style={{ width: `${loadProgress}%` }}
             />
           </div>
-          <span className="text-[9px] text-muted-foreground w-7 text-right tabular-nums">
+          <span className="text-[10px] text-muted-foreground font-medium w-8 text-right tabular-nums">
             {loadProgress}%
           </span>
         </div>
       )}
 
-      {/* Seek slider */}
+      {/* Seek bar */}
       {track.duration > 0 && (
         <div className="flex items-center gap-2">
-          <span className="text-[8px] text-muted-foreground tabular-nums w-8 text-right">
+          <span className="text-[10px] text-muted-foreground tabular-nums w-9 text-right font-medium">
             {formatTime(track.currentTime)}
           </span>
-          <Slider
-            value={[seekPercent]}
-            onValueChange={handleSeek}
-            min={0}
-            max={100}
-            step={0.1}
-            className="flex-1"
-          />
-          <span className="text-[8px] text-muted-foreground tabular-nums w-8">
+          <Slider value={[seekPercent]} onValueChange={handleSeek} min={0} max={100} step={0.1} className="flex-1" />
+          <span className="text-[10px] text-muted-foreground tabular-nums w-9 font-medium">
             {formatTime(track.duration)}
           </span>
         </div>
       )}
 
-      {/* Volume slider */}
-      <div className="flex items-center gap-2">
+      {/* Volume */}
+      <div className="flex items-center gap-3">
+        <Volume2 className="w-3 h-3 text-muted-foreground/50 shrink-0" />
         <Slider
           value={[track.isMuted ? 0 : track.volume]}
           onValueChange={([v]) => onUpdate(track.id, { volume: v })}
@@ -744,7 +765,7 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
           step={1}
           className="flex-1"
         />
-        <span className="text-[9px] text-muted-foreground w-7 text-right tabular-nums">
+        <span className="text-[10px] text-muted-foreground font-medium w-8 text-right tabular-nums">
           {track.isMuted ? "0" : track.volume}%
         </span>
       </div>
@@ -754,37 +775,32 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
         <button
           onClick={() => setShowDucking(!showDucking)}
           className={cn(
-            "flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] transition-colors",
+            "flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-medium transition-colors",
             track.duckingEnabled
-              ? "text-primary bg-primary/10"
-              : "text-muted-foreground/60 hover:bg-foreground/5"
+              ? "text-primary bg-primary/10 border border-primary/20"
+              : "text-muted-foreground/60 hover:bg-muted/50 border border-border/20"
           )}
         >
-          <AudioLines className="w-2.5 h-2.5" />
+          <AudioLines className="w-3 h-3" />
           Smart Ducking {track.duckingEnabled ? "On" : "Off"}
         </button>
         {showDucking && (
-          <div className="p-2 rounded-lg bg-foreground/[0.03] border border-border/10 space-y-2">
+          <div className="p-2.5 rounded-lg bg-muted/20 border border-border/20 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-[9px] text-muted-foreground">
-                Auto-lower when speaking
-              </span>
-              <button
+              <span className="text-[10px] text-muted-foreground">Auto-lower when speaking</span>
+              <Button
+                variant={track.duckingEnabled ? "default" : "outline"}
+                size="sm"
+                className="h-6 text-[10px] px-2.5"
                 onClick={() => onUpdate(track.id, { duckingEnabled: !track.duckingEnabled })}
-                className={cn(
-                  "px-2 py-0.5 rounded-md text-[9px] font-medium transition-colors",
-                  track.duckingEnabled
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-foreground/5 text-muted-foreground"
-                )}
               >
                 {track.duckingEnabled ? "Enabled" : "Disabled"}
-              </button>
+              </Button>
             </div>
             {track.duckingEnabled && (
-              <div className="space-y-1">
-                <span className="text-[8px] text-muted-foreground">
-                  Volume when speaking: {track.duckingLevel}%
+              <div className="space-y-1.5">
+                <span className="text-[10px] text-muted-foreground">
+                  Volume when speaking: <span className="font-medium text-foreground/80">{track.duckingLevel}%</span>
                 </span>
                 <Slider
                   value={[track.duckingLevel]}
@@ -801,9 +817,7 @@ const TrackRow: React.FC<TrackRowProps> = ({ track, scenes, onUpdate, onRemove }
       </div>
 
       {/* Scene assignment */}
-      {scenes.length > 1 && (
-        <SceneAssignment track={track} scenes={scenes} onUpdate={onUpdate} />
-      )}
+      {scenes.length > 1 && <SceneAssignment track={track} scenes={scenes} onUpdate={onUpdate} />}
     </div>
   );
 };
@@ -813,7 +827,6 @@ export function AudioMixerPanel() {
   const audioDevices = useMediaStore((s) => s.audioDevices);
   const isAudioOn = useMediaStore((s) => s.isAudioOn);
 
-  // Scene audio store
   const activeSceneId = useSceneAudioStore((s) => s.activeSceneId);
   const scenes = useSceneAudioStore((s) => s.scenes);
   const allTracks = useSceneAudioStore((s) => s.tracks);
@@ -821,21 +834,17 @@ export function AudioMixerPanel() {
   const updateTrack = useSceneAudioStore((s) => s.updateTrack);
   const removeTrack = useSceneAudioStore((s) => s.removeTrack);
 
-  // Filter tracks for current scene
   const sceneTracks = allTracks.filter(
     (t) => t.assignedSceneIds.length === 0 || t.assignedSceneIds.includes(activeSceneId)
   );
 
-  // Per-device volumes (local state)
   const [deviceVolumes, setDeviceVolumes] = useState<
     Record<string, { volume: number; muted: boolean }>
   >({});
 
-  // Master output volume
   const [masterVolume, setMasterVolume] = useState(80);
   const [masterMuted, setMasterMuted] = useState(false);
 
-  // Add track dialog
   const [showAddTrack, setShowAddTrack] = useState(false);
   const [addMode, setAddMode] = useState<"file" | "url">("file");
   const [urlInput, setUrlInput] = useState("");
@@ -932,199 +941,182 @@ export function AudioMixerPanel() {
   };
 
   return (
-    <div className="space-y-5">
-      {/* ── OUTPUT SECTION ── */}
-      <div className="space-y-2">
-        <div className="px-1 space-y-1">
-          <div className="flex items-center gap-2">
-            <Speaker className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Output
-            </span>
-          </div>
-          <p className="text-[9px] text-muted-foreground/50 leading-relaxed">
-            What your audience hears — the final mixed audio sent to speakers or stream.
-          </p>
-        </div>
-        <FaderStrip
-          label="Master Output"
-          icon={<Speaker className="w-3.5 h-3.5" />}
-          volume={masterVolume}
-          isMuted={masterMuted}
-          onVolumeChange={setMasterVolume}
-          onMuteToggle={() => setMasterMuted(!masterMuted)}
-        />
-        <div className="px-1">
-          <OutputSoundTest volume={masterVolume} muted={masterMuted} />
-        </div>
-      </div>
+    <TooltipProvider delayDuration={300}>
+      <div className="space-y-3">
+        {/* ── OUTPUT ── */}
+        <MixerSection
+          icon={<Speaker className="w-4 h-4" />}
+          title="Output"
+          description="The final mixed audio your audience hears through speakers or stream"
+        >
+          <FaderStrip
+            label="Master Output"
+            icon={<Speaker className="w-4 h-4" />}
+            volume={masterVolume}
+            isMuted={masterMuted}
+            onVolumeChange={setMasterVolume}
+            onMuteToggle={() => setMasterMuted(!masterMuted)}
+            extra={<OutputSoundTest volume={masterVolume} muted={masterMuted} />}
+          />
+        </MixerSection>
 
-      <div className="h-px bg-border/10" />
-
-      {/* ── INPUT SECTION ── */}
-      <div className="space-y-2">
-        <div className="px-1 space-y-1">
-          <div className="flex items-center gap-2">
-            <Mic className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Input Sources
-            </span>
-          </div>
-          <p className="text-[9px] text-muted-foreground/50 leading-relaxed">
-            Microphones and audio devices capturing your voice or instruments.
-          </p>
-        </div>
-        {audioDevices.length === 0 ? (
-          <p className="text-[10px] text-muted-foreground/50 px-1">
-            No input devices found
-          </p>
-        ) : (
-          audioDevices.map((device) => {
-            const dv = getDeviceVolume(device.deviceId);
-            return (
-              <div key={device.deviceId} className="space-y-1.5">
-                <FaderStrip
-                  label={device.label || `Mic ${device.deviceId.slice(0, 6)}`}
-                  icon={<Mic className="w-3.5 h-3.5" />}
-                  volume={dv.volume}
-                  isMuted={dv.muted}
-                  onVolumeChange={(v) => updateDeviceVolume(device.deviceId, v)}
-                  onMuteToggle={() => toggleDeviceMute(device.deviceId)}
-                  isActive={isAudioOn}
-                />
-                <div className="px-1">
-                  <InputSoundTest deviceId={device.deviceId} />
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-
-      <div className="h-px bg-border/10" />
-
-      {/* ── SCENE AUDIO SECTION ── */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between px-1">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Music className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                Scene Audio
+        {/* ── INPUT SOURCES ── */}
+        <MixerSection
+          icon={<Mic className="w-4 h-4" />}
+          title="Input Sources"
+          description="Microphones and instruments capturing your audio"
+          badge={`${audioDevices.length}`}
+        >
+          {audioDevices.length === 0 ? (
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/20 border border-border/10">
+              <Info className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+              <span className="text-[11px] text-muted-foreground/70">
+                No input devices detected. Connect a microphone to get started.
               </span>
             </div>
-            <p className="text-[9px] text-muted-foreground/50 leading-relaxed">
-              Background music, sound effects, or audio tracks added to your scene.
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 px-2 text-[10px]"
-            onClick={() => setShowAddTrack(!showAddTrack)}
-          >
-            <Plus className="w-3 h-3 mr-1" />
-            Add
-          </Button>
-        </div>
-
-        {/* Add Track Panel */}
-        {showAddTrack && (
-          <div className="p-3 rounded-xl bg-primary/5 border border-primary/20 space-y-3">
-            <div className="flex gap-1">
-              <button
-                onClick={() => setAddMode("file")}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all",
-                  addMode === "file"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-foreground/5"
-                )}
-              >
-                <Upload className="w-3 h-3" />
-                Upload File
-              </button>
-              <button
-                onClick={() => setAddMode("url")}
-                className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-[10px] font-medium transition-all",
-                  addMode === "url"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-foreground/5"
-                )}
-              >
-                <Link className="w-3 h-3" />
-                URL / Stream
-              </button>
+          ) : (
+            <div className="space-y-2">
+              {audioDevices.map((device) => {
+                const dv = getDeviceVolume(device.deviceId);
+                return (
+                  <FaderStrip
+                    key={device.deviceId}
+                    label={device.label || `Mic ${device.deviceId.slice(0, 6)}`}
+                    icon={<Mic className="w-4 h-4" />}
+                    volume={dv.volume}
+                    isMuted={dv.muted}
+                    onVolumeChange={(v) => updateDeviceVolume(device.deviceId, v)}
+                    onMuteToggle={() => toggleDeviceMute(device.deviceId)}
+                    isActive={isAudioOn}
+                    extra={<InputSoundTest deviceId={device.deviceId} />}
+                  />
+                );
+              })}
             </div>
+          )}
+        </MixerSection>
 
-            {addMode === "file" ? (
-              <>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="audio/*,.mp3,.wav,.ogg,.flac,.aac,.m4a,.wma,.opus,.webm,.aiff,.mid,.midi"
-                  multiple
-                  className="hidden"
-                  onChange={handleFileUpload}
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full h-8 text-[10px]"
-                  onClick={() => fileInputRef.current?.click()}
+        {/* ── SCENE AUDIO ── */}
+        <MixerSection
+          icon={<Music className="w-4 h-4" />}
+          title="Scene Audio"
+          description="Background music, sound effects, and audio tracks for your scene"
+          badge={sceneTracks.length > 0 ? `${sceneTracks.length}` : undefined}
+          action={
+            <Button
+              variant={showAddTrack ? "default" : "outline"}
+              size="sm"
+              className="h-7 text-[10px] gap-1.5"
+              onClick={() => setShowAddTrack(!showAddTrack)}
+            >
+              <Plus className="w-3 h-3" />
+              Add Track
+            </Button>
+          }
+        >
+          {/* Add Track Panel */}
+          {showAddTrack && (
+            <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 space-y-3">
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => setAddMode("file")}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-[11px] font-medium transition-all",
+                    addMode === "file"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-muted/50 border border-border/20"
+                  )}
                 >
-                  <Upload className="w-3 h-3 mr-1.5" />
-                  Choose Audio Files
-                </Button>
-              </>
-            ) : (
-              <div className="space-y-1.5">
-                <div className="flex gap-1.5">
-                  <Input
-                    value={urlInput}
-                    onChange={(e) => {
-                      setUrlInput(e.target.value);
-                      setUrlError(null);
-                    }}
-                    placeholder="https://example.com/audio.mp3"
-                    className={cn("h-7 text-[10px] flex-1", urlError && "border-destructive")}
-                    onKeyDown={(e) => e.key === "Enter" && handleAddUrl()}
+                  <Upload className="w-3.5 h-3.5" />
+                  Upload File
+                </button>
+                <button
+                  onClick={() => setAddMode("url")}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg text-[11px] font-medium transition-all",
+                    addMode === "url"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-muted/50 border border-border/20"
+                  )}
+                >
+                  <Link className="w-3.5 h-3.5" />
+                  URL / Stream
+                </button>
+              </div>
+
+              {addMode === "file" ? (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="audio/*,.mp3,.wav,.ogg,.flac,.aac,.m4a,.wma,.opus,.webm,.aiff,.mid,.midi"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileUpload}
                   />
                   <Button
-                    variant="default"
+                    variant="outline"
                     size="sm"
-                    className="h-7 px-3 text-[10px]"
-                    onClick={handleAddUrl}
-                    disabled={!urlInput.trim()}
+                    className="w-full h-9 text-[11px]"
+                    onClick={() => fileInputRef.current?.click()}
                   >
-                    Add
+                    <Upload className="w-3.5 h-3.5 mr-1.5" />
+                    Choose Audio Files
                   </Button>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-1.5">
+                    <Input
+                      value={urlInput}
+                      onChange={(e) => {
+                        setUrlInput(e.target.value);
+                        setUrlError(null);
+                      }}
+                      placeholder="https://example.com/audio.mp3"
+                      className={cn("h-8 text-[11px] flex-1", urlError && "border-destructive")}
+                      onKeyDown={(e) => e.key === "Enter" && handleAddUrl()}
+                    />
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="h-8 px-3 text-[11px]"
+                      onClick={handleAddUrl}
+                      disabled={!urlInput.trim()}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  {urlError && (
+                    <p className="text-[10px] text-destructive px-0.5">{urlError}</p>
+                  )}
                 </div>
-                {urlError && (
-                  <p className="text-[9px] text-destructive px-1">{urlError}</p>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
 
-        {sceneTracks.length === 0 && !showAddTrack ? (
-          <p className="text-[10px] text-muted-foreground/50 px-1">
-            No audio tracks added to this scene
-          </p>
-        ) : (
-          sceneTracks.map((track) => (
-            <TrackRow
-              key={track.id}
-              track={track}
-              scenes={scenes}
-              onUpdate={updateTrack}
-              onRemove={removeTrack}
-            />
-          ))
-        )}
+          {sceneTracks.length === 0 && !showAddTrack ? (
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/20 border border-border/10">
+              <Music className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+              <span className="text-[11px] text-muted-foreground/70">
+                No audio tracks yet. Add background music or sound effects.
+              </span>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {sceneTracks.map((track) => (
+                <TrackRow
+                  key={track.id}
+                  track={track}
+                  scenes={scenes}
+                  onUpdate={updateTrack}
+                  onRemove={removeTrack}
+                />
+              ))}
+            </div>
+          )}
+        </MixerSection>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
