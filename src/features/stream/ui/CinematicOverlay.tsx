@@ -49,7 +49,7 @@ const AnamorphicFlareOverlay = () => (
 );
 
 const DutchAngleOverlay = () => (
-  <div className="absolute inset-[-10%] z-[1]" style={{ transform: "rotate(-5deg) scale(1.15)", boxShadow: "inset 0 0 60px rgba(0,0,0,0.4)" }} />
+  <div className="absolute inset-0" style={{ boxShadow: "inset 0 0 60px rgba(0,0,0,0.4)" }} />
 );
 
 const ShallowDOFOverlay = () => (
@@ -169,8 +169,7 @@ const AsymmetricLetterboxOverlay = () => (
 
 const FisheyeOverlay = () => (
   <div className="absolute inset-0" style={{
-    background: "radial-gradient(circle at center, transparent 55%, rgba(0,0,0,0.8) 90%, black 100%)",
-    borderRadius: "50%",
+    background: "radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.9) 100%)",
   }} />
 );
 
@@ -314,7 +313,7 @@ const WormsEyeOverlay = () => (
 );
 
 const DutchTiltOverlay = () => (
-  <div className="absolute inset-[-10%] z-[1]" style={{ transform: "rotate(-8deg) scale(1.2)", boxShadow: "inset 0 0 80px rgba(0,0,0,0.5)" }} />
+  <div className="absolute inset-0" style={{ boxShadow: "inset 0 0 80px rgba(0,0,0,0.5)" }} />
 );
 
 const ForcedPerspectiveOverlay = () => (
@@ -507,7 +506,7 @@ const DreamlikeDefocusOverlay = () => (
 // ══════════════════════════════════════════════════════════════
 
 const HandheldShakeOverlay = () => (
-  <div className="absolute inset-0" style={{ animation: "handheld-shake 0.15s linear infinite", boxShadow: "inset 0 0 20px rgba(0,0,0,0.1)" }} />
+  <div className="absolute inset-0" style={{ boxShadow: "inset 0 0 20px rgba(0,0,0,0.1)" }} />
 );
 
 const LockedTripodOverlay = () => (

@@ -10,6 +10,7 @@ import { AmbientBackground } from "./AmbientBackground";
 import { PipLayoutPreset } from "./pip/PipLayoutMenu";
 import { CinematicOverlay } from "./CinematicOverlay";
 import { CinematicEffect } from "./pip/cinematicShotData";
+import { getCinematicCanvasStyles } from "./pip/cinematicCanvasStyles";
 
 interface CameraRendererProps {
   stream: MediaStream | null;
@@ -201,7 +202,33 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         </div>
       )}
 
-      <canvas ref={canvasRef} className="w-full h-full relative z-0" />
+      {/* SVG filter definitions for cinematic effects */}
+      <svg width="0" height="0" style={{ position: "absolute" }}>
+        <defs>
+          <filter id="svgf-barrel" colorInterpolationFilters="sRGB">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="clean" />
+            <feComponentTransfer in="clean" result="barrel">
+              <feFuncR type="identity" />
+              <feFuncG type="identity" />
+              <feFuncB type="identity" />
+            </feComponentTransfer>
+            <feMorphology operator="dilate" radius="0.5" in="barrel" result="expand" />
+            <feComposite in="SourceGraphic" in2="expand" operator="in" />
+          </filter>
+        </defs>
+      </svg>
+
+      {(() => {
+        const cinematicStyles = getCinematicCanvasStyles(cinematicEffect);
+        return (
+          <div
+            className="w-full h-full relative z-0"
+            style={cinematicStyles.container}
+          >
+            <canvas ref={canvasRef} className="w-full h-full" style={cinematicStyles.canvas} />
+          </div>
+        );
+      })()}
 
       <CinematicOverlay effect={cinematicEffect} />
 
