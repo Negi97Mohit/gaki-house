@@ -34,6 +34,15 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
   const gridRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Auto-focus search input when menu opens
+  useEffect(() => {
+    if (!isOpen) return;
+    const timer = setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
   // Autoscroll to selected shot when menu opens or effect changes
   useEffect(() => {
     if (!isOpen || activeCinematicEffect === "none") return;
@@ -42,7 +51,7 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
-    }, 100);
+    }, 150);
     return () => clearTimeout(timer);
   }, [isOpen, activeCinematicEffect]);
 
@@ -58,10 +67,6 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
   const handleSelectShot = (preset: CinematicPreset) => {
     const isActive = activeCinematicEffect === preset.id;
     onCinematicEffectChange(isActive ? "none" : preset.id);
-    // Auto-focus search input after selecting
-    setTimeout(() => {
-      searchInputRef.current?.focus();
-    }, 0);
   };
 
   return (
@@ -86,6 +91,9 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
           sideOffset={10}
           className="z-[var(--z-text-toolbar)] w-72 max-h-[75vh] bg-background/95 backdrop-blur-xl border-border/40 p-0 flex flex-col"
           onCloseAutoFocus={(e) => e.preventDefault()}
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
+          onFocusOutside={(e) => e.preventDefault()}
         >
           {/* Header */}
           <div className="p-2 border-b border-border/30 space-y-2">

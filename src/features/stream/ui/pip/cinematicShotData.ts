@@ -80,7 +80,7 @@ export const CINEMATIC_PRESETS: CinematicPreset[] = [
   { id: "asymmetric-letterbox", name: "Asymmetric", description: "Thin top bar, thick bottom bar", color: "#3a1a1a", category: "letterbox" },
 
   // ── Optical & Lens (1-20) ──
-  { id: "fisheye", name: "Fisheye", description: "Circular dark edge vignette", color: "#4488FF", category: "optical" },
+  { id: "fisheye", name: "Fisheye", description: "Barrel distortion with circular crop", color: "#4488FF", category: "optical" },
   { id: "ultra-wide", name: "Ultra Wide", description: "Subtle wide edge darkening", color: "#3366CC", category: "optical" },
   { id: "wide-angle", name: "Wide Angle", description: "Light edge shadow gradient", color: "#5577DD", category: "optical" },
   { id: "standard-perspective", name: "Standard", description: "Very subtle edge shadow", color: "#888888", category: "optical" },
