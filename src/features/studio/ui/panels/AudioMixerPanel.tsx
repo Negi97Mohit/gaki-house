@@ -722,24 +722,44 @@ export function AudioMixerPanel() {
   };
 
   return (
-    <div className="space-y-4">
-      {/* Master Output */}
-      <FaderStrip
-        label="Master Output"
-        icon={<Speaker className="w-3.5 h-3.5" />}
-        volume={masterVolume}
-        isMuted={masterMuted}
-        onVolumeChange={setMasterVolume}
-        onMuteToggle={() => setMasterMuted(!masterMuted)}
-      />
-
-      {/* Input Devices */}
+    <div className="space-y-5">
+      {/* ── OUTPUT SECTION ── */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 px-1">
-          <Mic className="w-3 h-3 text-muted-foreground" />
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-            Input Sources
-          </span>
+        <div className="px-1 space-y-1">
+          <div className="flex items-center gap-2">
+            <Speaker className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Output
+            </span>
+          </div>
+          <p className="text-[9px] text-muted-foreground/50 leading-relaxed">
+            What your audience hears — the final mixed audio sent to speakers or stream.
+          </p>
+        </div>
+        <FaderStrip
+          label="Master Output"
+          icon={<Speaker className="w-3.5 h-3.5" />}
+          volume={masterVolume}
+          isMuted={masterMuted}
+          onVolumeChange={setMasterVolume}
+          onMuteToggle={() => setMasterMuted(!masterMuted)}
+        />
+      </div>
+
+      <div className="h-px bg-border/10" />
+
+      {/* ── INPUT SECTION ── */}
+      <div className="space-y-2">
+        <div className="px-1 space-y-1">
+          <div className="flex items-center gap-2">
+            <Mic className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Input Sources
+            </span>
+          </div>
+          <p className="text-[9px] text-muted-foreground/50 leading-relaxed">
+            Microphones and audio devices capturing your voice or instruments.
+          </p>
         </div>
         {audioDevices.length === 0 ? (
           <p className="text-[10px] text-muted-foreground/50 px-1">
@@ -764,14 +784,21 @@ export function AudioMixerPanel() {
         )}
       </div>
 
-      {/* Scene Audio Tracks */}
+      <div className="h-px bg-border/10" />
+
+      {/* ── SCENE AUDIO SECTION ── */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2">
-            <Music className="w-3 h-3 text-muted-foreground" />
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Scene Audio
-            </span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Music className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Scene Audio
+              </span>
+            </div>
+            <p className="text-[9px] text-muted-foreground/50 leading-relaxed">
+              Background music, sound effects, or audio tracks added to your scene.
+            </p>
           </div>
           <Button
             variant="ghost"
