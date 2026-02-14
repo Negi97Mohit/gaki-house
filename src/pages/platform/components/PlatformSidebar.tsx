@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings } from "lucide-react";
 import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
 import { cn } from "@/shared/lib/utils";
 
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: "Home", icon: Home, path: "/platform" },
   { label: "Browse", icon: Compass, path: "/platform/browse" },
   { label: "Following", icon: Heart, path: "/platform/following" },
+  { label: "Settings", icon: Settings, path: "/platform/settings" },
 ];
 
 export const PlatformSidebar: React.FC = () => {
@@ -18,7 +19,7 @@ export const PlatformSidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "h-full bg-background border-r border-border/30 flex flex-col transition-all duration-200 shrink-0",
+        "h-full bg-background border-r border-border/30 flex-col transition-all duration-200 shrink-0 hidden md:flex",
         collapsed ? "w-[52px]" : "w-[220px]"
       )}
     >
@@ -30,6 +31,7 @@ export const PlatformSidebar: React.FC = () => {
             <Link
               key={item.path}
               to={item.path}
+              title={collapsed ? item.label : undefined}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
                 active
@@ -58,6 +60,7 @@ export const PlatformSidebar: React.FC = () => {
           <Link
             key={ch.id}
             to={`/platform/stream/${ch.username}`}
+            title={collapsed ? ch.displayName : undefined}
             className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-muted transition-colors group"
           >
             <div className="relative shrink-0">

@@ -1,7 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Heart, Share2, Users, Send, MoreHorizontal, CheckCircle } from "lucide-react";
+import {
+  Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
+  Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X
+} from "lucide-react";
 import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
+import { cn } from "@/shared/lib/utils";
 
 const MOCK_CHAT = [
   { id: "1", user: "NightOwl", color: "hsl(48 96% 53%)", message: "lets gooo 🔥" },
@@ -14,6 +18,8 @@ const MOCK_CHAT = [
   { id: "8", user: "ThunderBolt", color: "#fbbf24", message: "POG" },
 ];
 
+const QUALITY_OPTIONS = ["1080p60", "720p60", "480p", "360p", "160p (Audio Only)"];
+
 export const StreamPage: React.FC = () => {
   const { username } = useParams();
   const channel = MOCK_CHANNELS.find((c) => c.username === username) || MOCK_CHANNELS[0];
@@ -21,6 +27,18 @@ export const StreamPage: React.FC = () => {
   const [messages, setMessages] = useState(MOCK_CHAT);
   const [isFollowing, setIsFollowing] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
+
+  // Player controls
+  const [isTheater, setIsTheater] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(80);
+  const [showQuality, setShowQuality] = useState(false);
+  const [selectedQuality, setSelectedQuality] = useState("1080p60");
+  const [showControls, setShowControls] = useState(true);
+  const [showMobileChat, setShowMobileChat] = useState(false);
+  const controlsTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,17 +53,51 @@ export const StreamPage: React.FC = () => {
     setChatInput("");
   };
 
+  const toggleFullscreen = useCallback(() => {
+    if (!playerRef.current) return;
+    if (!document.fullscreenElement) {
+      playerRef.current.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  const handlePlayerMouseMove = () => {
+    setShowControls(true);
+    if (controlsTimer.current) clearTimeout(controlsTimer.current);
+    controlsTimer.current = setTimeout(() => setShowControls(false), 3000);
+  };
+
   return (
-    <div className="flex h-full">
+    <div className={cn("flex h-full", isTheater && "flex-col")}>
       {/* Stream + Info */}
-      <div className="flex-1 flex flex-col overflow-y-auto">
+      <div className={cn("flex-1 flex flex-col overflow-y-auto", isTheater && "flex-none")}>
         {/* Video Player */}
-        <div className="relative w-full aspect-video bg-black flex items-center justify-center">
+        <div
+          ref={playerRef}
+          className={cn(
+            "relative w-full bg-black flex items-center justify-center group",
+            isTheater ? "aspect-video max-h-[80vh]" : "aspect-video",
+            isFullscreen && "max-h-none"
+          )}
+          onMouseMove={handlePlayerMouseMove}
+          onMouseLeave={() => setShowControls(false)}
+        >
           <img
             src={channel.thumbnail}
             alt={channel.title}
             className="w-full h-full object-cover"
           />
+
+          {/* Live badge */}
           <div className="absolute top-3 left-3 flex items-center gap-2">
             <span className="px-2 py-0.5 bg-destructive text-destructive-foreground text-xs font-bold uppercase rounded">
               Live
@@ -55,15 +107,111 @@ export const StreamPage: React.FC = () => {
               {formatViewerCount(channel.viewers)}
             </span>
           </div>
+
+          {/* Player Controls Overlay */}
+          <div
+            className={cn(
+              "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-3 transition-opacity duration-300",
+              showControls || isFullscreen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            )}
+          >
+            {/* Volume bar (thin line) */}
+            <div className="w-full h-0.5 bg-white/20 rounded-full mb-3 cursor-pointer">
+              <div className="h-full bg-primary rounded-full" style={{ width: "42%" }} />
+            </div>
+
+            <div className="flex items-center justify-between">
+              {/* Left controls */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setIsMuted(!isMuted)}
+                  className="text-white hover:text-primary transition-colors"
+                >
+                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                </button>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={isMuted ? 0 : volume}
+                  onChange={(e) => {
+                    setVolume(Number(e.target.value));
+                    if (isMuted) setIsMuted(false);
+                  }}
+                  className="w-20 h-1 accent-primary cursor-pointer"
+                />
+              </div>
+
+              {/* Right controls */}
+              <div className="flex items-center gap-2">
+                {/* Quality selector */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowQuality(!showQuality)}
+                    className="text-white hover:text-primary transition-colors p-1"
+                  >
+                    <Settings className="w-4.5 h-4.5" />
+                  </button>
+                  {showQuality && (
+                    <div className="absolute bottom-full right-0 mb-2 bg-card border border-border/40 rounded-lg shadow-lg py-1 min-w-[140px] z-[100]">
+                      {QUALITY_OPTIONS.map((q) => (
+                        <button
+                          key={q}
+                          onClick={() => {
+                            setSelectedQuality(q);
+                            setShowQuality(false);
+                          }}
+                          className={cn(
+                            "w-full text-left px-3 py-1.5 text-sm transition-colors",
+                            selectedQuality === q
+                              ? "text-primary font-medium bg-primary/10"
+                              : "text-foreground hover:bg-muted"
+                          )}
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Theater mode */}
+                <button
+                  onClick={() => setIsTheater(!isTheater)}
+                  className="text-white hover:text-primary transition-colors p-1 hidden lg:block"
+                  title="Theater Mode"
+                >
+                  <Theater className="w-4.5 h-4.5" />
+                </button>
+
+                {/* Fullscreen */}
+                <button
+                  onClick={toggleFullscreen}
+                  className="text-white hover:text-primary transition-colors p-1"
+                  title="Fullscreen"
+                >
+                  {isFullscreen ? (
+                    <Minimize className="w-4.5 h-4.5" />
+                  ) : (
+                    <Maximize className="w-4.5 h-4.5" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Stream Info */}
-        <div className="p-4 border-b border-border/30">
+        <div className={cn("p-4 border-b border-border/30", isTheater && "hidden")}>
           <div className="flex items-start gap-3">
-            <img src={channel.avatar} alt="" className="w-12 h-12 rounded-full bg-muted" />
+            <Link to={`/platform/profile/${channel.username}`}>
+              <img src={channel.avatar} alt="" className="w-12 h-12 rounded-full bg-muted" />
+            </Link>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-foreground">{channel.displayName}</h1>
+                <Link to={`/platform/profile/${channel.username}`} className="text-lg font-bold text-foreground hover:text-primary transition-colors">
+                  {channel.displayName}
+                </Link>
                 {channel.isVerified && <CheckCircle className="w-4 h-4 text-primary" />}
               </div>
               <p className="text-sm text-foreground font-medium mt-0.5">{channel.title}</p>
@@ -73,7 +221,7 @@ export const StreamPage: React.FC = () => {
               >
                 {channel.category}
               </Link>
-              <div className="flex gap-1.5 mt-2">
+              <div className="flex gap-1.5 mt-2 flex-wrap">
                 {channel.tags.map((tag) => (
                   <span key={tag} className="px-2 py-0.5 bg-muted text-muted-foreground text-[11px] rounded font-medium">
                     {tag}
@@ -84,19 +232,20 @@ export const StreamPage: React.FC = () => {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => setIsFollowing(!isFollowing)}
-                className={`px-4 py-2 rounded-md text-sm font-bold transition-colors ${
+                className={cn(
+                  "px-4 py-2 rounded-md text-sm font-bold transition-colors",
                   isFollowing
                     ? "bg-muted text-foreground hover:bg-muted/80"
                     : "bg-primary text-primary-foreground hover:opacity-90"
-                }`}
+                )}
               >
-                <Heart className={`w-4 h-4 inline mr-1.5 ${isFollowing ? "fill-destructive text-destructive" : ""}`} />
+                <Heart className={cn("w-4 h-4 inline mr-1.5", isFollowing && "fill-destructive text-destructive")} />
                 {isFollowing ? "Following" : "Follow"}
               </button>
-              <button className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors">
+              <button className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
                 <Share2 className="w-4 h-4" />
               </button>
-              <button className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors">
+              <button className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
                 <MoreHorizontal className="w-4 h-4" />
               </button>
             </div>
@@ -109,7 +258,7 @@ export const StreamPage: React.FC = () => {
         </div>
 
         {/* About */}
-        {channel.bio && (
+        {channel.bio && !isTheater && (
           <div className="p-4">
             <h3 className="text-sm font-semibold text-foreground mb-2">About {channel.displayName}</h3>
             <p className="text-sm text-muted-foreground">{channel.bio}</p>
@@ -117,43 +266,89 @@ export const StreamPage: React.FC = () => {
         )}
       </div>
 
-      {/* Chat Panel */}
-      <div className="w-[340px] border-l border-border/30 flex flex-col bg-card shrink-0 hidden lg:flex">
-        <div className="px-4 py-3 border-b border-border/30">
-          <p className="text-sm font-semibold text-foreground">Stream Chat</p>
-        </div>
+      {/* Mobile Chat Toggle */}
+      <button
+        onClick={() => setShowMobileChat(true)}
+        className="lg:hidden fixed bottom-4 right-4 z-50 p-3 bg-primary text-primary-foreground rounded-full shadow-lg"
+      >
+        <MessageSquare className="w-5 h-5" />
+      </button>
 
-        <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 scrollbar-thin">
-          {messages.map((msg) => (
-            <div key={msg.id} className="text-sm leading-relaxed">
-              <span className="font-semibold" style={{ color: msg.color }}>
-                {msg.user}
-              </span>
-              <span className="text-foreground/80">: {msg.message}</span>
-            </div>
-          ))}
-          <div ref={chatEndRef} />
-        </div>
+      {/* Chat Panel - Desktop */}
+      <div className={cn(
+        "w-[340px] border-l border-border/30 flex flex-col bg-card shrink-0 hidden lg:flex",
+        isTheater && "flex-1"
+      )}>
+        <ChatPanel
+          messages={messages}
+          chatInput={chatInput}
+          setChatInput={setChatInput}
+          onSend={handleSend}
+          chatEndRef={chatEndRef}
+        />
+      </div>
 
-        <div className="p-3 border-t border-border/30">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Send a message..."
-              className="flex-1 bg-background border border-border/40 rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
-            />
-            <button
-              onClick={handleSend}
-              className="px-3 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity"
-            >
-              <Send className="w-4 h-4" />
+      {/* Chat Panel - Mobile Overlay */}
+      {showMobileChat && (
+        <div className="lg:hidden fixed inset-0 z-[200] bg-background/95 backdrop-blur-sm flex flex-col">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
+            <p className="text-sm font-semibold text-foreground">Stream Chat</p>
+            <button onClick={() => setShowMobileChat(false)} className="p-1 text-muted-foreground hover:text-foreground">
+              <X className="w-5 h-5" />
             </button>
           </div>
+          <ChatPanel
+            messages={messages}
+            chatInput={chatInput}
+            setChatInput={setChatInput}
+            onSend={handleSend}
+            chatEndRef={chatEndRef}
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 };
+
+const ChatPanel: React.FC<{
+  messages: typeof MOCK_CHAT;
+  chatInput: string;
+  setChatInput: (v: string) => void;
+  onSend: () => void;
+  chatEndRef: React.RefObject<HTMLDivElement>;
+}> = ({ messages, chatInput, setChatInput, onSend, chatEndRef }) => (
+  <>
+    <div className="px-4 py-3 border-b border-border/30">
+      <p className="text-sm font-semibold text-foreground">Stream Chat</p>
+    </div>
+    <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 scrollbar-thin">
+      {messages.map((msg) => (
+        <div key={msg.id} className="text-sm leading-relaxed">
+          <span className="font-semibold" style={{ color: msg.color }}>
+            {msg.user}
+          </span>
+          <span className="text-foreground/80">: {msg.message}</span>
+        </div>
+      ))}
+      <div ref={chatEndRef} />
+    </div>
+    <div className="p-3 border-t border-border/30">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={chatInput}
+          onChange={(e) => setChatInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSend()}
+          placeholder="Send a message..."
+          className="flex-1 bg-background border border-border/40 rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+        />
+        <button
+          onClick={onSend}
+          className="px-3 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  </>
+);

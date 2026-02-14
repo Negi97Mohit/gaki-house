@@ -24,6 +24,8 @@ const PlatformBrowse = lazy(() => import("./pages/platform/pages/BrowsePage").th
 const PlatformStream = lazy(() => import("./pages/platform/pages/StreamPage").then(m => ({ default: m.StreamPage })));
 const PlatformProfile = lazy(() => import("./pages/platform/pages/ProfilePage").then(m => ({ default: m.ProfilePage })));
 const PlatformFollowing = lazy(() => import("./pages/platform/pages/FollowingPage").then(m => ({ default: m.FollowingPage })));
+const PlatformSearch = lazy(() => import("./pages/platform/pages/SearchPage").then(m => ({ default: m.SearchPage })));
+const PlatformSettings = lazy(() => import("./pages/platform/pages/SettingsPage").then(m => ({ default: m.SettingsPage })));
 
 const queryClient = new QueryClient();
 
@@ -119,6 +121,8 @@ const App = () => {
                       <Route path="stream/:username" element={<PlatformStream />} />
                       <Route path="profile/:username" element={<PlatformProfile />} />
                       <Route path="following" element={<PlatformFollowing />} />
+                      <Route path="search" element={<PlatformSearch />} />
+                      <Route path="settings" element={<PlatformSettings />} />
                     </Route>
                     <Route path="/remote-cam" element={<RemoteCamera />} />
                     <Route path="*" element={<NotFound />} />
