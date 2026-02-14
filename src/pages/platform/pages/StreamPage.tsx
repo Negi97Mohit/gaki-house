@@ -7,6 +7,9 @@ import {
 import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs, addDoc, deleteDoc } from "firebase/firestore";
+import { toast } from "sonner";
 
 import { EmotePicker } from "../components/EmotePicker";
 import { ChatBadge, BadgeType } from "../components/ChatBadge";
@@ -53,9 +56,67 @@ export const StreamPage: React.FC = () => {
   const [showMobileChat, setShowMobileChat] = useState(false);
   const controlsTimer = useRef<NodeJS.Timeout | null>(null);
 
+  // Firestore for valid check
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (!user) {
+      setIsFollowing(false);
+      return;
+    }
+    const checkFollow = async () => {
+      try {
+        const q = query(
+          collection(db, "follows"),
+          where("follower_id", "==", user.uid),
+          where("following_id", "==", channel.id)
+        );
+        const snapshot = await getDocs(q);
+        setIsFollowing(!snapshot.empty);
+      } catch (e) {
+        console.error("Error checking follow status:", e);
+      }
+    };
+    checkFollow();
+  }, [user, channel.id]);
+
+  const toggleFollow = async () => {
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+
+    const startState = isFollowing;
+    // Optimistic update
+    setIsFollowing(!startState);
+
+    try {
+      if (startState) {
+        // Unfollow
+        const q = query(
+          collection(db, "follows"),
+          where("follower_id", "==", user.uid),
+          where("following_id", "==", channel.id)
+        );
+        const snapshot = await getDocs(q);
+        snapshot.forEach(async (d) => {
+          await deleteDoc(d.ref);
+        });
+        toast.success(`Unfollowed ${channel.displayName}`);
+      } else {
+        // Follow
+        await addDoc(collection(db, "follows"), {
+          follower_id: user.uid,
+          following_id: channel.id,
+          created_at: new Date().toISOString()
+        });
+        toast.success(`Following ${channel.displayName}`);
+      }
+    } catch (e) {
+      console.error("Error toggling follow:", e);
+      // Revert on error
+      setIsFollowing(startState);
+      toast.error("Failed to update follow status");
+    }
+  };
 
   const handleSend = () => {
     if (!chatInput.trim()) return;
@@ -249,10 +310,7 @@ export const StreamPage: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <button
-                onClick={() => {
-                  if (!user) { openAuthModal("login"); return; }
-                  setIsFollowing(!isFollowing);
-                }}
+                onClick={toggleFollow}
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-bold transition-colors",
                   isFollowing

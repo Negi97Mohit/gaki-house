@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 import { MOCK_CHANNELS } from "../data/mockData";
 import { StreamCard } from "../components/StreamCard";
@@ -11,13 +12,22 @@ export const FollowingPage: React.FC = () => {
 
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from("follows")
-      .select("following_id")
-      .eq("follower_id", user.id)
-      .then(({ data }) => {
-        if (data) setFollowedIds(data.map((f) => f.following_id));
-      });
+
+    const fetchFollows = async () => {
+      try {
+        const q = query(
+          collection(db, "follows"),
+          where("follower_id", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        const ids = querySnapshot.docs.map(doc => doc.data().following_id);
+        setFollowedIds(ids);
+      } catch (error) {
+        console.error("Error fetching follows:", error);
+      }
+    };
+
+    fetchFollows();
   }, [user]);
 
   if (!user) {

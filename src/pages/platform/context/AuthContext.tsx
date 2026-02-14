@@ -1,14 +1,25 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { User, Session } from "@supabase/supabase-js";
-import type { Tables } from "@/integrations/supabase/types";
+import { auth, db } from "@/lib/firebase";
+import {
+  User,
+  onAuthStateChanged,
+  signOut as firebaseSignOut
+} from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
-type Profile = Tables<"profiles">;
+export interface Profile {
+  id: string;
+  email: string;
+  username?: string;
+  display_name?: string;
+  avatar_url?: string;
+  bio?: string;
+  created_at?: string;
+}
 
 interface AuthContextType {
   user: User | null;
   profile: Profile | null;
-  session: Session | null;
   loading: boolean;
   isAuthModalOpen: boolean;
   authModalTab: "login" | "signup";
@@ -16,6 +27,7 @@ interface AuthContextType {
   closeAuthModal: () => void;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  createProfile: (user: User, additionalData?: Partial<Profile>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,51 +41,60 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
 
-  const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-    setProfile(data);
+  const fetchProfile = async (uid: string) => {
+    try {
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setProfile(docSnap.data() as Profile);
+      } else {
+        setProfile(null);
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  const createProfile = async (user: User, additionalData: Partial<Profile> = {}) => {
+    try {
+      const newProfile: Profile = {
+        id: user.uid,
+        email: user.email || "",
+        created_at: new Date().toISOString(),
+        username: user.email?.split("@")[0] || "user",
+        display_name: user.displayName || user.email?.split("@")[0] || "User",
+        avatar_url: user.photoURL || "",
+        ...additionalData
+      };
+
+      await setDoc(doc(db, "users", user.uid), newProfile, { merge: true });
+      setProfile(newProfile);
+    } catch (error) {
+      console.error("Error creating profile:", error);
+      throw error;
+    }
   };
 
   const refreshProfile = async () => {
-    if (user) await fetchProfile(user.id);
+    if (user) await fetchProfile(user.uid);
   };
 
   useEffect(() => {
-    // Set up auth listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          // Use setTimeout to avoid deadlock with Supabase auth
-          setTimeout(() => fetchProfile(session.user.id), 0);
-        } else {
-          setProfile(null);
-        }
-        setLoading(false);
-      }
-    );
-
-    // THEN get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        await fetchProfile(currentUser.uid);
+      } else {
+        setProfile(null);
       }
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   const openAuthModal = (tab: "login" | "signup" = "login") => {
@@ -84,19 +105,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setProfile(null);
-    setSession(null);
+    try {
+      await firebaseSignOut(auth);
+      setUser(null);
+      setProfile(null);
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user, profile, session, loading,
-        isAuthModalOpen, authModalTab,
-        openAuthModal, closeAuthModal,
-        signOut, refreshProfile,
+        user,
+        profile,
+        loading,
+        isAuthModalOpen,
+        authModalTab,
+        openAuthModal,
+        closeAuthModal,
+        signOut,
+        refreshProfile,
+        createProfile
       }}
     >
       {children}

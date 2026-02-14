@@ -51,8 +51,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       toast.success("Signed in successfully with Google!");
       onClose();
     } catch (error: any) {
-      console.error("Google sign in error:", error);
-      toast.error(error.message || "Google sign-in failed");
+      if (error.code === "auth/popup-closed-by-user") {
+        console.log("Sign-in cancelled by user");
+      } else {
+        console.error("Google sign in error:", error);
+        let message = "Google sign-in failed. Please try again.";
+
+        if (error.code === "auth/network-request-failed") {
+          message = "Network error. Please check your connection.";
+        } else if (error.code === "auth/popup-blocked") {
+          message = "Sign-in popup was blocked. Please allow popups.";
+        }
+
+        toast.error(message);
+      }
     } finally {
       setGoogleLoading(false);
     }
@@ -83,7 +95,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       setEmail("");
       setPassword("");
     } catch (err: any) {
-      toast.error(err.message || "Authentication failed");
+      // Map common Firebase auth errors to user-friendly messages
+      let message = "Authentication failed. Please try again.";
+
+      if (err.code === "auth/email-already-in-use") message = "This email is already registered.";
+      else if (err.code === "auth/invalid-email") message = "Please enter a valid email address.";
+      else if (err.code === "auth/weak-password") message = "Password should be at least 6 characters.";
+      else if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
+        message = "Invalid email or password.";
+      } else if (err.code === "auth/too-many-requests") {
+        message = "Too many failed attempts. Please try again later.";
+      } else if (err.code === "auth/network-request-failed") {
+        message = "Network error. Please check your connection.";
+      }
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }

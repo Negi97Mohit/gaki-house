@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { User, Bell, Palette, Shield, Save, Loader2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/lib/firebase";
+import { doc, updateDoc } from "firebase/firestore";
 import { toast } from "sonner";
 
 const TABS = [
@@ -30,7 +31,9 @@ export const SettingsPage: React.FC = () => {
     }
   }, [profile]);
 
+
   if (!user) {
+    // ... (same auth check UI)
     return (
       <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
         <User className="w-12 h-12 text-muted-foreground" />
@@ -48,18 +51,21 @@ export const SettingsPage: React.FC = () => {
 
   const handleSave = async () => {
     setSaving(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ display_name: displayName, username, bio })
-      .eq("id", user.id);
-
-    if (error) {
-      toast.error(error.message);
-    } else {
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        display_name: displayName,
+        username,
+        bio
+      });
       toast.success("Profile saved!");
       await refreshProfile();
+    } catch (error: any) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to save profile");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   };
 
   return (
