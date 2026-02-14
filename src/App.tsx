@@ -26,6 +26,7 @@ const PlatformProfile = lazy(() => import("./pages/platform/pages/ProfilePage").
 const PlatformFollowing = lazy(() => import("./pages/platform/pages/FollowingPage").then(m => ({ default: m.FollowingPage })));
 const PlatformSearch = lazy(() => import("./pages/platform/pages/SearchPage").then(m => ({ default: m.SearchPage })));
 const PlatformSettings = lazy(() => import("./pages/platform/pages/SettingsPage").then(m => ({ default: m.SettingsPage })));
+const PlatformClips = lazy(() => import("./pages/platform/pages/ClipsPage").then(m => ({ default: m.ClipsPage })));
 
 const queryClient = new QueryClient();
 
@@ -123,6 +124,7 @@ const App = () => {
                       <Route path="following" element={<PlatformFollowing />} />
                       <Route path="search" element={<PlatformSearch />} />
                       <Route path="settings" element={<PlatformSettings />} />
+                      <Route path="clips" element={<PlatformClips />} />
                     </Route>
                     <Route path="/remote-cam" element={<RemoteCamera />} />
                     <Route path="*" element={<NotFound />} />

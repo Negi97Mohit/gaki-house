@@ -8,15 +8,26 @@ import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
 
-const MOCK_CHAT = [
-  { id: "1", user: "NightOwl", color: "hsl(48 96% 53%)", message: "lets gooo 🔥" },
-  { id: "2", user: "PixelQueen", color: "#ff6bda", message: "that play was insane" },
+import { EmotePicker } from "../components/EmotePicker";
+import { ChatBadge, BadgeType } from "../components/ChatBadge";
+
+interface ChatMessage {
+  id: string;
+  user: string;
+  color: string;
+  message: string;
+  badges?: BadgeType[];
+}
+
+const MOCK_CHAT: ChatMessage[] = [
+  { id: "1", user: "NightOwl", color: "hsl(48 96% 53%)", message: "lets gooo 🔥", badges: ["sub"] },
+  { id: "2", user: "PixelQueen", color: "#ff6bda", message: "that play was insane", badges: ["mod"] },
   { id: "3", user: "ShadowMC", color: "#5babff", message: "GG WP" },
-  { id: "4", user: "DragonSlayer", color: "#ffb84d", message: "clutch!!" },
-  { id: "5", user: "CosmicDust", color: "#c084fc", message: "how does he do that every time" },
+  { id: "4", user: "DragonSlayer", color: "#ffb84d", message: "clutch!!", badges: ["vip"] },
+  { id: "5", user: "CosmicDust", color: "#c084fc", message: "how does he do that every time", badges: ["sub"] },
   { id: "6", user: "NeonViper", color: "hsl(48 96% 53%)", message: "W stream" },
-  { id: "7", user: "IcyBlaze", color: "#67e8f9", message: "KEKW" },
-  { id: "8", user: "ThunderBolt", color: "#fbbf24", message: "POG" },
+  { id: "7", user: "IcyBlaze", color: "#67e8f9", message: "KEKW", badges: ["sub"] },
+  { id: "8", user: "ThunderBolt", color: "#fbbf24", message: "POG", badges: ["verified"] },
 ];
 
 const QUALITY_OPTIONS = ["1080p60", "720p60", "480p", "360p", "160p (Audio Only)"];
@@ -321,7 +332,7 @@ export const StreamPage: React.FC = () => {
 };
 
 const ChatPanel: React.FC<{
-  messages: typeof MOCK_CHAT;
+  messages: ChatMessage[];
   chatInput: string;
   setChatInput: (v: string) => void;
   onSend: () => void;
@@ -333,17 +344,23 @@ const ChatPanel: React.FC<{
     </div>
     <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 scrollbar-thin">
       {messages.map((msg) => (
-        <div key={msg.id} className="text-sm leading-relaxed">
-          <span className="font-semibold" style={{ color: msg.color }}>
-            {msg.user}
+        <div key={msg.id} className="text-sm leading-relaxed flex items-start gap-1">
+          {msg.badges?.map((badge) => (
+            <ChatBadge key={badge} type={badge} className="mt-0.5" />
+          ))}
+          <span>
+            <span className="font-semibold" style={{ color: msg.color }}>
+              {msg.user}
+            </span>
+            <span className="text-foreground/80">: {msg.message}</span>
           </span>
-          <span className="text-foreground/80">: {msg.message}</span>
         </div>
       ))}
       <div ref={chatEndRef} />
     </div>
     <div className="p-3 border-t border-border/30">
-      <div className="flex gap-2">
+      <div className="flex items-center gap-1">
+        <EmotePicker onSelect={(emote) => setChatInput(chatInput + emote)} />
         <input
           type="text"
           value={chatInput}
