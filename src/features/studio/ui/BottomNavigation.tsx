@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { SlidersHorizontal, Expand, Shrink, Download, Users, LogIn, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { SlidersHorizontal, Expand, Shrink, Download, Users, LogIn, LogOut, Home } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -74,6 +75,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
   const [isElectron, setIsElectron] = useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkElectron =
@@ -153,6 +155,20 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
 
         <div className="relative flex items-center gap-1.5 px-3 py-2">
+          <ShortcutTooltip label="Home">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
+              onClick={() => navigate("/secondary")}
+              data-floating-trigger
+            >
+              <Home className="w-3.5 h-3.5" />
+            </Button>
+          </ShortcutTooltip>
+
+          <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
+
           <ShortcutTooltip label="Settings" shortcut="settings">
             <Button
               variant="ghost"

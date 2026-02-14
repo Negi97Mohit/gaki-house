@@ -15,6 +15,7 @@ import { useUiStore } from "@/stores/ui.store";
 const Index = lazy(() => import("./pages/Index"));
 
 const RemoteCamera = lazy(() => import("./pages/RemoteCamera"));
+const SecondaryPage = lazy(() => import("./pages/SecondaryPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -104,7 +105,7 @@ const App = () => {
                 <Suspense fallback={<Loader visible={true} />}>
                   <Routes>
                     <Route path="/" element={<Index />} />
-
+                    <Route path="/secondary" element={<SecondaryPage />} />
                     <Route path="/remote-cam" element={<RemoteCamera />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
