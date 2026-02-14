@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
 import { cn } from "@/shared/lib/utils";
+import { useAuth } from "../context/AuthContext";
 
 const MOCK_CHAT = [
   { id: "1", user: "NightOwl", color: "hsl(48 96% 53%)", message: "lets gooo 🔥" },
@@ -22,6 +23,7 @@ const QUALITY_OPTIONS = ["1080p60", "720p60", "480p", "360p", "160p (Audio Only)
 
 export const StreamPage: React.FC = () => {
   const { username } = useParams();
+  const { user, profile, openAuthModal } = useAuth();
   const channel = MOCK_CHANNELS.find((c) => c.username === username) || MOCK_CHANNELS[0];
   const [chatInput, setChatInput] = useState("");
   const [messages, setMessages] = useState(MOCK_CHAT);
@@ -46,9 +48,14 @@ export const StreamPage: React.FC = () => {
 
   const handleSend = () => {
     if (!chatInput.trim()) return;
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+    const chatName = profile?.display_name || user.email?.split("@")[0] || "You";
     setMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), user: "You", color: "hsl(48 96% 53%)", message: chatInput.trim() },
+      { id: Date.now().toString(), user: chatName, color: "hsl(48 96% 53%)", message: chatInput.trim() },
     ]);
     setChatInput("");
   };
@@ -231,7 +238,10 @@ export const StreamPage: React.FC = () => {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <button
-                onClick={() => setIsFollowing(!isFollowing)}
+                onClick={() => {
+                  if (!user) { openAuthModal("login"); return; }
+                  setIsFollowing(!isFollowing);
+                }}
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-bold transition-colors",
                   isFollowing

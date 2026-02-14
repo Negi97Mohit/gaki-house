@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bell, User, ArrowLeft, X } from "lucide-react";
+import { Search, Bell, ArrowLeft, X } from "lucide-react";
 import { MOCK_CHANNELS, MOCK_CATEGORIES, formatViewerCount } from "../data/mockData";
+import { UserMenu } from "./UserMenu";
 
 export const PlatformTopNav: React.FC = () => {
   const navigate = useNavigate();
@@ -164,12 +165,7 @@ export const PlatformTopNav: React.FC = () => {
         <button className="p-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
           <Bell className="w-4.5 h-4.5" />
         </button>
-        <Link
-          to="/platform/settings"
-          className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-accent/20 transition-colors"
-        >
-          <User className="w-4 h-4 text-muted-foreground" />
-        </Link>
+        <UserMenu />
         <Link
           to="/"
           className="ml-1 sm:ml-2 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-md hover:opacity-90 transition-opacity hidden sm:block"
