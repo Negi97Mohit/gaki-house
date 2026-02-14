@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import ReactPlayer from "react-player";
 import { useParams, Link } from "react-router-dom";
 import {
   Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
@@ -39,17 +40,36 @@ export const StreamPage: React.FC = () => {
   const { username } = useParams();
   const { user, profile, openAuthModal } = useAuth();
   const channel = MOCK_CHANNELS.find((c) => c.username === username) || MOCK_CHANNELS[0];
+
+  // Dynamic chat based on channel
+  const [messages, setMessages] = useState(() => {
+    return MOCK_CHAT.map(msg => ({
+      ...msg,
+      id: Math.random().toString(36).substr(2, 9),
+      message: `${msg.message} (${channel.displayName} hype!)` // Simple variation
+    }));
+  });
+
+  // Reset messages when channel changes
+  useEffect(() => {
+    setMessages(MOCK_CHAT.map(msg => ({
+      ...msg,
+      id: Math.random().toString(36).substr(2, 9),
+      message: `${msg.message}`
+    })));
+  }, [channel.id]); // Only depend on channel.id to avoid unnecessary updates
+
   const [chatInput, setChatInput] = useState("");
-  const [messages, setMessages] = useState(MOCK_CHAT);
   const [isFollowing, setIsFollowing] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null); // Ref for container
 
   // Player controls
+  const [isPlaying, setIsPlaying] = useState(true); // Auto-play
   const [isTheater, setIsTheater] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(80);
+  const [isMuted, setIsMuted] = useState(true); // Muted for autoplay policy
+  const [volume, setVolume] = useState(0.8); // react-player volume is 0-1
   const [showQuality, setShowQuality] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState("1080p60");
   const [showControls, setShowControls] = useState(true);
@@ -155,6 +175,13 @@ export const StreamPage: React.FC = () => {
     controlsTimer.current = setTimeout(() => setShowControls(false), 3000);
   };
 
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (isMuted && newVolume > 0) setIsMuted(false);
+    if (newVolume === 0) setIsMuted(true);
+  };
+
   return (
     <div className={cn("flex h-full", isTheater && "flex-col")}>
       {/* Stream + Info */}
@@ -163,21 +190,43 @@ export const StreamPage: React.FC = () => {
         <div
           ref={playerRef}
           className={cn(
-            "relative w-full bg-black flex items-center justify-center group",
+            "relative w-full bg-black flex items-center justify-center group select-none",
             isTheater ? "aspect-video max-h-[80vh]" : "aspect-video",
-            isFullscreen && "max-h-none"
+            isFullscreen && "max-h-none h-screen w-screen fixed top-0 left-0 z-50"
           )}
           onMouseMove={handlePlayerMouseMove}
           onMouseLeave={() => setShowControls(false)}
         >
-          <img
-            src={channel.thumbnail}
-            alt={channel.title}
-            className="w-full h-full object-cover"
-          />
+          {channel.streamUrl ? (
+            <ReactPlayer
+              url={channel.streamUrl}
+              width="100%"
+              height="100%"
+              playing={isPlaying}
+              muted={isMuted}
+              volume={volume}
+              controls={false} // We are using custom controls
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              style={{ position: 'absolute', top: 0, left: 0 }}
+            />
+          ) : (
+            <img
+              src={channel.thumbnail}
+              alt={channel.title}
+              className="w-full h-full object-cover opacity-50"
+            />
+          )}
+
+          {/* Error/Offline State or Placeholder if no streamUrl */}
+          {!channel.streamUrl && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <p className="text-white font-bold text-xl">Stream Offline</p>
+            </div>
+          )}
 
           {/* Live badge */}
-          <div className="absolute top-3 left-3 flex items-center gap-2">
+          <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none z-10">
             <span className="px-2 py-0.5 bg-destructive text-destructive-foreground text-xs font-bold uppercase rounded">
               Live
             </span>
@@ -190,35 +239,48 @@ export const StreamPage: React.FC = () => {
           {/* Player Controls Overlay */}
           <div
             className={cn(
-              "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-3 transition-opacity duration-300",
-              showControls || isFullscreen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent px-4 py-3 transition-opacity duration-300 z-20",
+              showControls || isFullscreen || !isPlaying ? "opacity-100" : "opacity-0"
             )}
           >
+            {/* Play/Pause for overlay click (optional, usually clicking video toggles play) */}
+
             {/* Volume bar (thin line) */}
-            <div className="w-full h-0.5 bg-white/20 rounded-full mb-3 cursor-pointer">
+            {/* <div className="w-full h-0.5 bg-white/20 rounded-full mb-3 cursor-pointer">
               <div className="h-full bg-primary rounded-full" style={{ width: "42%" }} />
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-between">
               {/* Left controls */}
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setIsMuted(!isMuted)}
+                  onClick={() => setIsPlaying(!isPlaying)}
                   className="text-white hover:text-primary transition-colors"
                 >
-                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                  {isPlaying ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pause w-5 h-5"><rect width="4" height="16" x="6" y="4" /><rect width="4" height="16" x="14" y="4" /></svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play w-5 h-5"><polygon points="6 3 20 12 6 21 6 3" /></svg>
+                  )}
                 </button>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={isMuted ? 0 : volume}
-                  onChange={(e) => {
-                    setVolume(Number(e.target.value));
-                    if (isMuted) setIsMuted(false);
-                  }}
-                  className="w-20 h-1 accent-primary cursor-pointer"
-                />
+
+                <div className="flex items-center gap-2 group/volume">
+                  <button
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="text-white hover:text-primary transition-colors"
+                  >
+                    {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                  </button>
+                  <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    className="w-0 overflow-hidden group-hover/volume:w-20 transition-all duration-300 h-1 accent-primary cursor-pointer bg-white/20 rounded-lg appearance-none"
+                  />
+                </div>
               </div>
 
               {/* Right controls */}

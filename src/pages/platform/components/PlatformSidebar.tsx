@@ -56,42 +56,34 @@ export const PlatformSidebar: React.FC = () => {
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-1">
-        {recommendedChannels.map((ch) => (
-          <Link
-            key={ch.id}
-            to={`/platform/stream/${ch.username}`}
-            title={collapsed ? ch.displayName : undefined}
-            className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-muted transition-colors group"
-          >
-            <div className="relative shrink-0">
-              <img
-                src={ch.avatar}
-                alt={ch.displayName}
-                className="w-7 h-7 rounded-full bg-muted"
-              />
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-destructive border-2 border-background" />
-            </div>
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-1 pb-4">
+        {/* YouTube Section */}
+        {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'youtube').length > 0 && (
+          <div className="mb-4">
             {!collapsed && (
-              <>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-foreground truncate leading-tight font-medium">
-                    {ch.displayName}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground truncate leading-tight">
-                    {ch.category}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-                  <span className="text-[11px] text-muted-foreground">
-                    {formatViewerCount(ch.viewers)}
-                  </span>
-                </div>
-              </>
+              <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 mt-2">
+                YouTube
+              </p>
             )}
-          </Link>
-        ))}
+            {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'youtube').map((ch) => (
+              <ChannelLink key={`yt-${ch.id}`} ch={ch} collapsed={collapsed} />
+            ))}
+          </div>
+        )}
+
+        {/* Twitch Section */}
+        {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'twitch').length > 0 && (
+          <div className="mb-4">
+            {!collapsed && (
+              <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 mt-2">
+                Twitch
+              </p>
+            )}
+            {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'twitch').map((ch) => (
+              <ChannelLink key={`tw-${ch.id}`} ch={ch} collapsed={collapsed} />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Collapse toggle */}
@@ -104,3 +96,38 @@ export const PlatformSidebar: React.FC = () => {
     </aside>
   );
 };
+
+const ChannelLink = ({ ch, collapsed }: { ch: typeof MOCK_CHANNELS[0], collapsed: boolean }) => (
+  <Link
+    to={`/platform/stream/${ch.username}`}
+    title={collapsed ? ch.displayName : undefined}
+    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-muted transition-colors group"
+  >
+    <div className="relative shrink-0">
+      <img
+        src={ch.avatar}
+        alt={ch.displayName}
+        className="w-7 h-7 rounded-full bg-muted"
+      />
+      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-destructive border-2 border-background" />
+    </div>
+    {!collapsed && (
+      <>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-foreground truncate leading-tight font-medium">
+            {ch.displayName}
+          </p>
+          <p className="text-[11px] text-muted-foreground truncate leading-tight">
+            {ch.category}
+          </p>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
+          <span className="text-[11px] text-muted-foreground">
+            {formatViewerCount(ch.viewers)}
+          </span>
+        </div>
+      </>
+    )}
+  </Link>
+);
