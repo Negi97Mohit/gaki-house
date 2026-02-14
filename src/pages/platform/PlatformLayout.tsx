@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { PlatformTopNav } from "./components/PlatformTopNav";
 import { PlatformSidebar } from "./components/PlatformSidebar";
+import { PlatformMobileNav } from "./components/PlatformMobileNav";
 
 export const PlatformLayout: React.FC = () => {
   return (
@@ -9,10 +10,11 @@ export const PlatformLayout: React.FC = () => {
       <PlatformTopNav />
       <div className="flex flex-1 overflow-hidden">
         <PlatformSidebar />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pb-14 md:pb-0">
           <Outlet />
         </main>
       </div>
+      <PlatformMobileNav />
     </div>
   );
 };
