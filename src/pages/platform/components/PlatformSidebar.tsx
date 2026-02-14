@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings } from "lucide-react";
+import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings, Film } from "lucide-react";
 import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
 import { cn } from "@/shared/lib/utils";
 
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: "Home", icon: Home, path: "/platform" },
   { label: "Browse", icon: Compass, path: "/platform/browse" },
   { label: "Following", icon: Heart, path: "/platform/following" },
+  { label: "Clips", icon: Film, path: "/platform/clips" },
   { label: "Settings", icon: Settings, path: "/platform/settings" },
 ];
 
