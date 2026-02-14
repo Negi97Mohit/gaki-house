@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings, Film } from "lucide-react";
-import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
+import { MOCK_CHANNELS, formatViewerCount, PLATFORM_META, PlatformType } from "../data/mockData";
+import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { cn } from "@/shared/lib/utils";
 
 const NAV_ITEMS = [
@@ -15,7 +16,18 @@ const NAV_ITEMS = [
 export const PlatformSidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  const recommendedChannels = MOCK_CHANNELS.filter((c) => c.isLive).slice(0, 8);
+
+  // Dynamically group live channels by platform
+  const liveChannels = MOCK_CHANNELS.filter((c) => c.isLive && c.platform);
+  const platformGroups = liveChannels.reduce<Record<PlatformType, typeof MOCK_CHANNELS>>((acc, ch) => {
+    const p = ch.platform!;
+    if (!acc[p]) acc[p] = [];
+    acc[p].push(ch);
+    return acc;
+  }, {} as Record<PlatformType, typeof MOCK_CHANNELS>);
+
+  // Order: youtube, twitch, kick, rumble, facebook, x
+  const platformOrder: PlatformType[] = ["youtube", "twitch", "kick", "rumble", "facebook", "x"];
 
   return (
     <aside
@@ -57,33 +69,30 @@ export const PlatformSidebar: React.FC = () => {
       )}
 
       <div className="flex-1 overflow-y-auto scrollbar-thin px-1 pb-4">
-        {/* YouTube Section */}
-        {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'youtube').length > 0 && (
-          <div className="mb-4">
-            {!collapsed && (
-              <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 mt-2">
-                YouTube
-              </p>
-            )}
-            {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'youtube').map((ch) => (
-              <ChannelLink key={`yt-${ch.id}`} ch={ch} collapsed={collapsed} />
-            ))}
-          </div>
-        )}
-
-        {/* Twitch Section */}
-        {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'twitch').length > 0 && (
-          <div className="mb-4">
-            {!collapsed && (
-              <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 mt-2">
-                Twitch
-              </p>
-            )}
-            {MOCK_CHANNELS.filter(c => c.isLive && c.platform === 'twitch').map((ch) => (
-              <ChannelLink key={`tw-${ch.id}`} ch={ch} collapsed={collapsed} />
-            ))}
-          </div>
-        )}
+        {platformOrder.map((platform) => {
+          const channels = platformGroups[platform];
+          if (!channels || channels.length === 0) return null;
+          const meta = PLATFORM_META[platform];
+          const PIcon = getPlatformIcon(platform);
+          return (
+            <div key={platform} className="mb-3">
+              {!collapsed && (
+                <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 mt-2 flex items-center gap-1.5">
+                  <span
+                    className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-sm leading-none"
+                    style={{ color: meta.color }}
+                  >
+                    <PIcon className="w-3.5 h-3.5" style={{ color: meta.color }} />
+                  </span>
+                  {meta.label}
+                </p>
+              )}
+              {channels.slice(0, 5).map((ch) => (
+                <ChannelLink key={`${platform}-${ch.id}`} ch={ch} collapsed={collapsed} />
+              ))}
+            </div>
+          );
+        })}
       </div>
 
       {/* Collapse toggle */}

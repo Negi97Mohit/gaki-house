@@ -5,7 +5,8 @@ import {
   Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
   Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X
 } from "lucide-react";
-import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
+import { MOCK_CHANNELS, formatViewerCount, PLATFORM_META } from "../data/mockData";
+import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import { db } from "@/lib/firebase";
@@ -354,6 +355,19 @@ export const StreamPage: React.FC = () => {
                   {channel.displayName}
                 </Link>
                 {channel.isVerified && <CheckCircle className="w-4 h-4 text-primary" />}
+                {channel.platform && (() => {
+                  const meta = PLATFORM_META[channel.platform];
+                  const PIcon = getPlatformIcon(channel.platform);
+                  return (
+                    <span
+                      className="px-1.5 py-0.5 text-[10px] font-bold rounded flex items-center gap-1"
+                      style={{ backgroundColor: meta.color, color: meta.textColor }}
+                    >
+                      <PIcon className="w-3 h-3" style={{ color: meta.textColor }} />
+                      {meta.label}
+                    </span>
+                  );
+                })()}
               </div>
               <p className="text-sm text-foreground font-medium mt-0.5">{channel.title}</p>
               <Link
