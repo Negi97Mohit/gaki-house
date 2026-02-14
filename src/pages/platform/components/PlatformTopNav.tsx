@@ -15,10 +15,10 @@ export const PlatformTopNav: React.FC = () => {
 
   const matchedChannels = trimmed
     ? MOCK_CHANNELS.filter(
-        (c) =>
-          c.displayName.toLowerCase().includes(trimmed) ||
-          c.username.toLowerCase().includes(trimmed)
-      ).slice(0, 5)
+      (c) =>
+        c.displayName.toLowerCase().includes(trimmed) ||
+        c.username.toLowerCase().includes(trimmed)
+    ).slice(0, 5)
     : [];
 
   const matchedCategories = trimmed
@@ -58,9 +58,9 @@ export const PlatformTopNav: React.FC = () => {
       {/* Left: Logo */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(-1)}
           className="text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
-          title="Back to Studio"
+          title="Go Back"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
@@ -151,7 +151,7 @@ export const PlatformTopNav: React.FC = () => {
 
             {/* Search all link */}
             <button
-              onClick={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
+              onClick={() => handleSubmit({ preventDefault: () => { } } as React.FormEvent)}
               className="w-full px-4 py-2.5 text-sm text-primary font-medium hover:bg-muted transition-colors border-t border-border/20 text-left"
             >
               Search for "{query}"
