@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import { User, Bell, Palette, Shield, Save } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { User, Bell, Palette, Shield, Save, Loader2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const TABS = [
   { id: "profile", label: "Profile", icon: User },
@@ -12,14 +15,51 @@ const TABS = [
 type TabId = (typeof TABS)[number]["id"];
 
 export const SettingsPage: React.FC = () => {
+  const { user, profile, openAuthModal, refreshProfile } = useAuth();
   const [activeTab, setActiveTab] = useState<TabId>("profile");
-  const [displayName, setDisplayName] = useState("Your Display Name");
+  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(profile.display_name || "");
+      setUsername(profile.username || "");
+      setBio(profile.bio || "");
+    }
+  }, [profile]);
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
+        <User className="w-12 h-12 text-muted-foreground" />
+        <h2 className="text-xl font-bold text-foreground">Settings</h2>
+        <p className="text-muted-foreground text-sm">Sign in to manage your settings.</p>
+        <button
+          onClick={() => openAuthModal("login")}
+          className="px-6 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity"
+        >
+          Sign In
+        </button>
+      </div>
+    );
+  }
+
+  const handleSave = async () => {
+    setSaving(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ display_name: displayName, username, bio })
+      .eq("id", user.id);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Profile saved!");
+      await refreshProfile();
+    }
+    setSaving(false);
   };
 
   return (
@@ -73,8 +113,12 @@ export const SettingsPage: React.FC = () => {
 
             {/* Avatar */}
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
-                <User className="w-8 h-8 text-muted-foreground" />
+              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-8 h-8 text-muted-foreground" />
+                )}
               </div>
               <div>
                 <button className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:opacity-90 transition-opacity">
@@ -95,6 +139,17 @@ export const SettingsPage: React.FC = () => {
               />
             </div>
 
+            {/* Username */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                className="w-full bg-muted border border-border/40 rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50"
+              />
+            </div>
+
             {/* Bio */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">Bio</label>
@@ -102,6 +157,7 @@ export const SettingsPage: React.FC = () => {
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 rows={4}
+                maxLength={300}
                 placeholder="Tell viewers about yourself..."
                 className="w-full bg-muted border border-border/40 rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 resize-none"
               />
@@ -110,10 +166,11 @@ export const SettingsPage: React.FC = () => {
 
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity"
+              disabled={saving}
+              className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity disabled:opacity-50"
             >
-              <Save className="w-4 h-4" />
-              {saved ? "Saved!" : "Save Changes"}
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         )}

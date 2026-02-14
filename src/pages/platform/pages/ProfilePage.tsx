@@ -1,21 +1,34 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Settings, Calendar, Users } from "lucide-react";
 import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
 import { StreamCard } from "../components/StreamCard";
+import { useAuth } from "../context/AuthContext";
 
 export const ProfilePage: React.FC = () => {
   const { username } = useParams();
-  const channel = username === "me" ? null : MOCK_CHANNELS.find((c) => c.username === username);
+  const { user, profile: authProfile } = useAuth();
 
-  const profile = channel || {
-    displayName: "Your Profile",
-    username: "me",
-    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=me",
-    bio: "Welcome to your channel! Start streaming to build your community.",
-    followers: 0,
-    isLive: false,
-  };
+  const isSelf = username === "me" || (user && authProfile?.username === username);
+  const channel = !isSelf ? MOCK_CHANNELS.find((c) => c.username === username) : null;
+
+  const profile = isSelf && authProfile
+    ? {
+        displayName: authProfile.display_name || "Your Profile",
+        username: authProfile.username || "me",
+        avatar: authProfile.avatar_url || "https://api.dicebear.com/9.x/adventurer/svg?seed=me",
+        bio: authProfile.bio || "Welcome to your channel! Start streaming to build your community.",
+        followers: 0,
+        isLive: false,
+      }
+    : channel || {
+        displayName: "Your Profile",
+        username: "me",
+        avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=me",
+        bio: "Welcome to your channel! Start streaming to build your community.",
+        followers: 0,
+        isLive: false,
+      };
 
   const pastStreams = MOCK_CHANNELS.slice(0, 4);
 
@@ -39,11 +52,14 @@ export const ProfilePage: React.FC = () => {
             <h1 className="text-2xl font-bold text-foreground">{profile.displayName}</h1>
             <p className="text-muted-foreground text-sm">@{profile.username}</p>
           </div>
-          {username === "me" && (
-            <button className="px-4 py-2 bg-muted text-foreground text-sm font-medium rounded-md hover:bg-muted/80 transition-colors flex items-center gap-2">
+          {isSelf && (
+            <Link
+              to="/platform/settings"
+              className="px-4 py-2 bg-muted text-foreground text-sm font-medium rounded-md hover:bg-muted/80 transition-colors flex items-center gap-2"
+            >
               <Settings className="w-4 h-4" />
               Edit Profile
-            </button>
+            </Link>
           )}
         </div>
         {profile.bio && (

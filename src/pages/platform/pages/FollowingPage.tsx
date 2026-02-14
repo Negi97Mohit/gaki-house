@@ -1,8 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "../context/AuthContext";
 import { MOCK_CHANNELS } from "../data/mockData";
 import { StreamCard } from "../components/StreamCard";
+import { Heart } from "lucide-react";
 
 export const FollowingPage: React.FC = () => {
+  const { user, openAuthModal } = useAuth();
+  const [followedIds, setFollowedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("follows")
+      .select("following_id")
+      .eq("follower_id", user.id)
+      .then(({ data }) => {
+        if (data) setFollowedIds(data.map((f) => f.following_id));
+      });
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
+        <Heart className="w-12 h-12 text-muted-foreground" />
+        <h2 className="text-xl font-bold text-foreground">Follow your favorites</h2>
+        <p className="text-muted-foreground text-sm text-center max-w-sm">
+          Sign in to follow channels and see when they go live.
+        </p>
+        <button
+          onClick={() => openAuthModal("login")}
+          className="px-6 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity"
+        >
+          Sign In
+        </button>
+      </div>
+    );
+  }
+
+  // For now show mock channels as followed (real follow data will link to real profiles later)
   const followedChannels = MOCK_CHANNELS.slice(0, 6);
 
   return (
