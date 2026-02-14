@@ -15,8 +15,15 @@ import { useUiStore } from "@/stores/ui.store";
 const Index = lazy(() => import("./pages/Index"));
 
 const RemoteCamera = lazy(() => import("./pages/RemoteCamera"));
-const SecondaryPage = lazy(() => import("./pages/SecondaryPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Platform pages
+const PlatformLayout = lazy(() => import("./pages/platform/PlatformLayout").then(m => ({ default: m.PlatformLayout })));
+const PlatformHome = lazy(() => import("./pages/platform/pages/HomePage").then(m => ({ default: m.HomePage })));
+const PlatformBrowse = lazy(() => import("./pages/platform/pages/BrowsePage").then(m => ({ default: m.BrowsePage })));
+const PlatformStream = lazy(() => import("./pages/platform/pages/StreamPage").then(m => ({ default: m.StreamPage })));
+const PlatformProfile = lazy(() => import("./pages/platform/pages/ProfilePage").then(m => ({ default: m.ProfilePage })));
+const PlatformFollowing = lazy(() => import("./pages/platform/pages/FollowingPage").then(m => ({ default: m.FollowingPage })));
 
 const queryClient = new QueryClient();
 
@@ -105,7 +112,14 @@ const App = () => {
                 <Suspense fallback={<Loader visible={true} />}>
                   <Routes>
                     <Route path="/" element={<Index />} />
-                    <Route path="/secondary" element={<SecondaryPage />} />
+                    <Route path="/platform" element={<PlatformLayout />}>
+                      <Route index element={<PlatformHome />} />
+                      <Route path="browse" element={<PlatformBrowse />} />
+                      <Route path="browse/:category" element={<PlatformBrowse />} />
+                      <Route path="stream/:username" element={<PlatformStream />} />
+                      <Route path="profile/:username" element={<PlatformProfile />} />
+                      <Route path="following" element={<PlatformFollowing />} />
+                    </Route>
                     <Route path="/remote-cam" element={<RemoteCamera />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
