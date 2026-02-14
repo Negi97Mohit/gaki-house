@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings, Film } from "lucide-react";
-import { MOCK_CHANNELS, formatViewerCount, PLATFORM_META, PlatformType } from "../data/mockData";
+import { MOCK_CHANNELS, formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { cn } from "@/shared/lib/utils";
 
@@ -13,27 +13,32 @@ const NAV_ITEMS = [
   { label: "Settings", icon: Settings, path: "/platform/settings" },
 ];
 
+// All platform IDs grouped by category
+const PLATFORM_GROUPS: { key: string; platforms: PlatformType[] }[] = [
+  { key: "major", platforms: ["youtube", "twitch", "facebook", "tiktok", "instagram", "x", "linkedin"] },
+  { key: "gaming", platforms: ["kick", "rumble", "dlive", "trovo", "bilibili", "nimotv"] },
+  { key: "professional", platforms: ["vimeo", "vk", "mixcloud", "brightcove", "jwplayer", "kaltura", "ibm", "wowza", "mux", "aws"] },
+  { key: "selfhosted", platforms: ["owncast", "peertube", "nginx", "wowzaserver", "antmedia", "red5", "mediasoup"] },
+];
+
 export const PlatformSidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
-  // Dynamically group live channels by platform
+  // Group live channels by platform
   const liveChannels = MOCK_CHANNELS.filter((c) => c.isLive && c.platform);
-  const platformGroups = liveChannels.reduce<Record<PlatformType, typeof MOCK_CHANNELS>>((acc, ch) => {
+  const channelsByPlatform = liveChannels.reduce<Record<string, typeof MOCK_CHANNELS>>((acc, ch) => {
     const p = ch.platform!;
     if (!acc[p]) acc[p] = [];
     acc[p].push(ch);
     return acc;
-  }, {} as Record<PlatformType, typeof MOCK_CHANNELS>);
-
-  // Order: youtube, twitch, kick, rumble, facebook, x
-  const platformOrder: PlatformType[] = ["youtube", "twitch", "kick", "rumble", "facebook", "x"];
+  }, {});
 
   return (
     <aside
       className={cn(
         "h-full bg-background border-r border-border/30 flex-col transition-all duration-200 shrink-0 hidden md:flex",
-        collapsed ? "w-[52px]" : "w-[220px]"
+        collapsed ? "w-[52px]" : "w-[230px]"
       )}
     >
       {/* Nav Links */}
@@ -59,37 +64,49 @@ export const PlatformSidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* Recommended */}
-      {!collapsed && (
-        <div className="mt-2 px-3">
-          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">
-            Recommended
-          </p>
-        </div>
-      )}
-
+      {/* Channel list by platform group */}
       <div className="flex-1 overflow-y-auto scrollbar-thin px-1 pb-4">
-        {platformOrder.map((platform) => {
-          const channels = platformGroups[platform];
-          if (!channels || channels.length === 0) return null;
-          const meta = PLATFORM_META[platform];
-          const PIcon = getPlatformIcon(platform);
+        {PLATFORM_GROUPS.map((group) => {
+          // Only show group if it has live channels on at least one platform
+          const groupHasChannels = group.platforms.some((p) => channelsByPlatform[p]?.length);
+          if (!groupHasChannels) return null;
+
           return (
-            <div key={platform} className="mb-3">
+            <div key={group.key} className="mb-2">
               {!collapsed && (
-                <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1 mt-2 flex items-center gap-1.5">
-                  <span
-                    className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-sm leading-none"
-                    style={{ color: meta.color }}
-                  >
-                    <PIcon className="w-3.5 h-3.5" style={{ color: meta.color }} />
-                  </span>
-                  {meta.label}
+                <p className="px-2 text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold mt-3 mb-1">
+                  {PLATFORM_CATEGORY_LABELS[group.key]}
                 </p>
               )}
-              {channels.slice(0, 5).map((ch) => (
-                <ChannelLink key={`${platform}-${ch.id}`} ch={ch} collapsed={collapsed} />
-              ))}
+
+              {group.platforms.map((platform) => {
+                const channels = channelsByPlatform[platform];
+                if (!channels || channels.length === 0) return null;
+                const meta = PLATFORM_META[platform];
+                const PIcon = getPlatformIcon(platform);
+                return (
+                  <div key={platform} className="mb-1.5">
+                    {!collapsed && (
+                      <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-0.5 mt-1.5 flex items-center gap-1.5">
+                        <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-sm leading-none" style={{ color: meta.color }}>
+                          <PIcon className="w-3.5 h-3.5" style={{ color: meta.color }} />
+                        </span>
+                        {meta.label}
+                      </p>
+                    )}
+                    {collapsed && (
+                      <div className="flex justify-center my-1" title={meta.label}>
+                        <span className="inline-flex items-center justify-center w-5 h-5 rounded" style={{ color: meta.color }}>
+                          <PIcon className="w-4 h-4" style={{ color: meta.color }} />
+                        </span>
+                      </div>
+                    )}
+                    {channels.slice(0, 3).map((ch) => (
+                      <ChannelLink key={`${platform}-${ch.id}`} ch={ch} collapsed={collapsed} />
+                    ))}
+                  </div>
+                );
+              })}
             </div>
           );
         })}
