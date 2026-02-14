@@ -18,7 +18,7 @@ export const PlatformSidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "h-full bg-[#0e0e10] border-r border-white/5 flex flex-col transition-all duration-200 shrink-0",
+        "h-full bg-background border-r border-border/30 flex flex-col transition-all duration-200 shrink-0",
         collapsed ? "w-[52px]" : "w-[220px]"
       )}
     >
@@ -33,8 +33,8 @@ export const PlatformSidebar: React.FC = () => {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
                 active
-                  ? "bg-[#53fc18]/10 text-[#53fc18]"
-                  : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               <item.icon className="w-5 h-5 shrink-0" />
@@ -47,7 +47,7 @@ export const PlatformSidebar: React.FC = () => {
       {/* Recommended */}
       {!collapsed && (
         <div className="mt-2 px-3">
-          <p className="text-[11px] uppercase tracking-wider text-zinc-500 font-semibold mb-2">
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">
             Recommended
           </p>
         </div>
@@ -58,29 +58,29 @@ export const PlatformSidebar: React.FC = () => {
           <Link
             key={ch.id}
             to={`/platform/stream/${ch.username}`}
-            className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-white/5 transition-colors group"
+            className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-muted transition-colors group"
           >
             <div className="relative shrink-0">
               <img
                 src={ch.avatar}
                 alt={ch.displayName}
-                className="w-7 h-7 rounded-full bg-zinc-800"
+                className="w-7 h-7 rounded-full bg-muted"
               />
-              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-red-500 border-2 border-[#0e0e10]" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-destructive border-2 border-background" />
             </div>
             {!collapsed && (
               <>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-zinc-200 truncate leading-tight font-medium">
+                  <p className="text-sm text-foreground truncate leading-tight font-medium">
                     {ch.displayName}
                   </p>
-                  <p className="text-[11px] text-zinc-500 truncate leading-tight">
+                  <p className="text-[11px] text-muted-foreground truncate leading-tight">
                     {ch.category}
                   </p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                  <span className="text-[11px] text-zinc-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
+                  <span className="text-[11px] text-muted-foreground">
                     {formatViewerCount(ch.viewers)}
                   </span>
                 </div>
@@ -93,7 +93,7 @@ export const PlatformSidebar: React.FC = () => {
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="p-2 m-2 rounded-md hover:bg-white/5 text-zinc-500 hover:text-zinc-300 transition-colors self-end"
+        className="p-2 m-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors self-end"
       >
         {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
       </button>

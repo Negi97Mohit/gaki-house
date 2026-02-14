@@ -12,7 +12,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
       to={`/platform/browse/${category.slug}`}
       className="group block"
     >
-      <div className="aspect-[3/4] rounded-lg overflow-hidden bg-zinc-900 mb-2 relative">
+      <div className="aspect-[3/4] rounded-lg overflow-hidden bg-muted mb-2 relative">
         <img
           src={category.thumbnail}
           alt={category.name}
@@ -21,15 +21,15 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
-      <p className="text-sm text-white font-semibold truncate">{category.name}</p>
-      <p className="text-[12px] text-zinc-400">
+      <p className="text-sm text-foreground font-semibold truncate">{category.name}</p>
+      <p className="text-[12px] text-muted-foreground">
         {formatViewerCount(category.viewers)} watching
       </p>
       <div className="flex gap-1 mt-1 flex-wrap">
         {category.tags.map((tag) => (
           <span
             key={tag}
-            className="px-1.5 py-0.5 bg-zinc-800 text-zinc-400 text-[10px] rounded font-medium"
+            className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] rounded font-medium"
           >
             {tag}
           </span>

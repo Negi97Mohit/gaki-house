@@ -5,7 +5,7 @@ import { PlatformSidebar } from "./components/PlatformSidebar";
 
 export const PlatformLayout: React.FC = () => {
   return (
-    <div className="h-screen w-full flex flex-col bg-[#0e0e10] text-white overflow-hidden">
+    <div className="h-screen w-full flex flex-col bg-background text-foreground overflow-hidden">
       <PlatformTopNav />
       <div className="flex flex-1 overflow-hidden">
         <PlatformSidebar />
