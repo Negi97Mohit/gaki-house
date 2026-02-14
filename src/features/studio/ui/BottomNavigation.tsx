@@ -160,7 +160,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               variant="ghost"
               size="icon"
               className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
-              onClick={() => navigate("/secondary")}
+              onClick={() => navigate("/platform")}
               data-floating-trigger
             >
               <Home className="w-3.5 h-3.5" />
