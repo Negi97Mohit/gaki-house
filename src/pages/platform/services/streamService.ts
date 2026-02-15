@@ -33,18 +33,12 @@ export async function fetchAllStreams(): Promise<StreamChannel[]> {
     if (twitchStreams.length > 0) apiPlatforms.add("twitch");
     if (kickStreams.length > 0) apiPlatforms.add("kick");
 
-    // Keep mock data for unsupported platforms/failed APIs
-    // NOTE: If Kick API returns 0 streams (e.g. proxy blocked), we fall back to mock data
-    const mockFallback = MOCK_CHANNELS.filter(
-        (ch) => !ch.platform || !apiPlatforms.has(ch.platform)
-    );
-
-    // Merge: API data first (sorted by viewers desc), then mock fallback
+    // Merge: API data first (sorted by viewers desc)
     const apiStreams = [...youtubeStreams, ...twitchStreams, ...kickStreams].sort(
         (a, b) => b.viewers - a.viewers
     );
 
-    return [...apiStreams, ...mockFallback];
+    return apiStreams;
 }
 
 /**

@@ -29,7 +29,7 @@ export function useFeaturedStream() {
     const { data: streams, ...rest } = useStreams();
     const featured = streams && streams.length > 0
         ? streams.reduce((max, ch) => (ch.viewers > max.viewers ? ch : max), streams[0])
-        : MOCK_CHANNELS[0];
+        : null;
 
     return { data: featured, ...rest };
 }

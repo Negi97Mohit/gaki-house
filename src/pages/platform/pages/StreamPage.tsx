@@ -13,28 +13,13 @@ import { useAuth } from "../context/AuthContext";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 import { toast } from "sonner";
+import { StreamChatEmbed } from "../components/StreamChatEmbed";
 
-import { EmotePicker } from "../components/EmotePicker";
-import { ChatBadge, BadgeType } from "../components/ChatBadge";
+// Removed ChatMessage interface
 
-interface ChatMessage {
-  id: string;
-  user: string;
-  color: string;
-  message: string;
-  badges?: BadgeType[];
-}
 
-const MOCK_CHAT: ChatMessage[] = [
-  { id: "1", user: "NightOwl", color: "hsl(48 96% 53%)", message: "lets gooo 🔥", badges: ["sub"] },
-  { id: "2", user: "PixelQueen", color: "#ff6bda", message: "that play was insane", badges: ["mod"] },
-  { id: "3", user: "ShadowMC", color: "#5babff", message: "GG WP" },
-  { id: "4", user: "DragonSlayer", color: "#ffb84d", message: "clutch!!", badges: ["vip"] },
-  { id: "5", user: "CosmicDust", color: "#c084fc", message: "how does he do that every time", badges: ["sub"] },
-  { id: "6", user: "NeonViper", color: "hsl(48 96% 53%)", message: "W stream" },
-  { id: "7", user: "IcyBlaze", color: "#67e8f9", message: "KEKW", badges: ["sub"] },
-  { id: "8", user: "ThunderBolt", color: "#fbbf24", message: "POG", badges: ["verified"] },
-];
+// Removed MOCK_CHAT
+
 
 const QUALITY_OPTIONS = ["1080p60", "720p60", "480p", "360p", "160p (Audio Only)"];
 
@@ -44,25 +29,23 @@ export const StreamPage: React.FC = () => {
   const { data: allStreams = [] } = useStreams();
   const channel = allStreams.find((c) => c.username === username) || allStreams[0];
 
-  // Dynamic chat based on channel
-  const [messages, setMessages] = useState(() => {
-    return MOCK_CHAT.map(msg => ({
-      ...msg,
-      id: Math.random().toString(36).substr(2, 9),
-      message: `${msg.message} (${channel.displayName} hype!)` // Simple variation
-    }));
-  });
+  if (!channel) {
+    return (
+      <div className="flex items-center justify-center h-full text-foreground">
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-2">Stream Not Found</h2>
+          <p className="text-muted-foreground">The requested channel could not be found or is offline.</p>
+          <Link to="/platform/browse" className="mt-4 inline-block px-4 py-2 bg-primary text-primary-foreground rounded hover:opacity-90">
+            Browse Channels
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-  // Reset messages when channel changes
-  useEffect(() => {
-    setMessages(MOCK_CHAT.map(msg => ({
-      ...msg,
-      id: Math.random().toString(36).substr(2, 9),
-      message: `${msg.message}`
-    })));
-  }, [channel.id]); // Only depend on channel.id to avoid unnecessary updates
+  // Removed mock chat logic
 
-  const [chatInput, setChatInput] = useState("");
+
   const [isFollowing, setIsFollowing] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<HTMLDivElement>(null); // Ref for container
@@ -141,19 +124,8 @@ export const StreamPage: React.FC = () => {
     }
   };
 
-  const handleSend = () => {
-    if (!chatInput.trim()) return;
-    if (!user) {
-      openAuthModal("login");
-      return;
-    }
-    const chatName = profile?.display_name || user.email?.split("@")[0] || "You";
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now().toString(), user: chatName, color: "hsl(48 96% 53%)", message: chatInput.trim() },
-    ]);
-    setChatInput("");
-  };
+  // Removed handleSend
+
 
   const toggleFullscreen = useCallback(() => {
     if (!playerRef.current) return;
@@ -218,7 +190,7 @@ export const StreamPage: React.FC = () => {
           )}
 
           {/* Error/Offline State or Placeholder if no streamUrl */}
-          {!channel.streamUrl && (
+          {(!channel.streamUrl && channel.username) && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <p className="text-white font-bold text-xl">Stream Offline</p>
             </div>
@@ -432,13 +404,13 @@ export const StreamPage: React.FC = () => {
         "w-[340px] border-l border-border/30 flex flex-col bg-card shrink-0 hidden lg:flex",
         isTheater && "flex-1"
       )}>
-        <ChatPanel
-          messages={messages}
-          chatInput={chatInput}
-          setChatInput={setChatInput}
-          onSend={handleSend}
-          chatEndRef={chatEndRef}
-        />
+        {channel && (
+          <StreamChatEmbed
+            platform={channel.platform || "twitch"}
+            channelId={channel.id.replace("yt-live-", "")} // Simplified ID extraction
+            username={channel.username.replace("tw-", "").replace("kick-", "")} // Simplified username extraction if needed
+          />
+        )}
       </div>
 
       {/* Chat Panel - Mobile Overlay */}
@@ -450,64 +422,19 @@ export const StreamPage: React.FC = () => {
               <X className="w-5 h-5" />
             </button>
           </div>
-          <ChatPanel
-            messages={messages}
-            chatInput={chatInput}
-            setChatInput={setChatInput}
-            onSend={handleSend}
-            chatEndRef={chatEndRef}
-          />
+          {channel && (
+            <StreamChatEmbed
+              platform={channel.platform || "twitch"}
+              channelId={channel.id.replace("yt-live-", "")}
+              username={channel.username.replace("tw-", "").replace("kick-", "")}
+              className="flex-1"
+            />
+          )}
         </div>
       )}
     </div>
   );
 };
 
-const ChatPanel: React.FC<{
-  messages: ChatMessage[];
-  chatInput: string;
-  setChatInput: (v: string) => void;
-  onSend: () => void;
-  chatEndRef: React.RefObject<HTMLDivElement>;
-}> = ({ messages, chatInput, setChatInput, onSend, chatEndRef }) => (
-  <>
-    <div className="px-4 py-3 border-b border-border/30">
-      <p className="text-sm font-semibold text-foreground">Stream Chat</p>
-    </div>
-    <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 scrollbar-thin">
-      {messages.map((msg) => (
-        <div key={msg.id} className="text-sm leading-relaxed flex items-start gap-1">
-          {msg.badges?.map((badge) => (
-            <ChatBadge key={badge} type={badge} className="mt-0.5" />
-          ))}
-          <span>
-            <span className="font-semibold" style={{ color: msg.color }}>
-              {msg.user}
-            </span>
-            <span className="text-foreground/80">: {msg.message}</span>
-          </span>
-        </div>
-      ))}
-      <div ref={chatEndRef} />
-    </div>
-    <div className="p-3 border-t border-border/30">
-      <div className="flex items-center gap-1">
-        <EmotePicker onSelect={(emote) => setChatInput(chatInput + emote)} />
-        <input
-          type="text"
-          value={chatInput}
-          onChange={(e) => setChatInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && onSend()}
-          placeholder="Send a message..."
-          className="flex-1 bg-background border border-border/40 rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
-        />
-        <button
-          onClick={onSend}
-          className="px-3 py-2 bg-primary text-primary-foreground rounded-md hover:opacity-90 transition-opacity"
-        >
-          <Send className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  </>
-);
+// Removed ChatPanel component definition
+

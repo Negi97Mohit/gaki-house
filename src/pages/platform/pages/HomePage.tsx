@@ -29,15 +29,16 @@ export const HomePage: React.FC = () => {
     channelsByPlatform[p].push(ch);
   });
 
-  const featuredPlatformInfo = featured.platform ? PLATFORM_META[featured.platform] : null;
-  const FeaturedPlatformIcon = featured.platform ? getPlatformIcon(featured.platform) : null;
+  const featuredPlatformInfo = featured?.platform ? PLATFORM_META[featured.platform] : null;
+  const FeaturedPlatformIcon = featured?.platform ? getPlatformIcon(featured.platform) : null;
 
   return (
     <div className="pb-12">
       {/* Hero / Featured Stream */}
+      {/* Hero / Featured Stream */}
       {loading ? (
         <div className="w-full aspect-[21/9] max-h-[400px] bg-muted animate-pulse" />
-      ) : (
+      ) : featured ? (
         <Link
           to={`/platform/stream/${featured.username}`}
           className="block relative w-full aspect-[21/9] max-h-[400px] overflow-hidden group"
@@ -83,6 +84,10 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
         </Link>
+      ) : (
+        <div className="w-full aspect-[21/9] max-h-[400px] bg-muted flex items-center justify-center">
+          <p className="text-muted-foreground">No featured streams available right now.</p>
+        </div>
       )}
 
       {/* Top Categories */}
