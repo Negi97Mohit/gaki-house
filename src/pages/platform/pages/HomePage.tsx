@@ -111,44 +111,74 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Live Across Platforms — grouped by category */}
-      {PLATFORM_GROUPS.map((group) => {
+      {/* Platform-Specific Live Sections */}
+      {[
+        { id: "twitch", label: "Twitch Live", color: "#9146FF" },
+        { id: "youtube", label: "YouTube Live", color: "#FF0000" },
+        { id: "kick", label: "Kick Live", color: "#53FC18" },
+        { id: "tiktok", label: "TikTok Live", color: "#000000" }
+      ].map((platform) => {
+        const channels = channelsByPlatform[platform.id] || [];
+        if (channels.length === 0) return null;
+
+        const PIcon = getPlatformIcon(platform.id);
+
+        return (
+          <section className="px-6 mt-10" key={platform.id}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <span
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-md"
+                  style={{ backgroundColor: `${platform.color}15`, color: platform.color }}
+                >
+                  <PIcon className="w-4.5 h-4.5" style={{ color: platform.color }} />
+                </span>
+                {platform.label}
+                <span className="text-xs font-normal text-muted-foreground ml-1">
+                  {channels.length} live
+                </span>
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+              {channels.slice(0, 10).map((ch) => (
+                <StreamCard key={ch.id} channel={ch} />
+              ))}
+            </div>
+          </section>
+        );
+      })}
+
+      {/* Other Platforms Grouped */}
+      {PLATFORM_GROUPS.filter(g => g.key !== "major").map((group) => {
         const groupHasPlatforms = group.platforms.some((p) => channelsByPlatform[p]?.length);
         if (!groupHasPlatforms) return null;
 
         return (
           <div key={group.key} className="mt-10">
-            {/* Group header */}
             <div className="px-6 mb-2">
               <h2 className="text-base font-bold text-muted-foreground/80 uppercase tracking-wider">
                 {group.label} Platforms
               </h2>
             </div>
-
             {group.platforms.map((platform) => {
+              if (["kick"].includes(platform)) return null; // Skip if handled above
               const channels = channelsByPlatform[platform];
               if (!channels || channels.length === 0) return null;
               const meta = PLATFORM_META[platform];
               const PIcon = getPlatformIcon(platform);
               return (
                 <section className="px-6 mt-6" key={platform}>
+                  {/* ... same standard section ... */}
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-                      <span
-                        className="inline-flex items-center justify-center w-7 h-7 rounded-md"
-                        style={{ backgroundColor: `${meta.color}15`, color: meta.color }}
-                      >
+                      <span className="inline-flex items-center justify-center w-7 h-7 rounded-md" style={{ backgroundColor: `${meta.color}15`, color: meta.color }}>
                         <PIcon className="w-4.5 h-4.5" style={{ color: meta.color }} />
                       </span>
                       {meta.label}
-                      <span className="text-xs font-normal text-muted-foreground ml-1">
-                        {channels.length} live
-                      </span>
                     </h3>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-                    {loading
-                      ? Array.from({ length: 2 }).map((_, i) => <SkeletonStreamCard key={i} />)
-                      : channels.slice(0, 5).map((ch) => <StreamCard key={ch.id} channel={ch} />)}
+                    {channels.slice(0, 5).map((ch) => <StreamCard key={ch.id} channel={ch} />)}
                   </div>
                 </section>
               );

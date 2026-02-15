@@ -38,4 +38,15 @@ contextBridge.exposeInMainWorld("electron", {
   // Desktop Capturer
   getDesktopSources: (options: any) =>
     ipcRenderer.invoke("get-desktop-sources", options),
+
+  // Auth Controls
+  auth: {
+    start: (url: string) => ipcRenderer.invoke("auth:start", url),
+  },
+
+  // Proxy Controls
+  proxy: {
+    request: (url: string, options: any) =>
+      ipcRenderer.invoke("proxy:request", url, options),
+  },
 });

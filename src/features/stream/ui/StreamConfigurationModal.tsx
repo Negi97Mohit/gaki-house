@@ -75,7 +75,7 @@ const PlatformIcon: React.FC<{
   size?: number;
 }> = ({ platformIconName, color = "#fff", size = 24 }) => {
   const path = PLATFORM_SVG_PATHS[platformIconName.toLowerCase()];
-  
+
   if (path) {
     return (
       <svg viewBox="0 0 24 24" fill={color} width={size} height={size}>
@@ -83,7 +83,7 @@ const PlatformIcon: React.FC<{
       </svg>
     );
   }
-  
+
   // Fallback for unknown platforms
   return (
     <div
@@ -617,6 +617,47 @@ export const StreamConfigurationModal: React.FC<
                       )}
                     </Button>
                   </div>
+
+                  {/* OAuth Connect Buttons */}
+                  {(selectedPlatformId === "twitch" || selectedPlatformId === "youtube") && (
+                    <div className="pt-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs h-8 gap-2"
+                        onClick={async () => {
+                          const { AuthService } = await import("@/features/stream/services/authService");
+                          const { fetchTwitchStreamKey } = await import("@/pages/platform/services/twitchService");
+                          const { fetchYouTubeStreamKey } = await import("@/pages/platform/services/youtubeService");
+
+                          const token = await AuthService.startOAuthFlow(selectedPlatformId as "twitch" | "youtube");
+                          if (token) {
+                            AuthService.saveToken(selectedPlatformId, token);
+                            let key = null;
+                            if (selectedPlatformId === "twitch") {
+                              key = await fetchTwitchStreamKey(token);
+                            } else if (selectedPlatformId === "youtube") {
+                              key = await fetchYouTubeStreamKey(token);
+                            }
+
+                            if (key) {
+                              setNewKey(key);
+                            } else {
+                              console.warn("Got token but failed to fetch stream key");
+                            }
+                          }
+                        }}
+                      >
+                        <PlatformIcon
+                          platformIconName={selectedPlatformId}
+                          color={selectedPlatformId === "twitch" ? "#9146FF" : "#FF0000"}
+                          size={14}
+                        />
+                        Connect & Get Key
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Actions */}

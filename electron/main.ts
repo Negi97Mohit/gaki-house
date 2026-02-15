@@ -58,8 +58,12 @@ function createWindow() {
 
   mainWindow.setMenuBarVisibility(false);
 
+  // In development, load from Vite server
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
+  } else if (!app.isPackaged) {
+    // Fallback for dev mode if env var is missing
+    mainWindow.loadURL("http://localhost:5173");
   } else {
     mainWindow.loadFile(path.join(__dirname, "../../dist/index.html"));
   }
@@ -339,6 +343,58 @@ function setupIpcHandlers() {
   ipcMain.handle("storage:delete", (_, key: string) => {
     store.delete(key);
     return true;
+  });
+
+  // 4. AUTH HANDLERS
+  ipcMain.handle("auth:start", async (event, authUrl: string) => {
+    return new Promise((resolve, reject) => {
+      const authWindow = new BrowserWindow({
+        width: 600,
+        height: 700,
+        show: true,
+        parent: mainWindow || undefined,
+        modal: true,
+        webPreferences: {
+          nodeIntegration: false,
+          contextIsolation: true,
+        },
+      });
+
+      authWindow.loadURL(authUrl);
+
+      const handleCallback = (url: string) => {
+        // Look for tokens in URL params (Twitch/YouTube usually return fragments or query params)
+        if (url.includes("access_token") || url.includes("code")) {
+          resolve(url);
+          authWindow.close();
+        }
+      };
+
+      authWindow.webContents.on("will-navigate", (event, url) => {
+        handleCallback(url);
+      });
+
+      authWindow.webContents.on("will-redirect", (event, url) => {
+        handleCallback(url);
+      });
+
+      authWindow.on("closed", () => {
+        resolve(null);
+      });
+    });
+  });
+
+  // 5. PROXY HANDLERS (Bypass CORS)
+  ipcMain.handle("proxy:request", async (event, url: string, options: any) => {
+    try {
+      const fetch = (await import("node-fetch")).default;
+      const response = await fetch(url, options);
+      const data = await response.json();
+      return { ok: response.ok, status: response.status, data };
+    } catch (error: any) {
+      console.error("[Proxy] Request failed:", error);
+      return { ok: false, status: 500, error: error.message };
+    }
   });
 }
 

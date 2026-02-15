@@ -82,12 +82,16 @@ export async function fetchYouTubeLiveStreams(
         const searchRes = await fetch(searchUrl.toString());
         if (!searchRes.ok) {
             const errorData = await searchRes.json().catch(() => ({}));
-            console.error("[YouTubeService] Search API error:", searchRes.status, errorData);
+            console.error("[YouTubeService] Search API error:", searchRes.status, errorData, "URL:", searchUrl.toString());
             return [];
         }
         const searchData = await searchRes.json();
         const items: YouTubeSearchItem[] = searchData.items || [];
-        if (items.length === 0) return [];
+        console.log(`[YouTubeService] Found ${items.length} live streams.`);
+        if (items.length === 0) {
+            console.warn("[YouTubeService] No live streams found via API.");
+            return [];
+        }
 
         // Step 2: Get viewer counts + categories from video details
         const videoIds = items.map((i) => i.id.videoId).join(",");
@@ -152,5 +156,31 @@ export async function fetchYouTubeLiveStreams(
     } catch (err) {
         console.error("[YouTubeService] Failed to fetch live streams:", err);
         return [];
+    }
+}
+
+// NEW: Fetch YouTube Stream Key (Requires OAuth)
+export async function fetchYouTubeStreamKey(accessToken: string): Promise<string | null> {
+    // Note: This requires 'https://www.googleapis.com/auth/youtube.readonly' or 'youtube' scope
+    // and the user must have a channel and live streaming enabled.
+    try {
+        const res = await fetch(`${YOUTUBE_API_BASE}/liveStreams?part=snippet,cdn&mine=true`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            console.error("[YouTubeService] Failed to fetch live streams info:", res.status);
+            return null;
+        }
+
+        const data = await res.json();
+        // Return the first stream key found
+        const key = data.items?.[0]?.cdn?.ingestionInfo?.streamName;
+        return key || null;
+    } catch (e) {
+        console.error("[YouTubeService] Error fetching stream key:", e);
+        return null;
     }
 }

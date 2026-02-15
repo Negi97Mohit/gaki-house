@@ -35,9 +35,9 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         return <div className="w-full h-full bg-black flex items-center justify-center text-white">No Stream URL</div>;
     }
 
-    // Handle Kick via Iframe (Generic ReactPlayer doesn't support Kick live natively yet)
+    // Handle Kick via Iframe
     if (channel.platform === "kick") {
-        const slug = channel.username; // Kick uses username as slug
+        const slug = channel.username;
         return (
             <iframe
                 src={`https://player.kick.com/${slug}?autoplay=${playing}&muted=${muted}`}
@@ -49,16 +49,30 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle Twitch & YouTube via ReactPlayer
-    // Note: Twitch needs parent domain for embedding in production
-    const isTwitch = channel.platform === "twitch";
-    const twitchConfig = isTwitch ? {
-        options: {
-            parent: [window.location.hostname, "localhost"]
+    // Handle Twitch via Iframe (More reliable than ReactPlayer for parent config)
+    if (channel.platform === "twitch") {
+        const username = channel.username.replace("tw-", ""); // Remove our prefix if present
+        const hostname = window.location.hostname;
+        // Construct parent params - Twitch requires the exact domain of the embedding site
+        // We include localhost and 127.0.0.1 for dev
+        const origin = window.location.origin;
+        let parent = `parent=localhost&parent=127.0.0.1`;
+        if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+            parent += `&parent=${hostname}`;
         }
-    } : undefined;
 
-    // Render ReactPlayer for supported platforms
+        return (
+            <iframe
+                src={`https://player.twitch.tv/?channel=${username}&${parent}&autoplay=${playing}&muted=${muted}`}
+                className="w-full h-full"
+                allowFullScreen
+                allow="autoplay; fullscreen; picture-in-picture"
+                style={{ border: "none" }}
+            />
+        );
+    }
+
+    // Handle YouTube via ReactPlayer (Standard)
     return (
         <ReactPlayer
             ref={playerRef}
@@ -68,9 +82,8 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
             playing={playing}
             muted={muted}
             volume={volume}
-            controls={false} // Custom controls overlays used in parent
+            controls={false}
             config={{
-                twitch: twitchConfig,
                 youtube: {
                     playerVars: { showinfo: 1, controls: 0 }
                 }

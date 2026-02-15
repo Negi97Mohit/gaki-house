@@ -44,6 +44,50 @@ async function getTwitchAppToken(): Promise<string | null> {
     }
 }
 
+// NEW: Fetch Stream Key for logged-in user
+export async function fetchTwitchStreamKey(userToken: string): Promise<string | null> {
+    const clientId = import.meta.env.VITE_TWITCH_CLIENT_ID;
+    if (!clientId) return null;
+
+    try {
+        const broadcasterId = await getUserIdFromToken(userToken, clientId);
+        if (!broadcasterId) return null;
+
+        const res = await fetch(`${TWITCH_API_BASE}/streams/key?broadcaster_id=${broadcasterId}`, {
+            headers: {
+                "Client-ID": clientId,
+                Authorization: `Bearer ${userToken}`,
+            },
+        });
+
+        if (!res.ok) {
+            console.error("[TwitchService] Stream key fetch error:", res.status);
+            return null;
+        }
+
+        const data = await res.json();
+        return data.data?.[0]?.stream_key || null;
+    } catch (e) {
+        console.error("[TwitchService] Failed to fetch stream key:", e);
+        return null;
+    }
+}
+
+async function getUserIdFromToken(token: string, clientId: string): Promise<string | null> {
+    try {
+        const res = await fetch(`${TWITCH_API_BASE}/users`, {
+            headers: {
+                "Client-ID": clientId,
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        const data = await res.json();
+        return data.data?.[0]?.id || null;
+    } catch {
+        return null;
+    }
+}
+
 interface TwitchStream {
     id: string;
     user_id: string;
