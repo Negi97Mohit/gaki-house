@@ -1,32 +1,27 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import path from "path";
-import { componentTagger } from "lovable-tagger";
-
-import basicSsl from "@vitejs/plugin-basic-ssl";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-    proxy: {
-      "/api/apertus": {
-        target: "https://api.publicai.co",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/apertus/, ""),
-      },
-    },
-  },
-  plugins: [
-    react(),
-    basicSsl(),
-    mode === "development" && componentTagger(),
-  ].filter(Boolean),
-  base: "./",
+export default defineConfig({
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-}));
+  server: {
+    proxy: {
+      // Proxy API requests to Kick to bypass CORS in development
+      '/api/kick': {
+        target: 'https://kick.com/api/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/kick/, ''),
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        }
+      }
+    }
+  }
+});

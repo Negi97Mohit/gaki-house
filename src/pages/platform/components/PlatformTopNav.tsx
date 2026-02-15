@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, ArrowLeft, X } from "lucide-react";
-import { MOCK_CHANNELS, MOCK_CATEGORIES, formatViewerCount } from "../data/mockData";
+import { MOCK_CATEGORIES, formatViewerCount } from "../data/mockData";
+import { useStreams } from "../hooks/useStreams";
 import { UserMenu } from "./UserMenu";
 
 export const PlatformTopNav: React.FC = () => {
@@ -12,9 +13,10 @@ export const PlatformTopNav: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const trimmed = query.trim().toLowerCase();
+  const { data: allStreams = [] } = useStreams();
 
   const matchedChannels = trimmed
-    ? MOCK_CHANNELS.filter(
+    ? allStreams.filter(
       (c) =>
         c.displayName.toLowerCase().includes(trimmed) ||
         c.username.toLowerCase().includes(trimmed)

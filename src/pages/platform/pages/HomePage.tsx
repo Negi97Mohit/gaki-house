@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
-import { MOCK_CHANNELS, MOCK_CATEGORIES, FEATURED_STREAM, formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
+import { MOCK_CATEGORIES, formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { StreamCard } from "../components/StreamCard";
 import { CategoryCard } from "../components/CategoryCard";
 import { SkeletonStreamCard, SkeletonCategoryCard } from "../components/SkeletonStreamCard";
+import { useStreams, useFeaturedStream } from "../hooks/useStreams";
 
 // All platforms ordered by category
 const PLATFORM_GROUPS: { key: string; label: string; platforms: PlatformType[] }[] = [
@@ -16,17 +17,13 @@ const PLATFORM_GROUPS: { key: string; label: string; platforms: PlatformType[] }
 ];
 
 export const HomePage: React.FC = () => {
-  const featured = FEATURED_STREAM;
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: streams = [], isLoading } = useStreams();
+  const { data: featured } = useFeaturedStream();
+  const loading = isLoading;
 
   // Group live channels by platform
-  const channelsByPlatform: Record<string, typeof MOCK_CHANNELS> = {};
-  MOCK_CHANNELS.filter((c) => c.isLive && c.platform).forEach((ch) => {
+  const channelsByPlatform: Record<string, typeof streams> = {};
+  streams.filter((c) => c.isLive && c.platform).forEach((ch) => {
     const p = ch.platform!;
     if (!channelsByPlatform[p]) channelsByPlatform[p] = [];
     channelsByPlatform[p].push(ch);

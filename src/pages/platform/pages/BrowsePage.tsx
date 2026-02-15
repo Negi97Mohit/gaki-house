@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { MOCK_CATEGORIES, MOCK_CHANNELS, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
+import { MOCK_CATEGORIES, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
+import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { CategoryCard } from "../components/CategoryCard";
 import { StreamCard } from "../components/StreamCard";
@@ -48,6 +49,7 @@ export const BrowsePage: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState<FilterSelection>("all");
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
+  const { data: MOCK_CHANNELS = [] } = useStreams();
 
   // Determine which platforms match the filter
   const getFilteredPlatforms = (): PlatformType[] | null => {

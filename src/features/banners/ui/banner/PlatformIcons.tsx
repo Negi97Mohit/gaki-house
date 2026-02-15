@@ -23,7 +23,7 @@ const XIcon = () => (
 
 const TikTokIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.01-8.05.02-12.07z" />
+    <path d="M12.525 0.02c1.31-0.02 2.61-0.01 3.91-0.02 0.08 1.53 0.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-0.05-2.89-0.35-4.2-0.97-0.57-0.26-1.1-0.59-1.62-0.93-0.01 2.92 0.01 5.84-0.02 8.75-0.08 1.4-0.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43 0.08-2.86-0.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-0.02-0.5-0.03-1-0.01-1.49 0.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72 0.02 1.48-0.04 2.96-0.04 4.44-0.99-0.32-2.15-0.23-3.02 0.37-0.63 0.41-1.11 1.04-1.36 1.75-0.21 0.51-0.15 1.07-0.14 1.61 0.24 1.64 1.82 3.02 3.5 2.87 1.12-0.01 2.19-0.66 2.77-1.61 0.19-0.33 0.4-0.67 0.41-1.06 0.1-1.79 0.06-3.57 0.07-5.36 0.01-4.03 0.02-8.05 0.02-12.07z" />
   </svg>
 );
 
@@ -122,192 +122,192 @@ export const getPlatformIcon = (
     // Major
     github: Github,
     instagram: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <InstagramIcon />
-      </div>
+      </span>
     ),
     linkedin: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <LinkedinIcon />
-      </div>
+      </span>
     ),
     facebook: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <FacebookIcon />
-      </div>
+      </span>
     ),
     youtube: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <YoutubeIcon />
-      </div>
+      </span>
     ),
     website: Globe,
     discord: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <DiscordIcon />
-      </div>
+      </span>
     ),
     twitch: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <TwitchIcon />
-      </div>
+      </span>
     ),
     x: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <XIcon />
-      </div>
+      </span>
     ),
     tiktok: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <TikTokIcon />
-      </div>
+      </span>
     ),
 
     // Gaming
     kick: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <KickIcon />
-      </div>
+      </span>
     ),
     rumble: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <RumbleIcon />
-      </div>
+      </span>
     ),
     dlive: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <DliveIcon />
-      </div>
+      </span>
     ),
     trovo: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <TrovoIcon />
-      </div>
+      </span>
     ),
     bilibili: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <BilibiliIcon />
-      </div>
+      </span>
     ),
     nimotv: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <NimotvIcon />
-      </div>
+      </span>
     ),
 
     // Professional
     vimeo: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <VimeoIcon />
-      </div>
+      </span>
     ),
     vk: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <VKIcon />
-      </div>
+      </span>
     ),
     mixcloud: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <MixcloudIcon />
-      </div>
+      </span>
     ),
     brightcove: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M21.991 11.09a3.485 3.485 0 0 0-.91-2.369c-.61-.66-1.39-1.03-2.31-1.11-.21-.02-.43-.02-.64 0-.69.05-1.32.28-1.9.66-.29.19-.56.41-.8.66-.06.06-.11.12-.17.18-.04-.05-.08-.1-.13-.14a4.59 4.59 0 0 0-2.05-1.27 4.43 4.43 0 0 0-2.41-.09c-.76.18-1.42.54-2.01 1.03a4.62 4.62 0 0 0-1.08 1.24c-.02.03-.04.07-.06.1-.04-.04-.07-.07-.11-.11a3.84 3.84 0 0 0-1.6-1.02 3.67 3.67 0 0 0-1.88-.11c-.65.13-1.24.41-1.74.82-.62.5-1.07 1.13-1.34 1.88-.2.56-.28 1.14-.26 1.73.03.89.29 1.71.79 2.44.54.8 1.27 1.39 2.16 1.74.59.23 1.2.35 1.84.35h13.42c.39 0 .77-.05 1.15-.15a3.6 3.6 0 0 0 1.45-.71 3.43 3.43 0 0 0 1.13-1.54c.25-.68.33-1.38.24-2.1-.04-.32-.12-.63-.23-.93z" />
         </svg>
-      </div>
+      </span>
     ),
     jwplayer: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.514 0-10-4.486-10-10S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-2-14v8l6-4z" />
         </svg>
-      </div>
+      </span>
     ),
     kaltura: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M9.6 7.2l7.2 4.8-7.2 4.8V7.2zM12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z" />
         </svg>
-      </div>
+      </span>
     ),
     ibm: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M0 7.5h4.05v1H0zm0 2h5.06v1H0zm0 2h5.06v1H0zm0 2h4.05v1H0zm0 2.016h2.968v1H0zm5.058-6.011h4.006V7.5H5.058zm0 2h4.006v-1H5.058zm0 2h4.006v-1H5.058zm0 2.016h4.006v-1H5.058zM10.978 16.5v-9h1.013l1.57 4 1.644-4h1.012v9h-1.012v-6.5l-1.57 4h-.075l-1.57-4v6.5zm6.997-9h4.05v1h-4.05zm0 2h5.035v1h-5.035zm0 2h5.035v1h-5.035zm0 2h4.05v1h-4.05zm0 2.016H24v1h-6.025z" />
         </svg>
-      </div>
+      </span>
     ),
     wowza: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-2-14v8l6-4z" />
         </svg>
-      </div>
+      </span>
     ),
     mux: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M8.25 17.25h1.5V12l3 4.5h.5l3-4.5v5.25h1.5V6.75h-1.5L12 13.5l-4.25-6.75H6.25v10.5h2zm12-10.5h-1.5v10.5h1.5zM3.75 6.75h1.5v10.5h-1.5z" />
         </svg>
-      </div>
+      </span>
     ),
     aws: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <AwsIcon />
-      </div>
+      </span>
     ),
 
     // Self-Hosted
     owncast: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm1.5-15.5a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM8 12.5c0 2.21 1.79 4 4 4s4-1.79 4-4H8z" />
         </svg>
-      </div>
+      </span>
     ),
     peertube: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 5L1.5 11v11L12 24l10.5-2V11zm0 2.1l8.4 4.8v7.2L12 21.9l-8.4-2.8V11.9zm0 3.9l-4.8 2.4V18l4.8 1.6 4.8-1.6v-4.6z" />
         </svg>
-      </div>
+      </span>
     ),
     nginx: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 0L1.605 6v12L12 24l10.395-6V6zm6 16.59c0 .705-.646 1.29-1.529 1.29-.631 0-1.351-.255-1.801-.81l-4.5-5.655v5.22c0 .69-.6 1.245-1.35 1.245H8.79c-.705 0-1.29-.6-1.29-1.29V7.41c0-.705.63-1.29 1.5-1.29.646 0 1.35.27 1.8.825l4.5 5.655V7.41c0-.69.6-1.245 1.35-1.245h.045c.705 0 1.305.6 1.305 1.29z" />
         </svg>
-      </div>
+      </span>
     ),
     wowzaserver: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-2-14v8l6-4z" />
         </svg>
-      </div>
+      </span>
     ),
     antmedia: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4zm0 2.18l6 3v5.45c0 4.5-3.03 8.65-6 9.88-2.97-1.23-6-5.38-6-9.88V7.18l6-3zM10 8v8l6-4z" />
         </svg>
-      </div>
+      </span>
     ),
     red5: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zM8 7h4c1.657 0 3 1.343 3 3s-1.343 3-3 3h-2v4H8V7zm4 4c.552 0 1-.448 1-1s-.448-1-1-1H10v2h2z" />
         </svg>
-      </div>
+      </span>
     ),
     mediasoup: ({ className, style }) => (
-      <div className={className} style={style}>
+      <span className={className} style={style}>
         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
           <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-3-7v-2h6v2H9zm0-4v-2h6v2H9z" />
         </svg>
-      </div>
+      </span>
     ),
   };
   return icons[platform.toLowerCase()] || Globe;

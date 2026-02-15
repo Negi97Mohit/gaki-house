@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings, Film } from "lucide-react";
-import { MOCK_CHANNELS, formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
+import { formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
+import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { cn } from "@/shared/lib/utils";
 
@@ -24,6 +25,7 @@ const PLATFORM_GROUPS: { key: string; platforms: PlatformType[] }[] = [
 export const PlatformSidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { data: MOCK_CHANNELS = [] } = useStreams();
 
   // Group live channels by platform
   const liveChannels = MOCK_CHANNELS.filter((c) => c.isLive && c.platform);
@@ -74,9 +76,9 @@ export const PlatformSidebar: React.FC = () => {
           return (
             <div key={group.key} className="mb-2">
               {!collapsed && (
-                <p className="px-2 text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold mt-3 mb-1">
+                <div className="px-2 text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold mt-3 mb-1">
                   {PLATFORM_CATEGORY_LABELS[group.key]}
-                </p>
+                </div>
               )}
 
               {group.platforms.map((platform) => {
@@ -87,12 +89,12 @@ export const PlatformSidebar: React.FC = () => {
                 return (
                   <div key={platform} className="mb-1.5">
                     {!collapsed && (
-                      <p className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-0.5 mt-1.5 flex items-center gap-1.5">
+                      <div className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-0.5 mt-1.5 flex items-center gap-1.5">
                         <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-sm leading-none" style={{ color: meta.color }}>
                           <PIcon className="w-3.5 h-3.5" style={{ color: meta.color }} />
                         </span>
                         {meta.label}
-                      </p>
+                      </div>
                     )}
                     {collapsed && (
                       <div className="flex justify-center my-1" title={meta.label}>

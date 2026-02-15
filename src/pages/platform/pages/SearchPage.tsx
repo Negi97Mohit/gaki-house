@@ -1,30 +1,32 @@
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { Search } from "lucide-react";
-import { MOCK_CHANNELS, MOCK_CATEGORIES } from "../data/mockData";
+import { MOCK_CATEGORIES } from "../data/mockData";
+import { useStreams } from "../hooks/useStreams";
 import { StreamCard } from "../components/StreamCard";
 import { CategoryCard } from "../components/CategoryCard";
 
 export const SearchPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("q")?.toLowerCase() || "";
+  const { data: MOCK_CHANNELS = [] } = useStreams();
 
   const matchedChannels = query
     ? MOCK_CHANNELS.filter(
-        (c) =>
-          c.displayName.toLowerCase().includes(query) ||
-          c.username.toLowerCase().includes(query) ||
-          c.title.toLowerCase().includes(query) ||
-          c.category.toLowerCase().includes(query)
-      )
+      (c) =>
+        c.displayName.toLowerCase().includes(query) ||
+        c.username.toLowerCase().includes(query) ||
+        c.title.toLowerCase().includes(query) ||
+        c.category.toLowerCase().includes(query)
+    )
     : [];
 
   const matchedCategories = query
     ? MOCK_CATEGORIES.filter(
-        (c) =>
-          c.name.toLowerCase().includes(query) ||
-          c.tags.some((t) => t.toLowerCase().includes(query))
-      )
+      (c) =>
+        c.name.toLowerCase().includes(query) ||
+        c.tags.some((t) => t.toLowerCase().includes(query))
+    )
     : [];
 
   const hasResults = matchedChannels.length > 0 || matchedCategories.length > 0;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
-import { MOCK_CHANNELS } from "../data/mockData";
+import { useStreams } from "../hooks/useStreams";
 import { StreamCard } from "../components/StreamCard";
 import { Heart } from "lucide-react";
 
@@ -49,7 +49,8 @@ export const FollowingPage: React.FC = () => {
   }
 
   // For now show mock channels as followed (real follow data will link to real profiles later)
-  const followedChannels = MOCK_CHANNELS.slice(0, 6);
+  const { data: allStreams = [] } = useStreams();
+  const followedChannels = allStreams.slice(0, 6);
 
   return (
     <div className="p-6 pb-12">

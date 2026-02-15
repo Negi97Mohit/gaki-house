@@ -1,7 +1,8 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { Settings, Calendar, Users } from "lucide-react";
-import { MOCK_CHANNELS, formatViewerCount } from "../data/mockData";
+import { formatViewerCount } from "../data/mockData";
+import { useStreams } from "../hooks/useStreams";
 import { StreamCard } from "../components/StreamCard";
 import { useAuth } from "../context/AuthContext";
 
@@ -10,27 +11,28 @@ export const ProfilePage: React.FC = () => {
   const { user, profile: authProfile } = useAuth();
 
   const isSelf = username === "me" || (user && authProfile?.username === username);
-  const channel = !isSelf ? MOCK_CHANNELS.find((c) => c.username === username) : null;
+  const { data: allStreams = [] } = useStreams();
+  const channel = !isSelf ? allStreams.find((c) => c.username === username) : null;
 
   const profile = isSelf && authProfile
     ? {
-        displayName: authProfile.display_name || "Your Profile",
-        username: authProfile.username || "me",
-        avatar: authProfile.avatar_url || "https://api.dicebear.com/9.x/adventurer/svg?seed=me",
-        bio: authProfile.bio || "Welcome to your channel! Start streaming to build your community.",
-        followers: 0,
-        isLive: false,
-      }
+      displayName: authProfile.display_name || "Your Profile",
+      username: authProfile.username || "me",
+      avatar: authProfile.avatar_url || "https://api.dicebear.com/9.x/adventurer/svg?seed=me",
+      bio: authProfile.bio || "Welcome to your channel! Start streaming to build your community.",
+      followers: 0,
+      isLive: false,
+    }
     : channel || {
-        displayName: "Your Profile",
-        username: "me",
-        avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=me",
-        bio: "Welcome to your channel! Start streaming to build your community.",
-        followers: 0,
-        isLive: false,
-      };
+      displayName: "Your Profile",
+      username: "me",
+      avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=me",
+      bio: "Welcome to your channel! Start streaming to build your community.",
+      followers: 0,
+      isLive: false,
+    };
 
-  const pastStreams = MOCK_CHANNELS.slice(0, 4);
+  const pastStreams = allStreams.slice(0, 4);
 
   return (
     <div className="pb-12">

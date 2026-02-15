@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import ReactPlayer from "react-player";
+import { StreamPlayer } from "../components/StreamPlayer";
 import { useParams, Link } from "react-router-dom";
 import {
   Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
   Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X
 } from "lucide-react";
-import { MOCK_CHANNELS, formatViewerCount, PLATFORM_META } from "../data/mockData";
+import { formatViewerCount, PLATFORM_META } from "../data/mockData";
+import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
@@ -40,7 +41,8 @@ const QUALITY_OPTIONS = ["1080p60", "720p60", "480p", "360p", "160p (Audio Only)
 export const StreamPage: React.FC = () => {
   const { username } = useParams();
   const { user, profile, openAuthModal } = useAuth();
-  const channel = MOCK_CHANNELS.find((c) => c.username === username) || MOCK_CHANNELS[0];
+  const { data: allStreams = [] } = useStreams();
+  const channel = allStreams.find((c) => c.username === username) || allStreams[0];
 
   // Dynamic chat based on channel
   const [messages, setMessages] = useState(() => {
@@ -199,17 +201,13 @@ export const StreamPage: React.FC = () => {
           onMouseLeave={() => setShowControls(false)}
         >
           {channel.streamUrl ? (
-            <ReactPlayer
-              url={channel.streamUrl}
-              width="100%"
-              height="100%"
+            <StreamPlayer
+              channel={channel}
               playing={isPlaying}
               muted={isMuted}
               volume={volume}
-              controls={false} // We are using custom controls
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
-              style={{ position: 'absolute', top: 0, left: 0 }}
             />
           ) : (
             <img
