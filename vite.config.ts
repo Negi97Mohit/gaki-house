@@ -15,14 +15,29 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        /*
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom', 'zustand'],
-          three: ['three', '@react-three/fiber', '@react-three/drei'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-popover', 'lucide-react'],
-          utils: ['date-fns', 'uuid']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // 1. Heavy, independent libs (Leaf nodes in dependency graph)
+            if (id.includes('three') || id.includes('@react-three') || id.includes('@mkkellogg')) {
+              return 'three';
+            }
+            if (id.includes('@mediapipe')) {
+              return 'mediapipe';
+            }
+            if (id.includes('firebase')) {
+              return 'firebase';
+            }
+
+            // 2. UI Libraries (often interdependent, group them safely)
+            if (id.includes('@radix-ui') || id.includes('lucide-react') || id.includes('framer-motion')) {
+              return 'ui';
+            }
+
+            // 3. Everything else goes to vendor (React, Router, Zustand, Utils)
+            // This avoids the 'vendor' <-> 'vendor-react' cycle by keeping them together
+            return 'vendor';
+          }
         }
-        */
       },
       external: ['node-media-server', 'fluent-ffmpeg', 'ffmpeg-static', 'electron']
     }
