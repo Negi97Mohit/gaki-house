@@ -2,58 +2,66 @@ import React from "react";
 import { User } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 
-const AVATAR_COLORS = [
-  "bg-primary/80",
-  "bg-destructive/70",
-  "bg-blue-500/80",
-  "bg-emerald-500/80",
-  "bg-purple-500/80",
-  "bg-orange-500/80",
-  "bg-pink-500/80",
-  "bg-teal-500/80",
+// 10 default profile avatars using DiceBear Avatars API
+// Each uses a different style + seed for variety
+export const DEFAULT_AVATARS = [
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Felix&backgroundColor=b6e3f4",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Luna&backgroundColor=ffd5dc",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Max&backgroundColor=c0aede",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Coco&backgroundColor=d1f4d1",
+  "https://api.dicebear.com/9.x/adventurer/svg?seed=Zara&backgroundColor=ffe4b5",
+  "https://api.dicebear.com/9.x/bottts/svg?seed=Robo1&backgroundColor=b6e3f4",
+  "https://api.dicebear.com/9.x/bottts/svg?seed=Robo2&backgroundColor=c0aede",
+  "https://api.dicebear.com/9.x/fun-emoji/svg?seed=Happy&backgroundColor=ffd5dc",
+  "https://api.dicebear.com/9.x/fun-emoji/svg?seed=Cool&backgroundColor=d1f4d1",
+  "https://api.dicebear.com/9.x/lorelei/svg?seed=Star&backgroundColor=ffe4b5",
 ];
 
-function getColorFromName(name: string): string {
+/** Pick a deterministic default avatar based on a string (name/uid) */
+export function getDefaultAvatar(seed: string): string {
   let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return name.slice(0, 2).toUpperCase();
+  return DEFAULT_AVATARS[Math.abs(hash) % DEFAULT_AVATARS.length];
 }
 
 interface DefaultAvatarProps {
+  /** If avatar_url is provided and non-empty, render it. Otherwise use default. */
+  avatarUrl?: string;
   name?: string;
+  uid?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
 
 const sizeClasses = {
-  sm: "w-8 h-8 text-xs",
-  md: "w-10 h-10 text-sm",
-  lg: "w-20 h-20 text-xl",
+  sm: "w-8 h-8",
+  md: "w-10 h-10",
+  lg: "w-20 h-20",
 };
 
-export const DefaultAvatar: React.FC<DefaultAvatarProps> = ({ name, size = "md", className }) => {
-  if (!name) {
+export const DefaultAvatar: React.FC<DefaultAvatarProps> = ({ avatarUrl, name, uid, size = "md", className }) => {
+  // If the user has a custom avatar, show it
+  if (avatarUrl) {
     return (
-      <div className={cn("rounded-full bg-muted flex items-center justify-center", sizeClasses[size], className)}>
-        <User className="w-1/2 h-1/2 text-muted-foreground" />
-      </div>
+      <img
+        src={avatarUrl}
+        alt={name || "Avatar"}
+        className={cn("rounded-full object-cover bg-muted", sizeClasses[size], className)}
+      />
     );
   }
 
-  const colorClass = getColorFromName(name);
-  const initials = getInitials(name);
+  // Otherwise, pick one of the 10 defaults based on uid or name
+  const seed = uid || name || "default";
+  const defaultUrl = getDefaultAvatar(seed);
 
   return (
-    <div className={cn("rounded-full flex items-center justify-center font-bold text-white select-none", colorClass, sizeClasses[size], className)}>
-      {initials}
-    </div>
+    <img
+      src={defaultUrl}
+      alt={name || "Avatar"}
+      className={cn("rounded-full object-cover bg-muted", sizeClasses[size], className)}
+    />
   );
 };

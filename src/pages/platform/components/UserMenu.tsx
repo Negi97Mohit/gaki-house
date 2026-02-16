@@ -45,11 +45,7 @@ export const UserMenu: React.FC = () => {
         onClick={() => setOpen(!open)}
         className="rounded-full hover:ring-2 hover:ring-primary/50 transition-all overflow-hidden"
       >
-        {avatarUrl ? (
-          <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
-        ) : (
-          <DefaultAvatar name={displayName} size="sm" />
-        )}
+        <DefaultAvatar avatarUrl={avatarUrl} name={displayName} uid={user.uid} size="sm" />
       </button>
 
       {open && (
