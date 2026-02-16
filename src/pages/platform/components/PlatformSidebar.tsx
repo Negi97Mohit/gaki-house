@@ -125,7 +125,7 @@ export const PlatformSidebar: React.FC = () => {
   );
 };
 
-const ChannelLink = ({ ch, collapsed }: { ch: typeof MOCK_CHANNELS[0], collapsed: boolean }) => (
+const ChannelLink = ({ ch, collapsed }: { ch: any, collapsed: boolean }) => (
   <Link
     to={`/platform/stream/${ch.username}`}
     title={collapsed ? ch.displayName : undefined}
