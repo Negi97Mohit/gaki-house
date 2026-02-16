@@ -11,6 +11,22 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        /*
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom', 'zustand'],
+          three: ['three', '@react-three/fiber', '@react-three/drei'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-popover', 'lucide-react'],
+          utils: ['date-fns', 'uuid']
+        }
+        */
+      },
+      external: ['node-media-server', 'fluent-ffmpeg', 'ffmpeg-static', 'electron']
+    }
+  },
   server: {
     proxy: {
       // Proxy API requests to Kick to bypass CORS in development
