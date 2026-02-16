@@ -17,10 +17,7 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // 1. Heavy, independent libs (Leaf nodes in dependency graph)
-            if (id.includes('three') || id.includes('@react-three') || id.includes('@mkkellogg')) {
-              return 'three';
-            }
+            // Only split TRULY independent, non-React heavy libs
             if (id.includes('@mediapipe')) {
               return 'mediapipe';
             }
@@ -28,13 +25,8 @@ export default defineConfig({
               return 'firebase';
             }
 
-            // 2. UI Libraries (often interdependent, group them safely)
-            if (id.includes('@radix-ui') || id.includes('lucide-react') || id.includes('framer-motion')) {
-              return 'ui';
-            }
-
-            // 3. Everything else goes to vendor (React, Router, Zustand, Utils)
-            // This avoids the 'vendor' <-> 'vendor-react' cycle by keeping them together
+            // EVERYTHING else (React, UI, Three.js) goes to vendor
+            // Three.js ecosystem is too tightly bound to React to split safely
             return 'vendor';
           }
         }
