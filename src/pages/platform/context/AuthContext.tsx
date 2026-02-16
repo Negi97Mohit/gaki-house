@@ -6,6 +6,7 @@ import {
   signOut as firebaseSignOut
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { getDefaultAvatar } from "../components/DefaultAvatar";
 
 export interface Profile {
   id: string;
@@ -67,7 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         created_at: new Date().toISOString(),
         username: user.email?.split("@")[0] || "user",
         display_name: user.displayName || user.email?.split("@")[0] || "User",
-        avatar_url: user.photoURL || "",
+        avatar_url: user.photoURL || getDefaultAvatar(user.uid),
         ...additionalData
       };
 

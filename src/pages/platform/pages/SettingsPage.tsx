@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { User, Bell, Palette, Shield, Save, Loader2, Moon, Sun, Check, Monitor, Globe, Lock, Eye, EyeOff, Mail, Key, Trash2 } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import { User, Bell, Palette, Shield, Save, Loader2, Moon, Sun, Check, Monitor, Globe, Lock, Eye, EyeOff, Mail, Key, Trash2, AlertCircle } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import { db } from "@/lib/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { toast } from "sonner";
 import { useThemeStore, themes, ThemeName } from "@/features/theme";
-import { DefaultAvatar } from "../components/DefaultAvatar";
+import { DefaultAvatar, DEFAULT_AVATARS, getDefaultAvatar } from "../components/DefaultAvatar";
 
 const TABS = [
   { id: "profile", label: "Profile", icon: User },
@@ -64,6 +64,9 @@ export const SettingsPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [saving, setSaving] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [checkingUsername, setCheckingUsername] = useState(false);
 
   // Notification state
   const [notifications, setNotifications] = useState<NotificationSettings>(DEFAULT_NOTIFICATIONS);
@@ -79,8 +82,41 @@ export const SettingsPage: React.FC = () => {
       setDisplayName(profile.display_name || "");
       setUsername(profile.username || "");
       setBio(profile.bio || "");
+      setSelectedAvatar(profile.avatar_url || getDefaultAvatar(user?.uid || ""));
     }
   }, [profile]);
+
+  // Username uniqueness check with debounce
+  const checkUsernameUnique = useCallback(async (newUsername: string) => {
+    if (!newUsername || newUsername.length < 3) {
+      setUsernameError(newUsername.length > 0 && newUsername.length < 3 ? "Username must be at least 3 characters" : "");
+      return;
+    }
+    if (!user) return;
+    // If unchanged from current profile, skip check
+    if (newUsername === profile?.username) {
+      setUsernameError("");
+      return;
+    }
+    setCheckingUsername(true);
+    try {
+      const q = query(collection(db, "users"), where("username", "==", newUsername));
+      const snapshot = await getDocs(q);
+      const taken = snapshot.docs.some((d) => d.id !== user.uid);
+      setUsernameError(taken ? "This username is already taken" : "");
+    } catch (e) {
+      console.error("Error checking username:", e);
+    } finally {
+      setCheckingUsername(false);
+    }
+  }, [user, profile?.username]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (username) checkUsernameUnique(username);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [username, checkUsernameUnique]);
 
   if (!user) {
     return (
@@ -99,6 +135,14 @@ export const SettingsPage: React.FC = () => {
   }
 
   const handleSave = async () => {
+    if (usernameError) {
+      toast.error("Please fix username issues before saving");
+      return;
+    }
+    if (username.length < 3) {
+      toast.error("Username must be at least 3 characters");
+      return;
+    }
     setSaving(true);
     try {
       const userRef = doc(db, "users", user.uid);
@@ -106,6 +150,7 @@ export const SettingsPage: React.FC = () => {
         display_name: displayName,
         username,
         bio,
+        avatar_url: selectedAvatar,
       });
       toast.success("Profile saved!");
       await refreshProfile();
@@ -185,20 +230,44 @@ export const SettingsPage: React.FC = () => {
               <p className="text-sm text-muted-foreground">Manage your public profile information.</p>
             </div>
 
-            {/* Avatar */}
-            <div className="flex items-center gap-4">
-              <div className="overflow-hidden">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="" className="w-20 h-20 rounded-full object-cover" />
-                ) : (
-                  <DefaultAvatar name={avatarDisplayName} size="lg" />
-                )}
+            {/* Current Avatar */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-3">Profile Picture</label>
+              <div className="flex items-center gap-4 mb-4">
+                <img
+                  src={selectedAvatar || getDefaultAvatar(user.uid)}
+                  alt="Current avatar"
+                  className="w-20 h-20 rounded-full object-cover bg-muted border-2 border-primary/30"
+                />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Current Avatar</p>
+                  <p className="text-xs text-muted-foreground">Choose from the defaults below</p>
+                </div>
               </div>
-              <div>
-                <button className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:opacity-90 transition-opacity">
-                  Upload Avatar
-                </button>
-                <p className="text-xs text-muted-foreground mt-1">JPG, PNG. Max 2MB.</p>
+              {/* 10 Default Avatar Options */}
+              <div className="grid grid-cols-5 sm:grid-cols-10 gap-3">
+                {DEFAULT_AVATARS.map((url, i) => {
+                  const isSelected = selectedAvatar === url;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedAvatar(url)}
+                      className={cn(
+                        "relative w-12 h-12 rounded-full overflow-hidden border-2 transition-all hover:scale-110",
+                        isSelected
+                          ? "border-primary ring-2 ring-primary/30 scale-110"
+                          : "border-border/30 hover:border-border"
+                      )}
+                    >
+                      <img src={url} alt={`Avatar ${i + 1}`} className="w-full h-full object-cover bg-muted" />
+                      {isSelected && (
+                        <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                          <Check className="w-4 h-4 text-primary" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -214,12 +283,36 @@ export const SettingsPage: React.FC = () => {
 
             {/* Username */}
             <FieldGroup label="Username">
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                className="w-full bg-muted border border-border/40 rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/50"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+                  maxLength={30}
+                  className={cn(
+                    "w-full bg-muted border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none transition-colors",
+                    usernameError
+                      ? "border-destructive focus:border-destructive"
+                      : "border-border/40 focus:border-primary/50"
+                  )}
+                />
+                {checkingUsername && (
+                  <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-muted-foreground" />
+                )}
+                {!checkingUsername && username.length >= 3 && !usernameError && (
+                  <Check className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />
+                )}
+              </div>
+              {usernameError && (
+                <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {usernameError}
+                </p>
+              )}
+              {!usernameError && username.length >= 3 && !checkingUsername && (
+                <p className="text-xs text-green-500 mt-1">Username is available!</p>
+              )}
+              <p className="text-xs text-muted-foreground mt-1">Only lowercase letters, numbers, and underscores. 3-30 characters.</p>
             </FieldGroup>
 
             {/* Email (read-only) */}
@@ -251,7 +344,7 @@ export const SettingsPage: React.FC = () => {
 
             <button
               onClick={handleSave}
-              disabled={saving}
+              disabled={saving || !!usernameError || checkingUsername}
               className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity disabled:opacity-50"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
