@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { X, Mail, Loader2, Eye, EyeOff, Check } from "lucide-react";
+import { X, Mail, Loader2, Eye, EyeOff, Check, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider
+  GoogleAuthProvider,
+  User as FirebaseUser
 } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { cn } from "@/shared/lib/utils";
 
 const PASSWORD_RULES = [
@@ -19,17 +20,43 @@ const PASSWORD_RULES = [
   { label: "One special character", test: (p: string) => /[^A-Za-z0-9]/.test(p) },
 ];
 
+type ModalStep = "auth" | "profile-setup";
+
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, authModalTab, closeAuthModal, openAuthModal, createProfile } = useAuth();
+  const { isAuthModalOpen, authModalTab, closeAuthModal, openAuthModal, createProfile, needsProfileSetup, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Profile setup state for new Google users
+  const [step, setStep] = useState<ModalStep>("auth");
+  const [pendingUser, setPendingUser] = useState<FirebaseUser | null>(null);
+  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
+
+  // Auto-start profile setup when user needs it (e.g., returning user with no profile)
+  const effectiveStep = (needsProfileSetup && user && step === "auth") ? "profile-setup" : step;
+  const effectivePendingUser = effectiveStep === "profile-setup" && !pendingUser && user ? user : pendingUser;
+
   if (!isAuthModalOpen) return null;
 
   const isLogin = authModalTab === "login";
   const isPasswordValid = PASSWORD_RULES.every((r) => r.test(password));
+
+  const resetForm = () => {
+    setEmail("");
+    setPassword("");
+    setStep("auth");
+    setPendingUser(null);
+    setDisplayName("");
+    setUsername("");
+  };
+
+  const handleClose = () => {
+    resetForm();
+    closeAuthModal();
+  };
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,17 +76,17 @@ export const AuthModal: React.FC = () => {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
         toast.success("Welcome back!");
+        handleClose();
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await createProfile(userCredential.user);
-        toast.success("Account created successfully!");
+        // New email signup — go to profile setup
+        setPendingUser(userCredential.user);
+        setDisplayName(userCredential.user.email?.split("@")[0] || "");
+        setUsername(userCredential.user.email?.split("@")[0] || "");
+        setStep("profile-setup");
       }
-      closeAuthModal();
-      setEmail("");
-      setPassword("");
     } catch (err: any) {
       console.error("Auth error:", err);
-      // Map common Firebase auth errors to user-friendly messages
       let message = "Authentication failed. Please try again.";
 
       if (err.code === "auth/email-already-in-use") message = "This email is already registered.";
@@ -71,6 +98,8 @@ export const AuthModal: React.FC = () => {
         message = "Too many failed attempts. Please try again later.";
       } else if (err.code === "auth/network-request-failed") {
         message = "Network error. Please check your connection.";
+      } else if (err.code === "auth/unauthorized-domain") {
+        message = "This domain is not authorized for sign-in. Please use the desktop app or contact support.";
       }
 
       toast.error(message);
@@ -85,20 +114,24 @@ export const AuthModal: React.FC = () => {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
 
-      // Check if user profile exists, if not create it
+      // Check if user profile exists in Firestore
       const docRef = doc(db, "users", result.user.uid);
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
-        await createProfile(result.user);
+        // New user — show profile setup step
+        setPendingUser(result.user);
+        setDisplayName(result.user.displayName || result.user.email?.split("@")[0] || "");
+        setUsername(result.user.email?.split("@")[0] || "");
+        setStep("profile-setup");
+      } else {
+        // Existing user — sign in directly
+        toast.success("Signed in with Google!");
+        handleClose();
       }
-
-      toast.success("Signed in with Google!");
-      closeAuthModal();
     } catch (err: any) {
       if (err.code === "auth/popup-closed-by-user") {
         console.log("Sign-in cancelled by user");
-        // Intentionally do not show a toast for cancellation
       } else {
         console.error("Google sign in error:", err);
         let message = "Google sign-in failed. Please try again.";
@@ -107,16 +140,124 @@ export const AuthModal: React.FC = () => {
           message = "Network error. Please check your connection.";
         } else if (err.code === "auth/popup-blocked") {
           message = "Sign-in popup was blocked. Please allow popups.";
+        } else if (err.code === "auth/unauthorized-domain") {
+          message = "This domain is not authorized for sign-in. Please use the desktop app or contact support.";
         }
 
         toast.error(message);
       }
     } finally {
-      // Ensure loading state is reset so buttons become active again
       setLoading(false);
     }
   };
 
+  const handleProfileSetupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const setupUser = effectivePendingUser;
+    if (!setupUser) return;
+
+    if (!displayName.trim()) {
+      toast.error("Please enter a display name");
+      return;
+    }
+    if (!username.trim()) {
+      toast.error("Please enter a username");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await createProfile(setupUser, {
+        display_name: displayName.trim(),
+        username: username.trim().toLowerCase().replace(/[^a-z0-9_-]/g, ""),
+        avatar_url: setupUser.photoURL || undefined,
+      });
+      toast.success("Profile created! Welcome aboard! 🎉");
+      handleClose();
+    } catch (err: any) {
+      console.error("Profile creation error:", err);
+      toast.error("Failed to create profile. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ---- Profile Setup Step ----
+  if (effectiveStep === "profile-setup") {
+    return (
+      <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div className="relative w-full max-w-md mx-4 bg-card border border-border/40 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none" />
+
+          {/* Close */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 p-1 text-muted-foreground hover:text-foreground transition-colors z-10"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          <div className="p-8 relative">
+            {/* Header */}
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                {effectivePendingUser?.photoURL ? (
+                  <img src={effectivePendingUser.photoURL} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-8 h-8 text-primary" />
+                )}
+              </div>
+              <h2 className="text-2xl font-bold text-foreground">
+                Complete Your Profile
+              </h2>
+              <p className="text-sm text-muted-foreground mt-2">
+                Set up your display name and username to get started
+              </p>
+            </div>
+
+            <form onSubmit={handleProfileSetupSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-muted-foreground uppercase tracking-wider ml-1">Display Name</label>
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="How others will see you"
+                  required
+                  className="w-full bg-muted/50 border border-border/40 rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-xs font-medium text-muted-foreground uppercase tracking-wider ml-1">Username</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-2.5 text-sm text-muted-foreground">@</span>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
+                    placeholder="your_username"
+                    required
+                    className="w-full bg-muted/50 border border-border/40 rounded-xl pl-7 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading || !displayName.trim() || !username.trim()}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none mt-2"
+              >
+                {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                Complete Setup
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- Auth Step (Login / Signup) ----
   return (
     <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="relative w-full max-w-md mx-4 bg-card border border-border/40 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
@@ -124,7 +265,7 @@ export const AuthModal: React.FC = () => {
 
         {/* Close */}
         <button
-          onClick={closeAuthModal}
+          onClick={handleClose}
           className="absolute top-4 right-4 p-1 text-muted-foreground hover:text-foreground transition-colors z-10"
         >
           <X className="w-5 h-5" />

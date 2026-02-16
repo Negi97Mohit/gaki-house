@@ -22,6 +22,7 @@ interface AuthContextType {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
+  needsProfileSetup: boolean;
   isAuthModalOpen: boolean;
   authModalTab: "login" | "signup";
   openAuthModal: (tab?: "login" | "signup") => void;
@@ -43,20 +44,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [needsProfileSetup, setNeedsProfileSetup] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
 
-  const fetchProfile = async (uid: string) => {
+  const fetchProfile = async (uid: string): Promise<boolean> => {
     try {
       const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setProfile(docSnap.data() as Profile);
+        return true;
       } else {
         setProfile(null);
+        return false;
       }
     } catch (error) {
       console.error("Error fetching profile:", error);
+      return false;
     }
   };
 
@@ -74,6 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       await setDoc(doc(db, "users", user.uid), newProfile, { merge: true });
       setProfile(newProfile);
+      setNeedsProfileSetup(false);
     } catch (error) {
       console.error("Error creating profile:", error);
       throw error;
@@ -88,9 +94,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        await fetchProfile(currentUser.uid);
+        const hasProfile = await fetchProfile(currentUser.uid);
+        if (!hasProfile) {
+          // User is signed in but has no profile — prompt for setup
+          setNeedsProfileSetup(true);
+          setAuthModalTab("signup");
+          setIsAuthModalOpen(true);
+        } else {
+          setNeedsProfileSetup(false);
+        }
       } else {
         setProfile(null);
+        setNeedsProfileSetup(false);
       }
       setLoading(false);
     });
@@ -110,6 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await firebaseSignOut(auth);
       setUser(null);
       setProfile(null);
+      setNeedsProfileSetup(false);
     } catch (error) {
       console.error("Error signing out:", error);
     }
@@ -121,6 +137,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         profile,
         loading,
+        needsProfileSetup,
         isAuthModalOpen,
         authModalTab,
         openAuthModal,

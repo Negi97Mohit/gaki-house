@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
+import { AuthProvider } from "./pages/platform/context/AuthContext";
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import Loader from "@/shared/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
@@ -112,24 +113,26 @@ const App = () => {
               <Sonner />
               {/* Router is now dynamic */}
               <Router>
-                <Suspense fallback={<Loader visible={true} />}>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/platform" element={<PlatformLayout />}>
-                      <Route index element={<PlatformHome />} />
-                      <Route path="browse" element={<PlatformBrowse />} />
-                      <Route path="browse/:category" element={<PlatformBrowse />} />
-                      <Route path="stream/:username" element={<PlatformStream />} />
-                      <Route path="profile/:username" element={<PlatformProfile />} />
-                      <Route path="following" element={<PlatformFollowing />} />
-                      <Route path="search" element={<PlatformSearch />} />
-                      <Route path="settings" element={<PlatformSettings />} />
-                      <Route path="clips" element={<PlatformClips />} />
-                    </Route>
-                    <Route path="/remote-cam" element={<RemoteCamera />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </Suspense>
+                <AuthProvider>
+                  <Suspense fallback={<Loader visible={true} />}>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/platform" element={<PlatformLayout />}>
+                        <Route index element={<PlatformHome />} />
+                        <Route path="browse" element={<PlatformBrowse />} />
+                        <Route path="browse/:category" element={<PlatformBrowse />} />
+                        <Route path="stream/:username" element={<PlatformStream />} />
+                        <Route path="profile/:username" element={<PlatformProfile />} />
+                        <Route path="following" element={<PlatformFollowing />} />
+                        <Route path="search" element={<PlatformSearch />} />
+                        <Route path="settings" element={<PlatformSettings />} />
+                        <Route path="clips" element={<PlatformClips />} />
+                      </Route>
+                      <Route path="/remote-cam" element={<RemoteCamera />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </Suspense>
+                </AuthProvider>
               </Router>
             </TooltipProvider>
           </DebugProvider>
