@@ -47,7 +47,7 @@ const Index = () => {
   const rtmp = useRtmpStream();
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const vault = useFileVault();
-  const { user, openAuthModal, closeAuthModal, isAuthModalOpen, signOut } = useAuth();
+  const { user, profile, openAuthModal, closeAuthModal, isAuthModalOpen, signOut } = useAuth();
 
   const handlePastedFiles = useCallback(
     (files: File[]) => {
@@ -127,6 +127,10 @@ const Index = () => {
             onOpenAuth={() => openAuthModal("login")}
             onSignOut={signOut}
             isSignedIn={!!user}
+            userAvatarUrl={profile?.avatar_url}
+            userDisplayName={profile?.display_name}
+            userUid={user?.uid}
+            userUsername={profile?.username}
           />
 
           <FileVaultModal
