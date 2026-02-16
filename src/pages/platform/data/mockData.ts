@@ -9,7 +9,12 @@ export type PlatformType =
   // Professional
   | "vimeo" | "vk" | "mixcloud" | "brightcove" | "jwplayer" | "kaltura" | "ibm" | "wowza" | "mux" | "aws"
   // Self-Hosted
-  | "owncast" | "peertube" | "nginx" | "wowzaserver" | "antmedia" | "red5" | "mediasoup";
+  | "owncast" | "peertube" | "nginx" | "wowzaserver" | "antmedia" | "red5" | "mediasoup"
+  // Asia & Regional
+  | "douyu" | "huya" | "kuaishou" | "douyin" | "yy" // China
+  | "afreecatv" | "navernow" | "kakaotv" // Korea
+  | "niconico" | "showroom" | "mirrativ" // Japan
+  | "bigo" | "cubetv" | "rooter" | "loco" | "chingari"; // SEA/India
 
 export interface StreamChannel {
   id: string;
@@ -44,7 +49,7 @@ export interface PlatformMeta {
   label: string;
   color: string;
   textColor: string;
-  category: "major" | "gaming" | "professional" | "selfhosted";
+  category: "major" | "gaming" | "professional" | "selfhosted" | "asia";
 }
 
 export const PLATFORM_META: Record<PlatformType, PlatformMeta> = {
@@ -61,8 +66,8 @@ export const PLATFORM_META: Record<PlatformType, PlatformMeta> = {
   rumble: { label: "Rumble", color: "#85C742", textColor: "#000", category: "gaming" },
   dlive: { label: "DLive", color: "#FFD300", textColor: "#000", category: "gaming" },
   trovo: { label: "Trovo", color: "#19D65C", textColor: "#fff", category: "gaming" },
-  bilibili: { label: "Bilibili", color: "#00A1D6", textColor: "#fff", category: "gaming" },
-  nimotv: { label: "Nimo TV", color: "#EE3C49", textColor: "#fff", category: "gaming" },
+  bilibili: { label: "Bilibili", color: "#00A1D6", textColor: "#fff", category: "asia" }, // Moved to Asia
+  nimotv: { label: "Nimo TV", color: "#EE3C49", textColor: "#fff", category: "asia" },   // Moved to Asia
   // Professional
   vimeo: { label: "Vimeo", color: "#1AB7EA", textColor: "#fff", category: "professional" },
   vk: { label: "VK Live", color: "#0077FF", textColor: "#fff", category: "professional" },
@@ -82,6 +87,27 @@ export const PLATFORM_META: Record<PlatformType, PlatformMeta> = {
   antmedia: { label: "Ant Media", color: "#00D4FF", textColor: "#000", category: "selfhosted" },
   red5: { label: "Red5", color: "#D32F2F", textColor: "#fff", category: "selfhosted" },
   mediasoup: { label: "MediaSoup", color: "#4CAF50", textColor: "#fff", category: "selfhosted" },
+
+  // Asia & Regional
+  douyu: { label: "Douyu", color: "#FF5900", textColor: "#fff", category: "asia" },
+  huya: { label: "Huya", color: "#FFD800", textColor: "#000", category: "asia" },
+  kuaishou: { label: "Kuaishou", color: "#FF2B00", textColor: "#fff", category: "asia" },
+  douyin: { label: "Douyin", color: "#000000", textColor: "#fff", category: "asia" },
+  yy: { label: "YY Live", color: "#FADC1E", textColor: "#000", category: "asia" },
+
+  afreecatv: { label: "AfreecaTV", color: "#3B72F2", textColor: "#fff", category: "asia" },
+  navernow: { label: "Naver NOW", color: "#03C75A", textColor: "#fff", category: "asia" },
+  kakaotv: { label: "KakaoTV", color: "#FEE500", textColor: "#000", category: "asia" },
+
+  niconico: { label: "Niconico", color: "#252525", textColor: "#fff", category: "asia" },
+  showroom: { label: "SHOWROOM", color: "#F05A75", textColor: "#fff", category: "asia" },
+  mirrativ: { label: "Mirrativ", color: "#F32C52", textColor: "#fff", category: "asia" },
+
+  bigo: { label: "BIGO Live", color: "#00A0FF", textColor: "#fff", category: "asia" },
+  cubetv: { label: "Cube TV", color: "#8E44AD", textColor: "#fff", category: "asia" },
+  rooter: { label: "Rooter", color: "#2ECC71", textColor: "#000", category: "asia" },
+  loco: { label: "Loco", color: "#FFD700", textColor: "#000", category: "asia" },
+  chingari: { label: "Chingari", color: "#A83636", textColor: "#fff", category: "asia" }
 };
 
 export const PLATFORM_CATEGORY_LABELS: Record<string, string> = {
@@ -89,6 +115,7 @@ export const PLATFORM_CATEGORY_LABELS: Record<string, string> = {
   gaming: "Gaming",
   professional: "Professional",
   selfhosted: "Self-Hosted",
+  asia: "Asia & Regional",
 };
 
 export const MOCK_CATEGORIES: Category[] = [
@@ -116,7 +143,165 @@ export const MOCK_CATEGORIES: Category[] = [
 
 const avatarBase = "https://api.dicebear.com/9.x/adventurer/svg?seed=";
 
-export const MOCK_CHANNELS: StreamChannel[] = [];
+export const MOCK_CHANNELS: StreamChannel[] = [
+  // China
+  {
+    id: "bilibili-1",
+    username: "BV1xx411c7X7", // Example Bilibili Video ID
+    displayName: "Bilibili Gaming",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=bili",
+    title: "Genshin Impact Version 4.0 Trailer",
+    category: "Gaming",
+    categorySlug: "gaming",
+    viewers: 154200,
+    thumbnail: "https://images.unsplash.com/photo-1578357078586-491fab1488ce?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Anime", "RPG"],
+    platform: "bilibili",
+    streamUrl: "//player.bilibili.com/player.html?bvid=BV1xx411c7X7"
+  },
+  {
+    id: "douyu-1",
+    username: "douyu-123",
+    displayName: "Douyu Star",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=douyu",
+    title: "League of Legends LPL Spring Split",
+    category: "League of Legends",
+    categorySlug: "league-of-legends",
+    viewers: 520000,
+    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Esports", "LPL"],
+    platform: "douyu",
+    streamUrl: "https://www.douyu.com/123"
+  },
+  {
+    id: "huya-1",
+    username: "huya-456",
+    displayName: "Huya Top",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=huya",
+    title: "Honor of Kings Championship",
+    category: "Mobile Games",
+    categorySlug: "gaming",
+    viewers: 340000,
+    thumbnail: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Mobile", "MOBA"],
+    platform: "huya",
+    streamUrl: "https://www.huya.com/456"
+  },
+
+  // Japan
+  {
+    id: "nico-1",
+    username: "sm9", // Classic placeholder
+    displayName: "Niconico User",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=nico",
+    title: "Lets Play! Super Mario",
+    category: "Retro",
+    categorySlug: "gaming",
+    viewers: 12000,
+    thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Retro", "Mario"],
+    platform: "niconico",
+    streamUrl: "https://www.nicovideo.jp/watch/sm9"
+  },
+  {
+    id: "showroom-1",
+    username: "showroom-live",
+    displayName: "Idol Room",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=show",
+    title: "Live Concert & Chat",
+    category: "Music",
+    categorySlug: "music",
+    viewers: 8500,
+    thumbnail: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Idol", "Music"],
+    platform: "showroom",
+    streamUrl: "https://www.showroom-live.com/"
+  },
+
+  // Korea
+  {
+    id: "afreeca-1",
+    username: "afreeca-best",
+    displayName: "Pro Gamer KR",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=afreeca",
+    title: "StarCraft Remastered Ladder",
+    category: "StarCraft",
+    categorySlug: "gaming",
+    viewers: 45000,
+    thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["RTS", "Korean"],
+    platform: "afreecatv",
+    streamUrl: "https://play.afreecatv.com/"
+  },
+  {
+    id: "naver-1",
+    username: "naver-now",
+    displayName: "K-Pop Now",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=naver",
+    title: "Exclusive Interview with BTS",
+    category: "Music",
+    categorySlug: "music",
+    viewers: 890000,
+    thumbnail: "https://images.unsplash.com/photo-1493224272406-fa4ec81bd436?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["K-Pop", "Interview"],
+    platform: "navernow",
+    streamUrl: "https://now.naver.com/"
+  },
+
+  // SEA / India
+  {
+    id: "nimo-1",
+    username: "nimo-gta",
+    displayName: "Nimo Gamer",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=nimo",
+    title: "GTA V Roleplay Server",
+    category: "GTA V",
+    categorySlug: "gta-v",
+    viewers: 25000,
+    thumbnail: "https://images.unsplash.com/photo-1596727147705-54a7156f0ae3?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["RP", "SEA"],
+    platform: "nimotv",
+    streamUrl: "https://www.nimo.tv/"
+  },
+  {
+    id: "rooter-1",
+    username: "rooter-bgmi",
+    displayName: "Rooter Esports",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=rooter",
+    title: "BGMI Tournament Finals",
+    category: "Mobile Games",
+    categorySlug: "gaming",
+    viewers: 110000,
+    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["BGMI", "India"],
+    platform: "rooter",
+    streamUrl: "https://www.rooter.gg/"
+  },
+  {
+    id: "loco-1",
+    username: "loco-stream",
+    displayName: "Loco Legends",
+    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=loco",
+    title: "Valorant India Cup",
+    category: "Valorant",
+    categorySlug: "valorant",
+    viewers: 35000,
+    thumbnail: "https://images.unsplash.com/photo-1624138784181-dc7f5b75e52e?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["FPS", "Tournament"],
+    platform: "loco",
+    streamUrl: "https://loco.gg/"
+  }
+];
 
 export const FEATURED_STREAM = null;
 
@@ -124,4 +309,3 @@ export function formatViewerCount(count: number): string {
   if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
   return count.toString();
 }
-

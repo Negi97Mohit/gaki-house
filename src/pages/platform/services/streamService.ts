@@ -3,6 +3,9 @@ import { StreamChannel, MOCK_CHANNELS, PlatformType } from "../data/mockData";
 import { fetchYouTubeLiveStreams } from "./youtubeService";
 import { fetchTwitchLiveStreams } from "./twitchService";
 import { fetchKickLiveStreams } from "./kickService";
+import { fetchDLiveLiveStreams } from "./dliveService";
+import { fetchTrovoLiveStreams } from "./trovoService";
+import { fetchRumbleLiveStreams } from "./rumbleService";
 
 /**
  * Fetches live streams from all configured platform APIs.
@@ -16,15 +19,20 @@ import { fetchKickLiveStreams } from "./kickService";
 export async function fetchAllStreams(): Promise<StreamChannel[]> {
     const hasYouTubeKey = !!import.meta.env.VITE_YOUTUBE_API_KEY;
     const hasTwitchKey = !!import.meta.env.VITE_TWITCH_CLIENT_ID;
+    const hasTrovoKey = !!import.meta.env.VITE_TROVO_CLIENT_ID;
+
 
     // Always fetch Kick (via proxy), as it doesn't need a key in this dev setup
     // But we treat it as "optional" if it fails
 
     // Fetch from available APIs in parallel
-    const [youtubeStreams, twitchStreams, kickStreams] = await Promise.all([
+    const [youtubeStreams, twitchStreams, kickStreams, dliveStreams, trovoStreams, rumbleStreams] = await Promise.all([
         hasYouTubeKey ? fetchYouTubeLiveStreams(12) : Promise.resolve([]),
         hasTwitchKey ? fetchTwitchLiveStreams(12) : Promise.resolve([]),
         fetchKickLiveStreams(),
+        fetchDLiveLiveStreams(12),
+        hasTrovoKey ? fetchTrovoLiveStreams(12) : Promise.resolve([]),
+        fetchRumbleLiveStreams(),
     ]);
 
     // Determine which platforms have live API data
@@ -32,9 +40,12 @@ export async function fetchAllStreams(): Promise<StreamChannel[]> {
     if (youtubeStreams.length > 0) apiPlatforms.add("youtube");
     if (twitchStreams.length > 0) apiPlatforms.add("twitch");
     if (kickStreams.length > 0) apiPlatforms.add("kick");
+    if (dliveStreams.length > 0) apiPlatforms.add("dlive");
+    if (trovoStreams.length > 0) apiPlatforms.add("trovo");
+    if (rumbleStreams.length > 0) apiPlatforms.add("rumble");
 
     // Merge: API data first (sorted by viewers desc)
-    const apiStreams = [...youtubeStreams, ...twitchStreams, ...kickStreams].sort(
+    const apiStreams = [...youtubeStreams, ...twitchStreams, ...kickStreams, ...dliveStreams, ...trovoStreams, ...rumbleStreams].sort(
         (a, b) => b.viewers - a.viewers
     );
 

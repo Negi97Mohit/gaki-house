@@ -54,6 +54,18 @@ export const StreamChatEmbed: React.FC<StreamChatEmbedProps> = ({
         );
     }
 
+    if (platform === "dlive") {
+        return (
+            <iframe
+                src={`https://dlive.tv/embed/chat/${username}`}
+                height="100%"
+                width="100%"
+                className={className}
+                style={{ border: "none" }}
+            />
+        );
+    }
+
     return (
         <div className={`flex items-center justify-center h-full bg-card text-muted-foreground ${className}`}>
             <p>Chat not supported for {platform}</p>

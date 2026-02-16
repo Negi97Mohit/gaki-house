@@ -6,6 +6,9 @@
   # Vite's output directory is 'dist'
   publish = "dist"
 
+[functions]
+  directory = "netlify/functions"
+
 [dev]
   # This is the command to run your Vite dev server
   command = "npm run dev"
@@ -18,6 +21,20 @@
 [[redirects]]
   from = "/api/apertus/*"
   to = "https://api.publicai.co/:splat"
+  status = 200
+  force = true
+
+# Kick API Proxy (bypasses Cloudflare via server-side function)
+[[redirects]]
+  from = "/api/kick/*"
+  to = "/.netlify/functions/kick-proxy?path=/:splat"
+  status = 200
+  force = true
+
+# DLive GraphQL API Proxy (bypasses CORS)
+[[redirects]]
+  from = "/api/dlive"
+  to = "https://graphigo.prd.dlive.tv/"
   status = 200
   force = true
 

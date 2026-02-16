@@ -27,7 +27,55 @@ export const StreamPage: React.FC = () => {
   const { username } = useParams();
   const { user, profile, openAuthModal } = useAuth();
   const { data: allStreams = [] } = useStreams();
-  const channel = allStreams.find((c) => c.username === username) || allStreams[0];
+  // Fallback: If not found in API list, try to construct from username pattern (e.g. douyu-123)
+  const channel = allStreams.find((c) => c.username === username) || (() => {
+    if (!username) return allStreams[0];
+
+    // Check for supported prefixes
+    const supportedPrefixes: Record<string, any> = {
+      "douyu-": "douyu",
+      "huya-": "huya",
+      "bilibili-": "bilibili",
+      "kuaishou-": "kuaishou",
+      "douyin-": "douyin",
+      "yy-": "yy",
+      "afreecatv-": "afreecatv",
+      "navernow-": "navernow",
+      "kakaotv-": "kakaotv",
+      "niconico-": "niconico",
+      "showroom-": "showroom",
+      "mirrativ-": "mirrativ",
+      "nimotv-": "nimotv",
+      "bigo-": "bigo",
+      "cubetv-": "cubetv",
+      "rooter-": "rooter",
+      "loco-": "loco",
+      "chingari-": "chingari",
+      "rumble-": "rumble", // Also support manual rumble
+    };
+
+    for (const [prefix, platform] of Object.entries(supportedPrefixes)) {
+      if (username.startsWith(prefix)) {
+        const id = username.slice(prefix.length);
+        return {
+          id: username,
+          username: id,
+          displayName: `${platform.charAt(0).toUpperCase() + platform.slice(1)} Stream`,
+          avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${id}`,
+          title: `Live on ${platform}`,
+          category: "Just Chatting",
+          categorySlug: "just-chatting",
+          viewers: 0,
+          thumbnail: "", // No thumbnail for manual
+          isLive: true,
+          tags: ["manual"],
+          streamUrl: "", // URL construction handled in StreamPlayer based on platform
+          platform: platform,
+        } as any; // Cast to StreamChannel (approximate)
+      }
+    }
+    return allStreams[0];
+  })();
 
   if (!channel) {
     return (
@@ -407,7 +455,7 @@ export const StreamPage: React.FC = () => {
         {channel && (
           <StreamChatEmbed
             platform={channel.platform || "twitch"}
-            channelId={channel.id.replace("yt-live-", "")} // Simplified ID extraction
+            channelId={channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1] || channel.id.replace(/^yt-(live|pop)-/, "")} // Extract video ID from URL
             username={channel.username.replace("tw-", "").replace("kick-", "")} // Simplified username extraction if needed
           />
         )}
@@ -425,7 +473,7 @@ export const StreamPage: React.FC = () => {
           {channel && (
             <StreamChatEmbed
               platform={channel.platform || "twitch"}
-              channelId={channel.id.replace("yt-live-", "")}
+              channelId={channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1] || channel.id.replace(/^yt-(live|pop)-/, "")}
               username={channel.username.replace("tw-", "").replace("kick-", "")}
               className="flex-1"
             />

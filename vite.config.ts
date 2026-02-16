@@ -45,6 +45,16 @@ export default defineConfig({
           'Accept': 'application/json',
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         }
+      },
+      // Proxy DLive GraphQL API to bypass CORS
+      '/api/dlive': {
+        target: 'https://graphigo.prd.dlive.tv',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/dlive/, ''),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
       }
     }
   }

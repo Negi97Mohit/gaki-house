@@ -54,28 +54,26 @@ export async function fetchKickLiveStreams(): Promise<StreamChannel[]> {
         }
     }
 
-    // 2. WEB MODE: We cannot fetch dynamic kick data securely from a browser tab due to Cloudflare.
-    // We return a single "status" card to inform the developer/user.
-    console.warn("[KickService] Kick live streams require the Electron Desktop App to function.");
+    // 2. WEB MODE: Use server-side proxy to bypass Cloudflare
+    // Vite dev proxy: /api/kick -> https://kick.com/api/v1 (configured in vite.config.ts)
+    // Netlify deploy: /api/kick -> kick-proxy function (configured in netlify.toml)
+    console.log("[KickService] Using server-side proxy for Kick streams (web mode).");
 
-    return [{
-        id: "kick-web-notice",
-        username: "system",
-        displayName: "Electron Required",
-        avatar: "https://api.dicebear.com/9.x/initials/svg?seed=KR",
-        title: "Kick Live Streams are only available in the Electron App (Cloudflare Protection)",
-        category: "System",
-        categorySlug: "system",
-        viewers: 0,
-        thumbnail: "https://placehold.co/600x400/53FC18/000000?text=Open+App+For+Kick",
-        isLive: true,
-        tags: ["System"],
-        isVerified: true,
-        followers: 0,
-        bio: "Please run 'npm run electron:dev' to see real Kick streams.",
-        streamUrl: "https://kick.com",
-        platform: "kick" as PlatformType
-    }];
+    const proxyUrl = `/api/kick/subcategories/just-chatting/livestreams`;
+
+    try {
+        const res = await fetch(proxyUrl);
+        if (!res.ok) {
+            console.warn("[KickService] Proxy returned error:", res.status);
+            return [];
+        }
+
+        const data: KickLivestreamResponse = await res.json();
+        return mapKickResponse(data);
+    } catch (e) {
+        console.error("[KickService] Proxy fetch error:", e);
+        return [];
+    }
 }
 
 
