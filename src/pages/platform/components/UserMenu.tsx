@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { User, Settings, LogOut, LayoutDashboard } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { DefaultAvatar } from "./DefaultAvatar";
 
 export const UserMenu: React.FC = () => {
   const { user, profile, signOut, openAuthModal } = useAuth();
@@ -42,12 +43,12 @@ export const UserMenu: React.FC = () => {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:ring-2 hover:ring-primary/50 transition-all overflow-hidden"
+        className="rounded-full hover:ring-2 hover:ring-primary/50 transition-all overflow-hidden"
       >
         {avatarUrl ? (
-          <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+          <img src={avatarUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
         ) : (
-          <User className="w-4 h-4 text-muted-foreground" />
+          <DefaultAvatar name={displayName} size="sm" />
         )}
       </button>
 

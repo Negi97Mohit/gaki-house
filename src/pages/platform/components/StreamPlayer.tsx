@@ -23,7 +23,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     onPause,
     onError,
 }) => {
-    const playerRef = useRef<ReactPlayer>(null);
+    const playerRef = useRef<any>(null);
     const [hasError, setHasError] = useState(false);
 
     // Reset error state when channel changes
@@ -76,7 +76,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     return (
         <ReactPlayer
             ref={playerRef}
-            url={channel.streamUrl}
+            src={channel.streamUrl}
             width="100%"
             height="100%"
             playing={playing}
@@ -85,12 +85,12 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
             controls={false}
             config={{
                 youtube: {
-                    playerVars: { showinfo: 1, controls: 0 }
+                    embedOptions: { showinfo: 1, controls: 0 }
                 }
-            }}
+            } as any}
             onPlay={onPlay}
             onPause={onPause}
-            onError={(e) => {
+            onError={(e: any) => {
                 console.error("StreamPlayer Error:", e);
                 setHasError(true);
                 if (onError) onError(e);
