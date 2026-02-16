@@ -396,6 +396,54 @@ function setupIpcHandlers() {
       return { ok: false, status: 500, error: error.message };
     }
   });
+
+  // 6. BROWSER FETCH HANDLER (Bypass Cloudflare)
+  ipcMain.handle("kick-fetch-url", async (event, url: string) => {
+    return new Promise((resolve) => {
+      const fetchWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        show: false, // Hidden window
+        webPreferences: {
+          nodeIntegration: false,
+          contextIsolation: true,
+        },
+      });
+
+      fetchWindow.loadURL(url);
+
+      fetchWindow.webContents.on("did-finish-load", async () => {
+        try {
+          // extract JSON from the body
+          const content = await fetchWindow.webContents.executeJavaScript(
+            `document.body.innerText`
+          );
+          try {
+            const json = JSON.parse(content);
+            resolve({ ok: true, data: json });
+          } catch (e) {
+            resolve({ ok: false, error: "Failed to parse JSON" });
+          }
+        } catch (e: any) {
+          resolve({ ok: false, error: e.message });
+        }
+        fetchWindow.close();
+      });
+
+      fetchWindow.webContents.on("did-fail-load", () => {
+        resolve({ ok: false, error: "Failed to load URL" });
+        fetchWindow.close();
+      });
+
+      // Timeout safety
+      setTimeout(() => {
+        if (!fetchWindow.isDestroyed()) {
+          fetchWindow.close();
+          resolve({ ok: false, error: "Timeout" });
+        }
+      }, 15000);
+    });
+  });
 }
 
 // --- SERVER & APP LIFECYCLE ---

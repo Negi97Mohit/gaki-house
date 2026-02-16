@@ -49,4 +49,7 @@ contextBridge.exposeInMainWorld("electron", {
     request: (url: string, options: any) =>
       ipcRenderer.invoke("proxy:request", url, options),
   },
+
+  // Kick Browser Fetcher
+  kickFetch: (url: string) => ipcRenderer.invoke("kick-fetch-url", url),
 });

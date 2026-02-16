@@ -8,7 +8,7 @@
   "main": "electron/dist/main.js",
   "scripts": {
     "dev": "vite --port 5173 --strictPort",
-    "build": "tsc && vite build",
+    "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" tsc && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -166,6 +166,7 @@
     "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
     "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
     "eslint": "^9.32.0",

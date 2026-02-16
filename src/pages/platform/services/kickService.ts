@@ -1,26 +1,11 @@
-// Kick API Service (Development Proxy)
+// Kick API Service
 import { StreamChannel, PlatformType } from "../data/mockData";
 
-// List of popular/interesting Kick channels to poll
-// (Kick doesn't have a public search API without auth, so we poll likely live channels)
-const KICK_CHANNELS_TO_POLL = [
-    "xqc", "adinross", "trainwreckstv", "roshtein", "n3on",
-    "iceposeidon", "destiny", "fousey", "amouranth", "hikaru",
-    "westcol", "ac7ionman", "buddha"
-];
+// NOTE: We do NOT hardcode any channels here.
+// Live streams are fetched dynamically from Kick's "Just Chatting" category via Electron.
 
-interface KickChannelResponse {
-    id: number;
-    user_id: number;
-    slug: string;
-    is_banned: boolean;
-    playback_url: string; // hls url
-    user: {
-        username: string;
-        profile_pic: string;
-        bio: string;
-    };
-    livestream: {
+interface KickLivestreamResponse {
+    data: {
         id: number;
         slug: string;
         session_title: string;
@@ -34,86 +19,89 @@ interface KickChannelResponse {
             slug: string;
         }[];
         is_live: boolean;
-    } | null;
+        user_id: number;
+        user: {
+            username: string;
+            profile_pic: string;
+            bio: string;
+        };
+    }[];
 }
 
 export async function fetchKickLiveStreams(): Promise<StreamChannel[]> {
     const electron = (window as any).electron;
-    // If no electron proxy, we can't fetch from client side due to CORS.
-    if (!electron || !electron.proxy) {
-        console.warn("[KickService] Electron proxy not available. Using mock data.");
-        return [
-            {
-                id: "kick-mock-1",
-                username: "xqc",
-                displayName: "xQc",
-                avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=kick-xqc",
-                title: "Mock Stream: Gaming Warlord (Electron Required for Real Data)",
-                category: "Just Chatting",
-                categorySlug: "just-chatting",
-                viewers: 15000,
-                thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1000",
-                isLive: true,
-                tags: ["mock", "dev"],
-                isVerified: true,
-                followers: 0,
-                bio: "Mock Bio",
-                streamUrl: "https://kick.com/xqc",
-                platform: "kick" as PlatformType
+
+    // 1. ELECTRON MODE: Use hidden browser window to fetch dynamic list
+    if (electron && electron.kickFetch) {
+        // Fetch from a general category to get a purely dynamic list of who is live RIGHT NOW.
+        // No hardcoded "top streamers" list.
+        const URL = "https://kick.com/api/v1/subcategories/just-chatting/livestreams";
+
+        try {
+            const result = await electron.kickFetch(URL);
+
+            if (result.ok && result.data) {
+                const data: KickLivestreamResponse = result.data;
+                const streams = mapKickResponse(data);
+                return streams;
+            } else {
+                console.warn("[KickService] Browser fetch failed:", result.error);
+                return [];
             }
-        ];
+        } catch (e) {
+            console.error("[KickService] Electron fetch error:", e);
+            return [];
+        }
     }
 
-    try {
-        const promises = KICK_CHANNELS_TO_POLL.map(async (slug) => {
-            try {
-                // Use the proxy to fetch from Kick's internal API
-                const url = `https://kick.com/api/v1/channels/${slug}`;
-                const result = await electron.proxy.request(url, {
-                    method: "GET",
-                    headers: {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                        "Accept": "application/json",
-                    }
-                });
+    // 2. WEB MODE: We cannot fetch dynamic kick data securely from a browser tab due to Cloudflare.
+    // We return a single "status" card to inform the developer/user.
+    console.warn("[KickService] Kick live streams require the Electron Desktop App to function.");
 
-                if (!result.ok) return null;
-                const data: KickChannelResponse = result.data;
+    return [{
+        id: "kick-web-notice",
+        username: "system",
+        displayName: "Electron Required",
+        avatar: "https://api.dicebear.com/9.x/initials/svg?seed=KR",
+        title: "Kick Live Streams are only available in the Electron App (Cloudflare Protection)",
+        category: "System",
+        categorySlug: "system",
+        viewers: 0,
+        thumbnail: "https://placehold.co/600x400/53FC18/000000?text=Open+App+For+Kick",
+        isLive: true,
+        tags: ["System"],
+        isVerified: true,
+        followers: 0,
+        bio: "Please run 'npm run electron:dev' to see real Kick streams.",
+        streamUrl: "https://kick.com",
+        platform: "kick" as PlatformType
+    }];
+}
 
-                // Filter out offline channels
-                if (!data.livestream || !data.livestream.is_live) return null;
 
-                const stream = data.livestream;
+function mapKickResponse(data: KickLivestreamResponse): StreamChannel[] {
+    if (!data || !data.data) return [];
 
-                return {
-                    id: `kick-${stream.id}`,
-                    username: data.slug,
-                    displayName: data.user.username,
-                    avatar: data.user.profile_pic || `https://api.dicebear.com/9.x/adventurer/svg?seed=kick-${data.slug}`,
-                    title: stream.session_title,
-                    category: stream.categories?.[0]?.name || "Just Chatting",
-                    categorySlug: stream.categories?.[0]?.slug || "just-chatting",
-                    viewers: stream.viewer_count,
-                    thumbnail: stream.thumbnail?.url || "",
-                    isLive: true,
-                    tags: stream.tags || ["live"],
-                    isVerified: true,
-                    followers: 0,
-                    bio: data.user.bio,
-                    streamUrl: `https://kick.com/${data.slug}`,
-                    platform: "kick" as PlatformType,
-                };
-            } catch (e) {
-                // Individual channel fetch failure
-                return null;
-            }
-        });
+    return data.data.map((stream: any) => {
+        const user = stream.user || {};
 
-        const results = await Promise.all(promises);
-        return results.filter((ch): ch is StreamChannel => ch !== null);
-
-    } catch (err) {
-        console.error("[KickService] Failed to fetch live streams via proxy:", err);
-        return [];
-    }
+        return {
+            id: `kick-${stream.id}`,
+            username: stream.slug,
+            displayName: user.username || stream.slug,
+            avatar: user.profile_pic || `https://api.dicebear.com/9.x/adventurer/svg?seed=kick-${stream.slug}`,
+            title: stream.session_title,
+            category: stream.categories?.[0]?.name || "Just Chatting",
+            categorySlug: stream.categories?.[0]?.slug || "just-chatting",
+            viewers: stream.viewer_count,
+            thumbnail: stream.thumbnail?.url || "",
+            isLive: stream.is_live,
+            tags: stream.tags || ["live"],
+            isVerified: true, // Assuming if they are in the top list they are verified/relevant
+            followers: 0,
+            bio: user.bio || "",
+            streamUrl: `https://kick.com/${stream.slug}`,
+            platform: "kick" as PlatformType,
+        };
+    });
 }
