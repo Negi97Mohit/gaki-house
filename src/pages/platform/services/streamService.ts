@@ -45,11 +45,23 @@ export async function fetchAllStreams(): Promise<StreamChannel[]> {
     if (rumbleStreams.length > 0) apiPlatforms.add("rumble");
 
     // Merge: API data first (sorted by viewers desc)
-    const apiStreams = [...youtubeStreams, ...twitchStreams, ...kickStreams, ...dliveStreams, ...trovoStreams, ...rumbleStreams].sort(
-        (a, b) => b.viewers - a.viewers
-    );
+    // Merge: API data first, then Mock data (which now contains real static streams)
+    // We combine them to ensure the app always feels "rich" and populated
+    const allStreams = [
+        ...youtubeStreams,
+        ...twitchStreams,
+        ...kickStreams,
+        ...dliveStreams,
+        ...trovoStreams,
+        ...rumbleStreams,
+        ...MOCK_CHANNELS
+    ];
 
-    return apiStreams;
+    // Remove duplicates based on username/id if any (simple check)
+    const uniqueStreams = Array.from(new Map(allStreams.map(item => [item.username + item.platform, item])).values());
+
+    // Sort by viewers descending
+    return uniqueStreams.sort((a, b) => b.viewers - a.viewers);
 }
 
 /**

@@ -69,6 +69,25 @@ function createWindow() {
   }
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    // Allow Google and Firebase Auth flows to open in a new window
+    // We check for the specific auth domain and Google's accounts domain
+    const isAuthUrl =
+      url.includes("accounts.google.com") ||
+      url.includes("gaki-fb708.firebaseapp.com") ||
+      // Also allow generic firebase auth domains just in case
+      url.includes("firebaseapp.com/__/auth/");
+
+    if (isAuthUrl) {
+      return {
+        action: "allow",
+        overrideBrowserWindowOptions: {
+          autoHideMenuBar: true,
+          parent: mainWindow || undefined,
+          modal: true,
+        },
+      };
+    }
+
     if (url.startsWith("http:") || url.startsWith("https:")) {
       shell.openExternal(url);
     }

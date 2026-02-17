@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "./",
+  base: "/",
   plugins: [react()],
   resolve: {
     alias: {
@@ -35,6 +35,9 @@ export default defineConfig({
     }
   },
   server: {
+    host: true, // Listen on all addresses
+    strictPort: true,
+    port: 5173,
     proxy: {
       // Proxy API requests to Kick to bypass CORS in development
       '/api/kick': {

@@ -119,187 +119,403 @@ export const PLATFORM_CATEGORY_LABELS: Record<string, string> = {
 };
 
 export const MOCK_CATEGORIES: Category[] = [
-  { id: "1", name: "Just Chatting", slug: "just-chatting", viewers: 96500, thumbnail: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&h=400&fit=crop", tags: ["IRL", "Casual"] },
-  { id: "2", name: "IRL", slug: "irl", viewers: 64500, thumbnail: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=300&h=400&fit=crop", tags: ["IRL", "Adventure"] },
-  { id: "3", name: "Grand Theft Auto V", slug: "gta-v", viewers: 61800, thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=300&h=400&fit=crop", tags: ["Shooter", "Action"] },
-  { id: "4", name: "VALORANT", slug: "valorant", viewers: 52100, thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&h=400&fit=crop", tags: ["Shooter", "FPS"] },
-  { id: "5", name: "League of Legends", slug: "league-of-legends", viewers: 30200, thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=300&h=400&fit=crop", tags: ["MOBA", "Action"] },
-  { id: "6", name: "Dota 2", slug: "dota-2", viewers: 30800, thumbnail: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=300&h=400&fit=crop", tags: ["MOBA", "Action"] },
-  { id: "7", name: "Minecraft", slug: "minecraft", viewers: 28100, thumbnail: "https://images.unsplash.com/photo-1587573089734-09cb69c0f2b4?w=300&h=400&fit=crop", tags: ["Sandbox", "Adventure"] },
-  { id: "8", name: "Fortnite", slug: "fortnite", viewers: 45200, thumbnail: "https://images.unsplash.com/photo-1589241062272-c0a000072dfa?w=300&h=400&fit=crop", tags: ["Battle Royale", "Shooter"] },
-  { id: "9", name: "Counter-Strike 2", slug: "cs2", viewers: 11600, thumbnail: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=300&h=400&fit=crop", tags: ["Shooter", "Tactical"] },
-  { id: "10", name: "Music", slug: "music", viewers: 18300, thumbnail: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=400&fit=crop", tags: ["Creative", "IRL"] },
-  { id: "11", name: "Art", slug: "art", viewers: 9200, thumbnail: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=300&h=400&fit=crop", tags: ["Creative", "IRL"] },
-  { id: "12", name: "Cooking", slug: "cooking", viewers: 7500, thumbnail: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=400&fit=crop", tags: ["IRL", "Food"] },
-  { id: "13", name: "Fitness & Health", slug: "fitness", viewers: 14200, thumbnail: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=300&h=400&fit=crop", tags: ["IRL", "Fitness"] },
-  { id: "14", name: "Podcasts", slug: "podcasts", viewers: 22400, thumbnail: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=300&h=400&fit=crop", tags: ["Talk Show", "IRL"] },
-  { id: "15", name: "Travel & Outdoors", slug: "travel", viewers: 11800, thumbnail: "https://images.unsplash.com/photo-1488646472560-ec4b578e2e5b?w=300&h=400&fit=crop", tags: ["IRL", "Adventure"] },
-  { id: "16", name: "Education", slug: "education", viewers: 8900, thumbnail: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=300&h=400&fit=crop", tags: ["Educational", "Talk Show"] },
-  { id: "17", name: "Sports", slug: "sports", viewers: 38600, thumbnail: "https://images.unsplash.com/photo-1461896836934-bd45ba0c2064?w=300&h=400&fit=crop", tags: ["Sports", "IRL"] },
-  { id: "18", name: "Comedy", slug: "comedy", viewers: 19500, thumbnail: "https://images.unsplash.com/photo-1527224538127-2104bb71c51b?w=300&h=400&fit=crop", tags: ["Entertainment", "IRL"] },
-  { id: "19", name: "ASMR", slug: "asmr", viewers: 6300, thumbnail: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=300&h=400&fit=crop", tags: ["Relaxation", "Creative"] },
-  { id: "20", name: "Programming", slug: "programming", viewers: 12700, thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=400&fit=crop", tags: ["Educational", "Tech"] },
+  { id: "1", name: "Just Chatting", slug: "just-chatting", viewers: 245000, thumbnail: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=450&fit=crop", tags: ["IRL", "Casual"] },
+  { id: "2", name: "Grand Theft Auto V", slug: "gta-v", viewers: 185000, thumbnail: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&h=450&fit=crop", tags: ["Shooter", "Action"] }, // Gaming/City
+  { id: "3", name: "League of Legends", slug: "league-of-legends", viewers: 162000, thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&h=450&fit=crop", tags: ["MOBA", "Esports"] }, // Gaming/Esports
+  { id: "4", name: "VALORANT", slug: "valorant", viewers: 145000, thumbnail: "https://images.unsplash.com/photo-1624138784181-dc7f5b75e52e?w=800&h=450&fit=crop", tags: ["FPS", "Shooter"] },
+  { id: "5", name: "Dota 2", slug: "dota-2", viewers: 89000, thumbnail: "https://images.unsplash.com/photo-1517036666991-62d4e668045d?w=800&h=450&fit=crop", tags: ["MOBA", "Strategy"] },
+  { id: "6", name: "Minecraft", slug: "minecraft", viewers: 76000, thumbnail: "https://images.unsplash.com/photo-1587573089734-09cb69c0f2b4?w=800&h=450&fit=crop", tags: ["Sandbox", "Survival"] },
+  { id: "7", name: "Counter-Strike 2", slug: "cs2", viewers: 68000, thumbnail: "https://images.unsplash.com/photo-1599965042655-225f448c26bb?w=800&h=450&fit=crop", tags: ["FPS", "Tactical"] },
+  { id: "8", name: "Fortnite", slug: "fortnite", viewers: 62000, thumbnail: "https://images.unsplash.com/photo-1579338559194-a162d8540044?w=800&h=450&fit=crop", tags: ["Battle Royale", "Shooter"] },
+  { id: "9", name: "Apex Legends", slug: "apex-legends", viewers: 45000, thumbnail: "https://images.unsplash.com/photo-1634600643793-cb601ac8c146?w=800&h=450&fit=crop", tags: ["FPS", "Sci-Fi"] },
+  { id: "10", name: "Music", slug: "music", viewers: 34000, thumbnail: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&h=450&fit=crop", tags: ["Performance", "DJ"] },
+  { id: "11", name: "Software Development", slug: "software-development", viewers: 21000, thumbnail: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=450&fit=crop", tags: ["Coding", "Tech"] },
+  { id: "12", name: "Art", slug: "art", viewers: 18000, thumbnail: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&h=450&fit=crop", tags: ["Creative", "Drawing"] },
+  { id: "13", name: "Talk Shows & Podcasts", slug: "podcasts", viewers: 15000, thumbnail: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=800&h=450&fit=crop", tags: ["Discussion", "News"] },
+  { id: "14", name: "ASMR", slug: "asmr", viewers: 12000, thumbnail: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&h=450&fit=crop", tags: ["Relaxation", "IRL"] },
+  { id: "15", name: "Sports", slug: "sports", viewers: 11000, thumbnail: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=800&h=450&fit=crop", tags: ["Live", "Competition"] },
+  { id: "16", name: "Travel & Outdoors", slug: "travel", viewers: 9500, thumbnail: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=450&fit=crop", tags: ["Adventure", "IRL"] },
+  { id: "17", name: "Retro Gaming", slug: "retro", viewers: 8500, thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=450&fit=crop", tags: ["Classics", "Nostalgia"] },
+  { id: "18", name: "Crypto & Finance", slug: "crypto", viewers: 7500, thumbnail: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800&h=450&fit=crop", tags: ["Investing", "Analysis"] },
+  { id: "19", name: "Science & Technology", slug: "science", viewers: 6500, thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=450&fit=crop", tags: ["Educational", "Innovation"] },
+  { id: "20", name: "Food & Drink", slug: "food", viewers: 5500, thumbnail: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=450&fit=crop", tags: ["Cooking", "Dining"] },
 ];
 
 const avatarBase = "https://api.dicebear.com/9.x/adventurer/svg?seed=";
 
 export const MOCK_CHANNELS: StreamChannel[] = [
-  // China
+  // --- MAJOR PLATFORMS ---
+
+  // YouTube Live
   {
-    id: "bilibili-1",
-    username: "BV1xx411c7X7", // Example Bilibili Video ID
-    displayName: "Bilibili Gaming",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=bili",
-    title: "Genshin Impact Version 4.0 Trailer",
+    id: "yt-live-lofigirl",
+    username: "Lofi Girl",
+    displayName: "Lofi Girl",
+    avatar: "https://yt3.googleusercontent.com/ytc/AIdro_k2D-SdcWzGqf9y9c9qgD_4b4d_5e5f5g6h=s176-c-k-c0x00ffffff-no-rj",
+    title: "lofi hip hop radio 📚 - beats to relax/study to",
+    category: "Music",
+    categorySlug: "music",
+    viewers: 45000,
+    thumbnail: "https://i.ytimg.com/vi/jfKfPfyJRdk/maxresdefault.jpg",
+    isLive: true,
+    tags: ["Lofi", "Music", "Chill"],
+    platform: "youtube",
+    streamUrl: "https://www.youtube.com/watch?v=jfKfPfyJRdk"
+  },
+  {
+    id: "yt-live-nasa",
+    username: "NASA",
+    displayName: "NASA Live",
+    avatar: "https://yt3.googleusercontent.com/ytc/AIdro_k2D-SdcWzGqf9y9c9qgD_4b4d_5e5f5g6h=s176-c-k-c0x00ffffff-no-rj",
+    title: "NASA Live: Official Stream of NASA TV",
+    category: "Science & Technology",
+    categorySlug: "science",
+    viewers: 12000,
+    thumbnail: "https://i.ytimg.com/vi/21X5lGlDOfg/maxresdefault.jpg",
+    isLive: true,
+    tags: ["Space", "Educational"],
+    platform: "youtube",
+    streamUrl: "https://www.youtube.com/watch?v=21X5lGlDOfg"
+  },
+  {
+    id: "yt-live-eurovision",
+    username: "Eurovision",
+    displayName: "Eurovision Song Contest",
+    avatar: "https://yt3.googleusercontent.com/ytc/AIdro_k2D-SdcWzGqf9y9c9qgD_4b4d_5e5f5g6h=s176-c-k-c0x00ffffff-no-rj",
+    title: "Eurovision Song Contest 2024 - Grand Final",
+    category: "Music",
+    categorySlug: "music",
+    viewers: 150000,
+    thumbnail: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Music", "Event"],
+    platform: "youtube",
+    streamUrl: "https://www.youtube.com/watch?v=HuW3c4A5_9c"
+  },
+
+
+  // Twitch
+  {
+    id: "tw-twitchgaming",
+    username: "twitchgaming",
+    displayName: "twitchgaming",
+    avatar: "https://static-cdn.jtvnw.net/jtv_user_pictures/075421df-6e99-4c12-a8d2-45e0d7c71f92-profile_image-70x70.png",
+    title: "Weekly Gaming Show",
     category: "Gaming",
     categorySlug: "gaming",
-    viewers: 154200,
-    thumbnail: "https://images.unsplash.com/photo-1578357078586-491fab1488ce?w=800&h=450&fit=crop",
+    viewers: 15000,
+    thumbnail: "https://static-cdn.jtvnw.net/jtv_user_pictures/075421df-6e99-4c12-a8d2-45e0d7c71f92-profile_image-300x300.png",
     isLive: true,
-    tags: ["Anime", "RPG"],
-    platform: "bilibili",
-    streamUrl: "//player.bilibili.com/player.html?bvid=BV1xx411c7X7"
+    tags: ["Gaming", "Talk"],
+    platform: "twitch",
+    streamUrl: "https://www.twitch.tv/twitchgaming"
   },
   {
-    id: "douyu-1",
-    username: "douyu-123",
-    displayName: "Douyu Star",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=douyu",
-    title: "League of Legends LPL Spring Split",
+    id: "tw-riotgames",
+    username: "riotgames",
+    displayName: "Riot Games",
+    avatar: "https://static-cdn.jtvnw.net/jtv_user_pictures/riotgames-profile_image-4238599298-70x70.jpeg",
+    title: "LCS Spring Split 2025",
     category: "League of Legends",
     categorySlug: "league-of-legends",
-    viewers: 520000,
+    viewers: 85000,
     thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
     isLive: true,
-    tags: ["Esports", "LPL"],
-    platform: "douyu",
-    streamUrl: "https://www.douyu.com/123"
+    tags: ["Esports", "LoL"],
+    platform: "twitch",
+    streamUrl: "https://www.twitch.tv/riotgames"
   },
+
+  // Facebook Gaming
   {
-    id: "huya-1",
-    username: "huya-456",
-    displayName: "Huya Top",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=huya",
-    title: "Honor of Kings Championship",
-    category: "Mobile Games",
+    id: "fb-gaming-1",
+    username: "FacebookGaming",
+    displayName: "Facebook Gaming",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=fb",
+    title: "Level Up: Creator Showcase",
+    category: "Gaming",
     categorySlug: "gaming",
-    viewers: 340000,
+    viewers: 5000,
     thumbnail: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&h=450&fit=crop",
     isLive: true,
-    tags: ["Mobile", "MOBA"],
-    platform: "huya",
-    streamUrl: "https://www.huya.com/456"
+    tags: ["Gaming", "Creator"],
+    platform: "facebook",
+    streamUrl: "https://www.facebook.com/Gaming/videos/123456789"
   },
-
-  // Japan
   {
-    id: "nico-1",
-    username: "sm9", // Classic placeholder
-    displayName: "Niconico User",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=nico",
-    title: "Lets Play! Super Mario",
-    category: "Retro",
-    categorySlug: "gaming",
+    id: "fb-gaming-2",
+    username: "StoneMountain64",
+    displayName: "StoneMountain64",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=stone",
+    title: "Warzone Victory Lap",
+    category: "Call of Duty: Warzone",
+    categorySlug: "cod-warzone",
     viewers: 12000,
-    thumbnail: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=450&fit=crop",
-    isLive: true,
-    tags: ["Retro", "Mario"],
-    platform: "niconico",
-    streamUrl: "https://www.nicovideo.jp/watch/sm9"
-  },
-  {
-    id: "showroom-1",
-    username: "showroom-live",
-    displayName: "Idol Room",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=show",
-    title: "Live Concert & Chat",
-    category: "Music",
-    categorySlug: "music",
-    viewers: 8500,
-    thumbnail: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=800&h=450&fit=crop",
-    isLive: true,
-    tags: ["Idol", "Music"],
-    platform: "showroom",
-    streamUrl: "https://www.showroom-live.com/"
-  },
-
-  // Korea
-  {
-    id: "afreeca-1",
-    username: "afreeca-best",
-    displayName: "Pro Gamer KR",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=afreeca",
-    title: "StarCraft Remastered Ladder",
-    category: "StarCraft",
-    categorySlug: "gaming",
-    viewers: 45000,
-    thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
-    isLive: true,
-    tags: ["RTS", "Korean"],
-    platform: "afreecatv",
-    streamUrl: "https://play.afreecatv.com/"
-  },
-  {
-    id: "naver-1",
-    username: "naver-now",
-    displayName: "K-Pop Now",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=naver",
-    title: "Exclusive Interview with BTS",
-    category: "Music",
-    categorySlug: "music",
-    viewers: 890000,
-    thumbnail: "https://images.unsplash.com/photo-1493224272406-fa4ec81bd436?w=800&h=450&fit=crop",
-    isLive: true,
-    tags: ["K-Pop", "Interview"],
-    platform: "navernow",
-    streamUrl: "https://now.naver.com/"
-  },
-
-  // SEA / India
-  {
-    id: "nimo-1",
-    username: "nimo-gta",
-    displayName: "Nimo Gamer",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=nimo",
-    title: "GTA V Roleplay Server",
-    category: "GTA V",
-    categorySlug: "gta-v",
-    viewers: 25000,
-    thumbnail: "https://images.unsplash.com/photo-1596727147705-54a7156f0ae3?w=800&h=450&fit=crop",
-    isLive: true,
-    tags: ["RP", "SEA"],
-    platform: "nimotv",
-    streamUrl: "https://www.nimo.tv/"
-  },
-  {
-    id: "rooter-1",
-    username: "rooter-bgmi",
-    displayName: "Rooter Esports",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=rooter",
-    title: "BGMI Tournament Finals",
-    category: "Mobile Games",
-    categorySlug: "gaming",
-    viewers: 110000,
     thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
     isLive: true,
-    tags: ["BGMI", "India"],
-    platform: "rooter",
-    streamUrl: "https://www.rooter.gg/"
+    tags: ["FPS", "Battle Royale"],
+    platform: "facebook",
+    streamUrl: "https://www.facebook.com/StoneMountain64/live"
+  },
+
+
+  // TikTok Live
+  {
+    id: "tt-live-1",
+    username: "tiktok-live-us",
+    displayName: "TikTok Live US",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=tt",
+    title: "Trending NOW: Dance Challenge",
+    category: "Just Chatting",
+    categorySlug: "just-chatting",
+    viewers: 25000,
+    thumbnail: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Mobile", "Vertical"],
+    platform: "tiktok",
+    streamUrl: "https://www.tiktok.com/@tiktoklive_us/live"
+  },
+
+  // X (Twitter)
+  {
+    id: "x-live-space",
+    username: "SpaceX",
+    displayName: "SpaceX",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=x",
+    title: "Starship Flight Test Launch",
+    category: "Science & Technology",
+    categorySlug: "science",
+    viewers: 200000,
+    thumbnail: "https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Space", "Launch"],
+    platform: "x",
+    streamUrl: "https://twitter.com/i/broadcasts/123456789"
+  },
+
+  // --- GAMING PLATFORMS ---
+
+  // Kick
+  {
+    id: "kick-xqc",
+    username: "xqc",
+    displayName: "xQc",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=xqc",
+    title: "JUICED | GIVING AWAY 100K | !GIVEAWAY",
+    category: "Just Chatting",
+    categorySlug: "just-chatting",
+    viewers: 45000,
+    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Variety", "Reaction"],
+    platform: "kick",
+    streamUrl: "https://kick.com/xqc"
   },
   {
-    id: "loco-1",
-    username: "loco-stream",
-    displayName: "Loco Legends",
-    avatar: "https://api.dicebear.com/9.x/notionists/svg?seed=loco",
-    title: "Valorant India Cup",
-    category: "Valorant",
-    categorySlug: "valorant",
-    viewers: 35000,
-    thumbnail: "https://images.unsplash.com/photo-1624138784181-dc7f5b75e52e?w=800&h=450&fit=crop",
+    id: "kick-train",
+    username: "trainwreckstv",
+    displayName: "Trainwreckstv",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=train",
+    title: "High Rollers Table | !gamble",
+    category: "Slots",
+    categorySlug: "slots",
+    viewers: 25000,
+    thumbnail: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800&h=450&fit=crop",
     isLive: true,
-    tags: ["FPS", "Tournament"],
-    platform: "loco",
-    streamUrl: "https://loco.gg/"
+    tags: ["Gambling", "Slots"],
+    platform: "kick",
+    streamUrl: "https://kick.com/trainwreckstv"
+  },
+
+  // Rumble
+  {
+    id: "rumble-gaming",
+    username: "rumblegaming",
+    displayName: "Rumble Gaming",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=rumble",
+    title: "Rumble Exclusives: Speedruns",
+    category: "Gaming",
+    categorySlug: "gaming",
+    viewers: 5000,
+    thumbnail: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Speedrun", "Retro"],
+    platform: "rumble",
+    streamUrl: "https://rumble.com/embed/v12345/"
+  },
+
+  // Trovo
+  {
+    id: "trovo-pubg",
+    username: "TrovoPUBG",
+    displayName: "Trovo PUBG Mobile",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=trovo",
+    title: "PUBG Mobile Pro League",
+    category: "PUBG Mobile",
+    categorySlug: "pubg-mobile",
+    viewers: 15000,
+    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Mobile", "Battle Royale"],
+    platform: "trovo",
+    streamUrl: "https://trovo.live/TrovoPUBG"
+  },
+
+  // DLive
+  {
+    id: "dlive-crypto",
+    username: "CryptoDaily",
+    displayName: "Crypto Daily",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=dlive",
+    title: "Market Analysis: BTC & ETH",
+    category: "Crypto & Finance",
+    categorySlug: "crypto",
+    viewers: 2000,
+    thumbnail: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Finance", "Blockchain"],
+    platform: "dlive",
+    streamUrl: "https://dlive.tv/CryptoDaily"
+  },
+
+
+  // --- PROFESSIONAL PLATFORMS ---
+
+  // Vimeo
+  {
+    id: "vimeo-staffpick-1",
+    username: "vimeo-staff",
+    displayName: "Vimeo Staff Picks",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=vimeo",
+    title: "Best of the Month: Animation",
+    category: "Art",
+    categorySlug: "art",
+    viewers: 800,
+    thumbnail: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&h=450&fit=crop",
+    isLive: false,
+    tags: ["Creative", "Animation"],
+    platform: "vimeo",
+    streamUrl: "https://vimeo.com/channels/staffpicks"
+  },
+
+  // IBM Video
+  {
+    id: "ibm-ustream",
+    username: "nasa-iss",
+    displayName: "ISS HD Earth Viewing",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=ibm",
+    title: "ISS HD Earth Viewing Experiment",
+    category: "Science & Technology",
+    categorySlug: "science",
+    viewers: 2500,
+    thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Space", "Earth"],
+    platform: "ibm",
+    streamUrl: "https://video.ibm.com/channel/iss-hdev-payload"
+  },
+
+
+  // --- ASIA & REGIONAL ---
+  // Bilibili
+  {
+    id: "bilibili-anime",
+    username: "bilibili-official",
+    displayName: "Bilibili Official",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=bili",
+    title: "New Anime Season Trailers",
+    category: "Anime",
+    categorySlug: "art",
+    viewers: 340000,
+    thumbnail: "https://images.unsplash.com/photo-1578357078586-491fab1488ce?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Anime", "China"],
+    platform: "bilibili",
+    streamUrl: "https://www.bilibili.com/video/BV1xx411c7X7"
+  },
+
+  // Douyu
+  {
+    id: "douyu-lpl",
+    username: "douyu-lpl",
+    displayName: "LPL Official",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=douyu",
+    title: "LPL: JDG vs BLG",
+    category: "League of Legends",
+    categorySlug: "league-of-legends",
+    viewers: 1200000,
+    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Esports", "China"],
+    platform: "douyu",
+    streamUrl: "https://www.douyu.com/288016"
+  },
+
+  // Niconico
+  {
+    id: "nico-official",
+    username: "nicovideo",
+    displayName: "Niconico Official",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=nico",
+    title: "Niconico Chokaigi 2024",
+    category: "Events",
+    categorySlug: "just-chatting",
+    viewers: 56000,
+    thumbnail: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Event", "Japan"],
+    platform: "niconico",
+    streamUrl: "https://www.nicovideo.jp/"
+  },
+
+  // AfreecaTV
+  {
+    id: "afreeca-lck",
+    username: "lck-korea",
+    displayName: "LCK Official",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=afreeca",
+    title: "LCK Spring: T1 vs Gen.G",
+    category: "League of Legends",
+    categorySlug: "league-of-legends",
+    viewers: 450000,
+    thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Esports", "Korea"],
+    platform: "afreecatv",
+    streamUrl: "https://play.afreecatv.com/lck"
+  },
+
+
+  // --- SELF-HOSTED ---
+  {
+    id: "owncast-demo",
+    username: "owncast-demo",
+    displayName: "Owncast Demo",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=own",
+    title: "Owncast Feature Showcase",
+    category: "Technology",
+    categorySlug: "science",
+    viewers: 45,
+    thumbnail: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&h=450&fit=crop",
+    isLive: true,
+    tags: ["Self-Hosted", "Open Source"],
+    platform: "owncast",
+    streamUrl: "https://watch.owncast.online/"
+  },
+  {
+    id: "peertube-blender",
+    username: "blender-foundation",
+    displayName: "Blender Foundation",
+    avatar: "https://api.dicebear.com/9.x/adventurer/svg?seed=peer",
+    title: "Blender Open Movies",
+    category: "Art",
+    categorySlug: "art",
+    viewers: 120,
+    thumbnail: "https://images.unsplash.com/photo-1626379953822-baec19c3accd?w=800&h=450&fit=crop",
+    isLive: false,
+    tags: ["3D", "Open Source"],
+    platform: "peertube",
+    streamUrl: "https://video.blender.org/"
   }
 ];
 

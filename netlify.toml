@@ -10,12 +10,14 @@
   directory = "netlify/functions"
 
 [dev]
+  framework = "vite"
   # This is the command to run your Vite dev server
   command = "npm run dev"
   # The port your Vite server runs on
   targetPort = 5173
   # The port Netlify will expose for your local dev environment
   port = 8888
+  autoLaunch = false
 
 # API Proxy Redirect
 [[redirects]]
