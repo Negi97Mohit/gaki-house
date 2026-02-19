@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import {
   User,
   signInWithPopup,
+  signInWithCredential,
   GoogleAuthProvider,
   signOut as firebaseSignOut,
   onAuthStateChanged
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, firebaseConfig } from "@/lib/firebase";
 import { toast } from "sonner";
 
 export const useAuth = () => {
@@ -25,8 +26,27 @@ export const useAuth = () => {
 
   const googleSignIn = async () => {
     try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const electron = (window as any).electron;
+
+      if (electron?.auth?.googleOAuth) {
+        // Electron: use BrowserWindow-based OAuth flow
+        const result = await electron.auth.googleOAuth(firebaseConfig.apiKey);
+        if (!result) {
+          console.log("Sign-in cancelled by user");
+          return;
+        }
+
+        const credential = GoogleAuthProvider.credential(
+          result.idToken,
+          result.accessToken
+        );
+        await signInWithCredential(auth, credential);
+      } else {
+        // Web: use standard popup flow
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+      }
+
       toast.success("Signed in successfully with Google!");
       setIsAuthModalOpen(false);
     } catch (error: any) {

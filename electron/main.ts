@@ -403,6 +403,129 @@ function setupIpcHandlers() {
     });
   });
 
+  // Google OAuth flow for Electron (bypasses auth/unauthorized-domain)
+  ipcMain.handle(
+    "auth:google-oauth",
+    async (event, { apiKey }: { apiKey: string }) => {
+      return new Promise(async (resolve) => {
+        try {
+          // Fetch the Google client ID from Firebase's project config
+          const fetch = (await import("node-fetch")).default;
+          const configResp = await fetch(
+            `https://www.googleapis.com/identitytoolkit/v3/relyingparty/getProjectConfig?key=${apiKey}`
+          );
+          const configData = (await configResp.json()) as any;
+
+          // Find the Google provider's client ID
+          const googleProvider = configData?.idpConfig?.find(
+            (p: any) => p.provider === "GOOGLE"
+          );
+          const clientId = googleProvider?.clientId;
+
+          if (!clientId) {
+            console.error(
+              "[Auth] Could not find Google client ID from Firebase config"
+            );
+            resolve(null);
+            return;
+          }
+
+          const redirectUri = "http://localhost";
+          const scope = "openid email profile";
+          const authUrl =
+            `https://accounts.google.com/o/oauth2/v2/auth?` +
+            `client_id=${encodeURIComponent(clientId)}` +
+            `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+            `&response_type=token id_token` +
+            `&scope=${encodeURIComponent(scope)}` +
+            `&nonce=${Date.now().toString(36)}`;
+
+          const authWindow = new BrowserWindow({
+            width: 500,
+            height: 700,
+            show: true,
+            parent: mainWindow || undefined,
+            modal: true,
+            autoHideMenuBar: true,
+            webPreferences: {
+              nodeIntegration: false,
+              contextIsolation: true,
+            },
+          });
+
+          let resolved = false;
+          const tryResolve = (data: any) => {
+            if (resolved) return;
+            resolved = true;
+            resolve(data);
+            if (!authWindow.isDestroyed()) authWindow.close();
+          };
+
+          // Use executeJavaScript to read the full URL including the fragment (#)
+          // Navigation events (will-navigate, will-redirect) strip the fragment,
+          // so we must read it from the page's own window.location after navigation.
+          const tryExtractTokensFromPage = async () => {
+            if (resolved || authWindow.isDestroyed()) return;
+            try {
+              const fullUrl = await authWindow.webContents.executeJavaScript(
+                "window.location.href"
+              );
+              console.log("[Auth] Page URL:", fullUrl);
+              if (
+                fullUrl &&
+                fullUrl.includes("#") &&
+                fullUrl.includes("id_token")
+              ) {
+                const hash = fullUrl.split("#")[1];
+                const params = new URLSearchParams(hash);
+                const idToken = params.get("id_token");
+                const accessToken = params.get("access_token");
+                if (idToken) {
+                  console.log("[Auth] Successfully extracted tokens");
+                  tryResolve({ idToken, accessToken });
+                }
+              }
+            } catch (e) {
+              // Window may have been destroyed, ignore
+            }
+          };
+
+          authWindow.loadURL(authUrl);
+
+          // After Google redirects to http://localhost#tokens, the page will
+          // either load (if something is on port 80) or fail. Either way,
+          // window.location.href will contain the fragment with our tokens.
+          authWindow.webContents.on("did-navigate", (_, url) => {
+            if (url.startsWith(redirectUri)) {
+              // Small delay to ensure the fragment is available in the page context
+              setTimeout(tryExtractTokensFromPage, 100);
+            }
+          });
+
+          authWindow.webContents.on(
+            "did-fail-load",
+            (_, errorCode, errorDesc, validatedURL) => {
+              if (validatedURL.startsWith(redirectUri)) {
+                setTimeout(tryExtractTokensFromPage, 100);
+              }
+            }
+          );
+
+          authWindow.webContents.on("did-finish-load", () => {
+            tryExtractTokensFromPage();
+          });
+
+          authWindow.on("closed", () => {
+            if (!resolved) resolve(null);
+          });
+        } catch (error) {
+          console.error("[Auth] Google OAuth error:", error);
+          resolve(null);
+        }
+      });
+    }
+  );
+
   // 5. PROXY HANDLERS (Bypass CORS)
   ipcMain.handle("proxy:request", async (event, url: string, options: any) => {
     try {

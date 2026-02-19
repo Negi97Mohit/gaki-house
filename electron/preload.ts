@@ -42,6 +42,8 @@ contextBridge.exposeInMainWorld("electron", {
   // Auth Controls
   auth: {
     start: (url: string) => ipcRenderer.invoke("auth:start", url),
+    googleOAuth: (apiKey: string) =>
+      ipcRenderer.invoke("auth:google-oauth", { apiKey }),
   },
 
   // Proxy Controls

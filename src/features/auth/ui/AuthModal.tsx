@@ -8,12 +8,13 @@ import {
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
-import { auth } from "@/lib/firebase";
+import { auth, firebaseConfig } from "@/lib/firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  signInWithCredential,
 } from "firebase/auth";
 import { Loader, Eye, EyeOff, Check, X } from "lucide-react";
 import { toast } from "sonner";
@@ -46,8 +47,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleGoogleSignIn = useCallback(async () => {
     setGoogleLoading(true);
     try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const electron = (window as any).electron;
+
+      if (electron?.auth?.googleOAuth) {
+        // Electron: use BrowserWindow-based OAuth flow
+        const result = await electron.auth.googleOAuth(firebaseConfig.apiKey);
+        if (!result) {
+          // User closed the auth window
+          console.log("Sign-in cancelled by user");
+          return;
+        }
+
+        const credential = GoogleAuthProvider.credential(
+          result.idToken,
+          result.accessToken
+        );
+        await signInWithCredential(auth, credential);
+      } else {
+        // Web: use standard popup flow
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+      }
+
       toast.success("Signed in successfully with Google!");
       onClose();
     } catch (error: any) {

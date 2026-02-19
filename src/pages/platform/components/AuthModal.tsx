@@ -6,10 +6,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signInWithCredential,
   GoogleAuthProvider,
   User as FirebaseUser
 } from "firebase/auth";
-import { auth, db } from "@/lib/firebase";
+import { auth, db, firebaseConfig } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { cn } from "@/shared/lib/utils";
 
@@ -111,18 +112,41 @@ export const AuthModal: React.FC = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
+      let signedInUser: FirebaseUser;
+      const electron = (window as any).electron;
+
+      if (electron?.auth?.googleOAuth) {
+        // Electron: use BrowserWindow-based OAuth flow
+        const result = await electron.auth.googleOAuth(firebaseConfig.apiKey);
+        if (!result) {
+          // User closed the auth window
+          console.log("Sign-in cancelled by user");
+          setLoading(false);
+          return;
+        }
+
+        const credential = GoogleAuthProvider.credential(
+          result.idToken,
+          result.accessToken
+        );
+        const userCredential = await signInWithCredential(auth, credential);
+        signedInUser = userCredential.user;
+      } else {
+        // Web: use standard popup flow
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        signedInUser = result.user;
+      }
 
       // Check if user profile exists in Firestore
-      const docRef = doc(db, "users", result.user.uid);
+      const docRef = doc(db, "users", signedInUser.uid);
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
         // New user — show profile setup step
-        setPendingUser(result.user);
-        setDisplayName(result.user.displayName || result.user.email?.split("@")[0] || "");
-        setUsername(result.user.email?.split("@")[0] || "");
+        setPendingUser(signedInUser);
+        setDisplayName(signedInUser.displayName || signedInUser.email?.split("@")[0] || "");
+        setUsername(signedInUser.email?.split("@")[0] || "");
         setStep("profile-setup");
       } else {
         // Existing user — sign in directly
