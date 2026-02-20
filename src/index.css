@@ -4129,3 +4129,90 @@ body.cursor-inactive * {
     transform: translateX(-50%) translateY(0);
   }
 }
+
+/* ============================== */
+/* MOBILE APP STYLES (/m routes)  */
+/* ============================== */
+
+/* Mobile shell */
+.mobile-shell {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Safe area padding for notch/home indicator */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Hide scrollbar but keep scrolling */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Snap scroll for TikTok-style clips feed */
+.mobile-clips-feed > div {
+  scroll-snap-type: y mandatory;
+  overscroll-behavior-y: contain;
+}
+
+.mobile-reel {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Mobile bottom nav glassmorphism */
+.mobile-bottom-nav {
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Mobile top bar glassmorphism */
+.mobile-top-bar {
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Line clamp utilities (for mobile text truncation) */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Mobile tap highlight override */
+.mobile-shell * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth entrance animations for mobile pages */
+@keyframes mobile-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-shell main > * {
+  animation: mobile-fade-up 0.3s ease-out;
+}

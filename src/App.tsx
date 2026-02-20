@@ -29,6 +29,16 @@ const PlatformSearch = lazy(() => import("./pages/platform/pages/SearchPage").th
 const PlatformSettings = lazy(() => import("./pages/platform/pages/SettingsPage").then(m => ({ default: m.SettingsPage })));
 const PlatformClips = lazy(() => import("./pages/platform/pages/ClipsPage").then(m => ({ default: m.ClipsPage })));
 
+// Mobile pages
+const MobileLayout = lazy(() => import("./pages/Mobile/MobileLayout").then(m => ({ default: m.MobileLayout })));
+const MobileHome = lazy(() => import("./pages/Mobile/pages/MobileHomePage").then(m => ({ default: m.MobileHomePage })));
+const MobileBrowse = lazy(() => import("./pages/Mobile/pages/MobileBrowsePage").then(m => ({ default: m.MobileBrowsePage })));
+const MobileStream = lazy(() => import("./pages/Mobile/pages/MobileStreamPage").then(m => ({ default: m.MobileStreamPage })));
+const MobileClips = lazy(() => import("./pages/Mobile/pages/MobileClipsPage").then(m => ({ default: m.MobileClipsPage })));
+const MobileProfile = lazy(() => import("./pages/Mobile/pages/MobileProfilePage").then(m => ({ default: m.MobileProfilePage })));
+const MobileSearch = lazy(() => import("./pages/Mobile/pages/MobileSearchPage").then(m => ({ default: m.MobileSearchPage })));
+const MobileSettings = lazy(() => import("./pages/Mobile/pages/MobileSettingsPage").then(m => ({ default: m.MobileSettingsPage })));
+
 const queryClient = new QueryClient();
 
 // Initialize theme from persisted store on app load
@@ -127,6 +137,17 @@ const App = () => {
                         <Route path="search" element={<PlatformSearch />} />
                         <Route path="settings" element={<PlatformSettings />} />
                         <Route path="clips" element={<PlatformClips />} />
+                      </Route>
+                      {/* Mobile routes */}
+                      <Route path="/m" element={<MobileLayout />}>
+                        <Route index element={<MobileHome />} />
+                        <Route path="browse" element={<MobileBrowse />} />
+                        <Route path="browse/:category" element={<MobileBrowse />} />
+                        <Route path="stream/:username" element={<MobileStream />} />
+                        <Route path="clips" element={<MobileClips />} />
+                        <Route path="profile/:username" element={<MobileProfile />} />
+                        <Route path="search" element={<MobileSearch />} />
+                        <Route path="settings" element={<MobileSettings />} />
                       </Route>
                       <Route path="/remote-cam" element={<RemoteCamera />} />
                       <Route path="*" element={<NotFound />} />
