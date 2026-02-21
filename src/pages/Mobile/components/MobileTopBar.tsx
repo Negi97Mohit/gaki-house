@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bell, X } from "lucide-react";
+import { Search, Bell, X, Heart } from "lucide-react";
 import { useAuth } from "@/pages/platform/context/AuthContext";
 import { cn } from "@/shared/lib/utils";
 
@@ -34,6 +34,12 @@ export const MobileTopBar: React.FC = () => {
 
                 {/* Right actions */}
                 <div className="flex items-center gap-1">
+                    <button
+                        onClick={() => navigate("/m/following")}
+                        className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all active:scale-90"
+                    >
+                        <Heart className="w-5 h-5" />
+                    </button>
                     <button
                         onClick={() => setSearchOpen(true)}
                         className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all active:scale-90"

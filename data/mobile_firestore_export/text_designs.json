@@ -1,0 +1,2045 @@
+[
+  {
+    "id": "aggressive-condensed_mobile",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "style": {
+      "fontFamily": "Barlow Condensed",
+      "borderColor": "#000000",
+      "fontSize": 88,
+      "shadow": true,
+      "border": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "underline": false,
+      "color": "#ff0000",
+      "italic": false,
+      "textShadow": "4px 4px 0px #000000, 8px 8px 15px rgba(0,0,0,0.6)",
+      "letterSpacing": "0.06em",
+      "outline": true,
+      "borderWidth": 0
+    },
+    "name": "Aggressive Condensed (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #ff0000 0%, #8b0000 100%)",
+    "category": "headlines",
+    "isMobile": true,
+    "originalDesktopId": "aggressive-condensed"
+  },
+  {
+    "id": "anime-manga-stroke_mobile",
+    "thumbnail": "linear-gradient(135deg, #ffffff 0%, #000000 100%)",
+    "category": "fun",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "layers": [
+      {
+        "fontFamily": "Noto Sans JP",
+        "fontSize": 92,
+        "type": "text",
+        "color": "#ffffff"
+      },
+      {
+        "width": 10,
+        "type": "stroke",
+        "color": "#000000"
+      },
+      {
+        "opacity": 0.5,
+        "type": "speedlines"
+      },
+      {
+        "opacity": 0.3,
+        "type": "halftone"
+      }
+    ],
+    "name": "Anime Manga Stroke (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "anime-manga-stroke"
+  },
+  {
+    "id": "bold-impact_mobile",
+    "style": {
+      "outline": false,
+      "fontFamily": "Anton",
+      "letterSpacing": "0.02em",
+      "bold": false,
+      "underline": false,
+      "shadow": true,
+      "italic": false,
+      "backgroundColor": "transparent",
+      "textShadow": "5px 5px 0px #000000, 10px 10px 20px rgba(0,0,0,0.5)",
+      "borderColor": "#000000",
+      "fontSize": 82,
+      "borderWidth": 0,
+      "color": "#ffffff",
+      "border": false
+    },
+    "category": "headlines",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "thumbnail": "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+    "name": "Bold Impact (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "bold-impact"
+  },
+  {
+    "id": "bounce-fun_mobile",
+    "animation": {
+      "duration": 0.6,
+      "infinite": true,
+      "type": "bounce"
+    },
+    "migratedAt": "2025-12-22T11:12:10.170Z",
+    "name": "Bounce Fun (Mobile)",
+    "layers": [
+      {
+        "color": "#00c853",
+        "type": "text",
+        "fontFamily": "Luckiest Guy",
+        "fontSize": 68
+      },
+      {
+        "type": "stroke",
+        "width": 3,
+        "color": "#ffffff"
+      },
+      {
+        "color": "rgba(0,0,0,0.3)",
+        "offsetX": 5,
+        "type": "shadow",
+        "offsetY": 5,
+        "blur": 10
+      }
+    ],
+    "thumbnail": "linear-gradient(135deg, #00c853 0%, #69f0ae 100%)",
+    "category": "animated",
+    "isMobile": true,
+    "originalDesktopId": "bounce-fun"
+  },
+  {
+    "id": "burnt-paper-grunge_mobile",
+    "category": "retro",
+    "layers": [
+      {
+        "type": "text",
+        "color": "#f7e7c5",
+        "fontFamily": "IM Fell English",
+        "fontSize": 90
+      },
+      {
+        "src": "/textures/burnt-edges.png",
+        "blendMode": "multiply",
+        "type": "texture",
+        "opacity": 1
+      },
+      {
+        "opacity": 0.4,
+        "type": "dust"
+      },
+      {
+        "opacity": 0.25,
+        "type": "grain"
+      }
+    ],
+    "name": "Burnt Paper Grunge (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "thumbnail": "#f7e7c5",
+    "isMobile": true,
+    "originalDesktopId": "burnt-paper-grunge"
+  },
+  {
+    "id": "candy-jelly_mobile",
+    "thumbnail": "#ff467e",
+    "name": "Glossy Candy Jelly (Mobile)",
+    "category": "fun",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "layers": [
+      {
+        "type": "text",
+        "color": "#ff467e",
+        "fontFamily": "Baloo",
+        "fontSize": 110
+      },
+      {
+        "type": "jelly-3d",
+        "depth": 25
+      },
+      {
+        "type": "gloss",
+        "strength": 1
+      },
+      {
+        "color": "rgba(0,0,0,0.4)",
+        "offsetX": 0,
+        "offsetY": 4,
+        "blur": 20,
+        "type": "inner-shadow"
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "candy-jelly"
+  },
+  {
+    "id": "casual-notes_mobile",
+    "thumbnail": "linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%)",
+    "name": "Casual Notes (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "category": "casual",
+    "style": {
+      "shadow": true,
+      "borderColor": "#000000",
+      "italic": false,
+      "fontSize": 64,
+      "outline": false,
+      "fontFamily": "Caveat",
+      "borderWidth": 0,
+      "textShadow": "1px 1px 2px rgba(0,0,0,0.1)",
+      "underline": false,
+      "border": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "letterSpacing": "0.02em",
+      "color": "#2d3436"
+    },
+    "isMobile": true,
+    "originalDesktopId": "casual-notes"
+  },
+  {
+    "id": "chrome-gradient_mobile",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Anton",
+        "fontSize": 120,
+        "gradient": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)"
+      },
+      {
+        "offsetY": 4,
+        "offsetX": 0,
+        "blur": 25,
+        "color": "rgba(0,0,0,0.6)",
+        "type": "inner-shadow"
+      },
+      {
+        "type": "gloss",
+        "strength": 0.8
+      }
+    ],
+    "category": "modern",
+    "name": "Chrome Gradient (Mobile)",
+    "thumbnail": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)",
+    "isMobile": true,
+    "originalDesktopId": "chrome-gradient"
+  },
+  {
+    "id": "chrome-liquid-metal_mobile",
+    "thumbnail": "linear-gradient(90deg, #ffffff, #a6a6a6, #1c1c1c, #bfbfbf)",
+    "category": "modern",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "layers": [
+      {
+        "type": "text",
+        "fontFamily": "Anton",
+        "fontSize": 110,
+        "gradient": "linear-gradient(90deg, #ffffff, #a6a6a6, #1c1c1c, #bfbfbf)"
+      },
+      {
+        "strength": 0.9,
+        "type": "specular-highlight"
+      },
+      {
+        "offsetY": 4,
+        "offsetX": 0,
+        "color": "rgba(0,0,0,0.7)",
+        "blur": 25,
+        "type": "inner-shadow"
+      },
+      {
+        "type": "gloss",
+        "strength": 0.8
+      }
+    ],
+    "name": "Chrome Liquid Metal (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "chrome-liquid-metal"
+  },
+  {
+    "id": "chrome-metal_mobile",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "style": {
+      "border": false,
+      "fontFamily": "Space Grotesk",
+      "outline": false,
+      "borderColor": "#000000",
+      "borderWidth": 0,
+      "color": "#bdc3c7",
+      "letterSpacing": "0.06em",
+      "textShadow": "2px 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.3)",
+      "bold": true,
+      "shadow": true,
+      "backgroundColor": "transparent",
+      "underline": false,
+      "italic": false,
+      "fontSize": 68,
+      "gradient": "linear-gradient(135deg, #bdc3c7 0%, #ecf0f1 50%, #95a5a6 100%)"
+    },
+    "name": "Chrome Metal (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%)",
+    "category": "modern",
+    "isMobile": true,
+    "originalDesktopId": "chrome-metal"
+  },
+  {
+    "id": "cinematic-fog-title_mobile",
+    "name": "Cinematic Fog Title (Mobile)",
+    "category": "elegant",
+    "layers": [
+      {
+        "fontSize": 120,
+        "color": "#e4d8c4",
+        "fontFamily": "Garamond",
+        "type": "text"
+      },
+      {
+        "opacity": 0.45,
+        "type": "fog"
+      },
+      {
+        "type": "rimlight",
+        "color": "#ffdca8",
+        "strength": 0.8
+      },
+      {
+        "offsetX": 0,
+        "blur": 40,
+        "type": "shadow",
+        "offsetY": 18,
+        "color": "rgba(0,0,0,0.6)"
+      }
+    ],
+    "thumbnail": "#333333",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "isMobile": true,
+    "originalDesktopId": "cinematic-fog-title"
+  },
+  {
+    "id": "cinematic-title_mobile",
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "name": "Cinematic Title (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #000000 0%, #434343 100%)",
+    "category": "cinematic",
+    "style": {
+      "backgroundColor": "transparent",
+      "outline": false,
+      "letterSpacing": "0.1em",
+      "fontFamily": "Cinzel",
+      "shadow": true,
+      "underline": false,
+      "italic": false,
+      "borderWidth": 0,
+      "color": "#FFFFFF",
+      "borderColor": "#000000",
+      "bold": true,
+      "fontSize": 78,
+      "border": false,
+      "textShadow": "0 10px 30px rgba(0,0,0,0.9), 0 0 60px rgba(255,255,255,0.3)"
+    },
+    "isMobile": true,
+    "originalDesktopId": "cinematic-title"
+  },
+  {
+    "id": "classic-newspaper_mobile",
+    "name": "Classic Newspaper (Mobile)",
+    "style": {
+      "letterSpacing": "0.02em",
+      "backgroundColor": "transparent",
+      "outline": false,
+      "textShadow": "none",
+      "fontFamily": "Merriweather",
+      "italic": false,
+      "border": false,
+      "shadow": false,
+      "color": "#1a1a1a",
+      "borderWidth": 0,
+      "borderColor": "#000000",
+      "underline": true,
+      "fontSize": 52,
+      "bold": true
+    },
+    "category": "vintage",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "thumbnail": "linear-gradient(135deg, #f4f4f4 0%, #d9d9d9 100%)",
+    "isMobile": true,
+    "originalDesktopId": "classic-newspaper"
+  },
+  {
+    "id": "cloud-puff_mobile",
+    "layers": [
+      {
+        "fontFamily": "Fredoka",
+        "type": "text",
+        "color": "#ffffff",
+        "fontSize": 110
+      },
+      {
+        "type": "puff",
+        "strength": 0.9
+      },
+      {
+        "opacity": 0.4,
+        "type": "fog"
+      },
+      {
+        "strength": 0.6,
+        "type": "bloom"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "thumbnail": "#dbeafe",
+    "name": "Cloud Puff Soft Text (Mobile)",
+    "category": "fun",
+    "isMobile": true,
+    "originalDesktopId": "cloud-puff"
+  },
+  {
+    "id": "comic-bang_mobile",
+    "style": {
+      "backgroundColor": "transparent",
+      "fontFamily": "Bangers",
+      "letterSpacing": "0.05em",
+      "underline": false,
+      "shadow": false,
+      "color": "#ffff00",
+      "border": true,
+      "italic": false,
+      "borderWidth": 5,
+      "bold": false,
+      "borderColor": "#000000",
+      "fontSize": 76,
+      "textShadow": "4px 4px 0px #ff0000, 8px 8px 0px #000000",
+      "outline": true
+    },
+    "thumbnail": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    "name": "Comic Bang (Mobile)",
+    "category": "fun",
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "isMobile": true,
+    "originalDesktopId": "comic-bang"
+  },
+  {
+    "id": "confetti-party_mobile",
+    "animation": {
+      "duration": 0.6,
+      "infinite": true,
+      "type": "confetti"
+    },
+    "name": "Confetti Party (Mobile)",
+    "layers": [
+      {
+        "gradient": "linear-gradient(90deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)",
+        "fontSize": 70,
+        "fontFamily": "Bangers",
+        "type": "text"
+      },
+      {
+        "width": 3,
+        "type": "stroke",
+        "color": "#ffffff"
+      },
+      {
+        "offsetY": 4,
+        "offsetX": 4,
+        "color": "rgba(0,0,0,0.3)",
+        "blur": 8,
+        "type": "shadow"
+      }
+    ],
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "isMobile": true,
+    "originalDesktopId": "confetti-party"
+  },
+  {
+    "id": "crystal-diamond_mobile",
+    "name": "Crystal Diamond Shine (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "thumbnail": "linear-gradient(135deg, #b7e8ff 0%, #ffffff 100%)",
+    "category": "effects",
+    "layers": [
+      {
+        "color": "#ffffff",
+        "fontFamily": "Bodoni",
+        "type": "text",
+        "fontSize": 110
+      },
+      {
+        "type": "diamond-facets",
+        "strength": 1
+      },
+      {
+        "type": "sparkle",
+        "density": 0.6
+      },
+      {
+        "type": "glow",
+        "color": "#b7e8ff",
+        "blur": 30
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "crystal-diamond"
+  },
+  {
+    "id": "cyberpunk-hard-glow_mobile",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00ffff 100%)",
+    "layers": [
+      {
+        "fontSize": 100,
+        "type": "text",
+        "color": "#ffffff",
+        "fontFamily": "Orbitron"
+      },
+      {
+        "color": "#ff00ff",
+        "type": "glow",
+        "strength": 1,
+        "blur": 25
+      },
+      {
+        "type": "glow",
+        "strength": 0.7,
+        "color": "#00ffff",
+        "blur": 45
+      },
+      {
+        "type": "scanlines",
+        "opacity": 0.3
+      }
+    ],
+    "name": "Cyberpunk Hard Glow (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "isMobile": true,
+    "originalDesktopId": "cyberpunk-hard-glow"
+  },
+  {
+    "id": "digital-display_mobile",
+    "name": "Digital Display (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "thumbnail": "linear-gradient(135deg, #00ff00 0%, #00cc00 100%)",
+    "category": "futuristic",
+    "style": {
+      "outline": false,
+      "fontSize": 70,
+      "italic": false,
+      "textShadow": "0 0 10px #00ff00, 0 0 20px #00ff00",
+      "padding": "15px 35px",
+      "shadow": false,
+      "borderWidth": 2,
+      "borderColor": "#00ff00",
+      "bold": true,
+      "fontFamily": "Saira Condensed",
+      "backgroundColor": "#0a0a0a",
+      "border": true,
+      "underline": false,
+      "letterSpacing": "0.12em",
+      "color": "#00ff00"
+    },
+    "isMobile": true,
+    "originalDesktopId": "digital-display"
+  },
+  {
+    "id": "dreamy-script_mobile",
+    "category": "elegant",
+    "name": "Dreamy Script (Mobile)",
+    "style": {
+      "borderWidth": 0,
+      "color": "#ff6b9d",
+      "borderColor": "#000000",
+      "shadow": true,
+      "underline": false,
+      "italic": false,
+      "letterSpacing": "0.03em",
+      "bold": false,
+      "fontFamily": "Pacifico",
+      "outline": false,
+      "textShadow": "2px 2px 8px rgba(255,107,157,0.4), 0 0 20px rgba(255,107,157,0.2)",
+      "backgroundColor": "transparent",
+      "border": false,
+      "fontSize": 58
+    },
+    "thumbnail": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "isMobile": true,
+    "originalDesktopId": "dreamy-script"
+  },
+  {
+    "id": "electric-shock_mobile",
+    "name": "Electric Shock (Mobile)",
+    "animation": {
+      "duration": 0.3,
+      "type": "electric",
+      "infinite": true
+    },
+    "thumbnail": "linear-gradient(135deg, #00ffff 0%, #ffffff 50%, #00ccff 100%)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "layers": [
+      {
+        "type": "text",
+        "fontSize": 68,
+        "color": "#00ffff",
+        "fontFamily": "Exo 2"
+      },
+      {
+        "blur": 15,
+        "type": "glow",
+        "color": "#00ffff"
+      },
+      {
+        "type": "outer-glow",
+        "blur": 30,
+        "color": "#ffffff"
+      }
+    ],
+    "category": "animated",
+    "isMobile": true,
+    "originalDesktopId": "electric-shock"
+  },
+  {
+    "id": "elegant-serif-modern_mobile",
+    "style": {
+      "backgroundColor": "transparent",
+      "fontFamily": "Libre Baskerville",
+      "letterSpacing": "0.03em",
+      "underline": false,
+      "shadow": true,
+      "color": "#2c3e50",
+      "border": false,
+      "italic": false,
+      "borderWidth": 0,
+      "bold": true,
+      "borderColor": "#000000",
+      "textShadow": "1px 1px 3px rgba(0,0,0,0.15)",
+      "fontSize": 54,
+      "outline": false
+    },
+    "thumbnail": "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
+    "category": "elegant",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "name": "Elegant Serif Modern (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "elegant-serif-modern"
+  },
+  {
+    "id": "fire-blaze_mobile",
+    "name": "Fire Blaze (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "animation": {
+      "type": "fire",
+      "duration": 0.8,
+      "infinite": true
+    },
+    "category": "animated",
+    "layers": [
+      {
+        "type": "text",
+        "fontSize": 72,
+        "fontFamily": "Anton",
+        "color": "#ff4500"
+      },
+      {
+        "type": "glow",
+        "blur": 25,
+        "color": "#ff6600"
+      },
+      {
+        "type": "outer-glow",
+        "color": "#ff3300",
+        "blur": 40
+      }
+    ],
+    "thumbnail": "linear-gradient(135deg, #ff4500 0%, #ff8c00 50%, #ffd700 100%)",
+    "isMobile": true,
+    "originalDesktopId": "fire-blaze"
+  },
+  {
+    "id": "fire-gradient_mobile",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "category": "colorful",
+    "name": "Fire Gradient (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #ff0000 0%, #ff7f00 50%, #ffff00 100%)",
+    "style": {
+      "textShadow": "0 0 20px rgba(255,127,0,0.8), 3px 3px 6px rgba(0,0,0,0.5)",
+      "underline": false,
+      "outline": false,
+      "backgroundColor": "transparent",
+      "letterSpacing": "0.05em",
+      "fontFamily": "Rajdhani",
+      "fontSize": 72,
+      "border": false,
+      "italic": false,
+      "gradient": "linear-gradient(135deg, #ff0000 0%, #ff7f00 50%, #ffff00 100%)",
+      "shadow": true,
+      "borderWidth": 0,
+      "color": "#ff0000",
+      "borderColor": "#000000",
+      "bold": true
+    },
+    "isMobile": true,
+    "originalDesktopId": "fire-gradient"
+  },
+  {
+    "id": "flame-inferno_mobile",
+    "thumbnail": "linear-gradient(180deg, #ff0000 0%, #ff4500 30%, #ff8c00 60%, #ffd700 100%)",
+    "animation": {
+      "infinite": true,
+      "duration": 0.6,
+      "type": "flame"
+    },
+    "category": "animated",
+    "name": "Flame Inferno (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.170Z",
+    "layers": [
+      {
+        "fontSize": 74,
+        "gradient": "linear-gradient(180deg, #ffd700 0%, #ff8c00 40%, #ff4500 70%, #ff0000 100%)",
+        "fontFamily": "Russo One",
+        "type": "text"
+      },
+      {
+        "blur": 30,
+        "color": "#ff4500",
+        "type": "glow"
+      },
+      {
+        "type": "outer-glow",
+        "color": "#ff0000",
+        "blur": 50
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "flame-inferno"
+  },
+  {
+    "id": "float-dreamy_mobile",
+    "name": "Float Dreamy (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.170Z",
+    "animation": {
+      "duration": 3,
+      "infinite": true,
+      "type": "float"
+    },
+    "layers": [
+      {
+        "fontSize": 58,
+        "color": "#fcb69f",
+        "fontFamily": "Pacifico",
+        "type": "text"
+      },
+      {
+        "color": "#ffecd2",
+        "blur": 15,
+        "type": "glow"
+      },
+      {
+        "offsetX": 0,
+        "blur": 20,
+        "type": "shadow",
+        "color": "rgba(252,182,159,0.4)",
+        "offsetY": 10
+      }
+    ],
+    "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+    "category": "animated",
+    "isMobile": true,
+    "originalDesktopId": "float-dreamy"
+  },
+  {
+    "id": "futuristic-tech_mobile",
+    "category": "futuristic",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "style": {
+      "letterSpacing": "0.08em",
+      "backgroundColor": "transparent",
+      "outline": false,
+      "textShadow": "0 0 20px #00d4ff, 0 0 40px #00d4ff, 2px 2px 4px rgba(0,0,0,0.8)",
+      "italic": false,
+      "fontFamily": "Exo 2",
+      "border": false,
+      "shadow": true,
+      "color": "#00d4ff",
+      "borderWidth": 0,
+      "borderColor": "#000000",
+      "underline": false,
+      "fontSize": 68,
+      "bold": true
+    },
+    "name": "Futuristic Tech (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
+    "isMobile": true,
+    "originalDesktopId": "futuristic-tech"
+  },
+  {
+    "id": "glitch-cyber_mobile",
+    "name": "Glitch Cyber (Mobile)",
+    "layers": [
+      {
+        "fontSize": 64,
+        "type": "text",
+        "fontFamily": "Audiowide",
+        "color": "#ffffff"
+      },
+      {
+        "type": "offset-layer",
+        "color": "#ff0080",
+        "offsetY": 0,
+        "offsetX": 2
+      },
+      {
+        "offsetX": -2,
+        "type": "offset-layer",
+        "color": "#00ffff",
+        "offsetY": 0
+      }
+    ],
+    "thumbnail": "linear-gradient(135deg, #ff0080 0%, #7928ca 50%, #00ffff 100%)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "animation": {
+      "type": "glitch",
+      "infinite": true,
+      "duration": 0.5
+    },
+    "category": "animated",
+    "isMobile": true,
+    "originalDesktopId": "glitch-cyber"
+  },
+  {
+    "id": "glitch-digital_mobile",
+    "name": "Glitch Digital (Mobile)",
+    "category": "modern",
+    "style": {
+      "textShadow": "2px 2px 0px #ff0080, -2px -2px 0px #00ffff",
+      "fontSize": 72,
+      "backgroundColor": "transparent",
+      "italic": false,
+      "bold": true,
+      "borderColor": "#000000",
+      "underline": false,
+      "color": "#ffffff",
+      "shadow": false,
+      "fontFamily": "Audiowide",
+      "border": false,
+      "letterSpacing": "0.1em",
+      "borderWidth": 0,
+      "outline": false
+    },
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "thumbnail": "linear-gradient(135deg, #ff0080 0%, #7928ca 100%)",
+    "isMobile": true,
+    "originalDesktopId": "glitch-digital"
+  },
+  {
+    "id": "glow-ethereal_mobile",
+    "thumbnail": "linear-gradient(135deg, #7c4dff 0%, #b388ff 100%)",
+    "animation": {
+      "duration": 2,
+      "infinite": true,
+      "type": "glow"
+    },
+    "category": "animated",
+    "migratedAt": "2025-12-22T11:12:10.170Z",
+    "name": "Glow Ethereal (Mobile)",
+    "layers": [
+      {
+        "color": "#b388ff",
+        "fontFamily": "Cinzel",
+        "fontSize": 62,
+        "type": "text"
+      },
+      {
+        "type": "glow",
+        "blur": 25,
+        "color": "#7c4dff"
+      },
+      {
+        "color": "#e040fb",
+        "blur": 50,
+        "type": "outer-glow"
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "glow-ethereal"
+  },
+  {
+    "id": "gold-metal-3d_mobile",
+    "layers": [
+      {
+        "fontSize": 110,
+        "fontFamily": "Playfair Display",
+        "type": "text",
+        "color": "#ffffff"
+      },
+      {
+        "blendMode": "overlay",
+        "opacity": 1,
+        "type": "texture",
+        "src": "/textures/gold_foil.jpg"
+      },
+      {
+        "color": "rgba(0,0,0,0.5)",
+        "blur": 15,
+        "type": "inner-shadow",
+        "offsetX": 0,
+        "offsetY": 6
+      },
+      {
+        "angle": 140,
+        "type": "extrude",
+        "color": "#8b6f23",
+        "depth": 30
+      },
+      {
+        "color": "rgba(255,215,0,0.6)",
+        "blur": 25,
+        "type": "glow"
+      }
+    ],
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
+    "name": "Gold Metal 3D  (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "isMobile": true,
+    "originalDesktopId": "gold-metal-3d"
+  },
+  {
+    "id": "golden-royal-serif_mobile",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "name": "Golden Royal Serif (Mobile)",
+    "layers": [
+      {
+        "color": "#ffffff",
+        "fontSize": 115,
+        "type": "text",
+        "fontFamily": "Cormorant"
+      },
+      {
+        "type": "gold-foil",
+        "texture": "/textures/gold_foil.jpg"
+      },
+      {
+        "type": "emboss",
+        "strength": 0.7
+      },
+      {
+        "offsetX": 0,
+        "type": "shadow",
+        "blur": 30,
+        "color": "rgba(0,0,0,0.5)",
+        "offsetY": 16
+      }
+    ],
+    "category": "elegant",
+    "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
+    "isMobile": true,
+    "originalDesktopId": "golden-royal-serif"
+  },
+  {
+    "id": "gradient-sunset_mobile",
+    "thumbnail": "linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #ee5a6f 100%)",
+    "style": {
+      "underline": false,
+      "textShadow": "3px 3px 6px rgba(0,0,0,0.3)",
+      "border": false,
+      "bold": true,
+      "fontFamily": "Poppins",
+      "shadow": true,
+      "fontSize": 66,
+      "backgroundColor": "transparent",
+      "outline": false,
+      "color": "#ff6b6b",
+      "borderColor": "#000000",
+      "borderWidth": 0,
+      "letterSpacing": "0.03em",
+      "italic": false,
+      "gradient": "linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #ee5a6f 100%)"
+    },
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "category": "colorful",
+    "name": "Gradient Sunset (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "gradient-sunset"
+  },
+  {
+    "id": "graffiti-drip_mobile",
+    "thumbnail": "linear-gradient(135deg, #ff3ea5 0%, #00ff88 100%)",
+    "category": "urban",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "layers": [
+      {
+        "fontSize": 105,
+        "color": "#ffffff",
+        "type": "text",
+        "fontFamily": "Bungee"
+      },
+      {
+        "spread": 25,
+        "type": "spray",
+        "color": "#ff3ea5"
+      },
+      {
+        "type": "drip",
+        "length": 20
+      },
+      {
+        "color": "rgba(0,0,0,0.6)",
+        "offsetX": 10,
+        "blur": 20,
+        "type": "shadow"
+      }
+    ],
+    "name": "Graffiti Spray Drip (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "graffiti-drip"
+  },
+  {
+    "id": "graffiti-pro_mobile",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "category": "urban",
+    "thumbnail": "linear-gradient(135deg, #ff0099 0%, #00ff88 100%)",
+    "name": "Graffiti Pro (Mobile)",
+    "layers": [
+      {
+        "type": "text",
+        "fontSize": 92,
+        "color": "#ffffff",
+        "fontFamily": "Bungee"
+      },
+      {
+        "color": "#ff0099",
+        "blur": 45,
+        "spread": 12,
+        "type": "spray"
+      },
+      {
+        "offsetX": 10,
+        "blur": 45,
+        "color": "#00ff88",
+        "spread": 12,
+        "type": "spray"
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "graffiti-pro"
+  },
+  {
+    "id": "graffiti-urban_mobile",
+    "layers": [
+      {
+        "fontSize": 66,
+        "type": "text",
+        "color": "#ff00ff",
+        "fontFamily": "Permanent Marker"
+      },
+      {
+        "color": "#000000",
+        "type": "stroke",
+        "width": 4
+      },
+      {
+        "offsetX": 3,
+        "type": "offset-layer",
+        "offsetY": -3,
+        "color": "#00ffff"
+      },
+      {
+        "offsetX": -3,
+        "color": "#ffff00",
+        "type": "offset-layer",
+        "offsetY": 3
+      }
+    ],
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00ffff 50%, #ffff00 100%)",
+    "category": "animated",
+    "animation": {
+      "infinite": true,
+      "type": "graffiti",
+      "duration": 0.5
+    },
+    "name": "Graffiti Urban (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "isMobile": true,
+    "originalDesktopId": "graffiti-urban"
+  },
+  {
+    "id": "handwritten-script_mobile",
+    "name": "Handwritten Script (Mobile)",
+    "category": "casual",
+    "style": {
+      "border": false,
+      "borderWidth": 0,
+      "borderColor": "#000000",
+      "fontSize": 58,
+      "color": "#2c3e50",
+      "shadow": true,
+      "letterSpacing": "0.02em",
+      "backgroundColor": "transparent",
+      "italic": false,
+      "outline": false,
+      "bold": false,
+      "underline": false,
+      "textShadow": "1px 1px 2px rgba(0,0,0,0.1)",
+      "fontFamily": "Dancing Script"
+    },
+    "thumbnail": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "isMobile": true,
+    "originalDesktopId": "handwritten-script"
+  },
+  {
+    "id": "hologram-rainbow_mobile",
+    "thumbnail": "linear-gradient(120deg, #ff00cc, #00f2ff, #fffd37)",
+    "name": "Hologram Rainbow Shift (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "category": "futuristic",
+    "layers": [
+      {
+        "fontFamily": "Montserrat",
+        "fontSize": 100,
+        "type": "text",
+        "gradient": "linear-gradient(120deg, #ff00cc, #00f2ff, #fffd37)"
+      },
+      {
+        "opacity": 0.3,
+        "type": "grain"
+      },
+      {
+        "type": "prism-shift",
+        "strength": 0.5
+      },
+      {
+        "blur": 20,
+        "type": "glow",
+        "color": "#ffffff"
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "hologram-rainbow"
+  },
+  {
+    "id": "ice-crystal_mobile",
+    "layers": [
+      {
+        "color": "#a0d8ef",
+        "fontSize": 66,
+        "fontFamily": "Glacial Indifference",
+        "type": "text"
+      },
+      {
+        "color": "#e0f0ff",
+        "type": "glow",
+        "blur": 20
+      },
+      {
+        "color": "#80c8df",
+        "type": "outer-glow",
+        "blur": 40
+      },
+      {
+        "type": "sparkle",
+        "density": 0.5
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:10.170Z",
+    "category": "animated",
+    "name": "Ice Crystal (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #a0d8ef 0%, #e0f0ff 50%, #ffffff 100%)",
+    "animation": {
+      "infinite": true,
+      "duration": 2,
+      "type": "ice"
+    },
+    "isMobile": true,
+    "originalDesktopId": "ice-crystal"
+  },
+  {
+    "id": "ice-glass-frost_mobile",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "category": "effects",
+    "thumbnail": "linear-gradient(135deg, #b4e4ff 0%, #ffffff 100%)",
+    "name": "Ice Glass Frost (Mobile)",
+    "layers": [
+      {
+        "fontFamily": "Saira",
+        "type": "text",
+        "fontSize": 100,
+        "color": "rgba(255,255,255,0.75)"
+      },
+      {
+        "blendMode": "screen",
+        "src": "/textures/frost.png",
+        "opacity": 0.8,
+        "type": "texture"
+      },
+      {
+        "intensity": 0.6,
+        "type": "refraction"
+      },
+      {
+        "color": "#b4e4ff",
+        "type": "outer-glow",
+        "blur": 60
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "ice-glass-frost"
+  },
+  {
+    "id": "industrial-stencil_mobile",
+    "thumbnail": "linear-gradient(135deg, #4a4a4a 0%, #1a1a1a 100%)",
+    "name": "Industrial Stencil (Mobile)",
+    "category": "modern",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "style": {
+      "underline": false,
+      "border": false,
+      "fontFamily": "Teko",
+      "letterSpacing": "0.1em",
+      "italic": false,
+      "borderColor": "#000000",
+      "outline": true,
+      "textShadow": "3px 3px 0px rgba(0,0,0,0.8)",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "borderWidth": 0,
+      "fontSize": 78,
+      "color": "#ffffff",
+      "shadow": true
+    },
+    "isMobile": true,
+    "originalDesktopId": "industrial-stencil"
+  },
+  {
+    "id": "ink-brush-calligraphy_mobile",
+    "name": "Ink Brush Calligraphy (Mobile)",
+    "layers": [
+      {
+        "color": "#000000",
+        "fontSize": 100,
+        "fontFamily": "Great Vibes",
+        "type": "text"
+      },
+      {
+        "src": "/textures/ink-brush.png",
+        "opacity": 1,
+        "type": "texture",
+        "blendMode": "multiply"
+      },
+      {
+        "type": "splatter",
+        "opacity": 0.4
+      }
+    ],
+    "category": "casual",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "thumbnail": "#f5f5f5",
+    "isMobile": true,
+    "originalDesktopId": "ink-brush-calligraphy"
+  },
+  {
+    "id": "led-dot-matrix_mobile",
+    "name": "LED Dot Matrix (Mobile)",
+    "layers": [
+      {
+        "fontFamily": "Roboto Mono",
+        "color": "#ffffff",
+        "type": "text",
+        "fontSize": 95
+      },
+      {
+        "type": "dot-grid",
+        "size": 6
+      },
+      {
+        "type": "bloom",
+        "strength": 0.6
+      },
+      {
+        "type": "rgb-shift",
+        "strength": 0.2
+      }
+    ],
+    "category": "tech",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "thumbnail": "#333333",
+    "isMobile": true,
+    "originalDesktopId": "led-dot-matrix"
+  },
+  {
+    "id": "luxury-gold_mobile",
+    "category": "elegant",
+    "name": "Luxury Gold (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)",
+    "style": {
+      "gradient": "linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%)",
+      "underline": false,
+      "outline": false,
+      "letterSpacing": "0.05em",
+      "italic": true,
+      "fontFamily": "Playfair Display",
+      "borderWidth": 0,
+      "textShadow": "0 2px 10px rgba(255,215,0,0.5), 0 0 30px rgba(255,215,0,0.3), 2px 2px 4px rgba(0,0,0,0.5)",
+      "shadow": true,
+      "color": "#ffd700",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "borderColor": "#000000",
+      "border": false,
+      "fontSize": 64
+    },
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "isMobile": true,
+    "originalDesktopId": "luxury-gold"
+  },
+  {
+    "id": "luxury-serif-bold_mobile",
+    "style": {
+      "shadow": true,
+      "outline": false,
+      "letterSpacing": "0.02em",
+      "fontFamily": "Abril Fatface",
+      "borderColor": "#000000",
+      "color": "#2c3e50",
+      "bold": false,
+      "borderWidth": 0,
+      "border": false,
+      "backgroundColor": "transparent",
+      "underline": false,
+      "fontSize": 66,
+      "textShadow": "2px 2px 4px rgba(0,0,0,0.2)",
+      "italic": false
+    },
+    "name": "Luxury Serif Bold (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #2c3e50 0%, #3498db 100%)",
+    "category": "elegant",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "isMobile": true,
+    "originalDesktopId": "luxury-serif-bold"
+  },
+  {
+    "id": "magazine-editorial_mobile",
+    "style": {
+      "borderColor": "#000000",
+      "borderWidth": 0,
+      "textShadow": "1px 1px 2px rgba(0,0,0,0.1)",
+      "bold": true,
+      "border": false,
+      "shadow": true,
+      "backgroundColor": "transparent",
+      "underline": false,
+      "fontSize": 60,
+      "italic": true,
+      "fontFamily": "Cormorant Garamond",
+      "outline": false,
+      "color": "#1a1a1a",
+      "letterSpacing": "0.05em"
+    },
+    "thumbnail": "linear-gradient(135deg, #000000 0%, #2c2c2c 100%)",
+    "category": "elegant",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "name": "Magazine Editorial (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "magazine-editorial"
+  },
+  {
+    "id": "minimal-swiss_mobile",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "category": "minimal",
+    "name": "Minimal Swiss Clean (Mobile)",
+    "layers": [
+      {
+        "fontFamily": "Helvetica Neue",
+        "type": "text",
+        "color": "#000000",
+        "fontSize": 95
+      }
+    ],
+    "thumbnail": "#f0f0f0",
+    "isMobile": true,
+    "originalDesktopId": "minimal-swiss"
+  },
+  {
+    "id": "neon-arcade_mobile",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "name": "Neon Arcade (Mobile)",
+    "category": "retro",
+    "style": {
+      "shadow": false,
+      "borderColor": "#000000",
+      "italic": false,
+      "fontSize": 68,
+      "fontFamily": "Bungee",
+      "outline": false,
+      "borderWidth": 0,
+      "border": false,
+      "underline": false,
+      "textShadow": "0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 3px 3px 0px #00ffff, 6px 6px 0px rgba(0,0,0,0.5)",
+      "backgroundColor": "transparent",
+      "bold": false,
+      "letterSpacing": "0.06em",
+      "color": "#ff00ff"
+    },
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00ffff 100%)",
+    "isMobile": true,
+    "originalDesktopId": "neon-arcade"
+  },
+  {
+    "id": "neon-cyberpunk_mobile",
+    "style": {
+      "outline": true,
+      "underline": false,
+      "italic": false,
+      "shadow": false,
+      "border": false,
+      "letterSpacing": "0.05em",
+      "borderWidth": 0,
+      "borderColor": "#000000",
+      "bold": true,
+      "fontFamily": "Orbitron",
+      "backgroundColor": "transparent",
+      "color": "#00f5ff",
+      "fontSize": 64,
+      "textShadow": "0 0 10px #00f5ff, 0 0 20px #00f5ff, 0 0 40px #00f5ff, 0 0 80px #00f5ff, 0 0 120px #ff00f5"
+    },
+    "name": "Neon Cyberpunk (Mobile)",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(135deg, #00f5ff 0%, #ff00f5 100%)",
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "isMobile": true,
+    "originalDesktopId": "neon-cyberpunk"
+  },
+  {
+    "id": "neon-flicker_mobile",
+    "animation": {
+      "duration": 1.2,
+      "type": "neon",
+      "infinite": true
+    },
+    "layers": [
+      {
+        "fontSize": 60,
+        "fontFamily": "Orbitron",
+        "type": "text",
+        "color": "#ff00de"
+      },
+      {
+        "blur": 20,
+        "color": "#ff00de",
+        "type": "glow"
+      },
+      {
+        "blur": 50,
+        "type": "outer-glow",
+        "color": "#ff00de"
+      }
+    ],
+    "thumbnail": "linear-gradient(135deg, #ff00de 0%, #00fff2 100%)",
+    "category": "animated",
+    "name": "Neon Flicker (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "isMobile": true,
+    "originalDesktopId": "neon-flicker"
+  },
+  {
+    "id": "neon-glow-pro_mobile",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00eaff 100%)",
+    "category": "futuristic",
+    "layers": [
+      {
+        "fontSize": 96,
+        "type": "text",
+        "color": "#ffffff",
+        "fontFamily": "Bungee"
+      },
+      {
+        "width": 8,
+        "type": "stroke",
+        "color": "#ff00ff"
+      },
+      {
+        "type": "glow",
+        "color": "#ff00ff",
+        "blur": 40
+      },
+      {
+        "color": "#00eaff",
+        "type": "glow",
+        "blur": 80
+      },
+      {
+        "offsetX": 0,
+        "type": "inner-shadow",
+        "blur": 12,
+        "color": "rgba(0,0,0,0.4)",
+        "offsetY": 4
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "name": "Neon Glow Pro  (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "neon-glow-pro"
+  },
+  {
+    "id": "neon-tube-glow-2_mobile",
+    "name": "Neon Tube Glow 2.0 (Mobile)",
+    "category": "futuristic",
+    "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00eaff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "color": "#ffffff",
+        "fontSize": 96,
+        "fontFamily": "Bungee"
+      },
+      {
+        "color": "#ffffff",
+        "intensity": 1,
+        "type": "inner-core"
+      },
+      {
+        "color": "#ff00ff",
+        "strength": 1,
+        "type": "glow",
+        "blur": 40
+      },
+      {
+        "type": "glow",
+        "blur": 80,
+        "color": "#00eaff",
+        "strength": 0.8
+      },
+      {
+        "opacity": 0.25,
+        "color": "#ff00ff",
+        "type": "ambient-bloom"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "isMobile": true,
+    "originalDesktopId": "neon-tube-glow-2"
+  },
+  {
+    "id": "ocean-wave_mobile",
+    "category": "colorful",
+    "thumbnail": "linear-gradient(135deg, #2e3192 0%, #1bffff 100%)",
+    "style": {
+      "shadow": true,
+      "fontSize": 64,
+      "underline": false,
+      "outline": false,
+      "gradient": "linear-gradient(135deg, #2e3192 0%, #1bffff 100%)",
+      "border": false,
+      "bold": true,
+      "fontFamily": "Montserrat",
+      "letterSpacing": "0.04em",
+      "borderWidth": 0,
+      "borderColor": "#000000",
+      "textShadow": "3px 3px 10px rgba(0,0,0,0.3)",
+      "color": "#2e3192",
+      "backgroundColor": "transparent",
+      "italic": false
+    },
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "name": "Ocean Wave (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "ocean-wave"
+  },
+  {
+    "id": "paintbrush-script_mobile",
+    "name": "Paint Brush Script (Mobile)",
+    "category": "casual",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "thumbnail": "#4CAF50",
+    "layers": [
+      {
+        "fontFamily": "Brush Script MT",
+        "type": "text",
+        "fontSize": 96,
+        "color": "#ffffff"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/brush_texture.png",
+        "blendMode": "multiply",
+        "opacity": 1
+      },
+      {
+        "blur": 10,
+        "offsetY": 4,
+        "offsetX": 4,
+        "color": "rgba(0,0,0,0.4)",
+        "type": "shadow"
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "paintbrush-script"
+  },
+  {
+    "id": "pulse-beat_mobile",
+    "thumbnail": "linear-gradient(135deg, #e91e63 0%, #9c27b0 100%)",
+    "category": "animated",
+    "name": "Pulse Beat (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.170Z",
+    "layers": [
+      {
+        "fontSize": 76,
+        "fontFamily": "Bebas Neue",
+        "color": "#e91e63",
+        "type": "text"
+      },
+      {
+        "blur": 20,
+        "color": "#e91e63",
+        "type": "glow"
+      },
+      {
+        "blur": 40,
+        "color": "#9c27b0",
+        "type": "outer-glow"
+      }
+    ],
+    "animation": {
+      "infinite": true,
+      "duration": 0.8,
+      "type": "pulse"
+    },
+    "isMobile": true,
+    "originalDesktopId": "pulse-beat"
+  },
+  {
+    "id": "rainbow-outline-neon_mobile",
+    "category": "effects",
+    "thumbnail": "linear-gradient(90deg,#ff0088,#ff6600,#ffee00,#0aff69,#0099ff,#a200ff)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "layers": [
+      {
+        "type": "text",
+        "fontSize": 100,
+        "fontFamily": "Poppins",
+        "color": "#ffffff"
+      },
+      {
+        "type": "stroke",
+        "width": 8,
+        "gradient": "linear-gradient(90deg,#ff0088,#ff6600,#ffee00,#0aff69,#0099ff,#a200ff)"
+      },
+      {
+        "blur": 35,
+        "type": "glow",
+        "color": "#ffffff"
+      }
+    ],
+    "name": "Rainbow Outline Neon (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "rainbow-outline-neon"
+  },
+  {
+    "id": "rainbow-pride_mobile",
+    "category": "colorful",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "thumbnail": "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+    "style": {
+      "borderColor": "#000000",
+      "backgroundColor": "transparent",
+      "fontFamily": "Righteous",
+      "italic": false,
+      "fontSize": 70,
+      "letterSpacing": "0.05em",
+      "bold": false,
+      "borderWidth": 0,
+      "textShadow": "3px 3px 8px rgba(0,0,0,0.4)",
+      "color": "#667eea",
+      "outline": false,
+      "shadow": true,
+      "underline": false,
+      "border": false,
+      "gradient": "linear-gradient(90deg, #ff0000 0%, #ff7f00 16.67%, #ffff00 33.33%, #00ff00 50%, #0000ff 66.67%, #4b0082 83.33%, #9400d3 100%)"
+    },
+    "name": "Rainbow Pride (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "rainbow-pride"
+  },
+  {
+    "id": "rainbow-wave_mobile",
+    "animation": {
+      "type": "rainbow",
+      "duration": 3,
+      "infinite": true
+    },
+    "layers": [
+      {
+        "type": "text",
+        "gradient": "linear-gradient(90deg, #ff0000 0%, #ff7f00 16.67%, #ffff00 33.33%, #00ff00 50%, #0000ff 66.67%, #4b0082 83.33%, #9400d3 100%)",
+        "fontSize": 70,
+        "fontFamily": "Righteous"
+      },
+      {
+        "width": 2,
+        "type": "stroke",
+        "color": "#ffffff"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "name": "Rainbow Wave (Mobile)",
+    "category": "animated",
+    "thumbnail": "linear-gradient(90deg, #ff0000 0%, #ff7f00 14%, #ffff00 28%, #00ff00 42%, #0000ff 57%, #4b0082 71%, #9400d3 85%, #ff0000 100%)",
+    "isMobile": true,
+    "originalDesktopId": "rainbow-wave"
+  },
+  {
+    "id": "retro-gaming_mobile",
+    "name": "Retro Gaming (Mobile)",
+    "style": {
+      "textShadow": "4px 4px 0px rgba(0,0,0,0.5)",
+      "fontSize": 42,
+      "border": true,
+      "letterSpacing": "0.1em",
+      "underline": false,
+      "italic": false,
+      "borderWidth": 3,
+      "fontFamily": "Press Start 2P",
+      "padding": "15px 30px",
+      "shadow": true,
+      "backgroundColor": "#000000",
+      "outline": false,
+      "bold": false,
+      "color": "#00ff00",
+      "borderColor": "#00ff00"
+    },
+    "thumbnail": "linear-gradient(135deg, #00ff00 0%, #ffff00 100%)",
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "category": "retro",
+    "isMobile": true,
+    "originalDesktopId": "retro-gaming"
+  },
+  {
+    "id": "retro-vaporwave_mobile",
+    "thumbnail": "linear-gradient(90deg,#ff00ff,#00ccff)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "category": "retro",
+    "name": "Retro Vaporwave Chrome (Mobile)",
+    "layers": [
+      {
+        "fontFamily": "VCR OSD Mono",
+        "gradient": "linear-gradient(90deg,#ff00ff,#00ccff)",
+        "type": "text",
+        "fontSize": 105
+      },
+      {
+        "type": "chrome",
+        "strength": 0.8
+      },
+      {
+        "opacity": 0.4,
+        "type": "grain"
+      },
+      {
+        "opacity": 0.4,
+        "type": "scanlines"
+      }
+    ],
+    "isMobile": true,
+    "originalDesktopId": "retro-vaporwave"
+  },
+  {
+    "id": "retro-vhs_mobile",
+    "thumbnail": "linear-gradient(135deg, #ff0000 0%, #00ffff 100%)",
+    "layers": [
+      {
+        "type": "text",
+        "color": "#ffffff",
+        "fontFamily": "Press Start 2P",
+        "fontSize": 64
+      },
+      {
+        "type": "offset-layer",
+        "offsetX": 3,
+        "color": "#ff0000",
+        "offsetY": -2
+      },
+      {
+        "offsetX": -3,
+        "offsetY": 2,
+        "type": "offset-layer",
+        "color": "#00ffff"
+      },
+      {
+        "type": "texture",
+        "src": "/textures/scanlines.png",
+        "opacity": 0.4,
+        "blendMode": "multiply"
+      }
+    ],
+    "category": "retro",
+    "name": "Retro VHS (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "isMobile": true,
+    "originalDesktopId": "retro-vhs"
+  },
+  {
+    "id": "shake-impact_mobile",
+    "animation": {
+      "duration": 0.4,
+      "infinite": true,
+      "type": "shake"
+    },
+    "layers": [
+      {
+        "type": "text",
+        "color": "#ff1744",
+        "fontSize": 80,
+        "fontFamily": "Anton"
+      },
+      {
+        "width": 4,
+        "color": "#000000",
+        "type": "stroke"
+      },
+      {
+        "color": "rgba(0,0,0,0.5)",
+        "type": "shadow",
+        "offsetX": 6,
+        "offsetY": 6,
+        "blur": 8
+      }
+    ],
+    "category": "animated",
+    "migratedAt": "2025-12-22T11:12:10.170Z",
+    "name": "Shake Impact (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #ff1744 0%, #d50000 100%)",
+    "isMobile": true,
+    "originalDesktopId": "shake-impact"
+  },
+  {
+    "id": "sketch-marker_mobile",
+    "category": "casual",
+    "name": "Sketch Marker (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "style": {
+      "bold": false,
+      "italic": false,
+      "outline": false,
+      "borderWidth": 0,
+      "border": false,
+      "fontFamily": "Permanent Marker",
+      "fontSize": 62,
+      "backgroundColor": "transparent",
+      "underline": false,
+      "borderColor": "#000000",
+      "shadow": true,
+      "textShadow": "2px 2px 4px rgba(0,0,0,0.2)",
+      "letterSpacing": "0.04em",
+      "color": "#2d3436"
+    },
+    "isMobile": true,
+    "originalDesktopId": "sketch-marker"
+  },
+  {
+    "id": "snow-frost_mobile",
+    "name": "Snow Frost (Mobile)",
+    "category": "animated",
+    "thumbnail": "linear-gradient(135deg, #ffffff 0%, #e0f0ff 50%, #a0d8ef 100%)",
+    "animation": {
+      "duration": 1.5,
+      "type": "snow",
+      "infinite": true
+    },
+    "layers": [
+      {
+        "fontSize": 64,
+        "type": "text",
+        "color": "#ffffff",
+        "fontFamily": "Quicksand"
+      },
+      {
+        "blur": 15,
+        "color": "#e0f0ff",
+        "type": "glow"
+      },
+      {
+        "blur": 30,
+        "type": "outer-glow",
+        "color": "#a0d8ef"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "isMobile": true,
+    "originalDesktopId": "snow-frost"
+  },
+  {
+    "id": "soft-bubble-pop_mobile",
+    "category": "fun",
+    "migratedAt": "2025-12-22T11:12:10.168Z",
+    "name": "Soft Bubble Pop 3D (Mobile)",
+    "layers": [
+      {
+        "color": "#ffb3d9",
+        "fontFamily": "Poppins",
+        "fontSize": 110,
+        "type": "text"
+      },
+      {
+        "type": "3d-puff",
+        "depth": 25
+      },
+      {
+        "type": "gloss",
+        "strength": 1
+      },
+      {
+        "offsetX": 0,
+        "type": "shadow",
+        "offsetY": 12,
+        "blur": 25,
+        "color": "rgba(0,0,0,0.3)"
+      }
+    ],
+    "thumbnail": "#ffb3d9",
+    "isMobile": true,
+    "originalDesktopId": "soft-bubble-pop"
+  },
+  {
+    "id": "soft-pastel_mobile",
+    "style": {
+      "border": false,
+      "outline": false,
+      "bold": false,
+      "letterSpacing": "0.04em",
+      "borderColor": "#000000",
+      "fontSize": 56,
+      "textShadow": "2px 2px 8px rgba(255,154,158,0.3)",
+      "borderWidth": 0,
+      "shadow": true,
+      "backgroundColor": "transparent",
+      "underline": false,
+      "fontFamily": "Quicksand",
+      "italic": false,
+      "color": "#ff9a9e",
+      "gradient": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%)"
+    },
+    "name": "Soft Pastel (Mobile)",
+    "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "category": "elegant",
+    "isMobile": true,
+    "originalDesktopId": "soft-pastel"
+  },
+  {
+    "id": "sports-arena_mobile",
+    "thumbnail": "linear-gradient(135deg, #f12711 0%, #f5af19 100%)",
+    "style": {
+      "fontSize": 76,
+      "shadow": true,
+      "letterSpacing": "0.08em",
+      "borderWidth": 0,
+      "italic": false,
+      "underline": false,
+      "color": "#ffffff",
+      "outline": true,
+      "borderColor": "#000000",
+      "bold": false,
+      "backgroundColor": "transparent",
+      "textShadow": "5px 5px 0px #000000, 10px 10px 30px rgba(241,39,17,0.6)",
+      "fontFamily": "Russo One",
+      "border": false
+    },
+    "name": "Sports Arena (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "category": "headlines",
+    "isMobile": true,
+    "originalDesktopId": "sports-arena"
+  },
+  {
+    "id": "urban-street_mobile",
+    "style": {
+      "color": "#ffffff",
+      "borderWidth": 4,
+      "italic": false,
+      "backgroundColor": "#1a1a1a",
+      "underline": false,
+      "fontSize": 74,
+      "borderColor": "#ff0000",
+      "fontFamily": "Bebas Neue",
+      "letterSpacing": "0.12em",
+      "border": true,
+      "padding": "10px 30px",
+      "shadow": false,
+      "outline": false,
+      "bold": false,
+      "textShadow": "3px 3px 0px #ff0000, 6px 6px 0px rgba(0,0,0,0.3)"
+    },
+    "name": "Urban Street (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.167Z",
+    "category": "modern",
+    "thumbnail": "linear-gradient(135deg, #141e30 0%, #243b55 100%)",
+    "isMobile": true,
+    "originalDesktopId": "urban-street"
+  },
+  {
+    "id": "vintage-stamp_mobile",
+    "thumbnail": "linear-gradient(135deg, #c94b4b 0%, #4b134f 100%)",
+    "migratedAt": "2025-12-22T11:12:10.166Z",
+    "category": "vintage",
+    "name": "Vintage Stamp (Mobile)",
+    "style": {
+      "outline": false,
+      "shadow": true,
+      "fontSize": 68,
+      "italic": false,
+      "underline": false,
+      "bold": false,
+      "border": true,
+      "color": "#f4e4c1",
+      "letterSpacing": "0.08em",
+      "textShadow": "3px 3px 0px rgba(0,0,0,0.4)",
+      "padding": "20px 40px",
+      "borderWidth": 6,
+      "borderColor": "#f4e4c1",
+      "backgroundColor": "#8b0000",
+      "fontFamily": "Alfa Slab One"
+    },
+    "isMobile": true,
+    "originalDesktopId": "vintage-stamp"
+  },
+  {
+    "id": "water-flow_mobile",
+    "category": "animated",
+    "name": "Water Flow (Mobile)",
+    "migratedAt": "2025-12-22T11:12:10.169Z",
+    "layers": [
+      {
+        "color": "#00bfff",
+        "fontSize": 68,
+        "fontFamily": "Montserrat",
+        "type": "text"
+      },
+      {
+        "blur": 20,
+        "color": "#00aaff",
+        "type": "glow"
+      },
+      {
+        "color": "#0077be",
+        "blur": 35,
+        "type": "outer-glow"
+      }
+    ],
+    "animation": {
+      "infinite": true,
+      "type": "water",
+      "duration": 2
+    },
+    "thumbnail": "linear-gradient(135deg, #00bfff 0%, #1e90ff 50%, #0099cc 100%)",
+    "isMobile": true,
+    "originalDesktopId": "water-flow"
+  }
+]

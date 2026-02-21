@@ -1,0 +1,349 @@
+[
+  {
+    "id": "bouncy-period_mobile",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "category": "Kinetic",
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontSize": 56,
+      "accentColor": "#FF0055",
+      "alignment": "left",
+      "fontFamily": "Poppins"
+    },
+    "defaultContent": {
+      "heading": "Make a Statement."
+    },
+    "animationConfig": {
+      "easing": "elastic",
+      "loopDelay": 4,
+      "loop": true,
+      "duration": 0.8
+    },
+    "name": "Bouncy Period (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "bouncy-period"
+  },
+  {
+    "id": "card-feature_mobile",
+    "defaultContent": {
+      "title": "Smart AI",
+      "desc": "Generates layouts instantly."
+    },
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "alignment": "left",
+      "fontSize": 32,
+      "fontFamily": "Inter",
+      "backgroundColor": "rgba(255,255,255,0.1)"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "animationConfig": {
+      "duration": 0.8,
+      "direction": "up",
+      "easing": "smooth"
+    },
+    "name": "Feature Card (Mobile)",
+    "source": "system",
+    "category": "UI",
+    "isMobile": true,
+    "originalDesktopId": "card-feature"
+  },
+  {
+    "id": "counter-stat_mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "baseStyle": {
+      "fontFamily": "Inter",
+      "color": "#4ADE80",
+      "alignment": "center",
+      "fontSize": 72
+    },
+    "source": "system",
+    "animationConfig": {
+      "easing": "smooth",
+      "duration": 2
+    },
+    "defaultContent": {
+      "label": "Revenue Generated",
+      "value": "$1,000,000"
+    },
+    "category": "Data",
+    "name": "Statistic Counter (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "counter-stat"
+  },
+  {
+    "id": "cyber-title_mobile",
+    "category": "Glitch",
+    "baseStyle": {
+      "color": "#00FFFF",
+      "fontSize": 64,
+      "fontFamily": "Orbitron",
+      "alignment": "center"
+    },
+    "name": "Cyber Title (Mobile)",
+    "source": "system",
+    "defaultContent": {
+      "heading": "CYBERPUNK",
+      "status": "CONNECTED"
+    },
+    "animationConfig": {
+      "direction": "left",
+      "easing": "smooth",
+      "duration": 0.8
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "isMobile": true,
+    "originalDesktopId": "cyber-title"
+  },
+  {
+    "id": "editorial-tagline_mobile",
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontSize": 48,
+      "alignment": "center",
+      "fontFamily": "Montserrat"
+    },
+    "defaultContent": {
+      "tag": "[ NEW COLLECTION ]",
+      "heading": "SUMMER 2025"
+    },
+    "name": "The Edit: Tagline (Mobile)",
+    "animationConfig": {
+      "direction": "down",
+      "delay": 0.2,
+      "duration": 1,
+      "easing": "smooth"
+    },
+    "category": "Reveal",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "isMobile": true,
+    "originalDesktopId": "editorial-tagline"
+  },
+  {
+    "id": "glide-title_mobile",
+    "defaultContent": {
+      "heading": "Smooth Glide",
+      "subheading": "Cinematic Entrance"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "baseStyle": {
+      "fontSize": 72,
+      "fontFamily": "Playfair Display",
+      "color": "#F5E5C5",
+      "alignment": "center"
+    },
+    "name": "Glide (Mobile)",
+    "category": "Reveal",
+    "animationConfig": {
+      "easing": "smooth",
+      "duration": 1.5,
+      "direction": "up"
+    },
+    "source": "system",
+    "isMobile": true,
+    "originalDesktopId": "glide-title"
+  },
+  {
+    "id": "glitch-reveal-1_mobile",
+    "source": "system",
+    "category": "Glitch",
+    "animationConfig": {
+      "easing": "linear",
+      "loopDelay": 5,
+      "duration": 0.3,
+      "delay": 0.05,
+      "loop": true
+    },
+    "defaultContent": {
+      "subheading": "Rebooting...",
+      "heading": "SYSTEM_FAILURE"
+    },
+    "name": "Glitch Reveal (Mobile)",
+    "baseStyle": {
+      "fontFamily": "Courier New",
+      "alignment": "left",
+      "color": "#00FF00",
+      "fontSize": 42
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "isMobile": true,
+    "originalDesktopId": "glitch-reveal-1"
+  },
+  {
+    "id": "lower-third-clean_mobile",
+    "name": "Clean Lower Third (Mobile)",
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontFamily": "Inter",
+      "fontSize": 28,
+      "alignment": "left"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "source": "system",
+    "animationConfig": {
+      "easing": "smooth",
+      "duration": 1,
+      "direction": "left"
+    },
+    "category": "UI",
+    "defaultContent": {
+      "name": "Sarah Jenkins",
+      "role": "Product Designer"
+    },
+    "isMobile": true,
+    "originalDesktopId": "lower-third-clean"
+  },
+  {
+    "id": "sliding-text-reveal_mobile",
+    "source": "system",
+    "defaultContent": {
+      "subheading": "Reveal Effect",
+      "heading": "Sliding Text"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "animationConfig": {
+      "duration": 0.8,
+      "loopDelay": 3,
+      "loop": true,
+      "easing": "smooth",
+      "direction": "up"
+    },
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontSize": 64,
+      "alignment": "left",
+      "fontFamily": "Inter"
+    },
+    "name": "Sliding Text Reveal (Mobile)",
+    "category": "Reveal",
+    "isMobile": true,
+    "originalDesktopId": "sliding-text-reveal"
+  },
+  {
+    "id": "social-message_mobile",
+    "name": "Social Message (Mobile)",
+    "baseStyle": {
+      "fontSize": 24,
+      "alignment": "left",
+      "fontFamily": "Inter",
+      "backgroundColor": "#FFFFFF",
+      "color": "#000000"
+    },
+    "animationConfig": {
+      "duration": 0.6,
+      "direction": "up",
+      "easing": "bouncy"
+    },
+    "defaultContent": {
+      "user": "@alex_design",
+      "message": "This tool is absolutely mind-blowing! 🚀"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "source": "system",
+    "category": "Social",
+    "isMobile": true,
+    "originalDesktopId": "social-message"
+  },
+  {
+    "id": "wow-rotate-scale_mobile",
+    "defaultContent": {
+      "heading": "HUGE SALE!",
+      "subheading": "50% OFF"
+    },
+    "baseStyle": {
+      "fontFamily": "Anton",
+      "fontSize": 80,
+      "color": "#FF0055",
+      "alignment": "center"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "source": "system",
+    "animationConfig": {
+      "loopDelay": 3,
+      "loop": true,
+      "easing": "bouncy",
+      "direction": "up",
+      "duration": 0.5
+    },
+    "category": "Kinetic",
+    "name": "Wow: Rotate & Scale (Mobile)",
+    "isMobile": true,
+    "originalDesktopId": "wow-rotate-scale"
+  },
+  {
+    "id": "zero-gravity_mobile",
+    "name": "Zero Gravity (Mobile)",
+    "defaultContent": {
+      "word1": "Bounce",
+      "word2": "Higher"
+    },
+    "animationConfig": {
+      "duration": 0.6,
+      "delay": 0.1,
+      "easing": "bouncy",
+      "loop": true,
+      "loopDelay": 2
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "category": "Kinetic",
+    "baseStyle": {
+      "alignment": "center",
+      "fontSize": 96,
+      "color": "#FFD700",
+      "fontFamily": "Bebas Neue"
+    },
+    "source": "system",
+    "isMobile": true,
+    "originalDesktopId": "zero-gravity"
+  }
+]

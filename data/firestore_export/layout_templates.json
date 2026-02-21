@@ -1,0 +1,3630 @@
+[
+  {
+    "id": "asymmetric-columns",
+    "sections": [
+      {
+        "id": "left",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "width": "20%",
+          "top": "0%",
+          "left": "0%",
+          "height": "100%"
+        },
+        "name": "Left"
+      },
+      {
+        "name": "Center",
+        "id": "center",
+        "style": {
+          "height": "100%",
+          "top": "0%",
+          "left": "20%",
+          "width": "60%",
+          "position": "absolute",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)"
+        }
+      },
+      {
+        "style": {
+          "height": "100%",
+          "width": "20%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "80%",
+          "position": "absolute",
+          "top": "0%"
+        },
+        "name": "Right",
+        "id": "right"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.028Z",
+    "description": "Three columns with varying widths",
+    "name": "Asymmetric Columns"
+  },
+  {
+    "id": "asymmetric-hero",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Asymmetric Hero",
+    "description": "40/60 split for hero emphasis",
+    "sections": [
+      {
+        "style": {
+          "top": "0%",
+          "height": "100%",
+          "left": "0%",
+          "width": "40%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        },
+        "id": "hero",
+        "name": "Hero"
+      },
+      {
+        "id": "content",
+        "name": "Content",
+        "style": {
+          "position": "absolute",
+          "left": "40%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "100%",
+          "top": "0%",
+          "width": "60%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "aurora-borealis",
+    "description": "Northern lights with flowing particle waves.",
+    "sections": [
+      {
+        "id": "aurora-1",
+        "style": {
+          "background": "#050a14"
+        },
+        "name": "Aurora 1"
+      },
+      {
+        "id": "aurora-2",
+        "name": "Aurora 2",
+        "style": {
+          "background": "#050a14"
+        }
+      },
+      {
+        "name": "Aurora 3",
+        "id": "aurora-3",
+        "style": {
+          "background": "#050a14"
+        }
+      }
+    ],
+    "name": "Aurora Borealis",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z"
+  },
+  {
+    "id": "bento-modern",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "width": "55%",
+          "left": "0%",
+          "height": "55%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        },
+        "id": "primary",
+        "name": "Primary"
+      },
+      {
+        "id": "card-1",
+        "style": {
+          "position": "absolute",
+          "width": "22.5%",
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "left": "55%",
+          "top": "0%",
+          "height": "27.5%"
+        },
+        "name": "Card 1"
+      },
+      {
+        "name": "Card 2",
+        "id": "card-2",
+        "style": {
+          "width": "22.5%",
+          "left": "77.5%",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "height": "27.5%",
+          "top": "0%",
+          "position": "absolute"
+        }
+      },
+      {
+        "id": "card-3",
+        "name": "Card 3",
+        "style": {
+          "left": "55%",
+          "height": "27.5%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "top": "27.5%",
+          "width": "45%",
+          "position": "absolute"
+        }
+      },
+      {
+        "name": "Bottom 1",
+        "style": {
+          "width": "30%",
+          "left": "0%",
+          "backgroundColor": "rgba(168,85,247,0.9)",
+          "height": "45%",
+          "top": "55%",
+          "position": "absolute"
+        },
+        "id": "bottom-1"
+      },
+      {
+        "id": "bottom-2",
+        "name": "Bottom 2",
+        "style": {
+          "width": "25%",
+          "backgroundColor": "rgba(59,130,246,0.9)",
+          "position": "absolute",
+          "left": "30%",
+          "top": "55%",
+          "height": "45%"
+        }
+      },
+      {
+        "id": "bottom-3",
+        "style": {
+          "position": "absolute",
+          "height": "45%",
+          "width": "45%",
+          "top": "55%",
+          "left": "55%",
+          "backgroundColor": "rgba(20,184,166,0.9)"
+        },
+        "name": "Bottom 3"
+      }
+    ],
+    "name": "Bento Box",
+    "description": "Modern asymmetric tiles",
+    "migratedAt": "2025-12-22T11:12:07.032Z"
+  },
+  {
+    "id": "card-grid-four",
+    "sections": [
+      {
+        "style": {
+          "left": "5%",
+          "position": "absolute",
+          "top": "5%",
+          "height": "42.5%",
+          "width": "42.5%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        },
+        "name": "Card Top Left",
+        "id": "card-tl"
+      },
+      {
+        "id": "card-tr",
+        "name": "Card Top Right",
+        "style": {
+          "position": "absolute",
+          "width": "42.5%",
+          "height": "42.5%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "52.5%",
+          "top": "5%"
+        }
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "height": "42.5%",
+          "left": "5%",
+          "width": "42.5%",
+          "top": "52.5%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        },
+        "name": "Card Bottom Left",
+        "id": "card-bl"
+      },
+      {
+        "id": "card-br",
+        "style": {
+          "left": "52.5%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "42.5%",
+          "top": "52.5%",
+          "position": "absolute",
+          "height": "42.5%"
+        },
+        "name": "Card Bottom Right"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "name": "Card Grid Four",
+    "description": "2x2 card grid with spacing"
+  },
+  {
+    "id": "card-grid-three",
+    "name": "Card Grid Three",
+    "sections": [
+      {
+        "id": "card-1",
+        "style": {
+          "left": "2.5%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "width": "28.333%",
+          "position": "absolute",
+          "top": "5%",
+          "height": "90%"
+        },
+        "name": "Card 1"
+      },
+      {
+        "id": "card-2",
+        "name": "Card 2",
+        "style": {
+          "position": "absolute",
+          "width": "28.333%",
+          "top": "5%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "90%",
+          "left": "35.833%"
+        }
+      },
+      {
+        "id": "card-3",
+        "name": "Card 3",
+        "style": {
+          "width": "28.333%",
+          "height": "90%",
+          "left": "69.167%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "5%",
+          "position": "absolute"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Three card-like sections with gaps"
+  },
+  {
+    "id": "carousel-3-cards",
+    "name": "Carousel - 3 Cards",
+    "description": "Three cards with center emphasis",
+    "sections": [
+      {
+        "name": "Left",
+        "id": "left-card",
+        "style": {
+          "height": "70%",
+          "left": "5%",
+          "position": "absolute",
+          "top": "15%",
+          "backgroundColor": "rgba(148,163,184,0.7)",
+          "width": "22%"
+        }
+      },
+      {
+        "style": {
+          "height": "90%",
+          "top": "5%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "width": "36%",
+          "left": "32%"
+        },
+        "id": "center-card",
+        "name": "Center"
+      },
+      {
+        "name": "Right",
+        "style": {
+          "top": "15%",
+          "height": "70%",
+          "position": "absolute",
+          "width": "22%",
+          "left": "73%",
+          "backgroundColor": "rgba(148,163,184,0.7)"
+        },
+        "id": "right-card"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z"
+  },
+  {
+    "id": "carousel-5-cards",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "sections": [
+      {
+        "name": "Far Left",
+        "id": "far-left",
+        "style": {
+          "width": "15%",
+          "position": "absolute",
+          "left": "1%",
+          "backgroundColor": "rgba(148,163,184,0.5)",
+          "height": "50%",
+          "top": "25%"
+        }
+      },
+      {
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "height": "65%",
+          "left": "17%",
+          "top": "17.5%",
+          "width": "18%",
+          "backgroundColor": "rgba(148,163,184,0.7)"
+        },
+        "id": "left"
+      },
+      {
+        "name": "Center",
+        "style": {
+          "left": "36%",
+          "width": "28%",
+          "position": "absolute",
+          "height": "90%",
+          "top": "5%",
+          "backgroundColor": "rgba(99,102,241,0.9)"
+        },
+        "id": "center"
+      },
+      {
+        "name": "Right",
+        "style": {
+          "width": "18%",
+          "left": "65%",
+          "position": "absolute",
+          "height": "65%",
+          "backgroundColor": "rgba(148,163,184,0.7)",
+          "top": "17.5%"
+        },
+        "id": "right"
+      },
+      {
+        "name": "Far Right",
+        "style": {
+          "width": "15%",
+          "backgroundColor": "rgba(148,163,184,0.5)",
+          "position": "absolute",
+          "left": "84%",
+          "height": "50%",
+          "top": "25%"
+        },
+        "id": "far-right"
+      }
+    ],
+    "name": "Carousel - 5 Cards",
+    "description": "Five cards carousel"
+  },
+  {
+    "id": "case-study",
+    "description": "Vertical list of case studies with gallery and details",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "name": "Case Study",
+    "sections": [
+      {
+        "id": "case-1",
+        "name": "Project One",
+        "style": {
+          "backgroundColor": "#ffffff",
+          "color": "#000000"
+        },
+        "description": "Description for the first project."
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#f5f5f5"
+        },
+        "description": "Description for the second project.",
+        "id": "case-2",
+        "name": "Project Two"
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#ffffff"
+        },
+        "id": "case-3",
+        "description": "Description for the third project.",
+        "name": "Project Three"
+      }
+    ]
+  },
+  {
+    "id": "chiaroscuro-canvas",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "category": "dynamic",
+    "sections": [
+      {
+        "name": "Study 1",
+        "id": "study-1",
+        "style": {
+          "background": "#0a0806"
+        }
+      },
+      {
+        "name": "Study 2",
+        "style": {
+          "background": "#0a0806"
+        },
+        "id": "study-2"
+      }
+    ],
+    "description": "Michelangelo-inspired dramatic lighting.",
+    "name": "Chiaroscuro Canvas"
+  },
+  {
+    "id": "cinematic-parallax",
+    "name": "Cinematic Parallax",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "sections": [
+      {
+        "id": "scene-1",
+        "name": "Scene 01",
+        "style": {
+          "background": "#0a0a0f"
+        }
+      },
+      {
+        "style": {
+          "background": "#0a0a0f"
+        },
+        "id": "scene-2",
+        "name": "Scene 02"
+      }
+    ],
+    "category": "dynamic",
+    "description": "Film-style depth of field parallax."
+  },
+  {
+    "id": "corner-emphasis",
+    "name": "Corner Emphasis",
+    "sections": [
+      {
+        "style": {
+          "top": "20%",
+          "height": "60%",
+          "left": "20%",
+          "position": "absolute",
+          "width": "60%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        },
+        "name": "Center",
+        "id": "center"
+      },
+      {
+        "name": "Top Left",
+        "id": "corner-tl",
+        "style": {
+          "left": "0%",
+          "height": "15%",
+          "width": "15%",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute"
+        }
+      },
+      {
+        "name": "Top Right",
+        "style": {
+          "left": "85%",
+          "width": "15%",
+          "position": "absolute",
+          "top": "0%",
+          "height": "15%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        },
+        "id": "corner-tr"
+      },
+      {
+        "style": {
+          "height": "15%",
+          "left": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "85%",
+          "width": "15%"
+        },
+        "name": "Bottom Left",
+        "id": "corner-bl"
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "85%",
+          "height": "15%",
+          "width": "15%",
+          "left": "85%",
+          "position": "absolute"
+        },
+        "id": "corner-br",
+        "name": "Bottom Right"
+      }
+    ],
+    "description": "Large center with four small corners",
+    "migratedAt": "2025-12-22T11:12:07.031Z"
+  },
+  {
+    "id": "crystalline-tessellation",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "description": "Hadid-inspired geometric fracturing.",
+    "name": "Crystalline Tessellation",
+    "sections": [
+      {
+        "name": "Facet 1",
+        "style": {
+          "background": "#fafafc"
+        },
+        "id": "crystal-1"
+      },
+      {
+        "style": {
+          "background": "#fafafc"
+        },
+        "id": "crystal-2",
+        "name": "Facet 2"
+      },
+      {
+        "id": "crystal-3",
+        "name": "Facet 3",
+        "style": {
+          "background": "#fafafc"
+        }
+      }
+    ],
+    "category": "dynamic"
+  },
+  {
+    "id": "dashboard-grid",
+    "sections": [
+      {
+        "style": {
+          "width": "15%",
+          "top": "0%",
+          "height": "100%",
+          "backgroundColor": "rgba(71, 85, 105, 0.9)",
+          "position": "absolute",
+          "left": "0%"
+        },
+        "id": "sidebar",
+        "name": "Sidebar"
+      },
+      {
+        "id": "grid-1",
+        "name": "Grid 1",
+        "style": {
+          "position": "absolute",
+          "height": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "0%",
+          "left": "15%",
+          "width": "42.5%"
+        }
+      },
+      {
+        "name": "Grid 2",
+        "id": "grid-2",
+        "style": {
+          "top": "0%",
+          "position": "absolute",
+          "width": "42.5%",
+          "height": "50%",
+          "left": "57.5%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)"
+        }
+      },
+      {
+        "id": "grid-3",
+        "style": {
+          "position": "absolute",
+          "left": "15%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "height": "50%",
+          "top": "50%",
+          "width": "42.5%"
+        },
+        "name": "Grid 3"
+      },
+      {
+        "name": "Grid 4",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "position": "absolute",
+          "width": "42.5%",
+          "left": "57.5%",
+          "height": "50%",
+          "top": "50%"
+        },
+        "id": "grid-4"
+      }
+    ],
+    "description": "Sidebar with 2x2 grid content",
+    "name": "Dashboard Grid",
+    "migratedAt": "2025-12-22T11:12:07.029Z"
+  },
+  {
+    "id": "default",
+    "name": "Full Screen",
+    "description": "Single full-screen section",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "100%",
+          "width": "100%"
+        },
+        "id": "main",
+        "name": "Main"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.024Z"
+  },
+  {
+    "id": "depth-choreography",
+    "sections": [
+      {
+        "name": "Layer 1",
+        "style": {
+          "background": "#0a0a0f"
+        },
+        "id": "depth-1"
+      },
+      {
+        "id": "depth-2",
+        "style": {
+          "background": "#0a0a0f"
+        },
+        "name": "Layer 2"
+      }
+    ],
+    "name": "Depth Choreography",
+    "description": "Cinematic depth of field layers.",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z"
+  },
+  {
+    "id": "diagonal-split",
+    "description": "Dynamic diagonal division",
+    "name": "Diagonal Split",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "width": "70%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "top": "0%",
+          "left": "0%",
+          "height": "60%"
+        },
+        "name": "Large Top Left",
+        "id": "large-top-left"
+      },
+      {
+        "name": "Small Top Right",
+        "style": {
+          "left": "70%",
+          "height": "30%",
+          "width": "30%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(236,72,153,0.9)"
+        },
+        "id": "small-top-right"
+      },
+      {
+        "name": "Mid Right",
+        "id": "mid-right",
+        "style": {
+          "height": "30%",
+          "position": "absolute",
+          "width": "30%",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "top": "30%",
+          "left": "70%"
+        }
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "top": "60%",
+          "width": "30%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "height": "40%",
+          "left": "0%"
+        },
+        "id": "small-bottom-left",
+        "name": "Small Bottom Left"
+      },
+      {
+        "name": "Mid Bottom",
+        "style": {
+          "width": "40%",
+          "backgroundColor": "rgba(168,85,247,0.9)",
+          "top": "60%",
+          "height": "40%",
+          "left": "30%",
+          "position": "absolute"
+        },
+        "id": "mid-bottom"
+      },
+      {
+        "id": "bottom-right",
+        "style": {
+          "left": "70%",
+          "height": "40%",
+          "backgroundColor": "rgba(59,130,246,0.9)",
+          "top": "60%",
+          "width": "30%",
+          "position": "absolute"
+        },
+        "name": "Bottom Right"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z"
+  },
+  {
+    "id": "editorial-grid-shift",
+    "name": "Editorial Grid Shift",
+    "sections": [
+      {
+        "name": "Featured",
+        "id": "edit-1",
+        "style": {
+          "background": "#ffffff"
+        }
+      },
+      {
+        "name": "Panel 2",
+        "id": "edit-2",
+        "style": {
+          "background": "#ffffff"
+        }
+      },
+      {
+        "name": "Panel 3",
+        "style": {
+          "background": "#ffffff"
+        },
+        "id": "edit-3"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "description": "Magazine grid that shifts clockwise on click.",
+    "category": "dynamic"
+  },
+  {
+    "id": "elastic-morph-cards",
+    "sections": [
+      {
+        "style": {
+          "background": "#FF6B6B"
+        },
+        "name": "Card 1",
+        "id": "elastic-1"
+      },
+      {
+        "name": "Card 2",
+        "style": {
+          "background": "#4ECDC4"
+        },
+        "id": "elastic-2"
+      },
+      {
+        "name": "Card 3",
+        "style": {
+          "background": "#45B7D1"
+        },
+        "id": "elastic-3"
+      }
+    ],
+    "name": "Elastic Morph Cards",
+    "description": "Rubber-band physics card interactions.",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z"
+  },
+  {
+    "id": "expanding-cards",
+    "name": "Expanding Cards",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "Interactive timeline with 5 expanding panels",
+    "category": "dynamic",
+    "sections": [
+      {
+        "style": {
+          "left": "0%",
+          "height": "100%",
+          "background": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+          "width": "20%",
+          "top": "0%",
+          "color": "#ffffff"
+        },
+        "name": "Sunrise",
+        "id": "card-1"
+      },
+      {
+        "style": {
+          "top": "0%",
+          "color": "#ffffff",
+          "left": "20%",
+          "background": "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+          "width": "20%",
+          "height": "100%"
+        },
+        "name": "Lavender",
+        "id": "card-2"
+      },
+      {
+        "name": "Ocean",
+        "style": {
+          "left": "40%",
+          "top": "0%",
+          "color": "#ffffff",
+          "width": "20%",
+          "background": "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
+          "height": "100%"
+        },
+        "id": "card-3"
+      },
+      {
+        "style": {
+          "top": "0%",
+          "left": "60%",
+          "color": "#ffffff",
+          "width": "20%",
+          "background": "linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)",
+          "height": "100%"
+        },
+        "name": "Peach",
+        "id": "card-4"
+      },
+      {
+        "id": "card-5",
+        "name": "Sky",
+        "style": {
+          "width": "20%",
+          "left": "80%",
+          "background": "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
+          "height": "100%",
+          "color": "#ffffff",
+          "top": "0%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "fibonacci-cascade",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "sections": [
+      {
+        "id": "fib-1",
+        "style": {
+          "background": "#faf8f5"
+        },
+        "name": "Sequence 1"
+      },
+      {
+        "style": {
+          "background": "#faf8f5"
+        },
+        "name": "Sequence 2",
+        "id": "fib-2"
+      },
+      {
+        "name": "Sequence 3",
+        "id": "fib-3",
+        "style": {
+          "background": "#faf8f5"
+        }
+      }
+    ],
+    "name": "Fibonacci Cascade",
+    "description": "Da Vinci-inspired golden ratio layout.",
+    "category": "dynamic"
+  },
+  {
+    "id": "gallery-masonry",
+    "name": "Gallery Masonry",
+    "description": "Photo gallery masonry style",
+    "sections": [
+      {
+        "name": "Photo 1",
+        "style": {
+          "height": "40%",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "width": "33.333%",
+          "left": "0%"
+        },
+        "id": "photo-1"
+      },
+      {
+        "name": "Photo 2",
+        "style": {
+          "left": "33.333%",
+          "position": "absolute",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "top": "0%",
+          "height": "60%",
+          "width": "33.333%"
+        },
+        "id": "photo-2"
+      },
+      {
+        "id": "photo-3",
+        "style": {
+          "height": "45%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "0%",
+          "left": "66.666%",
+          "width": "33.334%"
+        },
+        "name": "Photo 3"
+      },
+      {
+        "id": "photo-4",
+        "style": {
+          "left": "0%",
+          "top": "40%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "60%",
+          "width": "33.333%",
+          "position": "absolute"
+        },
+        "name": "Photo 4"
+      },
+      {
+        "id": "photo-5",
+        "style": {
+          "height": "55%",
+          "left": "66.666%",
+          "top": "45%",
+          "width": "33.334%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "position": "absolute"
+        },
+        "name": "Photo 5"
+      },
+      {
+        "id": "photo-6",
+        "name": "Photo 6",
+        "style": {
+          "width": "33.333%",
+          "top": "60%",
+          "left": "33.333%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "height": "40%",
+          "position": "absolute"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.029Z"
+  },
+  {
+    "id": "glitch-matrix",
+    "name": "Glitch Matrix",
+    "description": "Digital rain with glitch distortion.",
+    "category": "dynamic",
+    "sections": [
+      {
+        "name": "Node 001",
+        "id": "matrix-1",
+        "style": {
+          "background": "#000000"
+        }
+      },
+      {
+        "style": {
+          "background": "#000000"
+        },
+        "id": "matrix-2",
+        "name": "Node 002"
+      },
+      {
+        "style": {
+          "background": "#000000"
+        },
+        "name": "Node 003",
+        "id": "matrix-3"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z"
+  },
+  {
+    "id": "golden-ratio-horizontal",
+    "sections": [
+      {
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "top": "0%",
+          "position": "absolute",
+          "width": "100%",
+          "height": "61.8%"
+        },
+        "name": "Top",
+        "id": "top"
+      },
+      {
+        "id": "bottom",
+        "style": {
+          "height": "38.2%",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "position": "absolute",
+          "top": "61.8%"
+        },
+        "name": "Bottom"
+      }
+    ],
+    "name": "Golden Ratio Horizontal",
+    "description": "Two horizontal sections split by golden ratio",
+    "migratedAt": "2025-12-22T11:12:07.029Z"
+  },
+  {
+    "id": "golden-ratio-vertical",
+    "name": "Golden Ratio Vertical",
+    "sections": [
+      {
+        "style": {
+          "height": "100%",
+          "top": "0%",
+          "left": "0%",
+          "width": "61.8%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "position": "absolute"
+        },
+        "name": "Left",
+        "id": "left"
+      },
+      {
+        "name": "Right",
+        "id": "right",
+        "style": {
+          "top": "0%",
+          "left": "61.8%",
+          "height": "100%",
+          "position": "absolute",
+          "width": "38.2%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.029Z",
+    "description": "Two vertical sections split by golden ratio (61.8/38.2)"
+  },
+  {
+    "id": "grid-six",
+    "sections": [
+      {
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "height": "50%",
+          "left": "0%",
+          "width": "33.333%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        },
+        "id": "top-left"
+      },
+      {
+        "style": {
+          "left": "33.333%",
+          "position": "absolute",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "33.333%",
+          "top": "0%"
+        },
+        "id": "top-center",
+        "name": "Top Center"
+      },
+      {
+        "name": "Top Right",
+        "style": {
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "0%",
+          "height": "50%",
+          "width": "33.334%",
+          "left": "66.666%",
+          "position": "absolute"
+        },
+        "id": "top-right"
+      },
+      {
+        "name": "Bottom Left",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "50%",
+          "width": "33.333%",
+          "left": "0%",
+          "height": "50%",
+          "position": "absolute"
+        },
+        "id": "bottom-left"
+      },
+      {
+        "name": "Bottom Center",
+        "id": "bottom-center",
+        "style": {
+          "left": "33.333%",
+          "width": "33.333%",
+          "position": "absolute",
+          "top": "50%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "height": "50%"
+        }
+      },
+      {
+        "id": "bottom-right",
+        "style": {
+          "top": "50%",
+          "height": "50%",
+          "width": "33.334%",
+          "left": "66.666%",
+          "backgroundColor": "rgba(217, 70, 239, 0.9)",
+          "position": "absolute"
+        },
+        "name": "Bottom Right"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.028Z",
+    "name": "Six Grid",
+    "description": "2x3 grid layout"
+  },
+  {
+    "id": "grid-twelve",
+    "description": "3x4 grid layout",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Grid Twelve",
+    "sections": [
+      {
+        "id": "cell-1",
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "height": "25%",
+          "width": "33.333%",
+          "top": "0%"
+        },
+        "name": "Cell 1"
+      },
+      {
+        "name": "Cell 2",
+        "style": {
+          "top": "0%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "33.333%",
+          "width": "33.333%",
+          "height": "25%",
+          "position": "absolute"
+        },
+        "id": "cell-2"
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "0%",
+          "height": "25%",
+          "width": "33.334%",
+          "position": "absolute",
+          "left": "66.666%"
+        },
+        "id": "cell-3",
+        "name": "Cell 3"
+      },
+      {
+        "style": {
+          "width": "33.333%",
+          "height": "25%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "top": "25%"
+        },
+        "id": "cell-4",
+        "name": "Cell 4"
+      },
+      {
+        "id": "cell-5",
+        "style": {
+          "left": "33.333%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "position": "absolute",
+          "top": "25%",
+          "width": "33.333%",
+          "height": "25%"
+        },
+        "name": "Cell 5"
+      },
+      {
+        "name": "Cell 6",
+        "id": "cell-6",
+        "style": {
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "height": "25%",
+          "position": "absolute",
+          "left": "66.666%",
+          "width": "33.334%",
+          "top": "25%"
+        }
+      },
+      {
+        "id": "cell-7",
+        "name": "Cell 7",
+        "style": {
+          "position": "absolute",
+          "height": "25%",
+          "left": "0%",
+          "width": "33.333%",
+          "top": "50%",
+          "backgroundColor": "rgba(14, 165, 233, 0.9)"
+        }
+      },
+      {
+        "name": "Cell 8",
+        "style": {
+          "position": "absolute",
+          "height": "25%",
+          "left": "33.333%",
+          "width": "33.333%",
+          "top": "50%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)"
+        },
+        "id": "cell-8"
+      },
+      {
+        "id": "cell-9",
+        "style": {
+          "position": "absolute",
+          "width": "33.334%",
+          "height": "25%",
+          "backgroundColor": "rgba(168, 85, 247, 0.9)",
+          "left": "66.666%",
+          "top": "50%"
+        },
+        "name": "Cell 9"
+      },
+      {
+        "name": "Cell 10",
+        "id": "cell-10",
+        "style": {
+          "height": "25%",
+          "top": "75%",
+          "width": "33.333%",
+          "left": "0%",
+          "backgroundColor": "rgba(251, 146, 60, 0.9)",
+          "position": "absolute"
+        }
+      },
+      {
+        "id": "cell-11",
+        "name": "Cell 11",
+        "style": {
+          "height": "25%",
+          "top": "75%",
+          "width": "33.333%",
+          "left": "33.333%",
+          "backgroundColor": "rgba(20, 184, 166, 0.9)",
+          "position": "absolute"
+        }
+      },
+      {
+        "id": "cell-12",
+        "style": {
+          "top": "75%",
+          "width": "33.334%",
+          "position": "absolute",
+          "height": "25%",
+          "left": "66.666%",
+          "backgroundColor": "rgba(244, 63, 94, 0.9)"
+        },
+        "name": "Cell 12"
+      }
+    ]
+  },
+  {
+    "id": "haute-couture-stacks",
+    "description": "Fashion runway card reveals.",
+    "sections": [
+      {
+        "name": "Look 01",
+        "id": "look-1",
+        "style": {
+          "background": "#f8f8f6"
+        }
+      },
+      {
+        "id": "look-2",
+        "name": "Look 02",
+        "style": {
+          "background": "#f8f8f6"
+        }
+      },
+      {
+        "style": {
+          "background": "#f8f8f6"
+        },
+        "name": "Look 03",
+        "id": "look-3"
+      }
+    ],
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "name": "Haute Couture Stacks"
+  },
+  {
+    "id": "header-content",
+    "sections": [
+      {
+        "style": {
+          "height": "20%",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "0%"
+        },
+        "id": "header",
+        "name": "Header"
+      },
+      {
+        "name": "Content",
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "position": "absolute",
+          "top": "20%",
+          "height": "80%",
+          "width": "100%"
+        },
+        "id": "content"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "name": "Header & Content",
+    "description": "Top header with main content below"
+  },
+  {
+    "id": "header-sidebar-content",
+    "sections": [
+      {
+        "name": "Header",
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "height": "15%"
+        },
+        "id": "header"
+      },
+      {
+        "name": "Sidebar",
+        "style": {
+          "top": "15%",
+          "width": "20%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "height": "85%"
+        },
+        "id": "sidebar"
+      },
+      {
+        "style": {
+          "height": "85%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "width": "80%",
+          "left": "20%",
+          "position": "absolute",
+          "top": "15%"
+        },
+        "name": "Content",
+        "id": "content"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "description": "Header with sidebar and main content",
+    "name": "Header, Sidebar & Content"
+  },
+  {
+    "id": "holographic-prism",
+    "description": "Rainbow light refraction effects.",
+    "sections": [
+      {
+        "name": "Spectrum 1",
+        "id": "prism-1",
+        "style": {
+          "background": "#0a0a0f"
+        }
+      },
+      {
+        "id": "prism-2",
+        "name": "Spectrum 2",
+        "style": {
+          "background": "#0a0a0f"
+        }
+      },
+      {
+        "id": "prism-3",
+        "style": {
+          "background": "#0a0a0f"
+        },
+        "name": "Spectrum 3"
+      }
+    ],
+    "name": "Holographic Prism",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z"
+  },
+  {
+    "id": "horizontal-thirds",
+    "name": "Horizontal Thirds",
+    "sections": [
+      {
+        "name": "Top",
+        "style": {
+          "top": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "left": "0%",
+          "height": "33.333%",
+          "width": "100%"
+        },
+        "id": "top"
+      },
+      {
+        "style": {
+          "top": "33.333%",
+          "position": "absolute",
+          "left": "0%",
+          "height": "33.333%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "100%"
+        },
+        "name": "Middle",
+        "id": "middle"
+      },
+      {
+        "name": "Bottom",
+        "style": {
+          "left": "0%",
+          "top": "66.666%",
+          "height": "33.334%",
+          "width": "100%",
+          "position": "absolute",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)"
+        },
+        "id": "bottom"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Three horizontal sections using rule of thirds"
+  },
+  {
+    "id": "interstellar-dock",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "sections": [
+      {
+        "id": "module-1",
+        "name": "Module 001",
+        "style": {
+          "background": "#05050f"
+        }
+      },
+      {
+        "style": {
+          "background": "#05050f"
+        },
+        "name": "Module 002",
+        "id": "module-2"
+      },
+      {
+        "style": {
+          "background": "#05050f"
+        },
+        "name": "Module 003",
+        "id": "module-3"
+      }
+    ],
+    "name": "Interstellar Dock",
+    "description": "3D rotating spacecraft modules.",
+    "category": "dynamic"
+  },
+  {
+    "id": "liquid-mirror",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "name": "Liquid Mirror",
+    "sections": [
+      {
+        "name": "Reflection 1",
+        "style": {
+          "background": "#1a365d"
+        },
+        "id": "mirror-1"
+      },
+      {
+        "style": {
+          "background": "#1a365d"
+        },
+        "id": "mirror-2",
+        "name": "Reflection 2"
+      },
+      {
+        "id": "mirror-3",
+        "name": "Reflection 3",
+        "style": {
+          "background": "#1a365d"
+        }
+      }
+    ],
+    "category": "dynamic",
+    "description": "Interactive water ripple distortion."
+  },
+  {
+    "id": "magazine-hero",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Editorial style with large hero",
+    "name": "Magazine Hero",
+    "sections": [
+      {
+        "style": {
+          "width": "65%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "height": "65%",
+          "top": "0%",
+          "left": "0%"
+        },
+        "id": "hero",
+        "name": "Hero"
+      },
+      {
+        "id": "sidebar-1",
+        "name": "Sidebar 1",
+        "style": {
+          "top": "0%",
+          "width": "35%",
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "height": "32%",
+          "left": "65%",
+          "position": "absolute"
+        }
+      },
+      {
+        "style": {
+          "left": "65%",
+          "position": "absolute",
+          "top": "32%",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "width": "35%",
+          "height": "33%"
+        },
+        "id": "sidebar-2",
+        "name": "Sidebar 2"
+      },
+      {
+        "style": {
+          "left": "0%",
+          "width": "40%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "top": "65%",
+          "position": "absolute",
+          "height": "35%"
+        },
+        "name": "Footer 1",
+        "id": "footer-1"
+      },
+      {
+        "name": "Footer 2",
+        "id": "footer-2",
+        "style": {
+          "width": "60%",
+          "left": "40%",
+          "position": "absolute",
+          "top": "65%",
+          "backgroundColor": "rgba(168,85,247,0.9)",
+          "height": "35%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "magazine-layout",
+    "migratedAt": "2025-12-22T11:12:07.029Z",
+    "name": "Magazine Layout",
+    "sections": [
+      {
+        "id": "header",
+        "name": "Header",
+        "style": {
+          "top": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "width": "100%",
+          "left": "0%",
+          "height": "25%"
+        }
+      },
+      {
+        "id": "col-left",
+        "style": {
+          "width": "33.333%",
+          "height": "75%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "25%"
+        },
+        "name": "Left Column"
+      },
+      {
+        "id": "col-center",
+        "name": "Center Column",
+        "style": {
+          "position": "absolute",
+          "top": "25%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "75%",
+          "width": "33.333%",
+          "left": "33.333%"
+        }
+      },
+      {
+        "style": {
+          "top": "25%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "75%",
+          "width": "33.334%",
+          "left": "66.666%",
+          "position": "absolute"
+        },
+        "id": "col-right",
+        "name": "Right Column"
+      }
+    ],
+    "description": "Header with three-column content below"
+  },
+  {
+    "id": "magnetism-layout",
+    "sections": [
+      {
+        "type": "text",
+        "name": "Project Header",
+        "id": "header",
+        "content": {
+          "title": "Global Communication",
+          "subtitle": "Richard Mille"
+        },
+        "style": {
+          "background": "transparent"
+        }
+      },
+      {
+        "id": "media-1",
+        "name": "Media Row 1 (Video)",
+        "style": {
+          "background": "transparent"
+        },
+        "type": "video"
+      },
+      {
+        "type": "image",
+        "id": "media-2-left",
+        "style": {
+          "background": "transparent"
+        },
+        "name": "Media Row 2 Left"
+      },
+      {
+        "style": {
+          "background": "transparent"
+        },
+        "type": "image",
+        "id": "media-2-right",
+        "name": "Media Row 2 Right"
+      },
+      {
+        "name": "Media Row 3 Left",
+        "style": {
+          "background": "transparent"
+        },
+        "type": "image",
+        "id": "media-3-left"
+      },
+      {
+        "style": {
+          "background": "transparent"
+        },
+        "name": "Media Row 3 Right",
+        "type": "image",
+        "id": "media-3-right"
+      },
+      {
+        "name": "Media Row 4 (Video)",
+        "id": "media-4",
+        "style": {
+          "background": "transparent"
+        },
+        "type": "video"
+      },
+      {
+        "style": {
+          "background": "transparent"
+        },
+        "name": "Media Row 5 (Large)",
+        "type": "image",
+        "id": "media-5"
+      },
+      {
+        "id": "media-6-left",
+        "style": {
+          "background": "transparent"
+        },
+        "type": "image",
+        "name": "Media Row 6 Left"
+      },
+      {
+        "style": {
+          "background": "transparent"
+        },
+        "id": "media-6-right",
+        "type": "image",
+        "name": "Media Row 6 Right"
+      }
+    ],
+    "description": "A high-end editorial grid layout with a project header and mixed media rows.",
+    "name": "Magnetism Grid",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.033Z"
+  },
+  {
+    "id": "masonry-complex",
+    "name": "Masonry Complex",
+    "sections": [
+      {
+        "name": "Large Left",
+        "style": {
+          "width": "50%",
+          "position": "absolute",
+          "height": "60%",
+          "left": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "top": "0%"
+        },
+        "id": "large-left"
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "height": "30%",
+          "left": "50%",
+          "top": "0%",
+          "width": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute"
+        }
+      },
+      {
+        "style": {
+          "width": "50%",
+          "left": "50%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "height": "30%",
+          "position": "absolute",
+          "top": "30%"
+        },
+        "id": "mid-right",
+        "name": "Mid Right"
+      },
+      {
+        "name": "Bottom Left",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "40%",
+          "position": "absolute",
+          "width": "30%",
+          "left": "0%",
+          "top": "60%"
+        },
+        "id": "bottom-left"
+      },
+      {
+        "style": {
+          "height": "40%",
+          "left": "30%",
+          "width": "20%",
+          "position": "absolute",
+          "top": "60%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)"
+        },
+        "name": "Bottom Mid",
+        "id": "bottom-mid"
+      },
+      {
+        "name": "Bottom Right",
+        "style": {
+          "height": "40%",
+          "left": "50%",
+          "position": "absolute",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "width": "50%",
+          "top": "60%"
+        },
+        "id": "bottom-right"
+      }
+    ],
+    "description": "Complex masonry with varied sizes",
+    "migratedAt": "2025-12-22T11:12:07.031Z"
+  },
+  {
+    "id": "masonry-three",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "sections": [
+      {
+        "name": "Tall Left",
+        "style": {
+          "left": "0%",
+          "height": "100%",
+          "position": "absolute",
+          "width": "40%",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)"
+        },
+        "id": "tall-left"
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute",
+          "width": "60%",
+          "top": "0%",
+          "left": "40%",
+          "height": "40%"
+        }
+      },
+      {
+        "style": {
+          "width": "60%",
+          "height": "60%",
+          "position": "absolute",
+          "left": "40%",
+          "top": "40%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        },
+        "id": "bottom-right",
+        "name": "Bottom Right"
+      }
+    ],
+    "description": "Asymmetric three-section masonry layout",
+    "name": "Masonry Three"
+  },
+  {
+    "id": "morphing-blob",
+    "description": "Organic blob shapes with gooey physics.",
+    "sections": [
+      {
+        "name": "Blob 1",
+        "id": "blob-1",
+        "style": {
+          "background": "#fef3f2"
+        }
+      },
+      {
+        "style": {
+          "background": "#fef3f2"
+        },
+        "name": "Blob 2",
+        "id": "blob-2"
+      },
+      {
+        "id": "blob-3",
+        "name": "Blob 3",
+        "style": {
+          "background": "#fef3f2"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "name": "Morphing Blob",
+    "category": "dynamic"
+  },
+  {
+    "id": "neon-pulse-city",
+    "description": "Cyberpunk grid with pulsing neon effects.",
+    "name": "Neon Pulse City",
+    "category": "dynamic",
+    "sections": [
+      {
+        "id": "neon-1",
+        "style": {
+          "background": "#0a0a14"
+        },
+        "name": "Node 01"
+      },
+      {
+        "name": "Node 02",
+        "style": {
+          "background": "#0a0a14"
+        },
+        "id": "neon-2"
+      },
+      {
+        "style": {
+          "background": "#0a0a14"
+        },
+        "name": "Node 03",
+        "id": "neon-3"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z"
+  },
+  {
+    "id": "origami-unfold",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "description": "3D paper folding animation effects.",
+    "name": "Origami Unfold",
+    "category": "dynamic",
+    "sections": [
+      {
+        "id": "fold-1",
+        "name": "Fold 1",
+        "style": {
+          "background": "#FDFAF6"
+        }
+      },
+      {
+        "id": "fold-2",
+        "name": "Fold 2",
+        "style": {
+          "background": "#FFF5F5"
+        }
+      }
+    ]
+  },
+  {
+    "id": "parametric-flow",
+    "sections": [
+      {
+        "name": "Curve A",
+        "style": {
+          "background": "#fafafa"
+        },
+        "id": "curve-1"
+      },
+      {
+        "style": {
+          "background": "#fafafa"
+        },
+        "id": "curve-2",
+        "name": "Curve B"
+      },
+      {
+        "style": {
+          "background": "#fafafa"
+        },
+        "name": "Curve C",
+        "id": "curve-3"
+      }
+    ],
+    "name": "Parametric Flow",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "category": "dynamic",
+    "description": "Hadid-inspired curved panel system."
+  },
+  {
+    "id": "particle-universe",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "sections": [
+      {
+        "id": "star-1",
+        "style": {
+          "background": "#050514"
+        },
+        "name": "Star System 1"
+      },
+      {
+        "id": "star-2",
+        "style": {
+          "background": "#050514"
+        },
+        "name": "Star System 2"
+      },
+      {
+        "id": "star-3",
+        "style": {
+          "background": "#050514"
+        },
+        "name": "Star System 3"
+      }
+    ],
+    "description": "Interactive particle system with gravity.",
+    "category": "dynamic",
+    "name": "Particle Universe"
+  },
+  {
+    "id": "performance-flow",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "A cinematic horizontal scroll layout.",
+    "name": "Performance Flow",
+    "category": "dynamic",
+    "sections": [
+      {
+        "style": {
+          "background": "#1a1a1a"
+        },
+        "id": "flow-1",
+        "name": "Featured 1"
+      },
+      {
+        "style": {
+          "background": "#1a1a1a"
+        },
+        "name": "Featured 2",
+        "id": "flow-2"
+      },
+      {
+        "style": {
+          "background": "#1a1a1a"
+        },
+        "id": "flow-3",
+        "name": "Featured 3"
+      }
+    ]
+  },
+  {
+    "id": "picture-in-picture",
+    "name": "Picture in Picture",
+    "description": "Small overlay in bottom-right corner",
+    "sections": [
+      {
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "100%",
+          "position": "absolute",
+          "top": "0%",
+          "width": "100%"
+        },
+        "id": "main",
+        "name": "Main"
+      },
+      {
+        "name": "PIP",
+        "style": {
+          "height": "25%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "left": "70%",
+          "position": "absolute",
+          "width": "25%",
+          "top": "70%"
+        },
+        "id": "pip"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z"
+  },
+  {
+    "id": "pip-creative",
+    "description": "Creative PiP with side panels",
+    "sections": [
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "left": "5%",
+          "width": "60%",
+          "top": "10%",
+          "position": "absolute",
+          "height": "80%"
+        }
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "width": "25%",
+          "top": "5%",
+          "height": "28%",
+          "position": "absolute",
+          "left": "70%"
+        },
+        "name": "PiP 1",
+        "id": "pip-1"
+      },
+      {
+        "id": "pip-2",
+        "name": "PiP 2",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "width": "25%",
+          "top": "36%",
+          "left": "70%",
+          "height": "28%"
+        }
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "top": "67%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "height": "28%",
+          "width": "25%",
+          "left": "70%"
+        },
+        "id": "pip-3",
+        "name": "PiP 3"
+      }
+    ],
+    "name": "Picture-in-Picture Creative",
+    "migratedAt": "2025-12-22T11:12:07.032Z"
+  },
+  {
+    "id": "portfolio-grid",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Portfolio Grid",
+    "sections": [
+      {
+        "id": "featured",
+        "style": {
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "position": "absolute",
+          "height": "50%",
+          "left": "0%",
+          "top": "0%",
+          "width": "100%"
+        },
+        "name": "Featured"
+      },
+      {
+        "name": "Item 1",
+        "id": "item-1",
+        "style": {
+          "left": "0%",
+          "top": "50%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "width": "25%",
+          "height": "50%"
+        }
+      },
+      {
+        "id": "item-2",
+        "name": "Item 2",
+        "style": {
+          "width": "25%",
+          "left": "25%",
+          "height": "50%",
+          "top": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute"
+        }
+      },
+      {
+        "id": "item-3",
+        "name": "Item 3",
+        "style": {
+          "width": "25%",
+          "left": "50%",
+          "height": "50%",
+          "position": "absolute",
+          "top": "50%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)"
+        }
+      },
+      {
+        "name": "Item 4",
+        "style": {
+          "width": "25%",
+          "position": "absolute",
+          "top": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "50%",
+          "left": "75%"
+        },
+        "id": "item-4"
+      }
+    ],
+    "description": "Portfolio with featured and grid items"
+  },
+  {
+    "id": "portfolio-scroll",
+    "name": "Portfolio Scroll",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#ffffff"
+        },
+        "id": "portfolio-intro",
+        "description": "Hi! I am an independent graphic designer.",
+        "name": "Introduction"
+      },
+      {
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#B21C1B"
+        },
+        "description": "Selected Project",
+        "id": "project-Intro",
+        "name": "Intro"
+      },
+      {
+        "name": "Slide1",
+        "id": "project-acqua",
+        "description": "Selected Project",
+        "style": {
+          "backgroundColor": "#003F66",
+          "color": "#ffffff"
+        }
+      },
+      {
+        "description": "Selected Project",
+        "name": "Slide2",
+        "id": "project-epicerie",
+        "style": {
+          "backgroundColor": "#CFCC93",
+          "color": "#000000"
+        }
+      }
+    ],
+    "category": "dynamic",
+    "description": "Vertical project list with bold typography and colored sections"
+  },
+  {
+    "id": "quad",
+    "description": "Four equal quadrants",
+    "sections": [
+      {
+        "style": {
+          "height": "50%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "width": "50%",
+          "left": "0%",
+          "top": "0%"
+        },
+        "id": "top-left",
+        "name": "Top Left"
+      },
+      {
+        "name": "Top Right",
+        "id": "top-right",
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "50%",
+          "left": "50%",
+          "height": "50%",
+          "position": "absolute",
+          "top": "0%"
+        }
+      },
+      {
+        "style": {
+          "top": "50%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "height": "50%",
+          "width": "50%"
+        },
+        "id": "bottom-left",
+        "name": "Bottom Left"
+      },
+      {
+        "id": "bottom-right",
+        "style": {
+          "left": "50%",
+          "height": "50%",
+          "position": "absolute",
+          "width": "50%",
+          "top": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        },
+        "name": "Bottom Right"
+      }
+    ],
+    "name": "Quad",
+    "migratedAt": "2025-12-22T11:12:07.027Z"
+  },
+  {
+    "id": "side-by-side-thirds",
+    "name": "Side by Side Thirds",
+    "sections": [
+      {
+        "name": "Left",
+        "style": {
+          "width": "33.333%",
+          "top": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "height": "100%"
+        },
+        "id": "left"
+      },
+      {
+        "name": "Top Right",
+        "id": "top-right",
+        "style": {
+          "top": "0%",
+          "left": "33.333%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "66.667%",
+          "position": "absolute"
+        }
+      },
+      {
+        "name": "Bottom Right",
+        "id": "bottom-right",
+        "style": {
+          "top": "50%",
+          "position": "absolute",
+          "left": "33.333%",
+          "height": "50%",
+          "width": "66.667%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "description": "Left third with right two-thirds split"
+  },
+  {
+    "id": "sidebar-left",
+    "sections": [
+      {
+        "name": "Sidebar",
+        "id": "sidebar",
+        "style": {
+          "width": "25%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "height": "100%",
+          "left": "0%"
+        }
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "position": "absolute",
+          "width": "75%",
+          "top": "0%",
+          "left": "25%",
+          "height": "100%"
+        },
+        "name": "Main",
+        "id": "main"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "name": "Sidebar Left",
+    "description": "Narrow left sidebar with main content"
+  },
+  {
+    "id": "sidebar-right",
+    "sections": [
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "100%",
+          "top": "0%",
+          "width": "75%"
+        }
+      },
+      {
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "width": "25%",
+          "top": "0%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "100%",
+          "left": "75%"
+        },
+        "id": "sidebar"
+      }
+    ],
+    "name": "Sidebar Right",
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "description": "Main content with narrow right sidebar"
+  },
+  {
+    "id": "simon-portfolio",
+    "category": "dynamic",
+    "name": "Simon Daufresne",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#B21C1B"
+        },
+        "name": "Intro",
+        "id": "project-Intro",
+        "description": "Art direction & Visual Identity for a luxury perfume brand"
+      },
+      {
+        "id": "project-acqua",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#003F66"
+        },
+        "name": "Slide1",
+        "description": "Sub Content"
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#CFCC93"
+        },
+        "description": "Brand identity refresh for Le Bon Marché food hall",
+        "id": "project-epicerie",
+        "name": "Slide2"
+      },
+      {
+        "style": {
+          "backgroundColor": "#1a1a1a",
+          "color": "#ffffff"
+        },
+        "name": "Editorial",
+        "id": "project-editorial",
+        "description": "Typography and layout for print publications"
+      }
+    ],
+    "description": "Minimalist portfolio with bold typography and GSAP animations"
+  },
+  {
+    "id": "sistine-depth",
+    "sections": [
+      {
+        "name": "Layer 1",
+        "id": "sis-1",
+        "style": {
+          "background": "#1a1512"
+        }
+      }
+    ],
+    "name": "Sistine Depth",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "description": "Deep parallax and layered floating elements."
+  },
+  {
+    "id": "slider-layout",
+    "sections": [
+      {
+        "id": "slide-1",
+        "name": "Deep Purple",
+        "style": {
+          "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          "width": "100%",
+          "left": "0%",
+          "color": "#ffffff",
+          "height": "100%",
+          "top": "0%"
+        }
+      },
+      {
+        "id": "slide-2",
+        "name": "Sunset Orange",
+        "style": {
+          "color": "#ffffff",
+          "top": "0%",
+          "background": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)",
+          "width": "100%",
+          "height": "100%",
+          "left": "0%"
+        }
+      },
+      {
+        "name": "Ocean Blue",
+        "style": {
+          "height": "100%",
+          "width": "100%",
+          "left": "0%",
+          "color": "#ffffff",
+          "background": "linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)",
+          "top": "0%"
+        },
+        "id": "slide-3"
+      },
+      {
+        "name": "Lush Green",
+        "id": "slide-4",
+        "style": {
+          "color": "#ffffff",
+          "top": "0%",
+          "height": "100%",
+          "background": "linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)",
+          "width": "100%",
+          "left": "0%"
+        }
+      },
+      {
+        "name": "Midnight",
+        "id": "slide-5",
+        "style": {
+          "left": "0%",
+          "height": "100%",
+          "color": "#ffffff",
+          "width": "100%",
+          "top": "0%",
+          "background": "linear-gradient(to top, #30cfd0 0%, #330867 100%)"
+        }
+      }
+    ],
+    "description": "Clean slider with gradient backgrounds",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "name": "Gradient Slider"
+  },
+  {
+    "id": "split-horizontal-asymmetric",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "sections": [
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "top": "0%",
+          "height": "80%",
+          "left": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "width": "100%"
+        }
+      },
+      {
+        "name": "Footer",
+        "id": "footer",
+        "style": {
+          "top": "80%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "height": "20%",
+          "width": "100%",
+          "position": "absolute",
+          "left": "0%"
+        }
+      }
+    ],
+    "name": "Split Horizontal Asymmetric",
+    "description": "80/20 horizontal split"
+  },
+  {
+    "id": "split-landing-page",
+    "category": "dynamic",
+    "name": "Split Landing Page",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "Interactive split screen with hover expansion",
+    "sections": [
+      {
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "rgba(87, 84, 236, 0.7)"
+        },
+        "description": "",
+        "id": "split-left",
+        "name": ""
+      },
+      {
+        "id": "split-right",
+        "description": "",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "rgba(43, 43, 43, 0.8)"
+        },
+        "name": ""
+      }
+    ]
+  },
+  {
+    "id": "split-screen-vertical",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "width": "70%",
+          "top": "0%",
+          "height": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "left": "0%"
+        }
+      },
+      {
+        "style": {
+          "height": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "top": "0%",
+          "width": "30%",
+          "left": "70%",
+          "position": "absolute"
+        },
+        "id": "secondary",
+        "name": "Secondary"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.028Z",
+    "name": "Split Screen Vertical",
+    "description": "70/30 vertical split"
+  },
+  {
+    "id": "split-vertical-asymmetric",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Split Vertical Asymmetric",
+    "description": "80/20 vertical split",
+    "sections": [
+      {
+        "style": {
+          "height": "100%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "width": "80%",
+          "top": "0%"
+        },
+        "id": "main",
+        "name": "Main"
+      },
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "height": "100%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "width": "20%",
+          "top": "0%",
+          "left": "80%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "spotlight-bottom",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "name": "Spotlight Bottom",
+    "description": "Two top panels with large bottom section",
+    "sections": [
+      {
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "50%",
+          "top": "0%",
+          "position": "absolute",
+          "left": "0%",
+          "height": "35%"
+        },
+        "id": "top-left",
+        "name": "Top Left"
+      },
+      {
+        "style": {
+          "height": "35%",
+          "position": "absolute",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "50%",
+          "top": "0%",
+          "left": "50%"
+        },
+        "id": "top-right",
+        "name": "Top Right"
+      },
+      {
+        "name": "Spotlight",
+        "id": "spotlight",
+        "style": {
+          "position": "absolute",
+          "height": "65%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "top": "35%",
+          "left": "0%",
+          "width": "100%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "spotlight-frame",
+    "sections": [
+      {
+        "id": "spotlight",
+        "style": {
+          "position": "absolute",
+          "width": "60%",
+          "left": "20%",
+          "top": "20%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "height": "60%"
+        },
+        "name": "Spotlight"
+      },
+      {
+        "style": {
+          "left": "0%",
+          "top": "0%",
+          "height": "20%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59,130,246,0.8)",
+          "width": "100%"
+        },
+        "id": "top",
+        "name": "Top"
+      },
+      {
+        "style": {
+          "width": "100%",
+          "height": "20%",
+          "top": "80%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59,130,246,0.8)",
+          "left": "0%"
+        },
+        "id": "bottom",
+        "name": "Bottom"
+      },
+      {
+        "id": "left",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(236,72,153,0.8)",
+          "left": "0%",
+          "height": "60%",
+          "width": "20%",
+          "top": "20%"
+        },
+        "name": "Left"
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "width": "20%",
+          "height": "60%",
+          "backgroundColor": "rgba(236,72,153,0.8)",
+          "left": "80%",
+          "top": "20%"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "name": "Spotlight Frame",
+    "description": "Center emphasis with decorative frame"
+  },
+  {
+    "id": "spotlight-left",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "name": "Spotlight Left",
+    "description": "Large left section with two stacked right panels",
+    "sections": [
+      {
+        "style": {
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "width": "65%",
+          "left": "0%",
+          "height": "100%",
+          "top": "0%",
+          "position": "absolute"
+        },
+        "name": "Main",
+        "id": "main"
+      },
+      {
+        "style": {
+          "top": "0%",
+          "position": "absolute",
+          "height": "50%",
+          "left": "65%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "35%"
+        },
+        "name": "Top Right",
+        "id": "top-right"
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "width": "35%",
+          "left": "65%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "50%",
+          "height": "50%"
+        },
+        "name": "Bottom Right",
+        "id": "bottom-right"
+      }
+    ]
+  },
+  {
+    "id": "spotlight-right",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "name": "Spotlight Right",
+    "sections": [
+      {
+        "id": "top-left",
+        "style": {
+          "top": "0%",
+          "height": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "width": "35%"
+        },
+        "name": "Top Left"
+      },
+      {
+        "id": "bottom-left",
+        "style": {
+          "top": "50%",
+          "position": "absolute",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "left": "0%",
+          "width": "35%",
+          "height": "50%"
+        },
+        "name": "Bottom Left"
+      },
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "width": "65%",
+          "top": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "height": "100%",
+          "position": "absolute",
+          "left": "35%"
+        }
+      }
+    ],
+    "description": "Two stacked left panels with large right section"
+  },
+  {
+    "id": "spotlight-top",
+    "name": "Spotlight Top",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Large top section with two bottom panels",
+    "sections": [
+      {
+        "name": "Spotlight",
+        "style": {
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "65%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)"
+        },
+        "id": "spotlight"
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "35%",
+          "position": "absolute",
+          "top": "65%",
+          "left": "0%",
+          "width": "50%"
+        },
+        "name": "Bottom Left",
+        "id": "bottom-left"
+      },
+      {
+        "name": "Bottom Right",
+        "id": "bottom-right",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "35%",
+          "position": "absolute",
+          "width": "50%",
+          "top": "65%",
+          "left": "50%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "staircase-up",
+    "description": "Ascending stepped sections",
+    "name": "Staircase Up",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "sections": [
+      {
+        "id": "step-1",
+        "name": "Step 1",
+        "style": {
+          "width": "25%",
+          "top": "0%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "height": "40%",
+          "position": "absolute",
+          "left": "0%"
+        }
+      },
+      {
+        "id": "step-2",
+        "style": {
+          "left": "25%",
+          "height": "60%",
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "width": "25%",
+          "top": "0%",
+          "position": "absolute"
+        },
+        "name": "Step 2"
+      },
+      {
+        "id": "step-3",
+        "name": "Step 3",
+        "style": {
+          "height": "80%",
+          "position": "absolute",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "left": "50%",
+          "width": "25%",
+          "top": "0%"
+        }
+      },
+      {
+        "id": "step-4",
+        "style": {
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "height": "100%",
+          "width": "25%",
+          "left": "75%",
+          "top": "0%",
+          "position": "absolute"
+        },
+        "name": "Step 4"
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "width": "25%",
+          "height": "60%",
+          "top": "40%",
+          "backgroundColor": "rgba(168,85,247,0.9)"
+        },
+        "name": "Fill 1",
+        "id": "fill-1"
+      },
+      {
+        "name": "Fill 2",
+        "id": "fill-2",
+        "style": {
+          "top": "60%",
+          "backgroundColor": "rgba(59,130,246,0.9)",
+          "height": "40%",
+          "position": "absolute",
+          "width": "25%",
+          "left": "25%"
+        }
+      },
+      {
+        "id": "fill-3",
+        "style": {
+          "top": "80%",
+          "backgroundColor": "rgba(20,184,166,0.9)",
+          "height": "20%",
+          "left": "50%",
+          "position": "absolute",
+          "width": "25%"
+        },
+        "name": "Fill 3"
+      }
+    ]
+  },
+  {
+    "id": "temporal-fracture",
+    "name": "Temporal Fracture",
+    "description": "Nolan-inspired time-fragmented grid.",
+    "sections": [
+      {
+        "style": {
+          "background": "#0a0c12"
+        },
+        "id": "frag-1",
+        "name": "Fragment 1"
+      },
+      {
+        "style": {
+          "background": "#0a0c12"
+        },
+        "name": "Fragment 2",
+        "id": "frag-2"
+      },
+      {
+        "style": {
+          "background": "#0a0c12"
+        },
+        "id": "frag-3",
+        "name": "Fragment 3"
+      }
+    ],
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z"
+  },
+  {
+    "id": "top-bottom-thirds",
+    "name": "Top Bottom Thirds",
+    "sections": [
+      {
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "left": "0%",
+          "height": "33.333%"
+        },
+        "name": "Top",
+        "id": "top"
+      },
+      {
+        "name": "Bottom Left",
+        "style": {
+          "height": "66.667%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute",
+          "top": "33.333%",
+          "left": "0%",
+          "width": "50%"
+        },
+        "id": "bottom-left"
+      },
+      {
+        "name": "Bottom Right",
+        "style": {
+          "width": "50%",
+          "left": "50%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "position": "absolute",
+          "height": "66.667%",
+          "top": "33.333%"
+        },
+        "id": "bottom-right"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "description": "Top third with bottom two-thirds split"
+  },
+  {
+    "id": "trio",
+    "migratedAt": "2025-12-22T11:12:07.026Z",
+    "description": "Three equal vertical columns",
+    "name": "Trio",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "height": "100%",
+          "top": "0%",
+          "width": "33.333%"
+        },
+        "id": "left",
+        "name": "Left"
+      },
+      {
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "33.333%",
+          "height": "100%",
+          "left": "33.333%",
+          "top": "0%"
+        },
+        "id": "center"
+      },
+      {
+        "name": "Right",
+        "id": "right",
+        "style": {
+          "height": "100%",
+          "top": "0%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "width": "33.334%",
+          "position": "absolute",
+          "left": "66.666%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "triple-horizontal",
+    "sections": [
+      {
+        "id": "top",
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "left": "0%",
+          "top": "0%",
+          "height": "33.333%"
+        },
+        "name": "Top"
+      },
+      {
+        "id": "middle",
+        "name": "Middle",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "top": "33.333%",
+          "left": "0%",
+          "width": "100%",
+          "height": "33.333%"
+        }
+      },
+      {
+        "style": {
+          "left": "0%",
+          "top": "66.666%",
+          "width": "100%",
+          "height": "33.334%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "position": "absolute"
+        },
+        "name": "Bottom",
+        "id": "bottom"
+      }
+    ],
+    "description": "Three equal horizontal rows",
+    "name": "Triple Horizontal",
+    "migratedAt": "2025-12-22T11:12:07.028Z"
+  },
+  {
+    "id": "two-halves",
+    "sections": [
+      {
+        "name": "Left",
+        "id": "left",
+        "style": {
+          "height": "100%",
+          "width": "50%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "left": "0%"
+        }
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "top": "0%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "100%",
+          "position": "absolute",
+          "width": "50%",
+          "left": "50%"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.026Z",
+    "description": "Two equal vertical sections",
+    "name": "Two Halves"
+  },
+  {
+    "id": "two-halves-horizontal",
+    "migratedAt": "2025-12-22T11:12:07.026Z",
+    "name": "Two Halves Horizontal",
+    "description": "Two equal horizontal sections",
+    "sections": [
+      {
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "height": "50%"
+        },
+        "id": "top",
+        "name": "Top"
+      },
+      {
+        "style": {
+          "left": "0%",
+          "height": "50%",
+          "width": "100%",
+          "top": "50%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute"
+        },
+        "name": "Bottom",
+        "id": "bottom"
+      }
+    ]
+  },
+  {
+    "id": "vertical-slider",
+    "category": "dynamic",
+    "sections": [
+      {
+        "name": "Slide 1 Left",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#FD3555"
+        },
+        "id": "v-slide-1-left"
+      },
+      {
+        "name": "Slide 1 Right",
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#FFE4E8"
+        },
+        "id": "v-slide-1-right"
+      },
+      {
+        "id": "v-slide-2-left",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#2A86BA"
+        },
+        "name": "Slide 2 Left"
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#D4EFFC"
+        },
+        "name": "Slide 2 Right",
+        "id": "v-slide-2-right"
+      },
+      {
+        "id": "v-slide-3-left",
+        "name": "Slide 3 Left",
+        "style": {
+          "backgroundColor": "#252E33",
+          "color": "#ffffff"
+        }
+      },
+      {
+        "id": "v-slide-3-right",
+        "name": "Slide 3 Right",
+        "style": {
+          "backgroundColor": "#E6E6E6",
+          "color": "#000000"
+        }
+      },
+      {
+        "style": {
+          "backgroundColor": "#FFB866",
+          "color": "#ffffff"
+        },
+        "name": "Slide 4 Left",
+        "id": "v-slide-4-left"
+      },
+      {
+        "name": "Slide 4 Right",
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#FFF0D6"
+        },
+        "id": "v-slide-4-right"
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "Split screen slider with reverse scrolling",
+    "name": "Double Vertical Slider"
+  },
+  {
+    "id": "vertical-thirds",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Vertical Thirds",
+    "description": "Three vertical sections using rule of thirds",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "height": "100%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "width": "33.333%",
+          "left": "0%"
+        }
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "33.333%",
+          "height": "100%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "33.333%"
+        },
+        "name": "Center",
+        "id": "center"
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "top": "0%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)",
+          "position": "absolute",
+          "left": "66.666%",
+          "height": "100%",
+          "width": "33.334%"
+        }
+      }
+    ]
+  },
+  {
+    "id": "vitruvian-motion",
+    "sections": [
+      {
+        "style": {
+          "background": "#f5f1eb"
+        },
+        "name": "Canvas",
+        "id": "vit-1"
+      }
+    ],
+    "name": "Vitruvian Motion",
+    "category": "dynamic",
+    "description": "Technical sketching and geometry animations.",
+    "migratedAt": "2025-12-22T11:12:07.033Z"
+  },
+  {
+    "id": "vogue-parallax",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "style": {
+          "background": "linear-gradient(to bottom, #ffffff, #f7f7f7)"
+        },
+        "name": "Cover",
+        "id": "vogue-1"
+      },
+      {
+        "id": "vogue-2",
+        "name": "Editorial",
+        "style": {
+          "background": "linear-gradient(to bottom, #f7f7f7, #eaeaea)"
+        }
+      },
+      {
+        "id": "vogue-3",
+        "name": "Details",
+        "style": {
+          "background": "linear-gradient(to top, #fff1eb 0%, #ace0f9 100%)"
+        }
+      },
+      {
+        "style": {
+          "background": "linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)"
+        },
+        "name": "Backstage",
+        "id": "vogue-4"
+      }
+    ],
+    "description": "High-fashion parallax with sticky typography.",
+    "category": "dynamic",
+    "name": "Vogue Editorial"
+  },
+  {
+    "id": "void-emergence",
+    "sections": [
+      {
+        "name": "Entity 01",
+        "id": "entity-1",
+        "style": {
+          "background": "#08050f"
+        }
+      },
+      {
+        "style": {
+          "background": "#08050f"
+        },
+        "name": "Entity 02",
+        "id": "entity-2"
+      },
+      {
+        "name": "Entity 03",
+        "style": {
+          "background": "#08050f"
+        },
+        "id": "entity-3"
+      }
+    ],
+    "name": "Void Emergence",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "description": "Physics-based panel emergence."
+  },
+  {
+    "id": "window-pane-nine",
+    "name": "Window Pane Nine",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "sections": [
+      {
+        "name": "Top Left",
+        "style": {
+          "height": "33.333%",
+          "position": "absolute",
+          "width": "33.333%",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "0%"
+        },
+        "id": "tl"
+      },
+      {
+        "id": "tc",
+        "name": "Top Center",
+        "style": {
+          "height": "33.333%",
+          "top": "0%",
+          "position": "absolute",
+          "width": "33.333%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "33.333%"
+        }
+      },
+      {
+        "name": "Top Right",
+        "id": "tr",
+        "style": {
+          "height": "33.333%",
+          "top": "0%",
+          "width": "33.334%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "position": "absolute",
+          "left": "66.666%"
+        }
+      },
+      {
+        "style": {
+          "height": "33.333%",
+          "position": "absolute",
+          "left": "0%",
+          "top": "33.333%",
+          "width": "33.333%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)"
+        },
+        "name": "Middle Left",
+        "id": "ml"
+      },
+      {
+        "id": "mc",
+        "name": "Middle Center",
+        "style": {
+          "top": "33.333%",
+          "width": "33.333%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "height": "33.333%",
+          "position": "absolute",
+          "left": "33.333%"
+        }
+      },
+      {
+        "name": "Middle Right",
+        "style": {
+          "top": "33.333%",
+          "left": "66.666%",
+          "width": "33.334%",
+          "height": "33.333%",
+          "position": "absolute",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)"
+        },
+        "id": "mr"
+      },
+      {
+        "id": "bl",
+        "style": {
+          "backgroundColor": "rgba(14, 165, 233, 0.9)",
+          "position": "absolute",
+          "width": "33.333%",
+          "height": "33.334%",
+          "top": "66.666%",
+          "left": "0%"
+        },
+        "name": "Bottom Left"
+      },
+      {
+        "name": "Bottom Center",
+        "id": "bc",
+        "style": {
+          "top": "66.666%",
+          "height": "33.334%",
+          "position": "absolute",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)",
+          "left": "33.333%",
+          "width": "33.333%"
+        }
+      },
+      {
+        "name": "Bottom Right",
+        "id": "br",
+        "style": {
+          "top": "66.666%",
+          "position": "absolute",
+          "left": "66.666%",
+          "height": "33.334%",
+          "width": "33.334%",
+          "backgroundColor": "rgba(168, 85, 247, 0.9)"
+        }
+      }
+    ],
+    "description": "3x3 equal grid like a window"
+  },
+  {
+    "id": "wintour-editorial",
+    "name": "Wintour Editorial",
+    "sections": [
+      {
+        "id": "win-1",
+        "name": "Cover",
+        "style": {
+          "background": "#fff"
+        }
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "description": "High-impact typography and scroll snapping."
+  },
+  {
+    "id": "zaha-parametric",
+    "name": "Zaha Parametric",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "name": "Main",
+        "style": {
+          "background": "#000"
+        },
+        "id": "zaha-1"
+      }
+    ],
+    "description": "Abstract curved 3D geometries and flow.",
+    "category": "dynamic"
+  }
+]

@@ -1,0 +1,471 @@
+[
+  {
+    "id": "diagonal-rush-v1",
+    "effects": {
+      "videoFilter": "saturate(0) contrast(1.1)"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "center-cam"
+        }
+      ],
+      "templateId": "diagonal-rush"
+    },
+    "canvasAspectRatio": "9:16",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#F0F0F0"
+    },
+    "styleTags": [
+      "fashion",
+      "diagonal",
+      "scroll",
+      "fast"
+    ],
+    "textOverlays": [],
+    "source": "system",
+    "name": "Diagonal Rush"
+  },
+  {
+    "id": "editorial-sticky-split",
+    "background": {
+      "blankCanvasColor": "#FFF",
+      "backgroundEffect": "none"
+    },
+    "styleTags": [
+      "split",
+      "editorial",
+      "clean",
+      "reading"
+    ],
+    "textOverlays": [],
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "canvasLayout": {
+      "sections": [
+        {
+          "id": "sticky-media",
+          "content": {
+            "type": "camera"
+          }
+        }
+      ],
+      "templateId": "sticky-split"
+    },
+    "canvasAspectRatio": "16:9",
+    "source": "system",
+    "effects": {
+      "videoFilter": "sepia(0.2)"
+    },
+    "name": "Sticky Editorial"
+  },
+  {
+    "id": "fashion-horizontal-scroll",
+    "source": "system",
+    "background": {
+      "blankCanvasColor": "#FFF",
+      "backgroundEffect": "none"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "effects": {
+      "videoFilter": "grayscale(1)"
+    },
+    "canvasAspectRatio": "16:9",
+    "styleTags": [
+      "horizontal",
+      "fashion",
+      "gallery",
+      "pan"
+    ],
+    "name": "Runway Horizontal",
+    "canvasLayout": {
+      "templateId": "horizontal-scroll",
+      "sections": [
+        {
+          "id": "item-1",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "id": "item-2",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "item-3"
+        }
+      ]
+    },
+    "textOverlays": [],
+    "pip": {
+      "layoutMode": "hidden"
+    }
+  },
+  {
+    "id": "fashion-layered-parallax",
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "layer-back"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "layer-front"
+        }
+      ],
+      "templateId": "layered-parallax"
+    },
+    "textOverlays": [],
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "effects": {
+      "videoFilter": "contrast(1.2)"
+    },
+    "styleTags": [
+      "fashion",
+      "depth",
+      "scroll",
+      "image"
+    ],
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "name": "Layered Parallax",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#1A1A1A"
+    }
+  },
+  {
+    "id": "kinetic-infinite-grid",
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "canvasAspectRatio": "16:9",
+    "effects": {
+      "videoFilter": "contrast(1.1)"
+    },
+    "name": "Infinite Grid",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#000"
+    },
+    "textOverlays": [],
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "styleTags": [
+      "grid",
+      "loop",
+      "seamless",
+      "gallery"
+    ],
+    "canvasLayout": {
+      "sections": [
+        {
+          "id": "grid-1",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-2"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-3"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-4"
+        }
+      ],
+      "templateId": "infinite-grid"
+    }
+  },
+  {
+    "id": "kinetic-scroll-zoom",
+    "styleTags": [
+      "scale",
+      "hero",
+      "impact",
+      "modern"
+    ],
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "canvasAspectRatio": "16:9",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#111"
+    },
+    "name": "Scroll Zoom Hero",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "canvasLayout": {
+      "templateId": "scroll-zoom",
+      "sections": [
+        {
+          "id": "hero-zoom",
+          "content": {
+            "type": "camera"
+          }
+        }
+      ]
+    },
+    "textOverlays": [],
+    "source": "system",
+    "effects": {
+      "videoFilter": "none"
+    }
+  },
+  {
+    "id": "kinetic-stencil-v1",
+    "canvasLayout": {
+      "templateId": "kinetic-stencil",
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "main-feed"
+        }
+      ]
+    },
+    "source": "system",
+    "effects": {
+      "videoFilter": "grayscale(1) contrast(1.2)"
+    },
+    "name": "Kinetic Stencil",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "canvasAspectRatio": "16:9",
+    "styleTags": [
+      "bold",
+      "mask",
+      "typography",
+      "video-in-text"
+    ],
+    "textOverlays": [],
+    "background": {
+      "blankCanvasColor": "#000000",
+      "backgroundEffect": "none"
+    },
+    "pip": {
+      "layoutMode": "hidden"
+    }
+  },
+  {
+    "id": "kinetic-typography-v1",
+    "effects": {
+      "videoFilter": "contrast(1.1)"
+    },
+    "canvasAspectRatio": "16:9",
+    "styleTags": [
+      "modern",
+      "typography",
+      "bold",
+      "editorial",
+      "gsap"
+    ],
+    "textOverlays": [],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "source": "system",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#E5E5E5"
+    },
+    "name": "Kinetic Editorial",
+    "canvasLayout": {
+      "sections": [
+        {
+          "id": "hero",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "id": "grid-1",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "id": "grid-2",
+          "content": {
+            "type": "empty"
+          }
+        }
+      ],
+      "templateId": "kinetic-typography"
+    }
+  },
+  {
+    "id": "modern-circular-gallery",
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "templateId": "circular-gallery",
+      "sections": [
+        {
+          "id": "circle-1",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "circle-2"
+        },
+        {
+          "id": "circle-3",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "id": "circle-4",
+          "content": {
+            "type": "empty"
+          }
+        }
+      ]
+    },
+    "textOverlays": [],
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "effects": {
+      "videoFilter": "none"
+    },
+    "styleTags": [
+      "circle",
+      "rotate",
+      "creative",
+      "experimental"
+    ],
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "name": "Circular Gallery",
+    "background": {
+      "blankCanvasColor": "#111",
+      "backgroundEffect": "none"
+    }
+  },
+  {
+    "id": "modern-snap-sections",
+    "source": "system",
+    "background": {
+      "blankCanvasColor": "#000",
+      "backgroundEffect": "none"
+    },
+    "effects": {
+      "videoFilter": "none"
+    },
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "name": "Snap Stories",
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "snap-1"
+        },
+        {
+          "id": "snap-2",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "id": "snap-3",
+          "content": {
+            "type": "empty"
+          }
+        }
+      ],
+      "templateId": "snap-sections"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "styleTags": [
+      "snap",
+      "fullscreen",
+      "story",
+      "mobile"
+    ],
+    "textOverlays": []
+  }
+]
