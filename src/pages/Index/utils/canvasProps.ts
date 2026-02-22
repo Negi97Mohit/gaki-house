@@ -37,8 +37,8 @@ interface CanvasCallbacks {
   onCanvasPresetSelect: (layout: any) => void;
   onSaveCanvasPreset: (name: string, layout: any) => void;
   onDeleteCanvasPreset: (id: string) => void;
-  shareCanvasPreset: (id: string) => void;
-  unshareCanvasPreset: (id: string) => void;
+  shareCanvasPreset: (presetOrId: any, authorName?: string) => void;
+  unshareCanvasPreset: (presetOrId: any) => void;
   onAddSavedOverlay: (overlay: GeneratedOverlay) => void;
   onDeleteSavedOverlay: (id: string) => void;
   onBannerTextStyleChange: (style: React.CSSProperties) => void;
