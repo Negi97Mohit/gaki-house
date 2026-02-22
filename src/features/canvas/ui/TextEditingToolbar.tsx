@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import { Button } from "@/shared/ui/button";
-import { Sparkles, Layers } from "lucide-react";
+import { Sparkles, Layers, Type } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { TextOverlayState } from "@/types/caption";
 import { TextFormattingControls } from "@/features/caption/ui/text-toolbar/TextFormattingControls";
@@ -22,6 +22,7 @@ interface TextEditingToolbarProps {
   containerRef?: React.RefObject<HTMLElement>;
   elementHeight?: number;
   elementWidth?: number;
+  onEditClick?: () => void;
 }
 
 export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
@@ -32,6 +33,7 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
   containerRef,
   elementHeight = 40,
   elementWidth = 100,
+  onEditClick,
 }) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [toolbarPosition, setToolbarPosition] = useState(position);
@@ -82,7 +84,22 @@ export const TextEditingToolbar: React.FC<TextEditingToolbarProps> = ({
       >
         {/* Subtle inner glow */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
-        
+
+        {onEditClick && (
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative h-6 w-6 shrink-0 rounded-xl hover:bg-foreground/5 dark:hover:bg-white/10"
+              onClick={onEditClick}
+              title="Edit Text Content"
+            >
+              <Type className="w-3 h-3 text-primary" />
+            </Button>
+            <div className="w-px h-4 bg-border/20 dark:bg-white/10 mx-0.5" />
+          </>
+        )}
+
         <Button
           variant={showDesigns ? "secondary" : "ghost"}
           size="icon"

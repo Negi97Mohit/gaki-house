@@ -98,7 +98,7 @@ export function SettingsPanel() {
         {activeSection === "display" && (
           <div className="space-y-4">
             {/* Zoom Level */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-3">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
               <div className="flex items-center gap-2">
                 <ZoomIn className="w-3.5 h-3.5 text-muted-foreground" />
                 <Label className="text-[11px] font-medium">Zoom Level</Label>
@@ -115,7 +115,7 @@ export function SettingsPanel() {
             </div>
 
             {/* Grid Settings */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-3">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
               <div className="flex items-center gap-2 mb-2">
                 <Grid3X3 className="w-3.5 h-3.5 text-muted-foreground" />
                 <span className="text-[11px] font-medium">Grid Settings</span>
@@ -131,7 +131,7 @@ export function SettingsPanel() {
             </div>
 
             {/* Fullscreen */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10">
               <div className="flex items-center gap-2">
                 <Maximize className="w-3.5 h-3.5 text-muted-foreground" />
                 <span className="text-[11px] font-medium">Fullscreen Mode</span>
@@ -146,7 +146,7 @@ export function SettingsPanel() {
         {activeSection === "audio" && (
           <div className="space-y-4">
             {/* Master Volume */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-3">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
               <div className="flex items-center gap-2">
                 <Volume2 className="w-3.5 h-3.5 text-muted-foreground" />
                 <Label className="text-[11px] font-medium">Master Volume</Label>
@@ -163,7 +163,7 @@ export function SettingsPanel() {
             </div>
 
             {/* Microphone */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-3">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[11px] font-medium">Microphone</span>
               </div>
@@ -194,7 +194,7 @@ export function SettingsPanel() {
             </div>
 
             {/* Output */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-2">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-2">
               <Label className="text-[10px] text-muted-foreground">Output Device</Label>
               <Select value={audioOutput} onValueChange={setAudioOutput}>
                 <SelectTrigger className="h-7 text-[10px]">
@@ -209,7 +209,7 @@ export function SettingsPanel() {
             </div>
 
             {/* Audio Processing */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10 space-y-3">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
               <span className="text-[11px] font-medium">Audio Processing</span>
               <div className="flex items-center justify-between">
                 <Label className="text-[10px] text-muted-foreground">Noise Suppression</Label>
@@ -226,7 +226,7 @@ export function SettingsPanel() {
         {activeSection === "shortcuts" && (
           <div className="space-y-3">
             {Object.entries(shortcutCategories).map(([category, keys]) => (
-              <div key={category} className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10">
+              <div key={category} className="p-3 rounded-xl bg-transparent border border-border/10">
                 <h4 className="text-[10px] font-semibold text-muted-foreground mb-2">{category}</h4>
                 <div className="space-y-1.5">
                   {keys.map((key) => {
@@ -250,7 +250,7 @@ export function SettingsPanel() {
         {activeSection === "about" && (
           <div className="space-y-3">
             {/* Logo & Title */}
-            <div className="p-4 rounded-xl bg-foreground/[0.02] border border-border/10">
+            <div className="p-4 rounded-xl bg-transparent border border-border/10">
               <div className="flex items-center gap-3 mb-3">
                 <img src={gakiLogo} alt="GAKI Logo" className="w-10 h-10 rounded-lg" />
                 <div>
@@ -266,7 +266,7 @@ export function SettingsPanel() {
             </div>
 
             {/* Features */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10">
               <h4 className="text-[10px] font-semibold text-muted-foreground mb-2">Features</h4>
               <ul className="space-y-1.5">
                 <li className="flex items-center gap-2 text-[10px] text-foreground/80">
@@ -285,7 +285,7 @@ export function SettingsPanel() {
             </div>
 
             {/* Creator */}
-            <div className="p-3 rounded-xl bg-foreground/[0.02] border border-border/10">
+            <div className="p-3 rounded-xl bg-transparent border border-border/10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-muted-foreground">Created with love ❤️❤️❤️ by</span>

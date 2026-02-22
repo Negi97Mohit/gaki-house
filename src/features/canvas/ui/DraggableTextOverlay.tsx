@@ -302,6 +302,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
             elementHeight={
               (overlay.layout.size.height / 100) * sceneSize.height
             }
+            onEditClick={() => setIsEditing(true)}
           />
         </div>
       )}

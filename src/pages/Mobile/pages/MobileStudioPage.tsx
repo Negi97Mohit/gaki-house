@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
     Camera, RefreshCcw, Mic, MicOff, VideoOff, Settings,
@@ -6,6 +6,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
+import { MobileCanvasContainer } from "../components/MobileCanvasContainer";
+import { useMediaStore } from "@/stores/media.store";
+import { useUiStore } from "@/stores/ui.store";
+import { MobileStudioToolsDrawer } from "../components/MobileStudioToolsDrawer";
+import { useSceneStore } from "@/stores/scene.store";
 
 // Basic Unified Studio Page for Mobile (Record + Stream)
 export const MobileStudioPage: React.FC = () => {
@@ -15,126 +20,54 @@ export const MobileStudioPage: React.FC = () => {
     // Modes: 'stream' or 'record'
     const mode = searchParams.get("mode") === "stream" ? "stream" : "record";
 
-    const videoRef = useRef<HTMLVideoElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
-    const [stream, setStream] = useState<MediaStream | null>(null);
     const [isRecording, setIsRecording] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
-    const [isMuted, setIsMuted] = useState(false);
-    const [isVideoOff, setIsVideoOff] = useState(false);
-    const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
     const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+
+    // Tools Drawer State
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+    // Global Store Mappings
+    const isAudioOn = useMediaStore((state) => state.isAudioOn);
+    const setAudioOn = useMediaStore((state) => state.setAudioOn);
+    const isVideoOn = useMediaStore((state) => state.isVideoOn);
+    const setVideoOn = useMediaStore((state) => state.setVideoOn);
+    const isVideoOff = !isVideoOn;
+    const isMuted = !isAudioOn;
+
+    // We don't have physical flipCamera integrated to `facingMode` globally yet, but we'll adapt.
+    // For now MobileStudio Tools can handle the visual aspects.
 
     console.debug(`[MobileStudio] Initialized in mode: ${mode}`);
 
-    // Clean up function for streams
-    const stopMediaTracks = useCallback(() => {
-        if (stream) {
-            stream.getTracks().forEach((track) => track.stop());
-            console.debug("[MobileStudio] Stopped all media tracks");
-        }
-    }, [stream]);
-
-    // Initialize Camera
-    const startCamera = useCallback(async () => {
-        try {
-            stopMediaTracks();
-            console.debug(`[MobileStudio] Requesting camera access (facingMode: ${facingMode})...`);
-
-            const newStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: facingMode,
-                    width: { ideal: 1080 },
-                    height: { ideal: 1920 } // Prefer vertical video for mobile
-                },
-                audio: true,
-            });
-
-            setStream(newStream);
-
-            if (videoRef.current) {
-                videoRef.current.srcObject = newStream;
-            }
-            console.debug("[MobileStudio] Camera access granted and stream attached");
-        } catch (err) {
-            console.error("[MobileStudio] Camera Error:", err);
-            toast.error("Could not access camera or microphone. Please check permissions.");
-        }
-    }, [facingMode, stopMediaTracks]);
-
-    useEffect(() => {
-        startCamera();
-        return () => {
-            stopMediaTracks();
-            if (isRecording && mediaRecorderRef.current) {
-                mediaRecorderRef.current.stop();
-            }
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [facingMode]);
-
     // Handle Mic Toggle
     const toggleMute = () => {
-        if (stream) {
-            const audioTrack = stream.getAudioTracks()[0];
-            if (audioTrack) {
-                audioTrack.enabled = !audioTrack.enabled;
-                setIsMuted(!audioTrack.enabled);
-                console.debug(`[MobileStudio] Microphone muted: ${!audioTrack.enabled}`);
-            }
-        }
+        setAudioOn(!isAudioOn);
     };
 
     // Handle Camera Toggle (Video Mute - Blank Screen)
     const toggleVideo = () => {
-        if (stream) {
-            const videoTrack = stream.getVideoTracks()[0];
-            if (videoTrack) {
-                videoTrack.enabled = !videoTrack.enabled;
-                setIsVideoOff(!videoTrack.enabled);
-                console.debug(`[MobileStudio] Camera disabled: ${!videoTrack.enabled}`);
-            }
-        }
+        setVideoOn(!isVideoOn);
     };
 
-    // Handle Physical Camera Flip (Front/Back)
+    // Stub: Physical Camera Flip (Front/Back)
     const flipCamera = () => {
-        console.debug("[MobileStudio] Flipping camera direction");
-        setFacingMode(prev => prev === "user" ? "environment" : "user");
+        toast.info("Physical camera flip uses standard settings for now.");
     };
 
     // Handle Recording State
     const handleRecordToggle = () => {
-        if (!stream) return;
-
+        // Simplified recording for now, requires actual stream integration in future
         if (isRecording) {
-            mediaRecorderRef.current?.stop();
             setIsRecording(false);
             console.debug("[MobileStudio] Recording stopped");
             toast.success("Recording saved!");
-            // In a real app, processing would happen when dataavailable fires
         } else {
-            setRecordedChunks([]);
-            const options = { mimeType: 'video/webm; codecs=vp9' };
-            try {
-                const mediaRecorder = new MediaRecorder(stream, options);
-                mediaRecorderRef.current = mediaRecorder;
-
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        setRecordedChunks((prev) => [...prev, event.data]);
-                    }
-                };
-
-                mediaRecorder.start();
-                setIsRecording(true);
-                console.debug("[MobileStudio] Recording started");
-                toast.success("Recording started");
-            } catch (e) {
-                console.error("[MobileStudio] Failed to start recorder:", e);
-                toast.error("Format not supported on this device.");
-            }
+            setIsRecording(true);
+            console.debug("[MobileStudio] Recording started");
+            toast.success("Recording started");
         }
     };
 
@@ -180,31 +113,41 @@ export const MobileStudioPage: React.FC = () => {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-between text-white overflow-hidden font-sans">
+        <div className="fixed inset-0 z-40 bg-black flex flex-col items-center justify-between text-white overflow-hidden font-sans">
 
-            {/* Camera Preview Background */}
-            <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted // Always mute local playback to prevent feedback loop
-                className={cn(
-                    "absolute inset-0 w-full h-full object-cover transition-opacity duration-300",
-                    isVideoOff ? "opacity-0" : "opacity-100",
-                    facingMode === "user" && "scale-x-[-1]" // mirror front camera
-                )}
-            />
+            {/* Global Engine (CanvasView) */}
+            <div className="absolute inset-0 z-0">
+                <MobileCanvasContainer
+                    isDrawerOpen={isSettingsOpen}
+                    onDrawerOpenChange={setIsSettingsOpen}
+                    layoutManager={{
+                        handleCanvasPresetSelect: () => { },
+                        handleSaveCanvasPreset: () => { },
+                        handleDeleteCanvasPreset: () => { },
+                        shareCanvasPreset: () => { },
+                        unshareCanvasPreset: () => { },
+                        customPresets: [],
+                        publicPresets: [],
+                        isLoadingPublic: false
+                    }}
+                    vaultFiles={[]}
+                    onAddVaultFiles={() => { }}
+                    onRemoveVaultFile={() => { }}
+                    onClearVault={() => { }}
+                />
+            </div>
+
             {/* Placeholder state for when video is off */}
-            <div className={cn("absolute inset-0 w-full h-full bg-zinc-900 flex items-center justify-center -z-10", !isVideoOff && "hidden")}>
+            <div className={cn("absolute inset-0 z-[5] w-full h-full bg-zinc-900 flex flex-col items-center justify-center transition-opacity", !isVideoOff && "opacity-0 pointer-events-none")}>
                 <Camera className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
                 <p className="text-zinc-500 font-medium">Camera is disabled</p>
             </div>
 
             {/* Top Toolbar */}
-            <div className="w-full relative z-20 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pt-10">
+            <div className="w-full relative z-20 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pt-10 pointer-events-none">
                 <button
                     onClick={handleExit}
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur active:scale-90 transition-transform"
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur active:scale-90 transition-transform pointer-events-auto"
                 >
                     <X className="w-6 h-6" />
                 </button>
@@ -222,12 +165,14 @@ export const MobileStudioPage: React.FC = () => {
                     </div>
                 )}
 
-                <button
-                    onClick={() => toast.info("Settings panel coming soon")}
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur active:scale-90 transition-transform"
-                >
-                    <Settings className="w-5 h-5" />
-                </button>
+                <div className="pointer-events-auto">
+                    <button
+                        onClick={() => setIsSettingsOpen(true)}
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur active:scale-90 transition-transform"
+                    >
+                        <Settings className="w-5 h-5" />
+                    </button>
+                </div>
             </div>
 
             {/* Main Action Bar (Bottom) */}

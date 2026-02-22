@@ -37,6 +37,7 @@ interface CanvasDesignsPanelProps {
   isLoadingPublic?: boolean;
   onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
+  isHorizontal?: boolean;
 }
 
 // --- EXACT PREVIEW RENDERER (Memoized) ---
@@ -99,13 +100,13 @@ const PresetPreview = memo(
                 textOverlays={[]}
                 blankCanvasColor={preset.background.blankCanvasColor || "#000"}
                 backgroundImageUrl={preset.background.backgroundImageUrl}
-                onSectionContentChange={() => {}}
-                onGridAssetSelect={() => {}}
+                onSectionContentChange={() => { }}
+                onGridAssetSelect={() => { }}
                 layoutMode="pip"
                 cameraShape="rectangle"
                 pipSize={{ width: 20, height: 20 }}
                 backgroundEffect="none"
-                onSectionCameraSettingsChange={() => {}}
+                onSectionCameraSettingsChange={() => { }}
                 // Force low-power mode if available in your renderer
                 videoDevices={[]}
               />
@@ -134,7 +135,7 @@ const PresetPreview = memo(
     const pipShadow = 'pipShadow' in pip ? pip.pipShadow : undefined;
     const pipBorder = 'pipBorder' in pip ? pip.pipBorder : undefined;
     const cameraShape = 'cameraShape' in pip ? pip.cameraShape : 'rectangle';
-    
+
     const pipStyle: React.CSSProperties = {
       left: `${pip.pipPosition?.x || 0}%`,
       top: `${pip.pipPosition?.y || 0}%`,
@@ -202,8 +203,8 @@ const PresetPreview = memo(
                   text.style.textAlign === "right"
                     ? "flex-end"
                     : text.style.textAlign === "center"
-                    ? "center"
-                    : "flex-start",
+                      ? "center"
+                      : "flex-start",
               }}
             >
               <div
@@ -355,6 +356,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
   isLoadingPublic,
   onShareCanvasPreset,
   onUnshareCanvasPreset,
+  isHorizontal = false,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [savePresetName, setSavePresetName] = useState("");
@@ -435,8 +437,8 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     selectedCategory === "all"
       ? CANVAS_PRESETS
       : selectedCategory === "community"
-      ? publicPresets || []
-      : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
+        ? publicPresets || []
+        : CANVAS_PRESETS.filter((p) => p.styleTags.includes(selectedCategory));
 
   return (
     <div className="flex flex-col h-full font-mono gap-3">
@@ -576,21 +578,41 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
         </div>
       )}
 
-      {/* Presets Grid */}
+      {/* Presets Grid / Row */}
       <div className="flex-1 overflow-y-auto sharp-scrollbar min-h-0 pr-1">
-        <div className="grid grid-cols-2 gap-3 pb-4">
-          {!(selectedCategory === "community" && isLoadingPublic) &&
-            filteredCanvasPresets.map((preset) => (
-              <PreviewCard
-                key={preset.id}
-                preset={preset}
-                isCustom={false}
-                isSelected={selectedPresetId === preset.id}
-                onSelect={handleSelect}
-                setRef={(el) => (presetRefs.current[preset.id] = el)}
-              />
-            ))}
-        </div>
+        {isHorizontal ? (
+          <ScrollArea className="w-full">
+            <div className="flex gap-3 pb-4">
+              {!(selectedCategory === "community" && isLoadingPublic) &&
+                filteredCanvasPresets.map((preset) => (
+                  <div key={preset.id} className="w-40 shrink-0">
+                    <PreviewCard
+                      preset={preset}
+                      isCustom={false}
+                      isSelected={selectedPresetId === preset.id}
+                      onSelect={handleSelect}
+                      setRef={(el) => (presetRefs.current[preset.id] = el)}
+                    />
+                  </div>
+                ))}
+            </div>
+            <ScrollBar orientation="horizontal" className="h-1.5" />
+          </ScrollArea>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 pb-4">
+            {!(selectedCategory === "community" && isLoadingPublic) &&
+              filteredCanvasPresets.map((preset) => (
+                <PreviewCard
+                  key={preset.id}
+                  preset={preset}
+                  isCustom={false}
+                  isSelected={selectedPresetId === preset.id}
+                  onSelect={handleSelect}
+                  setRef={(el) => (presetRefs.current[preset.id] = el)}
+                />
+              ))}
+          </div>
+        )}
 
         {filteredCanvasPresets.length === 0 && !isLoadingPublic && (
           <div className="flex flex-col items-center justify-center py-12 text-muted-foreground border-2 border-dashed border-border rounded-lg bg-muted/5">

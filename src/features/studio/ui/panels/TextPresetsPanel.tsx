@@ -12,6 +12,7 @@ interface TextPresetsPanelProps {
   dynamicStyle: string;
   onDynamicStyleChange: (styleId: string) => void;
   activePresetId?: string;
+  isHorizontal?: boolean;
 }
 
 export const TextPresetsPanel: React.FC<TextPresetsPanelProps> = ({
@@ -20,6 +21,7 @@ export const TextPresetsPanel: React.FC<TextPresetsPanelProps> = ({
   dynamicStyle,
   onDynamicStyleChange,
   activePresetId,
+  isHorizontal = false,
 }) => {
   const [activeTab, setActiveTab] = useState("dynamic");
 
@@ -51,6 +53,7 @@ export const TextPresetsPanel: React.FC<TextPresetsPanelProps> = ({
           <DynamicStylesPanel
             dynamicStyle={dynamicStyle}
             onDynamicStyleChange={onDynamicStyleChange}
+            isHorizontal={isHorizontal}
           />
         </TabsContent>
 
@@ -59,6 +62,7 @@ export const TextPresetsPanel: React.FC<TextPresetsPanelProps> = ({
             currentStyle={style}
             onStyleChange={onStyleChange}
             activePresetId={activePresetId}
+            isHorizontal={isHorizontal}
           />
         </TabsContent>
 

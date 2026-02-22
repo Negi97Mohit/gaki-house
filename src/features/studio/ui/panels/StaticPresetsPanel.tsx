@@ -3,18 +3,21 @@ import React, { useEffect, useRef } from "react";
 import { useCaptionPresets } from "@/hooks/useCaptionPresets";
 import { CaptionStyle } from "@/types/caption";
 import { cn } from "@/shared/lib/utils";
+import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
 
 interface StaticPresetsPanelProps {
   onStyleChange: (style: CaptionStyle) => void;
   currentStyle: CaptionStyle;
   // NEW: Optional prop to identify which preset is active
   activePresetId?: string;
+  isHorizontal?: boolean;
 }
 
 export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
   onStyleChange,
   currentStyle,
   activePresetId,
+  isHorizontal = false,
 }) => {
   const { captionPresets: CAPTION_PRESETS } = useCaptionPresets();
   // NEW: Refs for scroll-to functionality
@@ -54,44 +57,88 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        {CAPTION_PRESETS.map((preset) => {
-          const isSelected = activePresetId === preset.id;
+      {isHorizontal ? (
+        <ScrollArea className="w-full">
+          <div className="flex gap-2 pb-4">
+            {CAPTION_PRESETS.map((preset) => {
+              const isSelected = activePresetId === preset.id;
 
-          return (
-            <button
-              key={preset.id}
-              // NEW: Attach Ref
-              ref={(el) => (itemRefs.current[preset.id] = el)}
-              onClick={() => handlePresetSelect(preset)}
-              title={preset.name}
-              className={cn(
-                "group relative overflow-hidden border transition-all duration-150",
-                // NEW: Selected styling
-                isSelected
-                  ? "border-primary ring-2 ring-primary ring-offset-1 ring-offset-background"
-                  : "border-border hover:border-primary"
-              )}
-            >
-              <img
-                src={preset.preview}
-                alt={preset.name}
-                className="w-full aspect-video object-cover transition-transform duration-200 group-hover:scale-105"
-              />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/90 to-transparent p-2 pt-4">
-                <span
+              return (
+                <button
+                  key={preset.id}
+                  // NEW: Attach Ref
+                  ref={(el) => (itemRefs.current[preset.id] = el)}
+                  onClick={() => handlePresetSelect(preset)}
+                  title={preset.name}
                   className={cn(
-                    "text-[10px] font-medium tracking-wide",
-                    isSelected ? "text-primary" : "text-foreground"
+                    "group relative overflow-hidden flex-shrink-0 w-36 border transition-all duration-150",
+                    // NEW: Selected styling
+                    isSelected
+                      ? "border-primary ring-2 ring-primary ring-offset-1 ring-offset-background"
+                      : "border-border hover:border-primary"
                   )}
                 >
-                  {preset.name.toUpperCase()}
-                </span>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+                  <img
+                    src={preset.preview}
+                    alt={preset.name}
+                    className="w-full aspect-video object-cover transition-transform duration-200 group-hover:scale-105"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/90 to-transparent p-2 pt-4">
+                    <span
+                      className={cn(
+                        "text-[10px] font-medium tracking-wide",
+                        isSelected ? "text-primary" : "text-foreground"
+                      )}
+                    >
+                      {preset.name.toUpperCase()}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <ScrollBar orientation="horizontal" className="h-1.5" />
+        </ScrollArea>
+      ) : (
+        <div className="grid grid-cols-2 gap-2">
+          {CAPTION_PRESETS.map((preset) => {
+            const isSelected = activePresetId === preset.id;
+
+            return (
+              <button
+                key={preset.id}
+                // NEW: Attach Ref
+                ref={(el) => (itemRefs.current[preset.id] = el)}
+                onClick={() => handlePresetSelect(preset)}
+                title={preset.name}
+                className={cn(
+                  "group relative overflow-hidden border transition-all duration-150",
+                  // NEW: Selected styling
+                  isSelected
+                    ? "border-primary ring-2 ring-primary ring-offset-1 ring-offset-background"
+                    : "border-border hover:border-primary"
+                )}
+              >
+                <img
+                  src={preset.preview}
+                  alt={preset.name}
+                  className="w-full aspect-video object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/90 to-transparent p-2 pt-4">
+                  <span
+                    className={cn(
+                      "text-[10px] font-medium tracking-wide",
+                      isSelected ? "text-primary" : "text-foreground"
+                    )}
+                  >
+                    {preset.name.toUpperCase()}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
