@@ -128,21 +128,21 @@ export const useLayoutManager = ({
       updateActiveScene((scene) => {
         const newScene: SceneState = {
           ...scene,
+          isVideoOn: true,
           textOverlays: [],
           activeOverlays: [],
           browserOverlays: [],
           fileOverlays: [],
           blankCanvasColor: preset.background.blankCanvasColor,
           backgroundEffect: (preset.background.backgroundEffect === "blur" || preset.background.backgroundEffect === "image" ? preset.background.backgroundEffect : "none") as "none" | "blur" | "image",
+          backgroundImageUrl: preset.background.backgroundImageUrl,
           videoFilter: "none",
           isBeautifyEnabled: false,
           isNeonEdgeEnabled: false,
           ...getResponsivePipLayout(preset, screenSize),
-          layoutMode: (preset.canvasLayout
-            ? "pip"
-            : preset.pip.layoutMode) as LayoutMode,
+          layoutMode: ((preset.canvasLayout ? "solo" : preset.pip.layoutMode) || "pip") as LayoutMode,
           cameraShape: preset.pip.cameraShape as CameraShape,
-          splitRatio: preset.pip.splitRatio ?? DEFAULT_LAYOUT_STATE.splitRatio,
+          splitRatio: preset.pip.splitRatio ?? 50,
           pipBorder: preset.pip.pipBorder ?? DEFAULT_LAYOUT_STATE.pipBorder,
           pipShadow: preset.pip.pipShadow ?? DEFAULT_LAYOUT_STATE.pipShadow,
           canvasAspectRatio: preset.canvasAspectRatio ?? "16:9",
@@ -153,6 +153,10 @@ export const useLayoutManager = ({
               ? "off"
               : "canvas") as any,
         };
+
+        if (preset.pip?.pipSize) {
+          newScene.pipSize = preset.pip.pipSize;
+        }
 
         if (preset.effects.videoFilter)
           newScene.videoFilter = preset.effects.videoFilter;
@@ -254,6 +258,8 @@ export const useLayoutManager = ({
     },
     [
       updateActiveScene,
+      setSelectedTextId,
+      setSelectedFileId,
       setSelectedBrowserId,
     ]
   );
