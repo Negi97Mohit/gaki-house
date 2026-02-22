@@ -8,6 +8,7 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
 import { MobileCanvasContainer } from "../components/MobileCanvasContainer";
+import { useCanvasStore } from "@/stores/canvas.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
 import { useStreamStore } from "@/stores/stream.store";
@@ -19,6 +20,8 @@ type ToolCategory = "none" | "captions" | "effects" | "filters" | "stream" | "la
 
 type DrawerTab = "designs" | "captions" | "camera";
 
+type MobileDesignId = "clean-pip" | "story-focus" | "interview" | "gaming-neon" | "news-bar" | "minimal";
+
 export const MobileStudioPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<ToolCategory>("none");
@@ -27,6 +30,13 @@ export const MobileStudioPage: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [drawerTab, setDrawerTab] = useState<DrawerTab>("designs");
   const [showStreamConfig, setShowStreamConfig] = useState(false);
+  const [selectedMobileDesign, setSelectedMobileDesign] = useState<MobileDesignId>("clean-pip");
+
+  const setLayoutMode = useCanvasStore((s) => s.setLayoutMode);
+  const setCameraShape = useCanvasStore((s) => s.setCameraShape);
+  const setSplitRatio = useCanvasStore((s) => s.setSplitRatio);
+  const setPipPosition = useCanvasStore((s) => s.setPipPosition);
+  const setPipSize = useCanvasStore((s) => s.setPipSize);
 
   // Global Store
   const isAudioOn = useMediaStore((s) => s.isAudioOn);
@@ -37,6 +47,8 @@ export const MobileStudioPage: React.FC = () => {
   const setDynamicStyle = useSceneStore((s) => s.setDynamicStyle);
   const setVideoFilter = useSceneStore((s) => s.setVideoFilter);
   const setBackgroundEffect = useSceneStore((s) => s.setBackgroundEffect);
+  const setBlankCanvasColor = useSceneStore((s) => s.setBlankCanvasColor);
+  const setCaptionsEnabled = useSceneStore((s) => s.setCaptionsEnabled);
 
   const { destinations } = useStreamStore(useShallow((s) => ({
     destinations: s.destinations,
@@ -86,6 +98,82 @@ export const MobileStudioPage: React.FC = () => {
     return "camera";
   };
 
+  const applyMobileDesign = (designId: MobileDesignId) => {
+    const baseStyle = useSceneStore.getState().captionStyle || {};
+    setSelectedMobileDesign(designId);
+
+    switch (designId) {
+      case "clean-pip":
+        setLayoutMode("pip");
+        setCameraShape("rounded");
+        setPipPosition({ x: 66, y: 8 });
+        setPipSize({ width: 30, height: 32 });
+        setVideoFilter("none");
+        setBackgroundEffect("none");
+        setBlankCanvasColor("#111111");
+        setCaptionsEnabled(true);
+        setCaptionStyle({ ...baseStyle, fontSize: 30, backgroundColor: "rgba(0,0,0,0.45)", color: "#ffffff" });
+        setDynamicStyle("none");
+        break;
+      case "story-focus":
+        setLayoutMode("solo");
+        setVideoFilter("vivid");
+        setBackgroundEffect("blur");
+        setBlankCanvasColor("#1a102b");
+        setCaptionsEnabled(true);
+        setCaptionStyle({ ...baseStyle, fontSize: 34, backgroundColor: "rgba(76,29,149,0.55)", color: "#ffffff" });
+        setDynamicStyle("karaoke");
+        break;
+      case "interview":
+        setLayoutMode("split-horizontal");
+        setSplitRatio(52);
+        setVideoFilter("none");
+        setBackgroundEffect("none");
+        setBlankCanvasColor("#0a0a0a");
+        setCaptionsEnabled(true);
+        setCaptionStyle({ ...baseStyle, fontSize: 26, backgroundColor: "rgba(0,0,0,0.7)", color: "#f9fafb" });
+        setDynamicStyle("none");
+        break;
+      case "gaming-neon":
+        setLayoutMode("pip");
+        setCameraShape("circle");
+        setPipPosition({ x: 70, y: 6 });
+        setPipSize({ width: 26, height: 28 });
+        setVideoFilter("contrast");
+        setBackgroundEffect("none");
+        setBlankCanvasColor("#070317");
+        setCaptionsEnabled(true);
+        setCaptionStyle({ ...baseStyle, fontSize: 32, backgroundColor: "rgba(15,23,42,0.75)", color: "#22d3ee" });
+        setDynamicStyle("glitch");
+        break;
+      case "news-bar":
+        setLayoutMode("split-vertical");
+        setSplitRatio(60);
+        setVideoFilter("none");
+        setBackgroundEffect("none");
+        setBlankCanvasColor("#0b1324");
+        setCaptionsEnabled(true);
+        setCaptionStyle({ ...baseStyle, fontSize: 24, backgroundColor: "rgba(2,6,23,0.85)", color: "#e2e8f0" });
+        setDynamicStyle("word-pop");
+        break;
+      case "minimal":
+      default:
+        setLayoutMode("solo");
+        setVideoFilter("grayscale");
+        setBackgroundEffect("none");
+        setBlankCanvasColor("#000000");
+        setCaptionsEnabled(true);
+        setCaptionStyle({ ...baseStyle, fontSize: 28, backgroundColor: "rgba(0,0,0,0.55)", color: "#ffffff" });
+        setDynamicStyle("none");
+        break;
+    }
+
+    if (isVideoOff) {
+      setVideoOn(true);
+    }
+    toast.success("Mobile design applied");
+  };
+
   const handleSelectCategory = (cat: ToolCategory) => {
     const next = activeCategory === cat ? "none" : cat;
     setActiveCategory(next);
@@ -95,7 +183,7 @@ export const MobileStudioPage: React.FC = () => {
     }
 
     setDrawerTab(getDrawerTabForCategory(cat));
-    setIsDrawerOpen(true);
+    setIsDrawerOpen(cat !== "layout");
 
     if (cat === "stream") {
       setShowStreamConfig(true);
@@ -117,13 +205,8 @@ export const MobileStudioPage: React.FC = () => {
       setDynamicStyle("karaoke");
     }
 
-    if (cat === "filters") {
-      setVideoFilter("grayscale");
-    }
-
-    if (cat === "effects") {
-      setBackgroundEffect("blur");
-    }
+    if (cat === "filters") setVideoFilter("grayscale");
+    if (cat === "effects") setBackgroundEffect("blur");
   };
 
   // ─── Tool Bar Items ─────────────────────────────────────────────
@@ -215,6 +298,48 @@ export const MobileStudioPage: React.FC = () => {
           BOTTOM AREA — Tool Tray + Action Buttons
       ══════════════════════════════════════════════════════════════ */}
       <div className="relative z-20 flex flex-col bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+
+        {activeCategory === "layout" && (
+          <div className="px-3 pb-3">
+            <div className="rounded-2xl border border-white/15 bg-black/50 backdrop-blur-md p-3">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[11px] uppercase tracking-wider text-white/70 font-semibold">Mobile designs</p>
+                <button
+                  onClick={() => {
+                    setDrawerTab("designs");
+                    setIsDrawerOpen(true);
+                  }}
+                  className="text-[10px] text-white/70 underline underline-offset-2"
+                >
+                  More
+                </button>
+              </div>
+              <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+                {[
+                  { id: "clean-pip", label: "Clean PiP" },
+                  { id: "story-focus", label: "Story" },
+                  { id: "interview", label: "Interview" },
+                  { id: "gaming-neon", label: "Gaming" },
+                  { id: "news-bar", label: "News" },
+                  { id: "minimal", label: "Minimal" },
+                ].map((design) => (
+                  <button
+                    key={design.id}
+                    onClick={() => applyMobileDesign(design.id as MobileDesignId)}
+                    className={cn(
+                      "shrink-0 px-3 py-2 rounded-xl border text-xs font-semibold transition-all",
+                      selectedMobileDesign === design.id
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-white/10 text-white/80 border-white/20"
+                    )}
+                  >
+                    {design.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Horizontal Tool Category Bar (Instagram-style) ──────── */}
         <div className="flex gap-1 overflow-x-auto px-3 pb-3" style={{ scrollbarWidth: 'none' }}>
