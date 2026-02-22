@@ -12,21 +12,21 @@
     "pip": {
       "pipSize": {
         "width": 38,
-        "height": 50
+        "height": 40
       },
       "pipShadow": {
         "color": "rgba(255, 107, 107, 0.3)",
         "blur": 30
       },
       "pipPosition": {
-        "y": 40,
-        "x": 55
+        "x": 55,
+        "y": 16
       },
       "pipBorder": {
         "width": 0,
         "color": "#FF6B6B"
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "layoutMode": "pip"
     },
     "source": "system",
@@ -46,21 +46,26 @@
         "style": {
           "textAlign": "center",
           "color": "#4ECDC4",
-          "backgroundColor": "transparent",
-          "fontSize": 180,
-          "fontFamily": "Arial"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 36,
+          "fontFamily": "Arial",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "geo-circle",
         "layout": {
           "layerOrder": "below-video",
           "zIndex": 5,
           "position": {
-            "x": 5,
+            "x": 8,
             "y": 15
           },
           "size": {
-            "height": 25,
-            "width": 20
+            "width": 28,
+            "height": 25
           },
           "rotation": 0
         },
@@ -74,69 +79,26 @@
             "y": 65
           },
           "size": {
-            "height": 20,
-            "width": 15
+            "width": 28,
+            "height": 20
           },
           "layerOrder": "below-video",
           "rotation": 45
         },
         "id": "geo-square",
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FFE66D",
           "textAlign": "center",
-          "fontSize": 120,
-          "fontFamily": "Arial"
+          "fontSize": 36,
+          "fontFamily": "Arial",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "■"
-      },
-      {
-        "style": {
-          "textAlign": "center",
-          "color": "#FF6B6B",
-          "fontFamily": "Arial",
-          "fontSize": 100,
-          "backgroundColor": "transparent"
-        },
-        "id": "geo-triangle",
-        "content": "▲",
-        "layout": {
-          "position": {
-            "x": 75,
-            "y": 10
-          },
-          "size": {
-            "width": 12,
-            "height": 15
-          },
-          "layerOrder": "below-video",
-          "zIndex": 5,
-          "rotation": -15
-        }
-      },
-      {
-        "content": "—",
-        "id": "geo-line",
-        "style": {
-          "fontFamily": "Arial",
-          "textAlign": "center",
-          "backgroundColor": "transparent",
-          "fontSize": 80,
-          "color": "#95E1D3"
-        },
-        "layout": {
-          "position": {
-            "x": 70,
-            "y": 70
-          },
-          "zIndex": 10,
-          "rotation": 25,
-          "layerOrder": "above-video",
-          "size": {
-            "height": 8,
-            "width": 25
-          }
-        }
       }
     ],
     "isMobile": true,
@@ -147,14 +109,22 @@
     "pip": {
       "layoutMode": "pip",
       "pipPosition": {
-        "x": 27.5,
+        "x": 50,
         "y": 12.5
       },
       "pipSize": {
-        "width": 65,
-        "height": 75
+        "width": 46,
+        "height": 40
       },
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "name": "Adora Sidebar (Mobile)",
     "styleTags": [
@@ -175,7 +145,7 @@
           "rotation": 0,
           "zIndex": 15,
           "position": {
-            "x": 3,
+            "x": 8,
             "y": 11
           },
           "size": {
@@ -184,58 +154,45 @@
           }
         },
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "left",
           "color": "#FFFFFF",
           "fontFamily": "Playfair Display",
-          "fontSize": 52
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
         "id": "adora-magazine",
         "layout": {
           "position": {
-            "x": 3,
+            "x": 8,
             "y": 19.5
           },
           "rotation": 0,
           "zIndex": 15,
           "size": {
-            "height": 3,
-            "width": 30
+            "width": 30,
+            "height": 8
           }
         },
         "style": {
-          "fontSize": 12,
+          "fontSize": 20,
           "textAlign": "left",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#AAAAAA",
-          "fontFamily": "Inter"
+          "fontFamily": "Inter",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "MAGAZINE"
-      },
-      {
-        "style": {
-          "textAlign": "left",
-          "fontSize": 38,
-          "fontFamily": "Anton",
-          "backgroundColor": "transparent",
-          "color": "#FFFFFF"
-        },
-        "content": "ADORA<br>MONTMINY",
-        "layout": {
-          "rotation": 0,
-          "zIndex": 15,
-          "position": {
-            "y": 72,
-            "x": 3
-          },
-          "size": {
-            "height": 12,
-            "width": 30
-          }
-        },
-        "id": "adora-name"
       }
     ],
     "createdAt": {
@@ -258,17 +215,22 @@
         "id": "alabas-title",
         "style": {
           "color": "#2A2A2A",
-          "fontSize": 88,
+          "fontSize": 36,
           "fontFamily": "Playfair Display",
           "textAlign": "center",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "ALABAS",
         "layout": {
           "rotation": 0,
           "size": {
-            "height": 12,
-            "width": 80
+            "width": 80,
+            "height": 12
           },
           "position": {
             "x": 50,
@@ -280,22 +242,27 @@
       {
         "layout": {
           "size": {
-            "height": 3,
-            "width": 80
+            "width": 80,
+            "height": 8
           },
           "rotation": 0,
           "position": {
-            "y": 88,
-            "x": 50
+            "x": 50,
+            "y": 88
           },
           "zIndex": 15
         },
         "style": {
           "textAlign": "center",
-          "fontSize": 14,
+          "fontSize": 20,
           "color": "#2A2A2A",
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontFamily": "Inter",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "alabas-sub",
         "content": "MAGAZINE"
@@ -324,12 +291,20 @@
       "layoutMode": "pip",
       "pipPosition": {
         "x": 50,
-        "y": 45
+        "y": 16
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "width": 88,
-        "height": 70
+        "width": 46,
+        "height": 40
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "source": "system",
@@ -351,31 +326,41 @@
         "layout": {
           "position": {
             "x": 10,
-            "y": 6.5
+            "y": 8
           },
           "zIndex": 15,
           "size": {
-            "height": 3,
-            "width": 80
+            "width": 80,
+            "height": 8
           },
           "rotation": 0
         },
         "style": {
           "textAlign": "center",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#666666",
           "fontFamily": "Inter",
-          "fontSize": 11
+          "fontSize": 20,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "april-issue"
       },
       {
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Playfair Display",
-          "fontSize": 92,
+          "fontSize": 36,
           "color": "#000000",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "april-title",
         "layout": {
@@ -391,29 +376,6 @@
           "zIndex": 15
         },
         "content": "APRIL"
-      },
-      {
-        "layout": {
-          "rotation": 0,
-          "zIndex": 15,
-          "position": {
-            "y": 20,
-            "x": 15
-          },
-          "size": {
-            "height": 6,
-            "width": 70
-          }
-        },
-        "style": {
-          "backgroundColor": "transparent",
-          "color": "#333333",
-          "fontSize": 16,
-          "fontFamily": "Inter",
-          "textAlign": "center"
-        },
-        "content": "Interview with<br>Olivia Wilson",
-        "id": "april-interview"
       }
     ],
     "background": {
@@ -433,17 +395,21 @@
     "pip": {
       "layoutMode": "pip",
       "pipSize": {
-        "height": 85,
-        "width": 85
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
-        "y": 12.5,
-        "x": 7.5
+        "x": 50,
+        "y": 12.5
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipBorder": {
         "color": "#000000",
         "width": 1
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "name": "April Fashion (Mobile)",
@@ -470,7 +436,7 @@
           }
         }
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipShadow": {
         "blur": 30,
         "color": "rgba(62, 39, 35, 0.4)"
@@ -481,12 +447,12 @@
       },
       "layoutMode": "pip",
       "pipPosition": {
-        "x": 26,
-        "y": 19
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
-        "height": 62,
-        "width": 48
+        "width": 46,
+        "height": 40
       }
     },
     "styleTags": [
@@ -500,24 +466,29 @@
         "content": "gallery space",
         "layout": {
           "size": {
-            "height": 8,
-            "width": 60
+            "width": 60,
+            "height": 8
           },
           "position": {
             "x": 20,
-            "y": 4
+            "y": 8
           },
           "rotation": 0,
           "zIndex": 15
         },
         "style": {
           "textAlign": "center",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textShadow": "0px 1px 2px rgba(62, 39, 35, 0.2)",
           "fontWeight": "400",
           "color": "#3E2723",
           "fontFamily": "Cormorant Garamond",
-          "fontSize": 52
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "preset-text-title",
         "responsive": {
@@ -563,22 +534,27 @@
     "textOverlays": [
       {
         "style": {
-          "fontSize": 72,
+          "fontSize": 36,
           "textShadow": "3px 3px 0px #FF3366",
           "textAlign": "right",
           "color": "#FFFFFF",
           "fontFamily": "Anton",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
           "position": {
-            "y": 19,
-            "x": 45
+            "x": 45,
+            "y": 19
           },
           "size": {
-            "height": 12,
-            "width": 50
+            "width": 50,
+            "height": 12
           },
           "rotation": -5
         },
@@ -639,14 +615,14 @@
           }
         }
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "height": 48,
-        "width": 42
+        "width": 42,
+        "height": 40
       },
       "pipPosition": {
-        "x": 14,
-        "y": 36
+        "x": 50,
+        "y": 16
       },
       "layoutMode": "pip"
     },
@@ -663,11 +639,16 @@
     "textOverlays": [
       {
         "style": {
-          "fontSize": 14,
+          "fontSize": 20,
           "fontFamily": "Inter",
           "color": "#FFD700",
-          "backgroundColor": "transparent",
-          "textAlign": "center"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "Larana Magazine",
         "layout": {
@@ -677,8 +658,8 @@
             "y": 8
           },
           "size": {
-            "height": 3,
-            "width": 80
+            "width": 80,
+            "height": 8
           },
           "rotation": 0
         },
@@ -687,10 +668,15 @@
       {
         "style": {
           "fontFamily": "Anton",
-          "backgroundColor": "transparent",
-          "fontSize": 92,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 36,
           "textAlign": "center",
-          "color": "#FFD700"
+          "color": "#FFD700",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "beauty-title",
         "content": "BEAUTY",
@@ -698,36 +684,13 @@
           "zIndex": 15,
           "rotation": 0,
           "position": {
-            "y": 14,
-            "x": 50
+            "x": 50,
+            "y": 14
           },
           "size": {
-            "height": 12,
-            "width": 80
+            "width": 80,
+            "height": 12
           }
-        }
-      },
-      {
-        "id": "beauty-sub",
-        "layout": {
-          "zIndex": 15,
-          "size": {
-            "height": 3,
-            "width": 80
-          },
-          "position": {
-            "y": 23,
-            "x": 50
-          },
-          "rotation": 0
-        },
-        "content": "Woman & Lifestyle",
-        "style": {
-          "backgroundColor": "transparent",
-          "fontSize": 16,
-          "textAlign": "center",
-          "color": "#FFD700",
-          "fontFamily": "Inter"
         }
       }
     ],
@@ -749,15 +712,23 @@
     "source": "system",
     "pip": {
       "pipPosition": {
-        "y": 55,
-        "x": 50
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
-        "width": 88,
-        "height": 88
+        "width": 46,
+        "height": 40
       },
-      "cameraShape": "rectangle",
-      "layoutMode": "pip"
+      "cameraShape": "rounded",
+      "layoutMode": "pip",
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "isMobile": true,
     "originalDesktopId": "beauty-golden"
@@ -792,9 +763,14 @@
           "color": "#F59E0B",
           "fontFamily": "Anton",
           "textShadow": "2px 2px 0px #1E293B",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "left",
-          "fontSize": 64
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "responsive": {
           "mobile": {
@@ -817,13 +793,13 @@
         },
         "layout": {
           "position": {
-            "y": 52.5,
-            "x": 0
+            "x": 8,
+            "y": 52.5
           },
           "zIndex": 15,
           "size": {
-            "height": 15,
-            "width": 40
+            "width": 40,
+            "height": 15
           },
           "rotation": -5
         }
@@ -836,12 +812,12 @@
         "width": 3
       },
       "pipSize": {
-        "width": 50,
-        "height": 60
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
-        "y": 0,
-        "x": 45
+        "x": 50,
+        "y": 4
       },
       "layoutMode": "pip",
       "responsive": {
@@ -857,7 +833,7 @@
           "layoutMode": "pip"
         }
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipShadow": {
         "blur": 25,
         "color": "rgba(245, 158, 11, 0.3)"
@@ -875,21 +851,26 @@
           "rotation": 0,
           "zIndex": 15,
           "position": {
-            "y": 8,
-            "x": 50
+            "x": 50,
+            "y": 8
           },
           "size": {
-            "height": 5,
-            "width": 85
+            "width": 85,
+            "height": 8
           }
         },
         "id": "bq-quarterly",
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Inter",
           "textAlign": "center",
-          "fontSize": 12,
-          "color": "#FFFFFF"
+          "fontSize": 20,
+          "color": "#FFFFFF",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "QUARTERLY<br>EDITION"
       },
@@ -897,10 +878,15 @@
         "style": {
           "textAlign": "center",
           "fontFamily": "Anton",
-          "fontSize": 96,
+          "fontSize": 36,
           "color": "#D4AF37",
           "fontWeight": "900",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "size": {
@@ -910,35 +896,12 @@
           "rotation": 0,
           "zIndex": 15,
           "position": {
-            "y": 16,
-            "x": 50
+            "x": 50,
+            "y": 16
           }
         },
         "id": "bq-business",
         "content": "BUSINESS"
-      },
-      {
-        "id": "bq-insight",
-        "content": "Insight & Strategy",
-        "layout": {
-          "zIndex": 15,
-          "rotation": 0,
-          "size": {
-            "height": 6,
-            "width": 85
-          },
-          "position": {
-            "x": 50,
-            "y": 25
-          }
-        },
-        "style": {
-          "fontFamily": "Playfair Display",
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "fontSize": 28,
-          "color": "#FFFFFF"
-        }
       }
     ],
     "styleTags": [
@@ -959,15 +922,23 @@
     },
     "pip": {
       "pipSize": {
-        "height": 88,
-        "width": 88
+        "width": 46,
+        "height": 40
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
         "x": 50,
-        "y": 55
+        "y": 16
       },
-      "layoutMode": "pip"
+      "layoutMode": "pip",
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "background": {
       "backgroundEffect": "none",
@@ -1002,8 +973,8 @@
         "layout": {
           "zIndex": 15,
           "position": {
-            "y": 6,
-            "x": 10
+            "x": 10,
+            "y": 8
           },
           "size": {
             "width": 80,
@@ -1015,10 +986,15 @@
         "content": "FASHION",
         "style": {
           "color": "#1A1A1A",
-          "fontSize": 76,
+          "fontSize": 36,
           "textAlign": "center",
           "fontFamily": "Playfair Display",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -1027,7 +1003,7 @@
           "rotation": 0,
           "size": {
             "width": 80,
-            "height": 3
+            "height": 8
           },
           "position": {
             "x": 10,
@@ -1037,47 +1013,37 @@
         },
         "content": "MAGAZINE",
         "style": {
-          "backgroundColor": "transparent",
-          "fontSize": 14,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 20,
           "color": "#666666",
           "fontFamily": "Inter",
-          "textAlign": "center"
-        }
-      },
-      {
-        "layout": {
-          "zIndex": 15,
-          "size": {
-            "height": 5,
-            "width": 40
-          },
-          "rotation": 0,
+          "textAlign": "center",
           "position": {
-            "y": 85.5,
-            "x": 55
-          }
-        },
-        "content": "|||||||||||||||||||||||",
-        "style": {
-          "textAlign": "right",
-          "fontFamily": "Courier New",
-          "backgroundColor": "transparent",
-          "fontSize": 32,
-          "color": "#1A1A1A"
-        },
-        "id": "cb-barcode"
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
+        }
       }
     ],
     "pip": {
       "pipSize": {
-        "width": 88,
-        "height": 80
+        "width": 46,
+        "height": 40
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "layoutMode": "pip",
       "pipPosition": {
-        "y": 10,
-        "x": 6
+        "x": 50,
+        "y": 10
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "name": "Classic Barcode (Mobile)",
@@ -1098,16 +1064,16 @@
         "color": "transparent"
       },
       "pipSize": {
-        "height": 20,
-        "width": 20
+        "width": 24,
+        "height": 20
       },
       "pipBorder": {
         "color": "#4ade80",
         "width": 2
       },
       "pipPosition": {
-        "x": 85,
-        "y": 80
+        "x": 72,
+        "y": 16
       },
       "layoutMode": "pip",
       "cameraShape": "circle"
@@ -1130,22 +1096,27 @@
     "textOverlays": [
       {
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Courier New",
           "textAlign": "left",
           "fontSize": 32,
-          "color": "#4ade80"
+          "color": "#4ade80",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "> npm run start:dev",
         "layout": {
           "size": {
-            "height": 8,
-            "width": 80
+            "width": 80,
+            "height": 8
           },
           "zIndex": 10,
           "position": {
-            "y": 10,
-            "x": 5
+            "x": 8,
+            "y": 10
           },
           "rotation": 0,
           "layerOrder": "below-video"
@@ -1155,8 +1126,8 @@
       {
         "layout": {
           "position": {
-            "y": 20,
-            "x": 5
+            "x": 8,
+            "y": 20
           },
           "layerOrder": "below-video",
           "zIndex": 10,
@@ -1170,36 +1141,17 @@
         "id": "term-output",
         "style": {
           "fontFamily": "Courier New",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "left",
           "color": "#a3a3a3",
           "fontSize": 24,
-          "whiteSpace": "pre-wrap"
-        }
-      },
-      {
-        "content": "_",
-        "layout": {
-          "size": {
-            "width": 5,
-            "height": 8
-          },
+          "whiteSpace": "pre-wrap",
           "position": {
-            "y": 40,
-            "x": 5
+            "x": 50,
+            "y": 86
           },
-          "rotation": 0,
-          "layerOrder": "below-video",
-          "zIndex": 10
-        },
-        "style": {
-          "fontFamily": "Courier New",
-          "textAlign": "left",
-          "color": "#4ade80",
-          "backgroundColor": "transparent",
-          "fontSize": 32
-        },
-        "id": "term-cursor"
+          "padding": "8px 12px"
+        }
       }
     ],
     "isMobile": true,
@@ -1223,7 +1175,12 @@
           "textAlign": "center",
           "color": "#FF6B6B",
           "border": "4px solid #000000",
-          "fontSize": 78
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "responsive": {
           "mobile": {
@@ -1246,13 +1203,13 @@
         "layout": {
           "zIndex": 15,
           "size": {
-            "height": 12,
-            "width": 35
+            "width": 35,
+            "height": 12
           },
           "rotation": -2,
           "position": {
-            "y": 6,
-            "x": 32.5
+            "x": 32.5,
+            "y": 8
           }
         }
       }
@@ -1273,12 +1230,12 @@
         "color": "rgba(0, 0, 0, 0)"
       },
       "pipSize": {
-        "height": 54,
-        "width": 46
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
-        "y": 23,
-        "x": 27
+        "x": 50,
+        "y": 16
       },
       "responsive": {
         "mobile": {
@@ -1293,7 +1250,7 @@
         }
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipBorder": {
         "color": "#4ECDC4",
         "width": 6
@@ -1317,19 +1274,24 @@
       {
         "style": {
           "fontWeight": "900",
-          "fontSize": 96,
+          "fontSize": 36,
           "textAlign": "center",
           "fontFamily": "Impact",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FF0000",
-          "textShadow": "4px 4px 0px #000000, -2px -2px 0px #FFFFFF"
+          "textShadow": "4px 4px 0px #000000, -2px -2px 0px #FFFFFF",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "comic-boom",
         "content": "BOOM!",
         "layout": {
           "position": {
-            "y": 8,
-            "x": 15
+            "x": 15,
+            "y": 8
           },
           "zIndex": 20,
           "size": {
@@ -1350,70 +1312,25 @@
           },
           "zIndex": 15,
           "size": {
-            "height": 10,
-            "width": 8
+            "width": 28,
+            "height": 10
           },
           "layerOrder": "below-video"
         },
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textShadow": "3px 3px 0px #000000",
           "color": "#0000FF",
           "fontFamily": "Arial",
-          "fontSize": 72,
-          "textAlign": "center"
+          "fontSize": 36,
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "comic-stars-1"
-      },
-      {
-        "id": "comic-pow",
-        "style": {
-          "textShadow": "3px 3px 0px #000000",
-          "color": "#00FF00",
-          "textAlign": "center",
-          "backgroundColor": "rgba(0, 0, 0, 0.8)",
-          "fontSize": 56,
-          "fontFamily": "Impact",
-          "fontWeight": "900"
-        },
-        "content": "POW",
-        "layout": {
-          "rotation": 15,
-          "position": {
-            "y": 75,
-            "x": 70
-          },
-          "zIndex": 20,
-          "layerOrder": "above-video",
-          "size": {
-            "width": 20,
-            "height": 12
-          }
-        }
-      },
-      {
-        "layout": {
-          "position": {
-            "x": 58,
-            "y": 18
-          },
-          "size": {
-            "height": 8,
-            "width": 30
-          },
-          "rotation": 0,
-          "zIndex": 10,
-          "layerOrder": "below-video"
-        },
-        "content": "• • • •",
-        "id": "comic-dots",
-        "style": {
-          "fontFamily": "Arial",
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "color": "#FF00FF",
-          "fontSize": 64
-        }
       }
     ],
     "styleTags": [
@@ -1434,7 +1351,7 @@
     "pip": {
       "pipSize": {
         "width": 45,
-        "height": 45
+        "height": 40
       },
       "pipBorder": {
         "color": "#000000",
@@ -1443,7 +1360,7 @@
       "cameraShape": "circle",
       "pipPosition": {
         "x": 50,
-        "y": 50
+        "y": 16
       },
       "layoutMode": "pip",
       "pipShadow": {
@@ -1478,10 +1395,15 @@
           "color": "#c2410c",
           "fontWeight": "700",
           "textAlign": "left",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontStyle": "italic",
-          "fontSize": 56,
-          "fontFamily": "Georgia"
+          "fontSize": 36,
+          "fontFamily": "Georgia",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -1490,8 +1412,8 @@
         "layout": {
           "rotation": 0,
           "position": {
-            "y": 45,
-            "x": 75
+            "x": 75,
+            "y": 45
           },
           "layerOrder": "below-video",
           "zIndex": 10,
@@ -1502,37 +1424,18 @@
         },
         "style": {
           "fontSize": 24,
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "whiteSpace": "pre-wrap",
           "fontWeight": "400",
           "color": "#431407",
           "fontFamily": "Arial",
           "lineHeight": 1.6,
-          "textAlign": "left"
-        }
-      },
-      {
-        "id": "cooking-accent",
-        "style": {
-          "color": "#000000",
-          "fontFamily": "Arial",
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "fontSize": 64
-        },
-        "content": "🌿",
-        "layout": {
-          "size": {
-            "height": 10,
-            "width": 10
-          },
+          "textAlign": "left",
           "position": {
-            "x": 90,
-            "y": 85
+            "x": 50,
+            "y": 86
           },
-          "layerOrder": "below-video",
-          "rotation": 15,
-          "zIndex": 10
+          "padding": "8px 12px"
         }
       }
     ],
@@ -1559,17 +1462,17 @@
         "color": "#fb923c"
       },
       "pipPosition": {
-        "y": 50,
-        "x": 30
+        "x": 50,
+        "y": 16
       },
       "pipShadow": {
         "blur": 20,
         "color": "rgba(251, 146, 60, 0.3)"
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "height": 80,
-        "width": 45
+        "width": 45,
+        "height": 40
       }
     },
     "source": "system",
@@ -1583,10 +1486,27 @@
     "id": "creative-trio-grid_mobile",
     "pip": {
       "cameraShape": "rounded",
-      "layoutMode": "pip"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "effects": {
-      "isBeautifyEnabled": true
+      "isBeautifyEnabled": true,
+      "videoFilter": "none"
     },
     "textOverlays": [
       {
@@ -1594,18 +1514,23 @@
           "fontWeight": "600",
           "fontFamily": "Inter",
           "fontSize": 32,
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "left",
-          "color": "#1F2937"
+          "color": "#1F2937",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
-            "y": 5,
-            "x": 5
+            "x": 8,
+            "y": 8
           },
           "size": {
-            "height": 10,
-            "width": 40
+            "width": 40,
+            "height": 10
           },
           "zIndex": 10,
           "rotation": 0
@@ -1711,24 +1636,29 @@
         },
         "id": "preset-text-title",
         "style": {
-          "fontSize": 56,
+          "fontSize": 36,
           "textShadow": "0px 4px 12px rgba(255, 255, 255, 0.3)",
           "fontFamily": "Space Grotesk",
           "textAlign": "center",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontWeight": "700",
-          "color": "#FFFFFF"
+          "color": "#FFFFFF",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "rotation": 0,
           "zIndex": 15,
           "size": {
-            "height": 9,
-            "width": 50
+            "width": 50,
+            "height": 9
           },
           "position": {
             "x": 25,
-            "y": 7.5
+            "y": 8
           }
         }
       }
@@ -1740,8 +1670,8 @@
         "width": 1
       },
       "pipSize": {
-        "width": 55,
-        "height": 65
+        "width": 46,
+        "height": 40
       },
       "pipShadow": {
         "color": "rgba(255, 255, 255, 0.15)",
@@ -1762,8 +1692,8 @@
         }
       },
       "pipPosition": {
-        "x": 22.5,
-        "y": 17.5
+        "x": 50,
+        "y": 16
       }
     },
     "createdAt": {
@@ -1820,14 +1750,14 @@
         "blur": 20
       },
       "pipPosition": {
-        "y": 15,
-        "x": 21
+        "x": 50,
+        "y": 15
       },
       "pipSize": {
         "width": 28,
-        "height": 70
+        "height": 40
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "layoutMode": "pip"
     },
     "name": "Editorial Magazine (Mobile)",
@@ -1847,23 +1777,28 @@
       {
         "style": {
           "fontFamily": "Helvetica",
-          "fontSize": 58,
+          "fontSize": 36,
           "fontWeight": "900",
           "textAlign": "left",
           "color": "#000000",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "layerOrder": "above-video",
           "zIndex": 20,
           "rotation": 0,
           "size": {
-            "height": 10,
-            "width": 26
+            "width": 28,
+            "height": 10
           },
           "position": {
-            "y": 15,
-            "x": 22
+            "x": 22,
+            "y": 15
           }
         },
         "id": "preset-text-title",
@@ -1891,10 +1826,15 @@
         "style": {
           "color": "#666666",
           "fontFamily": "Helvetica",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontSize": 22,
           "fontWeight": "300",
-          "textAlign": "left"
+          "textAlign": "left",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "preset-text-subtitle",
         "layout": {
@@ -1902,12 +1842,12 @@
           "zIndex": 20,
           "layerOrder": "above-video",
           "size": {
-            "width": 26,
+            "width": 28,
             "height": 8
           },
           "position": {
-            "y": 71,
-            "x": 22
+            "x": 22,
+            "y": 71
           }
         },
         "responsive": {
@@ -1928,45 +1868,6 @@
           }
         },
         "content": "THE NEW\nAESTHETIC"
-      },
-      {
-        "id": "preset-text-side",
-        "content": "Vol. 2024",
-        "layout": {
-          "rotation": 0,
-          "position": {
-            "y": 47.5,
-            "x": 47
-          },
-          "zIndex": 15,
-          "size": {
-            "height": 5,
-            "width": 50
-          }
-        },
-        "style": {
-          "fontWeight": "400",
-          "textAlign": "right",
-          "fontFamily": "Helvetica",
-          "backgroundColor": "transparent",
-          "color": "#999999",
-          "fontSize": 16
-        },
-        "responsive": {
-          "mobile": {
-            "layout": {
-              "rotation": 0,
-              "size": {
-                "width": 80,
-                "height": 5
-              },
-              "position": {
-                "y": 85.5,
-                "x": 10
-              }
-            }
-          }
-        }
       }
     ],
     "isMobile": true,
@@ -1988,16 +1889,21 @@
         "id": "en-editorial",
         "style": {
           "fontFamily": "Playfair Display",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FFFFFF",
-          "fontSize": 78,
+          "fontSize": 36,
           "textAlign": "center",
-          "fontWeight": "400"
+          "fontWeight": "400",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
-            "y": 14,
-            "x": 50
+            "x": 50,
+            "y": 14
           },
           "size": {
             "width": 85,
@@ -2014,13 +1920,18 @@
           "textAlign": "center",
           "fontFamily": "Inter",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
-          "fontSize": 24
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 24,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "size": {
-            "height": 5,
-            "width": 85
+            "width": 85,
+            "height": 8
           },
           "zIndex": 15,
           "position": {
@@ -2048,15 +1959,19 @@
         "color": "#FFFFFF",
         "width": 1
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "height": 88,
-        "width": 88
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
       "pipPosition": {
-        "y": 55,
-        "x": 50
+        "x": 50,
+        "y": 16
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "source": "system",
@@ -2086,7 +2001,23 @@
     ],
     "pip": {
       "layoutMode": "solo",
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "source": "system",
     "textOverlays": [
@@ -2095,10 +2026,15 @@
         "style": {
           "textAlign": "center",
           "fontFamily": "Playfair Display",
-          "fontSize": 96,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#222222",
-          "fontWeight": "700"
+          "fontWeight": "700",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
@@ -2108,28 +2044,33 @@
           },
           "rotation": 0,
           "size": {
-            "height": 12,
-            "width": 90
+            "width": 90,
+            "height": 12
           }
         },
         "content": "LARANA"
       },
       {
         "style": {
-          "fontSize": 48,
+          "fontSize": 36,
           "fontFamily": "Playfair Display",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "left",
-          "color": "#333333"
+          "color": "#333333",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
-            "y": 55,
-            "x": 30
+            "x": 30,
+            "y": 55
           },
           "size": {
-            "height": 20,
-            "width": 50
+            "width": 50,
+            "height": 20
           },
           "rotation": 0,
           "zIndex": 15
@@ -2153,19 +2094,24 @@
           },
           "zIndex": 15,
           "size": {
-            "height": 10,
-            "width": 80
+            "width": 80,
+            "height": 10
           },
           "rotation": 0
         },
         "content": "FASHION",
         "id": "fbe-fashion",
         "style": {
-          "fontSize": 72,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Playfair Display",
           "color": "#FFFFFF",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -2176,7 +2122,7 @@
           "rotation": 0,
           "size": {
             "width": 80,
-            "height": 3
+            "height": 8
           },
           "position": {
             "x": 50,
@@ -2184,35 +2130,16 @@
           }
         },
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Inter",
           "color": "#AAAAAA",
           "textAlign": "center",
-          "fontSize": 14
-        }
-      },
-      {
-        "content": "STYLE",
-        "style": {
-          "fontFamily": "Anton",
-          "fontSize": 96,
-          "textShadow": "0 0 20px rgba(255,255,255,0.3)",
-          "color": "#FFFFFF",
-          "textAlign": "center",
-          "backgroundColor": "transparent"
-        },
-        "id": "fbe-style",
-        "layout": {
-          "rotation": -90,
-          "size": {
-            "height": 40,
-            "width": 25
-          },
-          "zIndex": 15,
+          "fontSize": 20,
           "position": {
-            "y": 50,
-            "x": 15
-          }
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       }
     ],
@@ -2225,15 +2152,23 @@
       "videoFilter": "contrast(1.2)"
     },
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "width": 88,
-        "height": 88
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
       "pipPosition": {
-        "y": 55,
-        "x": 50
+        "x": 50,
+        "y": 16
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "createdAt": {
@@ -2272,17 +2207,22 @@
         "id": "fbw-fashion",
         "content": "FASHION",
         "style": {
-          "fontSize": 88,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Playfair Display",
           "color": "#FFFFFF",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
           "position": {
-            "y": 18,
-            "x": 50
+            "x": 50,
+            "y": 18
           },
           "rotation": 0,
           "size": {
@@ -2307,29 +2247,38 @@
           "rotation": 0
         },
         "style": {
-          "fontSize": 88,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FFFFFF",
           "fontFamily": "Playfair Display",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       }
     ],
     "pip": {
       "pipPosition": {
         "x": 50,
-        "y": 55
+        "y": 16
       },
       "pipSize": {
-        "height": 88,
-        "width": 88
+        "width": 46,
+        "height": 40
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipBorder": {
         "width": 2,
         "color": "#FFFFFF"
       },
-      "layoutMode": "pip"
+      "layoutMode": "pip",
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "effects": {
       "videoFilter": "grayscale(1) contrast(1.2)"
@@ -2350,19 +2299,24 @@
         "content": "ISSUE 2<br>FEB 2029",
         "style": {
           "color": "#000000",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Inter",
-          "fontSize": 11,
-          "textAlign": "left"
+          "fontSize": 20,
+          "textAlign": "left",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "size": {
-            "height": 5,
-            "width": 30
+            "width": 30,
+            "height": 8
           },
           "position": {
-            "y": 12,
-            "x": 18
+            "x": 18,
+            "y": 12
           },
           "rotation": 0,
           "zIndex": 15
@@ -2377,8 +2331,8 @@
           "rotation": 0,
           "zIndex": 15,
           "position": {
-            "y": 26,
-            "x": 70
+            "x": 70,
+            "y": 26
           }
         },
         "content": "fashion<br>magazine.",
@@ -2386,81 +2340,15 @@
         "style": {
           "textAlign": "right",
           "fontFamily": "Anton",
-          "fontSize": 42,
-          "backgroundColor": "transparent",
-          "color": "#000000"
-        }
-      },
-      {
-        "style": {
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#000000",
-          "textAlign": "left",
-          "fontSize": 9
-        },
-        "id": "fmm-feature",
-        "content": "FEATURING<br>OLIVIA WILSON ON THE ART OF",
-        "layout": {
-          "zIndex": 15,
-          "rotation": 0,
           "position": {
-            "x": 22,
-            "y": 58
+            "x": 50,
+            "y": 86
           },
-          "size": {
-            "width": 50,
-            "height": 5
-          }
+          "padding": "8px 12px"
         }
-      },
-      {
-        "content": "MIX&",
-        "layout": {
-          "position": {
-            "x": 28,
-            "y": 65
-          },
-          "size": {
-            "width": 40,
-            "height": 10
-          },
-          "zIndex": 15,
-          "rotation": 0
-        },
-        "id": "fmm-title",
-        "style": {
-          "fontWeight": "700",
-          "color": "#000000",
-          "fontSize": 56,
-          "textAlign": "left",
-          "fontFamily": "Playfair Display",
-          "backgroundColor": "transparent"
-        }
-      },
-      {
-        "layout": {
-          "size": {
-            "height": 8,
-            "width": 50
-          },
-          "rotation": 0,
-          "position": {
-            "y": 72,
-            "x": 28
-          },
-          "zIndex": 15
-        },
-        "content": "Matching",
-        "style": {
-          "textAlign": "left",
-          "fontFamily": "Playfair Display",
-          "color": "#000000",
-          "fontSize": 48,
-          "fontWeight": "400",
-          "backgroundColor": "transparent"
-        },
-        "id": "fmm-matching"
       }
     ],
     "source": "system",
@@ -2485,15 +2373,23 @@
       "nanoseconds": 88000000
     },
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
-        "y": 35,
-        "x": 50
+        "x": 50,
+        "y": 16
       },
       "layoutMode": "pip",
       "pipSize": {
-        "height": 32,
-        "width": 45
+        "width": 45,
+        "height": 32
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "isMobile": true,
@@ -2510,8 +2406,8 @@
     ],
     "pip": {
       "pipSize": {
-        "width": 85,
-        "height": 42
+        "width": 46,
+        "height": 40
       },
       "pipBorder": {
         "width": 2,
@@ -2519,28 +2415,37 @@
       },
       "pipPosition": {
         "x": 50,
-        "y": 38
+        "y": 16
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "textOverlays": [
       {
         "style": {
           "textAlign": "center",
-          "fontSize": 78,
+          "fontSize": 36,
           "fontFamily": "Anton",
-          "backgroundColor": "transparent",
-          "color": "#FFFFFF"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "color": "#FFFFFF",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
-            "y": 12,
-            "x": 50
+            "x": 50,
+            "y": 12
           },
           "size": {
-            "height": 10,
-            "width": 80
+            "width": 80,
+            "height": 10
           },
           "zIndex": 15,
           "rotation": 0
@@ -2552,9 +2457,14 @@
         "style": {
           "color": "#FFFFFF",
           "textAlign": "center",
-          "fontSize": 16,
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter"
+          "fontSize": 20,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontFamily": "Inter",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
@@ -2563,8 +2473,8 @@
             "y": 20
           },
           "size": {
-            "height": 3,
-            "width": 80
+            "width": 80,
+            "height": 8
           },
           "rotation": 0
         },
@@ -2607,8 +2517,13 @@
           "color": "#FFFFFF",
           "textAlign": "left",
           "fontFamily": "Inter",
-          "fontSize": 11,
-          "backgroundColor": "transparent"
+          "fontSize": 20,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
@@ -2618,8 +2533,8 @@
             "y": 9
           },
           "size": {
-            "height": 3,
-            "width": 40
+            "width": 40,
+            "height": 8
           }
         },
         "content": "CLASSIC COLLECTION"
@@ -2629,9 +2544,14 @@
           "textAlign": "center",
           "fontFamily": "Playfair Display",
           "fontWeight": "700",
-          "fontSize": 96,
+          "fontSize": 36,
           "color": "#E63946",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "fre-title",
         "content": "FASHION",
@@ -2647,158 +2567,27 @@
             "y": 13
           }
         }
-      },
-      {
-        "layout": {
-          "position": {
-            "x": 72,
-            "y": 9
-          },
-          "size": {
-            "height": 3,
-            "width": 25
-          },
-          "rotation": 0,
-          "zIndex": 15
-        },
-        "content": "NOVEMBER EDITION",
-        "style": {
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter",
-          "textAlign": "right",
-          "fontSize": 11,
-          "color": "#FFFFFF"
-        },
-        "id": "fre-edition"
-      },
-      {
-        "id": "fre-ny",
-        "content": "New York",
-        "layout": {
-          "size": {
-            "height": 4,
-            "width": 30
-          },
-          "zIndex": 15,
-          "rotation": 0,
-          "position": {
-            "y": 21,
-            "x": 15
-          }
-        },
-        "style": {
-          "textAlign": "left",
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter",
-          "fontSize": 14,
-          "color": "#FFFFFF"
-        }
-      },
-      {
-        "style": {
-          "color": "#FFFFFF",
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter",
-          "textAlign": "right",
-          "fontSize": 14
-        },
-        "id": "fre-magazine",
-        "layout": {
-          "zIndex": 15,
-          "rotation": 0,
-          "position": {
-            "y": 21,
-            "x": 72
-          },
-          "size": {
-            "height": 4,
-            "width": 25
-          }
-        },
-        "content": "Magazine"
-      },
-      {
-        "id": "fre-looks",
-        "content": "10 Must Have<br>Looks for the<br>Season Ahead",
-        "layout": {
-          "size": {
-            "width": 40,
-            "height": 8
-          },
-          "position": {
-            "x": 15,
-            "y": 27
-          },
-          "zIndex": 15,
-          "rotation": 0
-        },
-        "style": {
-          "fontSize": 13,
-          "backgroundColor": "transparent",
-          "color": "#FFFFFF",
-          "textAlign": "left",
-          "fontFamily": "Inter"
-        }
-      },
-      {
-        "id": "fre-voucher",
-        "content": "Free Gift<br>Voucher",
-        "style": {
-          "fontSize": 24,
-          "backgroundColor": "#E63946",
-          "fontFamily": "Playfair Display",
-          "color": "#FFFFFF",
-          "textAlign": "center"
-        },
-        "layout": {
-          "size": {
-            "width": 28,
-            "height": 10
-          },
-          "zIndex": 15,
-          "rotation": 0,
-          "position": {
-            "y": 78,
-            "x": 22
-          }
-        }
-      },
-      {
-        "content": "Exclusive Interview<br>Marceline<br>Anderson",
-        "style": {
-          "color": "#FFFFFF",
-          "textAlign": "left",
-          "backgroundColor": "transparent",
-          "fontWeight": "400",
-          "fontFamily": "Playfair Display",
-          "fontSize": 28
-        },
-        "layout": {
-          "rotation": 0,
-          "size": {
-            "width": 55,
-            "height": 10
-          },
-          "position": {
-            "y": 85,
-            "x": 15
-          },
-          "zIndex": 15
-        },
-        "id": "fre-interview"
       }
     ],
     "canvasAspectRatio": "9:16",
     "pip": {
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "height": 88,
-        "width": 88
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
-        "y": 55,
-        "x": 50
+        "x": 50,
+        "y": 16
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "styleTags": [
@@ -2850,20 +2639,25 @@
         "style": {
           "fontWeight": "400",
           "fontFamily": "Playfair Display",
-          "fontSize": 58,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
-          "color": "#000000"
+          "color": "#000000",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
           "position": {
-            "y": 6,
-            "x": 25
+            "x": 25,
+            "y": 8
           },
           "size": {
-            "height": 8,
-            "width": 50
+            "width": 50,
+            "height": 8
           },
           "rotation": 0
         },
@@ -2882,14 +2676,14 @@
     },
     "pip": {
       "pipPosition": {
-        "x": 34,
-        "y": 19
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
         "width": 32,
-        "height": 72
+        "height": 40
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipBorder": {
         "color": "#000000",
         "width": 2
@@ -2927,14 +2721,22 @@
     ],
     "pip": {
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
         "x": 50,
-        "y": 55
+        "y": 16
       },
       "pipSize": {
-        "height": 85,
-        "width": 75
+        "width": 46,
+        "height": 40
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "background": {
@@ -2947,8 +2749,8 @@
         "layout": {
           "rotation": 0,
           "position": {
-            "y": 12,
-            "x": 50
+            "x": 50,
+            "y": 12
           },
           "size": {
             "width": 85,
@@ -2962,24 +2764,34 @@
           "fontWeight": "400",
           "fontFamily": "Playfair Display",
           "color": "#2A2A2A",
-          "fontSize": 68,
-          "backgroundColor": "transparent"
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
         "id": "fsv-cover",
         "style": {
           "color": "#666666",
-          "fontSize": 12,
-          "backgroundColor": "transparent",
+          "fontSize": 20,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Inter",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "MAGAZINE COVER",
         "layout": {
           "size": {
             "width": 85,
-            "height": 3
+            "height": 8
           },
           "rotation": 0,
           "zIndex": 15,
@@ -2988,76 +2800,6 @@
             "y": 19
           }
         }
-      },
-      {
-        "style": {
-          "backgroundColor": "transparent",
-          "fontFamily": "Playfair Display",
-          "color": "#2A2A2A",
-          "fontWeight": "300",
-          "fontSize": 48,
-          "textAlign": "left"
-        },
-        "id": "fsv-volume",
-        "layout": {
-          "rotation": 0,
-          "zIndex": 15,
-          "size": {
-            "width": 25,
-            "height": 12
-          },
-          "position": {
-            "x": 18,
-            "y": 25
-          }
-        },
-        "content": "VOLUME<br>30"
-      },
-      {
-        "style": {
-          "color": "#2A2A2A",
-          "textAlign": "center",
-          "fontFamily": "Anton",
-          "backgroundColor": "transparent",
-          "fontSize": 86
-        },
-        "id": "fsv-style",
-        "content": "STYLE",
-        "layout": {
-          "size": {
-            "height": 35,
-            "width": 22
-          },
-          "zIndex": 15,
-          "rotation": -90,
-          "position": {
-            "y": 55,
-            "x": 15
-          }
-        }
-      },
-      {
-        "content": "HIS UNLIMITED<br>FROM MARCH MENS EDITION",
-        "style": {
-          "backgroundColor": "transparent",
-          "textAlign": "right",
-          "fontFamily": "Inter",
-          "color": "#666666",
-          "fontSize": 9
-        },
-        "layout": {
-          "rotation": 0,
-          "zIndex": 15,
-          "position": {
-            "x": 75,
-            "y": 25
-          },
-          "size": {
-            "width": 22,
-            "height": 6
-          }
-        },
-        "id": "fsv-edition"
       }
     ],
     "createdAt": {
@@ -3090,18 +2832,22 @@
     },
     "pip": {
       "pipSize": {
-        "width": 70,
-        "height": 78
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
-        "y": 55,
-        "x": 50
+        "x": 50,
+        "y": 16
       },
       "pipBorder": {
         "color": "#FFFFFF",
         "width": 6
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "styleTags": [
@@ -3127,11 +2873,16 @@
         },
         "style": {
           "fontFamily": "Playfair Display",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FFFFFF",
-          "fontSize": 88,
+          "fontSize": 36,
           "fontWeight": "700",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "ftt-title"
       },
@@ -3139,48 +2890,30 @@
         "id": "ftt-trends",
         "layout": {
           "position": {
-            "y": 22,
-            "x": 50
+            "x": 50,
+            "y": 22
           },
           "rotation": 0,
           "zIndex": 15,
           "size": {
             "width": 85,
-            "height": 5
+            "height": 8
           }
         },
         "style": {
           "fontFamily": "Inter",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FFFFFF",
           "fontWeight": "300",
           "textAlign": "center",
-          "fontSize": 24
+          "fontSize": 24,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "TRENDS"
-      },
-      {
-        "content": "realityofonsite.com",
-        "style": {
-          "color": "#FFFFFF",
-          "fontFamily": "Inter",
-          "backgroundColor": "transparent",
-          "fontSize": 12,
-          "textAlign": "center"
-        },
-        "layout": {
-          "rotation": 0,
-          "position": {
-            "y": 92,
-            "x": 50
-          },
-          "zIndex": 15,
-          "size": {
-            "width": 85,
-            "height": 3
-          }
-        },
-        "id": "ftt-site"
       }
     ],
     "source": "system",
@@ -3200,15 +2933,23 @@
     },
     "pip": {
       "pipPosition": {
-        "y": 45,
-        "x": 50
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
-        "height": 65,
-        "width": 88
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "name": "Fashionist (Mobile)",
     "styleTags": [
@@ -3226,21 +2967,26 @@
       {
         "content": "PHOTOGRAPHER 2025",
         "style": {
-          "backgroundColor": "transparent",
-          "fontSize": 10,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 20,
           "textAlign": "center",
           "fontFamily": "Inter",
-          "color": "#999999"
+          "color": "#999999",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "rotation": 0,
           "position": {
-            "y": 8,
-            "x": 50
+            "x": 50,
+            "y": 8
           },
           "size": {
             "width": 85,
-            "height": 3
+            "height": 8
           },
           "zIndex": 15
         },
@@ -3262,36 +3008,18 @@
         },
         "style": {
           "fontFamily": "Cormorant Garamond",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
           "color": "#666666",
-          "fontSize": 68,
-          "fontWeight": "500"
+          "fontSize": 36,
+          "fontWeight": "500",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "FASHIONIST"
-      },
-      {
-        "content": "FASHION MAGAZINE",
-        "id": "fashionist-subtitle",
-        "style": {
-          "fontSize": 11,
-          "textAlign": "center",
-          "color": "#999999",
-          "fontFamily": "Inter",
-          "backgroundColor": "transparent"
-        },
-        "layout": {
-          "position": {
-            "y": 89,
-            "x": 50
-          },
-          "size": {
-            "width": 85,
-            "height": 3
-          },
-          "zIndex": 15,
-          "rotation": 0
-        }
       }
     ],
     "canvasAspectRatio": "9:16",
@@ -3312,11 +3040,16 @@
         "content": "FAUCET",
         "id": "faucet-title",
         "style": {
-          "fontSize": 82,
+          "fontSize": 36,
           "textAlign": "center",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#F5F0E8",
-          "fontFamily": "Playfair Display"
+          "fontFamily": "Playfair Display",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
@@ -3325,8 +3058,8 @@
             "height": 12
           },
           "position": {
-            "y": 12,
-            "x": 50
+            "x": 50,
+            "y": 12
           },
           "rotation": 0
         }
@@ -3335,36 +3068,49 @@
         "content": "SUMMER<br>TRENDS",
         "id": "faucet-trends",
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#F5F0E8",
           "textAlign": "left",
-          "fontSize": 38,
-          "fontFamily": "Playfair Display"
+          "fontSize": 36,
+          "fontFamily": "Playfair Display",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
-            "y": 22,
-            "x": 18
+            "x": 18,
+            "y": 22
           },
           "rotation": 0,
           "size": {
-            "height": 10,
-            "width": 50
+            "width": 50,
+            "height": 10
           },
           "zIndex": 15
         }
       }
     ],
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "layoutMode": "pip",
       "pipPosition": {
         "x": 50,
-        "y": 55
+        "y": 16
       },
       "pipSize": {
-        "width": 85,
-        "height": 85
+        "width": 46,
+        "height": 40
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "background": {
@@ -3391,12 +3137,17 @@
       {
         "style": {
           "color": "#14b8a6",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "left",
           "fontStyle": "italic",
           "fontWeight": "900",
-          "fontSize": 96,
-          "fontFamily": "Impact"
+          "fontSize": 36,
+          "fontFamily": "Impact",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "fit-title",
         "layout": {
@@ -3417,25 +3168,29 @@
       {
         "style": {
           "fontWeight": "700",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "padding": "10px",
           "borderRadius": "10px",
           "border": "4px solid #0f766e",
-          "fontSize": 64,
+          "fontSize": 36,
           "color": "#0f766e",
           "fontFamily": "Courier New",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          }
         },
         "layout": {
           "rotation": 0,
           "layerOrder": "below-video",
           "position": {
-            "y": 60,
-            "x": 75
+            "x": 75,
+            "y": 60
           },
           "size": {
-            "height": 15,
-            "width": 30
+            "width": 30,
+            "height": 15
           },
           "zIndex": 10
         },
@@ -3470,13 +3225,13 @@
       },
       "layoutMode": "pip",
       "pipPosition": {
-        "y": 50,
-        "x": 25
+        "x": 50,
+        "y": 16
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "height": 85,
-        "width": 40
+        "width": 40,
+        "height": 40
       }
     },
     "source": "system",
@@ -3516,8 +3271,8 @@
       },
       "cameraShape": "rounded",
       "pipSize": {
-        "height": 28,
-        "width": 22
+        "width": 24,
+        "height": 28
       },
       "responsive": {
         "mobile": {
@@ -3532,8 +3287,8 @@
         }
       },
       "pipPosition": {
-        "x": 4,
-        "y": 1
+        "x": 50,
+        "y": 4
       },
       "pipBorder": {
         "color": "#00FF88",
@@ -3548,11 +3303,16 @@
           "fontFamily": "Oswald",
           "backgroundColor": "rgba(0, 0, 0, 0.7)",
           "backdropFilter": "blur(5px)",
-          "fontSize": 68,
+          "fontSize": 36,
           "border": "3px solid #00FF88",
           "color": "#00FF88",
           "textAlign": "center",
-          "textShadow": "0px 0px 20px rgba(0, 255, 136, 0.8)"
+          "textShadow": "0px 0px 20px rgba(0, 255, 136, 0.8)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "preset-text-title",
         "responsive": {
@@ -3576,14 +3336,14 @@
         "content": "LIVE",
         "layout": {
           "position": {
-            "y": 79,
-            "x": 52.5
+            "x": 52.5,
+            "y": 79
           },
           "zIndex": 15,
           "rotation": -3,
           "size": {
-            "height": 12,
-            "width": 35
+            "width": 35,
+            "height": 12
           }
         }
       }
@@ -3620,7 +3380,7 @@
       },
       "pipSize": {
         "width": 45,
-        "height": 55
+        "height": 40
       },
       "layoutMode": "pip",
       "pipShadow": {
@@ -3628,8 +3388,8 @@
         "color": "rgba(255,255,255,0.1)"
       },
       "pipPosition": {
-        "y": 22.5,
-        "x": 27.5
+        "x": 50,
+        "y": 16
       }
     },
     "styleTags": [
@@ -3650,7 +3410,12 @@
           "textShadow": "0 2px 8px rgba(0,0,0,0.2)",
           "color": "#FFFFFF",
           "textAlign": "center",
-          "fontSize": 48
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "FROSTED\nELEGANCE",
         "responsive": {
@@ -3703,8 +3468,8 @@
       {
         "layout": {
           "position": {
-            "y": 8,
-            "x": 8
+            "x": 8,
+            "y": 8
           },
           "layerOrder": "above-video",
           "zIndex": 20,
@@ -3720,8 +3485,13 @@
           "textShadow": "2px 0px 0px #FF0000, -2px 0px 0px #00FFFF",
           "textAlign": "center",
           "fontWeight": "700",
-          "fontSize": 72,
-          "backgroundColor": "transparent"
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "glitch-title",
         "content": "GLITCH"
@@ -3730,14 +3500,14 @@
         "layout": {
           "rotation": 0,
           "size": {
-            "height": 6,
-            "width": 25
+            "width": 28,
+            "height": 8
           },
           "layerOrder": "below-video",
           "zIndex": 10,
           "position": {
-            "y": 15,
-            "x": 68
+            "x": 68,
+            "y": 15
           }
         },
         "content": "01010101",
@@ -3748,57 +3518,12 @@
           "color": "#00FF00",
           "textAlign": "center",
           "fontSize": 24,
-          "backgroundColor": "transparent"
-        }
-      },
-      {
-        "content": "11001100",
-        "style": {
-          "fontFamily": "Courier New",
-          "textShadow": "0 0 10px #00FF00",
-          "fontSize": 24,
-          "color": "#00FF00",
-          "textAlign": "center",
-          "backgroundColor": "transparent"
-        },
-        "id": "matrix-code-2",
-        "layout": {
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "position": {
-            "x": 70,
-            "y": 75
+            "x": 50,
+            "y": 86
           },
-          "layerOrder": "below-video",
-          "size": {
-            "height": 6,
-            "width": 25
-          },
-          "zIndex": 10,
-          "rotation": 0
-        }
-      },
-      {
-        "content": "▬▬▬",
-        "id": "glitch-bars",
-        "style": {
-          "fontFamily": "Arial",
-          "textAlign": "center",
-          "color": "#FF00FF",
-          "fontSize": 56,
-          "textShadow": "0 0 15px #FF00FF",
-          "backgroundColor": "transparent"
-        },
-        "layout": {
-          "layerOrder": "above-video",
-          "position": {
-            "y": 65,
-            "x": 12
-          },
-          "size": {
-            "height": 10,
-            "width": 20
-          },
-          "zIndex": 15,
-          "rotation": 0
+          "padding": "8px 12px"
         }
       }
     ],
@@ -3819,7 +3544,7 @@
     },
     "name": "Glitch Digital Matrix (Mobile)",
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
         "width": 30,
         "height": 40
@@ -3829,8 +3554,8 @@
         "color": "#00FF00"
       },
       "pipPosition": {
-        "y": 30,
-        "x": 35
+        "x": 50,
+        "y": 16
       },
       "pipShadow": {
         "blur": 35,
@@ -3877,15 +3602,20 @@
           "backdropFilter": "blur(10px)",
           "color": "#FFFFFF",
           "textAlign": "center",
-          "fontSize": 56,
-          "fontWeight": "800"
+          "fontSize": 36,
+          "fontWeight": "800",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "morph-title",
         "content": "CREATIVE\nSPACE",
         "layout": {
           "size": {
-            "height": 12,
-            "width": 70
+            "width": 70,
+            "height": 12
           },
           "position": {
             "x": 15,
@@ -3919,13 +3649,13 @@
       },
       "layoutMode": "pip",
       "pipPosition": {
-        "y": 15,
-        "x": 20
+        "x": 50,
+        "y": 15
       },
       "cameraShape": "rounded",
       "pipSize": {
-        "width": 60,
-        "height": 70
+        "width": 46,
+        "height": 40
       }
     },
     "background": {
@@ -3957,13 +3687,13 @@
         "color": "rgba(255, 0, 255, 0.6)"
       },
       "pipPosition": {
-        "y": 35,
-        "x": 60
+        "x": 60,
+        "y": 16
       },
       "cameraShape": "circle",
       "pipSize": {
-        "height": 35,
-        "width": 35
+        "width": 35,
+        "height": 35
       },
       "pipBorder": {
         "width": 5,
@@ -3986,17 +3716,22 @@
         "id": "graffiti-tag",
         "style": {
           "fontWeight": "900",
-          "fontSize": 120,
+          "fontSize": 36,
           "fontFamily": "Impact",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "left",
           "color": "#00FF00",
-          "textShadow": "4px 4px 0px #FF00FF, 8px 8px 0px #00FFFF"
+          "textShadow": "4px 4px 0px #FF00FF, 8px 8px 0px #00FFFF",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "LIVE",
         "layout": {
           "position": {
-            "x": 5,
+            "x": 8,
             "y": 10
           },
           "layerOrder": "above-video",
@@ -4011,15 +3746,15 @@
       {
         "layout": {
           "position": {
-            "y": 8,
-            "x": 45
+            "x": 45,
+            "y": 8
           },
           "zIndex": 15,
           "layerOrder": "below-video",
           "rotation": 15,
           "size": {
-            "height": 10,
-            "width": 10
+            "width": 28,
+            "height": 10
           }
         },
         "content": "★",
@@ -4027,36 +3762,16 @@
           "textAlign": "center",
           "textShadow": "0 0 20px #FFD700",
           "color": "#FFD700",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Arial",
-          "fontSize": 80
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "spray-accent-1"
-      },
-      {
-        "style": {
-          "textShadow": "0 0 15px #FF1493",
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "color": "#FF1493",
-          "fontFamily": "Arial",
-          "fontSize": 60
-        },
-        "id": "spray-accent-2",
-        "content": "◆",
-        "layout": {
-          "position": {
-            "x": 15,
-            "y": 75
-          },
-          "size": {
-            "height": 8,
-            "width": 8
-          },
-          "rotation": -20,
-          "zIndex": 15,
-          "layerOrder": "below-video"
-        }
       }
     ],
     "createdAt": {
@@ -4095,13 +3810,18 @@
         "content": "FUTURE",
         "id": "holo-title",
         "style": {
-          "fontSize": 68,
+          "fontSize": 36,
           "textAlign": "center",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#B8F3FF",
           "textShadow": "0 0 20px #B8F3FF, 0 0 40px #FF77FF, 0 0 60px #00D9FF",
           "fontFamily": "Orbitron",
-          "fontWeight": "700"
+          "fontWeight": "700",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 20,
@@ -4122,10 +3842,15 @@
         "style": {
           "textShadow": "0 0 40px #FF77FF",
           "textAlign": "center",
-          "fontSize": 200,
+          "fontSize": 36,
           "color": "#FF77FF",
           "fontFamily": "Arial",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "holo-ring",
         "layout": {
@@ -4138,58 +3863,8 @@
           },
           "size": {
             "width": 35,
-            "height": 40
+            "height": 30
           }
-        }
-      },
-      {
-        "content": "～～～～",
-        "id": "holo-wave",
-        "style": {
-          "color": "#00D9FF",
-          "fontFamily": "Arial",
-          "fontSize": 64,
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "textShadow": "0 0 20px #00D9FF"
-        },
-        "layout": {
-          "zIndex": 10,
-          "rotation": 0,
-          "layerOrder": "below-video",
-          "position": {
-            "y": 75,
-            "x": 18
-          },
-          "size": {
-            "height": 10,
-            "width": 40
-          }
-        }
-      },
-      {
-        "style": {
-          "textShadow": "0 0 15px #FFB3FF",
-          "color": "#FFB3FF",
-          "fontFamily": "Arial",
-          "fontSize": 48,
-          "backgroundColor": "transparent",
-          "textAlign": "center"
-        },
-        "id": "holo-dots",
-        "content": "· · · · ·",
-        "layout": {
-          "rotation": 0,
-          "size": {
-            "height": 8,
-            "width": 30
-          },
-          "zIndex": 15,
-          "position": {
-            "x": 65,
-            "y": 68
-          },
-          "layerOrder": "above-video"
         }
       }
     ],
@@ -4200,16 +3875,16 @@
       },
       "cameraShape": "hexagon",
       "pipPosition": {
-        "x": 30,
-        "y": 35
+        "x": 50,
+        "y": 16
       },
       "pipBorder": {
         "width": 3,
         "color": "#B8F3FF"
       },
       "pipSize": {
-        "height": 50,
-        "width": 40
+        "width": 40,
+        "height": 40
       },
       "layoutMode": "pip"
     },
@@ -4225,25 +3900,33 @@
     "pip": {
       "pipPosition": {
         "x": 50,
-        "y": 55
+        "y": 16
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "width": 85,
-        "height": 85
+        "width": 46,
+        "height": 40
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "textOverlays": [
       {
         "layout": {
           "position": {
-            "y": 12,
-            "x": 50
+            "x": 50,
+            "y": 12
           },
           "size": {
-            "height": 12,
-            "width": 85
+            "width": 85,
+            "height": 12
           },
           "zIndex": 15,
           "rotation": 0
@@ -4251,21 +3934,31 @@
         "id": "larana-title",
         "style": {
           "fontFamily": "Playfair Display",
-          "fontSize": 96,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
-          "color": "#4A90E2"
+          "color": "#4A90E2",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "LARANA"
       },
       {
         "id": "larana-sub",
         "style": {
-          "fontSize": 14,
+          "fontSize": 20,
           "color": "#333333",
           "textAlign": "center",
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontFamily": "Inter",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
@@ -4274,35 +3967,12 @@
           },
           "size": {
             "width": 85,
-            "height": 3
+            "height": 8
           },
           "zIndex": 15,
           "rotation": 0
         },
         "content": "FASHION MAGAZINE"
-      },
-      {
-        "style": {
-          "color": "#4A90E2",
-          "fontSize": 54,
-          "textAlign": "left",
-          "fontFamily": "Playfair Display",
-          "backgroundColor": "transparent"
-        },
-        "id": "larana-feature",
-        "content": "Effortless<br>Elegance",
-        "layout": {
-          "position": {
-            "y": 78,
-            "x": 18
-          },
-          "rotation": 0,
-          "zIndex": 15,
-          "size": {
-            "width": 60,
-            "height": 16
-          }
-        }
       }
     ],
     "background": {
@@ -4376,18 +4046,23 @@
           "color": "#8B4513",
           "textAlign": "center",
           "fontFamily": "Lora",
-          "fontSize": 46
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       }
     ],
     "pip": {
       "pipPosition": {
-        "y": 15,
-        "x": 25
+        "x": 50,
+        "y": 15
       },
       "pipSize": {
-        "width": 50,
-        "height": 60
+        "width": 46,
+        "height": 40
       },
       "pipShadow": {
         "color": "rgba(255, 215, 0, 0.4)",
@@ -4463,10 +4138,15 @@
         "style": {
           "textAlign": "left",
           "fontFamily": "Arial",
-          "backgroundColor": "transparent",
-          "fontSize": 48,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 36,
           "color": "#4338ca",
-          "fontWeight": "600"
+          "fontWeight": "600",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "lofi-title"
       },
@@ -4493,44 +4173,23 @@
           "textAlign": "center",
           "fontSize": 24,
           "borderRadius": "20px",
-          "color": "#6366f1"
-        }
-      },
-      {
-        "content": "☁️",
-        "layout": {
+          "color": "#6366f1",
           "position": {
-            "x": 20,
-            "y": 60
-          },
-          "zIndex": 5,
-          "size": {
-            "width": 20,
-            "height": 20
-          },
-          "layerOrder": "below-video",
-          "rotation": 0
-        },
-        "style": {
-          "textAlign": "center",
-          "opacity": 0.5,
-          "fontFamily": "Arial",
-          "backgroundColor": "transparent",
-          "color": "#ffffff",
-          "fontSize": 120
-        },
-        "id": "lofi-decoration"
+            "x": 50,
+            "y": 86
+          }
+        }
       }
     ],
     "pip": {
       "layoutMode": "pip",
       "pipPosition": {
-        "y": 65,
-        "x": 75
+        "x": 72,
+        "y": 16
       },
       "pipSize": {
-        "height": 45,
-        "width": 35
+        "width": 35,
+        "height": 40
       },
       "pipBorder": {
         "color": "#ffffff",
@@ -4566,8 +4225,8 @@
         "content": "LUXURY",
         "layout": {
           "size": {
-            "height": 10,
-            "width": 30
+            "width": 30,
+            "height": 10
           },
           "position": {
             "x": 35,
@@ -4599,21 +4258,31 @@
           "fontWeight": "700",
           "textAlign": "center",
           "color": "#FFD700",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Playfair Display",
-          "fontSize": 64,
-          "textShadow": "0px 4px 15px rgba(255, 215, 0, 0.6)"
+          "fontSize": 36,
+          "textShadow": "0px 4px 15px rgba(255, 215, 0, 0.6)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textShadow": "0px 2px 8px rgba(0,0,0,0.8)",
           "fontFamily": "Montserrat",
           "fontSize": 20,
           "textAlign": "center",
           "fontWeight": "300",
-          "color": "#FFFFFF"
+          "color": "#FFFFFF",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "COLLECTION",
         "responsive": {
@@ -4638,57 +4307,14 @@
           "rotation": 0,
           "layerOrder": "above-video",
           "position": {
-            "y": 21,
-            "x": 35
+            "x": 35,
+            "y": 21
           },
           "zIndex": 20,
           "size": {
             "width": 30,
-            "height": 4
+            "height": 8
           }
-        }
-      },
-      {
-        "layout": {
-          "zIndex": 20,
-          "layerOrder": "above-video",
-          "size": {
-            "height": 5,
-            "width": 30
-          },
-          "position": {
-            "x": 35,
-            "y": 79.5
-          },
-          "rotation": 0
-        },
-        "responsive": {
-          "mobile": {
-            "style": {
-              "fontSize": 14
-            },
-            "layout": {
-              "size": {
-                "width": 68,
-                "height": 5
-              },
-              "position": {
-                "y": 82.5,
-                "x": 16
-              }
-            }
-          }
-        },
-        "content": "PRESTIGE EDITION",
-        "id": "preset-text-bottom",
-        "style": {
-          "color": "#FFD700",
-          "backdropFilter": "blur(5px)",
-          "fontSize": 16,
-          "fontFamily": "Montserrat",
-          "fontWeight": "500",
-          "textAlign": "center",
-          "backgroundColor": "rgba(0, 0, 0, 0.6)"
         }
       }
     ],
@@ -4703,7 +4329,7 @@
       },
       "pipSize": {
         "width": 32,
-        "height": 78
+        "height": 40
       },
       "responsive": {
         "mobile": {
@@ -4718,11 +4344,11 @@
         }
       },
       "pipPosition": {
-        "y": 11,
-        "x": 34
+        "x": 50,
+        "y": 11
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded"
     },
     "name": "Luxury Magazine (Mobile)",
     "canvasAspectRatio": "9:16",
@@ -4751,8 +4377,8 @@
     },
     "pip": {
       "pipPosition": {
-        "y": 25,
-        "x": 27.5
+        "x": 50,
+        "y": 16
       },
       "responsive": {
         "mobile": {
@@ -4767,8 +4393,8 @@
         }
       },
       "pipSize": {
-        "height": 50,
-        "width": 45
+        "width": 45,
+        "height": 40
       },
       "pipShadow": {
         "color": "rgba(0, 0, 0, 0.1)",
@@ -4778,7 +4404,7 @@
         "width": 1,
         "color": "#000000"
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "layoutMode": "pip"
     },
     "name": "Minimal White Space (Mobile)",
@@ -4794,10 +4420,15 @@
         "style": {
           "color": "#000000",
           "fontFamily": "Inter",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontWeight": "300",
-          "fontSize": 48,
-          "textAlign": "center"
+          "fontSize": 36,
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "responsive": {
           "mobile": {
@@ -4818,8 +4449,8 @@
         },
         "layout": {
           "position": {
-            "y": 6,
-            "x": 20
+            "x": 20,
+            "y": 8
           },
           "size": {
             "width": 60,
@@ -4862,8 +4493,8 @@
         "layout": {
           "zIndex": 15,
           "position": {
-            "y": 70,
-            "x": 18
+            "x": 18,
+            "y": 70
           },
           "size": {
             "width": 30,
@@ -4877,9 +4508,14 @@
           "fontFamily": "Anton",
           "color": "#111111",
           "textAlign": "left",
-          "backgroundColor": "transparent",
-          "fontSize": 88,
-          "fontWeight": "900"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 36,
+          "fontWeight": "900",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -4897,41 +4533,39 @@
         },
         "id": "mfc-fashion",
         "style": {
-          "fontSize": 72,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Playfair Display",
           "textAlign": "left",
-          "color": "#111111"
+          "color": "#111111",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "FASHION"
-      },
-      {
-        "id": "mfc-magazine",
-        "layout": {
-          "position": {
-            "y": 28,
-            "x": 60
-          },
-          "zIndex": 15,
-          "size": {
-            "height": 5,
-            "width": 70
-          },
-          "rotation": 0
-        },
-        "style": {
-          "fontFamily": "Inter",
-          "fontSize": 14,
-          "backgroundColor": "transparent",
-          "color": "#333333",
-          "textAlign": "left"
-        },
-        "content": "MAGAZINE COVER"
       }
     ],
     "pip": {
-      "cameraShape": "rectangle",
-      "layoutMode": "solo"
+      "cameraShape": "rounded",
+      "layoutMode": "solo",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "effects": {
       "videoFilter": "grayscale(1) contrast(1.1)",
@@ -4978,8 +4612,8 @@
           "rotation": 0,
           "zIndex": 15,
           "position": {
-            "y": 22.5,
-            "x": 60
+            "x": 60,
+            "y": 22.5
           }
         },
         "id": "grid-title",
@@ -4989,8 +4623,13 @@
           "backgroundColor": "rgba(99, 102, 241, 0.1)",
           "fontWeight": "700",
           "border": "1px solid #6366F1",
-          "fontSize": 42,
-          "textAlign": "center"
+          "fontSize": 36,
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "MODERN\nGRID",
         "responsive": {
@@ -5013,7 +4652,7 @@
       }
     ],
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "responsive": {
         "mobile": {
           "layoutMode": "pip",
@@ -5028,12 +4667,12 @@
         }
       },
       "pipPosition": {
-        "y": 26,
-        "x": 6
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
         "width": 38,
-        "height": 48
+        "height": 40
       },
       "pipShadow": {
         "blur": 20,
@@ -5061,8 +4700,8 @@
         "layout": {
           "rotation": 0,
           "position": {
-            "y": 10,
-            "x": 18
+            "x": 18,
+            "y": 10
           },
           "zIndex": 15,
           "size": {
@@ -5071,11 +4710,16 @@
           }
         },
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FFFFFF",
-          "fontSize": 64,
+          "fontSize": 36,
           "fontFamily": "Playfair Display",
-          "textAlign": "left"
+          "textAlign": "left",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "mst-fashion"
       },
@@ -5083,9 +4727,14 @@
         "style": {
           "textAlign": "left",
           "fontFamily": "Inter",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#AAAAAA",
-          "fontSize": 16
+          "fontSize": 20,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "mst-magazine",
         "content": "MAGAZINE",
@@ -5098,54 +4747,8 @@
           "zIndex": 15,
           "size": {
             "width": 70,
-            "height": 3
-          }
-        }
-      },
-      {
-        "style": {
-          "textAlign": "left",
-          "color": "#FFFFFF",
-          "fontFamily": "Inter",
-          "backgroundColor": "transparent",
-          "fontSize": 18
-        },
-        "id": "mst-tips",
-        "content": "MODERN<br>STYLE TIPS",
-        "layout": {
-          "rotation": 0,
-          "size": {
-            "width": 50,
             "height": 8
-          },
-          "zIndex": 15,
-          "position": {
-            "x": 18,
-            "y": 20
           }
-        }
-      },
-      {
-        "id": "mst-name",
-        "content": "ADORA<br>MONTMINY",
-        "style": {
-          "textAlign": "left",
-          "fontSize": 48,
-          "backgroundColor": "transparent",
-          "color": "#FFFFFF",
-          "fontFamily": "Anton"
-        },
-        "layout": {
-          "zIndex": 15,
-          "size": {
-            "height": 12,
-            "width": 70
-          },
-          "position": {
-            "y": 72,
-            "x": 18
-          },
-          "rotation": 0
         }
       }
     ],
@@ -5158,13 +4761,21 @@
     "pip": {
       "layoutMode": "pip",
       "pipSize": {
-        "height": 50,
-        "width": 85
+        "width": 46,
+        "height": 40
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
         "x": 50,
-        "y": 40
+        "y": 16
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "styleTags": [
@@ -5210,8 +4821,8 @@
         "id": "mono-mag",
         "layout": {
           "size": {
-            "height": 3,
-            "width": 85
+            "width": 85,
+            "height": 8
           },
           "zIndex": 15,
           "rotation": 0,
@@ -5223,9 +4834,14 @@
         "style": {
           "color": "#FFFFFF",
           "fontFamily": "Inter",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
-          "fontSize": 14
+          "fontSize": 20,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -5238,81 +4854,44 @@
           "rotation": 0,
           "zIndex": 15,
           "size": {
-            "height": 10,
-            "width": 85
+            "width": 85,
+            "height": 10
           }
         },
         "id": "mono-title",
         "style": {
           "fontFamily": "Anton",
-          "fontSize": 72,
+          "fontSize": 36,
           "textAlign": "center",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent"
-        }
-      },
-      {
-        "style": {
-          "color": "#FFFFFF",
-          "fontSize": 12,
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "fontFamily": "Inter"
-        },
-        "id": "mono-date",
-        "content": "20 JUNE 2025",
-        "layout": {
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "position": {
-            "y": 22,
-            "x": 50
+            "x": 50,
+            "y": 86
           },
-          "size": {
-            "height": 3,
-            "width": 85
-          },
-          "rotation": 0,
-          "zIndex": 15
-        }
-      },
-      {
-        "content": "Celebrating the Strength, Grace and Individuality",
-        "id": "mono-desc",
-        "style": {
-          "textAlign": "center",
-          "fontFamily": "Inter",
-          "backgroundColor": "transparent",
-          "fontSize": 11,
-          "color": "#CCCCCC"
-        },
-        "layout": {
-          "rotation": 0,
-          "position": {
-            "y": 70,
-            "x": 50
-          },
-          "zIndex": 15,
-          "size": {
-            "width": 80,
-            "height": 8
-          }
+          "padding": "8px 12px"
         }
       }
     ],
     "pip": {
       "pipPosition": {
         "x": 50,
-        "y": 40
+        "y": 16
       },
       "pipSize": {
-        "width": 85,
-        "height": 45
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
       "pipBorder": {
         "color": "#FFFFFF",
         "width": 3
       },
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "isMobile": true,
     "originalDesktopId": "monochrome-grid"
@@ -5357,9 +4936,14 @@
           "textShadow": "0px 2px 8px rgba(0, 0, 0, 0.4)",
           "backdropFilter": "blur(6px)",
           "fontFamily": "Merriweather",
-          "fontSize": 44,
+          "fontSize": 36,
           "textAlign": "center",
-          "backgroundColor": "rgba(139, 115, 85, 0.6)"
+          "backgroundColor": "rgba(139, 115, 85, 0.6)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       }
     ],
@@ -5369,7 +4953,7 @@
     "pip": {
       "pipSize": {
         "width": 45,
-        "height": 45
+        "height": 40
       },
       "pipBorder": {
         "color": "#F4E8C1",
@@ -5393,8 +4977,8 @@
         }
       },
       "pipPosition": {
-        "x": 27.5,
-        "y": 27.5
+        "x": 50,
+        "y": 16
       },
       "cameraShape": "circle"
     },
@@ -5436,20 +5020,25 @@
           },
           "layerOrder": "above-video",
           "position": {
-            "y": 15,
-            "x": 52
+            "x": 52,
+            "y": 15
           }
         },
         "id": "cyber-title",
         "content": "CYBER",
         "style": {
-          "fontSize": 64,
+          "fontSize": 36,
           "fontWeight": "700",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#00FFFF",
           "textAlign": "center",
           "fontFamily": "Orbitron",
-          "textShadow": "0 0 30px #00FFFF, 0 0 60px #FF00FF"
+          "textShadow": "0 0 30px #00FFFF, 0 0 60px #FF00FF",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -5458,49 +5047,29 @@
           "textShadow": "0 0 15px #FF00FF",
           "color": "#FF00FF",
           "textAlign": "center",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontSize": 32,
-          "fontFamily": "Courier New"
+          "fontFamily": "Courier New",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "grid-line-1",
         "layout": {
           "size": {
             "width": 45,
-            "height": 5
+            "height": 8
           },
           "rotation": 0,
           "zIndex": 10,
           "position": {
-            "y": 30,
-            "x": 52
+            "x": 52,
+            "y": 30
           },
           "layerOrder": "below-video"
         }
-      },
-      {
-        "content": "▲▲▲",
-        "layout": {
-          "position": {
-            "x": 54,
-            "y": 65
-          },
-          "size": {
-            "height": 10,
-            "width": 15
-          },
-          "layerOrder": "above-video",
-          "rotation": 0,
-          "zIndex": 15
-        },
-        "style": {
-          "backgroundColor": "transparent",
-          "textShadow": "0 0 20px #FFD700",
-          "fontFamily": "Arial",
-          "fontSize": 48,
-          "color": "#FFD700",
-          "textAlign": "center"
-        },
-        "id": "cyber-accent"
       }
     ],
     "styleTags": [
@@ -5520,13 +5089,13 @@
         "blur": 40
       },
       "pipPosition": {
-        "x": 8,
-        "y": 25
+        "x": 50,
+        "y": 16
       },
       "layoutMode": "pip",
       "pipSize": {
         "width": 40,
-        "height": 50
+        "height": 40
       },
       "cameraShape": "hexagon"
     },
@@ -5571,8 +5140,8 @@
         "color": "rgba(255, 0, 110, 0.7)"
       },
       "pipPosition": {
-        "y": 22.5,
-        "x": 30
+        "x": 50,
+        "y": 16
       },
       "responsive": {
         "mobile": {
@@ -5587,8 +5156,8 @@
         }
       },
       "pipSize": {
-        "height": 55,
-        "width": 40
+        "width": 40,
+        "height": 40
       },
       "layoutMode": "pip",
       "cameraShape": "rounded",
@@ -5605,22 +5174,27 @@
           "rotation": 0,
           "zIndex": 15,
           "position": {
-            "y": 7,
-            "x": 30
+            "x": 30,
+            "y": 8
           },
           "size": {
-            "height": 16,
-            "width": 40
+            "width": 40,
+            "height": 16
           }
         },
         "style": {
           "textAlign": "center",
           "textShadow": "0px 0px 25px rgba(255, 0, 110, 0.9)",
-          "fontSize": 62,
+          "fontSize": 36,
           "color": "#FF006E",
           "fontFamily": "Rajdhani",
           "border": "3px solid #FF006E",
-          "backgroundColor": "rgba(255, 0, 110, 0.08)"
+          "backgroundColor": "rgba(255, 0, 110, 0.08)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "NEON\nPULSE",
         "responsive": {
@@ -5668,15 +5242,15 @@
       {
         "layout": {
           "size": {
-            "height": 6,
-            "width": 10
+            "width": 28,
+            "height": 8
           },
           "zIndex": 20,
           "rotation": 0,
           "layerOrder": "above-video",
           "position": {
-            "y": 5,
-            "x": 5
+            "x": 8,
+            "y": 8
           }
         },
         "content": "LIVE",
@@ -5689,53 +5263,40 @@
           "fontWeight": "700",
           "borderRadius": "4px",
           "color": "#ffffff",
-          "fontFamily": "Arial"
+          "fontFamily": "Arial",
+          "position": {
+            "x": 50,
+            "y": 86
+          }
         }
       },
       {
         "layout": {
           "size": {
-            "height": 15,
-            "width": 100
+            "width": 90,
+            "height": 15
           },
           "layerOrder": "above-video",
           "rotation": 0,
           "zIndex": 10,
           "position": {
-            "y": 85,
-            "x": 0
+            "x": 8,
+            "y": 85
           }
         },
         "id": "news-ticker-bg",
         "style": {
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#ffffff",
+          "fontSize": 26,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "color": "#ffffff",
+          "padding": "8px 12px",
+          "textAlign": "center"
         },
         "content": ""
-      },
-      {
-        "style": {
-          "fontFamily": "Arial",
-          "fontSize": 48,
-          "textAlign": "left",
-          "color": "#0f172a",
-          "backgroundColor": "transparent",
-          "fontWeight": "900"
-        },
-        "content": "BREAKING NEWS: TOP STORY",
-        "layout": {
-          "zIndex": 20,
-          "size": {
-            "width": 90,
-            "height": 10
-          },
-          "layerOrder": "above-video",
-          "position": {
-            "x": 5,
-            "y": 88
-          },
-          "rotation": 0
-        },
-        "id": "news-headline"
       }
     ],
     "pip": {
@@ -5748,10 +5309,10 @@
         "width": 35,
         "height": 35
       },
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
         "x": 70,
-        "y": 25
+        "y": 16
       },
       "pipShadow": {
         "blur": 10,
@@ -5790,9 +5351,14 @@
         "style": {
           "fontFamily": "Anton",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "right",
-          "fontSize": 72
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "LARANA"
       },
@@ -5800,9 +5366,14 @@
         "style": {
           "textAlign": "right",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
-          "fontSize": 12,
-          "fontFamily": "Inter"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 20,
+          "fontFamily": "Inter",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "olivia-sub",
         "layout": {
@@ -5812,35 +5383,12 @@
           },
           "rotation": 0,
           "size": {
-            "height": 3,
-            "width": 40
+            "width": 40,
+            "height": 8
           },
           "zIndex": 15
         },
         "content": "FASHION MAGAZINE"
-      },
-      {
-        "style": {
-          "fontSize": 96,
-          "backgroundColor": "transparent",
-          "fontFamily": "Anton",
-          "textAlign": "right",
-          "color": "#FFFFFF"
-        },
-        "id": "olivia-issue",
-        "layout": {
-          "zIndex": 15,
-          "rotation": 0,
-          "position": {
-            "y": 22,
-            "x": 82
-          },
-          "size": {
-            "height": 12,
-            "width": 30
-          }
-        },
-        "content": "10"
       }
     ],
     "styleTags": [
@@ -5865,14 +5413,18 @@
       },
       "layoutMode": "pip",
       "pipSize": {
-        "width": 85,
-        "height": 85
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
         "x": 50,
-        "y": 55
+        "y": 16
       },
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "canvasAspectRatio": "9:16",
     "isMobile": true,
@@ -5891,13 +5443,13 @@
       {
         "layout": {
           "size": {
-            "height": 12,
-            "width": 45
+            "width": 45,
+            "height": 12
           },
           "layerOrder": "above-video",
           "position": {
-            "y": 15,
-            "x": 50
+            "x": 50,
+            "y": 15
           },
           "rotation": 0,
           "zIndex": 20
@@ -5906,26 +5458,36 @@
         "content": "8-BIT",
         "style": {
           "fontFamily": "Press Start 2P",
-          "fontSize": 48,
+          "fontSize": 36,
           "color": "#FFD93D",
           "backgroundColor": "rgba(0, 0, 0, 0.6)",
           "textShadow": "3px 3px 0px #000000",
           "fontWeight": "400",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
         "style": {
           "textAlign": "center",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textShadow": "4px 4px 0px #000000",
-          "fontSize": 88,
+          "fontSize": 36,
           "fontFamily": "Arial",
-          "color": "#FF6B9D"
+          "color": "#FF6B9D",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "size": {
-            "width": 12,
+            "width": 28,
             "height": 12
           },
           "position": {
@@ -5938,55 +5500,6 @@
         },
         "content": "♥",
         "id": "pixel-heart"
-      },
-      {
-        "content": "◉",
-        "style": {
-          "fontSize": 72,
-          "textAlign": "center",
-          "color": "#FFD93D",
-          "textShadow": "3px 3px 0px #000000",
-          "fontFamily": "Arial",
-          "backgroundColor": "transparent"
-        },
-        "layout": {
-          "layerOrder": "above-video",
-          "zIndex": 15,
-          "rotation": 0,
-          "position": {
-            "y": 68,
-            "x": 75
-          },
-          "size": {
-            "width": 10,
-            "height": 10
-          }
-        },
-        "id": "pixel-coin"
-      },
-      {
-        "content": "█ █ █",
-        "layout": {
-          "layerOrder": "below-video",
-          "zIndex": 10,
-          "size": {
-            "height": 8,
-            "width": 40
-          },
-          "rotation": 0,
-          "position": {
-            "x": 52,
-            "y": 82
-          }
-        },
-        "id": "pixel-blocks",
-        "style": {
-          "backgroundColor": "transparent",
-          "fontFamily": "Courier New",
-          "textAlign": "center",
-          "fontSize": 56,
-          "color": "#6BCB77"
-        }
       }
     ],
     "background": {
@@ -6000,18 +5513,18 @@
       },
       "layoutMode": "pip",
       "pipPosition": {
-        "x": 10,
-        "y": 30
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
-        "height": 40,
-        "width": 35
+        "width": 35,
+        "height": 40
       },
       "pipBorder": {
         "width": 8,
         "color": "#FFD93D"
       },
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded"
     },
     "name": "Pixel Art Retro (Mobile)",
     "createdAt": {
@@ -6038,22 +5551,27 @@
         "id": "preset-text-title",
         "style": {
           "fontFamily": "Libre Baskerville",
-          "fontSize": 42,
+          "fontSize": 36,
           "backdropFilter": "blur(8px)",
           "color": "#D4A574",
           "textAlign": "left",
           "backgroundColor": "rgba(0, 0, 0, 0.5)",
-          "fontWeight": "700"
+          "fontWeight": "700",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
-            "y": 30,
-            "x": 40
+            "x": 40,
+            "y": 30
           },
           "zIndex": 15,
           "size": {
-            "height": 10,
-            "width": 50
+            "width": 50,
+            "height": 10
           },
           "rotation": 0
         },
@@ -6105,17 +5623,22 @@
             "y": 39.5
           },
           "size": {
-            "height": 5,
-            "width": 45
+            "width": 45,
+            "height": 8
           }
         },
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontWeight": "400",
           "fontFamily": "Libre Baskerville",
           "color": "#D4A574",
           "textAlign": "left",
-          "fontSize": 18
+          "fontSize": 20,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       }
     ],
@@ -6125,8 +5648,8 @@
         "width": 4
       },
       "pipPosition": {
-        "x": 12.5,
-        "y": 32.5
+        "x": 50,
+        "y": 16
       },
       "responsive": {
         "mobile": {
@@ -6147,8 +5670,8 @@
         "blur": 30
       },
       "pipSize": {
-        "height": 35,
-        "width": 35
+        "width": 35,
+        "height": 35
       }
     },
     "styleTags": [
@@ -6176,16 +5699,21 @@
       {
         "style": {
           "fontFamily": "Playfair Display",
-          "fontSize": 68,
+          "fontSize": 36,
           "color": "#D4AF37",
           "textAlign": "center",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
           "position": {
             "x": 10,
-            "y": 7
+            "y": 8
           },
           "size": {
             "width": 80,
@@ -6199,20 +5727,25 @@
       {
         "style": {
           "color": "#D4AF37",
-          "fontSize": 16,
-          "backgroundColor": "transparent",
+          "fontSize": 20,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Inter",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "pe-edition",
         "layout": {
           "size": {
-            "height": 3,
-            "width": 80
+            "width": 80,
+            "height": 8
           },
           "position": {
-            "y": 17.5,
-            "x": 10
+            "x": 10,
+            "y": 17.5
           },
           "rotation": 0,
           "zIndex": 15
@@ -6245,14 +5778,14 @@
         "blur": 25
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
-        "x": 6,
+        "x": 50,
         "y": 11
       },
       "pipSize": {
-        "height": 88,
-        "width": 88
+        "width": 46,
+        "height": 40
       },
       "pipBorder": {
         "color": "#D4AF37",
@@ -6281,7 +5814,23 @@
     },
     "pip": {
       "layoutMode": "pip",
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "name": "Editorial Hero Grid (Mobile)",
     "canvasLayout": {
@@ -6336,11 +5885,16 @@
         "style": {
           "textAlign": "left",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Oswald",
           "fontWeight": "700",
           "textShadow": "2px 2px 0px #333",
-          "fontSize": 64
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "sidebar-main-text",
         "layout": {
@@ -6349,8 +5903,8 @@
             "y": 10
           },
           "size": {
-            "height": 80,
-            "width": 30
+            "width": 30,
+            "height": 30
           },
           "rotation": 0,
           "zIndex": 10
@@ -6364,15 +5918,23 @@
     "id": "reset-miller_mobile",
     "source": "system",
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "layoutMode": "pip",
       "pipSize": {
-        "width": 85,
-        "height": 85
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
-        "x": 7.5,
+        "x": 50,
         "y": 12.5
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "effects": {
@@ -6393,7 +5955,7 @@
           "zIndex": 15,
           "position": {
             "x": 10,
-            "y": 6
+            "y": 8
           },
           "rotation": 0,
           "size": {
@@ -6403,28 +5965,38 @@
         },
         "id": "rm-faucet",
         "style": {
-          "backgroundColor": "transparent",
-          "fontSize": 82,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 36,
           "textAlign": "center",
           "color": "#F5F0E8",
-          "fontFamily": "Playfair Display"
+          "fontFamily": "Playfair Display",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "FAUCET"
       },
       {
         "style": {
           "color": "#F5F0E8",
-          "fontSize": 14,
-          "backgroundColor": "transparent",
+          "fontSize": 20,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Inter",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "SUMMER TRENDS",
         "id": "rm-trends",
         "layout": {
           "size": {
-            "height": 3,
-            "width": 80
+            "width": 80,
+            "height": 8
           },
           "zIndex": 15,
           "position": {
@@ -6433,29 +6005,6 @@
           },
           "rotation": 0
         }
-      },
-      {
-        "layout": {
-          "position": {
-            "x": 10,
-            "y": 80
-          },
-          "size": {
-            "height": 10,
-            "width": 80
-          },
-          "rotation": 0,
-          "zIndex": 15
-        },
-        "style": {
-          "backgroundColor": "transparent",
-          "fontFamily": "Playfair Display",
-          "textAlign": "center",
-          "color": "#F5F0E8",
-          "fontSize": 56
-        },
-        "content": "RESET MILLER",
-        "id": "rm-name"
       }
     ],
     "canvasAspectRatio": "9:16",
@@ -6500,12 +6049,12 @@
         "content": "RETRO\nWAVE",
         "layout": {
           "size": {
-            "height": 14,
-            "width": 45
+            "width": 45,
+            "height": 14
           },
           "position": {
-            "y": 3,
-            "x": 27.5
+            "x": 27.5,
+            "y": 8
           },
           "zIndex": 15,
           "rotation": 0
@@ -6517,8 +6066,13 @@
           "textAlign": "center",
           "backgroundColor": "rgba(0, 0, 0, 0.6)",
           "color": "#00FFFF",
-          "fontSize": 38,
-          "border": "2px solid #FF6B9D"
+          "fontSize": 36,
+          "border": "2px solid #FF6B9D",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       }
     ],
@@ -6548,15 +6102,15 @@
         }
       },
       "pipSize": {
-        "width": 50,
-        "height": 58
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
       "pipPosition": {
-        "x": 25,
-        "y": 21
+        "x": 50,
+        "y": 16
       },
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded"
     },
     "name": "Retro VHS Aesthetic (Mobile)",
     "createdAt": {
@@ -6575,14 +6129,22 @@
     "pip": {
       "layoutMode": "pip",
       "pipPosition": {
-        "y": 55,
-        "x": 50
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
-        "width": 88,
-        "height": 88
+        "width": 46,
+        "height": 40
       },
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "name": "RV Me Business (Mobile)",
     "styleTags": [
@@ -6602,8 +6164,8 @@
             "y": 10
           },
           "size": {
-            "height": 5,
-            "width": 22
+            "width": 28,
+            "height": 8
           }
         },
         "content": "|||||||||||||||||||",
@@ -6612,7 +6174,12 @@
           "fontFamily": "Courier New",
           "backgroundColor": "#FFFFFF",
           "color": "#000000",
-          "fontSize": 28
+          "fontSize": 28,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -6620,163 +6187,28 @@
         "content": "RV ME<br>MAGAZINE",
         "layout": {
           "size": {
-            "height": 8,
-            "width": 22
+            "width": 28,
+            "height": 8
           },
           "zIndex": 15,
           "position": {
-            "y": 10,
-            "x": 75
+            "x": 75,
+            "y": 10
           },
           "rotation": 0
         },
         "style": {
-          "fontSize": 18,
+          "fontSize": 20,
           "backgroundColor": "#FFCC00",
           "textAlign": "center",
           "fontFamily": "Anton",
-          "color": "#000000"
+          "color": "#000000",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
-      },
-      {
-        "content": "SUCCESS TIPS<br>IN 2022",
-        "id": "rvme-tips",
-        "layout": {
-          "position": {
-            "x": 18,
-            "y": 20
-          },
-          "size": {
-            "height": 5,
-            "width": 40
-          },
-          "rotation": 0,
-          "zIndex": 15
-        },
-        "style": {
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter",
-          "fontSize": 13,
-          "color": "#000000",
-          "textAlign": "left",
-          "fontWeight": "700"
-        }
-      },
-      {
-        "id": "rvme-tips-desc",
-        "layout": {
-          "position": {
-            "x": 18,
-            "y": 26
-          },
-          "rotation": 0,
-          "size": {
-            "height": 12,
-            "width": 40
-          },
-          "zIndex": 15
-        },
-        "style": {
-          "color": "#000000",
-          "fontFamily": "Inter",
-          "textAlign": "left",
-          "fontSize": 10,
-          "backgroundColor": "transparent"
-        },
-        "content": "With our fast paced way<br>how to become tips, you'll<br>become business tips<br>NOW not tomorrow...<br>and that is very much<br>necessary."
-      },
-      {
-        "style": {
-          "fontSize": 13,
-          "textAlign": "left",
-          "fontWeight": "700",
-          "color": "#000000",
-          "fontFamily": "Inter",
-          "backgroundColor": "transparent"
-        },
-        "id": "rvme-start",
-        "layout": {
-          "zIndex": 15,
-          "position": {
-            "y": 42,
-            "x": 18
-          },
-          "size": {
-            "width": 40,
-            "height": 5
-          },
-          "rotation": 0
-        },
-        "content": "START YOUR<br>BUSINESS"
-      },
-      {
-        "style": {
-          "color": "#000000",
-          "fontSize": 10,
-          "backgroundColor": "transparent",
-          "fontFamily": "Inter",
-          "textAlign": "left"
-        },
-        "content": "We shall in build<br>your business in a<br>way that is very good<br>and it very much<br>counts.",
-        "layout": {
-          "rotation": 0,
-          "position": {
-            "x": 18,
-            "y": 48
-          },
-          "zIndex": 15,
-          "size": {
-            "width": 40,
-            "height": 10
-          }
-        },
-        "id": "rvme-start-desc"
-      },
-      {
-        "layout": {
-          "size": {
-            "width": 85,
-            "height": 12
-          },
-          "zIndex": 15,
-          "position": {
-            "y": 82,
-            "x": 50
-          },
-          "rotation": 0
-        },
-        "id": "rvme-business",
-        "content": "BUSINESS",
-        "style": {
-          "fontFamily": "Anton",
-          "textAlign": "center",
-          "color": "#000000",
-          "fontSize": 88,
-          "backgroundColor": "#FFCC00"
-        }
-      },
-      {
-        "style": {
-          "color": "#000000",
-          "backgroundColor": "#FFFFFF",
-          "fontFamily": "Inter",
-          "textAlign": "center",
-          "fontSize": 16
-        },
-        "layout": {
-          "position": {
-            "y": 90,
-            "x": 50
-          },
-          "rotation": 0,
-          "size": {
-            "height": 4,
-            "width": 85
-          },
-          "zIndex": 15
-        },
-        "content": "MAGAZINE 2022",
-        "id": "rvme-year"
       }
     ],
     "createdAt": {
@@ -6830,20 +6262,25 @@
         },
         "style": {
           "textShadow": "0px 2px 6px rgba(139, 111, 142, 0.2)",
-          "fontSize": 42,
+          "fontSize": 36,
           "color": "#8B6F8E",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
-          "fontFamily": "Quicksand"
+          "fontFamily": "Quicksand",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "size": {
-            "height": 8,
-            "width": 60
+            "width": 60,
+            "height": 8
           },
           "position": {
-            "y": 84,
-            "x": 20
+            "x": 20,
+            "y": 84
           },
           "zIndex": 15,
           "rotation": 0
@@ -6885,12 +6322,12 @@
         "color": "rgba(255, 182, 193, 0.5)"
       },
       "pipPosition": {
-        "x": 30,
-        "y": 30
+        "x": 50,
+        "y": 16
       },
       "pipSize": {
-        "height": 40,
-        "width": 40
+        "width": 40,
+        "height": 40
       },
       "cameraShape": "circle"
     },
@@ -6912,7 +6349,7 @@
       "videoFilter": "grayscale(1) contrast(1.2)"
     },
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipBorder": {
         "width": 4,
         "color": "#D4AF37"
@@ -6922,12 +6359,12 @@
         "color": "rgba(212, 175, 55, 0.3)"
       },
       "pipPosition": {
-        "y": 12.5,
-        "x": 7.5
+        "x": 50,
+        "y": 12.5
       },
       "pipSize": {
-        "height": 85,
-        "width": 85
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip"
     },
@@ -6946,21 +6383,26 @@
           "rotation": 0,
           "zIndex": 15,
           "position": {
-            "y": 6.5,
-            "x": 10
+            "x": 10,
+            "y": 8
           },
           "size": {
             "width": 80,
-            "height": 3
+            "height": 8
           }
         },
         "id": "spencer-issue",
         "style": {
-          "fontSize": 12,
+          "fontSize": 20,
           "fontFamily": "Inter",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
-          "textAlign": "center"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "ISSUE 10"
       },
@@ -6968,69 +6410,28 @@
         "id": "spencer-title",
         "style": {
           "fontFamily": "Playfair Display",
-          "fontSize": 84,
+          "fontSize": 36,
           "color": "#FFFFFF",
           "textAlign": "center",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "SPENCER",
         "layout": {
           "zIndex": 15,
           "position": {
-            "y": 9,
-            "x": 10
+            "x": 10,
+            "y": 9
           },
-          "size": {
-            "height": 12,
-            "width": 80
-          },
-          "rotation": 0
-        }
-      },
-      {
-        "id": "spencer-subtitle",
-        "layout": {
           "size": {
             "width": 80,
-            "height": 3
+            "height": 12
           },
-          "position": {
-            "x": 10,
-            "y": 22.5
-          },
-          "zIndex": 15,
           "rotation": 0
-        },
-        "content": "MAGAZINE",
-        "style": {
-          "backgroundColor": "transparent",
-          "color": "#FFFFFF",
-          "fontSize": 14,
-          "textAlign": "center",
-          "fontFamily": "Inter"
-        }
-      },
-      {
-        "layout": {
-          "rotation": 0,
-          "zIndex": 15,
-          "position": {
-            "y": 69,
-            "x": 0
-          },
-          "size": {
-            "width": 60,
-            "height": 18
-          }
-        },
-        "content": "FRESH<br>SUMMER<br>FASHION",
-        "id": "spencer-feature",
-        "style": {
-          "color": "#D4AF37",
-          "fontFamily": "Playfair Display",
-          "fontSize": 52,
-          "textAlign": "left",
-          "backgroundColor": "transparent"
         }
       }
     ],
@@ -7042,14 +6443,14 @@
     "source": "system",
     "pip": {
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipShadow": {
         "color": "#7f1d1d",
         "blur": 50
       },
       "pipSize": {
-        "height": 60,
-        "width": 60
+        "width": 46,
+        "height": 40
       },
       "pipBorder": {
         "color": "#7f1d1d",
@@ -7057,7 +6458,7 @@
       },
       "pipPosition": {
         "x": 50,
-        "y": 50
+        "y": 16
       }
     },
     "textOverlays": [
@@ -7070,9 +6471,14 @@
           "letterSpacing": "5px",
           "color": "#991b1b",
           "fontFamily": "Impact",
-          "fontSize": 80,
+          "fontSize": 36,
           "textAlign": "center",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
@@ -7080,8 +6486,8 @@
             "y": 15
           },
           "size": {
-            "height": 15,
-            "width": 80
+            "width": 80,
+            "height": 15
           },
           "rotation": 0,
           "layerOrder": "above-video",
@@ -7095,21 +6501,26 @@
           "fontWeight": "700",
           "color": "#991b1b",
           "letterSpacing": "5px",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textShadow": "0 0 10px #000000",
           "fontFamily": "Impact",
-          "fontSize": 80
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "rotation": 0,
           "zIndex": 20,
           "position": {
-            "y": 85,
-            "x": 50
+            "x": 50,
+            "y": 85
           },
           "size": {
-            "height": 15,
-            "width": 80
+            "width": 80,
+            "height": 15
           },
           "layerOrder": "above-video"
         },
@@ -7158,13 +6569,13 @@
         "width": 6
       },
       "pipSize": {
-        "height": 32,
-        "width": 32
+        "width": 32,
+        "height": 32
       },
       "cameraShape": "circle",
       "pipPosition": {
-        "y": 55,
-        "x": 65
+        "x": 65,
+        "y": 16
       },
       "layoutMode": "pip"
     },
@@ -7187,8 +6598,8 @@
           "layerOrder": "above-video",
           "zIndex": 20,
           "size": {
-            "height": 25,
-            "width": 50
+            "width": 50,
+            "height": 25
           },
           "rotation": -8,
           "position": {
@@ -7197,13 +6608,18 @@
           }
         },
         "style": {
-          "fontSize": 110,
+          "fontSize": 36,
           "fontWeight": "900",
           "fontFamily": "Impact",
           "textShadow": "5px 5px 0px #000000, -2px -2px 0px #FFFFFF, 0 0 30px #FF6B00",
           "textAlign": "left",
           "color": "#FF6B00",
-          "backgroundColor": "transparent"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "spray-main"
       },
@@ -7212,17 +6628,22 @@
         "content": "▼",
         "style": {
           "textAlign": "center",
-          "backgroundColor": "transparent",
-          "fontSize": 48,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 36,
           "textShadow": "0 0 15px #00FFD1",
           "color": "#00FFD1",
-          "fontFamily": "Arial"
+          "fontFamily": "Arial",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "zIndex": 15,
           "size": {
-            "height": 8,
-            "width": 5
+            "width": 28,
+            "height": 8
           },
           "position": {
             "x": 15,
@@ -7231,56 +6652,6 @@
           "layerOrder": "below-video",
           "rotation": 0
         }
-      },
-      {
-        "style": {
-          "textAlign": "center",
-          "fontFamily": "Arial",
-          "color": "#FF00E6",
-          "textShadow": "0 0 15px #FF00E6",
-          "backgroundColor": "transparent",
-          "fontSize": 48
-        },
-        "id": "spray-drip-2",
-        "content": "▼",
-        "layout": {
-          "zIndex": 15,
-          "position": {
-            "x": 45,
-            "y": 42
-          },
-          "rotation": 0,
-          "size": {
-            "width": 5,
-            "height": 8
-          },
-          "layerOrder": "below-video"
-        }
-      },
-      {
-        "layout": {
-          "layerOrder": "below-video",
-          "position": {
-            "y": 8,
-            "x": 10
-          },
-          "size": {
-            "height": 10,
-            "width": 35
-          },
-          "zIndex": 10,
-          "rotation": 0
-        },
-        "id": "spray-stars",
-        "style": {
-          "fontSize": 64,
-          "fontFamily": "Arial",
-          "textShadow": "0 0 25px #FFD700",
-          "textAlign": "center",
-          "backgroundColor": "transparent",
-          "color": "#FFD700"
-        },
-        "content": "✦✦✦"
       }
     ],
     "isMobile": true,
@@ -7299,13 +6670,13 @@
         "layout": {
           "zIndex": 20,
           "position": {
-            "y": 30,
-            "x": 5
+            "x": 8,
+            "y": 30
           },
           "layerOrder": "above-video",
           "size": {
-            "height": 30,
-            "width": 40
+            "width": 40,
+            "height": 30
           },
           "rotation": 0
         },
@@ -7313,9 +6684,14 @@
           "color": "#000000",
           "fontFamily": "Impact",
           "fontWeight": "900",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
-          "fontSize": 140
+          "fontSize": 36,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "ART",
         "id": "stencil-text"
@@ -7325,7 +6701,7 @@
           "layerOrder": "below-video",
           "rotation": 0,
           "size": {
-            "width": 12,
+            "width": 28,
             "height": 15
           },
           "position": {
@@ -7335,62 +6711,19 @@
           "zIndex": 10
         },
         "style": {
-          "fontSize": 96,
-          "backgroundColor": "transparent",
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
           "fontFamily": "Arial",
-          "color": "#FF0000"
+          "color": "#FF0000",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "◊",
         "id": "stencil-spray-1"
-      },
-      {
-        "style": {
-          "fontSize": 72,
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "color": "#FF0000",
-          "fontFamily": "Arial"
-        },
-        "layout": {
-          "position": {
-            "x": 82,
-            "y": 75
-          },
-          "zIndex": 10,
-          "layerOrder": "below-video",
-          "rotation": 0,
-          "size": {
-            "width": 10,
-            "height": 12
-          }
-        },
-        "content": "◊",
-        "id": "stencil-spray-2"
-      },
-      {
-        "id": "stencil-line",
-        "style": {
-          "backgroundColor": "transparent",
-          "textAlign": "center",
-          "color": "#000000",
-          "fontFamily": "Courier New",
-          "fontSize": 28
-        },
-        "layout": {
-          "zIndex": 15,
-          "layerOrder": "above-video",
-          "size": {
-            "height": 5,
-            "width": 35
-          },
-          "rotation": 0,
-          "position": {
-            "y": 62,
-            "x": 8
-          }
-        },
-        "content": "━━━━━━━━"
       }
     ],
     "name": "Stencil Street Art (Mobile)",
@@ -7406,17 +6739,17 @@
       },
       "pipSize": {
         "width": 42,
-        "height": 55
+        "height": 40
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipBorder": {
         "color": "#000000",
         "width": 5
       },
       "pipPosition": {
         "x": 52,
-        "y": 25
+        "y": 16
       }
     },
     "background": {
@@ -7460,19 +6793,24 @@
         },
         "style": {
           "backgroundColor": "rgba(0, 217, 255, 0.08)",
-          "fontSize": 66,
+          "fontSize": 36,
           "textAlign": "center",
           "fontFamily": "Orbitron",
           "backdropFilter": "blur(8px)",
           "fontWeight": "700",
           "color": "#00D9FF",
           "border": "2px solid #00D9FF",
-          "textShadow": "0px 0px 20px rgba(0, 217, 255, 0.8)"
+          "textShadow": "0px 0px 20px rgba(0, 217, 255, 0.8)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "size": {
-            "height": 11,
-            "width": 32
+            "width": 32,
+            "height": 11
           },
           "zIndex": 20,
           "rotation": 0,
@@ -7504,12 +6842,12 @@
         },
         "layout": {
           "position": {
-            "y": 24.5,
-            "x": 34
+            "x": 34,
+            "y": 24.5
           },
           "size": {
             "width": 32,
-            "height": 5
+            "height": 8
           },
           "rotation": 0,
           "layerOrder": "above-video",
@@ -7524,16 +6862,21 @@
           "textAlign": "center",
           "color": "#FFFFFF",
           "textShadow": "0px 2px 10px rgba(0, 217, 255, 0.5)",
-          "fontSize": 24
+          "fontSize": 24,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "content": "THE FUTURE"
       }
     ],
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
-        "y": 14,
-        "x": 33
+        "x": 50,
+        "y": 14
       },
       "layoutMode": "pip",
       "pipShadow": {
@@ -7557,8 +6900,8 @@
         "color": "#00D9FF"
       },
       "pipSize": {
-        "height": 72,
-        "width": 34
+        "width": 34,
+        "height": 40
       }
     },
     "styleTags": [
@@ -7587,19 +6930,23 @@
     "canvasAspectRatio": "9:16",
     "pip": {
       "pipPosition": {
-        "x": 7.5,
+        "x": 50,
         "y": 12.5
       },
       "layoutMode": "pip",
       "pipSize": {
-        "height": 85,
-        "width": 85
+        "width": 46,
+        "height": 40
       },
       "pipBorder": {
         "color": "#FFFFFF",
         "width": 1
       },
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "styleTags": [
       "magazine",
@@ -7615,17 +6962,22 @@
       {
         "content": "LARANA",
         "style": {
-          "fontSize": 68,
+          "fontSize": 36,
           "fontFamily": "Anton",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
-          "textAlign": "right"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "textAlign": "right",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "rotation": 0,
           "position": {
             "x": 55,
-            "y": 6
+            "y": 8
           },
           "size": {
             "width": 40,
@@ -7638,10 +6990,15 @@
       {
         "style": {
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Inter",
           "textAlign": "right",
-          "fontSize": 12
+          "fontSize": 20,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "tt-fashion",
         "layout": {
@@ -7650,59 +7007,13 @@
             "y": 14.5
           },
           "size": {
-            "height": 3,
-            "width": 40
+            "width": 40,
+            "height": 8
           },
           "rotation": 0,
           "zIndex": 15
         },
         "content": "FASHION MAGAZINE"
-      },
-      {
-        "id": "tt-ten",
-        "content": "10",
-        "layout": {
-          "rotation": 0,
-          "zIndex": 15,
-          "size": {
-            "height": 14,
-            "width": 30
-          },
-          "position": {
-            "x": 67,
-            "y": 12
-          }
-        },
-        "style": {
-          "backgroundColor": "transparent",
-          "color": "#FFFFFF",
-          "textAlign": "right",
-          "fontFamily": "Anton",
-          "fontSize": 112
-        }
-      },
-      {
-        "content": "FASHION<br>TRENDS IN<br>2024",
-        "id": "tt-trends",
-        "style": {
-          "fontSize": 13,
-          "fontFamily": "Inter",
-          "color": "#FFFFFF",
-          "textAlign": "right",
-          "backgroundColor": "transparent"
-        },
-        "layout": {
-          "position": {
-            "x": 60.5,
-            "y": 26
-          },
-          "size": {
-            "height": 8,
-            "width": 35
-          },
-          "rotation": 0,
-          "zIndex": 15
-        }
       }
     ],
     "createdAt": {
@@ -7737,14 +7048,14 @@
     },
     "source": "system",
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "width": 50,
-        "height": 50
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
-        "y": 40,
-        "x": 50
+        "x": 50,
+        "y": 16
       },
       "pipShadow": {
         "blur": 0,
@@ -7772,18 +7083,23 @@
           },
           "zIndex": 20,
           "size": {
-            "height": 8,
-            "width": 90
+            "width": 90,
+            "height": 8
           }
         },
         "style": {
           "letterSpacing": "8px",
           "color": "#ffffff",
-          "fontSize": 40,
+          "fontSize": 36,
           "backgroundColor": "#000000",
           "textAlign": "center",
           "fontFamily": "Arial",
-          "fontWeight": "700"
+          "fontWeight": "700",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "vapor-text"
       },
@@ -7805,32 +7121,16 @@
         },
         "style": {
           "borderRadius": "50%",
-          "background": "linear-gradient(to top, #ff00ff, #ff7700)"
-        }
-      },
-      {
-        "id": "vapor-grid-line",
-        "style": {
-          "textAlign": "center",
-          "fontWeight": "bold",
-          "color": "#00ffff",
-          "fontSize": 40,
-          "fontFamily": "Arial",
-          "backgroundColor": "transparent"
-        },
-        "content": "____________________",
-        "layout": {
-          "rotation": 0,
-          "size": {
-            "height": 5,
-            "width": 100
-          },
-          "layerOrder": "below-video",
-          "zIndex": 15,
+          "background": "linear-gradient(to top, #ff00ff, #ff7700)",
+          "fontSize": 26,
           "position": {
             "x": 50,
-            "y": 90
-          }
+            "y": 86
+          },
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "color": "#ffffff",
+          "padding": "8px 12px",
+          "textAlign": "center"
         }
       }
     ],
@@ -7871,25 +7171,38 @@
           "textAlign": "center",
           "fontFamily": "Brush Script MT",
           "color": "#4a4a4a",
-          "fontSize": 48,
-          "backgroundColor": "transparent"
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "polaroid-caption"
       },
       {
         "style": {
           "transform": "rotate(-45deg)",
-          "backgroundColor": "rgba(255, 255, 255, 0.4)"
+          "backgroundColor": "rgba(255, 255, 255, 0.4)",
+          "fontSize": 26,
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "color": "#ffffff",
+          "padding": "8px 12px",
+          "textAlign": "center"
         },
         "layout": {
           "position": {
-            "y": 10,
-            "x": 25
+            "x": 25,
+            "y": 10
           },
           "zIndex": 25,
           "size": {
-            "height": 5,
-            "width": 15
+            "width": 28,
+            "height": 8
           },
           "layerOrder": "above-video",
           "rotation": -15
@@ -7908,14 +7221,14 @@
     "source": "system",
     "name": "Vintage Polaroid (Mobile)",
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "width": 50,
-        "height": 60
+        "width": 46,
+        "height": 40
       },
       "pipPosition": {
         "x": 50,
-        "y": 45
+        "y": 16
       },
       "pipShadow": {
         "blur": 20,
@@ -7952,13 +7265,18 @@
           }
         },
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "fontFamily": "Playfair Display",
           "fontWeight": "700",
-          "fontSize": 72,
+          "fontSize": 36,
           "textShadow": "0px 4px 12px rgba(0,0,0,0.8)",
           "color": "#D4AF37",
-          "textAlign": "center"
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "preset-text-title",
         "content": "VOGUE",
@@ -7987,17 +7305,22 @@
           "zIndex": 20,
           "size": {
             "width": 28,
-            "height": 4
+            "height": 8
           }
         },
         "style": {
-          "fontSize": 18,
+          "fontSize": 20,
           "fontWeight": "300",
           "textShadow": "0px 2px 8px rgba(0,0,0,0.6)",
           "fontFamily": "Montserrat",
           "color": "#FFFFFF",
-          "backgroundColor": "transparent",
-          "textAlign": "center"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "textAlign": "center",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "preset-text-subtitle",
         "responsive": {
@@ -8060,18 +7383,18 @@
         }
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
-        "y": 12.5,
-        "x": 35
+        "x": 50,
+        "y": 12.5
       },
       "pipShadow": {
         "color": "rgba(212, 175, 55, 0.4)",
         "blur": 25
       },
       "pipSize": {
-        "height": 75,
-        "width": 30
+        "width": 30,
+        "height": 40
       }
     },
     "isMobile": true,
@@ -8081,15 +7404,23 @@
     "id": "vogue-monochrome_mobile",
     "source": "system",
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipSize": {
-        "width": 88,
-        "height": 88
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
       "pipPosition": {
         "x": 50,
-        "y": 55
+        "y": 16
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "createdAt": {
@@ -8107,8 +7438,8 @@
           "rotation": 0,
           "zIndex": 15,
           "size": {
-            "height": 14,
-            "width": 85
+            "width": 85,
+            "height": 14
           },
           "position": {
             "x": 50,
@@ -8118,12 +7449,17 @@
         "content": "VOGUE",
         "id": "vm-vogue",
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
           "fontFamily": "Playfair Display",
           "color": "#000000",
-          "fontSize": 112,
-          "fontWeight": "700"
+          "fontSize": 36,
+          "fontWeight": "700",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -8136,17 +7472,22 @@
           "zIndex": 15,
           "size": {
             "width": 85,
-            "height": 3
+            "height": 8
           }
         },
         "content": "SPRING COLLECTIONS",
         "style": {
           "textAlign": "center",
-          "fontSize": 13,
+          "fontSize": 20,
           "fontWeight": "300",
           "fontFamily": "Inter",
-          "backgroundColor": "transparent",
-          "color": "#666666"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "color": "#666666",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "id": "vm-spring"
       }
@@ -8183,18 +7524,23 @@
         "style": {
           "color": "#FFFFFF",
           "textAlign": "center",
-          "fontSize": 68,
-          "backgroundColor": "transparent",
-          "fontFamily": "Playfair Display"
+          "fontSize": 36,
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontFamily": "Playfair Display",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "position": {
-            "y": 7,
-            "x": 10
+            "x": 10,
+            "y": 8
           },
           "size": {
-            "height": 10,
-            "width": 80
+            "width": 80,
+            "height": 10
           },
           "rotation": 0,
           "zIndex": 15
@@ -8204,9 +7550,14 @@
         "style": {
           "textAlign": "center",
           "fontFamily": "Inter",
-          "backgroundColor": "transparent",
-          "fontSize": 14,
-          "color": "#AAAAAA"
+          "backgroundColor": "rgba(0,0,0,0.58)",
+          "fontSize": 20,
+          "color": "#AAAAAA",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         },
         "layout": {
           "rotation": 0,
@@ -8217,34 +7568,11 @@
           },
           "size": {
             "width": 80,
-            "height": 3
+            "height": 8
           }
         },
         "id": "v17-mag",
         "content": "MAGAZINE COVER"
-      },
-      {
-        "style": {
-          "textAlign": "right",
-          "backgroundColor": "transparent",
-          "fontSize": 72,
-          "color": "#FFFFFF",
-          "fontFamily": "Anton"
-        },
-        "content": "VOLUME<br>17",
-        "layout": {
-          "size": {
-            "height": 15,
-            "width": 40
-          },
-          "zIndex": 15,
-          "rotation": 0,
-          "position": {
-            "y": 12.5,
-            "x": 55
-          }
-        },
-        "id": "v17-volume"
       }
     ],
     "createdAt": {
@@ -8254,15 +7582,23 @@
     },
     "canvasAspectRatio": "9:16",
     "pip": {
-      "cameraShape": "rectangle",
+      "cameraShape": "rounded",
       "pipPosition": {
-        "x": 6,
+        "x": 50,
         "y": 11
       },
       "layoutMode": "pip",
       "pipSize": {
-        "height": 88,
-        "width": 88
+        "width": 46,
+        "height": 40
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
       }
     },
     "background": {
@@ -8279,15 +7615,23 @@
     "id": "woman-lifestyle_mobile",
     "pip": {
       "pipPosition": {
-        "y": 11,
-        "x": 6
+        "x": 50,
+        "y": 11
       },
       "pipSize": {
-        "height": 88,
-        "width": 88
+        "width": 46,
+        "height": 40
       },
       "layoutMode": "pip",
-      "cameraShape": "rectangle"
+      "cameraShape": "rounded",
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      }
     },
     "textOverlays": [
       {
@@ -8295,8 +7639,8 @@
         "layout": {
           "rotation": 0,
           "position": {
-            "y": 8,
-            "x": 10
+            "x": 10,
+            "y": 8
           },
           "zIndex": 15,
           "size": {
@@ -8306,11 +7650,16 @@
         },
         "id": "wl-beauty",
         "style": {
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "color": "#FFD700",
-          "fontSize": 86,
+          "fontSize": 36,
           "textAlign": "center",
-          "fontFamily": "Anton"
+          "fontFamily": "Anton",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       },
       {
@@ -8322,18 +7671,23 @@
             "height": 12
           },
           "position": {
-            "y": 74,
-            "x": 15
+            "x": 15,
+            "y": 74
           },
           "rotation": 0,
           "zIndex": 15
         },
         "style": {
           "color": "#FFD700",
-          "backgroundColor": "transparent",
+          "backgroundColor": "rgba(0,0,0,0.58)",
           "textAlign": "center",
-          "fontSize": 42,
-          "fontFamily": "Playfair Display"
+          "fontSize": 36,
+          "fontFamily": "Playfair Display",
+          "position": {
+            "x": 50,
+            "y": 86
+          },
+          "padding": "8px 12px"
         }
       }
     ],

@@ -5,10 +5,10 @@
     "style": {
       "fontFamily": "Barlow Condensed",
       "borderColor": "#000000",
-      "fontSize": 88,
+      "fontSize": 36,
       "shadow": true,
       "border": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "bold": true,
       "underline": false,
       "color": "#ff0000",
@@ -16,7 +16,13 @@
       "textShadow": "4px 4px 0px #000000, 8px 8px 15px rgba(0,0,0,0.6)",
       "letterSpacing": "0.06em",
       "outline": true,
-      "borderWidth": 0
+      "borderWidth": 0,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Aggressive Condensed (Mobile)",
     "thumbnail": "linear-gradient(135deg, #ff0000 0%, #8b0000 100%)",
@@ -52,7 +58,18 @@
     ],
     "name": "Anime Manga Stroke (Mobile)",
     "isMobile": true,
-    "originalDesktopId": "anime-manga-stroke"
+    "originalDesktopId": "anime-manga-stroke",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "bold-impact_mobile",
@@ -64,13 +81,19 @@
       "underline": false,
       "shadow": true,
       "italic": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "textShadow": "5px 5px 0px #000000, 10px 10px 20px rgba(0,0,0,0.5)",
       "borderColor": "#000000",
-      "fontSize": 82,
+      "fontSize": 36,
       "borderWidth": 0,
       "color": "#ffffff",
-      "border": false
+      "border": false,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "category": "headlines",
     "migratedAt": "2025-12-22T11:12:10.167Z",
@@ -111,7 +134,18 @@
     "thumbnail": "linear-gradient(135deg, #00c853 0%, #69f0ae 100%)",
     "category": "animated",
     "isMobile": true,
-    "originalDesktopId": "bounce-fun"
+    "originalDesktopId": "bounce-fun",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "burnt-paper-grunge_mobile",
@@ -142,7 +176,18 @@
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "thumbnail": "#f7e7c5",
     "isMobile": true,
-    "originalDesktopId": "burnt-paper-grunge"
+    "originalDesktopId": "burnt-paper-grunge",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "candy-jelly_mobile",
@@ -174,7 +219,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "candy-jelly"
+    "originalDesktopId": "candy-jelly",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "casual-notes_mobile",
@@ -186,17 +242,23 @@
       "shadow": true,
       "borderColor": "#000000",
       "italic": false,
-      "fontSize": 64,
+      "fontSize": 36,
       "outline": false,
       "fontFamily": "Caveat",
       "borderWidth": 0,
       "textShadow": "1px 1px 2px rgba(0,0,0,0.1)",
       "underline": false,
       "border": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "bold": false,
       "letterSpacing": "0.02em",
-      "color": "#2d3436"
+      "color": "#2d3436",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "isMobile": true,
     "originalDesktopId": "casual-notes"
@@ -227,7 +289,18 @@
     "name": "Chrome Gradient (Mobile)",
     "thumbnail": "linear-gradient(90deg, #ffffff, #b8b8b8, #1c1c1c, #b8b8b8, #ffffff)",
     "isMobile": true,
-    "originalDesktopId": "chrome-gradient"
+    "originalDesktopId": "chrome-gradient",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "chrome-liquid-metal_mobile",
@@ -259,7 +332,18 @@
     ],
     "name": "Chrome Liquid Metal (Mobile)",
     "isMobile": true,
-    "originalDesktopId": "chrome-liquid-metal"
+    "originalDesktopId": "chrome-liquid-metal",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "chrome-metal_mobile",
@@ -275,11 +359,17 @@
       "textShadow": "2px 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.3)",
       "bold": true,
       "shadow": true,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "underline": false,
       "italic": false,
-      "fontSize": 68,
-      "gradient": "linear-gradient(135deg, #bdc3c7 0%, #ecf0f1 50%, #95a5a6 100%)"
+      "fontSize": 36,
+      "gradient": "linear-gradient(135deg, #bdc3c7 0%, #ecf0f1 50%, #95a5a6 100%)",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Chrome Metal (Mobile)",
     "thumbnail": "linear-gradient(135deg, #bdc3c7 0%, #2c3e50 100%)",
@@ -318,7 +408,18 @@
     "thumbnail": "#333333",
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "isMobile": true,
-    "originalDesktopId": "cinematic-fog-title"
+    "originalDesktopId": "cinematic-fog-title",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "cinematic-title_mobile",
@@ -327,7 +428,7 @@
     "thumbnail": "linear-gradient(135deg, #000000 0%, #434343 100%)",
     "category": "cinematic",
     "style": {
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "outline": false,
       "letterSpacing": "0.1em",
       "fontFamily": "Cinzel",
@@ -338,9 +439,15 @@
       "color": "#FFFFFF",
       "borderColor": "#000000",
       "bold": true,
-      "fontSize": 78,
+      "fontSize": 36,
       "border": false,
-      "textShadow": "0 10px 30px rgba(0,0,0,0.9), 0 0 60px rgba(255,255,255,0.3)"
+      "textShadow": "0 10px 30px rgba(0,0,0,0.9), 0 0 60px rgba(255,255,255,0.3)",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "isMobile": true,
     "originalDesktopId": "cinematic-title"
@@ -350,7 +457,7 @@
     "name": "Classic Newspaper (Mobile)",
     "style": {
       "letterSpacing": "0.02em",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "outline": false,
       "textShadow": "none",
       "fontFamily": "Merriweather",
@@ -361,8 +468,14 @@
       "borderWidth": 0,
       "borderColor": "#000000",
       "underline": true,
-      "fontSize": 52,
-      "bold": true
+      "fontSize": 36,
+      "bold": true,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "category": "vintage",
     "migratedAt": "2025-12-22T11:12:10.167Z",
@@ -397,12 +510,23 @@
     "name": "Cloud Puff Soft Text (Mobile)",
     "category": "fun",
     "isMobile": true,
-    "originalDesktopId": "cloud-puff"
+    "originalDesktopId": "cloud-puff",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "comic-bang_mobile",
     "style": {
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "fontFamily": "Bangers",
       "letterSpacing": "0.05em",
       "underline": false,
@@ -413,9 +537,15 @@
       "borderWidth": 5,
       "bold": false,
       "borderColor": "#000000",
-      "fontSize": 76,
+      "fontSize": 36,
       "textShadow": "4px 4px 0px #ff0000, 8px 8px 0px #000000",
-      "outline": true
+      "outline": true,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "thumbnail": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
     "name": "Comic Bang (Mobile)",
@@ -456,7 +586,18 @@
     "thumbnail": "linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)",
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "isMobile": true,
-    "originalDesktopId": "confetti-party"
+    "originalDesktopId": "confetti-party",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "crystal-diamond_mobile",
@@ -486,7 +627,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "crystal-diamond"
+    "originalDesktopId": "crystal-diamond",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "cyberpunk-hard-glow_mobile",
@@ -519,7 +671,18 @@
     "name": "Cyberpunk Hard Glow (Mobile)",
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "isMobile": true,
-    "originalDesktopId": "cyberpunk-hard-glow"
+    "originalDesktopId": "cyberpunk-hard-glow",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "digital-display_mobile",
@@ -529,7 +692,7 @@
     "category": "futuristic",
     "style": {
       "outline": false,
-      "fontSize": 70,
+      "fontSize": 36,
       "italic": false,
       "textShadow": "0 0 10px #00ff00, 0 0 20px #00ff00",
       "padding": "15px 35px",
@@ -542,7 +705,12 @@
       "border": true,
       "underline": false,
       "letterSpacing": "0.12em",
-      "color": "#00ff00"
+      "color": "#00ff00",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "textAlign": "center"
     },
     "isMobile": true,
     "originalDesktopId": "digital-display"
@@ -563,9 +731,15 @@
       "fontFamily": "Pacifico",
       "outline": false,
       "textShadow": "2px 2px 8px rgba(255,107,157,0.4), 0 0 20px rgba(255,107,157,0.2)",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "border": false,
-      "fontSize": 58
+      "fontSize": 36,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "thumbnail": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
     "migratedAt": "2025-12-22T11:12:10.167Z",
@@ -602,12 +776,23 @@
     ],
     "category": "animated",
     "isMobile": true,
-    "originalDesktopId": "electric-shock"
+    "originalDesktopId": "electric-shock",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "elegant-serif-modern_mobile",
     "style": {
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "fontFamily": "Libre Baskerville",
       "letterSpacing": "0.03em",
       "underline": false,
@@ -619,8 +804,14 @@
       "bold": true,
       "borderColor": "#000000",
       "textShadow": "1px 1px 3px rgba(0,0,0,0.15)",
-      "fontSize": 54,
-      "outline": false
+      "fontSize": 36,
+      "outline": false,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "thumbnail": "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
     "category": "elegant",
@@ -659,7 +850,18 @@
     ],
     "thumbnail": "linear-gradient(135deg, #ff4500 0%, #ff8c00 50%, #ffd700 100%)",
     "isMobile": true,
-    "originalDesktopId": "fire-blaze"
+    "originalDesktopId": "fire-blaze",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "fire-gradient_mobile",
@@ -671,10 +873,10 @@
       "textShadow": "0 0 20px rgba(255,127,0,0.8), 3px 3px 6px rgba(0,0,0,0.5)",
       "underline": false,
       "outline": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "letterSpacing": "0.05em",
       "fontFamily": "Rajdhani",
-      "fontSize": 72,
+      "fontSize": 36,
       "border": false,
       "italic": false,
       "gradient": "linear-gradient(135deg, #ff0000 0%, #ff7f00 50%, #ffff00 100%)",
@@ -682,7 +884,13 @@
       "borderWidth": 0,
       "color": "#ff0000",
       "borderColor": "#000000",
-      "bold": true
+      "bold": true,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "isMobile": true,
     "originalDesktopId": "fire-gradient"
@@ -717,7 +925,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "flame-inferno"
+    "originalDesktopId": "flame-inferno",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "float-dreamy_mobile",
@@ -751,7 +970,18 @@
     "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
     "category": "animated",
     "isMobile": true,
-    "originalDesktopId": "float-dreamy"
+    "originalDesktopId": "float-dreamy",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "futuristic-tech_mobile",
@@ -759,7 +989,7 @@
     "migratedAt": "2025-12-22T11:12:10.167Z",
     "style": {
       "letterSpacing": "0.08em",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "outline": false,
       "textShadow": "0 0 20px #00d4ff, 0 0 40px #00d4ff, 2px 2px 4px rgba(0,0,0,0.8)",
       "italic": false,
@@ -770,8 +1000,14 @@
       "borderWidth": 0,
       "borderColor": "#000000",
       "underline": false,
-      "fontSize": 68,
-      "bold": true
+      "fontSize": 36,
+      "bold": true,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Futuristic Tech (Mobile)",
     "thumbnail": "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
@@ -810,7 +1046,18 @@
     },
     "category": "animated",
     "isMobile": true,
-    "originalDesktopId": "glitch-cyber"
+    "originalDesktopId": "glitch-cyber",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "glitch-digital_mobile",
@@ -818,8 +1065,8 @@
     "category": "modern",
     "style": {
       "textShadow": "2px 2px 0px #ff0080, -2px -2px 0px #00ffff",
-      "fontSize": 72,
-      "backgroundColor": "transparent",
+      "fontSize": 36,
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "italic": false,
       "bold": true,
       "borderColor": "#000000",
@@ -830,7 +1077,13 @@
       "border": false,
       "letterSpacing": "0.1em",
       "borderWidth": 0,
-      "outline": false
+      "outline": false,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "migratedAt": "2025-12-22T11:12:10.166Z",
     "thumbnail": "linear-gradient(135deg, #ff0080 0%, #7928ca 100%)",
@@ -867,7 +1120,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "glow-ethereal"
+    "originalDesktopId": "glow-ethereal",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "gold-metal-3d_mobile",
@@ -908,7 +1172,18 @@
     "name": "Gold Metal 3D  (Mobile)",
     "migratedAt": "2025-12-22T11:12:10.168Z",
     "isMobile": true,
-    "originalDesktopId": "gold-metal-3d"
+    "originalDesktopId": "gold-metal-3d",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "golden-royal-serif_mobile",
@@ -940,7 +1215,18 @@
     "category": "elegant",
     "thumbnail": "linear-gradient(135deg, #FFD700 0%, #8b6f23 100%)",
     "isMobile": true,
-    "originalDesktopId": "golden-royal-serif"
+    "originalDesktopId": "golden-royal-serif",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "gradient-sunset_mobile",
@@ -952,15 +1238,21 @@
       "bold": true,
       "fontFamily": "Poppins",
       "shadow": true,
-      "fontSize": 66,
-      "backgroundColor": "transparent",
+      "fontSize": 36,
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "outline": false,
       "color": "#ff6b6b",
       "borderColor": "#000000",
       "borderWidth": 0,
       "letterSpacing": "0.03em",
       "italic": false,
-      "gradient": "linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #ee5a6f 100%)"
+      "gradient": "linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #ee5a6f 100%)",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "migratedAt": "2025-12-22T11:12:10.166Z",
     "category": "colorful",
@@ -998,7 +1290,18 @@
     ],
     "name": "Graffiti Spray Drip (Mobile)",
     "isMobile": true,
-    "originalDesktopId": "graffiti-drip"
+    "originalDesktopId": "graffiti-drip",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "graffiti-pro_mobile",
@@ -1028,7 +1331,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "graffiti-pro"
+    "originalDesktopId": "graffiti-pro",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "graffiti-urban_mobile",
@@ -1067,7 +1381,18 @@
     "name": "Graffiti Urban (Mobile)",
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "isMobile": true,
-    "originalDesktopId": "graffiti-urban"
+    "originalDesktopId": "graffiti-urban",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "handwritten-script_mobile",
@@ -1077,17 +1402,23 @@
       "border": false,
       "borderWidth": 0,
       "borderColor": "#000000",
-      "fontSize": 58,
+      "fontSize": 36,
       "color": "#2c3e50",
       "shadow": true,
       "letterSpacing": "0.02em",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "italic": false,
       "outline": false,
       "bold": false,
       "underline": false,
       "textShadow": "1px 1px 2px rgba(0,0,0,0.1)",
-      "fontFamily": "Dancing Script"
+      "fontFamily": "Dancing Script",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "thumbnail": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     "migratedAt": "2025-12-22T11:12:10.166Z",
@@ -1122,7 +1453,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "hologram-rainbow"
+    "originalDesktopId": "hologram-rainbow",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "ice-crystal_mobile",
@@ -1158,7 +1500,18 @@
       "type": "ice"
     },
     "isMobile": true,
-    "originalDesktopId": "ice-crystal"
+    "originalDesktopId": "ice-crystal",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "ice-glass-frost_mobile",
@@ -1190,7 +1543,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "ice-glass-frost"
+    "originalDesktopId": "ice-glass-frost",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "industrial-stencil_mobile",
@@ -1207,12 +1571,18 @@
       "borderColor": "#000000",
       "outline": true,
       "textShadow": "3px 3px 0px rgba(0,0,0,0.8)",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "bold": true,
       "borderWidth": 0,
-      "fontSize": 78,
+      "fontSize": 36,
       "color": "#ffffff",
-      "shadow": true
+      "shadow": true,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "isMobile": true,
     "originalDesktopId": "industrial-stencil"
@@ -1242,7 +1612,18 @@
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "thumbnail": "#f5f5f5",
     "isMobile": true,
-    "originalDesktopId": "ink-brush-calligraphy"
+    "originalDesktopId": "ink-brush-calligraphy",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "led-dot-matrix_mobile",
@@ -1271,7 +1652,18 @@
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "thumbnail": "#333333",
     "isMobile": true,
-    "originalDesktopId": "led-dot-matrix"
+    "originalDesktopId": "led-dot-matrix",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "luxury-gold_mobile",
@@ -1289,11 +1681,17 @@
       "textShadow": "0 2px 10px rgba(255,215,0,0.5), 0 0 30px rgba(255,215,0,0.3), 2px 2px 4px rgba(0,0,0,0.5)",
       "shadow": true,
       "color": "#ffd700",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "bold": true,
       "borderColor": "#000000",
       "border": false,
-      "fontSize": 64
+      "fontSize": 36,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "migratedAt": "2025-12-22T11:12:10.166Z",
     "isMobile": true,
@@ -1311,11 +1709,17 @@
       "bold": false,
       "borderWidth": 0,
       "border": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "underline": false,
-      "fontSize": 66,
+      "fontSize": 36,
       "textShadow": "2px 2px 4px rgba(0,0,0,0.2)",
-      "italic": false
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Luxury Serif Bold (Mobile)",
     "thumbnail": "linear-gradient(135deg, #2c3e50 0%, #3498db 100%)",
@@ -1333,14 +1737,20 @@
       "bold": true,
       "border": false,
       "shadow": true,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "underline": false,
-      "fontSize": 60,
+      "fontSize": 36,
       "italic": true,
       "fontFamily": "Cormorant Garamond",
       "outline": false,
       "color": "#1a1a1a",
-      "letterSpacing": "0.05em"
+      "letterSpacing": "0.05em",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "thumbnail": "linear-gradient(135deg, #000000 0%, #2c2c2c 100%)",
     "category": "elegant",
@@ -1364,7 +1774,18 @@
     ],
     "thumbnail": "#f0f0f0",
     "isMobile": true,
-    "originalDesktopId": "minimal-swiss"
+    "originalDesktopId": "minimal-swiss",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "neon-arcade_mobile",
@@ -1375,17 +1796,23 @@
       "shadow": false,
       "borderColor": "#000000",
       "italic": false,
-      "fontSize": 68,
+      "fontSize": 36,
       "fontFamily": "Bungee",
       "outline": false,
       "borderWidth": 0,
       "border": false,
       "underline": false,
       "textShadow": "0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 3px 3px 0px #00ffff, 6px 6px 0px rgba(0,0,0,0.5)",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "bold": false,
       "letterSpacing": "0.06em",
-      "color": "#ff00ff"
+      "color": "#ff00ff",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "thumbnail": "linear-gradient(135deg, #ff00ff 0%, #00ffff 100%)",
     "isMobile": true,
@@ -1404,10 +1831,16 @@
       "borderColor": "#000000",
       "bold": true,
       "fontFamily": "Orbitron",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "color": "#00f5ff",
-      "fontSize": 64,
-      "textShadow": "0 0 10px #00f5ff, 0 0 20px #00f5ff, 0 0 40px #00f5ff, 0 0 80px #00f5ff, 0 0 120px #ff00f5"
+      "fontSize": 36,
+      "textShadow": "0 0 10px #00f5ff, 0 0 20px #00f5ff, 0 0 40px #00f5ff, 0 0 80px #00f5ff, 0 0 120px #ff00f5",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Neon Cyberpunk (Mobile)",
     "category": "futuristic",
@@ -1446,7 +1879,18 @@
     "name": "Neon Flicker (Mobile)",
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "isMobile": true,
-    "originalDesktopId": "neon-flicker"
+    "originalDesktopId": "neon-flicker",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "neon-glow-pro_mobile",
@@ -1485,7 +1929,18 @@
     "migratedAt": "2025-12-22T11:12:10.168Z",
     "name": "Neon Glow Pro  (Mobile)",
     "isMobile": true,
-    "originalDesktopId": "neon-glow-pro"
+    "originalDesktopId": "neon-glow-pro",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "neon-tube-glow-2_mobile",
@@ -1524,7 +1979,18 @@
     ],
     "migratedAt": "2025-12-22T11:12:10.168Z",
     "isMobile": true,
-    "originalDesktopId": "neon-tube-glow-2"
+    "originalDesktopId": "neon-tube-glow-2",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "ocean-wave_mobile",
@@ -1532,7 +1998,7 @@
     "thumbnail": "linear-gradient(135deg, #2e3192 0%, #1bffff 100%)",
     "style": {
       "shadow": true,
-      "fontSize": 64,
+      "fontSize": 36,
       "underline": false,
       "outline": false,
       "gradient": "linear-gradient(135deg, #2e3192 0%, #1bffff 100%)",
@@ -1544,8 +2010,14 @@
       "borderColor": "#000000",
       "textShadow": "3px 3px 10px rgba(0,0,0,0.3)",
       "color": "#2e3192",
-      "backgroundColor": "transparent",
-      "italic": false
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "migratedAt": "2025-12-22T11:12:10.167Z",
     "name": "Ocean Wave (Mobile)",
@@ -1580,7 +2052,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "paintbrush-script"
+    "originalDesktopId": "paintbrush-script",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "pulse-beat_mobile",
@@ -1612,7 +2095,18 @@
       "type": "pulse"
     },
     "isMobile": true,
-    "originalDesktopId": "pulse-beat"
+    "originalDesktopId": "pulse-beat",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "rainbow-outline-neon_mobile",
@@ -1639,7 +2133,18 @@
     ],
     "name": "Rainbow Outline Neon (Mobile)",
     "isMobile": true,
-    "originalDesktopId": "rainbow-outline-neon"
+    "originalDesktopId": "rainbow-outline-neon",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "rainbow-pride_mobile",
@@ -1648,10 +2153,10 @@
     "thumbnail": "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
     "style": {
       "borderColor": "#000000",
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "fontFamily": "Righteous",
       "italic": false,
-      "fontSize": 70,
+      "fontSize": 36,
       "letterSpacing": "0.05em",
       "bold": false,
       "borderWidth": 0,
@@ -1661,7 +2166,13 @@
       "shadow": true,
       "underline": false,
       "border": false,
-      "gradient": "linear-gradient(90deg, #ff0000 0%, #ff7f00 16.67%, #ffff00 33.33%, #00ff00 50%, #0000ff 66.67%, #4b0082 83.33%, #9400d3 100%)"
+      "gradient": "linear-gradient(90deg, #ff0000 0%, #ff7f00 16.67%, #ffff00 33.33%, #00ff00 50%, #0000ff 66.67%, #4b0082 83.33%, #9400d3 100%)",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Rainbow Pride (Mobile)",
     "isMobile": true,
@@ -1692,14 +2203,25 @@
     "category": "animated",
     "thumbnail": "linear-gradient(90deg, #ff0000 0%, #ff7f00 14%, #ffff00 28%, #00ff00 42%, #0000ff 57%, #4b0082 71%, #9400d3 85%, #ff0000 100%)",
     "isMobile": true,
-    "originalDesktopId": "rainbow-wave"
+    "originalDesktopId": "rainbow-wave",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "retro-gaming_mobile",
     "name": "Retro Gaming (Mobile)",
     "style": {
       "textShadow": "4px 4px 0px rgba(0,0,0,0.5)",
-      "fontSize": 42,
+      "fontSize": 36,
       "border": true,
       "letterSpacing": "0.1em",
       "underline": false,
@@ -1712,7 +2234,12 @@
       "outline": false,
       "bold": false,
       "color": "#00ff00",
-      "borderColor": "#00ff00"
+      "borderColor": "#00ff00",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "textAlign": "center"
     },
     "thumbnail": "linear-gradient(135deg, #00ff00 0%, #ffff00 100%)",
     "migratedAt": "2025-12-22T11:12:10.166Z",
@@ -1747,7 +2274,18 @@
       }
     ],
     "isMobile": true,
-    "originalDesktopId": "retro-vaporwave"
+    "originalDesktopId": "retro-vaporwave",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "retro-vhs_mobile",
@@ -1782,7 +2320,18 @@
     "name": "Retro VHS (Mobile)",
     "migratedAt": "2025-12-22T11:12:10.168Z",
     "isMobile": true,
-    "originalDesktopId": "retro-vhs"
+    "originalDesktopId": "retro-vhs",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "shake-impact_mobile",
@@ -1816,7 +2365,18 @@
     "name": "Shake Impact (Mobile)",
     "thumbnail": "linear-gradient(135deg, #ff1744 0%, #d50000 100%)",
     "isMobile": true,
-    "originalDesktopId": "shake-impact"
+    "originalDesktopId": "shake-impact",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "sketch-marker_mobile",
@@ -1831,14 +2391,20 @@
       "borderWidth": 0,
       "border": false,
       "fontFamily": "Permanent Marker",
-      "fontSize": 62,
-      "backgroundColor": "transparent",
+      "fontSize": 36,
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "underline": false,
       "borderColor": "#000000",
       "shadow": true,
       "textShadow": "2px 2px 4px rgba(0,0,0,0.2)",
       "letterSpacing": "0.04em",
-      "color": "#2d3436"
+      "color": "#2d3436",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "isMobile": true,
     "originalDesktopId": "sketch-marker"
@@ -1873,7 +2439,18 @@
     ],
     "migratedAt": "2025-12-22T11:12:10.169Z",
     "isMobile": true,
-    "originalDesktopId": "snow-frost"
+    "originalDesktopId": "snow-frost",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "soft-bubble-pop_mobile",
@@ -1905,7 +2482,18 @@
     ],
     "thumbnail": "#ffb3d9",
     "isMobile": true,
-    "originalDesktopId": "soft-bubble-pop"
+    "originalDesktopId": "soft-bubble-pop",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   },
   {
     "id": "soft-pastel_mobile",
@@ -1915,16 +2503,22 @@
       "bold": false,
       "letterSpacing": "0.04em",
       "borderColor": "#000000",
-      "fontSize": 56,
+      "fontSize": 36,
       "textShadow": "2px 2px 8px rgba(255,154,158,0.3)",
       "borderWidth": 0,
       "shadow": true,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "underline": false,
       "fontFamily": "Quicksand",
       "italic": false,
       "color": "#ff9a9e",
-      "gradient": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%)"
+      "gradient": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%)",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Soft Pastel (Mobile)",
     "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
@@ -1937,7 +2531,7 @@
     "id": "sports-arena_mobile",
     "thumbnail": "linear-gradient(135deg, #f12711 0%, #f5af19 100%)",
     "style": {
-      "fontSize": 76,
+      "fontSize": 36,
       "shadow": true,
       "letterSpacing": "0.08em",
       "borderWidth": 0,
@@ -1947,10 +2541,16 @@
       "outline": true,
       "borderColor": "#000000",
       "bold": false,
-      "backgroundColor": "transparent",
+      "backgroundColor": "rgba(0,0,0,0.58)",
       "textShadow": "5px 5px 0px #000000, 10px 10px 30px rgba(241,39,17,0.6)",
       "fontFamily": "Russo One",
-      "border": false
+      "border": false,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Sports Arena (Mobile)",
     "migratedAt": "2025-12-22T11:12:10.167Z",
@@ -1966,7 +2566,7 @@
       "italic": false,
       "backgroundColor": "#1a1a1a",
       "underline": false,
-      "fontSize": 74,
+      "fontSize": 36,
       "borderColor": "#ff0000",
       "fontFamily": "Bebas Neue",
       "letterSpacing": "0.12em",
@@ -1975,7 +2575,12 @@
       "shadow": false,
       "outline": false,
       "bold": false,
-      "textShadow": "3px 3px 0px #ff0000, 6px 6px 0px rgba(0,0,0,0.3)"
+      "textShadow": "3px 3px 0px #ff0000, 6px 6px 0px rgba(0,0,0,0.3)",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "textAlign": "center"
     },
     "name": "Urban Street (Mobile)",
     "migratedAt": "2025-12-22T11:12:10.167Z",
@@ -1993,7 +2598,7 @@
     "style": {
       "outline": false,
       "shadow": true,
-      "fontSize": 68,
+      "fontSize": 36,
       "italic": false,
       "underline": false,
       "bold": false,
@@ -2005,7 +2610,12 @@
       "borderWidth": 6,
       "borderColor": "#f4e4c1",
       "backgroundColor": "#8b0000",
-      "fontFamily": "Alfa Slab One"
+      "fontFamily": "Alfa Slab One",
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "textAlign": "center"
     },
     "isMobile": true,
     "originalDesktopId": "vintage-stamp"
@@ -2040,6 +2650,17 @@
     },
     "thumbnail": "linear-gradient(135deg, #00bfff 0%, #1e90ff 50%, #0099cc 100%)",
     "isMobile": true,
-    "originalDesktopId": "water-flow"
+    "originalDesktopId": "water-flow",
+    "style": {
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 86
+      },
+      "backgroundColor": "rgba(0,0,0,0.58)",
+      "color": "#ffffff",
+      "padding": "8px 12px",
+      "textAlign": "center"
+    }
   }
 ]

@@ -14,8 +14,8 @@
       "color": "#00F5FF",
       "animation": "slide-up",
       "position": {
-        "y": 90,
-        "x": 50
+        "x": 50,
+        "y": 90
       },
       "rotation": 0,
       "bold": true,
@@ -24,7 +24,9 @@
       "borderColor": "#00F5FF",
       "italic": false,
       "backgroundColor": "rgba(30, 30, 30, 0.9)",
-      "shadow": true
+      "shadow": true,
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -52,8 +54,8 @@
       "italic": false,
       "shadow": true,
       "position": {
-        "y": 85,
-        "x": 50
+        "x": 50,
+        "y": 85
       },
       "borderWidth": 2,
       "shape": "rounded",
@@ -63,7 +65,9 @@
       "borderColor": "#FFFFFF",
       "fontFamily": "Inter",
       "border": false,
-      "fontSize": 26
+      "fontSize": 26,
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "name": "Minimal Stroke (Mobile)",
     "isMobile": true,
@@ -93,7 +97,9 @@
       "shape": "rounded",
       "animation": "fade",
       "backgroundColor": "rgba(26, 26, 26, 0.8)",
-      "border": false
+      "border": false,
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -133,7 +139,9 @@
       "borderWidth": 2,
       "borderColor": "#FFFFFF",
       "outline": false,
-      "italic": false
+      "italic": false,
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "source": "system",
     "isMobile": true,
@@ -168,7 +176,9 @@
       "border": false,
       "bold": false,
       "shadow": true,
-      "borderColor": "#f5e5c5"
+      "borderColor": "#f5e5c5",
+      "padding": "8px 12px",
+      "textAlign": "center"
     },
     "description": "A classic, elegant serif font for a cinematic feel.",
     "isMobile": true,

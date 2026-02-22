@@ -57,7 +57,7 @@
     "description": "Floating bubble style with centered avatar",
     "preview": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     "source": "system",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "isMobile": true,
     "originalDesktopId": "creator-bubble"
   },
@@ -123,7 +123,7 @@
     "showTagline": true,
     "preview": "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)",
     "theme": "glassmorphism",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "name": "Crystal Clear (Mobile)",
     "isMobile": true,
     "originalDesktopId": "crystal-clear"
@@ -131,7 +131,7 @@
   {
     "id": "cyber-grid_mobile",
     "source": "system",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "styles": {
       "name": {
         "color": "#39ff14",
@@ -202,7 +202,7 @@
     "description": "Premium dark theme with gold accents",
     "preview": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
     "name": "Dark Mode Elite (Mobile)",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "theme": "dark",
     "styles": {
       "tagline": {
@@ -321,7 +321,7 @@
   },
   {
     "id": "electric-pulse_mobile",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "source": "system",
     "styles": {
       "container": {
@@ -391,7 +391,7 @@
     "id": "gaming-rgb_mobile",
     "preview": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
     "theme": "dark",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "showTagline": true,
     "showAvatar": true,
     "layout": "horizontal",
@@ -508,7 +508,7 @@
     "preview": "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)",
     "source": "system",
     "layout": "horizontal",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "name": "Glassmorphism (Mobile)",
     "description": "Frosted glass effect with blur",
     "isMobile": true,
@@ -525,7 +525,7 @@
     "showAvatar": true,
     "source": "system",
     "preview": "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "styles": {
       "container": {
         "boxShadow": "0 10px 40px rgba(240, 147, 251, 0.3)",
@@ -629,7 +629,7 @@
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
-    "maxLinks": 5,
+    "maxLinks": 4,
     "theme": "neon",
     "isMobile": true,
     "originalDesktopId": "hologram-wave"
@@ -639,7 +639,7 @@
     "description": "Simple and elegant with subtle shadows",
     "showAvatar": true,
     "theme": "light",
-    "maxLinks": 6,
+    "maxLinks": 4,
     "showTagline": true,
     "preview": "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)",
     "name": "Minimal Clean (Mobile)",
@@ -702,7 +702,7 @@
       "nanoseconds": 989000000
     },
     "source": "system",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "layout": "horizontal",
     "theme": "neon",
     "showAvatar": true,
@@ -764,7 +764,7 @@
     "id": "neon-glow_mobile",
     "description": "Cyberpunk style with glowing neon borders",
     "layout": "horizontal",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "source": "system",
     "showTagline": true,
     "showAvatar": true,

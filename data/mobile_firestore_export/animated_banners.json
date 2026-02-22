@@ -52,7 +52,7 @@
       "ambient",
       "meditation"
     ],
-    "maxLinks": 5,
+    "maxLinks": 4,
     "layers": {
       "midground": "aurora-bands",
       "foreground": "star-dust",
@@ -79,7 +79,7 @@
   {
     "id": "cosmic-swarm_mobile",
     "showAvatar": true,
-    "maxLinks": 5,
+    "maxLinks": 4,
     "layers": {
       "background": "deep-space",
       "midground": "nebula-clouds",
@@ -232,7 +232,7 @@
       "ruby"
     ],
     "description": "Rotating crystal with light refraction and rainbow dispersion",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "isMobile": true,
     "originalDesktopId": "crystal-prism"
   },
@@ -287,7 +287,7 @@
       "green-purple",
       "blue-orange"
     ],
-    "maxLinks": 5,
+    "maxLinks": 4,
     "description": "Pulsing neon grid with data streams and circuit patterns",
     "showAvatar": true,
     "animatedBehaviors": [
@@ -491,7 +491,7 @@
     },
     "source": "system",
     "showAvatar": true,
-    "maxLinks": 5,
+    "maxLinks": 4,
     "preview": "linear-gradient(180deg, #0a1a0a 0%, #1a3320 50%, #0a1510 100%)",
     "colorVariants": [
       "green-gold",
@@ -602,7 +602,7 @@
         "name": "metallic-sheen"
       }
     ],
-    "maxLinks": 5,
+    "maxLinks": 4,
     "particleSettings": {
       "size": 0.015,
       "speed": 0.1,
@@ -741,7 +741,7 @@
       "simplex-noise"
     ],
     "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "colorVariants": [
       "black-gold",
       "indigo-coral",
@@ -779,7 +779,7 @@
       "music",
       "premium-content"
     ],
-    "maxLinks": 5,
+    "maxLinks": 4,
     "layout": "horizontal",
     "name": "Liquid Chrome (Mobile)",
     "shaderEffects": [
@@ -874,7 +874,7 @@
       "midground": "nebula-layers",
       "background": "deep-space"
     },
-    "maxLinks": 5,
+    "maxLinks": 4,
     "showAvatar": true,
     "theme": "cosmic",
     "layout": "horizontal",
@@ -956,7 +956,7 @@
         "name": "rain-distortion"
       }
     ],
-    "maxLinks": 5,
+    "maxLinks": 4,
     "showAvatar": true,
     "colorVariants": [
       "blue-pink",
@@ -1018,7 +1018,7 @@
       "background": "cyber-grid",
       "midground": "rotating-rings"
     },
-    "maxLinks": 5,
+    "maxLinks": 4,
     "motionSystem": {
       "objects3D": [
         "torus-ring-large",
@@ -1103,7 +1103,7 @@
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "maxLinks": 5,
+    "maxLinks": 4,
     "description": "Deep underwater scene with caustic light and bubbles",
     "preview": "linear-gradient(180deg, #001a33 0%, #002244 50%, #001122 100%)",
     "colorVariants": [
@@ -1121,7 +1121,7 @@
       "blue-flame",
       "green-fire"
     ],
-    "maxLinks": 5,
+    "maxLinks": 4,
     "layers": {
       "foreground": "ember-particles",
       "midground": "flame-core",
@@ -1221,7 +1221,7 @@
     "showTagline": true,
     "source": "system",
     "name": "Retro Wave (Mobile)",
-    "maxLinks": 5,
+    "maxLinks": 4,
     "technologiesUsed": [
       "framer-motion",
       "gsap",
@@ -1316,7 +1316,7 @@
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "maxLinks": 5,
+    "maxLinks": 4,
     "isMobile": true,
     "originalDesktopId": "sakura-petals"
   },

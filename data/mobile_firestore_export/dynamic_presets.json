@@ -10,7 +10,24 @@
       "nanoseconds": 472000000
     },
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "canvasLayout": {
       "sections": [
@@ -54,7 +71,24 @@
     ],
     "textOverlays": [],
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -111,25 +145,60 @@
           "id": "item-1",
           "content": {
             "type": "camera"
+          },
+          "style": {
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "52%"
           }
         },
         {
           "id": "item-2",
           "content": {
             "type": "empty"
+          },
+          "style": {
+            "top": "52%",
+            "left": "0%",
+            "width": "50%",
+            "height": "48%"
           }
         },
         {
           "content": {
             "type": "empty"
           },
-          "id": "item-3"
+          "id": "item-3",
+          "style": {
+            "top": "52%",
+            "left": "50%",
+            "width": "50%",
+            "height": "48%"
+          }
         }
       ]
     },
     "textOverlays": [],
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "isMobile": true,
     "originalDesktopId": "fashion-horizontal-scroll"
@@ -143,13 +212,25 @@
           "content": {
             "type": "camera"
           },
-          "id": "layer-back"
+          "id": "layer-back",
+          "style": {
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "58%"
+          }
         },
         {
           "content": {
             "type": "empty"
           },
-          "id": "layer-front"
+          "id": "layer-front",
+          "style": {
+            "top": "58%",
+            "left": "0%",
+            "width": "100%",
+            "height": "42%"
+          }
         }
       ],
       "templateId": "layered-parallax"
@@ -171,7 +252,24 @@
       "image"
     ],
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "name": "Layered Parallax (Mobile)",
     "background": {
@@ -184,7 +282,24 @@
   {
     "id": "kinetic-infinite-grid_mobile",
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "canvasAspectRatio": "16:9",
     "effects": {
@@ -214,25 +329,37 @@
           "id": "grid-1",
           "content": {
             "type": "camera"
+          },
+          "style": {
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "52%"
           }
         },
         {
           "content": {
             "type": "empty"
           },
-          "id": "grid-2"
+          "id": "grid-2",
+          "style": {
+            "top": "52%",
+            "left": "0%",
+            "width": "50%",
+            "height": "48%"
+          }
         },
         {
           "content": {
             "type": "empty"
           },
-          "id": "grid-3"
-        },
-        {
-          "content": {
-            "type": "empty"
-          },
-          "id": "grid-4"
+          "id": "grid-3",
+          "style": {
+            "top": "52%",
+            "left": "50%",
+            "width": "50%",
+            "height": "48%"
+          }
         }
       ],
       "templateId": "infinite-grid"
@@ -249,7 +376,24 @@
       "modern"
     ],
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "canvasAspectRatio": "16:9",
     "background": {
@@ -317,7 +461,24 @@
       "backgroundEffect": "none"
     },
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "isMobile": true,
     "originalDesktopId": "kinetic-stencil-v1"
@@ -342,7 +503,24 @@
       "nanoseconds": 472000000
     },
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "source": "system",
     "background": {
@@ -356,18 +534,36 @@
           "id": "hero",
           "content": {
             "type": "camera"
+          },
+          "style": {
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "52%"
           }
         },
         {
           "id": "grid-1",
           "content": {
             "type": "empty"
+          },
+          "style": {
+            "top": "52%",
+            "left": "0%",
+            "width": "50%",
+            "height": "48%"
           }
         },
         {
           "id": "grid-2",
           "content": {
             "type": "empty"
+          },
+          "style": {
+            "top": "52%",
+            "left": "50%",
+            "width": "50%",
+            "height": "48%"
           }
         }
       ],
@@ -386,24 +582,36 @@
           "id": "circle-1",
           "content": {
             "type": "camera"
+          },
+          "style": {
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "52%"
           }
         },
         {
           "content": {
             "type": "empty"
           },
-          "id": "circle-2"
+          "id": "circle-2",
+          "style": {
+            "top": "52%",
+            "left": "0%",
+            "width": "50%",
+            "height": "48%"
+          }
         },
         {
           "id": "circle-3",
           "content": {
             "type": "empty"
-          }
-        },
-        {
-          "id": "circle-4",
-          "content": {
-            "type": "empty"
+          },
+          "style": {
+            "top": "52%",
+            "left": "50%",
+            "width": "50%",
+            "height": "48%"
           }
         }
       ]
@@ -425,7 +633,24 @@
       "experimental"
     ],
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "name": "Circular Gallery (Mobile)",
     "background": {
@@ -446,7 +671,24 @@
       "videoFilter": "none"
     },
     "pip": {
-      "layoutMode": "hidden"
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 28
+      },
+      "pipPosition": {
+        "x": 62,
+        "y": 6
+      },
+      "pipBorder": {
+        "color": "#ffffff",
+        "width": 1.2
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.35)",
+        "blur": 18
+      },
+      "cameraShape": "rounded"
     },
     "name": "Snap Stories (Mobile)",
     "canvasAspectRatio": "9:16",
@@ -456,18 +698,36 @@
           "content": {
             "type": "camera"
           },
-          "id": "snap-1"
+          "id": "snap-1",
+          "style": {
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "52%"
+          }
         },
         {
           "id": "snap-2",
           "content": {
             "type": "empty"
+          },
+          "style": {
+            "top": "52%",
+            "left": "0%",
+            "width": "50%",
+            "height": "48%"
           }
         },
         {
           "id": "snap-3",
           "content": {
             "type": "empty"
+          },
+          "style": {
+            "top": "52%",
+            "left": "50%",
+            "width": "50%",
+            "height": "48%"
           }
         }
       ],
