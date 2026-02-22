@@ -15,8 +15,14 @@ import {
 } from "firebase/firestore"; // --- ADDED: Import firestore functions
 import { toast } from "sonner"; // --- ADDED: Import toast
 import { generateId } from "@/shared/lib/id";
+import mobileCanvasPresetsData from "../../../../data/mobile_firestore_export/canvas_presets.json";
+import mobileDynamicPresetsData from "../../../../data/mobile_firestore_export/dynamic_presets.json";
 
-export const useCanvasPresets = () => {
+interface UseCanvasPresetsOptions {
+  mobileOnly?: boolean;
+}
+
+export const useCanvasPresets = ({ mobileOnly = false }: UseCanvasPresetsOptions = {}) => {
   const [customPresets, setCustomPresets] = useLocalStorage<CanvasPreset[]>(
     "custom-canvas-presets",
     []
@@ -53,20 +59,33 @@ export const useCanvasPresets = () => {
   useEffect(() => {
     const q1 = query(collection(db, "canvas_presets"), orderBy("createdAt", "desc"));
     const u1 = onSnapshot(q1, (snap) => {
-      setStaticSystemPresets(snap.docs.map(d => ({ id: d.id, ...d.data() } as CanvasPreset)));
+      const docs = snap.docs.map(d => ({ id: d.id, ...d.data() } as CanvasPreset & { isMobile?: boolean }));
+      const filtered = mobileOnly ? docs.filter((preset) => (preset as any).isMobile === true) : docs;
+      setStaticSystemPresets(filtered);
     });
 
     const q2 = query(collection(db, "dynamic_presets"), orderBy("createdAt", "desc"));
     const u2 = onSnapshot(q2, (snap) => {
-      setDynamicSystemPresets(snap.docs.map(d => ({ id: d.id, ...d.data() } as CanvasPreset)));
+      const docs = snap.docs.map(d => ({ id: d.id, ...d.data() } as CanvasPreset & { isMobile?: boolean }));
+      const filtered = mobileOnly ? docs.filter((preset) => (preset as any).isMobile === true) : docs;
+      setDynamicSystemPresets(filtered);
     });
 
     setLoading(false);
     return () => { u1(); u2(); };
-  }, []);
+  }, [mobileOnly]);
 
   // Combine them
-  const allSystemPresets = [...dynamicSystemPresets, ...staticSystemPresets];
+  const fallbackMobilePresets = [
+    ...(mobileDynamicPresetsData as CanvasPreset[]),
+    ...(mobileCanvasPresetsData as CanvasPreset[]),
+  ];
+
+  const allSystemPresets = mobileOnly
+    ? ([...dynamicSystemPresets, ...staticSystemPresets].length > 0
+      ? [...dynamicSystemPresets, ...staticSystemPresets]
+      : fallbackMobilePresets)
+    : [...dynamicSystemPresets, ...staticSystemPresets];
 
 
   const saveCanvasPreset = useCallback(

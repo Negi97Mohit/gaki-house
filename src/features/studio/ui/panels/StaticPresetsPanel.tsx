@@ -11,6 +11,7 @@ interface StaticPresetsPanelProps {
   // NEW: Optional prop to identify which preset is active
   activePresetId?: string;
   isHorizontal?: boolean;
+  mobileOnly?: boolean;
 }
 
 export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
@@ -18,8 +19,9 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
   currentStyle,
   activePresetId,
   isHorizontal = false,
+  mobileOnly = false,
 }) => {
-  const { captionPresets: CAPTION_PRESETS } = useCaptionPresets();
+  const { captionPresets: CAPTION_PRESETS } = useCaptionPresets({ mobileOnly });
   // NEW: Refs for scroll-to functionality
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 

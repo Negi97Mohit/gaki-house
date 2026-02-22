@@ -38,6 +38,7 @@ interface CanvasDesignsPanelProps {
   onShareCanvasPreset?: (preset: CanvasPreset, authorName?: string) => void;
   onUnshareCanvasPreset?: (preset: CanvasPreset) => void;
   isHorizontal?: boolean;
+  mobileOnly?: boolean;
 }
 
 // --- EXACT PREVIEW RENDERER (Memoized) ---
@@ -357,6 +358,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
   onShareCanvasPreset,
   onUnshareCanvasPreset,
   isHorizontal = false,
+  mobileOnly = false,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [savePresetName, setSavePresetName] = useState("");
@@ -367,7 +369,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     activePresetId || null
   );
 
-  const { systemPresets: CANVAS_PRESETS } = useCanvasPresets();
+  const { systemPresets: CANVAS_PRESETS } = useCanvasPresets({ mobileOnly });
 
   // Sync local state with parent prop
   useEffect(() => {

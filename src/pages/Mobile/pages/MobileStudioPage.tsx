@@ -1,10 +1,9 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Camera, RefreshCcw, Mic, MicOff, VideoOff, X, Radio,
-  Sparkles, Type, Palette, Settings2, Zap, Share2,
-  ChevronUp, Eye, EyeOff, Music, Image as ImageIcon,
-  LayoutGrid, Wand2, MessageSquare, Circle
+  Sparkles, Type, Palette, Settings2, Share2,
+  LayoutGrid
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
@@ -13,31 +12,12 @@ import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
 import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
-import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
-import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
-import { useCaptionPresets } from "@/hooks/useCaptionPresets";
 import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
 
 // ─── Tool Category Type ────────────────────────────────────────────
 type ToolCategory = "none" | "captions" | "effects" | "filters" | "stream" | "layout";
 
-// ─── Caption Animation Previews ────────────────────────────────────
-const CAPTION_ANIMATION_PREVIEWS = DYNAMIC_STYLE_OPTIONS.map(s => ({
-  id: s.id,
-  label: s.name,
-}));
-
-// ─── Quick Filters ─────────────────────────────────────────────────
-const QUICK_FILTERS = [
-  { id: "none", label: "Normal", emoji: "☀️" },
-  { id: "grayscale", label: "B&W", emoji: "🖤" },
-  { id: "sepia", label: "Warm", emoji: "🌅" },
-  { id: "vintage", label: "Vintage", emoji: "📷" },
-  { id: "cool", label: "Cool", emoji: "❄️" },
-  { id: "vivid", label: "Vivid", emoji: "🌈" },
-  { id: "noir", label: "Noir", emoji: "🎬" },
-  { id: "dreamy", label: "Dreamy", emoji: "✨" },
-];
+type DrawerTab = "designs" | "captions" | "camera";
 
 export const MobileStudioPage: React.FC = () => {
   const navigate = useNavigate();
@@ -45,20 +25,22 @@ export const MobileStudioPage: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerTab, setDrawerTab] = useState<DrawerTab>("designs");
   const [showStreamConfig, setShowStreamConfig] = useState(false);
-  const [selectedCaptionAnimation, setSelectedCaptionAnimation] = useState("none");
 
   // Global Store
   const isAudioOn = useMediaStore((s) => s.isAudioOn);
   const setAudioOn = useMediaStore((s) => s.setAudioOn);
   const isVideoOn = useMediaStore((s) => s.isVideoOn);
   const setVideoOn = useMediaStore((s) => s.setVideoOn);
+  const setCaptionStyle = useSceneStore((s) => s.setCaptionStyle);
+  const setDynamicStyle = useSceneStore((s) => s.setDynamicStyle);
+  const setVideoFilter = useSceneStore((s) => s.setVideoFilter);
+  const setBackgroundEffect = useSceneStore((s) => s.setBackgroundEffect);
 
   const { destinations } = useStreamStore(useShallow((s) => ({
     destinations: s.destinations,
   })));
-
-  const { captionPresets } = useCaptionPresets();
 
   const isVideoOff = !isVideoOn;
   const isMuted = !isAudioOn;
@@ -98,8 +80,50 @@ export const MobileStudioPage: React.FC = () => {
     navigate("/m");
   };
 
+  const getDrawerTabForCategory = (cat: ToolCategory): DrawerTab => {
+    if (cat === "captions") return "captions";
+    if (cat === "layout") return "designs";
+    return "camera";
+  };
+
   const handleSelectCategory = (cat: ToolCategory) => {
-    setActiveCategory(prev => prev === cat ? "none" : cat);
+    const next = activeCategory === cat ? "none" : cat;
+    setActiveCategory(next);
+    if (next === "none") {
+      setIsDrawerOpen(false);
+      return;
+    }
+
+    setDrawerTab(getDrawerTabForCategory(cat));
+    setIsDrawerOpen(true);
+
+    if (cat === "stream") {
+      setShowStreamConfig(true);
+    }
+
+    if (cat === "layout" && isVideoOff) {
+      setVideoOn(true);
+      toast.success("Camera enabled so you can preview designs");
+    }
+
+    if (cat === "captions") {
+      setCaptionStyle({
+        ...useSceneStore.getState().captionStyle,
+        fontSize: 32,
+        fontWeight: "700",
+        backgroundColor: "rgba(0,0,0,0.55)",
+        color: "#ffffff",
+      });
+      setDynamicStyle("karaoke");
+    }
+
+    if (cat === "filters") {
+      setVideoFilter("grayscale");
+    }
+
+    if (cat === "effects") {
+      setBackgroundEffect("blur");
+    }
   };
 
   // ─── Tool Bar Items ─────────────────────────────────────────────
@@ -119,6 +143,8 @@ export const MobileStudioPage: React.FC = () => {
         <MobileCanvasContainer
           isDrawerOpen={isDrawerOpen}
           onDrawerOpenChange={setIsDrawerOpen}
+          activeDrawerTab={drawerTab}
+          onActiveDrawerTabChange={setDrawerTab}
           layoutManager={{
             handleCanvasPresetSelect: () => {},
             handleSaveCanvasPreset: () => {},
@@ -189,184 +215,6 @@ export const MobileStudioPage: React.FC = () => {
           BOTTOM AREA — Tool Tray + Action Buttons
       ══════════════════════════════════════════════════════════════ */}
       <div className="relative z-20 flex flex-col bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-
-        {/* ── Expanded Tool Panel (Instagram-style horizontal scroll) ─ */}
-        {activeCategory !== "none" && (
-          <div className="px-2 pb-3 animate-in slide-in-from-bottom-4 duration-200">
-            <div className="bg-black/60 backdrop-blur-xl rounded-2xl border border-white/10 p-3">
-              {/* CAPTIONS */}
-              {activeCategory === "captions" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Caption Animation</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {CAPTION_ANIMATION_PREVIEWS.map((anim) => (
-                      <button
-                        key={anim.id}
-                        onClick={() => setSelectedCaptionAnimation(anim.id)}
-                        className={cn(
-                          "shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold transition-all active:scale-95 border",
-                          selectedCaptionAnimation === anim.id
-                            ? "bg-white text-black border-white shadow-lg shadow-white/20"
-                            : "bg-white/10 text-white/80 border-white/10 hover:bg-white/20"
-                        )}
-                      >
-                        {anim.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Caption Style Presets */}
-                  {captionPresets.length > 0 && (
-                    <>
-                      <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1 mt-2">Style Presets</p>
-                      <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                        {captionPresets.slice(0, 12).map((preset) => (
-                          <button
-                            key={preset.id}
-                            className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                          >
-                            <div
-                              className="w-16 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold border border-white/10"
-                              style={{
-                                fontFamily: preset.style?.fontFamily || 'sans-serif',
-                                color: preset.style?.color || '#fff',
-                                backgroundColor: preset.style?.backgroundColor || 'rgba(0,0,0,0.5)',
-                              }}
-                            >
-                              Abc
-                            </div>
-                            <span className="text-[9px] text-white/60 max-w-[64px] truncate">{preset.name}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {/* EFFECTS */}
-              {activeCategory === "effects" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Scene Effects</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {[
-                      { id: "none", label: "None", emoji: "🚫" },
-                      { id: "snow", label: "Snow", emoji: "❄️" },
-                      { id: "rain", label: "Rain", emoji: "🌧️" },
-                      { id: "fire", label: "Fire", emoji: "🔥" },
-                      { id: "sparkles", label: "Sparkles", emoji: "✨" },
-                      { id: "neon-pulse", label: "Neon", emoji: "💜" },
-                      { id: "bokeh", label: "Bokeh", emoji: "🔮" },
-                      { id: "dust", label: "Dust", emoji: "🌫️" },
-                    ].map((fx) => (
-                      <button
-                        key={fx.id}
-                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
-                          {fx.emoji}
-                        </div>
-                        <span className="text-[10px] text-white/70 font-medium">{fx.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* FILTERS */}
-              {activeCategory === "filters" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Camera Filters</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {QUICK_FILTERS.map((f) => (
-                      <button
-                        key={f.id}
-                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
-                          {f.emoji}
-                        </div>
-                        <span className="text-[10px] text-white/70 font-medium">{f.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* LAYOUT */}
-              {activeCategory === "layout" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Canvas Layouts</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {[
-                      { id: "solo", label: "Solo", icon: "📹" },
-                      { id: "pip", label: "PiP", icon: "🖼️" },
-                      { id: "split", label: "Split", icon: "◻️" },
-                      { id: "grid", label: "Grid", icon: "⊞" },
-                    ].map((l) => (
-                      <button
-                        key={l.id}
-                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
-                          {l.icon}
-                        </div>
-                        <span className="text-[10px] text-white/70 font-medium">{l.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => setIsDrawerOpen(true)}
-                    className="w-full py-2 rounded-xl bg-white/10 text-xs text-white/70 font-medium hover:bg-white/15 transition-colors"
-                  >
-                    More Layouts & Designs →
-                  </button>
-                </div>
-              )}
-
-              {/* STREAM */}
-              {activeCategory === "stream" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Stream Destinations</p>
-                  {destinations.length === 0 ? (
-                    <div className="text-center py-4">
-                      <p className="text-sm text-white/50 mb-3">No destinations configured</p>
-                      <button
-                        onClick={() => setShowStreamConfig(true)}
-                        className="px-5 py-2.5 bg-primary rounded-full text-sm font-bold text-primary-foreground active:scale-95 transition-transform"
-                      >
-                        + Add Platform
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                      {destinations.map((dest) => (
-                        <div key={dest.id} className="shrink-0 flex flex-col items-center gap-1.5">
-                          <div className={cn(
-                            "w-14 h-14 rounded-2xl border flex items-center justify-center transition-colors",
-                            dest.enabled ? "bg-green-500/20 border-green-500/40" : "bg-white/10 border-white/10"
-                          )}>
-                            <Radio className="w-6 h-6" />
-                          </div>
-                          <span className="text-[10px] text-white/70 font-medium max-w-[56px] truncate">{dest.platform}</span>
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => setShowStreamConfig(true)}
-                        className="shrink-0 flex flex-col items-center gap-1.5"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-dashed border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
-                          <span className="text-xl">+</span>
-                        </div>
-                        <span className="text-[10px] text-white/50 font-medium">Add</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* ── Horizontal Tool Category Bar (Instagram-style) ──────── */}
         <div className="flex gap-1 overflow-x-auto px-3 pb-3" style={{ scrollbarWidth: 'none' }}>
