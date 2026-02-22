@@ -18,6 +18,7 @@ import { CanvasPreset } from "@/types/canvasPreset";
 import { SocialBannerDesign, SocialBannerData } from "@/types/socialBanner";
 import { AnimatedBannerDesign } from "@/types/animatedBanner";
 import { VaultFile } from "@/types/vault";
+import { useIsMobile } from "@/shared/hooks/use-mobile";
 
 // Sub-components
 import { CanvasDesignsPanel } from "./panels/CanvasDesignsPanel";
@@ -103,6 +104,7 @@ const sections = [
 ];
 
 export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
+  const isMobile = useIsMobile();
   const isOpen = props.isOpen;
   const closePanel = props.onClose;
   const [activeSection, setActiveSection] = useState<string | null>(
@@ -138,18 +140,19 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "fixed bottom-16 left-6 overflow-hidden",
+        "fixed overflow-hidden flex",
+        isMobile ? "inset-x-2 bottom-20 flex-col" : "bottom-16 left-6 flex-row",
         "bg-background/70 dark:bg-background/50 backdrop-blur-2xl",
         "border border-border/20 dark:border-white/10 rounded-2xl",
         "shadow-2xl shadow-black/10 dark:shadow-black/40",
-        "transition-all duration-300 ease-out flex",
+        "transition-all duration-300 ease-out",
         isOpen && (props.isMouseActive || isHovered)
           ? "opacity-100 translate-y-0 pointer-events-auto visible" // Added visible
           : "opacity-0 translate-y-4 pointer-events-none invisible", // Added invisible
       )}
       style={{
         zIndex: "var(--z-floating-panel)",
-        height: "75vh",
+        height: isMobile ? "65vh" : "75vh",
         maxHeight: "720px",
       }}
     >
@@ -157,7 +160,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
 
       {/* Minimal Sidebar Navigation */}
-      <div className="relative w-12 bg-foreground/[0.02] dark:bg-white/[0.02] border-r border-border/10 dark:border-white/5 flex flex-col items-center py-3 gap-1">
+      <div className={cn(
+        "relative bg-foreground/[0.02] dark:bg-white/[0.02] flex items-center gap-1",
+        isMobile ? "w-full border-b border-border/10 dark:border-white/5 flex-row overflow-x-auto no-scrollbar px-3 py-2 flex-shrink-0" : "w-12 border-r border-border/10 dark:border-white/5 flex-col py-3"
+      )}>
         {sections.map((section) => {
           const Icon = section.icon;
           const isActive = activeSection === section.id;
@@ -172,7 +178,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                   )
                 }
                 className={cn(
-                  "group relative w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200",
+                  "group relative w-9 h-9 flex items-center justify-center rounded-xl transition-all duration-200 flex-shrink-0",
                   isActive
                     ? "bg-primary/15 text-primary"
                     : "text-muted-foreground/60 hover:text-foreground hover:bg-foreground/5 dark:hover:bg-white/5",
@@ -182,7 +188,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-primary rounded-r-full" />
+                  <div className={cn(
+                    "absolute bg-primary",
+                    isMobile ? "bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-5 rounded-t-full" : "left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full"
+                  )} />
                 )}
               </button>
             </ShortcutTooltip>
@@ -191,7 +200,10 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       </div>
 
       {/* Content Area */}
-      <div className="relative flex flex-col w-[380px] h-full">
+      <div className={cn(
+        "relative flex flex-col h-full",
+        isMobile ? "w-full flex-1 min-h-0" : "w-[380px]"
+      )}>
         {/* Minimal Header - just close button */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-border/10 dark:border-white/5">
           <span className="text-[10px] font-medium text-muted-foreground/70">
@@ -225,7 +237,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
           {activeSection === "animation-library" && (
             <GSAPAnimationsPanel
-              onSelectPreset={props.onSelectGSAPPreset || (() => {})}
+              onSelectPreset={props.onSelectGSAPPreset || (() => { })}
               selectedPresetId={props.selectedGSAPPresetId}
             />
           )}

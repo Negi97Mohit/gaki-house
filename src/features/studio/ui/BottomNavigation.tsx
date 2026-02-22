@@ -166,6 +166,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       <div
         className={cn(
           "fixed bottom-6 left-1/2 -translate-x-1/2 transition-all duration-500 ease-out",
+          "max-w-[calc(100vw-2rem)]", // Ensure it doesn't overflow screen width
           "backdrop-blur-2xl rounded-2xl",
           "bg-background/60 dark:bg-background/40",
           "border border-border/20 dark:border-white/[0.08]",
@@ -178,7 +179,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
 
-        <div className="relative flex items-center gap-1.5 px-3 py-2">
+        <div className="relative flex items-center gap-1.5 px-3 py-2 overflow-x-auto overflow-y-hidden no-scrollbar">
           <ShortcutTooltip label="Home">
             <Button
               variant="ghost"
