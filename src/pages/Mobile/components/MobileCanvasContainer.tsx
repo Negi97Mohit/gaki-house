@@ -492,6 +492,8 @@ export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
         setSplitRatio(newScene.splitRatio ?? 0.5);
       if (newScene.pipPosition !== activeScene.pipPosition)
         setPipPosition(newScene.pipPosition ?? { x: 75, y: 75 });
+      if (newScene.pipSize !== activeScene.pipSize)
+        setPipSize(newScene.pipSize ?? { width: 30, height: 30 });
 
       if (newScene.customMaskUrl !== activeScene.customMaskUrl)
         setCustomMaskUrl(newScene.customMaskUrl);
@@ -584,6 +586,7 @@ export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
       setCameraShape,
       setSplitRatio,
       setPipPosition,
+      setPipSize,
       setCustomMaskUrl,
       setActiveOverlays,
       setTextOverlays,

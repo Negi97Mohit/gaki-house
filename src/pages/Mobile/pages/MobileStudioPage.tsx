@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Camera, RefreshCcw, Mic, MicOff, VideoOff, X, Radio,
@@ -33,6 +33,9 @@ export const MobileStudioPage: React.FC = () => {
   const setAudioOn = useMediaStore((s) => s.setAudioOn);
   const isVideoOn = useMediaStore((s) => s.isVideoOn);
   const setVideoOn = useMediaStore((s) => s.setVideoOn);
+  const setVideoDevices = useMediaStore((s) => s.setVideoDevices);
+  const selectedVideoDevice = useMediaStore((s) => s.selectedVideoDevice);
+  const setSelectedVideoDevice = useMediaStore((s) => s.setSelectedVideoDevice);
 
   const { destinations } = useStreamStore(useShallow((s) => ({
     destinations: s.destinations,
@@ -45,6 +48,31 @@ export const MobileStudioPage: React.FC = () => {
   const toggleMute = () => setAudioOn(!isAudioOn);
   const toggleVideo = () => setVideoOn(!isVideoOn);
   const flipCamera = () => toast.info("Camera flip coming soon");
+
+  useEffect(() => {
+    const bootstrapMobileCamera = async () => {
+      if (!navigator.mediaDevices?.enumerateDevices || !navigator.mediaDevices?.getUserMedia) return;
+
+      try {
+        const probe = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        probe.getTracks().forEach((t) => t.stop());
+
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cams = devices.filter((d) => d.kind === "videoinput");
+        if (cams.length) {
+          setVideoDevices(cams);
+          if (!selectedVideoDevice) {
+            setSelectedVideoDevice(cams[0].deviceId);
+          }
+          if (!isVideoOn) setVideoOn(true);
+        }
+      } catch (error) {
+        console.warn("[MobileStudio] camera bootstrap failed", error);
+      }
+    };
+
+    bootstrapMobileCamera();
+  }, [isVideoOn, selectedVideoDevice, setSelectedVideoDevice, setVideoDevices, setVideoOn]);
 
   const handleGoLive = () => {
     if (isStreaming) {
