@@ -21,8 +21,8 @@ export const MobileBottomNav: React.FC = () => {
   };
 
   return (
-    <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-xl border-t border-border/10 safe-area-bottom">
-      <div className="flex items-center justify-around h-14 max-w-lg mx-auto relative">
+    <nav className="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-background/70 border-t border-border/20 safe-area-bottom">
+      <div className="flex items-center justify-around h-[58px] max-w-lg mx-auto relative px-1">
         {TABS.map((tab) => {
           // Center "Go Live" button — navigates directly to studio
           if (tab.icon === null) {
@@ -30,10 +30,13 @@ export const MobileBottomNav: React.FC = () => {
               <button
                 key="center-cta"
                 onClick={() => navigate("/m/studio")}
-                className="flex items-center justify-center -mt-5"
+                className="flex items-center justify-center -mt-4"
               >
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary via-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 transition-transform hover:shadow-primary/50">
-                  <Radio className="w-6 h-6 text-primary-foreground" strokeWidth={2.5} />
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-md shadow-primary/25 active:scale-95 transition-transform">
+                  <Radio
+                    className="w-5 h-5 text-primary-foreground"
+                    strokeWidth={2.5}
+                  />
                 </div>
               </button>
             );
@@ -47,17 +50,28 @@ export const MobileBottomNav: React.FC = () => {
               key={tab.path}
               to={tab.path}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-xl transition-all active:scale-90",
-                active ? "text-primary" : "text-muted-foreground"
+                "flex flex-col items-center justify-center gap-0.5 px-2.5 py-1 rounded-xl transition-all active:scale-95",
+                active ? "text-primary" : "text-muted-foreground",
               )}
             >
               <div className="relative">
-                <Icon className={cn("w-[22px] h-[22px] transition-all", active && "scale-110")} strokeWidth={active ? 2.5 : 1.8} />
+                <Icon
+                  className={cn(
+                    "w-5 h-5 transition-all",
+                    active && "scale-105",
+                  )}
+                  strokeWidth={active ? 2.4 : 1.9}
+                />
                 {active && (
                   <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
                 )}
               </div>
-              <span className={cn("text-[10px] font-medium leading-none", active && "font-bold")}>
+              <span
+                className={cn(
+                  "text-[10px] font-medium leading-none",
+                  active && "font-semibold",
+                )}
+              >
                 {tab.label}
               </span>
             </Link>
