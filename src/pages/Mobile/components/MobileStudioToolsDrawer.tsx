@@ -42,10 +42,19 @@ export interface MobileStudioToolsDrawerProps {
     // Controlled State
     isOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
+    activeTab?: "designs" | "captions" | "camera";
+    onActiveTabChange?: (tab: "designs" | "captions" | "camera") => void;
 }
 
 export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (props) => {
-    const [activeTab, setActiveTab] = useState("designs");
+    const [localActiveTab, setLocalActiveTab] = useState<"designs" | "captions" | "camera">("designs");
+
+    const activeTab = props.activeTab ?? localActiveTab;
+    const handleTabChange = (tab: string) => {
+        const nextTab = tab as "designs" | "captions" | "camera";
+        setLocalActiveTab(nextTab);
+        props.onActiveTabChange?.(nextTab);
+    };
 
     return (
         <Drawer open={props.isOpen} onOpenChange={props.onOpenChange}>
@@ -59,7 +68,7 @@ export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (
                 </DrawerTrigger>
             )}
 
-            <DrawerContent className="h-auto max-h-[50vh] flex flex-col bg-background/80 backdrop-blur-xl border-t border-border/20 rounded-t-3xl">
+            <DrawerContent className="h-auto max-h-[82dvh] flex flex-col bg-background/80 backdrop-blur-xl border-t border-border/20 rounded-t-3xl">
                 <DrawerHeader className="relative border-b border-border/10 pb-4">
                     <DrawerTitle className="text-center text-lg font-bold tracking-tight">Studio Tools</DrawerTitle>
                     <DrawerClose asChild>
@@ -76,7 +85,7 @@ export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (
                 <div className="flex-1 overflow-hidden flex flex-col p-4 w-full">
                     <Tabs
                         value={activeTab}
-                        onValueChange={setActiveTab}
+                        onValueChange={handleTabChange}
                         className="w-full flex-1 flex flex-col min-h-0"
                     >
                         {/* Tab Navigation */}
@@ -94,7 +103,7 @@ export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (
 
                         {/* Tab Contents */}
                         <div className="flex-1 overflow-y-auto min-h-0" style={{ scrollbarWidth: 'none' }}>
-                            <TabsContent value="designs" className="outline-none m-0 data-[state=inactive]:hidden">
+                            <TabsContent value="designs" className="outline-none m-0 h-full data-[state=inactive]:hidden">
                                 <CanvasDesignsPanel
                                     onCanvasPresetSelect={props.onCanvasPresetSelect}
                                     onSaveCanvasPreset={props.onSaveCanvasPreset}
@@ -108,7 +117,7 @@ export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (
                                 />
                             </TabsContent>
 
-                            <TabsContent value="captions" className="outline-none m-0 data-[state=inactive]:hidden">
+                            <TabsContent value="captions" className="outline-none m-0 h-full data-[state=inactive]:hidden">
                                 <TextPresetsPanel
                                     style={props.style}
                                     onStyleChange={props.onStyleChange}
@@ -118,7 +127,7 @@ export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (
                                 />
                             </TabsContent>
 
-                            <TabsContent value="camera" className="outline-none m-0 data-[state=inactive]:hidden">
+                            <TabsContent value="camera" className="outline-none m-0 h-full data-[state=inactive]:hidden">
                                 <SettingsPanel />
                             </TabsContent>
                         </div>

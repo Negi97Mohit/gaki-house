@@ -48,6 +48,8 @@ export interface MobileCanvasContainerProps {
   trigger?: React.ReactNode;
   isDrawerOpen?: boolean;
   onDrawerOpenChange?: (open: boolean) => void;
+  activeDrawerTab?: "designs" | "captions" | "camera";
+  onActiveDrawerTabChange?: (tab: "designs" | "captions" | "camera") => void;
 }
 
 export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
@@ -61,6 +63,8 @@ export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
   trigger,
   isDrawerOpen,
   onDrawerOpenChange,
+  activeDrawerTab,
+  onActiveDrawerTabChange,
 }) => {
   const hasAiPopoverAutoOpenedRef = useRef(false);
 
@@ -985,6 +989,8 @@ export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
       <MobileStudioToolsDrawer
         isOpen={isDrawerOpen}
         onOpenChange={onDrawerOpenChange}
+        activeTab={activeDrawerTab}
+        onActiveTabChange={onActiveDrawerTabChange}
         trigger={trigger}
         onCanvasPresetSelect={layoutManager.handleCanvasPresetSelect}
         customCanvasPresets={layoutManager.customPresets}
