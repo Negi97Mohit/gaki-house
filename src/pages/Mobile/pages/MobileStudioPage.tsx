@@ -1,275 +1,465 @@
-import React, { useRef, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import React, { useRef, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-    Camera, RefreshCcw, Mic, MicOff, VideoOff, Settings,
-    X, Radio, Circle, MonitorPlay, Share2
+  Camera, RefreshCcw, Mic, MicOff, VideoOff, X, Radio,
+  Sparkles, Type, Palette, Settings2, Zap, Share2,
+  ChevronUp, Eye, EyeOff, Music, Image as ImageIcon,
+  LayoutGrid, Wand2, MessageSquare, Circle
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
 import { MobileCanvasContainer } from "../components/MobileCanvasContainer";
 import { useMediaStore } from "@/stores/media.store";
-import { useUiStore } from "@/stores/ui.store";
-import { MobileStudioToolsDrawer } from "../components/MobileStudioToolsDrawer";
 import { useSceneStore } from "@/stores/scene.store";
+import { useStreamStore } from "@/stores/stream.store";
+import { useShallow } from "zustand/react/shallow";
+import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
+import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
+import { useCaptionPresets } from "@/hooks/useCaptionPresets";
+import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
 
-// Basic Unified Studio Page for Mobile (Record + Stream)
+// ─── Tool Category Type ────────────────────────────────────────────
+type ToolCategory = "none" | "captions" | "effects" | "filters" | "stream" | "layout";
+
+// ─── Caption Animation Previews ────────────────────────────────────
+const CAPTION_ANIMATION_PREVIEWS = DYNAMIC_STYLE_OPTIONS.map(s => ({
+  id: s.id,
+  label: s.name,
+}));
+
+// ─── Quick Filters ─────────────────────────────────────────────────
+const QUICK_FILTERS = [
+  { id: "none", label: "Normal", emoji: "☀️" },
+  { id: "grayscale", label: "B&W", emoji: "🖤" },
+  { id: "sepia", label: "Warm", emoji: "🌅" },
+  { id: "vintage", label: "Vintage", emoji: "📷" },
+  { id: "cool", label: "Cool", emoji: "❄️" },
+  { id: "vivid", label: "Vivid", emoji: "🌈" },
+  { id: "noir", label: "Noir", emoji: "🎬" },
+  { id: "dreamy", label: "Dreamy", emoji: "✨" },
+];
+
 export const MobileStudioPage: React.FC = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [activeCategory, setActiveCategory] = useState<ToolCategory>("none");
+  const [isRecording, setIsRecording] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showStreamConfig, setShowStreamConfig] = useState(false);
+  const [selectedCaptionAnimation, setSelectedCaptionAnimation] = useState("none");
 
-    // Modes: 'stream' or 'record'
-    const mode = searchParams.get("mode") === "stream" ? "stream" : "record";
+  // Global Store
+  const isAudioOn = useMediaStore((s) => s.isAudioOn);
+  const setAudioOn = useMediaStore((s) => s.setAudioOn);
+  const isVideoOn = useMediaStore((s) => s.isVideoOn);
+  const setVideoOn = useMediaStore((s) => s.setVideoOn);
 
-    const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const { destinations } = useStreamStore(useShallow((s) => ({
+    destinations: s.destinations,
+  })));
 
-    const [isRecording, setIsRecording] = useState(false);
-    const [isStreaming, setIsStreaming] = useState(false);
-    const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const { captionPresets } = useCaptionPresets();
 
-    // Tools Drawer State
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const isVideoOff = !isVideoOn;
+  const isMuted = !isAudioOn;
+  const isLive = isStreaming || isRecording;
 
-    // Global Store Mappings
-    const isAudioOn = useMediaStore((state) => state.isAudioOn);
-    const setAudioOn = useMediaStore((state) => state.setAudioOn);
-    const isVideoOn = useMediaStore((state) => state.isVideoOn);
-    const setVideoOn = useMediaStore((state) => state.setVideoOn);
-    const isVideoOff = !isVideoOn;
-    const isMuted = !isAudioOn;
+  const toggleMute = () => setAudioOn(!isAudioOn);
+  const toggleVideo = () => setVideoOn(!isVideoOn);
+  const flipCamera = () => toast.info("Camera flip coming soon");
 
-    // We don't have physical flipCamera integrated to `facingMode` globally yet, but we'll adapt.
-    // For now MobileStudio Tools can handle the visual aspects.
+  const handleGoLive = () => {
+    if (isStreaming) {
+      setIsStreaming(false);
+      toast.info("Stream ended");
+    } else if (destinations.length === 0) {
+      setShowStreamConfig(true);
+    } else {
+      setIsStreaming(true);
+      toast.success("You're live!");
+    }
+  };
 
-    console.debug(`[MobileStudio] Initialized in mode: ${mode}`);
+  const handleRecord = () => {
+    if (isRecording) {
+      setIsRecording(false);
+      toast.success("Recording saved!");
+    } else {
+      setIsRecording(true);
+      toast.success("Recording started");
+    }
+  };
 
-    // Handle Mic Toggle
-    const toggleMute = () => {
-        setAudioOn(!isAudioOn);
-    };
+  const handleExit = () => {
+    if (isLive) {
+      const msg = isRecording ? "recording" : "streaming";
+      if (!window.confirm(`Stop ${msg} and exit?`)) return;
+    }
+    navigate("/m");
+  };
 
-    // Handle Camera Toggle (Video Mute - Blank Screen)
-    const toggleVideo = () => {
-        setVideoOn(!isVideoOn);
-    };
+  const handleSelectCategory = (cat: ToolCategory) => {
+    setActiveCategory(prev => prev === cat ? "none" : cat);
+  };
 
-    // Stub: Physical Camera Flip (Front/Back)
-    const flipCamera = () => {
-        toast.info("Physical camera flip uses standard settings for now.");
-    };
+  // ─── Tool Bar Items ─────────────────────────────────────────────
+  const toolBarItems: { id: ToolCategory; icon: React.ElementType; label: string }[] = [
+    { id: "captions", icon: Type, label: "Captions" },
+    { id: "effects", icon: Sparkles, label: "Effects" },
+    { id: "filters", icon: Palette, label: "Filters" },
+    { id: "layout", icon: LayoutGrid, label: "Layout" },
+    { id: "stream", icon: Radio, label: "Stream" },
+  ];
 
-    // Handle Recording State
-    const handleRecordToggle = () => {
-        // Simplified recording for now, requires actual stream integration in future
-        if (isRecording) {
-            setIsRecording(false);
-            console.debug("[MobileStudio] Recording stopped");
-            toast.success("Recording saved!");
-        } else {
-            setIsRecording(true);
-            console.debug("[MobileStudio] Recording started");
-            toast.success("Recording started");
-        }
-    };
+  return (
+    <div className="fixed inset-0 z-40 bg-black flex flex-col text-white overflow-hidden">
 
-    // Handle Streaming State
-    const handleStreamToggle = () => {
-        if (isStreaming) {
-            setIsStreaming(false);
-            console.debug("[MobileStudio] Multi-Stream stopped");
-            toast.info("Stream ended");
-        } else {
-            setIsStreaming(true);
-            console.debug("[MobileStudio] Multi-Stream started");
-            toast.success("Going live to connected platforms!");
-        }
-    };
+      {/* ── Canvas Background ────────────────────────────────────── */}
+      <div className="absolute inset-0 z-0">
+        <MobileCanvasContainer
+          isDrawerOpen={isDrawerOpen}
+          onDrawerOpenChange={setIsDrawerOpen}
+          layoutManager={{
+            handleCanvasPresetSelect: () => {},
+            handleSaveCanvasPreset: () => {},
+            handleDeleteCanvasPreset: () => {},
+            shareCanvasPreset: () => {},
+            unshareCanvasPreset: () => {},
+            customPresets: [],
+            publicPresets: [],
+            isLoadingPublic: false,
+          }}
+          vaultFiles={[]}
+          onAddVaultFiles={() => {}}
+          onRemoveVaultFile={() => {}}
+          onClearVault={() => {}}
+        />
+      </div>
 
-    // Unified Action Button Click
-    const handleMainAction = () => {
-        if (mode === "record") {
-            handleRecordToggle();
-        } else {
-            handleStreamToggle();
-        }
-    };
+      {/* ── Video Off Placeholder ────────────────────────────────── */}
+      <div className={cn(
+        "absolute inset-0 z-[5] bg-zinc-900 flex flex-col items-center justify-center transition-opacity duration-300",
+        !isVideoOff && "opacity-0 pointer-events-none"
+      )}>
+        <Camera className="w-16 h-16 text-zinc-700 mb-4" />
+        <p className="text-zinc-500 font-medium">Camera is off</p>
+      </div>
 
-    // Switch modes safely (can't switch if actively recording/streaming)
-    const switchMode = (newMode: "stream" | "record") => {
-        if (isRecording || isStreaming) {
-            toast.warning(`Please stop ${isRecording ? 'recording' : 'streaming'} before switching modes.`);
-            return;
-        }
-        console.debug(`[MobileStudio] Switched mode via toggle -> ${newMode}`);
-        setSearchParams({ mode: newMode }, { replace: true });
-    };
+      {/* ══════════════════════════════════════════════════════════════
+          TOP BAR — Close, Live Badge, Side Actions
+      ══════════════════════════════════════════════════════════════ */}
+      <div className="relative z-20 flex items-start justify-between px-4 pt-[env(safe-area-inset-top,12px)] pb-2 bg-gradient-to-b from-black/70 to-transparent">
+        {/* Close */}
+        <button onClick={handleExit} className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform mt-2">
+          <X className="w-5 h-5" />
+        </button>
 
-    const handleExit = () => {
-        if (isRecording || isStreaming) {
-            const confirmExit = window.confirm("You are currently " + (isRecording ? "recording" : "streaming") + ". Are you sure you want to stop and exit?");
-            if (!confirmExit) return;
-        }
-        console.debug("[MobileStudio] Exiting Mobile Studio");
-        navigate("/m"); // Return back home
-    };
+        {/* Live / Rec badge */}
+        {isLive && (
+          <div className={cn(
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md mt-2 shadow-lg",
+            isStreaming ? "bg-red-600/90 shadow-red-500/30 animate-pulse" : "bg-red-600/80"
+          )}>
+            {isStreaming ? <Radio className="w-3.5 h-3.5" /> : <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+            <span className="text-xs font-bold tracking-wider uppercase">{isStreaming ? "LIVE" : "REC"}</span>
+          </div>
+        )}
 
-    return (
-        <div className="fixed inset-0 z-40 bg-black flex flex-col items-center justify-between text-white overflow-hidden font-sans">
-
-            {/* Global Engine (CanvasView) */}
-            <div className="absolute inset-0 z-0">
-                <MobileCanvasContainer
-                    isDrawerOpen={isSettingsOpen}
-                    onDrawerOpenChange={setIsSettingsOpen}
-                    layoutManager={{
-                        handleCanvasPresetSelect: () => { },
-                        handleSaveCanvasPreset: () => { },
-                        handleDeleteCanvasPreset: () => { },
-                        shareCanvasPreset: () => { },
-                        unshareCanvasPreset: () => { },
-                        customPresets: [],
-                        publicPresets: [],
-                        isLoadingPublic: false
-                    }}
-                    vaultFiles={[]}
-                    onAddVaultFiles={() => { }}
-                    onRemoveVaultFile={() => { }}
-                    onClearVault={() => { }}
-                />
-            </div>
-
-            {/* Placeholder state for when video is off */}
-            <div className={cn("absolute inset-0 z-[5] w-full h-full bg-zinc-900 flex flex-col items-center justify-center transition-opacity", !isVideoOff && "opacity-0 pointer-events-none")}>
-                <Camera className="w-16 h-16 text-zinc-700 mx-auto mb-4" />
-                <p className="text-zinc-500 font-medium">Camera is disabled</p>
-            </div>
-
-            {/* Top Toolbar */}
-            <div className="w-full relative z-20 flex items-center justify-between p-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent pt-10 pointer-events-none">
-                <button
-                    onClick={handleExit}
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur active:scale-90 transition-transform pointer-events-auto"
-                >
-                    <X className="w-6 h-6" />
-                </button>
-
-                {mode === "stream" && isStreaming && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-600/90 backdrop-blur rounded-full shadow-lg shadow-red-900/50 animate-pulse">
-                        <Radio className="w-4 h-4" />
-                        <span className="text-sm font-bold tracking-wide uppercase">LIVE</span>
-                    </div>
-                )}
-                {mode === "record" && isRecording && (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-red-600/90 backdrop-blur rounded-full shadow-lg shadow-red-900/50">
-                        <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
-                        <span className="text-sm font-bold tracking-wide font-mono">REC</span>
-                    </div>
-                )}
-
-                <div className="pointer-events-auto">
-                    <button
-                        onClick={() => setIsSettingsOpen(true)}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-black/40 backdrop-blur active:scale-90 transition-transform"
-                    >
-                        <Settings className="w-5 h-5" />
-                    </button>
-                </div>
-            </div>
-
-            {/* Main Action Bar (Bottom) */}
-            <div className="w-full relative z-20 flex flex-col gap-6 p-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent pb-safe">
-
-                {/* Secondary Actions (Flip, Mic, Video, Layouts) */}
-                <div className="flex items-center justify-between px-4">
-                    <button
-                        onClick={flipCamera}
-                        className="flex flex-col items-center gap-1 active:scale-90 transition-transform"
-                    >
-                        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
-                            <RefreshCcw className="w-5 h-5" />
-                        </div>
-                        <span className="text-[10px] font-medium text-white/70">Flip</span>
-                    </button>
-                    <button
-                        onClick={toggleMute}
-                        className={cn("flex flex-col items-center gap-1 active:scale-90 transition-transform", isMuted && "text-red-400")}
-                    >
-                        <div className={cn("w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center", isMuted && "bg-red-500/20")}>
-                            {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                        </div>
-                        <span className="text-[10px] font-medium text-white/70">{isMuted ? "Unmute" : "Mute"}</span>
-                    </button>
-                    <button
-                        onClick={toggleVideo}
-                        className={cn("flex flex-col items-center gap-1 active:scale-90 transition-transform", isVideoOff && "text-red-400")}
-                    >
-                        <div className={cn("w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center", isVideoOff && "bg-red-500/20")}>
-                            {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Camera className="w-5 h-5" />}
-                        </div>
-                        <span className="text-[10px] font-medium text-white/70">{isVideoOff ? "Turn On" : "Turn Off"}</span>
-                    </button>
-                    <button
-                        onClick={() => toast.info("Layout menu coming soon")}
-                        className="flex flex-col items-center gap-1 active:scale-90 transition-transform"
-                    >
-                        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
-                            <Share2 className="w-5 h-5" />
-                        </div>
-                        <span className="text-[10px] font-medium text-white/70">Share</span>
-                    </button>
-                </div>
-
-                {/* Primary Action Button (Shutter) */}
-                <div className="flex items-center justify-center mt-2">
-                    <button
-                        onClick={handleMainAction}
-                        className={cn(
-                            "group relative w-[80px] h-[80px] rounded-full flex items-center justify-center transition-all duration-300",
-                            mode === "record"
-                                ? "border-[6px] border-white/80 hover:border-white"
-                                : "border-[6px] border-primary/80 hover:border-primary"
-                        )}
-                    >
-                        {mode === "record" ? (
-                            <div className={cn(
-                                "bg-red-500 transition-all duration-300 group-hover:bg-red-400",
-                                isRecording ? "w-8 h-8 rounded-lg" : "w-[60px] h-[60px] rounded-full"
-                            )} />
-                        ) : (
-                            <div className={cn(
-                                "transition-all duration-300 flex items-center justify-center shadow-lg",
-                                isStreaming ? "w-10 h-10 bg-red-500 rounded-lg shadow-red-500/50" : "w-[60px] h-[60px] bg-primary rounded-full shadow-primary/50 group-hover:scale-105"
-                            )}>
-                                {!isStreaming && <Radio className="w-8 h-8 text-primary-foreground ml-1" />}
-                            </div>
-                        )}
-                    </button>
-                </div>
-
-                {/* Mode Switcher Pill */}
-                <div className="bg-black/60 backdrop-blur-md rounded-full mt-4 p-1 flex items-center self-center shadow-2xl border border-white/10 relative z-30">
-                    <button
-                        onClick={() => switchMode("record")}
-                        className={cn(
-                            "px-5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5",
-                            mode === "record" ? "bg-white text-black shadow-sm" : "text-white/60 hover:text-white"
-                        )}
-                    >
-                        <Circle className={cn("w-3 h-3", mode === "record" ? "text-red-500 fill-red-500" : "")} />
-                        Record
-                    </button>
-                    <button
-                        onClick={() => switchMode("stream")}
-                        className={cn(
-                            "px-5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5",
-                            mode === "stream" ? "bg-primary text-primary-foreground shadow-sm" : "text-white/60 hover:text-white"
-                        )}
-                    >
-                        <MonitorPlay className="w-3.5 h-3.5" />
-                        Stream
-                    </button>
-                </div>
-
-            </div>
+        {/* Right side actions */}
+        <div className="flex flex-col gap-3 mt-2">
+          <button onClick={flipCamera} className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform">
+            <RefreshCcw className="w-5 h-5" />
+          </button>
+          <button onClick={toggleMute} className={cn("w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform", isMuted ? "bg-red-500/60" : "bg-black/50")}>
+            {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          </button>
+          <button onClick={toggleVideo} className={cn("w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform", isVideoOff ? "bg-red-500/60" : "bg-black/50")}>
+            {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Camera className="w-5 h-5" />}
+          </button>
+          <button onClick={() => setIsDrawerOpen(true)} className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform">
+            <Settings2 className="w-5 h-5" />
+          </button>
         </div>
-    );
+      </div>
+
+      {/* SPACER — pushes bottom content down */}
+      <div className="flex-1" />
+
+      {/* ══════════════════════════════════════════════════════════════
+          BOTTOM AREA — Tool Tray + Action Buttons
+      ══════════════════════════════════════════════════════════════ */}
+      <div className="relative z-20 flex flex-col bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+
+        {/* ── Expanded Tool Panel (Instagram-style horizontal scroll) ─ */}
+        {activeCategory !== "none" && (
+          <div className="px-2 pb-3 animate-in slide-in-from-bottom-4 duration-200">
+            <div className="bg-black/60 backdrop-blur-xl rounded-2xl border border-white/10 p-3">
+              {/* CAPTIONS */}
+              {activeCategory === "captions" && (
+                <div className="space-y-3">
+                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Caption Animation</p>
+                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+                    {CAPTION_ANIMATION_PREVIEWS.map((anim) => (
+                      <button
+                        key={anim.id}
+                        onClick={() => setSelectedCaptionAnimation(anim.id)}
+                        className={cn(
+                          "shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold transition-all active:scale-95 border",
+                          selectedCaptionAnimation === anim.id
+                            ? "bg-white text-black border-white shadow-lg shadow-white/20"
+                            : "bg-white/10 text-white/80 border-white/10 hover:bg-white/20"
+                        )}
+                      >
+                        {anim.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Caption Style Presets */}
+                  {captionPresets.length > 0 && (
+                    <>
+                      <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1 mt-2">Style Presets</p>
+                      <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+                        {captionPresets.slice(0, 12).map((preset) => (
+                          <button
+                            key={preset.id}
+                            className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                          >
+                            <div
+                              className="w-16 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold border border-white/10"
+                              style={{
+                                fontFamily: preset.style?.fontFamily || 'sans-serif',
+                                color: preset.style?.color || '#fff',
+                                backgroundColor: preset.style?.backgroundColor || 'rgba(0,0,0,0.5)',
+                              }}
+                            >
+                              Abc
+                            </div>
+                            <span className="text-[9px] text-white/60 max-w-[64px] truncate">{preset.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* EFFECTS */}
+              {activeCategory === "effects" && (
+                <div className="space-y-3">
+                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Scene Effects</p>
+                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+                    {[
+                      { id: "none", label: "None", emoji: "🚫" },
+                      { id: "snow", label: "Snow", emoji: "❄️" },
+                      { id: "rain", label: "Rain", emoji: "🌧️" },
+                      { id: "fire", label: "Fire", emoji: "🔥" },
+                      { id: "sparkles", label: "Sparkles", emoji: "✨" },
+                      { id: "neon-pulse", label: "Neon", emoji: "💜" },
+                      { id: "bokeh", label: "Bokeh", emoji: "🔮" },
+                      { id: "dust", label: "Dust", emoji: "🌫️" },
+                    ].map((fx) => (
+                      <button
+                        key={fx.id}
+                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
+                          {fx.emoji}
+                        </div>
+                        <span className="text-[10px] text-white/70 font-medium">{fx.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* FILTERS */}
+              {activeCategory === "filters" && (
+                <div className="space-y-3">
+                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Camera Filters</p>
+                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+                    {QUICK_FILTERS.map((f) => (
+                      <button
+                        key={f.id}
+                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
+                          {f.emoji}
+                        </div>
+                        <span className="text-[10px] text-white/70 font-medium">{f.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* LAYOUT */}
+              {activeCategory === "layout" && (
+                <div className="space-y-3">
+                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Canvas Layouts</p>
+                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+                    {[
+                      { id: "solo", label: "Solo", icon: "📹" },
+                      { id: "pip", label: "PiP", icon: "🖼️" },
+                      { id: "split", label: "Split", icon: "◻️" },
+                      { id: "grid", label: "Grid", icon: "⊞" },
+                    ].map((l) => (
+                      <button
+                        key={l.id}
+                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
+                          {l.icon}
+                        </div>
+                        <span className="text-[10px] text-white/70 font-medium">{l.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setIsDrawerOpen(true)}
+                    className="w-full py-2 rounded-xl bg-white/10 text-xs text-white/70 font-medium hover:bg-white/15 transition-colors"
+                  >
+                    More Layouts & Designs →
+                  </button>
+                </div>
+              )}
+
+              {/* STREAM */}
+              {activeCategory === "stream" && (
+                <div className="space-y-3">
+                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Stream Destinations</p>
+                  {destinations.length === 0 ? (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-white/50 mb-3">No destinations configured</p>
+                      <button
+                        onClick={() => setShowStreamConfig(true)}
+                        className="px-5 py-2.5 bg-primary rounded-full text-sm font-bold text-primary-foreground active:scale-95 transition-transform"
+                      >
+                        + Add Platform
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
+                      {destinations.map((dest) => (
+                        <div key={dest.id} className="shrink-0 flex flex-col items-center gap-1.5">
+                          <div className={cn(
+                            "w-14 h-14 rounded-2xl border flex items-center justify-center transition-colors",
+                            dest.enabled ? "bg-green-500/20 border-green-500/40" : "bg-white/10 border-white/10"
+                          )}>
+                            <Radio className="w-6 h-6" />
+                          </div>
+                          <span className="text-[10px] text-white/70 font-medium max-w-[56px] truncate">{dest.platform}</span>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => setShowStreamConfig(true)}
+                        className="shrink-0 flex flex-col items-center gap-1.5"
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-dashed border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
+                          <span className="text-xl">+</span>
+                        </div>
+                        <span className="text-[10px] text-white/50 font-medium">Add</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Horizontal Tool Category Bar (Instagram-style) ──────── */}
+        <div className="flex gap-1 overflow-x-auto px-3 pb-3" style={{ scrollbarWidth: 'none' }}>
+          {toolBarItems.map((item) => {
+            const active = activeCategory === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleSelectCategory(item.id)}
+                className={cn(
+                  "shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all active:scale-95 border",
+                  active
+                    ? "bg-white text-black border-white shadow-lg shadow-white/10"
+                    : "bg-white/10 text-white/70 border-white/5 hover:bg-white/15"
+                )}
+              >
+                <item.icon className="w-3.5 h-3.5" />
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Action Buttons Row ──────────────────────────────────── */}
+        <div className="flex items-center justify-center gap-6 pb-3">
+          {/* Record Button */}
+          <button
+            onClick={handleRecord}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className={cn(
+              "w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all active:scale-90",
+              isRecording ? "border-red-500" : "border-white/50"
+            )}>
+              <div className={cn(
+                "bg-red-500 transition-all",
+                isRecording ? "w-6 h-6 rounded-md" : "w-10 h-10 rounded-full"
+              )} />
+            </div>
+            <span className="text-[10px] text-white/60 font-medium">Record</span>
+          </button>
+
+          {/* Go Live Button */}
+          <button
+            onClick={handleGoLive}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className={cn(
+              "w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-xl",
+              isStreaming
+                ? "bg-red-600 shadow-red-500/40 border-4 border-red-400"
+                : "bg-gradient-to-br from-primary to-primary/70 shadow-primary/30 border-4 border-white/20"
+            )}>
+              {isStreaming ? (
+                <div className="w-7 h-7 rounded-md bg-white" />
+              ) : (
+                <Radio className="w-8 h-8 text-primary-foreground" />
+              )}
+            </div>
+            <span className={cn(
+              "text-[10px] font-bold",
+              isStreaming ? "text-red-400" : "text-white/80"
+            )}>
+              {isStreaming ? "End Live" : "Go Live"}
+            </span>
+          </button>
+
+          {/* Share Button */}
+          <button
+            onClick={() => toast.info("Share coming soon")}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className="w-14 h-14 rounded-full border-[3px] border-white/30 flex items-center justify-center active:scale-90 transition-transform">
+              <Share2 className="w-6 h-6 text-white/70" />
+            </div>
+            <span className="text-[10px] text-white/60 font-medium">Share</span>
+          </button>
+        </div>
+
+        {/* Safe area spacer */}
+        <div className="h-[env(safe-area-inset-bottom,8px)]" />
+      </div>
+
+      {/* ── Stream Configuration Modal ───────────────────────────── */}
+      <StreamConfigurationModal
+        externalOpen={showStreamConfig}
+        onOpenChange={setShowStreamConfig}
+        onStartStream={() => {
+          setShowStreamConfig(false);
+          setIsStreaming(true);
+        }}
+        onStopStream={() => setIsStreaming(false)}
+      />
+    </div>
+  );
 };

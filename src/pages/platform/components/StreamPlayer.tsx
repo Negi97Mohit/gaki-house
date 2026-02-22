@@ -181,8 +181,9 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     }
 
     // Fallback: other platforms via ReactPlayer
+    const Player = ReactPlayer as any;
     return (
-        <ReactPlayer
+        <Player
             ref={playerRef}
             url={channel.streamUrl}
             width="100%"
