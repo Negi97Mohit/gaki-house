@@ -1,0 +1,963 @@
+[
+  {
+    "id": "B4bJzxoKHi3x8Sn62gJ9__mobile_md",
+    "canvasLayout": {
+      "templateId": "trio",
+      "sections": [
+        {
+          "content": {
+            "type": "color",
+            "color": "#8f55aa"
+          },
+          "id": "left"
+        },
+        {
+          "content": {
+            "type": "camera",
+            "settings": {
+              "pipShadow": {
+                "blur": 0,
+                "color": "rgba(0,0,0,0.5)"
+              },
+              "neonColor": "#00FFFF",
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "videoFilter": "grayscale(1) contrast(1.3)",
+              "cameraAspectRatio": "16:9",
+              "isFaceTrackingEnabled": false,
+              "neonIntensity": 20,
+              "isBeautifyEnabled": false,
+              "isLowLightEnabled": false,
+              "trackingSpeed": 0.08,
+              "isNeonEdgeEnabled": false,
+              "cameraBackground": "none",
+              "zoomSensitivity": 4,
+              "isAutoFramingEnabled": true,
+              "customAspectRatio": "",
+              "customBackgroundUrl": null
+            }
+          },
+          "id": "center"
+        },
+        {
+          "id": "right",
+          "content": {
+            "type": "image",
+            "src": "https://images.pexels.com/photos/34747327/pexels-photo-34747327.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+          }
+        }
+      ]
+    },
+    "textOverlays": [
+      {
+        "style": {
+          "fontSize": 68,
+          "textAlign": "center",
+          "fontWeight": "400",
+          "backgroundColor": "transparent",
+          "color": "#e4d8c4",
+          "fontFamily": "Garamond",
+          "textShadow": "none"
+        },
+        "id": "text-1763393023460-7ryz9snsr",
+        "content": "Wonderful New World",
+        "layout": {
+          "position": {
+            "x": 6.047817825768064,
+            "y": 45.358553048883635
+          },
+          "layerOrder": "above-video",
+          "rotation": -89.53116936341334,
+          "zIndex": 100,
+          "size": {
+            "width": 42.829817158931085,
+            "height": 9.336941813261165
+          }
+        }
+      }
+    ],
+    "downloadCount": 0,
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#1A1A1A",
+      "mobileSafeAreaAware": true
+    },
+    "authorName": "CreatorEnji",
+    "canvasAspectRatio": "9:16",
+    "pip": {
+      "pipSize": {
+        "width": 34,
+        "height": 42
+      },
+      "splitRatio": 0.5,
+      "pipBorder": {
+        "color": "#FFFFFF",
+        "width": 0
+      },
+      "pipPosition": {
+        "x": 33,
+        "y": 52
+      },
+      "layoutMode": "pip",
+      "cameraShape": "rectangle",
+      "pipShadow": {
+        "blur": 0,
+        "color": "rgba(0,0,0,0.5)"
+      }
+    },
+    "styleTags": [
+      "custom"
+    ],
+    "name": "Noir World • MD Mobile",
+    "localId": "custom-preset-1763393462848",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1763393475,
+      "nanoseconds": 687000000
+    },
+    "effects": {
+      "isBeautifyEnabled": false,
+      "videoFilter": "none",
+      "isNeonEdgeEnabled": false,
+      "neonColor": "cyan",
+      "neonIntensity": 20
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "md",
+      "collection": "public_canvas_presets",
+      "sourceId": "B4bJzxoKHi3x8Sn62gJ9"
+    }
+  },
+  {
+    "id": "Fu39bVE1uR0Cyrc5DEsz__mobile_md",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#1A1A1A",
+      "mobileSafeAreaAware": true
+    },
+    "effects": {
+      "videoFilter": "none",
+      "neonIntensity": 20,
+      "isBeautifyEnabled": false,
+      "isNeonEdgeEnabled": false,
+      "neonColor": "cyan"
+    },
+    "localId": "custom-preset-1763399088875",
+    "downloadCount": 0,
+    "styleTags": [
+      "custom"
+    ],
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "top-left"
+        },
+        {
+          "content": {
+            "type": "camera",
+            "settings": {
+              "customBackgroundUrl": null,
+              "videoFilter": "grayscale(1) contrast(1.3)",
+              "isAutoFramingEnabled": true,
+              "cameraBackground": "none",
+              "isLowLightEnabled": false,
+              "neonColor": "#00FFFF",
+              "neonIntensity": 20,
+              "pipBorder": {
+                "color": "#FFFFFF",
+                "width": 0
+              },
+              "trackingSpeed": 0.08,
+              "isFaceTrackingEnabled": false,
+              "isBeautifyEnabled": false,
+              "pipShadow": {
+                "color": "rgba(0,0,0,0.5)",
+                "blur": 0
+              },
+              "cameraAspectRatio": "16:9",
+              "zoomSensitivity": 4,
+              "customAspectRatio": "",
+              "isNeonEdgeEnabled": false
+            }
+          },
+          "id": "top-center"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "top-right"
+        },
+        {
+          "id": "bottom-left",
+          "content": {
+            "src": "https://pixabay.com/get/g73136d1441853d0a416e2db4afed33bed1bcba6ea11d58b7f87ef93e6b5cad504a4a46335509f3ce91fb071781987349451bf744c6d3321c542b948e0457457f_1280.jpg",
+            "type": "image"
+          }
+        },
+        {
+          "id": "bottom-center",
+          "content": {
+            "color": "#ba3b3b",
+            "type": "color"
+          }
+        },
+        {
+          "content": {
+            "type": "camera",
+            "settings": {
+              "pipShadow": {
+                "color": "rgba(0,0,0,0.5)",
+                "blur": 0
+              },
+              "isNeonEdgeEnabled": false,
+              "neonColor": "#00FFFF",
+              "isBeautifyEnabled": false,
+              "customAspectRatio": "",
+              "isLowLightEnabled": false,
+              "trackingSpeed": 0.08,
+              "videoFilter": "hue-rotate(200deg) saturate(2.8) contrast(1.4)",
+              "isFaceTrackingEnabled": false,
+              "neonIntensity": 20,
+              "isAutoFramingEnabled": false,
+              "cameraAspectRatio": "16:9",
+              "customBackgroundUrl": null,
+              "cameraBackground": "none",
+              "zoomSensitivity": 4,
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              }
+            }
+          },
+          "id": "bottom-right"
+        }
+      ],
+      "templateId": "grid-six"
+    },
+    "name": "LoremIosum • MD Mobile",
+    "authorName": "CreatorEnji",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1763399100,
+      "nanoseconds": 526000000
+    },
+    "textOverlays": [
+      {
+        "id": "text-1763398815520-19mv9s5d3",
+        "content": "Wonderful New World",
+        "style": {
+          "textShadow": "none",
+          "fontWeight": "400",
+          "fontFamily": "Garamond",
+          "backgroundColor": "transparent",
+          "textAlign": "center",
+          "fontSize": 68,
+          "color": "#e4d8c4"
+        },
+        "layout": {
+          "rotation": -89.53116936341334,
+          "zIndex": 100,
+          "layerOrder": "above-video",
+          "position": {
+            "x": 6.047817825768064,
+            "y": 45.358553048883635
+          },
+          "size": {
+            "width": 42.829817158931085,
+            "height": 9.336941813261165
+          }
+        }
+      }
+    ],
+    "pip": {
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 42
+      },
+      "splitRatio": 0.5,
+      "pipPosition": {
+        "x": 33,
+        "y": 52
+      },
+      "cameraShape": "rectangle",
+      "pipBorder": {
+        "color": "#FFFFFF",
+        "width": 0
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.5)",
+        "blur": 0
+      }
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "md",
+      "collection": "public_canvas_presets",
+      "sourceId": "Fu39bVE1uR0Cyrc5DEsz"
+    }
+  },
+  {
+    "id": "H43kv0AUlEqe9pZhfwIB__mobile_md",
+    "canvasAspectRatio": "9:16",
+    "textOverlays": [
+      {
+        "id": "text-1763393023460-7ryz9snsr",
+        "style": {
+          "fontFamily": "Times New Roman",
+          "textAlign": "center",
+          "textShadow": "0 10px 30px rgba(0,0,0,0.9), 0 0 60px rgba(255,255,255,0.3)",
+          "color": "#FFFFFF",
+          "fontSize": 58,
+          "backgroundColor": "transparent",
+          "fontWeight": "400"
+        },
+        "content": "Unaware Times",
+        "layout": {
+          "position": {
+            "x": 13.22081467941005,
+            "y": 6.657605822902571
+          },
+          "rotation": 0.6118620797037266,
+          "zIndex": 100,
+          "layerOrder": "above-video",
+          "size": {
+            "width": 71.68495077355836,
+            "height": 9.336941813261165
+          }
+        }
+      }
+    ],
+    "name": "Unaware TImes • MD Mobile",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#1A1A1A",
+      "mobileSafeAreaAware": true
+    },
+    "authorName": "Creator Enji",
+    "effects": {
+      "neonIntensity": 20,
+      "neonColor": "cyan",
+      "isBeautifyEnabled": false,
+      "videoFilter": "none",
+      "isNeonEdgeEnabled": false
+    },
+    "pip": {
+      "splitRatio": 0.5,
+      "layoutMode": "pip",
+      "pipSize": {
+        "width": 34,
+        "height": 42
+      },
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.5)",
+        "blur": 0
+      },
+      "pipBorder": {
+        "color": "#FFFFFF",
+        "width": 0
+      },
+      "pipPosition": {
+        "x": 33,
+        "y": 52
+      },
+      "cameraShape": "rectangle"
+    },
+    "localId": "custom-preset-1763393721846",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1763393731,
+      "nanoseconds": 219000000
+    },
+    "downloadCount": 0,
+    "canvasLayout": {
+      "templateId": "magazine-layout",
+      "sections": [
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "header"
+        },
+        {
+          "content": {
+            "settings": {
+              "videoFilter": "sepia(0.6) brightness(0.9) contrast(1.2)",
+              "isBeautifyEnabled": false,
+              "neonColor": "#00FFFF",
+              "isFaceTrackingEnabled": false,
+              "isAutoFramingEnabled": false,
+              "isLowLightEnabled": false,
+              "neonIntensity": 20,
+              "pipShadow": {
+                "blur": 0,
+                "color": "rgba(0,0,0,0.5)"
+              },
+              "trackingSpeed": 0.08,
+              "isNeonEdgeEnabled": false,
+              "cameraAspectRatio": "16:9",
+              "cameraBackground": "none",
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "customBackgroundUrl": null,
+              "zoomSensitivity": 4,
+              "customAspectRatio": ""
+            },
+            "type": "camera"
+          },
+          "id": "col-left"
+        },
+        {
+          "id": "col-center",
+          "content": {
+            "type": "camera",
+            "settings": {
+              "pipShadow": {
+                "blur": 0,
+                "color": "rgba(0,0,0,0.5)"
+              },
+              "trackingSpeed": 0.08,
+              "isNeonEdgeEnabled": false,
+              "isBeautifyEnabled": false,
+              "neonIntensity": 20,
+              "isAutoFramingEnabled": true,
+              "cameraBackground": "none",
+              "videoFilter": "contrast(1.8) brightness(1.1)",
+              "customAspectRatio": "",
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "zoomSensitivity": 4,
+              "cameraAspectRatio": "16:9",
+              "isLowLightEnabled": false,
+              "customBackgroundUrl": null,
+              "neonColor": "#00FFFF",
+              "isFaceTrackingEnabled": false
+            }
+          }
+        },
+        {
+          "content": {
+            "type": "camera",
+            "settings": {
+              "trackingSpeed": 0.08,
+              "isNeonEdgeEnabled": false,
+              "pipShadow": {
+                "blur": 0,
+                "color": "rgba(0,0,0,0.5)"
+              },
+              "pipBorder": {
+                "color": "#FFFFFF",
+                "width": 0
+              },
+              "neonIntensity": 20,
+              "isFaceTrackingEnabled": false,
+              "isLowLightEnabled": false,
+              "neonColor": "#00FFFF",
+              "customAspectRatio": "",
+              "customBackgroundUrl": null,
+              "isBeautifyEnabled": false,
+              "cameraBackground": "none",
+              "cameraAspectRatio": "16:9",
+              "zoomSensitivity": 4,
+              "videoFilter": "hue-rotate(200deg) saturate(2.8) contrast(1.4)",
+              "isAutoFramingEnabled": false
+            }
+          },
+          "id": "col-right"
+        }
+      ]
+    },
+    "styleTags": [
+      "custom"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "md",
+      "collection": "public_canvas_presets",
+      "sourceId": "H43kv0AUlEqe9pZhfwIB"
+    }
+  },
+  {
+    "id": "OyLTviuMBYAnWRArBcwp__mobile_md",
+    "downloadCount": 0,
+    "name": "Intro • MD Mobile",
+    "textOverlays": [
+      {
+        "id": "text-1766503465551-lf3rg8d85",
+        "content": "Do we Dare",
+        "layout": {
+          "layerOrder": "above-video",
+          "zIndex": 15,
+          "size": {
+            "width": 48.5356629362254,
+            "height": 17.499502567606143
+          },
+          "rotation": 0,
+          "position": {
+            "x": 22.24384463453761,
+            "y": 34.75024130714951
+          }
+        },
+        "style": {
+          "color": "#1A1A1A",
+          "textAlign": "center",
+          "fontWeight": "400",
+          "fontSize": 72,
+          "fontFamily": "Playfair Display",
+          "backgroundColor": "transparent",
+          "textShadow": "none"
+        }
+      },
+      {
+        "id": "text-1766503465551-xdp765v9e",
+        "style": {
+          "fontSize": 30,
+          "backgroundColor": "transparent",
+          "fontWeight": "400",
+          "fontFamily": "Inter",
+          "textAlign": "center",
+          "textShadow": "none",
+          "color": "#000000"
+        },
+        "layout": {
+          "layerOrder": "above-video",
+          "position": {
+            "x": 1.2113898984155007,
+            "y": 79.38916147771481
+          },
+          "size": {
+            "width": 19.34985835723234,
+            "height": 11.243942881004736
+          },
+          "rotation": 0,
+          "zIndex": 15
+        },
+        "content": "gaki.netlify.app"
+      },
+      {
+        "content": "|||||||||||||||||||||||",
+        "layout": {
+          "position": {
+            "x": 55,
+            "y": 85.5
+          },
+          "layerOrder": "above-video",
+          "zIndex": 15,
+          "size": {
+            "width": 36.800000000000004,
+            "height": 8
+          },
+          "rotation": 0
+        },
+        "id": "text-1766503465551-a8n2atx30",
+        "style": {
+          "backgroundColor": "transparent",
+          "textAlign": "center",
+          "color": "#1A1A1A",
+          "fontFamily": "Courier New",
+          "fontSize": 32,
+          "textShadow": "none",
+          "fontWeight": "400"
+        }
+      }
+    ],
+    "localId": "custom-preset-1766503653399-rd73kpe2g",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766503663,
+      "nanoseconds": 585000000
+    },
+    "canvasLayout": null,
+    "authorName": "Enji",
+    "pip": {
+      "cameraShape": "rectangle",
+      "pipSize": {
+        "width": 34,
+        "height": 42
+      },
+      "splitRatio": 0.5,
+      "pipBorder": {
+        "color": "#FFFFFF",
+        "width": 0
+      },
+      "layoutMode": "pip",
+      "pipShadow": {
+        "color": "rgba(0,0,0,0.5)",
+        "blur": 0
+      },
+      "pipPosition": {
+        "x": 33,
+        "y": 52
+      }
+    },
+    "effects": {
+      "neonColor": "cyan",
+      "videoFilter": "brightness(1.05)",
+      "isNeonEdgeEnabled": false,
+      "neonIntensity": 20,
+      "isBeautifyEnabled": false
+    },
+    "styleTags": [
+      "custom"
+    ],
+    "canvasAspectRatio": "9:16",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#F5F5F5",
+      "mobileSafeAreaAware": true
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "md",
+      "collection": "public_canvas_presets",
+      "sourceId": "OyLTviuMBYAnWRArBcwp"
+    }
+  },
+  {
+    "id": "o7MDwUnkPV9os9aVYnKf__mobile_md",
+    "canvasLayout": {
+      "templateId": "quad",
+      "sections": [
+        {
+          "id": "top-left",
+          "content": {
+            "settings": {
+              "zoomSensitivity": 4,
+              "isFaceTrackingEnabled": false,
+              "pipShadow": {
+                "color": "rgba(0,0,0,0.5)",
+                "blur": 0
+              },
+              "isNeonEdgeEnabled": false,
+              "neonIntensity": 20,
+              "customAspectRatio": "",
+              "neonColor": "#00FFFF",
+              "cameraBackground": "none",
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "isBeautifyEnabled": false,
+              "cameraAspectRatio": "16:9",
+              "videoFilter": "grayscale(1) contrast(1.3)",
+              "isLowLightEnabled": false,
+              "isAutoFramingEnabled": false,
+              "trackingSpeed": 0.08,
+              "customBackgroundUrl": null
+            },
+            "type": "camera"
+          }
+        },
+        {
+          "content": {
+            "settings": {
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "neonIntensity": 20,
+              "isNeonEdgeEnabled": false,
+              "neonColor": "#00FFFF",
+              "isFaceTrackingEnabled": false,
+              "videoFilter": "none",
+              "cameraAspectRatio": "16:9",
+              "isAutoFramingEnabled": false,
+              "customBackgroundUrl": null,
+              "trackingSpeed": 0.08,
+              "isBeautifyEnabled": false,
+              "cameraBackground": "none",
+              "zoomSensitivity": 4,
+              "isLowLightEnabled": false,
+              "pipShadow": {
+                "color": "rgba(0,0,0,0.5)",
+                "blur": 0
+              },
+              "customAspectRatio": ""
+            },
+            "type": "camera"
+          },
+          "id": "top-right"
+        },
+        {
+          "content": {
+            "settings": {
+              "zoomSensitivity": 4,
+              "pipShadow": {
+                "color": "rgba(0,0,0,0.5)",
+                "blur": 0
+              },
+              "isAutoFramingEnabled": false,
+              "trackingSpeed": 0.08,
+              "customAspectRatio": "",
+              "customBackgroundUrl": null,
+              "isFaceTrackingEnabled": false,
+              "cameraAspectRatio": "16:9",
+              "isLowLightEnabled": false,
+              "neonIntensity": 20,
+              "isNeonEdgeEnabled": false,
+              "videoFilter": "hue-rotate(90deg) saturate(2.5)",
+              "cameraBackground": "none",
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "neonColor": "#00FFFF",
+              "isBeautifyEnabled": false
+            },
+            "type": "camera"
+          },
+          "id": "bottom-left"
+        },
+        {
+          "id": "bottom-right",
+          "content": {
+            "type": "empty"
+          }
+        }
+      ]
+    },
+    "styleTags": [
+      "custom"
+    ],
+    "authorName": "Anonymous",
+    "effects": {
+      "neonColor": "cyan",
+      "neonIntensity": 20,
+      "videoFilter": "none",
+      "isNeonEdgeEnabled": false,
+      "isBeautifyEnabled": false
+    },
+    "textOverlays": [],
+    "downloadCount": 0,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1763881125,
+      "nanoseconds": 910000000
+    },
+    "localId": "custom-preset-1763355742163",
+    "canvasAspectRatio": "9:16",
+    "background": {
+      "blankCanvasColor": "#1A1A1A",
+      "backgroundEffect": "none",
+      "mobileSafeAreaAware": true
+    },
+    "pip": {
+      "pipSize": {
+        "width": 34,
+        "height": 42
+      },
+      "pipShadow": {
+        "blur": 0,
+        "color": "rgba(0,0,0,0.5)"
+      },
+      "layoutMode": "pip",
+      "pipBorder": {
+        "width": 0,
+        "color": "#FFFFFF"
+      },
+      "splitRatio": 0.5,
+      "cameraShape": "rectangle",
+      "pipPosition": {
+        "x": 33,
+        "y": 52
+      }
+    },
+    "name": "test • MD Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "md",
+      "collection": "public_canvas_presets",
+      "sourceId": "o7MDwUnkPV9os9aVYnKf"
+    }
+  },
+  {
+    "id": "yR8ppzQ4PfAyKERYZs8v__mobile_md",
+    "textOverlays": [],
+    "name": "ghibli • MD Mobile",
+    "background": {
+      "blankCanvasColor": "#1A1A1A",
+      "backgroundEffect": "none",
+      "mobileSafeAreaAware": true
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1763715659,
+      "nanoseconds": 216000000
+    },
+    "downloadCount": 0,
+    "canvasLayout": {
+      "templateId": "grid-six",
+      "sections": [
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "top-left"
+        },
+        {
+          "id": "top-center",
+          "content": {
+            "settings": {
+              "pipShadow": {
+                "blur": 0,
+                "color": "rgba(0,0,0,0.5)"
+              },
+              "trackingSpeed": 0.08,
+              "isAutoFramingEnabled": false,
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "neonIntensity": 20,
+              "videoFilter": "none",
+              "cameraAspectRatio": "16:9",
+              "isLowLightEnabled": false,
+              "cameraBackground": "none",
+              "customBackgroundUrl": null,
+              "activeInteractiveFilter": "ghibliSoft",
+              "zoomSensitivity": 4,
+              "isFaceTrackingEnabled": false,
+              "isNeonEdgeEnabled": false,
+              "neonColor": "#00FFFF",
+              "customAspectRatio": "",
+              "isBeautifyEnabled": false
+            },
+            "type": "camera"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "top-right"
+        },
+        {
+          "id": "bottom-left",
+          "content": {
+            "settings": {
+              "neonColor": "#00FFFF",
+              "activeInteractiveFilter": "pixarSoft",
+              "isFaceTrackingEnabled": false,
+              "customAspectRatio": "",
+              "isNeonEdgeEnabled": false,
+              "isLowLightEnabled": false,
+              "trackingSpeed": 0.08,
+              "isAutoFramingEnabled": false,
+              "pipBorder": {
+                "width": 0,
+                "color": "#FFFFFF"
+              },
+              "cameraBackground": "none",
+              "customBackgroundUrl": null,
+              "isBeautifyEnabled": false,
+              "neonIntensity": 20,
+              "zoomSensitivity": 4,
+              "cameraAspectRatio": "16:9",
+              "pipShadow": {
+                "color": "rgba(0,0,0,0.5)",
+                "blur": 0
+              },
+              "videoFilter": "none"
+            },
+            "type": "camera"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "bottom-center"
+        },
+        {
+          "content": {
+            "type": "camera",
+            "settings": {
+              "neonIntensity": 20,
+              "pipBorder": {
+                "color": "#FFFFFF",
+                "width": 0
+              },
+              "videoFilter": "none",
+              "isBeautifyEnabled": false,
+              "activeInteractiveFilter": "pastelCute",
+              "cameraBackground": "none",
+              "isFaceTrackingEnabled": false,
+              "trackingSpeed": 0.08,
+              "pipShadow": {
+                "blur": 0,
+                "color": "rgba(0,0,0,0.5)"
+              },
+              "customBackgroundUrl": null,
+              "isNeonEdgeEnabled": false,
+              "cameraAspectRatio": "16:9",
+              "neonColor": "#00FFFF",
+              "zoomSensitivity": 4,
+              "isAutoFramingEnabled": false,
+              "isLowLightEnabled": false,
+              "customAspectRatio": ""
+            }
+          },
+          "id": "bottom-right"
+        }
+      ]
+    },
+    "pip": {
+      "layoutMode": "pip",
+      "pipShadow": {
+        "blur": 0,
+        "color": "rgba(0,0,0,0.5)"
+      },
+      "pipBorder": {
+        "width": 0,
+        "color": "#FFFFFF"
+      },
+      "cameraShape": "rectangle",
+      "splitRatio": 0.5,
+      "pipPosition": {
+        "x": 33,
+        "y": 52
+      },
+      "pipSize": {
+        "width": 34,
+        "height": 42
+      }
+    },
+    "styleTags": [
+      "custom"
+    ],
+    "authorName": "enji",
+    "canvasAspectRatio": "9:16",
+    "localId": "custom-preset-1763715650466",
+    "effects": {
+      "neonIntensity": 20,
+      "isNeonEdgeEnabled": false,
+      "isBeautifyEnabled": false,
+      "videoFilter": "none",
+      "neonColor": "cyan"
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "md",
+      "collection": "public_canvas_presets",
+      "sourceId": "yR8ppzQ4PfAyKERYZs8v"
+    }
+  }
+]

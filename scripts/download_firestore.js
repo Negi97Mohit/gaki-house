@@ -43,8 +43,11 @@ async function downloadFirestore() {
 
     const allData = {};
 
+    let failedCollections = 0;
+
     for (const colName of collectionsToDownload) {
         console.log(`Downloading collection: ${colName}`);
+        const filePath = path.join(dataDir, `${colName}.json`);
         try {
             const colRef = collection(db, colName);
             const snapshot = await getDocs(colRef);
@@ -54,17 +57,47 @@ async function downloadFirestore() {
             });
             console.log(`- Fetched ${items.length} items from ${colName}`);
 
-            const filePath = path.join(dataDir, `${colName}.json`);
+            // Don't clobber existing exports on transient network/proxy failures.
+            if (items.length === 0) {
+                try {
+                    const existingRaw = await fs.readFile(filePath, "utf-8");
+                    const existing = JSON.parse(existingRaw);
+                    if (Array.isArray(existing) && existing.length > 0) {
+                        console.warn(`- Keeping existing ${colName}.json (${existing.length} items) because fetched set is empty.`);
+                        allData[colName] = existing;
+                        continue;
+                    }
+                } catch {
+                    // no existing file, continue with write
+                }
+            }
+
             await fs.writeFile(filePath, JSON.stringify(items, null, 2));
 
             allData[colName] = items;
         } catch (error) {
             console.error(`Error downloading ${colName}:`, error.message);
+            failedCollections += 1;
+
+            // Keep current local snapshot if download fails.
+            try {
+                const existingRaw = await fs.readFile(filePath, "utf-8");
+                const existing = JSON.parse(existingRaw);
+                if (Array.isArray(existing)) {
+                    allData[colName] = existing;
+                    console.warn(`- Reused existing local export for ${colName} (${existing.length} items).`);
+                }
+            } catch {
+                allData[colName] = [];
+            }
         }
     }
 
     await fs.writeFile(path.join(dataDir, 'all_data.json'), JSON.stringify(allData, null, 2));
     console.log("Download complete! Exported to data/firestore_export");
+    if (failedCollections > 0) {
+        console.warn(`Completed with ${failedCollections} failed collection downloads (local snapshots were preserved where available).`);
+    }
     process.exit(0);
 }
 

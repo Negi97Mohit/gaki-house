@@ -1,0 +1,954 @@
+[
+  {
+    "id": "acid__mobile_xs",
+    "name": "Acid • XS Mobile",
+    "style": "hue-rotate(100deg) saturate(3)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "acid",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "amber__mobile_xs",
+    "style": "sepia(0.3) hue-rotate(25deg) brightness(1.1)",
+    "name": "Amber • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "amber",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "aqua__mobile_xs",
+    "style": "hue-rotate(180deg) saturate(1.8) brightness(1.1)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Aqua • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "aqua",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "blush__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "style": "hue-rotate(-5deg) saturate(1.6) brightness(1.1)",
+    "name": "Blush • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "blush",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "burnt__mobile_xs",
+    "name": "Burnt • XS Mobile",
+    "style": "sepia(0.5) contrast(1.3) brightness(0.9)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "burnt",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "candy__mobile_xs",
+    "name": "Candy • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "saturate(2.5) brightness(1.2)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "candy",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "carbon__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "name": "Carbon • XS Mobile",
+    "style": "contrast(1.3) grayscale(0.6)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "carbon",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "cold-steel__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Cold Steel • XS Mobile",
+    "style": "hue-rotate(210deg) contrast(1.3) brightness(1)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "cold-steel",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "cool-breeze__mobile_xs",
+    "name": "Cool Breeze • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "hue-rotate(180deg) brightness(1.2) contrast(1.1)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "cool-breeze",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "coral__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "hue-rotate(-10deg) saturate(1.8) brightness(1.05)",
+    "name": "Coral • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "coral",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "crimson__mobile_xs",
+    "style": "sepia(0.4) hue-rotate(-20deg) saturate(1.5)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Crimson • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "crimson",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "cyber-neon__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "style": "hue-rotate(270deg) contrast(1.8) saturate(2.5) drop-shadow(0 0 5px #00ffff) drop-shadow(0 0 15px #ff00ff)",
+    "name": "Cyber Neon • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "cyber-neon",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "cyberpunk__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "hue-rotate(200deg) saturate(2.8) contrast(1.4)",
+    "name": "Cyberpunk • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "cyberpunk",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "deep-blue__mobile_xs",
+    "style": "hue-rotate(220deg) saturate(1.6) brightness(1.1)",
+    "name": "Deep Blue • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "deep-blue",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "desert__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Desert • XS Mobile",
+    "style": "sepia(0.4) hue-rotate(15deg) contrast(1.1)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "desert",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "dreamcore__mobile_xs",
+    "style": "blur(0.8px) brightness(1.1) saturate(1.4)",
+    "name": "Dreamcore • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "dreamcore",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "dreamscape__mobile_xs",
+    "style": "blur(1px) saturate(1.4) brightness(1.2)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Dreamscape • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "dreamscape",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "dreamy__mobile_xs",
+    "name": "Dreamy • XS Mobile",
+    "style": "saturate(1.8) blur(0.5px) brightness(1.1)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "dreamy",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "dusk__mobile_xs",
+    "style": "hue-rotate(-20deg) brightness(0.9) contrast(1.1)",
+    "name": "Dusk • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "dusk",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "electric__mobile_xs",
+    "style": "hue-rotate(220deg) brightness(1.3) saturate(2.2)",
+    "name": "Electric • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "electric",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "emerald__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "name": "Emerald • XS Mobile",
+    "style": "hue-rotate(120deg) saturate(1.8) brightness(1.1)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "emerald",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "espresso__mobile_xs",
+    "style": "sepia(0.6) contrast(1.3) brightness(0.95)",
+    "name": "Espresso • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "espresso",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "faded__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Faded • XS Mobile",
+    "style": "contrast(0.85) brightness(1.1)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "faded",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "film__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Film • XS Mobile",
+    "style": "contrast(1.3) brightness(0.95) sepia(0.3)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "film",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "forest__mobile_xs",
+    "name": "Forest • XS Mobile",
+    "style": "hue-rotate(60deg) saturate(1.3) contrast(1.2)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "forest",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "frost__mobile_xs",
+    "style": "contrast(1.1) brightness(1.3) saturate(0.9)",
+    "name": "Frost • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "frost",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "glow__mobile_xs",
+    "style": "brightness(1.4) saturate(1.5)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "name": "Glow • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "glow",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "golden-hour__mobile_xs",
+    "name": "Golden Hour • XS Mobile",
+    "style": "sepia(0.3) saturate(1.4) brightness(1.1) hue-rotate(15deg)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "golden-hour",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "gritty__mobile_xs",
+    "name": "Gritty • XS Mobile",
+    "style": "contrast(1.4) brightness(0.9) grayscale(0.4)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "gritty",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "haze__mobile_xs",
+    "name": "Haze • XS Mobile",
+    "style": "brightness(1.3) contrast(0.8) blur(0.3px)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "haze",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "high-contrast__mobile_xs",
+    "style": "contrast(1.8) brightness(1.1)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "High Contrast • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "high-contrast",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "hologram__mobile_xs",
+    "name": "Hologram • XS Mobile",
+    "style": "hue-rotate(180deg) brightness(1.3) contrast(1.2)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "hologram",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "icy__mobile_xs",
+    "name": "Icy • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "contrast(1.2) brightness(1.1) saturate(0.8)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "icy",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "lavender__mobile_xs",
+    "style": "hue-rotate(250deg) brightness(1.1)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Lavender • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "lavender",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "lunar__mobile_xs",
+    "name": "Lunar • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "style": "brightness(1.2) contrast(1.1) saturate(0.9) hue-rotate(180deg)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "lunar",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "matte__mobile_xs",
+    "style": "contrast(0.9) brightness(1.05) saturate(0.8)",
+    "name": "Matte • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "matte",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "mist__mobile_xs",
+    "name": "Mist • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "blur(1.5px) brightness(1.2) contrast(0.9)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "mist",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "mono__mobile_xs",
+    "name": "Monochrome • XS Mobile",
+    "style": "grayscale(1) brightness(1.1)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "mono",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "moody__mobile_xs",
+    "name": "Moody • XS Mobile",
+    "style": "contrast(1.4) brightness(0.9) saturate(0.8)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "moody",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "muted__mobile_xs",
+    "name": "Muted • XS Mobile",
+    "style": "saturate(0.7) brightness(1.1)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "muted",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "mystic__mobile_xs",
+    "style": "hue-rotate(250deg) saturate(2) contrast(1.1)",
+    "name": "Mystic • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "mystic",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "neon__mobile_xs",
+    "style": "saturate(3) brightness(1.2) hue-rotate(300deg)",
+    "name": "Neon • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "neon",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "neon-edge__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "style": "contrast(2) brightness(1.2) saturate(2) drop-shadow(0 0 3px #0ff) drop-shadow(0 0 8px #f0f)",
+    "name": "Neon Edge • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "neon-edge",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "neon-outline__mobile_xs",
+    "name": "Neon Outline • XS Mobile",
+    "style": "drop-shadow(0 0 2px cyan) drop-shadow(0 0 5px cyan) drop-shadow(0 0 10px magenta) drop-shadow(0 0 20px magenta) contrast(1.3) saturate(1.5)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "neon-outline",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "night-vision__mobile_xs",
+    "style": "hue-rotate(100deg) brightness(0.8) saturate(1.8)",
+    "name": "Night Vision • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "night-vision",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "noir__mobile_xs",
+    "style": "grayscale(1) contrast(1.3)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Noir • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "noir",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "none__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.093Z",
+    "style": "none",
+    "name": "None • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "none",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "oceanic__mobile_xs",
+    "style": "hue-rotate(170deg) saturate(1.4) contrast(1.2)",
+    "name": "Oceanic • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "oceanic",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "onyx__mobile_xs",
+    "style": "brightness(0.8) contrast(1.4) grayscale(0.5)",
+    "name": "Onyx • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "onyx",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "pearl__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "style": "brightness(1.4) contrast(0.95) saturate(0.9)",
+    "name": "Pearl • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "pearl",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "platinum__mobile_xs",
+    "style": "grayscale(0.6) brightness(1.3)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Platinum • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "platinum",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "polaroid__mobile_xs",
+    "style": "contrast(1.2) brightness(1.15) sepia(0.2)",
+    "name": "Polaroid • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "polaroid",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "punchy__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "style": "contrast(1.5) saturate(2)",
+    "name": "Punchy • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "punchy",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "radiant__mobile_xs",
+    "style": "brightness(1.3) saturate(1.6)",
+    "name": "Radiant • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "radiant",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "retro__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "sepia(0.6) contrast(1.1) brightness(0.9)",
+    "name": "Retro • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "retro",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "rose__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "sepia(0.2) hue-rotate(-30deg) brightness(1.1)",
+    "name": "Rose • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "rose",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "shadow__mobile_xs",
+    "name": "Shadow • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "contrast(1.6) brightness(0.85)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "shadow",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "smoke__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "contrast(0.9) grayscale(0.8) brightness(1.05)",
+    "name": "Smoke • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "smoke",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "soft-focus__mobile_xs",
+    "style": "blur(1px) brightness(1.1)",
+    "name": "Soft Focus • XS Mobile",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "soft-focus",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "steelblue__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "style": "hue-rotate(190deg) brightness(1.05) contrast(1.1)",
+    "name": "Steel Blue • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "steelblue",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "sunkissed__mobile_xs",
+    "style": "sepia(0.3) brightness(1.15) contrast(1.1)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "name": "Sunkissed • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "sunkissed",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "sunset__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "sepia(0.5) saturate(1.6) hue-rotate(-10deg)",
+    "name": "Sunset • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "sunset",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "technicolor__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "name": "Technicolor • XS Mobile",
+    "style": "hue-rotate(90deg) saturate(2.5)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "technicolor",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "vaporwave__mobile_xs",
+    "name": "Vaporwave • XS Mobile",
+    "style": "hue-rotate(260deg) saturate(2.4) brightness(1.2)",
+    "migratedAt": "2025-12-22T11:12:12.095Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "vaporwave",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "vibrant__mobile_xs",
+    "name": "Vibrant • XS Mobile",
+    "style": "saturate(2.2) contrast(1.3)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "vibrant",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "vintage__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.093Z",
+    "style": "sepia(0.6) brightness(0.9) contrast(1.2)",
+    "name": "Vintage • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "vintage",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "warm-glow__mobile_xs",
+    "name": "Warm Glow • XS Mobile",
+    "style": "sepia(0.3) contrast(1.2) brightness(1.05)",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "warm-glow",
+      "recommendedIntensity": 0.65
+    }
+  },
+  {
+    "id": "washed__mobile_xs",
+    "migratedAt": "2025-12-22T11:12:12.094Z",
+    "style": "contrast(0.8) brightness(1.2)",
+    "name": "Washed • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "filters",
+      "sourceId": "washed",
+      "recommendedIntensity": 0.65
+    }
+  }
+]

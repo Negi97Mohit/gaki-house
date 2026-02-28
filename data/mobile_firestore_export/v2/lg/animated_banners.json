@@ -1,0 +1,1495 @@
+[
+  {
+    "id": "aurora-flow__mobile_lg",
+    "preview": "linear-gradient(135deg, #001a1a 0%, #002233 50%, #001122 100%)",
+    "description": "Flowing aurora borealis with dynamic color waves",
+    "particleSettings": {
+      "speed": 0.1,
+      "size": 0.01,
+      "noise": 0.8,
+      "color": "#00ff88",
+      "colorVariant": "#ff00aa",
+      "count": 200
+    },
+    "showTagline": true,
+    "animatedBehaviors": [
+      "wave-flow",
+      "color-shift",
+      "shimmer"
+    ],
+    "shaderEffects": [
+      {
+        "name": "aurora",
+        "uniforms": {
+          "colorMix": 0.7,
+          "waveSpeed": 0.5
+        }
+      },
+      {
+        "uniforms": {
+          "intensity": 1.5
+        },
+        "name": "bloom"
+      }
+    ],
+    "showAvatar": true,
+    "colorVariants": [
+      "green-pink",
+      "blue-purple",
+      "cyan-orange"
+    ],
+    "layout": "mobile-stack",
+    "name": "Aurora Flow • LG Mobile",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "theme": "ethereal",
+    "recommendedUseCases": [
+      "nature",
+      "ambient",
+      "meditation"
+    ],
+    "maxLinks": 4,
+    "layers": {
+      "midground": "aurora-bands",
+      "foreground": "star-dust",
+      "background": "arctic-sky"
+    },
+    "motionSystem": {
+      "postprocessing": [
+        "bloom"
+      ],
+      "shaders": [
+        "aurora-wave",
+        "color-blend"
+      ],
+      "particles": true
+    },
+    "technologiesUsed": [
+      "react-three-fiber",
+      "simplex-noise",
+      "postprocessing"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "aurora-flow"
+    }
+  },
+  {
+    "id": "cosmic-swarm__mobile_lg",
+    "showAvatar": true,
+    "maxLinks": 4,
+    "layers": {
+      "background": "deep-space",
+      "midground": "nebula-clouds",
+      "foreground": "star-particles"
+    },
+    "motionSystem": {
+      "shaders": [
+        "cosmic-glow",
+        "nebula-fog"
+      ],
+      "particles": true,
+      "postprocessing": [
+        "bloom",
+        "chromatic-aberration"
+      ]
+    },
+    "layout": "mobile-stack",
+    "colorVariants": [
+      "purple-blue",
+      "pink-cyan",
+      "orange-red"
+    ],
+    "preview": "linear-gradient(135deg, #0a0015 0%, #1a0a30 50%, #0f051a 100%)",
+    "theme": "cosmic",
+    "particleSettings": {
+      "count": 500,
+      "size": 0.02,
+      "speed": 0.3,
+      "colorVariant": "#3b82f6",
+      "noise": 0.5,
+      "color": "#a855f7"
+    },
+    "showTagline": true,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "name": "Cosmic Swarm • LG Mobile",
+    "technologiesUsed": [
+      "react-three-fiber",
+      "drei",
+      "simplex-noise",
+      "postprocessing"
+    ],
+    "animatedBehaviors": [
+      "orbital-particles",
+      "pulsing-glow",
+      "nebula-drift"
+    ],
+    "source": "system",
+    "shaderEffects": [
+      {
+        "name": "bloom",
+        "uniforms": {
+          "threshold": 0.2,
+          "intensity": 2.5
+        }
+      },
+      {
+        "uniforms": {
+          "offset": 0.002
+        },
+        "name": "chromatic-aberration"
+      }
+    ],
+    "recommendedUseCases": [
+      "vtuber",
+      "cosmic-streamer",
+      "space-games"
+    ],
+    "description": "Ethereal particle swarm with gravitational pull around the banner frame",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "cosmic-swarm"
+    }
+  },
+  {
+    "id": "crystal-prism__mobile_lg",
+    "animatedBehaviors": [
+      "crystal-rotation",
+      "light-refraction",
+      "shard-orbit"
+    ],
+    "layers": {
+      "foreground": "light-rays",
+      "midground": "crystal-formation",
+      "background": "void-gradient"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "source": "system",
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "dispersion": 0.05,
+          "ior": 2.4
+        },
+        "name": "refraction"
+      },
+      {
+        "name": "bloom",
+        "uniforms": {
+          "intensity": 2
+        }
+      }
+    ],
+    "showTagline": true,
+    "technologiesUsed": [
+      "react-three-fiber",
+      "drei",
+      "postprocessing"
+    ],
+    "layout": "mobile-stack",
+    "recommendedUseCases": [
+      "luxury",
+      "jewelry",
+      "premium"
+    ],
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%)",
+    "name": "Crystal Prism • LG Mobile",
+    "motionSystem": {
+      "postprocessing": [
+        "bloom",
+        "depth-of-field"
+      ],
+      "objects3D": [
+        "crystal-main",
+        "crystal-shards"
+      ],
+      "shaders": [
+        "refraction",
+        "rainbow-dispersion"
+      ]
+    },
+    "showAvatar": true,
+    "theme": "ethereal",
+    "particleSettings": {
+      "size": 0.02,
+      "count": 30,
+      "noise": 0.2,
+      "color": "#ffffff",
+      "speed": 0.1
+    },
+    "colorVariants": [
+      "diamond",
+      "amethyst",
+      "emerald",
+      "ruby"
+    ],
+    "description": "Rotating crystal with light refraction and rainbow dispersion",
+    "maxLinks": 4,
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "crystal-prism"
+    }
+  },
+  {
+    "id": "cyber-pulse__mobile_lg",
+    "preview": "linear-gradient(135deg, #0a0014 0%, #1a0033 50%, #0d001a 100%)",
+    "theme": "cyber",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "layout": "mobile-stack",
+    "particleSettings": {
+      "speed": 0.4,
+      "size": 0.02,
+      "count": 50,
+      "color": "#00ffcc",
+      "noise": 0.3,
+      "colorVariant": "#ff00ff"
+    },
+    "recommendedUseCases": [
+      "tech-streams",
+      "programming",
+      "cyberpunk"
+    ],
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "intensity": 1.8
+        },
+        "name": "neon-glow"
+      }
+    ],
+    "layers": {
+      "background": "cyber-void",
+      "foreground": "data-nodes",
+      "midground": "circuit-grid"
+    },
+    "motionSystem": {
+      "shaders": [
+        "grid-glow"
+      ],
+      "timelines": [
+        "pulse-sequence",
+        "data-flow"
+      ]
+    },
+    "colorVariants": [
+      "cyan-magenta",
+      "green-purple",
+      "blue-orange"
+    ],
+    "maxLinks": 4,
+    "description": "Pulsing neon grid with data streams and circuit patterns",
+    "showAvatar": true,
+    "animatedBehaviors": [
+      "grid-pulse",
+      "line-trace",
+      "node-blink"
+    ],
+    "showTagline": true,
+    "name": "Cyber Pulse • LG Mobile",
+    "technologiesUsed": [
+      "framer-motion",
+      "canvas-2d"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "cyber-pulse"
+    }
+  },
+  {
+    "id": "electric-storm__mobile_lg",
+    "source": "system",
+    "layers": {
+      "midground": "rain-sheets",
+      "background": "storm-clouds",
+      "foreground": "lightning-bolts"
+    },
+    "preview": "linear-gradient(135deg, #0a0a1a 0%, #1a1a33 50%, #0a0a20 100%)",
+    "recommendedUseCases": [
+      "dramatic",
+      "action",
+      "weather"
+    ],
+    "colorVariants": [
+      "blue-white",
+      "purple-pink",
+      "red-orange"
+    ],
+    "technologiesUsed": [
+      "canvas-2d",
+      "framer-motion"
+    ],
+    "animatedBehaviors": [
+      "bolt-strike",
+      "plasma-crackle",
+      "cloud-surge"
+    ],
+    "motionSystem": {
+      "shaders": [
+        "electric-arc"
+      ],
+      "timelines": [
+        "lightning-flash",
+        "thunder-rumble"
+      ]
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "description": "Dynamic lightning strikes with electric plasma arcs",
+    "theme": "cinematic",
+    "showAvatar": true,
+    "showTagline": true,
+    "name": "Electric Storm • LG Mobile",
+    "layout": "mobile-stack",
+    "particleSettings": {
+      "speed": 1,
+      "colorVariant": "#ffffff",
+      "size": 0.01,
+      "noise": 0.2,
+      "count": 80,
+      "color": "#aaccff"
+    },
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "threshold": 0.1,
+          "intensity": 3
+        },
+        "name": "bloom"
+      }
+    ],
+    "maxLinks": 4,
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "electric-storm"
+    }
+  },
+  {
+    "id": "esports-hud__mobile_lg",
+    "description": "High-tech esports overlay with animated data streams",
+    "shaderEffects": [
+      {
+        "name": "energy-pulse",
+        "uniforms": {
+          "color": "#ff4444",
+          "speed": 1.5
+        }
+      }
+    ],
+    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%)",
+    "colorVariants": [
+      "red-black",
+      "blue-white",
+      "green-dark"
+    ],
+    "motionSystem": {
+      "timelines": [
+        "data-stream",
+        "pulse-indicators"
+      ],
+      "shaders": [
+        "tech-grid",
+        "energy-flow"
+      ]
+    },
+    "maxLinks": 4,
+    "animatedBehaviors": [
+      "data-pulse",
+      "border-sweep",
+      "indicator-blink"
+    ],
+    "showAvatar": true,
+    "source": "system",
+    "layers": {
+      "background": "tech-grid",
+      "foreground": "data-overlays",
+      "midground": "hud-elements"
+    },
+    "recommendedUseCases": [
+      "esports",
+      "competitive-gaming",
+      "tournaments"
+    ],
+    "theme": "esports",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "showTagline": true,
+    "technologiesUsed": [
+      "gsap",
+      "framer-motion",
+      "canvas-2d"
+    ],
+    "name": "Esports HUD • LG Mobile",
+    "layout": "mobile-stack",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "esports-hud"
+    }
+  },
+  {
+    "id": "forest-spirits__mobile_lg",
+    "motionSystem": {
+      "timelines": [
+        "firefly-dance"
+      ],
+      "particles": true
+    },
+    "particleSettings": {
+      "color": "#88ff88",
+      "count": 40,
+      "noise": 0.7,
+      "size": 0.025,
+      "colorVariant": "#ffff88",
+      "speed": 0.15
+    },
+    "layout": "mobile-stack",
+    "name": "Forest Spirits • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "description": "Mystical forest with floating light orbs and fireflies",
+    "recommendedUseCases": [
+      "nature",
+      "fantasy",
+      "cozy-gaming"
+    ],
+    "showTagline": true,
+    "technologiesUsed": [
+      "framer-motion",
+      "css-animations"
+    ],
+    "theme": "organic",
+    "shaderEffects": [
+      {
+        "name": "soft-glow",
+        "uniforms": {
+          "intensity": 1.2
+        }
+      }
+    ],
+    "animatedBehaviors": [
+      "orb-float",
+      "leaf-fall",
+      "mist-drift"
+    ],
+    "layers": {
+      "midground": "tree-silhouettes",
+      "background": "forest-depth",
+      "foreground": "light-particles"
+    },
+    "source": "system",
+    "showAvatar": true,
+    "maxLinks": 4,
+    "preview": "linear-gradient(180deg, #0a1a0a 0%, #1a3320 50%, #0a1510 100%)",
+    "colorVariants": [
+      "green-gold",
+      "blue-silver",
+      "purple-pink"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "forest-spirits"
+    }
+  },
+  {
+    "id": "glitch-matrix__mobile_lg",
+    "shaderEffects": [
+      {
+        "name": "glitch",
+        "uniforms": {
+          "intensity": 0.15,
+          "speed": 5
+        }
+      },
+      {
+        "uniforms": {
+          "amount": 3
+        },
+        "name": "rgb-split"
+      }
+    ],
+    "recommendedUseCases": [
+      "hacker-aesthetic",
+      "tech",
+      "cybersecurity"
+    ],
+    "theme": "cyber",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "source": "system",
+    "layout": "mobile-stack",
+    "name": "Glitch Matrix • LG Mobile",
+    "maxLinks": 4,
+    "showTagline": true,
+    "animatedBehaviors": [
+      "random-glitch",
+      "code-rain",
+      "flicker"
+    ],
+    "showAvatar": false,
+    "preview": "linear-gradient(135deg, #000000 0%, #001100 50%, #000a00 100%)",
+    "colorVariants": [
+      "matrix-green",
+      "cyber-blue",
+      "warning-red"
+    ],
+    "description": "Digital glitch effects with falling matrix code",
+    "technologiesUsed": [
+      "gsap",
+      "canvas-2d",
+      "custom-shaders"
+    ],
+    "motionSystem": {
+      "shaders": [
+        "glitch-displacement",
+        "rgb-split"
+      ],
+      "timelines": [
+        "glitch-sequence",
+        "code-fall"
+      ]
+    },
+    "layers": {
+      "foreground": "glitch-overlay",
+      "background": "matrix-void",
+      "midground": "falling-code"
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "glitch-matrix"
+    }
+  },
+  {
+    "id": "golden-particles__mobile_lg",
+    "technologiesUsed": [
+      "framer-motion",
+      "css-animations"
+    ],
+    "name": "Golden Particles • LG Mobile",
+    "source": "system",
+    "layout": "mobile-stack",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "animatedBehaviors": [
+      "dust-float",
+      "light-catch",
+      "gentle-swirl"
+    ],
+    "recommendedUseCases": [
+      "luxury",
+      "awards",
+      "premium-content"
+    ],
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "roughness": 0.2
+        },
+        "name": "metallic-sheen"
+      }
+    ],
+    "maxLinks": 4,
+    "particleSettings": {
+      "size": 0.015,
+      "speed": 0.1,
+      "color": "#ffd700",
+      "count": 80,
+      "colorVariant": "#ffaa00",
+      "noise": 0.6
+    },
+    "showTagline": true,
+    "colorVariants": [
+      "gold",
+      "silver",
+      "rose-gold",
+      "bronze"
+    ],
+    "motionSystem": {
+      "particles": true,
+      "shaders": [
+        "metallic-shimmer"
+      ]
+    },
+    "layers": {
+      "midground": "ambient-glow",
+      "background": "warm-dark",
+      "foreground": "gold-particles"
+    },
+    "preview": "linear-gradient(135deg, #1a1510 0%, #2a2015 50%, #151008 100%)",
+    "showAvatar": true,
+    "theme": "cinematic",
+    "description": "Elegant floating gold dust with premium shimmer effect",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "golden-particles"
+    }
+  },
+  {
+    "id": "hologram-scan__mobile_lg",
+    "showTagline": true,
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "opacity": 0.9,
+          "scanSpeed": 1.5
+        },
+        "name": "hologram"
+      }
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "maxLinks": 4,
+    "showAvatar": true,
+    "layout": "mobile-stack",
+    "technologiesUsed": [
+      "framer-motion",
+      "canvas-2d"
+    ],
+    "recommendedUseCases": [
+      "sci-fi",
+      "tech-reviews",
+      "futuristic"
+    ],
+    "particleSettings": {
+      "color": "#00ffff",
+      "noise": 0.1,
+      "count": 30,
+      "size": 0.015,
+      "speed": 0.2
+    },
+    "animatedBehaviors": [
+      "line-scan",
+      "static-flicker",
+      "depth-shift"
+    ],
+    "source": "system",
+    "description": "Futuristic holographic display with scanning effects",
+    "motionSystem": {
+      "timelines": [
+        "glitch-random"
+      ],
+      "shaders": [
+        "hologram-flicker",
+        "scan-sweep"
+      ]
+    },
+    "preview": "linear-gradient(135deg, #001a1a 0%, #003333 50%, #001a2a 100%)",
+    "theme": "cyber",
+    "layers": {
+      "foreground": "scan-overlay",
+      "background": "dark-tech",
+      "midground": "hologram-frame"
+    },
+    "colorVariants": [
+      "cyan-white",
+      "green-white",
+      "blue-white"
+    ],
+    "name": "Hologram Scan • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "hologram-scan"
+    }
+  },
+  {
+    "id": "ink-flow__mobile_lg",
+    "layout": "mobile-stack",
+    "theme": "organic",
+    "recommendedUseCases": [
+      "artistic",
+      "calligraphy",
+      "creative"
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "description": "Fluid ink simulation with organic spreading motion",
+    "source": "system",
+    "name": "Ink Flow • LG Mobile",
+    "motionSystem": {
+      "shaders": [
+        "fluid-simulation",
+        "ink-spread"
+      ],
+      "timelines": [
+        "flow-sequence"
+      ]
+    },
+    "animatedBehaviors": [
+      "ink-spread",
+      "color-bleed",
+      "organic-motion"
+    ],
+    "technologiesUsed": [
+      "webgl",
+      "custom-shaders",
+      "simplex-noise"
+    ],
+    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)",
+    "maxLinks": 4,
+    "colorVariants": [
+      "black-gold",
+      "indigo-coral",
+      "teal-magenta"
+    ],
+    "showAvatar": true,
+    "shaderEffects": [
+      {
+        "name": "fluid",
+        "uniforms": {
+          "diffusion": 0.5,
+          "viscosity": 0.3
+        }
+      }
+    ],
+    "layers": {
+      "foreground": "splatter-accents",
+      "midground": "ink-flow",
+      "background": "paper-texture"
+    },
+    "showTagline": true,
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "ink-flow"
+    }
+  },
+  {
+    "id": "liquid-chrome__mobile_lg",
+    "technologiesUsed": [
+      "react-three-fiber",
+      "drei",
+      "custom-shaders"
+    ],
+    "showTagline": true,
+    "recommendedUseCases": [
+      "luxury-brand",
+      "music",
+      "premium-content"
+    ],
+    "maxLinks": 4,
+    "layout": "mobile-stack",
+    "name": "Liquid Chrome • LG Mobile",
+    "shaderEffects": [
+      {
+        "name": "metallic",
+        "uniforms": {
+          "roughness": 0.1,
+          "metalness": 1
+        }
+      },
+      {
+        "name": "distortion",
+        "uniforms": {
+          "frequency": 2,
+          "amplitude": 0.3
+        }
+      }
+    ],
+    "animatedBehaviors": [
+      "liquid-morph",
+      "chrome-reflection",
+      "surface-ripple"
+    ],
+    "motionSystem": {
+      "timelines": [
+        "morph-sequence"
+      ],
+      "shaders": [
+        "metallic-distortion",
+        "environment-reflection"
+      ]
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "source": "system",
+    "colorVariants": [
+      "silver",
+      "gold",
+      "rose-gold",
+      "iridescent"
+    ],
+    "description": "Morphing metallic liquid simulation with reflective surfaces",
+    "showAvatar": true,
+    "theme": "cinematic",
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)",
+    "layers": {
+      "midground": "chrome-surface",
+      "background": "dark-gradient",
+      "foreground": "reflection-highlights"
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "liquid-chrome"
+    }
+  },
+  {
+    "id": "nebula-drift__mobile_lg",
+    "motionSystem": {
+      "particles": true,
+      "shaders": [
+        "nebula-blend",
+        "star-twinkle"
+      ]
+    },
+    "technologiesUsed": [
+      "framer-motion",
+      "css-animations"
+    ],
+    "shaderEffects": [
+      {
+        "name": "gaussian-blur",
+        "uniforms": {
+          "radius": 8
+        }
+      }
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "description": "Slow-moving cosmic nebula clouds with star field",
+    "showTagline": true,
+    "recommendedUseCases": [
+      "space-content",
+      "ambient",
+      "asmr"
+    ],
+    "layers": {
+      "foreground": "star-dust",
+      "midground": "nebula-layers",
+      "background": "deep-space"
+    },
+    "maxLinks": 4,
+    "showAvatar": true,
+    "theme": "cosmic",
+    "layout": "mobile-stack",
+    "particleSettings": {
+      "size": 0.01,
+      "colorVariant": "#6666ff",
+      "color": "#ff66aa",
+      "speed": 0.1,
+      "count": 100,
+      "noise": 0.6
+    },
+    "source": "system",
+    "name": "Nebula Drift • LG Mobile",
+    "colorVariants": [
+      "pink-blue",
+      "purple-orange",
+      "cyan-red"
+    ],
+    "animatedBehaviors": [
+      "cloud-drift",
+      "star-pulse",
+      "depth-parallax"
+    ],
+    "preview": "linear-gradient(135deg, #0a0020 0%, #200040 50%, #100030 100%)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "nebula-drift"
+    }
+  },
+  {
+    "id": "neon-city__mobile_lg",
+    "theme": "cyber",
+    "particleSettings": {
+      "color": "#66aaff",
+      "colorVariant": "#ff66aa",
+      "size": 0.005,
+      "speed": 1.5,
+      "noise": 0.1,
+      "count": 200
+    },
+    "preview": "linear-gradient(180deg, #0a0a15 0%, #151530 50%, #0a0a20 100%)",
+    "layers": {
+      "background": "city-skyline",
+      "midground": "building-lights",
+      "foreground": "rain-overlay"
+    },
+    "name": "Neon City • LG Mobile",
+    "technologiesUsed": [
+      "canvas-2d",
+      "framer-motion"
+    ],
+    "description": "Cyberpunk cityscape with rain and neon reflections",
+    "layout": "mobile-stack",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "showTagline": true,
+    "recommendedUseCases": [
+      "cyberpunk",
+      "lofi",
+      "night-streams"
+    ],
+    "motionSystem": {
+      "timelines": [
+        "rain-fall",
+        "sign-flicker"
+      ],
+      "shaders": [
+        "wet-surface-reflection"
+      ],
+      "particles": true
+    },
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "intensity": 0.5
+        },
+        "name": "rain-distortion"
+      }
+    ],
+    "maxLinks": 4,
+    "showAvatar": true,
+    "colorVariants": [
+      "blue-pink",
+      "purple-cyan",
+      "orange-teal"
+    ],
+    "animatedBehaviors": [
+      "rain-stream",
+      "neon-pulse",
+      "car-lights"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "neon-city"
+    }
+  },
+  {
+    "id": "neon-rings__mobile_lg",
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "scanSpeed": 2,
+          "glitchIntensity": 0.1
+        },
+        "name": "hologram"
+      }
+    ],
+    "name": "Neon Rings • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "showTagline": true,
+    "preview": "linear-gradient(135deg, #000000 0%, #0a1628 50%, #001a1a 100%)",
+    "colorVariants": [
+      "cyan-magenta",
+      "green-yellow",
+      "blue-purple"
+    ],
+    "description": "Rotating 3D holographic rings with scanning line effects",
+    "showAvatar": true,
+    "theme": "cyber",
+    "particleSettings": {
+      "count": 100,
+      "size": 0.01,
+      "color": "#00ffff",
+      "noise": 0.2,
+      "speed": 0.5
+    },
+    "layout": "mobile-stack",
+    "technologiesUsed": [
+      "react-three-fiber",
+      "drei",
+      "gsap",
+      "postprocessing"
+    ],
+    "source": "system",
+    "layers": {
+      "foreground": "scan-lines",
+      "background": "cyber-grid",
+      "midground": "rotating-rings"
+    },
+    "maxLinks": 4,
+    "motionSystem": {
+      "objects3D": [
+        "torus-ring-large",
+        "torus-ring-medium",
+        "torus-ring-small"
+      ],
+      "shaders": [
+        "hologram-scan",
+        "grid-pulse"
+      ],
+      "postprocessing": [
+        "bloom",
+        "scanlines"
+      ]
+    },
+    "animatedBehaviors": [
+      "ring-rotation",
+      "scan-sweep",
+      "pulse-sync"
+    ],
+    "recommendedUseCases": [
+      "tech-streams",
+      "cyberpunk",
+      "futuristic"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "neon-rings"
+    }
+  },
+  {
+    "id": "ocean-depths__mobile_lg",
+    "layers": {
+      "foreground": "bubble-particles",
+      "background": "deep-blue",
+      "midground": "water-volume"
+    },
+    "animatedBehaviors": [
+      "bubble-rise",
+      "light-caustics",
+      "seaweed-sway"
+    ],
+    "theme": "ethereal",
+    "shaderEffects": [
+      {
+        "name": "caustics",
+        "uniforms": {
+          "scale": 2,
+          "speed": 0.5
+        }
+      }
+    ],
+    "name": "Ocean Depths • LG Mobile",
+    "showAvatar": true,
+    "technologiesUsed": [
+      "framer-motion",
+      "canvas-2d"
+    ],
+    "showTagline": true,
+    "particleSettings": {
+      "noise": 0.4,
+      "speed": 0.3,
+      "count": 60,
+      "colorVariant": "#ffffff",
+      "size": 0.02,
+      "color": "#66ccff"
+    },
+    "layout": "mobile-stack",
+    "source": "system",
+    "motionSystem": {
+      "shaders": [
+        "caustics",
+        "water-distortion"
+      ],
+      "particles": true
+    },
+    "recommendedUseCases": [
+      "ocean-content",
+      "relaxation",
+      "aquarium"
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "maxLinks": 4,
+    "description": "Deep underwater scene with caustic light and bubbles",
+    "preview": "linear-gradient(180deg, #001a33 0%, #002244 50%, #001122 100%)",
+    "colorVariants": [
+      "ocean-blue",
+      "tropical-teal",
+      "deep-purple"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "ocean-depths"
+    }
+  },
+  {
+    "id": "phoenix-flame__mobile_lg",
+    "colorVariants": [
+      "orange-red",
+      "blue-flame",
+      "green-fire"
+    ],
+    "maxLinks": 4,
+    "layers": {
+      "foreground": "ember-particles",
+      "midground": "flame-core",
+      "background": "ash-gradient"
+    },
+    "layout": "mobile-stack",
+    "showAvatar": true,
+    "particleSettings": {
+      "colorVariant": "#ffaa00",
+      "size": 0.015,
+      "speed": 0.8,
+      "count": 300,
+      "noise": 0.6,
+      "color": "#ff4400"
+    },
+    "name": "Phoenix Flame • LG Mobile",
+    "showTagline": true,
+    "animatedBehaviors": [
+      "flame-flicker",
+      "ember-rise",
+      "heat-wave"
+    ],
+    "preview": "linear-gradient(135deg, #1a0500 0%, #2d0a00 50%, #0f0300 100%)",
+    "shaderEffects": [
+      {
+        "name": "fire",
+        "uniforms": {
+          "turbulence": 2,
+          "intensity": 1.5
+        }
+      },
+      {
+        "uniforms": {
+          "threshold": 0.3,
+          "intensity": 3
+        },
+        "name": "bloom"
+      }
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "technologiesUsed": [
+      "react-three-fiber",
+      "simplex-noise",
+      "postprocessing"
+    ],
+    "theme": "cinematic",
+    "source": "system",
+    "recommendedUseCases": [
+      "epic-gaming",
+      "fantasy",
+      "action"
+    ],
+    "description": "Epic fire and ember particles with rising phoenix silhouette",
+    "motionSystem": {
+      "postprocessing": [
+        "bloom",
+        "color-grading"
+      ],
+      "shaders": [
+        "fire-shader",
+        "heat-distortion"
+      ],
+      "particles": true
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "phoenix-flame"
+    }
+  },
+  {
+    "id": "retro-wave__mobile_lg",
+    "theme": "cinematic",
+    "description": "80s synthwave aesthetic with neon grid and sun",
+    "layers": {
+      "foreground": "silhouette-elements",
+      "background": "sunset-gradient",
+      "midground": "perspective-grid"
+    },
+    "motionSystem": {
+      "timelines": [
+        "grid-scroll",
+        "sun-pulse"
+      ],
+      "shaders": [
+        "scanlines",
+        "crt-warp"
+      ]
+    },
+    "layout": "mobile-stack",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "showTagline": true,
+    "source": "system",
+    "name": "Retro Wave • LG Mobile",
+    "maxLinks": 4,
+    "technologiesUsed": [
+      "framer-motion",
+      "gsap",
+      "css-animations"
+    ],
+    "showAvatar": true,
+    "preview": "linear-gradient(180deg, #1a0033 0%, #330066 40%, #ff6600 100%)",
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "offset": 0.003
+        },
+        "name": "chromatic-aberration"
+      }
+    ],
+    "colorVariants": [
+      "sunset-purple",
+      "midnight-blue",
+      "neon-pink"
+    ],
+    "recommendedUseCases": [
+      "synthwave",
+      "retro-gaming",
+      "music"
+    ],
+    "animatedBehaviors": [
+      "grid-perspective",
+      "sun-glow",
+      "palm-sway"
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "retro-wave"
+    }
+  },
+  {
+    "id": "sakura-petals__mobile_lg",
+    "showTagline": true,
+    "animatedBehaviors": [
+      "petal-fall",
+      "wind-gust",
+      "soft-glow"
+    ],
+    "colorVariants": [
+      "pink-white",
+      "purple-lavender",
+      "red-coral"
+    ],
+    "particleSettings": {
+      "speed": 0.2,
+      "colorVariant": "#ffffff",
+      "noise": 0.5,
+      "color": "#ffaacc",
+      "size": 0.04,
+      "count": 50
+    },
+    "motionSystem": {
+      "particles": true,
+      "timelines": [
+        "petal-cascade"
+      ]
+    },
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "intensity": 1
+        },
+        "name": "soft-bloom"
+      }
+    ],
+    "layout": "mobile-stack",
+    "layers": {
+      "background": "twilight-pink",
+      "midground": "branch-silhouettes",
+      "foreground": "falling-petals"
+    },
+    "preview": "linear-gradient(180deg, #1a0a15 0%, #2a1525 50%, #150a10 100%)",
+    "showAvatar": true,
+    "source": "system",
+    "name": "Sakura Petals • LG Mobile",
+    "technologiesUsed": [
+      "framer-motion",
+      "css-animations"
+    ],
+    "description": "Gentle falling cherry blossom petals with soft glow",
+    "theme": "vtuber",
+    "recommendedUseCases": [
+      "anime",
+      "vtuber",
+      "aesthetic"
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "maxLinks": 4,
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "sakura-petals"
+    }
+  },
+  {
+    "id": "vtuber-frame__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "animatedBehaviors": [
+      "gem-orbit",
+      "star-twinkle",
+      "frame-pulse"
+    ],
+    "showAvatar": true,
+    "showTagline": true,
+    "theme": "vtuber",
+    "motionSystem": {
+      "particles": true,
+      "objects3D": [
+        "decorative-gems",
+        "floating-stars"
+      ],
+      "timelines": [
+        "bounce-loop",
+        "sparkle-sequence"
+      ]
+    },
+    "technologiesUsed": [
+      "react-three-fiber",
+      "gsap",
+      "framer-motion"
+    ],
+    "description": "Animated broadcast frame with orbiting decorative elements",
+    "recommendedUseCases": [
+      "vtuber",
+      "anime",
+      "kawaii"
+    ],
+    "layout": "mobile-stack",
+    "preview": "linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #0f051a 100%)",
+    "name": "VTuber Frame • LG Mobile",
+    "colorVariants": [
+      "pink-blue",
+      "purple-gold",
+      "mint-coral"
+    ],
+    "maxLinks": 4,
+    "particleSettings": {
+      "size": 0.03,
+      "speed": 0.2,
+      "count": 50,
+      "color": "#ffb6c1",
+      "noise": 0.3,
+      "colorVariant": "#87ceeb"
+    },
+    "shaderEffects": [
+      {
+        "name": "glow",
+        "uniforms": {
+          "intensity": 2,
+          "color": "#ff69b4"
+        }
+      }
+    ],
+    "layers": {
+      "background": "gradient-void",
+      "foreground": "floating-elements",
+      "midground": "ornate-frame"
+    },
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animated_banners",
+      "sourceId": "vtuber-frame"
+    }
+  }
+]

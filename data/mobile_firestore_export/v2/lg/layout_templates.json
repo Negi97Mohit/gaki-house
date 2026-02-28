@@ -1,0 +1,5336 @@
+[
+  {
+    "id": "asymmetric-columns__mobile_lg",
+    "sections": [
+      {
+        "id": "left",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "width": "100%",
+          "top": "0%",
+          "left": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Center",
+        "id": "center",
+        "style": {
+          "height": "32%",
+          "top": "34%",
+          "left": "0%",
+          "width": "100%",
+          "position": "absolute",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "height": "32%",
+          "width": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "top": "68%",
+          "borderRadius": "15px"
+        },
+        "name": "Right",
+        "id": "right",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.028Z",
+    "description": "Three columns with varying widths",
+    "name": "Asymmetric Columns • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "asymmetric-columns"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "asymmetric-hero__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Asymmetric Hero • LG Mobile",
+    "description": "40/60 split for hero emphasis",
+    "sections": [
+      {
+        "style": {
+          "top": "0%",
+          "height": "49%",
+          "left": "0%",
+          "width": "100%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "hero",
+        "name": "Hero",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "content",
+        "name": "Content",
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "49%",
+          "top": "51%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "asymmetric-hero"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "aurora-borealis__mobile_lg",
+    "description": "Northern lights with flowing particle waves.",
+    "sections": [
+      {
+        "id": "aurora-1",
+        "style": {
+          "background": "#050a14",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Aurora 1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "aurora-2",
+        "name": "Aurora 2",
+        "style": {
+          "background": "#050a14",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Aurora 3",
+        "id": "aurora-3",
+        "style": {
+          "background": "#050a14",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "name": "Aurora Borealis • LG Mobile",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "aurora-borealis"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "bento-modern__mobile_lg",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "width": "100%",
+          "left": "0%",
+          "height": "12.57%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "primary",
+        "name": "Primary",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "card-1",
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "left": "0%",
+          "top": "14.57%",
+          "height": "12.57%",
+          "borderRadius": "15px"
+        },
+        "name": "Card 1",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Card 2",
+        "id": "card-2",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "height": "12.57%",
+          "top": "29.14%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "card-3",
+        "name": "Card 3",
+        "style": {
+          "left": "0%",
+          "height": "12.57%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "top": "43.71%",
+          "width": "100%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Bottom 1",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(168,85,247,0.9)",
+          "height": "12.57%",
+          "top": "58.29%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-1",
+        "mobileSectionOrder": 4
+      },
+      {
+        "id": "bottom-2",
+        "name": "Bottom 2",
+        "style": {
+          "width": "100%",
+          "backgroundColor": "rgba(59,130,246,0.9)",
+          "position": "absolute",
+          "left": "0%",
+          "top": "72.86%",
+          "height": "12.57%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 5
+      },
+      {
+        "id": "bottom-3",
+        "style": {
+          "position": "absolute",
+          "height": "12.57%",
+          "width": "100%",
+          "top": "87.43%",
+          "left": "0%",
+          "backgroundColor": "rgba(20,184,166,0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom 3",
+        "mobileSectionOrder": 6
+      }
+    ],
+    "name": "Bento Box • LG Mobile",
+    "description": "Modern asymmetric tiles",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "bento-modern"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "card-grid-four__mobile_lg",
+    "sections": [
+      {
+        "style": {
+          "left": "0%",
+          "position": "absolute",
+          "top": "0%",
+          "height": "23.5%",
+          "width": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Card Top Left",
+        "id": "card-tl",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "card-tr",
+        "name": "Card Top Right",
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "height": "23.5%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "top": "25.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "height": "23.5%",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Card Bottom Left",
+        "id": "card-bl",
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "card-br",
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "100%",
+          "top": "76.5%",
+          "position": "absolute",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "name": "Card Bottom Right",
+        "mobileSectionOrder": 3
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "name": "Card Grid Four • LG Mobile",
+    "description": "2x2 card grid with spacing",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "card-grid-four"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "card-grid-three__mobile_lg",
+    "name": "Card Grid Three • LG Mobile",
+    "sections": [
+      {
+        "id": "card-1",
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "width": "100%",
+          "position": "absolute",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Card 1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "card-2",
+        "name": "Card 2",
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "top": "34%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "32%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "card-3",
+        "name": "Card 3",
+        "style": {
+          "width": "100%",
+          "height": "32%",
+          "left": "0%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "68%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Three card-like sections with gaps",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "card-grid-three"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "carousel-3-cards__mobile_lg",
+    "name": "Carousel - 3 Cards • LG Mobile",
+    "description": "Three cards with center emphasis",
+    "sections": [
+      {
+        "name": "Left",
+        "id": "left-card",
+        "style": {
+          "height": "32%",
+          "left": "0%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(148,163,184,0.7)",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "height": "32%",
+          "top": "34%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "width": "100%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "center-card",
+        "name": "Center",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Right",
+        "style": {
+          "top": "68%",
+          "height": "32%",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(148,163,184,0.7)",
+          "borderRadius": "15px"
+        },
+        "id": "right-card",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "carousel-3-cards"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "carousel-5-cards__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "sections": [
+      {
+        "name": "Far Left",
+        "id": "far-left",
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(148,163,184,0.5)",
+          "height": "18.4%",
+          "top": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Left",
+        "style": {
+          "position": "absolute",
+          "height": "18.4%",
+          "left": "0%",
+          "top": "20.4%",
+          "width": "100%",
+          "backgroundColor": "rgba(148,163,184,0.7)",
+          "borderRadius": "15px"
+        },
+        "id": "left",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Center",
+        "style": {
+          "left": "0%",
+          "width": "100%",
+          "position": "absolute",
+          "height": "18.4%",
+          "top": "40.8%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "center",
+        "mobileSectionOrder": 2
+      },
+      {
+        "name": "Right",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "height": "18.4%",
+          "backgroundColor": "rgba(148,163,184,0.7)",
+          "top": "61.2%",
+          "borderRadius": "15px"
+        },
+        "id": "right",
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Far Right",
+        "style": {
+          "width": "100%",
+          "backgroundColor": "rgba(148,163,184,0.5)",
+          "position": "absolute",
+          "left": "0%",
+          "height": "18.4%",
+          "top": "81.6%",
+          "borderRadius": "15px"
+        },
+        "id": "far-right",
+        "mobileSectionOrder": 4
+      }
+    ],
+    "name": "Carousel - 5 Cards • LG Mobile",
+    "description": "Five cards carousel",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "carousel-5-cards"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "case-study__mobile_lg",
+    "description": "Vertical list of case studies with gallery and details",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "name": "Case Study • LG Mobile",
+    "sections": [
+      {
+        "id": "case-1",
+        "name": "Project One",
+        "style": {
+          "backgroundColor": "#ffffff",
+          "color": "#000000",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "description": "Description for the first project.",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#f5f5f5",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "description": "Description for the second project.",
+        "id": "case-2",
+        "name": "Project Two",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "case-3",
+        "description": "Description for the third project.",
+        "name": "Project Three",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "case-study"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "chiaroscuro-canvas__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "category": "dynamic",
+    "sections": [
+      {
+        "name": "Study 1",
+        "id": "study-1",
+        "style": {
+          "background": "#0a0806",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Study 2",
+        "style": {
+          "background": "#0a0806",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "id": "study-2",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "description": "Michelangelo-inspired dramatic lighting.",
+    "name": "Chiaroscuro Canvas • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "chiaroscuro-canvas"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "cinematic-parallax__mobile_lg",
+    "name": "Cinematic Parallax • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "sections": [
+      {
+        "id": "scene-1",
+        "name": "Scene 01",
+        "style": {
+          "background": "#0a0a0f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#0a0a0f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "id": "scene-2",
+        "name": "Scene 02",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "category": "dynamic",
+    "description": "Film-style depth of field parallax.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "cinematic-parallax"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "corner-emphasis__mobile_lg",
+    "name": "Corner Emphasis • LG Mobile",
+    "sections": [
+      {
+        "style": {
+          "top": "0%",
+          "height": "18.4%",
+          "left": "0%",
+          "position": "absolute",
+          "width": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Center",
+        "id": "center",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Top Left",
+        "id": "corner-tl",
+        "style": {
+          "left": "0%",
+          "height": "18.4%",
+          "width": "100%",
+          "top": "20.4%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Top Right",
+        "style": {
+          "left": "0%",
+          "width": "100%",
+          "position": "absolute",
+          "top": "40.8%",
+          "height": "18.4%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "corner-tr",
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "height": "18.4%",
+          "left": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "61.2%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Left",
+        "id": "corner-bl",
+        "mobileSectionOrder": 3
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "81.6%",
+          "height": "18.4%",
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "corner-br",
+        "name": "Bottom Right",
+        "mobileSectionOrder": 4
+      }
+    ],
+    "description": "Large center with four small corners",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "corner-emphasis"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "crystalline-tessellation__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "description": "Hadid-inspired geometric fracturing.",
+    "name": "Crystalline Tessellation • LG Mobile",
+    "sections": [
+      {
+        "name": "Facet 1",
+        "style": {
+          "background": "#fafafc",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "crystal-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#fafafc",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "crystal-2",
+        "name": "Facet 2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "crystal-3",
+        "name": "Facet 3",
+        "style": {
+          "background": "#fafafc",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "category": "dynamic",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "crystalline-tessellation"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "dashboard-grid__mobile_lg",
+    "sections": [
+      {
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "height": "18.4%",
+          "backgroundColor": "rgba(71, 85, 105, 0.9)",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "sidebar",
+        "name": "Sidebar",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "grid-1",
+        "name": "Grid 1",
+        "style": {
+          "position": "absolute",
+          "height": "18.4%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "20.4%",
+          "left": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Grid 2",
+        "id": "grid-2",
+        "style": {
+          "top": "40.8%",
+          "position": "absolute",
+          "width": "100%",
+          "height": "18.4%",
+          "left": "0%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "grid-3",
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "height": "18.4%",
+          "top": "61.2%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Grid 3",
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Grid 4",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "height": "18.4%",
+          "top": "81.6%",
+          "borderRadius": "15px"
+        },
+        "id": "grid-4",
+        "mobileSectionOrder": 4
+      }
+    ],
+    "description": "Sidebar with 2x2 grid content",
+    "name": "Dashboard Grid • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.029Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "dashboard-grid"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "default__mobile_lg",
+    "name": "Full Screen • LG Mobile",
+    "description": "Single full-screen section",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "100%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "main",
+        "name": "Main",
+        "mobileSectionOrder": 0
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.024Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "default"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "depth-choreography__mobile_lg",
+    "sections": [
+      {
+        "name": "Layer 1",
+        "style": {
+          "background": "#0a0a0f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "id": "depth-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "depth-2",
+        "style": {
+          "background": "#0a0a0f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "name": "Layer 2",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "name": "Depth Choreography • LG Mobile",
+    "description": "Cinematic depth of field layers.",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "depth-choreography"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "diagonal-split__mobile_lg",
+    "description": "Dynamic diagonal division",
+    "name": "Diagonal Split • LG Mobile",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "top": "0%",
+          "left": "0%",
+          "height": "15%",
+          "borderRadius": "15px"
+        },
+        "name": "Large Top Left",
+        "id": "large-top-left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Small Top Right",
+        "style": {
+          "left": "0%",
+          "height": "15%",
+          "width": "100%",
+          "position": "absolute",
+          "top": "17%",
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "small-top-right",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Mid Right",
+        "id": "mid-right",
+        "style": {
+          "height": "15%",
+          "position": "absolute",
+          "width": "100%",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "top": "34%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "top": "51%",
+          "width": "100%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "height": "15%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "small-bottom-left",
+        "name": "Small Bottom Left",
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Mid Bottom",
+        "style": {
+          "width": "100%",
+          "backgroundColor": "rgba(168,85,247,0.9)",
+          "top": "68%",
+          "height": "15%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "mid-bottom",
+        "mobileSectionOrder": 4
+      },
+      {
+        "id": "bottom-right",
+        "style": {
+          "left": "0%",
+          "height": "15%",
+          "backgroundColor": "rgba(59,130,246,0.9)",
+          "top": "85%",
+          "width": "100%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Right",
+        "mobileSectionOrder": 5
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "diagonal-split"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "editorial-grid-shift__mobile_lg",
+    "name": "Editorial Grid Shift • LG Mobile",
+    "sections": [
+      {
+        "name": "Featured",
+        "id": "edit-1",
+        "style": {
+          "background": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Panel 2",
+        "id": "edit-2",
+        "style": {
+          "background": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Panel 3",
+        "style": {
+          "background": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "edit-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "description": "Magazine grid that shifts clockwise on click.",
+    "category": "dynamic",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "editorial-grid-shift"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "elastic-morph-cards__mobile_lg",
+    "sections": [
+      {
+        "style": {
+          "background": "#FF6B6B",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Card 1",
+        "id": "elastic-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Card 2",
+        "style": {
+          "background": "#4ECDC4",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "elastic-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Card 3",
+        "style": {
+          "background": "#45B7D1",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "elastic-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "name": "Elastic Morph Cards • LG Mobile",
+    "description": "Rubber-band physics card interactions.",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "elastic-morph-cards"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "expanding-cards__mobile_lg",
+    "name": "Expanding Cards • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "Interactive timeline with 5 expanding panels",
+    "category": "dynamic",
+    "sections": [
+      {
+        "style": {
+          "left": "0%",
+          "height": "18.4%",
+          "background": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+          "width": "100%",
+          "top": "0%",
+          "color": "#ffffff",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Sunrise",
+        "id": "card-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "top": "20.4%",
+          "color": "#ffffff",
+          "left": "0%",
+          "background": "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+          "width": "100%",
+          "height": "18.4%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Lavender",
+        "id": "card-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Ocean",
+        "style": {
+          "left": "0%",
+          "top": "40.8%",
+          "color": "#ffffff",
+          "width": "100%",
+          "background": "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
+          "height": "18.4%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "card-3",
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "top": "61.2%",
+          "left": "0%",
+          "color": "#ffffff",
+          "width": "100%",
+          "background": "linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)",
+          "height": "18.4%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Peach",
+        "id": "card-4",
+        "mobileSectionOrder": 3
+      },
+      {
+        "id": "card-5",
+        "name": "Sky",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "background": "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
+          "height": "18.4%",
+          "color": "#ffffff",
+          "top": "81.6%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 4
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "expanding-cards"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "fibonacci-cascade__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "sections": [
+      {
+        "id": "fib-1",
+        "style": {
+          "background": "#faf8f5",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Sequence 1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#faf8f5",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Sequence 2",
+        "id": "fib-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Sequence 3",
+        "id": "fib-3",
+        "style": {
+          "background": "#faf8f5",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "name": "Fibonacci Cascade • LG Mobile",
+    "description": "Da Vinci-inspired golden ratio layout.",
+    "category": "dynamic",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "fibonacci-cascade"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "gallery-masonry__mobile_lg",
+    "name": "Gallery Masonry • LG Mobile",
+    "description": "Photo gallery masonry style",
+    "sections": [
+      {
+        "name": "Photo 1",
+        "style": {
+          "height": "15%",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "photo-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Photo 2",
+        "style": {
+          "left": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "top": "17%",
+          "height": "15%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "photo-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "photo-3",
+        "style": {
+          "height": "15%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "34%",
+          "left": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Photo 3",
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "photo-4",
+        "style": {
+          "left": "0%",
+          "top": "51%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "15%",
+          "width": "100%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Photo 4",
+        "mobileSectionOrder": 3
+      },
+      {
+        "id": "photo-5",
+        "style": {
+          "height": "15%",
+          "left": "0%",
+          "top": "68%",
+          "width": "100%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Photo 5",
+        "mobileSectionOrder": 4
+      },
+      {
+        "id": "photo-6",
+        "name": "Photo 6",
+        "style": {
+          "width": "100%",
+          "top": "85%",
+          "left": "0%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "height": "15%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 5
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.029Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "gallery-masonry"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "glitch-matrix__mobile_lg",
+    "name": "Glitch Matrix • LG Mobile",
+    "description": "Digital rain with glitch distortion.",
+    "category": "dynamic",
+    "sections": [
+      {
+        "name": "Node 001",
+        "id": "matrix-1",
+        "style": {
+          "background": "#000000",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#000000",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "matrix-2",
+        "name": "Node 002",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "background": "#000000",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Node 003",
+        "id": "matrix-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "glitch-matrix"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "golden-ratio-horizontal__mobile_lg",
+    "sections": [
+      {
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "top": "0%",
+          "position": "absolute",
+          "width": "100%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "name": "Top",
+        "id": "top",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "bottom",
+        "style": {
+          "height": "49%",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "position": "absolute",
+          "top": "51%",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "name": "Golden Ratio Horizontal • LG Mobile",
+    "description": "Two horizontal sections split by golden ratio",
+    "migratedAt": "2025-12-22T11:12:07.029Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "golden-ratio-horizontal"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "golden-ratio-vertical__mobile_lg",
+    "name": "Golden Ratio Vertical • LG Mobile",
+    "sections": [
+      {
+        "style": {
+          "height": "49%",
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Left",
+        "id": "left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Right",
+        "id": "right",
+        "style": {
+          "top": "51%",
+          "left": "0%",
+          "height": "49%",
+          "position": "absolute",
+          "width": "100%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.029Z",
+    "description": "Two vertical sections split by golden ratio (61.8/38.2)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "golden-ratio-vertical"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "grid-six__mobile_lg",
+    "sections": [
+      {
+        "name": "Top Left",
+        "style": {
+          "position": "absolute",
+          "top": "0%",
+          "height": "15%",
+          "left": "0%",
+          "width": "100%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "top-left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "left": "0%",
+          "position": "absolute",
+          "height": "15%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "100%",
+          "top": "17%",
+          "borderRadius": "15px"
+        },
+        "id": "top-center",
+        "name": "Top Center",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Top Right",
+        "style": {
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "34%",
+          "height": "15%",
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "top-right",
+        "mobileSectionOrder": 2
+      },
+      {
+        "name": "Bottom Left",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "51%",
+          "width": "100%",
+          "left": "0%",
+          "height": "15%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-left",
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Bottom Center",
+        "id": "bottom-center",
+        "style": {
+          "left": "0%",
+          "width": "100%",
+          "position": "absolute",
+          "top": "68%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "height": "15%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 4
+      },
+      {
+        "id": "bottom-right",
+        "style": {
+          "top": "85%",
+          "height": "15%",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(217, 70, 239, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Right",
+        "mobileSectionOrder": 5
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.028Z",
+    "name": "Six Grid • LG Mobile",
+    "description": "2x3 grid layout",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "grid-six"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "grid-twelve__mobile_lg",
+    "description": "3x4 grid layout",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Grid Twelve • LG Mobile",
+    "sections": [
+      {
+        "id": "cell-1",
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "height": "12%",
+          "width": "100%",
+          "top": "0%",
+          "borderRadius": "15px"
+        },
+        "name": "Cell 1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Cell 2",
+        "style": {
+          "top": "14%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "width": "100%",
+          "height": "12%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "cell-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "top": "28%",
+          "height": "12%",
+          "width": "100%",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "cell-3",
+        "name": "Cell 3",
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "width": "100%",
+          "height": "12%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "top": "42%",
+          "borderRadius": "15px"
+        },
+        "id": "cell-4",
+        "name": "Cell 4",
+        "mobileSectionOrder": 3
+      },
+      {
+        "id": "cell-5",
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "position": "absolute",
+          "top": "56%",
+          "width": "100%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "name": "Cell 5",
+        "mobileSectionOrder": 4
+      },
+      {
+        "name": "Cell 6",
+        "id": "cell-6",
+        "style": {
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "height": "12%",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "70%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 5
+      },
+      {
+        "id": "cell-7",
+        "name": "Cell 7",
+        "style": {
+          "position": "absolute",
+          "height": "12%",
+          "left": "0%",
+          "width": "100%",
+          "top": "84%",
+          "backgroundColor": "rgba(14, 165, 233, 0.9)",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 6
+      },
+      {
+        "name": "Cell 8",
+        "style": {
+          "position": "absolute",
+          "height": "12%",
+          "left": "0%",
+          "width": "100%",
+          "top": "98%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "cell-8",
+        "mobileSectionOrder": 7
+      },
+      {
+        "id": "cell-9",
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "height": "12%",
+          "backgroundColor": "rgba(168, 85, 247, 0.9)",
+          "left": "0%",
+          "top": "112%",
+          "borderRadius": "15px"
+        },
+        "name": "Cell 9",
+        "mobileSectionOrder": 8
+      },
+      {
+        "name": "Cell 10",
+        "id": "cell-10",
+        "style": {
+          "height": "12%",
+          "top": "126%",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(251, 146, 60, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 9
+      },
+      {
+        "id": "cell-11",
+        "name": "Cell 11",
+        "style": {
+          "height": "12%",
+          "top": "140%",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(20, 184, 166, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 10
+      },
+      {
+        "id": "cell-12",
+        "style": {
+          "top": "154%",
+          "width": "100%",
+          "position": "absolute",
+          "height": "12%",
+          "left": "0%",
+          "backgroundColor": "rgba(244, 63, 94, 0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Cell 12",
+        "mobileSectionOrder": 11
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "grid-twelve"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "haute-couture-stacks__mobile_lg",
+    "description": "Fashion runway card reveals.",
+    "sections": [
+      {
+        "name": "Look 01",
+        "id": "look-1",
+        "style": {
+          "background": "#f8f8f6",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "look-2",
+        "name": "Look 02",
+        "style": {
+          "background": "#f8f8f6",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "background": "#f8f8f6",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Look 03",
+        "id": "look-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "name": "Haute Couture Stacks • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "haute-couture-stacks"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "header-content__mobile_lg",
+    "sections": [
+      {
+        "style": {
+          "height": "49%",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "header",
+        "name": "Header",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Content",
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "position": "absolute",
+          "top": "51%",
+          "height": "49%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "content",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "name": "Header & Content • LG Mobile",
+    "description": "Top header with main content below",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "header-content"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "header-sidebar-content__mobile_lg",
+    "sections": [
+      {
+        "name": "Header",
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "header",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Sidebar",
+        "style": {
+          "top": "34%",
+          "width": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "sidebar",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "height": "32%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "top": "68%",
+          "borderRadius": "15px"
+        },
+        "name": "Content",
+        "id": "content",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "description": "Header with sidebar and main content",
+    "name": "Header, Sidebar & Content • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "header-sidebar-content"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "holographic-prism__mobile_lg",
+    "description": "Rainbow light refraction effects.",
+    "sections": [
+      {
+        "name": "Spectrum 1",
+        "id": "prism-1",
+        "style": {
+          "background": "#0a0a0f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "prism-2",
+        "name": "Spectrum 2",
+        "style": {
+          "background": "#0a0a0f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "prism-3",
+        "style": {
+          "background": "#0a0a0f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Spectrum 3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "name": "Holographic Prism • LG Mobile",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "holographic-prism"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "horizontal-thirds__mobile_lg",
+    "name": "Horizontal Thirds • LG Mobile",
+    "sections": [
+      {
+        "name": "Top",
+        "style": {
+          "top": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "left": "0%",
+          "height": "32%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "top",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "top": "34%",
+          "position": "absolute",
+          "left": "0%",
+          "height": "32%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Middle",
+        "id": "middle",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Bottom",
+        "style": {
+          "left": "0%",
+          "top": "68%",
+          "height": "32%",
+          "width": "100%",
+          "position": "absolute",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "bottom",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Three horizontal sections using rule of thirds",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "horizontal-thirds"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "interstellar-dock__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "sections": [
+      {
+        "id": "module-1",
+        "name": "Module 001",
+        "style": {
+          "background": "#05050f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#05050f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Module 002",
+        "id": "module-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "background": "#05050f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Module 003",
+        "id": "module-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "name": "Interstellar Dock • LG Mobile",
+    "description": "3D rotating spacecraft modules.",
+    "category": "dynamic",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "interstellar-dock"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "liquid-mirror__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "name": "Liquid Mirror • LG Mobile",
+    "sections": [
+      {
+        "name": "Reflection 1",
+        "style": {
+          "background": "#1a365d",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "mirror-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#1a365d",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "mirror-2",
+        "name": "Reflection 2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "mirror-3",
+        "name": "Reflection 3",
+        "style": {
+          "background": "#1a365d",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "category": "dynamic",
+    "description": "Interactive water ripple distortion.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "liquid-mirror"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "magazine-hero__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Editorial style with large hero",
+    "name": "Magazine Hero • LG Mobile",
+    "sections": [
+      {
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "height": "18.4%",
+          "top": "0%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "hero",
+        "name": "Hero",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "sidebar-1",
+        "name": "Sidebar 1",
+        "style": {
+          "top": "20.4%",
+          "width": "100%",
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "height": "18.4%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "left": "0%",
+          "position": "absolute",
+          "top": "40.8%",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "width": "100%",
+          "height": "18.4%",
+          "borderRadius": "15px"
+        },
+        "id": "sidebar-2",
+        "name": "Sidebar 2",
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "left": "0%",
+          "width": "100%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "top": "61.2%",
+          "position": "absolute",
+          "height": "18.4%",
+          "borderRadius": "15px"
+        },
+        "name": "Footer 1",
+        "id": "footer-1",
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Footer 2",
+        "id": "footer-2",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "top": "81.6%",
+          "backgroundColor": "rgba(168,85,247,0.9)",
+          "height": "18.4%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 4
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "magazine-hero"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "magazine-layout__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.029Z",
+    "name": "Magazine Layout • LG Mobile",
+    "sections": [
+      {
+        "id": "header",
+        "name": "Header",
+        "style": {
+          "top": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "width": "100%",
+          "left": "0%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "col-left",
+        "style": {
+          "width": "100%",
+          "height": "23.5%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "25.5%",
+          "borderRadius": "15px"
+        },
+        "name": "Left Column",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "col-center",
+        "name": "Center Column",
+        "style": {
+          "position": "absolute",
+          "top": "51%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "23.5%",
+          "width": "100%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "top": "76.5%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "23.5%",
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "col-right",
+        "name": "Right Column",
+        "mobileSectionOrder": 3
+      }
+    ],
+    "description": "Header with three-column content below",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "magazine-layout"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "magnetism-layout__mobile_lg",
+    "sections": [
+      {
+        "type": "text",
+        "name": "Project Header",
+        "id": "header",
+        "content": {
+          "title": "Global Communication",
+          "subtitle": "Richard Mille"
+        },
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "media-1",
+        "name": "Media Row 1 (Video)",
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "14%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "type": "video",
+        "mobileSectionOrder": 1
+      },
+      {
+        "type": "image",
+        "id": "media-2-left",
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "28%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "name": "Media Row 2 Left",
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "42%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "type": "image",
+        "id": "media-2-right",
+        "name": "Media Row 2 Right",
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Media Row 3 Left",
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "56%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "type": "image",
+        "id": "media-3-left",
+        "mobileSectionOrder": 4
+      },
+      {
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "70%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "name": "Media Row 3 Right",
+        "type": "image",
+        "id": "media-3-right",
+        "mobileSectionOrder": 5
+      },
+      {
+        "name": "Media Row 4 (Video)",
+        "id": "media-4",
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "84%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "type": "video",
+        "mobileSectionOrder": 6
+      },
+      {
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "98%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "name": "Media Row 5 (Large)",
+        "type": "image",
+        "id": "media-5",
+        "mobileSectionOrder": 7
+      },
+      {
+        "id": "media-6-left",
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "112%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "type": "image",
+        "name": "Media Row 6 Left",
+        "mobileSectionOrder": 8
+      },
+      {
+        "style": {
+          "background": "transparent",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "126%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "id": "media-6-right",
+        "type": "image",
+        "name": "Media Row 6 Right",
+        "mobileSectionOrder": 9
+      }
+    ],
+    "description": "A high-end editorial grid layout with a project header and mixed media rows.",
+    "name": "Magnetism Grid • LG Mobile",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "magnetism-layout"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "masonry-complex__mobile_lg",
+    "name": "Masonry Complex • LG Mobile",
+    "sections": [
+      {
+        "name": "Large Left",
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "height": "15%",
+          "left": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "top": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "large-left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "height": "15%",
+          "left": "0%",
+          "top": "17%",
+          "width": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "height": "15%",
+          "position": "absolute",
+          "top": "34%",
+          "borderRadius": "15px"
+        },
+        "id": "mid-right",
+        "name": "Mid Right",
+        "mobileSectionOrder": 2
+      },
+      {
+        "name": "Bottom Left",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "15%",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "top": "51%",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-left",
+        "mobileSectionOrder": 3
+      },
+      {
+        "style": {
+          "height": "15%",
+          "left": "0%",
+          "width": "100%",
+          "position": "absolute",
+          "top": "68%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Mid",
+        "id": "bottom-mid",
+        "mobileSectionOrder": 4
+      },
+      {
+        "name": "Bottom Right",
+        "style": {
+          "height": "15%",
+          "left": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "width": "100%",
+          "top": "85%",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-right",
+        "mobileSectionOrder": 5
+      }
+    ],
+    "description": "Complex masonry with varied sizes",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "masonry-complex"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "masonry-three__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "sections": [
+      {
+        "name": "Tall Left",
+        "style": {
+          "left": "0%",
+          "height": "32%",
+          "position": "absolute",
+          "width": "100%",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "tall-left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "top-right",
+        "name": "Top Right",
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute",
+          "width": "100%",
+          "top": "34%",
+          "left": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "width": "100%",
+          "height": "32%",
+          "position": "absolute",
+          "left": "0%",
+          "top": "68%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-right",
+        "name": "Bottom Right",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "description": "Asymmetric three-section masonry layout",
+    "name": "Masonry Three • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "masonry-three"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "morphing-blob__mobile_lg",
+    "description": "Organic blob shapes with gooey physics.",
+    "sections": [
+      {
+        "name": "Blob 1",
+        "id": "blob-1",
+        "style": {
+          "background": "#fef3f2",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#fef3f2",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Blob 2",
+        "id": "blob-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "blob-3",
+        "name": "Blob 3",
+        "style": {
+          "background": "#fef3f2",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "name": "Morphing Blob • LG Mobile",
+    "category": "dynamic",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "morphing-blob"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "neon-pulse-city__mobile_lg",
+    "description": "Cyberpunk grid with pulsing neon effects.",
+    "name": "Neon Pulse City • LG Mobile",
+    "category": "dynamic",
+    "sections": [
+      {
+        "id": "neon-1",
+        "style": {
+          "background": "#0a0a14",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Node 01",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Node 02",
+        "style": {
+          "background": "#0a0a14",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "neon-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "background": "#0a0a14",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Node 03",
+        "id": "neon-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "neon-pulse-city"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "origami-unfold__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "description": "3D paper folding animation effects.",
+    "name": "Origami Unfold • LG Mobile",
+    "category": "dynamic",
+    "sections": [
+      {
+        "id": "fold-1",
+        "name": "Fold 1",
+        "style": {
+          "background": "#FDFAF6",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "fold-2",
+        "name": "Fold 2",
+        "style": {
+          "background": "#FFF5F5",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "origami-unfold"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "parametric-flow__mobile_lg",
+    "sections": [
+      {
+        "name": "Curve A",
+        "style": {
+          "background": "#fafafa",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "curve-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#fafafa",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "curve-2",
+        "name": "Curve B",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "background": "#fafafa",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Curve C",
+        "id": "curve-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "name": "Parametric Flow • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "category": "dynamic",
+    "description": "Hadid-inspired curved panel system.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "parametric-flow"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "particle-universe__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "sections": [
+      {
+        "id": "star-1",
+        "style": {
+          "background": "#050514",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Star System 1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "star-2",
+        "style": {
+          "background": "#050514",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Star System 2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "star-3",
+        "style": {
+          "background": "#050514",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Star System 3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "description": "Interactive particle system with gravity.",
+    "category": "dynamic",
+    "name": "Particle Universe • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "particle-universe"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "performance-flow__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "A cinematic horizontal scroll layout.",
+    "name": "Performance Flow • LG Mobile",
+    "category": "dynamic",
+    "sections": [
+      {
+        "style": {
+          "background": "#1a1a1a",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "flow-1",
+        "name": "Featured 1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#1a1a1a",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Featured 2",
+        "id": "flow-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "background": "#1a1a1a",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "flow-3",
+        "name": "Featured 3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "performance-flow"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "picture-in-picture__mobile_lg",
+    "name": "Picture in Picture • LG Mobile",
+    "description": "Small overlay in bottom-right corner",
+    "sections": [
+      {
+        "style": {
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "49%",
+          "position": "absolute",
+          "top": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "main",
+        "name": "Main",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "PIP",
+        "style": {
+          "height": "49%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "width": "100%",
+          "top": "51%",
+          "borderRadius": "15px"
+        },
+        "id": "pip",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "picture-in-picture"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "pip-creative__mobile_lg",
+    "description": "Creative PiP with side panels",
+    "sections": [
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "position": "absolute",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "width": "100%",
+          "top": "25.5%",
+          "height": "23.5%",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "name": "PiP 1",
+        "id": "pip-1",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "pip-2",
+        "name": "PiP 2",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "width": "100%",
+          "top": "51%",
+          "left": "0%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "top": "76.5%",
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "height": "23.5%",
+          "width": "100%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "pip-3",
+        "name": "PiP 3",
+        "mobileSectionOrder": 3
+      }
+    ],
+    "name": "Picture-in-Picture Creative • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "pip-creative"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "portfolio-grid__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Portfolio Grid • LG Mobile",
+    "sections": [
+      {
+        "id": "featured",
+        "style": {
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "position": "absolute",
+          "height": "18.4%",
+          "left": "0%",
+          "top": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Featured",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Item 1",
+        "id": "item-1",
+        "style": {
+          "left": "0%",
+          "top": "20.4%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "width": "100%",
+          "height": "18.4%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "item-2",
+        "name": "Item 2",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "height": "18.4%",
+          "top": "40.8%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "item-3",
+        "name": "Item 3",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "height": "18.4%",
+          "position": "absolute",
+          "top": "61.2%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Item 4",
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "top": "81.6%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "18.4%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "item-4",
+        "mobileSectionOrder": 4
+      }
+    ],
+    "description": "Portfolio with featured and grid items",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "portfolio-grid"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "portfolio-scroll__mobile_lg",
+    "name": "Portfolio Scroll • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "id": "portfolio-intro",
+        "description": "Hi! I am an independent graphic designer.",
+        "name": "Introduction",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#B21C1B",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "25.5%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "description": "Selected Project",
+        "id": "project-Intro",
+        "name": "Intro",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Slide1",
+        "id": "project-acqua",
+        "description": "Selected Project",
+        "style": {
+          "backgroundColor": "#003F66",
+          "color": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "description": "Selected Project",
+        "name": "Slide2",
+        "id": "project-epicerie",
+        "style": {
+          "backgroundColor": "#CFCC93",
+          "color": "#000000",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "76.5%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 3
+      }
+    ],
+    "category": "dynamic",
+    "description": "Vertical project list with bold typography and colored sections",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "portfolio-scroll"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "quad__mobile_lg",
+    "description": "Four equal quadrants",
+    "sections": [
+      {
+        "style": {
+          "height": "23.5%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "width": "100%",
+          "left": "0%",
+          "top": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "top-left",
+        "name": "Top Left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Top Right",
+        "id": "top-right",
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "100%",
+          "left": "0%",
+          "height": "23.5%",
+          "position": "absolute",
+          "top": "25.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "top": "51%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "height": "23.5%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-left",
+        "name": "Bottom Left",
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "bottom-right",
+        "style": {
+          "left": "0%",
+          "height": "23.5%",
+          "position": "absolute",
+          "width": "100%",
+          "top": "76.5%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Right",
+        "mobileSectionOrder": 3
+      }
+    ],
+    "name": "Quad • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "quad"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "side-by-side-thirds__mobile_lg",
+    "name": "Side by Side Thirds • LG Mobile",
+    "sections": [
+      {
+        "name": "Left",
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Top Right",
+        "id": "top-right",
+        "style": {
+          "top": "34%",
+          "left": "0%",
+          "height": "32%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "100%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Bottom Right",
+        "id": "bottom-right",
+        "style": {
+          "top": "68%",
+          "position": "absolute",
+          "left": "0%",
+          "height": "32%",
+          "width": "100%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "description": "Left third with right two-thirds split",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "side-by-side-thirds"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "sidebar-left__mobile_lg",
+    "sections": [
+      {
+        "name": "Sidebar",
+        "id": "sidebar",
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "height": "49%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "position": "absolute",
+          "width": "100%",
+          "top": "51%",
+          "left": "0%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "name": "Main",
+        "id": "main",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "name": "Sidebar Left • LG Mobile",
+    "description": "Narrow left sidebar with main content",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "sidebar-left"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "sidebar-right__mobile_lg",
+    "sections": [
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(148, 163, 184, 0.9)",
+          "height": "49%",
+          "top": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "top": "51%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "49%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "sidebar",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "name": "Sidebar Right • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.027Z",
+    "description": "Main content with narrow right sidebar",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "sidebar-right"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "simon-portfolio__mobile_lg",
+    "category": "dynamic",
+    "name": "Simon Daufresne • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#B21C1B",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "name": "Intro",
+        "id": "project-Intro",
+        "description": "Art direction & Visual Identity for a luxury perfume brand",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "project-acqua",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#003F66",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "25.5%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "name": "Slide1",
+        "description": "Sub Content",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#CFCC93",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "description": "Brand identity refresh for Le Bon Marché food hall",
+        "id": "project-epicerie",
+        "name": "Slide2",
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "backgroundColor": "#1a1a1a",
+          "color": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "76.5%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "name": "Editorial",
+        "id": "project-editorial",
+        "description": "Typography and layout for print publications",
+        "mobileSectionOrder": 3
+      }
+    ],
+    "description": "Minimalist portfolio with bold typography and GSAP animations",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "simon-portfolio"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "sistine-depth__mobile_lg",
+    "sections": [
+      {
+        "name": "Layer 1",
+        "id": "sis-1",
+        "style": {
+          "background": "#1a1512",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      }
+    ],
+    "name": "Sistine Depth • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "description": "Deep parallax and layered floating elements.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "sistine-depth"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "slider-layout__mobile_lg",
+    "sections": [
+      {
+        "id": "slide-1",
+        "name": "Deep Purple",
+        "style": {
+          "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          "width": "100%",
+          "left": "0%",
+          "color": "#ffffff",
+          "height": "18.4%",
+          "top": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "slide-2",
+        "name": "Sunset Orange",
+        "style": {
+          "color": "#ffffff",
+          "top": "20.4%",
+          "background": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)",
+          "width": "100%",
+          "height": "18.4%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Ocean Blue",
+        "style": {
+          "height": "18.4%",
+          "width": "100%",
+          "left": "0%",
+          "color": "#ffffff",
+          "background": "linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)",
+          "top": "40.8%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "slide-3",
+        "mobileSectionOrder": 2
+      },
+      {
+        "name": "Lush Green",
+        "id": "slide-4",
+        "style": {
+          "color": "#ffffff",
+          "top": "61.2%",
+          "height": "18.4%",
+          "background": "linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)",
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 3
+      },
+      {
+        "name": "Midnight",
+        "id": "slide-5",
+        "style": {
+          "left": "0%",
+          "height": "18.4%",
+          "color": "#ffffff",
+          "width": "100%",
+          "top": "81.6%",
+          "background": "linear-gradient(to top, #30cfd0 0%, #330867 100%)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 4
+      }
+    ],
+    "description": "Clean slider with gradient backgrounds",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "name": "Gradient Slider • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "slider-layout"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "split-horizontal-asymmetric__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "sections": [
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "top": "0%",
+          "height": "49%",
+          "left": "0%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Footer",
+        "id": "footer",
+        "style": {
+          "top": "51%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "height": "49%",
+          "width": "100%",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      }
+    ],
+    "name": "Split Horizontal Asymmetric • LG Mobile",
+    "description": "80/20 horizontal split",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "split-horizontal-asymmetric"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "split-landing-page__mobile_lg",
+    "category": "dynamic",
+    "name": "Split Landing Page • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "Interactive split screen with hover expansion",
+    "sections": [
+      {
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "rgba(87, 84, 236, 0.7)",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "description": "",
+        "id": "split-left",
+        "name": "",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "split-right",
+        "description": "",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "rgba(43, 43, 43, 0.8)",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "name": "",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "split-landing-page"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "split-screen-vertical__mobile_lg",
+    "sections": [
+      {
+        "id": "main",
+        "name": "Main",
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "height": "49%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "height": "49%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "top": "51%",
+          "width": "100%",
+          "left": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "id": "secondary",
+        "name": "Secondary",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.028Z",
+    "name": "Split Screen Vertical • LG Mobile",
+    "description": "70/30 vertical split",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "split-screen-vertical"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "split-vertical-asymmetric__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Split Vertical Asymmetric • LG Mobile",
+    "description": "80/20 vertical split",
+    "sections": [
+      {
+        "style": {
+          "height": "49%",
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "width": "100%",
+          "top": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "main",
+        "name": "Main",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "sidebar",
+        "name": "Sidebar",
+        "style": {
+          "position": "absolute",
+          "height": "49%",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "width": "100%",
+          "top": "51%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "split-vertical-asymmetric"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "spotlight-bottom__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "name": "Spotlight Bottom • LG Mobile",
+    "description": "Two top panels with large bottom section",
+    "sections": [
+      {
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "100%",
+          "top": "0%",
+          "position": "absolute",
+          "left": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "top-left",
+        "name": "Top Left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "height": "32%",
+          "position": "absolute",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "100%",
+          "top": "34%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "top-right",
+        "name": "Top Right",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Spotlight",
+        "id": "spotlight",
+        "style": {
+          "position": "absolute",
+          "height": "32%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "top": "68%",
+          "left": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "spotlight-bottom"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "spotlight-frame__mobile_lg",
+    "sections": [
+      {
+        "id": "spotlight",
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "top": "0%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "height": "18.4%",
+          "borderRadius": "15px"
+        },
+        "name": "Spotlight",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "left": "0%",
+          "top": "20.4%",
+          "height": "18.4%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59,130,246,0.8)",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "top",
+        "name": "Top",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "width": "100%",
+          "height": "18.4%",
+          "top": "40.8%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59,130,246,0.8)",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "bottom",
+        "name": "Bottom",
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "left",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(236,72,153,0.8)",
+          "left": "0%",
+          "height": "18.4%",
+          "width": "100%",
+          "top": "61.2%",
+          "borderRadius": "15px"
+        },
+        "name": "Left",
+        "mobileSectionOrder": 3
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "height": "18.4%",
+          "backgroundColor": "rgba(236,72,153,0.8)",
+          "left": "0%",
+          "top": "81.6%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 4
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "name": "Spotlight Frame • LG Mobile",
+    "description": "Center emphasis with decorative frame",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "spotlight-frame"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "spotlight-left__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "name": "Spotlight Left • LG Mobile",
+    "description": "Large left section with two stacked right panels",
+    "sections": [
+      {
+        "style": {
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "width": "100%",
+          "left": "0%",
+          "height": "32%",
+          "top": "0%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Main",
+        "id": "main",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "top": "34%",
+          "position": "absolute",
+          "height": "32%",
+          "left": "0%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Top Right",
+        "id": "top-right",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Right",
+        "id": "bottom-right",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "spotlight-left"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "spotlight-right__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "name": "Spotlight Right • LG Mobile",
+    "sections": [
+      {
+        "id": "top-left",
+        "style": {
+          "top": "0%",
+          "height": "32%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "position": "absolute",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Top Left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "bottom-left",
+        "style": {
+          "top": "34%",
+          "position": "absolute",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "left": "0%",
+          "width": "100%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Left",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Main",
+        "id": "main",
+        "style": {
+          "width": "100%",
+          "top": "68%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "height": "32%",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "description": "Two stacked left panels with large right section",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "spotlight-right"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "spotlight-top__mobile_lg",
+    "name": "Spotlight Top • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "description": "Large top section with two bottom panels",
+    "sections": [
+      {
+        "name": "Spotlight",
+        "style": {
+          "top": "0%",
+          "left": "0%",
+          "width": "100%",
+          "height": "32%",
+          "position": "absolute",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "spotlight",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "32%",
+          "position": "absolute",
+          "top": "34%",
+          "left": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Left",
+        "id": "bottom-left",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Bottom Right",
+        "id": "bottom-right",
+        "style": {
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "height": "32%",
+          "position": "absolute",
+          "width": "100%",
+          "top": "68%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "spotlight-top"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "staircase-up__mobile_lg",
+    "description": "Ascending stepped sections",
+    "name": "Staircase Up • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.032Z",
+    "sections": [
+      {
+        "id": "step-1",
+        "name": "Step 1",
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "backgroundColor": "rgba(99,102,241,0.9)",
+          "height": "12.57%",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "step-2",
+        "style": {
+          "left": "0%",
+          "height": "12.57%",
+          "backgroundColor": "rgba(236,72,153,0.9)",
+          "width": "100%",
+          "top": "14.57%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Step 2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "step-3",
+        "name": "Step 3",
+        "style": {
+          "height": "12.57%",
+          "position": "absolute",
+          "backgroundColor": "rgba(251,146,60,0.9)",
+          "left": "0%",
+          "width": "100%",
+          "top": "29.14%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "id": "step-4",
+        "style": {
+          "backgroundColor": "rgba(34,197,94,0.9)",
+          "height": "12.57%",
+          "width": "100%",
+          "left": "0%",
+          "top": "43.71%",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Step 4",
+        "mobileSectionOrder": 3
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "height": "12.57%",
+          "top": "58.29%",
+          "backgroundColor": "rgba(168,85,247,0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Fill 1",
+        "id": "fill-1",
+        "mobileSectionOrder": 4
+      },
+      {
+        "name": "Fill 2",
+        "id": "fill-2",
+        "style": {
+          "top": "72.86%",
+          "backgroundColor": "rgba(59,130,246,0.9)",
+          "height": "12.57%",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 5
+      },
+      {
+        "id": "fill-3",
+        "style": {
+          "top": "87.43%",
+          "backgroundColor": "rgba(20,184,166,0.9)",
+          "height": "12.57%",
+          "left": "0%",
+          "position": "absolute",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Fill 3",
+        "mobileSectionOrder": 6
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "staircase-up"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "temporal-fracture__mobile_lg",
+    "name": "Temporal Fracture • LG Mobile",
+    "description": "Nolan-inspired time-fragmented grid.",
+    "sections": [
+      {
+        "style": {
+          "background": "#0a0c12",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "frag-1",
+        "name": "Fragment 1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#0a0c12",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Fragment 2",
+        "id": "frag-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "background": "#0a0c12",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "frag-3",
+        "name": "Fragment 3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.034Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "temporal-fracture"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "top-bottom-thirds__mobile_lg",
+    "name": "Top Bottom Thirds • LG Mobile",
+    "sections": [
+      {
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(99, 102, 241, 0.9)",
+          "left": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Top",
+        "id": "top",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Bottom Left",
+        "style": {
+          "height": "32%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute",
+          "top": "34%",
+          "left": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-left",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Bottom Right",
+        "style": {
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "position": "absolute",
+          "height": "32%",
+          "top": "68%",
+          "borderRadius": "15px"
+        },
+        "id": "bottom-right",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "description": "Top third with bottom two-thirds split",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "top-bottom-thirds"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "trio__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.026Z",
+    "description": "Three equal vertical columns",
+    "name": "Trio • LG Mobile",
+    "sections": [
+      {
+        "style": {
+          "position": "absolute",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "height": "32%",
+          "top": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "left",
+        "name": "Left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Center",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "width": "100%",
+          "height": "32%",
+          "left": "0%",
+          "top": "34%",
+          "borderRadius": "15px"
+        },
+        "id": "center",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Right",
+        "id": "right",
+        "style": {
+          "height": "32%",
+          "top": "68%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "width": "100%",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "trio"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "triple-horizontal__mobile_lg",
+    "sections": [
+      {
+        "id": "top",
+        "style": {
+          "width": "100%",
+          "position": "absolute",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "left": "0%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Top",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "middle",
+        "name": "Middle",
+        "style": {
+          "position": "absolute",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "top": "34%",
+          "left": "0%",
+          "width": "100%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "style": {
+          "left": "0%",
+          "top": "68%",
+          "width": "100%",
+          "height": "32%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom",
+        "id": "bottom",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "description": "Three equal horizontal rows",
+    "name": "Triple Horizontal • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.028Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "triple-horizontal"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "two-halves__mobile_lg",
+    "sections": [
+      {
+        "name": "Left",
+        "id": "left",
+        "style": {
+          "height": "49%",
+          "width": "100%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "top": "51%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "height": "49%",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.026Z",
+    "description": "Two equal vertical sections",
+    "name": "Two Halves • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "two-halves"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "two-halves-horizontal__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.026Z",
+    "name": "Two Halves Horizontal • LG Mobile",
+    "description": "Two equal horizontal sections",
+    "sections": [
+      {
+        "style": {
+          "width": "100%",
+          "top": "0%",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "position": "absolute",
+          "height": "49%",
+          "borderRadius": "15px"
+        },
+        "id": "top",
+        "name": "Top",
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "left": "0%",
+          "height": "49%",
+          "width": "100%",
+          "top": "51%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "position": "absolute",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom",
+        "id": "bottom",
+        "mobileSectionOrder": 1
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "two-halves-horizontal"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "vertical-slider__mobile_lg",
+    "category": "dynamic",
+    "sections": [
+      {
+        "name": "Slide 1 Left",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#FD3555",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "id": "v-slide-1-left",
+        "mobileSectionOrder": 0
+      },
+      {
+        "name": "Slide 1 Right",
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#FFE4E8",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "14%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "id": "v-slide-1-right",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "v-slide-2-left",
+        "style": {
+          "color": "#ffffff",
+          "backgroundColor": "#2A86BA",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "28%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "name": "Slide 2 Left",
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#D4EFFC",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "42%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "name": "Slide 2 Right",
+        "id": "v-slide-2-right",
+        "mobileSectionOrder": 3
+      },
+      {
+        "id": "v-slide-3-left",
+        "name": "Slide 3 Left",
+        "style": {
+          "backgroundColor": "#252E33",
+          "color": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "56%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 4
+      },
+      {
+        "id": "v-slide-3-right",
+        "name": "Slide 3 Right",
+        "style": {
+          "backgroundColor": "#E6E6E6",
+          "color": "#000000",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "70%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 5
+      },
+      {
+        "style": {
+          "backgroundColor": "#FFB866",
+          "color": "#ffffff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "84%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "name": "Slide 4 Left",
+        "id": "v-slide-4-left",
+        "mobileSectionOrder": 6
+      },
+      {
+        "name": "Slide 4 Right",
+        "style": {
+          "color": "#000000",
+          "backgroundColor": "#FFF0D6",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "98%",
+          "height": "12%",
+          "borderRadius": "15px"
+        },
+        "id": "v-slide-4-right",
+        "mobileSectionOrder": 7
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "description": "Split screen slider with reverse scrolling",
+    "name": "Double Vertical Slider • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "vertical-slider"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "vertical-thirds__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.031Z",
+    "name": "Vertical Thirds • LG Mobile",
+    "description": "Three vertical sections using rule of thirds",
+    "sections": [
+      {
+        "id": "left",
+        "name": "Left",
+        "style": {
+          "height": "32%",
+          "position": "absolute",
+          "top": "0%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "width": "100%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "position": "absolute",
+          "top": "34%",
+          "left": "0%",
+          "height": "32%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Center",
+        "id": "center",
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "right",
+        "name": "Right",
+        "style": {
+          "top": "68%",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)",
+          "position": "absolute",
+          "left": "0%",
+          "height": "32%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      }
+    ],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "vertical-thirds"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "vitruvian-motion__mobile_lg",
+    "sections": [
+      {
+        "style": {
+          "background": "#f5f1eb",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "100%",
+          "borderRadius": "15px"
+        },
+        "name": "Canvas",
+        "id": "vit-1",
+        "mobileSectionOrder": 0
+      }
+    ],
+    "name": "Vitruvian Motion • LG Mobile",
+    "category": "dynamic",
+    "description": "Technical sketching and geometry animations.",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "vitruvian-motion"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "vogue-parallax__mobile_lg",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "style": {
+          "background": "linear-gradient(to bottom, #ffffff, #f7f7f7)",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "name": "Cover",
+        "id": "vogue-1",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "vogue-2",
+        "name": "Editorial",
+        "style": {
+          "background": "linear-gradient(to bottom, #f7f7f7, #eaeaea)",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "25.5%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "id": "vogue-3",
+        "name": "Details",
+        "style": {
+          "background": "linear-gradient(to top, #fff1eb 0%, #ace0f9 100%)",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "51%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "background": "linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "76.5%",
+          "height": "23.5%",
+          "borderRadius": "15px"
+        },
+        "name": "Backstage",
+        "id": "vogue-4",
+        "mobileSectionOrder": 3
+      }
+    ],
+    "description": "High-fashion parallax with sticky typography.",
+    "category": "dynamic",
+    "name": "Vogue Editorial • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "vogue-parallax"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "void-emergence__mobile_lg",
+    "sections": [
+      {
+        "name": "Entity 01",
+        "id": "entity-1",
+        "style": {
+          "background": "#08050f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      },
+      {
+        "style": {
+          "background": "#08050f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "34%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "name": "Entity 02",
+        "id": "entity-2",
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Entity 03",
+        "style": {
+          "background": "#08050f",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "68%",
+          "height": "32%",
+          "borderRadius": "15px"
+        },
+        "id": "entity-3",
+        "mobileSectionOrder": 2
+      }
+    ],
+    "name": "Void Emergence • LG Mobile",
+    "category": "dynamic",
+    "migratedAt": "2025-12-22T11:12:07.035Z",
+    "description": "Physics-based panel emergence.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "void-emergence"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "window-pane-nine__mobile_lg",
+    "name": "Window Pane Nine • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.030Z",
+    "sections": [
+      {
+        "name": "Top Left",
+        "style": {
+          "height": "12%",
+          "position": "absolute",
+          "width": "100%",
+          "left": "0%",
+          "backgroundColor": "rgba(59, 130, 246, 0.9)",
+          "top": "0%",
+          "borderRadius": "15px"
+        },
+        "id": "tl",
+        "mobileSectionOrder": 0
+      },
+      {
+        "id": "tc",
+        "name": "Top Center",
+        "style": {
+          "height": "12%",
+          "top": "14%",
+          "position": "absolute",
+          "width": "100%",
+          "backgroundColor": "rgba(16, 185, 129, 0.9)",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 1
+      },
+      {
+        "name": "Top Right",
+        "id": "tr",
+        "style": {
+          "height": "12%",
+          "top": "28%",
+          "width": "100%",
+          "backgroundColor": "rgba(239, 68, 68, 0.9)",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 2
+      },
+      {
+        "style": {
+          "height": "12%",
+          "position": "absolute",
+          "left": "0%",
+          "top": "42%",
+          "width": "100%",
+          "backgroundColor": "rgba(245, 158, 11, 0.9)",
+          "borderRadius": "15px"
+        },
+        "name": "Middle Left",
+        "id": "ml",
+        "mobileSectionOrder": 3
+      },
+      {
+        "id": "mc",
+        "name": "Middle Center",
+        "style": {
+          "top": "56%",
+          "width": "100%",
+          "backgroundColor": "rgba(139, 92, 246, 0.9)",
+          "height": "12%",
+          "position": "absolute",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 4
+      },
+      {
+        "name": "Middle Right",
+        "style": {
+          "top": "70%",
+          "left": "0%",
+          "width": "100%",
+          "height": "12%",
+          "position": "absolute",
+          "backgroundColor": "rgba(236, 72, 153, 0.9)",
+          "borderRadius": "15px"
+        },
+        "id": "mr",
+        "mobileSectionOrder": 5
+      },
+      {
+        "id": "bl",
+        "style": {
+          "backgroundColor": "rgba(14, 165, 233, 0.9)",
+          "position": "absolute",
+          "width": "100%",
+          "height": "12%",
+          "top": "84%",
+          "left": "0%",
+          "borderRadius": "15px"
+        },
+        "name": "Bottom Left",
+        "mobileSectionOrder": 6
+      },
+      {
+        "name": "Bottom Center",
+        "id": "bc",
+        "style": {
+          "top": "98%",
+          "height": "12%",
+          "position": "absolute",
+          "backgroundColor": "rgba(34, 197, 94, 0.9)",
+          "left": "0%",
+          "width": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 7
+      },
+      {
+        "name": "Bottom Right",
+        "id": "br",
+        "style": {
+          "top": "112%",
+          "position": "absolute",
+          "left": "0%",
+          "height": "12%",
+          "width": "100%",
+          "backgroundColor": "rgba(168, 85, 247, 0.9)",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 8
+      }
+    ],
+    "description": "3x3 equal grid like a window",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "window-pane-nine"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "wintour-editorial__mobile_lg",
+    "name": "Wintour Editorial • LG Mobile",
+    "sections": [
+      {
+        "id": "win-1",
+        "name": "Cover",
+        "style": {
+          "background": "#fff",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "100%",
+          "borderRadius": "15px"
+        },
+        "mobileSectionOrder": 0
+      }
+    ],
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "category": "dynamic",
+    "description": "High-impact typography and scroll snapping.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "wintour-editorial"
+    },
+    "layoutDirection": "vertical-stack"
+  },
+  {
+    "id": "zaha-parametric__mobile_lg",
+    "name": "Zaha Parametric • LG Mobile",
+    "migratedAt": "2025-12-22T11:12:07.033Z",
+    "sections": [
+      {
+        "name": "Main",
+        "style": {
+          "background": "#000",
+          "position": "absolute",
+          "left": "0%",
+          "width": "100%",
+          "top": "0%",
+          "height": "100%",
+          "borderRadius": "15px"
+        },
+        "id": "zaha-1",
+        "mobileSectionOrder": 0
+      }
+    ],
+    "description": "Abstract curved 3D geometries and flow.",
+    "category": "dynamic",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "layout_templates",
+      "sourceId": "zaha-parametric"
+    },
+    "layoutDirection": "vertical-stack"
+  }
+]

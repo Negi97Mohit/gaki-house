@@ -1,0 +1,433 @@
+[
+  {
+    "id": "bouncy-period__mobile_lg",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "category": "Kinetic",
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontSize": 56,
+      "accentColor": "#FF0055",
+      "alignment": "left",
+      "fontFamily": "Poppins"
+    },
+    "defaultContent": {
+      "heading": "Make a Statement."
+    },
+    "animationConfig": {
+      "easing": "elastic",
+      "loopDelay": 4,
+      "loop": true,
+      "duration": 0.8,
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "name": "Bouncy Period • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "bouncy-period"
+    }
+  },
+  {
+    "id": "card-feature__mobile_lg",
+    "defaultContent": {
+      "title": "Smart AI",
+      "desc": "Generates layouts instantly."
+    },
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "alignment": "left",
+      "fontSize": 32,
+      "fontFamily": "Inter",
+      "backgroundColor": "rgba(255,255,255,0.1)"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "animationConfig": {
+      "duration": 0.8,
+      "direction": "up",
+      "easing": "smooth",
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "name": "Feature Card • LG Mobile",
+    "source": "system",
+    "category": "UI",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "card-feature"
+    }
+  },
+  {
+    "id": "counter-stat__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "baseStyle": {
+      "fontFamily": "Inter",
+      "color": "#4ADE80",
+      "alignment": "center",
+      "fontSize": 72
+    },
+    "source": "system",
+    "animationConfig": {
+      "easing": "smooth",
+      "duration": 2,
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "defaultContent": {
+      "label": "Revenue Generated",
+      "value": "$1,000,000"
+    },
+    "category": "Data",
+    "name": "Statistic Counter • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "counter-stat"
+    }
+  },
+  {
+    "id": "cyber-title__mobile_lg",
+    "category": "Glitch",
+    "baseStyle": {
+      "color": "#00FFFF",
+      "fontSize": 64,
+      "fontFamily": "Orbitron",
+      "alignment": "center"
+    },
+    "name": "Cyber Title • LG Mobile",
+    "source": "system",
+    "defaultContent": {
+      "heading": "CYBERPUNK",
+      "status": "CONNECTED"
+    },
+    "animationConfig": {
+      "direction": "left",
+      "easing": "smooth",
+      "duration": 0.8,
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "cyber-title"
+    }
+  },
+  {
+    "id": "editorial-tagline__mobile_lg",
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontSize": 48,
+      "alignment": "center",
+      "fontFamily": "Montserrat"
+    },
+    "defaultContent": {
+      "tag": "[ NEW COLLECTION ]",
+      "heading": "SUMMER 2025"
+    },
+    "name": "The Edit: Tagline • LG Mobile",
+    "animationConfig": {
+      "direction": "down",
+      "delay": 0.2,
+      "duration": 1,
+      "easing": "smooth",
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "category": "Reveal",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "editorial-tagline"
+    }
+  },
+  {
+    "id": "glide-title__mobile_lg",
+    "defaultContent": {
+      "heading": "Smooth Glide",
+      "subheading": "Cinematic Entrance"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "baseStyle": {
+      "fontSize": 72,
+      "fontFamily": "Playfair Display",
+      "color": "#F5E5C5",
+      "alignment": "center"
+    },
+    "name": "Glide • LG Mobile",
+    "category": "Reveal",
+    "animationConfig": {
+      "easing": "smooth",
+      "duration": 1.5,
+      "direction": "up",
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "glide-title"
+    }
+  },
+  {
+    "id": "glitch-reveal-1__mobile_lg",
+    "source": "system",
+    "category": "Glitch",
+    "animationConfig": {
+      "easing": "linear",
+      "loopDelay": 5,
+      "duration": 0.3,
+      "delay": 0.05,
+      "loop": true,
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "defaultContent": {
+      "subheading": "Rebooting...",
+      "heading": "SYSTEM_FAILURE"
+    },
+    "name": "Glitch Reveal • LG Mobile",
+    "baseStyle": {
+      "fontFamily": "Courier New",
+      "alignment": "left",
+      "color": "#00FF00",
+      "fontSize": 42
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "glitch-reveal-1"
+    }
+  },
+  {
+    "id": "lower-third-clean__mobile_lg",
+    "name": "Clean Lower Third • LG Mobile",
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontFamily": "Inter",
+      "fontSize": 28,
+      "alignment": "left"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "source": "system",
+    "animationConfig": {
+      "easing": "smooth",
+      "duration": 1,
+      "direction": "left",
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "category": "UI",
+    "defaultContent": {
+      "name": "Sarah Jenkins",
+      "role": "Product Designer"
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "lower-third-clean"
+    }
+  },
+  {
+    "id": "sliding-text-reveal__mobile_lg",
+    "source": "system",
+    "defaultContent": {
+      "subheading": "Reveal Effect",
+      "heading": "Sliding Text"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "animationConfig": {
+      "duration": 0.8,
+      "loopDelay": 3,
+      "loop": true,
+      "easing": "smooth",
+      "direction": "up",
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "baseStyle": {
+      "color": "#FFFFFF",
+      "fontSize": 64,
+      "alignment": "left",
+      "fontFamily": "Inter"
+    },
+    "name": "Sliding Text Reveal • LG Mobile",
+    "category": "Reveal",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "sliding-text-reveal"
+    }
+  },
+  {
+    "id": "social-message__mobile_lg",
+    "name": "Social Message • LG Mobile",
+    "baseStyle": {
+      "fontSize": 24,
+      "alignment": "left",
+      "fontFamily": "Inter",
+      "backgroundColor": "#FFFFFF",
+      "color": "#000000"
+    },
+    "animationConfig": {
+      "duration": 0.6,
+      "direction": "up",
+      "easing": "bouncy",
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "defaultContent": {
+      "user": "@alex_design",
+      "message": "This tool is absolutely mind-blowing! 🚀"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "source": "system",
+    "category": "Social",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "social-message"
+    }
+  },
+  {
+    "id": "wow-rotate-scale__mobile_lg",
+    "defaultContent": {
+      "heading": "HUGE SALE!",
+      "subheading": "50% OFF"
+    },
+    "baseStyle": {
+      "fontFamily": "Anton",
+      "fontSize": 80,
+      "color": "#FF0055",
+      "alignment": "center"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "source": "system",
+    "animationConfig": {
+      "loopDelay": 3,
+      "loop": true,
+      "easing": "bouncy",
+      "direction": "up",
+      "duration": 0.5,
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "category": "Kinetic",
+    "name": "Wow: Rotate & Scale • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "wow-rotate-scale"
+    }
+  },
+  {
+    "id": "zero-gravity__mobile_lg",
+    "name": "Zero Gravity • LG Mobile",
+    "defaultContent": {
+      "word1": "Bounce",
+      "word2": "Higher"
+    },
+    "animationConfig": {
+      "duration": 0.6,
+      "delay": 0.1,
+      "easing": "bouncy",
+      "loop": true,
+      "loopDelay": 2,
+      "mobileOptimized": true,
+      "quality": "balanced"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "category": "Kinetic",
+    "baseStyle": {
+      "alignment": "center",
+      "fontSize": 96,
+      "color": "#FFD700",
+      "fontFamily": "Bebas Neue"
+    },
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "animation_library",
+      "sourceId": "zero-gravity"
+    }
+  }
+]

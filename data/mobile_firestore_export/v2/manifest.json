@@ -1,0 +1,309 @@
+{
+  "generatedAt": "2026-02-28T08:31:41.553Z",
+  "version": "mobile-firestore-v2",
+  "source": "data/firestore_export/*.json",
+  "profiles": [
+    {
+      "id": "xs",
+      "label": "Small phones",
+      "width": 320,
+      "height": 568,
+      "fontScale": 0.78,
+      "pipScale": 0.8,
+      "spacingScale": 0.82
+    },
+    {
+      "id": "sm",
+      "label": "Standard phones",
+      "width": 360,
+      "height": 640,
+      "fontScale": 0.88,
+      "pipScale": 0.9,
+      "spacingScale": 0.9
+    },
+    {
+      "id": "md",
+      "label": "Large phones",
+      "width": 390,
+      "height": 844,
+      "fontScale": 1,
+      "pipScale": 1,
+      "spacingScale": 1
+    },
+    {
+      "id": "lg",
+      "label": "Phablets",
+      "width": 430,
+      "height": 932,
+      "fontScale": 1.08,
+      "pipScale": 1.12,
+      "spacingScale": 1.1
+    }
+  ],
+  "collections": {
+    "anime_styles": {
+      "xs": {
+        "inputCount": 69,
+        "outputCount": 69,
+        "outputPath": "data/mobile_firestore_export/v2/xs/anime_styles.json"
+      },
+      "sm": {
+        "inputCount": 69,
+        "outputCount": 69,
+        "outputPath": "data/mobile_firestore_export/v2/sm/anime_styles.json"
+      },
+      "md": {
+        "inputCount": 69,
+        "outputCount": 69,
+        "outputPath": "data/mobile_firestore_export/v2/md/anime_styles.json"
+      },
+      "lg": {
+        "inputCount": 69,
+        "outputCount": 69,
+        "outputPath": "data/mobile_firestore_export/v2/lg/anime_styles.json"
+      }
+    },
+    "animation_library": {
+      "xs": {
+        "inputCount": 12,
+        "outputCount": 12,
+        "outputPath": "data/mobile_firestore_export/v2/xs/animation_library.json"
+      },
+      "sm": {
+        "inputCount": 12,
+        "outputCount": 12,
+        "outputPath": "data/mobile_firestore_export/v2/sm/animation_library.json"
+      },
+      "md": {
+        "inputCount": 12,
+        "outputCount": 12,
+        "outputPath": "data/mobile_firestore_export/v2/md/animation_library.json"
+      },
+      "lg": {
+        "inputCount": 12,
+        "outputCount": 12,
+        "outputPath": "data/mobile_firestore_export/v2/lg/animation_library.json"
+      }
+    },
+    "text_designs": {
+      "xs": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/xs/text_designs.json"
+      },
+      "sm": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/sm/text_designs.json"
+      },
+      "md": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/md/text_designs.json"
+      },
+      "lg": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/lg/text_designs.json"
+      }
+    },
+    "canvas_presets": {
+      "xs": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/xs/canvas_presets.json"
+      },
+      "sm": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/sm/canvas_presets.json"
+      },
+      "md": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/md/canvas_presets.json"
+      },
+      "lg": {
+        "inputCount": 70,
+        "outputCount": 70,
+        "outputPath": "data/mobile_firestore_export/v2/lg/canvas_presets.json"
+      }
+    },
+    "dynamic_presets": {
+      "xs": {
+        "inputCount": 10,
+        "outputCount": 10,
+        "outputPath": "data/mobile_firestore_export/v2/xs/dynamic_presets.json"
+      },
+      "sm": {
+        "inputCount": 10,
+        "outputCount": 10,
+        "outputPath": "data/mobile_firestore_export/v2/sm/dynamic_presets.json"
+      },
+      "md": {
+        "inputCount": 10,
+        "outputCount": 10,
+        "outputPath": "data/mobile_firestore_export/v2/md/dynamic_presets.json"
+      },
+      "lg": {
+        "inputCount": 10,
+        "outputCount": 10,
+        "outputPath": "data/mobile_firestore_export/v2/lg/dynamic_presets.json"
+      }
+    },
+    "social_banners": {
+      "xs": {
+        "inputCount": 16,
+        "outputCount": 16,
+        "outputPath": "data/mobile_firestore_export/v2/xs/social_banners.json"
+      },
+      "sm": {
+        "inputCount": 16,
+        "outputCount": 16,
+        "outputPath": "data/mobile_firestore_export/v2/sm/social_banners.json"
+      },
+      "md": {
+        "inputCount": 16,
+        "outputCount": 16,
+        "outputPath": "data/mobile_firestore_export/v2/md/social_banners.json"
+      },
+      "lg": {
+        "inputCount": 16,
+        "outputCount": 16,
+        "outputPath": "data/mobile_firestore_export/v2/lg/social_banners.json"
+      }
+    },
+    "animated_banners": {
+      "xs": {
+        "inputCount": 20,
+        "outputCount": 20,
+        "outputPath": "data/mobile_firestore_export/v2/xs/animated_banners.json"
+      },
+      "sm": {
+        "inputCount": 20,
+        "outputCount": 20,
+        "outputPath": "data/mobile_firestore_export/v2/sm/animated_banners.json"
+      },
+      "md": {
+        "inputCount": 20,
+        "outputCount": 20,
+        "outputPath": "data/mobile_firestore_export/v2/md/animated_banners.json"
+      },
+      "lg": {
+        "inputCount": 20,
+        "outputCount": 20,
+        "outputPath": "data/mobile_firestore_export/v2/lg/animated_banners.json"
+      }
+    },
+    "public_canvas_presets": {
+      "xs": {
+        "inputCount": 6,
+        "outputCount": 6,
+        "outputPath": "data/mobile_firestore_export/v2/xs/public_canvas_presets.json"
+      },
+      "sm": {
+        "inputCount": 6,
+        "outputCount": 6,
+        "outputPath": "data/mobile_firestore_export/v2/sm/public_canvas_presets.json"
+      },
+      "md": {
+        "inputCount": 6,
+        "outputCount": 6,
+        "outputPath": "data/mobile_firestore_export/v2/md/public_canvas_presets.json"
+      },
+      "lg": {
+        "inputCount": 6,
+        "outputCount": 6,
+        "outputPath": "data/mobile_firestore_export/v2/lg/public_canvas_presets.json"
+      }
+    },
+    "preset_templates": {
+      "xs": {
+        "inputCount": 5,
+        "outputCount": 5,
+        "outputPath": "data/mobile_firestore_export/v2/xs/preset_templates.json"
+      },
+      "sm": {
+        "inputCount": 5,
+        "outputCount": 5,
+        "outputPath": "data/mobile_firestore_export/v2/sm/preset_templates.json"
+      },
+      "md": {
+        "inputCount": 5,
+        "outputCount": 5,
+        "outputPath": "data/mobile_firestore_export/v2/md/preset_templates.json"
+      },
+      "lg": {
+        "inputCount": 5,
+        "outputCount": 5,
+        "outputPath": "data/mobile_firestore_export/v2/lg/preset_templates.json"
+      }
+    },
+    "filters": {
+      "xs": {
+        "inputCount": 68,
+        "outputCount": 68,
+        "outputPath": "data/mobile_firestore_export/v2/xs/filters.json"
+      },
+      "sm": {
+        "inputCount": 68,
+        "outputCount": 68,
+        "outputPath": "data/mobile_firestore_export/v2/sm/filters.json"
+      },
+      "md": {
+        "inputCount": 68,
+        "outputCount": 68,
+        "outputPath": "data/mobile_firestore_export/v2/md/filters.json"
+      },
+      "lg": {
+        "inputCount": 68,
+        "outputCount": 68,
+        "outputPath": "data/mobile_firestore_export/v2/lg/filters.json"
+      }
+    },
+    "caption_presets": {
+      "xs": {
+        "inputCount": 51,
+        "outputCount": 51,
+        "outputPath": "data/mobile_firestore_export/v2/xs/caption_presets.json"
+      },
+      "sm": {
+        "inputCount": 51,
+        "outputCount": 51,
+        "outputPath": "data/mobile_firestore_export/v2/sm/caption_presets.json"
+      },
+      "md": {
+        "inputCount": 51,
+        "outputCount": 51,
+        "outputPath": "data/mobile_firestore_export/v2/md/caption_presets.json"
+      },
+      "lg": {
+        "inputCount": 51,
+        "outputCount": 51,
+        "outputPath": "data/mobile_firestore_export/v2/lg/caption_presets.json"
+      }
+    },
+    "layout_templates": {
+      "xs": {
+        "inputCount": 80,
+        "outputCount": 80,
+        "outputPath": "data/mobile_firestore_export/v2/xs/layout_templates.json"
+      },
+      "sm": {
+        "inputCount": 80,
+        "outputCount": 80,
+        "outputPath": "data/mobile_firestore_export/v2/sm/layout_templates.json"
+      },
+      "md": {
+        "inputCount": 80,
+        "outputCount": 80,
+        "outputPath": "data/mobile_firestore_export/v2/md/layout_templates.json"
+      },
+      "lg": {
+        "inputCount": 80,
+        "outputCount": 80,
+        "outputPath": "data/mobile_firestore_export/v2/lg/layout_templates.json"
+      }
+    }
+  }
+}

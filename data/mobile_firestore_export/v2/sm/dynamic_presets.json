@@ -1,0 +1,631 @@
+[
+  {
+    "id": "diagonal-rush-v1__mobile_sm",
+    "effects": {
+      "videoFilter": "saturate(0) contrast(1.1)"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "center-cam"
+        }
+      ],
+      "templateId": "diagonal-rush"
+    },
+    "canvasAspectRatio": "9:16",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#F0F0F0",
+      "mobileSafeAreaAware": true
+    },
+    "styleTags": [
+      "fashion",
+      "diagonal",
+      "scroll",
+      "fast"
+    ],
+    "textOverlays": [],
+    "source": "system",
+    "name": "Diagonal Rush • SM Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "diagonal-rush-v1"
+    }
+  },
+  {
+    "id": "editorial-sticky-split__mobile_sm",
+    "background": {
+      "blankCanvasColor": "#FFF",
+      "backgroundEffect": "none",
+      "mobileSafeAreaAware": true
+    },
+    "styleTags": [
+      "split",
+      "editorial",
+      "clean",
+      "reading"
+    ],
+    "textOverlays": [],
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "canvasLayout": {
+      "sections": [
+        {
+          "id": "sticky-media",
+          "content": {
+            "type": "camera"
+          }
+        }
+      ],
+      "templateId": "sticky-split"
+    },
+    "canvasAspectRatio": "9:16",
+    "source": "system",
+    "effects": {
+      "videoFilter": "sepia(0.2)"
+    },
+    "name": "Sticky Editorial • SM Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "editorial-sticky-split"
+    }
+  },
+  {
+    "id": "fashion-horizontal-scroll__mobile_sm",
+    "source": "system",
+    "background": {
+      "blankCanvasColor": "#FFF",
+      "backgroundEffect": "none",
+      "mobileSafeAreaAware": true
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "effects": {
+      "videoFilter": "grayscale(1)"
+    },
+    "canvasAspectRatio": "9:16",
+    "styleTags": [
+      "horizontal",
+      "fashion",
+      "gallery",
+      "pan"
+    ],
+    "name": "Runway Horizontal • SM Mobile",
+    "canvasLayout": {
+      "templateId": "horizontal-scroll",
+      "sections": [
+        {
+          "id": "item-1",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "id": "item-2",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "item-3"
+        }
+      ]
+    },
+    "textOverlays": [],
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "fashion-horizontal-scroll"
+    }
+  },
+  {
+    "id": "fashion-layered-parallax__mobile_sm",
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "layer-back"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "layer-front"
+        }
+      ],
+      "templateId": "layered-parallax"
+    },
+    "textOverlays": [],
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "effects": {
+      "videoFilter": "contrast(1.2)"
+    },
+    "styleTags": [
+      "fashion",
+      "depth",
+      "scroll",
+      "image"
+    ],
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "name": "Layered Parallax • SM Mobile",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#1A1A1A",
+      "mobileSafeAreaAware": true
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "fashion-layered-parallax"
+    }
+  },
+  {
+    "id": "kinetic-infinite-grid__mobile_sm",
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "canvasAspectRatio": "9:16",
+    "effects": {
+      "videoFilter": "contrast(1.1)"
+    },
+    "name": "Infinite Grid • SM Mobile",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#000",
+      "mobileSafeAreaAware": true
+    },
+    "textOverlays": [],
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "styleTags": [
+      "grid",
+      "loop",
+      "seamless",
+      "gallery"
+    ],
+    "canvasLayout": {
+      "sections": [
+        {
+          "id": "grid-1",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-2"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-3"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-4"
+        }
+      ],
+      "templateId": "infinite-grid"
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "kinetic-infinite-grid"
+    }
+  },
+  {
+    "id": "kinetic-scroll-zoom__mobile_sm",
+    "styleTags": [
+      "scale",
+      "hero",
+      "impact",
+      "modern"
+    ],
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "canvasAspectRatio": "9:16",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#111",
+      "mobileSafeAreaAware": true
+    },
+    "name": "Scroll Zoom Hero • SM Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "canvasLayout": {
+      "templateId": "scroll-zoom",
+      "sections": [
+        {
+          "id": "hero-zoom",
+          "content": {
+            "type": "camera"
+          }
+        }
+      ]
+    },
+    "textOverlays": [],
+    "source": "system",
+    "effects": {
+      "videoFilter": "none"
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "kinetic-scroll-zoom"
+    }
+  },
+  {
+    "id": "kinetic-stencil-v1__mobile_sm",
+    "canvasLayout": {
+      "templateId": "kinetic-stencil",
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "main-feed"
+        }
+      ]
+    },
+    "source": "system",
+    "effects": {
+      "videoFilter": "grayscale(1) contrast(1.2)"
+    },
+    "name": "Kinetic Stencil • SM Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "canvasAspectRatio": "9:16",
+    "styleTags": [
+      "bold",
+      "mask",
+      "typography",
+      "video-in-text"
+    ],
+    "textOverlays": [],
+    "background": {
+      "blankCanvasColor": "#000000",
+      "backgroundEffect": "none",
+      "mobileSafeAreaAware": true
+    },
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "kinetic-stencil-v1"
+    }
+  },
+  {
+    "id": "kinetic-typography-v1__mobile_sm",
+    "effects": {
+      "videoFilter": "contrast(1.1)"
+    },
+    "canvasAspectRatio": "9:16",
+    "styleTags": [
+      "modern",
+      "typography",
+      "bold",
+      "editorial",
+      "gsap"
+    ],
+    "textOverlays": [],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "source": "system",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#E5E5E5",
+      "mobileSafeAreaAware": true
+    },
+    "name": "Kinetic Editorial • SM Mobile",
+    "canvasLayout": {
+      "sections": [
+        {
+          "id": "hero",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "id": "grid-1",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "id": "grid-2",
+          "content": {
+            "type": "empty"
+          }
+        }
+      ],
+      "templateId": "kinetic-typography"
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "kinetic-typography-v1"
+    }
+  },
+  {
+    "id": "modern-circular-gallery__mobile_sm",
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "templateId": "circular-gallery",
+      "sections": [
+        {
+          "id": "circle-1",
+          "content": {
+            "type": "camera"
+          }
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "circle-2"
+        },
+        {
+          "id": "circle-3",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "id": "circle-4",
+          "content": {
+            "type": "empty"
+          }
+        }
+      ]
+    },
+    "textOverlays": [],
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "effects": {
+      "videoFilter": "none"
+    },
+    "styleTags": [
+      "circle",
+      "rotate",
+      "creative",
+      "experimental"
+    ],
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "name": "Circular Gallery • SM Mobile",
+    "background": {
+      "blankCanvasColor": "#111",
+      "backgroundEffect": "none",
+      "mobileSafeAreaAware": true
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "modern-circular-gallery"
+    }
+  },
+  {
+    "id": "modern-snap-sections__mobile_sm",
+    "source": "system",
+    "background": {
+      "blankCanvasColor": "#000",
+      "backgroundEffect": "none",
+      "mobileSafeAreaAware": true
+    },
+    "effects": {
+      "videoFilter": "none"
+    },
+    "pip": {
+      "layoutMode": "hidden",
+      "pipSize": {
+        "width": 31,
+        "height": 38
+      },
+      "pipPosition": {
+        "x": 34.5,
+        "y": 52
+      }
+    },
+    "name": "Snap Stories • SM Mobile",
+    "canvasAspectRatio": "9:16",
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "snap-1"
+        },
+        {
+          "id": "snap-2",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "id": "snap-3",
+          "content": {
+            "type": "empty"
+          }
+        }
+      ],
+      "templateId": "snap-sections"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "styleTags": [
+      "snap",
+      "fullscreen",
+      "story",
+      "mobile"
+    ],
+    "textOverlays": [],
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "sm",
+      "collection": "dynamic_presets",
+      "sourceId": "modern-snap-sections"
+    }
+  }
+]

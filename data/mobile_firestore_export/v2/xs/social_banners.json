@@ -1,0 +1,1104 @@
+[
+  {
+    "id": "creator-bubble__mobile_xs",
+    "theme": "gradient",
+    "showAvatar": true,
+    "name": "Creator Bubble • XS Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "layout": "mobile-stack",
+    "showTagline": true,
+    "styles": {
+      "link": {
+        "padding": "10px",
+        "background": "#ffffff",
+        "borderRadius": "50%",
+        "color": "#667eea",
+        "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.15)"
+      },
+      "linksContainer": {
+        "marginTop": "8px",
+        "gap": "8px",
+        "display": "flex"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      },
+      "name": {
+        "fontWeight": "600",
+        "fontSize": "14px",
+        "textAlign": "center",
+        "color": "#ffffff"
+      },
+      "container": {
+        "alignItems": "center",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "height": "100%",
+        "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        "minWidth": "100%",
+        "padding": "13px",
+        "flexDirection": "column",
+        "gap": "7px",
+        "boxShadow": "0 20px 60px rgba(102, 126, 234, 0.4)",
+        "borderRadius": "15px",
+        "width": "100%"
+      },
+      "tagline": {
+        "fontSize": "10px",
+        "color": "rgba(255, 255, 255, 0.8)",
+        "textAlign": "center"
+      }
+    },
+    "description": "Floating bubble style with centered avatar",
+    "preview": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    "source": "system",
+    "maxLinks": 4,
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "creator-bubble"
+    }
+  },
+  {
+    "id": "crystal-clear__mobile_xs",
+    "source": "system",
+    "description": "Ultra-modern glass with crystal clarity",
+    "layout": "mobile-stack",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "styles": {
+      "tagline": {
+        "color": "rgba(255, 255, 255, 0.6)",
+        "fontSize": "10px",
+        "fontFamily": "'Inter', sans-serif",
+        "letterSpacing": "0.5px"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      },
+      "name": {
+        "color": "#ffffff",
+        "fontWeight": "600",
+        "letterSpacing": "-0.5px",
+        "fontFamily": "'Inter', sans-serif",
+        "fontSize": "14px"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "marginLeft": "auto",
+        "gap": "12px"
+      },
+      "link": {
+        "padding": "10px",
+        "background": "rgba(255, 255, 255, 0.15)",
+        "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.05)",
+        "color": "#ffffff",
+        "transition": "all 0.3s ease",
+        "borderRadius": "12px",
+        "border": "1px solid rgba(255, 255, 255, 0.2)"
+      },
+      "container": {
+        "borderRadius": "15px",
+        "backdropFilter": "blur(25px)",
+        "gap": "7px",
+        "alignItems": "center",
+        "padding": "13px",
+        "height": "100%",
+        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1)",
+        "WebkitBackdropFilter": "blur(25px)",
+        "width": "100%",
+        "boxSizing": "border-box",
+        "background": "rgba(255, 255, 255, 0.1)",
+        "display": "flex",
+        "border": "1px solid rgba(255, 255, 255, 0.4)",
+        "minWidth": "100%"
+      }
+    },
+    "showAvatar": true,
+    "showTagline": true,
+    "preview": "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)",
+    "theme": "glassmorphism",
+    "maxLinks": 4,
+    "name": "Crystal Clear • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "crystal-clear"
+    }
+  },
+  {
+    "id": "cyber-grid__mobile_xs",
+    "source": "system",
+    "maxLinks": 4,
+    "styles": {
+      "name": {
+        "color": "#39ff14",
+        "fontSize": "14px",
+        "textShadow": "0 0 15px rgba(57, 255, 20, 0.9)",
+        "fontFamily": "'Share Tech Mono', monospace",
+        "fontWeight": "700"
+      },
+      "linksContainer": {
+        "marginLeft": "auto",
+        "display": "flex",
+        "gap": "8px"
+      },
+      "link": {
+        "background": "rgba(57, 255, 20, 0.1)",
+        "borderRadius": "4px",
+        "color": "#39ff14",
+        "border": "1px solid rgba(57, 255, 20, 0.3)",
+        "padding": "9px"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      },
+      "container": {
+        "padding": "13px",
+        "backgroundImage": "linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px)",
+        "border": "2px solid #39ff14",
+        "alignItems": "center",
+        "borderRadius": "15px",
+        "boxSizing": "border-box",
+        "background": "linear-gradient(135deg, #000000 0%, #0d1117 100%)",
+        "height": "100%",
+        "backgroundSize": "20px 20px",
+        "display": "flex",
+        "width": "100%",
+        "gap": "7px",
+        "boxShadow": "0 0 25px rgba(57, 255, 20, 0.4), inset 0 0 40px rgba(57, 255, 20, 0.05)",
+        "minWidth": "100%"
+      },
+      "tagline": {
+        "fontSize": "10px",
+        "opacity": "0.8",
+        "fontFamily": "'Share Tech Mono', monospace",
+        "color": "#00ff88"
+      }
+    },
+    "name": "Cyber Grid • XS Mobile",
+    "description": "Matrix-inspired grid pattern with neon accents",
+    "preview": "linear-gradient(135deg, #000000 0%, #0d1117 100%)",
+    "layout": "mobile-stack",
+    "theme": "neon",
+    "showAvatar": true,
+    "showTagline": true,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "cyber-grid"
+    }
+  },
+  {
+    "id": "dark-mode-elite__mobile_xs",
+    "source": "system",
+    "showAvatar": true,
+    "layout": "mobile-stack",
+    "showTagline": true,
+    "description": "Premium dark theme with gold accents",
+    "preview": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+    "name": "Dark Mode Elite • XS Mobile",
+    "maxLinks": 4,
+    "theme": "dark",
+    "styles": {
+      "tagline": {
+        "fontSize": "10px",
+        "fontStyle": "italic",
+        "color": "#888888"
+      },
+      "container": {
+        "border": "1px solid #d4af37",
+        "alignItems": "center",
+        "height": "100%",
+        "borderRadius": "15px",
+        "width": "100%",
+        "padding": "13px",
+        "boxShadow": "0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(212, 175, 55, 0.2)",
+        "boxSizing": "border-box",
+        "background": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+        "gap": "7px",
+        "display": "flex",
+        "minWidth": "100%"
+      },
+      "link": {
+        "borderRadius": "8px",
+        "background": "rgba(212, 175, 55, 0.1)",
+        "color": "#d4af37",
+        "border": "1px solid rgba(212, 175, 55, 0.3)",
+        "padding": "10px"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "marginLeft": "auto",
+        "gap": "10px"
+      },
+      "name": {
+        "color": "#d4af37",
+        "fontFamily": "'Playfair Display', serif",
+        "fontWeight": "600",
+        "fontSize": "14px"
+      },
+      "icon": {
+        "width": "18px",
+        "height": "18px"
+      }
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "dark-mode-elite"
+    }
+  },
+  {
+    "id": "digital-surge__mobile_xs",
+    "source": "system",
+    "maxLinks": 4,
+    "styles": {
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      },
+      "name": {
+        "textShadow": "0 0 20px rgba(139, 92, 246, 0.8)",
+        "color": "#8b5cf6",
+        "fontWeight": "800",
+        "fontSize": "14px",
+        "textTransform": "uppercase",
+        "fontFamily": "'Orbitron', sans-serif"
+      },
+      "link": {
+        "background": "rgba(139, 92, 246, 0.15)",
+        "borderRadius": "8px",
+        "padding": "9px",
+        "border": "1px solid rgba(139, 92, 246, 0.4)",
+        "color": "#8b5cf6"
+      },
+      "tagline": {
+        "fontSize": "10px",
+        "color": "#a78bfa",
+        "textTransform": "uppercase",
+        "letterSpacing": "4px"
+      },
+      "container": {
+        "width": "100%",
+        "height": "100%",
+        "boxShadow": "0 4px 30px rgba(139, 92, 246, 0.4), inset 0 0 20px rgba(139, 92, 246, 0.1)",
+        "borderRadius": "15px",
+        "background": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)",
+        "boxSizing": "border-box",
+        "padding": "13px",
+        "display": "flex",
+        "alignItems": "center",
+        "animation": "banner-neon-flicker 4s linear infinite",
+        "border": "3px solid #8b5cf6",
+        "gap": "7px",
+        "minWidth": "100%"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "marginLeft": "auto",
+        "gap": "8px"
+      }
+    },
+    "name": "Digital Surge • XS Mobile",
+    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)",
+    "description": "High-tech surge effect with animated borders",
+    "showAvatar": false,
+    "showTagline": true,
+    "layout": "mobile-stack",
+    "theme": "neon",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "digital-surge"
+    }
+  },
+  {
+    "id": "electric-pulse__mobile_xs",
+    "maxLinks": 4,
+    "source": "system",
+    "styles": {
+      "container": {
+        "animation": "banner-pulse-glow 2s ease-in-out infinite",
+        "gap": "7px",
+        "height": "100%",
+        "boxSizing": "border-box",
+        "width": "100%",
+        "display": "flex",
+        "padding": "13px",
+        "borderRadius": "15px",
+        "border": "2px solid #00d4ff",
+        "background": "linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 100%)",
+        "boxShadow": "0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(0, 212, 255, 0.2), inset 0 0 30px rgba(0, 212, 255, 0.1)",
+        "alignItems": "center",
+        "minWidth": "100%"
+      },
+      "name": {
+        "fontFamily": "'Rajdhani', sans-serif",
+        "fontSize": "14px",
+        "color": "#00d4ff",
+        "letterSpacing": "2px",
+        "fontWeight": "800",
+        "textShadow": "0 0 20px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.4)"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "marginLeft": "auto",
+        "gap": "10px"
+      },
+      "tagline": {
+        "letterSpacing": "3px",
+        "textTransform": "uppercase",
+        "color": "#ff00aa",
+        "fontSize": "10px",
+        "textShadow": "0 0 10px rgba(255, 0, 170, 0.6)"
+      },
+      "icon": {
+        "height": "20px",
+        "width": "20px",
+        "filter": "drop-shadow(0 0 6px rgba(0, 212, 255, 0.8))"
+      },
+      "link": {
+        "boxShadow": "0 0 15px rgba(0, 212, 255, 0.3)",
+        "color": "#00d4ff",
+        "padding": "10px",
+        "background": "rgba(0, 212, 255, 0.15)",
+        "borderRadius": "10px",
+        "border": "1px solid rgba(0, 212, 255, 0.4)"
+      }
+    },
+    "description": "Animated electric border with pulsing glow",
+    "name": "Electric Pulse • XS Mobile",
+    "theme": "neon",
+    "showTagline": true,
+    "showAvatar": true,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "preview": "linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 100%)",
+    "layout": "mobile-stack",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "electric-pulse"
+    }
+  },
+  {
+    "id": "gaming-rgb__mobile_xs",
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
+    "theme": "dark",
+    "maxLinks": 4,
+    "showTagline": true,
+    "showAvatar": true,
+    "layout": "mobile-stack",
+    "styles": {
+      "name": {
+        "color": "#ffffff",
+        "fontFamily": "'Rajdhani', sans-serif",
+        "letterSpacing": "2px",
+        "textTransform": "uppercase",
+        "fontSize": "14px",
+        "fontWeight": "800"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "marginLeft": "auto",
+        "gap": "8px"
+      },
+      "tagline": {
+        "textTransform": "uppercase",
+        "color": "#a855f7",
+        "fontSize": "10px",
+        "letterSpacing": "3px"
+      },
+      "link": {
+        "color": "#ffffff",
+        "background": "linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(236, 72, 153, 0.3) 100%)",
+        "borderRadius": "6px",
+        "border": "1px solid rgba(168, 85, 247, 0.5)",
+        "padding": "10px"
+      },
+      "container": {
+        "background": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
+        "width": "100%",
+        "gap": "7px",
+        "alignItems": "center",
+        "boxShadow": "0 0 30px rgba(139, 92, 246, 0.3)",
+        "display": "flex",
+        "borderRadius": "15px",
+        "borderImage": "linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) 1",
+        "boxSizing": "border-box",
+        "border": "3px solid transparent",
+        "height": "100%",
+        "padding": "13px",
+        "minWidth": "100%"
+      },
+      "icon": {
+        "width": "20px",
+        "height": "20px"
+      }
+    },
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "description": "Animated RGB border effect for gamers",
+    "name": "Gaming RGB • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "gaming-rgb"
+    }
+  },
+  {
+    "id": "glassmorphism__mobile_xs",
+    "styles": {
+      "container": {
+        "alignItems": "center",
+        "gap": "7px",
+        "WebkitBackdropFilter": "blur(20px)",
+        "backdropFilter": "blur(20px)",
+        "border": "1px solid rgba(255, 255, 255, 0.3)",
+        "width": "100%",
+        "display": "flex",
+        "borderRadius": "15px",
+        "background": "rgba(255, 255, 255, 0.15)",
+        "boxSizing": "border-box",
+        "padding": "13px",
+        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.1)",
+        "height": "100%",
+        "minWidth": "100%"
+      },
+      "name": {
+        "fontSize": "14px",
+        "textShadow": "0 2px 4px rgba(0, 0, 0, 0.2)",
+        "color": "#ffffff",
+        "fontWeight": "600"
+      },
+      "icon": {
+        "height": "20px",
+        "width": "20px"
+      },
+      "tagline": {
+        "fontSize": "10px",
+        "color": "rgba(255, 255, 255, 0.8)"
+      },
+      "linksContainer": {
+        "marginLeft": "auto",
+        "display": "flex",
+        "gap": "10px"
+      },
+      "link": {
+        "border": "1px solid rgba(255, 255, 255, 0.2)",
+        "borderRadius": "12px",
+        "color": "#ffffff",
+        "background": "rgba(255, 255, 255, 0.2)",
+        "padding": "10px"
+      }
+    },
+    "showAvatar": true,
+    "showTagline": true,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "theme": "glassmorphism",
+    "preview": "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)",
+    "source": "system",
+    "layout": "mobile-stack",
+    "maxLinks": 4,
+    "name": "Glassmorphism • XS Mobile",
+    "description": "Frosted glass effect with blur",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "glassmorphism"
+    }
+  },
+  {
+    "id": "gradient-wave__mobile_xs",
+    "layout": "mobile-stack",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "showAvatar": true,
+    "source": "system",
+    "preview": "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)",
+    "maxLinks": 4,
+    "styles": {
+      "container": {
+        "boxShadow": "0 10px 40px rgba(240, 147, 251, 0.3)",
+        "boxSizing": "border-box",
+        "height": "100%",
+        "background": "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)",
+        "padding": "13px",
+        "display": "flex",
+        "alignItems": "center",
+        "width": "100%",
+        "gap": "7px",
+        "borderRadius": "15px",
+        "minWidth": "100%"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      },
+      "link": {
+        "boxShadow": "0 4px 15px rgba(0, 0, 0, 0.1)",
+        "borderRadius": "50%",
+        "color": "#f5576c",
+        "background": "rgba(255, 255, 255, 0.9)",
+        "padding": "10px"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "gap": "8px",
+        "marginLeft": "auto"
+      },
+      "name": {
+        "fontWeight": "700",
+        "color": "#ffffff",
+        "textShadow": "0 2px 10px rgba(0, 0, 0, 0.2)",
+        "fontSize": "14px"
+      },
+      "tagline": {
+        "fontSize": "10px",
+        "color": "rgba(255, 255, 255, 0.9)"
+      }
+    },
+    "showTagline": true,
+    "description": "Flowing gradient background with modern feel",
+    "theme": "gradient",
+    "name": "Gradient Wave • XS Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "gradient-wave"
+    }
+  },
+  {
+    "id": "hologram-wave__mobile_xs",
+    "showAvatar": true,
+    "layout": "mobile-stack",
+    "showTagline": true,
+    "styles": {
+      "name": {
+        "color": "#ffffff",
+        "fontWeight": "700",
+        "fontSize": "14px",
+        "fontFamily": "'Poppins', sans-serif"
+      },
+      "icon": {
+        "width": "18px",
+        "height": "18px"
+      },
+      "tagline": {
+        "fontSize": "10px",
+        "color": "rgba(255, 255, 255, 0.7)"
+      },
+      "linksContainer": {
+        "marginLeft": "auto",
+        "gap": "10px",
+        "display": "flex"
+      },
+      "container": {
+        "width": "100%",
+        "borderRadius": "15px",
+        "padding": "13px",
+        "background": "linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(45, 45, 68, 0.9) 100%)",
+        "border": "2px solid rgba(255, 255, 255, 0.3)",
+        "animation": "banner-holographic 8s linear infinite",
+        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.05)",
+        "alignItems": "center",
+        "gap": "7px",
+        "display": "flex",
+        "height": "100%",
+        "boxSizing": "border-box",
+        "minWidth": "100%"
+      },
+      "link": {
+        "background": "rgba(255, 255, 255, 0.15)",
+        "padding": "10px",
+        "borderRadius": "10px",
+        "border": "1px solid rgba(255, 255, 255, 0.2)",
+        "color": "#ffffff"
+      }
+    },
+    "description": "Holographic color-shifting effect",
+    "name": "Hologram Wave • XS Mobile",
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%)",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "maxLinks": 4,
+    "theme": "neon",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "hologram-wave"
+    }
+  },
+  {
+    "id": "minimal-clean__mobile_xs",
+    "description": "Simple and elegant with subtle shadows",
+    "showAvatar": true,
+    "theme": "light",
+    "maxLinks": 4,
+    "showTagline": true,
+    "preview": "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)",
+    "name": "Minimal Clean • XS Mobile",
+    "styles": {
+      "linksContainer": {
+        "gap": "8px",
+        "display": "flex",
+        "marginLeft": "auto"
+      },
+      "name": {
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "fontFamily": "'Inter', sans-serif",
+        "color": "#1a1a1a"
+      },
+      "container": {
+        "background": "#ffffff",
+        "display": "flex",
+        "alignItems": "center",
+        "gap": "7px",
+        "border": "1px solid #e0e0e0",
+        "boxShadow": "0 4px 20px rgba(0, 0, 0, 0.08)",
+        "height": "100%",
+        "borderRadius": "15px",
+        "boxSizing": "border-box",
+        "width": "100%",
+        "padding": "13px",
+        "minWidth": "100%"
+      },
+      "icon": {
+        "width": "18px",
+        "height": "18px"
+      },
+      "tagline": {
+        "fontSize": "10px",
+        "color": "#666666"
+      },
+      "link": {
+        "color": "#333333",
+        "transition": "all 0.2s ease",
+        "borderRadius": "50%",
+        "background": "#f5f5f5",
+        "padding": "10px"
+      }
+    },
+    "source": "system",
+    "layout": "mobile-stack",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "minimal-clean"
+    }
+  },
+  {
+    "id": "neon-dreams__mobile_xs",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "source": "system",
+    "maxLinks": 4,
+    "layout": "mobile-stack",
+    "theme": "neon",
+    "showAvatar": true,
+    "name": "Neon Dreams • XS Mobile",
+    "description": "Dual-tone neon with dreamy blur",
+    "showTagline": true,
+    "preview": "linear-gradient(135deg, #1a0033 0%, #330066 100%)",
+    "styles": {
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      },
+      "link": {
+        "color": "#00ffff",
+        "background": "rgba(0, 255, 255, 0.1)",
+        "borderRadius": "10px",
+        "border": "1px solid rgba(0, 255, 255, 0.3)",
+        "padding": "10px"
+      },
+      "container": {
+        "width": "100%",
+        "borderRadius": "15px",
+        "boxSizing": "border-box",
+        "padding": "13px",
+        "borderImage": "linear-gradient(90deg, #ff00ff, #00ffff) 1",
+        "display": "flex",
+        "background": "linear-gradient(135deg, rgba(26, 0, 51, 0.95) 0%, rgba(51, 0, 102, 0.95) 100%)",
+        "alignItems": "center",
+        "height": "100%",
+        "backdropFilter": "blur(10px)",
+        "gap": "7px",
+        "border": "2px solid transparent",
+        "boxShadow": "0 0 40px rgba(255, 0, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.3)",
+        "minWidth": "100%"
+      },
+      "tagline": {
+        "color": "#cc99ff",
+        "fontSize": "10px",
+        "opacity": "0.9"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "marginLeft": "auto",
+        "gap": "10px"
+      },
+      "name": {
+        "fontWeight": "700",
+        "fontSize": "14px",
+        "WebkitBackgroundClip": "text",
+        "background": "linear-gradient(90deg, #ff00ff, #00ffff)",
+        "WebkitTextFillColor": "transparent",
+        "fontFamily": "'Exo 2', sans-serif",
+        "color": "#ffffff"
+      }
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "neon-dreams"
+    }
+  },
+  {
+    "id": "neon-glow__mobile_xs",
+    "description": "Cyberpunk style with glowing neon borders",
+    "layout": "mobile-stack",
+    "maxLinks": 4,
+    "source": "system",
+    "showTagline": true,
+    "showAvatar": true,
+    "styles": {
+      "link": {
+        "border": "1px solid rgba(0, 255, 255, 0.3)",
+        "color": "#00ffff",
+        "borderRadius": "8px",
+        "padding": "8px",
+        "transition": "all 0.3s ease",
+        "background": "rgba(0, 255, 255, 0.1)"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "gap": "12px",
+        "marginLeft": "auto"
+      },
+      "tagline": {
+        "textShadow": "0 0 8px rgba(255, 0, 255, 0.6)",
+        "opacity": "0.9",
+        "fontSize": "10px",
+        "color": "#ff00ff"
+      },
+      "name": {
+        "textShadow": "0 0 10px rgba(0, 255, 255, 0.8)",
+        "color": "#00ffff",
+        "fontSize": "14px",
+        "fontFamily": "'Orbitron', sans-serif",
+        "fontWeight": "700"
+      },
+      "icon": {
+        "filter": "drop-shadow(0 0 4px rgba(0, 255, 255, 0.6))",
+        "width": "20px",
+        "height": "20px"
+      },
+      "container": {
+        "alignItems": "center",
+        "borderRadius": "15px",
+        "border": "2px solid #00ffff",
+        "padding": "13px",
+        "boxShadow": "0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)",
+        "height": "100%",
+        "background": "linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 62, 0.95) 100%)",
+        "width": "100%",
+        "boxSizing": "border-box",
+        "gap": "7px",
+        "display": "flex",
+        "minWidth": "100%"
+      }
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "preview": "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%)",
+    "name": "Neon Glow • XS Mobile",
+    "theme": "neon",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "neon-glow"
+    }
+  },
+  {
+    "id": "professional-card__mobile_xs",
+    "layout": "mobile-stack",
+    "showTagline": true,
+    "theme": "dark",
+    "showAvatar": true,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "styles": {
+      "container": {
+        "alignItems": "center",
+        "padding": "13px",
+        "gap": "7px",
+        "boxShadow": "0 10px 40px rgba(0, 119, 181, 0.3)",
+        "minWidth": "100%",
+        "boxSizing": "border-box",
+        "width": "100%",
+        "borderRadius": "15px",
+        "flexDirection": "column",
+        "background": "linear-gradient(135deg, #0077b5 0%, #004182 100%)",
+        "height": "100%",
+        "display": "flex"
+      },
+      "icon": {
+        "width": "18px",
+        "height": "18px"
+      },
+      "linksContainer": {
+        "justifyContent": "center",
+        "gap": "10px",
+        "display": "flex",
+        "marginTop": "8px",
+        "flexWrap": "wrap"
+      },
+      "tagline": {
+        "textAlign": "center",
+        "color": "rgba(255, 255, 255, 0.85)",
+        "fontSize": "10px"
+      },
+      "name": {
+        "color": "#ffffff",
+        "fontSize": "14px",
+        "textAlign": "center",
+        "fontWeight": "600",
+        "fontFamily": "'Inter', sans-serif"
+      },
+      "link": {
+        "borderRadius": "50%",
+        "padding": "10px",
+        "color": "#0077b5",
+        "background": "#ffffff",
+        "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.15)"
+      }
+    },
+    "maxLinks": 4,
+    "source": "system",
+    "name": "Professional Card • XS Mobile",
+    "description": "LinkedIn-style professional look",
+    "preview": "linear-gradient(135deg, #0077b5 0%, #004182 100%)",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "professional-card"
+    }
+  },
+  {
+    "id": "retro-pixel__mobile_xs",
+    "maxLinks": 4,
+    "source": "system",
+    "showTagline": true,
+    "name": "Retro Pixel • XS Mobile",
+    "preview": "linear-gradient(135deg, #2d1b69 0%, #1a0533 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "styles": {
+      "name": {
+        "fontSize": "14px",
+        "color": "#00ff88",
+        "textShadow": "3px 3px 0px #ff6b9d",
+        "fontFamily": "'Press Start 2P', monospace",
+        "fontWeight": "700"
+      },
+      "tagline": {
+        "color": "#ffd700",
+        "fontFamily": "'Press Start 2P', monospace",
+        "fontSize": "10px"
+      },
+      "linksContainer": {
+        "marginLeft": "auto",
+        "display": "flex",
+        "gap": "8px"
+      },
+      "link": {
+        "background": "#00ff88",
+        "padding": "10px",
+        "borderRadius": "0px",
+        "border": "2px solid #ff6b9d",
+        "color": "#2d1b69"
+      },
+      "container": {
+        "width": "100%",
+        "boxShadow": "8px 8px 0px #ff6b9d, 0 0 20px rgba(255, 107, 157, 0.3)",
+        "background": "#2d1b69",
+        "padding": "13px",
+        "imageRendering": "pixelated",
+        "alignItems": "center",
+        "borderRadius": "15px",
+        "border": "4px solid #ff6b9d",
+        "boxSizing": "border-box",
+        "gap": "7px",
+        "height": "100%",
+        "display": "flex",
+        "minWidth": "100%"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      }
+    },
+    "description": "8-bit inspired pixel art style",
+    "layout": "mobile-stack",
+    "showAvatar": false,
+    "theme": "retro",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "retro-pixel"
+    }
+  },
+  {
+    "id": "streamer-tag__mobile_xs",
+    "maxLinks": 4,
+    "preview": "linear-gradient(135deg, #9146ff 0%, #772ce8 100%)",
+    "theme": "gradient",
+    "description": "Compact horizontal bar perfect for streams",
+    "showTagline": false,
+    "layout": "mobile-stack",
+    "name": "Streamer Tag • XS Mobile",
+    "showAvatar": false,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "source": "system",
+    "styles": {
+      "container": {
+        "background": "linear-gradient(135deg, #9146ff 0%, #772ce8 100%)",
+        "gap": "7px",
+        "padding": "13px",
+        "width": "100%",
+        "alignItems": "center",
+        "boxShadow": "0 4px 20px rgba(145, 70, 255, 0.4)",
+        "borderRadius": "15px",
+        "height": "100%",
+        "display": "flex",
+        "boxSizing": "border-box",
+        "minWidth": "100%"
+      },
+      "link": {
+        "background": "rgba(255, 255, 255, 0.2)",
+        "borderRadius": "50%",
+        "padding": "8px",
+        "color": "#ffffff"
+      },
+      "icon": {
+        "height": "16px",
+        "width": "16px"
+      },
+      "name": {
+        "fontSize": "14px",
+        "color": "#ffffff",
+        "fontWeight": "700",
+        "fontFamily": "'Poppins', sans-serif"
+      },
+      "linksContainer": {
+        "marginLeft": "8px",
+        "display": "flex",
+        "gap": "6px"
+      }
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "xs",
+      "collection": "social_banners",
+      "sourceId": "streamer-tag"
+    }
+  }
+]

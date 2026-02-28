@@ -1,0 +1,2196 @@
+[
+  {
+    "id": "arcade-bouncy__mobile_lg",
+    "description": "A fun, bold, and bouncy arcade-style text.",
+    "source": "system",
+    "style": {
+      "bold": true,
+      "italic": false,
+      "shadow": true,
+      "shape": "pill",
+      "animation": "bounce",
+      "border": true,
+      "fontFamily": "Bungee",
+      "color": "#000000",
+      "outline": false,
+      "rotation": 0,
+      "borderColor": "#000000",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "fontSize": 43,
+      "underline": false,
+      "backgroundColor": "#FFD700",
+      "borderWidth": 3,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/FFD700/000000/png?text=Arcade+Bouncy",
+    "name": "Arcade Bouncy • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "arcade-bouncy"
+    }
+  },
+  {
+    "id": "architect-draft__mobile_lg",
+    "style": {
+      "animation": "fade",
+      "bold": false,
+      "color": "#dbeafe",
+      "italic": false,
+      "borderWidth": 2,
+      "shadow": false,
+      "border": false,
+      "rotation": 0,
+      "position": {
+        "x": 50,
+        "y": 15
+      },
+      "shape": "banner",
+      "fontSize": 28,
+      "fontFamily": "Architects Daughter",
+      "outline": false,
+      "borderColor": "#dbeafe",
+      "underline": false,
+      "backgroundColor": "rgba(30, 58, 138, 0.9)",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "description": "A neat, architectural handwriting style.",
+    "name": "Architect Draft • LG Mobile",
+    "source": "system",
+    "preview": "https://placehold.co/600x120/1e3a8a/dbeafe/png?text=Architect+Draft",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "architect-draft"
+    }
+  },
+  {
+    "id": "author-quote__mobile_lg",
+    "preview": "https://placehold.co/600x120/f5f5f5/333333/png?text=Author+Quote",
+    "style": {
+      "bold": false,
+      "underline": false,
+      "animation": "fade",
+      "fontFamily": "PT Serif",
+      "borderWidth": 1,
+      "rotation": 0,
+      "shape": "rounded",
+      "italic": true,
+      "borderColor": "#333333",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "color": "#333333",
+      "backgroundColor": "rgba(245, 245, 245, 0.8)",
+      "outline": false,
+      "border": true,
+      "fontSize": 28,
+      "shadow": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "name": "Author Quote • LG Mobile",
+    "description": "An italic serif, perfect for quoting.",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "author-quote"
+    }
+  },
+  {
+    "id": "bouncy-pill__mobile_lg",
+    "description": "A fun, energetic style with a bounce animation.",
+    "style": {
+      "shadow": true,
+      "rotation": 0,
+      "bold": true,
+      "borderColor": "#FFFFFF",
+      "animation": "bounce",
+      "underline": false,
+      "borderWidth": 2,
+      "shape": "pill",
+      "color": "#FFFFFF",
+      "italic": false,
+      "fontSize": 35,
+      "fontFamily": "Montserrat",
+      "backgroundColor": "#ff6347",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "border": false,
+      "outline": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/ff6347/ffffff/png?text=Bouncy!",
+    "name": "Bouncy Pill • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "bouncy-pill"
+    }
+  },
+  {
+    "id": "chalkboard__mobile_lg",
+    "style": {
+      "borderColor": "#FFFFFF",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "backgroundColor": "rgba(54, 69, 79, 0.9)",
+      "underline": false,
+      "italic": false,
+      "border": false,
+      "rotation": 0,
+      "fontSize": 35,
+      "fontFamily": "Gochi Hand",
+      "shape": "rounded",
+      "outline": false,
+      "animation": "fade",
+      "bold": false,
+      "borderWidth": 2,
+      "shadow": false,
+      "color": "#FFFFFF",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Chalkboard • LG Mobile",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "description": "A handwritten font on a dark background.",
+    "preview": "https://placehold.co/600x120/36454f/ffffff/png?text=Chalkboard",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "chalkboard"
+    }
+  },
+  {
+    "id": "cinematic-title__mobile_lg",
+    "source": "system",
+    "description": "An elegant, italicized serif font for a film feel.",
+    "style": {
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "fontFamily": "Playfair Display",
+      "outline": false,
+      "italic": true,
+      "color": "#f5e5c5",
+      "shadow": true,
+      "borderColor": "#f5e5c5",
+      "shape": "rectangular",
+      "animation": "fade",
+      "borderWidth": 2,
+      "bold": false,
+      "border": false,
+      "backgroundColor": "transparent",
+      "fontSize": 37,
+      "rotation": 0,
+      "underline": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/4a4a4a/f5e5c5/png?text=Cinematic+Title",
+    "name": "Cinematic Title • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "cinematic-title"
+    }
+  },
+  {
+    "id": "cinematic-wide__mobile_lg",
+    "name": "Cinematic Wide • LG Mobile",
+    "description": "A wide, bold title for cinematic feel.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "shadow": true,
+      "animation": "fade",
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": true,
+      "fontSize": 45,
+      "fontFamily": "Cinzel",
+      "shape": "rectangular",
+      "borderColor": "#FFFFFF",
+      "italic": false,
+      "borderWidth": 2,
+      "color": "#FFFFFF",
+      "outline": false,
+      "position": {
+        "x": 50,
+        "y": 80
+      },
+      "border": false,
+      "textShadow": "0 2px 5px rgba(0,0,0,0.8)",
+      "rotation": 0,
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/000000/FFFFFF/png?text=Cinematic+Wide",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "cinematic-wide"
+    }
+  },
+  {
+    "id": "classic-typewriter__mobile_lg",
+    "name": "Classic Typewriter • LG Mobile",
+    "source": "system",
+    "description": "A simple, classic typewriter font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "borderColor": "#222222",
+      "position": {
+        "x": 50,
+        "y": 80
+      },
+      "bold": false,
+      "italic": false,
+      "underline": false,
+      "fontSize": 28,
+      "outline": false,
+      "border": false,
+      "rotation": 0,
+      "borderWidth": 2,
+      "backgroundColor": "rgba(241, 241, 241, 0.8)",
+      "fontFamily": "Courier New",
+      "shape": "rounded",
+      "color": "#222222",
+      "shadow": false,
+      "animation": "fade",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/f1f1f1/222222/png?text=Classic+Typewriter",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "classic-typewriter"
+    }
+  },
+  {
+    "id": "clean-outline__mobile_lg",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/aaaaaa/FFFFFF/png?text=Clean+Outline",
+    "style": {
+      "italic": false,
+      "fontFamily": "Inter",
+      "backgroundColor": "transparent",
+      "border": false,
+      "rotation": 0,
+      "borderColor": "#FFFFFF",
+      "color": "#FFFFFF",
+      "shape": "rectangular",
+      "outline": true,
+      "animation": "fade",
+      "borderWidth": 2,
+      "shadow": true,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "textShadow": "0 1px 3px rgba(0,0,0,0.8)",
+      "underline": false,
+      "fontSize": 35,
+      "bold": true,
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Clean Outline • LG Mobile",
+    "description": "Transparent background with a clean white outline.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "clean-outline"
+    }
+  },
+  {
+    "id": "comic-book__mobile_lg",
+    "description": "A fun, comic-book style.",
+    "style": {
+      "borderWidth": 3,
+      "rotation": 1,
+      "italic": false,
+      "outline": false,
+      "shadow": false,
+      "borderColor": "#000000",
+      "backgroundColor": "rgba(255, 255, 255, 0.9)",
+      "fontFamily": "Comic Sans MS",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "shape": "rounded",
+      "animation": "bounce",
+      "color": "#000000",
+      "border": true,
+      "bold": true,
+      "underline": false,
+      "fontSize": 32,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=Comic+Book",
+    "name": "Comic Book • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "comic-book"
+    }
+  },
+  {
+    "id": "corporate-blue__mobile_lg",
+    "description": "A clean, sans-serif font for business.",
+    "source": "system",
+    "style": {
+      "rotation": 0,
+      "color": "#0284c7",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "underline": false,
+      "borderWidth": 2,
+      "outline": false,
+      "borderColor": "#0284c7",
+      "bold": true,
+      "italic": false,
+      "shadow": false,
+      "shape": "rounded",
+      "border": false,
+      "animation": "fade",
+      "fontSize": 28,
+      "backgroundColor": "rgba(240, 249, 255, 0.9)",
+      "fontFamily": "Open Sans",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/f0f9ff/0284c7/png?text=Corporate+Blue",
+    "name": "Corporate Blue • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "corporate-blue"
+    }
+  },
+  {
+    "id": "creepy-horror__mobile_lg",
+    "source": "system",
+    "style": {
+      "animation": "fade",
+      "fontSize": 52,
+      "color": "#dc2f02",
+      "shadow": true,
+      "rotation": 0,
+      "borderColor": "#dc2f02",
+      "border": false,
+      "borderWidth": 2,
+      "bold": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "backgroundColor": "rgba(0, 0, 0, 0.8)",
+      "fontFamily": "Creepster",
+      "shape": "rounded",
+      "italic": false,
+      "outline": false,
+      "underline": false,
+      "textShadow": "0 0 5px #dc2f02",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Creepy Horror • LG Mobile",
+    "preview": "https://placehold.co/600x120/000000/dc2f02/png?text=Creepy",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "description": "A spooky, horror-themed font.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "creepy-horror"
+    }
+  },
+  {
+    "id": "cursive-script__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "description": "An elegant, flowing script.",
+    "name": "Cursive Script • LG Mobile",
+    "style": {
+      "rotation": 0,
+      "color": "#c70039",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "underline": false,
+      "borderWidth": 2,
+      "outline": false,
+      "borderColor": "#c70039",
+      "italic": false,
+      "bold": true,
+      "shadow": true,
+      "shape": "rectangular",
+      "border": false,
+      "animation": "fade",
+      "fontSize": 41,
+      "backgroundColor": "transparent",
+      "fontFamily": "Dancing Script",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/fdeeee/c70039/png?text=Cursive+Script",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "cursive-script"
+    }
+  },
+  {
+    "id": "cyber-magenta__mobile_lg",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "fontFamily": "Michroma",
+      "shape": "rectangular",
+      "animation": "fade",
+      "outline": true,
+      "bold": false,
+      "border": false,
+      "borderWidth": 2,
+      "textShadow": "0 0 8px #FF00FF",
+      "backgroundColor": "transparent",
+      "underline": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "color": "#FF00FF",
+      "fontSize": 39,
+      "italic": false,
+      "borderColor": "#FF00FF",
+      "rotation": 0,
+      "shadow": true,
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/0a0a0a/FF00FF/png?text=Cyber+Magenta",
+    "description": "A futuristic font with a striking magenta color.",
+    "name": "Cyber Magenta • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "cyber-magenta"
+    }
+  },
+  {
+    "id": "digital-blue__mobile_lg",
+    "source": "system",
+    "style": {
+      "position": {
+        "x": 50,
+        "y": 90
+      },
+      "rotation": 0,
+      "color": "#00C4FF",
+      "fontFamily": "Share Tech Mono",
+      "backgroundColor": "rgba(5, 10, 32, 0.8)",
+      "fontSize": 32,
+      "bold": false,
+      "italic": false,
+      "shadow": true,
+      "outline": false,
+      "borderColor": "#00C4FF",
+      "border": true,
+      "borderWidth": 1,
+      "animation": "slide-up",
+      "underline": false,
+      "shape": "banner",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Digital Blue • LG Mobile",
+    "preview": "https://placehold.co/600x120/050a20/00C4FF/png?text=Digital+Blue",
+    "description": "A clean, digital-style blue text.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "digital-blue"
+    }
+  },
+  {
+    "id": "elegant-gold__mobile_lg",
+    "description": "A classic serif font with a subtle gold touch.",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "textShadow": "0 1px 3px rgba(0,0,0,0.4)",
+      "rotation": 0,
+      "fontFamily": "Playfair Display",
+      "italic": true,
+      "fontSize": 37,
+      "color": "#D4AF37",
+      "border": false,
+      "borderWidth": 2,
+      "backgroundColor": "transparent",
+      "shadow": true,
+      "animation": "fade",
+      "shape": "rectangular",
+      "underline": false,
+      "borderColor": "#D4AF37",
+      "bold": false,
+      "outline": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Elegant Gold • LG Mobile",
+    "preview": "https://placehold.co/600x120/fdfbf7/D4AF37/png?text=Elegant+Gold",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "elegant-gold"
+    }
+  },
+  {
+    "id": "faded-text__mobile_lg",
+    "name": "Faded Text • LG Mobile",
+    "source": "system",
+    "description": "Subtle text with low opacity background.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "shape": "rounded",
+      "fontFamily": "Inter",
+      "outline": false,
+      "border": false,
+      "borderWidth": 2,
+      "color": "#bbbbbb",
+      "rotation": 0,
+      "italic": false,
+      "shadow": false,
+      "position": {
+        "x": 50,
+        "y": 88
+      },
+      "underline": false,
+      "animation": "fade",
+      "bold": false,
+      "fontSize": 24,
+      "backgroundColor": "rgba(0, 0, 0, 0.2)",
+      "borderColor": "#bbbbbb",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/111111/bbbbbb/png?text=Faded+Text",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "faded-text"
+    }
+  },
+  {
+    "id": "formal-invite__mobile_lg",
+    "source": "system",
+    "description": "An elegant, thin script.",
+    "style": {
+      "shape": "rectangular",
+      "border": false,
+      "borderWidth": 2,
+      "backgroundColor": "transparent",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "fontFamily": "Great Vibes",
+      "color": "#0a0a0a",
+      "rotation": 0,
+      "fontSize": 43,
+      "bold": false,
+      "animation": "fade",
+      "italic": false,
+      "outline": false,
+      "borderColor": "#0a0a0a",
+      "underline": false,
+      "shadow": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "name": "Formal Invite • LG Mobile",
+    "preview": "https://placehold.co/600x120/ffffff/0a0a0a/png?text=Formal+Invite",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "formal-invite"
+    }
+  },
+  {
+    "id": "gaming-green-glow__mobile_lg",
+    "source": "system",
+    "description": "A sharp, tech font with a bright green glow.",
+    "preview": "https://placehold.co/600x120/1a1a1a/39FF14/png?text=Gaming+Green",
+    "style": {
+      "backgroundColor": "rgba(0, 0, 0, 0.7)",
+      "shadow": true,
+      "borderColor": "#39FF14",
+      "position": {
+        "x": 50,
+        "y": 88
+      },
+      "outline": false,
+      "underline": false,
+      "rotation": 0,
+      "textShadow": "0 0 10px #39FF14, 0 0 20px #39FF14",
+      "bold": true,
+      "italic": false,
+      "border": true,
+      "fontSize": 41,
+      "shape": "rectangular",
+      "color": "#39FF14",
+      "borderWidth": 1,
+      "fontFamily": "Orbitron",
+      "animation": "fade",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Gaming Green • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "gaming-green-glow"
+    }
+  },
+  {
+    "id": "gothic-story__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "color": "#f0e6d2",
+      "underline": false,
+      "border": false,
+      "italic": false,
+      "bold": false,
+      "fontSize": 39,
+      "shape": "rectangular",
+      "fontFamily": "Uncial Antiqua",
+      "borderWidth": 2,
+      "animation": "fade",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "outline": false,
+      "shadow": true,
+      "backgroundColor": "transparent",
+      "rotation": 0,
+      "borderColor": "#f0e6d2",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Gothic Story • LG Mobile",
+    "description": "An old-style font for a dramatic effect.",
+    "preview": "https://placehold.co/600x120/222222/f0e6d2/png?text=Gothic+Story",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "gothic-story"
+    }
+  },
+  {
+    "id": "green-success-pill__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "source": "system",
+    "style": {
+      "animation": "bounce",
+      "shadow": true,
+      "backgroundColor": "#16a34a",
+      "outline": false,
+      "borderColor": "#FFFFFF",
+      "underline": false,
+      "rotation": 0,
+      "bold": true,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "border": false,
+      "shape": "pill",
+      "italic": false,
+      "borderWidth": 2,
+      "color": "#FFFFFF",
+      "fontFamily": "Montserrat",
+      "fontSize": 30,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/16a34a/ffffff/png?text=Success!",
+    "name": "Green Success • LG Mobile",
+    "description": "A friendly green pill for success messages.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "green-success-pill"
+    }
+  },
+  {
+    "id": "impact-heavy__mobile_lg",
+    "source": "system",
+    "name": "Impact Heavy • LG Mobile",
+    "style": {
+      "color": "#000000",
+      "rotation": 0,
+      "backgroundColor": "rgba(255, 255, 255, 0.9)",
+      "borderColor": "#000000",
+      "border": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "shadow": false,
+      "bold": true,
+      "shape": "rectangular",
+      "underline": false,
+      "italic": false,
+      "outline": false,
+      "fontSize": 56,
+      "fontFamily": "Anton",
+      "animation": "fade",
+      "borderWidth": 2,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=IMPACT+HEAVY",
+    "description": "A thick, bold, all-caps font.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "impact-heavy"
+    }
+  },
+  {
+    "id": "indie-flower__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "border": false,
+      "bold": false,
+      "color": "#FFFFFF",
+      "underline": false,
+      "shape": "pill",
+      "outline": false,
+      "borderColor": "#FFFFFF",
+      "rotation": 0,
+      "shadow": false,
+      "fontSize": 32,
+      "animation": "fade",
+      "backgroundColor": "rgba(50, 50, 50, 0.8)",
+      "fontFamily": "Indie Flower",
+      "borderWidth": 2,
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Indie Flower • LG Mobile",
+    "description": "A friendly, rounded handwritten font.",
+    "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Indie+Flower",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "indie-flower"
+    }
+  },
+  {
+    "id": "inverted-pill__mobile_lg",
+    "source": "system",
+    "style": {
+      "underline": false,
+      "animation": "fade",
+      "backgroundColor": "#222222",
+      "outline": false,
+      "borderColor": "#f0f0f0",
+      "shadow": true,
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "border": false,
+      "rotation": 0,
+      "color": "#f0f0f0",
+      "shape": "pill",
+      "fontFamily": "Inter",
+      "italic": false,
+      "borderWidth": 2,
+      "bold": true,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Inverted Pill • LG Mobile",
+    "description": "A dark pill with bright text.",
+    "preview": "https://placehold.co/600x120/222222/f0f0f0/png?text=Inverted+Pill",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "inverted-pill"
+    }
+  },
+  {
+    "id": "journal-entry__mobile_lg",
+    "description": "A personal, script-like font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "shadow": false,
+      "fontSize": 30,
+      "color": "#4a3f35",
+      "animation": "fade",
+      "borderWidth": 2,
+      "outline": false,
+      "bold": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "rotation": -1,
+      "fontFamily": "Kalam",
+      "borderColor": "#4a3f35",
+      "italic": false,
+      "backgroundColor": "rgba(250, 243, 224, 0.9)",
+      "underline": false,
+      "border": false,
+      "shape": "rounded",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/faf3e0/4a3f35/png?text=Journal+Entry",
+    "name": "Journal Entry • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "journal-entry"
+    }
+  },
+  {
+    "id": "karaoke-glow__mobile_lg",
+    "name": "Karaoke Glow • LG Mobile",
+    "source": "system",
+    "preview": "https://placehold.co/600x120/1e1e1e/00F5FF/png?text=Karaoke+Glow",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "borderColor": "#00F5FF",
+      "backgroundColor": "rgba(30, 30, 30, 0.8)",
+      "textShadow": "0 0 8px #00F5FF",
+      "fontSize": 52,
+      "borderWidth": 2,
+      "fontFamily": "Bebas Neue",
+      "shadow": true,
+      "position": {
+        "x": 50,
+        "y": 90
+      },
+      "rotation": 0,
+      "shape": "rectangular",
+      "color": "#00F5FF",
+      "underline": false,
+      "animation": "slide-up",
+      "outline": false,
+      "italic": false,
+      "border": false,
+      "bold": true,
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "description": "Bright, clear text that slides up, styled for karaoke.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "karaoke-glow"
+    }
+  },
+  {
+    "id": "luckiest-guy-cartoon__mobile_lg",
+    "description": "A fun, heavy cartoon-style font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/00b4d8/ffffff/png?text=LUCKIEST+GUY",
+    "style": {
+      "rotation": -3,
+      "border": false,
+      "bold": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "outline": true,
+      "backgroundColor": "rgba(0, 180, 216, 0.9)",
+      "borderColor": "#FFFFFF",
+      "fontFamily": "Luckiest Guy",
+      "animation": "bounce",
+      "shape": "pill",
+      "italic": false,
+      "color": "#FFFFFF",
+      "borderWidth": 2,
+      "underline": false,
+      "fontSize": 48,
+      "shadow": true,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Luckiest Guy • LG Mobile",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "luckiest-guy-cartoon"
+    }
+  },
+  {
+    "id": "marker-scribble__mobile_lg",
+    "preview": "https://placehold.co/600x120/ffff99/000000/png?text=Marker+Scribble",
+    "description": "A thick, permanent marker style.",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "name": "Marker Scribble • LG Mobile",
+    "style": {
+      "italic": false,
+      "backgroundColor": "rgba(255, 255, 153, 0.9)",
+      "fontFamily": "Permanent Marker",
+      "border": false,
+      "rotation": 2,
+      "borderColor": "#000000",
+      "color": "#000000",
+      "shape": "rounded",
+      "outline": false,
+      "animation": "fade",
+      "borderWidth": 2,
+      "shadow": false,
+      "position": {
+        "x": 50,
+        "y": 30
+      },
+      "underline": false,
+      "fontSize": 35,
+      "bold": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "marker-scribble"
+    }
+  },
+  {
+    "id": "minimal-dark__mobile_lg",
+    "source": "system",
+    "preview": "https://placehold.co/600x120/1a1a1a/ffffff/png?text=Minimal+Dark",
+    "description": "Clean text with a subtle shadow.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "name": "Minimal Dark • LG Mobile",
+    "style": {
+      "shape": "rounded",
+      "fontFamily": "Inter",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "italic": false,
+      "border": false,
+      "shadow": true,
+      "rotation": 0,
+      "outline": false,
+      "color": "#FFFFFF",
+      "animation": "fade",
+      "borderColor": "#FFFFFF",
+      "bold": false,
+      "backgroundColor": "rgba(0, 0, 0, 0.5)",
+      "underline": false,
+      "fontSize": 28,
+      "borderWidth": 2,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "minimal-dark"
+    }
+  },
+  {
+    "id": "minimal-light__mobile_lg",
+    "style": {
+      "italic": false,
+      "fontFamily": "Roboto",
+      "borderWidth": 2,
+      "bold": false,
+      "borderColor": "#525252",
+      "shadow": false,
+      "border": false,
+      "underline": false,
+      "outline": false,
+      "rotation": 0,
+      "backgroundColor": "rgba(229, 229, 229, 0.7)",
+      "color": "#525252",
+      "fontSize": 26,
+      "animation": "fade",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "shape": "rounded",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "description": "A thin, light font on a light background.",
+    "source": "system",
+    "name": "Minimal Light • LG Mobile",
+    "preview": "https://placehold.co/600x120/e5e5e5/525252/png?text=Minimal+Light",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "minimal-light"
+    }
+  },
+  {
+    "id": "minimal-serif__mobile_lg",
+    "preview": "https://placehold.co/600x120/1a1a1a/EEEEEE/png?text=Minimal+Serif",
+    "description": "A clean, modern serif font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "source": "system",
+    "name": "Minimal Serif • LG Mobile",
+    "style": {
+      "color": "#EEEEEE",
+      "shape": "rounded",
+      "borderColor": "#EEEEEE",
+      "shadow": false,
+      "rotation": 0,
+      "italic": false,
+      "backgroundColor": "rgba(0,0,0,0.6)",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "underline": false,
+      "fontSize": 30,
+      "borderWidth": 2,
+      "animation": "fade",
+      "bold": false,
+      "fontFamily": "Lora",
+      "border": false,
+      "outline": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "minimal-serif"
+    }
+  },
+  {
+    "id": "news-ticker__mobile_lg",
+    "source": "system",
+    "style": {
+      "fontSize": 26,
+      "animation": "fade",
+      "italic": false,
+      "outline": false,
+      "shape": "banner",
+      "borderWidth": 2,
+      "shadow": false,
+      "bold": true,
+      "borderColor": "#FFFFFF",
+      "rotation": 0,
+      "fontFamily": "Roboto",
+      "border": false,
+      "color": "#FFFFFF",
+      "position": {
+        "x": 50,
+        "y": 90
+      },
+      "underline": false,
+      "backgroundColor": "rgba(0, 83, 156, 0.9)",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "News Ticker • LG Mobile",
+    "description": "A classic news-style lower-third banner.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/00539C/FFFFFF/png?text=News+Ticker",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "news-ticker"
+    }
+  },
+  {
+    "id": "orange-outline-bold__mobile_lg",
+    "style": {
+      "shape": "rectangular",
+      "underline": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "backgroundColor": "transparent",
+      "fontSize": 52,
+      "color": "#f97316",
+      "animation": "fade",
+      "outline": true,
+      "borderColor": "#f97316",
+      "shadow": true,
+      "rotation": 0,
+      "textShadow": "0 2px 2px #000000",
+      "italic": false,
+      "border": false,
+      "borderWidth": 2,
+      "fontFamily": "Impact",
+      "bold": true,
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/4a4a4a/f97316/png?text=Orange+Outline",
+    "source": "system",
+    "description": "Thick text with an orange outline.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "name": "Orange Outline • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "orange-outline-bold"
+    }
+  },
+  {
+    "id": "oswald-condensed__mobile_lg",
+    "preview": "https://placehold.co/600x120/c70039/ffffff/png?text=Oswald+Condensed",
+    "name": "Oswald Condensed • LG Mobile",
+    "description": "A condensed, strong font for statements.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "position": {
+        "x": 50,
+        "y": 88
+      },
+      "color": "#FFFFFF",
+      "italic": false,
+      "bold": true,
+      "outline": false,
+      "backgroundColor": "rgba(199, 0, 57, 0.9)",
+      "animation": "slide-up",
+      "underline": false,
+      "shape": "rectangular",
+      "fontSize": 43,
+      "borderWidth": 2,
+      "border": false,
+      "shadow": true,
+      "rotation": 0,
+      "borderColor": "#FFFFFF",
+      "fontFamily": "Oswald",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "oswald-condensed"
+    }
+  },
+  {
+    "id": "passion-one-black__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/111111/f5b300/png?text=Passion+One",
+    "style": {
+      "borderWidth": 2,
+      "shape": "rectangular",
+      "border": false,
+      "fontFamily": "Passion One",
+      "rotation": 0,
+      "shadow": true,
+      "color": "#f5b300",
+      "bold": true,
+      "underline": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "borderColor": "#f5b300",
+      "animation": "fade",
+      "fontSize": 60,
+      "backgroundColor": "transparent",
+      "italic": false,
+      "outline": true,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Passion One Black • LG Mobile",
+    "description": "A very heavy, impactful font.",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "passion-one-black"
+    }
+  },
+  {
+    "id": "pink-pill-pop__mobile_lg",
+    "name": "Pink Pill Pop • LG Mobile",
+    "source": "system",
+    "description": "A soft pink pill shape.",
+    "style": {
+      "backgroundColor": "#f9a8d4",
+      "outline": false,
+      "borderColor": "#1f2937",
+      "bold": true,
+      "animation": "fade",
+      "underline": false,
+      "shadow": false,
+      "italic": false,
+      "shape": "pill",
+      "fontSize": 28,
+      "rotation": 0,
+      "border": false,
+      "fontFamily": "Open Sans",
+      "borderWidth": 2,
+      "color": "#1f2937",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/f9a8d4/1f2937/png?text=Pink+Pill",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "pink-pill-pop"
+    }
+  },
+  {
+    "id": "pixel-perfect__mobile_lg",
+    "source": "system",
+    "description": "A retro, pixelated font style.",
+    "style": {
+      "borderColor": "#FFFFFF",
+      "rotation": 0,
+      "shadow": false,
+      "bold": false,
+      "animation": "fade",
+      "underline": false,
+      "border": false,
+      "borderWidth": 2,
+      "fontFamily": "Press Start 2P",
+      "color": "#FFFFFF",
+      "italic": false,
+      "backgroundColor": "rgba(30, 30, 30, 0.8)",
+      "shape": "rounded",
+      "outline": false,
+      "fontSize": 26,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Pixel+Perfect",
+    "name": "Pixel Perfect • LG Mobile",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "pixel-perfect"
+    }
+  },
+  {
+    "id": "purple-gradient__mobile_lg",
+    "source": "system",
+    "description": "A bold text with a purple gradient.",
+    "style": {
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "border": false,
+      "bold": true,
+      "fontFamily": "Exo 2",
+      "rotation": 0,
+      "textShadow": "0 0 10px #a855f7",
+      "borderWidth": 2,
+      "backgroundColor": "transparent",
+      "underline": false,
+      "fontSize": 45,
+      "borderColor": "#c084fc",
+      "color": "#c084fc",
+      "outline": false,
+      "shape": "rectangular",
+      "shadow": true,
+      "italic": false,
+      "gradient": "linear-gradient(90deg, #a855f7, #6366f1)",
+      "animation": "fade",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/1e1b4b/c084fc/png?text=Purple+Gradient",
+    "name": "Purple Gradient • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "purple-gradient"
+    }
+  },
+  {
+    "id": "red-alert-banner__mobile_lg",
+    "description": "A full-width red banner for alerts.",
+    "preview": "https://placehold.co/600x120/dc2626/ffffff/png?text=Red+Alert",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "bold": true,
+      "underline": false,
+      "color": "#FFFFFF",
+      "borderWidth": 2,
+      "backgroundColor": "rgba(220, 38, 38, 0.9)",
+      "borderColor": "#FFFFFF",
+      "position": {
+        "x": 50,
+        "y": 10
+      },
+      "fontSize": 43,
+      "animation": "fade",
+      "italic": false,
+      "outline": false,
+      "fontFamily": "Bebas Neue",
+      "rotation": 0,
+      "shape": "banner",
+      "shadow": true,
+      "border": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "source": "system",
+    "name": "Red Alert Banner • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "red-alert-banner"
+    }
+  },
+  {
+    "id": "retro-wave__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "name": "Retro Wave • LG Mobile",
+    "style": {
+      "bold": false,
+      "fontFamily": "Monoton",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "color": "#f920f2",
+      "backgroundColor": "transparent",
+      "textShadow": "0 0 5px #f920f2, 0 0 10px #00c4ff",
+      "borderWidth": 2,
+      "outline": false,
+      "shadow": true,
+      "underline": false,
+      "border": false,
+      "rotation": 0,
+      "shape": "rectangular",
+      "italic": false,
+      "animation": "fade",
+      "fontSize": 43,
+      "borderColor": "#f920f2",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "source": "system",
+    "description": "A retro 80s style with pink and blue.",
+    "preview": "https://placehold.co/600x120/0f0c29/f920f2/png?text=Retro+Wave",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "retro-wave"
+    }
+  },
+  {
+    "id": "rubik-bubbles__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/4361ee/ffffff/png?text=Bubbles",
+    "name": "Rubik Bubbles • LG Mobile",
+    "description": "A unique, bubbly font.",
+    "style": {
+      "rotation": 0,
+      "fontSize": 43,
+      "fontFamily": "Rubik Bubbles",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "shadow": false,
+      "outline": false,
+      "bold": false,
+      "color": "#FFFFFF",
+      "borderColor": "#FFFFFF",
+      "border": false,
+      "animation": "bounce",
+      "shape": "pill",
+      "backgroundColor": "rgba(67, 97, 238, 0.8)",
+      "borderWidth": 2,
+      "italic": false,
+      "underline": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "rubik-bubbles"
+    }
+  },
+  {
+    "id": "russo-one-solid__mobile_lg",
+    "description": "A solid, wide, and modern font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "animation": "fade",
+      "shape": "rounded",
+      "outline": false,
+      "bold": false,
+      "borderColor": "#94d2bd",
+      "rotation": 0,
+      "borderWidth": 2,
+      "border": false,
+      "underline": false,
+      "color": "#94d2bd",
+      "italic": false,
+      "backgroundColor": "rgba(0, 95, 115, 0.9)",
+      "fontFamily": "Russo One",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "shadow": true,
+      "fontSize": 41,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Russo One Solid • LG Mobile",
+    "source": "system",
+    "preview": "https://placehold.co/600x120/005f73/94d2bd/png?text=Russo+One",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "russo-one-solid"
+    }
+  },
+  {
+    "id": "shadow-block__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/ffffff/444444/png?text=Shadow+Block",
+    "description": "Text with a heavy block shadow.",
+    "style": {
+      "bold": false,
+      "textShadow": "4px 4px 0px #444444",
+      "outline": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "backgroundColor": "transparent",
+      "border": false,
+      "shape": "rectangular",
+      "color": "#FFFFFF",
+      "underline": false,
+      "rotation": 0,
+      "borderWidth": 2,
+      "fontSize": 50,
+      "shadow": true,
+      "fontFamily": "Alfa Slab One",
+      "animation": "fade",
+      "italic": false,
+      "borderColor": "#FFFFFF",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Shadow Block • LG Mobile",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "shadow-block"
+    }
+  },
+  {
+    "id": "shrikhand-playful__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "source": "system",
+    "name": "Shrikhand Playful • LG Mobile",
+    "preview": "https://placehold.co/600x120/f72585/ffffff/png?text=Shrikhand",
+    "description": "A playful, rounded, and bold font.",
+    "style": {
+      "backgroundColor": "rgba(247, 37, 133, 0.9)",
+      "shadow": true,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "borderColor": "#FFFFFF",
+      "outline": false,
+      "underline": false,
+      "rotation": 0,
+      "bold": false,
+      "italic": false,
+      "shape": "rounded",
+      "border": false,
+      "fontSize": 41,
+      "color": "#FFFFFF",
+      "borderWidth": 2,
+      "fontFamily": "Shrikhand",
+      "animation": "bounce",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "shrikhand-playful"
+    }
+  },
+  {
+    "id": "simple-border__mobile_lg",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "shadow": false,
+      "backgroundColor": "transparent",
+      "shape": "rounded",
+      "fontSize": 30,
+      "borderColor": "#FFFFFF",
+      "fontFamily": "Roboto",
+      "color": "#FFFFFF",
+      "borderWidth": 3,
+      "italic": false,
+      "rotation": 0,
+      "animation": "fade",
+      "border": true,
+      "underline": false,
+      "outline": false,
+      "bold": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "description": "Transparent fill with a simple border.",
+    "name": "Simple Border • LG Mobile",
+    "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Simple+Border",
+    "source": "system",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "simple-border"
+    }
+  },
+  {
+    "id": "sleek-modern__mobile_lg",
+    "preview": "https://placehold.co/600x120/0a0a0a/e5e5e5/png?text=Sleek+Modern",
+    "name": "Sleek Modern • LG Mobile",
+    "source": "system",
+    "description": "A thin, light, and modern font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "style": {
+      "shadow": false,
+      "shape": "banner",
+      "position": {
+        "x": 50,
+        "y": 90
+      },
+      "rotation": 0,
+      "fontSize": 30,
+      "borderWidth": 2,
+      "fontFamily": "Kanit",
+      "backgroundColor": "rgba(10, 10, 10, 0.7)",
+      "border": false,
+      "borderColor": "#e5e5e5",
+      "bold": false,
+      "underline": false,
+      "animation": "slide-up",
+      "outline": false,
+      "italic": false,
+      "color": "#e5e5e5",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "sleek-modern"
+    }
+  },
+  {
+    "id": "speech-bubble__mobile_lg",
+    "name": "Speech Bubble • LG Mobile",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "description": "A casual, comic-style speech bubble.",
+    "style": {
+      "rotation": 0,
+      "color": "#000000",
+      "border": false,
+      "animation": "fade",
+      "bold": false,
+      "borderColor": "#000000",
+      "backgroundColor": "#FFFFFF",
+      "fontFamily": "Inter",
+      "shape": "speech-bubble",
+      "outline": false,
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 70
+      },
+      "underline": false,
+      "borderWidth": 2,
+      "fontSize": 24,
+      "shadow": true,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=Speech+Bubble",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "speech-bubble"
+    }
+  },
+  {
+    "id": "staatliches-poster__mobile_lg",
+    "source": "system",
+    "name": "Staatliches Poster • LG Mobile",
+    "style": {
+      "fontSize": 58,
+      "outline": false,
+      "borderColor": "#d90429",
+      "borderWidth": 2,
+      "fontFamily": "Staatliches",
+      "shape": "rectangular",
+      "rotation": 0,
+      "backgroundColor": "rgba(224, 224, 224, 0.9)",
+      "bold": false,
+      "underline": false,
+      "shadow": false,
+      "color": "#d90429",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "animation": "fade",
+      "border": false,
+      "italic": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "preview": "https://placehold.co/600x120/e0e0e0/d90429/png?text=Staatliches",
+    "description": "A bold, poster-style display font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "staatliches-poster"
+    }
+  },
+  {
+    "id": "vlog-note__mobile_lg",
+    "preview": "https://placehold.co/600x120/ffffff/1a1a1a/png?text=Vlog+Note",
+    "style": {
+      "rotation": -2,
+      "shape": "rounded",
+      "backgroundColor": "rgba(255, 255, 255, 0.9)",
+      "color": "#1a1a1a",
+      "italic": false,
+      "border": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "animation": "bounce",
+      "underline": false,
+      "shadow": true,
+      "borderColor": "#1a1a1a",
+      "fontSize": 39,
+      "fontFamily": "Caveat",
+      "borderWidth": 2,
+      "bold": true,
+      "outline": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "name": "Vlog Note • LG Mobile",
+    "source": "system",
+    "description": "A casual, handwritten style for vlogs.",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "vlog-note"
+    }
+  },
+  {
+    "id": "western-saloon__mobile_lg",
+    "style": {
+      "shadow": true,
+      "backgroundColor": "rgba(88, 47, 14, 0.8)",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "fontFamily": "Rye",
+      "outline": false,
+      "bold": false,
+      "fontSize": 39,
+      "color": "#fdf0d5",
+      "underline": false,
+      "italic": false,
+      "borderColor": "#fdf0d5",
+      "border": true,
+      "borderWidth": 2,
+      "animation": "fade",
+      "rotation": 0,
+      "shape": "rectangular",
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "description": "A classic, old-west style font.",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/582f0e/fdf0d5/png?text=Western+Saloon",
+    "source": "system",
+    "name": "Western Saloon • LG Mobile",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "western-saloon"
+    }
+  },
+  {
+    "id": "yellow-box__mobile_lg",
+    "style": {
+      "color": "#1e293b",
+      "shape": "rounded",
+      "borderColor": "#1e293b",
+      "rotation": 0,
+      "shadow": true,
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 15
+      },
+      "backgroundColor": "#fde047",
+      "underline": false,
+      "fontSize": 30,
+      "borderWidth": 2,
+      "animation": "slide-up",
+      "bold": true,
+      "fontFamily": "Montserrat",
+      "border": false,
+      "outline": false,
+      "textShadow": "0 2px 12px rgba(0,0,0,0.35)",
+      "mobileLineClamp": 3,
+      "mobileSafeMargin": 11
+    },
+    "name": "Yellow Box • LG Mobile",
+    "description": "Bright yellow box with bold black text.",
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/fde047/1e293b/png?text=Yellow+Box",
+    "mobileMeta": {
+      "platform": "mobile",
+      "variant": "v2",
+      "screenProfile": "lg",
+      "collection": "caption_presets",
+      "sourceId": "yellow-box"
+    }
+  }
+]

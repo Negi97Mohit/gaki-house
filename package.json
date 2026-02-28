@@ -17,7 +17,10 @@
     "analyze": "vite-bundle-visualizer",
     "electron:compile": "tsc electron/main.ts electron/preload.ts electron/rtmp-server.ts --outDir electron/dist --module commonjs --target es6 --esModuleInterop --skipLibCheck && node electron/generate-config.js",
     "electron:dev": "concurrently -k \"npm run dev\" \"npm run electron:compile && wait-on tcp:5173 && electron .\"",
-    "electron:build": "npm run build && npm run electron:compile && electron-builder"
+    "electron:build": "npm run build && npm run electron:compile && electron-builder",
+    "firestore:download": "node scripts/download_firestore.js",
+    "firestore:mobile-jsons": "node scripts/build_mobile_firestore_jsons.js",
+    "firestore:mobile-jsons:refresh": "npm run firestore:download && npm run firestore:mobile-jsons"
   },
   "build": {
     "compression": "store",
