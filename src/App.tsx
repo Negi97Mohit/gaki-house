@@ -40,6 +40,7 @@ const MobileSearch = lazy(() => import("./pages/Mobile/pages/MobileSearchPage").
 const MobileSettings = lazy(() => import("./pages/Mobile/pages/MobileSettingsPage").then(m => ({ default: m.MobileSettingsPage })));
 const MobileStudio = lazy(() => import("./pages/Mobile/pages/MobileStudioPage").then(m => ({ default: m.MobileStudioPage })));
 const MobileFollowing = lazy(() => import("./pages/Mobile/pages/MobileFollowingPage").then(m => ({ default: m.MobileFollowingPage })));
+const MobileLive = lazy(() => import("./pages/Mobile/pages/MobileLivePage").then(m => ({ default: m.MobileLivePage })));
 
 const queryClient = new QueryClient();
 
@@ -147,6 +148,7 @@ const App = () => {
                         <Route path="browse/:category" element={<MobileBrowse />} />
                         <Route path="stream/:username" element={<MobileStream />} />
                         <Route path="studio" element={<MobileStudio />} />
+                        <Route path="live" element={<MobileLive />} />
                         <Route path="following" element={<MobileFollowing />} />
                         <Route path="clips" element={<MobileClips />} />
                         <Route path="profile/:username" element={<MobileProfile />} />

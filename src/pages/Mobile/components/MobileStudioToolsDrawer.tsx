@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Drawer,
     DrawerContent,
@@ -14,13 +14,11 @@ import { X, Settings2 } from "lucide-react";
 import { CanvasDesignsPanel } from "@/features/studio/ui/panels/CanvasDesignsPanel";
 import { TextPresetsPanel } from "@/features/studio/ui/panels/TextPresetsPanel";
 import { SettingsPanel } from "@/features/studio/ui/panels/SettingsPanel";
-// import { DynamicStylesPanel } from "@/features/studio/ui/panels/DynamicStylesPanel"; -> included in TextPresetsPanel
 
 import { CanvasPreset } from "@/types/canvasPreset";
 import { CaptionStyle } from "@/types/caption";
 
 export interface MobileStudioToolsDrawerProps {
-    // Designs Props
     onCanvasPresetSelect?: (preset: CanvasPreset) => void;
     customCanvasPresets?: CanvasPreset[];
     onSaveCanvasPreset?: (name: string, layout?: any) => void;
@@ -29,27 +27,29 @@ export interface MobileStudioToolsDrawerProps {
     isLoadingPublic?: boolean;
     onShareCanvasPreset?: (preset: CanvasPreset | string, authorName?: string) => void;
     onUnshareCanvasPreset?: (preset: CanvasPreset | string) => void;
-
-    // Text/Caption Props
     style: CaptionStyle;
     onStyleChange: (style: CaptionStyle) => void;
     dynamicStyle: string;
     onDynamicStyleChange: (styleId: string) => void;
-
-    // Trigger Element
     trigger?: React.ReactNode;
-
-    // Controlled State
     isOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
+    activeTab?: "designs" | "captions" | "camera";
+    visibleTabs?: Array<"designs" | "captions" | "camera">;
 }
 
 export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (props) => {
-    const [activeTab, setActiveTab] = useState("designs");
+    const tabs = props.visibleTabs ?? ["designs", "captions"];
+    const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>(tabs[0]);
+
+    useEffect(() => {
+        if (props.activeTab && tabs.includes(props.activeTab)) {
+            setActiveTab(props.activeTab);
+        }
+    }, [props.activeTab, tabs]);
 
     return (
         <Drawer open={props.isOpen} onOpenChange={props.onOpenChange}>
-            {/* If trigger is provided, we still render it, otherwise headless if fully controlled */}
             {props.trigger && <DrawerTrigger asChild>{props.trigger}</DrawerTrigger>}
             {!props.trigger && !props.isOpen && (
                 <DrawerTrigger asChild>
@@ -76,51 +76,61 @@ export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (
                 <div className="flex-1 overflow-hidden flex flex-col p-4 w-full">
                     <Tabs
                         value={activeTab}
-                        onValueChange={setActiveTab}
+                        onValueChange={(v) => setActiveTab(v as (typeof tabs)[number])}
                         className="w-full flex-1 flex flex-col min-h-0"
                     >
-                        {/* Tab Navigation */}
-                        <TabsList className="w-full grid grid-cols-3 h-12 bg-muted/30 rounded-full mb-4 p-1 shrink-0">
-                            <TabsTrigger value="designs" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-                                Designs
-                            </TabsTrigger>
-                            <TabsTrigger value="captions" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-                                Text & Captions
-                            </TabsTrigger>
-                            <TabsTrigger value="camera" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-                                Settings
-                            </TabsTrigger>
+                        <TabsList className="w-full grid h-12 bg-muted/30 rounded-full mb-4 p-1 shrink-0" style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
+                            {tabs.includes("designs") && (
+                                <TabsTrigger value="designs" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
+                                    Designs
+                                </TabsTrigger>
+                            )}
+                            {tabs.includes("captions") && (
+                                <TabsTrigger value="captions" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
+                                    Text & Captions
+                                </TabsTrigger>
+                            )}
+                            {tabs.includes("camera") && (
+                                <TabsTrigger value="camera" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
+                                    Settings
+                                </TabsTrigger>
+                            )}
                         </TabsList>
 
-                        {/* Tab Contents */}
                         <div className="flex-1 overflow-y-auto min-h-0" style={{ scrollbarWidth: 'none' }}>
-                            <TabsContent value="designs" className="outline-none m-0 data-[state=inactive]:hidden">
-                                <CanvasDesignsPanel
-                                    onCanvasPresetSelect={props.onCanvasPresetSelect}
-                                    onSaveCanvasPreset={props.onSaveCanvasPreset}
-                                    customCanvasPresets={props.customCanvasPresets}
-                                    onDeleteCanvasPreset={props.onDeleteCanvasPreset}
-                                    publicPresets={props.publicPresets}
-                                    isLoadingPublic={props.isLoadingPublic}
-                                    onShareCanvasPreset={props.onShareCanvasPreset}
-                                    onUnshareCanvasPreset={props.onUnshareCanvasPreset}
-                                    isHorizontal={true}
-                                />
-                            </TabsContent>
+                            {tabs.includes("designs") && (
+                                <TabsContent value="designs" className="outline-none m-0 data-[state=inactive]:hidden">
+                                    <CanvasDesignsPanel
+                                        onCanvasPresetSelect={props.onCanvasPresetSelect}
+                                        onSaveCanvasPreset={props.onSaveCanvasPreset}
+                                        customCanvasPresets={props.customCanvasPresets}
+                                        onDeleteCanvasPreset={props.onDeleteCanvasPreset}
+                                        publicPresets={props.publicPresets}
+                                        isLoadingPublic={props.isLoadingPublic}
+                                        onShareCanvasPreset={props.onShareCanvasPreset}
+                                        onUnshareCanvasPreset={props.onUnshareCanvasPreset}
+                                        isHorizontal={true}
+                                    />
+                                </TabsContent>
+                            )}
 
-                            <TabsContent value="captions" className="outline-none m-0 data-[state=inactive]:hidden">
-                                <TextPresetsPanel
-                                    style={props.style}
-                                    onStyleChange={props.onStyleChange}
-                                    dynamicStyle={props.dynamicStyle}
-                                    onDynamicStyleChange={props.onDynamicStyleChange}
-                                    isHorizontal={true}
-                                />
-                            </TabsContent>
+                            {tabs.includes("captions") && (
+                                <TabsContent value="captions" className="outline-none m-0 data-[state=inactive]:hidden">
+                                    <TextPresetsPanel
+                                        style={props.style}
+                                        onStyleChange={props.onStyleChange}
+                                        dynamicStyle={props.dynamicStyle}
+                                        onDynamicStyleChange={props.onDynamicStyleChange}
+                                        isHorizontal={true}
+                                    />
+                                </TabsContent>
+                            )}
 
-                            <TabsContent value="camera" className="outline-none m-0 data-[state=inactive]:hidden">
-                                <SettingsPanel />
-                            </TabsContent>
+                            {tabs.includes("camera") && (
+                                <TabsContent value="camera" className="outline-none m-0 data-[state=inactive]:hidden">
+                                    <SettingsPanel />
+                                </TabsContent>
+                            )}
                         </div>
                     </Tabs>
                 </div>

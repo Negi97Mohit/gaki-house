@@ -48,6 +48,8 @@ export interface MobileCanvasContainerProps {
   trigger?: React.ReactNode;
   isDrawerOpen?: boolean;
   onDrawerOpenChange?: (open: boolean) => void;
+  activeTab?: "designs" | "captions" | "camera";
+  drawerTabs?: Array<"designs" | "captions" | "camera">;
 }
 
 export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
@@ -61,6 +63,8 @@ export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
   trigger,
   isDrawerOpen,
   onDrawerOpenChange,
+  activeTab,
+  drawerTabs,
 }) => {
   const hasAiPopoverAutoOpenedRef = useRef(false);
 
@@ -994,6 +998,8 @@ export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
         isLoadingPublic={layoutManager.isLoadingPublic}
         onShareCanvasPreset={layoutManager.shareCanvasPreset}
         onUnshareCanvasPreset={layoutManager.unshareCanvasPreset}
+        activeTab={activeTab}
+        visibleTabs={drawerTabs}
         style={activeScene.captionStyle}
         onStyleChange={(val) => updateSceneProperty("captionStyle", val)}
         dynamicStyle={activeScene.dynamicStyle}

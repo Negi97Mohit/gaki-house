@@ -6,7 +6,7 @@ import { AuthModal } from "@/pages/platform/components/AuthModal";
 
 export const MobileLayout: React.FC = () => {
     const location = useLocation();
-    const isStudioPage = location.pathname === "/m/studio";
+    const isStudioPage = location.pathname === "/m/studio" || location.pathname === "/m/live";
 
     return (
         <div className="mobile-shell h-[100dvh] w-full flex flex-col bg-background text-foreground overflow-hidden">
