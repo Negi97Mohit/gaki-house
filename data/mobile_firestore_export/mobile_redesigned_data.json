@@ -1,0 +1,5248 @@
+{
+  "anime_styles": [
+    {
+      "id": "classic",
+      "name": "classic",
+      "lowThreshold": 80,
+      "midColor": "#e84a5f",
+      "edgeThreshold": 40,
+      "highThreshold": 200,
+      "skinDetectionStrength": 0.8,
+      "skinColor": "#ffb6b6",
+      "highlightColor": "#ffdbc5",
+      "shadowColor": "#2c1b47",
+      "detailSensitivity": 10,
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 0
+    },
+    {
+      "id": "dreamscape",
+      "name": "dreamscape",
+      "midColor": "#9b5de5",
+      "skinColor": "#ffd6e7",
+      "skinDetectionStrength": 1,
+      "detailSensitivity": 10,
+      "highlightColor": "#f8edff",
+      "shadowColor": "#2d1f47",
+      "lowThreshold": 70,
+      "edgeThreshold": 35,
+      "highThreshold": 205,
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 0
+    },
+    {
+      "id": "ghibliSoft",
+      "name": "ghibliSoft",
+      "midColor": "#9fc9a3",
+      "skinColor": "#ffd7b5",
+      "shadowColor": "#3b4a3f",
+      "highlightColor": "#f6f2d4",
+      "lowThreshold": 75,
+      "highThreshold": 205,
+      "skinDetectionStrength": 1.2,
+      "detailSensitivity": 8,
+      "edgeThreshold": 35,
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 0
+    },
+    {
+      "id": "ghibliWarm",
+      "name": "ghibliWarm",
+      "lowThreshold": 80,
+      "highThreshold": 210,
+      "shadowColor": "#5c2d1f",
+      "detailSensitivity": 10,
+      "midColor": "#e39e6d",
+      "edgeThreshold": 40,
+      "highlightColor": "#ffe7c4",
+      "skinDetectionStrength": 1.1,
+      "skinColor": "#ffd3b6",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 0
+    },
+    {
+      "id": "lavender",
+      "name": "lavender",
+      "edgeThreshold": 45,
+      "skinColor": "#f3e5f5",
+      "shadowColor": "#1a0b2e",
+      "highlightColor": "#e0b0ff",
+      "midColor": "#9d4edd",
+      "skinDetectionStrength": 1,
+      "lowThreshold": 70,
+      "highThreshold": 200,
+      "detailSensitivity": 12,
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 0
+    },
+    {
+      "id": "pastelCute",
+      "name": "pastelCute",
+      "highThreshold": 205,
+      "skinDetectionStrength": 1.3,
+      "detailSensitivity": 10,
+      "shadowColor": "#6b4f7f",
+      "lowThreshold": 80,
+      "edgeThreshold": 35,
+      "highlightColor": "#fff0f8",
+      "midColor": "#ffb3d9",
+      "skinColor": "#ffd6e1",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 0
+    },
+    {
+      "id": "roseGold",
+      "name": "roseGold",
+      "skinColor": "#ffd3c2",
+      "midColor": "#e9a6a6",
+      "lowThreshold": 75,
+      "highThreshold": 210,
+      "shadowColor": "#4b2e2e",
+      "highlightColor": "#ffe8e8",
+      "edgeThreshold": 40,
+      "skinDetectionStrength": 1.2,
+      "detailSensitivity": 12,
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 0
+    },
+    {
+      "id": "bleach",
+      "name": "bleach",
+      "skinColor": "#ffe7d5",
+      "highlightColor": "#ffffff",
+      "skinDetectionStrength": 0.5,
+      "shadowColor": "#0a0a0a",
+      "highThreshold": 210,
+      "detailSensitivity": 5,
+      "edgeThreshold": 30,
+      "lowThreshold": 85,
+      "midColor": "#cccccc",
+      "mobileCategory": "clean",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 1
+    },
+    {
+      "id": "comicBold",
+      "name": "comicBold",
+      "skinDetectionStrength": 1,
+      "highlightColor": "#ffffff",
+      "skinColor": "#ffe2cc",
+      "lowThreshold": 90,
+      "midColor": "#2d2d2d",
+      "shadowColor": "#000000",
+      "edgeThreshold": 20,
+      "highThreshold": 210,
+      "detailSensitivity": 25,
+      "mobileCategory": "clean",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 1
+    },
+    {
+      "id": "dominator",
+      "name": "dominator",
+      "midColor": "#00ced1",
+      "shadowColor": "#000000",
+      "highThreshold": 210,
+      "lowThreshold": 70,
+      "skinDetectionStrength": 1,
+      "skinColor": "#b0e0e6",
+      "edgeThreshold": 50,
+      "highlightColor": "#e0ffff",
+      "detailSensitivity": 12,
+      "mobileCategory": "clean",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 1
+    },
+    {
+      "id": "arcane",
+      "name": "arcane",
+      "detailSensitivity": 20,
+      "highlightColor": "#d7c6ff",
+      "shadowColor": "#1e1a24",
+      "skinColor": "#e8c1b5",
+      "edgeThreshold": 60,
+      "lowThreshold": 65,
+      "highThreshold": 200,
+      "midColor": "#654d7a",
+      "skinDetectionStrength": 1,
+      "mobileCategory": "dark",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 2
+    },
+    {
+      "id": "cosmicVoid",
+      "name": "cosmicVoid",
+      "detailSensitivity": 10,
+      "highThreshold": 200,
+      "lowThreshold": 30,
+      "shadowColor": "#000000",
+      "midColor": "#4b0082",
+      "edgeThreshold": 30,
+      "skinDetectionStrength": 1.2,
+      "skinColor": "#9370db",
+      "highlightColor": "#e6e6fa",
+      "mobileCategory": "dark",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 2
+    },
+    {
+      "id": "gothic",
+      "name": "gothic",
+      "highThreshold": 180,
+      "lowThreshold": 60,
+      "shadowColor": "#0f0f0f",
+      "skinDetectionStrength": 0.8,
+      "skinColor": "#f0f0f0",
+      "highlightColor": "#e0e0e0",
+      "edgeThreshold": 35,
+      "midColor": "#8a0303",
+      "detailSensitivity": 10,
+      "mobileCategory": "dark",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 2
+    },
+    {
+      "id": "neonHorror",
+      "name": "neonHorror",
+      "skinColor": "#ffd2d2",
+      "lowThreshold": 55,
+      "shadowColor": "#0f0010",
+      "skinDetectionStrength": 0.9,
+      "detailSensitivity": 18,
+      "highlightColor": "#fffae3",
+      "highThreshold": 190,
+      "midColor": "#ff005c",
+      "edgeThreshold": 55,
+      "mobileCategory": "dark",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 2
+    },
+    {
+      "id": "noirBlue",
+      "name": "noirBlue",
+      "highThreshold": 210,
+      "edgeThreshold": 40,
+      "skinColor": "#ffe2cc",
+      "detailSensitivity": 10,
+      "skinDetectionStrength": 1,
+      "highlightColor": "#dfe4ff",
+      "shadowColor": "#000014",
+      "midColor": "#4d4d7a",
+      "lowThreshold": 80,
+      "mobileCategory": "dark",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 2
+    },
+    {
+      "id": "phantom",
+      "name": "phantom",
+      "edgeThreshold": 40,
+      "detailSensitivity": 15,
+      "shadowColor": "#1a0000",
+      "highlightColor": "#ffffff",
+      "highThreshold": 210,
+      "midColor": "#ff0000",
+      "skinDetectionStrength": 1,
+      "lowThreshold": 60,
+      "skinColor": "#ffcccc",
+      "mobileCategory": "dark",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 2
+    },
+    {
+      "id": "spectralHaunting",
+      "name": "spectralHaunting",
+      "skinColor": "#b0c4de",
+      "skinDetectionStrength": 0.5,
+      "shadowColor": "#0f0f1a",
+      "highThreshold": 190,
+      "lowThreshold": 50,
+      "highlightColor": "#f8f8ff",
+      "edgeThreshold": 20,
+      "detailSensitivity": 10,
+      "midColor": "#778899",
+      "mobileCategory": "dark",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 2
+    },
+    {
+      "id": "cyberneticAugment",
+      "name": "cyberneticAugment",
+      "skinDetectionStrength": 1.2,
+      "midColor": "#1e90ff",
+      "skinColor": "#87cefa",
+      "highThreshold": 205,
+      "edgeThreshold": 50,
+      "highlightColor": "#00bfff",
+      "lowThreshold": 65,
+      "shadowColor": "#000022",
+      "detailSensitivity": 14,
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "cyberpunk",
+      "name": "cyberpunk",
+      "highThreshold": 220,
+      "detailSensitivity": 15,
+      "skinDetectionStrength": 1.1,
+      "skinColor": "#ff6b6b",
+      "midColor": "#00fff0",
+      "shadowColor": "#0a0a2a",
+      "edgeThreshold": 55,
+      "highlightColor": "#ff00ff",
+      "lowThreshold": 60,
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "glitchPurple",
+      "name": "glitchPurple",
+      "shadowColor": "#1a0020",
+      "highThreshold": 195,
+      "skinDetectionStrength": 0.9,
+      "skinColor": "#ffcce6",
+      "detailSensitivity": 20,
+      "highlightColor": "#f2d6ff",
+      "midColor": "#aa00ff",
+      "lowThreshold": 60,
+      "edgeThreshold": 55,
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "hologram",
+      "name": "hologram",
+      "highThreshold": 200,
+      "highlightColor": "#e6fcff",
+      "skinDetectionStrength": 1.1,
+      "detailSensitivity": 14,
+      "midColor": "#5de5ff",
+      "shadowColor": "#1f003f",
+      "lowThreshold": 65,
+      "skinColor": "#ffd6e0",
+      "edgeThreshold": 45,
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "holographicGlitch",
+      "name": "holographicGlitch",
+      "skinColor": "#e0ffff",
+      "highlightColor": "#ff00ff",
+      "edgeThreshold": 45,
+      "highThreshold": 210,
+      "lowThreshold": 60,
+      "detailSensitivity": 15,
+      "midColor": "#00ffff",
+      "skinDetectionStrength": 0.8,
+      "shadowColor": "#1a0033",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "infrared",
+      "name": "infrared",
+      "edgeThreshold": 45,
+      "lowThreshold": 60,
+      "detailSensitivity": 15,
+      "skinColor": "#ffc6b5",
+      "highThreshold": 205,
+      "shadowColor": "#2b0000",
+      "skinDetectionStrength": 0.8,
+      "highlightColor": "#ffe6d5",
+      "midColor": "#ff4500",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "matrix",
+      "name": "matrix",
+      "edgeThreshold": 45,
+      "lowThreshold": 50,
+      "detailSensitivity": 12,
+      "skinColor": "#88ff88",
+      "highThreshold": 180,
+      "shadowColor": "#001a00",
+      "skinDetectionStrength": 0.5,
+      "midColor": "#00ff00",
+      "highlightColor": "#ccffcc",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "radioactiveDecay",
+      "name": "radioactiveDecay",
+      "highlightColor": "#ffff00",
+      "edgeThreshold": 50,
+      "lowThreshold": 60,
+      "skinDetectionStrength": 0.7,
+      "skinColor": "#adff2f",
+      "detailSensitivity": 15,
+      "highThreshold": 200,
+      "midColor": "#7fff00",
+      "shadowColor": "#0f1a00",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "toxicGreen",
+      "name": "toxicGreen",
+      "detailSensitivity": 20,
+      "shadowColor": "#003300",
+      "highThreshold": 185,
+      "highlightColor": "#e2ffdc",
+      "skinDetectionStrength": 0.8,
+      "lowThreshold": 55,
+      "midColor": "#39ff14",
+      "edgeThreshold": 45,
+      "skinColor": "#ffd8cc",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 3
+    },
+    {
+      "id": "bloodMoon",
+      "name": "bloodMoon",
+      "detailSensitivity": 15,
+      "highThreshold": 205,
+      "skinDetectionStrength": 0.8,
+      "lowThreshold": 70,
+      "midColor": "#a30000",
+      "edgeThreshold": 50,
+      "shadowColor": "#1a0000",
+      "skinColor": "#ffdddd",
+      "highlightColor": "#ffcccc",
+      "mobileCategory": "fire",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 4
+    },
+    {
+      "id": "fireDragon",
+      "name": "fireDragon",
+      "shadowColor": "#260000",
+      "midColor": "#ff4500",
+      "highThreshold": 210,
+      "skinColor": "#ffccb8",
+      "highlightColor": "#ffd1a1",
+      "detailSensitivity": 18,
+      "skinDetectionStrength": 1.1,
+      "lowThreshold": 75,
+      "edgeThreshold": 50,
+      "mobileCategory": "fire",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 4
+    },
+    {
+      "id": "volcanicMagma",
+      "name": "volcanicMagma",
+      "highlightColor": "#ffcc00",
+      "skinDetectionStrength": 0.8,
+      "detailSensitivity": 15,
+      "midColor": "#ff4500",
+      "skinColor": "#ff6600",
+      "lowThreshold": 50,
+      "highThreshold": 180,
+      "shadowColor": "#1a0000",
+      "edgeThreshold": 40,
+      "mobileCategory": "fire",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 4
+    },
+    {
+      "id": "abyssalDepth",
+      "name": "abyssalDepth",
+      "highThreshold": 190,
+      "midColor": "#006994",
+      "detailSensitivity": 12,
+      "skinDetectionStrength": 1,
+      "skinColor": "#008b8b",
+      "lowThreshold": 50,
+      "edgeThreshold": 40,
+      "shadowColor": "#00001a",
+      "highlightColor": "#00ffff",
+      "mobileCategory": "ice",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 5
+    },
+    {
+      "id": "crystalline",
+      "name": "crystalline",
+      "detailSensitivity": 22,
+      "skinColor": "#e6e6fa",
+      "skinDetectionStrength": 0.9,
+      "highThreshold": 200,
+      "lowThreshold": 50,
+      "shadowColor": "#101030",
+      "midColor": "#a020f0",
+      "edgeThreshold": 65,
+      "highlightColor": "#00ffff",
+      "mobileCategory": "ice",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 5
+    },
+    {
+      "id": "frostBlue",
+      "name": "frostBlue",
+      "detailSensitivity": 12,
+      "shadowColor": "#001f3f",
+      "skinDetectionStrength": 1.1,
+      "highThreshold": 210,
+      "lowThreshold": 70,
+      "edgeThreshold": 35,
+      "highlightColor": "#e6f7ff",
+      "skinColor": "#ffecec",
+      "midColor": "#4da6ff",
+      "mobileCategory": "ice",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 5
+    },
+    {
+      "id": "norseIce",
+      "name": "norseIce",
+      "skinColor": "#c7e0ed",
+      "skinDetectionStrength": 1.8,
+      "detailSensitivity": 8,
+      "highlightColor": "#d5e9f2",
+      "shadowColor": "#0a1f2e",
+      "midColor": "#5c8a9e",
+      "edgeThreshold": 32,
+      "highThreshold": 210,
+      "lowThreshold": 62,
+      "mobileCategory": "ice",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 5
+    },
+    {
+      "id": "dystopianGrey",
+      "name": "dystopianGrey",
+      "highThreshold": 190,
+      "midColor": "#696969",
+      "skinColor": "#a9a9a9",
+      "detailSensitivity": 10,
+      "lowThreshold": 60,
+      "shadowColor": "#1a1a1a",
+      "edgeThreshold": 40,
+      "highlightColor": "#d3d3d3",
+      "skinDetectionStrength": 0,
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 6
+    },
+    {
+      "id": "manga",
+      "name": "manga",
+      "skinDetectionStrength": 0,
+      "lowThreshold": 80,
+      "highThreshold": 200,
+      "highlightColor": "#FFFFFF",
+      "midColor": "#808080",
+      "skinColor": "#FFFFFF",
+      "shadowColor": "#000000",
+      "detailSensitivity": 10,
+      "edgeThreshold": 30,
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 6
+    },
+    {
+      "id": "noirDetective",
+      "name": "noirDetective",
+      "skinColor": "#d3d3d3",
+      "detailSensitivity": 6,
+      "lowThreshold": 75,
+      "edgeThreshold": 30,
+      "highThreshold": 220,
+      "skinDetectionStrength": 1.2,
+      "midColor": "#4a4a4a",
+      "highlightColor": "#ffffff",
+      "shadowColor": "#000000",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 6
+    },
+    {
+      "id": "samuraiInk",
+      "name": "samuraiInk",
+      "skinColor": "#f2f2f2",
+      "highlightColor": "#ffffff",
+      "edgeThreshold": 25,
+      "midColor": "#5b5b5b",
+      "shadowColor": "#000000",
+      "skinDetectionStrength": 0,
+      "highThreshold": 210,
+      "detailSensitivity": 5,
+      "lowThreshold": 85,
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 6
+    },
+    {
+      "id": "byzantineMosaic",
+      "name": "byzantineMosaic",
+      "midColor": "#b8860b",
+      "highThreshold": 215,
+      "edgeThreshold": 25,
+      "skinDetectionStrength": 1.8,
+      "skinColor": "#daa520",
+      "lowThreshold": 70,
+      "shadowColor": "#1f1410",
+      "detailSensitivity": 15,
+      "highlightColor": "#ffd700",
+      "mobileCategory": "cultural",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 7
+    },
+    {
+      "id": "edoPeriod",
+      "name": "edoPeriod",
+      "skinColor": "#deb887",
+      "shadowColor": "#1a1410",
+      "highThreshold": 215,
+      "skinDetectionStrength": 2.3,
+      "edgeThreshold": 32,
+      "midColor": "#8b4513",
+      "highlightColor": "#f5deb3",
+      "detailSensitivity": 10,
+      "lowThreshold": 68,
+      "mobileCategory": "cultural",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 7
+    },
+    {
+      "id": "egyptianPapyrus",
+      "name": "egyptianPapyrus",
+      "highThreshold": 218,
+      "skinDetectionStrength": 2,
+      "edgeThreshold": 28,
+      "skinColor": "#c19a6b",
+      "detailSensitivity": 10,
+      "lowThreshold": 68,
+      "shadowColor": "#2b1f0a",
+      "highlightColor": "#faf4e8",
+      "midColor": "#d4a76a",
+      "mobileCategory": "cultural",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 7
+    },
+    {
+      "id": "jadeDynasty",
+      "name": "jadeDynasty",
+      "detailSensitivity": 9,
+      "shadowColor": "#0d1f0d",
+      "skinDetectionStrength": 2.2,
+      "highThreshold": 212,
+      "edgeThreshold": 32,
+      "lowThreshold": 65,
+      "highlightColor": "#c9f0dd",
+      "skinColor": "#f5e8d0",
+      "midColor": "#00a36c",
+      "mobileCategory": "cultural",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 7
+    },
+    {
+      "id": "ukiyoe",
+      "name": "ukiyoe",
+      "skinDetectionStrength": 1.2,
+      "detailSensitivity": 12,
+      "edgeThreshold": 40,
+      "highlightColor": "#eff7ff",
+      "highThreshold": 190,
+      "shadowColor": "#0d1b2a",
+      "lowThreshold": 75,
+      "midColor": "#1e6091",
+      "skinColor": "#ffdbb3",
+      "mobileCategory": "cultural",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 7
+    },
+    {
+      "id": "cavePainting",
+      "name": "cavePainting",
+      "detailSensitivity": 25,
+      "highThreshold": 200,
+      "shadowColor": "#2b1810",
+      "highlightColor": "#deb887",
+      "lowThreshold": 70,
+      "skinColor": "#cd853f",
+      "edgeThreshold": 35,
+      "midColor": "#a0522d",
+      "skinDetectionStrength": 1.5,
+      "mobileCategory": "art",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 8
+    },
+    {
+      "id": "medievalIllumination",
+      "name": "medievalIllumination",
+      "skinColor": "#f5deb3",
+      "detailSensitivity": 12,
+      "lowThreshold": 65,
+      "edgeThreshold": 40,
+      "highThreshold": 210,
+      "skinDetectionStrength": 2.2,
+      "midColor": "#8b4513",
+      "highlightColor": "#daa520",
+      "shadowColor": "#1a0f26",
+      "mobileCategory": "art",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 8
+    },
+    {
+      "id": "oilPaint",
+      "name": "oilPaint",
+      "highlightColor": "#f3dfc1",
+      "shadowColor": "#2d1f1f",
+      "lowThreshold": 75,
+      "edgeThreshold": 65,
+      "highThreshold": 200,
+      "skinDetectionStrength": 1.4,
+      "midColor": "#b37a5e",
+      "skinColor": "#ffcfb6",
+      "detailSensitivity": 22,
+      "mobileCategory": "art",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 8
+    },
+    {
+      "id": "renaissanceOil",
+      "name": "renaissanceOil",
+      "detailSensitivity": 10,
+      "lowThreshold": 65,
+      "shadowColor": "#2d1810",
+      "skinDetectionStrength": 2.5,
+      "edgeThreshold": 38,
+      "highlightColor": "#f0e68c",
+      "midColor": "#8b6f47",
+      "highThreshold": 215,
+      "skinColor": "#deb887",
+      "mobileCategory": "art",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 8
+    },
+    {
+      "id": "watercolor",
+      "name": "watercolor",
+      "skinColor": "#ffe9d6",
+      "midColor": "#aed6dc",
+      "shadowColor": "#4a6572",
+      "skinDetectionStrength": 1,
+      "highlightColor": "#f6f5f5",
+      "edgeThreshold": 30,
+      "highThreshold": 190,
+      "detailSensitivity": 8,
+      "lowThreshold": 70,
+      "mobileCategory": "art",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 8
+    },
+    {
+      "id": "demonSlayer",
+      "name": "demonSlayer",
+      "highlightColor": "#f6f6f2",
+      "midColor": "#50b37a",
+      "detailSensitivity": 18,
+      "lowThreshold": 75,
+      "skinDetectionStrength": 1.5,
+      "highThreshold": 205,
+      "skinColor": "#ffd5c3",
+      "shadowColor": "#1a0b0b",
+      "edgeThreshold": 45,
+      "mobileCategory": "anime",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 9
+    },
+    {
+      "id": "bioluminescent",
+      "name": "bioluminescent",
+      "edgeThreshold": 60,
+      "skinColor": "#00cc99",
+      "midColor": "#00ffaa",
+      "skinDetectionStrength": 1.1,
+      "highThreshold": 200,
+      "detailSensitivity": 20,
+      "lowThreshold": 55,
+      "highlightColor": "#ccffee",
+      "shadowColor": "#001010",
+      "mobileCategory": "sci-fi",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 10
+    },
+    {
+      "id": "mechaBlue",
+      "name": "mechaBlue",
+      "shadowColor": "#000019",
+      "midColor": "#0033cc",
+      "skinColor": "#ffd6cc",
+      "lowThreshold": 70,
+      "detailSensitivity": 15,
+      "edgeThreshold": 55,
+      "highlightColor": "#d5e5ff",
+      "highThreshold": 210,
+      "skinDetectionStrength": 1,
+      "mobileCategory": "sci-fi",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 10
+    },
+    {
+      "id": "xenomorphic",
+      "name": "xenomorphic",
+      "edgeThreshold": 60,
+      "midColor": "#00ff00",
+      "skinColor": "#55ff55",
+      "shadowColor": "#000f00",
+      "detailSensitivity": 20,
+      "skinDetectionStrength": 0.5,
+      "lowThreshold": 40,
+      "highlightColor": "#ccffcc",
+      "highThreshold": 180,
+      "mobileCategory": "sci-fi",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 10
+    },
+    {
+      "id": "thermalImaging",
+      "name": "thermalImaging",
+      "skinDetectionStrength": 1,
+      "skinColor": "#ff8c00",
+      "highThreshold": 180,
+      "edgeThreshold": 30,
+      "midColor": "#ff0000",
+      "lowThreshold": 50,
+      "shadowColor": "#00008b",
+      "detailSensitivity": 8,
+      "highlightColor": "#ffff00",
+      "mobileCategory": "xray",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 11
+    },
+    {
+      "id": "xrayVision",
+      "name": "xrayVision",
+      "highlightColor": "#ffffff",
+      "midColor": "#4682b4",
+      "detailSensitivity": 18,
+      "lowThreshold": 40,
+      "skinColor": "#87ceeb",
+      "highThreshold": 210,
+      "skinDetectionStrength": 0.5,
+      "shadowColor": "#000000",
+      "edgeThreshold": 50,
+      "mobileCategory": "xray",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 11
+    },
+    {
+      "id": "artDeco",
+      "name": "artDeco",
+      "skinDetectionStrength": 2,
+      "detailSensitivity": 9,
+      "highlightColor": "#ffd700",
+      "midColor": "#c0c0c0",
+      "highThreshold": 215,
+      "skinColor": "#f5deb3",
+      "edgeThreshold": 35,
+      "lowThreshold": 68,
+      "shadowColor": "#1a1a1a",
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "aztecSun",
+      "name": "aztecSun",
+      "detailSensitivity": 15,
+      "highThreshold": 210,
+      "shadowColor": "#1f0f00",
+      "lowThreshold": 65,
+      "highlightColor": "#ffd700",
+      "skinColor": "#d2691e",
+      "edgeThreshold": 30,
+      "midColor": "#ff8c00",
+      "skinDetectionStrength": 2,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "desertMirage",
+      "name": "desertMirage",
+      "midColor": "#f4a460",
+      "skinColor": "#deb887",
+      "detailSensitivity": 7,
+      "skinDetectionStrength": 1.8,
+      "highlightColor": "#fff8dc",
+      "shadowColor": "#3d2817",
+      "lowThreshold": 68,
+      "edgeThreshold": 30,
+      "highThreshold": 218,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "emerald",
+      "name": "emerald",
+      "shadowColor": "#002b26",
+      "highThreshold": 195,
+      "lowThreshold": 65,
+      "skinDetectionStrength": 1,
+      "midColor": "#00a884",
+      "skinColor": "#ffe4d0",
+      "highlightColor": "#c8fff0",
+      "edgeThreshold": 40,
+      "detailSensitivity": 14,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "golden",
+      "name": "golden",
+      "midColor": "#ffd700",
+      "highThreshold": 210,
+      "edgeThreshold": 50,
+      "skinDetectionStrength": 1,
+      "skinColor": "#ffebd7",
+      "lowThreshold": 70,
+      "detailSensitivity": 12,
+      "highlightColor": "#fffbcc",
+      "shadowColor": "#2a2200",
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "inspector",
+      "name": "inspector",
+      "detailSensitivity": 12,
+      "highlightColor": "#fff0f5",
+      "lowThreshold": 70,
+      "highThreshold": 210,
+      "midColor": "#ff1493",
+      "shadowColor": "#1a0505",
+      "edgeThreshold": 45,
+      "skinColor": "#ffc0cb",
+      "skinDetectionStrength": 1.2,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "mint",
+      "name": "mint",
+      "highlightColor": "#e0fff4",
+      "skinColor": "#ffe0e6",
+      "detailSensitivity": 15,
+      "shadowColor": "#1c3d35",
+      "midColor": "#4fffa3",
+      "skinDetectionStrength": 1.1,
+      "edgeThreshold": 45,
+      "lowThreshold": 70,
+      "highThreshold": 200,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "ocean",
+      "name": "ocean",
+      "shadowColor": "#000033",
+      "highThreshold": 200,
+      "lowThreshold": 60,
+      "skinDetectionStrength": 1,
+      "midColor": "#0066cc",
+      "skinColor": "#b3d9ff",
+      "highlightColor": "#99ccff",
+      "edgeThreshold": 40,
+      "detailSensitivity": 12,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "pixarSoft",
+      "name": "pixarSoft",
+      "skinDetectionStrength": 1.25,
+      "edgeThreshold": 50,
+      "lowThreshold": 60,
+      "highThreshold": 210,
+      "shadowColor": "#2e4057",
+      "skinColor": "#ffd7c0",
+      "highlightColor": "#e4f1fe",
+      "midColor": "#7db9e8",
+      "detailSensitivity": 14,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "romanFreco",
+      "name": "romanFreco",
+      "edgeThreshold": 30,
+      "skinDetectionStrength": 2.2,
+      "shadowColor": "#3d2817",
+      "lowThreshold": 65,
+      "highlightColor": "#f4e4c1",
+      "midColor": "#c85a54",
+      "detailSensitivity": 10,
+      "skinColor": "#d4a574",
+      "highThreshold": 215,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "sepia",
+      "name": "sepia",
+      "highlightColor": "#f0e6d2",
+      "midColor": "#a68a6d",
+      "detailSensitivity": 15,
+      "lowThreshold": 70,
+      "skinColor": "#dcbfa6",
+      "skinDetectionStrength": 1,
+      "highThreshold": 190,
+      "shadowColor": "#2e2115",
+      "edgeThreshold": 50,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "sovietPropaganda",
+      "name": "sovietPropaganda",
+      "detailSensitivity": 12,
+      "edgeThreshold": 28,
+      "shadowColor": "#1a0000",
+      "highlightColor": "#ffd700",
+      "highThreshold": 215,
+      "midColor": "#cc0000",
+      "skinDetectionStrength": 1.8,
+      "lowThreshold": 68,
+      "skinColor": "#ffccaa",
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "spartanBronze",
+      "name": "spartanBronze",
+      "edgeThreshold": 35,
+      "skinDetectionStrength": 2,
+      "lowThreshold": 65,
+      "shadowColor": "#1f1408",
+      "midColor": "#b87333",
+      "skinColor": "#cd9575",
+      "highThreshold": 215,
+      "detailSensitivity": 8,
+      "highlightColor": "#ffd7a8",
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "steampunkBrass",
+      "name": "steampunkBrass",
+      "skinDetectionStrength": 2,
+      "highlightColor": "#ffd9a0",
+      "skinColor": "#e0c4a8",
+      "highThreshold": 212,
+      "edgeThreshold": 32,
+      "lowThreshold": 65,
+      "detailSensitivity": 9,
+      "shadowColor": "#1f1108",
+      "midColor": "#cd7f32",
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "sunset",
+      "name": "sunset",
+      "lowThreshold": 70,
+      "highThreshold": 210,
+      "skinColor": "#ffcc80",
+      "shadowColor": "#2d1b4e",
+      "skinDetectionStrength": 1.2,
+      "highlightColor": "#ffbe0b",
+      "edgeThreshold": 50,
+      "midColor": "#d65db1",
+      "detailSensitivity": 15,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    },
+    {
+      "id": "victorianDaguerreotype",
+      "name": "victorianDaguerreotype",
+      "skinDetectionStrength": 2,
+      "lowThreshold": 65,
+      "highThreshold": 210,
+      "edgeThreshold": 32,
+      "shadowColor": "#1a1410",
+      "highlightColor": "#f5e6d3",
+      "skinColor": "#e8d4c0",
+      "midColor": "#8b7355",
+      "detailSensitivity": 8,
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 64,
+      "tapToApply": true,
+      "longPressPreview": true,
+      "carouselOrder": 99
+    }
+  ],
+  "animation_library": [
+    {
+      "id": "bouncy-period",
+      "name": "Bouncy Period",
+      "category": "Kinetic",
+      "source": "system",
+      "baseStyle": {
+        "color": "#FFFFFF",
+        "fontSize": 32,
+        "accentColor": "#FF0055",
+        "alignment": "left",
+        "fontFamily": "Poppins"
+      },
+      "defaultContent": {
+        "heading": "Make a Statement."
+      },
+      "animationConfig": {
+        "easing": "elastic",
+        "loopDelay": 4,
+        "loop": true,
+        "duration": 0.8
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "trending",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "card-feature",
+      "name": "Feature Card",
+      "category": "UI",
+      "source": "system",
+      "baseStyle": {
+        "color": "#FFFFFF",
+        "alignment": "left",
+        "fontSize": 19,
+        "fontFamily": "Inter",
+        "backgroundColor": "rgba(255,255,255,0.1)"
+      },
+      "defaultContent": {
+        "title": "Smart AI",
+        "desc": "Generates layouts instantly."
+      },
+      "animationConfig": {
+        "duration": 0.8,
+        "direction": "up",
+        "easing": "smooth"
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "ui-element",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "counter-stat",
+      "name": "Statistic Counter",
+      "category": "Data",
+      "source": "system",
+      "baseStyle": {
+        "fontFamily": "Inter",
+        "color": "#4ADE80",
+        "alignment": "center",
+        "fontSize": 42
+      },
+      "defaultContent": {
+        "label": "Revenue Generated",
+        "value": "$1,000,000"
+      },
+      "animationConfig": {
+        "easing": "smooth",
+        "duration": 2
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "stat-badge",
+      "presentationStyle": "callout-card",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "cyber-title",
+      "name": "Cyber Title",
+      "category": "Glitch",
+      "source": "system",
+      "baseStyle": {
+        "color": "#00FFFF",
+        "fontSize": 37,
+        "fontFamily": "Orbitron",
+        "alignment": "center"
+      },
+      "defaultContent": {
+        "heading": "CYBERPUNK",
+        "status": "CONNECTED"
+      },
+      "animationConfig": {
+        "direction": "left",
+        "easing": "smooth",
+        "duration": 0.8
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "glitch",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "editorial-tagline",
+      "name": "The Edit: Tagline",
+      "category": "Reveal",
+      "source": "system",
+      "baseStyle": {
+        "color": "#FFFFFF",
+        "fontSize": 28,
+        "alignment": "center",
+        "fontFamily": "Montserrat"
+      },
+      "defaultContent": {
+        "tag": "[ NEW COLLECTION ]",
+        "heading": "SUMMER 2025"
+      },
+      "animationConfig": {
+        "direction": "down",
+        "delay": 0.2,
+        "duration": 1,
+        "easing": "smooth"
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "reveal",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "glide-title",
+      "name": "Glide",
+      "category": "Reveal",
+      "source": "system",
+      "baseStyle": {
+        "fontSize": 42,
+        "fontFamily": "Playfair Display",
+        "color": "#F5E5C5",
+        "alignment": "center"
+      },
+      "defaultContent": {
+        "heading": "Smooth Glide",
+        "subheading": "Cinematic Entrance"
+      },
+      "animationConfig": {
+        "easing": "smooth",
+        "duration": 1.5,
+        "direction": "up"
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "reveal",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "glitch-reveal-1",
+      "name": "Glitch Reveal",
+      "category": "Glitch",
+      "source": "system",
+      "baseStyle": {
+        "fontFamily": "Courier New",
+        "alignment": "left",
+        "color": "#00FF00",
+        "fontSize": 24
+      },
+      "defaultContent": {
+        "subheading": "Rebooting...",
+        "heading": "SYSTEM_FAILURE"
+      },
+      "animationConfig": {
+        "easing": "linear",
+        "loopDelay": 5,
+        "duration": 0.3,
+        "delay": 0.05,
+        "loop": true
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "glitch",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "lower-third-clean",
+      "name": "Caption Bar",
+      "category": "UI",
+      "source": "system",
+      "baseStyle": {
+        "color": "#FFFFFF",
+        "fontFamily": "Inter",
+        "fontSize": 16,
+        "alignment": "center"
+      },
+      "defaultContent": {
+        "name": "Your Name",
+        "role": "Your Title"
+      },
+      "animationConfig": {
+        "easing": "smooth",
+        "duration": 1,
+        "direction": "left"
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "caption",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "sliding-text-reveal",
+      "name": "Sliding Text Reveal",
+      "category": "Reveal",
+      "source": "system",
+      "baseStyle": {
+        "color": "#FFFFFF",
+        "fontSize": 37,
+        "alignment": "left",
+        "fontFamily": "Inter"
+      },
+      "defaultContent": {
+        "subheading": "Reveal Effect",
+        "heading": "Sliding Text"
+      },
+      "animationConfig": {
+        "duration": 0.8,
+        "loopDelay": 3,
+        "loop": true,
+        "easing": "smooth",
+        "direction": "up"
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "reveal",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "social-message",
+      "name": "Social Message",
+      "category": "Social",
+      "source": "system",
+      "baseStyle": {
+        "fontSize": 14,
+        "alignment": "left",
+        "fontFamily": "Inter",
+        "backgroundColor": "#FFFFFF",
+        "color": "#000000"
+      },
+      "defaultContent": {
+        "user": "@alex_design",
+        "message": "This tool is absolutely mind-blowing! 🚀"
+      },
+      "animationConfig": {
+        "duration": 0.6,
+        "direction": "up",
+        "easing": "bouncy"
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "social-sticker",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "wow-rotate-scale",
+      "name": "Wow: Rotate & Scale",
+      "category": "Kinetic",
+      "source": "system",
+      "baseStyle": {
+        "fontFamily": "Anton",
+        "fontSize": 46,
+        "color": "#FF0055",
+        "alignment": "center"
+      },
+      "defaultContent": {
+        "heading": "HUGE SALE!",
+        "subheading": "50% OFF"
+      },
+      "animationConfig": {
+        "loopDelay": 3,
+        "loop": true,
+        "easing": "bouncy",
+        "direction": "up",
+        "duration": 0.5
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "trending",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    },
+    {
+      "id": "zero-gravity",
+      "name": "Zero Gravity",
+      "category": "Kinetic",
+      "source": "system",
+      "baseStyle": {
+        "alignment": "center",
+        "fontSize": 56,
+        "color": "#FFD700",
+        "fontFamily": "Bebas Neue"
+      },
+      "defaultContent": {
+        "word1": "Bounce",
+        "word2": "Higher"
+      },
+      "animationConfig": {
+        "duration": 0.6,
+        "delay": 0.1,
+        "easing": "bouncy",
+        "loop": true,
+        "loopDelay": 2
+      },
+      "mobileAspectRatio": "9:16",
+      "mobileCategory": "trending",
+      "presentationStyle": "story-sticker",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "tapToEdit": true
+    }
+  ],
+  "text_designs": [
+    {
+      "id": "bold-impact",
+      "name": "Bold Impact",
+      "category": "headlines",
+      "thumbnail": "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+      "style": {
+        "outline": false,
+        "fontFamily": "Anton",
+        "letterSpacing": "0.02em",
+        "bold": false,
+        "underline": false,
+        "shadow": true,
+        "italic": false,
+        "backgroundColor": "transparent",
+        "textShadow": "5px 5px 0px #000000",
+        "borderColor": "#000000",
+        "fontSize": 48,
+        "borderWidth": 0,
+        "color": "#ffffff",
+        "border": false
+      },
+      "mobileCategory": "impact",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "neon-cyberpunk",
+      "name": "Neon Cyberpunk",
+      "category": "futuristic",
+      "thumbnail": "linear-gradient(135deg, #00f5ff 0%, #ff00f5 100%)",
+      "style": {
+        "outline": true,
+        "underline": false,
+        "italic": false,
+        "shadow": false,
+        "border": false,
+        "letterSpacing": "0.05em",
+        "borderWidth": 0,
+        "borderColor": "#000000",
+        "bold": true,
+        "fontFamily": "Orbitron",
+        "backgroundColor": "transparent",
+        "color": "#00f5ff",
+        "fontSize": 37,
+        "textShadow": "0 0 10px #00f5ff, 0 0 20px #00f5ff"
+      },
+      "mobileCategory": "futuristic",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "glitch-digital",
+      "name": "Glitch Digital",
+      "category": "modern",
+      "thumbnail": "linear-gradient(135deg, #ff0080 0%, #7928ca 100%)",
+      "style": {
+        "textShadow": "2px 2px 0px #ff0080, -2px -2px 0px #00ffff",
+        "fontSize": 42,
+        "backgroundColor": "transparent",
+        "italic": false,
+        "bold": true,
+        "borderColor": "#000000",
+        "underline": false,
+        "color": "#ffffff",
+        "shadow": false,
+        "fontFamily": "Audiowide",
+        "border": false,
+        "letterSpacing": "0.1em",
+        "borderWidth": 0,
+        "outline": false
+      },
+      "mobileCategory": "modern",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "luxury-gold",
+      "name": "Luxury Gold",
+      "category": "elegant",
+      "thumbnail": "linear-gradient(135deg, #ffd700 0%, #ffed4e 100%)",
+      "style": {
+        "gradient": "linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%)",
+        "underline": false,
+        "outline": false,
+        "letterSpacing": "0.05em",
+        "italic": true,
+        "fontFamily": "Playfair Display",
+        "borderWidth": 0,
+        "textShadow": "0 2px 10px rgba(255,215,0,0.5)",
+        "shadow": true,
+        "color": "#ffd700",
+        "backgroundColor": "transparent",
+        "bold": true,
+        "borderColor": "#000000",
+        "border": false,
+        "fontSize": 37
+      },
+      "mobileCategory": "elegant",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "comic-bang",
+      "name": "Comic Bang",
+      "category": "fun",
+      "thumbnail": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "style": {
+        "backgroundColor": "transparent",
+        "fontFamily": "Bangers",
+        "letterSpacing": "0.05em",
+        "underline": false,
+        "shadow": false,
+        "color": "#ffff00",
+        "border": true,
+        "italic": false,
+        "borderWidth": 5,
+        "bold": false,
+        "borderColor": "#000000",
+        "fontSize": 44,
+        "textShadow": "4px 4px 0px #ff0000, 8px 8px 0px #000000",
+        "outline": true
+      },
+      "mobileCategory": "fun",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "gradient-sunset",
+      "name": "Gradient Sunset",
+      "category": "colorful",
+      "thumbnail": "linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #ee5a6f 100%)",
+      "style": {
+        "underline": false,
+        "textShadow": "3px 3px 6px rgba(0,0,0,0.3)",
+        "border": false,
+        "bold": true,
+        "fontFamily": "Poppins",
+        "shadow": true,
+        "fontSize": 38,
+        "backgroundColor": "transparent",
+        "outline": false,
+        "color": "#ff6b6b",
+        "borderColor": "#000000",
+        "borderWidth": 0,
+        "letterSpacing": "0.03em",
+        "italic": false,
+        "gradient": "linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #ee5a6f 100%)"
+      },
+      "mobileCategory": "colorful",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "soft-pastel",
+      "name": "Soft Pastel",
+      "category": "elegant",
+      "thumbnail": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+      "style": {
+        "border": false,
+        "outline": false,
+        "bold": false,
+        "letterSpacing": "0.04em",
+        "borderColor": "#000000",
+        "fontSize": 32,
+        "textShadow": "2px 2px 8px rgba(255,154,158,0.3)",
+        "borderWidth": 0,
+        "shadow": true,
+        "backgroundColor": "transparent",
+        "underline": false,
+        "fontFamily": "Quicksand",
+        "italic": false,
+        "color": "#ff9a9e",
+        "gradient": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%)"
+      },
+      "mobileCategory": "elegant",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "handwritten-script",
+      "name": "Handwritten Script",
+      "category": "casual",
+      "thumbnail": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "style": {
+        "border": false,
+        "borderWidth": 0,
+        "borderColor": "#000000",
+        "fontSize": 34,
+        "color": "#2c3e50",
+        "shadow": true,
+        "letterSpacing": "0.02em",
+        "backgroundColor": "transparent",
+        "italic": false,
+        "outline": false,
+        "bold": false,
+        "underline": false,
+        "textShadow": "1px 1px 2px rgba(0,0,0,0.1)",
+        "fontFamily": "Dancing Script"
+      },
+      "mobileCategory": "casual",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "cinematic-title",
+      "name": "Cinematic Title",
+      "category": "cinematic",
+      "thumbnail": "linear-gradient(135deg, #000000 0%, #434343 100%)",
+      "style": {
+        "backgroundColor": "transparent",
+        "outline": false,
+        "letterSpacing": "0.1em",
+        "fontFamily": "Cinzel",
+        "shadow": true,
+        "underline": false,
+        "italic": false,
+        "borderWidth": 0,
+        "color": "#FFFFFF",
+        "borderColor": "#000000",
+        "bold": true,
+        "fontSize": 45,
+        "border": false,
+        "textShadow": "0 10px 30px rgba(0,0,0,0.9)"
+      },
+      "mobileCategory": "cinematic",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "retro-gaming",
+      "name": "Retro Gaming",
+      "category": "retro",
+      "thumbnail": "linear-gradient(135deg, #00ff00 0%, #ffff00 100%)",
+      "style": {
+        "textShadow": "4px 4px 0px rgba(0,0,0,0.5)",
+        "fontSize": 24,
+        "border": true,
+        "letterSpacing": "0.1em",
+        "underline": false,
+        "italic": false,
+        "borderWidth": 3,
+        "fontFamily": "Press Start 2P",
+        "shadow": true,
+        "backgroundColor": "#000000",
+        "outline": false,
+        "bold": false,
+        "color": "#00ff00",
+        "borderColor": "#00ff00"
+      },
+      "mobileCategory": "retro",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "manga",
+      "name": "Anime Manga Stroke",
+      "category": "fun",
+      "thumbnail": "linear-gradient(135deg, #ffffff 0%, #000000 100%)",
+      "layers": [
+        {
+          "fontFamily": "Noto Sans JP",
+          "fontSize": 53,
+          "type": "text",
+          "color": "#ffffff"
+        },
+        {
+          "width": 10,
+          "type": "stroke",
+          "color": "#000000"
+        },
+        {
+          "opacity": 0.5,
+          "type": "speedlines"
+        },
+        {
+          "opacity": 0.3,
+          "type": "halftone"
+        }
+      ],
+      "mobileCategory": "fun",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    },
+    {
+      "id": "fire-gradient",
+      "name": "Fire Gradient",
+      "category": "colorful",
+      "thumbnail": "linear-gradient(135deg, #ff0000 0%, #ff7f00 50%, #ffff00 100%)",
+      "style": {
+        "textShadow": "0 0 20px rgba(255,127,0,0.8)",
+        "underline": false,
+        "outline": false,
+        "backgroundColor": "transparent",
+        "letterSpacing": "0.05em",
+        "fontFamily": "Rajdhani",
+        "fontSize": 42,
+        "border": false,
+        "italic": false,
+        "gradient": "linear-gradient(135deg, #ff0000 0%, #ff7f00 50%, #ffff00 100%)",
+        "shadow": true,
+        "borderWidth": 0,
+        "color": "#ff0000",
+        "borderColor": "#000000",
+        "bold": true
+      },
+      "mobileCategory": "colorful",
+      "gestureResize": true,
+      "gestureRotate": true,
+      "doubleTapEdit": true
+    }
+  ],
+  "canvas_presets": [
+    {
+      "id": "dark-mode-centered",
+      "name": "Dark Mode Centered",
+      "source": "system",
+      "canvasAspectRatio": "9:16",
+      "styleTags": [
+        "dark",
+        "modern",
+        "minimal"
+      ],
+      "background": {
+        "backgroundEffect": "none",
+        "blankCanvasColor": "#000000"
+      },
+      "effects": {
+        "videoFilter": "contrast(1.1)"
+      },
+      "pip": {
+        "layoutMode": "pip",
+        "cameraShape": "rounded",
+        "pipPosition": {
+          "x": 50,
+          "y": 12
+        },
+        "pipSize": {
+          "width": 88,
+          "height": 52
+        },
+        "pipBorder": {
+          "width": 0,
+          "color": "#FFFFFF"
+        },
+        "pipShadow": {
+          "color": "rgba(255, 255, 255, 0.15)",
+          "blur": 40
+        }
+      },
+      "textOverlays": [
+        {
+          "id": "preset-text-title",
+          "content": "FOCUS",
+          "style": {
+            "fontSize": 32,
+            "fontFamily": "Space Grotesk",
+            "textAlign": "center",
+            "backgroundColor": "transparent",
+            "fontWeight": "700",
+            "color": "#FFFFFF"
+          },
+          "layout": {
+            "rotation": 0,
+            "zIndex": 15,
+            "size": {
+              "height": 9,
+              "width": 50
+            },
+            "position": {
+              "x": 25,
+              "y": 11
+            },
+            "interactive": true
+          }
+        }
+      ],
+      "mobileInteraction": {
+        "swipeUp": "next-preset",
+        "doubleTap": "toggle-edit",
+        "pinch": "zoom-canvas",
+        "longPress": "show-options"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15,
+        "left": 4,
+        "right": 4
+      },
+      "discoveryTags": [
+        "dark",
+        "modern",
+        "minimal"
+      ]
+    },
+    {
+      "id": "gaming-stream-overlay",
+      "name": "Gaming Stream Overlay",
+      "source": "system",
+      "styleTags": [
+        "gaming",
+        "stream",
+        "neon"
+      ],
+      "background": {
+        "blankCanvasColor": "#1A0033",
+        "backgroundEffect": "none"
+      },
+      "effects": {
+        "neonColor": "green",
+        "isNeonEdgeEnabled": true,
+        "videoFilter": "contrast(1.2) saturate(1.35)",
+        "neonIntensity": 30
+      },
+      "pip": {
+        "layoutMode": "pip",
+        "cameraShape": "rounded",
+        "pipPosition": {
+          "x": 76,
+          "y": 10
+        },
+        "pipSize": {
+          "width": 32,
+          "height": 24
+        },
+        "pipBorder": {
+          "color": "#00FF88",
+          "width": 3
+        },
+        "pipShadow": {
+          "blur": 35,
+          "color": "rgba(0, 255, 136, 0.6)"
+        }
+      },
+      "textOverlays": [
+        {
+          "id": "preset-text-title",
+          "content": "LIVE",
+          "style": {
+            "fontWeight": "700",
+            "fontFamily": "Oswald",
+            "backgroundColor": "rgba(0, 0, 0, 0.7)",
+            "fontSize": 39,
+            "border": "3px solid #00FF88",
+            "color": "#00FF88",
+            "textAlign": "center",
+            "textShadow": "0px 0px 20px rgba(0, 255, 136, 0.8)"
+          },
+          "layout": {
+            "position": {
+              "y": 79,
+              "x": 52.5
+            },
+            "zIndex": 15,
+            "rotation": -3,
+            "size": {
+              "height": 12,
+              "width": 35
+            },
+            "interactive": true
+          }
+        }
+      ],
+      "canvasAspectRatio": "9:16",
+      "mobileInteraction": {
+        "swipeUp": "next-preset",
+        "doubleTap": "toggle-edit",
+        "pinch": "zoom-canvas",
+        "longPress": "show-options"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15,
+        "left": 4,
+        "right": 4
+      },
+      "discoveryTags": [
+        "gaming",
+        "stream",
+        "neon"
+      ]
+    },
+    {
+      "id": "spooky-horror",
+      "name": "Spooky Horror",
+      "source": "system",
+      "styleTags": [
+        "horror",
+        "dark",
+        "halloween"
+      ],
+      "background": {
+        "blankCanvasColor": "#1a0505",
+        "backgroundEffect": "none"
+      },
+      "effects": {
+        "videoFilter": "grayscale(1) contrast(1.5) brightness(0.8)"
+      },
+      "pip": {
+        "layoutMode": "pip",
+        "cameraShape": "rectangle",
+        "pipPosition": {
+          "x": 50,
+          "y": 45
+        },
+        "pipSize": {
+          "width": 88,
+          "height": 65
+        },
+        "pipBorder": {
+          "color": "#7f1d1d",
+          "width": 2
+        },
+        "pipShadow": {
+          "color": "#7f1d1d",
+          "blur": 50
+        }
+      },
+      "textOverlays": [
+        {
+          "id": "horror-text-top",
+          "content": "DON'T LOOK",
+          "style": {
+            "textShadow": "0 0 10px #000000",
+            "fontWeight": "700",
+            "color": "#991b1b",
+            "fontFamily": "Impact",
+            "fontSize": 46,
+            "textAlign": "center",
+            "backgroundColor": "transparent"
+          },
+          "layout": {
+            "position": {
+              "x": 50,
+              "y": 15
+            },
+            "size": {
+              "height": 15,
+              "width": 80
+            },
+            "rotation": 0,
+            "layerOrder": "above-video",
+            "zIndex": 20,
+            "interactive": true
+          }
+        },
+        {
+          "id": "horror-text-bottom",
+          "content": "BEHIND YOU",
+          "style": {
+            "textAlign": "center",
+            "fontWeight": "700",
+            "color": "#991b1b",
+            "backgroundColor": "transparent",
+            "fontFamily": "Impact",
+            "fontSize": 46
+          },
+          "layout": {
+            "rotation": 0,
+            "zIndex": 20,
+            "position": {
+              "y": 82,
+              "x": 50
+            },
+            "size": {
+              "height": 15,
+              "width": 80
+            },
+            "layerOrder": "above-video",
+            "interactive": true
+          }
+        }
+      ],
+      "canvasAspectRatio": "9:16",
+      "mobileInteraction": {
+        "swipeUp": "next-preset",
+        "doubleTap": "toggle-edit",
+        "pinch": "zoom-canvas",
+        "longPress": "show-options"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15,
+        "left": 4,
+        "right": 4
+      },
+      "discoveryTags": [
+        "horror",
+        "dark",
+        "halloween"
+      ]
+    },
+    {
+      "id": "vogue-monochrome",
+      "name": "Vogue Monochrome",
+      "source": "system",
+      "canvasAspectRatio": "9:16",
+      "styleTags": [
+        "magazine",
+        "vogue",
+        "monochrome",
+        "luxury"
+      ],
+      "background": {
+        "backgroundEffect": "none",
+        "blankCanvasColor": "#FFFFFF"
+      },
+      "effects": {
+        "isBeautifyEnabled": true,
+        "videoFilter": "grayscale(1) contrast(1.2)"
+      },
+      "pip": {
+        "layoutMode": "pip",
+        "cameraShape": "rectangle",
+        "pipPosition": {
+          "x": 50,
+          "y": 45
+        },
+        "pipSize": {
+          "width": 88,
+          "height": 65
+        },
+        "pipBorder": {
+          "width": 0,
+          "color": "#FFFFFF"
+        },
+        "pipShadow": {
+          "blur": 0,
+          "color": "transparent"
+        }
+      },
+      "textOverlays": [
+        {
+          "id": "vm-vogue",
+          "content": "VOGUE",
+          "style": {
+            "backgroundColor": "transparent",
+            "textAlign": "center",
+            "fontFamily": "Playfair Display",
+            "color": "#000000",
+            "fontSize": 65,
+            "fontWeight": "700"
+          },
+          "layout": {
+            "rotation": 0,
+            "zIndex": 15,
+            "size": {
+              "height": 14,
+              "width": 85
+            },
+            "position": {
+              "x": 50,
+              "y": 12
+            },
+            "interactive": true
+          }
+        },
+        {
+          "id": "vm-spring",
+          "content": "SPRING COLLECTIONS",
+          "style": {
+            "textAlign": "center",
+            "fontSize": 10,
+            "fontWeight": "300",
+            "fontFamily": "Inter",
+            "backgroundColor": "transparent",
+            "color": "#666666"
+          },
+          "layout": {
+            "position": {
+              "x": 50,
+              "y": 23
+            },
+            "rotation": 0,
+            "zIndex": 15,
+            "size": {
+              "width": 85,
+              "height": 3
+            },
+            "interactive": true
+          }
+        }
+      ],
+      "mobileInteraction": {
+        "swipeUp": "next-preset",
+        "doubleTap": "toggle-edit",
+        "pinch": "zoom-canvas",
+        "longPress": "show-options"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15,
+        "left": 4,
+        "right": 4
+      },
+      "discoveryTags": [
+        "magazine",
+        "vogue",
+        "monochrome",
+        "luxury"
+      ]
+    },
+    {
+      "id": "lofi-study",
+      "name": "Lofi Study Space",
+      "source": "system",
+      "styleTags": [
+        "chill",
+        "lofi",
+        "aesthetic",
+        "calm"
+      ],
+      "background": {
+        "blankCanvasColor": "#e0e7ff",
+        "backgroundEffect": "none"
+      },
+      "effects": {
+        "videoFilter": "saturate(0.8) brightness(1.1)"
+      },
+      "pip": {
+        "layoutMode": "pip",
+        "cameraShape": "rounded",
+        "pipPosition": {
+          "x": 76,
+          "y": 72
+        },
+        "pipSize": {
+          "width": 32,
+          "height": 24
+        },
+        "pipBorder": {
+          "color": "#ffffff",
+          "width": 8
+        },
+        "pipShadow": {
+          "blur": 20,
+          "color": "rgba(199, 210, 254, 0.8)"
+        }
+      },
+      "textOverlays": [
+        {
+          "id": "lofi-title",
+          "content": "Study with me ☕",
+          "style": {
+            "textAlign": "left",
+            "fontFamily": "Arial",
+            "backgroundColor": "transparent",
+            "fontSize": 28,
+            "color": "#4338ca",
+            "fontWeight": "600"
+          },
+          "layout": {
+            "size": {
+              "width": 50,
+              "height": 10
+            },
+            "position": {
+              "x": 10,
+              "y": 15
+            },
+            "rotation": 0,
+            "layerOrder": "below-video",
+            "zIndex": 10,
+            "interactive": true
+          }
+        }
+      ],
+      "canvasAspectRatio": "9:16",
+      "mobileInteraction": {
+        "swipeUp": "next-preset",
+        "doubleTap": "toggle-edit",
+        "pinch": "zoom-canvas",
+        "longPress": "show-options"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15,
+        "left": 4,
+        "right": 4
+      },
+      "discoveryTags": [
+        "chill",
+        "lofi",
+        "aesthetic",
+        "calm"
+      ]
+    },
+    {
+      "id": "gradient-morph-overlay",
+      "name": "Gradient Morph Overlay",
+      "source": "system",
+      "styleTags": [
+        "gradient",
+        "overlay",
+        "vibrant",
+        "modern"
+      ],
+      "background": {
+        "backgroundEffect": "blur",
+        "blankCanvasColor": "linear-gradient(45deg, #667eea 0%, #764ba2 100%)"
+      },
+      "effects": {
+        "videoFilter": "brightness(1.05) saturate(1.1)",
+        "isBeautifyEnabled": true
+      },
+      "pip": {
+        "layoutMode": "pip",
+        "cameraShape": "rounded",
+        "pipPosition": {
+          "x": 50,
+          "y": 12
+        },
+        "pipSize": {
+          "width": 88,
+          "height": 52
+        },
+        "pipBorder": {
+          "color": "rgba(255,255,255,0.3)",
+          "width": 1
+        },
+        "pipShadow": {
+          "blur": 40,
+          "color": "rgba(0,0,0,0.2)"
+        }
+      },
+      "textOverlays": [
+        {
+          "id": "morph-title",
+          "content": "CREATIVE\nSPACE",
+          "style": {
+            "textShadow": "0 2px 10px rgba(0,0,0,0.3)",
+            "backgroundColor": "rgba(255,255,255,0.15)",
+            "fontFamily": "Poppins",
+            "backdropFilter": "blur(10px)",
+            "color": "#FFFFFF",
+            "textAlign": "center",
+            "fontSize": 32,
+            "fontWeight": "800"
+          },
+          "layout": {
+            "size": {
+              "height": 12,
+              "width": 70
+            },
+            "position": {
+              "x": 15,
+              "y": 14
+            },
+            "zIndex": 25,
+            "rotation": 0,
+            "interactive": true
+          }
+        }
+      ],
+      "canvasAspectRatio": "9:16",
+      "mobileInteraction": {
+        "swipeUp": "next-preset",
+        "doubleTap": "toggle-edit",
+        "pinch": "zoom-canvas",
+        "longPress": "show-options"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15,
+        "left": 4,
+        "right": 4
+      },
+      "discoveryTags": [
+        "gradient",
+        "overlay",
+        "vibrant",
+        "modern"
+      ]
+    }
+  ],
+  "dynamic_presets": [
+    {
+      "id": "diagonal-rush-v1",
+      "name": "Diagonal Rush",
+      "source": "system",
+      "canvasAspectRatio": "9:16",
+      "styleTags": [
+        "fashion",
+        "diagonal",
+        "scroll",
+        "fast"
+      ],
+      "pip": {
+        "layoutMode": "hidden"
+      },
+      "background": {
+        "backgroundEffect": "none",
+        "blankCanvasColor": "#F0F0F0"
+      },
+      "effects": {
+        "videoFilter": "saturate(0) contrast(1.1)"
+      },
+      "textOverlays": [],
+      "canvasLayout": {
+        "templateId": "diagonal-rush",
+        "sections": [
+          {
+            "id": "center-cam",
+            "content": {
+              "type": "camera"
+            }
+          }
+        ]
+      },
+      "mobileInteraction": {
+        "scrollAxis": "vertical",
+        "gesture": "swipe-up",
+        "snapMode": "momentum"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      }
+    },
+    {
+      "id": "modern-snap-sections",
+      "name": "Snap Stories",
+      "source": "system",
+      "canvasAspectRatio": "9:16",
+      "styleTags": [
+        "snap",
+        "fullscreen",
+        "story",
+        "mobile"
+      ],
+      "pip": {
+        "layoutMode": "hidden"
+      },
+      "background": {
+        "backgroundEffect": "none",
+        "blankCanvasColor": "#000"
+      },
+      "effects": {
+        "videoFilter": "none"
+      },
+      "textOverlays": [],
+      "canvasLayout": {
+        "templateId": "snap-sections",
+        "sections": [
+          {
+            "id": "snap-1",
+            "content": {
+              "type": "camera"
+            }
+          },
+          {
+            "id": "snap-2",
+            "content": {
+              "type": "empty"
+            }
+          },
+          {
+            "id": "snap-3",
+            "content": {
+              "type": "empty"
+            }
+          }
+        ]
+      },
+      "mobileInteraction": {
+        "scrollAxis": "vertical",
+        "gesture": "swipe-up",
+        "snapMode": "snap"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      }
+    },
+    {
+      "id": "kinetic-typography-v1",
+      "name": "Kinetic Editorial",
+      "source": "system",
+      "canvasAspectRatio": "9:16",
+      "styleTags": [
+        "modern",
+        "typography",
+        "bold",
+        "editorial"
+      ],
+      "pip": {
+        "layoutMode": "hidden"
+      },
+      "background": {
+        "backgroundEffect": "none",
+        "blankCanvasColor": "#E5E5E5"
+      },
+      "effects": {
+        "videoFilter": "contrast(1.1)"
+      },
+      "textOverlays": [],
+      "canvasLayout": {
+        "templateId": "kinetic-typography",
+        "sections": [
+          {
+            "id": "hero",
+            "content": {
+              "type": "camera"
+            }
+          },
+          {
+            "id": "grid-1",
+            "content": {
+              "type": "empty"
+            }
+          },
+          {
+            "id": "grid-2",
+            "content": {
+              "type": "empty"
+            }
+          }
+        ]
+      },
+      "mobileInteraction": {
+        "scrollAxis": "vertical",
+        "gesture": "swipe-up",
+        "snapMode": "paged"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      }
+    }
+  ],
+  "social_banners": [
+    {
+      "id": "minimal-clean",
+      "name": "Minimal Clean",
+      "source": "system",
+      "layout": "story-card",
+      "theme": "light",
+      "showAvatar": true,
+      "showTagline": true,
+      "maxLinks": 6,
+      "description": "Simple and elegant with subtle shadows",
+      "preview": "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)",
+      "styles": {
+        "linksContainer": {
+          "gap": "8px",
+          "display": "flex",
+          "flexWrap": "wrap",
+          "justifyContent": "center"
+        },
+        "name": {
+          "fontSize": "20px",
+          "fontWeight": "600",
+          "fontFamily": "'Inter', sans-serif",
+          "color": "#1a1a1a"
+        },
+        "container": {
+          "background": "#ffffff",
+          "display": "flex",
+          "alignItems": "center",
+          "gap": "12px",
+          "border": "1px solid #e0e0e0",
+          "boxShadow": "0 4px 20px rgba(0, 0, 0, 0.08)",
+          "borderRadius": "16px",
+          "boxSizing": "border-box",
+          "width": "100%",
+          "padding": "20px 16px",
+          "flexDirection": "column"
+        },
+        "icon": {
+          "width": "18px",
+          "height": "18px"
+        },
+        "tagline": {
+          "fontSize": "14px",
+          "color": "#666666",
+          "textAlign": "center"
+        },
+        "link": {
+          "color": "#333333",
+          "borderRadius": "50%",
+          "background": "#f5f5f5",
+          "padding": "10px"
+        }
+      },
+      "mobilePresentation": "bottom-sheet",
+      "tapAction": "expand",
+      "swipeDownDismiss": true,
+      "hapticOnTap": true
+    },
+    {
+      "id": "neon-glow",
+      "name": "Neon Glow",
+      "source": "system",
+      "layout": "story-card",
+      "theme": "neon",
+      "showAvatar": true,
+      "showTagline": true,
+      "maxLinks": 5,
+      "description": "Cyberpunk style with glowing neon borders",
+      "preview": "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%)",
+      "styles": {
+        "link": {
+          "border": "1px solid rgba(0, 255, 255, 0.3)",
+          "color": "#00ffff",
+          "borderRadius": "8px",
+          "padding": "8px",
+          "background": "rgba(0, 255, 255, 0.1)"
+        },
+        "linksContainer": {
+          "display": "flex",
+          "gap": "8px",
+          "flexWrap": "wrap",
+          "justifyContent": "center"
+        },
+        "tagline": {
+          "textShadow": "0 0 8px rgba(255, 0, 255, 0.6)",
+          "opacity": "0.9",
+          "fontSize": "14px",
+          "color": "#ff00ff",
+          "textAlign": "center"
+        },
+        "name": {
+          "textShadow": "0 0 10px rgba(0, 255, 255, 0.8)",
+          "color": "#00ffff",
+          "fontSize": "20px",
+          "fontFamily": "'Orbitron', sans-serif",
+          "fontWeight": "700"
+        },
+        "icon": {
+          "filter": "drop-shadow(0 0 4px rgba(0, 255, 255, 0.6))",
+          "width": "20px",
+          "height": "20px"
+        },
+        "container": {
+          "alignItems": "center",
+          "borderRadius": "12px",
+          "border": "2px solid #00ffff",
+          "padding": "20px 16px",
+          "boxShadow": "0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)",
+          "background": "linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 62, 0.95) 100%)",
+          "width": "100%",
+          "boxSizing": "border-box",
+          "gap": "12px",
+          "display": "flex",
+          "flexDirection": "column"
+        }
+      },
+      "mobilePresentation": "bottom-sheet",
+      "tapAction": "expand",
+      "swipeDownDismiss": true,
+      "hapticOnTap": true
+    },
+    {
+      "id": "glassmorphism",
+      "name": "Glassmorphism",
+      "source": "system",
+      "layout": "story-card",
+      "theme": "glassmorphism",
+      "showAvatar": true,
+      "showTagline": true,
+      "maxLinks": 5,
+      "description": "Frosted glass effect with blur",
+      "preview": "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)",
+      "styles": {
+        "container": {
+          "alignItems": "center",
+          "gap": "12px",
+          "backdropFilter": "blur(20px)",
+          "border": "1px solid rgba(255, 255, 255, 0.3)",
+          "width": "100%",
+          "display": "flex",
+          "borderRadius": "20px",
+          "background": "rgba(255, 255, 255, 0.15)",
+          "boxSizing": "border-box",
+          "padding": "20px 16px",
+          "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.1)",
+          "flexDirection": "column"
+        },
+        "name": {
+          "fontSize": "20px",
+          "color": "#ffffff",
+          "fontWeight": "600"
+        },
+        "icon": {
+          "height": "20px",
+          "width": "20px"
+        },
+        "tagline": {
+          "fontSize": "14px",
+          "color": "rgba(255, 255, 255, 0.8)",
+          "textAlign": "center"
+        },
+        "linksContainer": {
+          "display": "flex",
+          "gap": "8px",
+          "flexWrap": "wrap",
+          "justifyContent": "center"
+        },
+        "link": {
+          "border": "1px solid rgba(255, 255, 255, 0.2)",
+          "borderRadius": "12px",
+          "color": "#ffffff",
+          "background": "rgba(255, 255, 255, 0.2)",
+          "padding": "10px"
+        }
+      },
+      "mobilePresentation": "bottom-sheet",
+      "tapAction": "expand",
+      "swipeDownDismiss": true,
+      "hapticOnTap": true
+    },
+    {
+      "id": "dark-mode-elite",
+      "name": "Dark Mode Elite",
+      "source": "system",
+      "layout": "story-card",
+      "theme": "dark",
+      "showAvatar": true,
+      "showTagline": true,
+      "maxLinks": 5,
+      "description": "Premium dark theme with gold accents",
+      "preview": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+      "styles": {
+        "tagline": {
+          "fontSize": "13px",
+          "fontStyle": "italic",
+          "color": "#888888",
+          "textAlign": "center"
+        },
+        "container": {
+          "border": "1px solid #d4af37",
+          "alignItems": "center",
+          "borderRadius": "12px",
+          "width": "100%",
+          "padding": "20px 16px",
+          "boxShadow": "0 8px 30px rgba(0, 0, 0, 0.5)",
+          "boxSizing": "border-box",
+          "background": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+          "gap": "12px",
+          "display": "flex",
+          "flexDirection": "column"
+        },
+        "link": {
+          "borderRadius": "8px",
+          "background": "rgba(212, 175, 55, 0.1)",
+          "color": "#d4af37",
+          "border": "1px solid rgba(212, 175, 55, 0.3)",
+          "padding": "10px"
+        },
+        "linksContainer": {
+          "display": "flex",
+          "gap": "8px",
+          "flexWrap": "wrap",
+          "justifyContent": "center"
+        },
+        "name": {
+          "color": "#d4af37",
+          "fontFamily": "'Playfair Display', serif",
+          "fontWeight": "600",
+          "fontSize": "20px"
+        },
+        "icon": {
+          "width": "18px",
+          "height": "18px"
+        }
+      },
+      "mobilePresentation": "bottom-sheet",
+      "tapAction": "expand",
+      "swipeDownDismiss": true,
+      "hapticOnTap": true
+    }
+  ],
+  "animated_banners": [
+    {
+      "id": "aurora-flow",
+      "name": "Aurora Flow",
+      "source": "system",
+      "layout": "portrait",
+      "theme": "ethereal",
+      "showAvatar": true,
+      "showTagline": true,
+      "maxLinks": 5,
+      "description": "Flowing aurora borealis with dynamic color waves",
+      "preview": "linear-gradient(135deg, #001a1a 0%, #002233 50%, #001122 100%)",
+      "particleSettings": {
+        "speed": 0.1,
+        "size": 0.01,
+        "noise": 0.8,
+        "color": "#00ff88",
+        "colorVariant": "#ff00aa",
+        "count": 200,
+        "mobileOptimized": true,
+        "maxParticlesMobile": 80
+      },
+      "animatedBehaviors": [
+        "wave-flow",
+        "color-shift",
+        "shimmer"
+      ],
+      "recommendedUseCases": [
+        "nature",
+        "ambient"
+      ],
+      "mobilePresentation": {
+        "primary": "story-overlay",
+        "secondary": "explore-card",
+        "tertiary": "profile-banner"
+      },
+      "interactionType": "tap-to-activate",
+      "performanceTier": "adaptive"
+    },
+    {
+      "id": "cyber-pulse",
+      "name": "Cyber Pulse",
+      "source": "system",
+      "layout": "portrait",
+      "theme": "cyber",
+      "showAvatar": true,
+      "showTagline": true,
+      "maxLinks": 5,
+      "description": "Pulsing neon grid with data streams",
+      "preview": "linear-gradient(135deg, #0a0014 0%, #1a0033 50%, #0d001a 100%)",
+      "particleSettings": {
+        "speed": 0.4,
+        "size": 0.02,
+        "count": 50,
+        "color": "#00ffcc",
+        "noise": 0.3,
+        "colorVariant": "#ff00ff",
+        "mobileOptimized": true,
+        "maxParticlesMobile": 50
+      },
+      "animatedBehaviors": [
+        "grid-pulse",
+        "line-trace",
+        "node-blink"
+      ],
+      "mobilePresentation": {
+        "primary": "story-overlay",
+        "secondary": "explore-card",
+        "tertiary": "profile-banner"
+      },
+      "interactionType": "tap-to-activate",
+      "performanceTier": "adaptive"
+    },
+    {
+      "id": "sakura-petals",
+      "name": "Sakura Petals",
+      "source": "system",
+      "layout": "portrait",
+      "theme": "vtuber",
+      "showAvatar": true,
+      "showTagline": true,
+      "maxLinks": 5,
+      "description": "Gentle falling cherry blossom petals",
+      "preview": "linear-gradient(180deg, #1a0a15 0%, #2a1525 50%, #150a10 100%)",
+      "particleSettings": {
+        "speed": 0.2,
+        "colorVariant": "#ffffff",
+        "noise": 0.5,
+        "color": "#ffaacc",
+        "size": 0.04,
+        "count": 50,
+        "mobileOptimized": true,
+        "maxParticlesMobile": 50
+      },
+      "animatedBehaviors": [
+        "petal-fall",
+        "wind-gust",
+        "soft-glow"
+      ],
+      "mobilePresentation": {
+        "primary": "story-overlay",
+        "secondary": "explore-card",
+        "tertiary": "profile-banner"
+      },
+      "interactionType": "tap-to-activate",
+      "performanceTier": "adaptive"
+    }
+  ],
+  "public_canvas_presets": [
+    {
+      "id": "OyLTviuMBYAnWRArBcwp",
+      "name": "Intro",
+      "authorName": "Enji",
+      "canvasAspectRatio": "9:16",
+      "styleTags": [
+        "custom"
+      ],
+      "background": {
+        "backgroundEffect": "none",
+        "blankCanvasColor": "#F5F5F5"
+      },
+      "effects": {
+        "videoFilter": "brightness(1.05)"
+      },
+      "pip": {
+        "layoutMode": "pip",
+        "cameraShape": "rectangle",
+        "pipPosition": {
+          "x": 50,
+          "y": 45
+        },
+        "pipSize": {
+          "width": 88,
+          "height": 65
+        },
+        "pipBorder": {
+          "width": 0,
+          "color": "#FFFFFF"
+        },
+        "pipShadow": {
+          "blur": 0,
+          "color": "transparent"
+        }
+      },
+      "textOverlays": [
+        {
+          "id": "text-title",
+          "content": "Do we Dare",
+          "style": {
+            "color": "#1A1A1A",
+            "textAlign": "center",
+            "fontWeight": "400",
+            "fontSize": 44,
+            "fontFamily": "Playfair Display",
+            "backgroundColor": "transparent"
+          },
+          "layout": {
+            "layerOrder": "above-video",
+            "zIndex": 15,
+            "size": {
+              "height": 19,
+              "width": 52.75
+            },
+            "rotation": 0,
+            "position": {
+              "x": 22.24,
+              "y": 34.75
+            },
+            "interactive": true
+          }
+        }
+      ],
+      "mobileInteraction": {
+        "swipeUp": "next-preset",
+        "doubleTap": "toggle-edit",
+        "pinch": "zoom-canvas",
+        "longPress": "show-options"
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15,
+        "left": 4,
+        "right": 4
+      },
+      "discoveryTags": [
+        "custom"
+      ]
+    }
+  ],
+  "preset_templates": [
+    {
+      "id": "karaoke-highlight",
+      "name": "Karaoke Highlight",
+      "source": "system",
+      "description": "Bright, clear text on a bottom banner, styled for karaoke.",
+      "style": {
+        "border": false,
+        "borderWidth": 2,
+        "shape": "rounded",
+        "outline": false,
+        "underline": false,
+        "color": "#00F5FF",
+        "animation": "slide-up",
+        "position": {
+          "y": 82,
+          "x": 50
+        },
+        "rotation": 0,
+        "bold": true,
+        "fontSize": 30,
+        "fontFamily": "Bebas Neue",
+        "borderColor": "#00F5FF",
+        "italic": false,
+        "backgroundColor": "rgba(30, 30, 30, 0.9)",
+        "shadow": true
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToSafeZone": true
+    },
+    {
+      "id": "neon-glow",
+      "name": "Neon Glow",
+      "source": "system",
+      "description": "A bright, glowing text effect with a dark background.",
+      "style": {
+        "fontSize": 20,
+        "underline": false,
+        "position": {
+          "x": 50,
+          "y": 82
+        },
+        "color": "#e94560",
+        "italic": false,
+        "borderWidth": 2,
+        "rotation": 0,
+        "bold": true,
+        "fontFamily": "Montserrat",
+        "borderColor": "#e94560",
+        "shadow": true,
+        "outline": false,
+        "shape": "rounded",
+        "animation": "fade",
+        "backgroundColor": "rgba(26, 26, 26, 0.8)",
+        "border": false
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToSafeZone": true
+    },
+    {
+      "id": "news-ticker",
+      "name": "News Ticker",
+      "source": "system",
+      "description": "A classic news-style lower-third banner.",
+      "style": {
+        "animation": "fade",
+        "underline": false,
+        "shape": "rounded",
+        "rotation": 0,
+        "border": false,
+        "backgroundColor": "rgba(0, 83, 156, 0.9)",
+        "shadow": false,
+        "bold": true,
+        "color": "#FFFFFF",
+        "position": {
+          "x": 50,
+          "y": 82
+        },
+        "fontFamily": "Arial",
+        "fontSize": 17,
+        "borderWidth": 2,
+        "borderColor": "#FFFFFF",
+        "outline": false,
+        "italic": false
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToSafeZone": true
+    },
+    {
+      "id": "vintage-film",
+      "name": "Vintage Film",
+      "source": "system",
+      "description": "A classic, elegant serif font for a cinematic feel.",
+      "style": {
+        "borderWidth": 2,
+        "fontSize": 22,
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "rotation": 0,
+        "color": "#f5e5c5",
+        "shape": "rounded",
+        "animation": "fade",
+        "position": {
+          "x": 50,
+          "y": 82
+        },
+        "fontFamily": "Playfair Display",
+        "italic": true,
+        "underline": false,
+        "outline": false,
+        "border": false,
+        "bold": false,
+        "shadow": true,
+        "borderColor": "#f5e5c5"
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToSafeZone": true
+    },
+    {
+      "id": "minimal-stroke",
+      "name": "Minimal Stroke",
+      "source": "system",
+      "description": "Clean text with an outline for high contrast on any video.",
+      "style": {
+        "outline": true,
+        "color": "#FFFFFF",
+        "rotation": 0,
+        "animation": "fade",
+        "italic": false,
+        "shadow": true,
+        "position": {
+          "y": 82,
+          "x": 50
+        },
+        "borderWidth": 2,
+        "shape": "rounded",
+        "bold": true,
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "underline": false,
+        "borderColor": "#FFFFFF",
+        "fontFamily": "Inter",
+        "border": false,
+        "fontSize": 19
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToSafeZone": true
+    }
+  ],
+  "filters": [
+    {
+      "id": "none",
+      "name": "None",
+      "style": "none",
+      "mobileCategory": "basic",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 0
+    },
+    {
+      "id": "candy",
+      "name": "Candy",
+      "style": "saturate(2.5) brightness(1.2)",
+      "mobileCategory": "vibrant",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 1
+    },
+    {
+      "id": "glow",
+      "name": "Glow",
+      "style": "brightness(1.4) saturate(1.5)",
+      "mobileCategory": "vibrant",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 1
+    },
+    {
+      "id": "punchy",
+      "name": "Punchy",
+      "style": "contrast(1.5) saturate(2)",
+      "mobileCategory": "vibrant",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 1
+    },
+    {
+      "id": "radiant",
+      "name": "Radiant",
+      "style": "brightness(1.3) saturate(1.6)",
+      "mobileCategory": "vibrant",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 1
+    },
+    {
+      "id": "vibrant",
+      "name": "Vibrant",
+      "style": "saturate(2.2) contrast(1.3)",
+      "mobileCategory": "vibrant",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 1
+    },
+    {
+      "id": "amber",
+      "name": "Amber",
+      "style": "sepia(0.3) hue-rotate(25deg) brightness(1.1)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "blush",
+      "name": "Blush",
+      "style": "hue-rotate(-5deg) saturate(1.6) brightness(1.1)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "burnt",
+      "name": "Burnt",
+      "style": "sepia(0.5) contrast(1.3) brightness(0.9)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "coral",
+      "name": "Coral",
+      "style": "hue-rotate(-10deg) saturate(1.8) brightness(1.05)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "crimson",
+      "name": "Crimson",
+      "style": "sepia(0.4) hue-rotate(-20deg) saturate(1.5)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "desert",
+      "name": "Desert",
+      "style": "sepia(0.4) hue-rotate(15deg) contrast(1.1)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "dusk",
+      "name": "Dusk",
+      "style": "hue-rotate(-20deg) brightness(0.9) contrast(1.1)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "espresso",
+      "name": "Espresso",
+      "style": "sepia(0.6) contrast(1.3) brightness(0.95)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "rose",
+      "name": "Rose",
+      "style": "sepia(0.2) hue-rotate(-30deg) brightness(1.1)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "sunset",
+      "name": "Sunset",
+      "style": "sepia(0.5) saturate(1.6) hue-rotate(-10deg)",
+      "mobileCategory": "warm",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 2
+    },
+    {
+      "id": "aqua",
+      "name": "Aqua",
+      "style": "hue-rotate(180deg) saturate(1.8) brightness(1.1)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "cold-steel",
+      "name": "Cold Steel",
+      "style": "hue-rotate(210deg) contrast(1.3) brightness(1)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "cool-breeze",
+      "name": "Cool Breeze",
+      "style": "hue-rotate(180deg) brightness(1.2) contrast(1.1)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "deep-blue",
+      "name": "Deep Blue",
+      "style": "hue-rotate(220deg) saturate(1.6) brightness(1.1)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "frost",
+      "name": "Frost",
+      "style": "contrast(1.1) brightness(1.3) saturate(0.9)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "icy",
+      "name": "Icy",
+      "style": "contrast(1.2) brightness(1.1) saturate(0.8)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "lunar",
+      "name": "Lunar",
+      "style": "brightness(1.2) contrast(1.1) saturate(0.9) hue-rotate(180deg)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "oceanic",
+      "name": "Oceanic",
+      "style": "hue-rotate(170deg) saturate(1.4) contrast(1.2)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "steelblue",
+      "name": "Steel Blue",
+      "style": "hue-rotate(190deg) brightness(1.05) contrast(1.1)",
+      "mobileCategory": "cool",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 3
+    },
+    {
+      "id": "faded",
+      "name": "Faded",
+      "style": "contrast(0.85) brightness(1.1)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "film",
+      "name": "Film",
+      "style": "contrast(1.3) brightness(0.95) sepia(0.3)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "golden-hour",
+      "name": "Golden Hour",
+      "style": "sepia(0.3) saturate(1.4) brightness(1.1) hue-rotate(15deg)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "polaroid",
+      "name": "Polaroid",
+      "style": "contrast(1.2) brightness(1.15) sepia(0.2)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "retro",
+      "name": "Retro",
+      "style": "sepia(0.6) contrast(1.1) brightness(0.9)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "sunkissed",
+      "name": "Sunkissed",
+      "style": "sepia(0.3) brightness(1.15) contrast(1.1)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "vintage",
+      "name": "Vintage",
+      "style": "sepia(0.6) brightness(0.9) contrast(1.2)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "warm-glow",
+      "name": "Warm Glow",
+      "style": "sepia(0.3) contrast(1.2) brightness(1.05)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "washed",
+      "name": "Washed",
+      "style": "contrast(0.8) brightness(1.2)",
+      "mobileCategory": "vintage",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 4
+    },
+    {
+      "id": "cyberpunk",
+      "name": "Cyberpunk",
+      "style": "hue-rotate(200deg) saturate(2.8) contrast(1.4)",
+      "mobileCategory": "cinematic",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 5
+    },
+    {
+      "id": "gritty",
+      "name": "Gritty",
+      "style": "contrast(1.4) brightness(0.9) grayscale(0.4)",
+      "mobileCategory": "cinematic",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 5
+    },
+    {
+      "id": "high-contrast",
+      "name": "High Contrast",
+      "style": "contrast(1.8) brightness(1.1)",
+      "mobileCategory": "cinematic",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 5
+    },
+    {
+      "id": "matte",
+      "name": "Matte",
+      "style": "contrast(0.9) brightness(1.05) saturate(0.8)",
+      "mobileCategory": "cinematic",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 5
+    },
+    {
+      "id": "moody",
+      "name": "Moody",
+      "style": "contrast(1.4) brightness(0.9) saturate(0.8)",
+      "mobileCategory": "cinematic",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 5
+    },
+    {
+      "id": "shadow",
+      "name": "Shadow",
+      "style": "contrast(1.6) brightness(0.85)",
+      "mobileCategory": "cinematic",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 5
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon",
+      "style": "contrast(1.3) grayscale(0.6)",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 6
+    },
+    {
+      "id": "mono",
+      "name": "Monochrome",
+      "style": "grayscale(1) brightness(1.1)",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 6
+    },
+    {
+      "id": "muted",
+      "name": "Muted",
+      "style": "saturate(0.7) brightness(1.1)",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 6
+    },
+    {
+      "id": "noir",
+      "name": "Noir",
+      "style": "grayscale(1) contrast(1.3)",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 6
+    },
+    {
+      "id": "onyx",
+      "name": "Onyx",
+      "style": "brightness(0.8) contrast(1.4) grayscale(0.5)",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 6
+    },
+    {
+      "id": "platinum",
+      "name": "Platinum",
+      "style": "grayscale(0.6) brightness(1.3)",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 6
+    },
+    {
+      "id": "smoke",
+      "name": "Smoke",
+      "style": "contrast(0.9) grayscale(0.8) brightness(1.05)",
+      "mobileCategory": "monochrome",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 6
+    },
+    {
+      "id": "dreamscape",
+      "name": "Dreamscape",
+      "style": "blur(1px) saturate(1.4) brightness(1.2)",
+      "mobileCategory": "dreamy",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 7
+    },
+    {
+      "id": "dreamy",
+      "name": "Dreamy",
+      "style": "saturate(1.8) blur(0.5px) brightness(1.1)",
+      "mobileCategory": "dreamy",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 7
+    },
+    {
+      "id": "haze",
+      "name": "Haze",
+      "style": "brightness(1.3) contrast(0.8) blur(0.3px)",
+      "mobileCategory": "dreamy",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 7
+    },
+    {
+      "id": "mist",
+      "name": "Mist",
+      "style": "blur(1.5px) brightness(1.2) contrast(0.9)",
+      "mobileCategory": "dreamy",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 7
+    },
+    {
+      "id": "pearl",
+      "name": "Pearl",
+      "style": "brightness(1.4) contrast(0.95) saturate(0.9)",
+      "mobileCategory": "dreamy",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 7
+    },
+    {
+      "id": "soft-focus",
+      "name": "Soft Focus",
+      "style": "blur(1px) brightness(1.1)",
+      "mobileCategory": "dreamy",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 7
+    },
+    {
+      "id": "acid",
+      "name": "Acid",
+      "style": "hue-rotate(100deg) saturate(3)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "cyber-neon",
+      "name": "Cyber Neon",
+      "style": "hue-rotate(270deg) contrast(1.8) saturate(2.5) drop-shadow(0 0 5px #00ffff) drop-shadow(0 0 15px #ff00ff)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "dreamcore",
+      "name": "Dreamcore",
+      "style": "blur(0.8px) brightness(1.1) saturate(1.4)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "electric",
+      "name": "Electric",
+      "style": "hue-rotate(220deg) brightness(1.3) saturate(2.2)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "hologram",
+      "name": "Hologram",
+      "style": "hue-rotate(180deg) brightness(1.3) contrast(1.2)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "mystic",
+      "name": "Mystic",
+      "style": "hue-rotate(250deg) saturate(2) contrast(1.1)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "neon",
+      "name": "Neon",
+      "style": "saturate(3) brightness(1.2) hue-rotate(300deg)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "neon-edge",
+      "name": "Neon Edge",
+      "style": "contrast(2) brightness(1.2) saturate(2) drop-shadow(0 0 3px #0ff) drop-shadow(0 0 8px #f0f)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "neon-outline",
+      "name": "Neon Outline",
+      "style": "drop-shadow(0 0 2px cyan) drop-shadow(0 0 5px cyan) drop-shadow(0 0 10px magenta) drop-shadow(0 0 20px magenta) contrast(1.3) saturate(1.5)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "technicolor",
+      "name": "Technicolor",
+      "style": "hue-rotate(90deg) saturate(2.5)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "vaporwave",
+      "name": "Vaporwave",
+      "style": "hue-rotate(260deg) saturate(2.4) brightness(1.2)",
+      "mobileCategory": "neon",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 8
+    },
+    {
+      "id": "emerald",
+      "name": "Emerald",
+      "style": "hue-rotate(120deg) saturate(1.8) brightness(1.1)",
+      "mobileCategory": "nature",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 9
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "style": "hue-rotate(60deg) saturate(1.3) contrast(1.2)",
+      "mobileCategory": "nature",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 9
+    },
+    {
+      "id": "night-vision",
+      "name": "Night Vision",
+      "style": "hue-rotate(100deg) brightness(0.8) saturate(1.8)",
+      "mobileCategory": "nature",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 9
+    },
+    {
+      "id": "lavender",
+      "name": "Lavender",
+      "style": "hue-rotate(250deg) brightness(1.1)",
+      "mobileCategory": "other",
+      "previewShape": "circle",
+      "previewSize": 56,
+      "tapToApply": true,
+      "swipeStrength": 0,
+      "stripOrder": 99
+    }
+  ],
+  "caption_presets": [
+    {
+      "id": "minimal-dark",
+      "name": "Minimal Dark",
+      "source": "system",
+      "description": "Clean text with a subtle shadow.",
+      "preview": "https://placehold.co/600x120/1a1a1a/ffffff",
+      "style": {
+        "shape": "rounded",
+        "fontFamily": "Inter",
+        "position": {
+          "x": 50,
+          "y": 82
+        },
+        "italic": false,
+        "border": false,
+        "shadow": true,
+        "rotation": 0,
+        "outline": false,
+        "color": "#FFFFFF",
+        "animation": "fade",
+        "borderColor": "#FFFFFF",
+        "bold": false,
+        "backgroundColor": "rgba(0, 0, 0, 0.5)",
+        "underline": false,
+        "fontSize": 18,
+        "borderWidth": 2
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToGuides": true,
+      "mobileAnimation": "fade"
+    },
+    {
+      "id": "neon-glow-caption",
+      "name": "Neon Glow",
+      "source": "system",
+      "description": "A bright, glowing text effect.",
+      "preview": "https://placehold.co/600x120/1a1a1a/e94560",
+      "style": {
+        "backgroundColor": "rgba(26, 26, 26, 0.8)",
+        "shadow": true,
+        "borderColor": "#e94560",
+        "position": {
+          "x": 50,
+          "y": 82
+        },
+        "outline": false,
+        "underline": false,
+        "rotation": 0,
+        "bold": true,
+        "italic": false,
+        "border": false,
+        "fontSize": 27,
+        "shape": "rectangular",
+        "color": "#e94560",
+        "borderWidth": 1,
+        "fontFamily": "Montserrat",
+        "animation": "fade"
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToGuides": true,
+      "mobileAnimation": "fade"
+    },
+    {
+      "id": "bouncy-pill",
+      "name": "Bouncy Pill",
+      "source": "system",
+      "description": "A fun, energetic style with a bounce animation.",
+      "preview": "https://placehold.co/600x120/ff6347/ffffff",
+      "style": {
+        "shadow": true,
+        "rotation": 0,
+        "bold": true,
+        "borderColor": "#FFFFFF",
+        "animation": "bounce",
+        "underline": false,
+        "borderWidth": 2,
+        "shape": "pill",
+        "color": "#FFFFFF",
+        "italic": false,
+        "fontSize": 22,
+        "fontFamily": "Montserrat",
+        "backgroundColor": "#ff6347",
+        "position": {
+          "y": 50,
+          "x": 50
+        },
+        "border": false,
+        "outline": false
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToGuides": true,
+      "mobileAnimation": "bounce"
+    },
+    {
+      "id": "cinematic-title-caption",
+      "name": "Cinematic Title",
+      "source": "system",
+      "description": "An elegant, italicized serif font for a film feel.",
+      "preview": "https://placehold.co/600x120/4a4a4a/f5e5c5",
+      "style": {
+        "position": {
+          "x": 50,
+          "y": 82
+        },
+        "fontFamily": "Playfair Display",
+        "outline": false,
+        "italic": true,
+        "color": "#f5e5c5",
+        "shadow": true,
+        "borderColor": "#f5e5c5",
+        "shape": "rectangular",
+        "animation": "fade",
+        "borderWidth": 2,
+        "bold": false,
+        "border": false,
+        "backgroundColor": "transparent",
+        "fontSize": 24,
+        "rotation": 0,
+        "underline": false
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToGuides": true,
+      "mobileAnimation": "fade"
+    },
+    {
+      "id": "karaoke-glow",
+      "name": "Karaoke Glow",
+      "source": "system",
+      "description": "Bright, clear text that slides up, styled for karaoke.",
+      "preview": "https://placehold.co/600x120/1e1e1e/00F5FF",
+      "style": {
+        "borderColor": "#00F5FF",
+        "backgroundColor": "rgba(30, 30, 30, 0.8)",
+        "textShadow": "0 0 8px #00F5FF",
+        "fontSize": 34,
+        "borderWidth": 2,
+        "fontFamily": "Bebas Neue",
+        "shadow": true,
+        "position": {
+          "x": 50,
+          "y": 82
+        },
+        "rotation": 0,
+        "shape": "rectangular",
+        "color": "#00F5FF",
+        "underline": false,
+        "animation": "slide-up",
+        "outline": false,
+        "italic": false,
+        "border": false,
+        "bold": true
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToGuides": true,
+      "mobileAnimation": "slide-up"
+    },
+    {
+      "id": "vlog-note",
+      "name": "Vlog Note",
+      "source": "system",
+      "description": "A casual, handwritten style for vlogs.",
+      "preview": "https://placehold.co/600x120/ffffff/1a1a1a",
+      "style": {
+        "rotation": -2,
+        "shape": "rounded",
+        "backgroundColor": "rgba(255, 255, 255, 0.9)",
+        "color": "#1a1a1a",
+        "italic": false,
+        "border": false,
+        "position": {
+          "x": 50,
+          "y": 50
+        },
+        "animation": "bounce",
+        "underline": false,
+        "shadow": true,
+        "borderColor": "#1a1a1a",
+        "fontSize": 25,
+        "fontFamily": "Caveat",
+        "borderWidth": 2,
+        "bold": true,
+        "outline": false
+      },
+      "gestureMove": true,
+      "gestureResize": true,
+      "doubleTapEdit": true,
+      "snapToGuides": true,
+      "mobileAnimation": "bounce"
+    }
+  ],
+  "layout_templates": [
+    {
+      "id": "fullscreen-story",
+      "name": "Full Story",
+      "description": "Single full-bleed portrait section — like an Instagram Story",
+      "mobileCategory": "basic",
+      "sections": [
+        {
+          "id": "main",
+          "name": "Story",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "100%",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        }
+      ],
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      },
+      "scrollBehavior": "none"
+    },
+    {
+      "id": "two-stacked",
+      "name": "Two Stacked",
+      "description": "Two equal portrait halves stacked vertically — like a TikTok duet",
+      "mobileCategory": "split",
+      "sections": [
+        {
+          "id": "top",
+          "name": "Top",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "50%",
+            "backgroundColor": "rgba(59,130,246,0.9)"
+          }
+        },
+        {
+          "id": "bottom",
+          "name": "Bottom",
+          "style": {
+            "position": "absolute",
+            "top": "50%",
+            "left": "0%",
+            "width": "100%",
+            "height": "50%",
+            "backgroundColor": "rgba(16,185,129,0.9)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "side-by-side-portrait",
+      "name": "Side by Side",
+      "description": "Two equal columns in portrait — like TikTok duet side-by-side",
+      "mobileCategory": "split",
+      "sections": [
+        {
+          "id": "left",
+          "name": "Left",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "50%",
+            "height": "100%",
+            "backgroundColor": "rgba(59,130,246,0.9)"
+          }
+        },
+        {
+          "id": "right",
+          "name": "Right",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "50%",
+            "width": "50%",
+            "height": "100%",
+            "backgroundColor": "rgba(16,185,129,0.9)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pip-corner",
+      "name": "PiP Corner",
+      "description": "Full background with small camera in corner — like IG Stories reaction",
+      "mobileCategory": "pip",
+      "sections": [
+        {
+          "id": "background",
+          "name": "Background",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "100%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        },
+        {
+          "id": "pip",
+          "name": "Camera",
+          "style": {
+            "position": "absolute",
+            "top": "8%",
+            "right": "4%",
+            "width": "28%",
+            "height": "20%",
+            "backgroundColor": "rgba(59,130,246,0.9)",
+            "borderRadius": "12px"
+          }
+        }
+      ]
+    },
+    {
+      "id": "story-top-text",
+      "name": "Story: Top Text",
+      "description": "Camera fills bottom 70%, text safe zone at top — like IG Stories selfie",
+      "mobileCategory": "story",
+      "sections": [
+        {
+          "id": "text-zone",
+          "name": "Text Area",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "25%",
+            "backgroundColor": "transparent"
+          }
+        },
+        {
+          "id": "camera",
+          "name": "Camera",
+          "style": {
+            "position": "absolute",
+            "top": "25%",
+            "left": "0%",
+            "width": "100%",
+            "height": "75%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        }
+      ],
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      }
+    },
+    {
+      "id": "story-bottom-caption",
+      "name": "Story: Caption Bottom",
+      "description": "Camera top, caption card at bottom — like TikTok with lyrics",
+      "mobileCategory": "story",
+      "sections": [
+        {
+          "id": "camera",
+          "name": "Camera",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "75%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        },
+        {
+          "id": "caption",
+          "name": "Caption",
+          "style": {
+            "position": "absolute",
+            "top": "75%",
+            "left": "0%",
+            "width": "100%",
+            "height": "25%",
+            "backgroundColor": "rgba(0,0,0,0.6)",
+            "backdropFilter": "blur(10px)"
+          }
+        }
+      ],
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      }
+    },
+    {
+      "id": "story-thirds",
+      "name": "Story: Thirds",
+      "description": "Three equal portrait thirds — stack three clips",
+      "mobileCategory": "story",
+      "sections": [
+        {
+          "id": "top",
+          "name": "Top",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "33.333%",
+            "backgroundColor": "rgba(59,130,246,0.9)"
+          }
+        },
+        {
+          "id": "middle",
+          "name": "Middle",
+          "style": {
+            "position": "absolute",
+            "top": "33.333%",
+            "left": "0%",
+            "width": "100%",
+            "height": "33.333%",
+            "backgroundColor": "rgba(16,185,129,0.9)"
+          }
+        },
+        {
+          "id": "bottom",
+          "name": "Bottom",
+          "style": {
+            "position": "absolute",
+            "top": "66.666%",
+            "left": "0%",
+            "width": "100%",
+            "height": "33.334%",
+            "backgroundColor": "rgba(239,68,68,0.9)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "story-quad",
+      "name": "Story: Quad",
+      "description": "2×2 grid in portrait — show 4 clips at once",
+      "mobileCategory": "story",
+      "sections": [
+        {
+          "id": "tl",
+          "name": "Top Left",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "50%",
+            "height": "50%",
+            "backgroundColor": "rgba(59,130,246,0.9)"
+          }
+        },
+        {
+          "id": "tr",
+          "name": "Top Right",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "50%",
+            "width": "50%",
+            "height": "50%",
+            "backgroundColor": "rgba(16,185,129,0.9)"
+          }
+        },
+        {
+          "id": "bl",
+          "name": "Bottom Left",
+          "style": {
+            "position": "absolute",
+            "top": "50%",
+            "left": "0%",
+            "width": "50%",
+            "height": "50%",
+            "backgroundColor": "rgba(239,68,68,0.9)"
+          }
+        },
+        {
+          "id": "br",
+          "name": "Bottom Right",
+          "style": {
+            "position": "absolute",
+            "top": "50%",
+            "left": "50%",
+            "width": "50%",
+            "height": "50%",
+            "backgroundColor": "rgba(245,158,11,0.9)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "magazine-portrait",
+      "name": "Magazine Portrait",
+      "description": "Header band + full camera below — like a portrait magazine cover",
+      "mobileCategory": "editorial",
+      "sections": [
+        {
+          "id": "header",
+          "name": "Header",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "18%",
+            "backgroundColor": "rgba(239,68,68,0.9)"
+          }
+        },
+        {
+          "id": "camera",
+          "name": "Camera",
+          "style": {
+            "position": "absolute",
+            "top": "18%",
+            "left": "0%",
+            "width": "100%",
+            "height": "72%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        },
+        {
+          "id": "footer",
+          "name": "Footer",
+          "style": {
+            "position": "absolute",
+            "top": "90%",
+            "left": "0%",
+            "width": "100%",
+            "height": "10%",
+            "backgroundColor": "rgba(0,0,0,0.8)"
+          }
+        }
+      ],
+      "safeArea": {
+        "top": 10,
+        "bottom": 10
+      }
+    },
+    {
+      "id": "editorial-sidebar-portrait",
+      "name": "Editorial Side Panel",
+      "description": "Thin left accent strip + main camera — CapCut editorial style",
+      "mobileCategory": "editorial",
+      "sections": [
+        {
+          "id": "accent",
+          "name": "Accent Strip",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "12%",
+            "height": "100%",
+            "backgroundColor": "rgba(239,68,68,0.9)"
+          }
+        },
+        {
+          "id": "camera",
+          "name": "Camera",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "12%",
+            "width": "88%",
+            "height": "100%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bento-portrait",
+      "name": "Bento Grid",
+      "description": "Asymmetric bento tiles in portrait — modern mobile aesthetic",
+      "mobileCategory": "editorial",
+      "sections": [
+        {
+          "id": "hero",
+          "name": "Hero",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "45%",
+            "backgroundColor": "rgba(99,102,241,0.9)"
+          }
+        },
+        {
+          "id": "card-1",
+          "name": "Card 1",
+          "style": {
+            "position": "absolute",
+            "top": "45%",
+            "left": "0%",
+            "width": "48%",
+            "height": "28%",
+            "backgroundColor": "rgba(236,72,153,0.9)"
+          }
+        },
+        {
+          "id": "card-2",
+          "name": "Card 2",
+          "style": {
+            "position": "absolute",
+            "top": "45%",
+            "left": "52%",
+            "width": "48%",
+            "height": "28%",
+            "backgroundColor": "rgba(251,146,60,0.9)"
+          }
+        },
+        {
+          "id": "footer",
+          "name": "Footer",
+          "style": {
+            "position": "absolute",
+            "top": "73%",
+            "left": "0%",
+            "width": "100%",
+            "height": "27%",
+            "backgroundColor": "rgba(34,197,94,0.9)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "profile-3col",
+      "name": "Profile Grid (3×3)",
+      "description": "9-tile grid like Instagram profile page — scrollable",
+      "mobileCategory": "grid",
+      "scrollBehavior": "vertical",
+      "sections": [
+        {
+          "id": "tile-1",
+          "name": "Tile 1",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(0,0,0,0.9)"
+          }
+        },
+        {
+          "id": "tile-2",
+          "name": "Tile 2",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(30,60,90,0.9)"
+          }
+        },
+        {
+          "id": "tile-3",
+          "name": "Tile 3",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(60,120,180,0.9)"
+          }
+        },
+        {
+          "id": "tile-4",
+          "name": "Tile 4",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(90,180,15,0.9)"
+          }
+        },
+        {
+          "id": "tile-5",
+          "name": "Tile 5",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(120,240,105,0.9)"
+          }
+        },
+        {
+          "id": "tile-6",
+          "name": "Tile 6",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(150,45,195,0.9)"
+          }
+        },
+        {
+          "id": "tile-7",
+          "name": "Tile 7",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(180,105,30,0.9)"
+          }
+        },
+        {
+          "id": "tile-8",
+          "name": "Tile 8",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(210,165,120,0.9)"
+          }
+        },
+        {
+          "id": "tile-9",
+          "name": "Tile 9",
+          "style": {
+            "position": "relative",
+            "width": "33.333%",
+            "height": "33.333%",
+            "display": "inline-block",
+            "backgroundColor": "rgba(240,225,210,0.9)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "explore-grid",
+      "name": "Explore Grid",
+      "description": "Mixed-size masonry grid — like Instagram Explore",
+      "mobileCategory": "grid",
+      "scrollBehavior": "vertical-infinite",
+      "sections": [
+        {
+          "id": "featured",
+          "name": "Featured",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "66%",
+            "height": "44%",
+            "backgroundColor": "rgba(99,102,241,0.9)"
+          }
+        },
+        {
+          "id": "small-1",
+          "name": "Small 1",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "66%",
+            "width": "34%",
+            "height": "22%",
+            "backgroundColor": "rgba(236,72,153,0.9)"
+          }
+        },
+        {
+          "id": "small-2",
+          "name": "Small 2",
+          "style": {
+            "position": "absolute",
+            "top": "22%",
+            "left": "66%",
+            "width": "34%",
+            "height": "22%",
+            "backgroundColor": "rgba(251,146,60,0.9)"
+          }
+        },
+        {
+          "id": "col-1",
+          "name": "Col 1",
+          "style": {
+            "position": "absolute",
+            "top": "44%",
+            "left": "0%",
+            "width": "34%",
+            "height": "33%",
+            "backgroundColor": "rgba(34,197,94,0.9)"
+          }
+        },
+        {
+          "id": "col-2",
+          "name": "Col 2",
+          "style": {
+            "position": "absolute",
+            "top": "44%",
+            "left": "34%",
+            "width": "32%",
+            "height": "33%",
+            "backgroundColor": "rgba(168,85,247,0.9)"
+          }
+        },
+        {
+          "id": "col-3",
+          "name": "Col 3",
+          "style": {
+            "position": "absolute",
+            "top": "44%",
+            "left": "66%",
+            "width": "34%",
+            "height": "33%",
+            "backgroundColor": "rgba(59,130,246,0.9)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "bottom-nav-layout",
+      "name": "Bottom Navigation",
+      "description": "Replaces desktop sidebar nav — content top, nav tabs bottom",
+      "mobileCategory": "navigation",
+      "sections": [
+        {
+          "id": "content",
+          "name": "Content Area",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "85%",
+            "backgroundColor": "rgba(248,250,252,1)"
+          }
+        },
+        {
+          "id": "nav-bar",
+          "name": "Nav Bar",
+          "style": {
+            "position": "absolute",
+            "top": "85%",
+            "left": "0%",
+            "width": "100%",
+            "height": "15%",
+            "backgroundColor": "rgba(255,255,255,1)",
+            "borderTop": "1px solid rgba(0,0,0,0.1)",
+            "display": "flex",
+            "alignItems": "center",
+            "justifyContent": "space-around"
+          }
+        }
+      ],
+      "safeArea": {
+        "bottom": 20
+      }
+    },
+    {
+      "id": "tab-swipe-layout",
+      "name": "Tab + Swipe",
+      "description": "Top tab bar with horizontally swipeable content panes",
+      "mobileCategory": "navigation",
+      "sections": [
+        {
+          "id": "tab-bar",
+          "name": "Tab Bar",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "10%",
+            "backgroundColor": "rgba(255,255,255,1)",
+            "borderBottom": "1px solid rgba(0,0,0,0.1)"
+          }
+        },
+        {
+          "id": "pane-1",
+          "name": "Pane 1",
+          "style": {
+            "position": "absolute",
+            "top": "10%",
+            "left": "0%",
+            "width": "100%",
+            "height": "90%",
+            "backgroundColor": "rgba(248,250,252,1)"
+          }
+        }
+      ],
+      "scrollBehavior": "horizontal-paged"
+    },
+    {
+      "id": "bottom-sheet-overlay",
+      "name": "Bottom Sheet",
+      "description": "Full canvas + draggable bottom sheet — like IG comments or CapCut panels",
+      "mobileCategory": "navigation",
+      "sections": [
+        {
+          "id": "canvas",
+          "name": "Canvas",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "100%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        },
+        {
+          "id": "sheet",
+          "name": "Bottom Sheet",
+          "style": {
+            "position": "absolute",
+            "bottom": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "45%",
+            "backgroundColor": "rgba(255,255,255,1)",
+            "borderRadius": "20px 20px 0 0",
+            "boxShadow": "0 -4px 20px rgba(0,0,0,0.15)"
+          }
+        }
+      ],
+      "gestureSheet": {
+        "minHeight": "15%",
+        "maxHeight": "90%",
+        "snapPoints": [
+          "15%",
+          "45%",
+          "90%"
+        ]
+      }
+    },
+    {
+      "id": "reels-snap",
+      "name": "Reels Snap",
+      "description": "Full-bleed snap-scrolling portrait sections — like TikTok / Reels feed",
+      "mobileCategory": "reels",
+      "scrollBehavior": "vertical-snap",
+      "sections": [
+        {
+          "id": "reel-1",
+          "name": "Reel 1",
+          "style": {
+            "position": "relative",
+            "width": "100%",
+            "height": "100vh",
+            "flexShrink": "0",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        },
+        {
+          "id": "reel-2",
+          "name": "Reel 2",
+          "style": {
+            "position": "relative",
+            "width": "100%",
+            "height": "100vh",
+            "flexShrink": "0",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        },
+        {
+          "id": "reel-3",
+          "name": "Reel 3",
+          "style": {
+            "position": "relative",
+            "width": "100%",
+            "height": "100vh",
+            "flexShrink": "0",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        }
+      ],
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      }
+    },
+    {
+      "id": "story-snap-stack",
+      "name": "Story Stack",
+      "description": "Horizontally swipeable stories with progress bar — like IG Stories",
+      "mobileCategory": "reels",
+      "scrollBehavior": "horizontal-snap",
+      "sections": [
+        {
+          "id": "story-1",
+          "name": "Story 1",
+          "style": {
+            "position": "relative",
+            "width": "100%",
+            "height": "100%",
+            "flexShrink": "0",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        },
+        {
+          "id": "story-2",
+          "name": "Story 2",
+          "style": {
+            "position": "relative",
+            "width": "100%",
+            "height": "100%",
+            "flexShrink": "0",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        },
+        {
+          "id": "story-3",
+          "name": "Story 3",
+          "style": {
+            "position": "relative",
+            "width": "100%",
+            "height": "100%",
+            "flexShrink": "0",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        }
+      ],
+      "progressBar": {
+        "visible": true,
+        "position": "top",
+        "height": 3,
+        "gap": 4
+      },
+      "safeArea": {
+        "top": 10,
+        "bottom": 15
+      }
+    },
+    {
+      "id": "cinematic-portrait",
+      "name": "Cinematic Portrait",
+      "description": "Full portrait with letterbox bars top and bottom",
+      "mobileCategory": "cinematic",
+      "sections": [
+        {
+          "id": "bar-top",
+          "name": "Letterbox Top",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "100%",
+            "height": "10%",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        },
+        {
+          "id": "frame",
+          "name": "Frame",
+          "style": {
+            "position": "absolute",
+            "top": "10%",
+            "left": "0%",
+            "width": "100%",
+            "height": "80%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        },
+        {
+          "id": "bar-bottom",
+          "name": "Letterbox Bottom",
+          "style": {
+            "position": "absolute",
+            "top": "90%",
+            "left": "0%",
+            "width": "100%",
+            "height": "10%",
+            "backgroundColor": "rgba(0,0,0,1)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vertical-split-accent",
+      "name": "Accent Split",
+      "description": "Thin color accent strip left or right, main content fills rest",
+      "mobileCategory": "cinematic",
+      "sections": [
+        {
+          "id": "accent",
+          "name": "Color Accent",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "0%",
+            "width": "8%",
+            "height": "100%",
+            "backgroundColor": "rgba(239,68,68,0.9)"
+          }
+        },
+        {
+          "id": "main",
+          "name": "Main",
+          "style": {
+            "position": "absolute",
+            "top": "0%",
+            "left": "8%",
+            "width": "92%",
+            "height": "100%",
+            "backgroundColor": "rgba(30,30,30,1)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "parallax-portrait",
+      "name": "Parallax Portrait",
+      "description": "Layered depth scrolling in portrait — background moves slower than foreground",
+      "mobileCategory": "dynamic",
+      "category": "dynamic",
+      "scrollBehavior": "vertical-parallax",
+      "sections": [
+        {
+          "id": "bg",
+          "name": "Background Layer",
+          "style": {
+            "background": "#0a0a0f",
+            "zIndex": 0
+          }
+        },
+        {
+          "id": "mid",
+          "name": "Middle Layer",
+          "style": {
+            "background": "transparent",
+            "zIndex": 5
+          }
+        },
+        {
+          "id": "fg",
+          "name": "Foreground Layer",
+          "style": {
+            "background": "transparent",
+            "zIndex": 10
+          }
+        }
+      ],
+      "parallaxRatios": {
+        "bg": 0.3,
+        "mid": 0.6,
+        "fg": 1.0
+      }
+    },
+    {
+      "id": "glitch-matrix",
+      "name": "Glitch Matrix",
+      "description": "Digital rain with glitch distortion — portrait optimized",
+      "mobileCategory": "dynamic",
+      "category": "dynamic",
+      "sections": [
+        {
+          "id": "matrix-1",
+          "name": "Node 001",
+          "style": {
+            "background": "#000000"
+          }
+        },
+        {
+          "id": "matrix-2",
+          "name": "Node 002",
+          "style": {
+            "background": "#000000"
+          }
+        },
+        {
+          "id": "matrix-3",
+          "name": "Node 003",
+          "style": {
+            "background": "#000000"
+          }
+        }
+      ]
+    }
+  ],
+  "_mobileConfig": {
+    "version": "2.0.0",
+    "platform": "mobile",
+    "defaultAspectRatio": "9:16",
+    "safeAreaInsets": {
+      "top": 10,
+      "bottom": 15,
+      "left": 4,
+      "right": 4
+    },
+    "gestureSystem": {
+      "swipeNavigation": true,
+      "pinchZoom": true,
+      "hapticFeedback": true,
+      "doubleTapAction": "edit",
+      "longPressAction": "options"
+    },
+    "adaptivePerformance": {
+      "enabled": true,
+      "tiers": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "autoReduceParticles": true,
+      "autoReduceBlur": true
+    },
+    "uiPhilosophy": {
+      "primaryNav": "bottom-tab",
+      "contentFlow": "vertical-scroll",
+      "previewStrip": "horizontal-carousel",
+      "editPanel": "bottom-sheet",
+      "toolsLocation": "bottom"
+    }
+  }
+}

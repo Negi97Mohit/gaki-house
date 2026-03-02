@@ -1,85 +1,46 @@
 [
   {
-    "id": "karaoke-highlight_mobile",
+    "id": "karaoke-highlight",
+    "name": "Karaoke Highlight",
     "source": "system",
-    "preview": "https://placehold.co/600x120/1e1e1e/00F5FF/png?text=Karaoke+Style",
     "description": "Bright, clear text on a bottom banner, styled for karaoke.",
-    "name": "Karaoke Highlight (Mobile)",
     "style": {
       "border": false,
       "borderWidth": 2,
-      "shape": "rectangular",
+      "shape": "rounded",
       "outline": false,
       "underline": false,
       "color": "#00F5FF",
       "animation": "slide-up",
       "position": {
-        "y": 90,
+        "y": 82,
         "x": 50
       },
       "rotation": 0,
       "bold": true,
-      "fontSize": 42,
+      "fontSize": 30,
       "fontFamily": "Bebas Neue",
       "borderColor": "#00F5FF",
       "italic": false,
       "backgroundColor": "rgba(30, 30, 30, 0.9)",
       "shadow": true
     },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "isMobile": true,
-    "originalDesktopId": "karaoke-highlight"
+    "gestureMove": true,
+    "gestureResize": true,
+    "doubleTapEdit": true,
+    "snapToSafeZone": true
   },
   {
-    "id": "minimal-stroke_mobile",
-    "preview": "https://placehold.co/600x120/999999/FFFFFF/png?text=Minimal+Stroke",
-    "description": "Clean text with an outline for high contrast on any video.",
+    "id": "neon-glow",
+    "name": "Neon Glow",
     "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "style": {
-      "outline": true,
-      "color": "#FFFFFF",
-      "rotation": 0,
-      "animation": "fade",
-      "italic": false,
-      "shadow": true,
-      "position": {
-        "y": 85,
-        "x": 50
-      },
-      "borderWidth": 2,
-      "shape": "rounded",
-      "bold": true,
-      "backgroundColor": "rgba(0, 0, 0, 0)",
-      "underline": false,
-      "borderColor": "#FFFFFF",
-      "fontFamily": "Inter",
-      "border": false,
-      "fontSize": 26
-    },
-    "name": "Minimal Stroke (Mobile)",
-    "isMobile": true,
-    "originalDesktopId": "minimal-stroke"
-  },
-  {
-    "id": "neon-glow_mobile",
     "description": "A bright, glowing text effect with a dark background.",
-    "preview": "https://placehold.co/600x120/1a1a1a/e94560/png?text=Neon+Glow",
-    "name": "Neon Glow (Mobile)",
     "style": {
-      "fontSize": 28,
+      "fontSize": 20,
       "underline": false,
       "position": {
         "x": 50,
-        "y": 85
+        "y": 82
       },
       "color": "#e94560",
       "italic": false,
@@ -95,29 +56,20 @@
       "backgroundColor": "rgba(26, 26, 26, 0.8)",
       "border": false
     },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "source": "system",
-    "isMobile": true,
-    "originalDesktopId": "neon-glow"
+    "gestureMove": true,
+    "gestureResize": true,
+    "doubleTapEdit": true,
+    "snapToSafeZone": true
   },
   {
-    "id": "news-ticker_mobile",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "name": "News Ticker (Mobile)",
-    "preview": "https://placehold.co/600x120/00539C/FFFFFF/png?text=News+Ticker",
+    "id": "news-ticker",
+    "name": "News Ticker",
+    "source": "system",
     "description": "A classic news-style lower-third banner.",
     "style": {
       "animation": "fade",
       "underline": false,
-      "shape": "rectangular",
+      "shape": "rounded",
       "rotation": 0,
       "border": false,
       "backgroundColor": "rgba(0, 83, 156, 0.9)",
@@ -126,32 +78,28 @@
       "color": "#FFFFFF",
       "position": {
         "x": 50,
-        "y": 90
+        "y": 82
       },
       "fontFamily": "Arial",
-      "fontSize": 24,
+      "fontSize": 17,
       "borderWidth": 2,
       "borderColor": "#FFFFFF",
       "outline": false,
       "italic": false
     },
-    "source": "system",
-    "isMobile": true,
-    "originalDesktopId": "news-ticker"
+    "gestureMove": true,
+    "gestureResize": true,
+    "doubleTapEdit": true,
+    "snapToSafeZone": true
   },
   {
-    "id": "vintage-film_mobile",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "name": "Vintage Film (Mobile)",
-    "preview": "https://placehold.co/600x120/4a4a4a/f5e5c5/png?text=Vintage+Film",
+    "id": "vintage-film",
+    "name": "Vintage Film",
     "source": "system",
+    "description": "A classic, elegant serif font for a cinematic feel.",
     "style": {
       "borderWidth": 2,
-      "fontSize": 30,
+      "fontSize": 22,
       "backgroundColor": "rgba(0, 0, 0, 0)",
       "rotation": 0,
       "color": "#f5e5c5",
@@ -159,7 +107,7 @@
       "animation": "fade",
       "position": {
         "x": 50,
-        "y": 85
+        "y": 82
       },
       "fontFamily": "Playfair Display",
       "italic": true,
@@ -170,8 +118,40 @@
       "shadow": true,
       "borderColor": "#f5e5c5"
     },
-    "description": "A classic, elegant serif font for a cinematic feel.",
-    "isMobile": true,
-    "originalDesktopId": "vintage-film"
+    "gestureMove": true,
+    "gestureResize": true,
+    "doubleTapEdit": true,
+    "snapToSafeZone": true
+  },
+  {
+    "id": "minimal-stroke",
+    "name": "Minimal Stroke",
+    "source": "system",
+    "description": "Clean text with an outline for high contrast on any video.",
+    "style": {
+      "outline": true,
+      "color": "#FFFFFF",
+      "rotation": 0,
+      "animation": "fade",
+      "italic": false,
+      "shadow": true,
+      "position": {
+        "y": 82,
+        "x": 50
+      },
+      "borderWidth": 2,
+      "shape": "rounded",
+      "bold": true,
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "underline": false,
+      "borderColor": "#FFFFFF",
+      "fontFamily": "Inter",
+      "border": false,
+      "fontSize": 19
+    },
+    "gestureMove": true,
+    "gestureResize": true,
+    "doubleTapEdit": true,
+    "snapToSafeZone": true
   }
 ]

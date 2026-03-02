@@ -1,356 +1,126 @@
 [
   {
-    "id": "diagonal-rush-v1_mobile",
-    "effects": {
-      "videoFilter": "saturate(0) contrast(1.1)"
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "canvasLayout": {
-      "sections": [
-        {
-          "content": {
-            "type": "camera"
-          },
-          "id": "center-cam"
-        }
-      ],
-      "templateId": "diagonal-rush"
-    },
+    "id": "diagonal-rush-v1",
+    "name": "Diagonal Rush",
+    "source": "system",
     "canvasAspectRatio": "9:16",
-    "background": {
-      "backgroundEffect": "none",
-      "blankCanvasColor": "#F0F0F0"
-    },
     "styleTags": [
       "fashion",
       "diagonal",
       "scroll",
       "fast"
     ],
-    "textOverlays": [],
-    "source": "system",
-    "name": "Diagonal Rush (Mobile)",
-    "isMobile": true,
-    "originalDesktopId": "diagonal-rush-v1"
-  },
-  {
-    "id": "editorial-sticky-split_mobile",
-    "background": {
-      "blankCanvasColor": "#FFF",
-      "backgroundEffect": "none"
-    },
-    "styleTags": [
-      "split",
-      "editorial",
-      "clean",
-      "reading"
-    ],
-    "textOverlays": [],
     "pip": {
       "layoutMode": "hidden"
     },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "canvasLayout": {
-      "sections": [
-        {
-          "id": "sticky-media",
-          "content": {
-            "type": "camera"
-          }
-        }
-      ],
-      "templateId": "sticky-split"
-    },
-    "canvasAspectRatio": "16:9",
-    "source": "system",
-    "effects": {
-      "videoFilter": "sepia(0.2)"
-    },
-    "name": "Sticky Editorial (Mobile)",
-    "isMobile": true,
-    "originalDesktopId": "editorial-sticky-split"
-  },
-  {
-    "id": "fashion-horizontal-scroll_mobile",
-    "source": "system",
     "background": {
-      "blankCanvasColor": "#FFF",
-      "backgroundEffect": "none"
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#F0F0F0"
     },
     "effects": {
-      "videoFilter": "grayscale(1)"
+      "videoFilter": "saturate(0) contrast(1.1)"
     },
-    "canvasAspectRatio": "16:9",
-    "styleTags": [
-      "horizontal",
-      "fashion",
-      "gallery",
-      "pan"
-    ],
-    "name": "Runway Horizontal (Mobile)",
+    "textOverlays": [],
     "canvasLayout": {
-      "templateId": "horizontal-scroll",
+      "templateId": "diagonal-rush",
       "sections": [
         {
-          "id": "item-1",
+          "id": "center-cam",
           "content": {
             "type": "camera"
           }
-        },
-        {
-          "id": "item-2",
-          "content": {
-            "type": "empty"
-          }
-        },
-        {
-          "content": {
-            "type": "empty"
-          },
-          "id": "item-3"
         }
       ]
     },
-    "textOverlays": [],
-    "pip": {
-      "layoutMode": "hidden"
+    "mobileInteraction": {
+      "scrollAxis": "vertical",
+      "gesture": "swipe-up",
+      "snapMode": "momentum"
     },
-    "isMobile": true,
-    "originalDesktopId": "fashion-horizontal-scroll"
+    "safeArea": {
+      "top": 10,
+      "bottom": 15
+    }
   },
   {
-    "id": "fashion-layered-parallax_mobile",
-    "canvasAspectRatio": "9:16",
-    "canvasLayout": {
-      "sections": [
-        {
-          "content": {
-            "type": "camera"
-          },
-          "id": "layer-back"
-        },
-        {
-          "content": {
-            "type": "empty"
-          },
-          "id": "layer-front"
-        }
-      ],
-      "templateId": "layered-parallax"
-    },
-    "textOverlays": [],
+    "id": "modern-snap-sections",
+    "name": "Snap Stories",
     "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "effects": {
-      "videoFilter": "contrast(1.2)"
-    },
+    "canvasAspectRatio": "9:16",
     "styleTags": [
-      "fashion",
-      "depth",
-      "scroll",
-      "image"
+      "snap",
+      "fullscreen",
+      "story",
+      "mobile"
     ],
     "pip": {
       "layoutMode": "hidden"
     },
-    "name": "Layered Parallax (Mobile)",
-    "background": {
-      "backgroundEffect": "none",
-      "blankCanvasColor": "#1A1A1A"
-    },
-    "isMobile": true,
-    "originalDesktopId": "fashion-layered-parallax"
-  },
-  {
-    "id": "kinetic-infinite-grid_mobile",
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "canvasAspectRatio": "16:9",
-    "effects": {
-      "videoFilter": "contrast(1.1)"
-    },
-    "name": "Infinite Grid (Mobile)",
     "background": {
       "backgroundEffect": "none",
       "blankCanvasColor": "#000"
     },
-    "textOverlays": [],
-    "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "styleTags": [
-      "grid",
-      "loop",
-      "seamless",
-      "gallery"
-    ],
-    "canvasLayout": {
-      "sections": [
-        {
-          "id": "grid-1",
-          "content": {
-            "type": "camera"
-          }
-        },
-        {
-          "content": {
-            "type": "empty"
-          },
-          "id": "grid-2"
-        },
-        {
-          "content": {
-            "type": "empty"
-          },
-          "id": "grid-3"
-        },
-        {
-          "content": {
-            "type": "empty"
-          },
-          "id": "grid-4"
-        }
-      ],
-      "templateId": "infinite-grid"
-    },
-    "isMobile": true,
-    "originalDesktopId": "kinetic-infinite-grid"
-  },
-  {
-    "id": "kinetic-scroll-zoom_mobile",
-    "styleTags": [
-      "scale",
-      "hero",
-      "impact",
-      "modern"
-    ],
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "canvasAspectRatio": "16:9",
-    "background": {
-      "backgroundEffect": "none",
-      "blankCanvasColor": "#111"
-    },
-    "name": "Scroll Zoom Hero (Mobile)",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "canvasLayout": {
-      "templateId": "scroll-zoom",
-      "sections": [
-        {
-          "id": "hero-zoom",
-          "content": {
-            "type": "camera"
-          }
-        }
-      ]
-    },
-    "textOverlays": [],
-    "source": "system",
     "effects": {
       "videoFilter": "none"
     },
-    "isMobile": true,
-    "originalDesktopId": "kinetic-scroll-zoom"
-  },
-  {
-    "id": "kinetic-stencil-v1_mobile",
+    "textOverlays": [],
     "canvasLayout": {
-      "templateId": "kinetic-stencil",
+      "templateId": "snap-sections",
       "sections": [
         {
+          "id": "snap-1",
           "content": {
             "type": "camera"
-          },
-          "id": "main-feed"
+          }
+        },
+        {
+          "id": "snap-2",
+          "content": {
+            "type": "empty"
+          }
+        },
+        {
+          "id": "snap-3",
+          "content": {
+            "type": "empty"
+          }
         }
       ]
     },
-    "source": "system",
-    "effects": {
-      "videoFilter": "grayscale(1) contrast(1.2)"
+    "mobileInteraction": {
+      "scrollAxis": "vertical",
+      "gesture": "swipe-up",
+      "snapMode": "snap"
     },
-    "name": "Kinetic Stencil (Mobile)",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "canvasAspectRatio": "16:9",
-    "styleTags": [
-      "bold",
-      "mask",
-      "typography",
-      "video-in-text"
-    ],
-    "textOverlays": [],
-    "background": {
-      "blankCanvasColor": "#000000",
-      "backgroundEffect": "none"
-    },
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "isMobile": true,
-    "originalDesktopId": "kinetic-stencil-v1"
+    "safeArea": {
+      "top": 10,
+      "bottom": 15
+    }
   },
   {
-    "id": "kinetic-typography-v1_mobile",
-    "effects": {
-      "videoFilter": "contrast(1.1)"
-    },
-    "canvasAspectRatio": "16:9",
+    "id": "kinetic-typography-v1",
+    "name": "Kinetic Editorial",
+    "source": "system",
+    "canvasAspectRatio": "9:16",
     "styleTags": [
       "modern",
       "typography",
       "bold",
-      "editorial",
-      "gsap"
+      "editorial"
     ],
-    "textOverlays": [],
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
     "pip": {
       "layoutMode": "hidden"
     },
-    "source": "system",
     "background": {
       "backgroundEffect": "none",
       "blankCanvasColor": "#E5E5E5"
     },
-    "name": "Kinetic Editorial (Mobile)",
+    "effects": {
+      "videoFilter": "contrast(1.1)"
+    },
+    "textOverlays": [],
     "canvasLayout": {
+      "templateId": "kinetic-typography",
       "sections": [
         {
           "id": "hero",
@@ -370,122 +140,16 @@
             "type": "empty"
           }
         }
-      ],
-      "templateId": "kinetic-typography"
-    },
-    "isMobile": true,
-    "originalDesktopId": "kinetic-typography-v1"
-  },
-  {
-    "id": "modern-circular-gallery_mobile",
-    "canvasAspectRatio": "16:9",
-    "canvasLayout": {
-      "templateId": "circular-gallery",
-      "sections": [
-        {
-          "id": "circle-1",
-          "content": {
-            "type": "camera"
-          }
-        },
-        {
-          "content": {
-            "type": "empty"
-          },
-          "id": "circle-2"
-        },
-        {
-          "id": "circle-3",
-          "content": {
-            "type": "empty"
-          }
-        },
-        {
-          "id": "circle-4",
-          "content": {
-            "type": "empty"
-          }
-        }
       ]
     },
-    "textOverlays": [],
-    "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
+    "mobileInteraction": {
+      "scrollAxis": "vertical",
+      "gesture": "swipe-up",
+      "snapMode": "paged"
     },
-    "effects": {
-      "videoFilter": "none"
-    },
-    "styleTags": [
-      "circle",
-      "rotate",
-      "creative",
-      "experimental"
-    ],
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "name": "Circular Gallery (Mobile)",
-    "background": {
-      "blankCanvasColor": "#111",
-      "backgroundEffect": "none"
-    },
-    "isMobile": true,
-    "originalDesktopId": "modern-circular-gallery"
-  },
-  {
-    "id": "modern-snap-sections_mobile",
-    "source": "system",
-    "background": {
-      "blankCanvasColor": "#000",
-      "backgroundEffect": "none"
-    },
-    "effects": {
-      "videoFilter": "none"
-    },
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "name": "Snap Stories (Mobile)",
-    "canvasAspectRatio": "9:16",
-    "canvasLayout": {
-      "sections": [
-        {
-          "content": {
-            "type": "camera"
-          },
-          "id": "snap-1"
-        },
-        {
-          "id": "snap-2",
-          "content": {
-            "type": "empty"
-          }
-        },
-        {
-          "id": "snap-3",
-          "content": {
-            "type": "empty"
-          }
-        }
-      ],
-      "templateId": "snap-sections"
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "styleTags": [
-      "snap",
-      "fullscreen",
-      "story",
-      "mobile"
-    ],
-    "textOverlays": [],
-    "isMobile": true,
-    "originalDesktopId": "modern-snap-sections"
+    "safeArea": {
+      "top": 10,
+      "bottom": 15
+    }
   }
 ]
