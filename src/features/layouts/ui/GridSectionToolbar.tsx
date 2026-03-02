@@ -137,6 +137,8 @@ export const GridSectionToolbar: React.FC<GridSectionToolbarProps> = ({
       className={cn(
         // Moved from 'right-2' to 'left-2' to avoid conflict with DynamicDeleteButton (which is usually top-right)
         "absolute top-2 left-2 flex items-center gap-1 z-[100] transition-all duration-200",
+        // Hide on mobile — controls are in the bottom tool tray
+        "max-[768px]:hidden",
         isVisible
           ? "opacity-100 translate-y-0"
           : "opacity-0 -translate-y-2 pointer-events-none"
