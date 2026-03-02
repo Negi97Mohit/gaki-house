@@ -2,21 +2,20 @@ import React, { useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Camera, RefreshCcw, Mic, MicOff, VideoOff, X, Radio,
-  Sparkles, Type, Palette, Settings2, Zap, Share2,
-  ChevronUp, Eye, EyeOff, Music, Image as ImageIcon,
-  LayoutGrid, Wand2, MessageSquare, Circle
+  Sparkles, Type, Palette, Settings2,
+  LayoutGrid, Share2
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
 import { MobileCanvasContainer } from "../components/MobileCanvasContainer";
 import { useMediaStore } from "@/stores/media.store";
-import { useSceneStore } from "@/stores/scene.store";
 import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
-import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
 import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
 import { useCaptionPresets } from "@/hooks/useCaptionPresets";
 import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
+import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
+import { useCanvasStore } from "@/stores/canvas.store";
 
 // ─── Tool Category Type ────────────────────────────────────────────
 type ToolCategory = "none" | "captions" | "effects" | "filters" | "stream" | "layout";
@@ -39,11 +38,16 @@ const QUICK_FILTERS = [
   { id: "dreamy", label: "Dreamy", emoji: "✨" },
 ];
 
+const MOBILE_LAYOUT_OPTIONS = [
+  { id: "solo", label: "Solo", icon: "📹", subtitle: "Full camera" },
+  { id: "pip", label: "PiP", icon: "🪟", subtitle: "Floating cam" },
+  { id: "split-vertical", label: "Split V", icon: "⬌", subtitle: "Side by side" },
+  { id: "split-horizontal", label: "Split H", icon: "⬍", subtitle: "Top / bottom" },
+] as const;
+
 export const MobileStudioPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<ToolCategory>("none");
-  const [isRecording, setIsRecording] = useState(false);
-  const [isStreaming, setIsStreaming] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showStreamConfig, setShowStreamConfig] = useState(false);
   const [selectedCaptionAnimation, setSelectedCaptionAnimation] = useState("none");
@@ -53,41 +57,71 @@ export const MobileStudioPage: React.FC = () => {
   const setAudioOn = useMediaStore((s) => s.setAudioOn);
   const isVideoOn = useMediaStore((s) => s.isVideoOn);
   const setVideoOn = useMediaStore((s) => s.setVideoOn);
+  const layoutMode = useCanvasStore((s) => s.layoutMode);
+  const setLayoutMode = useCanvasStore((s) => s.setLayoutMode);
 
   const { destinations } = useStreamStore(useShallow((s) => ({
     destinations: s.destinations,
   })));
 
   const { captionPresets } = useCaptionPresets();
+  const rtmp = useRtmpStream();
 
   const isVideoOff = !isVideoOn;
   const isMuted = !isAudioOn;
+  const isStreaming = rtmp.isStreaming;
+  const isRecording = rtmp.isRecording;
   const isLive = isStreaming || isRecording;
 
-  const toggleMute = () => setAudioOn(!isAudioOn);
-  const toggleVideo = () => setVideoOn(!isVideoOn);
+  const requestMediaPermission = useCallback(async (kind: "audio" | "video") => {
+    try {
+      const tempStream = await navigator.mediaDevices.getUserMedia({
+        audio: kind === "audio",
+        video: kind === "video",
+      });
+      tempStream.getTracks().forEach((track) => track.stop());
+      return true;
+    } catch {
+      toast.error(`${kind === "audio" ? "Microphone" : "Camera"} permission denied`);
+      return false;
+    }
+  }, []);
+
+  const toggleMute = useCallback(async () => {
+    if (!isAudioOn) {
+      const granted = await requestMediaPermission("audio");
+      if (!granted) return;
+    }
+    setAudioOn(!isAudioOn);
+  }, [isAudioOn, requestMediaPermission, setAudioOn]);
+
+  const toggleVideo = useCallback(async () => {
+    if (!isVideoOn) {
+      const granted = await requestMediaPermission("video");
+      if (!granted) return;
+    }
+    setVideoOn(!isVideoOn);
+  }, [isVideoOn, requestMediaPermission, setVideoOn]);
+
   const flipCamera = () => toast.info("Camera flip coming soon");
 
-  const handleGoLive = () => {
-    if (isStreaming) {
-      setIsStreaming(false);
-      toast.info("Stream ended");
-    } else if (destinations.length === 0) {
-      setShowStreamConfig(true);
-    } else {
-      setIsStreaming(true);
-      toast.success("You're live!");
+  const handleGoLive = async () => {
+    if (isStreaming || rtmp.isConnecting) {
+      rtmp.stopStreaming();
+      return;
     }
+
+    const hasEnabledDestination = destinations.some((dest) => dest.enabled);
+    if (!hasEnabledDestination) {
+      setShowStreamConfig(true);
+      return;
+    }
+
+    await rtmp.startStreaming();
   };
 
   const handleRecord = () => {
-    if (isRecording) {
-      setIsRecording(false);
-      toast.success("Recording saved!");
-    } else {
-      setIsRecording(true);
-      toast.success("Recording started");
-    }
+    rtmp.toggleRecording();
   };
 
   const handleExit = () => {
@@ -100,6 +134,11 @@ export const MobileStudioPage: React.FC = () => {
 
   const handleSelectCategory = (cat: ToolCategory) => {
     setActiveCategory(prev => prev === cat ? "none" : cat);
+  };
+
+  const handleApplyLayout = (layout: "solo" | "pip" | "split-vertical" | "split-horizontal") => {
+    setLayoutMode(layout);
+    toast.success(`${layout.replace("-", " ")} layout applied`);
   };
 
   // ─── Tool Bar Items ─────────────────────────────────────────────
@@ -296,30 +335,36 @@ export const MobileStudioPage: React.FC = () => {
               {/* LAYOUT */}
               {activeCategory === "layout" && (
                 <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Canvas Layouts</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {[
-                      { id: "solo", label: "Solo", icon: "📹" },
-                      { id: "pip", label: "PiP", icon: "🖼️" },
-                      { id: "split", label: "Split", icon: "◻️" },
-                      { id: "grid", label: "Grid", icon: "⊞" },
-                    ].map((l) => (
-                      <button
-                        key={l.id}
-                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
-                          {l.icon}
-                        </div>
-                        <span className="text-[10px] text-white/70 font-medium">{l.label}</span>
-                      </button>
-                    ))}
+                  <div className="flex items-center justify-between px-1">
+                    <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold">Canvas Layouts</p>
+                    <span className="text-[10px] text-white/40">Tap to apply</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {MOBILE_LAYOUT_OPTIONS.map((l) => {
+                      const isActiveLayout = layoutMode === l.id;
+                      return (
+                        <button
+                          key={l.id}
+                          onClick={() => handleApplyLayout(l.id)}
+                          className={cn(
+                            "rounded-2xl border p-3 text-left transition-all active:scale-95",
+                            isActiveLayout
+                              ? "bg-white text-black border-white shadow-lg shadow-white/20"
+                              : "bg-white/10 border-white/10 text-white"
+                          )}
+                        >
+                          <div className="text-xl mb-2">{l.icon}</div>
+                          <p className={cn("text-xs font-semibold", isActiveLayout ? "text-black" : "text-white/90")}>{l.label}</p>
+                          <p className={cn("text-[10px]", isActiveLayout ? "text-black/70" : "text-white/50")}>{l.subtitle}</p>
+                        </button>
+                      );
+                    })}
                   </div>
                   <button
                     onClick={() => setIsDrawerOpen(true)}
                     className="w-full py-2 rounded-xl bg-white/10 text-xs text-white/70 font-medium hover:bg-white/15 transition-colors"
                   >
-                    More Layouts & Designs →
+                    Open Advanced Layout Designer →
                   </button>
                 </div>
               )}
@@ -413,12 +458,15 @@ export const MobileStudioPage: React.FC = () => {
           <button
             onClick={handleGoLive}
             className="flex flex-col items-center gap-1"
+            disabled={rtmp.isConnecting}
           >
             <div className={cn(
               "w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-xl",
-              isStreaming
-                ? "bg-red-600 shadow-red-500/40 border-4 border-red-400"
-                : "bg-gradient-to-br from-primary to-primary/70 shadow-primary/30 border-4 border-white/20"
+              rtmp.isConnecting
+                ? "bg-yellow-500/90 shadow-yellow-500/40 border-4 border-yellow-300/70"
+                : isStreaming
+                  ? "bg-red-600 shadow-red-500/40 border-4 border-red-400"
+                  : "bg-gradient-to-br from-primary to-primary/70 shadow-primary/30 border-4 border-white/20"
             )}>
               {isStreaming ? (
                 <div className="w-7 h-7 rounded-md bg-white" />
@@ -430,7 +478,7 @@ export const MobileStudioPage: React.FC = () => {
               "text-[10px] font-bold",
               isStreaming ? "text-red-400" : "text-white/80"
             )}>
-              {isStreaming ? "End Live" : "Go Live"}
+              {rtmp.isConnecting ? "Connecting..." : isStreaming ? "End Live" : "Go Live"}
             </span>
           </button>
 
@@ -454,11 +502,11 @@ export const MobileStudioPage: React.FC = () => {
       <StreamConfigurationModal
         externalOpen={showStreamConfig}
         onOpenChange={setShowStreamConfig}
-        onStartStream={() => {
+        onStartStream={async () => {
           setShowStreamConfig(false);
-          setIsStreaming(true);
+          await rtmp.startStreaming();
         }}
-        onStopStream={() => setIsStreaming(false)}
+        onStopStream={() => rtmp.stopStreaming()}
       />
     </div>
   );
