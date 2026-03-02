@@ -1,196 +1,130 @@
 [
   {
     "id": "arcade-bouncy",
-    "description": "A fun, bold, and bouncy arcade-style text.",
-    "source": "system",
+    "preview": "https://placehold.co/600x120/FFD700/000000/png?text=Arcade+Bouncy",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
     "style": {
-      "bold": true,
-      "italic": false,
-      "shadow": true,
-      "shape": "pill",
       "animation": "bounce",
-      "border": true,
-      "fontFamily": "Bungee",
-      "color": "#000000",
-      "outline": false,
-      "rotation": 0,
+      "bold": true,
+      "backgroundColor": "#FFD700",
       "borderColor": "#000000",
+      "borderWidth": 3,
+      "fontFamily": "Bungee",
+      "border": true,
+      "rotation": 0,
+      "italic": false,
       "position": {
         "y": 50,
         "x": 50
       },
-      "fontSize": 40,
+      "shadow": true,
+      "outline": false,
+      "shape": "pill",
       "underline": false,
-      "backgroundColor": "#FFD700",
-      "borderWidth": 3
+      "fontSize": 40,
+      "color": "#000000"
     },
-    "preview": "https://placehold.co/600x120/FFD700/000000/png?text=Arcade+Bouncy",
+    "source": "system",
     "name": "Arcade Bouncy",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    }
+    "description": "A fun, bold, and bouncy arcade-style text."
   },
   {
     "id": "architect-draft",
-    "style": {
-      "animation": "fade",
-      "bold": false,
-      "color": "#dbeafe",
-      "italic": false,
-      "borderWidth": 2,
-      "shadow": false,
-      "border": false,
-      "rotation": 0,
-      "position": {
-        "x": 50,
-        "y": 15
-      },
-      "shape": "banner",
-      "fontSize": 26,
-      "fontFamily": "Architects Daughter",
-      "outline": false,
-      "borderColor": "#dbeafe",
-      "underline": false,
-      "backgroundColor": "rgba(30, 58, 138, 0.9)"
-    },
     "description": "A neat, architectural handwriting style.",
     "name": "Architect Draft",
+    "style": {
+      "shape": "banner",
+      "underline": false,
+      "outline": false,
+      "shadow": false,
+      "color": "#dbeafe",
+      "fontSize": 26,
+      "border": false,
+      "fontFamily": "Architects Daughter",
+      "borderWidth": 2,
+      "borderColor": "#dbeafe",
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "rgba(30, 58, 138, 0.9)",
+      "position": {
+        "y": 15,
+        "x": 50
+      },
+      "italic": false,
+      "rotation": 0
+    },
     "source": "system",
-    "preview": "https://placehold.co/600x120/1e3a8a/dbeafe/png?text=Architect+Draft",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
-    }
+    },
+    "preview": "https://placehold.co/600x120/1e3a8a/dbeafe/png?text=Architect+Draft"
   },
   {
     "id": "author-quote",
-    "preview": "https://placehold.co/600x120/f5f5f5/333333/png?text=Author+Quote",
     "style": {
-      "bold": false,
-      "underline": false,
-      "animation": "fade",
-      "fontFamily": "PT Serif",
-      "borderWidth": 1,
-      "rotation": 0,
-      "shape": "rounded",
-      "italic": true,
-      "borderColor": "#333333",
-      "position": {
-        "x": 50,
-        "y": 50
-      },
       "color": "#333333",
-      "backgroundColor": "rgba(245, 245, 245, 0.8)",
-      "outline": false,
-      "border": true,
       "fontSize": 26,
-      "shadow": false
+      "outline": false,
+      "shadow": false,
+      "shape": "rounded",
+      "underline": false,
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "italic": true,
+      "rotation": 0,
+      "borderColor": "#333333",
+      "animation": "fade",
+      "bold": false,
+      "backgroundColor": "rgba(245, 245, 245, 0.8)",
+      "fontFamily": "PT Serif",
+      "border": true,
+      "borderWidth": 1
     },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/f5f5f5/333333/png?text=Author+Quote",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "name": "Author Quote",
     "description": "An italic serif, perfect for quoting.",
-    "source": "system"
+    "name": "Author Quote"
   },
   {
     "id": "bouncy-pill",
     "description": "A fun, energetic style with a bounce animation.",
-    "style": {
-      "shadow": true,
-      "rotation": 0,
-      "bold": true,
-      "borderColor": "#FFFFFF",
-      "animation": "bounce",
-      "underline": false,
-      "borderWidth": 2,
-      "shape": "pill",
-      "color": "#FFFFFF",
-      "italic": false,
-      "fontSize": 32,
-      "fontFamily": "Montserrat",
-      "backgroundColor": "#ff6347",
-      "position": {
-        "y": 50,
-        "x": 50
-      },
-      "border": false,
-      "outline": false
-    },
-    "preview": "https://placehold.co/600x120/ff6347/ffffff/png?text=Bouncy!",
     "name": "Bouncy Pill",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "source": "system"
-  },
-  {
-    "id": "chalkboard",
     "style": {
-      "borderColor": "#FFFFFF",
-      "position": {
-        "y": 50,
-        "x": 50
-      },
-      "backgroundColor": "rgba(54, 69, 79, 0.9)",
-      "underline": false,
-      "italic": false,
-      "border": false,
-      "rotation": 0,
       "fontSize": 32,
-      "fontFamily": "Gochi Hand",
-      "shape": "rounded",
+      "color": "#FFFFFF",
+      "shadow": true,
       "outline": false,
-      "animation": "fade",
-      "bold": false,
-      "borderWidth": 2,
-      "shadow": false,
-      "color": "#FFFFFF"
-    },
-    "name": "Chalkboard",
-    "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "description": "A handwritten font on a dark background.",
-    "preview": "https://placehold.co/600x120/36454f/ffffff/png?text=Chalkboard"
-  },
-  {
-    "id": "cinematic-title",
-    "source": "system",
-    "description": "An elegant, italicized serif font for a film feel.",
-    "style": {
+      "underline": false,
+      "shape": "pill",
+      "rotation": 0,
+      "italic": false,
       "position": {
         "x": 50,
-        "y": 85
+        "y": 50
       },
-      "fontFamily": "Playfair Display",
-      "outline": false,
-      "italic": true,
-      "color": "#f5e5c5",
-      "shadow": true,
-      "borderColor": "#f5e5c5",
-      "shape": "rectangular",
-      "animation": "fade",
+      "animation": "bounce",
+      "bold": true,
+      "backgroundColor": "#ff6347",
+      "borderColor": "#FFFFFF",
       "borderWidth": 2,
-      "bold": false,
       "border": false,
-      "backgroundColor": "transparent",
-      "fontSize": 34,
-      "rotation": 0,
-      "underline": false
+      "fontFamily": "Montserrat"
     },
-    "preview": "https://placehold.co/600x120/4a4a4a/f5e5c5/png?text=Cinematic+Title",
-    "name": "Cinematic Title",
+    "source": "system",
+    "preview": "https://placehold.co/600x120/ff6347/ffffff/png?text=Bouncy!",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
@@ -198,75 +132,140 @@
     }
   },
   {
-    "id": "cinematic-wide",
-    "name": "Cinematic Wide",
-    "description": "A wide, bold title for cinematic feel.",
+    "id": "chalkboard",
+    "preview": "https://placehold.co/600x120/36454f/ffffff/png?text=Chalkboard",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
+    "source": "system",
     "style": {
-      "shadow": true,
-      "animation": "fade",
-      "underline": false,
-      "backgroundColor": "transparent",
-      "bold": true,
-      "fontSize": 42,
-      "fontFamily": "Cinzel",
-      "shape": "rectangular",
-      "borderColor": "#FFFFFF",
-      "italic": false,
-      "borderWidth": 2,
-      "color": "#FFFFFF",
       "outline": false,
+      "shadow": false,
+      "underline": false,
+      "shape": "rounded",
+      "color": "#FFFFFF",
+      "fontSize": 32,
+      "borderColor": "#FFFFFF",
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "rgba(54, 69, 79, 0.9)",
+      "border": false,
+      "fontFamily": "Gochi Hand",
+      "borderWidth": 2,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "italic": false,
+      "rotation": 0
+    },
+    "name": "Chalkboard",
+    "description": "A handwritten font on a dark background."
+  },
+  {
+    "id": "cinematic-title",
+    "style": {
+      "fontSize": 34,
+      "color": "#f5e5c5",
+      "shadow": true,
+      "outline": false,
+      "shape": "rectangular",
+      "underline": false,
+      "rotation": 0,
+      "italic": true,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "animation": "fade",
+      "bold": false,
+      "backgroundColor": "transparent",
+      "borderColor": "#f5e5c5",
+      "borderWidth": 2,
+      "fontFamily": "Playfair Display",
+      "border": false
+    },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/4a4a4a/f5e5c5/png?text=Cinematic+Title",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "description": "An elegant, italicized serif font for a film feel.",
+    "name": "Cinematic Title"
+  },
+  {
+    "id": "cinematic-wide",
+    "style": {
       "position": {
         "x": 50,
         "y": 80
       },
+      "italic": false,
+      "rotation": 0,
       "border": false,
+      "fontFamily": "Cinzel",
+      "borderWidth": 2,
+      "borderColor": "#FFFFFF",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "animation": "fade",
+      "color": "#FFFFFF",
+      "fontSize": 42,
+      "underline": false,
+      "shape": "rectangular",
+      "outline": false,
       "textShadow": "0 2px 5px rgba(0,0,0,0.8)",
-      "rotation": 0
+      "shadow": true
     },
     "source": "system",
-    "preview": "https://placehold.co/600x120/000000/FFFFFF/png?text=Cinematic+Wide"
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/000000/FFFFFF/png?text=Cinematic+Wide",
+    "description": "A wide, bold title for cinematic feel.",
+    "name": "Cinematic Wide"
   },
   {
     "id": "classic-typewriter",
     "name": "Classic Typewriter",
-    "source": "system",
     "description": "A simple, classic typewriter font.",
+    "preview": "https://placehold.co/600x120/f1f1f1/222222/png?text=Classic+Typewriter",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
     "style": {
+      "shape": "rounded",
+      "underline": false,
+      "shadow": false,
+      "outline": false,
+      "fontSize": 26,
+      "color": "#222222",
+      "borderWidth": 2,
+      "fontFamily": "Courier New",
+      "border": false,
+      "backgroundColor": "rgba(241, 241, 241, 0.8)",
+      "animation": "fade",
+      "bold": false,
       "borderColor": "#222222",
+      "rotation": 0,
+      "italic": false,
       "position": {
         "y": 80,
         "x": 50
-      },
-      "bold": false,
-      "italic": false,
-      "underline": false,
-      "fontSize": 26,
-      "outline": false,
-      "border": false,
-      "rotation": 0,
-      "borderWidth": 2,
-      "backgroundColor": "rgba(241, 241, 241, 0.8)",
-      "fontFamily": "Courier New",
-      "shape": "rounded",
-      "color": "#222222",
-      "shadow": false,
-      "animation": "fade"
+      }
     },
-    "preview": "https://placehold.co/600x120/f1f1f1/222222/png?text=Classic+Typewriter"
+    "source": "system"
   },
   {
     "id": "clean-outline",
-    "source": "system",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
@@ -274,192 +273,193 @@
     },
     "preview": "https://placehold.co/600x120/aaaaaa/FFFFFF/png?text=Clean+Outline",
     "style": {
-      "italic": false,
-      "fontFamily": "Inter",
-      "backgroundColor": "transparent",
-      "border": false,
-      "rotation": 0,
-      "borderColor": "#FFFFFF",
-      "color": "#FFFFFF",
       "shape": "rectangular",
-      "outline": true,
-      "animation": "fade",
-      "borderWidth": 2,
-      "shadow": true,
-      "position": {
-        "y": 85,
-        "x": 50
-      },
-      "textShadow": "0 1px 3px rgba(0,0,0,0.8)",
       "underline": false,
+      "outline": true,
+      "textShadow": "0 1px 3px rgba(0,0,0,0.8)",
+      "shadow": true,
+      "color": "#FFFFFF",
       "fontSize": 32,
-      "bold": true
+      "border": false,
+      "fontFamily": "Inter",
+      "borderWidth": 2,
+      "borderColor": "#FFFFFF",
+      "bold": true,
+      "animation": "fade",
+      "backgroundColor": "transparent",
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "italic": false,
+      "rotation": 0
     },
+    "source": "system",
     "name": "Clean Outline",
     "description": "Transparent background with a clean white outline."
   },
   {
     "id": "comic-book",
-    "description": "A fun, comic-book style.",
-    "style": {
-      "borderWidth": 3,
-      "rotation": 1,
-      "italic": false,
-      "outline": false,
-      "shadow": false,
-      "borderColor": "#000000",
-      "backgroundColor": "rgba(255, 255, 255, 0.9)",
-      "fontFamily": "Comic Sans MS",
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "shape": "rounded",
-      "animation": "bounce",
-      "color": "#000000",
-      "border": true,
-      "bold": true,
-      "underline": false,
-      "fontSize": 30
-    },
-    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=Comic+Book",
-    "name": "Comic Book",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "source": "system"
+    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=Comic+Book",
+    "style": {
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "rotation": 1,
+      "fontFamily": "Comic Sans MS",
+      "border": true,
+      "borderWidth": 3,
+      "borderColor": "#000000",
+      "backgroundColor": "rgba(255, 255, 255, 0.9)",
+      "animation": "bounce",
+      "bold": true,
+      "color": "#000000",
+      "fontSize": 30,
+      "shape": "rounded",
+      "underline": false,
+      "outline": false,
+      "shadow": false
+    },
+    "source": "system",
+    "name": "Comic Book",
+    "description": "A fun, comic-book style."
   },
   {
     "id": "corporate-blue",
+    "name": "Corporate Blue",
     "description": "A clean, sans-serif font for business.",
-    "source": "system",
-    "style": {
-      "rotation": 0,
-      "color": "#0284c7",
-      "position": {
-        "y": 85,
-        "x": 50
-      },
-      "underline": false,
-      "borderWidth": 2,
-      "outline": false,
-      "borderColor": "#0284c7",
-      "bold": true,
-      "italic": false,
-      "shadow": false,
-      "shape": "rounded",
-      "border": false,
-      "animation": "fade",
-      "fontSize": 26,
-      "backgroundColor": "rgba(240, 249, 255, 0.9)",
-      "fontFamily": "Open Sans"
-    },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
     "preview": "https://placehold.co/600x120/f0f9ff/0284c7/png?text=Corporate+Blue",
-    "name": "Corporate Blue"
+    "style": {
+      "color": "#0284c7",
+      "fontSize": 26,
+      "shape": "rounded",
+      "underline": false,
+      "outline": false,
+      "shadow": false,
+      "italic": false,
+      "position": {
+        "y": 85,
+        "x": 50
+      },
+      "rotation": 0,
+      "fontFamily": "Open Sans",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#0284c7",
+      "backgroundColor": "rgba(240, 249, 255, 0.9)",
+      "animation": "fade",
+      "bold": true
+    },
+    "source": "system"
   },
   {
     "id": "creepy-horror",
-    "source": "system",
-    "style": {
-      "animation": "fade",
-      "fontSize": 48,
-      "color": "#dc2f02",
-      "shadow": true,
-      "rotation": 0,
-      "borderColor": "#dc2f02",
-      "border": false,
-      "borderWidth": 2,
-      "bold": false,
-      "position": {
-        "y": 50,
-        "x": 50
-      },
-      "backgroundColor": "rgba(0, 0, 0, 0.8)",
-      "fontFamily": "Creepster",
-      "shape": "rounded",
-      "italic": false,
-      "outline": false,
-      "underline": false,
-      "textShadow": "0 0 5px #dc2f02"
-    },
-    "name": "Creepy Horror",
     "preview": "https://placehold.co/600x120/000000/dc2f02/png?text=Creepy",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
+    "style": {
+      "borderWidth": 2,
+      "border": false,
+      "fontFamily": "Creepster",
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "rgba(0, 0, 0, 0.8)",
+      "borderColor": "#dc2f02",
+      "rotation": 0,
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "italic": false,
+      "shape": "rounded",
+      "underline": false,
+      "textShadow": "0 0 5px #dc2f02",
+      "shadow": true,
+      "outline": false,
+      "fontSize": 48,
+      "color": "#dc2f02"
+    },
+    "source": "system",
+    "name": "Creepy Horror",
     "description": "A spooky, horror-themed font."
   },
   {
     "id": "cursive-script",
+    "name": "Cursive Script",
+    "description": "An elegant, flowing script.",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "description": "An elegant, flowing script.",
-    "name": "Cursive Script",
+    "preview": "https://placehold.co/600x120/fdeeee/c70039/png?text=Cursive+Script",
     "style": {
-      "rotation": 0,
-      "color": "#c70039",
+      "fontFamily": "Dancing Script",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#c70039",
+      "backgroundColor": "transparent",
+      "animation": "fade",
+      "bold": true,
       "position": {
         "y": 50,
         "x": 50
       },
-      "underline": false,
-      "borderWidth": 2,
-      "outline": false,
-      "borderColor": "#c70039",
       "italic": false,
-      "bold": true,
-      "shadow": true,
+      "rotation": 0,
       "shape": "rectangular",
-      "border": false,
-      "animation": "fade",
-      "fontSize": 38,
-      "backgroundColor": "transparent",
-      "fontFamily": "Dancing Script"
+      "underline": false,
+      "outline": false,
+      "shadow": true,
+      "color": "#c70039",
+      "fontSize": 38
     },
-    "preview": "https://placehold.co/600x120/fdeeee/c70039/png?text=Cursive+Script",
     "source": "system"
   },
   {
     "id": "cyber-magenta",
+    "style": {
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "italic": false,
+      "rotation": 0,
+      "fontFamily": "Michroma",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#FF00FF",
+      "animation": "fade",
+      "bold": false,
+      "backgroundColor": "transparent",
+      "color": "#FF00FF",
+      "fontSize": 36,
+      "underline": false,
+      "shape": "rectangular",
+      "outline": true,
+      "textShadow": "0 0 8px #FF00FF",
+      "shadow": true
+    },
     "source": "system",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
-    },
-    "style": {
-      "fontFamily": "Michroma",
-      "shape": "rectangular",
-      "animation": "fade",
-      "outline": true,
-      "bold": false,
-      "border": false,
-      "borderWidth": 2,
-      "textShadow": "0 0 8px #FF00FF",
-      "backgroundColor": "transparent",
-      "underline": false,
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "color": "#FF00FF",
-      "fontSize": 36,
-      "italic": false,
-      "borderColor": "#FF00FF",
-      "rotation": 0,
-      "shadow": true
     },
     "preview": "https://placehold.co/600x120/0a0a0a/FF00FF/png?text=Cyber+Magenta",
     "description": "A futuristic font with a striking magenta color.",
@@ -467,165 +467,98 @@
   },
   {
     "id": "digital-blue",
+    "name": "Digital Blue",
+    "description": "A clean, digital-style blue text.",
+    "preview": "https://placehold.co/600x120/050a20/00C4FF/png?text=Digital+Blue",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
     "source": "system",
     "style": {
+      "outline": false,
+      "shadow": true,
+      "shape": "banner",
+      "underline": false,
+      "color": "#00C4FF",
+      "fontSize": 30,
+      "borderColor": "#00C4FF",
+      "backgroundColor": "rgba(5, 10, 32, 0.8)",
+      "bold": false,
+      "animation": "slide-up",
+      "fontFamily": "Share Tech Mono",
+      "border": true,
+      "borderWidth": 1,
       "position": {
         "y": 90,
         "x": 50
       },
-      "rotation": 0,
-      "color": "#00C4FF",
-      "fontFamily": "Share Tech Mono",
-      "backgroundColor": "rgba(5, 10, 32, 0.8)",
-      "fontSize": 30,
-      "bold": false,
       "italic": false,
-      "shadow": true,
-      "outline": false,
-      "borderColor": "#00C4FF",
-      "border": true,
-      "borderWidth": 1,
-      "animation": "slide-up",
-      "underline": false,
-      "shape": "banner"
-    },
-    "name": "Digital Blue",
-    "preview": "https://placehold.co/600x120/050a20/00C4FF/png?text=Digital+Blue",
-    "description": "A clean, digital-style blue text.",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
+      "rotation": 0
     }
   },
   {
     "id": "elegant-gold",
+    "name": "Elegant Gold",
     "description": "A classic serif font with a subtle gold touch.",
-    "source": "system",
+    "preview": "https://placehold.co/600x120/fdfbf7/D4AF37/png?text=Elegant+Gold",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
     "style": {
-      "textShadow": "0 1px 3px rgba(0,0,0,0.4)",
       "rotation": 0,
-      "fontFamily": "Playfair Display",
-      "italic": true,
-      "fontSize": 34,
-      "color": "#D4AF37",
-      "border": false,
-      "borderWidth": 2,
-      "backgroundColor": "transparent",
-      "shadow": true,
-      "animation": "fade",
-      "shape": "rectangular",
-      "underline": false,
-      "borderColor": "#D4AF37",
-      "bold": false,
-      "outline": false,
       "position": {
         "y": 50,
         "x": 50
-      }
+      },
+      "italic": true,
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "transparent",
+      "borderColor": "#D4AF37",
+      "borderWidth": 2,
+      "border": false,
+      "fontFamily": "Playfair Display",
+      "fontSize": 34,
+      "color": "#D4AF37",
+      "textShadow": "0 1px 3px rgba(0,0,0,0.4)",
+      "shadow": true,
+      "outline": false,
+      "underline": false,
+      "shape": "rectangular"
     },
-    "name": "Elegant Gold",
-    "preview": "https://placehold.co/600x120/fdfbf7/D4AF37/png?text=Elegant+Gold"
+    "source": "system"
   },
   {
     "id": "faded-text",
-    "name": "Faded Text",
-    "source": "system",
     "description": "Subtle text with low opacity background.",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
+    "name": "Faded Text",
     "style": {
-      "shape": "rounded",
-      "fontFamily": "Inter",
-      "outline": false,
-      "border": false,
-      "borderWidth": 2,
-      "color": "#bbbbbb",
-      "rotation": 0,
       "italic": false,
-      "shadow": false,
-      "position": {
-        "y": 88,
-        "x": 50
-      },
-      "underline": false,
-      "animation": "fade",
-      "bold": false,
-      "fontSize": 22,
-      "backgroundColor": "rgba(0, 0, 0, 0.2)",
-      "borderColor": "#bbbbbb"
-    },
-    "preview": "https://placehold.co/600x120/111111/bbbbbb/png?text=Faded+Text"
-  },
-  {
-    "id": "formal-invite",
-    "source": "system",
-    "description": "An elegant, thin script.",
-    "style": {
-      "shape": "rectangular",
-      "border": false,
-      "borderWidth": 2,
-      "backgroundColor": "transparent",
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "fontFamily": "Great Vibes",
-      "color": "#0a0a0a",
-      "rotation": 0,
-      "fontSize": 40,
-      "bold": false,
-      "animation": "fade",
-      "italic": false,
-      "outline": false,
-      "borderColor": "#0a0a0a",
-      "underline": false,
-      "shadow": false
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "name": "Formal Invite",
-    "preview": "https://placehold.co/600x120/ffffff/0a0a0a/png?text=Formal+Invite"
-  },
-  {
-    "id": "gaming-green-glow",
-    "source": "system",
-    "description": "A sharp, tech font with a bright green glow.",
-    "preview": "https://placehold.co/600x120/1a1a1a/39FF14/png?text=Gaming+Green",
-    "style": {
-      "backgroundColor": "rgba(0, 0, 0, 0.7)",
-      "shadow": true,
-      "borderColor": "#39FF14",
       "position": {
         "x": 50,
         "y": 88
       },
-      "outline": false,
-      "underline": false,
       "rotation": 0,
-      "textShadow": "0 0 10px #39FF14, 0 0 20px #39FF14",
-      "bold": true,
-      "italic": false,
-      "border": true,
-      "fontSize": 38,
-      "shape": "rectangular",
-      "color": "#39FF14",
-      "borderWidth": 1,
-      "fontFamily": "Orbitron",
-      "animation": "fade"
+      "fontFamily": "Inter",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#bbbbbb",
+      "animation": "fade",
+      "bold": false,
+      "backgroundColor": "rgba(0, 0, 0, 0.2)",
+      "color": "#bbbbbb",
+      "fontSize": 22,
+      "underline": false,
+      "shape": "rounded",
+      "outline": false,
+      "shadow": false
     },
-    "name": "Gaming Green",
+    "source": "system",
+    "preview": "https://placehold.co/600x120/111111/bbbbbb/png?text=Faded+Text",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
@@ -633,7 +566,77 @@
     }
   },
   {
+    "id": "formal-invite",
+    "description": "An elegant, thin script.",
+    "name": "Formal Invite",
+    "style": {
+      "shadow": false,
+      "outline": false,
+      "shape": "rectangular",
+      "underline": false,
+      "fontSize": 40,
+      "color": "#0a0a0a",
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "transparent",
+      "borderColor": "#0a0a0a",
+      "borderWidth": 2,
+      "fontFamily": "Great Vibes",
+      "border": false,
+      "rotation": 0,
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      }
+    },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/ffffff/0a0a0a/png?text=Formal+Invite",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    }
+  },
+  {
+    "id": "gaming-green-glow",
+    "description": "A sharp, tech font with a bright green glow.",
+    "name": "Gaming Green",
+    "style": {
+      "fontFamily": "Orbitron",
+      "border": true,
+      "borderWidth": 1,
+      "borderColor": "#39FF14",
+      "backgroundColor": "rgba(0, 0, 0, 0.7)",
+      "bold": true,
+      "animation": "fade",
+      "position": {
+        "y": 88,
+        "x": 50
+      },
+      "italic": false,
+      "rotation": 0,
+      "underline": false,
+      "shape": "rectangular",
+      "outline": false,
+      "textShadow": "0 0 10px #39FF14, 0 0 20px #39FF14",
+      "shadow": true,
+      "color": "#39FF14",
+      "fontSize": 38
+    },
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/1a1a1a/39FF14/png?text=Gaming+Green"
+  },
+  {
     "id": "gothic-story",
+    "name": "Gothic Story",
+    "description": "An old-style font for a dramatic effect.",
+    "preview": "https://placehold.co/600x120/222222/f0e6d2/png?text=Gothic+Story",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
@@ -641,156 +644,186 @@
     },
     "style": {
       "color": "#f0e6d2",
-      "underline": false,
-      "border": false,
-      "italic": false,
-      "bold": false,
       "fontSize": 36,
       "shape": "rectangular",
-      "fontFamily": "Uncial Antiqua",
-      "borderWidth": 2,
-      "animation": "fade",
+      "underline": false,
+      "outline": false,
+      "shadow": true,
+      "italic": false,
       "position": {
         "y": 50,
         "x": 50
       },
-      "outline": false,
-      "shadow": true,
-      "backgroundColor": "transparent",
       "rotation": 0,
-      "borderColor": "#f0e6d2"
+      "fontFamily": "Uncial Antiqua",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#f0e6d2",
+      "backgroundColor": "transparent",
+      "bold": false,
+      "animation": "fade"
     },
-    "name": "Gothic Story",
-    "description": "An old-style font for a dramatic effect.",
-    "preview": "https://placehold.co/600x120/222222/f0e6d2/png?text=Gothic+Story",
     "source": "system"
   },
   {
     "id": "green-success-pill",
+    "preview": "https://placehold.co/600x120/16a34a/ffffff/png?text=Success!",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "source": "system",
     "style": {
-      "animation": "bounce",
-      "shadow": true,
-      "backgroundColor": "#16a34a",
-      "outline": false,
-      "borderColor": "#FFFFFF",
-      "underline": false,
       "rotation": 0,
-      "bold": true,
       "position": {
         "x": 50,
         "y": 50
       },
-      "border": false,
-      "shape": "pill",
       "italic": false,
+      "animation": "bounce",
+      "backgroundColor": "#16a34a",
+      "bold": true,
+      "borderColor": "#FFFFFF",
       "borderWidth": 2,
-      "color": "#FFFFFF",
+      "border": false,
       "fontFamily": "Montserrat",
-      "fontSize": 28
+      "fontSize": 28,
+      "color": "#FFFFFF",
+      "shadow": true,
+      "outline": false,
+      "underline": false,
+      "shape": "pill"
     },
-    "preview": "https://placehold.co/600x120/16a34a/ffffff/png?text=Success!",
+    "source": "system",
     "name": "Green Success",
     "description": "A friendly green pill for success messages."
   },
   {
     "id": "impact-heavy",
-    "source": "system",
     "name": "Impact Heavy",
+    "description": "A thick, bold, all-caps font.",
+    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=IMPACT+HEAVY",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
     "style": {
+      "underline": false,
+      "shape": "rectangular",
+      "shadow": false,
+      "outline": false,
+      "fontSize": 52,
       "color": "#000000",
-      "rotation": 0,
-      "backgroundColor": "rgba(255, 255, 255, 0.9)",
-      "borderColor": "#000000",
+      "borderWidth": 2,
+      "fontFamily": "Anton",
       "border": false,
+      "bold": true,
+      "backgroundColor": "rgba(255, 255, 255, 0.9)",
+      "animation": "fade",
+      "borderColor": "#000000",
+      "rotation": 0,
+      "italic": false,
+      "position": {
+        "y": 50,
+        "x": 50
+      }
+    },
+    "source": "system"
+  },
+  {
+    "id": "indie-flower",
+    "description": "A friendly, rounded handwritten font.",
+    "name": "Indie Flower",
+    "style": {
+      "borderColor": "#FFFFFF",
+      "bold": false,
+      "backgroundColor": "rgba(50, 50, 50, 0.8)",
+      "animation": "fade",
+      "fontFamily": "Indie Flower",
+      "border": false,
+      "borderWidth": 2,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "italic": false,
+      "rotation": 0,
+      "outline": false,
+      "shadow": false,
+      "underline": false,
+      "shape": "pill",
+      "color": "#FFFFFF",
+      "fontSize": 30
+    },
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Indie+Flower"
+  },
+  {
+    "id": "inverted-pill",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/222222/f0f0f0/png?text=Inverted+Pill",
+    "source": "system",
+    "style": {
+      "borderColor": "#f0f0f0",
+      "animation": "fade",
+      "backgroundColor": "#222222",
+      "bold": true,
+      "border": false,
+      "fontFamily": "Inter",
+      "borderWidth": 2,
+      "italic": false,
+      "position": {
+        "y": 85,
+        "x": 50
+      },
+      "rotation": 0,
+      "outline": false,
+      "shadow": true,
+      "underline": false,
+      "shape": "pill",
+      "color": "#f0f0f0",
+      "fontSize": 24
+    },
+    "name": "Inverted Pill",
+    "description": "A dark pill with bright text."
+  },
+  {
+    "id": "journal-entry",
+    "description": "A personal, script-like font.",
+    "name": "Journal Entry",
+    "style": {
+      "border": false,
+      "fontFamily": "Kalam",
+      "borderWidth": 2,
+      "borderColor": "#4a3f35",
+      "backgroundColor": "rgba(250, 243, 224, 0.9)",
+      "bold": false,
+      "animation": "fade",
+      "italic": false,
       "position": {
         "y": 50,
         "x": 50
       },
-      "shadow": false,
-      "bold": true,
-      "shape": "rectangular",
+      "rotation": -1,
+      "shape": "rounded",
       "underline": false,
-      "italic": false,
       "outline": false,
-      "fontSize": 52,
-      "fontFamily": "Anton",
-      "animation": "fade",
-      "borderWidth": 2
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=IMPACT+HEAVY",
-    "description": "A thick, bold, all-caps font."
-  },
-  {
-    "id": "indie-flower",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "style": {
-      "border": false,
-      "bold": false,
-      "color": "#FFFFFF",
-      "underline": false,
-      "shape": "pill",
-      "outline": false,
-      "borderColor": "#FFFFFF",
-      "rotation": 0,
       "shadow": false,
-      "fontSize": 30,
-      "animation": "fade",
-      "backgroundColor": "rgba(50, 50, 50, 0.8)",
-      "fontFamily": "Indie Flower",
-      "borderWidth": 2,
-      "italic": false,
-      "position": {
-        "y": 85,
-        "x": 50
-      }
+      "color": "#4a3f35",
+      "fontSize": 28
     },
-    "name": "Indie Flower",
-    "description": "A friendly, rounded handwritten font.",
-    "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Indie+Flower",
-    "source": "system"
-  },
-  {
-    "id": "inverted-pill",
     "source": "system",
-    "style": {
-      "underline": false,
-      "animation": "fade",
-      "backgroundColor": "#222222",
-      "outline": false,
-      "borderColor": "#f0f0f0",
-      "shadow": true,
-      "fontSize": 24,
-      "position": {
-        "y": 85,
-        "x": 50
-      },
-      "border": false,
-      "rotation": 0,
-      "color": "#f0f0f0",
-      "shape": "pill",
-      "fontFamily": "Inter",
-      "italic": false,
-      "borderWidth": 2,
-      "bold": true
-    },
-    "name": "Inverted Pill",
-    "description": "A dark pill with bright text.",
-    "preview": "https://placehold.co/600x120/222222/f0f0f0/png?text=Inverted+Pill",
+    "preview": "https://placehold.co/600x120/faf3e0/4a3f35/png?text=Journal+Entry",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
@@ -798,74 +831,42 @@
     }
   },
   {
-    "id": "journal-entry",
-    "description": "A personal, script-like font.",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "style": {
-      "shadow": false,
-      "fontSize": 28,
-      "color": "#4a3f35",
-      "animation": "fade",
-      "borderWidth": 2,
-      "outline": false,
-      "bold": false,
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "rotation": -1,
-      "fontFamily": "Kalam",
-      "borderColor": "#4a3f35",
-      "italic": false,
-      "backgroundColor": "rgba(250, 243, 224, 0.9)",
-      "underline": false,
-      "border": false,
-      "shape": "rounded"
-    },
-    "source": "system",
-    "preview": "https://placehold.co/600x120/faf3e0/4a3f35/png?text=Journal+Entry",
-    "name": "Journal Entry"
-  },
-  {
     "id": "karaoke-glow",
-    "name": "Karaoke Glow",
-    "source": "system",
-    "preview": "https://placehold.co/600x120/1e1e1e/00F5FF/png?text=Karaoke+Glow",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
     "style": {
-      "borderColor": "#00F5FF",
-      "backgroundColor": "rgba(30, 30, 30, 0.8)",
-      "textShadow": "0 0 8px #00F5FF",
+      "color": "#00F5FF",
       "fontSize": 48,
-      "borderWidth": 2,
-      "fontFamily": "Bebas Neue",
+      "outline": false,
+      "textShadow": "0 0 8px #00F5FF",
       "shadow": true,
+      "underline": false,
+      "shape": "rectangular",
       "position": {
         "x": 50,
         "y": 90
       },
-      "rotation": 0,
-      "shape": "rectangular",
-      "color": "#00F5FF",
-      "underline": false,
-      "animation": "slide-up",
-      "outline": false,
       "italic": false,
+      "rotation": 0,
+      "borderColor": "#00F5FF",
+      "backgroundColor": "rgba(30, 30, 30, 0.8)",
+      "bold": true,
+      "animation": "slide-up",
       "border": false,
-      "bold": true
+      "fontFamily": "Bebas Neue",
+      "borderWidth": 2
     },
-    "description": "Bright, clear text that slides up, styled for karaoke."
+    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/1e1e1e/00F5FF/png?text=Karaoke+Glow",
+    "description": "Bright, clear text that slides up, styled for karaoke.",
+    "name": "Karaoke Glow"
   },
   {
     "id": "luckiest-guy-cartoon",
+    "name": "Luckiest Guy",
     "description": "A fun, heavy cartoon-style font.",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -874,354 +875,353 @@
     },
     "preview": "https://placehold.co/600x120/00b4d8/ffffff/png?text=LUCKIEST+GUY",
     "style": {
-      "rotation": -3,
-      "border": false,
-      "bold": false,
-      "position": {
-        "x": 50,
-        "y": 50
-      },
+      "fontSize": 44,
+      "color": "#FFFFFF",
+      "shadow": true,
       "outline": true,
+      "underline": false,
+      "shape": "pill",
+      "rotation": -3,
+      "italic": false,
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "animation": "bounce",
+      "bold": false,
       "backgroundColor": "rgba(0, 180, 216, 0.9)",
       "borderColor": "#FFFFFF",
-      "fontFamily": "Luckiest Guy",
-      "animation": "bounce",
-      "shape": "pill",
-      "italic": false,
-      "color": "#FFFFFF",
       "borderWidth": 2,
-      "underline": false,
-      "fontSize": 44,
-      "shadow": true
+      "fontFamily": "Luckiest Guy",
+      "border": false
     },
-    "name": "Luckiest Guy",
     "source": "system"
   },
   {
     "id": "marker-scribble",
     "preview": "https://placehold.co/600x120/ffff99/000000/png?text=Marker+Scribble",
-    "description": "A thick, permanent marker style.",
-    "source": "system",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "name": "Marker Scribble",
     "style": {
-      "italic": false,
-      "backgroundColor": "rgba(255, 255, 153, 0.9)",
+      "borderWidth": 2,
       "fontFamily": "Permanent Marker",
       "border": false,
-      "rotation": 2,
-      "borderColor": "#000000",
-      "color": "#000000",
-      "shape": "rounded",
-      "outline": false,
+      "backgroundColor": "rgba(255, 255, 153, 0.9)",
       "animation": "fade",
-      "borderWidth": 2,
-      "shadow": false,
+      "bold": false,
+      "borderColor": "#000000",
+      "rotation": 2,
+      "italic": false,
       "position": {
         "x": 50,
         "y": 30
       },
       "underline": false,
+      "shape": "rounded",
+      "shadow": false,
+      "outline": false,
       "fontSize": 32,
-      "bold": false
-    }
+      "color": "#000000"
+    },
+    "source": "system",
+    "name": "Marker Scribble",
+    "description": "A thick, permanent marker style."
   },
   {
     "id": "minimal-dark",
-    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
     "preview": "https://placehold.co/600x120/1a1a1a/ffffff/png?text=Minimal+Dark",
-    "description": "Clean text with a subtle shadow.",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "name": "Minimal Dark",
+    "source": "system",
     "style": {
-      "shape": "rounded",
-      "fontFamily": "Inter",
-      "position": {
-        "x": 50,
-        "y": 85
-      },
-      "italic": false,
-      "border": false,
-      "shadow": true,
-      "rotation": 0,
-      "outline": false,
-      "color": "#FFFFFF",
-      "animation": "fade",
-      "borderColor": "#FFFFFF",
-      "bold": false,
-      "backgroundColor": "rgba(0, 0, 0, 0.5)",
-      "underline": false,
       "fontSize": 26,
-      "borderWidth": 2
-    }
-  },
-  {
-    "id": "minimal-light",
-    "style": {
-      "italic": false,
-      "fontFamily": "Roboto",
-      "borderWidth": 2,
-      "bold": false,
-      "borderColor": "#525252",
-      "shadow": false,
-      "border": false,
-      "underline": false,
+      "color": "#FFFFFF",
+      "shadow": true,
       "outline": false,
-      "rotation": 0,
-      "backgroundColor": "rgba(229, 229, 229, 0.7)",
-      "color": "#525252",
-      "fontSize": 24,
-      "animation": "fade",
-      "position": {
-        "x": 50,
-        "y": 85
-      },
-      "shape": "rounded"
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "description": "A thin, light font on a light background.",
-    "source": "system",
-    "name": "Minimal Light",
-    "preview": "https://placehold.co/600x120/e5e5e5/525252/png?text=Minimal+Light"
-  },
-  {
-    "id": "minimal-serif",
-    "preview": "https://placehold.co/600x120/1a1a1a/EEEEEE/png?text=Minimal+Serif",
-    "description": "A clean, modern serif font.",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "source": "system",
-    "name": "Minimal Serif",
-    "style": {
-      "color": "#EEEEEE",
+      "underline": false,
       "shape": "rounded",
-      "borderColor": "#EEEEEE",
-      "shadow": false,
       "rotation": 0,
       "italic": false,
-      "backgroundColor": "rgba(0,0,0,0.6)",
       "position": {
         "y": 85,
         "x": 50
       },
+      "backgroundColor": "rgba(0, 0, 0, 0.5)",
+      "bold": false,
+      "animation": "fade",
+      "borderColor": "#FFFFFF",
+      "borderWidth": 2,
+      "fontFamily": "Inter",
+      "border": false
+    },
+    "name": "Minimal Dark",
+    "description": "Clean text with a subtle shadow."
+  },
+  {
+    "id": "minimal-light",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "preview": "https://placehold.co/600x120/e5e5e5/525252/png?text=Minimal+Light",
+    "style": {
+      "rotation": 0,
+      "italic": false,
+      "position": {
+        "y": 85,
+        "x": 50
+      },
+      "borderWidth": 2,
+      "border": false,
+      "fontFamily": "Roboto",
+      "animation": "fade",
+      "backgroundColor": "rgba(229, 229, 229, 0.7)",
+      "bold": false,
+      "borderColor": "#525252",
+      "fontSize": 24,
+      "color": "#525252",
+      "underline": false,
+      "shape": "rounded",
+      "shadow": false,
+      "outline": false
+    },
+    "source": "system",
+    "name": "Minimal Light",
+    "description": "A thin, light font on a light background."
+  },
+  {
+    "id": "minimal-serif",
+    "description": "A clean, modern serif font.",
+    "name": "Minimal Serif",
+    "style": {
+      "shadow": false,
+      "outline": false,
+      "shape": "rounded",
       "underline": false,
       "fontSize": 28,
-      "borderWidth": 2,
-      "animation": "fade",
+      "color": "#EEEEEE",
       "bold": false,
+      "backgroundColor": "rgba(0,0,0,0.6)",
+      "animation": "fade",
+      "borderColor": "#EEEEEE",
+      "borderWidth": 2,
       "fontFamily": "Lora",
       "border": false,
-      "outline": false
+      "rotation": 0,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "italic": false
+    },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/1a1a1a/EEEEEE/png?text=Minimal+Serif",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
     }
   },
   {
     "id": "news-ticker",
+    "name": "News Ticker",
+    "description": "A classic news-style lower-third banner.",
+    "preview": "https://placehold.co/600x120/00539C/FFFFFF/png?text=News+Ticker",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
     "source": "system",
     "style": {
-      "fontSize": 24,
-      "animation": "fade",
-      "italic": false,
-      "outline": false,
       "shape": "banner",
-      "borderWidth": 2,
+      "underline": false,
       "shadow": false,
+      "outline": false,
+      "fontSize": 24,
+      "color": "#FFFFFF",
+      "borderWidth": 2,
+      "border": false,
+      "fontFamily": "Roboto",
+      "animation": "fade",
       "bold": true,
+      "backgroundColor": "rgba(0, 83, 156, 0.9)",
       "borderColor": "#FFFFFF",
       "rotation": 0,
-      "fontFamily": "Roboto",
-      "border": false,
-      "color": "#FFFFFF",
+      "italic": false,
       "position": {
         "x": 50,
         "y": 90
-      },
-      "underline": false,
-      "backgroundColor": "rgba(0, 83, 156, 0.9)"
-    },
-    "name": "News Ticker",
-    "description": "A classic news-style lower-third banner.",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "preview": "https://placehold.co/600x120/00539C/FFFFFF/png?text=News+Ticker"
+      }
+    }
   },
   {
     "id": "orange-outline-bold",
-    "style": {
-      "shape": "rectangular",
-      "underline": false,
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "backgroundColor": "transparent",
-      "fontSize": 48,
-      "color": "#f97316",
-      "animation": "fade",
-      "outline": true,
-      "borderColor": "#f97316",
-      "shadow": true,
-      "rotation": 0,
-      "textShadow": "0 2px 2px #000000",
-      "italic": false,
-      "border": false,
-      "borderWidth": 2,
-      "fontFamily": "Impact",
-      "bold": true
-    },
-    "preview": "https://placehold.co/600x120/4a4a4a/f97316/png?text=Orange+Outline",
-    "source": "system",
-    "description": "Thick text with an orange outline.",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "name": "Orange Outline"
+    "preview": "https://placehold.co/600x120/4a4a4a/f97316/png?text=Orange+Outline",
+    "style": {
+      "rotation": 0,
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "italic": false,
+      "borderWidth": 2,
+      "border": false,
+      "fontFamily": "Impact",
+      "animation": "fade",
+      "backgroundColor": "transparent",
+      "bold": true,
+      "borderColor": "#f97316",
+      "fontSize": 48,
+      "color": "#f97316",
+      "shape": "rectangular",
+      "underline": false,
+      "textShadow": "0 2px 2px #000000",
+      "shadow": true,
+      "outline": true
+    },
+    "source": "system",
+    "name": "Orange Outline",
+    "description": "Thick text with an orange outline."
   },
   {
     "id": "oswald-condensed",
     "preview": "https://placehold.co/600x120/c70039/ffffff/png?text=Oswald+Condensed",
-    "name": "Oswald Condensed",
-    "description": "A condensed, strong font for statements.",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
     "style": {
-      "position": {
-        "x": 50,
-        "y": 88
-      },
       "color": "#FFFFFF",
-      "italic": false,
-      "bold": true,
-      "outline": false,
-      "backgroundColor": "rgba(199, 0, 57, 0.9)",
-      "animation": "slide-up",
-      "underline": false,
-      "shape": "rectangular",
       "fontSize": 40,
-      "borderWidth": 2,
-      "border": false,
+      "outline": false,
       "shadow": true,
+      "shape": "rectangular",
+      "underline": false,
+      "position": {
+        "y": 88,
+        "x": 50
+      },
+      "italic": false,
       "rotation": 0,
       "borderColor": "#FFFFFF",
-      "fontFamily": "Oswald"
+      "animation": "slide-up",
+      "backgroundColor": "rgba(199, 0, 57, 0.9)",
+      "bold": true,
+      "border": false,
+      "fontFamily": "Oswald",
+      "borderWidth": 2
     },
-    "source": "system"
+    "source": "system",
+    "name": "Oswald Condensed",
+    "description": "A condensed, strong font for statements."
   },
   {
     "id": "passion-one-black",
+    "description": "A very heavy, impactful font.",
+    "name": "Passion One Black",
+    "style": {
+      "rotation": 0,
+      "italic": false,
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "borderWidth": 2,
+      "border": false,
+      "fontFamily": "Passion One",
+      "backgroundColor": "transparent",
+      "animation": "fade",
+      "bold": true,
+      "borderColor": "#f5b300",
+      "fontSize": 56,
+      "color": "#f5b300",
+      "shape": "rectangular",
+      "underline": false,
+      "shadow": true,
+      "outline": true
+    },
+    "source": "system",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "preview": "https://placehold.co/600x120/111111/f5b300/png?text=Passion+One",
-    "style": {
-      "borderWidth": 2,
-      "shape": "rectangular",
-      "border": false,
-      "fontFamily": "Passion One",
-      "rotation": 0,
-      "shadow": true,
-      "color": "#f5b300",
-      "bold": true,
-      "underline": false,
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "borderColor": "#f5b300",
-      "animation": "fade",
-      "fontSize": 56,
-      "backgroundColor": "transparent",
-      "italic": false,
-      "outline": true
-    },
-    "name": "Passion One Black",
-    "description": "A very heavy, impactful font.",
-    "source": "system"
+    "preview": "https://placehold.co/600x120/111111/f5b300/png?text=Passion+One"
   },
   {
     "id": "pink-pill-pop",
-    "name": "Pink Pill Pop",
-    "source": "system",
     "description": "A soft pink pill shape.",
+    "name": "Pink Pill Pop",
     "style": {
-      "backgroundColor": "#f9a8d4",
-      "outline": false,
-      "borderColor": "#1f2937",
-      "bold": true,
-      "animation": "fade",
-      "underline": false,
-      "shadow": false,
-      "italic": false,
-      "shape": "pill",
-      "fontSize": 26,
-      "rotation": 0,
-      "border": false,
-      "fontFamily": "Open Sans",
-      "borderWidth": 2,
       "color": "#1f2937",
+      "fontSize": 26,
+      "outline": false,
+      "shadow": false,
+      "underline": false,
+      "shape": "pill",
       "position": {
         "x": 50,
         "y": 85
-      }
+      },
+      "italic": false,
+      "rotation": 0,
+      "borderColor": "#1f2937",
+      "animation": "fade",
+      "bold": true,
+      "backgroundColor": "#f9a8d4",
+      "fontFamily": "Open Sans",
+      "border": false,
+      "borderWidth": 2
     },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/f9a8d4/1f2937/png?text=Pink+Pill",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
-    },
-    "preview": "https://placehold.co/600x120/f9a8d4/1f2937/png?text=Pink+Pill"
+    }
   },
   {
     "id": "pixel-perfect",
-    "source": "system",
     "description": "A retro, pixelated font style.",
+    "name": "Pixel Perfect",
+    "source": "system",
     "style": {
-      "borderColor": "#FFFFFF",
-      "rotation": 0,
-      "shadow": false,
-      "bold": false,
-      "animation": "fade",
-      "underline": false,
-      "border": false,
-      "borderWidth": 2,
-      "fontFamily": "Press Start 2P",
-      "color": "#FFFFFF",
-      "italic": false,
-      "backgroundColor": "rgba(30, 30, 30, 0.8)",
-      "shape": "rounded",
-      "outline": false,
       "fontSize": 24,
+      "color": "#FFFFFF",
+      "shadow": false,
+      "outline": false,
+      "shape": "rounded",
+      "underline": false,
+      "rotation": 0,
       "position": {
         "x": 50,
         "y": 85
-      }
+      },
+      "italic": false,
+      "backgroundColor": "rgba(30, 30, 30, 0.8)",
+      "animation": "fade",
+      "bold": false,
+      "borderColor": "#FFFFFF",
+      "borderWidth": 2,
+      "border": false,
+      "fontFamily": "Press Start 2P"
     },
     "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Pixel+Perfect",
-    "name": "Pixel Perfect",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
@@ -1230,468 +1230,468 @@
   },
   {
     "id": "purple-gradient",
-    "source": "system",
+    "name": "Purple Gradient",
     "description": "A bold text with a purple gradient.",
-    "style": {
-      "position": {
-        "y": 50,
-        "x": 50
-      },
-      "border": false,
-      "bold": true,
-      "fontFamily": "Exo 2",
-      "rotation": 0,
-      "textShadow": "0 0 10px #a855f7",
-      "borderWidth": 2,
-      "backgroundColor": "transparent",
-      "underline": false,
-      "fontSize": 42,
-      "borderColor": "#c084fc",
-      "color": "#c084fc",
-      "outline": false,
-      "shape": "rectangular",
-      "shadow": true,
-      "italic": false,
-      "gradient": "linear-gradient(90deg, #a855f7, #6366f1)",
-      "animation": "fade"
-    },
+    "preview": "https://placehold.co/600x120/1e1b4b/c084fc/png?text=Purple+Gradient",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "preview": "https://placehold.co/600x120/1e1b4b/c084fc/png?text=Purple+Gradient",
-    "name": "Purple Gradient"
+    "style": {
+      "color": "#c084fc",
+      "fontSize": 42,
+      "shape": "rectangular",
+      "underline": false,
+      "outline": false,
+      "gradient": "linear-gradient(90deg, #a855f7, #6366f1)",
+      "shadow": true,
+      "textShadow": "0 0 10px #a855f7",
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "rotation": 0,
+      "border": false,
+      "fontFamily": "Exo 2",
+      "borderWidth": 2,
+      "borderColor": "#c084fc",
+      "backgroundColor": "transparent",
+      "animation": "fade",
+      "bold": true
+    },
+    "source": "system"
   },
   {
     "id": "red-alert-banner",
-    "description": "A full-width red banner for alerts.",
+    "style": {
+      "outline": false,
+      "shadow": true,
+      "underline": false,
+      "shape": "banner",
+      "color": "#FFFFFF",
+      "fontSize": 40,
+      "borderColor": "#FFFFFF",
+      "bold": true,
+      "backgroundColor": "rgba(220, 38, 38, 0.9)",
+      "animation": "fade",
+      "border": false,
+      "fontFamily": "Bebas Neue",
+      "borderWidth": 2,
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 10
+      },
+      "rotation": 0
+    },
+    "source": "system",
     "preview": "https://placehold.co/600x120/dc2626/ffffff/png?text=Red+Alert",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "style": {
-      "bold": true,
-      "underline": false,
-      "color": "#FFFFFF",
-      "borderWidth": 2,
-      "backgroundColor": "rgba(220, 38, 38, 0.9)",
-      "borderColor": "#FFFFFF",
-      "position": {
-        "y": 10,
-        "x": 50
-      },
-      "fontSize": 40,
-      "animation": "fade",
-      "italic": false,
-      "outline": false,
-      "fontFamily": "Bebas Neue",
-      "rotation": 0,
-      "shape": "banner",
-      "shadow": true,
-      "border": false
-    },
-    "source": "system",
+    "description": "A full-width red banner for alerts.",
     "name": "Red Alert Banner"
   },
   {
     "id": "retro-wave",
+    "style": {
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "italic": false,
+      "rotation": 0,
+      "fontFamily": "Monoton",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#f920f2",
+      "animation": "fade",
+      "bold": false,
+      "backgroundColor": "transparent",
+      "color": "#f920f2",
+      "fontSize": 40,
+      "underline": false,
+      "shape": "rectangular",
+      "outline": false,
+      "textShadow": "0 0 5px #f920f2, 0 0 10px #00c4ff",
+      "shadow": true
+    },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/0f0c29/f920f2/png?text=Retro+Wave",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "name": "Retro Wave",
-    "style": {
-      "bold": false,
-      "fontFamily": "Monoton",
-      "position": {
-        "y": 50,
-        "x": 50
-      },
-      "color": "#f920f2",
-      "backgroundColor": "transparent",
-      "textShadow": "0 0 5px #f920f2, 0 0 10px #00c4ff",
-      "borderWidth": 2,
-      "outline": false,
-      "shadow": true,
-      "underline": false,
-      "border": false,
-      "rotation": 0,
-      "shape": "rectangular",
-      "italic": false,
-      "animation": "fade",
-      "fontSize": 40,
-      "borderColor": "#f920f2"
-    },
-    "source": "system",
     "description": "A retro 80s style with pink and blue.",
-    "preview": "https://placehold.co/600x120/0f0c29/f920f2/png?text=Retro+Wave"
+    "name": "Retro Wave"
   },
   {
     "id": "rubik-bubbles",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400031,
-      "nanoseconds": 909000000
-    },
-    "preview": "https://placehold.co/600x120/4361ee/ffffff/png?text=Bubbles",
-    "name": "Rubik Bubbles",
-    "description": "A unique, bubbly font.",
     "style": {
-      "rotation": 0,
-      "fontSize": 40,
+      "borderColor": "#FFFFFF",
+      "bold": false,
+      "animation": "bounce",
+      "backgroundColor": "rgba(67, 97, 238, 0.8)",
       "fontFamily": "Rubik Bubbles",
+      "border": false,
+      "borderWidth": 2,
       "position": {
         "y": 50,
         "x": 50
       },
-      "shadow": false,
-      "outline": false,
-      "bold": false,
-      "color": "#FFFFFF",
-      "borderColor": "#FFFFFF",
-      "border": false,
-      "animation": "bounce",
-      "shape": "pill",
-      "backgroundColor": "rgba(67, 97, 238, 0.8)",
-      "borderWidth": 2,
       "italic": false,
-      "underline": false
+      "rotation": 0,
+      "outline": false,
+      "shadow": false,
+      "underline": false,
+      "shape": "pill",
+      "color": "#FFFFFF",
+      "fontSize": 40
     },
-    "source": "system"
-  },
-  {
-    "id": "russo-one-solid",
-    "description": "A solid, wide, and modern font.",
+    "source": "system",
+    "preview": "https://placehold.co/600x120/4361ee/ffffff/png?text=Bubbles",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
+    "description": "A unique, bubbly font.",
+    "name": "Rubik Bubbles"
+  },
+  {
+    "id": "russo-one-solid",
+    "preview": "https://placehold.co/600x120/005f73/94d2bd/png?text=Russo+One",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400031,
+      "nanoseconds": 909000000
+    },
+    "source": "system",
     "style": {
-      "animation": "fade",
       "shape": "rounded",
-      "outline": false,
-      "bold": false,
-      "borderColor": "#94d2bd",
-      "rotation": 0,
-      "borderWidth": 2,
-      "border": false,
       "underline": false,
+      "outline": false,
+      "shadow": true,
       "color": "#94d2bd",
-      "italic": false,
-      "backgroundColor": "rgba(0, 95, 115, 0.9)",
+      "fontSize": 38,
       "fontFamily": "Russo One",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#94d2bd",
+      "bold": false,
+      "backgroundColor": "rgba(0, 95, 115, 0.9)",
+      "animation": "fade",
+      "italic": false,
       "position": {
         "x": 50,
         "y": 85
       },
-      "shadow": true,
-      "fontSize": 38
+      "rotation": 0
     },
     "name": "Russo One Solid",
-    "source": "system",
-    "preview": "https://placehold.co/600x120/005f73/94d2bd/png?text=Russo+One"
+    "description": "A solid, wide, and modern font."
   },
   {
     "id": "shadow-block",
+    "name": "Shadow Block",
+    "description": "Text with a heavy block shadow.",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
     "preview": "https://placehold.co/600x120/ffffff/444444/png?text=Shadow+Block",
-    "description": "Text with a heavy block shadow.",
     "style": {
-      "bold": false,
-      "textShadow": "4px 4px 0px #444444",
-      "outline": false,
       "position": {
         "y": 50,
         "x": 50
       },
-      "backgroundColor": "transparent",
-      "border": false,
-      "shape": "rectangular",
-      "color": "#FFFFFF",
-      "underline": false,
-      "rotation": 0,
-      "borderWidth": 2,
-      "fontSize": 46,
-      "shadow": true,
-      "fontFamily": "Alfa Slab One",
-      "animation": "fade",
       "italic": false,
-      "borderColor": "#FFFFFF"
+      "rotation": 0,
+      "border": false,
+      "fontFamily": "Alfa Slab One",
+      "borderWidth": 2,
+      "borderColor": "#FFFFFF",
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "transparent",
+      "color": "#FFFFFF",
+      "fontSize": 46,
+      "underline": false,
+      "shape": "rectangular",
+      "outline": false,
+      "textShadow": "4px 4px 0px #444444",
+      "shadow": true
     },
-    "name": "Shadow Block",
     "source": "system"
   },
   {
     "id": "shrikhand-playful",
+    "preview": "https://placehold.co/600x120/f72585/ffffff/png?text=Shrikhand",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
+    },
+    "style": {
+      "borderWidth": 2,
+      "fontFamily": "Shrikhand",
+      "border": false,
+      "bold": false,
+      "backgroundColor": "rgba(247, 37, 133, 0.9)",
+      "animation": "bounce",
+      "borderColor": "#FFFFFF",
+      "rotation": 0,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "italic": false,
+      "shape": "rounded",
+      "underline": false,
+      "shadow": true,
+      "outline": false,
+      "fontSize": 38,
+      "color": "#FFFFFF"
     },
     "source": "system",
     "name": "Shrikhand Playful",
-    "preview": "https://placehold.co/600x120/f72585/ffffff/png?text=Shrikhand",
-    "description": "A playful, rounded, and bold font.",
-    "style": {
-      "backgroundColor": "rgba(247, 37, 133, 0.9)",
-      "shadow": true,
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "borderColor": "#FFFFFF",
-      "outline": false,
-      "underline": false,
-      "rotation": 0,
-      "bold": false,
-      "italic": false,
-      "shape": "rounded",
-      "border": false,
-      "fontSize": 38,
-      "color": "#FFFFFF",
-      "borderWidth": 2,
-      "fontFamily": "Shrikhand",
-      "animation": "bounce"
-    }
+    "description": "A playful, rounded, and bold font."
   },
   {
     "id": "simple-border",
+    "name": "Simple Border",
+    "description": "Transparent fill with a simple border.",
+    "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Simple+Border",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
+    "source": "system",
     "style": {
-      "shadow": false,
-      "backgroundColor": "transparent",
-      "shape": "rounded",
       "fontSize": 28,
-      "borderColor": "#FFFFFF",
-      "fontFamily": "Roboto",
       "color": "#FFFFFF",
-      "borderWidth": 3,
-      "italic": false,
-      "rotation": 0,
-      "animation": "fade",
-      "border": true,
       "underline": false,
+      "shape": "rounded",
+      "shadow": false,
       "outline": false,
-      "bold": false,
+      "rotation": 0,
       "position": {
         "x": 50,
         "y": 50
-      }
-    },
-    "description": "Transparent fill with a simple border.",
-    "name": "Simple Border",
-    "preview": "https://placehold.co/600x120/333333/FFFFFF/png?text=Simple+Border",
-    "source": "system"
+      },
+      "italic": false,
+      "borderWidth": 3,
+      "fontFamily": "Roboto",
+      "border": true,
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "transparent",
+      "borderColor": "#FFFFFF"
+    }
   },
   {
     "id": "sleek-modern",
-    "preview": "https://placehold.co/600x120/0a0a0a/e5e5e5/png?text=Sleek+Modern",
-    "name": "Sleek Modern",
-    "source": "system",
     "description": "A thin, light, and modern font.",
+    "name": "Sleek Modern",
+    "style": {
+      "fontFamily": "Kanit",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#e5e5e5",
+      "animation": "slide-up",
+      "backgroundColor": "rgba(10, 10, 10, 0.7)",
+      "bold": false,
+      "italic": false,
+      "position": {
+        "y": 90,
+        "x": 50
+      },
+      "rotation": 0,
+      "underline": false,
+      "shape": "banner",
+      "outline": false,
+      "shadow": false,
+      "color": "#e5e5e5",
+      "fontSize": 28
+    },
+    "source": "system",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "style": {
-      "shadow": false,
-      "shape": "banner",
-      "position": {
-        "x": 50,
-        "y": 90
-      },
-      "rotation": 0,
-      "fontSize": 28,
-      "borderWidth": 2,
-      "fontFamily": "Kanit",
-      "backgroundColor": "rgba(10, 10, 10, 0.7)",
-      "border": false,
-      "borderColor": "#e5e5e5",
-      "bold": false,
-      "underline": false,
-      "animation": "slide-up",
-      "outline": false,
-      "italic": false,
-      "color": "#e5e5e5"
-    }
+    "preview": "https://placehold.co/600x120/0a0a0a/e5e5e5/png?text=Sleek+Modern"
   },
   {
     "id": "speech-bubble",
-    "name": "Speech Bubble",
     "source": "system",
+    "style": {
+      "color": "#000000",
+      "fontSize": 22,
+      "shape": "speech-bubble",
+      "underline": false,
+      "outline": false,
+      "shadow": true,
+      "position": {
+        "x": 50,
+        "y": 70
+      },
+      "italic": false,
+      "rotation": 0,
+      "fontFamily": "Inter",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#000000",
+      "bold": false,
+      "animation": "fade",
+      "backgroundColor": "#FFFFFF"
+    },
+    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=Speech+Bubble",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
     "description": "A casual, comic-style speech bubble.",
-    "style": {
-      "rotation": 0,
-      "color": "#000000",
-      "border": false,
-      "animation": "fade",
-      "bold": false,
-      "borderColor": "#000000",
-      "backgroundColor": "#FFFFFF",
-      "fontFamily": "Inter",
-      "shape": "speech-bubble",
-      "outline": false,
-      "italic": false,
-      "position": {
-        "y": 70,
-        "x": 50
-      },
-      "underline": false,
-      "borderWidth": 2,
-      "fontSize": 22,
-      "shadow": true
-    },
-    "preview": "https://placehold.co/600x120/ffffff/000000/png?text=Speech+Bubble"
+    "name": "Speech Bubble"
   },
   {
     "id": "staatliches-poster",
-    "source": "system",
-    "name": "Staatliches Poster",
-    "style": {
-      "fontSize": 54,
-      "outline": false,
-      "borderColor": "#d90429",
-      "borderWidth": 2,
-      "fontFamily": "Staatliches",
-      "shape": "rectangular",
-      "rotation": 0,
-      "backgroundColor": "rgba(224, 224, 224, 0.9)",
-      "bold": false,
-      "underline": false,
-      "shadow": false,
-      "color": "#d90429",
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "animation": "fade",
-      "border": false,
-      "italic": false
-    },
     "preview": "https://placehold.co/600x120/e0e0e0/d90429/png?text=Staatliches",
-    "description": "A bold, poster-style display font.",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
-    }
+    },
+    "style": {
+      "color": "#d90429",
+      "fontSize": 54,
+      "outline": false,
+      "shadow": false,
+      "underline": false,
+      "shape": "rectangular",
+      "position": {
+        "y": 50,
+        "x": 50
+      },
+      "italic": false,
+      "rotation": 0,
+      "borderColor": "#d90429",
+      "animation": "fade",
+      "bold": false,
+      "backgroundColor": "rgba(224, 224, 224, 0.9)",
+      "border": false,
+      "fontFamily": "Staatliches",
+      "borderWidth": 2
+    },
+    "source": "system",
+    "name": "Staatliches Poster",
+    "description": "A bold, poster-style display font."
   },
   {
     "id": "vlog-note",
     "preview": "https://placehold.co/600x120/ffffff/1a1a1a/png?text=Vlog+Note",
-    "style": {
-      "rotation": -2,
-      "shape": "rounded",
-      "backgroundColor": "rgba(255, 255, 255, 0.9)",
-      "color": "#1a1a1a",
-      "italic": false,
-      "border": false,
-      "position": {
-        "x": 50,
-        "y": 50
-      },
-      "animation": "bounce",
-      "underline": false,
-      "shadow": true,
-      "borderColor": "#1a1a1a",
-      "fontSize": 36,
-      "fontFamily": "Caveat",
-      "borderWidth": 2,
-      "bold": true,
-      "outline": false
-    },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "name": "Vlog Note",
+    "style": {
+      "rotation": -2,
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "italic": false,
+      "backgroundColor": "rgba(255, 255, 255, 0.9)",
+      "bold": true,
+      "animation": "bounce",
+      "borderColor": "#1a1a1a",
+      "borderWidth": 2,
+      "fontFamily": "Caveat",
+      "border": false,
+      "fontSize": 36,
+      "color": "#1a1a1a",
+      "shadow": true,
+      "outline": false,
+      "underline": false,
+      "shape": "rounded"
+    },
     "source": "system",
+    "name": "Vlog Note",
     "description": "A casual, handwritten style for vlogs."
   },
   {
     "id": "western-saloon",
+    "source": "system",
     "style": {
-      "shadow": true,
+      "borderColor": "#fdf0d5",
+      "animation": "fade",
       "backgroundColor": "rgba(88, 47, 14, 0.8)",
+      "bold": false,
+      "border": true,
+      "fontFamily": "Rye",
+      "borderWidth": 2,
       "position": {
         "y": 85,
         "x": 50
       },
-      "fontFamily": "Rye",
-      "outline": false,
-      "bold": false,
-      "fontSize": 36,
-      "color": "#fdf0d5",
-      "underline": false,
       "italic": false,
-      "borderColor": "#fdf0d5",
-      "border": true,
-      "borderWidth": 2,
-      "animation": "fade",
       "rotation": 0,
-      "shape": "rectangular"
+      "outline": false,
+      "shadow": true,
+      "underline": false,
+      "shape": "rectangular",
+      "color": "#fdf0d5",
+      "fontSize": 36
     },
-    "description": "A classic, old-west style font.",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
     "preview": "https://placehold.co/600x120/582f0e/fdf0d5/png?text=Western+Saloon",
-    "source": "system",
+    "description": "A classic, old-west style font.",
     "name": "Western Saloon"
   },
   {
     "id": "yellow-box",
-    "style": {
-      "color": "#1e293b",
-      "shape": "rounded",
-      "borderColor": "#1e293b",
-      "rotation": 0,
-      "shadow": true,
-      "italic": false,
-      "position": {
-        "y": 15,
-        "x": 50
-      },
-      "backgroundColor": "#fde047",
-      "underline": false,
-      "fontSize": 28,
-      "borderWidth": 2,
-      "animation": "slide-up",
-      "bold": true,
-      "fontFamily": "Montserrat",
-      "border": false,
-      "outline": false
-    },
     "name": "Yellow Box",
     "description": "Bright yellow box with bold black text.",
-    "source": "system",
+    "preview": "https://placehold.co/600x120/fde047/1e293b/png?text=Yellow+Box",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400031,
       "nanoseconds": 909000000
     },
-    "preview": "https://placehold.co/600x120/fde047/1e293b/png?text=Yellow+Box"
+    "source": "system",
+    "style": {
+      "underline": false,
+      "shape": "rounded",
+      "outline": false,
+      "shadow": true,
+      "color": "#1e293b",
+      "fontSize": 28,
+      "fontFamily": "Montserrat",
+      "border": false,
+      "borderWidth": 2,
+      "borderColor": "#1e293b",
+      "bold": true,
+      "backgroundColor": "#fde047",
+      "animation": "slide-up",
+      "italic": false,
+      "position": {
+        "y": 15,
+        "x": 50
+      },
+      "rotation": 0
+    }
   }
 ]

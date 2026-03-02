@@ -1,29 +1,59 @@
 [
   {
     "id": "aurora-flow",
-    "preview": "linear-gradient(135deg, #001a1a 0%, #002233 50%, #001122 100%)",
-    "description": "Flowing aurora borealis with dynamic color waves",
+    "showAvatar": true,
+    "showTagline": true,
+    "layout": "horizontal",
+    "theme": "ethereal",
+    "recommendedUseCases": [
+      "nature",
+      "ambient",
+      "meditation"
+    ],
+    "technologiesUsed": [
+      "react-three-fiber",
+      "simplex-noise",
+      "postprocessing"
+    ],
+    "motionSystem": {
+      "postprocessing": [
+        "bloom"
+      ],
+      "particles": true,
+      "shaders": [
+        "aurora-wave",
+        "color-blend"
+      ]
+    },
     "particleSettings": {
-      "speed": 0.1,
-      "size": 0.01,
       "noise": 0.8,
-      "color": "#00ff88",
       "colorVariant": "#ff00aa",
+      "color": "#00ff88",
+      "size": 0.01,
+      "speed": 0.1,
       "count": 200
     },
-    "showTagline": true,
+    "name": "Aurora Flow",
+    "description": "Flowing aurora borealis with dynamic color waves",
     "animatedBehaviors": [
       "wave-flow",
       "color-shift",
       "shimmer"
     ],
+    "source": "system",
+    "layers": {
+      "midground": "aurora-bands",
+      "foreground": "star-dust",
+      "background": "arctic-sky"
+    },
+    "maxLinks": 5,
     "shaderEffects": [
       {
-        "name": "aurora",
         "uniforms": {
           "colorMix": 0.7,
           "waveSpeed": 0.5
-        }
+        },
+        "name": "aurora"
       },
       {
         "uniforms": {
@@ -32,56 +62,36 @@
         "name": "bloom"
       }
     ],
-    "showAvatar": true,
-    "colorVariants": [
-      "green-pink",
-      "blue-purple",
-      "cyan-orange"
-    ],
-    "layout": "horizontal",
-    "name": "Aurora Flow",
-    "source": "system",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "theme": "ethereal",
-    "recommendedUseCases": [
-      "nature",
-      "ambient",
-      "meditation"
-    ],
-    "maxLinks": 5,
-    "layers": {
-      "midground": "aurora-bands",
-      "foreground": "star-dust",
-      "background": "arctic-sky"
-    },
-    "motionSystem": {
-      "postprocessing": [
-        "bloom"
-      ],
-      "shaders": [
-        "aurora-wave",
-        "color-blend"
-      ],
-      "particles": true
-    },
-    "technologiesUsed": [
-      "react-three-fiber",
-      "simplex-noise",
-      "postprocessing"
+    "preview": "linear-gradient(135deg, #001a1a 0%, #002233 50%, #001122 100%)",
+    "colorVariants": [
+      "green-pink",
+      "blue-purple",
+      "cyan-orange"
     ]
   },
   {
     "id": "cosmic-swarm",
+    "showTagline": true,
     "showAvatar": true,
-    "maxLinks": 5,
-    "layers": {
-      "background": "deep-space",
-      "midground": "nebula-clouds",
-      "foreground": "star-particles"
+    "animatedBehaviors": [
+      "orbital-particles",
+      "pulsing-glow",
+      "nebula-drift"
+    ],
+    "description": "Ethereal particle swarm with gravitational pull around the banner frame",
+    "name": "Cosmic Swarm",
+    "particleSettings": {
+      "size": 0.02,
+      "speed": 0.3,
+      "count": 500,
+      "noise": 0.5,
+      "color": "#a855f7",
+      "colorVariant": "#3b82f6"
     },
     "motionSystem": {
       "shaders": [
@@ -94,48 +104,26 @@
         "chromatic-aberration"
       ]
     },
-    "layout": "horizontal",
-    "colorVariants": [
-      "purple-blue",
-      "pink-cyan",
-      "orange-red"
-    ],
-    "preview": "linear-gradient(135deg, #0a0015 0%, #1a0a30 50%, #0f051a 100%)",
-    "theme": "cosmic",
-    "particleSettings": {
-      "count": 500,
-      "size": 0.02,
-      "speed": 0.3,
-      "colorVariant": "#3b82f6",
-      "noise": 0.5,
-      "color": "#a855f7"
-    },
-    "showTagline": true,
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "name": "Cosmic Swarm",
     "technologiesUsed": [
       "react-three-fiber",
       "drei",
       "simplex-noise",
       "postprocessing"
     ],
-    "animatedBehaviors": [
-      "orbital-particles",
-      "pulsing-glow",
-      "nebula-drift"
+    "theme": "cosmic",
+    "recommendedUseCases": [
+      "vtuber",
+      "cosmic-streamer",
+      "space-games"
     ],
-    "source": "system",
+    "layout": "horizontal",
     "shaderEffects": [
       {
-        "name": "bloom",
         "uniforms": {
           "threshold": 0.2,
           "intensity": 2.5
-        }
+        },
+        "name": "bloom"
       },
       {
         "uniforms": {
@@ -144,60 +132,29 @@
         "name": "chromatic-aberration"
       }
     ],
-    "recommendedUseCases": [
-      "vtuber",
-      "cosmic-streamer",
-      "space-games"
-    ],
-    "description": "Ethereal particle swarm with gravitational pull around the banner frame"
-  },
-  {
-    "id": "crystal-prism",
-    "animatedBehaviors": [
-      "crystal-rotation",
-      "light-refraction",
-      "shard-orbit"
-    ],
     "layers": {
-      "foreground": "light-rays",
-      "midground": "crystal-formation",
-      "background": "void-gradient"
+      "background": "deep-space",
+      "foreground": "star-particles",
+      "midground": "nebula-clouds"
     },
+    "maxLinks": 5,
+    "source": "system",
+    "colorVariants": [
+      "purple-blue",
+      "pink-cyan",
+      "orange-red"
+    ],
+    "preview": "linear-gradient(135deg, #0a0015 0%, #1a0a30 50%, #0f051a 100%)",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
-    },
-    "source": "system",
-    "shaderEffects": [
-      {
-        "uniforms": {
-          "dispersion": 0.05,
-          "ior": 2.4
-        },
-        "name": "refraction"
-      },
-      {
-        "name": "bloom",
-        "uniforms": {
-          "intensity": 2
-        }
-      }
-    ],
+    }
+  },
+  {
+    "id": "crystal-prism",
+    "showAvatar": true,
     "showTagline": true,
-    "technologiesUsed": [
-      "react-three-fiber",
-      "drei",
-      "postprocessing"
-    ],
-    "layout": "horizontal",
-    "recommendedUseCases": [
-      "luxury",
-      "jewelry",
-      "premium"
-    ],
-    "preview": "linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%)",
-    "name": "Crystal Prism",
     "motionSystem": {
       "postprocessing": [
         "bloom",
@@ -212,48 +169,86 @@
         "rainbow-dispersion"
       ]
     },
-    "showAvatar": true,
-    "theme": "ethereal",
     "particleSettings": {
-      "size": 0.02,
-      "count": 30,
       "noise": 0.2,
       "color": "#ffffff",
-      "speed": 0.1
+      "size": 0.02,
+      "speed": 0.1,
+      "count": 30
     },
-    "colorVariants": [
-      "diamond",
-      "amethyst",
-      "emerald",
-      "ruby"
+    "recommendedUseCases": [
+      "luxury",
+      "jewelry",
+      "premium"
+    ],
+    "theme": "ethereal",
+    "layout": "horizontal",
+    "technologiesUsed": [
+      "react-three-fiber",
+      "drei",
+      "postprocessing"
     ],
     "description": "Rotating crystal with light refraction and rainbow dispersion",
-    "maxLinks": 5
-  },
-  {
-    "id": "cyber-pulse",
-    "preview": "linear-gradient(135deg, #0a0014 0%, #1a0033 50%, #0d001a 100%)",
-    "theme": "cyber",
+    "animatedBehaviors": [
+      "crystal-rotation",
+      "light-refraction",
+      "shard-orbit"
+    ],
+    "name": "Crystal Prism",
     "source": "system",
+    "layers": {
+      "foreground": "light-rays",
+      "background": "void-gradient",
+      "midground": "crystal-formation"
+    },
+    "maxLinks": 5,
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "ior": 2.4,
+          "dispersion": 0.05
+        },
+        "name": "refraction"
+      },
+      {
+        "uniforms": {
+          "intensity": 2
+        },
+        "name": "bloom"
+      }
+    ],
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "layout": "horizontal",
-    "particleSettings": {
-      "speed": 0.4,
-      "size": 0.02,
-      "count": 50,
-      "color": "#00ffcc",
-      "noise": 0.3,
-      "colorVariant": "#ff00ff"
-    },
-    "recommendedUseCases": [
-      "tech-streams",
-      "programming",
-      "cyberpunk"
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%)",
+    "colorVariants": [
+      "diamond",
+      "amethyst",
+      "emerald",
+      "ruby"
+    ]
+  },
+  {
+    "id": "cyber-pulse",
+    "colorVariants": [
+      "cyan-magenta",
+      "green-purple",
+      "blue-orange"
     ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "preview": "linear-gradient(135deg, #0a0014 0%, #1a0033 50%, #0d001a 100%)",
+    "layers": {
+      "foreground": "data-nodes",
+      "background": "cyber-void",
+      "midground": "circuit-grid"
+    },
+    "maxLinks": 5,
     "shaderEffects": [
       {
         "uniforms": {
@@ -262,68 +257,64 @@
         "name": "neon-glow"
       }
     ],
-    "layers": {
-      "background": "cyber-void",
-      "foreground": "data-nodes",
-      "midground": "circuit-grid"
-    },
-    "motionSystem": {
-      "shaders": [
-        "grid-glow"
-      ],
-      "timelines": [
-        "pulse-sequence",
-        "data-flow"
-      ]
-    },
-    "colorVariants": [
-      "cyan-magenta",
-      "green-purple",
-      "blue-orange"
-    ],
-    "maxLinks": 5,
+    "source": "system",
+    "name": "Cyber Pulse",
     "description": "Pulsing neon grid with data streams and circuit patterns",
-    "showAvatar": true,
     "animatedBehaviors": [
       "grid-pulse",
       "line-trace",
       "node-blink"
     ],
-    "showTagline": true,
-    "name": "Cyber Pulse",
+    "layout": "horizontal",
+    "theme": "cyber",
+    "recommendedUseCases": [
+      "tech-streams",
+      "programming",
+      "cyberpunk"
+    ],
     "technologiesUsed": [
       "framer-motion",
       "canvas-2d"
-    ]
+    ],
+    "motionSystem": {
+      "timelines": [
+        "pulse-sequence",
+        "data-flow"
+      ],
+      "shaders": [
+        "grid-glow"
+      ]
+    },
+    "particleSettings": {
+      "noise": 0.3,
+      "colorVariant": "#ff00ff",
+      "color": "#00ffcc",
+      "count": 50,
+      "size": 0.02,
+      "speed": 0.4
+    },
+    "showTagline": true,
+    "showAvatar": true
   },
   {
     "id": "electric-storm",
-    "source": "system",
-    "layers": {
-      "midground": "rain-sheets",
-      "background": "storm-clouds",
-      "foreground": "lightning-bolts"
-    },
-    "preview": "linear-gradient(135deg, #0a0a1a 0%, #1a1a33 50%, #0a0a20 100%)",
-    "recommendedUseCases": [
-      "dramatic",
-      "action",
-      "weather"
-    ],
-    "colorVariants": [
-      "blue-white",
-      "purple-pink",
-      "red-orange"
-    ],
-    "technologiesUsed": [
-      "canvas-2d",
-      "framer-motion"
-    ],
+    "showTagline": true,
+    "showAvatar": true,
     "animatedBehaviors": [
       "bolt-strike",
       "plasma-crackle",
       "cloud-surge"
     ],
+    "description": "Dynamic lightning strikes with electric plasma arcs",
+    "name": "Electric Storm",
+    "particleSettings": {
+      "noise": 0.2,
+      "color": "#aaccff",
+      "colorVariant": "#ffffff",
+      "speed": 1,
+      "count": 80,
+      "size": 0.01
+    },
     "motionSystem": {
       "shaders": [
         "electric-arc"
@@ -333,25 +324,17 @@
         "thunder-rumble"
       ]
     },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "description": "Dynamic lightning strikes with electric plasma arcs",
-    "theme": "cinematic",
-    "showAvatar": true,
-    "showTagline": true,
-    "name": "Electric Storm",
+    "technologiesUsed": [
+      "canvas-2d",
+      "framer-motion"
+    ],
     "layout": "horizontal",
-    "particleSettings": {
-      "speed": 1,
-      "colorVariant": "#ffffff",
-      "size": 0.01,
-      "noise": 0.2,
-      "count": 80,
-      "color": "#aaccff"
-    },
+    "theme": "cinematic",
+    "recommendedUseCases": [
+      "dramatic",
+      "action",
+      "weather"
+    ],
     "shaderEffects": [
       {
         "uniforms": {
@@ -361,25 +344,74 @@
         "name": "bloom"
       }
     ],
-    "maxLinks": 4
+    "layers": {
+      "midground": "rain-sheets",
+      "foreground": "lightning-bolts",
+      "background": "storm-clouds"
+    },
+    "maxLinks": 4,
+    "source": "system",
+    "colorVariants": [
+      "blue-white",
+      "purple-pink",
+      "red-orange"
+    ],
+    "preview": "linear-gradient(135deg, #0a0a1a 0%, #1a1a33 50%, #0a0a20 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    }
   },
   {
     "id": "esports-hud",
-    "description": "High-tech esports overlay with animated data streams",
     "shaderEffects": [
       {
-        "name": "energy-pulse",
         "uniforms": {
           "color": "#ff4444",
           "speed": 1.5
-        }
+        },
+        "name": "energy-pulse"
       }
     ],
-    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%)",
+    "maxLinks": 4,
+    "layers": {
+      "background": "tech-grid",
+      "foreground": "data-overlays",
+      "midground": "hud-elements"
+    },
+    "source": "system",
     "colorVariants": [
       "red-black",
       "blue-white",
       "green-dark"
+    ],
+    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f1a 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "showTagline": true,
+    "showAvatar": true,
+    "name": "Esports HUD",
+    "animatedBehaviors": [
+      "data-pulse",
+      "border-sweep",
+      "indicator-blink"
+    ],
+    "description": "High-tech esports overlay with animated data streams",
+    "technologiesUsed": [
+      "gsap",
+      "framer-motion",
+      "canvas-2d"
+    ],
+    "layout": "horizontal",
+    "theme": "esports",
+    "recommendedUseCases": [
+      "esports",
+      "competitive-gaming",
+      "tournaments"
     ],
     "motionSystem": {
       "timelines": [
@@ -390,112 +422,86 @@
         "tech-grid",
         "energy-flow"
       ]
-    },
-    "maxLinks": 4,
-    "animatedBehaviors": [
-      "data-pulse",
-      "border-sweep",
-      "indicator-blink"
-    ],
-    "showAvatar": true,
-    "source": "system",
-    "layers": {
-      "background": "tech-grid",
-      "foreground": "data-overlays",
-      "midground": "hud-elements"
-    },
-    "recommendedUseCases": [
-      "esports",
-      "competitive-gaming",
-      "tournaments"
-    ],
-    "theme": "esports",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "showTagline": true,
-    "technologiesUsed": [
-      "gsap",
-      "framer-motion",
-      "canvas-2d"
-    ],
-    "name": "Esports HUD",
-    "layout": "horizontal"
+    }
   },
   {
     "id": "forest-spirits",
-    "motionSystem": {
-      "timelines": [
-        "firefly-dance"
-      ],
-      "particles": true
-    },
-    "particleSettings": {
-      "color": "#88ff88",
-      "count": 40,
-      "noise": 0.7,
-      "size": 0.025,
-      "colorVariant": "#ffff88",
-      "speed": 0.15
-    },
-    "layout": "horizontal",
-    "name": "Forest Spirits",
+    "colorVariants": [
+      "green-gold",
+      "blue-silver",
+      "purple-pink"
+    ],
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "description": "Mystical forest with floating light orbs and fireflies",
-    "recommendedUseCases": [
-      "nature",
-      "fantasy",
-      "cozy-gaming"
-    ],
-    "showTagline": true,
-    "technologiesUsed": [
-      "framer-motion",
-      "css-animations"
-    ],
-    "theme": "organic",
+    "preview": "linear-gradient(180deg, #0a1a0a 0%, #1a3320 50%, #0a1510 100%)",
+    "layers": {
+      "midground": "tree-silhouettes",
+      "foreground": "light-particles",
+      "background": "forest-depth"
+    },
+    "maxLinks": 5,
     "shaderEffects": [
       {
-        "name": "soft-glow",
         "uniforms": {
           "intensity": 1.2
-        }
+        },
+        "name": "soft-glow"
       }
     ],
+    "source": "system",
+    "description": "Mystical forest with floating light orbs and fireflies",
     "animatedBehaviors": [
       "orb-float",
       "leaf-fall",
       "mist-drift"
     ],
-    "layers": {
-      "midground": "tree-silhouettes",
-      "background": "forest-depth",
-      "foreground": "light-particles"
+    "name": "Forest Spirits",
+    "motionSystem": {
+      "particles": true,
+      "timelines": [
+        "firefly-dance"
+      ]
     },
-    "source": "system",
-    "showAvatar": true,
-    "maxLinks": 5,
-    "preview": "linear-gradient(180deg, #0a1a0a 0%, #1a3320 50%, #0a1510 100%)",
-    "colorVariants": [
-      "green-gold",
-      "blue-silver",
-      "purple-pink"
-    ]
+    "particleSettings": {
+      "noise": 0.7,
+      "colorVariant": "#ffff88",
+      "color": "#88ff88",
+      "count": 40,
+      "size": 0.025,
+      "speed": 0.15
+    },
+    "layout": "horizontal",
+    "theme": "organic",
+    "recommendedUseCases": [
+      "nature",
+      "fantasy",
+      "cozy-gaming"
+    ],
+    "technologiesUsed": [
+      "framer-motion",
+      "css-animations"
+    ],
+    "showTagline": true,
+    "showAvatar": true
   },
   {
     "id": "glitch-matrix",
+    "layers": {
+      "midground": "falling-code",
+      "foreground": "glitch-overlay",
+      "background": "matrix-void"
+    },
+    "maxLinks": 4,
     "shaderEffects": [
       {
-        "name": "glitch",
         "uniforms": {
-          "intensity": 0.15,
-          "speed": 5
-        }
+          "speed": 5,
+          "intensity": 0.15
+        },
+        "name": "glitch"
       },
       {
         "uniforms": {
@@ -504,35 +510,34 @@
         "name": "rgb-split"
       }
     ],
+    "source": "system",
+    "colorVariants": [
+      "matrix-green",
+      "cyber-blue",
+      "warning-red"
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "preview": "linear-gradient(135deg, #000000 0%, #001100 50%, #000a00 100%)",
+    "showTagline": true,
+    "showAvatar": false,
+    "name": "Glitch Matrix",
+    "description": "Digital glitch effects with falling matrix code",
+    "animatedBehaviors": [
+      "random-glitch",
+      "code-rain",
+      "flicker"
+    ],
     "recommendedUseCases": [
       "hacker-aesthetic",
       "tech",
       "cybersecurity"
     ],
     "theme": "cyber",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "source": "system",
     "layout": "horizontal",
-    "name": "Glitch Matrix",
-    "maxLinks": 4,
-    "showTagline": true,
-    "animatedBehaviors": [
-      "random-glitch",
-      "code-rain",
-      "flicker"
-    ],
-    "showAvatar": false,
-    "preview": "linear-gradient(135deg, #000000 0%, #001100 50%, #000a00 100%)",
-    "colorVariants": [
-      "matrix-green",
-      "cyber-blue",
-      "warning-red"
-    ],
-    "description": "Digital glitch effects with falling matrix code",
     "technologiesUsed": [
       "gsap",
       "canvas-2d",
@@ -547,37 +552,11 @@
         "glitch-sequence",
         "code-fall"
       ]
-    },
-    "layers": {
-      "foreground": "glitch-overlay",
-      "background": "matrix-void",
-      "midground": "falling-code"
     }
   },
   {
     "id": "golden-particles",
-    "technologiesUsed": [
-      "framer-motion",
-      "css-animations"
-    ],
-    "name": "Golden Particles",
     "source": "system",
-    "layout": "horizontal",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "animatedBehaviors": [
-      "dust-float",
-      "light-catch",
-      "gentle-swirl"
-    ],
-    "recommendedUseCases": [
-      "luxury",
-      "awards",
-      "premium-content"
-    ],
     "shaderEffects": [
       {
         "uniforms": {
@@ -586,120 +565,135 @@
         "name": "metallic-sheen"
       }
     ],
-    "maxLinks": 5,
-    "particleSettings": {
-      "size": 0.015,
-      "speed": 0.1,
-      "color": "#ffd700",
-      "count": 80,
-      "colorVariant": "#ffaa00",
-      "noise": 0.6
+    "layers": {
+      "midground": "ambient-glow",
+      "background": "warm-dark",
+      "foreground": "gold-particles"
     },
-    "showTagline": true,
+    "maxLinks": 5,
+    "preview": "linear-gradient(135deg, #1a1510 0%, #2a2015 50%, #151008 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
     "colorVariants": [
       "gold",
       "silver",
       "rose-gold",
       "bronze"
     ],
+    "showAvatar": true,
+    "showTagline": true,
+    "technologiesUsed": [
+      "framer-motion",
+      "css-animations"
+    ],
+    "layout": "horizontal",
+    "theme": "cinematic",
+    "recommendedUseCases": [
+      "luxury",
+      "awards",
+      "premium-content"
+    ],
+    "particleSettings": {
+      "color": "#ffd700",
+      "colorVariant": "#ffaa00",
+      "noise": 0.6,
+      "size": 0.015,
+      "speed": 0.1,
+      "count": 80
+    },
     "motionSystem": {
-      "particles": true,
       "shaders": [
         "metallic-shimmer"
-      ]
+      ],
+      "particles": true
     },
-    "layers": {
-      "midground": "ambient-glow",
-      "background": "warm-dark",
-      "foreground": "gold-particles"
-    },
-    "preview": "linear-gradient(135deg, #1a1510 0%, #2a2015 50%, #151008 100%)",
-    "showAvatar": true,
-    "theme": "cinematic",
+    "name": "Golden Particles",
+    "animatedBehaviors": [
+      "dust-float",
+      "light-catch",
+      "gentle-swirl"
+    ],
     "description": "Elegant floating gold dust with premium shimmer effect"
   },
   {
     "id": "hologram-scan",
-    "showTagline": true,
-    "shaderEffects": [
-      {
-        "uniforms": {
-          "opacity": 0.9,
-          "scanSpeed": 1.5
-        },
-        "name": "hologram"
-      }
-    ],
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
+    "motionSystem": {
+      "shaders": [
+        "hologram-flicker",
+        "scan-sweep"
+      ],
+      "timelines": [
+        "glitch-random"
+      ]
     },
-    "maxLinks": 4,
-    "showAvatar": true,
-    "layout": "horizontal",
-    "technologiesUsed": [
-      "framer-motion",
-      "canvas-2d"
-    ],
+    "particleSettings": {
+      "color": "#00ffff",
+      "noise": 0.1,
+      "count": 30,
+      "speed": 0.2,
+      "size": 0.015
+    },
     "recommendedUseCases": [
       "sci-fi",
       "tech-reviews",
       "futuristic"
     ],
-    "particleSettings": {
-      "color": "#00ffff",
-      "noise": 0.1,
-      "count": 30,
-      "size": 0.015,
-      "speed": 0.2
-    },
+    "theme": "cyber",
+    "layout": "horizontal",
+    "technologiesUsed": [
+      "framer-motion",
+      "canvas-2d"
+    ],
+    "description": "Futuristic holographic display with scanning effects",
     "animatedBehaviors": [
       "line-scan",
       "static-flicker",
       "depth-shift"
     ],
-    "source": "system",
-    "description": "Futuristic holographic display with scanning effects",
-    "motionSystem": {
-      "timelines": [
-        "glitch-random"
-      ],
-      "shaders": [
-        "hologram-flicker",
-        "scan-sweep"
-      ]
-    },
-    "preview": "linear-gradient(135deg, #001a1a 0%, #003333 50%, #001a2a 100%)",
-    "theme": "cyber",
-    "layers": {
-      "foreground": "scan-overlay",
-      "background": "dark-tech",
-      "midground": "hologram-frame"
-    },
-    "colorVariants": [
-      "cyan-white",
-      "green-white",
-      "blue-white"
-    ],
-    "name": "Hologram Scan"
-  },
-  {
-    "id": "ink-flow",
-    "layout": "horizontal",
-    "theme": "organic",
-    "recommendedUseCases": [
-      "artistic",
-      "calligraphy",
-      "creative"
-    ],
+    "name": "Hologram Scan",
+    "showAvatar": true,
+    "showTagline": true,
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "description": "Fluid ink simulation with organic spreading motion",
+    "preview": "linear-gradient(135deg, #001a1a 0%, #003333 50%, #001a2a 100%)",
+    "colorVariants": [
+      "cyan-white",
+      "green-white",
+      "blue-white"
+    ],
     "source": "system",
+    "layers": {
+      "midground": "hologram-frame",
+      "background": "dark-tech",
+      "foreground": "scan-overlay"
+    },
+    "maxLinks": 4,
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "scanSpeed": 1.5,
+          "opacity": 0.9
+        },
+        "name": "hologram"
+      }
+    ]
+  },
+  {
+    "id": "ink-flow",
+    "showTagline": true,
+    "showAvatar": true,
+    "animatedBehaviors": [
+      "ink-spread",
+      "color-bleed",
+      "organic-motion"
+    ],
+    "description": "Fluid ink simulation with organic spreading motion",
     "name": "Ink Flow",
     "motionSystem": {
       "shaders": [
@@ -710,77 +704,90 @@
         "flow-sequence"
       ]
     },
-    "animatedBehaviors": [
-      "ink-spread",
-      "color-bleed",
-      "organic-motion"
-    ],
     "technologiesUsed": [
       "webgl",
       "custom-shaders",
       "simplex-noise"
     ],
-    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)",
+    "layout": "horizontal",
+    "theme": "organic",
+    "recommendedUseCases": [
+      "artistic",
+      "calligraphy",
+      "creative"
+    ],
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "diffusion": 0.5,
+          "viscosity": 0.3
+        },
+        "name": "fluid"
+      }
+    ],
     "maxLinks": 5,
+    "layers": {
+      "background": "paper-texture",
+      "foreground": "splatter-accents",
+      "midground": "ink-flow"
+    },
+    "source": "system",
     "colorVariants": [
       "black-gold",
       "indigo-coral",
       "teal-magenta"
     ],
-    "showAvatar": true,
-    "shaderEffects": [
-      {
-        "name": "fluid",
-        "uniforms": {
-          "diffusion": 0.5,
-          "viscosity": 0.3
-        }
-      }
-    ],
-    "layers": {
-      "foreground": "splatter-accents",
-      "midground": "ink-flow",
-      "background": "paper-texture"
-    },
-    "showTagline": true
+    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    }
   },
   {
     "id": "liquid-chrome",
-    "technologiesUsed": [
-      "react-three-fiber",
-      "drei",
-      "custom-shaders"
+    "colorVariants": [
+      "silver",
+      "gold",
+      "rose-gold",
+      "iridescent"
     ],
-    "showTagline": true,
-    "recommendedUseCases": [
-      "luxury-brand",
-      "music",
-      "premium-content"
-    ],
-    "maxLinks": 5,
-    "layout": "horizontal",
-    "name": "Liquid Chrome",
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
     "shaderEffects": [
       {
-        "name": "metallic",
         "uniforms": {
           "roughness": 0.1,
           "metalness": 1
-        }
+        },
+        "name": "metallic"
       },
       {
-        "name": "distortion",
         "uniforms": {
           "frequency": 2,
           "amplitude": 0.3
-        }
+        },
+        "name": "distortion"
       }
     ],
+    "layers": {
+      "midground": "chrome-surface",
+      "background": "dark-gradient",
+      "foreground": "reflection-highlights"
+    },
+    "maxLinks": 5,
+    "source": "system",
     "animatedBehaviors": [
       "liquid-morph",
       "chrome-reflection",
       "surface-ripple"
     ],
+    "description": "Morphing metallic liquid simulation with reflective surfaces",
+    "name": "Liquid Chrome",
     "motionSystem": {
       "timelines": [
         "morph-sequence"
@@ -790,27 +797,20 @@
         "environment-reflection"
       ]
     },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "source": "system",
-    "colorVariants": [
-      "silver",
-      "gold",
-      "rose-gold",
-      "iridescent"
+    "technologiesUsed": [
+      "react-three-fiber",
+      "drei",
+      "custom-shaders"
     ],
-    "description": "Morphing metallic liquid simulation with reflective surfaces",
-    "showAvatar": true,
+    "layout": "horizontal",
     "theme": "cinematic",
-    "preview": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%)",
-    "layers": {
-      "midground": "chrome-surface",
-      "background": "dark-gradient",
-      "foreground": "reflection-highlights"
-    }
+    "recommendedUseCases": [
+      "luxury-brand",
+      "music",
+      "premium-content"
+    ],
+    "showTagline": true,
+    "showAvatar": true
   },
   {
     "id": "nebula-drift",
@@ -821,107 +821,113 @@
         "star-twinkle"
       ]
     },
-    "technologiesUsed": [
-      "framer-motion",
-      "css-animations"
-    ],
-    "shaderEffects": [
-      {
-        "name": "gaussian-blur",
-        "uniforms": {
-          "radius": 8
-        }
-      }
-    ],
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
+    "particleSettings": {
+      "color": "#ff66aa",
+      "colorVariant": "#6666ff",
+      "noise": 0.6,
+      "size": 0.01,
+      "speed": 0.1,
+      "count": 100
     },
-    "description": "Slow-moving cosmic nebula clouds with star field",
-    "showTagline": true,
     "recommendedUseCases": [
       "space-content",
       "ambient",
       "asmr"
     ],
-    "layers": {
-      "foreground": "star-dust",
-      "midground": "nebula-layers",
-      "background": "deep-space"
-    },
-    "maxLinks": 5,
-    "showAvatar": true,
     "theme": "cosmic",
     "layout": "horizontal",
-    "particleSettings": {
-      "size": 0.01,
-      "colorVariant": "#6666ff",
-      "color": "#ff66aa",
-      "speed": 0.1,
-      "count": 100,
-      "noise": 0.6
-    },
-    "source": "system",
-    "name": "Nebula Drift",
-    "colorVariants": [
-      "pink-blue",
-      "purple-orange",
-      "cyan-red"
+    "technologiesUsed": [
+      "framer-motion",
+      "css-animations"
     ],
+    "description": "Slow-moving cosmic nebula clouds with star field",
     "animatedBehaviors": [
       "cloud-drift",
       "star-pulse",
       "depth-parallax"
     ],
-    "preview": "linear-gradient(135deg, #0a0020 0%, #200040 50%, #100030 100%)"
-  },
-  {
-    "id": "neon-city",
-    "theme": "cyber",
-    "particleSettings": {
-      "color": "#66aaff",
-      "colorVariant": "#ff66aa",
-      "size": 0.005,
-      "speed": 1.5,
-      "noise": 0.1,
-      "count": 200
-    },
-    "preview": "linear-gradient(180deg, #0a0a15 0%, #151530 50%, #0a0a20 100%)",
-    "layers": {
-      "background": "city-skyline",
-      "midground": "building-lights",
-      "foreground": "rain-overlay"
-    },
-    "name": "Neon City",
-    "technologiesUsed": [
-      "canvas-2d",
-      "framer-motion"
-    ],
-    "description": "Cyberpunk cityscape with rain and neon reflections",
-    "layout": "horizontal",
-    "source": "system",
+    "name": "Nebula Drift",
+    "showAvatar": true,
+    "showTagline": true,
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "showTagline": true,
-    "recommendedUseCases": [
-      "cyberpunk",
-      "lofi",
-      "night-streams"
+    "preview": "linear-gradient(135deg, #0a0020 0%, #200040 50%, #100030 100%)",
+    "colorVariants": [
+      "pink-blue",
+      "purple-orange",
+      "cyan-red"
     ],
+    "source": "system",
+    "layers": {
+      "midground": "nebula-layers",
+      "background": "deep-space",
+      "foreground": "star-dust"
+    },
+    "maxLinks": 5,
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "radius": 8
+        },
+        "name": "gaussian-blur"
+      }
+    ]
+  },
+  {
+    "id": "neon-city",
+    "particleSettings": {
+      "size": 0.005,
+      "speed": 1.5,
+      "count": 200,
+      "noise": 0.1,
+      "colorVariant": "#ff66aa",
+      "color": "#66aaff"
+    },
     "motionSystem": {
+      "particles": true,
       "timelines": [
         "rain-fall",
         "sign-flicker"
       ],
       "shaders": [
         "wet-surface-reflection"
-      ],
-      "particles": true
+      ]
     },
+    "technologiesUsed": [
+      "canvas-2d",
+      "framer-motion"
+    ],
+    "layout": "horizontal",
+    "theme": "cyber",
+    "recommendedUseCases": [
+      "cyberpunk",
+      "lofi",
+      "night-streams"
+    ],
+    "animatedBehaviors": [
+      "rain-stream",
+      "neon-pulse",
+      "car-lights"
+    ],
+    "description": "Cyberpunk cityscape with rain and neon reflections",
+    "name": "Neon City",
+    "showAvatar": true,
+    "showTagline": true,
+    "preview": "linear-gradient(180deg, #0a0a15 0%, #151530 50%, #0a0a20 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "colorVariants": [
+      "blue-pink",
+      "purple-cyan",
+      "orange-teal"
+    ],
+    "source": "system",
     "shaderEffects": [
       {
         "uniforms": {
@@ -930,196 +936,201 @@
         "name": "rain-distortion"
       }
     ],
-    "maxLinks": 5,
-    "showAvatar": true,
-    "colorVariants": [
-      "blue-pink",
-      "purple-cyan",
-      "orange-teal"
-    ],
-    "animatedBehaviors": [
-      "rain-stream",
-      "neon-pulse",
-      "car-lights"
-    ]
+    "layers": {
+      "background": "city-skyline",
+      "foreground": "rain-overlay",
+      "midground": "building-lights"
+    },
+    "maxLinks": 5
   },
   {
     "id": "neon-rings",
-    "shaderEffects": [
-      {
-        "uniforms": {
-          "scanSpeed": 2,
-          "glitchIntensity": 0.1
-        },
-        "name": "hologram"
-      }
-    ],
-    "name": "Neon Rings",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "showTagline": true,
-    "preview": "linear-gradient(135deg, #000000 0%, #0a1628 50%, #001a1a 100%)",
-    "colorVariants": [
-      "cyan-magenta",
-      "green-yellow",
-      "blue-purple"
+    "animatedBehaviors": [
+      "ring-rotation",
+      "scan-sweep",
+      "pulse-sync"
     ],
     "description": "Rotating 3D holographic rings with scanning line effects",
-    "showAvatar": true,
-    "theme": "cyber",
+    "name": "Neon Rings",
     "particleSettings": {
-      "count": 100,
-      "size": 0.01,
-      "color": "#00ffff",
       "noise": 0.2,
-      "speed": 0.5
+      "color": "#00ffff",
+      "count": 100,
+      "speed": 0.5,
+      "size": 0.01
     },
-    "layout": "horizontal",
-    "technologiesUsed": [
-      "react-three-fiber",
-      "drei",
-      "gsap",
-      "postprocessing"
-    ],
-    "source": "system",
-    "layers": {
-      "foreground": "scan-lines",
-      "background": "cyber-grid",
-      "midground": "rotating-rings"
-    },
-    "maxLinks": 5,
     "motionSystem": {
+      "shaders": [
+        "hologram-scan",
+        "grid-pulse"
+      ],
       "objects3D": [
         "torus-ring-large",
         "torus-ring-medium",
         "torus-ring-small"
-      ],
-      "shaders": [
-        "hologram-scan",
-        "grid-pulse"
       ],
       "postprocessing": [
         "bloom",
         "scanlines"
       ]
     },
-    "animatedBehaviors": [
-      "ring-rotation",
-      "scan-sweep",
-      "pulse-sync"
+    "technologiesUsed": [
+      "react-three-fiber",
+      "drei",
+      "gsap",
+      "postprocessing"
     ],
     "recommendedUseCases": [
       "tech-streams",
       "cyberpunk",
       "futuristic"
-    ]
+    ],
+    "theme": "cyber",
+    "layout": "horizontal",
+    "showTagline": true,
+    "showAvatar": true,
+    "colorVariants": [
+      "cyan-magenta",
+      "green-yellow",
+      "blue-purple"
+    ],
+    "preview": "linear-gradient(135deg, #000000 0%, #0a1628 50%, #001a1a 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "glitchIntensity": 0.1,
+          "scanSpeed": 2
+        },
+        "name": "hologram"
+      }
+    ],
+    "layers": {
+      "background": "cyber-grid",
+      "foreground": "scan-lines",
+      "midground": "rotating-rings"
+    },
+    "maxLinks": 5,
+    "source": "system"
   },
   {
     "id": "ocean-depths",
-    "layers": {
-      "foreground": "bubble-particles",
-      "background": "deep-blue",
-      "midground": "water-volume"
-    },
-    "animatedBehaviors": [
-      "bubble-rise",
-      "light-caustics",
-      "seaweed-sway"
-    ],
-    "theme": "ethereal",
-    "shaderEffects": [
-      {
-        "name": "caustics",
-        "uniforms": {
-          "scale": 2,
-          "speed": 0.5
-        }
-      }
-    ],
-    "name": "Ocean Depths",
-    "showAvatar": true,
-    "technologiesUsed": [
-      "framer-motion",
-      "canvas-2d"
-    ],
-    "showTagline": true,
-    "particleSettings": {
-      "noise": 0.4,
-      "speed": 0.3,
-      "count": 60,
-      "colorVariant": "#ffffff",
-      "size": 0.02,
-      "color": "#66ccff"
-    },
-    "layout": "horizontal",
-    "source": "system",
-    "motionSystem": {
-      "shaders": [
-        "caustics",
-        "water-distortion"
-      ],
-      "particles": true
-    },
-    "recommendedUseCases": [
-      "ocean-content",
-      "relaxation",
-      "aquarium"
+    "colorVariants": [
+      "ocean-blue",
+      "tropical-teal",
+      "deep-purple"
     ],
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
-    "maxLinks": 5,
-    "description": "Deep underwater scene with caustic light and bubbles",
     "preview": "linear-gradient(180deg, #001a33 0%, #002244 50%, #001122 100%)",
-    "colorVariants": [
-      "ocean-blue",
-      "tropical-teal",
-      "deep-purple"
-    ]
+    "layers": {
+      "midground": "water-volume",
+      "foreground": "bubble-particles",
+      "background": "deep-blue"
+    },
+    "maxLinks": 5,
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "speed": 0.5,
+          "scale": 2
+        },
+        "name": "caustics"
+      }
+    ],
+    "source": "system",
+    "description": "Deep underwater scene with caustic light and bubbles",
+    "animatedBehaviors": [
+      "bubble-rise",
+      "light-caustics",
+      "seaweed-sway"
+    ],
+    "name": "Ocean Depths",
+    "motionSystem": {
+      "particles": true,
+      "shaders": [
+        "caustics",
+        "water-distortion"
+      ]
+    },
+    "particleSettings": {
+      "color": "#66ccff",
+      "colorVariant": "#ffffff",
+      "noise": 0.4,
+      "size": 0.02,
+      "speed": 0.3,
+      "count": 60
+    },
+    "theme": "ethereal",
+    "recommendedUseCases": [
+      "ocean-content",
+      "relaxation",
+      "aquarium"
+    ],
+    "layout": "horizontal",
+    "technologiesUsed": [
+      "framer-motion",
+      "canvas-2d"
+    ],
+    "showTagline": true,
+    "showAvatar": true
   },
   {
     "id": "phoenix-flame",
-    "colorVariants": [
-      "orange-red",
-      "blue-flame",
-      "green-fire"
-    ],
-    "maxLinks": 5,
-    "layers": {
-      "foreground": "ember-particles",
-      "midground": "flame-core",
-      "background": "ash-gradient"
-    },
-    "layout": "horizontal",
-    "showAvatar": true,
-    "particleSettings": {
-      "colorVariant": "#ffaa00",
-      "size": 0.015,
-      "speed": 0.8,
-      "count": 300,
-      "noise": 0.6,
-      "color": "#ff4400"
-    },
-    "name": "Phoenix Flame",
     "showTagline": true,
+    "showAvatar": true,
     "animatedBehaviors": [
       "flame-flicker",
       "ember-rise",
       "heat-wave"
     ],
-    "preview": "linear-gradient(135deg, #1a0500 0%, #2d0a00 50%, #0f0300 100%)",
+    "description": "Epic fire and ember particles with rising phoenix silhouette",
+    "name": "Phoenix Flame",
+    "particleSettings": {
+      "size": 0.015,
+      "speed": 0.8,
+      "count": 300,
+      "colorVariant": "#ffaa00",
+      "color": "#ff4400",
+      "noise": 0.6
+    },
+    "motionSystem": {
+      "particles": true,
+      "postprocessing": [
+        "bloom",
+        "color-grading"
+      ],
+      "shaders": [
+        "fire-shader",
+        "heat-distortion"
+      ]
+    },
+    "technologiesUsed": [
+      "react-three-fiber",
+      "simplex-noise",
+      "postprocessing"
+    ],
+    "layout": "horizontal",
+    "theme": "cinematic",
+    "recommendedUseCases": [
+      "epic-gaming",
+      "fantasy",
+      "action"
+    ],
     "shaderEffects": [
       {
-        "name": "fire",
         "uniforms": {
           "turbulence": 2,
           "intensity": 1.5
-        }
+        },
+        "name": "fire"
       },
       {
         "uniforms": {
@@ -1129,72 +1140,75 @@
         "name": "bloom"
       }
     ],
+    "maxLinks": 5,
+    "layers": {
+      "midground": "flame-core",
+      "background": "ash-gradient",
+      "foreground": "ember-particles"
+    },
+    "source": "system",
+    "colorVariants": [
+      "orange-red",
+      "blue-flame",
+      "green-fire"
+    ],
+    "preview": "linear-gradient(135deg, #1a0500 0%, #2d0a00 50%, #0f0300 100%)",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
-    },
-    "technologiesUsed": [
-      "react-three-fiber",
-      "simplex-noise",
-      "postprocessing"
-    ],
-    "theme": "cinematic",
-    "source": "system",
-    "recommendedUseCases": [
-      "epic-gaming",
-      "fantasy",
-      "action"
-    ],
-    "description": "Epic fire and ember particles with rising phoenix silhouette",
-    "motionSystem": {
-      "postprocessing": [
-        "bloom",
-        "color-grading"
-      ],
-      "shaders": [
-        "fire-shader",
-        "heat-distortion"
-      ],
-      "particles": true
     }
   },
   {
     "id": "retro-wave",
-    "theme": "cinematic",
     "description": "80s synthwave aesthetic with neon grid and sun",
-    "layers": {
-      "foreground": "silhouette-elements",
-      "background": "sunset-gradient",
-      "midground": "perspective-grid"
-    },
+    "animatedBehaviors": [
+      "grid-perspective",
+      "sun-glow",
+      "palm-sway"
+    ],
+    "name": "Retro Wave",
     "motionSystem": {
-      "timelines": [
-        "grid-scroll",
-        "sun-pulse"
-      ],
       "shaders": [
         "scanlines",
         "crt-warp"
+      ],
+      "timelines": [
+        "grid-scroll",
+        "sun-pulse"
       ]
     },
     "layout": "horizontal",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "showTagline": true,
-    "source": "system",
-    "name": "Retro Wave",
-    "maxLinks": 5,
+    "recommendedUseCases": [
+      "synthwave",
+      "retro-gaming",
+      "music"
+    ],
+    "theme": "cinematic",
     "technologiesUsed": [
       "framer-motion",
       "gsap",
       "css-animations"
     ],
+    "showTagline": true,
     "showAvatar": true,
+    "colorVariants": [
+      "sunset-purple",
+      "midnight-blue",
+      "neon-pink"
+    ],
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
     "preview": "linear-gradient(180deg, #1a0033 0%, #330066 40%, #ff6600 100%)",
+    "layers": {
+      "midground": "perspective-grid",
+      "foreground": "silhouette-elements",
+      "background": "sunset-gradient"
+    },
+    "maxLinks": 5,
     "shaderEffects": [
       {
         "uniforms": {
@@ -1203,49 +1217,11 @@
         "name": "chromatic-aberration"
       }
     ],
-    "colorVariants": [
-      "sunset-purple",
-      "midnight-blue",
-      "neon-pink"
-    ],
-    "recommendedUseCases": [
-      "synthwave",
-      "retro-gaming",
-      "music"
-    ],
-    "animatedBehaviors": [
-      "grid-perspective",
-      "sun-glow",
-      "palm-sway"
-    ]
+    "source": "system"
   },
   {
     "id": "sakura-petals",
-    "showTagline": true,
-    "animatedBehaviors": [
-      "petal-fall",
-      "wind-gust",
-      "soft-glow"
-    ],
-    "colorVariants": [
-      "pink-white",
-      "purple-lavender",
-      "red-coral"
-    ],
-    "particleSettings": {
-      "speed": 0.2,
-      "colorVariant": "#ffffff",
-      "noise": 0.5,
-      "color": "#ffaacc",
-      "size": 0.04,
-      "count": 50
-    },
-    "motionSystem": {
-      "particles": true,
-      "timelines": [
-        "petal-cascade"
-      ]
-    },
+    "source": "system",
     "shaderEffects": [
       {
         "uniforms": {
@@ -1254,58 +1230,111 @@
         "name": "soft-bloom"
       }
     ],
-    "layout": "horizontal",
     "layers": {
-      "background": "twilight-pink",
       "midground": "branch-silhouettes",
-      "foreground": "falling-petals"
+      "foreground": "falling-petals",
+      "background": "twilight-pink"
     },
+    "maxLinks": 5,
     "preview": "linear-gradient(180deg, #1a0a15 0%, #2a1525 50%, #150a10 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 807000000
+    },
+    "colorVariants": [
+      "pink-white",
+      "purple-lavender",
+      "red-coral"
+    ],
     "showAvatar": true,
-    "source": "system",
-    "name": "Sakura Petals",
+    "showTagline": true,
+    "particleSettings": {
+      "size": 0.04,
+      "speed": 0.2,
+      "count": 50,
+      "color": "#ffaacc",
+      "colorVariant": "#ffffff",
+      "noise": 0.5
+    },
+    "motionSystem": {
+      "particles": true,
+      "timelines": [
+        "petal-cascade"
+      ]
+    },
     "technologiesUsed": [
       "framer-motion",
       "css-animations"
     ],
-    "description": "Gentle falling cherry blossom petals with soft glow",
+    "layout": "horizontal",
     "theme": "vtuber",
     "recommendedUseCases": [
       "anime",
       "vtuber",
       "aesthetic"
     ],
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 807000000
-    },
-    "maxLinks": 5
+    "animatedBehaviors": [
+      "petal-fall",
+      "wind-gust",
+      "soft-glow"
+    ],
+    "description": "Gentle falling cherry blossom petals with soft glow",
+    "name": "Sakura Petals"
   },
   {
     "id": "vtuber-frame",
+    "colorVariants": [
+      "pink-blue",
+      "purple-gold",
+      "mint-coral"
+    ],
+    "preview": "linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #0f051a 100%)",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 807000000
     },
+    "shaderEffects": [
+      {
+        "uniforms": {
+          "color": "#ff69b4",
+          "intensity": 2
+        },
+        "name": "glow"
+      }
+    ],
+    "layers": {
+      "foreground": "floating-elements",
+      "background": "gradient-void",
+      "midground": "ornate-frame"
+    },
+    "maxLinks": 4,
+    "source": "system",
     "animatedBehaviors": [
       "gem-orbit",
       "star-twinkle",
       "frame-pulse"
     ],
-    "showAvatar": true,
-    "showTagline": true,
-    "theme": "vtuber",
+    "description": "Animated broadcast frame with orbiting decorative elements",
+    "name": "VTuber Frame",
+    "particleSettings": {
+      "noise": 0.3,
+      "color": "#ffb6c1",
+      "colorVariant": "#87ceeb",
+      "speed": 0.2,
+      "count": 50,
+      "size": 0.03
+    },
     "motionSystem": {
+      "timelines": [
+        "bounce-loop",
+        "sparkle-sequence"
+      ],
       "particles": true,
       "objects3D": [
         "decorative-gems",
         "floating-stars"
-      ],
-      "timelines": [
-        "bounce-loop",
-        "sparkle-sequence"
       ]
     },
     "technologiesUsed": [
@@ -1313,43 +1342,14 @@
       "gsap",
       "framer-motion"
     ],
-    "description": "Animated broadcast frame with orbiting decorative elements",
     "recommendedUseCases": [
       "vtuber",
       "anime",
       "kawaii"
     ],
+    "theme": "vtuber",
     "layout": "frame",
-    "preview": "linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #0f051a 100%)",
-    "name": "VTuber Frame",
-    "colorVariants": [
-      "pink-blue",
-      "purple-gold",
-      "mint-coral"
-    ],
-    "maxLinks": 4,
-    "particleSettings": {
-      "size": 0.03,
-      "speed": 0.2,
-      "count": 50,
-      "color": "#ffb6c1",
-      "noise": 0.3,
-      "colorVariant": "#87ceeb"
-    },
-    "shaderEffects": [
-      {
-        "name": "glow",
-        "uniforms": {
-          "intensity": 2,
-          "color": "#ff69b4"
-        }
-      }
-    ],
-    "layers": {
-      "background": "gradient-void",
-      "foreground": "floating-elements",
-      "midground": "ornate-frame"
-    },
-    "source": "system"
+    "showTagline": true,
+    "showAvatar": true
   }
 ]

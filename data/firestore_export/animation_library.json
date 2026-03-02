@@ -1,44 +1,6 @@
 [
   {
     "id": "bouncy-period",
-    "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 60000000
-    },
-    "category": "Kinetic",
-    "baseStyle": {
-      "color": "#FFFFFF",
-      "fontSize": 56,
-      "accentColor": "#FF0055",
-      "alignment": "left",
-      "fontFamily": "Poppins"
-    },
-    "defaultContent": {
-      "heading": "Make a Statement."
-    },
-    "animationConfig": {
-      "easing": "elastic",
-      "loopDelay": 4,
-      "loop": true,
-      "duration": 0.8
-    },
-    "name": "Bouncy Period"
-  },
-  {
-    "id": "card-feature",
-    "defaultContent": {
-      "title": "Smart AI",
-      "desc": "Generates layouts instantly."
-    },
-    "baseStyle": {
-      "color": "#FFFFFF",
-      "alignment": "left",
-      "fontSize": 32,
-      "fontFamily": "Inter",
-      "backgroundColor": "rgba(255,255,255,0.1)"
-    },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
@@ -46,138 +8,176 @@
     },
     "animationConfig": {
       "duration": 0.8,
+      "easing": "elastic",
+      "loop": true,
+      "loopDelay": 4
+    },
+    "baseStyle": {
+      "alignment": "left",
+      "fontFamily": "Poppins",
+      "color": "#FFFFFF",
+      "fontSize": 56,
+      "accentColor": "#FF0055"
+    },
+    "category": "Kinetic",
+    "source": "system",
+    "name": "Bouncy Period",
+    "defaultContent": {
+      "heading": "Make a Statement."
+    }
+  },
+  {
+    "id": "card-feature",
+    "animationConfig": {
+      "duration": 0.8,
       "direction": "up",
       "easing": "smooth"
     },
-    "name": "Feature Card",
-    "source": "system",
-    "category": "UI"
-  },
-  {
-    "id": "counter-stat",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 60000000
     },
-    "baseStyle": {
-      "fontFamily": "Inter",
-      "color": "#4ADE80",
-      "alignment": "center",
-      "fontSize": 72
-    },
+    "category": "UI",
     "source": "system",
+    "baseStyle": {
+      "alignment": "left",
+      "fontFamily": "Inter",
+      "color": "#FFFFFF",
+      "backgroundColor": "rgba(255,255,255,0.1)",
+      "fontSize": 32
+    },
+    "name": "Feature Card",
+    "defaultContent": {
+      "desc": "Generates layouts instantly.",
+      "title": "Smart AI"
+    }
+  },
+  {
+    "id": "counter-stat",
     "animationConfig": {
       "easing": "smooth",
       "duration": 2
     },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "category": "Data",
+    "source": "system",
+    "baseStyle": {
+      "fontSize": 72,
+      "color": "#4ADE80",
+      "fontFamily": "Inter",
+      "alignment": "center"
+    },
+    "name": "Statistic Counter",
     "defaultContent": {
       "label": "Revenue Generated",
       "value": "$1,000,000"
-    },
-    "category": "Data",
-    "name": "Statistic Counter"
+    }
   },
   {
     "id": "cyber-title",
-    "category": "Glitch",
-    "baseStyle": {
-      "color": "#00FFFF",
-      "fontSize": 64,
-      "fontFamily": "Orbitron",
-      "alignment": "center"
-    },
-    "name": "Cyber Title",
-    "source": "system",
-    "defaultContent": {
-      "heading": "CYBERPUNK",
-      "status": "CONNECTED"
-    },
     "animationConfig": {
+      "duration": 0.8,
       "direction": "left",
-      "easing": "smooth",
-      "duration": 0.8
+      "easing": "smooth"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 60000000
+    },
+    "category": "Glitch",
+    "source": "system",
+    "baseStyle": {
+      "color": "#00FFFF",
+      "alignment": "center",
+      "fontFamily": "Orbitron",
+      "fontSize": 64
+    },
+    "name": "Cyber Title",
+    "defaultContent": {
+      "status": "CONNECTED",
+      "heading": "CYBERPUNK"
     }
   },
   {
     "id": "editorial-tagline",
-    "baseStyle": {
-      "color": "#FFFFFF",
-      "fontSize": 48,
-      "alignment": "center",
-      "fontFamily": "Montserrat"
-    },
-    "defaultContent": {
-      "tag": "[ NEW COLLECTION ]",
-      "heading": "SUMMER 2025"
-    },
-    "name": "The Edit: Tagline",
-    "animationConfig": {
-      "direction": "down",
-      "delay": 0.2,
-      "duration": 1,
-      "easing": "smooth"
-    },
-    "category": "Reveal",
-    "source": "system",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 60000000
+    },
+    "animationConfig": {
+      "delay": 0.2,
+      "duration": 1,
+      "easing": "smooth",
+      "direction": "down"
+    },
+    "baseStyle": {
+      "fontSize": 48,
+      "color": "#FFFFFF",
+      "fontFamily": "Montserrat",
+      "alignment": "center"
+    },
+    "category": "Reveal",
+    "source": "system",
+    "name": "The Edit: Tagline",
+    "defaultContent": {
+      "tag": "[ NEW COLLECTION ]",
+      "heading": "SUMMER 2025"
     }
   },
   {
     "id": "glide-title",
+    "name": "Glide",
     "defaultContent": {
-      "heading": "Smooth Glide",
-      "subheading": "Cinematic Entrance"
+      "subheading": "Cinematic Entrance",
+      "heading": "Smooth Glide"
+    },
+    "animationConfig": {
+      "direction": "up",
+      "easing": "smooth",
+      "duration": 1.5
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 60000000
     },
-    "baseStyle": {
-      "fontSize": 72,
-      "fontFamily": "Playfair Display",
-      "color": "#F5E5C5",
-      "alignment": "center"
-    },
-    "name": "Glide",
     "category": "Reveal",
-    "animationConfig": {
-      "easing": "smooth",
-      "duration": 1.5,
-      "direction": "up"
-    },
-    "source": "system"
+    "source": "system",
+    "baseStyle": {
+      "color": "#F5E5C5",
+      "fontFamily": "Playfair Display",
+      "alignment": "center",
+      "fontSize": 72
+    }
   },
   {
     "id": "glitch-reveal-1",
-    "source": "system",
-    "category": "Glitch",
-    "animationConfig": {
-      "easing": "linear",
-      "loopDelay": 5,
-      "duration": 0.3,
-      "delay": 0.05,
-      "loop": true
-    },
     "defaultContent": {
-      "subheading": "Rebooting...",
-      "heading": "SYSTEM_FAILURE"
+      "heading": "SYSTEM_FAILURE",
+      "subheading": "Rebooting..."
     },
     "name": "Glitch Reveal",
+    "category": "Glitch",
+    "source": "system",
     "baseStyle": {
+      "fontSize": 42,
       "fontFamily": "Courier New",
       "alignment": "left",
-      "color": "#00FF00",
-      "fontSize": 42
+      "color": "#00FF00"
+    },
+    "animationConfig": {
+      "easing": "linear",
+      "delay": 0.05,
+      "loopDelay": 5,
+      "loop": true,
+      "duration": 0.3
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -188,35 +188,9 @@
   {
     "id": "lower-third-clean",
     "name": "Clean Lower Third",
-    "baseStyle": {
-      "color": "#FFFFFF",
-      "fontFamily": "Inter",
-      "fontSize": 28,
-      "alignment": "left"
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400036,
-      "nanoseconds": 60000000
-    },
-    "source": "system",
-    "animationConfig": {
-      "easing": "smooth",
-      "duration": 1,
-      "direction": "left"
-    },
-    "category": "UI",
     "defaultContent": {
       "name": "Sarah Jenkins",
       "role": "Product Designer"
-    }
-  },
-  {
-    "id": "sliding-text-reveal",
-    "source": "system",
-    "defaultContent": {
-      "subheading": "Reveal Effect",
-      "heading": "Sliding Text"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -224,39 +198,58 @@
       "nanoseconds": 60000000
     },
     "animationConfig": {
-      "duration": 0.8,
+      "duration": 1,
+      "direction": "left",
+      "easing": "smooth"
+    },
+    "baseStyle": {
+      "fontSize": 28,
+      "alignment": "left",
+      "fontFamily": "Inter",
+      "color": "#FFFFFF"
+    },
+    "source": "system",
+    "category": "UI"
+  },
+  {
+    "id": "sliding-text-reveal",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400036,
+      "nanoseconds": 60000000
+    },
+    "animationConfig": {
       "loopDelay": 3,
       "loop": true,
+      "duration": 0.8,
       "easing": "smooth",
       "direction": "up"
     },
     "baseStyle": {
-      "color": "#FFFFFF",
-      "fontSize": 64,
       "alignment": "left",
-      "fontFamily": "Inter"
+      "fontFamily": "Inter",
+      "color": "#FFFFFF",
+      "fontSize": 64
     },
+    "category": "Reveal",
+    "source": "system",
     "name": "Sliding Text Reveal",
-    "category": "Reveal"
+    "defaultContent": {
+      "subheading": "Reveal Effect",
+      "heading": "Sliding Text"
+    }
   },
   {
     "id": "social-message",
     "name": "Social Message",
-    "baseStyle": {
-      "fontSize": 24,
-      "alignment": "left",
-      "fontFamily": "Inter",
-      "backgroundColor": "#FFFFFF",
-      "color": "#000000"
+    "defaultContent": {
+      "message": "This tool is absolutely mind-blowing! 🚀",
+      "user": "@alex_design"
     },
     "animationConfig": {
-      "duration": 0.6,
+      "easing": "bouncy",
       "direction": "up",
-      "easing": "bouncy"
-    },
-    "defaultContent": {
-      "user": "@alex_design",
-      "message": "This tool is absolutely mind-blowing! 🚀"
+      "duration": 0.6
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -264,62 +257,69 @@
       "nanoseconds": 60000000
     },
     "source": "system",
-    "category": "Social"
+    "category": "Social",
+    "baseStyle": {
+      "alignment": "left",
+      "fontFamily": "Inter",
+      "color": "#000000",
+      "fontSize": 24,
+      "backgroundColor": "#FFFFFF"
+    }
   },
   {
     "id": "wow-rotate-scale",
-    "defaultContent": {
-      "heading": "HUGE SALE!",
-      "subheading": "50% OFF"
-    },
+    "category": "Kinetic",
+    "source": "system",
     "baseStyle": {
-      "fontFamily": "Anton",
       "fontSize": 80,
-      "color": "#FF0055",
-      "alignment": "center"
+      "fontFamily": "Anton",
+      "alignment": "center",
+      "color": "#FF0055"
+    },
+    "animationConfig": {
+      "duration": 0.5,
+      "loop": true,
+      "loopDelay": 3,
+      "easing": "bouncy",
+      "direction": "up"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 60000000
     },
-    "source": "system",
-    "animationConfig": {
-      "loopDelay": 3,
-      "loop": true,
-      "easing": "bouncy",
-      "direction": "up",
-      "duration": 0.5
+    "defaultContent": {
+      "subheading": "50% OFF",
+      "heading": "HUGE SALE!"
     },
-    "category": "Kinetic",
     "name": "Wow: Rotate & Scale"
   },
   {
     "id": "zero-gravity",
-    "name": "Zero Gravity",
-    "defaultContent": {
-      "word1": "Bounce",
-      "word2": "Higher"
+    "category": "Kinetic",
+    "source": "system",
+    "baseStyle": {
+      "color": "#FFD700",
+      "alignment": "center",
+      "fontFamily": "Bebas Neue",
+      "fontSize": 96
     },
     "animationConfig": {
+      "loop": true,
+      "loopDelay": 2,
       "duration": 0.6,
       "delay": 0.1,
-      "easing": "bouncy",
-      "loop": true,
-      "loopDelay": 2
+      "easing": "bouncy"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400036,
       "nanoseconds": 60000000
     },
-    "category": "Kinetic",
-    "baseStyle": {
-      "alignment": "center",
-      "fontSize": 96,
-      "color": "#FFD700",
-      "fontFamily": "Bebas Neue"
+    "defaultContent": {
+      "word2": "Higher",
+      "word1": "Bounce"
     },
-    "source": "system"
+    "name": "Zero Gravity"
   }
 ]

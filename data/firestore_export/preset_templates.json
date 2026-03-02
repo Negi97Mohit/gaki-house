@@ -1,167 +1,167 @@
 [
   {
     "id": "karaoke-highlight",
-    "source": "system",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 875000000
+    },
     "preview": "https://placehold.co/600x120/1e1e1e/00F5FF/png?text=Karaoke+Style",
-    "description": "Bright, clear text on a bottom banner, styled for karaoke.",
-    "name": "Karaoke Highlight",
     "style": {
+      "shape": "rectangular",
+      "underline": false,
+      "outline": false,
+      "shadow": true,
+      "color": "#00F5FF",
+      "fontSize": 42,
+      "fontFamily": "Bebas Neue",
       "border": false,
       "borderWidth": 2,
-      "shape": "rectangular",
-      "outline": false,
-      "underline": false,
-      "color": "#00F5FF",
+      "borderColor": "#00F5FF",
+      "backgroundColor": "rgba(30, 30, 30, 0.9)",
+      "bold": true,
       "animation": "slide-up",
+      "italic": false,
+      "position": {
+        "y": 90,
+        "x": 50
+      },
+      "rotation": 0
+    },
+    "source": "system",
+    "name": "Karaoke Highlight",
+    "description": "Bright, clear text on a bottom banner, styled for karaoke."
+  },
+  {
+    "id": "minimal-stroke",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 875000000
+    },
+    "preview": "https://placehold.co/600x120/999999/FFFFFF/png?text=Minimal+Stroke",
+    "source": "system",
+    "style": {
+      "underline": false,
+      "shape": "rounded",
+      "outline": true,
+      "shadow": true,
+      "color": "#FFFFFF",
+      "fontSize": 26,
+      "border": false,
+      "fontFamily": "Inter",
+      "borderWidth": 2,
+      "borderColor": "#FFFFFF",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "bold": true,
+      "animation": "fade",
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "rotation": 0
+    },
+    "name": "Minimal Stroke",
+    "description": "Clean text with an outline for high contrast on any video."
+  },
+  {
+    "id": "neon-glow",
+    "preview": "https://placehold.co/600x120/1a1a1a/e94560/png?text=Neon+Glow",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 875000000
+    },
+    "style": {
+      "underline": false,
+      "shape": "rounded",
+      "outline": false,
+      "shadow": true,
+      "color": "#e94560",
+      "fontSize": 28,
+      "border": false,
+      "fontFamily": "Montserrat",
+      "borderWidth": 2,
+      "borderColor": "#e94560",
+      "animation": "fade",
+      "bold": true,
+      "backgroundColor": "rgba(26, 26, 26, 0.8)",
+      "italic": false,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "rotation": 0
+    },
+    "source": "system",
+    "name": "Neon Glow",
+    "description": "A bright, glowing text effect with a dark background."
+  },
+  {
+    "id": "news-ticker",
+    "source": "system",
+    "style": {
+      "color": "#FFFFFF",
+      "fontSize": 24,
+      "shape": "rectangular",
+      "underline": false,
+      "outline": false,
+      "shadow": false,
+      "italic": false,
       "position": {
         "y": 90,
         "x": 50
       },
       "rotation": 0,
-      "bold": true,
-      "fontSize": 42,
-      "fontFamily": "Bebas Neue",
-      "borderColor": "#00F5FF",
-      "italic": false,
-      "backgroundColor": "rgba(30, 30, 30, 0.9)",
-      "shadow": true
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    }
-  },
-  {
-    "id": "minimal-stroke",
-    "preview": "https://placehold.co/600x120/999999/FFFFFF/png?text=Minimal+Stroke",
-    "description": "Clean text with an outline for high contrast on any video.",
-    "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "style": {
-      "outline": true,
-      "color": "#FFFFFF",
-      "rotation": 0,
-      "animation": "fade",
-      "italic": false,
-      "shadow": true,
-      "position": {
-        "y": 85,
-        "x": 50
-      },
-      "borderWidth": 2,
-      "shape": "rounded",
-      "bold": true,
-      "backgroundColor": "rgba(0, 0, 0, 0)",
-      "underline": false,
-      "borderColor": "#FFFFFF",
-      "fontFamily": "Inter",
       "border": false,
-      "fontSize": 26
-    },
-    "name": "Minimal Stroke"
-  },
-  {
-    "id": "neon-glow",
-    "description": "A bright, glowing text effect with a dark background.",
-    "preview": "https://placehold.co/600x120/1a1a1a/e94560/png?text=Neon+Glow",
-    "name": "Neon Glow",
-    "style": {
-      "fontSize": 28,
-      "underline": false,
-      "position": {
-        "x": 50,
-        "y": 85
-      },
-      "color": "#e94560",
-      "italic": false,
-      "borderWidth": 2,
-      "rotation": 0,
-      "bold": true,
-      "fontFamily": "Montserrat",
-      "borderColor": "#e94560",
-      "shadow": true,
-      "outline": false,
-      "shape": "rounded",
-      "animation": "fade",
-      "backgroundColor": "rgba(26, 26, 26, 0.8)",
-      "border": false
-    },
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "source": "system"
-  },
-  {
-    "id": "news-ticker",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 875000000
-    },
-    "name": "News Ticker",
-    "preview": "https://placehold.co/600x120/00539C/FFFFFF/png?text=News+Ticker",
-    "description": "A classic news-style lower-third banner.",
-    "style": {
-      "animation": "fade",
-      "underline": false,
-      "shape": "rectangular",
-      "rotation": 0,
-      "border": false,
-      "backgroundColor": "rgba(0, 83, 156, 0.9)",
-      "shadow": false,
-      "bold": true,
-      "color": "#FFFFFF",
-      "position": {
-        "x": 50,
-        "y": 90
-      },
       "fontFamily": "Arial",
-      "fontSize": 24,
       "borderWidth": 2,
       "borderColor": "#FFFFFF",
-      "outline": false,
-      "italic": false
+      "bold": true,
+      "animation": "fade",
+      "backgroundColor": "rgba(0, 83, 156, 0.9)"
     },
-    "source": "system"
+    "preview": "https://placehold.co/600x120/00539C/FFFFFF/png?text=News+Ticker",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 875000000
+    },
+    "description": "A classic news-style lower-third banner.",
+    "name": "News Ticker"
   },
   {
     "id": "vintage-film",
+    "style": {
+      "border": false,
+      "fontFamily": "Playfair Display",
+      "borderWidth": 2,
+      "borderColor": "#f5e5c5",
+      "animation": "fade",
+      "backgroundColor": "rgba(0, 0, 0, 0)",
+      "bold": false,
+      "italic": true,
+      "position": {
+        "x": 50,
+        "y": 85
+      },
+      "rotation": 0,
+      "shape": "rounded",
+      "underline": false,
+      "outline": false,
+      "shadow": true,
+      "color": "#f5e5c5",
+      "fontSize": 30
+    },
+    "source": "system",
+    "preview": "https://placehold.co/600x120/4a4a4a/f5e5c5/png?text=Vintage+Film",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400037,
       "nanoseconds": 875000000
     },
-    "name": "Vintage Film",
-    "preview": "https://placehold.co/600x120/4a4a4a/f5e5c5/png?text=Vintage+Film",
-    "source": "system",
-    "style": {
-      "borderWidth": 2,
-      "fontSize": 30,
-      "backgroundColor": "rgba(0, 0, 0, 0)",
-      "rotation": 0,
-      "color": "#f5e5c5",
-      "shape": "rounded",
-      "animation": "fade",
-      "position": {
-        "x": 50,
-        "y": 85
-      },
-      "fontFamily": "Playfair Display",
-      "italic": true,
-      "underline": false,
-      "outline": false,
-      "border": false,
-      "bold": false,
-      "shadow": true,
-      "borderColor": "#f5e5c5"
-    },
-    "description": "A classic, elegant serif font for a cinematic feel."
+    "description": "A classic, elegant serif font for a cinematic feel.",
+    "name": "Vintage Film"
   }
 ]

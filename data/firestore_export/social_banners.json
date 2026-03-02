@@ -1,470 +1,469 @@
 [
   {
     "id": "creator-bubble",
-    "theme": "gradient",
-    "showAvatar": true,
-    "name": "Creator Bubble",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400030,
-      "nanoseconds": 989000000
-    },
-    "layout": "vertical",
     "showTagline": true,
+    "maxLinks": 5,
+    "showAvatar": true,
     "styles": {
-      "link": {
-        "padding": "10px",
-        "background": "#ffffff",
-        "borderRadius": "50%",
-        "color": "#667eea",
-        "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.15)"
-      },
       "linksContainer": {
+        "display": "flex",
         "marginTop": "8px",
-        "gap": "8px",
-        "display": "flex"
-      },
-      "icon": {
-        "height": "18px",
-        "width": "18px"
-      },
-      "name": {
-        "fontWeight": "600",
-        "fontSize": "20px",
-        "textAlign": "center",
-        "color": "#ffffff"
+        "gap": "8px"
       },
       "container": {
         "alignItems": "center",
         "boxSizing": "border-box",
         "display": "flex",
-        "height": "100%",
         "background": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        "height": "100%",
+        "width": "100%",
         "minWidth": "auto",
-        "padding": "24px",
-        "flexDirection": "column",
         "gap": "12px",
         "boxShadow": "0 20px 60px rgba(102, 126, 234, 0.4)",
         "borderRadius": "24px",
-        "width": "100%"
+        "padding": "24px",
+        "flexDirection": "column"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
       },
       "tagline": {
         "fontSize": "13px",
         "color": "rgba(255, 255, 255, 0.8)",
         "textAlign": "center"
+      },
+      "name": {
+        "color": "#ffffff",
+        "textAlign": "center",
+        "fontWeight": "600",
+        "fontSize": "20px"
+      },
+      "link": {
+        "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.15)",
+        "background": "#ffffff",
+        "color": "#667eea",
+        "padding": "10px",
+        "borderRadius": "50%"
       }
     },
+    "source": "system",
     "description": "Floating bubble style with centered avatar",
-    "preview": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    "source": "system",
-    "maxLinks": 5
-  },
-  {
-    "id": "crystal-clear",
-    "source": "system",
-    "description": "Ultra-modern glass with crystal clarity",
-    "layout": "horizontal",
+    "name": "Creator Bubble",
+    "layout": "vertical",
+    "theme": "gradient",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
+    "preview": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+  },
+  {
+    "id": "crystal-clear",
+    "name": "Crystal Clear",
+    "description": "Ultra-modern glass with crystal clarity",
+    "preview": "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "theme": "glassmorphism",
+    "layout": "horizontal",
+    "maxLinks": 5,
+    "showTagline": true,
     "styles": {
-      "tagline": {
-        "color": "rgba(255, 255, 255, 0.6)",
-        "fontSize": "13px",
-        "fontFamily": "'Inter', sans-serif",
-        "letterSpacing": "0.5px"
+      "linksContainer": {
+        "marginLeft": "auto",
+        "display": "flex",
+        "gap": "12px"
       },
       "icon": {
         "height": "18px",
         "width": "18px"
       },
-      "name": {
-        "color": "#ffffff",
-        "fontWeight": "600",
-        "letterSpacing": "-0.5px",
-        "fontFamily": "'Inter', sans-serif",
-        "fontSize": "24px"
-      },
-      "linksContainer": {
+      "container": {
+        "width": "100%",
+        "border": "1px solid rgba(255, 255, 255, 0.4)",
+        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1)",
+        "backdropFilter": "blur(25px)",
+        "boxSizing": "border-box",
         "display": "flex",
-        "marginLeft": "auto",
-        "gap": "12px"
+        "height": "100%",
+        "WebkitBackdropFilter": "blur(25px)",
+        "gap": "18px",
+        "borderRadius": "24px",
+        "padding": "20px 32px",
+        "alignItems": "center",
+        "background": "rgba(255, 255, 255, 0.1)"
       },
       "link": {
-        "padding": "10px",
-        "background": "rgba(255, 255, 255, 0.15)",
         "boxShadow": "0 4px 12px rgba(0, 0, 0, 0.05)",
-        "color": "#ffffff",
+        "border": "1px solid rgba(255, 255, 255, 0.2)",
         "transition": "all 0.3s ease",
+        "padding": "10px",
         "borderRadius": "12px",
-        "border": "1px solid rgba(255, 255, 255, 0.2)"
+        "background": "rgba(255, 255, 255, 0.15)",
+        "color": "#ffffff"
       },
-      "container": {
-        "borderRadius": "24px",
-        "backdropFilter": "blur(25px)",
-        "gap": "18px",
-        "alignItems": "center",
-        "padding": "20px 32px",
-        "height": "100%",
-        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1)",
-        "WebkitBackdropFilter": "blur(25px)",
-        "width": "100%",
-        "boxSizing": "border-box",
-        "background": "rgba(255, 255, 255, 0.1)",
-        "display": "flex",
-        "border": "1px solid rgba(255, 255, 255, 0.4)"
+      "name": {
+        "fontWeight": "600",
+        "fontSize": "24px",
+        "color": "#ffffff",
+        "fontFamily": "'Inter', sans-serif",
+        "letterSpacing": "-0.5px"
+      },
+      "tagline": {
+        "fontFamily": "'Inter', sans-serif",
+        "letterSpacing": "0.5px",
+        "color": "rgba(255, 255, 255, 0.6)",
+        "fontSize": "13px"
       }
     },
-    "showAvatar": true,
-    "showTagline": true,
-    "preview": "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%)",
-    "theme": "glassmorphism",
-    "maxLinks": 5,
-    "name": "Crystal Clear"
+    "source": "system",
+    "showAvatar": true
   },
   {
     "id": "cyber-grid",
-    "source": "system",
-    "maxLinks": 5,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "theme": "neon",
+    "layout": "horizontal",
+    "preview": "linear-gradient(135deg, #000000 0%, #0d1117 100%)",
+    "name": "Cyber Grid",
+    "description": "Matrix-inspired grid pattern with neon accents",
+    "showAvatar": true,
     "styles": {
       "name": {
-        "color": "#39ff14",
-        "fontSize": "24px",
         "textShadow": "0 0 15px rgba(57, 255, 20, 0.9)",
+        "fontWeight": "700",
+        "fontSize": "24px",
+        "color": "#39ff14",
+        "fontFamily": "'Share Tech Mono', monospace"
+      },
+      "tagline": {
         "fontFamily": "'Share Tech Mono', monospace",
-        "fontWeight": "700"
+        "opacity": "0.8",
+        "color": "#00ff88",
+        "fontSize": "12px"
+      },
+      "link": {
+        "background": "rgba(57, 255, 20, 0.1)",
+        "color": "#39ff14",
+        "padding": "9px",
+        "borderRadius": "4px",
+        "border": "1px solid rgba(57, 255, 20, 0.3)"
       },
       "linksContainer": {
         "marginLeft": "auto",
         "display": "flex",
         "gap": "8px"
       },
-      "link": {
-        "background": "rgba(57, 255, 20, 0.1)",
-        "borderRadius": "4px",
-        "color": "#39ff14",
-        "border": "1px solid rgba(57, 255, 20, 0.3)",
-        "padding": "9px"
+      "container": {
+        "backgroundImage": "linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px)",
+        "borderRadius": "8px",
+        "padding": "16px 24px",
+        "gap": "16px",
+        "height": "100%",
+        "background": "linear-gradient(135deg, #000000 0%, #0d1117 100%)",
+        "alignItems": "center",
+        "backgroundSize": "20px 20px",
+        "border": "2px solid #39ff14",
+        "boxShadow": "0 0 25px rgba(57, 255, 20, 0.4), inset 0 0 40px rgba(57, 255, 20, 0.05)",
+        "width": "100%",
+        "boxSizing": "border-box",
+        "display": "flex"
       },
       "icon": {
         "height": "18px",
         "width": "18px"
-      },
-      "container": {
-        "padding": "16px 24px",
-        "backgroundImage": "linear-gradient(rgba(57, 255, 20, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(57, 255, 20, 0.03) 1px, transparent 1px)",
-        "border": "2px solid #39ff14",
-        "alignItems": "center",
-        "borderRadius": "8px",
-        "boxSizing": "border-box",
-        "background": "linear-gradient(135deg, #000000 0%, #0d1117 100%)",
-        "height": "100%",
-        "backgroundSize": "20px 20px",
-        "display": "flex",
-        "width": "100%",
-        "gap": "16px",
-        "boxShadow": "0 0 25px rgba(57, 255, 20, 0.4), inset 0 0 40px rgba(57, 255, 20, 0.05)"
-      },
-      "tagline": {
-        "fontSize": "12px",
-        "opacity": "0.8",
-        "fontFamily": "'Share Tech Mono', monospace",
-        "color": "#00ff88"
       }
     },
-    "name": "Cyber Grid",
-    "description": "Matrix-inspired grid pattern with neon accents",
-    "preview": "linear-gradient(135deg, #000000 0%, #0d1117 100%)",
-    "layout": "horizontal",
-    "theme": "neon",
-    "showAvatar": true,
-    "showTagline": true,
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400030,
-      "nanoseconds": 989000000
-    }
+    "source": "system",
+    "maxLinks": 5,
+    "showTagline": true
   },
   {
     "id": "dark-mode-elite",
-    "source": "system",
-    "showAvatar": true,
-    "layout": "horizontal",
     "showTagline": true,
-    "description": "Premium dark theme with gold accents",
-    "preview": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
-    "name": "Dark Mode Elite",
     "maxLinks": 5,
-    "theme": "dark",
+    "showAvatar": true,
     "styles": {
-      "tagline": {
-        "fontSize": "13px",
-        "fontStyle": "italic",
-        "color": "#888888"
-      },
-      "container": {
-        "border": "1px solid #d4af37",
-        "alignItems": "center",
-        "height": "100%",
-        "borderRadius": "12px",
-        "width": "100%",
-        "padding": "18px 28px",
-        "boxShadow": "0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(212, 175, 55, 0.2)",
-        "boxSizing": "border-box",
-        "background": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
-        "gap": "16px",
+      "linksContainer": {
+        "marginLeft": "auto",
+        "gap": "10px",
         "display": "flex"
       },
-      "link": {
-        "borderRadius": "8px",
-        "background": "rgba(212, 175, 55, 0.1)",
-        "color": "#d4af37",
-        "border": "1px solid rgba(212, 175, 55, 0.3)",
-        "padding": "10px"
-      },
-      "linksContainer": {
+      "container": {
+        "height": "100%",
+        "width": "100%",
+        "gap": "16px",
+        "boxShadow": "0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(212, 175, 55, 0.2)",
+        "border": "1px solid #d4af37",
+        "borderRadius": "12px",
+        "padding": "18px 28px",
+        "alignItems": "center",
+        "boxSizing": "border-box",
         "display": "flex",
-        "marginLeft": "auto",
-        "gap": "10px"
-      },
-      "name": {
-        "color": "#d4af37",
-        "fontFamily": "'Playfair Display', serif",
-        "fontWeight": "600",
-        "fontSize": "24px"
+        "background": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)"
       },
       "icon": {
         "width": "18px",
         "height": "18px"
+      },
+      "tagline": {
+        "color": "#888888",
+        "fontStyle": "italic",
+        "fontSize": "13px"
+      },
+      "name": {
+        "fontFamily": "'Playfair Display', serif",
+        "color": "#d4af37",
+        "fontWeight": "600",
+        "fontSize": "24px"
+      },
+      "link": {
+        "border": "1px solid rgba(212, 175, 55, 0.3)",
+        "color": "#d4af37",
+        "background": "rgba(212, 175, 55, 0.1)",
+        "borderRadius": "8px",
+        "padding": "10px"
       }
     },
+    "source": "system",
+    "description": "Premium dark theme with gold accents",
+    "name": "Dark Mode Elite",
+    "layout": "horizontal",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
-    }
+    },
+    "theme": "dark",
+    "preview": "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)"
   },
   {
     "id": "digital-surge",
-    "source": "system",
-    "maxLinks": 4,
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "theme": "neon",
+    "layout": "horizontal",
+    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)",
+    "description": "High-tech surge effect with animated borders",
+    "name": "Digital Surge",
+    "showAvatar": false,
     "styles": {
+      "linksContainer": {
+        "marginLeft": "auto",
+        "display": "flex",
+        "gap": "8px"
+      },
+      "container": {
+        "borderRadius": "12px",
+        "animation": "banner-neon-flicker 4s linear infinite",
+        "padding": "14px 22px",
+        "height": "100%",
+        "width": "100%",
+        "border": "3px solid #8b5cf6",
+        "gap": "14px",
+        "boxShadow": "0 4px 30px rgba(139, 92, 246, 0.4), inset 0 0 20px rgba(139, 92, 246, 0.1)",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "background": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)",
+        "alignItems": "center"
+      },
       "icon": {
         "height": "18px",
         "width": "18px"
       },
       "name": {
+        "fontWeight": "800",
+        "textTransform": "uppercase",
+        "fontSize": "24px",
         "textShadow": "0 0 20px rgba(139, 92, 246, 0.8)",
         "color": "#8b5cf6",
-        "fontWeight": "800",
-        "fontSize": "24px",
-        "textTransform": "uppercase",
         "fontFamily": "'Orbitron', sans-serif"
       },
-      "link": {
-        "background": "rgba(139, 92, 246, 0.15)",
-        "borderRadius": "8px",
-        "padding": "9px",
-        "border": "1px solid rgba(139, 92, 246, 0.4)",
-        "color": "#8b5cf6"
-      },
       "tagline": {
-        "fontSize": "11px",
+        "letterSpacing": "4px",
         "color": "#a78bfa",
         "textTransform": "uppercase",
-        "letterSpacing": "4px"
+        "fontSize": "11px"
       },
-      "container": {
-        "width": "100%",
-        "height": "100%",
-        "boxShadow": "0 4px 30px rgba(139, 92, 246, 0.4), inset 0 0 20px rgba(139, 92, 246, 0.1)",
-        "borderRadius": "12px",
-        "background": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)",
-        "boxSizing": "border-box",
-        "padding": "14px 22px",
-        "display": "flex",
-        "alignItems": "center",
-        "animation": "banner-neon-flicker 4s linear infinite",
-        "border": "3px solid #8b5cf6",
-        "gap": "14px"
-      },
-      "linksContainer": {
-        "display": "flex",
-        "marginLeft": "auto",
-        "gap": "8px"
+      "link": {
+        "border": "1px solid rgba(139, 92, 246, 0.4)",
+        "background": "rgba(139, 92, 246, 0.15)",
+        "color": "#8b5cf6",
+        "padding": "9px",
+        "borderRadius": "8px"
       }
     },
-    "name": "Digital Surge",
-    "preview": "linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)",
-    "description": "High-tech surge effect with animated borders",
-    "showAvatar": false,
+    "source": "system",
     "showTagline": true,
-    "layout": "horizontal",
-    "theme": "neon",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400030,
-      "nanoseconds": 989000000
-    }
+    "maxLinks": 4
   },
   {
     "id": "electric-pulse",
-    "maxLinks": 5,
-    "source": "system",
-    "styles": {
-      "container": {
-        "animation": "banner-pulse-glow 2s ease-in-out infinite",
-        "gap": "18px",
-        "height": "100%",
-        "boxSizing": "border-box",
-        "width": "100%",
-        "display": "flex",
-        "padding": "18px 28px",
-        "borderRadius": "16px",
-        "border": "2px solid #00d4ff",
-        "background": "linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 100%)",
-        "boxShadow": "0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(0, 212, 255, 0.2), inset 0 0 30px rgba(0, 212, 255, 0.1)",
-        "alignItems": "center"
-      },
-      "name": {
-        "fontFamily": "'Rajdhani', sans-serif",
-        "fontSize": "26px",
-        "color": "#00d4ff",
-        "letterSpacing": "2px",
-        "fontWeight": "800",
-        "textShadow": "0 0 20px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.4)"
-      },
-      "linksContainer": {
-        "display": "flex",
-        "marginLeft": "auto",
-        "gap": "10px"
-      },
-      "tagline": {
-        "letterSpacing": "3px",
-        "textTransform": "uppercase",
-        "color": "#ff00aa",
-        "fontSize": "13px",
-        "textShadow": "0 0 10px rgba(255, 0, 170, 0.6)"
-      },
-      "icon": {
-        "height": "20px",
-        "width": "20px",
-        "filter": "drop-shadow(0 0 6px rgba(0, 212, 255, 0.8))"
-      },
-      "link": {
-        "boxShadow": "0 0 15px rgba(0, 212, 255, 0.3)",
-        "color": "#00d4ff",
-        "padding": "10px",
-        "background": "rgba(0, 212, 255, 0.15)",
-        "borderRadius": "10px",
-        "border": "1px solid rgba(0, 212, 255, 0.4)"
-      }
-    },
-    "description": "Animated electric border with pulsing glow",
-    "name": "Electric Pulse",
-    "theme": "neon",
-    "showTagline": true,
-    "showAvatar": true,
+    "layout": "horizontal",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
+    "theme": "neon",
     "preview": "linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 100%)",
-    "layout": "horizontal"
+    "description": "Animated electric border with pulsing glow",
+    "name": "Electric Pulse",
+    "showAvatar": true,
+    "source": "system",
+    "styles": {
+      "icon": {
+        "width": "20px",
+        "filter": "drop-shadow(0 0 6px rgba(0, 212, 255, 0.8))",
+        "height": "20px"
+      },
+      "container": {
+        "alignItems": "center",
+        "display": "flex",
+        "background": "linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 100%)",
+        "boxSizing": "border-box",
+        "gap": "18px",
+        "boxShadow": "0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(0, 212, 255, 0.2), inset 0 0 30px rgba(0, 212, 255, 0.1)",
+        "border": "2px solid #00d4ff",
+        "width": "100%",
+        "height": "100%",
+        "padding": "18px 28px",
+        "borderRadius": "16px",
+        "animation": "banner-pulse-glow 2s ease-in-out infinite"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "gap": "10px",
+        "marginLeft": "auto"
+      },
+      "link": {
+        "padding": "10px",
+        "borderRadius": "10px",
+        "background": "rgba(0, 212, 255, 0.15)",
+        "color": "#00d4ff",
+        "boxShadow": "0 0 15px rgba(0, 212, 255, 0.3)",
+        "border": "1px solid rgba(0, 212, 255, 0.4)"
+      },
+      "tagline": {
+        "textShadow": "0 0 10px rgba(255, 0, 170, 0.6)",
+        "textTransform": "uppercase",
+        "fontSize": "13px",
+        "color": "#ff00aa",
+        "letterSpacing": "3px"
+      },
+      "name": {
+        "letterSpacing": "2px",
+        "fontFamily": "'Rajdhani', sans-serif",
+        "fontWeight": "800",
+        "fontSize": "26px",
+        "textShadow": "0 0 20px rgba(0, 212, 255, 0.8), 0 0 40px rgba(0, 212, 255, 0.4)",
+        "color": "#00d4ff"
+      }
+    },
+    "maxLinks": 5,
+    "showTagline": true
   },
   {
     "id": "gaming-rgb",
-    "preview": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
+    "description": "Animated RGB border effect for gamers",
+    "name": "Gaming RGB",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
     "theme": "dark",
-    "maxLinks": 5,
-    "showTagline": true,
-    "showAvatar": true,
     "layout": "horizontal",
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
+    "showTagline": true,
+    "maxLinks": 5,
+    "showAvatar": true,
     "styles": {
-      "name": {
+      "link": {
+        "border": "1px solid rgba(168, 85, 247, 0.5)",
+        "background": "linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(236, 72, 153, 0.3) 100%)",
         "color": "#ffffff",
-        "fontFamily": "'Rajdhani', sans-serif",
+        "padding": "10px",
+        "borderRadius": "6px"
+      },
+      "tagline": {
+        "fontSize": "12px",
+        "textTransform": "uppercase",
+        "color": "#a855f7",
+        "letterSpacing": "3px"
+      },
+      "name": {
         "letterSpacing": "2px",
+        "fontFamily": "'Rajdhani', sans-serif",
+        "color": "#ffffff",
         "textTransform": "uppercase",
         "fontSize": "26px",
         "fontWeight": "800"
       },
-      "linksContainer": {
-        "display": "flex",
-        "marginLeft": "auto",
-        "gap": "8px"
-      },
-      "tagline": {
-        "textTransform": "uppercase",
-        "color": "#a855f7",
-        "fontSize": "12px",
-        "letterSpacing": "3px"
-      },
-      "link": {
-        "color": "#ffffff",
-        "background": "linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(236, 72, 153, 0.3) 100%)",
-        "borderRadius": "6px",
-        "border": "1px solid rgba(168, 85, 247, 0.5)",
-        "padding": "10px"
-      },
-      "container": {
-        "background": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
-        "width": "100%",
-        "gap": "16px",
-        "alignItems": "center",
-        "boxShadow": "0 0 30px rgba(139, 92, 246, 0.3)",
-        "display": "flex",
-        "borderRadius": "8px",
-        "borderImage": "linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) 1",
-        "boxSizing": "border-box",
-        "border": "3px solid transparent",
-        "height": "100%",
-        "padding": "16px 24px"
-      },
       "icon": {
         "width": "20px",
         "height": "20px"
+      },
+      "container": {
+        "padding": "16px 24px",
+        "borderImage": "linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3) 1",
+        "borderRadius": "8px",
+        "width": "100%",
+        "height": "100%",
+        "gap": "16px",
+        "boxShadow": "0 0 30px rgba(139, 92, 246, 0.3)",
+        "border": "3px solid transparent",
+        "display": "flex",
+        "background": "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)",
+        "boxSizing": "border-box",
+        "alignItems": "center"
+      },
+      "linksContainer": {
+        "marginLeft": "auto",
+        "gap": "8px",
+        "display": "flex"
       }
     },
-    "source": "system",
+    "source": "system"
+  },
+  {
+    "id": "glassmorphism",
+    "preview": "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)",
+    "layout": "horizontal",
+    "theme": "glassmorphism",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
-    "description": "Animated RGB border effect for gamers",
-    "name": "Gaming RGB"
-  },
-  {
-    "id": "glassmorphism",
+    "description": "Frosted glass effect with blur",
+    "name": "Glassmorphism",
+    "source": "system",
     "styles": {
-      "container": {
-        "alignItems": "center",
-        "gap": "16px",
-        "WebkitBackdropFilter": "blur(20px)",
-        "backdropFilter": "blur(20px)",
-        "border": "1px solid rgba(255, 255, 255, 0.3)",
-        "width": "100%",
-        "display": "flex",
-        "borderRadius": "20px",
-        "background": "rgba(255, 255, 255, 0.15)",
-        "boxSizing": "border-box",
-        "padding": "18px 28px",
-        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.1)",
-        "height": "100%"
+      "link": {
+        "border": "1px solid rgba(255, 255, 255, 0.2)",
+        "borderRadius": "12px",
+        "padding": "10px",
+        "color": "#ffffff",
+        "background": "rgba(255, 255, 255, 0.2)"
       },
       "name": {
-        "fontSize": "24px",
         "textShadow": "0 2px 4px rgba(0, 0, 0, 0.2)",
-        "color": "#ffffff",
-        "fontWeight": "600"
-      },
-      "icon": {
-        "height": "20px",
-        "width": "20px"
+        "fontSize": "24px",
+        "fontWeight": "600",
+        "color": "#ffffff"
       },
       "tagline": {
         "fontSize": "14px",
@@ -475,412 +474,422 @@
         "display": "flex",
         "gap": "10px"
       },
-      "link": {
-        "border": "1px solid rgba(255, 255, 255, 0.2)",
-        "borderRadius": "12px",
-        "color": "#ffffff",
-        "background": "rgba(255, 255, 255, 0.2)",
-        "padding": "10px"
+      "icon": {
+        "width": "20px",
+        "height": "20px"
+      },
+      "container": {
+        "alignItems": "center",
+        "background": "rgba(255, 255, 255, 0.15)",
+        "WebkitBackdropFilter": "blur(20px)",
+        "gap": "16px",
+        "height": "100%",
+        "padding": "18px 28px",
+        "borderRadius": "20px",
+        "display": "flex",
+        "boxSizing": "border-box",
+        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.1)",
+        "border": "1px solid rgba(255, 255, 255, 0.3)",
+        "width": "100%",
+        "backdropFilter": "blur(20px)"
       }
     },
     "showAvatar": true,
-    "showTagline": true,
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400030,
-      "nanoseconds": 989000000
-    },
-    "theme": "glassmorphism",
-    "preview": "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)",
-    "source": "system",
-    "layout": "horizontal",
     "maxLinks": 5,
-    "name": "Glassmorphism",
-    "description": "Frosted glass effect with blur"
+    "showTagline": true
   },
   {
     "id": "gradient-wave",
-    "layout": "horizontal",
+    "preview": "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
-    "showAvatar": true,
-    "source": "system",
-    "preview": "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)",
-    "maxLinks": 5,
+    "theme": "gradient",
+    "layout": "horizontal",
+    "name": "Gradient Wave",
+    "description": "Flowing gradient background with modern feel",
     "styles": {
-      "container": {
-        "boxShadow": "0 10px 40px rgba(240, 147, 251, 0.3)",
-        "boxSizing": "border-box",
-        "height": "100%",
-        "background": "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)",
-        "padding": "18px 28px",
-        "display": "flex",
-        "alignItems": "center",
-        "width": "100%",
-        "gap": "16px",
-        "borderRadius": "16px"
-      },
-      "icon": {
-        "height": "18px",
-        "width": "18px"
-      },
-      "link": {
-        "boxShadow": "0 4px 15px rgba(0, 0, 0, 0.1)",
-        "borderRadius": "50%",
-        "color": "#f5576c",
-        "background": "rgba(255, 255, 255, 0.9)",
-        "padding": "10px"
-      },
-      "linksContainer": {
-        "display": "flex",
-        "gap": "8px",
-        "marginLeft": "auto"
-      },
       "name": {
-        "fontWeight": "700",
-        "color": "#ffffff",
         "textShadow": "0 2px 10px rgba(0, 0, 0, 0.2)",
-        "fontSize": "24px"
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "color": "#ffffff"
       },
       "tagline": {
         "fontSize": "14px",
         "color": "rgba(255, 255, 255, 0.9)"
+      },
+      "link": {
+        "boxShadow": "0 4px 15px rgba(0, 0, 0, 0.1)",
+        "background": "rgba(255, 255, 255, 0.9)",
+        "color": "#f5576c",
+        "padding": "10px",
+        "borderRadius": "50%"
+      },
+      "linksContainer": {
+        "gap": "8px",
+        "display": "flex",
+        "marginLeft": "auto"
+      },
+      "container": {
+        "display": "flex",
+        "background": "linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)",
+        "boxSizing": "border-box",
+        "alignItems": "center",
+        "padding": "18px 28px",
+        "borderRadius": "16px",
+        "boxShadow": "0 10px 40px rgba(240, 147, 251, 0.3)",
+        "gap": "16px",
+        "width": "100%",
+        "height": "100%"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
       }
     },
+    "source": "system",
+    "showAvatar": true,
     "showTagline": true,
-    "description": "Flowing gradient background with modern feel",
-    "theme": "gradient",
-    "name": "Gradient Wave"
+    "maxLinks": 5
   },
   {
     "id": "hologram-wave",
-    "showAvatar": true,
+    "name": "Hologram Wave",
+    "description": "Holographic color-shifting effect",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "theme": "neon",
     "layout": "horizontal",
+    "preview": "linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%)",
     "showTagline": true,
+    "maxLinks": 5,
+    "showAvatar": true,
     "styles": {
-      "name": {
-        "color": "#ffffff",
-        "fontWeight": "700",
-        "fontSize": "24px",
-        "fontFamily": "'Poppins', sans-serif"
-      },
       "icon": {
-        "width": "18px",
-        "height": "18px"
+        "height": "18px",
+        "width": "18px"
+      },
+      "container": {
+        "borderRadius": "16px",
+        "animation": "banner-holographic 8s linear infinite",
+        "padding": "18px 28px",
+        "border": "2px solid rgba(255, 255, 255, 0.3)",
+        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.05)",
+        "gap": "16px",
+        "height": "100%",
+        "width": "100%",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "background": "linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(45, 45, 68, 0.9) 100%)",
+        "alignItems": "center"
+      },
+      "linksContainer": {
+        "display": "flex",
+        "gap": "10px",
+        "marginLeft": "auto"
+      },
+      "link": {
+        "background": "rgba(255, 255, 255, 0.15)",
+        "color": "#ffffff",
+        "padding": "10px",
+        "borderRadius": "10px",
+        "border": "1px solid rgba(255, 255, 255, 0.2)"
       },
       "tagline": {
         "fontSize": "13px",
         "color": "rgba(255, 255, 255, 0.7)"
       },
-      "linksContainer": {
-        "marginLeft": "auto",
-        "gap": "10px",
-        "display": "flex"
-      },
-      "container": {
-        "width": "100%",
-        "borderRadius": "16px",
-        "padding": "18px 28px",
-        "background": "linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(45, 45, 68, 0.9) 100%)",
-        "border": "2px solid rgba(255, 255, 255, 0.3)",
-        "animation": "banner-holographic 8s linear infinite",
-        "boxShadow": "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.05)",
-        "alignItems": "center",
-        "gap": "16px",
-        "display": "flex",
-        "height": "100%",
-        "boxSizing": "border-box"
-      },
-      "link": {
-        "background": "rgba(255, 255, 255, 0.15)",
-        "padding": "10px",
-        "borderRadius": "10px",
-        "border": "1px solid rgba(255, 255, 255, 0.2)",
-        "color": "#ffffff"
+      "name": {
+        "fontSize": "24px",
+        "fontWeight": "700",
+        "color": "#ffffff",
+        "fontFamily": "'Poppins', sans-serif"
       }
     },
-    "description": "Holographic color-shifting effect",
-    "name": "Hologram Wave",
-    "preview": "linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%)",
-    "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400030,
-      "nanoseconds": 989000000
-    },
-    "maxLinks": 5,
-    "theme": "neon"
+    "source": "system"
   },
   {
     "id": "minimal-clean",
-    "description": "Simple and elegant with subtle shadows",
-    "showAvatar": true,
-    "theme": "light",
-    "maxLinks": 6,
-    "showTagline": true,
-    "preview": "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)",
-    "name": "Minimal Clean",
     "styles": {
-      "linksContainer": {
-        "gap": "8px",
-        "display": "flex",
-        "marginLeft": "auto"
-      },
       "name": {
         "fontSize": "22px",
         "fontWeight": "600",
-        "fontFamily": "'Inter', sans-serif",
-        "color": "#1a1a1a"
-      },
-      "container": {
-        "background": "#ffffff",
-        "display": "flex",
-        "alignItems": "center",
-        "gap": "16px",
-        "border": "1px solid #e0e0e0",
-        "boxShadow": "0 4px 20px rgba(0, 0, 0, 0.08)",
-        "height": "100%",
-        "borderRadius": "16px",
-        "boxSizing": "border-box",
-        "width": "100%",
-        "padding": "16px 24px"
-      },
-      "icon": {
-        "width": "18px",
-        "height": "18px"
+        "color": "#1a1a1a",
+        "fontFamily": "'Inter', sans-serif"
       },
       "tagline": {
         "fontSize": "14px",
         "color": "#666666"
       },
       "link": {
-        "color": "#333333",
-        "transition": "all 0.2s ease",
-        "borderRadius": "50%",
         "background": "#f5f5f5",
-        "padding": "10px"
-      }
-    },
-    "source": "system",
-    "layout": "horizontal",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400030,
-      "nanoseconds": 989000000
-    }
-  },
-  {
-    "id": "neon-dreams",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400030,
-      "nanoseconds": 989000000
-    },
-    "source": "system",
-    "maxLinks": 5,
-    "layout": "horizontal",
-    "theme": "neon",
-    "showAvatar": true,
-    "name": "Neon Dreams",
-    "description": "Dual-tone neon with dreamy blur",
-    "showTagline": true,
-    "preview": "linear-gradient(135deg, #1a0033 0%, #330066 100%)",
-    "styles": {
+        "color": "#333333",
+        "padding": "10px",
+        "transition": "all 0.2s ease",
+        "borderRadius": "50%"
+      },
+      "container": {
+        "boxSizing": "border-box",
+        "display": "flex",
+        "background": "#ffffff",
+        "alignItems": "center",
+        "borderRadius": "16px",
+        "padding": "16px 24px",
+        "height": "100%",
+        "width": "100%",
+        "gap": "16px",
+        "border": "1px solid #e0e0e0",
+        "boxShadow": "0 4px 20px rgba(0, 0, 0, 0.08)"
+      },
       "icon": {
         "height": "18px",
         "width": "18px"
       },
-      "link": {
-        "color": "#00ffff",
-        "background": "rgba(0, 255, 255, 0.1)",
-        "borderRadius": "10px",
-        "border": "1px solid rgba(0, 255, 255, 0.3)",
-        "padding": "10px"
-      },
-      "container": {
-        "width": "100%",
-        "borderRadius": "14px",
-        "boxSizing": "border-box",
-        "padding": "18px 26px",
-        "borderImage": "linear-gradient(90deg, #ff00ff, #00ffff) 1",
-        "display": "flex",
-        "background": "linear-gradient(135deg, rgba(26, 0, 51, 0.95) 0%, rgba(51, 0, 102, 0.95) 100%)",
-        "alignItems": "center",
-        "height": "100%",
-        "backdropFilter": "blur(10px)",
-        "gap": "16px",
-        "border": "2px solid transparent",
-        "boxShadow": "0 0 40px rgba(255, 0, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.3)"
-      },
-      "tagline": {
-        "color": "#cc99ff",
-        "fontSize": "13px",
-        "opacity": "0.9"
-      },
       "linksContainer": {
         "display": "flex",
-        "marginLeft": "auto",
-        "gap": "10px"
-      },
-      "name": {
-        "fontWeight": "700",
-        "fontSize": "26px",
-        "WebkitBackgroundClip": "text",
-        "background": "linear-gradient(90deg, #ff00ff, #00ffff)",
-        "WebkitTextFillColor": "transparent",
-        "fontFamily": "'Exo 2', sans-serif",
-        "color": "#ffffff"
+        "gap": "8px",
+        "marginLeft": "auto"
       }
-    }
+    },
+    "source": "system",
+    "showAvatar": true,
+    "maxLinks": 6,
+    "showTagline": true,
+    "preview": "linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%)",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "theme": "light",
+    "layout": "horizontal",
+    "description": "Simple and elegant with subtle shadows",
+    "name": "Minimal Clean"
+  },
+  {
+    "id": "neon-dreams",
+    "styles": {
+      "name": {
+        "WebkitBackgroundClip": "text",
+        "fontFamily": "'Exo 2', sans-serif",
+        "fontSize": "26px",
+        "WebkitTextFillColor": "transparent",
+        "fontWeight": "700",
+        "color": "#ffffff",
+        "background": "linear-gradient(90deg, #ff00ff, #00ffff)"
+      },
+      "tagline": {
+        "fontSize": "13px",
+        "color": "#cc99ff",
+        "opacity": "0.9"
+      },
+      "link": {
+        "border": "1px solid rgba(0, 255, 255, 0.3)",
+        "background": "rgba(0, 255, 255, 0.1)",
+        "color": "#00ffff",
+        "padding": "10px",
+        "borderRadius": "10px"
+      },
+      "container": {
+        "display": "flex",
+        "boxSizing": "border-box",
+        "borderImage": "linear-gradient(90deg, #ff00ff, #00ffff) 1",
+        "backdropFilter": "blur(10px)",
+        "width": "100%",
+        "border": "2px solid transparent",
+        "boxShadow": "0 0 40px rgba(255, 0, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.3)",
+        "background": "linear-gradient(135deg, rgba(26, 0, 51, 0.95) 0%, rgba(51, 0, 102, 0.95) 100%)",
+        "alignItems": "center",
+        "padding": "18px 26px",
+        "borderRadius": "14px",
+        "height": "100%",
+        "gap": "16px"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
+      },
+      "linksContainer": {
+        "marginLeft": "auto",
+        "display": "flex",
+        "gap": "10px"
+      }
+    },
+    "source": "system",
+    "showAvatar": true,
+    "showTagline": true,
+    "maxLinks": 5,
+    "preview": "linear-gradient(135deg, #1a0033 0%, #330066 100%)",
+    "layout": "horizontal",
+    "theme": "neon",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400030,
+      "nanoseconds": 989000000
+    },
+    "name": "Neon Dreams",
+    "description": "Dual-tone neon with dreamy blur"
   },
   {
     "id": "neon-glow",
-    "description": "Cyberpunk style with glowing neon borders",
-    "layout": "horizontal",
-    "maxLinks": 5,
     "source": "system",
-    "showTagline": true,
-    "showAvatar": true,
     "styles": {
       "link": {
         "border": "1px solid rgba(0, 255, 255, 0.3)",
+        "background": "rgba(0, 255, 255, 0.1)",
         "color": "#00ffff",
-        "borderRadius": "8px",
-        "padding": "8px",
         "transition": "all 0.3s ease",
-        "background": "rgba(0, 255, 255, 0.1)"
-      },
-      "linksContainer": {
-        "display": "flex",
-        "gap": "12px",
-        "marginLeft": "auto"
-      },
-      "tagline": {
-        "textShadow": "0 0 8px rgba(255, 0, 255, 0.6)",
-        "opacity": "0.9",
-        "fontSize": "14px",
-        "color": "#ff00ff"
+        "padding": "8px",
+        "borderRadius": "8px"
       },
       "name": {
-        "textShadow": "0 0 10px rgba(0, 255, 255, 0.8)",
         "color": "#00ffff",
+        "fontWeight": "700",
         "fontSize": "24px",
-        "fontFamily": "'Orbitron', sans-serif",
-        "fontWeight": "700"
+        "textShadow": "0 0 10px rgba(0, 255, 255, 0.8)",
+        "fontFamily": "'Orbitron', sans-serif"
+      },
+      "tagline": {
+        "color": "#ff00ff",
+        "opacity": "0.9",
+        "textShadow": "0 0 8px rgba(255, 0, 255, 0.6)",
+        "fontSize": "14px"
       },
       "icon": {
+        "height": "20px",
         "filter": "drop-shadow(0 0 4px rgba(0, 255, 255, 0.6))",
-        "width": "20px",
-        "height": "20px"
+        "width": "20px"
       },
       "container": {
-        "alignItems": "center",
-        "borderRadius": "12px",
-        "border": "2px solid #00ffff",
-        "padding": "16px 24px",
-        "boxShadow": "0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)",
         "height": "100%",
-        "background": "linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 62, 0.95) 100%)",
         "width": "100%",
-        "boxSizing": "border-box",
         "gap": "16px",
+        "boxShadow": "0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(0, 255, 255, 0.1)",
+        "border": "2px solid #00ffff",
+        "borderRadius": "12px",
+        "padding": "16px 24px",
+        "alignItems": "center",
+        "boxSizing": "border-box",
+        "background": "linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 62, 0.95) 100%)",
+        "display": "flex"
+      },
+      "linksContainer": {
+        "marginLeft": "auto",
+        "gap": "12px",
         "display": "flex"
       }
     },
+    "showAvatar": true,
+    "maxLinks": 5,
+    "showTagline": true,
+    "preview": "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%)",
+    "layout": "horizontal",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
-    "preview": "linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%)",
+    "theme": "neon",
     "name": "Neon Glow",
-    "theme": "neon"
+    "description": "Cyberpunk style with glowing neon borders"
   },
   {
     "id": "professional-card",
-    "layout": "card",
-    "showTagline": true,
-    "theme": "dark",
-    "showAvatar": true,
+    "preview": "linear-gradient(135deg, #0077b5 0%, #004182 100%)",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
+    "theme": "dark",
+    "layout": "card",
+    "name": "Professional Card",
+    "description": "LinkedIn-style professional look",
     "styles": {
-      "container": {
-        "alignItems": "center",
-        "padding": "20px",
-        "gap": "12px",
-        "boxShadow": "0 10px 40px rgba(0, 119, 181, 0.3)",
-        "minWidth": "auto",
-        "boxSizing": "border-box",
-        "width": "100%",
-        "borderRadius": "12px",
-        "flexDirection": "column",
-        "background": "linear-gradient(135deg, #0077b5 0%, #004182 100%)",
-        "height": "100%",
-        "display": "flex"
-      },
-      "icon": {
-        "width": "18px",
-        "height": "18px"
-      },
-      "linksContainer": {
-        "justifyContent": "center",
-        "gap": "10px",
-        "display": "flex",
-        "marginTop": "8px",
-        "flexWrap": "wrap"
-      },
       "tagline": {
-        "textAlign": "center",
+        "fontSize": "14px",
         "color": "rgba(255, 255, 255, 0.85)",
-        "fontSize": "14px"
+        "textAlign": "center"
       },
       "name": {
+        "textAlign": "center",
         "color": "#ffffff",
         "fontSize": "22px",
-        "textAlign": "center",
         "fontWeight": "600",
         "fontFamily": "'Inter', sans-serif"
       },
       "link": {
-        "borderRadius": "50%",
-        "padding": "10px",
-        "color": "#0077b5",
         "background": "#ffffff",
+        "color": "#0077b5",
+        "padding": "10px",
+        "borderRadius": "50%",
         "boxShadow": "0 2px 8px rgba(0, 0, 0, 0.15)"
+      },
+      "linksContainer": {
+        "marginTop": "8px",
+        "display": "flex",
+        "justifyContent": "center",
+        "gap": "10px",
+        "flexWrap": "wrap"
+      },
+      "container": {
+        "alignItems": "center",
+        "display": "flex",
+        "background": "linear-gradient(135deg, #0077b5 0%, #004182 100%)",
+        "boxSizing": "border-box",
+        "width": "100%",
+        "height": "100%",
+        "boxShadow": "0 10px 40px rgba(0, 119, 181, 0.3)",
+        "gap": "12px",
+        "minWidth": "auto",
+        "padding": "20px",
+        "borderRadius": "12px",
+        "flexDirection": "column"
+      },
+      "icon": {
+        "height": "18px",
+        "width": "18px"
       }
     },
-    "maxLinks": 4,
     "source": "system",
-    "name": "Professional Card",
-    "description": "LinkedIn-style professional look",
-    "preview": "linear-gradient(135deg, #0077b5 0%, #004182 100%)"
+    "showAvatar": true,
+    "showTagline": true,
+    "maxLinks": 4
   },
   {
     "id": "retro-pixel",
-    "maxLinks": 4,
-    "source": "system",
-    "showTagline": true,
     "name": "Retro Pixel",
+    "description": "8-bit inspired pixel art style",
     "preview": "linear-gradient(135deg, #2d1b69 0%, #1a0533 100%)",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
+    "theme": "retro",
+    "layout": "horizontal",
+    "maxLinks": 4,
+    "showTagline": true,
     "styles": {
+      "link": {
+        "border": "2px solid #ff6b9d",
+        "borderRadius": "0px",
+        "padding": "10px",
+        "color": "#2d1b69",
+        "background": "#00ff88"
+      },
       "name": {
-        "fontSize": "22px",
-        "color": "#00ff88",
-        "textShadow": "3px 3px 0px #ff6b9d",
         "fontFamily": "'Press Start 2P', monospace",
-        "fontWeight": "700"
+        "textShadow": "3px 3px 0px #ff6b9d",
+        "fontSize": "22px",
+        "fontWeight": "700",
+        "color": "#00ff88"
       },
       "tagline": {
         "color": "#ffd700",
@@ -889,90 +898,81 @@
       },
       "linksContainer": {
         "marginLeft": "auto",
-        "display": "flex",
-        "gap": "8px"
-      },
-      "link": {
-        "background": "#00ff88",
-        "padding": "10px",
-        "borderRadius": "0px",
-        "border": "2px solid #ff6b9d",
-        "color": "#2d1b69"
-      },
-      "container": {
-        "width": "100%",
-        "boxShadow": "8px 8px 0px #ff6b9d, 0 0 20px rgba(255, 107, 157, 0.3)",
-        "background": "#2d1b69",
-        "padding": "16px 24px",
-        "imageRendering": "pixelated",
-        "alignItems": "center",
-        "borderRadius": "0px",
-        "border": "4px solid #ff6b9d",
-        "boxSizing": "border-box",
-        "gap": "16px",
-        "height": "100%",
+        "gap": "8px",
         "display": "flex"
       },
       "icon": {
-        "height": "18px",
-        "width": "18px"
+        "width": "18px",
+        "height": "18px"
+      },
+      "container": {
+        "border": "4px solid #ff6b9d",
+        "gap": "16px",
+        "boxShadow": "8px 8px 0px #ff6b9d, 0 0 20px rgba(255, 107, 157, 0.3)",
+        "width": "100%",
+        "height": "100%",
+        "padding": "16px 24px",
+        "borderRadius": "0px",
+        "alignItems": "center",
+        "imageRendering": "pixelated",
+        "display": "flex",
+        "background": "#2d1b69",
+        "boxSizing": "border-box"
       }
     },
-    "description": "8-bit inspired pixel art style",
-    "layout": "horizontal",
-    "showAvatar": false,
-    "theme": "retro"
+    "source": "system",
+    "showAvatar": false
   },
   {
     "id": "streamer-tag",
-    "maxLinks": 4,
-    "preview": "linear-gradient(135deg, #9146ff 0%, #772ce8 100%)",
-    "theme": "gradient",
-    "description": "Compact horizontal bar perfect for streams",
     "showTagline": false,
-    "layout": "compact",
-    "name": "Streamer Tag",
+    "maxLinks": 4,
     "showAvatar": false,
+    "styles": {
+      "name": {
+        "fontSize": "18px",
+        "fontWeight": "700",
+        "fontFamily": "'Poppins', sans-serif",
+        "color": "#ffffff"
+      },
+      "link": {
+        "padding": "8px",
+        "borderRadius": "50%",
+        "background": "rgba(255, 255, 255, 0.2)",
+        "color": "#ffffff"
+      },
+      "linksContainer": {
+        "gap": "6px",
+        "display": "flex",
+        "marginLeft": "8px"
+      },
+      "container": {
+        "boxSizing": "border-box",
+        "display": "flex",
+        "background": "linear-gradient(135deg, #9146ff 0%, #772ce8 100%)",
+        "alignItems": "center",
+        "borderRadius": "100px",
+        "padding": "10px 20px",
+        "height": "100%",
+        "width": "100%",
+        "gap": "12px",
+        "boxShadow": "0 4px 20px rgba(145, 70, 255, 0.4)"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px"
+      }
+    },
+    "source": "system",
+    "name": "Streamer Tag",
+    "description": "Compact horizontal bar perfect for streams",
+    "layout": "compact",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400030,
       "nanoseconds": 989000000
     },
-    "source": "system",
-    "styles": {
-      "container": {
-        "background": "linear-gradient(135deg, #9146ff 0%, #772ce8 100%)",
-        "gap": "12px",
-        "padding": "10px 20px",
-        "width": "100%",
-        "alignItems": "center",
-        "boxShadow": "0 4px 20px rgba(145, 70, 255, 0.4)",
-        "borderRadius": "100px",
-        "height": "100%",
-        "display": "flex",
-        "boxSizing": "border-box"
-      },
-      "link": {
-        "background": "rgba(255, 255, 255, 0.2)",
-        "borderRadius": "50%",
-        "padding": "8px",
-        "color": "#ffffff"
-      },
-      "icon": {
-        "height": "16px",
-        "width": "16px"
-      },
-      "name": {
-        "fontSize": "18px",
-        "color": "#ffffff",
-        "fontWeight": "700",
-        "fontFamily": "'Poppins', sans-serif"
-      },
-      "linksContainer": {
-        "marginLeft": "8px",
-        "display": "flex",
-        "gap": "6px"
-      }
-    }
+    "theme": "gradient",
+    "preview": "linear-gradient(135deg, #9146ff 0%, #772ce8 100%)"
   }
 ]

@@ -1,16 +1,22 @@
 [
   {
     "id": "diagonal-rush-v1",
-    "effects": {
-      "videoFilter": "saturate(0) contrast(1.1)"
+    "pip": {
+      "layoutMode": "hidden"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400037,
       "nanoseconds": 472000000
     },
-    "pip": {
-      "layoutMode": "hidden"
+    "textOverlays": [],
+    "effects": {
+      "videoFilter": "saturate(0) contrast(1.1)"
+    },
+    "canvasAspectRatio": "9:16",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#F0F0F0"
     },
     "canvasLayout": {
       "sections": [
@@ -23,66 +29,58 @@
       ],
       "templateId": "diagonal-rush"
     },
-    "canvasAspectRatio": "9:16",
-    "background": {
-      "backgroundEffect": "none",
-      "blankCanvasColor": "#F0F0F0"
-    },
+    "name": "Diagonal Rush",
     "styleTags": [
       "fashion",
       "diagonal",
       "scroll",
       "fast"
     ],
-    "textOverlays": [],
-    "source": "system",
-    "name": "Diagonal Rush"
+    "source": "system"
   },
   {
     "id": "editorial-sticky-split",
-    "background": {
-      "blankCanvasColor": "#FFF",
-      "backgroundEffect": "none"
-    },
-    "styleTags": [
-      "split",
-      "editorial",
-      "clean",
-      "reading"
-    ],
-    "textOverlays": [],
-    "pip": {
-      "layoutMode": "hidden"
-    },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400037,
       "nanoseconds": 472000000
     },
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#FFF"
+    },
     "canvasLayout": {
       "sections": [
         {
-          "id": "sticky-media",
           "content": {
             "type": "camera"
-          }
+          },
+          "id": "sticky-media"
         }
       ],
       "templateId": "sticky-split"
     },
-    "canvasAspectRatio": "16:9",
-    "source": "system",
+    "name": "Sticky Editorial",
+    "textOverlays": [],
     "effects": {
       "videoFilter": "sepia(0.2)"
     },
-    "name": "Sticky Editorial"
+    "canvasAspectRatio": "16:9",
+    "source": "system",
+    "styleTags": [
+      "split",
+      "editorial",
+      "clean",
+      "reading"
+    ]
   },
   {
     "id": "fashion-horizontal-scroll",
-    "source": "system",
-    "background": {
-      "blankCanvasColor": "#FFF",
-      "backgroundEffect": "none"
+    "pip": {
+      "layoutMode": "hidden"
     },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
@@ -92,28 +90,22 @@
     "effects": {
       "videoFilter": "grayscale(1)"
     },
+    "textOverlays": [],
     "canvasAspectRatio": "16:9",
-    "styleTags": [
-      "horizontal",
-      "fashion",
-      "gallery",
-      "pan"
-    ],
     "name": "Runway Horizontal",
     "canvasLayout": {
-      "templateId": "horizontal-scroll",
       "sections": [
         {
-          "id": "item-1",
           "content": {
             "type": "camera"
-          }
+          },
+          "id": "item-1"
         },
         {
-          "id": "item-2",
           "content": {
             "type": "empty"
-          }
+          },
+          "id": "item-2"
         },
         {
           "content": {
@@ -121,16 +113,36 @@
           },
           "id": "item-3"
         }
-      ]
+      ],
+      "templateId": "horizontal-scroll"
     },
-    "textOverlays": [],
-    "pip": {
-      "layoutMode": "hidden"
-    }
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#FFF"
+    },
+    "styleTags": [
+      "horizontal",
+      "fashion",
+      "gallery",
+      "pan"
+    ],
+    "source": "system"
   },
   {
     "id": "fashion-layered-parallax",
+    "styleTags": [
+      "fashion",
+      "depth",
+      "scroll",
+      "image"
+    ],
+    "source": "system",
+    "effects": {
+      "videoFilter": "contrast(1.2)"
+    },
+    "textOverlays": [],
     "canvasAspectRatio": "9:16",
+    "name": "Layered Parallax",
     "canvasLayout": {
       "sections": [
         {
@@ -148,65 +160,39 @@
       ],
       "templateId": "layered-parallax"
     },
-    "textOverlays": [],
-    "source": "system",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#1A1A1A"
+    },
+    "pip": {
+      "layoutMode": "hidden"
+    },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400037,
       "nanoseconds": 472000000
-    },
-    "effects": {
-      "videoFilter": "contrast(1.2)"
-    },
-    "styleTags": [
-      "fashion",
-      "depth",
-      "scroll",
-      "image"
-    ],
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "name": "Layered Parallax",
-    "background": {
-      "backgroundEffect": "none",
-      "blankCanvasColor": "#1A1A1A"
     }
   },
   {
     "id": "kinetic-infinite-grid",
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "canvasAspectRatio": "16:9",
-    "effects": {
-      "videoFilter": "contrast(1.1)"
-    },
-    "name": "Infinite Grid",
-    "background": {
-      "backgroundEffect": "none",
-      "blankCanvasColor": "#000"
-    },
-    "textOverlays": [],
-    "source": "system",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
     "styleTags": [
       "grid",
       "loop",
       "seamless",
       "gallery"
     ],
+    "source": "system",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#000"
+    },
     "canvasLayout": {
       "sections": [
         {
-          "id": "grid-1",
           "content": {
             "type": "camera"
-          }
+          },
+          "id": "grid-1"
         },
         {
           "content": {
@@ -228,51 +214,84 @@
         }
       ],
       "templateId": "infinite-grid"
+    },
+    "name": "Infinite Grid",
+    "textOverlays": [],
+    "effects": {
+      "videoFilter": "contrast(1.1)"
+    },
+    "canvasAspectRatio": "16:9",
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "pip": {
+      "layoutMode": "hidden"
     }
   },
   {
     "id": "kinetic-scroll-zoom",
+    "source": "system",
     "styleTags": [
       "scale",
       "hero",
       "impact",
       "modern"
     ],
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "canvasAspectRatio": "16:9",
-    "background": {
-      "backgroundEffect": "none",
-      "blankCanvasColor": "#111"
-    },
-    "name": "Scroll Zoom Hero",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400037,
       "nanoseconds": 472000000
     },
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "name": "Scroll Zoom Hero",
     "canvasLayout": {
-      "templateId": "scroll-zoom",
       "sections": [
         {
-          "id": "hero-zoom",
           "content": {
             "type": "camera"
-          }
+          },
+          "id": "hero-zoom"
         }
-      ]
+      ],
+      "templateId": "scroll-zoom"
     },
-    "textOverlays": [],
-    "source": "system",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#111"
+    },
     "effects": {
       "videoFilter": "none"
-    }
+    },
+    "textOverlays": [],
+    "canvasAspectRatio": "16:9"
   },
   {
     "id": "kinetic-stencil-v1",
+    "styleTags": [
+      "bold",
+      "mask",
+      "typography",
+      "video-in-text"
+    ],
+    "source": "system",
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
+    },
+    "effects": {
+      "videoFilter": "grayscale(1) contrast(1.2)"
+    },
+    "textOverlays": [],
+    "canvasAspectRatio": "16:9",
     "canvasLayout": {
-      "templateId": "kinetic-stencil",
       "sections": [
         {
           "content": {
@@ -280,40 +299,18 @@
           },
           "id": "main-feed"
         }
-      ]
+      ],
+      "templateId": "kinetic-stencil"
     },
-    "source": "system",
-    "effects": {
-      "videoFilter": "grayscale(1) contrast(1.2)"
-    },
-    "name": "Kinetic Stencil",
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
-    },
-    "canvasAspectRatio": "16:9",
-    "styleTags": [
-      "bold",
-      "mask",
-      "typography",
-      "video-in-text"
-    ],
-    "textOverlays": [],
     "background": {
-      "blankCanvasColor": "#000000",
-      "backgroundEffect": "none"
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#000000"
     },
-    "pip": {
-      "layoutMode": "hidden"
-    }
+    "name": "Kinetic Stencil"
   },
   {
     "id": "kinetic-typography-v1",
-    "effects": {
-      "videoFilter": "contrast(1.1)"
-    },
-    "canvasAspectRatio": "16:9",
+    "source": "system",
     "styleTags": [
       "modern",
       "typography",
@@ -321,56 +318,62 @@
       "editorial",
       "gsap"
     ],
+    "effects": {
+      "videoFilter": "contrast(1.1)"
+    },
     "textOverlays": [],
-    "createdAt": {
-      "type": "firestore/timestamp/1.0",
-      "seconds": 1766400037,
-      "nanoseconds": 472000000
+    "canvasAspectRatio": "16:9",
+    "canvasLayout": {
+      "sections": [
+        {
+          "content": {
+            "type": "camera"
+          },
+          "id": "hero"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-1"
+        },
+        {
+          "content": {
+            "type": "empty"
+          },
+          "id": "grid-2"
+        }
+      ],
+      "templateId": "kinetic-typography"
     },
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "source": "system",
     "background": {
       "backgroundEffect": "none",
       "blankCanvasColor": "#E5E5E5"
     },
     "name": "Kinetic Editorial",
-    "canvasLayout": {
-      "sections": [
-        {
-          "id": "hero",
-          "content": {
-            "type": "camera"
-          }
-        },
-        {
-          "id": "grid-1",
-          "content": {
-            "type": "empty"
-          }
-        },
-        {
-          "id": "grid-2",
-          "content": {
-            "type": "empty"
-          }
-        }
-      ],
-      "templateId": "kinetic-typography"
+    "pip": {
+      "layoutMode": "hidden"
+    },
+    "createdAt": {
+      "type": "firestore/timestamp/1.0",
+      "seconds": 1766400037,
+      "nanoseconds": 472000000
     }
   },
   {
     "id": "modern-circular-gallery",
-    "canvasAspectRatio": "16:9",
+    "name": "Circular Gallery",
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#111"
+    },
     "canvasLayout": {
-      "templateId": "circular-gallery",
       "sections": [
         {
-          "id": "circle-1",
           "content": {
             "type": "camera"
-          }
+          },
+          "id": "circle-1"
         },
         {
           "content": {
@@ -379,28 +382,32 @@
           "id": "circle-2"
         },
         {
-          "id": "circle-3",
           "content": {
             "type": "empty"
-          }
+          },
+          "id": "circle-3"
         },
         {
-          "id": "circle-4",
           "content": {
             "type": "empty"
-          }
+          },
+          "id": "circle-4"
         }
-      ]
+      ],
+      "templateId": "circular-gallery"
+    },
+    "effects": {
+      "videoFilter": "none"
     },
     "textOverlays": [],
-    "source": "system",
+    "canvasAspectRatio": "16:9",
+    "pip": {
+      "layoutMode": "hidden"
+    },
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400037,
       "nanoseconds": 472000000
-    },
-    "effects": {
-      "videoFilter": "none"
     },
     "styleTags": [
       "circle",
@@ -408,30 +415,11 @@
       "creative",
       "experimental"
     ],
-    "pip": {
-      "layoutMode": "hidden"
-    },
-    "name": "Circular Gallery",
-    "background": {
-      "blankCanvasColor": "#111",
-      "backgroundEffect": "none"
-    }
+    "source": "system"
   },
   {
     "id": "modern-snap-sections",
-    "source": "system",
-    "background": {
-      "blankCanvasColor": "#000",
-      "backgroundEffect": "none"
-    },
-    "effects": {
-      "videoFilter": "none"
-    },
-    "pip": {
-      "layoutMode": "hidden"
-    },
     "name": "Snap Stories",
-    "canvasAspectRatio": "9:16",
     "canvasLayout": {
       "sections": [
         {
@@ -441,24 +429,36 @@
           "id": "snap-1"
         },
         {
-          "id": "snap-2",
           "content": {
             "type": "empty"
-          }
+          },
+          "id": "snap-2"
         },
         {
-          "id": "snap-3",
           "content": {
             "type": "empty"
-          }
+          },
+          "id": "snap-3"
         }
       ],
       "templateId": "snap-sections"
     },
+    "background": {
+      "backgroundEffect": "none",
+      "blankCanvasColor": "#000"
+    },
+    "effects": {
+      "videoFilter": "none"
+    },
+    "textOverlays": [],
+    "canvasAspectRatio": "9:16",
     "createdAt": {
       "type": "firestore/timestamp/1.0",
       "seconds": 1766400037,
       "nanoseconds": 472000000
+    },
+    "pip": {
+      "layoutMode": "hidden"
     },
     "styleTags": [
       "snap",
@@ -466,6 +466,6 @@
       "story",
       "mobile"
     ],
-    "textOverlays": []
+    "source": "system"
   }
 ]
