@@ -127,6 +127,7 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
         "border border-border/20 dark:border-white/10 rounded-2xl",
         "shadow-2xl shadow-black/10 dark:shadow-black/30",
         "transition-all duration-300 ease-out pointer-events-auto",
+        "max-[768px]:hidden",
         isFlipped ? "top-3" : isFullScreen ? "bottom-20" : "bottom-3"
       )}
       style={{
