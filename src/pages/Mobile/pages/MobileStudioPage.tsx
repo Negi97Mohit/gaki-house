@@ -1,9 +1,9 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Camera, RefreshCcw, Mic, MicOff, VideoOff, X, Radio,
-  Sparkles, Type, Palette, Settings2,
-  LayoutGrid, Share2
+  X, RefreshCcw, Mic, MicOff, VideoOff, Camera,
+  Radio, Type, Sparkles, Palette, LayoutGrid,
+  Zap, ChevronDown, Circle, Square, SplitSquareHorizontal
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
@@ -17,32 +17,49 @@ import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurati
 import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
 import { useCanvasStore } from "@/stores/canvas.store";
 
-// ─── Tool Category Type ────────────────────────────────────────────
-type ToolCategory = "none" | "captions" | "effects" | "filters" | "stream" | "layout";
+// ─── Types ─────────────────────────────────────────────────────────
+type ToolCategory = "none" | "captions" | "effects" | "filters" | "layout";
 
-// ─── Caption Animation Previews ────────────────────────────────────
-const CAPTION_ANIMATION_PREVIEWS = DYNAMIC_STYLE_OPTIONS.map(s => ({
+const CAPTION_STYLES = DYNAMIC_STYLE_OPTIONS.map(s => ({
   id: s.id,
   label: s.name,
 }));
 
-// ─── Quick Filters ─────────────────────────────────────────────────
 const QUICK_FILTERS = [
-  { id: "none", label: "Normal", emoji: "☀️" },
-  { id: "grayscale", label: "B&W", emoji: "🖤" },
-  { id: "sepia", label: "Warm", emoji: "🌅" },
-  { id: "vintage", label: "Vintage", emoji: "📷" },
-  { id: "cool", label: "Cool", emoji: "❄️" },
-  { id: "vivid", label: "Vivid", emoji: "🌈" },
-  { id: "noir", label: "Noir", emoji: "🎬" },
-  { id: "dreamy", label: "Dreamy", emoji: "✨" },
+  { id: "none", label: "Original" },
+  { id: "grayscale", label: "B&W" },
+  { id: "sepia", label: "Warm" },
+  { id: "vintage", label: "Vintage" },
+  { id: "cool", label: "Cool" },
+  { id: "vivid", label: "Vivid" },
+  { id: "noir", label: "Noir" },
+  { id: "dreamy", label: "Dreamy" },
 ];
 
-const MOBILE_LAYOUT_OPTIONS = [
-  { id: "solo", label: "Solo", icon: "📹", subtitle: "Full camera" },
-  { id: "pip", label: "PiP", icon: "🪟", subtitle: "Floating cam" },
-  { id: "split-vertical", label: "Split V", icon: "⬌", subtitle: "Side by side" },
-  { id: "split-horizontal", label: "Split H", icon: "⬍", subtitle: "Top / bottom" },
+const EFFECTS = [
+  { id: "none", label: "None" },
+  { id: "snow", label: "Snow" },
+  { id: "rain", label: "Rain" },
+  { id: "sparkles", label: "Sparkles" },
+  { id: "bokeh", label: "Bokeh" },
+  { id: "neon-pulse", label: "Neon" },
+];
+
+const LAYOUTS = [
+  { id: "solo", label: "Full", icon: Square },
+  { id: "pip", label: "PiP", icon: () => (
+    <div className="relative w-5 h-5">
+      <div className="absolute inset-0 border border-current rounded-sm" />
+      <div className="absolute bottom-0.5 right-0.5 w-2 h-2 bg-current rounded-sm" />
+    </div>
+  )},
+  { id: "split-vertical", label: "Side", icon: SplitSquareHorizontal },
+  { id: "split-horizontal", label: "Stack", icon: () => (
+    <div className="w-5 h-5 flex flex-col gap-0.5">
+      <div className="flex-1 border border-current rounded-sm" />
+      <div className="flex-1 border border-current rounded-sm" />
+    </div>
+  )},
 ] as const;
 
 export const MobileStudioPage: React.FC = () => {
@@ -50,9 +67,10 @@ export const MobileStudioPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ToolCategory>("none");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showStreamConfig, setShowStreamConfig] = useState(false);
-  const [selectedCaptionAnimation, setSelectedCaptionAnimation] = useState("none");
+  const [selectedFilter, setSelectedFilter] = useState("none");
+  const [selectedEffect, setSelectedEffect] = useState("none");
+  const [selectedCaption, setSelectedCaption] = useState("none");
 
-  // Global Store
   const isAudioOn = useMediaStore((s) => s.isAudioOn);
   const setAudioOn = useMediaStore((s) => s.setAudioOn);
   const isVideoOn = useMediaStore((s) => s.isVideoOn);
@@ -67,22 +85,23 @@ export const MobileStudioPage: React.FC = () => {
   const { captionPresets } = useCaptionPresets();
   const rtmp = useRtmpStream();
 
-  const isVideoOff = !isVideoOn;
-  const isMuted = !isAudioOn;
-  const isStreaming = rtmp.isStreaming;
-  const isRecording = rtmp.isRecording;
-  const isLive = isStreaming || isRecording;
+  const isLive = rtmp.isStreaming || rtmp.isRecording;
+
+  // Ensure solo mode on mount for mobile
+  useEffect(() => {
+    setLayoutMode("solo");
+  }, []);
 
   const requestMediaPermission = useCallback(async (kind: "audio" | "video") => {
     try {
       const tempStream = await navigator.mediaDevices.getUserMedia({
         audio: kind === "audio",
-        video: kind === "video",
+        video: kind === "video" ? { facingMode: "user" } : false,
       });
       tempStream.getTracks().forEach((track) => track.stop());
       return true;
     } catch {
-      toast.error(`${kind === "audio" ? "Microphone" : "Camera"} permission denied`);
+      toast.error(`${kind === "audio" ? "Mic" : "Camera"} access denied`);
       return false;
     }
   }, []);
@@ -103,57 +122,38 @@ export const MobileStudioPage: React.FC = () => {
     setVideoOn(!isVideoOn);
   }, [isVideoOn, requestMediaPermission, setVideoOn]);
 
-  const flipCamera = () => toast.info("Camera flip coming soon");
-
   const handleGoLive = async () => {
-    if (isStreaming || rtmp.isConnecting) {
+    if (rtmp.isStreaming || rtmp.isConnecting) {
       rtmp.stopStreaming();
       return;
     }
-
-    const hasEnabledDestination = destinations.some((dest) => dest.enabled);
-    if (!hasEnabledDestination) {
+    const hasEnabled = destinations.some((d) => d.enabled);
+    if (!hasEnabled) {
       setShowStreamConfig(true);
       return;
     }
-
     await rtmp.startStreaming();
   };
 
-  const handleRecord = () => {
-    rtmp.toggleRecording();
-  };
-
   const handleExit = () => {
-    if (isLive) {
-      const msg = isRecording ? "recording" : "streaming";
-      if (!window.confirm(`Stop ${msg} and exit?`)) return;
-    }
+    if (isLive && !window.confirm("Stop and exit?")) return;
     navigate("/m");
   };
 
-  const handleSelectCategory = (cat: ToolCategory) => {
+  const toggleCategory = (cat: ToolCategory) => {
     setActiveCategory(prev => prev === cat ? "none" : cat);
   };
 
-  const handleApplyLayout = (layout: "solo" | "pip" | "split-vertical" | "split-horizontal") => {
-    setLayoutMode(layout);
-    toast.success(`${layout.replace("-", " ")} layout applied`);
+  const handleApplyLayout = (id: string) => {
+    setLayoutMode(id as any);
+    setActiveCategory("none");
   };
 
-  // ─── Tool Bar Items ─────────────────────────────────────────────
-  const toolBarItems: { id: ToolCategory; icon: React.ElementType; label: string }[] = [
-    { id: "captions", icon: Type, label: "Captions" },
-    { id: "effects", icon: Sparkles, label: "Effects" },
-    { id: "filters", icon: Palette, label: "Filters" },
-    { id: "layout", icon: LayoutGrid, label: "Layout" },
-    { id: "stream", icon: Radio, label: "Stream" },
-  ];
-
+  // ─── Render ──────────────────────────────────────────────────────
   return (
-    <div className="fixed inset-0 z-40 bg-black flex flex-col text-white overflow-hidden">
+    <div className="fixed inset-0 z-40 bg-black flex flex-col overflow-hidden" style={{ height: '100dvh' }}>
 
-      {/* ── Canvas Background ────────────────────────────────────── */}
+      {/* ── Full-Screen Canvas ─────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
         <MobileCanvasContainer
           isDrawerOpen={isDrawerOpen}
@@ -175,257 +175,230 @@ export const MobileStudioPage: React.FC = () => {
         />
       </div>
 
-      {/* ── Video Off Placeholder ────────────────────────────────── */}
-      <div className={cn(
-        "absolute inset-0 z-[5] bg-zinc-900 flex flex-col items-center justify-center transition-opacity duration-300",
-        !isVideoOff && "opacity-0 pointer-events-none"
-      )}>
-        <Camera className="w-16 h-16 text-zinc-700 mb-4" />
-        <p className="text-zinc-500 font-medium">Camera is off</p>
-      </div>
+      {/* ── Camera Off Overlay ─────────────────────────────────────── */}
+      {!isVideoOn && (
+        <div className="absolute inset-0 z-[5] bg-black/90 flex flex-col items-center justify-center gap-3">
+          <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center">
+            <VideoOff className="w-8 h-8 text-white/30" />
+          </div>
+          <p className="text-white/40 text-sm font-medium">Camera is off</p>
+          <button
+            onClick={toggleVideo}
+            className="mt-2 px-6 py-2.5 bg-white/10 rounded-full text-sm font-semibold text-white active:scale-95 transition-transform"
+          >
+            Turn on camera
+          </button>
+        </div>
+      )}
 
       {/* ══════════════════════════════════════════════════════════════
-          TOP BAR — Close, Live Badge, Side Actions
+          TOP BAR
       ══════════════════════════════════════════════════════════════ */}
-      <div className="relative z-20 flex items-start justify-between px-4 pt-[env(safe-area-inset-top,12px)] pb-2 bg-gradient-to-b from-black/70 to-transparent">
+      <div className="relative z-20 flex items-center justify-between px-4 pt-[max(env(safe-area-inset-top),12px)] pb-2">
         {/* Close */}
-        <button onClick={handleExit} className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform mt-2">
-          <X className="w-5 h-5" />
+        <button
+          onClick={handleExit}
+          className="w-9 h-9 rounded-full bg-black/40 backdrop-blur flex items-center justify-center active:scale-90 transition-transform"
+        >
+          <X className="w-4.5 h-4.5 text-white" />
         </button>
 
-        {/* Live / Rec badge */}
+        {/* Live badge */}
         {isLive && (
           <div className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md mt-2 shadow-lg",
-            isStreaming ? "bg-red-600/90 shadow-red-500/30 animate-pulse" : "bg-red-600/80"
+            "flex items-center gap-1.5 px-3 py-1 rounded-full text-white",
+            rtmp.isStreaming
+              ? "bg-red-500 animate-pulse"
+              : "bg-red-500/80"
           )}>
-            {isStreaming ? <Radio className="w-3.5 h-3.5" /> : <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
-            <span className="text-xs font-bold tracking-wider uppercase">{isStreaming ? "LIVE" : "REC"}</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-white" />
+            <span className="text-[11px] font-bold tracking-wider">
+              {rtmp.isStreaming ? "LIVE" : "REC"}
+            </span>
           </div>
         )}
 
-        {/* Right side actions */}
-        <div className="flex flex-col gap-3 mt-2">
-          <button onClick={flipCamera} className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform">
-            <RefreshCcw className="w-5 h-5" />
-          </button>
-          <button onClick={toggleMute} className={cn("w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform", isMuted ? "bg-red-500/60" : "bg-black/50")}>
-            {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-          </button>
-          <button onClick={toggleVideo} className={cn("w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform", isVideoOff ? "bg-red-500/60" : "bg-black/50")}>
-            {isVideoOff ? <VideoOff className="w-5 h-5" /> : <Camera className="w-5 h-5" />}
-          </button>
-          <button onClick={() => setIsDrawerOpen(true)} className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center active:scale-90 transition-transform">
-            <Settings2 className="w-5 h-5" />
+        {/* Right side controls */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => toast.info("Flip coming soon")}
+            className="w-9 h-9 rounded-full bg-black/40 backdrop-blur flex items-center justify-center active:scale-90 transition-transform"
+          >
+            <RefreshCcw className="w-4 h-4 text-white" />
           </button>
         </div>
       </div>
 
-      {/* SPACER — pushes bottom content down */}
+      {/* ── Right Side Quick Actions (TikTok-style vertical strip) ── */}
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-4">
+        {/* Mic */}
+        <button
+          onClick={toggleMute}
+          className={cn(
+            "w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all",
+            !isAudioOn ? "bg-red-500/80" : "bg-black/40 backdrop-blur"
+          )}
+        >
+          {isAudioOn ? <Mic className="w-4.5 h-4.5 text-white" /> : <MicOff className="w-4.5 h-4.5 text-white" />}
+        </button>
+
+        {/* Camera */}
+        <button
+          onClick={toggleVideo}
+          className={cn(
+            "w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all",
+            !isVideoOn ? "bg-red-500/80" : "bg-black/40 backdrop-blur"
+          )}
+        >
+          {isVideoOn ? <Camera className="w-4.5 h-4.5 text-white" /> : <VideoOff className="w-4.5 h-4.5 text-white" />}
+        </button>
+      </div>
+
+      {/* SPACER */}
       <div className="flex-1" />
 
       {/* ══════════════════════════════════════════════════════════════
-          BOTTOM AREA — Tool Tray + Action Buttons
+          BOTTOM — Tool Tray + Actions
       ══════════════════════════════════════════════════════════════ */}
-      <div className="relative z-20 flex flex-col bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+      <div className="relative z-20 flex flex-col">
 
-        {/* ── Expanded Tool Panel (Instagram-style horizontal scroll) ─ */}
+        {/* ── Expanded Tool Panel (transparent overlay) ────────────── */}
         {activeCategory !== "none" && (
-          <div className="px-2 pb-3 animate-in slide-in-from-bottom-4 duration-200">
-            <div className="bg-black/60 backdrop-blur-xl rounded-2xl border border-white/10 p-3">
-              {/* CAPTIONS */}
-              {activeCategory === "captions" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Caption Animation</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {CAPTION_ANIMATION_PREVIEWS.map((anim) => (
-                      <button
-                        key={anim.id}
-                        onClick={() => setSelectedCaptionAnimation(anim.id)}
-                        className={cn(
-                          "shrink-0 px-4 py-2.5 rounded-full text-xs font-semibold transition-all active:scale-95 border",
-                          selectedCaptionAnimation === anim.id
-                            ? "bg-white text-black border-white shadow-lg shadow-white/20"
-                            : "bg-white/10 text-white/80 border-white/10 hover:bg-white/20"
-                        )}
-                      >
-                        {anim.label}
-                      </button>
-                    ))}
-                  </div>
+          <div className="px-3 pb-2 animate-in slide-in-from-bottom-3 duration-200">
 
-                  {/* Caption Style Presets */}
-                  {captionPresets.length > 0 && (
-                    <>
-                      <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1 mt-2">Style Presets</p>
-                      <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                        {captionPresets.slice(0, 12).map((preset) => (
-                          <button
-                            key={preset.id}
-                            className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                          >
-                            <div
-                              className="w-16 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold border border-white/10"
-                              style={{
-                                fontFamily: preset.style?.fontFamily || 'sans-serif',
-                                color: preset.style?.color || '#fff',
-                                backgroundColor: preset.style?.backgroundColor || 'rgba(0,0,0,0.5)',
-                              }}
-                            >
-                              Abc
-                            </div>
-                            <span className="text-[9px] text-white/60 max-w-[64px] truncate">{preset.name}</span>
-                          </button>
-                        ))}
+            {/* LAYOUT */}
+            {activeCategory === "layout" && (
+              <div className="flex gap-3 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
+                {LAYOUTS.map((l) => {
+                  const active = layoutMode === l.id;
+                  const Icon = l.icon;
+                  return (
+                    <button
+                      key={l.id}
+                      onClick={() => handleApplyLayout(l.id)}
+                      className={cn(
+                        "shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all",
+                      )}
+                    >
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                        active
+                          ? "bg-white text-black shadow-lg shadow-white/20"
+                          : "bg-white/10 text-white/70 backdrop-blur"
+                      )}>
+                        <Icon className="w-5 h-5" />
                       </div>
-                    </>
-                  )}
-                </div>
-              )}
+                      <span className={cn(
+                        "text-[10px] font-semibold",
+                        active ? "text-white" : "text-white/50"
+                      )}>{l.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
-              {/* EFFECTS */}
-              {activeCategory === "effects" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Scene Effects</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {[
-                      { id: "none", label: "None", emoji: "🚫" },
-                      { id: "snow", label: "Snow", emoji: "❄️" },
-                      { id: "rain", label: "Rain", emoji: "🌧️" },
-                      { id: "fire", label: "Fire", emoji: "🔥" },
-                      { id: "sparkles", label: "Sparkles", emoji: "✨" },
-                      { id: "neon-pulse", label: "Neon", emoji: "💜" },
-                      { id: "bokeh", label: "Bokeh", emoji: "🔮" },
-                      { id: "dust", label: "Dust", emoji: "🌫️" },
-                    ].map((fx) => (
-                      <button
-                        key={fx.id}
-                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
-                          {fx.emoji}
-                        </div>
-                        <span className="text-[10px] text-white/70 font-medium">{fx.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+            {/* CAPTIONS */}
+            {activeCategory === "captions" && (
+              <div className="flex gap-2.5 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
+                {CAPTION_STYLES.map((s) => {
+                  const active = selectedCaption === s.id;
+                  return (
+                    <button
+                      key={s.id}
+                      onClick={() => setSelectedCaption(s.id)}
+                      className={cn(
+                        "shrink-0 px-4 py-2 rounded-full text-[11px] font-semibold transition-all active:scale-95",
+                        active
+                          ? "bg-white text-black"
+                          : "bg-white/10 text-white/70 backdrop-blur"
+                      )}
+                    >
+                      {s.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
-              {/* FILTERS */}
-              {activeCategory === "filters" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Camera Filters</p>
-                  <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                    {QUICK_FILTERS.map((f) => (
-                      <button
-                        key={f.id}
-                        className="shrink-0 flex flex-col items-center gap-1.5 active:scale-95 transition-transform"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-2xl hover:bg-white/20 transition-colors">
-                          {f.emoji}
-                        </div>
-                        <span className="text-[10px] text-white/70 font-medium">{f.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+            {/* EFFECTS */}
+            {activeCategory === "effects" && (
+              <div className="flex gap-3 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
+                {EFFECTS.map((fx) => {
+                  const active = selectedEffect === fx.id;
+                  return (
+                    <button
+                      key={fx.id}
+                      onClick={() => setSelectedEffect(fx.id)}
+                      className="shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all"
+                    >
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                        active
+                          ? "bg-white text-black shadow-lg shadow-white/20"
+                          : "bg-white/10 text-white/70 backdrop-blur"
+                      )}>
+                        <Zap className="w-5 h-5" />
+                      </div>
+                      <span className={cn(
+                        "text-[10px] font-semibold",
+                        active ? "text-white" : "text-white/50"
+                      )}>{fx.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
-              {/* LAYOUT */}
-              {activeCategory === "layout" && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between px-1">
-                    <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold">Canvas Layouts</p>
-                    <span className="text-[10px] text-white/40">Tap to apply</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {MOBILE_LAYOUT_OPTIONS.map((l) => {
-                      const isActiveLayout = layoutMode === l.id;
-                      return (
-                        <button
-                          key={l.id}
-                          onClick={() => handleApplyLayout(l.id)}
-                          className={cn(
-                            "rounded-2xl border p-3 text-left transition-all active:scale-95",
-                            isActiveLayout
-                              ? "bg-white text-black border-white shadow-lg shadow-white/20"
-                              : "bg-white/10 border-white/10 text-white"
-                          )}
-                        >
-                          <div className="text-xl mb-2">{l.icon}</div>
-                          <p className={cn("text-xs font-semibold", isActiveLayout ? "text-black" : "text-white/90")}>{l.label}</p>
-                          <p className={cn("text-[10px]", isActiveLayout ? "text-black/70" : "text-white/50")}>{l.subtitle}</p>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <button
-                    onClick={() => setIsDrawerOpen(true)}
-                    className="w-full py-2 rounded-xl bg-white/10 text-xs text-white/70 font-medium hover:bg-white/15 transition-colors"
-                  >
-                    Open Advanced Layout Designer →
-                  </button>
-                </div>
-              )}
-
-              {/* STREAM */}
-              {activeCategory === "stream" && (
-                <div className="space-y-3">
-                  <p className="text-[11px] uppercase tracking-widest text-white/50 font-semibold px-1">Stream Destinations</p>
-                  {destinations.length === 0 ? (
-                    <div className="text-center py-4">
-                      <p className="text-sm text-white/50 mb-3">No destinations configured</p>
-                      <button
-                        onClick={() => setShowStreamConfig(true)}
-                        className="px-5 py-2.5 bg-primary rounded-full text-sm font-bold text-primary-foreground active:scale-95 transition-transform"
-                      >
-                        + Add Platform
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-                      {destinations.map((dest) => (
-                        <div key={dest.id} className="shrink-0 flex flex-col items-center gap-1.5">
-                          <div className={cn(
-                            "w-14 h-14 rounded-2xl border flex items-center justify-center transition-colors",
-                            dest.enabled ? "bg-green-500/20 border-green-500/40" : "bg-white/10 border-white/10"
-                          )}>
-                            <Radio className="w-6 h-6" />
-                          </div>
-                          <span className="text-[10px] text-white/70 font-medium max-w-[56px] truncate">{dest.platform}</span>
-                        </div>
-                      ))}
-                      <button
-                        onClick={() => setShowStreamConfig(true)}
-                        className="shrink-0 flex flex-col items-center gap-1.5"
-                      >
-                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-dashed border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors">
-                          <span className="text-xl">+</span>
-                        </div>
-                        <span className="text-[10px] text-white/50 font-medium">Add</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            {/* FILTERS */}
+            {activeCategory === "filters" && (
+              <div className="flex gap-3 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
+                {QUICK_FILTERS.map((f) => {
+                  const active = selectedFilter === f.id;
+                  return (
+                    <button
+                      key={f.id}
+                      onClick={() => setSelectedFilter(f.id)}
+                      className="shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all"
+                    >
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                        active
+                          ? "bg-white text-black shadow-lg shadow-white/20 ring-2 ring-white/50"
+                          : "bg-white/10 text-white/70 backdrop-blur"
+                      )}>
+                        <span className="text-[11px] font-bold">{f.label.slice(0, 3)}</span>
+                      </div>
+                      <span className={cn(
+                        "text-[10px] font-semibold",
+                        active ? "text-white" : "text-white/50"
+                      )}>{f.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
-        {/* ── Horizontal Tool Category Bar (Instagram-style) ──────── */}
-        <div className="flex gap-1 overflow-x-auto px-3 pb-3" style={{ scrollbarWidth: 'none' }}>
-          {toolBarItems.map((item) => {
+        {/* ── Tool Category Bar ────────────────────────────────────── */}
+        <div className="flex items-center gap-1 overflow-x-auto px-4 pb-3" style={{ scrollbarWidth: 'none' }}>
+          {([
+            { id: "layout" as ToolCategory, icon: LayoutGrid, label: "Layout" },
+            { id: "captions" as ToolCategory, icon: Type, label: "Captions" },
+            { id: "effects" as ToolCategory, icon: Sparkles, label: "Effects" },
+            { id: "filters" as ToolCategory, icon: Palette, label: "Filters" },
+          ]).map((item) => {
             const active = activeCategory === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => handleSelectCategory(item.id)}
+                onClick={() => toggleCategory(item.id)}
                 className={cn(
-                  "shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all active:scale-95 border",
+                  "shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11px] font-semibold transition-all active:scale-95",
                   active
-                    ? "bg-white text-black border-white shadow-lg shadow-white/10"
-                    : "bg-white/10 text-white/70 border-white/5 hover:bg-white/15"
+                    ? "bg-white text-black"
+                    : "bg-white/8 text-white/60"
                 )}
               >
                 <item.icon className="w-3.5 h-3.5" />
@@ -435,70 +408,70 @@ export const MobileStudioPage: React.FC = () => {
           })}
         </div>
 
-        {/* ── Action Buttons Row ──────────────────────────────────── */}
-        <div className="flex items-center justify-center gap-6 pb-3">
-          {/* Record Button */}
-          <button
-            onClick={handleRecord}
-            className="flex flex-col items-center gap-1"
-          >
+        {/* ── Action Buttons Row ───────────────────────────────────── */}
+        <div className="flex items-end justify-center gap-8 pb-2">
+          {/* Record */}
+          <button onClick={rtmp.toggleRecording} className="flex flex-col items-center gap-1">
             <div className={cn(
-              "w-14 h-14 rounded-full border-[3px] flex items-center justify-center transition-all active:scale-90",
-              isRecording ? "border-red-500" : "border-white/50"
+              "w-12 h-12 rounded-full border-[2.5px] flex items-center justify-center transition-all active:scale-90",
+              rtmp.isRecording ? "border-red-400" : "border-white/40"
             )}>
               <div className={cn(
                 "bg-red-500 transition-all",
-                isRecording ? "w-6 h-6 rounded-md" : "w-10 h-10 rounded-full"
+                rtmp.isRecording ? "w-5 h-5 rounded-sm" : "w-8 h-8 rounded-full"
               )} />
             </div>
-            <span className="text-[10px] text-white/60 font-medium">Record</span>
+            <span className="text-[9px] text-white/50 font-medium">Record</span>
           </button>
 
-          {/* Go Live Button */}
+          {/* Go Live — Hero button */}
           <button
             onClick={handleGoLive}
-            className="flex flex-col items-center gap-1"
             disabled={rtmp.isConnecting}
+            className="flex flex-col items-center gap-1"
           >
             <div className={cn(
-              "w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-xl",
+              "w-[68px] h-[68px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-xl",
               rtmp.isConnecting
-                ? "bg-yellow-500/90 shadow-yellow-500/40 border-4 border-yellow-300/70"
-                : isStreaming
-                  ? "bg-red-600 shadow-red-500/40 border-4 border-red-400"
-                  : "bg-gradient-to-br from-primary to-primary/70 shadow-primary/30 border-4 border-white/20"
+                ? "bg-yellow-500 shadow-yellow-500/30"
+                : rtmp.isStreaming
+                  ? "bg-red-500 shadow-red-500/30"
+                  : "bg-white shadow-white/20"
             )}>
-              {isStreaming ? (
-                <div className="w-7 h-7 rounded-md bg-white" />
+              {rtmp.isStreaming ? (
+                <Square className="w-7 h-7 text-white fill-white" />
               ) : (
-                <Radio className="w-8 h-8 text-primary-foreground" />
+                <Radio className={cn(
+                  "w-7 h-7",
+                  rtmp.isConnecting ? "text-white" : "text-black"
+                )} />
               )}
             </div>
             <span className={cn(
-              "text-[10px] font-bold",
-              isStreaming ? "text-red-400" : "text-white/80"
+              "text-[9px] font-bold",
+              rtmp.isStreaming ? "text-red-400" : "text-white/60"
             )}>
-              {rtmp.isConnecting ? "Connecting..." : isStreaming ? "End Live" : "Go Live"}
+              {rtmp.isConnecting ? "Connecting" : rtmp.isStreaming ? "End Live" : "Go Live"}
             </span>
           </button>
 
-          {/* Share Button */}
+          {/* Stream Config */}
           <button
-            onClick={() => toast.info("Share coming soon")}
+            onClick={() => setShowStreamConfig(true)}
             className="flex flex-col items-center gap-1"
           >
-            <div className="w-14 h-14 rounded-full border-[3px] border-white/30 flex items-center justify-center active:scale-90 transition-transform">
-              <Share2 className="w-6 h-6 text-white/70" />
+            <div className="w-12 h-12 rounded-full border-[2.5px] border-white/20 flex items-center justify-center active:scale-90 transition-transform">
+              <Radio className="w-5 h-5 text-white/60" />
             </div>
-            <span className="text-[10px] text-white/60 font-medium">Share</span>
+            <span className="text-[9px] text-white/50 font-medium">Setup</span>
           </button>
         </div>
 
-        {/* Safe area spacer */}
-        <div className="h-[env(safe-area-inset-bottom,8px)]" />
+        {/* Safe area */}
+        <div className="h-[max(env(safe-area-inset-bottom),8px)]" />
       </div>
 
-      {/* ── Stream Configuration Modal ───────────────────────────── */}
+      {/* ── Stream Config Modal ────────────────────────────────────── */}
       <StreamConfigurationModal
         externalOpen={showStreamConfig}
         onOpenChange={setShowStreamConfig}

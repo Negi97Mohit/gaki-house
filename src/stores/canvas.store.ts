@@ -25,8 +25,8 @@ interface CanvasState {
 }
 
 export const useCanvasStore = create<CanvasState>((set) => ({
-    layoutMode: 'pip',
-    cameraShape: 'circle',
+    layoutMode: 'solo',
+    cameraShape: 'rectangle',
     splitRatio: 50,
     pipPosition: { x: 20, y: 20 }, // Default position
     pipSize: { width: 300, height: 200 }, // Default size
