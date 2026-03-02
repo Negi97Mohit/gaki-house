@@ -1,130 +1,88 @@
 import React, { useState } from "react";
-import {
-    Drawer,
-    DrawerContent,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-    DrawerClose,
-} from "@/shared/ui/drawer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
-import { Button } from "@/shared/ui/button";
-import { X, Settings2 } from "lucide-react";
-
+import * as RadixTabs from "@radix-ui/react-tabs";
+import { Drawer } from "vaul";
+import { Paintbrush, Type, Settings } from "lucide-react";
 import { CanvasDesignsPanel } from "@/features/studio/ui/panels/CanvasDesignsPanel";
 import { TextPresetsPanel } from "@/features/studio/ui/panels/TextPresetsPanel";
-import { SettingsPanel } from "@/features/studio/ui/panels/SettingsPanel";
-// import { DynamicStylesPanel } from "@/features/studio/ui/panels/DynamicStylesPanel"; -> included in TextPresetsPanel
+import { cn } from "@/shared/lib/utils";
 
-import { CanvasPreset } from "@/types/canvasPreset";
-import { CaptionStyle } from "@/types/caption";
-
-export interface MobileStudioToolsDrawerProps {
-    // Designs Props
-    onCanvasPresetSelect?: (preset: CanvasPreset) => void;
-    customCanvasPresets?: CanvasPreset[];
-    onSaveCanvasPreset?: (name: string, layout?: any) => void;
-    onDeleteCanvasPreset?: (id: string) => void;
-    publicPresets?: CanvasPreset[];
-    isLoadingPublic?: boolean;
-    onShareCanvasPreset?: (preset: CanvasPreset | string, authorName?: string) => void;
-    onUnshareCanvasPreset?: (preset: CanvasPreset | string) => void;
-
-    // Text/Caption Props
-    style: CaptionStyle;
-    onStyleChange: (style: CaptionStyle) => void;
-    dynamicStyle: string;
-    onDynamicStyleChange: (styleId: string) => void;
-
-    // Trigger Element
-    trigger?: React.ReactNode;
-
-    // Controlled State
-    isOpen?: boolean;
-    onOpenChange?: (open: boolean) => void;
+interface MobileStudioToolsDrawerProps {
+    isOpen: boolean;
+    onOpenChange: (open: boolean) => void;
+    layoutManager?: any;
 }
 
-export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (props) => {
-    const [activeTab, setActiveTab] = useState("designs");
+export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = ({
+    isOpen,
+    onOpenChange,
+    layoutManager,
+}) => {
+    const [tab, setTab] = useState("designs");
 
     return (
-        <Drawer open={props.isOpen} onOpenChange={props.onOpenChange}>
-            {/* If trigger is provided, we still render it, otherwise headless if fully controlled */}
-            {props.trigger && <DrawerTrigger asChild>{props.trigger}</DrawerTrigger>}
-            {!props.trigger && !props.isOpen && (
-                <DrawerTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full bg-black/40 backdrop-blur border-none text-white">
-                        <Settings2 className="w-5 h-5" />
-                    </Button>
-                </DrawerTrigger>
-            )}
+        <Drawer.Root open={isOpen} onOpenChange={onOpenChange}>
+            <Drawer.Portal>
+                <Drawer.Overlay className="fixed inset-0 bg-black/60 z-[100]" />
+                <Drawer.Content
+                    className="fixed bottom-0 left-0 right-0 z-[101] bg-background rounded-t-[20px] outline-none mobile-sheet max-h-[80vh] flex flex-col"
+                    aria-label="Studio Tools"
+                >
+                    {/* Handle */}
+                    <div className="mobile-sheet-handle" aria-hidden="true" />
+                    <Drawer.Title className="sr-only">Studio Tools</Drawer.Title>
 
-            <DrawerContent className="h-auto max-h-[50vh] flex flex-col bg-background/80 backdrop-blur-xl border-t border-border/20 rounded-t-3xl">
-                <DrawerHeader className="relative border-b border-border/10 pb-4">
-                    <DrawerTitle className="text-center text-lg font-bold tracking-tight">Studio Tools</DrawerTitle>
-                    <DrawerClose asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-4 top-4 rounded-full"
+                    {/* Tab navigation */}
+                    <RadixTabs.Root value={tab} onValueChange={setTab} className="flex-1 flex flex-col overflow-hidden min-h-0">
+                        <RadixTabs.List
+                            className="flex items-center gap-1 px-4 py-2 border-b border-border/10 shrink-0"
+                            aria-label="Tool categories"
                         >
-                            <X className="w-4 h-4" />
-                        </Button>
-                    </DrawerClose>
-                </DrawerHeader>
+                            {([
+                                { id: "designs", icon: Paintbrush, label: "Designs" },
+                                { id: "captions", icon: Type, label: "Captions" },
+                                { id: "settings", icon: Settings, label: "Settings" },
+                            ]).map((t) => (
+                                <RadixTabs.Trigger
+                                    key={t.id}
+                                    value={t.id}
+                                    className={cn(
+                                        "flex items-center gap-2 px-4 py-2.5 rounded-full text-[12px] font-semibold transition-all active:scale-95 min-h-[40px]",
+                                        tab === t.id
+                                            ? "bg-foreground text-background"
+                                            : "text-muted-foreground hover:bg-muted/40"
+                                    )}
+                                >
+                                    <t.icon className="w-4 h-4" aria-hidden="true" />
+                                    {t.label}
+                                </RadixTabs.Trigger>
+                            ))}
+                        </RadixTabs.List>
 
-                <div className="flex-1 overflow-hidden flex flex-col p-4 w-full">
-                    <Tabs
-                        value={activeTab}
-                        onValueChange={setActiveTab}
-                        className="w-full flex-1 flex flex-col min-h-0"
-                    >
-                        {/* Tab Navigation */}
-                        <TabsList className="w-full grid grid-cols-3 h-12 bg-muted/30 rounded-full mb-4 p-1 shrink-0">
-                            <TabsTrigger value="designs" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-                                Designs
-                            </TabsTrigger>
-                            <TabsTrigger value="captions" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-                                Text & Captions
-                            </TabsTrigger>
-                            <TabsTrigger value="camera" className="rounded-full text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all">
-                                Settings
-                            </TabsTrigger>
-                        </TabsList>
-
-                        {/* Tab Contents */}
-                        <div className="flex-1 overflow-y-auto min-h-0" style={{ scrollbarWidth: 'none' }}>
-                            <TabsContent value="designs" className="outline-none m-0 data-[state=inactive]:hidden">
-                                <CanvasDesignsPanel
-                                    onCanvasPresetSelect={props.onCanvasPresetSelect}
-                                    onSaveCanvasPreset={props.onSaveCanvasPreset}
-                                    customCanvasPresets={props.customCanvasPresets}
-                                    onDeleteCanvasPreset={props.onDeleteCanvasPreset}
-                                    publicPresets={props.publicPresets}
-                                    isLoadingPublic={props.isLoadingPublic}
-                                    onShareCanvasPreset={props.onShareCanvasPreset}
-                                    onUnshareCanvasPreset={props.onUnshareCanvasPreset}
-                                    isHorizontal={true}
-                                />
-                            </TabsContent>
-
-                            <TabsContent value="captions" className="outline-none m-0 data-[state=inactive]:hidden">
-                                <TextPresetsPanel
-                                    style={props.style}
-                                    onStyleChange={props.onStyleChange}
-                                    dynamicStyle={props.dynamicStyle}
-                                    onDynamicStyleChange={props.onDynamicStyleChange}
-                                    isHorizontal={true}
-                                />
-                            </TabsContent>
-
-                            <TabsContent value="camera" className="outline-none m-0 data-[state=inactive]:hidden">
-                                <SettingsPanel />
-                            </TabsContent>
+                        <div className="flex-1 overflow-y-auto p-4 min-h-0">
+                            <RadixTabs.Content value="designs" className="h-full">
+                                {layoutManager && (
+                                    <CanvasDesignsPanel
+                                        onCanvasPresetSelect={layoutManager.handleCanvasPresetSelect}
+                                        onSaveCanvasPreset={layoutManager.handleSaveCanvasPreset}
+                                        onDeleteCanvasPreset={layoutManager.handleDeleteCanvasPreset}
+                                        customCanvasPresets={layoutManager.customPresets || []}
+                                        publicPresets={layoutManager.publicPresets || []}
+                                        isLoadingPublic={layoutManager.isLoadingPublic || false}
+                                        onShareCanvasPreset={layoutManager.shareCanvasPreset}
+                                        onUnshareCanvasPreset={layoutManager.unshareCanvasPreset}
+                                    />
+                                )}
+                            </RadixTabs.Content>
+                            <RadixTabs.Content value="captions" className="h-full">
+                                <TextPresetsPanel />
+                            </RadixTabs.Content>
+                            <RadixTabs.Content value="settings" className="h-full">
+                                <p className="text-muted-foreground text-sm">Stream settings coming soon.</p>
+                            </RadixTabs.Content>
                         </div>
-                    </Tabs>
-                </div>
-            </DrawerContent>
-        </Drawer>
+                    </RadixTabs.Root>
+                </Drawer.Content>
+            </Drawer.Portal>
+        </Drawer.Root>
     );
 };

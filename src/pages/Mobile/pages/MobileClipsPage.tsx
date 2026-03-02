@@ -20,10 +20,10 @@ export const MobileClipsPage: React.FC = () => {
     const [sort, setSort] = useState<SortType>("trending");
 
     return (
-        <div className="mobile-clips-feed h-full relative overflow-hidden">
+        <div className="mobile-clips-feed h-full relative overflow-hidden" role="region" aria-label="Clips feed">
             {/* Sort pills — floating at top */}
-            <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-center gap-1.5 py-2 px-3 bg-gradient-to-b from-black/60 to-transparent pointer-events-none">
-                <div className="flex gap-1 pointer-events-auto">
+            <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-center gap-1.5 py-3 px-3 bg-gradient-to-b from-black/60 to-transparent pointer-events-none mobile-safe-top">
+                <div className="flex gap-1.5 pointer-events-auto" role="tablist" aria-label="Sort clips">
                     {([
                         { key: "trending" as const, icon: TrendingUp, label: "Trending" },
                         { key: "recent" as const, icon: Calendar, label: "New" },
@@ -32,14 +32,16 @@ export const MobileClipsPage: React.FC = () => {
                         <button
                             key={key}
                             onClick={() => setSort(key)}
+                            role="tab"
+                            aria-selected={sort === key}
                             className={cn(
-                                "flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-semibold transition-all active:scale-95",
+                                "flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-semibold transition-all active:scale-95 min-h-[40px]",
                                 sort === key
-                                    ? "bg-white text-black"
-                                    : "bg-white/10 backdrop-blur-sm text-white/80"
+                                    ? "bg-white text-black shadow-md"
+                                    : "bg-white/10 backdrop-blur-md text-white/80 border border-white/10"
                             )}
                         >
-                            <Icon className="w-3 h-3" />
+                            <Icon className="w-3.5 h-3.5" aria-hidden="true" />
                             {label}
                         </button>
                     ))}
@@ -47,7 +49,7 @@ export const MobileClipsPage: React.FC = () => {
             </div>
 
             {/* Snap-scroll container */}
-            <div className="h-full overflow-y-auto snap-y snap-mandatory scrollbar-none">
+            <div className="h-full overflow-y-auto snap-y snap-mandatory no-scrollbar">
                 {MOCK_CLIPS.map((clip) => (
                     <MobileReelsCard key={clip.id} clip={clip} />
                 ))}

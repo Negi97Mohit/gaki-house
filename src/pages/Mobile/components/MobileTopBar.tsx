@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, X, Heart } from "lucide-react";
 import { useAuth } from "@/pages/platform/context/AuthContext";
+import { cn } from "@/shared/lib/utils";
 
 export const MobileTopBar: React.FC = () => {
   const navigate = useNavigate();
@@ -24,13 +25,17 @@ export const MobileTopBar: React.FC = () => {
 
   return (
     <>
-      <header className="mobile-top-bar safe-area-top sticky top-0 z-50 flex items-center justify-between px-3.5 h-12 bg-background/70 border-b border-border/20">
+      <header
+        className="mobile-top-bar mobile-safe-top sticky top-0 z-50 flex items-center justify-between px-4 h-14 mobile-glass border-b border-border/10"
+        role="banner"
+        aria-label="Top navigation"
+      >
         {/* Logo */}
-        <Link to="/m" className="flex items-center gap-2">
+        <Link to="/m" className="flex items-center gap-2.5" aria-label="GAKI Home">
           <img
             src="./icon.png"
             alt="GAKI"
-            className="w-6 h-6 rounded-md shadow-sm"
+            className="w-7 h-7 rounded-lg shadow-sm"
           />
           <span className="text-foreground font-black text-base tracking-tight">
             GAKI
@@ -38,33 +43,39 @@ export const MobileTopBar: React.FC = () => {
         </Link>
 
         {/* Right actions */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             onClick={() => navigate("/m/following")}
             className="mobile-icon-btn"
+            aria-label="Following"
           >
-            <Heart className="w-4 h-4" />
+            <Heart className="w-[18px] h-[18px]" />
           </button>
           <button
             onClick={() => setSearchOpen(true)}
             className="mobile-icon-btn"
+            aria-label="Search"
           >
-            <Search className="w-4 h-4" />
+            <Search className="w-[18px] h-[18px]" />
           </button>
-          <button className="mobile-icon-btn relative">
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full" />
+          <button
+            className="mobile-icon-btn relative"
+            aria-label="Notifications"
+          >
+            <Bell className="w-[18px] h-[18px]" />
+            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-destructive rounded-full" aria-hidden="true" />
           </button>
           <button
             onClick={() =>
               user ? navigate("/m/profile/me") : openAuthModal("login")
             }
-            className="ml-1 active:scale-95 transition-transform"
+            className="mobile-icon-btn"
+            aria-label={user ? "Your profile" : "Sign in"}
           >
             <img
               src={avatarUrl}
-              alt="You"
-              className="w-7 h-7 rounded-full bg-muted border border-border/40 object-cover"
+              alt=""
+              className="w-8 h-8 rounded-full bg-muted border-2 border-border/20 object-cover"
             />
           </button>
         </div>
@@ -72,16 +83,22 @@ export const MobileTopBar: React.FC = () => {
 
       {/* Full-screen search overlay */}
       {searchOpen && (
-        <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-xl flex flex-col animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="safe-area-top flex items-center gap-2 px-3 py-2 border-b border-border/20">
+        <div
+          className="fixed inset-0 z-[200] bg-background/98 backdrop-blur-2xl flex flex-col animate-in fade-in slide-in-from-top-2 duration-200"
+          role="dialog"
+          aria-label="Search"
+          aria-modal="true"
+        >
+          <div className="mobile-safe-top flex items-center gap-2.5 px-4 py-3 border-b border-border/10">
             <button
               onClick={() => {
                 setSearchOpen(false);
                 setQuery("");
               }}
               className="mobile-icon-btn"
+              aria-label="Close search"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
             <form onSubmit={handleSubmit} className="flex-1">
               <input
@@ -90,11 +107,12 @@ export const MobileTopBar: React.FC = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search streams, categories..."
-                className="w-full bg-muted/60 rounded-full px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/30"
+                className="w-full bg-muted/60 rounded-full px-5 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 min-h-[44px]"
+                aria-label="Search input"
               />
             </form>
           </div>
-          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm px-6 text-center">
             {query.trim()
               ? `Press enter to search "${query}"`
               : "Start typing to search..."}

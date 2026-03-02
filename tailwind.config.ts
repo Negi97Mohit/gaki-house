@@ -12,6 +12,18 @@ export default {
         "2xl": "1400px",
       },
     },
+    screens: {
+      'xs': '360px',
+      'sm-phone': '390px',
+      'phone': '428px',
+      'foldable': '600px',
+      'tablet': '768px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1400px',
+    },
     extend: {
       colors: {
         border: "hsl(var(--border))",
@@ -111,6 +123,22 @@ export default {
             boxShadow: "0 0 40px hsl(263 70% 60% / 0.6)"
           }
         },
+        "sheet-up": {
+          "0%": { transform: "translateY(100%)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" }
+        },
+        "sheet-down": {
+          "0%": { transform: "translateY(0)", opacity: "1" },
+          "100%": { transform: "translateY(100%)", opacity: "0" }
+        },
+        "fade-scale-in": {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" }
+        },
+        "live-pulse": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.7", transform: "scale(1.05)" }
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -118,6 +146,10 @@ export default {
         "fade-in": "fade-in 0.3s ease-out",
         "slide-up": "slide-up 0.4s ease-out",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "sheet-up": "sheet-up 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
+        "sheet-down": "sheet-down 0.2s ease-in",
+        "fade-scale-in": "fade-scale-in 0.2s ease-out",
+        "live-pulse": "live-pulse 1.5s ease-in-out infinite",
       },
     },
   },

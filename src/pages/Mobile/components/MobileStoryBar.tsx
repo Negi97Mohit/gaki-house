@@ -12,27 +12,28 @@ export const MobileStoryBar: React.FC<MobileStoryBarProps> = ({ streams }) => {
   if (liveStreams.length === 0) return null;
 
   return (
-    <div className="px-3 py-2.5">
-      <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none snap-x snap-mandatory">
+    <div className="px-3 py-3" role="region" aria-label="Live streams">
+      <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar snap-x snap-mandatory -webkit-overflow-scrolling-touch">
         {liveStreams.map((stream) => (
           <Link
             key={stream.id}
             to={`/m/stream/${stream.username}`}
-            className="flex flex-col items-center gap-1 shrink-0 snap-start active:scale-95 transition-transform"
+            className="flex flex-col items-center gap-1.5 shrink-0 snap-start active:scale-95 transition-transform min-w-[64px]"
+            aria-label={`Watch ${stream.displayName} live`}
           >
-            {/* Gradient ring */}
-            <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-br from-fuchsia-500 via-rose-500 to-amber-400 shadow-sm shadow-rose-500/25">
+            {/* Gradient ring — larger for touch */}
+            <div className="w-16 h-16 rounded-full p-[2.5px] bg-gradient-to-br from-fuchsia-500 via-rose-500 to-amber-400 shadow-md shadow-rose-500/20">
               <div className="w-full h-full rounded-full p-[2px] bg-background">
                 <img
                   src={stream.avatar}
-                  alt={stream.displayName}
+                  alt=""
                   className="w-full h-full rounded-full object-cover bg-muted"
                   loading="lazy"
                 />
               </div>
             </div>
             {/* Name */}
-            <span className="text-[10px] text-muted-foreground font-medium w-14 text-center truncate leading-tight">
+            <span className="text-[10px] text-muted-foreground font-medium w-16 text-center truncate leading-tight">
               {stream.displayName}
             </span>
           </Link>

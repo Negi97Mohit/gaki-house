@@ -1,361 +1,212 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { User, Bell, Palette, Shield, Save, Loader2, Moon, Sun, Check, ArrowLeft, ChevronRight, Trash2, AlertCircle } from "lucide-react";
-import { cn } from "@/shared/lib/utils";
-import { useAuth } from "@/pages/platform/context/AuthContext";
-import { db } from "@/lib/firebase";
-import { doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore";
-import { toast } from "sonner";
-import { useThemeStore, themes, ThemeName } from "@/features/theme";
-import { DEFAULT_AVATARS, getDefaultAvatar } from "@/pages/platform/components/DefaultAvatar";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+    ArrowLeft, Moon, Sun, Palette, User, Bell, Shield, HelpCircle,
+    ChevronRight, LogOut, Camera, Trash2, Languages, Monitor
+} from "lucide-react";
+import { useAuth } from "@/pages/platform/context/AuthContext";
+import { useThemeStore } from "@/shared/store/useThemeStore";
+import { cn } from "@/shared/lib/utils";
 
-type SectionId = "profile" | "notifications" | "appearance" | "privacy" | null;
-
-const FEATURED_THEMES: ThemeName[] = [
-    "default", "ocean", "forest", "sunset", "cyberpunk", "aurora",
-    "midnight", "sakura", "volcanic", "arctic", "neon", "ethereal",
+const THEMES = [
+    { id: "default", name: "Gold", color: "bg-amber-400" },
+    { id: "ocean", name: "Ocean", color: "bg-sky-400" },
+    { id: "forest", name: "Forest", color: "bg-green-500" },
+    { id: "sunset", name: "Sunset", color: "bg-orange-400" },
+    { id: "ultraviolet", name: "Violet", color: "bg-violet-500" },
+    { id: "midnightTokyo", name: "Tokyo", color: "bg-pink-500" },
+    { id: "obsidian", name: "Obsidian", color: "bg-zinc-700" },
+    { id: "roseGold", name: "Rosé", color: "bg-rose-400" },
+    { id: "iceQueen", name: "Ice", color: "bg-cyan-400" },
+    { id: "hexGrid", name: "Matrix", color: "bg-emerald-500" },
+    { id: "cosmicRing", name: "Cosmic", color: "bg-purple-500" },
+    { id: "nebulaDust", name: "Nebula", color: "bg-fuchsia-500" },
 ];
+
+interface SettingsGroupProps {
+    title: string;
+    children: React.ReactNode;
+}
+
+const SettingsGroup: React.FC<SettingsGroupProps> = ({ title, children }) => (
+    <div className="mb-6">
+        <h2 className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold px-5 mb-2">{title}</h2>
+        <div className="mx-4 rounded-2xl bg-card/60 border border-border/10 overflow-hidden divide-y divide-border/10">
+            {children}
+        </div>
+    </div>
+);
+
+interface SettingsItemProps {
+    icon: React.ElementType;
+    label: string;
+    description?: string;
+    onClick?: () => void;
+    right?: React.ReactNode;
+    destructive?: boolean;
+}
+
+const SettingsItem: React.FC<SettingsItemProps> = ({ icon: Icon, label, description, onClick, right, destructive }) => (
+    <button
+        onClick={onClick}
+        className={cn(
+            "w-full flex items-center gap-3.5 px-4 py-3.5 text-left active:bg-muted/40 transition-colors min-h-[52px]",
+            destructive && "text-destructive"
+        )}
+        aria-label={label}
+    >
+        <div className={cn(
+            "w-8 h-8 rounded-xl flex items-center justify-center shrink-0",
+            destructive ? "bg-destructive/10" : "bg-muted/60"
+        )}>
+            <Icon className={cn("w-4 h-4", destructive ? "text-destructive" : "text-muted-foreground")} aria-hidden="true" />
+        </div>
+        <div className="flex-1 min-w-0">
+            <p className={cn("text-[14px] font-medium", destructive ? "text-destructive" : "text-foreground")}>{label}</p>
+            {description && <p className="text-[11px] text-muted-foreground mt-0.5">{description}</p>}
+        </div>
+        {right || <ChevronRight className="w-4 h-4 text-muted-foreground/50 shrink-0" aria-hidden="true" />}
+    </button>
+);
 
 export const MobileSettingsPage: React.FC = () => {
     const navigate = useNavigate();
-    const { user, profile, openAuthModal, refreshProfile } = useAuth();
-    const [expandedSection, setExpandedSection] = useState<SectionId>(null);
-    const [displayName, setDisplayName] = useState("");
-    const [username, setUsername] = useState("");
-    const [bio, setBio] = useState("");
-    const [saving, setSaving] = useState(false);
-    const [selectedAvatar, setSelectedAvatar] = useState("");
-    const [usernameError, setUsernameError] = useState("");
-    const [checkingUsername, setCheckingUsername] = useState(false);
+    const { user, profile, logout, openAuthModal } = useAuth();
+    const { theme: currentTheme, isDark, setTheme, toggleDark } = useThemeStore();
 
-    const { theme: currentTheme, mode, setTheme, setMode } = useThemeStore();
-
-    useEffect(() => {
-        if (profile) {
-            setDisplayName(profile.display_name || "");
-            setUsername(profile.username || "");
-            setBio(profile.bio || "");
-            setSelectedAvatar(profile.avatar_url || getDefaultAvatar(user?.uid || ""));
-        }
-    }, [profile]);
-
-    const checkUsernameUnique = useCallback(async (newUsername: string) => {
-        if (!newUsername || newUsername.length < 3) {
-            setUsernameError(newUsername.length > 0 && newUsername.length < 3 ? "Min 3 characters" : "");
-            return;
-        }
-        if (!user || newUsername === profile?.username) { setUsernameError(""); return; }
-        setCheckingUsername(true);
-        try {
-            const q = query(collection(db, "users"), where("username", "==", newUsername));
-            const snapshot = await getDocs(q);
-            setUsernameError(snapshot.docs.some((d) => d.id !== user.uid) ? "Username taken" : "");
-        } catch { /* ignore */ } finally { setCheckingUsername(false); }
-    }, [user, profile?.username]);
-
-    useEffect(() => {
-        const timer = setTimeout(() => { if (username) checkUsernameUnique(username); }, 500);
-        return () => clearTimeout(timer);
-    }, [username, checkUsernameUnique]);
-
-    if (!user) {
-        return (
-            <div className="flex flex-col items-center justify-center h-full gap-4 p-6 text-center">
-                <User className="w-12 h-12 text-muted-foreground/40" />
-                <h2 className="text-lg font-bold text-foreground">Settings</h2>
-                <p className="text-muted-foreground text-sm">Sign in to manage your settings.</p>
-                <button
-                    onClick={() => openAuthModal("login")}
-                    className="px-6 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-full active:scale-95 transition-transform"
-                >
-                    Sign In
-                </button>
-            </div>
-        );
-    }
-
-    const handleSave = async () => {
-        if (usernameError) { toast.error("Fix username issues first"); return; }
-        if (username.length < 3) { toast.error("Username too short"); return; }
-        setSaving(true);
-        try {
-            await updateDoc(doc(db, "users", user.uid), {
-                display_name: displayName, username, bio, avatar_url: selectedAvatar,
-            });
-            toast.success("Saved!");
-            await refreshProfile();
-        } catch { toast.error("Save failed"); } finally { setSaving(false); }
-    };
-
-    const toggle = (id: SectionId) => setExpandedSection(expandedSection === id ? null : id);
+    const avatarUrl = profile?.avatar_url || "https://api.dicebear.com/9.x/adventurer/svg?seed=me";
 
     return (
-        <div className="min-h-full pb-8">
+        <div className="min-h-full pb-8" role="region" aria-label="Settings">
             {/* Header */}
-            <div className="sticky top-0 z-30 bg-background/90 backdrop-blur-lg border-b border-border/10 px-4 py-3 flex items-center gap-3">
-                <button onClick={() => navigate(-1)} className="p-1 text-muted-foreground active:scale-90 transition-transform">
+            <div className="flex items-center gap-3 px-4 pt-4 pb-5">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="mobile-icon-btn"
+                    aria-label="Go back"
+                >
                     <ArrowLeft className="w-5 h-5" />
                 </button>
-                <h1 className="text-base font-bold text-foreground">Settings</h1>
+                <h1 className="mobile-fluid-title">Settings</h1>
             </div>
 
-            {/* Settings sections as accordion */}
-            <div className="px-4 pt-3 space-y-2">
-                {/* Profile Section */}
-                <SettingsSection
-                    icon={User}
-                    label="Profile"
-                    expanded={expandedSection === "profile"}
-                    onToggle={() => toggle("profile")}
-                >
-                    <div className="space-y-4">
-                        {/* Avatar picker */}
-                        <div>
-                            <label className="block text-[12px] font-medium text-foreground mb-2">Avatar</label>
-                            <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
-                                {DEFAULT_AVATARS.map((url, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setSelectedAvatar(url)}
-                                        className={cn(
-                                            "w-12 h-12 rounded-full shrink-0 overflow-hidden border-2 transition-all active:scale-90",
-                                            selectedAvatar === url ? "border-primary ring-2 ring-primary/30" : "border-border/30"
-                                        )}
-                                    >
-                                        <img src={url} alt="" className="w-full h-full object-cover bg-muted" />
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <MobileInput label="Display Name" value={displayName} onChange={setDisplayName} />
-
-                        <div>
-                            <MobileInput
-                                label="Username"
-                                value={username}
-                                onChange={(v) => setUsername(v.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
-                                maxLength={30}
-                                error={usernameError}
-                            />
-                            {checkingUsername && <p className="text-[10px] text-muted-foreground mt-1">Checking...</p>}
-                            {!checkingUsername && username.length >= 3 && !usernameError && (
-                                <p className="text-[10px] text-green-500 mt-1 flex items-center gap-0.5"><Check className="w-3 h-3" />Available</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-[12px] font-medium text-foreground mb-1.5">Bio</label>
-                            <textarea
-                                value={bio}
-                                onChange={(e) => setBio(e.target.value)}
-                                rows={3}
-                                maxLength={300}
-                                placeholder="Tell us about yourself..."
-                                className="w-full bg-muted/50 rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/30 resize-none"
-                            />
-                            <p className="text-[10px] text-muted-foreground mt-0.5">{bio.length}/300</p>
-                        </div>
-
-                        <button
-                            onClick={handleSave}
-                            disabled={saving || !!usernameError || checkingUsername}
-                            className="w-full flex items-center justify-center gap-2 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-xl active:scale-[0.98] transition-transform disabled:opacity-50"
-                        >
-                            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            {saving ? "Saving..." : "Save Changes"}
-                        </button>
-                    </div>
-                </SettingsSection>
-
-                {/* Appearance Section */}
-                <SettingsSection
-                    icon={Palette}
-                    label="Appearance"
-                    expanded={expandedSection === "appearance"}
-                    onToggle={() => toggle("appearance")}
-                >
-                    <div className="space-y-4">
-                        {/* Light / Dark toggle */}
-                        <div>
-                            <label className="block text-[12px] font-medium text-foreground mb-2">Color Mode</label>
-                            <div className="flex gap-2">
-                                {([
-                                    { id: "light" as const, label: "Light", icon: Sun },
-                                    { id: "dark" as const, label: "Dark", icon: Moon },
-                                ]).map((m) => (
-                                    <button
-                                        key={m.id}
-                                        onClick={() => setMode(m.id)}
-                                        className={cn(
-                                            "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 transition-all active:scale-95",
-                                            mode === m.id
-                                                ? "border-primary bg-primary/10 text-primary"
-                                                : "border-border/30 text-muted-foreground"
-                                        )}
-                                    >
-                                        <m.icon className="w-4 h-4" />
-                                        <span className="text-[12px] font-semibold">{m.label}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Theme grid */}
-                        <div>
-                            <label className="block text-[12px] font-medium text-foreground mb-2">Theme</label>
-                            <div className="grid grid-cols-3 gap-2">
-                                {FEATURED_THEMES.map((themeKey) => {
-                                    const config = themes[themeKey];
-                                    const isActive = currentTheme === themeKey;
-                                    return (
-                                        <button
-                                            key={themeKey}
-                                            onClick={() => setTheme(themeKey)}
-                                            className={cn(
-                                                "flex flex-col items-center gap-1.5 p-2.5 rounded-xl border-2 transition-all active:scale-95",
-                                                isActive ? "border-primary bg-primary/5" : "border-border/20"
-                                            )}
-                                        >
-                                            <div className="flex gap-0.5">
-                                                {config.ambient.colors.slice(0, 3).map((color, i) => (
-                                                    <div key={i} className="w-4 h-4 rounded-full" style={{ backgroundColor: color }} />
-                                                ))}
-                                            </div>
-                                            <span className="text-[10px] font-medium text-foreground truncate w-full text-center">
-                                                {config.name}
-                                            </span>
-                                            {isActive && <Check className="w-3 h-3 text-primary" />}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                </SettingsSection>
-
-                {/* Notifications Section */}
-                <SettingsSection
-                    icon={Bell}
-                    label="Notifications"
-                    expanded={expandedSection === "notifications"}
-                    onToggle={() => toggle("notifications")}
-                >
-                    <div className="space-y-0.5">
-                        <MobileToggle label="Channel goes live" checked={true} />
-                        <MobileToggle label="New followers" checked={true} />
-                        <MobileToggle label="Subscriptions" checked={true} />
-                        <MobileToggle label="Chat mentions" checked={false} />
-                        <MobileToggle label="Push notifications" checked={true} />
-                        <MobileToggle label="Email digest" checked={false} />
-                    </div>
-                </SettingsSection>
-
-                {/* Privacy Section */}
-                <SettingsSection
-                    icon={Shield}
-                    label="Privacy & Safety"
-                    expanded={expandedSection === "privacy"}
-                    onToggle={() => toggle("privacy")}
-                >
-                    <div className="space-y-0.5">
-                        <MobileToggle label="Block DMs from strangers" checked={false} />
-                        <MobileToggle label="Hide activity status" checked={false} />
-                        <MobileToggle label="Mature content filter" checked={true} />
-                        <MobileToggle label="Show watch history" checked={true} />
-                        <MobileToggle label="Profile discovery" checked={true} />
-                    </div>
-                    <div className="mt-4 p-3 rounded-xl border border-destructive/30 bg-destructive/5">
-                        <p className="text-[12px] font-medium text-foreground">Delete Account</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">Permanently delete your account.</p>
-                        <button
-                            onClick={() => toast.error("Confirmation email sent.")}
-                            className="mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-destructive text-destructive-foreground text-[11px] font-medium rounded-lg active:scale-95 transition-transform"
-                        >
-                            <Trash2 className="w-3 h-3" />
-                            Delete
-                        </button>
-                    </div>
-                </SettingsSection>
-            </div>
-        </div>
-    );
-};
-
-// ── Reusable sub-components ──
-
-const SettingsSection: React.FC<{
-    icon: React.FC<any>;
-    label: string;
-    expanded: boolean;
-    onToggle: () => void;
-    children: React.ReactNode;
-}> = ({ icon: Icon, label, expanded, onToggle, children }) => (
-    <div className="rounded-2xl border border-border/15 overflow-hidden bg-card/30">
-        <button
-            onClick={onToggle}
-            className="w-full flex items-center justify-between px-4 py-3.5 active:bg-muted/30 transition-colors"
-        >
-            <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-primary" />
+            {/* Profile card */}
+            <div className="mx-4 mb-6 p-4 rounded-2xl bg-card/60 border border-border/10 flex items-center gap-4">
+                <div className="relative">
+                    <img
+                        src={avatarUrl}
+                        alt="Your avatar"
+                        className="w-16 h-16 rounded-full bg-muted object-cover border-2 border-border/20"
+                    />
+                    <button
+                        className="absolute -bottom-0.5 -right-0.5 w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-sm"
+                        aria-label="Change avatar"
+                    >
+                        <Camera className="w-3.5 h-3.5 text-primary-foreground" aria-hidden="true" />
+                    </button>
                 </div>
-                <span className="text-[14px] font-semibold text-foreground">{label}</span>
+                <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-bold text-foreground truncate">
+                        {profile?.display_name || "Your Profile"}
+                    </p>
+                    <p className="text-[12px] text-muted-foreground truncate">
+                        @{profile?.username || "username"}
+                    </p>
+                    {!user && (
+                        <button
+                            onClick={() => openAuthModal("login")}
+                            className="mt-2 px-4 py-2 bg-primary text-primary-foreground text-[12px] font-bold rounded-full active:scale-95 transition-transform min-h-[36px]"
+                        >
+                            Sign In
+                        </button>
+                    )}
+                </div>
             </div>
-            <ChevronRight className={cn("w-4 h-4 text-muted-foreground transition-transform", expanded && "rotate-90")} />
-        </button>
-        {expanded && (
-            <div className="px-4 pb-4 pt-1 animate-in fade-in slide-in-from-top-1 duration-200">
-                {children}
-            </div>
-        )}
-    </div>
-);
 
-const MobileInput: React.FC<{
-    label: string;
-    value: string;
-    onChange: (v: string) => void;
-    maxLength?: number;
-    error?: string;
-}> = ({ label, value, onChange, maxLength, error }) => (
-    <div>
-        <label className="block text-[12px] font-medium text-foreground mb-1.5">{label}</label>
-        <input
-            type="text"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            maxLength={maxLength}
-            className={cn(
-                "w-full bg-muted/50 rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 transition-all",
-                error ? "ring-1 ring-destructive" : "focus:ring-primary/30"
+            {/* Theme — iOS-style grouped */}
+            <SettingsGroup title="Appearance">
+                <div className="px-4 py-4">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-xl bg-muted/60 flex items-center justify-center">
+                            <Palette className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                        </div>
+                        <span className="text-[14px] font-medium text-foreground">Theme Color</span>
+                    </div>
+                    <div className="grid grid-cols-6 gap-3" role="radiogroup" aria-label="Theme color">
+                        {THEMES.map((t) => (
+                            <button
+                                key={t.id}
+                                onClick={() => setTheme(t.id)}
+                                className={cn(
+                                    "flex flex-col items-center gap-1.5 min-h-[44px]",
+                                )}
+                                role="radio"
+                                aria-checked={currentTheme === t.id}
+                                aria-label={t.name}
+                            >
+                                <div className={cn(
+                                    "w-9 h-9 rounded-full transition-all",
+                                    t.color,
+                                    currentTheme === t.id
+                                        ? "ring-2 ring-offset-2 ring-offset-background ring-foreground scale-110"
+                                        : "opacity-70"
+                                )} />
+                                <span className="text-[9px] text-muted-foreground font-medium">{t.name}</span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                <SettingsItem
+                    icon={isDark ? Moon : Sun}
+                    label={isDark ? "Dark Mode" : "Light Mode"}
+                    description="Toggle dark/light appearance"
+                    onClick={toggleDark}
+                    right={
+                        <div
+                            className={cn(
+                                "w-12 h-7 rounded-full flex items-center px-0.5 transition-colors",
+                                isDark ? "bg-primary" : "bg-muted"
+                            )}
+                            role="switch"
+                            aria-checked={isDark}
+                        >
+                            <div className={cn(
+                                "w-6 h-6 rounded-full bg-white shadow-sm transition-transform",
+                                isDark && "translate-x-5"
+                            )} />
+                        </div>
+                    }
+                />
+            </SettingsGroup>
+
+            <SettingsGroup title="Account">
+                <SettingsItem icon={User} label="Edit Profile" description="Name, bio, avatar" />
+                <SettingsItem icon={Bell} label="Notifications" description="Push, email alerts" />
+                <SettingsItem icon={Shield} label="Privacy & Security" description="Blocked users, data" />
+                <SettingsItem icon={Languages} label="Language" description="English" />
+            </SettingsGroup>
+
+            <SettingsGroup title="Support">
+                <SettingsItem icon={HelpCircle} label="Help Center" />
+                <SettingsItem icon={Monitor} label="About GAKI" description="v2.0.0" />
+            </SettingsGroup>
+
+            {user && (
+                <SettingsGroup title="Danger Zone">
+                    <SettingsItem
+                        icon={LogOut}
+                        label="Sign Out"
+                        onClick={logout}
+                        destructive
+                    />
+                    <SettingsItem
+                        icon={Trash2}
+                        label="Delete Account"
+                        description="Permanently remove your data"
+                        destructive
+                    />
+                </SettingsGroup>
             )}
-        />
-        {error && (
-            <p className="text-[10px] text-destructive mt-0.5 flex items-center gap-0.5">
-                <AlertCircle className="w-3 h-3" />{error}
-            </p>
-        )}
-    </div>
-);
-
-const MobileToggle: React.FC<{ label: string; checked: boolean }> = ({ label, checked: initialChecked }) => {
-    const [on, setOn] = useState(initialChecked);
-    return (
-        <div className="flex items-center justify-between py-3 border-b border-border/10">
-            <span className="text-[13px] text-foreground">{label}</span>
-            <button
-                onClick={() => setOn(!on)}
-                className={cn(
-                    "w-10 h-6 rounded-full transition-colors relative",
-                    on ? "bg-primary" : "bg-muted"
-                )}
-            >
-                <span className={cn(
-                    "absolute top-1 w-4 h-4 rounded-full bg-primary-foreground transition-transform",
-                    on ? "translate-x-5" : "translate-x-1"
-                )} />
-            </button>
         </div>
     );
 };
