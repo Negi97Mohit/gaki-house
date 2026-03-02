@@ -59,6 +59,7 @@ interface CameraRendererProps {
   onFaceTrackingToggle: (enabled: boolean) => void;
 
   portalContainer?: HTMLElement | null;
+  hidePipToolbar?: boolean;
   activeInteractiveFilter?: string;
   onInteractiveFilterChange?: (filter: string) => void;
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
@@ -224,7 +225,7 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
 
       <CinematicOverlay effect={cinematicEffect} />
 
-      {isHovered &&
+      {!props.hidePipToolbar && isHovered &&
         (props.isMouseActive ?? true) &&
         (props.portalContainer instanceof HTMLElement ? (
           createPortal(

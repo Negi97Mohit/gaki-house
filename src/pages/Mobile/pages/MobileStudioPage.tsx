@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   X, RefreshCcw, Mic, MicOff, VideoOff, Camera,
   Radio, Type, Sparkles, Palette, LayoutGrid,
-  Zap, ChevronDown, Circle, Square, SplitSquareHorizontal
+  Square, SplitSquareHorizontal, MoreHorizontal,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { toast } from "sonner";
@@ -11,38 +11,24 @@ import { MobileCanvasContainer } from "../components/MobileCanvasContainer";
 import { useMediaStore } from "@/stores/media.store";
 import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
-import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
 import { useCaptionPresets } from "@/hooks/useCaptionPresets";
+import { useFilters } from "@/hooks/useFilters";
 import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
 import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
 import { useCanvasStore } from "@/stores/canvas.store";
+import { useSceneStore } from "@/stores/scene.store";
+import { DYNAMIC_STYLE_OPTIONS } from "@/lib/dynamicCaptionStyles";
 
 // ─── Types ─────────────────────────────────────────────────────────
 type ToolCategory = "none" | "captions" | "effects" | "filters" | "layout";
 
-const CAPTION_STYLES = DYNAMIC_STYLE_OPTIONS.map(s => ({
-  id: s.id,
-  label: s.name,
-}));
-
-const QUICK_FILTERS = [
-  { id: "none", label: "Original" },
-  { id: "grayscale", label: "B&W" },
-  { id: "sepia", label: "Warm" },
-  { id: "vintage", label: "Vintage" },
-  { id: "cool", label: "Cool" },
-  { id: "vivid", label: "Vivid" },
-  { id: "noir", label: "Noir" },
-  { id: "dreamy", label: "Dreamy" },
-];
-
 const EFFECTS = [
-  { id: "none", label: "None" },
-  { id: "snow", label: "Snow" },
-  { id: "rain", label: "Rain" },
-  { id: "sparkles", label: "Sparkles" },
-  { id: "bokeh", label: "Bokeh" },
-  { id: "neon-pulse", label: "Neon" },
+  { id: "none", label: "None", emoji: "✖" },
+  { id: "snow", label: "Snow", emoji: "❄️" },
+  { id: "rain", label: "Rain", emoji: "🌧" },
+  { id: "sparkles", label: "Sparkles", emoji: "✨" },
+  { id: "bokeh", label: "Bokeh", emoji: "🔵" },
+  { id: "neon-pulse", label: "Neon", emoji: "💜" },
 ];
 
 const LAYOUTS = [
@@ -67,10 +53,10 @@ export const MobileStudioPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ToolCategory>("none");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [showStreamConfig, setShowStreamConfig] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("none");
-  const [selectedEffect, setSelectedEffect] = useState("none");
-  const [selectedCaption, setSelectedCaption] = useState("none");
+  const [fabOpen, setFabOpen] = useState(false);
+  const fabRef = useRef<HTMLDivElement>(null);
 
+  // Stores
   const isAudioOn = useMediaStore((s) => s.isAudioOn);
   const setAudioOn = useMediaStore((s) => s.setAudioOn);
   const isVideoOn = useMediaStore((s) => s.isVideoOn);
@@ -78,11 +64,21 @@ export const MobileStudioPage: React.FC = () => {
   const layoutMode = useCanvasStore((s) => s.layoutMode);
   const setLayoutMode = useCanvasStore((s) => s.setLayoutMode);
 
+  // Scene store for applying filters/effects/captions
+  const videoFilter = useSceneStore((s) => s.videoFilter);
+  const setVideoFilter = useSceneStore((s) => s.setVideoFilter);
+  const dynamicStyle = useSceneStore((s) => s.dynamicStyle);
+  const setDynamicStyle = useSceneStore((s) => s.setDynamicStyle);
+  const activeInteractiveFilter = useSceneStore((s) => s.activeInteractiveFilter);
+  const setActiveInteractiveFilter = useSceneStore((s) => s.setActiveInteractiveFilter);
+
   const { destinations } = useStreamStore(useShallow((s) => ({
     destinations: s.destinations,
   })));
 
+  // Firestore data
   const { captionPresets } = useCaptionPresets();
+  const { filters: firestoreFilters } = useFilters();
   const rtmp = useRtmpStream();
 
   const isLive = rtmp.isStreaming || rtmp.isRecording;
@@ -91,6 +87,22 @@ export const MobileStudioPage: React.FC = () => {
   useEffect(() => {
     setLayoutMode("solo");
   }, []);
+
+  // Close FAB on outside click
+  useEffect(() => {
+    if (!fabOpen) return;
+    const handler = (e: TouchEvent | MouseEvent) => {
+      if (fabRef.current && !fabRef.current.contains(e.target as Node)) {
+        setFabOpen(false);
+      }
+    };
+    document.addEventListener("touchstart", handler);
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("touchstart", handler);
+      document.removeEventListener("mousedown", handler);
+    };
+  }, [fabOpen]);
 
   const requestMediaPermission = useCallback(async (kind: "audio" | "video") => {
     try {
@@ -146,8 +158,37 @@ export const MobileStudioPage: React.FC = () => {
 
   const handleApplyLayout = (id: string) => {
     setLayoutMode(id as any);
-    setActiveCategory("none");
   };
+
+  const handleApplyFilter = (filterStyle: string) => {
+    setVideoFilter(filterStyle);
+  };
+
+  const handleApplyEffect = (effectId: string) => {
+    setActiveInteractiveFilter(effectId as any);
+  };
+
+  const handleApplyCaptionStyle = (styleId: string) => {
+    setDynamicStyle(styleId);
+  };
+
+  // Build caption style list: combine Firestore presets + dynamic styles
+  const captionStyles = [
+    { id: "none", label: "None" },
+    ...DYNAMIC_STYLE_OPTIONS.map(s => ({ id: s.id, label: s.name })),
+    ...captionPresets.map(p => ({ id: p.id, label: p.name || p.id })),
+  ];
+
+  // Build filter list from Firestore
+  const filterList = firestoreFilters.length > 0
+    ? firestoreFilters
+    : [
+        { id: "none", name: "Original", style: "none" },
+        { id: "grayscale", name: "B&W", style: "grayscale(1)" },
+        { id: "sepia", name: "Warm", style: "sepia(1)" },
+        { id: "saturate", name: "Vivid", style: "saturate(2)" },
+        { id: "contrast", name: "Pop", style: "contrast(1.5)" },
+      ];
 
   // ─── Render ──────────────────────────────────────────────────────
   return (
@@ -192,16 +233,10 @@ export const MobileStudioPage: React.FC = () => {
       )}
 
       {/* ══════════════════════════════════════════════════════════════
-          TOP BAR
+          TOP BAR — Live badge only
       ══════════════════════════════════════════════════════════════ */}
       <div className="relative z-20 flex items-center justify-between px-4 pt-[max(env(safe-area-inset-top),12px)] pb-2">
-        {/* Close */}
-        <button
-          onClick={handleExit}
-          className="w-9 h-9 rounded-full bg-black/40 backdrop-blur flex items-center justify-center active:scale-90 transition-transform"
-        >
-          <X className="w-4.5 h-4.5 text-white" />
-        </button>
+        <div /> {/* spacer */}
 
         {/* Live badge */}
         {isLive && (
@@ -218,40 +253,66 @@ export const MobileStudioPage: React.FC = () => {
           </div>
         )}
 
-        {/* Right side controls */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => toast.info("Flip coming soon")}
-            className="w-9 h-9 rounded-full bg-black/40 backdrop-blur flex items-center justify-center active:scale-90 transition-transform"
-          >
-            <RefreshCcw className="w-4 h-4 text-white" />
-          </button>
-        </div>
+        <div /> {/* spacer */}
       </div>
 
-      {/* ── Right Side Quick Actions (TikTok-style vertical strip) ── */}
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-4">
-        {/* Mic */}
+      {/* ══════════════════════════════════════════════════════════════
+          FAB — Expandable controls (close, flip, cam, mic)
+      ══════════════════════════════════════════════════════════════ */}
+      <div ref={fabRef} className="absolute top-[max(env(safe-area-inset-top),12px)] right-3 z-30 flex flex-col items-center gap-2">
+        {/* Main FAB toggle */}
         <button
-          onClick={toggleMute}
+          onClick={() => setFabOpen(!fabOpen)}
           className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all",
-            !isAudioOn ? "bg-red-500/80" : "bg-black/40 backdrop-blur"
+            "w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90",
+            fabOpen ? "bg-white/20 backdrop-blur-xl rotate-90" : "bg-black/40 backdrop-blur"
           )}
         >
-          {isAudioOn ? <Mic className="w-4.5 h-4.5 text-white" /> : <MicOff className="w-4.5 h-4.5 text-white" />}
+          <MoreHorizontal className="w-5 h-5 text-white" />
         </button>
 
-        {/* Camera */}
-        <button
-          onClick={toggleVideo}
-          className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all",
-            !isVideoOn ? "bg-red-500/80" : "bg-black/40 backdrop-blur"
-          )}
-        >
-          {isVideoOn ? <Camera className="w-4.5 h-4.5 text-white" /> : <VideoOff className="w-4.5 h-4.5 text-white" />}
-        </button>
+        {/* Expanded buttons */}
+        {fabOpen && (
+          <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            {/* Close */}
+            <button
+              onClick={handleExit}
+              className="w-10 h-10 rounded-full bg-black/50 backdrop-blur flex items-center justify-center active:scale-90 transition-transform"
+            >
+              <X className="w-4.5 h-4.5 text-white" />
+            </button>
+
+            {/* Flip camera */}
+            <button
+              onClick={() => toast.info("Flip coming soon")}
+              className="w-10 h-10 rounded-full bg-black/50 backdrop-blur flex items-center justify-center active:scale-90 transition-transform"
+            >
+              <RefreshCcw className="w-4 h-4 text-white" />
+            </button>
+
+            {/* Camera toggle */}
+            <button
+              onClick={toggleVideo}
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all",
+                !isVideoOn ? "bg-red-500/80" : "bg-black/50 backdrop-blur"
+              )}
+            >
+              {isVideoOn ? <Camera className="w-4 h-4 text-white" /> : <VideoOff className="w-4 h-4 text-white" />}
+            </button>
+
+            {/* Mic toggle */}
+            <button
+              onClick={toggleMute}
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-all",
+                !isAudioOn ? "bg-red-500/80" : "bg-black/50 backdrop-blur"
+              )}
+            >
+              {isAudioOn ? <Mic className="w-4 h-4 text-white" /> : <MicOff className="w-4 h-4 text-white" />}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* SPACER */}
@@ -268,7 +329,7 @@ export const MobileStudioPage: React.FC = () => {
 
             {/* LAYOUT */}
             {activeCategory === "layout" && (
-              <div className="flex gap-3 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
+              <div className="flex gap-3 overflow-x-auto py-3 px-1 no-scrollbar">
                 {LAYOUTS.map((l) => {
                   const active = layoutMode === l.id;
                   const Icon = l.icon;
@@ -276,17 +337,15 @@ export const MobileStudioPage: React.FC = () => {
                     <button
                       key={l.id}
                       onClick={() => handleApplyLayout(l.id)}
-                      className={cn(
-                        "shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all",
-                      )}
+                      className="shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all"
                     >
                       <div className={cn(
-                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                        "w-16 h-16 rounded-2xl flex items-center justify-center transition-all border",
                         active
-                          ? "bg-white text-black shadow-lg shadow-white/20"
-                          : "bg-white/10 text-white/70 backdrop-blur"
+                          ? "bg-white text-black shadow-lg shadow-white/20 border-white"
+                          : "bg-white/10 text-white/70 backdrop-blur border-white/10"
                       )}>
-                        <Icon className="w-5 h-5" />
+                        <Icon className="w-6 h-6" />
                       </div>
                       <span className={cn(
                         "text-[10px] font-semibold",
@@ -298,23 +357,34 @@ export const MobileStudioPage: React.FC = () => {
               </div>
             )}
 
-            {/* CAPTIONS */}
+            {/* CAPTIONS — from Firestore + dynamic styles */}
             {activeCategory === "captions" && (
-              <div className="flex gap-2.5 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
-                {CAPTION_STYLES.map((s) => {
-                  const active = selectedCaption === s.id;
+              <div className="flex gap-3 overflow-x-auto py-3 px-1 no-scrollbar">
+                {captionStyles.map((s) => {
+                  const active = dynamicStyle === s.id;
                   return (
                     <button
                       key={s.id}
-                      onClick={() => setSelectedCaption(s.id)}
-                      className={cn(
-                        "shrink-0 px-4 py-2 rounded-full text-[11px] font-semibold transition-all active:scale-95",
-                        active
-                          ? "bg-white text-black"
-                          : "bg-white/10 text-white/70 backdrop-blur"
-                      )}
+                      onClick={() => handleApplyCaptionStyle(s.id)}
+                      className="shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all"
                     >
-                      {s.label}
+                      <div className={cn(
+                        "w-16 h-16 rounded-2xl flex items-center justify-center transition-all border overflow-hidden",
+                        active
+                          ? "bg-white text-black shadow-lg shadow-white/20 border-white"
+                          : "bg-white/10 text-white/70 backdrop-blur border-white/10"
+                      )}>
+                        <span className={cn(
+                          "text-[10px] font-bold text-center leading-tight px-1",
+                          active ? "text-black" : "text-white/80"
+                        )}>
+                          {s.id === "none" ? "OFF" : s.label.slice(0, 8)}
+                        </span>
+                      </div>
+                      <span className={cn(
+                        "text-[9px] font-semibold max-w-[60px] truncate text-center",
+                        active ? "text-white" : "text-white/50"
+                      )}>{s.label}</span>
                     </button>
                   );
                 })}
@@ -323,22 +393,22 @@ export const MobileStudioPage: React.FC = () => {
 
             {/* EFFECTS */}
             {activeCategory === "effects" && (
-              <div className="flex gap-3 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
+              <div className="flex gap-3 overflow-x-auto py-3 px-1 no-scrollbar">
                 {EFFECTS.map((fx) => {
-                  const active = selectedEffect === fx.id;
+                  const active = activeInteractiveFilter === fx.id;
                   return (
                     <button
                       key={fx.id}
-                      onClick={() => setSelectedEffect(fx.id)}
+                      onClick={() => handleApplyEffect(fx.id)}
                       className="shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all"
                     >
                       <div className={cn(
-                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                        "w-16 h-16 rounded-2xl flex items-center justify-center transition-all border",
                         active
-                          ? "bg-white text-black shadow-lg shadow-white/20"
-                          : "bg-white/10 text-white/70 backdrop-blur"
+                          ? "bg-white text-black shadow-lg shadow-white/20 border-white"
+                          : "bg-white/10 text-white/70 backdrop-blur border-white/10"
                       )}>
-                        <Zap className="w-5 h-5" />
+                        <span className="text-xl">{fx.emoji}</span>
                       </div>
                       <span className={cn(
                         "text-[10px] font-semibold",
@@ -350,29 +420,39 @@ export const MobileStudioPage: React.FC = () => {
               </div>
             )}
 
-            {/* FILTERS */}
+            {/* FILTERS — from Firestore */}
             {activeCategory === "filters" && (
-              <div className="flex gap-3 overflow-x-auto py-3 px-1" style={{ scrollbarWidth: 'none' }}>
-                {QUICK_FILTERS.map((f) => {
-                  const active = selectedFilter === f.id;
+              <div className="flex gap-3 overflow-x-auto py-3 px-1 no-scrollbar">
+                {filterList.map((f) => {
+                  const active = videoFilter === f.style;
                   return (
                     <button
                       key={f.id}
-                      onClick={() => setSelectedFilter(f.id)}
+                      onClick={() => handleApplyFilter(f.style)}
                       className="shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all"
                     >
                       <div className={cn(
-                        "w-14 h-14 rounded-2xl flex items-center justify-center transition-all",
+                        "w-16 h-16 rounded-2xl flex items-center justify-center transition-all border relative overflow-hidden",
                         active
-                          ? "bg-white text-black shadow-lg shadow-white/20 ring-2 ring-white/50"
-                          : "bg-white/10 text-white/70 backdrop-blur"
+                          ? "ring-2 ring-white shadow-lg shadow-white/20 border-white"
+                          : "bg-white/10 border-white/10 backdrop-blur"
                       )}>
-                        <span className="text-[11px] font-bold">{f.label.slice(0, 3)}</span>
+                        {/* Filter preview swatch */}
+                        <div
+                          className="absolute inset-0 bg-gradient-to-br from-blue-500/30 via-purple-500/20 to-pink-500/30"
+                          style={{ filter: f.style !== "none" ? f.style : undefined }}
+                        />
+                        <span className={cn(
+                          "relative text-[10px] font-bold z-10",
+                          active ? "text-white" : "text-white/80"
+                        )}>
+                          {f.name.slice(0, 4)}
+                        </span>
                       </div>
                       <span className={cn(
                         "text-[10px] font-semibold",
                         active ? "text-white" : "text-white/50"
-                      )}>{f.label}</span>
+                      )}>{f.name}</span>
                     </button>
                   );
                 })}
@@ -382,7 +462,7 @@ export const MobileStudioPage: React.FC = () => {
         )}
 
         {/* ── Tool Category Bar ────────────────────────────────────── */}
-        <div className="flex items-center gap-1 overflow-x-auto px-4 pb-3" style={{ scrollbarWidth: 'none' }}>
+        <div className="flex items-center gap-1 overflow-x-auto px-4 pb-3 no-scrollbar">
           {([
             { id: "layout" as ToolCategory, icon: LayoutGrid, label: "Layout" },
             { id: "captions" as ToolCategory, icon: Type, label: "Captions" },
@@ -481,6 +561,9 @@ export const MobileStudioPage: React.FC = () => {
         }}
         onStopStream={() => rtmp.stopStreaming()}
       />
+
+      {/* Hide scrollbar utility */}
+      <style>{`.no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { scrollbar-width: none; }`}</style>
     </div>
   );
 };
