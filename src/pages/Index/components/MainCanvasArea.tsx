@@ -31,7 +31,7 @@ export const MainCanvasArea: React.FC<MainCanvasAreaProps> = ({
   activeTransition,
 }) => {
   return (
-    <div className="relative overflow-hidden w-full h-full flex-1 min-h-0">
+    <div className="flex-1 relative overflow-hidden">
       {/* Ambient Background - Always visible behind everything */}
       <AmbientBackground className="z-0" />
       
