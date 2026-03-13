@@ -28,7 +28,7 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
     >
       {/* Thumbnail / Live Preview */}
       <div className="relative aspect-video rounded-xl overflow-hidden bg-muted mb-2">
-        {isHovered && channel.streamUrl ? (
+        {isHovered && channel.streamUrl && isEmbeddablePlatform(channel.platform) ? (
           <div className="absolute inset-0">
             <StreamPlayer
               channel={channel}
