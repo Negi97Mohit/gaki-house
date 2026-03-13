@@ -4287,7 +4287,6 @@ body.cursor-inactive * {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
-}
 
 /* ── Carousel Scrollbar ──────────────────────────────────── */
 .carousel-scrollbar {
