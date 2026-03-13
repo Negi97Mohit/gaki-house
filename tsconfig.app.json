@@ -1,28 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
     "lib": [
       "ES2020",
       "DOM",
       "DOM.Iterable"
     ],
     "module": "ESNext",
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
     "moduleDetection": "force",
+    "moduleResolution": "bundler",
     "noEmit": true,
-    "jsx": "react-jsx",
-    /* Linting */
-    "strict": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noImplicitAny": false,
-    "noFallthroughCasesInSwitch": false,
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
@@ -30,11 +23,11 @@
       "@/app/*": [
         "./src/app/*"
       ],
-      "@/kernel/*": [
-        "./src/kernel/*"
-      ],
       "@/features/*": [
         "./src/features/*"
+      ],
+      "@/kernel/*": [
+        "./src/kernel/*"
       ],
       "@/pages/*": [
         "./src/pages/*"
@@ -42,7 +35,11 @@
       "@/shared/*": [
         "./src/shared/*"
       ]
-    }
+    },
+    "skipLibCheck": true,
+    "strict": false,
+    "target": "ES2020",
+    "useDefineForClassFields": true
   },
   "include": [
     "src"
