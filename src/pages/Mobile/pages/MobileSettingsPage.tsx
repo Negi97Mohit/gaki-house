@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { ThemeName } from "@/features/theme";
 import {
     ArrowLeft, Moon, Sun, Palette, User, Bell, Shield, HelpCircle,
     ChevronRight, LogOut, Camera, Trash2, Languages, Monitor
