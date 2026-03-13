@@ -19,7 +19,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const liveStreams = streams
-    .filter(s => s.isLive && s.streamUrl && s.thumbnail && !failedImages.has(s.id))
+    .filter(s => s.isLive && s.thumbnail && !failedImages.has(s.id) && isEmbeddablePlatform(s.platform))
     .slice(0, 12);
 
   const startAutoPlay = useCallback(() => {
