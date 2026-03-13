@@ -170,23 +170,9 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Generic fallback for other supported platforms without specific embed
-    if (["douyu", "huya", "kuaishou", "douyin", "yy", "afreecatv", "navernow", "kakaotv", "showroom", "mirrativ", "bigo", "cubetv", "rooter", "loco", "chingari", "nimotv"].includes(channel.platform || "")) {
-        return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white p-4 text-center">
-                <p className="mb-4 text-lg">Embed not fully supported for {channel.platform}</p>
-                {channel.streamUrl && (
-                    <a
-                        href={channel.streamUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition"
-                    >
-                        Watch on {channel.platform}
-                    </a>
-                )}
-            </div>
-        );
+    // Non-embeddable platforms — return null (caller should not render)
+    if (!isEmbeddablePlatform(channel.platform)) {
+        return null;
     }
 
     // Fallback: other platforms via ReactPlayer
