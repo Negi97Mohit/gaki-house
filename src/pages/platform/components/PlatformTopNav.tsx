@@ -170,8 +170,9 @@ export const PlatformTopNav: React.FC = () => {
         <UserMenu />
         <Link
           to="/"
-          className="ml-1 sm:ml-2 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-md hover:opacity-90 transition-opacity hidden sm:block"
+          className="ml-1 sm:ml-2 px-4 py-1.5 bg-destructive text-destructive-foreground text-xs font-bold rounded-md hover:opacity-90 transition-opacity flex items-center gap-1.5"
         >
+          <span className="w-2 h-2 rounded-full bg-destructive-foreground animate-pulse" />
           Go Live
         </Link>
       </div>

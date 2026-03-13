@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { ThemeName } from "@/features/theme";
 import {
     ArrowLeft, Moon, Sun, Palette, User, Bell, Shield, HelpCircle,
     ChevronRight, LogOut, Camera, Trash2, Languages, Monitor
 } from "lucide-react";
 import { useAuth } from "@/pages/platform/context/AuthContext";
-import { useThemeStore } from "@/shared/store/useThemeStore";
+import { useThemeStore } from "@/features/theme";
 import { cn } from "@/shared/lib/utils";
 
 const THEMES = [
@@ -71,8 +72,9 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon: Icon, label, descript
 
 export const MobileSettingsPage: React.FC = () => {
     const navigate = useNavigate();
-    const { user, profile, logout, openAuthModal } = useAuth();
-    const { theme: currentTheme, isDark, setTheme, toggleDark } = useThemeStore();
+    const { user, profile, signOut, openAuthModal } = useAuth();
+    const { theme: currentTheme, mode, setTheme, toggleMode } = useThemeStore();
+    const isDark = mode === "dark";
 
     const avatarUrl = profile?.avatar_url || "https://api.dicebear.com/9.x/adventurer/svg?seed=me";
 
@@ -136,7 +138,7 @@ export const MobileSettingsPage: React.FC = () => {
                         {THEMES.map((t) => (
                             <button
                                 key={t.id}
-                                onClick={() => setTheme(t.id)}
+                                onClick={() => setTheme(t.id as ThemeName)}
                                 className={cn(
                                     "flex flex-col items-center gap-1.5 min-h-[44px]",
                                 )}
@@ -160,7 +162,7 @@ export const MobileSettingsPage: React.FC = () => {
                     icon={isDark ? Moon : Sun}
                     label={isDark ? "Dark Mode" : "Light Mode"}
                     description="Toggle dark/light appearance"
-                    onClick={toggleDark}
+                    onClick={toggleMode}
                     right={
                         <div
                             className={cn(
@@ -196,7 +198,7 @@ export const MobileSettingsPage: React.FC = () => {
                     <SettingsItem
                         icon={LogOut}
                         label="Sign Out"
-                        onClick={logout}
+                        onClick={signOut}
                         destructive
                     />
                     <SettingsItem

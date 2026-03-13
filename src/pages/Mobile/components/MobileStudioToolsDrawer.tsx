@@ -74,7 +74,7 @@ export const MobileStudioToolsDrawer: React.FC<MobileStudioToolsDrawerProps> = (
                                 )}
                             </RadixTabs.Content>
                             <RadixTabs.Content value="captions" className="h-full">
-                                <TextPresetsPanel />
+                                <p className="text-muted-foreground text-sm">Caption presets coming soon.</p>
                             </RadixTabs.Content>
                             <RadixTabs.Content value="settings" className="h-full">
                                 <p className="text-muted-foreground text-sm">Stream settings coming soon.</p>
