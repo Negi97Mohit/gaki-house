@@ -140,6 +140,7 @@ const App = () => {
                         <Route path="search" element={<PlatformSearch />} />
                         <Route path="settings" element={<PlatformSettings />} />
                         <Route path="clips" element={<PlatformClips />} />
+                        <Route path="dashboard" element={<PlatformDashboard />} />
                       </Route>
                       {/* Mobile routes */}
                       <Route path="/m" element={<MobileLayout />}>
