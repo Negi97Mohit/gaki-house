@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Users, Volume2, VolumeX } from "lucide-react";
+import { Users, Volume2, VolumeX } from "lucide-react";
 import { StreamChannel, formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { StreamPlayer } from "./StreamPlayer";
@@ -13,48 +13,34 @@ interface LiveStreamCarouselProps {
 
 export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams, isLoading }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [userSelected, setUserSelected] = useState(false);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
-  const scrollRef = useRef<HTMLDivElement>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const liveStreams = streams
-    .filter(s => s.isLive && s.streamUrl && s.thumbnail)
+    .filter(s => s.isLive && s.streamUrl && s.thumbnail && !failedImages.has(s.id))
     .slice(0, 12);
 
-  // Auto-rotate carousel (only thumbnails, no video)
   const startAutoPlay = useCallback(() => {
     if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     autoPlayRef.current = setInterval(() => {
-      if (hoveredIndex === null && !userSelected) {
+      if (!userSelected) {
         setActiveIndex(prev => (prev + 1) % Math.max(liveStreams.length, 1));
       }
     }, 6000);
-  }, [liveStreams.length, hoveredIndex, userSelected]);
+  }, [liveStreams.length, userSelected]);
 
   useEffect(() => {
     startAutoPlay();
     return () => { if (autoPlayRef.current) clearInterval(autoPlayRef.current); };
   }, [startAutoPlay]);
 
-  // Reset userSelected after 30s of no interaction
   useEffect(() => {
     if (!userSelected) return;
     const timer = setTimeout(() => setUserSelected(false), 30000);
     return () => clearTimeout(timer);
   }, [userSelected]);
-
-  const navigate = (dir: -1 | 1) => {
-    setUserSelected(true);
-    setActiveIndex(prev => {
-      const next = prev + dir;
-      if (next < 0) return liveStreams.length - 1;
-      if (next >= liveStreams.length) return 0;
-      return next;
-    });
-  };
 
   const handleThumbnailClick = (i: number) => {
     setUserSelected(true);
@@ -66,9 +52,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
   };
 
   if (isLoading) {
-    return (
-      <div className="w-full aspect-video max-h-[480px] bg-muted animate-pulse rounded-none" />
-    );
+    return <div className="w-full aspect-video max-h-[480px] bg-muted animate-pulse" />;
   }
 
   if (liveStreams.length === 0) return null;
@@ -83,15 +67,9 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
     <div className="relative w-full">
       {/* Main featured stream */}
       <div className="relative w-full aspect-video max-h-[480px] bg-black overflow-hidden group">
-        {/* Show stream player only when user clicked, otherwise show thumbnail */}
         <div className="absolute inset-0">
           {userSelected ? (
-            <StreamPlayer
-              channel={featured}
-              playing={true}
-              muted={isMuted}
-              volume={0.5}
-            />
+            <StreamPlayer channel={featured} playing muted={isMuted} volume={0.5} />
           ) : (
             <img
               src={featured.thumbnail}
@@ -102,9 +80,8 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
           )}
         </div>
 
-        {/* Gradient overlays - stronger at bottom to ensure text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent pointer-events-none" />
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
 
         {/* Top badges */}
         <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
@@ -127,7 +104,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
           )}
         </div>
 
-        {/* Volume toggle - only show when playing video */}
+        {/* Volume toggle */}
         {userSelected && (
           <button
             onClick={() => setIsMuted(!isMuted)}
@@ -137,10 +114,10 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
           </button>
         )}
 
-        {/* Stream info overlay - positioned above thumbnail strip */}
+        {/* Stream info - pushed well above the thumbnail strip */}
         <Link
           to={`/platform/stream/${featured.username}`}
-          className="absolute bottom-16 left-0 right-0 px-6 z-10"
+          className="absolute bottom-20 left-0 right-0 px-6 z-10"
         >
           <div className="flex items-end gap-4">
             {featured.avatar && !failedImages.has(`avatar-${featured.id}`) && (
@@ -158,48 +135,18 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
               <p className="text-white/80 text-sm font-medium mt-0.5">
                 {featured.displayName}
               </p>
-              <div className="flex items-center gap-2 mt-1.5">
-                {featured.category && (
-                  <span className="text-white/60 text-xs">{featured.category}</span>
-                )}
-                {featured.tags.length > 0 && (
-                  <>
-                    <span className="text-white/30">•</span>
-                    {featured.tags.slice(0, 3).map(tag => (
-                      <span key={tag} className="px-2 py-0.5 bg-white/10 backdrop-blur-sm text-white/70 text-[10px] rounded-full">
-                        {tag}
-                      </span>
-                    ))}
-                  </>
-                )}
-              </div>
+              {featured.category && (
+                <span className="text-white/60 text-xs mt-1 inline-block">{featured.category}</span>
+              )}
             </div>
           </div>
         </Link>
-
-        {/* Nav arrows */}
-        <button
-          onClick={() => navigate(-1)}
-          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-black/40 backdrop-blur-sm rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => navigate(1)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2 bg-black/40 backdrop-blur-sm rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
       </div>
 
-      {/* Thumbnail strip - modern clean scrollbar */}
-      <div className="relative px-4 -mt-6 z-20">
-        <div
-          ref={scrollRef}
-          className="flex gap-2 overflow-x-auto pb-3 carousel-scrollbar"
-        >
+      {/* Thumbnail strip */}
+      <div className="relative px-4 -mt-8 z-20">
+        <div className="flex gap-2 overflow-x-auto pb-2 carousel-scrollbar-modern">
           {liveStreams.map((stream, i) => {
-            if (failedImages.has(stream.id)) return null;
             const isActive = i === activeIndex;
             const meta = stream.platform ? PLATFORM_META[stream.platform] : null;
             return (
@@ -207,10 +154,10 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
                 key={stream.id}
                 onClick={() => handleThumbnailClick(i)}
                 className={cn(
-                  "relative shrink-0 w-[140px] aspect-video rounded-lg overflow-hidden border-2 transition-all duration-300",
+                  "relative shrink-0 w-[130px] aspect-video rounded-lg overflow-hidden transition-all duration-300",
                   isActive
-                    ? "border-primary ring-1 ring-primary/30 scale-105"
-                    : "border-transparent opacity-60 hover:opacity-90"
+                    ? "ring-2 ring-primary scale-105 shadow-lg"
+                    : "opacity-50 hover:opacity-80 hover:scale-[1.02]"
                 )}
               >
                 <img
@@ -232,7 +179,6 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
                     </span>
                   </div>
                 </div>
-                {/* Platform dot */}
                 {meta && (
                   <div
                     className="absolute top-1 right-1 w-3 h-3 rounded-full border border-white/30"
