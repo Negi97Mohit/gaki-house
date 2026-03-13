@@ -26,6 +26,17 @@ const PLATFORM_SECTIONS: { id: string; label: string; color: string }[] = [
 export const HomePage: React.FC = () => {
   const { data: streams = [], isLoading } = useStreams();
   const navigate = useNavigate();
+  const { user, openAuthModal } = useAuth();
+  const requestGoLive = useGoLiveStore((s) => s.requestGoLive);
+
+  const handleGoLive = () => {
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+    requestGoLive();
+    navigate("/");
+  };
 
   // Group live channels by platform
   const channelsByPlatform: Record<string, typeof streams> = {};
