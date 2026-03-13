@@ -59,9 +59,20 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
   isConnecting: propIsConnecting,
   isBroadcasting: propIsBroadcasting,
 }) => {
+  // GoLive auto-open support
+  const { shouldOpenStreamConfig, clearGoLive } = useGoLiveStore();
+  const [goLiveModalOpen, setGoLiveModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (shouldOpenStreamConfig) {
+      setGoLiveModalOpen(true);
+      clearGoLive();
+    }
+  }, [shouldOpenStreamConfig, clearGoLive]);
+
   // Local state for Smart Switch
   const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
-  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false); // ADDED
+  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
   const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
 
   // Store hooks
