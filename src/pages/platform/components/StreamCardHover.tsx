@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { StreamChannel, formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
-import { StreamPlayer } from "./StreamPlayer";
+import { StreamPlayer, isEmbeddablePlatform } from "./StreamPlayer";
 import { cn } from "@/shared/lib/utils";
 
 interface StreamCardHoverProps {
