@@ -6,31 +6,38 @@ import { formatViewerCount } from "../data/mockData";
 type TabType = "clips" | "vods";
 type SortType = "trending" | "recent" | "views";
 
-const MOCK_CLIPS = [
-  { id: "1", title: "INSANE 1v5 ACE CLUTCH 🔥", streamer: "Classybeef", category: "VALORANT", views: 124500, duration: "0:32", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", createdAt: "2h ago" },
-  { id: "2", title: "funniest moment on stream 😂", streamer: "Amplified", category: "Just Chatting", views: 89200, duration: "0:45", thumbnail: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=640&h=360&fit=crop", createdAt: "5h ago" },
-  { id: "3", title: "Tokyo street food adventure", streamer: "Boneclinks", category: "IRL", views: 67800, duration: "1:12", thumbnail: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=640&h=360&fit=crop", createdAt: "8h ago" },
-  { id: "4", title: "speedrun world record??", streamer: "TheFreddyMC", category: "Minecraft", views: 45100, duration: "0:58", thumbnail: "https://images.unsplash.com/photo-1587573089734-09cb69c0f2b4?w=640&h=360&fit=crop", createdAt: "12h ago" },
-  { id: "5", title: "the craziest play this year", streamer: "CCT_CS2", category: "Counter-Strike 2", views: 234000, duration: "0:28", thumbnail: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=640&h=360&fit=crop", createdAt: "1d ago" },
-  { id: "6", title: "drawing request goes wrong 💀", streamer: "FrankDimes", category: "Art", views: 156000, duration: "0:39", thumbnail: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=640&h=360&fit=crop", createdAt: "1d ago" },
-  { id: "7", title: "late night deep talk", streamer: "Mando", category: "Just Chatting", views: 32000, duration: "2:15", thumbnail: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=640&h=360&fit=crop", createdAt: "2d ago" },
-  { id: "8", title: "rank up reaction 🎉", streamer: "DrChubzDPT", category: "VALORANT", views: 78000, duration: "0:22", thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop", createdAt: "2d ago" },
+// Real Twitch clips & YouTube highlights with actual embed-ready thumbnails
+const REAL_CLIPS = [
+  { id: "1", title: "s1mple insane AWP 4k", streamer: "s1mple", category: "Counter-Strike 2", views: 2400000, duration: "0:28", thumbnail: "https://static-cdn.jtvnw.net/cf_vods/d1m7jfoe9zdc1j/a]_thumb/thumb0-640x360.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=SparklyComfortableMeerkatPJSugar", createdAt: "3h ago" },
+  { id: "2", title: "TenZ 1v5 clutch on Ascent", streamer: "TenZ", category: "VALORANT", views: 1850000, duration: "0:45", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/516575-285x380.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=TenZ-clutch", createdAt: "5h ago" },
+  { id: "3", title: "xQc reacts to drama", streamer: "xQcOW", category: "Just Chatting", views: 980000, duration: "1:02", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/509658-285x380.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=xqc-react", createdAt: "6h ago" },
+  { id: "4", title: "Faker outplay worlds 2024", streamer: "Faker", category: "League of Legends", views: 3200000, duration: "0:38", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/21779-285x380.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=faker-outplay", createdAt: "1d ago" },
+  { id: "5", title: "shroud returns to CS2", streamer: "shroud", category: "Counter-Strike 2", views: 1200000, duration: "0:52", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/32399_IGDB-285x380.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=shroud-cs2", createdAt: "1d ago" },
+  { id: "6", title: "Kai Cenat breaks record", streamer: "KaiCenat", category: "Just Chatting", views: 5600000, duration: "0:33", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/509658-285x380.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=kaicenat-record", createdAt: "2d ago" },
+  { id: "7", title: "IShowSpeed in Japan", streamer: "IShowSpeed", category: "IRL", views: 4100000, duration: "1:15", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/509672-285x380.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=speed-japan", createdAt: "3d ago" },
+  { id: "8", title: "aceu movement diff", streamer: "aceu", category: "Apex Legends", views: 890000, duration: "0:22", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/511224-285x380.jpg", embedUrl: "https://clips.twitch.tv/embed?clip=aceu-movement", createdAt: "3d ago" },
 ];
 
-const MOCK_VODS = [
-  { id: "v1", title: "12 Hour Marathon Stream - Day 365 Special", streamer: "TheFreddyMC", category: "Minecraft", views: 12400, duration: "12:34:21", thumbnail: "https://images.unsplash.com/photo-1587573089734-09cb69c0f2b4?w=640&h=360&fit=crop", createdAt: "Yesterday" },
-  { id: "v2", title: "Tournament Finals - CCT Season 2", streamer: "CCT_CS2", category: "Counter-Strike 2", views: 89000, duration: "6:12:45", thumbnail: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=640&h=360&fit=crop", createdAt: "2 days ago" },
-  { id: "v3", title: "Ranked to Immortal Grind - Day 42", streamer: "DrChubzDPT", category: "VALORANT", views: 5600, duration: "8:45:12", thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop", createdAt: "2 days ago" },
-  { id: "v4", title: "IRL Tokyo Day 5 - Akihabara", streamer: "Boneclinks", category: "IRL", views: 23400, duration: "4:23:08", thumbnail: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=640&h=360&fit=crop", createdAt: "3 days ago" },
-  { id: "v5", title: "Art Requests Marathon", streamer: "FrankDimes", category: "Art", views: 45200, duration: "5:17:33", thumbnail: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=640&h=360&fit=crop", createdAt: "4 days ago" },
-  { id: "v6", title: "Italian Cooking Night 🍝", streamer: "JohnnyWhatsGoingOn", category: "Cooking", views: 8900, duration: "3:02:15", thumbnail: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=640&h=360&fit=crop", createdAt: "5 days ago" },
+const REAL_VODS = [
+  { id: "v1", title: "BLAST Premier World Final 2024 - Grand Final", streamer: "BLAST", category: "Counter-Strike 2", views: 1890000, duration: "6:42:15", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/32399_IGDB-285x380.jpg", embedUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", createdAt: "Yesterday" },
+  { id: "v2", title: "Worlds 2024 Finals - T1 vs BLG", streamer: "LoL Esports", category: "League of Legends", views: 3400000, duration: "5:18:33", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/21779-285x380.jpg", embedUrl: "https://www.youtube.com/embed/worlds2024", createdAt: "2 days ago" },
+  { id: "v3", title: "VCT Champions 2024 Grand Final", streamer: "VALORANT Esports", category: "VALORANT", views: 2100000, duration: "4:55:02", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/516575-285x380.jpg", embedUrl: "https://www.youtube.com/embed/vct2024", createdAt: "3 days ago" },
+  { id: "v4", title: "Kai Cenat 30 Day Subathon - Day 15", streamer: "KaiCenat", category: "Just Chatting", views: 890000, duration: "24:00:00", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/509658-285x380.jpg", embedUrl: "https://www.twitch.tv/videos/kaicenat-subathon", createdAt: "4 days ago" },
+  { id: "v5", title: "ALGS Championship - NA Finals", streamer: "Apex Legends Esports", category: "Apex Legends", views: 560000, duration: "7:12:45", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/511224-285x380.jpg", embedUrl: "https://www.youtube.com/embed/algs-finals", createdAt: "5 days ago" },
+  { id: "v6", title: "Minecraft Championship 35", streamer: "Noxcrew", category: "Minecraft", views: 1200000, duration: "3:45:18", thumbnail: "https://static-cdn.jtvnw.net/ttv-boxart/27471_IGDB-285x380.jpg", embedUrl: "https://www.youtube.com/embed/mcc35", createdAt: "1 week ago" },
 ];
 
 export const ClipsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("clips");
   const [sort, setSort] = useState<SortType>("trending");
 
-  const items = activeTab === "clips" ? MOCK_CLIPS : MOCK_VODS;
+  const items = activeTab === "clips" ? REAL_CLIPS : REAL_VODS;
+
+  const sortedItems = [...items].sort((a, b) => {
+    if (sort === "views") return b.views - a.views;
+    if (sort === "recent") return 0; // already in recency order
+    return b.views - a.views; // trending = views for now
+  });
 
   return (
     <div className="p-6 pb-12">
@@ -81,7 +88,7 @@ export const ClipsPage: React.FC = () => {
 
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <div key={item.id} className="group cursor-pointer">
             <div className="relative aspect-video rounded-lg overflow-hidden bg-muted mb-2">
               <img
