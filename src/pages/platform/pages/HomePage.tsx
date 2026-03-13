@@ -8,6 +8,8 @@ import { CategoryCard } from "../components/CategoryCard";
 import { SkeletonStreamCard, SkeletonCategoryCard } from "../components/SkeletonStreamCard";
 import { LiveStreamCarousel } from "../components/LiveStreamCarousel";
 import { useStreams } from "../hooks/useStreams";
+import { useAuth } from "../context/AuthContext";
+import { useGoLiveStore } from "@/stores/goLive.store";
 
 // All platforms ordered by category
 const PLATFORM_SECTIONS: { id: string; label: string; color: string }[] = [
