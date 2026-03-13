@@ -47,7 +47,7 @@ export const HomePage: React.FC = () => {
     channelsByPlatform[p].push(ch);
   });
 
-  const liveStreams = streams.filter(s => s.isLive);
+  const liveStreams = streams.filter(s => s.isLive && isEmbeddablePlatform(s.platform));
 
   return (
     <div className="pb-12">
