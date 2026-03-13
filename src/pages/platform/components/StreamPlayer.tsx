@@ -1,6 +1,15 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
-import { StreamChannel } from "../data/mockData";
+import { StreamChannel, PlatformType } from "../data/mockData";
+
+// Platforms that support actual video embedding
+const EMBEDDABLE_PLATFORMS: PlatformType[] = [
+  "twitch", "youtube", "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
+];
+
+export function isEmbeddablePlatform(platform?: PlatformType): boolean {
+  return !!platform && EMBEDDABLE_PLATFORMS.includes(platform);
+}
 
 interface StreamPlayerProps {
     channel: StreamChannel;
