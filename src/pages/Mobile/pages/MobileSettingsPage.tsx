@@ -197,7 +197,7 @@ export const MobileSettingsPage: React.FC = () => {
                     <SettingsItem
                         icon={LogOut}
                         label="Sign Out"
-                        onClick={logout}
+                        onClick={signOut}
                         destructive
                     />
                     <SettingsItem

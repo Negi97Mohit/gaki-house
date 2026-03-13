@@ -985,19 +985,7 @@ export const MobileCanvasContainer: React.FC<MobileCanvasContainerProps> = ({
       <MobileStudioToolsDrawer
         isOpen={isDrawerOpen}
         onOpenChange={onDrawerOpenChange}
-        trigger={trigger}
-        onCanvasPresetSelect={layoutManager.handleCanvasPresetSelect}
-        customCanvasPresets={layoutManager.customPresets}
-        onSaveCanvasPreset={layoutManager.handleSaveCanvasPreset}
-        onDeleteCanvasPreset={layoutManager.handleDeleteCanvasPreset}
-        publicPresets={layoutManager.publicPresets}
-        isLoadingPublic={layoutManager.isLoadingPublic}
-        onShareCanvasPreset={layoutManager.shareCanvasPreset}
-        onUnshareCanvasPreset={layoutManager.unshareCanvasPreset}
-        style={activeScene.captionStyle}
-        onStyleChange={(val) => updateSceneProperty("captionStyle", val)}
-        dynamicStyle={activeScene.dynamicStyle}
-        onDynamicStyleChange={(val) => updateSceneProperty("dynamicStyle", val)}
+        layoutManager={layoutManager}
       />
 
 
