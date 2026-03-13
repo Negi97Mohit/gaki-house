@@ -138,7 +138,7 @@ export const MobileSettingsPage: React.FC = () => {
                         {THEMES.map((t) => (
                             <button
                                 key={t.id}
-                                onClick={() => setTheme(t.id)}
+                                onClick={() => setTheme(t.id as ThemeName)}
                                 className={cn(
                                     "flex flex-col items-center gap-1.5 min-h-[44px]",
                                 )}
