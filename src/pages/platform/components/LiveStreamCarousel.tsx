@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Users, Volume2, VolumeX } from "lucide-react";
 import { StreamChannel, formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
-import { StreamPlayer } from "./StreamPlayer";
+import { StreamPlayer, isEmbeddablePlatform } from "./StreamPlayer";
 import { cn } from "@/shared/lib/utils";
 
 interface LiveStreamCarouselProps {
@@ -19,7 +19,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const liveStreams = streams
-    .filter(s => s.isLive && s.streamUrl && s.thumbnail && !failedImages.has(s.id))
+    .filter(s => s.isLive && s.thumbnail && !failedImages.has(s.id) && isEmbeddablePlatform(s.platform))
     .slice(0, 12);
 
   const startAutoPlay = useCallback(() => {
@@ -68,15 +68,17 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
       {/* Main featured stream */}
       <div className="relative w-full aspect-video max-h-[480px] bg-black overflow-hidden group">
         <div className="absolute inset-0">
-          {userSelected ? (
+          {userSelected && featured.streamUrl ? (
             <StreamPlayer channel={featured} playing muted={isMuted} volume={0.5} />
           ) : (
-            <img
-              src={featured.thumbnail}
-              alt={featured.title}
-              className="w-full h-full object-cover"
-              onError={() => handleImageError(featured.id)}
-            />
+            featured.thumbnail && !failedImages.has(featured.id) ? (
+              <img
+                src={featured.thumbnail}
+                alt={featured.title}
+                className="w-full h-full object-cover"
+                onError={() => handleImageError(featured.id)}
+              />
+            ) : null
           )}
         </div>
 

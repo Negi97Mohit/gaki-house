@@ -4,6 +4,7 @@ import { ChevronRight, Radio, Sparkles, TrendingUp } from "lucide-react";
 import { MOCK_CATEGORIES, formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { StreamCardHover } from "../components/StreamCardHover";
+import { isEmbeddablePlatform } from "../components/StreamPlayer";
 import { CategoryCard } from "../components/CategoryCard";
 import { SkeletonStreamCard, SkeletonCategoryCard } from "../components/SkeletonStreamCard";
 import { LiveStreamCarousel } from "../components/LiveStreamCarousel";
@@ -46,7 +47,7 @@ export const HomePage: React.FC = () => {
     channelsByPlatform[p].push(ch);
   });
 
-  const liveStreams = streams.filter(s => s.isLive);
+  const liveStreams = streams.filter(s => s.isLive && isEmbeddablePlatform(s.platform));
 
   return (
     <div className="pb-12">
