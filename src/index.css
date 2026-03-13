@@ -4288,23 +4288,12 @@ body.cursor-inactive * {
   display: none;
 }
 
-/* ── Carousel Scrollbar ──────────────────────────────────── */
-.carousel-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+/* ── Carousel Scrollbar Modern ────────────────────────────── */
+.carousel-scrollbar-modern {
+  scrollbar-width: none;
 }
-.carousel-scrollbar::-webkit-scrollbar {
-  height: 4px;
-}
-.carousel-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.carousel-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary) / 0.25);
-  border-radius: 9999px;
-}
-.carousel-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.5);
+.carousel-scrollbar-modern::-webkit-scrollbar {
+  display: none;
 }
 
 /* Hide scrollbar utility */
