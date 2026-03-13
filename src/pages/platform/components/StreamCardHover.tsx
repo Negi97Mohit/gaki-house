@@ -80,8 +80,8 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
         {/* Hover play indicator */}
         {!isHovered && channel.streamUrl && (
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-            <div className="w-10 h-10 rounded-full bg-primary/90 flex items-center justify-center">
-              <svg className="w-4 h-4 text-primary-foreground ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="w-7 h-7 rounded-full bg-primary/90 flex items-center justify-center">
+              <svg className="w-3 h-3 text-primary-foreground ml-0.5" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="6 3 20 12 6 21 6 3" />
               </svg>
             </div>
