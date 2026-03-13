@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bell, ArrowLeft, X } from "lucide-react";
+import { Search, Bell, X } from "lucide-react";
 import { MOCK_CATEGORIES, formatViewerCount } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
 import { UserMenu } from "./UserMenu";
+import { useAuth } from "../context/AuthContext";
+import { useGoLiveStore } from "@/stores/goLive.store";
 
 export const PlatformTopNav: React.FC = () => {
   const navigate = useNavigate();
@@ -11,6 +13,9 @@ export const PlatformTopNav: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { user, openAuthModal } = useAuth();
+  const requestGoLive = useGoLiveStore((s) => s.requestGoLive);
 
   const trimmed = query.trim().toLowerCase();
   const { data: allStreams = [] } = useStreams();
@@ -44,6 +49,16 @@ export const PlatformTopNav: React.FC = () => {
     navigate(path);
   };
 
+  const handleGoLive = () => {
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+    // Signal the store to auto-open stream config, then navigate
+    requestGoLive();
+    navigate("/");
+  };
+
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -59,13 +74,6 @@ export const PlatformTopNav: React.FC = () => {
     <header className="h-12 bg-background border-b border-border/30 flex items-center px-4 gap-4 shrink-0 z-50">
       {/* Left: Logo */}
       <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
-          title="Go Back"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </button>
         <Link to="/platform" className="flex items-center gap-2">
           <img src="./icon.png" alt="GAKI" className="w-7 h-7 rounded-lg" />
           <span className="text-foreground font-bold text-base tracking-tight hidden sm:inline">
@@ -168,13 +176,13 @@ export const PlatformTopNav: React.FC = () => {
           <Bell className="w-4.5 h-4.5" />
         </button>
         <UserMenu />
-        <Link
-          to="/"
+        <button
+          onClick={handleGoLive}
           className="ml-1 sm:ml-2 px-4 py-1.5 bg-destructive text-destructive-foreground text-xs font-bold rounded-md hover:opacity-90 transition-opacity flex items-center gap-1.5"
         >
           <span className="w-2 h-2 rounded-full bg-destructive-foreground animate-pulse" />
           Go Live
-        </Link>
+        </button>
       </div>
     </header>
   );
