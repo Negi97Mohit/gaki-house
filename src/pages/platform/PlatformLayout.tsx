@@ -2,13 +2,10 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { PlatformTopNav } from "./components/PlatformTopNav";
 import { PlatformSidebar } from "./components/PlatformSidebar";
-import { PlatformSidebar } from "./components/PlatformSidebar";
 import { PlatformMobileNav } from "./components/PlatformMobileNav";
 import { AuthModal } from "./components/AuthModal";
 
 export const PlatformLayout: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="h-screen w-full flex flex-col bg-background text-foreground overflow-hidden">
       <PlatformTopNav />
@@ -20,7 +17,6 @@ export const PlatformLayout: React.FC = () => {
       </div>
       <PlatformMobileNav />
       <AuthModal />
-
     </div>
   );
 };
