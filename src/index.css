@@ -4287,9 +4287,34 @@ body.cursor-inactive * {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
-.scrollbar-none {
+}
+
+/* ── Carousel Scrollbar ──────────────────────────────────── */
+.carousel-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+}
+.carousel-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.carousel-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.carousel-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.25);
+  border-radius: 9999px;
+}
+.carousel-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* ── Overscroll Behavior ─────────────────────────────────── */

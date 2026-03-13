@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings, Film } from "lucide-react";
+import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings, Film, BarChart3 } from "lucide-react";
 import { formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: "Home", icon: Home, path: "/platform" },
   { label: "Browse", icon: Compass, path: "/platform/browse" },
   { label: "Following", icon: Heart, path: "/platform/following" },
+  { label: "Dashboard", icon: BarChart3, path: "/platform/dashboard" },
   { label: "Clips", icon: Film, path: "/platform/clips" },
   { label: "Settings", icon: Settings, path: "/platform/settings" },
 ];

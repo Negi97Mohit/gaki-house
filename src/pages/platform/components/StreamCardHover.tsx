@@ -11,8 +11,13 @@ interface StreamCardHoverProps {
 
 export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const platformInfo = channel.platform ? PLATFORM_META[channel.platform] : null;
   const PlatformIcon = channel.platform ? getPlatformIcon(channel.platform) : null;
+
+  // Don't render card if thumbnail failed
+  if (imgError && !channel.streamUrl) return null;
 
   return (
     <Link
@@ -23,7 +28,6 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
     >
       {/* Thumbnail / Live Preview */}
       <div className="relative aspect-video rounded-xl overflow-hidden bg-muted mb-2">
-        {/* Show thumbnail by default, stream on hover */}
         {isHovered && channel.streamUrl ? (
           <div className="absolute inset-0">
             <StreamPlayer
@@ -34,12 +38,19 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
             />
           </div>
         ) : (
-          <img
-            src={channel.thumbnail}
-            alt={channel.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
-          />
+          !imgError && channel.thumbnail ? (
+            <img
+              src={channel.thumbnail}
+              alt={channel.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <div className="w-full h-full bg-muted flex items-center justify-center">
+              <span className="text-xs text-muted-foreground">No preview</span>
+            </div>
+          )
         )}
 
         {/* Live badge */}
@@ -80,11 +91,18 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
 
       {/* Info */}
       <div className="flex gap-2.5">
-        <img
-          src={channel.avatar}
-          alt={channel.displayName}
-          className="w-9 h-9 rounded-full bg-muted shrink-0 mt-0.5"
-        />
+        {!avatarError && channel.avatar ? (
+          <img
+            src={channel.avatar}
+            alt={channel.displayName}
+            className="w-9 h-9 rounded-full bg-muted shrink-0 mt-0.5"
+            onError={() => setAvatarError(true)}
+          />
+        ) : (
+          <div className="w-9 h-9 rounded-full bg-muted shrink-0 mt-0.5 flex items-center justify-center text-xs font-bold text-muted-foreground">
+            {channel.displayName.charAt(0)}
+          </div>
+        )}
         <div className="min-w-0 flex-1">
           <p className="text-sm text-foreground font-semibold truncate leading-tight">
             {channel.title}
@@ -106,16 +124,18 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
               {channel.category}
             </span>
           </div>
-          <div className="flex gap-1 mt-1.5 flex-wrap">
-            {channel.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] rounded-full font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+          {channel.tags.length > 0 && (
+            <div className="flex gap-1 mt-1.5 flex-wrap">
+              {channel.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag}
+                  className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] rounded-full font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </Link>
