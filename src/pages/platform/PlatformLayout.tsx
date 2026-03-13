@@ -1,7 +1,7 @@
 import React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { Outlet } from "react-router-dom";
 import { PlatformTopNav } from "./components/PlatformTopNav";
+import { PlatformSidebar } from "./components/PlatformSidebar";
 import { PlatformSidebar } from "./components/PlatformSidebar";
 import { PlatformMobileNav } from "./components/PlatformMobileNav";
 import { AuthModal } from "./components/AuthModal";
