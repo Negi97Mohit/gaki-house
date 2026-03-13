@@ -71,8 +71,9 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon: Icon, label, descript
 
 export const MobileSettingsPage: React.FC = () => {
     const navigate = useNavigate();
-    const { user, profile, logout, openAuthModal } = useAuth();
-    const { theme: currentTheme, isDark, setTheme, toggleDark } = useThemeStore();
+    const { user, profile, signOut, openAuthModal } = useAuth();
+    const { theme: currentTheme, mode, setTheme, toggleMode } = useThemeStore();
+    const isDark = mode === "dark";
 
     const avatarUrl = profile?.avatar_url || "https://api.dicebear.com/9.x/adventurer/svg?seed=me";
 
