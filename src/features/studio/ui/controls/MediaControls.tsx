@@ -320,6 +320,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       <StreamConfigurationModal
         onStartStream={onStartStream}
         onStopStream={onStopStream}
+        externalOpen={goLiveModalOpen}
+        onOpenChange={setGoLiveModalOpen}
       />
 
       <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
