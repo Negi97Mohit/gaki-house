@@ -5,7 +5,7 @@ import {
     ChevronRight, LogOut, Camera, Trash2, Languages, Monitor
 } from "lucide-react";
 import { useAuth } from "@/pages/platform/context/AuthContext";
-import { useThemeStore } from "@/shared/store/useThemeStore";
+import { useThemeStore } from "@/features/theme";
 import { cn } from "@/shared/lib/utils";
 
 const THEMES = [
