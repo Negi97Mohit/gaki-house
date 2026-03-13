@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Users, Volume2, VolumeX } from "lucide-react";
 import { StreamChannel, formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
-import { StreamPlayer } from "./StreamPlayer";
+import { StreamPlayer, isEmbeddablePlatform } from "./StreamPlayer";
 import { cn } from "@/shared/lib/utils";
 
 interface LiveStreamCarouselProps {
