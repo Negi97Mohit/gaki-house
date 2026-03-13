@@ -69,10 +69,10 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
         {/* Platform badge */}
         {platformInfo && PlatformIcon && (
           <span
-            className="absolute top-2 right-2 px-1.5 py-0.5 text-[10px] font-bold rounded-md flex items-center gap-1 z-10"
+            className="absolute top-1.5 right-1.5 px-1 py-px text-[8px] font-bold rounded flex items-center gap-0.5 z-10"
             style={{ backgroundColor: platformInfo.color, color: platformInfo.textColor }}
           >
-            <PlatformIcon className="w-3 h-3" style={{ color: platformInfo.textColor }} />
+            <PlatformIcon className="w-2.5 h-2.5" style={{ color: platformInfo.textColor }} />
             {platformInfo.label}
           </span>
         )}
