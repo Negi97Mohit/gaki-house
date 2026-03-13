@@ -68,15 +68,17 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
       {/* Main featured stream */}
       <div className="relative w-full aspect-video max-h-[480px] bg-black overflow-hidden group">
         <div className="absolute inset-0">
-          {userSelected ? (
+          {userSelected && featured.streamUrl ? (
             <StreamPlayer channel={featured} playing muted={isMuted} volume={0.5} />
           ) : (
-            <img
-              src={featured.thumbnail}
-              alt={featured.title}
-              className="w-full h-full object-cover"
-              onError={() => handleImageError(featured.id)}
-            />
+            featured.thumbnail && !failedImages.has(featured.id) ? (
+              <img
+                src={featured.thumbnail}
+                alt={featured.title}
+                className="w-full h-full object-cover"
+                onError={() => handleImageError(featured.id)}
+              />
+            ) : null
           )}
         </div>
 
