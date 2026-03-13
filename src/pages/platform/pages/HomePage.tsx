@@ -56,7 +56,7 @@ export const HomePage: React.FC = () => {
       {/* Go Live CTA Banner */}
       <section className="px-6 mt-6">
         <button
-          onClick={() => navigate("/")}
+          onClick={handleGoLive}
           className="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 border border-primary/20 hover:border-primary/40 transition-all group"
         >
           <div className="flex items-center gap-3">
