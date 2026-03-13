@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Mic,
   MicOff,
@@ -28,6 +28,7 @@ import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";
+import { useGoLiveStore } from "@/stores/goLive.store";
 
 
 interface MediaControlsProps {
@@ -58,9 +59,20 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
   isConnecting: propIsConnecting,
   isBroadcasting: propIsBroadcasting,
 }) => {
+  // GoLive auto-open support
+  const { shouldOpenStreamConfig, clearGoLive } = useGoLiveStore();
+  const [goLiveModalOpen, setGoLiveModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (shouldOpenStreamConfig) {
+      setGoLiveModalOpen(true);
+      clearGoLive();
+    }
+  }, [shouldOpenStreamConfig, clearGoLive]);
+
   // Local state for Smart Switch
   const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
-  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false); // ADDED
+  const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
   const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
 
   // Store hooks
@@ -308,6 +320,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       <StreamConfigurationModal
         onStartStream={onStartStream}
         onStopStream={onStopStream}
+        externalOpen={goLiveModalOpen}
+        onOpenChange={setGoLiveModalOpen}
       />
 
       <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />

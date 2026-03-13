@@ -8,6 +8,8 @@ import { CategoryCard } from "../components/CategoryCard";
 import { SkeletonStreamCard, SkeletonCategoryCard } from "../components/SkeletonStreamCard";
 import { LiveStreamCarousel } from "../components/LiveStreamCarousel";
 import { useStreams } from "../hooks/useStreams";
+import { useAuth } from "../context/AuthContext";
+import { useGoLiveStore } from "@/stores/goLive.store";
 
 // All platforms ordered by category
 const PLATFORM_SECTIONS: { id: string; label: string; color: string }[] = [
@@ -24,6 +26,17 @@ const PLATFORM_SECTIONS: { id: string; label: string; color: string }[] = [
 export const HomePage: React.FC = () => {
   const { data: streams = [], isLoading } = useStreams();
   const navigate = useNavigate();
+  const { user, openAuthModal } = useAuth();
+  const requestGoLive = useGoLiveStore((s) => s.requestGoLive);
+
+  const handleGoLive = () => {
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+    requestGoLive();
+    navigate("/");
+  };
 
   // Group live channels by platform
   const channelsByPlatform: Record<string, typeof streams> = {};
@@ -43,7 +56,7 @@ export const HomePage: React.FC = () => {
       {/* Go Live CTA Banner */}
       <section className="px-6 mt-6">
         <button
-          onClick={() => navigate("/")}
+          onClick={handleGoLive}
           className="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 border border-primary/20 hover:border-primary/40 transition-all group"
         >
           <div className="flex items-center gap-3">
