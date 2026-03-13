@@ -55,24 +55,24 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
 
         {/* Live badge */}
         {channel.isLive && (
-          <span className="absolute top-2 left-2 px-2 py-0.5 bg-destructive text-destructive-foreground text-[10px] font-bold uppercase rounded-md flex items-center gap-1 z-10">
-            <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse" />
+          <span className="absolute top-1.5 left-1.5 px-1.5 py-px bg-destructive text-destructive-foreground text-[8px] font-bold uppercase rounded flex items-center gap-0.5 z-10">
+            <span className="w-1 h-1 rounded-full bg-destructive-foreground animate-pulse" />
             LIVE
           </span>
         )}
 
         {/* Viewer count */}
-        <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/70 backdrop-blur-sm text-white text-[11px] font-medium rounded-md z-10">
+        <span className="absolute bottom-1.5 left-1.5 px-1.5 py-px bg-black/70 backdrop-blur-sm text-white text-[9px] font-medium rounded z-10">
           {formatViewerCount(channel.viewers)} viewers
         </span>
 
         {/* Platform badge */}
         {platformInfo && PlatformIcon && (
           <span
-            className="absolute top-2 right-2 px-1.5 py-0.5 text-[10px] font-bold rounded-md flex items-center gap-1 z-10"
+            className="absolute top-1.5 right-1.5 px-1 py-px text-[8px] font-bold rounded flex items-center gap-0.5 z-10"
             style={{ backgroundColor: platformInfo.color, color: platformInfo.textColor }}
           >
-            <PlatformIcon className="w-3 h-3" style={{ color: platformInfo.textColor }} />
+            <PlatformIcon className="w-2.5 h-2.5" style={{ color: platformInfo.textColor }} />
             {platformInfo.label}
           </span>
         )}
@@ -80,8 +80,8 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
         {/* Hover play indicator */}
         {!isHovered && channel.streamUrl && (
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-            <div className="w-10 h-10 rounded-full bg-primary/90 flex items-center justify-center">
-              <svg className="w-4 h-4 text-primary-foreground ml-0.5" viewBox="0 0 24 24" fill="currentColor">
+            <div className="w-7 h-7 rounded-full bg-primary/90 flex items-center justify-center">
+              <svg className="w-3 h-3 text-primary-foreground ml-0.5" viewBox="0 0 24 24" fill="currentColor">
                 <polygon points="6 3 20 12 6 21 6 3" />
               </svg>
             </div>
