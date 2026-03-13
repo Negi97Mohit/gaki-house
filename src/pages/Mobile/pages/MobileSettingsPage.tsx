@@ -161,7 +161,7 @@ export const MobileSettingsPage: React.FC = () => {
                     icon={isDark ? Moon : Sun}
                     label={isDark ? "Dark Mode" : "Light Mode"}
                     description="Toggle dark/light appearance"
-                    onClick={toggleDark}
+                    onClick={toggleMode}
                     right={
                         <div
                             className={cn(
