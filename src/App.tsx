@@ -28,6 +28,7 @@ const PlatformFollowing = lazy(() => import("./pages/platform/pages/FollowingPag
 const PlatformSearch = lazy(() => import("./pages/platform/pages/SearchPage").then(m => ({ default: m.SearchPage })));
 const PlatformSettings = lazy(() => import("./pages/platform/pages/SettingsPage").then(m => ({ default: m.SettingsPage })));
 const PlatformClips = lazy(() => import("./pages/platform/pages/ClipsPage").then(m => ({ default: m.ClipsPage })));
+const PlatformDashboard = lazy(() => import("./pages/platform/pages/DashboardPage").then(m => ({ default: m.DashboardPage })));
 
 // Mobile pages
 const MobileLayout = lazy(() => import("./pages/Mobile/MobileLayout").then(m => ({ default: m.MobileLayout })));
