@@ -55,14 +55,14 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
 
         {/* Live badge */}
         {channel.isLive && (
-          <span className="absolute top-2 left-2 px-2 py-0.5 bg-destructive text-destructive-foreground text-[10px] font-bold uppercase rounded-md flex items-center gap-1 z-10">
-            <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse" />
+          <span className="absolute top-1.5 left-1.5 px-1.5 py-px bg-destructive text-destructive-foreground text-[8px] font-bold uppercase rounded flex items-center gap-0.5 z-10">
+            <span className="w-1 h-1 rounded-full bg-destructive-foreground animate-pulse" />
             LIVE
           </span>
         )}
 
         {/* Viewer count */}
-        <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/70 backdrop-blur-sm text-white text-[11px] font-medium rounded-md z-10">
+        <span className="absolute bottom-1.5 left-1.5 px-1.5 py-px bg-black/70 backdrop-blur-sm text-white text-[9px] font-medium rounded z-10">
           {formatViewerCount(channel.viewers)} viewers
         </span>
 
