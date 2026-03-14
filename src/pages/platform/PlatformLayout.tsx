@@ -34,13 +34,13 @@ export const PlatformLayout: React.FC = () => {
       <button
         onClick={handleBack}
         type="button"
-        className="fixed bottom-6 right-6 z-40 hidden md:block bg-muted text-muted-foreground w-48 rounded-2xl h-14 relative text-sm font-semibold group border border-border/40"
+        className="fixed bottom-4 right-4 z-40 hidden md:block bg-muted rounded-xl h-10 w-10 lg:w-36 relative text-sm font-medium group border border-border/40"
         aria-label="Go back"
       >
-        <div className="bg-primary rounded-xl h-12 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10 duration-500 transition-all">
-          <ArrowLeft className="w-5 h-5 text-primary-foreground" />
+        <div className="bg-primary rounded-lg h-8 w-8 lg:w-1/4 flex items-center justify-center absolute left-1 top-[4px] lg:group-hover:w-[128px] z-10 duration-500 transition-all">
+          <ArrowLeft className="w-4 h-4 text-primary-foreground shrink-0" />
         </div>
-        <p className="translate-x-2 text-foreground">Go Back</p>
+        <p className="translate-x-2 text-foreground hidden lg:block">Go Back</p>
       </button>
     </div>
   );
