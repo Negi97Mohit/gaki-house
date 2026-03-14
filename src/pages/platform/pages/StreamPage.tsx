@@ -263,23 +263,26 @@ export const StreamPage: React.FC = () => {
                   const meta = PLATFORM_META[channel.platform];
                   const PIcon = getPlatformIcon(channel.platform);
                   return (
-                    <span
-                      className="px-1.5 py-0.5 text-[10px] font-bold rounded flex items-center gap-1"
-                      style={{ backgroundColor: meta.color, color: meta.textColor }}
-                    >
-                      <PIcon className="w-3 h-3" style={{ color: meta.textColor }} />
-                      {meta.label}
-                    </span>
+                    <>
+                      <span
+                        className="px-1.5 py-0.5 text-[10px] font-bold rounded flex items-center gap-1"
+                        style={{ backgroundColor: meta.color, color: meta.textColor }}
+                      >
+                        <PIcon className="w-3 h-3" style={{ color: meta.textColor }} />
+                        {meta.label}
+                      </span>
+                      <span
+                        className="px-2 py-0.5 text-[11px] font-bold rounded flex items-center gap-1"
+                        style={{ backgroundColor: `${meta.color}20`, color: meta.color, border: `1px solid ${meta.color}40` }}
+                      >
+                        <Users className="w-3 h-3" />
+                        {formatViewerCount(channel.viewers)} watching
+                      </span>
+                    </>
                   );
                 })()}
               </div>
-              <div className="flex items-center gap-2 mt-0.5">
-                <p className="text-sm text-foreground font-medium">{channel.title}</p>
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Users className="w-3 h-3" />
-                  {formatViewerCount(channel.viewers)} watching
-                </span>
-              </div>
+              <p className="text-sm text-foreground font-medium mt-0.5">{channel.title}</p>
               <Link
                 to={`/platform/browse/${channel.categorySlug}`}
                 className="text-primary text-xs hover:underline mt-0.5 inline-block"
