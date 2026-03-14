@@ -29,12 +29,13 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
       {/* Thumbnail / Live Preview */}
       <div className="relative aspect-video rounded-xl overflow-hidden bg-muted mb-2">
         {isHovered && channel.streamUrl && isEmbeddablePlatform(channel.platform) ? (
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 w-full h-full overflow-hidden">
             <StreamPlayer
               channel={channel}
               playing={true}
               muted={true}
               volume={0}
+              className="w-full h-full"
             />
           </div>
         ) : (

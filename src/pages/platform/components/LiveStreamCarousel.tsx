@@ -147,14 +147,19 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
 
       {/* Thumbnail strip */}
       <div className="relative px-4 -mt-8 z-20">
-        <div className="flex gap-2 overflow-x-auto pb-2 carousel-scrollbar-modern">
+        <div className="flex gap-2 overflow-x-auto pb-3 pt-1 px-1 carousel-scrollbar-modern">
           {liveStreams.map((stream, i) => {
             const isActive = i === activeIndex;
             const meta = stream.platform ? PLATFORM_META[stream.platform] : null;
             return (
-              <button
+              <Link
                 key={stream.id}
-                onClick={() => handleThumbnailClick(i)}
+                to={`/platform/stream/${stream.username}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleThumbnailClick(i);
+                }}
+                onDoubleClick={() => navigate(`/platform/stream/${stream.username}`)}
                 className={cn(
                   "relative shrink-0 w-[130px] aspect-video rounded-lg overflow-hidden transition-all duration-300",
                   isActive
