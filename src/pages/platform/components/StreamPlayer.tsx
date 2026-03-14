@@ -58,11 +58,31 @@ interface TwitchEmbedProps {
   channel: string;
   autoplay?: boolean;
   muted?: boolean;
+  controls?: boolean;
 }
 
-const TwitchEmbed: React.FC<TwitchEmbedProps> = ({ channel, autoplay = true, muted = true }) => {
+const TwitchEmbed: React.FC<TwitchEmbedProps> = ({ channel, autoplay = true, muted = true, controls = true }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const embedRef = useRef<any>(null);
+
+  // For thumbnail previews (controls=false), use a lightweight iframe instead of the full Embed SDK
+  if (!controls) {
+    const hostname = window.location.hostname;
+    const parents = ["localhost", "127.0.0.1"];
+    if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+      parents.push(hostname);
+    }
+    const parentParam = parents.map(p => `parent=${p}`).join("&");
+    return (
+      <iframe
+        src={`https://player.twitch.tv/?channel=${channel}&${parentParam}&autoplay=${autoplay}&muted=${muted}&controls=false`}
+        className="w-full h-full"
+        allowFullScreen
+        allow="autoplay; fullscreen"
+        style={{ border: "none" }}
+      />
+    );
+  }
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -106,6 +126,7 @@ interface StreamPlayerProps {
     playing?: boolean;
     muted?: boolean;
     volume?: number;
+    controls?: boolean;
     onPlay?: () => void;
     onPause?: () => void;
     onError?: (e: any) => void;
@@ -117,6 +138,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     playing = true,
     muted = true,
     volume = 0.5,
+    controls = true,
     onPlay,
     onPause,
     onError,
@@ -152,7 +174,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     // Handle Twitch via official Twitch Interactive Embed JS SDK (autoplay guaranteed)
     if (channel.platform === "twitch") {
         const username = channel.username.replace("tw-", "");
-        return <TwitchEmbed channel={username} autoplay={playing} muted={muted} />;
+        return <TwitchEmbed channel={username} autoplay={playing} muted={muted} controls={controls} />;
     }
 
     // Handle YouTube via iframe 
@@ -161,7 +183,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
             || channel.id.replace("yt-live-", "").replace("yt-pop-", "");
         return (
             <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=${playing ? 1 : 0}&mute=${muted ? 1 : 0}&modestbranding=1&rel=0&controls=1`}
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=${playing ? 1 : 0}&mute=${muted ? 1 : 0}&modestbranding=1&rel=0&controls=${controls ? 1 : 0}`}
                 className="w-full h-full"
                 allowFullScreen
                 allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
