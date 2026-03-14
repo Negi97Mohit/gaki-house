@@ -202,7 +202,7 @@ export const SettingsPage: React.FC = () => {
             onClick={() => setActiveTab(tab.id)}
             className={cn(
               "flex items-center gap-2 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2",
-              activeTab === tab.id
+              effectiveTab === tab.id
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground"
             )}
