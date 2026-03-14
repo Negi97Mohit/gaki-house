@@ -63,7 +63,8 @@ const DEFAULT_PRIVACY: PrivacySettings = {
 
 export const SettingsPage: React.FC = () => {
   const { user, profile, openAuthModal, refreshProfile } = useAuth();
-  const [activeTab, setActiveTab] = useState<TabId>("profile");
+  const [activeTab, setActiveTab] = useState<TabId>("appearance");
+  const TABS = user ? AUTH_TABS : PUBLIC_TABS;
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
