@@ -273,7 +273,13 @@ export const StreamPage: React.FC = () => {
                   );
                 })()}
               </div>
-              <p className="text-sm text-foreground font-medium mt-0.5">{channel.title}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-sm text-foreground font-medium">{channel.title}</p>
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  {formatViewerCount(channel.viewers)} watching
+                </span>
+              </div>
               <Link
                 to={`/platform/browse/${channel.categorySlug}`}
                 className="text-primary text-xs hover:underline mt-0.5 inline-block"
