@@ -161,21 +161,6 @@ export const MOCK_CHANNELS: StreamChannel[] = [
     streamUrl: "https://www.youtube.com/watch?v=jfKfPfyJRdk"
   },
   {
-    id: "yt-live-nasa",
-    username: "NASA",
-    displayName: "NASA Live",
-    avatar: "https://yt3.googleusercontent.com/ytc/AIdro_k2D-SdcWzGqf9y9c9qgD_4b4d_5e5f5g6h=s176-c-k-c0x00ffffff-no-rj",
-    title: "NASA Live: Official Stream of NASA TV",
-    category: "Science & Technology",
-    categorySlug: "science",
-    viewers: 8500,
-    thumbnail: "https://i.ytimg.com/vi/21X5lGlDOfg/maxresdefault.jpg",
-    isLive: true,
-    tags: ["Space", "Educational"],
-    platform: "youtube",
-    streamUrl: "https://www.youtube.com/watch?v=21X5lGlDOfg"
-  },
-  {
     id: "tw-live-monstercat",
     username: "tw-monstercat",
     displayName: "Monstercat",

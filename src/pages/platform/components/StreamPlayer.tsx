@@ -22,6 +22,84 @@ export function isIframePlatform(platform?: PlatformType): boolean {
   return !!platform && IFRAME_PLATFORMS.includes(platform);
 }
 
+// ---- Twitch Interactive Embed Component ----
+// Uses the official Twitch Embed JS SDK for reliable autoplay
+declare global {
+  interface Window {
+    Twitch?: any;
+  }
+}
+
+let twitchScriptLoaded = false;
+let twitchScriptLoading = false;
+const twitchScriptCallbacks: (() => void)[] = [];
+
+function loadTwitchScript(callback: () => void) {
+  if (twitchScriptLoaded && window.Twitch) {
+    callback();
+    return;
+  }
+  twitchScriptCallbacks.push(callback);
+  if (twitchScriptLoading) return;
+  twitchScriptLoading = true;
+
+  const script = document.createElement("script");
+  script.src = "https://embed.twitch.tv/embed/v1.js";
+  script.onload = () => {
+    twitchScriptLoaded = true;
+    twitchScriptLoading = false;
+    twitchScriptCallbacks.forEach((cb) => cb());
+    twitchScriptCallbacks.length = 0;
+  };
+  document.body.appendChild(script);
+}
+
+interface TwitchEmbedProps {
+  channel: string;
+  autoplay?: boolean;
+  muted?: boolean;
+}
+
+const TwitchEmbed: React.FC<TwitchEmbedProps> = ({ channel, autoplay = true, muted = true }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const embedRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const hostname = window.location.hostname;
+    const parents = ["localhost", "127.0.0.1"];
+    if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+      parents.push(hostname);
+    }
+
+    loadTwitchScript(() => {
+      if (!containerRef.current || !window.Twitch) return;
+
+      // Clear previous embed
+      containerRef.current.innerHTML = "";
+
+      embedRef.current = new window.Twitch.Embed(containerRef.current, {
+        width: "100%",
+        height: "100%",
+        channel: channel,
+        parent: parents,
+        autoplay: autoplay,
+        muted: muted,
+        layout: "video",
+      });
+    });
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
+      embedRef.current = null;
+    };
+  }, [channel, autoplay, muted]);
+
+  return <div ref={containerRef} className="w-full h-full" />;
+};
 interface StreamPlayerProps {
     channel: StreamChannel;
     className?: string;
@@ -61,7 +139,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         return (
             <div className={cn("w-full h-full", className)}>
                 <iframe
-                    src={`https://player.kick.com/${slug}?autoplay=${playing}&muted=${muted}`}
+                    src={`https://player.kick.com/${slug}?autoplay=true&muted=true`}
                     className="w-full h-full"
                     allowFullScreen
                     allow="autoplay; fullscreen; picture-in-picture"
@@ -71,27 +149,12 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle Twitch via Iframe
+    // Handle Twitch via official Twitch Interactive Embed JS SDK (autoplay guaranteed)
     if (channel.platform === "twitch") {
-        const username = channel.username.replace("tw-", ""); // Remove our prefix if present
-        const hostname = window.location.hostname;
-        const origin = window.location.origin;
-        let parent = `parent=localhost&parent=127.0.0.1`;
-        if (hostname !== "localhost" && hostname !== "127.0.0.1") {
-            parent += `&parent=${hostname}`;
-        }
-
-        return (
-            <iframe
-                src={`https://player.twitch.tv/?channel=${username}&${parent}&autoplay=${playing}&muted=${muted}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
+        const username = channel.username.replace("tw-", "");
+        return <TwitchEmbed channel={username} autoplay={playing} muted={muted} />;
     }
-    
+
     // Handle YouTube via iframe 
     if (channel.platform === "youtube") {
         const videoId = channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1]
@@ -107,12 +170,12 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle DLive via iframe
+    // Handle DLive via iframe (loads the channel page directly)
     if (channel.platform === "dlive") {
         const username = channel.username;
         return (
             <iframe
-                src={`https://dlive.tv/p/${username}?autoplay=${playing}&muted=${muted}`}
+                src={`https://dlive.tv/${username}`}
                 className="w-full h-full"
                 allowFullScreen
                 allow="autoplay; fullscreen; picture-in-picture"
@@ -120,8 +183,6 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
             />
         );
     }
-
-
 
     // Handle Trovo via iframe
     if (channel.platform === "trovo") {
@@ -136,10 +197,6 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
             />
         );
     }
-
-
-
-
 
     // Handle Rumble via iframe
     if (channel.platform === "rumble") {
@@ -191,10 +248,12 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     // Fallback: other platforms via ReactPlayer
     const Player = ReactPlayer as any;
     
+    const reactPlayerUrl = channel.streamUrl;
+
     return (
         <Player
             ref={playerRef}
-            url={channel.streamUrl}
+            url={reactPlayerUrl}
             width="100%"
             height="100%"
             playing={playing}
