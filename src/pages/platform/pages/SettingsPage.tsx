@@ -347,7 +347,7 @@ export const SettingsPage: React.FC = () => {
         )}
 
         {/* ===== NOTIFICATIONS TAB ===== */}
-        {activeTab === "notifications" && (
+        {effectiveTab === "notifications" && user && (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Notifications</h2>
