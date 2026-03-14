@@ -87,11 +87,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
 
         {/* Top badges */}
-        <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
-          <span className="px-2.5 py-1 bg-destructive text-destructive-foreground text-xs font-bold uppercase rounded-md flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-destructive-foreground animate-pulse" />
-            LIVE
-          </span>
+        <div className="absolute top-4 left-4 flex items-center gap-2 z-10 pointer-events-none">
           <span className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white text-xs font-medium rounded-md flex items-center gap-1.5">
             <Users className="w-3.5 h-3.5" />
             {formatViewerCount(featured.viewers)}
