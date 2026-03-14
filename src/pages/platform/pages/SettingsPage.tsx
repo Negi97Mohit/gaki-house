@@ -163,7 +163,7 @@ export const SettingsPage: React.FC = () => {
     toast.success("Privacy settings saved!");
   };
 
-  const avatarDisplayName = profile?.display_name || user.email?.split("@")[0] || "User";
+  const avatarDisplayName = profile?.display_name || user?.email?.split("@")[0] || "User";
 
   // Selected themes to display (curated subset for cleaner UI)
   const FEATURED_THEMES: ThemeName[] = [
