@@ -193,7 +193,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
                     style={{ backgroundColor: meta.color }}
                   />
                 )}
-              </button>
+              </Link>
             );
           })}
         </div>
