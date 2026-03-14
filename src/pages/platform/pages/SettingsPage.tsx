@@ -520,7 +520,7 @@ export const SettingsPage: React.FC = () => {
         )}
 
         {/* ===== PRIVACY & SAFETY TAB ===== */}
-        {activeTab === "privacy" && (
+        {effectiveTab === "privacy" && user && (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Privacy & Safety</h2>
