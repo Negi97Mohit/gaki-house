@@ -4,8 +4,8 @@ import { fetchAllStreams } from "../services/streamService";
 import { StreamChannel, MOCK_CHANNELS, PlatformType } from "../data/mockData";
 
 const STREAMS_QUERY_KEY = ["platform-streams"];
-const STALE_TIME = 2 * 60 * 1000; // 2 minutes
-const REFETCH_INTERVAL = 3 * 60 * 1000; // Auto-refetch every 3 minutes
+const STALE_TIME = 4 * 60 * 1000; // 4 minutes (increased to conserve YouTube API quota)
+const REFETCH_INTERVAL = 5 * 60 * 1000; // Auto-refetch every 5 minutes
 
 /**
  * Primary hook — fetches all live streams from APIs + mock fallback.

@@ -33,6 +33,13 @@
   status = 200
   force = true
 
+# YouTube Live Proxy (fetches live streams without API quota)
+[[redirects]]
+  from = "/api/youtube-live"
+  to = "/.netlify/functions/youtube-live-proxy"
+  status = 200
+  force = true
+
 # DLive GraphQL API Proxy (bypasses CORS)
 [[redirects]]
   from = "/api/dlive"
