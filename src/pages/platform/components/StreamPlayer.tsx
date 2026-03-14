@@ -48,13 +48,15 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     if (channel.platform === "kick") {
         const slug = channel.username;
         return (
-            <iframe
-                src={`https://player.kick.com/${slug}?autoplay=${playing}&muted=${muted}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
+            <div className={cn("w-full h-full", className)}>
+                <iframe
+                    src={`https://player.kick.com/${slug}?autoplay=${playing}&muted=${muted}`}
+                    className="w-full h-full"
+                    allowFullScreen
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    style={{ border: "none" }}
+                />
+            </div>
         );
     }
 
