@@ -37,10 +37,11 @@ export const PlatformLayout: React.FC = () => {
         className="fixed bottom-4 right-4 z-40 hidden md:flex bg-muted rounded-xl h-10 w-10 lg:w-36 items-center justify-center text-sm font-medium group border border-border/40 overflow-hidden"
         aria-label="Go back"
       >
-        <div className="bg-primary rounded-lg h-8 w-8 lg:w-8 flex items-center justify-center absolute left-1 top-1 lg:group-hover:w-[128px] z-10 duration-500 transition-all">
+        <div className="bg-primary rounded-lg h-8 w-8 lg:w-8 flex items-center justify-center absolute left-1 top-1 lg:group-hover:w-[calc(100%-8px)] duration-500 transition-all" />
+        <div className="relative z-20 flex items-center gap-2 pointer-events-none">
           <ArrowLeft className="w-4 h-4 text-primary-foreground shrink-0" />
+          <span className="hidden lg:inline text-foreground group-hover:text-primary-foreground transition-colors duration-300">Go Back</span>
         </div>
-        <p className="translate-x-2 text-foreground hidden lg:block">Go Back</p>
       </button>
     </div>
   );
