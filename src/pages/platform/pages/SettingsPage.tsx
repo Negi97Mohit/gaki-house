@@ -8,14 +8,18 @@ import { toast } from "sonner";
 import { useThemeStore, themes, ThemeName } from "@/features/theme";
 import { DefaultAvatar, DEFAULT_AVATARS, getDefaultAvatar } from "../components/DefaultAvatar";
 
-const TABS = [
+const PUBLIC_TABS = [
+  { id: "appearance", label: "Appearance", icon: Palette },
+] as const;
+
+const AUTH_TABS = [
   { id: "profile", label: "Profile", icon: User },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "appearance", label: "Appearance", icon: Palette },
   { id: "privacy", label: "Privacy & Safety", icon: Shield },
 ] as const;
 
-type TabId = (typeof TABS)[number]["id"];
+type TabId = "profile" | "notifications" | "appearance" | "privacy";
 
 // Notification settings interface
 interface NotificationSettings {
