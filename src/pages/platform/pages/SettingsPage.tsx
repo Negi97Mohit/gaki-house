@@ -123,21 +123,9 @@ export const SettingsPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [username, checkUsernameUnique]);
 
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-        <User className="w-12 h-12 text-muted-foreground" />
-        <h2 className="text-xl font-bold text-foreground">Settings</h2>
-        <p className="text-muted-foreground text-sm">Sign in to manage your settings.</p>
-        <button
-          onClick={() => openAuthModal("login")}
-          className="px-6 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity"
-        >
-          Sign In
-        </button>
-      </div>
-    );
-  }
+  // Reset to appearance tab if current tab requires auth and user signs out
+  const validTabIds = TABS.map(t => t.id);
+  const effectiveTab = validTabIds.includes(activeTab) ? activeTab : "appearance";
 
   const handleSave = async () => {
     if (usernameError) {
