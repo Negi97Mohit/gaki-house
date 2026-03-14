@@ -12,6 +12,7 @@ interface LiveStreamCarouselProps {
 }
 
 export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams, isLoading }) => {
+  const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [userSelected, setUserSelected] = useState(false);
