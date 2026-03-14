@@ -31,7 +31,12 @@ export const PlatformSidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const { data: MOCK_CHANNELS = [] } = useStreams();
+  const { user } = useAuth();
 
+  const NAV_ITEMS = [...PUBLIC_NAV_ITEMS, ...(user ? AUTH_NAV_ITEMS : [])].sort((a, b) => {
+    const order = ["/platform", "/platform/browse", "/platform/following", "/platform/dashboard", "/platform/clips", "/platform/settings"];
+    return order.indexOf(a.path) - order.indexOf(b.path);
+  });
   // Group live channels by platform
   const liveChannels = MOCK_CHANNELS.filter((c) => c.isLive && c.platform);
   const channelsByPlatform = liveChannels.reduce<Record<string, typeof MOCK_CHANNELS>>((acc, ch) => {
