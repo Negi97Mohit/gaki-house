@@ -103,23 +103,23 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
               />
             )}
             <div className="flex-1 min-w-0">
-              <h2 className="text-white text-xl font-bold truncate drop-shadow-lg">
+              <h2 className="text-white text-2xl font-bold truncate drop-shadow-lg">
                 {featured.title}
               </h2>
-              <p className="text-white/80 text-sm font-medium mt-0.5">
+              <p className="text-white/80 text-base font-medium mt-0.5">
                 {featured.displayName}
               </p>
               {featured.category && (
-                <span className="text-white/60 text-xs mt-1 inline-block">{featured.category}</span>
+                <span className="text-white/60 text-sm mt-1 inline-block">{featured.category}</span>
               )}
               <div className="flex items-center gap-2 mt-2">
-                <span className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white text-xs font-medium rounded-md flex items-center gap-1.5">
+                <span className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white text-sm font-medium rounded-md flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5" />
                   {formatViewerCount(featured.viewers)}
                 </span>
                 {platformMeta && PIcon && (
                   <span
-                    className="px-2 py-1 text-xs font-bold rounded-md flex items-center gap-1"
+                    className="px-2 py-1 text-sm font-bold rounded-md flex items-center gap-1"
                     style={{ backgroundColor: platformMeta.color, color: platformMeta.textColor }}
                   >
                     <PIcon className="w-3.5 h-3.5" style={{ color: platformMeta.textColor }} />
@@ -156,7 +156,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
                 }}
                 onDoubleClick={() => navigate(`/platform/stream/${stream.username}`)}
                 className={cn(
-                  "relative shrink-0 w-[130px] aspect-video rounded-lg overflow-hidden transition-all duration-300",
+                  "relative shrink-0 w-[180px] aspect-video rounded-lg overflow-hidden transition-all duration-300",
                   isActive
                     ? "ring-2 ring-primary scale-105 shadow-lg"
                     : "opacity-50 hover:opacity-80 hover:scale-[1.02]"
@@ -171,12 +171,12 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                 <div className="absolute bottom-1 left-1.5 right-1.5">
-                  <p className="text-white text-[9px] font-semibold truncate">
+                  <p className="text-white text-[11px] font-semibold truncate">
                     {stream.displayName}
                   </p>
                   <div className="flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-                    <span className="text-white/70 text-[8px]">
+                    <span className="text-white/70 text-[10px]">
                       {formatViewerCount(stream.viewers)}
                     </span>
                   </div>

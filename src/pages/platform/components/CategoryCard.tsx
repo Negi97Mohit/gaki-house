@@ -30,8 +30,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
-      <p className="text-sm text-foreground font-semibold truncate">{category.name}</p>
-      <p className="text-[12px] text-muted-foreground">
+      <p className="text-base text-foreground font-semibold truncate">{category.name}</p>
+      <p className="text-[13px] text-muted-foreground">
         {formatViewerCount(category.viewers)} watching
       </p>
       {category.tags.length > 0 && (
@@ -39,7 +39,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
           {category.tags.map((tag) => (
             <span
               key={tag}
-              className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] rounded font-medium"
+              className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[11px] rounded font-medium"
             >
               {tag}
             </span>

@@ -55,14 +55,14 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
         )}
 
         {/* Viewer count */}
-        <span className="absolute bottom-1.5 left-1.5 px-1.5 py-px bg-black/70 backdrop-blur-sm text-white text-[9px] font-medium rounded z-10">
+        <span className="absolute bottom-1.5 left-1.5 px-1.5 py-px bg-black/70 backdrop-blur-sm text-white text-xs font-medium rounded z-10">
           {formatViewerCount(channel.viewers)} viewers
         </span>
 
         {/* Platform badge */}
         {platformInfo && PlatformIcon && (
           <span
-            className="absolute top-1.5 right-1.5 px-1 py-px text-[8px] font-bold rounded flex items-center gap-0.5 z-10"
+            className="absolute top-1.5 right-1.5 px-1 py-px text-[10px] font-bold rounded flex items-center gap-0.5 z-10"
             style={{ backgroundColor: platformInfo.color, color: platformInfo.textColor }}
           >
             <PlatformIcon className="w-2.5 h-2.5" style={{ color: platformInfo.textColor }} />
@@ -97,23 +97,23 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-sm text-foreground font-semibold truncate leading-tight">
+          <p className="text-base text-foreground font-semibold truncate leading-tight">
             {channel.title}
           </p>
-          <p className="text-[13px] text-muted-foreground truncate mt-0.5">
+          <p className="text-sm text-muted-foreground truncate mt-0.5">
             {channel.displayName}
           </p>
           <div className="flex items-center gap-1.5 mt-0.5">
             {platformInfo && PlatformIcon && (
               <span
-                className="inline-flex items-center gap-0.5 px-1 py-0 text-[10px] font-semibold rounded"
+                className="inline-flex items-center gap-0.5 px-1 py-0 text-xs font-semibold rounded"
                 style={{ backgroundColor: `${platformInfo.color}20`, color: platformInfo.color }}
               >
                 <PlatformIcon className="w-2.5 h-2.5" style={{ color: platformInfo.color }} />
                 {platformInfo.label}
               </span>
             )}
-            <span className="text-[12px] text-muted-foreground/70 truncate">
+            <span className="text-[13px] text-muted-foreground/70 truncate">
               {channel.category}
             </span>
           </div>
@@ -122,7 +122,7 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
               {channel.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[10px] rounded-full font-medium"
+                  className="px-1.5 py-0.5 bg-muted text-muted-foreground text-[11px] rounded-full font-medium"
                 >
                   {tag}
                 </span>

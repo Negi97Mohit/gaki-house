@@ -22,7 +22,7 @@ export const PlatformMobileNav: React.FC = () => {
             key={item.path}
             to={item.path}
             className={cn(
-              "flex flex-col items-center gap-0.5 px-3 py-1 rounded-md text-[10px] font-medium transition-colors",
+              "flex flex-col items-center gap-0.5 px-3 py-1 rounded-md text-xs font-medium transition-colors",
               active ? "text-primary" : "text-muted-foreground"
             )}
           >

@@ -113,7 +113,7 @@ export const PlatformTopNav: React.FC = () => {
           <div className="absolute top-full mt-1.5 left-0 right-0 bg-card border border-border/40 rounded-lg shadow-lg z-[100] overflow-hidden max-h-[400px] overflow-y-auto">
             {matchedChannels.length > 0 && (
               <div className="p-2">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-2 py-1">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold px-2 py-1">
                   Channels
                 </p>
                 {matchedChannels.map((ch) => (
@@ -124,13 +124,13 @@ export const PlatformTopNav: React.FC = () => {
                   >
                     <img src={ch.avatar} alt="" className="w-7 h-7 rounded-full bg-muted" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground truncate">{ch.displayName}</p>
-                      <p className="text-xs text-muted-foreground truncate">{ch.category}</p>
+                      <p className="text-base font-medium text-foreground truncate">{ch.displayName}</p>
+                      <p className="text-[13px] text-muted-foreground truncate">{ch.category}</p>
                     </div>
                     {ch.isLive && (
                       <span className="flex items-center gap-1 shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-                        <span className="text-[11px] text-muted-foreground">{formatViewerCount(ch.viewers)}</span>
+                        <span className="text-xs text-muted-foreground">{formatViewerCount(ch.viewers)}</span>
                       </span>
                     )}
                   </button>
@@ -140,7 +140,7 @@ export const PlatformTopNav: React.FC = () => {
 
             {matchedCategories.length > 0 && (
               <div className="p-2 border-t border-border/20">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-2 py-1">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold px-2 py-1">
                   Categories
                 </p>
                 {matchedCategories.map((cat) => (
@@ -151,8 +151,8 @@ export const PlatformTopNav: React.FC = () => {
                   >
                     <img src={cat.thumbnail} alt="" className="w-7 h-9 rounded object-cover bg-muted" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">{cat.name}</p>
-                      <p className="text-xs text-muted-foreground">{formatViewerCount(cat.viewers)} watching</p>
+                      <p className="text-base font-medium text-foreground">{cat.name}</p>
+                      <p className="text-[13px] text-muted-foreground">{formatViewerCount(cat.viewers)} watching</p>
                     </div>
                   </button>
                 ))}

@@ -89,7 +89,7 @@ export const PlatformSidebar: React.FC = () => {
         <button
           onClick={handleBack}
           title={isCollapsed ? "Go Back" : undefined}
-          className="group flex items-center justify-start px-3 py-2 mb-2 rounded-lg text-[13px] font-medium transition-all duration-300 text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+          className="group flex items-center justify-start px-3 py-2 mb-2 rounded-lg text-sm font-medium transition-all duration-300 text-muted-foreground hover:bg-accent/50 hover:text-foreground"
         >
           <div className="flex items-center justify-center w-[18px]">
             <ArrowLeft className="w-[18px] h-[18px] shrink-0 transition-colors text-muted-foreground group-hover:text-foreground" strokeWidth={1.8} />
@@ -111,7 +111,7 @@ export const PlatformSidebar: React.FC = () => {
               to={item.path}
               title={isCollapsed ? item.label : undefined}
               className={cn(
-                "group flex items-center px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-300",
+                "group flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300",
                 active
                   ? "bg-primary/10 text-primary shadow-sm shadow-primary/5"
                   : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
@@ -143,7 +143,7 @@ export const PlatformSidebar: React.FC = () => {
       {!isCollapsed && (
         <div className="flex items-center gap-2 px-4 pt-3 pb-1">
           <Radio className="w-3.5 h-3.5 text-destructive animate-pulse" />
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
             Live Channels
           </span>
         </div>
@@ -183,11 +183,11 @@ export const PlatformSidebar: React.FC = () => {
                     onClick={() => toggleGroup(group.key)}
                     className="w-full h-full flex items-center justify-between rounded-md hover:bg-accent/30 transition-colors group absolute inset-0 px-3"
                   >
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors overflow-hidden whitespace-nowrap">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors overflow-hidden whitespace-nowrap">
                       {PLATFORM_CATEGORY_LABELS[group.key]}
                     </span>
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <span className="text-[10px] text-muted-foreground/40 tabular-nums">
+                      <span className="text-[11px] text-muted-foreground/40 tabular-nums">
                         {groupChannels.length}
                       </span>
                       <ChevronDown className={cn(
@@ -223,7 +223,7 @@ export const PlatformSidebar: React.FC = () => {
                       className="flex items-center justify-center py-1 overflow-hidden"
                     >
                       <span className={cn(
-                        "text-[11px] text-muted-foreground/50 hover:text-primary transition-all duration-300 ease-in-out whitespace-nowrap",
+                        "text-xs text-muted-foreground/50 hover:text-primary transition-all duration-300 ease-in-out whitespace-nowrap",
                         isCollapsed ? "w-0 opacity-0" : "w-auto opacity-100"
                       )}>
                         Show more
@@ -251,12 +251,12 @@ export const PlatformSidebar: React.FC = () => {
           ) : collapsed ? (
             <>
               <ChevronRight className="w-4 h-4" />
-              <span className="text-[11px] font-medium">Pin Open</span>
+              <span className="text-xs font-medium">Pin Open</span>
             </>
           ) : (
             <>
               <ChevronLeft className="w-4 h-4" />
-              <span className="text-[11px] font-medium">Collapse</span>
+              <span className="text-xs font-medium">Collapse</span>
             </>
           )}
         </button>
@@ -298,7 +298,7 @@ const ChannelLink = ({
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <p className="text-[13px] text-foreground truncate leading-tight font-medium group-hover:text-foreground">
+          <p className="text-sm text-foreground truncate leading-tight font-medium group-hover:text-foreground">
             {ch.displayName}
           </p>
           <PIcon
@@ -306,13 +306,13 @@ const ChannelLink = ({
             style={{ color: platformColor }}
           />
         </div>
-        <p className="text-[11px] text-muted-foreground/60 truncate leading-tight mt-0.5">
+        <p className="text-xs text-muted-foreground/60 truncate leading-tight mt-0.5">
           {ch.category}
         </p>
       </div>
       <div className="flex items-center gap-1 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity ml-2">
         <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-        <span className="text-[11px] text-muted-foreground font-medium tabular-nums">
+        <span className="text-xs text-muted-foreground font-medium tabular-nums">
           {formatViewerCount(ch.viewers)}
         </span>
       </div>
