@@ -8,8 +8,18 @@ const EMBEDDABLE_PLATFORMS: PlatformType[] = [
   "twitch", "youtube", "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
 ];
 
+// Platforms rendered via iframe (have their own native controls)
+const IFRAME_PLATFORMS: PlatformType[] = [
+  "twitch", "youtube", "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
+];
+
 export function isEmbeddablePlatform(platform?: PlatformType): boolean {
   return !!platform && EMBEDDABLE_PLATFORMS.includes(platform);
+}
+
+/** Returns true if the platform uses an iframe with its own native video controls */
+export function isIframePlatform(platform?: PlatformType): boolean {
+  return !!platform && IFRAME_PLATFORMS.includes(platform);
 }
 
 interface StreamPlayerProps {
