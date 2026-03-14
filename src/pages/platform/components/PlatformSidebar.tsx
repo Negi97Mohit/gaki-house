@@ -5,14 +5,18 @@ import { formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABEL
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { cn } from "@/shared/lib/utils";
+import { useAuth } from "../context/AuthContext";
 
-const NAV_ITEMS = [
+const PUBLIC_NAV_ITEMS = [
   { label: "Home", icon: Home, path: "/platform" },
   { label: "Browse", icon: Compass, path: "/platform/browse" },
+  { label: "Settings", icon: Settings, path: "/platform/settings" },
+];
+
+const AUTH_NAV_ITEMS = [
   { label: "Following", icon: Heart, path: "/platform/following" },
   { label: "Dashboard", icon: BarChart3, path: "/platform/dashboard" },
   { label: "Clips", icon: Film, path: "/platform/clips" },
-  { label: "Settings", icon: Settings, path: "/platform/settings" },
 ];
 
 // All platform IDs grouped by category
