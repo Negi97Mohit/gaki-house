@@ -216,7 +216,7 @@ export const SettingsPage: React.FC = () => {
       {/* Content */}
       <div className="flex-1 p-6 md:p-8 overflow-y-auto max-w-3xl">
         {/* ===== PROFILE TAB ===== */}
-        {activeTab === "profile" && (
+        {effectiveTab === "profile" && user && (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Profile Settings</h2>
