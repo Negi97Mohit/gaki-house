@@ -244,40 +244,7 @@ export const StreamPage: React.FC = () => {
             </div>
           )}
 
-          {/* Top badges - viewer count only */}
-          <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none z-10">
-            <span className="px-2 py-0.5 bg-black/60 text-white text-xs font-medium rounded flex items-center gap-1">
-              <Users className="w-3 h-3" />
-              {formatViewerCount(channel.viewers)}
-            </span>
-          </div>
-
-          {/* Minimal overlay - only theater/fullscreen, positioned to not overlap native controls */}
-          <div
-            className={cn(
-              "absolute top-3 right-3 flex items-center gap-1.5 transition-opacity duration-300 z-20",
-              showControls ? "opacity-100" : "opacity-0"
-            )}
-          >
-            <button
-              onClick={() => setIsTheater(!isTheater)}
-              className="text-white hover:text-primary transition-colors p-1.5 bg-black/60 rounded-md backdrop-blur-sm hidden lg:block"
-              title="Theater Mode"
-            >
-              <Theater className="w-4 h-4" />
-            </button>
-            <button
-              onClick={toggleFullscreen}
-              className="text-white hover:text-primary transition-colors p-1.5 bg-black/60 rounded-md backdrop-blur-sm"
-              title="Fullscreen"
-            >
-              {isFullscreen ? (
-                <Minimize className="w-4 h-4" />
-              ) : (
-                <Maximize className="w-4 h-4" />
-              )}
-            </button>
-          </div>
+          {/* All overlays removed - native player controls only */}
         </div>
 
         {/* Stream Info */}
@@ -306,7 +273,13 @@ export const StreamPage: React.FC = () => {
                   );
                 })()}
               </div>
-              <p className="text-sm text-foreground font-medium mt-0.5">{channel.title}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-sm text-foreground font-medium">{channel.title}</p>
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Users className="w-3 h-3" />
+                  {formatViewerCount(channel.viewers)} watching
+                </span>
+              </div>
               <Link
                 to={`/platform/browse/${channel.categorySlug}`}
                 className="text-primary text-xs hover:underline mt-0.5 inline-block"
