@@ -239,30 +239,12 @@ export const StreamPage: React.FC = () => {
 
           {/* Error/Offline State or Placeholder if no streamUrl */}
           {(!channel.streamUrl && channel.username) && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <p className="text-white font-bold text-xl">Stream Offline</p>
             </div>
           )}
 
-          {/* Invisible Overlay for Click-to-Play/Pause */}
-          <div 
-            className="absolute inset-0 z-20 cursor-pointer" 
-            onClick={() => setIsPlaying(!isPlaying)}
-            aria-label={isPlaying ? "Pause Video" : "Play Video"}
-          />
-          
-          {/* Pause Indicator overlay */}
-          {!isPlaying && channel.streamUrl && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 pointer-events-none">
-                <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center backdrop-blur-sm">
-                  <svg className="w-8 h-8 text-primary-foreground ml-1" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="6 3 20 12 6 21 6 3" />
-                  </svg>
-                </div>
-            </div>
-          )}
-
-          {/* All native controls overlay removed - native player controls only handled below overlay where possible or fully intercepted */}
+          {/* All overlays removed - native player controls only */}
         </div>
 
         {/* Stream Info */}

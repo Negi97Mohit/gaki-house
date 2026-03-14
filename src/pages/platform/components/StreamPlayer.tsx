@@ -71,8 +71,40 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    if (channel.platform === "twitch" || channel.platform === "youtube") {
-      // Leave these to be handled by ReactPlayer at the end of the component
+    // Handle Twitch via Iframe
+    if (channel.platform === "twitch") {
+        const username = channel.username.replace("tw-", ""); // Remove our prefix if present
+        const hostname = window.location.hostname;
+        const origin = window.location.origin;
+        let parent = `parent=localhost&parent=127.0.0.1`;
+        if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+            parent += `&parent=${hostname}`;
+        }
+
+        return (
+            <iframe
+                src={`https://player.twitch.tv/?channel=${username}&${parent}&autoplay=${playing}&muted=${muted}`}
+                className="w-full h-full"
+                allowFullScreen
+                allow="autoplay; fullscreen; picture-in-picture"
+                style={{ border: "none" }}
+            />
+        );
+    }
+    
+    // Handle YouTube via iframe 
+    if (channel.platform === "youtube") {
+        const videoId = channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1]
+            || channel.id.replace("yt-live-", "").replace("yt-pop-", "");
+        return (
+            <iframe
+                src={`https://www.youtube.com/embed/${videoId}?autoplay=${playing ? 1 : 0}&mute=${muted ? 1 : 0}&modestbranding=1&rel=0&controls=1`}
+                className="w-full h-full"
+                allowFullScreen
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                style={{ border: "none" }}
+            />
+        );
     }
 
     // Handle DLive via iframe
@@ -156,40 +188,25 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         return null;
     }
 
-    // Fallback: other platforms via ReactPlayer (including YouTube and Twitch)
+    // Fallback: other platforms via ReactPlayer
     const Player = ReactPlayer as any;
     
-    // Convert username to twitch twitch twitch username format if Twitch (removing tw- prefix)
-    let url = channel.streamUrl;
-    if (channel.platform === "twitch" && !url?.includes("twitch.tv")) {
-        const username = channel.username.replace("tw-", "");
-        url = `https://www.twitch.tv/${username}`;
-    }
-
     return (
         <Player
             ref={playerRef}
-            url={url}
+            url={channel.streamUrl}
             width="100%"
             height="100%"
             playing={playing}
             muted={muted}
             volume={volume}
-            controls={false} // Disable controls to allow custom click overlay if needed
+            controls={true}
             onPlay={onPlay}
             onPause={onPause}
             onError={(e: any) => {
                 console.error("StreamPlayer Error:", e);
                 setHasError(true);
                 if (onError) onError(e);
-            }}
-            config={{
-                youtube: {
-                playerVars: { autoplay: playing ? 1 : 0, mute: muted ? 1 : 0, modestbranding: 1 }
-                },
-                twitch: {
-                    options: { autoplay: playing, muted: muted }
-                }
             }}
             style={{ position: "absolute", top: 0, left: 0 }}
         />
