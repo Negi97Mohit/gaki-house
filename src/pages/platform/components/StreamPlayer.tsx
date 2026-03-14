@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { StreamChannel, PlatformType } from "../data/mockData";
+import { cn } from "@/shared/lib/utils";
 
 // Platforms that support actual video embedding
 const EMBEDDABLE_PLATFORMS: PlatformType[] = [
@@ -48,13 +49,15 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
     if (channel.platform === "kick") {
         const slug = channel.username;
         return (
-            <iframe
-                src={`https://player.kick.com/${slug}?autoplay=${playing}&muted=${muted}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
+            <div className={cn("w-full h-full", className)}>
+                <iframe
+                    src={`https://player.kick.com/${slug}?autoplay=${playing}&muted=${muted}`}
+                    className="w-full h-full"
+                    allowFullScreen
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    style={{ border: "none" }}
+                />
+            </div>
         );
     }
 

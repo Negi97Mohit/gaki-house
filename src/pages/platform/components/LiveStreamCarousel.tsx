@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Users, Volume2, VolumeX } from "lucide-react";
 import { StreamChannel, formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
@@ -12,6 +12,7 @@ interface LiveStreamCarouselProps {
 }
 
 export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams, isLoading }) => {
+  const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [userSelected, setUserSelected] = useState(false);
@@ -68,7 +69,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
       {/* Main featured stream */}
       <div className="relative w-full aspect-video max-h-[480px] bg-black overflow-hidden group">
         <div className="absolute inset-0">
-          {userSelected && featured.streamUrl ? (
+          {featured.streamUrl && isEmbeddablePlatform(featured.platform) ? (
             <StreamPlayer channel={featured} playing muted={isMuted} volume={0.5} />
           ) : (
             featured.thumbnail && !failedImages.has(featured.id) ? (
@@ -107,7 +108,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
         </div>
 
         {/* Volume toggle */}
-        {userSelected && (
+        {featured.streamUrl && isEmbeddablePlatform(featured.platform) && (
           <button
             onClick={() => setIsMuted(!isMuted)}
             className="absolute top-4 right-4 z-10 p-2 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-black/70 transition-colors"
@@ -147,14 +148,19 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
 
       {/* Thumbnail strip */}
       <div className="relative px-4 -mt-8 z-20">
-        <div className="flex gap-2 overflow-x-auto pb-2 carousel-scrollbar-modern">
+        <div className="flex gap-2 overflow-x-auto pb-3 pt-1 px-1 carousel-scrollbar-modern">
           {liveStreams.map((stream, i) => {
             const isActive = i === activeIndex;
             const meta = stream.platform ? PLATFORM_META[stream.platform] : null;
             return (
-              <button
+              <Link
                 key={stream.id}
-                onClick={() => handleThumbnailClick(i)}
+                to={`/platform/stream/${stream.username}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleThumbnailClick(i);
+                }}
+                onDoubleClick={() => navigate(`/platform/stream/${stream.username}`)}
                 className={cn(
                   "relative shrink-0 w-[130px] aspect-video rounded-lg overflow-hidden transition-all duration-300",
                   isActive
@@ -187,7 +193,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
                     style={{ backgroundColor: meta.color }}
                   />
                 )}
-              </button>
+              </Link>
             );
           })}
         </div>
