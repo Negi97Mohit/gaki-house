@@ -108,7 +108,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
         </div>
 
         {/* Volume toggle */}
-        {userSelected && (
+        {featured.streamUrl && isEmbeddablePlatform(featured.platform) && (
           <button
             onClick={() => setIsMuted(!isMuted)}
             className="absolute top-4 right-4 z-10 p-2 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-black/70 transition-colors"
