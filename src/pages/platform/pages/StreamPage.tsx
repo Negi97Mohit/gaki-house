@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { StreamPlayer } from "../components/StreamPlayer";
+import { StreamPlayer, isIframePlatform } from "../components/StreamPlayer";
 import { useParams, Link } from "react-router-dom";
 import {
   Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
