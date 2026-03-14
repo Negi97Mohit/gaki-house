@@ -56,8 +56,6 @@ export async function fetchAllStreams(): Promise<StreamChannel[]> {
         ...rumbleStreams,
         ...MOCK_CHANNELS
     ];
-
-    // Remove duplicates based on username/id if any (simple check)
     const uniqueStreams = Array.from(new Map(allStreams.map(item => [item.username + item.platform, item])).values());
 
     // Sort by viewers descending

@@ -10,7 +10,7 @@ const EMBEDDABLE_PLATFORMS: PlatformType[] = [
 
 // Platforms rendered via iframe (have their own native controls)
 const IFRAME_PLATFORMS: PlatformType[] = [
-  "twitch", "youtube", "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
+  "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
 ];
 
 export function isEmbeddablePlatform(platform?: PlatformType): boolean {
@@ -71,42 +71,8 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle Twitch via Iframe (More reliable than ReactPlayer for parent config)
-    if (channel.platform === "twitch") {
-        const username = channel.username.replace("tw-", ""); // Remove our prefix if present
-        const hostname = window.location.hostname;
-        // Construct parent params - Twitch requires the exact domain of the embedding site
-        // We include localhost and 127.0.0.1 for dev
-        const origin = window.location.origin;
-        let parent = `parent=localhost&parent=127.0.0.1`;
-        if (hostname !== "localhost" && hostname !== "127.0.0.1") {
-            parent += `&parent=${hostname}`;
-        }
-
-        return (
-            <iframe
-                src={`https://player.twitch.tv/?channel=${username}&${parent}&autoplay=${playing}&muted=${muted}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
-    }
-    // Handle YouTube via iframe (more reliable than ReactPlayer)
-    if (channel.platform === "youtube") {
-        // Extract video ID from streamUrl (format: https://www.youtube.com/watch?v=VIDEO_ID)
-        const videoId = channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1]
-            || channel.id.replace("yt-live-", "").replace("yt-pop-", "");
-        return (
-            <iframe
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=${playing ? 1 : 0}&mute=${muted ? 1 : 0}&modestbranding=1&rel=0&controls=1`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-                style={{ border: "none" }}
-            />
-        );
+    if (channel.platform === "twitch" || channel.platform === "youtube") {
+      // Leave these to be handled by ReactPlayer at the end of the component
     }
 
     // Handle DLive via iframe
@@ -114,7 +80,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         const username = channel.username;
         return (
             <iframe
-                src={`https://dlive.tv/p/${username}?autoplay=${playing}`}
+                src={`https://dlive.tv/p/${username}?autoplay=${playing}&muted=${muted}`}
                 className="w-full h-full"
                 allowFullScreen
                 allow="autoplay; fullscreen; picture-in-picture"
@@ -130,7 +96,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         const username = channel.username;
         return (
             <iframe
-                src={`https://player.trovo.live/embed/player?theatre=true&channel=${username}&autoplay=${playing}`}
+                src={`https://player.trovo.live/embed/player?theatre=true&channel=${username}&autoplay=${playing}&muted=${muted}`}
                 className="w-full h-full"
                 allowFullScreen
                 allow="autoplay; fullscreen; picture-in-picture"
@@ -162,9 +128,10 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         // ID is expected to be the BV ID (e.g. BV1xx411c7X7)
         return (
             <iframe
-                src={`//player.bilibili.com/player.html?bvid=${channel.username}&page=1&autoplay=${playing ? 1 : 0}`}
+                src={`//player.bilibili.com/player.html?bvid=${channel.username}&page=1&autoplay=${playing ? 1 : 0}&muted=${muted ? 1 : 0}`}
                 className="w-full h-full"
                 allowFullScreen
+                allow="autoplay; fullscreen; picture-in-picture"
                 style={{ border: "none" }}
             />
         );
@@ -175,9 +142,10 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         // ID is expected to be video ID (e.g. sm123456)
         return (
             <iframe
-                src={`https://embed.nicovideo.jp/watch/${channel.username}`}
+                src={`https://embed.nicovideo.jp/watch/${channel.username}?autoplay=${playing ? 1 : 0}&muted=${muted ? 1 : 0}`}
                 className="w-full h-full"
                 allowFullScreen
+                allow="autoplay; fullscreen; picture-in-picture"
                 style={{ border: "none" }}
             />
         );
@@ -188,24 +156,40 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         return null;
     }
 
-    // Fallback: other platforms via ReactPlayer
+    // Fallback: other platforms via ReactPlayer (including YouTube and Twitch)
     const Player = ReactPlayer as any;
+    
+    // Convert username to twitch twitch twitch username format if Twitch (removing tw- prefix)
+    let url = channel.streamUrl;
+    if (channel.platform === "twitch" && !url?.includes("twitch.tv")) {
+        const username = channel.username.replace("tw-", "");
+        url = `https://www.twitch.tv/${username}`;
+    }
+
     return (
         <Player
             ref={playerRef}
-            url={channel.streamUrl}
+            url={url}
             width="100%"
             height="100%"
             playing={playing}
             muted={muted}
             volume={volume}
-            controls={true}
+            controls={false} // Disable controls to allow custom click overlay if needed
             onPlay={onPlay}
             onPause={onPause}
             onError={(e: any) => {
                 console.error("StreamPlayer Error:", e);
                 setHasError(true);
                 if (onError) onError(e);
+            }}
+            config={{
+                youtube: {
+                playerVars: { autoplay: playing ? 1 : 0, mute: muted ? 1 : 0, modestbranding: 1 }
+                },
+                twitch: {
+                    options: { autoplay: playing, muted: muted }
+                }
             }}
             style={{ position: "absolute", top: 0, left: 0 }}
         />
