@@ -86,32 +86,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
         {/* Gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
 
-        {/* Top badges */}
-        <div className="absolute top-4 left-4 flex items-center gap-2 z-10 pointer-events-none">
-          <span className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white text-xs font-medium rounded-md flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" />
-            {formatViewerCount(featured.viewers)}
-          </span>
-          {platformMeta && PIcon && (
-            <span
-              className="px-2 py-1 text-xs font-bold rounded-md flex items-center gap-1"
-              style={{ backgroundColor: platformMeta.color, color: platformMeta.textColor }}
-            >
-              <PIcon className="w-3.5 h-3.5" style={{ color: platformMeta.textColor }} />
-              {platformMeta.label}
-            </span>
-          )}
-        </div>
 
-        {/* Volume toggle */}
-        {featured.streamUrl && isEmbeddablePlatform(featured.platform) && (
-          <button
-            onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}
-            className="absolute top-4 right-4 z-20 p-2 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-black/70 transition-colors"
-          >
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-          </button>
-        )}
 
         {/* Stream info - pushed well above the thumbnail strip */}
         <Link
@@ -137,6 +112,29 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
               {featured.category && (
                 <span className="text-white/60 text-xs mt-1 inline-block">{featured.category}</span>
               )}
+              <div className="flex items-center gap-2 mt-2">
+                <span className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white text-xs font-medium rounded-md flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" />
+                  {formatViewerCount(featured.viewers)}
+                </span>
+                {platformMeta && PIcon && (
+                  <span
+                    className="px-2 py-1 text-xs font-bold rounded-md flex items-center gap-1"
+                    style={{ backgroundColor: platformMeta.color, color: platformMeta.textColor }}
+                  >
+                    <PIcon className="w-3.5 h-3.5" style={{ color: platformMeta.textColor }} />
+                    {platformMeta.label}
+                  </span>
+                )}
+                {featured.streamUrl && isEmbeddablePlatform(featured.platform) && (
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsMuted(!isMuted); }}
+                    className="p-1.5 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-black/70 transition-colors ml-1"
+                  >
+                    {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </Link>
