@@ -23,25 +23,25 @@ export const PlatformLayout: React.FC = () => {
       <PlatformMobileNav />
       <AuthModal />
 
-      {/* Floating Back Button */}
+      {/* Back Button in sidebar area */}
       <motion.button
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => navigate("/")}
+        onClick={() => navigate(-1)}
         className={cn(
-          "fixed bottom-6 right-6 z-50",
-          "w-14 h-14 rounded-full",
-          "bg-primary text-primary-foreground",
-          "shadow-lg shadow-primary/30",
-          "flex items-center justify-center",
-          "hover:bg-primary/90 transition-colors",
-          "focus:outline-none focus:ring-2 focus:ring-primary/50"
+          "fixed bottom-6 left-6 z-40 hidden md:flex",
+          "h-10 px-4 rounded-xl gap-2",
+          "bg-muted text-muted-foreground",
+          "border border-border/40",
+          "items-center justify-center",
+          "hover:bg-accent hover:text-accent-foreground transition-colors",
+          "focus:outline-none focus:ring-2 focus:ring-ring/50"
         )}
-        aria-label="Go to main page"
+        aria-label="Go back"
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="w-4 h-4" />
+        <span className="text-sm font-medium">Back</span>
       </motion.button>
     </div>
   );
