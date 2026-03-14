@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { cn } from "@/shared/lib/utils";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 import { MediaControls } from "./controls/MediaControls";
@@ -85,21 +86,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   const [isElectron, setIsElectron] = useState(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  // Close user menu on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setIsUserMenuOpen(false);
-      }
-    };
-    if (isUserMenuOpen) {
-      document.addEventListener("mousedown", handler);
-    }
-    return () => document.removeEventListener("mousedown", handler);
-  }, [isUserMenuOpen]);
 
   useEffect(() => {
     const checkElectron =
@@ -252,68 +239,74 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
           {/* Auth Button / User Menu */}
           {isSignedIn ? (
-            <div className="relative" ref={userMenuRef}>
-              <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="rounded-full hover:ring-2 hover:ring-primary/50 transition-all overflow-hidden h-7 w-7 flex items-center justify-center"
-                data-floating-trigger
+            <Popover open={isUserMenuOpen} onOpenChange={setIsUserMenuOpen}>
+              <PopoverTrigger asChild>
+                <button
+                  className="rounded-full hover:ring-2 hover:ring-primary/50 transition-all overflow-hidden h-7 w-7 flex items-center justify-center outline-none"
+                  data-floating-trigger
+                >
+                  <DefaultAvatar
+                    avatarUrl={userAvatarUrl}
+                    name={userDisplayName}
+                    uid={userUid}
+                    size="sm"
+                    className="w-7 h-7"
+                  />
+                </button>
+              </PopoverTrigger>
+
+              <PopoverContent
+                side="top"
+                align="end"
+                sideOffset={24}
+                container={portalContainer || undefined}
+                className="w-56 p-0 bg-card/95 backdrop-blur-xl border border-border/40 rounded-xl shadow-2xl overflow-hidden pointer-events-auto"
+                style={{ zIndex: 100 }}
               >
-                <DefaultAvatar
-                  avatarUrl={userAvatarUrl}
-                  name={userDisplayName}
-                  uid={userUid}
-                  size="sm"
-                  className="w-7 h-7"
-                />
-              </button>
-
-              {isUserMenuOpen && (
-                <div className="absolute bottom-full mb-3 right-0 w-56 bg-card/95 backdrop-blur-xl border border-border/40 rounded-xl shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
-                  {/* User info */}
-                  <div className="px-4 py-3 border-b border-border/20">
-                    <p className="text-sm font-semibold text-foreground truncate">{userDisplayName || "User"}</p>
-                    {userUsername && <p className="text-xs text-muted-foreground truncate">@{userUsername}</p>}
-                  </div>
-
-                  <div className="py-1">
-                    <Link
-                      to={`/platform/profile/${userUsername || "me"}`}
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                    >
-                      <User className="w-4 h-4" />
-                      My Channel
-                    </Link>
-                    <Link
-                      to="/platform"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                    >
-                      <LayoutDashboard className="w-4 h-4" />
-                      Creator Dashboard
-                    </Link>
-                    <Link
-                      to="/platform/settings"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
-                    >
-                      <Settings className="w-4 h-4" />
-                      Settings
-                    </Link>
-                  </div>
-
-                  <div className="border-t border-border/20 py-1">
-                    <button
-                      onClick={() => { onSignOut?.(); setIsUserMenuOpen(false); }}
-                      className="flex items-center gap-3 w-full px-4 py-2 text-sm text-destructive hover:bg-muted transition-colors"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
-                    </button>
-                  </div>
+                {/* User info */}
+                <div className="px-4 py-3 border-b border-border/20">
+                  <p className="text-sm font-semibold text-foreground truncate">{userDisplayName || "User"}</p>
+                  {userUsername && <p className="text-xs text-muted-foreground truncate">@{userUsername}</p>}
                 </div>
-              )}
-            </div>
+
+                <div className="py-1">
+                  <Link
+                    to={`/platform/profile/${userUsername || "me"}`}
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    My Channel
+                  </Link>
+                  <Link
+                    to="/platform"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Creator Dashboard
+                  </Link>
+                  <Link
+                    to="/platform/settings"
+                    onClick={() => setIsUserMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Settings
+                  </Link>
+                </div>
+
+                <div className="border-t border-border/20 py-1">
+                  <button
+                    onClick={() => { onSignOut?.(); setIsUserMenuOpen(false); }}
+                    className="flex items-center gap-3 w-full px-4 py-2 text-sm text-destructive hover:bg-muted transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
           ) : (
             <ShortcutTooltip label="Sign In / Sign Up">
               <Button
