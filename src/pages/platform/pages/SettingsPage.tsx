@@ -8,14 +8,18 @@ import { toast } from "sonner";
 import { useThemeStore, themes, ThemeName } from "@/features/theme";
 import { DefaultAvatar, DEFAULT_AVATARS, getDefaultAvatar } from "../components/DefaultAvatar";
 
-const TABS = [
+const PUBLIC_TABS = [
+  { id: "appearance", label: "Appearance", icon: Palette },
+] as const;
+
+const AUTH_TABS = [
   { id: "profile", label: "Profile", icon: User },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "appearance", label: "Appearance", icon: Palette },
   { id: "privacy", label: "Privacy & Safety", icon: Shield },
 ] as const;
 
-type TabId = (typeof TABS)[number]["id"];
+type TabId = "profile" | "notifications" | "appearance" | "privacy";
 
 // Notification settings interface
 interface NotificationSettings {
@@ -59,7 +63,8 @@ const DEFAULT_PRIVACY: PrivacySettings = {
 
 export const SettingsPage: React.FC = () => {
   const { user, profile, openAuthModal, refreshProfile } = useAuth();
-  const [activeTab, setActiveTab] = useState<TabId>("profile");
+  const [activeTab, setActiveTab] = useState<TabId>("appearance");
+  const TABS = user ? AUTH_TABS : PUBLIC_TABS;
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
@@ -118,21 +123,9 @@ export const SettingsPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [username, checkUsernameUnique]);
 
-  if (!user) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-4 p-6">
-        <User className="w-12 h-12 text-muted-foreground" />
-        <h2 className="text-xl font-bold text-foreground">Settings</h2>
-        <p className="text-muted-foreground text-sm">Sign in to manage your settings.</p>
-        <button
-          onClick={() => openAuthModal("login")}
-          className="px-6 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-md hover:opacity-90 transition-opacity"
-        >
-          Sign In
-        </button>
-      </div>
-    );
-  }
+  // Reset to appearance tab if current tab requires auth and user signs out
+  const validTabIds = TABS.map(t => t.id);
+  const effectiveTab = validTabIds.includes(activeTab) ? activeTab : "appearance";
 
   const handleSave = async () => {
     if (usernameError) {
@@ -170,7 +163,7 @@ export const SettingsPage: React.FC = () => {
     toast.success("Privacy settings saved!");
   };
 
-  const avatarDisplayName = profile?.display_name || user.email?.split("@")[0] || "User";
+  const avatarDisplayName = profile?.display_name || user?.email?.split("@")[0] || "User";
 
   // Selected themes to display (curated subset for cleaner UI)
   const FEATURED_THEMES: ThemeName[] = [
@@ -190,7 +183,7 @@ export const SettingsPage: React.FC = () => {
             onClick={() => setActiveTab(tab.id)}
             className={cn(
               "flex items-center gap-3 w-full px-3 py-2.5 rounded-md text-sm font-medium transition-colors text-left",
-              activeTab === tab.id
+              effectiveTab === tab.id
                 ? "bg-primary/10 text-primary"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
@@ -209,7 +202,7 @@ export const SettingsPage: React.FC = () => {
             onClick={() => setActiveTab(tab.id)}
             className={cn(
               "flex items-center gap-2 px-3 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2",
-              activeTab === tab.id
+              effectiveTab === tab.id
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground"
             )}
@@ -223,7 +216,7 @@ export const SettingsPage: React.FC = () => {
       {/* Content */}
       <div className="flex-1 p-6 md:p-8 overflow-y-auto max-w-3xl">
         {/* ===== PROFILE TAB ===== */}
-        {activeTab === "profile" && (
+        {effectiveTab === "profile" && user && (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Profile Settings</h2>
@@ -354,7 +347,7 @@ export const SettingsPage: React.FC = () => {
         )}
 
         {/* ===== NOTIFICATIONS TAB ===== */}
-        {activeTab === "notifications" && (
+        {effectiveTab === "notifications" && user && (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Notifications</h2>
@@ -426,7 +419,7 @@ export const SettingsPage: React.FC = () => {
         )}
 
         {/* ===== APPEARANCE TAB ===== */}
-        {activeTab === "appearance" && (
+        {effectiveTab === "appearance" && (
           <div className="space-y-8">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Appearance</h2>
@@ -527,7 +520,7 @@ export const SettingsPage: React.FC = () => {
         )}
 
         {/* ===== PRIVACY & SAFETY TAB ===== */}
-        {activeTab === "privacy" && (
+        {effectiveTab === "privacy" && user && (
           <div className="space-y-6">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Privacy & Safety</h2>
