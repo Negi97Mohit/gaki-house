@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { StreamChannel, PlatformType } from "../data/mockData";
+import { cn } from "@/shared/lib/utils";
 
 // Platforms that support actual video embedding
 const EMBEDDABLE_PLATFORMS: PlatformType[] = [
