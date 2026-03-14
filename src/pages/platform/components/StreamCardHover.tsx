@@ -29,7 +29,7 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
       {/* Thumbnail / Live Preview */}
       <div className="relative aspect-video rounded-xl overflow-hidden bg-muted mb-2">
         {isHovered && channel.streamUrl && isEmbeddablePlatform(channel.platform) ? (
-          <div className="absolute inset-0 w-full h-full overflow-hidden">
+          <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
             <StreamPlayer
               channel={channel}
               playing={true}
@@ -52,14 +52,6 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel }) => 
               <span className="text-xs text-muted-foreground">No preview</span>
             </div>
           )
-        )}
-
-        {/* Live badge */}
-        {channel.isLive && (
-          <span className="absolute top-1.5 left-1.5 px-1.5 py-px bg-destructive text-destructive-foreground text-[8px] font-bold uppercase rounded flex items-center gap-0.5 z-10">
-            <span className="w-1 h-1 rounded-full bg-destructive-foreground animate-pulse" />
-            LIVE
-          </span>
         )}
 
         {/* Viewer count */}
