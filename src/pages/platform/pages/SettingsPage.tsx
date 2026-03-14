@@ -419,7 +419,7 @@ export const SettingsPage: React.FC = () => {
         )}
 
         {/* ===== APPEARANCE TAB ===== */}
-        {activeTab === "appearance" && (
+        {effectiveTab === "appearance" && (
           <div className="space-y-8">
             <div>
               <h2 className="text-xl font-bold text-foreground mb-1">Appearance</h2>
