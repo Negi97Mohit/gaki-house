@@ -68,7 +68,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
     <div className="relative w-full">
       {/* Main featured stream */}
       <div className="relative w-full aspect-video max-h-[480px] bg-black overflow-hidden group">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 pointer-events-none">
           {featured.streamUrl && isEmbeddablePlatform(featured.platform) ? (
             <StreamPlayer channel={featured} playing muted={isMuted} volume={0.5} />
           ) : (
@@ -87,11 +87,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none" />
 
         {/* Top badges */}
-        <div className="absolute top-4 left-4 flex items-center gap-2 z-10">
-          <span className="px-2.5 py-1 bg-destructive text-destructive-foreground text-xs font-bold uppercase rounded-md flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-destructive-foreground animate-pulse" />
-            LIVE
-          </span>
+        <div className="absolute top-4 left-4 flex items-center gap-2 z-10 pointer-events-none">
           <span className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white text-xs font-medium rounded-md flex items-center gap-1.5">
             <Users className="w-3.5 h-3.5" />
             {formatViewerCount(featured.viewers)}
@@ -110,8 +106,8 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
         {/* Volume toggle */}
         {featured.streamUrl && isEmbeddablePlatform(featured.platform) && (
           <button
-            onClick={() => setIsMuted(!isMuted)}
-            className="absolute top-4 right-4 z-10 p-2 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-black/70 transition-colors"
+            onClick={(e) => { e.stopPropagation(); setIsMuted(!isMuted); }}
+            className="absolute top-4 right-4 z-20 p-2 bg-black/50 backdrop-blur-sm rounded-full text-white hover:bg-black/70 transition-colors"
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
