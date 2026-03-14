@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, Heart, ChevronLeft, ChevronRight, Settings, Film, BarChart3 } from "lucide-react";
+import {
+  Home,
+  Compass,
+  Heart,
+  ChevronLeft,
+  ChevronRight,
+  Settings,
+  Film,
+  LayoutDashboard,
+  Radio,
+  ChevronDown,
+} from "lucide-react";
 import { formatViewerCount, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
@@ -15,11 +26,10 @@ const PUBLIC_NAV_ITEMS = [
 
 const AUTH_NAV_ITEMS = [
   { label: "Following", icon: Heart, path: "/platform/following" },
-  { label: "Dashboard", icon: BarChart3, path: "/platform/dashboard" },
+  { label: "Dashboard", icon: LayoutDashboard, path: "/platform/dashboard" },
   { label: "Clips", icon: Film, path: "/platform/clips" },
 ];
 
-// All platform IDs grouped by category
 const PLATFORM_GROUPS: { key: string; platforms: PlatformType[] }[] = [
   { key: "major", platforms: ["youtube", "twitch", "facebook", "tiktok", "instagram", "x", "linkedin"] },
   { key: "gaming", platforms: ["kick", "rumble", "dlive", "trovo", "bilibili", "nimotv"] },
@@ -29,6 +39,7 @@ const PLATFORM_GROUPS: { key: string; platforms: PlatformType[] }[] = [
 
 export const PlatformSidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ major: true });
   const location = useLocation();
   const { data: MOCK_CHANNELS = [] } = useStreams();
   const { user } = useAuth();
@@ -37,7 +48,7 @@ export const PlatformSidebar: React.FC = () => {
     const order = ["/platform", "/platform/browse", "/platform/following", "/platform/dashboard", "/platform/clips", "/platform/settings"];
     return order.indexOf(a.path) - order.indexOf(b.path);
   });
-  // Group live channels by platform
+
   const liveChannels = MOCK_CHANNELS.filter((c) => c.isLive && c.platform);
   const channelsByPlatform = liveChannels.reduce<Record<string, typeof MOCK_CHANNELS>>((acc, ch) => {
     const p = ch.platform!;
@@ -46,15 +57,19 @@ export const PlatformSidebar: React.FC = () => {
     return acc;
   }, {});
 
+  const toggleGroup = (key: string) => {
+    setExpandedGroups((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   return (
     <aside
       className={cn(
-        "h-full bg-background border-r border-border/30 flex-col transition-all duration-200 shrink-0 hidden md:flex",
-        collapsed ? "w-[52px]" : "w-[230px]"
+        "h-full bg-background/80 backdrop-blur-sm border-r border-border/20 flex-col transition-all duration-300 ease-out shrink-0 hidden md:flex",
+        collapsed ? "w-[56px]" : "w-[240px]"
       )}
     >
-      {/* Nav Links */}
-      <nav className="flex flex-col gap-0.5 p-2">
+      {/* Navigation */}
+      <nav className="flex flex-col gap-0.5 p-2.5 pt-3">
         {NAV_ITEMS.map((item) => {
           const active = location.pathname === item.path;
           return (
@@ -63,105 +78,179 @@ export const PlatformSidebar: React.FC = () => {
               to={item.path}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
+                "group flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-200",
                 active
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary/10 text-primary shadow-sm shadow-primary/5"
+                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
               )}
             >
-              <item.icon className="w-5 h-5 shrink-0" />
+              <item.icon className={cn(
+                "w-[18px] h-[18px] shrink-0 transition-colors",
+                active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+              )} strokeWidth={active ? 2.2 : 1.8} />
               {!collapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
-      {/* Channel list by platform group */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-1 pb-4">
+      {/* Divider */}
+      <div className="mx-3 h-px bg-border/30" />
+
+      {/* Live Channels Header */}
+      {!collapsed && (
+        <div className="flex items-center gap-2 px-4 pt-3 pb-1">
+          <Radio className="w-3.5 h-3.5 text-destructive animate-pulse" />
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+            Live Channels
+          </span>
+        </div>
+      )}
+      {collapsed && (
+        <div className="flex justify-center pt-3 pb-1">
+          <Radio className="w-4 h-4 text-destructive animate-pulse" />
+        </div>
+      )}
+
+      {/* Channel Groups */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-1.5 pb-4 space-y-1">
         {PLATFORM_GROUPS.map((group) => {
-          // Only show group if it has live channels on at least one platform
           const groupHasChannels = group.platforms.some((p) => channelsByPlatform[p]?.length);
           if (!groupHasChannels) return null;
 
+          const isExpanded = expandedGroups[group.key] ?? false;
+
+          // Collect all channels for this group
+          const groupChannels = group.platforms.flatMap((p) => {
+            const channels = channelsByPlatform[p];
+            if (!channels) return [];
+            return channels.map((ch) => ({ ...ch, _platform: p }));
+          });
+
           return (
-            <div key={group.key} className="mb-2">
-              {!collapsed && (
-                <div className="px-2 text-[9px] uppercase tracking-widest text-muted-foreground/60 font-bold mt-3 mb-1">
-                  {PLATFORM_CATEGORY_LABELS[group.key]}
+            <div key={group.key}>
+              {/* Group Header - clickable to expand/collapse */}
+              {!collapsed ? (
+                <button
+                  onClick={() => toggleGroup(group.key)}
+                  className="w-full flex items-center justify-between px-3 py-1.5 rounded-md hover:bg-accent/30 transition-colors group"
+                >
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">
+                    {PLATFORM_CATEGORY_LABELS[group.key]}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground/40 tabular-nums">
+                      {groupChannels.length}
+                    </span>
+                    <ChevronDown className={cn(
+                      "w-3 h-3 text-muted-foreground/40 transition-transform duration-200",
+                      isExpanded && "rotate-180"
+                    )} />
+                  </div>
+                </button>
+              ) : (
+                <div className="flex justify-center py-1">
+                  <div className="w-5 h-px bg-border/40 rounded-full" />
                 </div>
               )}
 
-              {group.platforms.map((platform) => {
-                const channels = channelsByPlatform[platform];
-                if (!channels || channels.length === 0) return null;
-                const meta = PLATFORM_META[platform];
-                const PIcon = getPlatformIcon(platform);
-                return (
-                  <div key={platform} className="mb-1.5">
-                    {!collapsed && (
-                      <div className="px-2 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-0.5 mt-1.5 flex items-center gap-1.5">
-                        <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-sm leading-none" style={{ color: meta.color }}>
-                          <PIcon className="w-3.5 h-3.5" style={{ color: meta.color }} />
-                        </span>
-                        {meta.label}
-                      </div>
-                    )}
-                    {collapsed && (
-                      <div className="flex justify-center my-1" title={meta.label}>
-                        <span className="inline-flex items-center justify-center w-5 h-5 rounded" style={{ color: meta.color }}>
-                          <PIcon className="w-4 h-4" style={{ color: meta.color }} />
-                        </span>
-                      </div>
-                    )}
-                    {channels.slice(0, 3).map((ch) => (
-                      <ChannelLink key={`${platform}-${ch.id}`} ch={ch} collapsed={collapsed} />
-                    ))}
-                  </div>
-                );
-              })}
+              {/* Channels */}
+              {(collapsed || isExpanded) && (
+                <div className={cn("space-y-px", !collapsed && "mt-0.5")}>
+                  {groupChannels.slice(0, collapsed ? 3 : 5).map((ch) => {
+                    const meta = PLATFORM_META[ch._platform as PlatformType];
+                    const PIcon = getPlatformIcon(ch._platform as PlatformType);
+                    return (
+                      <ChannelLink
+                        key={`${ch._platform}-${ch.id}`}
+                        ch={ch}
+                        collapsed={collapsed}
+                        platformIcon={PIcon}
+                        platformColor={meta?.color}
+                      />
+                    );
+                  })}
+                  {!collapsed && groupChannels.length > 5 && (
+                    <Link
+                      to="/platform/browse"
+                      className="flex items-center justify-center py-1 text-[11px] text-muted-foreground/50 hover:text-primary transition-colors"
+                    >
+                      Show more
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
 
       {/* Collapse toggle */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="p-2 m-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors self-end"
-      >
-        {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-      </button>
+      <div className="p-2 border-t border-border/20">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className={cn(
+            "w-full flex items-center justify-center gap-2 py-1.5 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-accent/50 transition-all duration-200",
+          )}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {collapsed ? (
+            <ChevronRight className="w-4 h-4" />
+          ) : (
+            <>
+              <ChevronLeft className="w-4 h-4" />
+              <span className="text-[11px] font-medium">Collapse</span>
+            </>
+          )}
+        </button>
+      </div>
     </aside>
   );
 };
 
-const ChannelLink = ({ ch, collapsed }: { ch: any, collapsed: boolean }) => (
+const ChannelLink = ({
+  ch,
+  collapsed,
+  platformIcon: PIcon,
+  platformColor,
+}: {
+  ch: any;
+  collapsed: boolean;
+  platformIcon: React.ComponentType<any>;
+  platformColor?: string;
+}) => (
   <Link
     to={`/platform/stream/${ch.username}`}
     title={collapsed ? ch.displayName : undefined}
-    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md hover:bg-muted transition-colors group"
+    className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg hover:bg-accent/40 transition-all duration-150 group"
   >
     <div className="relative shrink-0">
       <img
         src={ch.avatar}
         alt={ch.displayName}
-        className="w-7 h-7 rounded-full bg-muted"
+        className="w-7 h-7 rounded-full bg-muted ring-1 ring-border/20 object-cover"
       />
-      <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-destructive border-2 border-background" />
+      <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-destructive ring-2 ring-background" />
     </div>
     {!collapsed && (
       <>
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-foreground truncate leading-tight font-medium">
-            {ch.displayName}
-          </p>
-          <p className="text-[11px] text-muted-foreground truncate leading-tight">
+          <div className="flex items-center gap-1.5">
+            <p className="text-[13px] text-foreground truncate leading-tight font-medium group-hover:text-foreground">
+              {ch.displayName}
+            </p>
+            <PIcon
+              className="w-3 h-3 shrink-0 opacity-50"
+              style={{ color: platformColor }}
+            />
+          </div>
+          <p className="text-[11px] text-muted-foreground/60 truncate leading-tight mt-0.5">
             {ch.category}
           </p>
         </div>
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1 shrink-0 opacity-60 group-hover:opacity-100 transition-opacity">
           <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[11px] text-muted-foreground font-medium tabular-nums">
             {formatViewerCount(ch.viewers)}
           </span>
         </div>
