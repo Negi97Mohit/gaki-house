@@ -68,7 +68,7 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
     <div className="relative w-full">
       {/* Main featured stream */}
       <div className="relative w-full aspect-video max-h-[480px] bg-black overflow-hidden group">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 pointer-events-none">
           {featured.streamUrl && isEmbeddablePlatform(featured.platform) ? (
             <StreamPlayer channel={featured} playing muted={isMuted} volume={0.5} />
           ) : (
