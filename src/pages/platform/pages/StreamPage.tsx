@@ -252,111 +252,31 @@ export const StreamPage: React.FC = () => {
             </span>
           </div>
 
-          {/* Player Controls Overlay - only show for non-iframe platforms or limited controls for iframe */}
+          {/* Minimal overlay - only theater/fullscreen, positioned to not overlap native controls */}
           <div
             className={cn(
-              "absolute bottom-0 left-0 right-0 px-4 py-3 transition-opacity duration-300 z-20",
-              isIframePlatform(channel.platform)
-                ? "bg-transparent"
-                : "bg-gradient-to-t from-black/90 via-black/60 to-transparent",
-              showControls || isFullscreen || !isPlaying ? "opacity-100" : "opacity-0"
+              "absolute top-3 right-3 flex items-center gap-1.5 transition-opacity duration-300 z-20",
+              showControls ? "opacity-100" : "opacity-0"
             )}
           >
-            <div className="flex items-center justify-between">
-              {/* Left controls - only for non-iframe platforms */}
-              <div className="flex items-center gap-3">
-                {!isIframePlatform(channel.platform) && (
-                  <>
-                    <button
-                      onClick={() => setIsPlaying(!isPlaying)}
-                      className="text-white hover:text-primary transition-colors"
-                    >
-                      {isPlaying ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><rect width="4" height="16" x="6" y="4" /><rect width="4" height="16" x="14" y="4" /></svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><polygon points="6 3 20 12 6 21 6 3" /></svg>
-                      )}
-                    </button>
-
-                    <div className="flex items-center gap-2 group/volume">
-                      <button
-                        onClick={() => setIsMuted(!isMuted)}
-                        className="text-white hover:text-primary transition-colors"
-                      >
-                        {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                      </button>
-                      <input
-                        type="range"
-                        min={0}
-                        max={1}
-                        step={0.05}
-                        value={isMuted ? 0 : volume}
-                        onChange={handleVolumeChange}
-                        className="w-0 overflow-hidden group-hover/volume:w-20 transition-all duration-300 h-1 accent-primary cursor-pointer bg-white/20 rounded-lg appearance-none"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Right controls - always show theater/fullscreen */}
-              <div className="flex items-center gap-2">
-                {/* Quality selector - only for non-iframe */}
-                {!isIframePlatform(channel.platform) && (
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowQuality(!showQuality)}
-                      className="text-white hover:text-primary transition-colors p-1"
-                    >
-                      <Settings className="w-4.5 h-4.5" />
-                    </button>
-                    {showQuality && (
-                      <div className="absolute bottom-full right-0 mb-2 bg-card border border-border/40 rounded-lg shadow-lg py-1 min-w-[140px] z-[100]">
-                        {QUALITY_OPTIONS.map((q) => (
-                          <button
-                            key={q}
-                            onClick={() => {
-                              setSelectedQuality(q);
-                              setShowQuality(false);
-                            }}
-                            className={cn(
-                              "w-full text-left px-3 py-1.5 text-sm transition-colors",
-                              selectedQuality === q
-                                ? "text-primary font-medium bg-primary/10"
-                                : "text-foreground hover:bg-muted"
-                            )}
-                          >
-                            {q}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Theater mode */}
-                <button
-                  onClick={() => setIsTheater(!isTheater)}
-                  className="text-white hover:text-primary transition-colors p-1.5 bg-black/50 rounded-md backdrop-blur-sm hidden lg:block"
-                  title="Theater Mode"
-                >
-                  <Theater className="w-4 h-4" />
-                </button>
-
-                {/* Fullscreen */}
-                <button
-                  onClick={toggleFullscreen}
-                  className="text-white hover:text-primary transition-colors p-1.5 bg-black/50 rounded-md backdrop-blur-sm"
-                  title="Fullscreen"
-                >
-                  {isFullscreen ? (
-                    <Minimize className="w-4 h-4" />
-                  ) : (
-                    <Maximize className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
+            <button
+              onClick={() => setIsTheater(!isTheater)}
+              className="text-white hover:text-primary transition-colors p-1.5 bg-black/60 rounded-md backdrop-blur-sm hidden lg:block"
+              title="Theater Mode"
+            >
+              <Theater className="w-4 h-4" />
+            </button>
+            <button
+              onClick={toggleFullscreen}
+              className="text-white hover:text-primary transition-colors p-1.5 bg-black/60 rounded-md backdrop-blur-sm"
+              title="Fullscreen"
+            >
+              {isFullscreen ? (
+                <Minimize className="w-4 h-4" />
+              ) : (
+                <Maximize className="w-4 h-4" />
+              )}
+            </button>
           </div>
         </div>
 
