@@ -572,7 +572,7 @@ export const SettingsPage: React.FC = () => {
                   </div>
                   Platform Layout
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
                   {PLATFORM_LAYOUTS.map((layout) => {
                     const isActive = platformLayout === layout.id;
                     return (
