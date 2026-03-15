@@ -132,20 +132,52 @@ export interface ThemeConfig {
   glow: string;
 }
 
+export type PlatformLayout = "default" | "compact" | "cozy" | "theater";
+
+export const PLATFORM_LAYOUTS: { id: PlatformLayout; label: string; description: string }[] = [
+  { id: "default", label: "Default", description: "Balanced grid layout" },
+  { id: "compact", label: "Compact", description: "Dense, more content visible" },
+  { id: "cozy", label: "Cozy", description: "Larger cards, more spacing" },
+  { id: "theater", label: "Theater", description: "Wide hero, minimal sidebar" },
+];
+
+export const APP_FONTS = [
+  "geist-sans",
+  "Inter",
+  "DM Sans",
+  "Plus Jakarta Sans",
+  "Space Grotesk",
+  "Outfit",
+  "Manrope",
+  "Sora",
+  "Lexend",
+  "Figtree",
+  "Onest",
+  "Rubik",
+  "Nunito",
+] as const;
+
+export type AppFont = (typeof APP_FONTS)[number];
+
 interface ThemeState {
   theme: ThemeName;
   mode: ThemeMode;
+  fontFamily: AppFont;
+  platformLayout: PlatformLayout;
   setTheme: (theme: ThemeName) => void;
   setMode: (mode: ThemeMode) => void;
   toggleMode: () => void;
+  setFontFamily: (font: AppFont) => void;
+  setPlatformLayout: (layout: PlatformLayout) => void;
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      // UPDATED: Default theme is now "iceQueen"
       theme: "iceQueen",
       mode: "dark",
+      fontFamily: "geist-sans",
+      platformLayout: "default",
       setTheme: (theme) => {
         set({ theme });
         applyTheme(theme, get().mode);
@@ -159,17 +191,28 @@ export const useThemeStore = create<ThemeState>()(
         set({ mode: newMode });
         applyTheme(get().theme, newMode);
       },
+      setFontFamily: (fontFamily) => {
+        set({ fontFamily });
+        applyFont(fontFamily);
+      },
+      setPlatformLayout: (platformLayout) => set({ platformLayout }),
     }),
     {
       name: "app-theme",
       onRehydrateStorage: () => (state) => {
         if (state) {
           applyTheme(state.theme, state.mode);
+          if (state.fontFamily) applyFont(state.fontFamily);
         }
       },
     }
   )
 );
+
+function applyFont(font: AppFont) {
+  document.documentElement.style.setProperty("--font-app", font);
+  document.documentElement.style.fontFamily = `"${font}", system-ui, sans-serif`;
+}
 
 function applyTheme(theme: ThemeName, mode: ThemeMode) {
   const root = document.documentElement;
