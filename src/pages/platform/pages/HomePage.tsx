@@ -22,6 +22,14 @@ const getStreamGridClasses = (layout: PlatformLayout) => {
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
     case "theater":
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
+    case "magazine":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
+    case "cinematic":
+      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6";
+    case "mosaic":
+      return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3 space-y-3";
+    case "feed":
+      return "flex flex-col items-center gap-5 max-w-2xl mx-auto";
     default:
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
   }
@@ -33,8 +41,10 @@ const getCategoryGridClasses = (layout: PlatformLayout) => {
       return "grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-10 gap-3";
     case "cozy":
       return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5";
-    case "theater":
-      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4";
+    case "feed":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-2xl mx-auto";
+    case "cinematic":
+      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4";
     default:
       return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4";
   }
@@ -45,6 +55,10 @@ const getStreamCount = (layout: PlatformLayout) => {
     case "compact": return 12;
     case "cozy": return 8;
     case "theater": return 10;
+    case "feed": return 6;
+    case "cinematic": return 6;
+    case "mosaic": return 12;
+    case "magazine": return 10;
     default: return 10;
   }
 };

@@ -132,13 +132,17 @@ export interface ThemeConfig {
   glow: string;
 }
 
-export type PlatformLayout = "default" | "compact" | "cozy" | "theater";
+export type PlatformLayout = "default" | "compact" | "cozy" | "theater" | "magazine" | "cinematic" | "mosaic" | "feed";
 
 export const PLATFORM_LAYOUTS: { id: PlatformLayout; label: string; description: string }[] = [
   { id: "default", label: "Default", description: "Balanced grid layout" },
   { id: "compact", label: "Compact", description: "Dense, more content visible" },
   { id: "cozy", label: "Cozy", description: "Larger cards, more spacing" },
-  { id: "theater", label: "Theater", description: "Wide hero, minimal sidebar" },
+  { id: "theater", label: "Theater", description: "Wide view, collapsed sidebar" },
+  { id: "magazine", label: "Magazine", description: "Editorial featured + grid mix" },
+  { id: "cinematic", label: "Cinematic", description: "Widescreen 16:9 cards" },
+  { id: "mosaic", label: "Mosaic", description: "Pinterest-style staggered grid" },
+  { id: "feed", label: "Feed", description: "Single-column social feed" },
 ];
 
 export const APP_FONTS = [
