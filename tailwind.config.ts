@@ -73,7 +73,7 @@ export default {
         'smooth': 'var(--transition-smooth)',
       },
       fontFamily: {
-        sans: ["geist-sans"],
+        sans: ["var(--font-app, geist-sans)", "system-ui", "sans-serif"],
         cyber: ["Cyber", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
         display: ["Space Mono", "monospace"],
