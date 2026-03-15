@@ -155,9 +155,9 @@ export const HomePage: React.FC = () => {
             View all <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4">
+        <div className={categoryGridClasses}>
           {isLoading
-            ? Array.from({ length: 10 }).map((_, i) => <SkeletonCategoryCard key={i} />)
+            ? Array.from({ length: streamCount }).map((_, i) => <SkeletonCategoryCard key={i} />)
             : MOCK_CATEGORIES.slice(0, 16).map((cat) => (
               <CategoryCard key={cat.id} category={cat} />
             ))}
