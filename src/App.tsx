@@ -48,6 +48,7 @@ const queryClient = new QueryClient();
 function ThemeInitializer() {
   const theme = useThemeStore((s) => s.theme);
   const mode = useThemeStore((s) => s.mode);
+  const fontFamily = useThemeStore((s) => s.fontFamily);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -57,6 +58,21 @@ function ThemeInitializer() {
       root.classList.add("dark");
     }
   }, [theme, mode]);
+
+  useEffect(() => {
+    if (fontFamily && fontFamily !== "geist-sans") {
+      // Load Google Font dynamically
+      const id = `gfont-${fontFamily.replace(/\s+/g, "-")}`;
+      if (!document.getElementById(id)) {
+        const link = document.createElement("link");
+        link.id = id;
+        link.rel = "stylesheet";
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@300;400;500;600;700&display=swap`;
+        document.head.appendChild(link);
+      }
+    }
+    document.documentElement.style.fontFamily = `"${fontFamily}", system-ui, sans-serif`;
+  }, [fontFamily]);
 
   return null;
 }

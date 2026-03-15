@@ -3,14 +3,15 @@ import {
   User, Bell, Palette, Shield, Save, Loader2, Moon, Sun, Check,
   Mail, Trash2, AlertCircle, Sparkles, Radio, Users, MessageSquare,
   Zap, Send, AtSign, Eye, EyeOff, Search, ShieldCheck, Fingerprint,
-  CircleUserRound, Camera, Type, FileText, ChevronRight
+  CircleUserRound, Camera, Type, FileText, ChevronRight, LayoutGrid, Monitor
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc, getDoc, collection, query, where, getDocs, setDoc } from "firebase/firestore";
 import { toast } from "sonner";
-import { useThemeStore, themes, ThemeName } from "@/features/theme";
+import { useThemeStore, themes, ThemeName, APP_FONTS, PLATFORM_LAYOUTS } from "@/features/theme";
+import type { AppFont, PlatformLayout } from "@/features/theme";
 import { DefaultAvatar, DEFAULT_AVATARS, getDefaultAvatar } from "../components/DefaultAvatar";
 
 const PUBLIC_TABS = [
@@ -78,7 +79,7 @@ export const SettingsPage: React.FC = () => {
 
   const [notifications, setNotifications] = useState<NotificationSettings>(DEFAULT_NOTIFICATIONS);
   const [privacy, setPrivacy] = useState<PrivacySettings>(DEFAULT_PRIVACY);
-  const { theme: currentTheme, mode, setTheme, setMode } = useThemeStore();
+  const { theme: currentTheme, mode, setTheme, setMode, fontFamily, setFontFamily, platformLayout, setPlatformLayout } = useThemeStore();
 
   const loadUserSettings = useCallback(async () => {
     if (!user) return;
@@ -441,52 +442,41 @@ export const SettingsPage: React.FC = () => {
                 subtitle="Customize how the platform looks for you."
               />
 
-              {/* Color Mode */}
+              {/* Color Mode - Minimal toggle */}
               <GlassCard>
-                <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
-                    {mode === "dark" ? <Moon className="w-3.5 h-3.5 text-primary" /> : <Sun className="w-3.5 h-3.5 text-primary" />}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                      {mode === "dark" ? <Moon className="w-4 h-4 text-primary" /> : <Sun className="w-4 h-4 text-primary" />}
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-foreground">Color Mode</h3>
+                      <p className="text-xs text-muted-foreground">{mode === "dark" ? "Dark mode" : "Light mode"}</p>
+                    </div>
                   </div>
-                  Color Mode
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { id: "light" as const, label: "Light", description: "Clean & bright", icon: Sun },
-                    { id: "dark" as const, label: "Dark", description: "Easy on the eyes", icon: Moon },
-                  ].map((m) => (
-                    <button
-                      key={m.id}
-                      onClick={() => setMode(m.id)}
-                      className={cn(
-                        "group relative flex items-center gap-4 p-4 rounded-xl border-2 transition-all",
-                        mode === m.id
-                          ? "border-primary bg-primary/8 shadow-[0_0_20px_-4px_hsl(var(--primary)/0.2)]"
-                          : "border-border/30 bg-background/50 hover:border-border/60 hover:bg-muted/30"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
-                        mode === m.id
-                          ? "bg-primary text-primary-foreground shadow-md"
-                          : "bg-muted text-muted-foreground group-hover:bg-muted/80"
-                      )}>
-                        <m.icon className="w-5 h-5" />
-                      </div>
-                      <div className="text-left">
-                        <span className="text-sm font-semibold text-foreground block">{m.label}</span>
-                        <span className="text-xs text-muted-foreground">{m.description}</span>
-                      </div>
-                      {mode === m.id && (
-                        <div className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                          <Check className="w-3 h-3 text-primary-foreground" />
-                        </div>
-                      )}
-                    </button>
-                  ))}
+                  <div className="flex bg-muted/50 rounded-xl p-1 gap-0.5">
+                    {([
+                      { id: "light" as const, icon: Sun },
+                      { id: "dark" as const, icon: Moon },
+                    ]).map((m) => (
+                      <button
+                        key={m.id}
+                        onClick={() => setMode(m.id)}
+                        className={cn(
+                          "flex items-center justify-center w-9 h-9 rounded-lg transition-all",
+                          mode === m.id
+                            ? "bg-primary text-primary-foreground shadow-md"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        <m.icon className="w-4 h-4" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </GlassCard>
 
-              {/* Theme Grid */}
+              {/* Theme Grid - Compact gradient pills */}
               <GlassCard>
                 <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
                   <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
@@ -494,36 +484,117 @@ export const SettingsPage: React.FC = () => {
                   </div>
                   Theme
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
                   {FEATURED_THEMES.map((themeKey) => {
                     const config = themes[themeKey];
                     const isActive = currentTheme === themeKey;
+                    const colors = config.ambient.colors.slice(0, 3);
                     return (
                       <button
                         key={themeKey}
                         onClick={() => setTheme(themeKey)}
                         className={cn(
-                          "group relative flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 transition-all hover:scale-[1.03] hover:shadow-md",
+                          "group relative flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all",
                           isActive
-                            ? "border-primary bg-primary/5 shadow-[0_0_16px_-4px_hsl(var(--primary)/0.25)]"
-                            : "border-border/20 bg-background/40 hover:border-border/50"
+                            ? "border-primary ring-1 ring-primary/30 bg-primary/5"
+                            : "border-border/10 hover:border-border/40 bg-transparent"
                         )}
                       >
-                        <div className="flex gap-1.5">
-                          {config.ambient.colors.slice(0, 3).map((color, i) => (
-                            <div
-                              key={i}
-                              className="w-6 h-6 rounded-full border border-white/10 shadow-sm transition-transform group-hover:scale-110"
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-xs font-semibold text-foreground truncate w-full text-center">
+                        {/* Gradient swatch */}
+                        <div
+                          className="w-full h-8 rounded-lg shadow-inner overflow-hidden"
+                          style={{
+                            background: `linear-gradient(135deg, ${colors.join(", ")})`,
+                          }}
+                        />
+                        <span className="text-[10px] font-medium text-muted-foreground truncate w-full text-center leading-tight">
                           {config.name}
                         </span>
                         {isActive && (
-                          <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center shadow-sm">
-                            <Check className="w-3 h-3 text-primary-foreground" />
+                          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center shadow-sm">
+                            <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              {/* Font Family */}
+              <GlassCard>
+                <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+                    <Type className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  Font Family
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {APP_FONTS.map((font) => {
+                    const isActive = fontFamily === font;
+                    const displayName = font === "geist-sans" ? "Geist Sans" : font;
+                    return (
+                      <button
+                        key={font}
+                        onClick={() => setFontFamily(font)}
+                        className={cn(
+                          "relative flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-all text-left",
+                          isActive
+                            ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                            : "border-border/10 hover:border-border/40"
+                        )}
+                      >
+                        <span
+                          className="text-lg font-semibold text-foreground leading-none"
+                          style={{ fontFamily: font === "geist-sans" ? "geist-sans" : `"${font}", sans-serif` }}
+                        >
+                          Aa
+                        </span>
+                        <span className="text-[11px] font-medium text-muted-foreground truncate">
+                          {displayName}
+                        </span>
+                        {isActive && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                            <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </GlassCard>
+
+              {/* Platform Layout */}
+              <GlassCard>
+                <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+                    <LayoutGrid className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  Platform Layout
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {PLATFORM_LAYOUTS.map((layout) => {
+                    const isActive = platformLayout === layout.id;
+                    return (
+                      <button
+                        key={layout.id}
+                        onClick={() => setPlatformLayout(layout.id)}
+                        className={cn(
+                          "group relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
+                          isActive
+                            ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                            : "border-border/10 hover:border-border/40"
+                        )}
+                      >
+                        {/* Layout preview mini wireframe */}
+                        <LayoutPreview type={layout.id} isActive={isActive} />
+                        <div className="text-center">
+                          <span className="text-xs font-semibold text-foreground block">{layout.label}</span>
+                          <span className="text-[10px] text-muted-foreground">{layout.description}</span>
+                        </div>
+                        {isActive && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                            <Check className="w-2.5 h-2.5 text-primary-foreground" />
                           </div>
                         )}
                       </button>
@@ -748,3 +819,56 @@ const ToggleRow: React.FC<{
     </button>
   </div>
 );
+
+const LayoutPreview: React.FC<{ type: PlatformLayout; isActive: boolean }> = ({ type, isActive }) => {
+  const barColor = isActive ? "bg-primary/40" : "bg-muted-foreground/20";
+  const blockColor = isActive ? "bg-primary/25" : "bg-muted-foreground/10";
+
+  const layouts: Record<PlatformLayout, React.ReactNode> = {
+    default: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-3 h-full rounded-sm", barColor)} />
+        <div className="flex-1 flex flex-col gap-0.5">
+          <div className={cn("h-5 rounded-sm", blockColor)} />
+          <div className="flex-1 grid grid-cols-3 gap-0.5">
+            <div className={cn("rounded-sm", blockColor)} />
+            <div className={cn("rounded-sm", blockColor)} />
+            <div className={cn("rounded-sm", blockColor)} />
+          </div>
+        </div>
+      </div>
+    ),
+    compact: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-4 gap-0.5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className={cn("rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    cozy: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-3 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-2 gap-1">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={cn("rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    theater: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-7 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 grid grid-cols-4 gap-0.5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={cn("rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+  };
+
+  return <div className="w-full">{layouts[type]}</div>;
+};
