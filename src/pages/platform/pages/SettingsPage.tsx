@@ -3,7 +3,7 @@ import {
   User, Bell, Palette, Shield, Save, Loader2, Moon, Sun, Check,
   Mail, Trash2, AlertCircle, Sparkles, Radio, Users, MessageSquare,
   Zap, Send, AtSign, Eye, EyeOff, Search, ShieldCheck, Fingerprint,
-  CircleUserRound, Camera, Type, FileText, ChevronRight
+  CircleUserRound, Camera, Type, FileText, ChevronRight, LayoutGrid, Monitor
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
