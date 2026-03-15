@@ -79,7 +79,7 @@ export const SettingsPage: React.FC = () => {
 
   const [notifications, setNotifications] = useState<NotificationSettings>(DEFAULT_NOTIFICATIONS);
   const [privacy, setPrivacy] = useState<PrivacySettings>(DEFAULT_PRIVACY);
-  const { theme: currentTheme, mode, setTheme, setMode } = useThemeStore();
+  const { theme: currentTheme, mode, setTheme, setMode, fontFamily, setFontFamily, platformLayout, setPlatformLayout } = useThemeStore();
 
   const loadUserSettings = useCallback(async () => {
     if (!user) return;
