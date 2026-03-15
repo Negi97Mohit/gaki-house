@@ -43,7 +43,7 @@ const youtubeLiveLocalPlugin = () => {
               body,
           });
 
-          const data = await response.json();
+          const data: any = await response.json();
           
           // Basic extract to mirror the netlify fn
           const results: any[] = [];
