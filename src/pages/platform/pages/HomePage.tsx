@@ -11,6 +11,43 @@ import { LiveStreamCarousel } from "../components/LiveStreamCarousel";
 import { useStreams } from "../hooks/useStreams";
 import { useAuth } from "../context/AuthContext";
 import { useGoLiveStore } from "@/stores/goLive.store";
+import { useThemeStore, type PlatformLayout } from "@/features/theme";
+import { cn } from "@/shared/lib/utils";
+
+const getStreamGridClasses = (layout: PlatformLayout) => {
+  switch (layout) {
+    case "compact":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3";
+    case "cozy":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
+    case "theater":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
+    default:
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
+  }
+};
+
+const getCategoryGridClasses = (layout: PlatformLayout) => {
+  switch (layout) {
+    case "compact":
+      return "grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-10 gap-3";
+    case "cozy":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5";
+    case "theater":
+      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4";
+    default:
+      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4";
+  }
+};
+
+const getStreamCount = (layout: PlatformLayout) => {
+  switch (layout) {
+    case "compact": return 12;
+    case "cozy": return 8;
+    case "theater": return 10;
+    default: return 10;
+  }
+};
 
 // All platforms ordered by category
 const PLATFORM_SECTIONS: { id: string; label: string; color: string }[] = [
