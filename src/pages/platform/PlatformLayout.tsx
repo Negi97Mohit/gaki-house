@@ -5,7 +5,6 @@ import { PlatformSidebar } from "./components/PlatformSidebar";
 import { PlatformMobileNav } from "./components/PlatformMobileNav";
 import { AuthModal } from "./components/AuthModal";
 import { useThemeStore } from "@/features/theme";
-import { cn } from "@/shared/lib/utils";
 
 export const PlatformLayout: React.FC = () => {
   const platformLayout = useThemeStore((s) => s.platformLayout);

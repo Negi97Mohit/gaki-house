@@ -859,12 +859,68 @@ const LayoutPreview: React.FC<{ type: PlatformLayout; isActive: boolean }> = ({ 
       </div>
     ),
     theater: (
-      <div className="w-full h-12 flex flex-col gap-0.5">
-        <div className={cn("h-7 w-full rounded-sm", blockColor)} />
-        <div className="flex-1 grid grid-cols-4 gap-0.5">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className={cn("rounded-sm", blockColor)} />
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-1.5 h-full rounded-sm", barColor)} />
+        <div className="flex-1 flex flex-col gap-0.5">
+          <div className={cn("h-6 w-full rounded-sm", blockColor)} />
+          <div className="flex-1 grid grid-cols-4 gap-0.5">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className={cn("rounded-sm", blockColor)} />
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+    magazine: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 flex gap-0.5">
+          <div className={cn("w-1/2 rounded-sm", blockColor)} />
+          <div className="w-1/2 flex flex-col gap-0.5">
+            <div className={cn("flex-1 rounded-sm", blockColor)} />
+            <div className={cn("flex-1 rounded-sm", blockColor)} />
+            <div className={cn("flex-1 rounded-sm", blockColor)} />
+          </div>
+        </div>
+      </div>
+    ),
+    cinematic: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-1.5 h-full rounded-sm", barColor)} />
+        <div className="flex-1 flex flex-col gap-0.5">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className={cn("flex-1 rounded-sm", blockColor)} />
           ))}
+        </div>
+      </div>
+    ),
+    mosaic: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 flex gap-0.5">
+          <div className="flex-1 flex flex-col gap-0.5">
+            <div className={cn("h-7 rounded-sm", blockColor)} />
+            <div className={cn("flex-1 rounded-sm", blockColor)} />
+          </div>
+          <div className="flex-1 flex flex-col gap-0.5">
+            <div className={cn("h-4 rounded-sm", blockColor)} />
+            <div className={cn("flex-1 rounded-sm", blockColor)} />
+          </div>
+          <div className="flex-1 flex flex-col gap-0.5">
+            <div className={cn("h-6 rounded-sm", blockColor)} />
+            <div className={cn("flex-1 rounded-sm", blockColor)} />
+          </div>
+        </div>
+      </div>
+    ),
+    feed: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-1.5 h-full rounded-sm", barColor)} />
+        <div className="flex-1 flex justify-center">
+          <div className="w-2/3 flex flex-col gap-0.5">
+            <div className={cn("h-5 rounded-sm", blockColor)} />
+            <div className={cn("h-5 rounded-sm", blockColor)} />
+          </div>
         </div>
       </div>
     ),

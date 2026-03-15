@@ -38,12 +38,12 @@ const PLATFORM_GROUPS: { key: string; platforms: PlatformType[] }[] = [
   { key: "selfhosted", platforms: ["owncast", "peertube", "nginx", "wowzaserver", "antmedia", "red5", "mediasoup"] },
 ];
 
-export const PlatformSidebar: React.FC = () => {
+export const PlatformSidebar: React.FC<{ forceCollapsed?: boolean }> = ({ forceCollapsed }) => {
   const [collapsed, setCollapsed] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({ major: true });
   
-  const isCollapsed = collapsed && !isHovered;
+  const isCollapsed = forceCollapsed || (collapsed && !isHovered);
 
   const location = useLocation();
   const navigate = useNavigate();
