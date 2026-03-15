@@ -193,7 +193,7 @@ export const HomePage: React.FC = () => {
         />
       </section>
 
-      {/* Top Categories */}
+      {/* Top Categories — Horizontal Scroll */}
       <section className={cn("px-6 mt-10", platformLayout === "feed" && "px-0")}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
@@ -207,13 +207,7 @@ export const HomePage: React.FC = () => {
             View all <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className={categoryGridClasses}>
-          {isLoading
-            ? Array.from({ length: streamCount }).map((_, i) => <SkeletonCategoryCard key={i} />)
-            : MOCK_CATEGORIES.slice(0, 16).map((cat) => (
-              <CategoryCard key={cat.id} category={cat} />
-            ))}
-        </div>
+        <CategoryHorizontalScroll isLoading={isLoading} streamCount={streamCount} />
       </section>
 
       {/* Platform-Specific Live Sections */}
