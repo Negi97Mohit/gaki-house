@@ -4,8 +4,45 @@ import { MOCK_CATEGORIES, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS 
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { CategoryCard } from "../components/CategoryCard";
-import { StreamCard } from "../components/StreamCard";
+import { StreamCardHover } from "../components/StreamCardHover";
 import { cn } from "@/shared/lib/utils";
+import { useThemeStore, type PlatformLayout } from "@/features/theme";
+
+const getBrowseStreamGrid = (layout: PlatformLayout) => {
+  switch (layout) {
+    case "compact":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2";
+    case "cozy":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
+    case "theater":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
+    case "magazine":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-auto";
+    case "cinematic":
+      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6";
+    case "mosaic":
+      return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3";
+    case "feed":
+      return "flex flex-col items-center gap-6 max-w-2xl mx-auto";
+    default:
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
+  }
+};
+
+const getBrowseCategoryGrid = (layout: PlatformLayout) => {
+  switch (layout) {
+    case "compact":
+      return "grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-10 gap-3";
+    case "cozy":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5";
+    case "feed":
+      return "grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto";
+    case "cinematic":
+      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4";
+    default:
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-5";
+  }
+};
 
 const ALL_TAGS = [
   "All", "IRL", "Shooter", "FPS", "MOBA", "Action", "Sandbox", "Adventure",

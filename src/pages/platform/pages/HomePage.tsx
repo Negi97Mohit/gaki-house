@@ -17,19 +17,19 @@ import { cn } from "@/shared/lib/utils";
 const getStreamGridClasses = (layout: PlatformLayout) => {
   switch (layout) {
     case "compact":
-      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3";
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2";
     case "cozy":
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
     case "theater":
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
     case "magazine":
-      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 auto-rows-auto";
     case "cinematic":
-      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6";
+      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6";
     case "mosaic":
-      return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3 space-y-3";
+      return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3";
     case "feed":
-      return "flex flex-col items-center gap-5 max-w-2xl mx-auto";
+      return "flex flex-col items-center gap-6 max-w-2xl mx-auto";
     default:
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
   }
@@ -45,6 +45,8 @@ const getCategoryGridClasses = (layout: PlatformLayout) => {
       return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-2xl mx-auto";
     case "cinematic":
       return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4";
+    case "mosaic":
+      return "columns-3 sm:columns-4 md:columns-5 lg:columns-6 xl:columns-8 gap-3";
     default:
       return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4";
   }
@@ -57,8 +59,8 @@ const getStreamCount = (layout: PlatformLayout) => {
     case "theater": return 10;
     case "feed": return 6;
     case "cinematic": return 6;
-    case "mosaic": return 12;
-    case "magazine": return 10;
+    case "mosaic": return 15;
+    case "magazine": return 11;
     default: return 10;
   }
 };
@@ -74,6 +76,37 @@ const PLATFORM_SECTIONS: { id: string; label: string; color: string }[] = [
   { id: "dlive", label: "DLive", color: "#FFD300" },
   { id: "trovo", label: "Trovo Live", color: "#19D65C" },
 ];
+
+const StreamGrid: React.FC<{
+  streams: any[];
+  layout: PlatformLayout;
+  gridClasses: string;
+  count: number;
+  isLoading: boolean;
+}> = ({ streams, layout, gridClasses, count, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className={gridClasses}>
+        {Array.from({ length: count }).map((_, i) => <SkeletonStreamCard key={i} />)}
+      </div>
+    );
+  }
+
+  const items = streams.slice(0, count);
+
+  return (
+    <div className={gridClasses}>
+      {items.map((ch, i) => (
+        <StreamCardHover
+          key={ch.id}
+          channel={ch}
+          layout={layout}
+          featured={layout === "magazine" && i === 0}
+        />
+      ))}
+    </div>
+  );
+};
 
 export const HomePage: React.FC = () => {
   const { data: streams = [], isLoading } = useStreams();
@@ -105,14 +138,19 @@ export const HomePage: React.FC = () => {
   const liveStreams = streams.filter(s => s.isLive && isEmbeddablePlatform(s.platform));
 
   return (
-    <div className={cn("pb-12", platformLayout === "theater" && "max-w-[1600px] mx-auto")}>
+    <div className={cn(
+      "pb-12",
+      platformLayout === "theater" && "max-w-[1600px] mx-auto",
+      platformLayout === "feed" && "max-w-3xl mx-auto",
+      platformLayout === "cinematic" && "max-w-[1800px] mx-auto"
+    )}>
       {/* Hero: Live Stream Carousel */}
       {platformLayout !== "compact" && (
         <LiveStreamCarousel streams={streams} isLoading={isLoading} />
       )}
 
       {/* Go Live CTA Banner */}
-      <section className="px-6 mt-6">
+      <section className={cn("px-6 mt-6", platformLayout === "feed" && "px-0")}>
         <button
           onClick={handleGoLive}
           className="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-primary/15 via-primary/10 to-primary/5 border border-primary/20 hover:border-primary/40 transition-all group"
@@ -133,7 +171,7 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* Trending Now */}
-      <section className="px-6 mt-8">
+      <section className={cn("px-6 mt-8", platformLayout === "feed" && "px-0")}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-primary" />
@@ -146,17 +184,17 @@ export const HomePage: React.FC = () => {
             View all <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className={streamGridClasses}>
-          {isLoading
-            ? Array.from({ length: streamCount }).map((_, i) => <SkeletonStreamCard key={i} />)
-            : liveStreams.slice(0, streamCount).map((ch) => (
-              <StreamCardHover key={ch.id} channel={ch} />
-            ))}
-        </div>
+        <StreamGrid
+          streams={liveStreams}
+          layout={platformLayout}
+          gridClasses={streamGridClasses}
+          count={streamCount}
+          isLoading={isLoading}
+        />
       </section>
 
       {/* Top Categories */}
-      <section className="px-6 mt-10">
+      <section className={cn("px-6 mt-10", platformLayout === "feed" && "px-0")}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
@@ -186,7 +224,7 @@ export const HomePage: React.FC = () => {
         const PIcon = getPlatformIcon(platform.id);
 
         return (
-          <section className="px-6 mt-10" key={platform.id}>
+          <section className={cn("px-6 mt-10", platformLayout === "feed" && "px-0")} key={platform.id}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <span
@@ -201,11 +239,13 @@ export const HomePage: React.FC = () => {
                 </span>
               </h3>
             </div>
-            <div className={streamGridClasses}>
-              {channels.slice(0, streamCount).map((ch) => (
-                <StreamCardHover key={ch.id} channel={ch} />
-              ))}
-            </div>
+            <StreamGrid
+              streams={channels}
+              layout={platformLayout}
+              gridClasses={streamGridClasses}
+              count={streamCount}
+              isLoading={false}
+            />
           </section>
         );
       })}
