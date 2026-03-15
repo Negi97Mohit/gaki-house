@@ -87,6 +87,9 @@ export const BrowsePage: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<FilterSelection>("all");
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
   const { data: MOCK_CHANNELS = [] } = useStreams();
+  const platformLayout = useThemeStore((s) => s.platformLayout);
+  const streamGrid = getBrowseStreamGrid(platformLayout);
+  const categoryGrid = getBrowseCategoryGrid(platformLayout);
 
   // Determine which platforms match the filter
   const getFilteredPlatforms = (): PlatformType[] | null => {
