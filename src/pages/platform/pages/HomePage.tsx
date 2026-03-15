@@ -246,3 +246,59 @@ export const HomePage: React.FC = () => {
     </div>
   );
 };
+
+// ── Horizontal scrollable category row ──
+const CategoryHorizontalScroll: React.FC<{ isLoading: boolean; streamCount: number }> = ({ isLoading, streamCount }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  const scroll = (dir: number) => {
+    scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
+  };
+
+  return (
+    <div className="relative group/scroll">
+      {canScrollLeft && (
+        <button
+          onClick={() => scroll(-1)}
+          className="absolute left-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-r from-background via-background/80 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity"
+        >
+          <ChevronLeft className="w-5 h-5 text-foreground" />
+        </button>
+      )}
+      <div
+        ref={scrollRef}
+        onScroll={updateScroll}
+        className="flex gap-4 overflow-x-auto scrollbar-none scroll-smooth pb-1"
+      >
+        {isLoading
+          ? Array.from({ length: streamCount }).map((_, i) => (
+              <div key={i} className="shrink-0 w-[140px] sm:w-[160px]">
+                <SkeletonCategoryCard />
+              </div>
+            ))
+          : MOCK_CATEGORIES.slice(0, 16).map((cat) => (
+              <div key={cat.id} className="shrink-0 w-[140px] sm:w-[160px]">
+                <CategoryCard category={cat} />
+              </div>
+            ))}
+      </div>
+      {canScrollRight && (
+        <button
+          onClick={() => scroll(1)}
+          className="absolute right-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-l from-background via-background/80 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity"
+        >
+          <ChevronRight className="w-5 h-5 text-foreground" />
+        </button>
+      )}
+    </div>
+  );
+};
