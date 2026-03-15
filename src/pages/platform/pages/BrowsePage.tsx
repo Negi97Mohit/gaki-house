@@ -4,8 +4,45 @@ import { MOCK_CATEGORIES, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS 
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { CategoryCard } from "../components/CategoryCard";
-import { StreamCard } from "../components/StreamCard";
+import { StreamCardHover } from "../components/StreamCardHover";
 import { cn } from "@/shared/lib/utils";
+import { useThemeStore, type PlatformLayout } from "@/features/theme";
+
+const getBrowseStreamGrid = (layout: PlatformLayout) => {
+  switch (layout) {
+    case "compact":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2";
+    case "cozy":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
+    case "theater":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
+    case "magazine":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-auto";
+    case "cinematic":
+      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6";
+    case "mosaic":
+      return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3";
+    case "feed":
+      return "flex flex-col items-center gap-6 max-w-2xl mx-auto";
+    default:
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
+  }
+};
+
+const getBrowseCategoryGrid = (layout: PlatformLayout) => {
+  switch (layout) {
+    case "compact":
+      return "grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-10 gap-3";
+    case "cozy":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5";
+    case "feed":
+      return "grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto";
+    case "cinematic":
+      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4";
+    default:
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-5";
+  }
+};
 
 const ALL_TAGS = [
   "All", "IRL", "Shooter", "FPS", "MOBA", "Action", "Sandbox", "Adventure",
@@ -50,6 +87,9 @@ export const BrowsePage: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<FilterSelection>("all");
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
   const { data: MOCK_CHANNELS = [] } = useStreams();
+  const platformLayout = useThemeStore((s) => s.platformLayout);
+  const streamGrid = getBrowseStreamGrid(platformLayout);
+  const categoryGrid = getBrowseCategoryGrid(platformLayout);
 
   // Determine which platforms match the filter
   const getFilteredPlatforms = (): PlatformType[] | null => {
@@ -105,9 +145,9 @@ export const BrowsePage: React.FC = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-          {filteredStreams.map((ch) => (
-            <StreamCard key={ch.id} channel={ch} />
+        <div className={streamGrid}>
+          {filteredStreams.map((ch, i) => (
+            <StreamCardHover key={ch.id} channel={ch} layout={platformLayout} featured={platformLayout === "magazine" && i === 0} />
           ))}
         </div>
         {filteredStreams.length === 0 && (
@@ -149,7 +189,7 @@ export const BrowsePage: React.FC = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-5">
+      <div className={categoryGrid}>
         {filteredCategories.map((cat) => (
           <CategoryCard key={cat.id} category={cat} />
         ))}
@@ -167,9 +207,9 @@ export const BrowsePage: React.FC = () => {
               ? `${PLATFORM_META[selectedFilter as PlatformType].label} — Live Now`
               : `${PLATFORM_CATEGORY_LABELS[selectedFilter] || selectedFilter} — Live Now`}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-          {filterByPlatform(MOCK_CHANNELS.filter((c) => c.isLive)).map((ch) => (
-            <StreamCard key={ch.id} channel={ch} />
+        <div className={streamGrid}>
+          {filterByPlatform(MOCK_CHANNELS.filter((c) => c.isLive)).map((ch, i) => (
+            <StreamCardHover key={ch.id} channel={ch} layout={platformLayout} featured={platformLayout === "magazine" && i === 0} />
           ))}
         </div>
       </section>
