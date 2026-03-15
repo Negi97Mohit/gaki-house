@@ -10,7 +10,8 @@ import { useAuth } from "../context/AuthContext";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc, getDoc, collection, query, where, getDocs, setDoc } from "firebase/firestore";
 import { toast } from "sonner";
-import { useThemeStore, themes, ThemeName } from "@/features/theme";
+import { useThemeStore, themes, ThemeName, APP_FONTS, PLATFORM_LAYOUTS } from "@/features/theme";
+import type { AppFont, PlatformLayout } from "@/features/theme";
 import { DefaultAvatar, DEFAULT_AVATARS, getDefaultAvatar } from "../components/DefaultAvatar";
 
 const PUBLIC_TABS = [
