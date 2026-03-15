@@ -819,3 +819,56 @@ const ToggleRow: React.FC<{
     </button>
   </div>
 );
+
+const LayoutPreview: React.FC<{ type: PlatformLayout; isActive: boolean }> = ({ type, isActive }) => {
+  const barColor = isActive ? "bg-primary/40" : "bg-muted-foreground/20";
+  const blockColor = isActive ? "bg-primary/25" : "bg-muted-foreground/10";
+
+  const layouts: Record<PlatformLayout, React.ReactNode> = {
+    default: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-3 h-full rounded-sm", barColor)} />
+        <div className="flex-1 flex flex-col gap-0.5">
+          <div className={cn("h-5 rounded-sm", blockColor)} />
+          <div className="flex-1 grid grid-cols-3 gap-0.5">
+            <div className={cn("rounded-sm", blockColor)} />
+            <div className={cn("rounded-sm", blockColor)} />
+            <div className={cn("rounded-sm", blockColor)} />
+          </div>
+        </div>
+      </div>
+    ),
+    compact: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-4 gap-0.5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className={cn("rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    cozy: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-3 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-2 gap-1">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={cn("rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    theater: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-7 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 grid grid-cols-4 gap-0.5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={cn("rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+  };
+
+  return <div className="w-full">{layouts[type]}</div>;
+};
