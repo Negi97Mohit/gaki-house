@@ -66,6 +66,10 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user, openAuthModal } = useAuth();
   const requestGoLive = useGoLiveStore((s) => s.requestGoLive);
+  const platformLayout = useThemeStore((s) => s.platformLayout);
+  const streamGridClasses = getStreamGridClasses(platformLayout);
+  const categoryGridClasses = getCategoryGridClasses(platformLayout);
+  const streamCount = getStreamCount(platformLayout);
 
   const handleGoLive = () => {
     if (!user) {
