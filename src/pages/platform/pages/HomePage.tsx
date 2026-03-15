@@ -91,9 +91,11 @@ export const HomePage: React.FC = () => {
   const liveStreams = streams.filter(s => s.isLive && isEmbeddablePlatform(s.platform));
 
   return (
-    <div className="pb-12">
+    <div className={cn("pb-12", platformLayout === "theater" && "max-w-[1600px] mx-auto")}>
       {/* Hero: Live Stream Carousel */}
-      <LiveStreamCarousel streams={streams} isLoading={isLoading} />
+      {platformLayout !== "compact" && (
+        <LiveStreamCarousel streams={streams} isLoading={isLoading} />
+      )}
 
       {/* Go Live CTA Banner */}
       <section className="px-6 mt-6">
