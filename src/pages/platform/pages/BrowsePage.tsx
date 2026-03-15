@@ -224,29 +224,42 @@ export const BrowsePage: React.FC = () => {
         <p className="text-muted-foreground text-sm mt-1">Discover live channels and categories</p>
       </div>
 
-      {/* Filters */}
+      {/* Platform filters — horizontal scroll */}
       <div className="space-y-3">
-        <div className="flex items-center gap-3">
-          <FilterPills
-            items={PLATFORM_FILTER_GROUPS.map(g => g.label)}
-            selected={PLATFORM_FILTER_GROUPS.find(g => g.key === selectedFilter)?.label || "All"}
-            onSelect={(label) => {
-              const group = PLATFORM_FILTER_GROUPS.find(g => g.label === label);
-              if (group) { setSelectedFilter(group.key); setShowPlatforms(false); }
-            }}
-          />
+        <HorizontalScroll>
           <button
-            onClick={() => setShowPlatforms(!showPlatforms)}
+            onClick={() => setSelectedFilter("all")}
             className={cn(
-              "p-2 rounded-lg transition-colors shrink-0",
-              showPlatforms ? "bg-primary/10 text-primary" : "bg-muted/60 text-muted-foreground hover:text-foreground"
+              "px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all shrink-0",
+              selectedFilter === "all"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
           >
-            <SlidersHorizontal className="w-4 h-4" />
+            All
           </button>
-        </div>
-
-        {showPlatforms && <PlatformChips selectedFilter={selectedFilter} onSelect={setSelectedFilter} />}
+          {ALL_PLATFORMS.map((p) => {
+            const meta = PLATFORM_META[p];
+            const PIcon = getPlatformIcon(p);
+            const isActive = selectedFilter === p;
+            return (
+              <button
+                key={p}
+                onClick={() => setSelectedFilter(p)}
+                className={cn(
+                  "px-3 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all shrink-0 flex items-center gap-1.5 border",
+                  isActive
+                    ? "text-white border-transparent shadow-sm"
+                    : "bg-muted/60 text-muted-foreground hover:text-foreground border-transparent hover:bg-muted"
+                )}
+                style={isActive ? { backgroundColor: meta.color, color: meta.textColor } : undefined}
+              >
+                <PIcon className="w-3.5 h-3.5" style={{ color: isActive ? meta.textColor : meta.color }} />
+                {meta.label}
+              </button>
+            );
+          })}
+        </HorizontalScroll>
 
         <FilterPills items={ALL_TAGS} selected={selectedTag} onSelect={setSelectedTag} />
       </div>
