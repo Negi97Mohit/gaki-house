@@ -187,8 +187,8 @@ export const HomePage: React.FC = () => {
                 </span>
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-              {channels.slice(0, 10).map((ch) => (
+            <div className={streamGridClasses}>
+              {channels.slice(0, streamCount).map((ch) => (
                 <StreamCardHover key={ch.id} channel={ch} />
               ))}
             </div>
