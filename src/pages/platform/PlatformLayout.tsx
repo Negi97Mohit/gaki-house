@@ -9,14 +9,14 @@ import { cn } from "@/shared/lib/utils";
 
 export const PlatformLayout: React.FC = () => {
   const platformLayout = useThemeStore((s) => s.platformLayout);
-  const hideSidebar = platformLayout === "theater";
+  const forceCollapsed = platformLayout === "theater" || platformLayout === "cinematic" || platformLayout === "feed";
 
   return (
     <div className="h-screen w-full flex flex-col bg-background text-foreground overflow-hidden">
       <PlatformTopNav />
       <div className="flex flex-1 overflow-hidden">
-        {!hideSidebar && <PlatformSidebar />}
-        <main className={cn("flex-1 overflow-y-auto pb-14 md:pb-0", hideSidebar && "max-w-full")}>
+        <PlatformSidebar forceCollapsed={forceCollapsed} />
+        <main className="flex-1 overflow-y-auto pb-14 md:pb-0">
           <Outlet />
         </main>
       </div>
