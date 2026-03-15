@@ -132,10 +132,10 @@ export const HomePage: React.FC = () => {
             View all <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+        <div className={streamGridClasses}>
           {isLoading
-            ? Array.from({ length: 10 }).map((_, i) => <SkeletonStreamCard key={i} />)
-            : liveStreams.slice(0, 10).map((ch) => (
+            ? Array.from({ length: streamCount }).map((_, i) => <SkeletonStreamCard key={i} />)
+            : liveStreams.slice(0, streamCount).map((ch) => (
               <StreamCardHover key={ch.id} channel={ch} />
             ))}
         </div>
