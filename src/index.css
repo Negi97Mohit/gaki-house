@@ -20,6 +20,13 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --font-app: geist-sans;
+  }
+
+  * {
+    font-family: var(--font-app, geist-sans), system-ui, sans-serif;
+  }
 
   /* ===== DEFAULT THEME (Yellow/Gold) ===== */
   :root,
