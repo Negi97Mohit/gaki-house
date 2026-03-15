@@ -151,6 +151,11 @@ const PlatformIcons: Record<string, React.FC<{ className?: string }>> = {
       <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-3-7v-2h6v2H9zm0-4v-2h6v2H9z" />
     </svg>
   ),
+  gaki: ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9V7h2v10zm5-4h-2V7h2v6zm-5 0l3-3-3-3v6z" />
+    </svg>
+  ),
 };
 
 interface StreamPlatformSelectorProps {

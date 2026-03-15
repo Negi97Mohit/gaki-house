@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Radio,
   Eye,
@@ -12,6 +12,8 @@ import {
   Check,
   ChevronRight,
   Pencil,
+  Sparkles,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
@@ -67,6 +69,7 @@ const PLATFORM_SVG_PATHS: Record<string, string> = {
   red5: "M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zM8 7h4c1.657 0 3 1.343 3 3s-1.343 3-3 3h-2v4H8V7zm4 4c.552 0 1-.448 1-1s-.448-1-1-1H10v2h2z",
   mediasoup: "M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-3-7v-2h6v2H9zm0-4v-2h6v2H9z",
   custom: "M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-2-14v8l6-4z",
+  gaki: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15H9V7h2v10zm5-4h-2V7h2v6zm-5 0l3-3-3-3v6z",
 };
 
 const PlatformIcon: React.FC<{
@@ -617,6 +620,42 @@ export const StreamConfigurationModal: React.FC<
                       )}
                     </Button>
                   </div>
+
+                  {/* GAKI Generate Stream Key */}
+                  {selectedPlatformId === "gaki" && (
+                    <div className="pt-1 space-y-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs h-8 gap-2 border-primary/30 hover:border-primary/60 hover:bg-primary/5"
+                        onClick={() => {
+                          const generatedKey = `gaki_live_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 10)}`;
+                          setNewKey(generatedKey);
+                          setNewUrl("rtmp://live.gaki.app/stream/");
+                        }}
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-primary" />
+                        Generate Stream Key
+                      </Button>
+                      {newKey && newKey.startsWith("gaki_live_") && (
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-primary/5 border border-primary/10">
+                          <p className="text-[10px] text-muted-foreground font-mono truncate flex-1">{newKey}</p>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 shrink-0"
+                            onClick={() => {
+                              navigator.clipboard.writeText(newKey);
+                            }}
+                          >
+                            <Copy className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* OAuth Connect Buttons */}
                   {(selectedPlatformId === "twitch" || selectedPlatformId === "youtube") && (

@@ -12,6 +12,15 @@ export interface StreamingPlatform {
 }
 
 export const STREAMING_PLATFORMS: StreamingPlatform[] = [
+  // GAKI (This App)
+  {
+    id: 'gaki',
+    name: 'GAKI',
+    category: 'major',
+    color: '#8B5CF6',
+    icon: 'gaki',
+    rtmpUrl: 'rtmp://live.gaki.app/stream/',
+  },
   // Major Platforms
   {
     id: 'youtube',
