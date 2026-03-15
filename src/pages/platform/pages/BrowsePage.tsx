@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { MOCK_CATEGORIES, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
@@ -7,11 +7,12 @@ import { CategoryCard } from "../components/CategoryCard";
 import { StreamCardHover } from "../components/StreamCardHover";
 import { cn } from "@/shared/lib/utils";
 import { useThemeStore, type PlatformLayout } from "@/features/theme";
+import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 
 const getBrowseStreamGrid = (layout: PlatformLayout) => {
   switch (layout) {
     case "compact":
-      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2";
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3";
     case "cozy":
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
     case "theater":
@@ -29,21 +30,6 @@ const getBrowseStreamGrid = (layout: PlatformLayout) => {
   }
 };
 
-const getBrowseCategoryGrid = (layout: PlatformLayout) => {
-  switch (layout) {
-    case "compact":
-      return "grid grid-cols-4 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-9 xl:grid-cols-10 gap-3";
-    case "cozy":
-      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5";
-    case "feed":
-      return "grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-2xl mx-auto";
-    case "cinematic":
-      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4";
-    default:
-      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-5";
-  }
-};
-
 const ALL_TAGS = [
   "All", "IRL", "Shooter", "FPS", "MOBA", "Action", "Sandbox", "Adventure",
   "Battle Royale", "Tactical", "Creative", "Food", "Casual",
@@ -51,24 +37,18 @@ const ALL_TAGS = [
   "Relaxation", "Tech",
 ];
 
-// All platforms available
 const ALL_PLATFORMS: PlatformType[] = [
-  // Major
   "youtube", "twitch", "facebook", "tiktok", "instagram", "x", "linkedin",
-  // Gaming
   "kick", "rumble", "dlive", "trovo", "bilibili", "nimotv",
-  // Professional
   "vimeo", "vk", "mixcloud", "brightcove", "jwplayer", "kaltura", "ibm", "wowza", "mux", "aws",
-  // Self-Hosted
   "owncast", "peertube", "nginx", "wowzaserver", "antmedia", "red5", "mediasoup",
 ];
 
-// Group keys for the filter tabs
 const PLATFORM_FILTER_GROUPS = [
-  { key: "all" as const, label: "All Platforms" },
+  { key: "all" as const, label: "All" },
   { key: "major" as const, label: "Popular" },
   { key: "gaming" as const, label: "Gaming" },
-  { key: "professional" as const, label: "Professional" },
+  { key: "professional" as const, label: "Pro" },
   { key: "selfhosted" as const, label: "Self-Hosted" },
 ];
 
@@ -81,36 +61,102 @@ const PLATFORMS_BY_GROUP: Record<string, PlatformType[]> = {
 
 type FilterSelection = "all" | "major" | "gaming" | "professional" | "selfhosted" | PlatformType;
 
+// ── Horizontal scroll container with arrows ──
+const HorizontalScroll: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const updateScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  const scroll = (dir: number) => {
+    scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
+  };
+
+  return (
+    <div className={cn("relative group/scroll", className)}>
+      {canScrollLeft && (
+        <button
+          onClick={() => scroll(-1)}
+          className="absolute left-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-r from-background via-background/80 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity"
+        >
+          <ChevronLeft className="w-5 h-5 text-foreground" />
+        </button>
+      )}
+      <div
+        ref={scrollRef}
+        onScroll={updateScroll}
+        className="flex gap-4 overflow-x-auto scrollbar-none scroll-smooth pb-1"
+      >
+        {children}
+      </div>
+      {canScrollRight && (
+        <button
+          onClick={() => scroll(1)}
+          className="absolute right-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-l from-background via-background/80 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity"
+        >
+          <ChevronRight className="w-5 h-5 text-foreground" />
+        </button>
+      )}
+    </div>
+  );
+};
+
+// ── Minimal filter pill row ──
+const FilterPills: React.FC<{
+  items: string[];
+  selected: string;
+  onSelect: (v: string) => void;
+}> = ({ items, selected, onSelect }) => (
+  <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
+    {items.map((item) => (
+      <button
+        key={item}
+        onClick={() => onSelect(item)}
+        className={cn(
+          "px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all shrink-0",
+          selected === item
+            ? "bg-primary text-primary-foreground shadow-sm"
+            : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+        )}
+      >
+        {item}
+      </button>
+    ))}
+  </div>
+);
+
 export const BrowsePage: React.FC = () => {
   const { category } = useParams();
   const [selectedTag, setSelectedTag] = useState("All");
   const [selectedFilter, setSelectedFilter] = useState<FilterSelection>("all");
-  const [showAllPlatforms, setShowAllPlatforms] = useState(false);
+  const [showPlatforms, setShowPlatforms] = useState(false);
   const { data: MOCK_CHANNELS = [] } = useStreams();
   const platformLayout = useThemeStore((s) => s.platformLayout);
   const streamGrid = getBrowseStreamGrid(platformLayout);
-  const categoryGrid = getBrowseCategoryGrid(platformLayout);
 
-  // Determine which platforms match the filter
   const getFilteredPlatforms = (): PlatformType[] | null => {
-    if (selectedFilter === "all") return null; // no filtering
+    if (selectedFilter === "all") return null;
     if (PLATFORMS_BY_GROUP[selectedFilter]) return PLATFORMS_BY_GROUP[selectedFilter];
-    return [selectedFilter as PlatformType]; // individual platform
+    return [selectedFilter as PlatformType];
   };
 
-  // Filter channels by platform selection
   const filterByPlatform = (channels: typeof MOCK_CHANNELS) => {
     const platforms = getFilteredPlatforms();
     if (!platforms) return channels;
     return channels.filter((c) => c.platform && platforms.includes(c.platform));
   };
 
-  // If category slug is present, show streams for that category
+  // ── Category detail view ──
   if (category) {
     const cat = MOCK_CATEGORIES.find((c) => c.slug === category);
     let streams = MOCK_CHANNELS.filter((c) => c.categorySlug === category);
     streams = filterByPlatform(streams);
-
     const filteredStreams =
       selectedTag === "All"
         ? streams
@@ -118,31 +164,34 @@ export const BrowsePage: React.FC = () => {
     const streamTags = ["All", ...new Set(MOCK_CHANNELS.filter((c) => c.categorySlug === category).flatMap((s) => s.tags))];
 
     return (
-      <div className="p-6 pb-12">
-        <h1 className="text-2xl font-bold text-foreground mb-1">{cat?.name || category}</h1>
-        <p className="text-muted-foreground text-sm mb-5">
-          {filteredStreams.length} channels streaming
-        </p>
+      <div className="p-6 lg:p-8 pb-16 max-w-[1800px] mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">{cat?.name || category}</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            {filteredStreams.length} channels streaming
+          </p>
+        </div>
 
-        {/* Platform group filters */}
-        <PlatformFilterRow selectedFilter={selectedFilter} onSelect={setSelectedFilter} showAll={showAllPlatforms} onToggle={setShowAllPlatforms} />
-
-        {/* Tag filters */}
-        <div className="flex gap-1.5 mb-6 overflow-x-auto pb-2 scrollbar-thin">
-          {streamTags.map((tag) => (
+        <div className="space-y-4 mb-8">
+          <div className="flex items-center gap-3">
+            <FilterPills items={PLATFORM_FILTER_GROUPS.map(g => g.label)} selected={PLATFORM_FILTER_GROUPS.find(g => g.key === selectedFilter)?.label || "All"} onSelect={(label) => {
+              const group = PLATFORM_FILTER_GROUPS.find(g => g.label === label);
+              if (group) { setSelectedFilter(group.key); setShowPlatforms(false); }
+            }} />
             <button
-              key={tag}
-              onClick={() => setSelectedTag(tag)}
+              onClick={() => setShowPlatforms(!showPlatforms)}
               className={cn(
-                "px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors shrink-0",
-                selectedTag === tag
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
+                "p-2 rounded-lg transition-colors shrink-0",
+                showPlatforms ? "bg-primary/10 text-primary" : "bg-muted/60 text-muted-foreground hover:text-foreground"
               )}
             >
-              {tag}
+              <SlidersHorizontal className="w-4 h-4" />
             </button>
-          ))}
+          </div>
+
+          {showPlatforms && <PlatformChips selectedFilter={selectedFilter} onSelect={setSelectedFilter} />}
+
+          <FilterPills items={streamTags} selected={selectedTag} onSelect={setSelectedTag} />
         </div>
 
         <div className={streamGrid}>
@@ -151,141 +200,125 @@ export const BrowsePage: React.FC = () => {
           ))}
         </div>
         {filteredStreams.length === 0 && (
-          <p className="text-muted-foreground text-sm text-center py-12">No streams found for this filter.</p>
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+            <p className="text-sm">No streams found</p>
+          </div>
         )}
       </div>
     );
   }
 
-  // Default browse view with category tag filters + platform filter
+  // ── Default browse view ──
   const filteredCategories =
     selectedTag === "All"
       ? MOCK_CATEGORIES
       : MOCK_CATEGORIES.filter((c) => c.tags.some((t) => t.toLowerCase() === selectedTag.toLowerCase()));
 
+  const liveChannels = filterByPlatform(MOCK_CHANNELS.filter((c) => c.isLive));
+
   return (
-    <div className="p-6 pb-12">
-      <h1 className="text-2xl font-bold text-foreground mb-1">Browse</h1>
-      <p className="text-muted-foreground text-sm mb-5">Explore top categories and live channels across all platforms</p>
+    <div className="p-6 lg:p-8 pb-16 max-w-[1800px] mx-auto space-y-10">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">Browse</h1>
+        <p className="text-muted-foreground text-sm mt-1">Discover live channels and categories</p>
+      </div>
 
-      {/* Platform group filters + individual platform chips */}
-      <PlatformFilterRow selectedFilter={selectedFilter} onSelect={setSelectedFilter} showAll={showAllPlatforms} onToggle={setShowAllPlatforms} />
-
-      {/* Tag filters */}
-      <div className="flex gap-1.5 mb-6 overflow-x-auto pb-2 scrollbar-thin">
-        {ALL_TAGS.map((tag) => (
+      {/* Filters */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <FilterPills
+            items={PLATFORM_FILTER_GROUPS.map(g => g.label)}
+            selected={PLATFORM_FILTER_GROUPS.find(g => g.key === selectedFilter)?.label || "All"}
+            onSelect={(label) => {
+              const group = PLATFORM_FILTER_GROUPS.find(g => g.label === label);
+              if (group) { setSelectedFilter(group.key); setShowPlatforms(false); }
+            }}
+          />
           <button
-            key={tag}
-            onClick={() => setSelectedTag(tag)}
+            onClick={() => setShowPlatforms(!showPlatforms)}
             className={cn(
-              "px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors shrink-0",
-              selectedTag === tag
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground"
+              "p-2 rounded-lg transition-colors shrink-0",
+              showPlatforms ? "bg-primary/10 text-primary" : "bg-muted/60 text-muted-foreground hover:text-foreground"
             )}
           >
-            {tag}
+            <SlidersHorizontal className="w-4 h-4" />
           </button>
-        ))}
+        </div>
+
+        {showPlatforms && <PlatformChips selectedFilter={selectedFilter} onSelect={setSelectedFilter} />}
+
+        <FilterPills items={ALL_TAGS} selected={selectedTag} onSelect={setSelectedTag} />
       </div>
 
-      <div className={categoryGrid}>
-        {filteredCategories.map((cat) => (
-          <CategoryCard key={cat.id} category={cat} />
-        ))}
-      </div>
-      {filteredCategories.length === 0 && (
-        <p className="text-muted-foreground text-sm text-center py-12">No categories found for this filter.</p>
-      )}
+      {/* Top Categories — Horizontal Scroll */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-foreground">Top Categories</h2>
+          <span className="text-xs text-muted-foreground">{filteredCategories.length} categories</span>
+        </div>
+        <HorizontalScroll>
+          {filteredCategories.map((cat) => (
+            <div key={cat.id} className="shrink-0 w-[140px] sm:w-[160px]">
+              <CategoryCard category={cat} />
+            </div>
+          ))}
+          {filteredCategories.length === 0 && (
+            <p className="text-muted-foreground text-sm py-8 w-full text-center">No categories found</p>
+          )}
+        </HorizontalScroll>
+      </section>
 
-      {/* Live channels by selected platform filter */}
-      <section className="mt-10">
-        <h2 className="text-lg font-bold text-foreground mb-4">
-          {selectedFilter === "all"
-            ? "All Live Channels"
-            : PLATFORM_META[selectedFilter as PlatformType]
-              ? `${PLATFORM_META[selectedFilter as PlatformType].label} — Live Now`
-              : `${PLATFORM_CATEGORY_LABELS[selectedFilter] || selectedFilter} — Live Now`}
-        </h2>
+      {/* Live Channels */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-foreground">
+            {selectedFilter === "all"
+              ? "Live Now"
+              : PLATFORM_META[selectedFilter as PlatformType]
+                ? `${PLATFORM_META[selectedFilter as PlatformType].label} — Live`
+                : `${PLATFORM_CATEGORY_LABELS[selectedFilter] || selectedFilter} — Live`}
+          </h2>
+          <span className="text-xs text-muted-foreground">{liveChannels.length} streams</span>
+        </div>
         <div className={streamGrid}>
-          {filterByPlatform(MOCK_CHANNELS.filter((c) => c.isLive)).map((ch, i) => (
+          {liveChannels.map((ch, i) => (
             <StreamCardHover key={ch.id} channel={ch} layout={platformLayout} featured={platformLayout === "magazine" && i === 0} />
           ))}
         </div>
+        {liveChannels.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+            <p className="text-sm">No live channels</p>
+          </div>
+        )}
       </section>
     </div>
   );
 };
 
-// ── Platform filter row component ──
-interface PlatformFilterRowProps {
-  selectedFilter: FilterSelection;
-  onSelect: (f: FilterSelection) => void;
-  showAll: boolean;
-  onToggle: (v: boolean) => void;
-}
-
-const PlatformFilterRow: React.FC<PlatformFilterRowProps> = ({ selectedFilter, onSelect, showAll, onToggle }) => {
-  return (
-    <div className="mb-3">
-      {/* Group tabs (All / Popular / Gaming / Professional / Self-Hosted) */}
-      <div className="flex gap-1.5 mb-2 overflow-x-auto pb-1 scrollbar-thin">
-        {PLATFORM_FILTER_GROUPS.map((g) => (
-          <button
-            key={g.key}
-            onClick={() => { onSelect(g.key); onToggle(false); }}
-            className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-colors shrink-0",
-              selectedFilter === g.key
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {g.label}
-          </button>
-        ))}
+// ── Platform chips panel ──
+const PlatformChips: React.FC<{ selectedFilter: FilterSelection; onSelect: (f: FilterSelection) => void }> = ({ selectedFilter, onSelect }) => (
+  <div className="flex flex-wrap gap-1.5 p-3 bg-muted/30 rounded-xl border border-border/40">
+    {ALL_PLATFORMS.map((p) => {
+      const meta = PLATFORM_META[p];
+      const PIcon = getPlatformIcon(p);
+      const isActive = selectedFilter === p;
+      return (
         <button
-          onClick={() => onToggle(!showAll)}
+          key={p}
+          onClick={() => onSelect(p)}
           className={cn(
-            "px-3 py-1.5 text-xs font-medium rounded-full whitespace-nowrap transition-colors shrink-0 border",
-            showAll
-              ? "border-primary text-primary bg-primary/10"
-              : "border-border text-muted-foreground hover:text-foreground"
+            "px-2.5 py-1 text-[11px] font-medium rounded-full whitespace-nowrap transition-all shrink-0 flex items-center gap-1 border",
+            isActive
+              ? "text-white border-transparent shadow-sm"
+              : "bg-background text-muted-foreground hover:text-foreground border-border/40 hover:border-border"
           )}
+          style={isActive ? { backgroundColor: meta.color, color: meta.textColor } : undefined}
         >
-          {showAll ? "Hide Platforms ▲" : "All Platforms ▼"}
+          <PIcon className="w-3 h-3" style={{ color: isActive ? meta.textColor : meta.color }} />
+          {meta.label}
         </button>
-      </div>
-
-      {/* Individual platform chips (shown when expanded) */}
-      {showAll && (
-        <div className="flex flex-wrap gap-1.5 mb-2 p-3 bg-muted/40 rounded-lg border border-border/50">
-          {ALL_PLATFORMS.map((p) => {
-            const meta = PLATFORM_META[p];
-            const PIcon = getPlatformIcon(p);
-            const isActive = selectedFilter === p;
-            return (
-              <button
-                key={p}
-                onClick={() => onSelect(p)}
-                className={cn(
-                  "px-2.5 py-1 text-[11px] font-medium rounded-full whitespace-nowrap transition-all shrink-0 flex items-center gap-1 border",
-                  isActive
-                    ? "text-white border-transparent shadow-sm"
-                    : "bg-background text-muted-foreground hover:text-foreground border-border/60 hover:border-border"
-                )}
-                style={isActive ? { backgroundColor: meta.color, color: meta.textColor } : undefined}
-              >
-                <PIcon
-                  className="w-3 h-3"
-                  style={{ color: isActive ? meta.textColor : meta.color }}
-                />
-                {meta.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-};
+      );
+    })}
+  </div>
+);
