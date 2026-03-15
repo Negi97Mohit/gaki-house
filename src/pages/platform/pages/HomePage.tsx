@@ -23,13 +23,13 @@ const getStreamGridClasses = (layout: PlatformLayout) => {
     case "theater":
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
     case "magazine":
-      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 auto-rows-auto";
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 auto-rows-[220px]";
     case "cinematic":
-      return "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6";
+      return "flex flex-col gap-6 max-w-5xl mx-auto";
     case "mosaic":
       return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3";
     case "feed":
-      return "flex flex-col items-center gap-6 max-w-2xl mx-auto";
+      return "flex flex-col items-center gap-6 max-w-3xl mx-auto";
     default:
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
   }
@@ -58,7 +58,7 @@ const getStreamCount = (layout: PlatformLayout) => {
     case "cozy": return 8;
     case "theater": return 10;
     case "feed": return 6;
-    case "cinematic": return 6;
+    case "cinematic": return 5;
     case "mosaic": return 15;
     case "magazine": return 11;
     default: return 10;
@@ -145,9 +145,7 @@ export const HomePage: React.FC = () => {
       platformLayout === "cinematic" && "max-w-[1800px] mx-auto"
     )}>
       {/* Hero: Live Stream Carousel */}
-      {platformLayout !== "compact" && (
-        <LiveStreamCarousel streams={streams} isLoading={isLoading} />
-      )}
+      <LiveStreamCarousel streams={streams} isLoading={isLoading} layout={platformLayout} />
 
       {/* Go Live CTA Banner */}
       <section className={cn("px-6 mt-6", platformLayout === "feed" && "px-0")}>

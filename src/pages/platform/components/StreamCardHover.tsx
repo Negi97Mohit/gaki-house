@@ -35,11 +35,11 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
     : null;
 
   const thumbnailAspect = isCinematic
-    ? "aspect-[21/9]"
+    ? "aspect-[21/9] sm:aspect-[3/1]"
     : isFeed
     ? "aspect-video"
     : isMagazineFeatured
-    ? "aspect-[16/10]"
+    ? "h-full"
     : isCompact
     ? "aspect-video"
     : mosaicAspect || "aspect-video";
@@ -49,9 +49,9 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
       to={`/platform/stream/${channel.username}`}
       className={cn(
         "group block",
-        isFeed && "w-full",
+        (isFeed || isCinematic) && "w-full",
         isMosaic && "break-inside-avoid mb-3",
-        isMagazineFeatured && "col-span-2 row-span-2"
+        isMagazineFeatured && "col-span-2 row-span-2 h-full"
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
