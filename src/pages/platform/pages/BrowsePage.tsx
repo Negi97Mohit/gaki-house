@@ -145,9 +145,9 @@ export const BrowsePage: React.FC = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-          {filteredStreams.map((ch) => (
-            <StreamCard key={ch.id} channel={ch} />
+        <div className={streamGrid}>
+          {filteredStreams.map((ch, i) => (
+            <StreamCardHover key={ch.id} channel={ch} layout={platformLayout} featured={platformLayout === "magazine" && i === 0} />
           ))}
         </div>
         {filteredStreams.length === 0 && (
