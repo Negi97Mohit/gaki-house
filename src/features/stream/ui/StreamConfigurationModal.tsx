@@ -621,6 +621,42 @@ export const StreamConfigurationModal: React.FC<
                     </Button>
                   </div>
 
+                  {/* GAKI Generate Stream Key */}
+                  {selectedPlatformId === "gaki" && (
+                    <div className="pt-1 space-y-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs h-8 gap-2 border-primary/30 hover:border-primary/60 hover:bg-primary/5"
+                        onClick={() => {
+                          const generatedKey = `gaki_live_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 10)}`;
+                          setNewKey(generatedKey);
+                          setNewUrl("rtmp://live.gaki.app/stream/");
+                        }}
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-primary" />
+                        Generate Stream Key
+                      </Button>
+                      {newKey && newKey.startsWith("gaki_live_") && (
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-primary/5 border border-primary/10">
+                          <p className="text-[10px] text-muted-foreground font-mono truncate flex-1">{newKey}</p>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 shrink-0"
+                            onClick={() => {
+                              navigator.clipboard.writeText(newKey);
+                            }}
+                          >
+                            <Copy className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* OAuth Connect Buttons */}
                   {(selectedPlatformId === "twitch" || selectedPlatformId === "youtube") && (
                     <div className="pt-1">
