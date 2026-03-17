@@ -8,7 +8,7 @@ import { useThemeStore } from "@/features/theme";
 
 export const PlatformLayout: React.FC = () => {
   const platformLayout = useThemeStore((s) => s.platformLayout);
-  const forceCollapsed = platformLayout === "theater" || platformLayout === "cinematic" || platformLayout === "feed";
+  const forceCollapsed = platformLayout === "theater" || platformLayout === "cinematic" || platformLayout === "feed" || platformLayout === "netflix" || platformLayout === "hbo" || platformLayout === "appletv" || platformLayout === "disneyplus";
 
   return (
     <div className="h-screen w-full flex flex-col bg-background text-foreground overflow-hidden">

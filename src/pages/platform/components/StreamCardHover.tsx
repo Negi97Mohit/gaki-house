@@ -26,6 +26,12 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
   const isMosaic = layout === "mosaic";
   const isMagazineFeatured = layout === "magazine" && featured;
   const isCompact = layout === "compact";
+  const isNetflix = layout === "netflix";
+  const isHbo = layout === "hbo";
+  const isAppleTv = layout === "appletv";
+  const isDisneyPlus = layout === "disneyplus";
+  const isSpotify = layout === "spotify";
+  const isYoutube = layout === "youtube";
 
   // Mosaic: randomize aspect ratio for staggered effect
   const mosaicAspect = isMosaic
@@ -40,6 +46,16 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
     ? "aspect-video"
     : isMagazineFeatured
     ? "h-full"
+    : isNetflix || isDisneyPlus
+    ? "aspect-[2/3]"
+    : isHbo
+    ? "aspect-[3/4]"
+    : isAppleTv
+    ? "aspect-[4/3]"
+    : isSpotify
+    ? "aspect-square"
+    : isYoutube
+    ? "aspect-video"
     : isCompact
     ? "aspect-video"
     : mosaicAspect || "aspect-video";
@@ -51,7 +67,9 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
         "group block",
         (isFeed || isCinematic) && "w-full",
         isMosaic && "break-inside-avoid mb-3",
-        isMagazineFeatured && "col-span-2 row-span-2 h-full"
+        isMagazineFeatured && "col-span-2 row-span-2 h-full",
+        (isNetflix || isDisneyPlus) && "shrink-0 w-[140px] sm:w-[180px] snap-start",
+        isSpotify && "block",
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -60,7 +78,10 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
       <div className={cn(
         "relative rounded-xl overflow-hidden bg-muted mb-2",
         thumbnailAspect,
-        isMagazineFeatured && "rounded-2xl"
+        isMagazineFeatured && "rounded-2xl",
+        isDisneyPlus && "rounded-2xl",
+        isSpotify && "rounded-lg",
+        (isNetflix || isHbo) && "rounded-md",
       )}>
         {isHovered && channel.streamUrl && isEmbeddablePlatform(channel.platform) && channel.platform !== "twitch" ? (
           <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
@@ -132,22 +153,25 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
           </div>
         )}
 
-        {/* Gradient overlay for magazine featured */}
-        {isMagazineFeatured && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[5]" />
+        {/* Gradient overlay for magazine featured / streaming layouts */}
+        {(isMagazineFeatured || isNetflix || isHbo || isAppleTv || isDisneyPlus) && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-[5]" />
         )}
 
-        {/* Magazine featured: overlay info */}
-        {isMagazineFeatured && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-            <p className="text-white text-lg font-bold truncate drop-shadow-lg">{channel.title}</p>
-            <p className="text-white/80 text-sm mt-0.5">{channel.displayName} · {channel.category}</p>
+        {/* Overlay info for streaming-style layouts */}
+        {(isMagazineFeatured || isNetflix || isHbo || isDisneyPlus) && (
+          <div className="absolute bottom-0 left-0 right-0 p-2.5 z-10">
+            <p className={cn(
+              "text-white font-bold truncate drop-shadow-lg",
+              isMagazineFeatured ? "text-lg" : "text-xs"
+            )}>{channel.title}</p>
+            <p className="text-white/70 text-[10px] mt-0.5 truncate">{channel.displayName}</p>
           </div>
         )}
       </div>
 
-      {/* Info - hidden for magazine featured (shown in overlay) */}
-      {!isMagazineFeatured && (
+      {/* Info - hidden for overlay layouts */}
+      {!isMagazineFeatured && !isNetflix && !isHbo && !isDisneyPlus && (
         <div className={cn("flex gap-2.5", isFeed && "px-1")}>
           {!avatarError && channel.avatar ? (
             <img

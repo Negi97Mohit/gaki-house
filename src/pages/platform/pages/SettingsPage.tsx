@@ -572,35 +572,44 @@ export const SettingsPage: React.FC = () => {
                   </div>
                   Platform Layout
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
-                  {PLATFORM_LAYOUTS.map((layout) => {
-                    const isActive = platformLayout === layout.id;
-                    return (
-                      <button
-                        key={layout.id}
-                        onClick={() => setPlatformLayout(layout.id)}
-                        className={cn(
-                          "group relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
-                          isActive
-                            ? "border-primary bg-primary/5 ring-1 ring-primary/30"
-                            : "border-border/10 hover:border-border/40"
-                        )}
-                      >
-                        {/* Layout preview mini wireframe */}
-                        <LayoutPreview type={layout.id} isActive={isActive} />
-                        <div className="text-center">
-                          <span className="text-xs font-semibold text-foreground block">{layout.label}</span>
-                          <span className="text-[10px] text-muted-foreground">{layout.description}</span>
-                        </div>
-                        {isActive && (
-                          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-2.5 h-2.5 text-primary-foreground" />
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
+
+                {/* Group by category */}
+                {["Classic", "Streaming"].map((category) => {
+                  const categoryLayouts = PLATFORM_LAYOUTS.filter((l) => l.category === category);
+                  return (
+                    <div key={category} className="mb-4 last:mb-0">
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">{category}</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
+                        {categoryLayouts.map((layout) => {
+                          const isActive = platformLayout === layout.id;
+                          return (
+                            <button
+                              key={layout.id}
+                              onClick={() => setPlatformLayout(layout.id)}
+                              className={cn(
+                                "group relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
+                                isActive
+                                  ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                                  : "border-border/10 hover:border-border/40"
+                              )}
+                            >
+                              <LayoutPreview type={layout.id} isActive={isActive} />
+                              <div className="text-center">
+                                <span className="text-xs font-semibold text-foreground block">{layout.label}</span>
+                                <span className="text-[10px] text-muted-foreground">{layout.description}</span>
+                              </div>
+                              {isActive && (
+                                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                                  <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
               </GlassCard>
             </div>
           )}
@@ -921,6 +930,70 @@ const LayoutPreview: React.FC<{ type: PlatformLayout; isActive: boolean }> = ({ 
             <div className={cn("h-5 rounded-sm", blockColor)} />
             <div className={cn("h-5 rounded-sm", blockColor)} />
           </div>
+        </div>
+      </div>
+    ),
+    // ── Streaming-inspired layouts ──
+    netflix: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-5 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 flex gap-0.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className={cn("flex-1 rounded-sm", blockColor)} style={{ height: "100%" }} />
+          ))}
+        </div>
+      </div>
+    ),
+    youtube: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-3 gap-0.5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-px">
+              <div className={cn("flex-[2] rounded-sm", blockColor)} />
+              <div className={cn("flex-1 rounded-sm", isActive ? "bg-primary/15" : "bg-muted-foreground/5")} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+    hbo: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-6 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 flex gap-0.5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={cn("flex-1 rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    appletv: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-4 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 grid grid-cols-3 gap-1">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className={cn("rounded-md", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    disneyplus: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-3 w-full rounded-full", blockColor)} />
+        <div className="flex-1 flex gap-0.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className={cn("flex-1 rounded-lg", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    spotify: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-4 gap-0.5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className={cn("rounded-md aspect-square", blockColor)} />
+          ))}
         </div>
       </div>
     ),
