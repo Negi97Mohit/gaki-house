@@ -3188,25 +3188,25 @@ body.cursor-inactive * {
 
   /* ===== WAVEFORM PULSE THEME ===== */
   .theme-waveformPulse {
-    --background: 142 20% 98%;
-    --foreground: 142 20% 10%;
-    --card: 142 20% 96%;
-    --card-foreground: 142 20% 10%;
-    --popover: 142 20% 98%;
-    --popover-foreground: 142 20% 10%;
-    --primary: 142 71% 45%;
+    --background: 142 30% 97%;
+    --foreground: 142 25% 10%;
+    --card: 142 25% 95%;
+    --card-foreground: 142 25% 10%;
+    --popover: 142 30% 97%;
+    --popover-foreground: 142 25% 10%;
+    --primary: 142 71% 40%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 142 15% 92%;
-    --secondary-foreground: 142 20% 20%;
-    --muted: 142 15% 90%;
-    --muted-foreground: 142 10% 45%;
-    --accent: 142 71% 45%;
+    --secondary: 142 22% 91%;
+    --secondary-foreground: 142 22% 20%;
+    --muted: 142 20% 89%;
+    --muted-foreground: 142 15% 42%;
+    --accent: 142 71% 40%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 142 15% 80%;
-    --input: 142 15% 88%;
-    --ring: 142 71% 45%;
+    --border: 142 20% 62%;
+    --input: 142 20% 68%;
+    --ring: 142 71% 40%;
   }
 
   .dark.theme-waveformPulse,
