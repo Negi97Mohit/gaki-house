@@ -62,7 +62,7 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
       {/* Toggle Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 bg-muted hover:bg-muted/80 transition-colors"
       >
         <div className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-primary" />
