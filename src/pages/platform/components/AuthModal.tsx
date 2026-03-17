@@ -265,7 +265,7 @@ export const AuthModal: React.FC = () => {
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder="How others will see you"
                   required
-                  className="w-full bg-muted/50 border border-border/40 rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
+                  className="w-full bg-muted border border-border rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/60 transition-all"
                 />
               </div>
               <div className="space-y-1.5">
