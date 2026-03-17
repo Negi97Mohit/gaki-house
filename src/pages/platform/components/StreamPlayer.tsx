@@ -193,19 +193,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle DLive via iframe (loads the channel page directly)
-    if (channel.platform === "dlive") {
-        const username = channel.username;
-        return (
-            <iframe
-                src={`https://dlive.tv/${username}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
-    }
+    // DLive: removed — loads full page, no dedicated embed player, requires interaction
 
     // Handle Trovo via iframe
     if (channel.platform === "trovo") {
