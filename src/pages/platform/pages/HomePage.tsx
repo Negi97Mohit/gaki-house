@@ -30,6 +30,19 @@ const getStreamGridClasses = (layout: PlatformLayout) => {
       return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3";
     case "feed":
       return "flex flex-col items-center gap-6 max-w-3xl mx-auto";
+    // Streaming-inspired
+    case "netflix":
+      return "flex gap-3 overflow-x-auto scrollbar-none pb-2 snap-x snap-mandatory";
+    case "youtube":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4";
+    case "hbo":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3";
+    case "appletv":
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8";
+    case "disneyplus":
+      return "flex gap-4 overflow-x-auto scrollbar-none pb-2 snap-x";
+    case "spotify":
+      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4";
     default:
       return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
   }
@@ -47,6 +60,15 @@ const getCategoryGridClasses = (layout: PlatformLayout) => {
       return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4";
     case "mosaic":
       return "columns-3 sm:columns-4 md:columns-5 lg:columns-6 xl:columns-8 gap-3";
+    case "netflix":
+    case "disneyplus":
+      return "flex gap-3 overflow-x-auto scrollbar-none pb-2";
+    case "hbo":
+    case "appletv":
+      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3";
+    case "youtube":
+    case "spotify":
+      return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4";
     default:
       return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-8 gap-4";
   }
@@ -61,6 +83,12 @@ const getStreamCount = (layout: PlatformLayout) => {
     case "cinematic": return 5;
     case "mosaic": return 15;
     case "magazine": return 11;
+    case "netflix": return 15;
+    case "youtube": return 12;
+    case "hbo": return 10;
+    case "appletv": return 8;
+    case "disneyplus": return 12;
+    case "spotify": return 18;
     default: return 10;
   }
 };
