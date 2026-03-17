@@ -3418,25 +3418,25 @@ body.cursor-inactive * {
 
   /* ===== FRACTAL BLOOM THEME ===== */
   .theme-fractalBloom {
-    --background: 168 20% 98%;
-    --foreground: 168 20% 10%;
-    --card: 168 20% 96%;
-    --card-foreground: 168 20% 10%;
-    --popover: 168 20% 98%;
-    --popover-foreground: 168 20% 10%;
-    --primary: 168 76% 42%;
+    --background: 168 30% 97%;
+    --foreground: 168 25% 10%;
+    --card: 168 25% 95%;
+    --card-foreground: 168 25% 10%;
+    --popover: 168 30% 97%;
+    --popover-foreground: 168 25% 10%;
+    --primary: 168 76% 38%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 168 15% 92%;
-    --secondary-foreground: 168 20% 20%;
-    --muted: 168 15% 90%;
-    --muted-foreground: 168 10% 45%;
-    --accent: 168 76% 42%;
+    --secondary: 168 22% 91%;
+    --secondary-foreground: 168 22% 20%;
+    --muted: 168 20% 89%;
+    --muted-foreground: 168 15% 42%;
+    --accent: 168 76% 38%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 168 15% 80%;
-    --input: 168 15% 88%;
-    --ring: 168 76% 42%;
+    --border: 168 20% 62%;
+    --input: 168 20% 68%;
+    --ring: 168 76% 38%;
   }
 
   .dark.theme-fractalBloom,
