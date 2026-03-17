@@ -98,7 +98,7 @@ export const StreamPage: React.FC = () => {
 
   // Firestore for valid check
   useEffect(() => {
-    if (!user) {
+    if (!user || !channel) {
       setIsFollowing(false);
       return;
     }
@@ -116,7 +116,7 @@ export const StreamPage: React.FC = () => {
       }
     };
     checkFollow();
-  }, [user, channel.id]);
+  }, [user, channel?.id]);
 
   const toggleFollow = async () => {
     if (!user) {
