@@ -132,17 +132,25 @@ export interface ThemeConfig {
   glow: string;
 }
 
-export type PlatformLayout = "default" | "compact" | "cozy" | "theater" | "magazine" | "cinematic" | "mosaic" | "feed";
+export type PlatformLayout = "default" | "compact" | "cozy" | "theater" | "magazine" | "cinematic" | "mosaic" | "feed" | "netflix" | "youtube" | "hbo" | "appletv" | "disneyplus" | "spotify";
 
-export const PLATFORM_LAYOUTS: { id: PlatformLayout; label: string; description: string }[] = [
-  { id: "default", label: "Default", description: "Balanced grid layout" },
-  { id: "compact", label: "Compact", description: "Dense, more content visible" },
-  { id: "cozy", label: "Cozy", description: "Larger cards, more spacing" },
-  { id: "theater", label: "Theater", description: "Wide view, collapsed sidebar" },
-  { id: "magazine", label: "Magazine", description: "Editorial featured + grid mix" },
-  { id: "cinematic", label: "Cinematic", description: "Widescreen 16:9 cards" },
-  { id: "mosaic", label: "Mosaic", description: "Pinterest-style staggered grid" },
-  { id: "feed", label: "Feed", description: "Single-column social feed" },
+export const PLATFORM_LAYOUTS: { id: PlatformLayout; label: string; description: string; category?: string }[] = [
+  // Original layouts
+  { id: "default", label: "Default", description: "Balanced grid layout", category: "Classic" },
+  { id: "compact", label: "Compact", description: "Dense, more content visible", category: "Classic" },
+  { id: "cozy", label: "Cozy", description: "Larger cards, more spacing", category: "Classic" },
+  { id: "theater", label: "Theater", description: "Wide view, collapsed sidebar", category: "Classic" },
+  { id: "magazine", label: "Magazine", description: "Editorial featured + grid mix", category: "Classic" },
+  { id: "cinematic", label: "Cinematic", description: "Widescreen 16:9 cards", category: "Classic" },
+  { id: "mosaic", label: "Mosaic", description: "Pinterest-style staggered grid", category: "Classic" },
+  { id: "feed", label: "Feed", description: "Single-column social feed", category: "Classic" },
+  // Streaming-inspired layouts
+  { id: "netflix", label: "Netflix", description: "Horizontal rows with big hero banner", category: "Streaming" },
+  { id: "youtube", label: "YouTube", description: "Thumbnail grid with rich info cards", category: "Streaming" },
+  { id: "hbo", label: "HBO Max", description: "Dark cinematic tiles with spotlight hero", category: "Streaming" },
+  { id: "appletv", label: "Apple TV+", description: "Minimal, large artwork with clean type", category: "Streaming" },
+  { id: "disneyplus", label: "Disney+", description: "Rounded cards with category carousels", category: "Streaming" },
+  { id: "spotify", label: "Spotify", description: "Compact rounded cards in tight rows", category: "Streaming" },
 ];
 
 export const APP_FONTS = [
