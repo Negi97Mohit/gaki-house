@@ -73,8 +73,18 @@ export const AuthModal: React.FC = () => {
       return;
     }
 
+    if (!isEmailValid) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     if (!isLogin && !isPasswordValid) {
       toast.error("Password doesn't meet requirements");
+      return;
+    }
+
+    if (!isLogin && !passwordsMatch) {
+      toast.error("Passwords do not match");
       return;
     }
 
