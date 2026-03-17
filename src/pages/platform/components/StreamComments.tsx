@@ -65,7 +65,7 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
     <div className={cn("border-t border-border/30", className)}>
       {/* Toggle Header */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={handleToggle}
         className="w-full flex items-center justify-between px-4 py-3 bg-muted hover:bg-muted/80 transition-colors"
       >
         <div className="flex items-center gap-2">
