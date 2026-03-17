@@ -2728,24 +2728,24 @@ body.cursor-inactive * {
 
   /* ===== COSMIC RING ECLIPSE THEME ===== */
   .theme-cosmicRingEclipse {
-    --background: 43 20% 98%;
-    --foreground: 43 20% 10%;
-    --card: 43 20% 96%;
-    --card-foreground: 43 20% 10%;
-    --popover: 43 20% 98%;
-    --popover-foreground: 43 20% 10%;
-    --primary: 43 96% 56%;
+    --background: 43 40% 97%;
+    --foreground: 43 30% 10%;
+    --card: 43 35% 95%;
+    --card-foreground: 43 30% 10%;
+    --popover: 43 40% 97%;
+    --popover-foreground: 43 30% 10%;
+    --primary: 43 96% 50%;
     --primary-foreground: 0 0% 0%;
-    --secondary: 43 15% 92%;
-    --secondary-foreground: 43 20% 20%;
-    --muted: 43 15% 90%;
-    --muted-foreground: 43 10% 45%;
+    --secondary: 43 28% 91%;
+    --secondary-foreground: 43 25% 20%;
+    --muted: 43 25% 89%;
+    --muted-foreground: 43 18% 42%;
     --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 43 15% 80%;
-    --input: 43 15% 88%;
+    --border: 43 25% 65%;
+    --input: 43 25% 70%;
     --ring: 38 92% 50%;
   }
 
