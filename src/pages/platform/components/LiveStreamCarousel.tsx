@@ -31,14 +31,24 @@ export const LiveStreamCarousel: React.FC<LiveStreamCarouselProps> = ({ streams,
     setIsMuted(true); // Mute when switching streams
   }, []);
 
+  // Reset active index if streams change or become empty
   useEffect(() => {
-    // Reset active index if streams change or become empty
     if (liveStreams.length === 0) {
       setActiveIndex(0);
     } else if (activeIndex >= liveStreams.length) {
       setActiveIndex(liveStreams.length - 1);
     }
   }, [liveStreams.length, activeIndex]);
+
+  // Auto-rotate carousel every 8 seconds
+  useEffect(() => {
+    if (liveStreams.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % liveStreams.length);
+      setIsMuted(true); // Mute on auto-switch for autoplay compliance
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [liveStreams.length]);
 
   if (!featured) {
     return (
