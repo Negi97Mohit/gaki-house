@@ -170,7 +170,10 @@ export const HomePage: React.FC = () => {
       "pb-12",
       platformLayout === "theater" && "max-w-[1600px] mx-auto",
       platformLayout === "feed" && "max-w-3xl mx-auto",
-      platformLayout === "cinematic" && "max-w-[1800px] mx-auto"
+      platformLayout === "cinematic" && "max-w-[1800px] mx-auto",
+      platformLayout === "netflix" && "max-w-[1800px] mx-auto",
+      platformLayout === "hbo" && "max-w-[1800px] mx-auto",
+      platformLayout === "appletv" && "max-w-[1400px] mx-auto",
     )}>
       {/* Hero: Live Stream Carousel */}
       <LiveStreamCarousel streams={streams} isLoading={isLoading} layout={platformLayout} />

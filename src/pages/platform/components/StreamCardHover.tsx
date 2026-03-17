@@ -67,7 +67,9 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
         "group block",
         (isFeed || isCinematic) && "w-full",
         isMosaic && "break-inside-avoid mb-3",
-        isMagazineFeatured && "col-span-2 row-span-2 h-full"
+        isMagazineFeatured && "col-span-2 row-span-2 h-full",
+        (isNetflix || isDisneyPlus) && "shrink-0 w-[140px] sm:w-[180px] snap-start",
+        isSpotify && "block",
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
