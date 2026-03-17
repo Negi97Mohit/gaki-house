@@ -100,7 +100,7 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
           </form>
 
           {/* Comments List */}
-          <div className="space-y-3 max-h-[400px] overflow-y-auto">
+          <div className="space-y-3 max-h-[300px] overflow-y-auto overscroll-contain pr-1">
             {comments.map((comment) => (
               <div key={comment.id} className="flex gap-3 group">
                 <img
