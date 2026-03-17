@@ -372,6 +372,11 @@ export const StreamPage: React.FC = () => {
           )}
         </div>
 
+        {/* Comments */}
+        {!isTheater && (
+          <StreamComments channelName={channel.displayName} />
+        )}
+
         {/* About */}
         {channel.bio && !isTheater && (
           <div className="p-4">
