@@ -5,22 +5,27 @@ import { PlatformSidebar } from "./components/PlatformSidebar";
 import { PlatformMobileNav } from "./components/PlatformMobileNav";
 import { AuthModal } from "./components/AuthModal";
 import { useThemeStore } from "@/features/theme";
+import { PipProvider } from "./context/PipContext";
+import { PipMiniPlayer } from "./components/PipMiniPlayer";
 
 export const PlatformLayout: React.FC = () => {
   const platformLayout = useThemeStore((s) => s.platformLayout);
   const forceCollapsed = platformLayout === "theater" || platformLayout === "cinematic" || platformLayout === "feed" || platformLayout === "netflix" || platformLayout === "hbo" || platformLayout === "appletv" || platformLayout === "disneyplus";
 
   return (
-    <div className="h-screen w-full flex flex-col bg-background text-foreground overflow-hidden">
-      <PlatformTopNav />
-      <div className="flex flex-1 overflow-hidden">
-        <PlatformSidebar forceCollapsed={forceCollapsed} />
-        <main className="flex-1 overflow-y-auto pb-14 md:pb-0">
-          <Outlet />
-        </main>
+    <PipProvider>
+      <div className="h-screen w-full flex flex-col bg-background text-foreground overflow-hidden">
+        <PlatformTopNav />
+        <div className="flex flex-1 overflow-hidden">
+          <PlatformSidebar forceCollapsed={forceCollapsed} />
+          <main className="flex-1 overflow-y-auto pb-14 md:pb-0">
+            <Outlet />
+          </main>
+        </div>
+        <PlatformMobileNav />
+        <AuthModal />
+        <PipMiniPlayer />
       </div>
-      <PlatformMobileNav />
-      <AuthModal />
-    </div>
+    </PipProvider>
   );
 };
