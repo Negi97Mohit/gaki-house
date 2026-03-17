@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, ChevronUp, MessageSquare, ThumbsUp, ThumbsDown, Send } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
@@ -31,6 +31,13 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState(MOCK_COMMENTS);
   const { user, openAuthModal } = useAuth();
+  const commentsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isExpanded && commentsRef.current) {
+      commentsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [isExpanded]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +62,7 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
       {/* Toggle Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 bg-muted hover:bg-muted/80 transition-colors"
       >
         <div className="flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-primary" />
@@ -73,7 +80,7 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
 
       {/* Collapsible Content */}
       {isExpanded && (
-        <div className="px-4 pb-4 space-y-4">
+        <div ref={commentsRef} className="px-4 pb-4 space-y-4">
           {/* Comment Input */}
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
             <input
