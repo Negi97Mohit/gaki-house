@@ -127,10 +127,17 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle Twitch via official Twitch Interactive Embed JS SDK (autoplay guaranteed)
+    // Handle Twitch via official iframe player
     if (channel.platform === "twitch") {
-        const username = channel.username.replace("tw-", "");
-        return <TwitchEmbed channel={username} autoplay={playing} muted={muted} controls={controls} />;
+        const username = channel.username?.replace(/^tw-/, "")
+            || channel.streamUrl?.split("/").filter(Boolean).pop()
+            || "";
+
+        if (!username) {
+            return null;
+        }
+
+        return <TwitchEmbed channel={username} autoplay={playing} muted={muted} />;
     }
 
     // Handle YouTube via iframe 

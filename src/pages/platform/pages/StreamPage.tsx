@@ -220,7 +220,7 @@ export const StreamPage: React.FC = () => {
           onMouseMove={handlePlayerMouseMove}
           onMouseLeave={() => setShowControls(false)}
         >
-          {channel.streamUrl ? (
+          {(channel.streamUrl || channel.username) ? (
             <StreamPlayer
               channel={channel}
               playing={isPlaying}
@@ -237,8 +237,8 @@ export const StreamPage: React.FC = () => {
             />
           )}
 
-          {/* Error/Offline State or Placeholder if no streamUrl */}
-          {(!channel.streamUrl && channel.username) && (
+          {/* Error/Offline State or Placeholder if no playable source */}
+          {(!channel.streamUrl && !channel.username) && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <p className="text-white font-bold text-xl">Stream Offline</p>
             </div>
