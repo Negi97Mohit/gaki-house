@@ -2774,24 +2774,24 @@ body.cursor-inactive * {
 
   /* ===== COSMIC RING AURORA THEME ===== */
   .theme-cosmicRingAurora {
-    --background: 160 20% 98%;
-    --foreground: 160 20% 10%;
-    --card: 160 20% 96%;
-    --card-foreground: 160 20% 10%;
-    --popover: 160 20% 98%;
-    --popover-foreground: 160 20% 10%;
-    --primary: 160 84% 65%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 160 15% 92%;
-    --secondary-foreground: 160 20% 20%;
-    --muted: 160 15% 90%;
-    --muted-foreground: 160 10% 45%;
+    --background: 160 35% 97%;
+    --foreground: 160 25% 10%;
+    --card: 160 30% 95%;
+    --card-foreground: 160 25% 10%;
+    --popover: 160 35% 97%;
+    --popover-foreground: 160 25% 10%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 160 25% 91%;
+    --secondary-foreground: 160 25% 20%;
+    --muted: 160 22% 89%;
+    --muted-foreground: 160 15% 42%;
     --accent: 160 84% 39%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 160 15% 80%;
-    --input: 160 15% 88%;
+    --border: 160 22% 65%;
+    --input: 160 22% 70%;
     --ring: 160 84% 39%;
   }
 
