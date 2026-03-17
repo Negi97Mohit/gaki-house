@@ -19,20 +19,12 @@ export const UserMenu: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="flex items-center gap-1.5">
-        <button
-          onClick={() => openAuthModal("login")}
-          className="px-3.5 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-xl hover:bg-accent/40 transition-all duration-200"
-        >
-          Log In
-        </button>
-        <button
-          onClick={() => openAuthModal("signup")}
-          className="px-4 py-1.5 bg-primary text-primary-foreground text-xs font-semibold rounded-xl hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200"
-        >
-          Sign Up
-        </button>
-      </div>
+      <button
+        onClick={() => openAuthModal("login")}
+        className="px-4 py-1.5 bg-primary text-primary-foreground text-xs font-semibold rounded-xl hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200"
+      >
+        Sign In
+      </button>
     );
   }
 

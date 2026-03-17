@@ -297,14 +297,11 @@ export const AuthModal: React.FC = () => {
 
         <div className="p-8 relative">
           {/* Header */}
-          <div className="text-center mb-6">
-            <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl">
-              🎬
-            </div>
-            <h2 className="text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome back" : "Create Account"}
+          <div className="text-center mb-7">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              {isLogin ? "Welcome back" : "Create account"}
             </h2>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm text-muted-foreground mt-1.5">
               {isLogin ? "Sign in to access your dashboard" : "Join the community of creators"}
             </p>
           </div>
