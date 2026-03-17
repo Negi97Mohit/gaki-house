@@ -2636,24 +2636,24 @@ body.cursor-inactive * {
 
   /* ===== COSMIC RING DOUBLE THEME ===== */
   .theme-cosmicRingDouble {
-    --background: 187 20% 98%;
-    --foreground: 187 20% 10%;
-    --card: 187 20% 96%;
-    --card-foreground: 187 20% 10%;
-    --popover: 187 20% 98%;
-    --popover-foreground: 187 20% 10%;
-    --primary: 187 92% 69%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 187 15% 92%;
-    --secondary-foreground: 187 20% 20%;
-    --muted: 187 15% 90%;
-    --muted-foreground: 187 10% 45%;
+    --background: 187 35% 97%;
+    --foreground: 187 25% 10%;
+    --card: 187 30% 95%;
+    --card-foreground: 187 25% 10%;
+    --popover: 187 35% 97%;
+    --popover-foreground: 187 25% 10%;
+    --primary: 187 92% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 187 25% 91%;
+    --secondary-foreground: 187 25% 20%;
+    --muted: 187 22% 89%;
+    --muted-foreground: 187 15% 42%;
     --accent: 187 71% 52%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 187 15% 80%;
-    --input: 187 15% 88%;
+    --border: 187 22% 65%;
+    --input: 187 22% 70%;
     --ring: 187 71% 52%;
   }
 
