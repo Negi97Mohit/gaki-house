@@ -105,8 +105,8 @@ export const PipMiniPlayer: React.FC = () => {
     <div
       ref={containerRef}
       className={cn(
-        "fixed rounded-xl overflow-hidden shadow-2xl border border-border/40 bg-black",
-        "transition-shadow duration-300",
+        "group fixed rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black",
+        "transition-all duration-300",
         isDragging ? "shadow-[0_20px_60px_-10px_rgba(0,0,0,0.6)] scale-[1.02]" : "hover:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.4)]",
         isClosing && "animate-out fade-out-0 zoom-out-95 duration-200",
         !isClosing && "animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-4 duration-300"
@@ -133,60 +133,59 @@ export const PipMiniPlayer: React.FC = () => {
           controls={false}
         />
 
-        {/* Gradient overlay for controls */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 opacity-0 hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between pointer-events-none">
-          {/* Top bar - drag handle + close */}
-          <div className="flex items-center justify-between p-2.5 pointer-events-auto">
+        {/* Full-area hover overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between">
+          {/* Top bar */}
+          <div className="flex items-center justify-between p-3">
             <div
-              className="flex items-center gap-1.5 cursor-grab active:cursor-grabbing px-2.5 py-1.5 rounded-lg bg-white/90 text-black shadow-md"
+              className="flex items-center gap-2 cursor-grab active:cursor-grabbing px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 shadow-lg"
               onMouseDown={handleMouseDown}
               onTouchStart={handleTouchStart}
             >
-              <GripHorizontal className="w-3.5 h-3.5 text-black/70" strokeWidth={2} />
-              <span className="text-[10px] text-black/80 font-semibold select-none">
+              <GripHorizontal className="w-3.5 h-3.5 text-white/70" strokeWidth={2.5} />
+              <span className="text-[11px] text-white/90 font-medium select-none tracking-wide">
                 {pip.channel.displayName}
               </span>
             </div>
             <button
               onClick={handleClose}
-              className="p-1.5 rounded-lg bg-red-500 hover:bg-red-600 transition-colors shadow-md"
+              className="p-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/10 hover:bg-red-500/90 hover:border-red-400/50 transition-all duration-200 shadow-lg"
             >
-              <X className="w-3.5 h-3.5 text-white" strokeWidth={2} />
+              <X className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
             </button>
           </div>
 
-          {/* Bottom bar - mute + expand */}
-          <div className="flex items-center justify-between p-2.5 pointer-events-auto">
+          {/* Bottom bar */}
+          <div className="flex items-center justify-between p-3">
             <button
               onClick={togglePipMute}
-              className="p-2 rounded-lg bg-white/90 hover:bg-white transition-colors shadow-md"
+              className="p-2 rounded-full bg-white/15 backdrop-blur-md border border-white/10 hover:bg-white/25 transition-all duration-200 shadow-lg"
             >
               {pip.isMuted ? (
-                <VolumeX className="w-4 h-4 text-black" strokeWidth={2} />
+                <VolumeX className="w-4 h-4 text-white" strokeWidth={2.5} />
               ) : (
-                <Volume2 className="w-4 h-4 text-black" strokeWidth={2} />
+                <Volume2 className="w-4 h-4 text-white" strokeWidth={2.5} />
               )}
             </button>
 
-            {/* Live badge */}
             {pip.channel.isLive && (
-              <span className="px-2.5 py-1 bg-red-500 text-white text-[10px] font-bold rounded-md uppercase tracking-wide shadow-md">
+              <span className="px-2.5 py-1 bg-red-500/90 backdrop-blur-sm text-white text-[10px] font-bold rounded-full uppercase tracking-wider shadow-lg">
                 Live
               </span>
             )}
 
             <button
               onClick={handleExpand}
-              className="p-2 rounded-lg bg-primary hover:bg-primary/90 transition-colors shadow-md"
+              className="p-2 rounded-full bg-white/15 backdrop-blur-md border border-white/10 hover:bg-primary/80 hover:border-primary/50 transition-all duration-200 shadow-lg"
             >
-              <Maximize2 className="w-4 h-4 text-primary-foreground" strokeWidth={2} />
+              <Maximize2 className="w-4 h-4 text-white" strokeWidth={2.5} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Progress-like accent bar at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary/80" />
+      {/* Accent bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary/60 via-primary to-primary/60" />
     </div>
   );
 };
