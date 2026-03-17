@@ -28,6 +28,8 @@ export const StreamPage: React.FC = () => {
   const { username } = useParams();
   const { user, profile, openAuthModal } = useAuth();
   const { data: allStreams = [] } = useStreams();
+  const { openPip, closePip, pip } = usePip();
+  const location = useLocation();
   // Fallback: If not found in API list, try to construct from username pattern (e.g. douyu-123)
   const channel = allStreams.find((c) => c.username === username) || (() => {
     if (!username) return allStreams[0];
