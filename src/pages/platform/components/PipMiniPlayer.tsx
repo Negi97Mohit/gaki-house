@@ -134,52 +134,52 @@ export const PipMiniPlayer: React.FC = () => {
         />
 
         {/* Gradient overlay for controls */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40 opacity-0 hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/50 opacity-0 hover:opacity-100 transition-opacity duration-200 flex flex-col justify-between pointer-events-none">
           {/* Top bar - drag handle + close */}
-          <div className="flex items-center justify-between p-2 pointer-events-auto">
+          <div className="flex items-center justify-between p-2.5 pointer-events-auto">
             <div
-              className="flex items-center gap-1.5 cursor-grab active:cursor-grabbing px-2 py-1 rounded-lg bg-white/10 backdrop-blur-sm"
+              className="flex items-center gap-1.5 cursor-grab active:cursor-grabbing px-2.5 py-1.5 rounded-lg bg-white/90 text-black shadow-md"
               onMouseDown={handleMouseDown}
               onTouchStart={handleTouchStart}
             >
-              <GripHorizontal className="w-3.5 h-3.5 text-white/70" strokeWidth={1.8} />
-              <span className="text-[10px] text-white/60 font-medium select-none">
+              <GripHorizontal className="w-3.5 h-3.5 text-black/70" strokeWidth={2} />
+              <span className="text-[10px] text-black/80 font-semibold select-none">
                 {pip.channel.displayName}
               </span>
             </div>
             <button
               onClick={handleClose}
-              className="p-1.5 rounded-lg bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
+              className="p-1.5 rounded-lg bg-red-500 hover:bg-red-600 transition-colors shadow-md"
             >
-              <X className="w-3.5 h-3.5 text-white" strokeWidth={1.8} />
+              <X className="w-3.5 h-3.5 text-white" strokeWidth={2} />
             </button>
           </div>
 
           {/* Bottom bar - mute + expand */}
-          <div className="flex items-center justify-between p-2 pointer-events-auto">
+          <div className="flex items-center justify-between p-2.5 pointer-events-auto">
             <button
               onClick={togglePipMute}
-              className="p-1.5 rounded-lg bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
+              className="p-2 rounded-lg bg-white/90 hover:bg-white transition-colors shadow-md"
             >
               {pip.isMuted ? (
-                <VolumeX className="w-3.5 h-3.5 text-white" strokeWidth={1.8} />
+                <VolumeX className="w-4 h-4 text-black" strokeWidth={2} />
               ) : (
-                <Volume2 className="w-3.5 h-3.5 text-white" strokeWidth={1.8} />
+                <Volume2 className="w-4 h-4 text-black" strokeWidth={2} />
               )}
             </button>
 
             {/* Live badge */}
             {pip.channel.isLive && (
-              <span className="px-2 py-0.5 bg-red-500/90 text-white text-[10px] font-bold rounded-md uppercase tracking-wide">
+              <span className="px-2.5 py-1 bg-red-500 text-white text-[10px] font-bold rounded-md uppercase tracking-wide shadow-md">
                 Live
               </span>
             )}
 
             <button
               onClick={handleExpand}
-              className="p-1.5 rounded-lg bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
+              className="p-2 rounded-lg bg-primary hover:bg-primary/90 transition-colors shadow-md"
             >
-              <Maximize2 className="w-3.5 h-3.5 text-white" strokeWidth={1.8} />
+              <Maximize2 className="w-4 h-4 text-primary-foreground" strokeWidth={2} />
             </button>
           </div>
         </div>
