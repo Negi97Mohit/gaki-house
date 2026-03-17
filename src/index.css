@@ -3464,24 +3464,24 @@ body.cursor-inactive * {
 
   /* ===== GRAVITATIONAL LENS THEME ===== */
   .theme-gravitationalLens {
-    --background: 243 20% 98%;
-    --foreground: 243 20% 10%;
-    --card: 243 20% 96%;
-    --card-foreground: 243 20% 10%;
-    --popover: 243 20% 98%;
-    --popover-foreground: 243 20% 10%;
+    --background: 243 32% 97%;
+    --foreground: 243 28% 10%;
+    --card: 243 28% 95%;
+    --card-foreground: 243 28% 10%;
+    --popover: 243 32% 97%;
+    --popover-foreground: 243 28% 10%;
     --primary: 263 70% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 243 15% 92%;
-    --secondary-foreground: 243 20% 20%;
-    --muted: 243 15% 90%;
-    --muted-foreground: 243 10% 45%;
+    --secondary: 243 25% 91%;
+    --secondary-foreground: 243 22% 20%;
+    --muted: 243 22% 89%;
+    --muted-foreground: 243 15% 42%;
     --accent: 263 70% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 243 15% 80%;
-    --input: 243 15% 88%;
+    --border: 243 22% 62%;
+    --input: 243 22% 68%;
     --ring: 263 70% 50%;
   }
 
