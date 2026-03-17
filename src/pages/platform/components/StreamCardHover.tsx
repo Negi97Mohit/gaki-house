@@ -78,7 +78,10 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
       <div className={cn(
         "relative rounded-xl overflow-hidden bg-muted mb-2",
         thumbnailAspect,
-        isMagazineFeatured && "rounded-2xl"
+        isMagazineFeatured && "rounded-2xl",
+        isDisneyPlus && "rounded-2xl",
+        isSpotify && "rounded-lg",
+        (isNetflix || isHbo) && "rounded-md",
       )}>
         {isHovered && channel.streamUrl && isEmbeddablePlatform(channel.platform) && channel.platform !== "twitch" ? (
           <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
