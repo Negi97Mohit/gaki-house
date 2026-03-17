@@ -31,6 +31,13 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState(MOCK_COMMENTS);
   const { user, openAuthModal } = useAuth();
+  const commentsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isExpanded && commentsRef.current) {
+      commentsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [isExpanded]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
