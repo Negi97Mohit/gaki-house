@@ -153,22 +153,25 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
           </div>
         )}
 
-        {/* Gradient overlay for magazine featured */}
-        {isMagazineFeatured && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-[5]" />
+        {/* Gradient overlay for magazine featured / streaming layouts */}
+        {(isMagazineFeatured || isNetflix || isHbo || isAppleTv || isDisneyPlus) && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-[5]" />
         )}
 
-        {/* Magazine featured: overlay info */}
-        {isMagazineFeatured && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-            <p className="text-white text-lg font-bold truncate drop-shadow-lg">{channel.title}</p>
-            <p className="text-white/80 text-sm mt-0.5">{channel.displayName} · {channel.category}</p>
+        {/* Overlay info for streaming-style layouts */}
+        {(isMagazineFeatured || isNetflix || isHbo || isDisneyPlus) && (
+          <div className="absolute bottom-0 left-0 right-0 p-2.5 z-10">
+            <p className={cn(
+              "text-white font-bold truncate drop-shadow-lg",
+              isMagazineFeatured ? "text-lg" : "text-xs"
+            )}>{channel.title}</p>
+            <p className="text-white/70 text-[10px] mt-0.5 truncate">{channel.displayName}</p>
           </div>
         )}
       </div>
 
-      {/* Info - hidden for magazine featured (shown in overlay) */}
-      {!isMagazineFeatured && (
+      {/* Info - hidden for overlay layouts */}
+      {!isMagazineFeatured && !isNetflix && !isHbo && !isDisneyPlus && (
         <div className={cn("flex gap-2.5", isFeed && "px-1")}>
           {!avatarError && channel.avatar ? (
             <img
