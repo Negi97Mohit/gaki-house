@@ -1550,6 +1550,13 @@
     font-size: 14px;
   }
 
+  /* Dark mode: ensure select/dropdown/popover containers have solid backgrounds */
+  .dark [data-radix-popper-content-wrapper],
+  .dark [data-radix-select-content],
+  .dark [data-radix-dropdown-menu-content] {
+    color-scheme: dark;
+  }
+
   /* Icon hover - turn yellow (primary color) */
   button:hover svg,
   a:hover svg,
