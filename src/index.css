@@ -2958,24 +2958,24 @@ body.cursor-inactive * {
 
   /* ===== HEX GRID ORBIT THEME ===== */
   .theme-hexGridOrbit {
-    --background: 215 20% 98%;
-    --foreground: 215 20% 10%;
-    --card: 215 20% 96%;
-    --card-foreground: 215 20% 10%;
-    --popover: 215 20% 98%;
-    --popover-foreground: 215 20% 10%;
-    --primary: 215 16% 47%;
+    --background: 215 30% 97%;
+    --foreground: 215 25% 10%;
+    --card: 215 25% 95%;
+    --card-foreground: 215 25% 10%;
+    --popover: 215 30% 97%;
+    --popover-foreground: 215 25% 10%;
+    --primary: 215 40% 47%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 15% 92%;
-    --secondary-foreground: 215 20% 20%;
-    --muted: 215 15% 90%;
-    --muted-foreground: 215 10% 45%;
+    --secondary: 215 22% 91%;
+    --secondary-foreground: 215 22% 20%;
+    --muted: 215 20% 89%;
+    --muted-foreground: 215 15% 42%;
     --accent: 199 89% 48%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 215 15% 80%;
-    --input: 215 15% 88%;
+    --border: 215 20% 62%;
+    --input: 215 20% 68%;
     --ring: 199 89% 48%;
   }
 
