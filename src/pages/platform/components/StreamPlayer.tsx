@@ -3,14 +3,15 @@ import ReactPlayer from "react-player";
 import { StreamChannel, PlatformType } from "../data/mockData";
 import { cn } from "@/shared/lib/utils";
 
-// Platforms that support actual video embedding
+// Platforms that reliably support autoplay embedding (muted)
+// Excluded: bilibili (requires login), niconico (requires login), dlive (loads full page, no embed player)
 const EMBEDDABLE_PLATFORMS: PlatformType[] = [
-  "twitch", "youtube", "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
+  "twitch", "youtube", "kick", "trovo", "rumble"
 ];
 
 // Platforms rendered via iframe (have their own native controls)
 const IFRAME_PLATFORMS: PlatformType[] = [
-  "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
+  "kick", "trovo", "rumble"
 ];
 
 export function isEmbeddablePlatform(platform?: PlatformType): boolean {
