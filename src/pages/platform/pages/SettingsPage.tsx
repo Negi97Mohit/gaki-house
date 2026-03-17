@@ -936,6 +936,70 @@ const LayoutPreview: React.FC<{ type: PlatformLayout; isActive: boolean }> = ({ 
         </div>
       </div>
     ),
+    // ── Streaming-inspired layouts ──
+    netflix: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-5 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 flex gap-0.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className={cn("flex-1 rounded-sm", blockColor)} style={{ height: "100%" }} />
+          ))}
+        </div>
+      </div>
+    ),
+    youtube: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-3 gap-0.5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex flex-col gap-px">
+              <div className={cn("flex-[2] rounded-sm", blockColor)} />
+              <div className={cn("flex-1 rounded-sm", isActive ? "bg-primary/15" : "bg-muted-foreground/5")} />
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+    hbo: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-6 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 flex gap-0.5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className={cn("flex-1 rounded-sm", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    appletv: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-4 w-full rounded-sm", blockColor)} />
+        <div className="flex-1 grid grid-cols-3 gap-1">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className={cn("rounded-md", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    disneyplus: (
+      <div className="w-full h-12 flex flex-col gap-0.5">
+        <div className={cn("h-3 w-full rounded-full", blockColor)} />
+        <div className="flex-1 flex gap-0.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className={cn("flex-1 rounded-lg", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
+    spotify: (
+      <div className="w-full h-12 flex gap-0.5">
+        <div className={cn("w-2 h-full rounded-sm", barColor)} />
+        <div className="flex-1 grid grid-cols-4 gap-0.5">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className={cn("rounded-md aspect-square", blockColor)} />
+          ))}
+        </div>
+      </div>
+    ),
   };
 
   return <div className="w-full">{layouts[type]}</div>;
