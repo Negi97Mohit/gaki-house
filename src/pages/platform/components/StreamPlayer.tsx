@@ -3,14 +3,15 @@ import ReactPlayer from "react-player";
 import { StreamChannel, PlatformType } from "../data/mockData";
 import { cn } from "@/shared/lib/utils";
 
-// Platforms that support actual video embedding
+// Platforms that reliably support autoplay embedding (muted)
+// Excluded: bilibili (requires login), niconico (requires login), dlive (loads full page, no embed player)
 const EMBEDDABLE_PLATFORMS: PlatformType[] = [
-  "twitch", "youtube", "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
+  "twitch", "youtube", "kick", "trovo", "rumble"
 ];
 
 // Platforms rendered via iframe (have their own native controls)
 const IFRAME_PLATFORMS: PlatformType[] = [
-  "kick", "dlive", "trovo", "rumble", "bilibili", "niconico"
+  "kick", "trovo", "rumble"
 ];
 
 export function isEmbeddablePlatform(platform?: PlatformType): boolean {
@@ -192,19 +193,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle DLive via iframe (loads the channel page directly)
-    if (channel.platform === "dlive") {
-        const username = channel.username;
-        return (
-            <iframe
-                src={`https://dlive.tv/${username}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
-    }
+    // DLive: removed — loads full page, no dedicated embed player, requires interaction
 
     // Handle Trovo via iframe
     if (channel.platform === "trovo") {
@@ -234,33 +223,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle Bilibili via iframe
-    if (channel.platform === "bilibili") {
-        // ID is expected to be the BV ID (e.g. BV1xx411c7X7)
-        return (
-            <iframe
-                src={`//player.bilibili.com/player.html?bvid=${channel.username}&page=1&autoplay=${playing ? 1 : 0}&muted=${muted ? 1 : 0}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
-    }
-
-    // Handle Niconico via iframe
-    if (channel.platform === "niconico") {
-        // ID is expected to be video ID (e.g. sm123456)
-        return (
-            <iframe
-                src={`https://embed.nicovideo.jp/watch/${channel.username}?autoplay=${playing ? 1 : 0}&muted=${muted ? 1 : 0}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
-    }
+    // Bilibili & Niconico: removed — require login, don't reliably autoplay
 
     // Non-embeddable platforms — return null (caller should not render)
     if (!isEmbeddablePlatform(channel.platform)) {
