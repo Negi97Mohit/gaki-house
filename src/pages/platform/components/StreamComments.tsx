@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, ChevronUp, MessageSquare, ThumbsUp, ThumbsDown, Send } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "../context/AuthContext";
