@@ -185,22 +185,37 @@ export const StreamPage: React.FC = () => {
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
-  // Close PiP when we land on this stream's page (we're watching it full-size now)
+  // Close any existing PiP when we land on ANY stream page
   useEffect(() => {
-    if (pip.isActive && pip.channel?.username === username) {
+    if (pip.isActive) {
       closePip();
     }
-  }, [username, pip.isActive, pip.channel?.username, closePip]);
+    // Only run when the username (route) changes, not on every pip state change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   // Auto-activate PiP when navigating away from this stream page
+  // We use a ref to track latest values so the cleanup doesn't re-run on every change
+  const channelRef = useRef(channel);
+  const isPlayingRef = useRef(isPlaying);
+  const locationRef = useRef(location.pathname);
+  useEffect(() => { channelRef.current = channel; }, [channel]);
+  useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
+  useEffect(() => { locationRef.current = location.pathname; }, [location.pathname]);
+
   useEffect(() => {
     return () => {
-      // On unmount, if we have a channel and it's playing, activate PiP
-      if (channel && isPlaying) {
-        openPip(channel);
+      const ch = channelRef.current;
+      const playing = isPlayingRef.current;
+      // Only open PiP if we're navigating away and the stream was playing
+      if (ch && playing) {
+        // Don't open PiP if navigating to another stream (that page will play its own)
+        // We can't know the next route in cleanup, so we open it and let the next
+        // StreamPage's mount effect close it immediately if needed
+        openPip(ch);
       }
     };
-  }, [channel, isPlaying]);
+  }, [openPip]);
 
   const handlePlayerMouseMove = () => {
     setShowControls(true);
