@@ -185,6 +185,23 @@ export const StreamPage: React.FC = () => {
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
+  // Close PiP when we land on this stream's page (we're watching it full-size now)
+  useEffect(() => {
+    if (pip.isActive && pip.channel?.username === username) {
+      closePip();
+    }
+  }, [username, pip.isActive, pip.channel?.username, closePip]);
+
+  // Auto-activate PiP when navigating away from this stream page
+  useEffect(() => {
+    return () => {
+      // On unmount, if we have a channel and it's playing, activate PiP
+      if (channel && isPlaying) {
+        openPip(channel);
+      }
+    };
+  }, [channel, isPlaying]);
+
   const handlePlayerMouseMove = () => {
     setShowControls(true);
     if (controlsTimer.current) clearTimeout(controlsTimer.current);
