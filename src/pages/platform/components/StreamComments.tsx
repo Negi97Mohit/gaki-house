@@ -33,11 +33,15 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
   const { user, openAuthModal } = useAuth();
   const commentsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (isExpanded && commentsRef.current) {
-      commentsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+  const handleToggle = () => {
+    const wasExpanded = isExpanded;
+    setIsExpanded(!wasExpanded);
+    if (!wasExpanded && commentsRef.current) {
+      setTimeout(() => {
+        commentsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 50);
     }
-  }, [isExpanded]);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +65,7 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
     <div className={cn("border-t border-border/30", className)}>
       {/* Toggle Header */}
       <button
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={handleToggle}
         className="w-full flex items-center justify-between px-4 py-3 bg-muted hover:bg-muted/80 transition-colors"
       >
         <div className="flex items-center gap-2">
