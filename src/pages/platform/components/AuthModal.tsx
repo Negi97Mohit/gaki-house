@@ -301,21 +301,21 @@ export const AuthModal: React.FC = () => {
   // ---- Auth Step (Login / Signup) ----
   return (
     <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-md">
-      <div className="relative w-full max-w-sm mx-4 bg-card border border-border/30 rounded-3xl shadow-2xl shadow-black/30 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-sm mx-4 bg-card border border-border rounded-3xl shadow-2xl shadow-black/30 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Subtle top gradient accent */}
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
         {/* Close */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-accent/50 transition-all z-10"
+          className="absolute top-4 right-4 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all z-10"
         >
           <X className="w-4 h-4" />
         </button>
 
         <div className="p-7 relative">
           {/* Tab Switcher */}
-          <div className="flex items-center bg-muted/60 rounded-2xl p-1 mb-7">
+          <div className="flex items-center bg-muted rounded-2xl p-1 mb-7">
             <button
               type="button"
               onClick={() => { openAuthModal("login"); setEmail(""); setPassword(""); setConfirmPassword(""); }}
@@ -346,7 +346,7 @@ export const AuthModal: React.FC = () => {
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-background border border-border/50 hover:border-border/80 rounded-2xl text-sm font-medium text-foreground hover:bg-accent/30 transition-all duration-200 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-background border border-border hover:border-border/80 rounded-2xl text-sm font-medium text-foreground hover:bg-muted transition-all duration-200 disabled:opacity-50"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -361,9 +361,9 @@ export const AuthModal: React.FC = () => {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-border/30" />
-            <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wider uppercase">or</span>
-            <div className="flex-1 h-px bg-border/30" />
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-[11px] text-muted-foreground font-medium tracking-wider uppercase">or</span>
+            <div className="flex-1 h-px bg-border" />
           </div>
 
           {/* Email form */}
@@ -371,7 +371,7 @@ export const AuthModal: React.FC = () => {
             {/* Email */}
             <div className="space-y-1">
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <input
                   type="email"
                   value={email}
@@ -379,15 +379,15 @@ export const AuthModal: React.FC = () => {
                   placeholder="Email address"
                   required
                   className={cn(
-                    "w-full bg-muted/40 border rounded-2xl pl-10 pr-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 transition-all",
+                    "w-full bg-muted border rounded-2xl pl-10 pr-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all",
                     !isLogin && email.length > 0 && !isEmailValid
-                      ? "border-destructive/60 focus:ring-destructive/20 focus:border-destructive/50"
-                      : "border-border/30"
+                      ? "border-destructive focus:ring-destructive/30 focus:border-destructive"
+                      : "border-border"
                   )}
                 />
               </div>
               {!isLogin && email.length > 0 && !isEmailValid && (
-                <p className="text-[11px] text-destructive/80 pl-1">Please enter a valid email address</p>
+                <p className="text-[11px] text-destructive pl-1">Please enter a valid email address</p>
               )}
             </div>
 
@@ -399,12 +399,12 @@ export const AuthModal: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={isLogin ? "Password" : "Password (min 8 chars)"}
                 required
-                className="w-full bg-muted/40 border border-border/30 rounded-2xl pl-3.5 pr-10 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 transition-all"
+                className="w-full bg-muted border border-border rounded-2xl pl-3.5 pr-10 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/60 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -421,18 +421,18 @@ export const AuthModal: React.FC = () => {
                     placeholder="Confirm password"
                     required
                     className={cn(
-                      "w-full bg-muted/40 border rounded-2xl pl-3.5 pr-10 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 transition-all",
+                      "w-full bg-muted border rounded-2xl pl-3.5 pr-10 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition-all",
                       confirmPassword.length > 0 && !passwordsMatch
-                        ? "border-destructive/60 focus:ring-destructive/20 focus:border-destructive/50"
+                        ? "border-destructive focus:ring-destructive/30 focus:border-destructive"
                         : confirmPassword.length > 0 && passwordsMatch
-                        ? "border-primary/40 focus:ring-primary/25 focus:border-primary/40"
-                        : "border-border/30 focus:ring-primary/25 focus:border-primary/40"
+                        ? "border-primary focus:ring-primary/40 focus:border-primary"
+                        : "border-border focus:ring-primary/40 focus:border-primary/60"
                     )}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -440,13 +440,13 @@ export const AuthModal: React.FC = () => {
                     <div className="absolute right-10 top-1/2 -translate-y-1/2">
                       {passwordsMatch
                         ? <Check className="w-4 h-4 text-primary" />
-                        : <X className="w-4 h-4 text-destructive/70" />
+                        : <X className="w-4 h-4 text-destructive" />
                       }
                     </div>
                   )}
                 </div>
                 {confirmPassword.length > 0 && !passwordsMatch && (
-                  <p className="text-[11px] text-destructive/80 pl-1">Passwords do not match</p>
+                  <p className="text-[11px] text-destructive pl-1">Passwords do not match</p>
                 )}
               </div>
             )}
@@ -461,10 +461,10 @@ export const AuthModal: React.FC = () => {
                       key={rule.label}
                       className={cn(
                         "flex items-center gap-1.5 text-[10px] transition-colors",
-                        passed ? "text-primary font-medium" : "text-muted-foreground/50"
+                        passed ? "text-primary font-medium" : "text-muted-foreground"
                       )}
                     >
-                      {passed ? <Check className="w-3 h-3 shrink-0" /> : <div className="w-3 h-3 rounded-full border border-current opacity-40 shrink-0" />}
+                      {passed ? <Check className="w-3 h-3 shrink-0" /> : <div className="w-3 h-3 rounded-full border border-current opacity-50 shrink-0" />}
                       {rule.label}
                     </div>
                   );
