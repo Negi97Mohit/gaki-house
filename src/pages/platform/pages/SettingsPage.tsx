@@ -608,7 +608,7 @@ export const SettingsPage: React.FC = () => {
                         })}
                       </div>
                     </div>
-                  );
+                })}
               </GlassCard>
             </div>
           )}
