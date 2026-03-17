@@ -334,6 +334,13 @@ export const StreamPage: React.FC = () => {
                 <Heart className={cn("w-4 h-4 inline mr-1.5", isFollowing && "fill-destructive text-destructive")} />
                 {isFollowing ? "Following" : "Follow"}
               </button>
+              <button
+                onClick={() => { if (channel) openPip(channel); }}
+                className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+                title="Mini player"
+              >
+                <PictureInPicture2 className="w-4 h-4" />
+              </button>
               <button className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
                 <Share2 className="w-4 h-4" />
               </button>
