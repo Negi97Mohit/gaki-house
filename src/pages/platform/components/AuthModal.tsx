@@ -27,7 +27,9 @@ export const AuthModal: React.FC = () => {
   const { isAuthModalOpen, authModalTab, closeAuthModal, openAuthModal, createProfile, needsProfileSetup, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Profile setup state for new Google users
@@ -44,10 +46,15 @@ export const AuthModal: React.FC = () => {
 
   const isLogin = authModalTab === "login";
   const isPasswordValid = PASSWORD_RULES.every((r) => r.test(password));
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const passwordsMatch = password === confirmPassword;
 
   const resetForm = () => {
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     setStep("auth");
     setPendingUser(null);
     setDisplayName("");
@@ -66,8 +73,18 @@ export const AuthModal: React.FC = () => {
       return;
     }
 
+    if (!isEmailValid) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     if (!isLogin && !isPasswordValid) {
       toast.error("Password doesn't meet requirements");
+      return;
+    }
+
+    if (!isLogin && !passwordsMatch) {
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -301,7 +318,7 @@ export const AuthModal: React.FC = () => {
           <div className="flex items-center bg-muted/60 rounded-2xl p-1 mb-7">
             <button
               type="button"
-              onClick={() => { openAuthModal("login"); setEmail(""); setPassword(""); }}
+              onClick={() => { openAuthModal("login"); setEmail(""); setPassword(""); setConfirmPassword(""); }}
               className={cn(
                 "flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
                 isLogin
@@ -313,7 +330,7 @@ export const AuthModal: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => { openAuthModal("signup"); setEmail(""); setPassword(""); }}
+              onClick={() => { openAuthModal("signup"); setEmail(""); setPassword(""); setConfirmPassword(""); }}
               className={cn(
                 "flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
                 !isLogin
@@ -351,17 +368,30 @@ export const AuthModal: React.FC = () => {
 
           {/* Email form */}
           <form onSubmit={handleEmailAuth} className="space-y-3.5">
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email address"
-                required
-                className="w-full bg-muted/40 border border-border/30 rounded-2xl pl-10 pr-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 transition-all"
-              />
+            {/* Email */}
+            <div className="space-y-1">
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email address"
+                  required
+                  className={cn(
+                    "w-full bg-muted/40 border rounded-2xl pl-10 pr-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 transition-all",
+                    !isLogin && email.length > 0 && !isEmailValid
+                      ? "border-destructive/60 focus:ring-destructive/20 focus:border-destructive/50"
+                      : "border-border/30"
+                  )}
+                />
+              </div>
+              {!isLogin && email.length > 0 && !isEmailValid && (
+                <p className="text-[11px] text-destructive/80 pl-1">Please enter a valid email address</p>
+              )}
             </div>
+
+            {/* Password */}
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -379,6 +409,47 @@ export const AuthModal: React.FC = () => {
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
+
+            {/* Confirm Password (Signup only) */}
+            {!isLogin && (
+              <div className="space-y-1">
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm password"
+                    required
+                    className={cn(
+                      "w-full bg-muted/40 border rounded-2xl pl-3.5 pr-10 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 transition-all",
+                      confirmPassword.length > 0 && !passwordsMatch
+                        ? "border-destructive/60 focus:ring-destructive/20 focus:border-destructive/50"
+                        : confirmPassword.length > 0 && passwordsMatch
+                        ? "border-primary/40 focus:ring-primary/25 focus:border-primary/40"
+                        : "border-border/30 focus:ring-primary/25 focus:border-primary/40"
+                    )}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                  {confirmPassword.length > 0 && (
+                    <div className="absolute right-10 top-1/2 -translate-y-1/2">
+                      {passwordsMatch
+                        ? <Check className="w-4 h-4 text-primary" />
+                        : <X className="w-4 h-4 text-destructive/70" />
+                      }
+                    </div>
+                  )}
+                </div>
+                {confirmPassword.length > 0 && !passwordsMatch && (
+                  <p className="text-[11px] text-destructive/80 pl-1">Passwords do not match</p>
+                )}
+              </div>
+            )}
 
             {/* Password Validation Rules (Signup Only) */}
             {!isLogin && password.length > 0 && (
@@ -403,7 +474,7 @@ export const AuthModal: React.FC = () => {
 
             <button
               type="submit"
-              disabled={loading || (!isLogin && !isPasswordValid)}
+              disabled={loading || (!isLogin && (!isPasswordValid || !passwordsMatch || !isEmailValid))}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl text-sm font-bold shadow-md shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all duration-150 disabled:opacity-40 disabled:pointer-events-none"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
