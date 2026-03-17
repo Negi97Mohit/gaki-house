@@ -27,7 +27,9 @@ export const AuthModal: React.FC = () => {
   const { isAuthModalOpen, authModalTab, closeAuthModal, openAuthModal, createProfile, needsProfileSetup, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Profile setup state for new Google users
@@ -44,10 +46,15 @@ export const AuthModal: React.FC = () => {
 
   const isLogin = authModalTab === "login";
   const isPasswordValid = PASSWORD_RULES.every((r) => r.test(password));
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const passwordsMatch = password === confirmPassword;
 
   const resetForm = () => {
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
+    setShowPassword(false);
+    setShowConfirmPassword(false);
     setStep("auth");
     setPendingUser(null);
     setDisplayName("");
