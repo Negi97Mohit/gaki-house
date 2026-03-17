@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { StreamPlayer, isIframePlatform } from "../components/StreamPlayer";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import {
   Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
-  Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X
+  Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X, PictureInPicture2
 } from "lucide-react";
+import { usePip } from "../context/PipContext";
 import { formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
@@ -27,6 +28,8 @@ export const StreamPage: React.FC = () => {
   const { username } = useParams();
   const { user, profile, openAuthModal } = useAuth();
   const { data: allStreams = [] } = useStreams();
+  const { openPip, closePip, pip } = usePip();
+  const location = useLocation();
   // Fallback: If not found in API list, try to construct from username pattern (e.g. douyu-123)
   const channel = allStreams.find((c) => c.username === username) || (() => {
     if (!username) return allStreams[0];
@@ -182,6 +185,23 @@ export const StreamPage: React.FC = () => {
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
 
+  // Close PiP when we land on this stream's page (we're watching it full-size now)
+  useEffect(() => {
+    if (pip.isActive && pip.channel?.username === username) {
+      closePip();
+    }
+  }, [username, pip.isActive, pip.channel?.username, closePip]);
+
+  // Auto-activate PiP when navigating away from this stream page
+  useEffect(() => {
+    return () => {
+      // On unmount, if we have a channel and it's playing, activate PiP
+      if (channel && isPlaying) {
+        openPip(channel);
+      }
+    };
+  }, [channel, isPlaying]);
+
   const handlePlayerMouseMove = () => {
     setShowControls(true);
     if (controlsTimer.current) clearTimeout(controlsTimer.current);
@@ -313,6 +333,13 @@ export const StreamPage: React.FC = () => {
               >
                 <Heart className={cn("w-4 h-4 inline mr-1.5", isFollowing && "fill-destructive text-destructive")} />
                 {isFollowing ? "Following" : "Follow"}
+              </button>
+              <button
+                onClick={() => { if (channel) openPip(channel); }}
+                className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+                title="Mini player"
+              >
+                <PictureInPicture2 className="w-4 h-4" />
               </button>
               <button className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
                 <Share2 className="w-4 h-4" />
