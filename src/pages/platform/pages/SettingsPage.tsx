@@ -572,32 +572,44 @@ export const SettingsPage: React.FC = () => {
                   </div>
                   Platform Layout
                 </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
-                  {PLATFORM_LAYOUTS.map((layout) => {
-                    const isActive = platformLayout === layout.id;
-                    return (
-                      <button
-                        key={layout.id}
-                        onClick={() => setPlatformLayout(layout.id)}
-                        className={cn(
-                          "group relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
-                          isActive
-                            ? "border-primary bg-primary/5 ring-1 ring-primary/30"
-                            : "border-border/10 hover:border-border/40"
-                        )}
-                      >
-                        {/* Layout preview mini wireframe */}
-                        <LayoutPreview type={layout.id} isActive={isActive} />
-                        <div className="text-center">
-                          <span className="text-xs font-semibold text-foreground block">{layout.label}</span>
-                          <span className="text-[10px] text-muted-foreground">{layout.description}</span>
-                        </div>
-                        {isActive && (
-                          <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-2.5 h-2.5 text-primary-foreground" />
-                          </div>
-                        )}
-                      </button>
+
+                {/* Group by category */}
+                {["Classic", "Streaming"].map((category) => {
+                  const categoryLayouts = PLATFORM_LAYOUTS.filter((l) => l.category === category);
+                  return (
+                    <div key={category} className="mb-4 last:mb-0">
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-2">{category}</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
+                        {categoryLayouts.map((layout) => {
+                          const isActive = platformLayout === layout.id;
+                          return (
+                            <button
+                              key={layout.id}
+                              onClick={() => setPlatformLayout(layout.id)}
+                              className={cn(
+                                "group relative flex flex-col items-center gap-2 p-3 rounded-xl border transition-all",
+                                isActive
+                                  ? "border-primary bg-primary/5 ring-1 ring-primary/30"
+                                  : "border-border/10 hover:border-border/40"
+                              )}
+                            >
+                              <LayoutPreview type={layout.id} isActive={isActive} />
+                              <div className="text-center">
+                                <span className="text-xs font-semibold text-foreground block">{layout.label}</span>
+                                <span className="text-[10px] text-muted-foreground">{layout.description}</span>
+                              </div>
+                              {isActive && (
+                                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                                  <Check className="w-2.5 h-2.5 text-primary-foreground" />
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
                     );
                   })}
                 </div>
