@@ -3050,24 +3050,24 @@ body.cursor-inactive * {
 
   /* ===== PLASMA STORM THEME ===== */
   .theme-plasmaStorm {
-    --background: 263 20% 98%;
-    --foreground: 263 20% 10%;
-    --card: 263 20% 96%;
-    --card-foreground: 263 20% 10%;
-    --popover: 263 20% 98%;
-    --popover-foreground: 263 20% 10%;
+    --background: 263 35% 97%;
+    --foreground: 263 28% 10%;
+    --card: 263 30% 95%;
+    --card-foreground: 263 28% 10%;
+    --popover: 263 35% 97%;
+    --popover-foreground: 263 28% 10%;
     --primary: 263 70% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 263 15% 92%;
-    --secondary-foreground: 263 20% 20%;
-    --muted: 263 15% 90%;
-    --muted-foreground: 263 10% 45%;
+    --secondary: 263 25% 91%;
+    --secondary-foreground: 263 25% 20%;
+    --muted: 263 22% 89%;
+    --muted-foreground: 263 15% 42%;
     --accent: 263 70% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 263 15% 80%;
-    --input: 263 15% 88%;
+    --border: 263 22% 65%;
+    --input: 263 22% 70%;
     --ring: 263 70% 50%;
   }
 
