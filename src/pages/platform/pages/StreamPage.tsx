@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { StreamPlayer, isIframePlatform } from "../components/StreamPlayer";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import {
   Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
-  Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X
+  Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X, PictureInPicture2
 } from "lucide-react";
+import { usePip } from "../context/PipContext";
 import { formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
