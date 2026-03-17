@@ -58,8 +58,23 @@ export async function fetchAllStreams(): Promise<StreamChannel[]> {
     ];
     const uniqueStreams = Array.from(new Map(allStreams.map(item => [item.username + item.platform, item])).values());
 
+    // Filter: only keep streams that are live AND on reliably embeddable/viewable platforms
+    const RELIABLE_PLATFORMS: Set<PlatformType> = new Set([
+        "youtube", "twitch", "kick", "trovo", "rumble"
+    ]);
+
+    const liveAndPlayable = uniqueStreams.filter(stream => {
+        // Must be marked as live
+        if (!stream.isLive) return false;
+        // Must be on a platform that reliably autoplays without sign-in
+        if (stream.platform && !RELIABLE_PLATFORMS.has(stream.platform)) return false;
+        // Must have a stream URL or username for embedding
+        if (!stream.streamUrl && !stream.username) return false;
+        return true;
+    });
+
     // Sort by viewers descending
-    return uniqueStreams.sort((a, b) => b.viewers - a.viewers);
+    return liveAndPlayable.sort((a, b) => b.viewers - a.viewers);
 }
 
 /**

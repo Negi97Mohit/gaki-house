@@ -223,33 +223,7 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle Bilibili via iframe
-    if (channel.platform === "bilibili") {
-        // ID is expected to be the BV ID (e.g. BV1xx411c7X7)
-        return (
-            <iframe
-                src={`//player.bilibili.com/player.html?bvid=${channel.username}&page=1&autoplay=${playing ? 1 : 0}&muted=${muted ? 1 : 0}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
-    }
-
-    // Handle Niconico via iframe
-    if (channel.platform === "niconico") {
-        // ID is expected to be video ID (e.g. sm123456)
-        return (
-            <iframe
-                src={`https://embed.nicovideo.jp/watch/${channel.username}?autoplay=${playing ? 1 : 0}&muted=${muted ? 1 : 0}`}
-                className="w-full h-full"
-                allowFullScreen
-                allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: "none" }}
-            />
-        );
-    }
+    // Bilibili & Niconico: removed — require login, don't reliably autoplay
 
     // Non-embeddable platforms — return null (caller should not render)
     if (!isEmbeddablePlatform(channel.platform)) {
