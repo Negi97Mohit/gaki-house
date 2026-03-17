@@ -3,8 +3,8 @@ import { StreamPlayer, isIframePlatform } from "../components/StreamPlayer";
 import { useParams, Link, useLocation } from "react-router-dom";
 import {
   Heart, Share2, Users, Send, MoreHorizontal, CheckCircle,
-  Maximize, Minimize, Theater, Volume2, VolumeX, Settings, MessageSquare, X, PictureInPicture2
-} from "lucide-react";
+  Maximize, Minimize, Theater, Volume2, VolumeX, Settings, X, PictureInPicture2 } from
+"lucide-react";
 import { usePip } from "../context/PipContext";
 import { formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
@@ -55,7 +55,7 @@ export const StreamPage: React.FC = () => {
       "rooter-": "rooter",
       "loco-": "loco",
       "chingari-": "chingari",
-      "rumble-": "rumble", // Also support manual rumble
+      "rumble-": "rumble" // Also support manual rumble
     };
 
     for (const [prefix, platform] of Object.entries(supportedPrefixes)) {
@@ -74,7 +74,7 @@ export const StreamPage: React.FC = () => {
           isLive: true,
           tags: ["manual"],
           streamUrl: "", // URL construction handled in StreamPlayer based on platform
-          platform: platform,
+          platform: platform
         } as any; // Cast to StreamChannel (approximate)
       }
     }
@@ -200,9 +200,9 @@ export const StreamPage: React.FC = () => {
   const channelRef = useRef(channel);
   const isPlayingRef = useRef(isPlaying);
   const locationRef = useRef(location.pathname);
-  useEffect(() => { channelRef.current = channel; }, [channel]);
-  useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
-  useEffect(() => { locationRef.current = location.pathname; }, [location.pathname]);
+  useEffect(() => {channelRef.current = channel;}, [channel]);
+  useEffect(() => {isPlayingRef.current = isPlaying;}, [isPlaying]);
+  useEffect(() => {locationRef.current = location.pathname;}, [location.pathname]);
 
   useEffect(() => {
     return () => {
@@ -241,8 +241,8 @@ export const StreamPage: React.FC = () => {
             Browse Channels
           </Link>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -258,31 +258,31 @@ export const StreamPage: React.FC = () => {
             isFullscreen && "max-h-none h-screen w-screen fixed top-0 left-0 z-50"
           )}
           onMouseMove={handlePlayerMouseMove}
-          onMouseLeave={() => setShowControls(false)}
-        >
-          {(channel.streamUrl || channel.username) ? (
-            <StreamPlayer
-              channel={channel}
-              playing={isPlaying}
-              muted={isMuted}
-              volume={volume}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-            />
-          ) : (
-            <img
-              src={channel.thumbnail}
-              alt={channel.title}
-              className="w-full h-full object-cover opacity-50"
-            />
-          )}
+          onMouseLeave={() => setShowControls(false)}>
+          
+          {channel.streamUrl || channel.username ?
+          <StreamPlayer
+            channel={channel}
+            playing={isPlaying}
+            muted={isMuted}
+            volume={volume}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)} /> :
+
+
+          <img
+            src={channel.thumbnail}
+            alt={channel.title}
+            className="w-full h-full object-cover opacity-50" />
+
+          }
 
           {/* Error/Offline State or Placeholder if no playable source */}
-          {(!channel.streamUrl && !channel.username) && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {!channel.streamUrl && !channel.username &&
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <p className="text-white font-bold text-xl">Stream Offline</p>
             </div>
-          )}
+          }
 
           {/* All overlays removed - native player controls only */}
         </div>
@@ -306,35 +306,35 @@ export const StreamPage: React.FC = () => {
                     <>
                       <span
                         className="px-1.5 py-0.5 text-[10px] font-bold rounded flex items-center gap-1"
-                        style={{ backgroundColor: meta.color, color: meta.textColor }}
-                      >
+                        style={{ backgroundColor: meta.color, color: meta.textColor }}>
+                        
                         <PIcon className="w-3 h-3" style={{ color: meta.textColor }} />
                         {meta.label}
                       </span>
                       <span
                         className="px-2 py-0.5 text-[11px] font-bold rounded flex items-center gap-1"
-                        style={{ backgroundColor: `${meta.color}20`, color: meta.color, border: `1px solid ${meta.color}40` }}
-                      >
+                        style={{ backgroundColor: `${meta.color}20`, color: meta.color, border: `1px solid ${meta.color}40` }}>
+                        
                         <Users className="w-3 h-3" />
                         {formatViewerCount(channel.viewers)} watching
                       </span>
-                    </>
-                  );
+                    </>);
+
                 })()}
               </div>
               <p className="text-sm text-foreground font-medium mt-0.5">{channel.title}</p>
               <Link
                 to={`/platform/browse/${channel.categorySlug}`}
-                className="text-primary text-xs hover:underline mt-0.5 inline-block"
-              >
+                className="text-primary text-xs hover:underline mt-0.5 inline-block">
+                
                 {channel.category}
               </Link>
               <div className="flex gap-1.5 mt-2 flex-wrap">
-                {channel.tags.map((tag) => (
-                  <span key={tag} className="px-2 py-0.5 bg-muted text-muted-foreground text-[11px] rounded font-medium">
+                {channel.tags.map((tag) =>
+                <span key={tag} className="px-2 py-0.5 bg-muted text-muted-foreground text-[11px] rounded font-medium">
                     {tag}
                   </span>
-                ))}
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -342,19 +342,19 @@ export const StreamPage: React.FC = () => {
                 onClick={toggleFollow}
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-bold transition-colors",
-                  isFollowing
-                    ? "bg-muted text-foreground hover:bg-muted/80"
-                    : "bg-primary text-primary-foreground hover:opacity-90"
-                )}
-              >
+                  isFollowing ?
+                  "bg-muted text-foreground hover:bg-muted/80" :
+                  "bg-primary text-primary-foreground hover:opacity-90"
+                )}>
+                
                 <Heart className={cn("w-4 h-4 inline mr-1.5", isFollowing && "fill-destructive text-destructive")} />
                 {isFollowing ? "Following" : "Follow"}
               </button>
               <button
-                onClick={() => { if (channel) openPip(channel); }}
+                onClick={() => {if (channel) openPip(channel);}}
                 className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
-                title="Mini player"
-              >
+                title="Mini player">
+                
                 <PictureInPicture2 className="w-4 h-4" />
               </button>
               <button className="p-2 rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors hidden sm:block">
@@ -365,33 +365,33 @@ export const StreamPage: React.FC = () => {
               </button>
             </div>
           </div>
-          {channel.followers && (
-            <p className="text-xs text-muted-foreground mt-3 ml-[60px]">
+          {channel.followers &&
+          <p className="text-xs text-muted-foreground mt-3 ml-[60px]">
               {formatViewerCount(channel.followers)} followers
             </p>
-          )}
+          }
         </div>
 
         {/* Comments */}
-        {!isTheater && (
-          <StreamComments channelName={channel.displayName} />
-        )}
+        {!isTheater &&
+        <StreamComments channelName={channel.displayName} />
+        }
 
         {/* About */}
-        {channel.bio && !isTheater && (
-          <div className="p-4">
+        {channel.bio && !isTheater &&
+        <div className="p-4">
             <h3 className="text-sm font-semibold text-foreground mb-2">About {channel.displayName}</h3>
             <p className="text-sm text-muted-foreground">{channel.bio}</p>
           </div>
-        )}
+        }
       </div>
 
       {/* Mobile Chat Toggle */}
       <button
         onClick={() => setShowMobileChat(true)}
-        className="lg:hidden fixed bottom-4 right-4 z-50 p-3 bg-primary text-primary-foreground rounded-full shadow-lg"
-      >
-        <MessageSquare className="w-5 h-5" />
+        className="lg:hidden fixed bottom-4 right-4 z-50 p-3 bg-primary text-primary-foreground rounded-full shadow-lg">
+        
+        
       </button>
 
       {/* Chat Panel - Desktop */}
@@ -399,37 +399,36 @@ export const StreamPage: React.FC = () => {
         "w-[340px] border-l border-border/30 flex flex-col bg-card shrink-0 hidden lg:flex",
         isTheater && "flex-1"
       )}>
-        {channel && (
-          <StreamChatEmbed
-            platform={channel.platform || "twitch"}
-            channelId={channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1] || channel.id.replace(/^yt-(live|pop)-/, "")} // Extract video ID from URL
-            username={channel.username.replace("tw-", "").replace("kick-", "")} // Simplified username extraction if needed
-          />
-        )}
+        {channel &&
+        <StreamChatEmbed
+          platform={channel.platform || "twitch"}
+          channelId={channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1] || channel.id.replace(/^yt-(live|pop)-/, "")} // Extract video ID from URL
+          username={channel.username.replace("tw-", "").replace("kick-", "")} // Simplified username extraction if needed
+        />
+        }
       </div>
 
       {/* Chat Panel - Mobile Overlay */}
-      {showMobileChat && (
-        <div className="lg:hidden fixed inset-0 z-[200] bg-background/95 backdrop-blur-sm flex flex-col">
+      {showMobileChat &&
+      <div className="lg:hidden fixed inset-0 z-[200] bg-background/95 backdrop-blur-sm flex flex-col">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border/30">
             <p className="text-sm font-semibold text-foreground">Stream Chat</p>
             <button onClick={() => setShowMobileChat(false)} className="p-1 text-muted-foreground hover:text-foreground">
               <X className="w-5 h-5" />
             </button>
           </div>
-          {channel && (
-            <StreamChatEmbed
-              platform={channel.platform || "twitch"}
-              channelId={channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1] || channel.id.replace(/^yt-(live|pop)-/, "")}
-              username={channel.username.replace("tw-", "").replace("kick-", "")}
-              className="flex-1"
-            />
-          )}
+          {channel &&
+        <StreamChatEmbed
+          platform={channel.platform || "twitch"}
+          channelId={channel.streamUrl?.match(/[?&]v=([^&]+)/)?.[1] || channel.id.replace(/^yt-(live|pop)-/, "")}
+          username={channel.username.replace("tw-", "").replace("kick-", "")}
+          className="flex-1" />
+
+        }
         </div>
-      )}
-    </div>
-  );
+      }
+    </div>);
+
 };
 
 // Removed ChatPanel component definition
-
