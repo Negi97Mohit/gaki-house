@@ -389,9 +389,7 @@ export const StreamPage: React.FC = () => {
       {/* Mobile Chat Toggle */}
       <button
         onClick={() => setShowMobileChat(true)}
-        className="lg:hidden fixed bottom-4 right-4 z-50 p-3 bg-primary text-primary-foreground rounded-full shadow-lg">
-        
-        
+        className="lg:hidden fixed bottom-4 right-4 z-50 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hidden">
       </button>
 
       {/* Chat Panel - Desktop */}

@@ -80,7 +80,7 @@ export const StreamComments: React.FC<StreamCommentsProps> = ({ channelName, cla
 
       {/* Collapsible Content */}
       {isExpanded && (
-        <div className="px-4 pb-4 space-y-4">
+        <div ref={commentsRef} className="px-4 pb-4 space-y-4">
           {/* Comment Input */}
           <form onSubmit={handleSubmit} className="flex items-center gap-2">
             <input
