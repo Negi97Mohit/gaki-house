@@ -124,6 +124,10 @@ export const StreamPage: React.FC = () => {
       return;
     }
 
+    if (!channel) {
+      return;
+    }
+
     const startState = isFollowing;
     // Optimistic update
     setIsFollowing(!startState);
