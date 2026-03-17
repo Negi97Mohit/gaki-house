@@ -23,36 +23,16 @@ export function isIframePlatform(platform?: PlatformType): boolean {
   return !!platform && IFRAME_PLATFORMS.includes(platform);
 }
 
-// ---- Twitch Interactive Embed Component ----
-// Uses the official Twitch Embed JS SDK for reliable autoplay
-declare global {
-  interface Window {
-    Twitch?: any;
+// ---- Twitch Iframe Embed Component ----
+// Uses iframe directly for reliable autoplay (muted)
+
+function getTwitchParentParam(): string {
+  const hostname = window.location.hostname;
+  const parents = ["localhost", "127.0.0.1"];
+  if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+    parents.push(hostname);
   }
-}
-
-let twitchScriptLoaded = false;
-let twitchScriptLoading = false;
-const twitchScriptCallbacks: (() => void)[] = [];
-
-function loadTwitchScript(callback: () => void) {
-  if (twitchScriptLoaded && window.Twitch) {
-    callback();
-    return;
-  }
-  twitchScriptCallbacks.push(callback);
-  if (twitchScriptLoading) return;
-  twitchScriptLoading = true;
-
-  const script = document.createElement("script");
-  script.src = "https://embed.twitch.tv/embed/v1.js";
-  script.onload = () => {
-    twitchScriptLoaded = true;
-    twitchScriptLoading = false;
-    twitchScriptCallbacks.forEach((cb) => cb());
-    twitchScriptCallbacks.length = 0;
-  };
-  document.body.appendChild(script);
+  return parents.map(p => `parent=${p}`).join("&");
 }
 
 interface TwitchEmbedProps {
@@ -63,63 +43,16 @@ interface TwitchEmbedProps {
 }
 
 const TwitchEmbed: React.FC<TwitchEmbedProps> = ({ channel, autoplay = true, muted = true, controls = true }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const embedRef = useRef<any>(null);
-
-  // For thumbnail previews (controls=false), use a lightweight iframe instead of the full Embed SDK
-  if (!controls) {
-    const hostname = window.location.hostname;
-    const parents = ["localhost", "127.0.0.1"];
-    if (hostname !== "localhost" && hostname !== "127.0.0.1") {
-      parents.push(hostname);
-    }
-    const parentParam = parents.map(p => `parent=${p}`).join("&");
-    return (
-      <iframe
-        src={`https://player.twitch.tv/?channel=${channel}&${parentParam}&autoplay=${autoplay}&muted=${muted}&controls=false`}
-        className="w-full h-full"
-        allowFullScreen
-        allow="autoplay; fullscreen"
-        style={{ border: "none" }}
-      />
-    );
-  }
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const hostname = window.location.hostname;
-    const parents = ["localhost", "127.0.0.1"];
-    if (hostname !== "localhost" && hostname !== "127.0.0.1") {
-      parents.push(hostname);
-    }
-
-    loadTwitchScript(() => {
-      if (!containerRef.current || !window.Twitch) return;
-
-      // Clear previous embed
-      containerRef.current.innerHTML = "";
-
-      embedRef.current = new window.Twitch.Embed(containerRef.current, {
-        width: "100%",
-        height: "100%",
-        channel: channel,
-        parent: parents,
-        autoplay: autoplay,
-        muted: muted,
-        layout: "video",
-      });
-    });
-
-    return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
-      embedRef.current = null;
-    };
-  }, [channel, autoplay, muted]);
-
-  return <div ref={containerRef} className="w-full h-full" />;
+  const parentParam = getTwitchParentParam();
+  return (
+    <iframe
+      src={`https://player.twitch.tv/?channel=${channel}&${parentParam}&autoplay=${autoplay}&muted=${muted}&controls=${controls}`}
+      className="w-full h-full"
+      allowFullScreen
+      allow="autoplay; fullscreen; encrypted-media"
+      style={{ border: "none" }}
+    />
+  );
 };
 interface StreamPlayerProps {
     channel: StreamChannel;
