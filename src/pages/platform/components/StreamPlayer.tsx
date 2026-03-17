@@ -24,32 +24,54 @@ export function isIframePlatform(platform?: PlatformType): boolean {
 }
 
 // ---- Twitch Iframe Embed Component ----
-// Uses iframe directly for reliable autoplay (muted)
+// Uses the official Twitch iframe player with all detected parent hosts for preview/published embeds.
 
 function getTwitchParentParam(): string {
-  const hostname = window.location.hostname;
-  const parents = ["localhost", "127.0.0.1"];
-  if (hostname !== "localhost" && hostname !== "127.0.0.1") {
-    parents.push(hostname);
+  const parents = new Set<string>(["localhost", "127.0.0.1"]);
+
+  const addParent = (value?: string | null) => {
+    if (!value) return;
+    try {
+      const hostname = value.includes("://") ? new URL(value).hostname : value.split(":")[0];
+      if (hostname) parents.add(hostname);
+    } catch {
+      // Ignore malformed values
+    }
+  };
+
+  addParent(window.location.hostname);
+  addParent(document.referrer);
+
+  const ancestorOrigins = window.location.ancestorOrigins;
+  if (ancestorOrigins) {
+    Array.from(ancestorOrigins).forEach(addParent);
   }
-  return parents.map(p => `parent=${p}`).join("&");
+
+  return Array.from(parents)
+    .map((parent) => `parent=${encodeURIComponent(parent)}`)
+    .join("&");
 }
 
 interface TwitchEmbedProps {
   channel: string;
   autoplay?: boolean;
   muted?: boolean;
-  controls?: boolean;
 }
 
-const TwitchEmbed: React.FC<TwitchEmbedProps> = ({ channel, autoplay = true, muted = true, controls = true }) => {
+const TwitchEmbed: React.FC<TwitchEmbedProps> = ({ channel, autoplay = true, muted = true }) => {
   const parentParam = getTwitchParentParam();
+  const src = `https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&${parentParam}&autoplay=${autoplay}&muted=${muted}`;
+
   return (
     <iframe
-      src={`https://player.twitch.tv/?channel=${channel}&${parentParam}&autoplay=${autoplay}&muted=${muted}&controls=${controls}`}
+      key={src}
+      src={src}
+      title={`Twitch stream: ${channel}`}
       className="w-full h-full"
       allowFullScreen
-      allow="autoplay; fullscreen; encrypted-media"
+      allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+      loading="eager"
+      referrerPolicy="origin"
       style={{ border: "none" }}
     />
   );
@@ -105,10 +127,17 @@ export const StreamPlayer: React.FC<StreamPlayerProps> = ({
         );
     }
 
-    // Handle Twitch via official Twitch Interactive Embed JS SDK (autoplay guaranteed)
+    // Handle Twitch via official iframe player
     if (channel.platform === "twitch") {
-        const username = channel.username.replace("tw-", "");
-        return <TwitchEmbed channel={username} autoplay={playing} muted={muted} controls={controls} />;
+        const username = channel.username?.replace(/^tw-/, "")
+            || channel.streamUrl?.split("/").filter(Boolean).pop()
+            || "";
+
+        if (!username) {
+            return null;
+        }
+
+        return <TwitchEmbed channel={username} autoplay={playing} muted={muted} />;
     }
 
     // Handle YouTube via iframe 

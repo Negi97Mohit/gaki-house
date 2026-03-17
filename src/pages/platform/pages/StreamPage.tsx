@@ -77,20 +77,6 @@ export const StreamPage: React.FC = () => {
     return allStreams[0];
   })();
 
-  if (!channel) {
-    return (
-      <div className="flex items-center justify-center h-full text-foreground">
-        <div className="text-center">
-          <h2 className="text-xl font-bold mb-2">Stream Not Found</h2>
-          <p className="text-muted-foreground">The requested channel could not be found or is offline.</p>
-          <Link to="/platform/browse" className="mt-4 inline-block px-4 py-2 bg-primary text-primary-foreground rounded hover:opacity-90">
-            Browse Channels
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   // Removed mock chat logic
 
 
@@ -112,7 +98,7 @@ export const StreamPage: React.FC = () => {
 
   // Firestore for valid check
   useEffect(() => {
-    if (!user) {
+    if (!user || !channel) {
       setIsFollowing(false);
       return;
     }
@@ -130,11 +116,15 @@ export const StreamPage: React.FC = () => {
       }
     };
     checkFollow();
-  }, [user, channel.id]);
+  }, [user, channel?.id]);
 
   const toggleFollow = async () => {
     if (!user) {
       openAuthModal("login");
+      return;
+    }
+
+    if (!channel) {
       return;
     }
 
@@ -205,6 +195,20 @@ export const StreamPage: React.FC = () => {
     if (newVolume === 0) setIsMuted(true);
   };
 
+  if (!channel) {
+    return (
+      <div className="flex items-center justify-center h-full text-foreground">
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-2">Stream Not Found</h2>
+          <p className="text-muted-foreground">The requested channel could not be found or is offline.</p>
+          <Link to="/platform/browse" className="mt-4 inline-block px-4 py-2 bg-primary text-primary-foreground rounded hover:opacity-90">
+            Browse Channels
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("flex h-full", isTheater && "flex-col")}>
       {/* Stream + Info */}
@@ -220,7 +224,7 @@ export const StreamPage: React.FC = () => {
           onMouseMove={handlePlayerMouseMove}
           onMouseLeave={() => setShowControls(false)}
         >
-          {channel.streamUrl ? (
+          {(channel.streamUrl || channel.username) ? (
             <StreamPlayer
               channel={channel}
               playing={isPlaying}
@@ -237,8 +241,8 @@ export const StreamPage: React.FC = () => {
             />
           )}
 
-          {/* Error/Offline State or Placeholder if no streamUrl */}
-          {(!channel.streamUrl && channel.username) && (
+          {/* Error/Offline State or Placeholder if no playable source */}
+          {(!channel.streamUrl && !channel.username) && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <p className="text-white font-bold text-xl">Stream Offline</p>
             </div>
