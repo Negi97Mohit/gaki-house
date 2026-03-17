@@ -26,6 +26,12 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
   const isMosaic = layout === "mosaic";
   const isMagazineFeatured = layout === "magazine" && featured;
   const isCompact = layout === "compact";
+  const isNetflix = layout === "netflix";
+  const isHbo = layout === "hbo";
+  const isAppleTv = layout === "appletv";
+  const isDisneyPlus = layout === "disneyplus";
+  const isSpotify = layout === "spotify";
+  const isYoutube = layout === "youtube";
 
   // Mosaic: randomize aspect ratio for staggered effect
   const mosaicAspect = isMosaic
@@ -40,6 +46,16 @@ export const StreamCardHover: React.FC<StreamCardHoverProps> = ({ channel, layou
     ? "aspect-video"
     : isMagazineFeatured
     ? "h-full"
+    : isNetflix || isDisneyPlus
+    ? "aspect-[2/3]"
+    : isHbo
+    ? "aspect-[3/4]"
+    : isAppleTv
+    ? "aspect-[4/3]"
+    : isSpotify
+    ? "aspect-square"
+    : isYoutube
+    ? "aspect-video"
     : isCompact
     ? "aspect-video"
     : mosaicAspect || "aspect-video";
