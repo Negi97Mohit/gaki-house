@@ -15,6 +15,7 @@ import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 import { toast } from "sonner";
 import { StreamChatEmbed } from "../components/StreamChatEmbed";
+import { StreamComments } from "../components/StreamComments";
 
 // Removed ChatMessage interface
 
@@ -370,6 +371,11 @@ export const StreamPage: React.FC = () => {
             </p>
           )}
         </div>
+
+        {/* Comments */}
+        {!isTheater && (
+          <StreamComments channelName={channel.displayName} />
+        )}
 
         {/* About */}
         {channel.bio && !isTheater && (
