@@ -283,37 +283,56 @@ export const AuthModal: React.FC = () => {
 
   // ---- Auth Step (Login / Signup) ----
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-md mx-4 bg-card border border-border/40 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none" />
+    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-md">
+      <div className="relative w-full max-w-sm mx-4 bg-card border border-border/30 rounded-3xl shadow-2xl shadow-black/30 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        {/* Subtle top gradient accent */}
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
         {/* Close */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-1 text-muted-foreground hover:text-foreground transition-colors z-10"
+          className="absolute top-4 right-4 p-1.5 rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-accent/50 transition-all z-10"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        <div className="p-8 relative">
-          {/* Header */}
-          <div className="text-center mb-7">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              {isLogin ? "Welcome back" : "Create account"}
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1.5">
-              {isLogin ? "Sign in to access your dashboard" : "Join the community of creators"}
-            </p>
+        <div className="p-7 relative">
+          {/* Tab Switcher */}
+          <div className="flex items-center bg-muted/60 rounded-2xl p-1 mb-7">
+            <button
+              type="button"
+              onClick={() => { openAuthModal("login"); setEmail(""); setPassword(""); }}
+              className={cn(
+                "flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
+                isLogin
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { openAuthModal("signup"); setEmail(""); setPassword(""); }}
+              className={cn(
+                "flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
+                !isLogin
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Sign Up
+            </button>
           </div>
 
           {/* Google */}
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-background border border-border/60 hover:border-border rounded-xl text-sm font-medium text-foreground hover:bg-accent/40 transition-all disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-background border border-border/50 hover:border-border/80 rounded-2xl text-sm font-medium text-foreground hover:bg-accent/30 transition-all duration-200 disabled:opacity-50"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
@@ -325,53 +344,45 @@ export const AuthModal: React.FC = () => {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-border/40" />
-            <span className="text-xs text-muted-foreground font-medium">OR</span>
-            <div className="flex-1 h-px bg-border/40" />
+            <div className="flex-1 h-px bg-border/30" />
+            <span className="text-[11px] text-muted-foreground/60 font-medium tracking-wider uppercase">or</span>
+            <div className="flex-1 h-px bg-border/30" />
           </div>
 
           {/* Email form */}
-          <form onSubmit={handleEmailAuth} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-muted-foreground uppercase tracking-wider ml-1">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  className="w-full bg-muted/50 border border-border/40 rounded-xl pl-9 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
-                />
-              </div>
+          <form onSubmit={handleEmailAuth} className="space-y-3.5">
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 pointer-events-none" />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email address"
+                required
+                className="w-full bg-muted/40 border border-border/30 rounded-2xl pl-10 pr-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 transition-all"
+              />
             </div>
-            <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-muted-foreground uppercase tracking-wider ml-1">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={isLogin ? "••••••••" : "Min 8 characters"}
-                  required
-                  className="w-full bg-muted/50 border border-border/40 rounded-xl pl-3 pr-10 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={isLogin ? "Password" : "Password (min 8 chars)"}
+                required
+                className="w-full bg-muted/40 border border-border/30 rounded-2xl pl-3.5 pr-10 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary/40 transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
 
             {/* Password Validation Rules (Signup Only) */}
             {!isLogin && password.length > 0 && (
-              <div className="space-y-1 pt-1 pl-1">
+              <div className="grid grid-cols-2 gap-1 pt-0.5 pl-0.5">
                 {PASSWORD_RULES.map((rule) => {
                   const passed = rule.test(password);
                   return (
@@ -379,10 +390,10 @@ export const AuthModal: React.FC = () => {
                       key={rule.label}
                       className={cn(
                         "flex items-center gap-1.5 text-[10px] transition-colors",
-                        passed ? "text-primary font-medium" : "text-muted-foreground/60"
+                        passed ? "text-primary font-medium" : "text-muted-foreground/50"
                       )}
                     >
-                      {passed ? <Check className="w-3 h-3" /> : <div className="w-3 h-3 rounded-full border border-current opacity-40" />}
+                      {passed ? <Check className="w-3 h-3 shrink-0" /> : <div className="w-3 h-3 rounded-full border border-current opacity-40 shrink-0" />}
                       {rule.label}
                     </div>
                   );
@@ -393,27 +404,12 @@ export const AuthModal: React.FC = () => {
             <button
               type="submit"
               disabled={loading || (!isLogin && !isPasswordValid)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none mt-2"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl text-sm font-bold shadow-md shadow-primary/20 hover:shadow-primary/30 active:scale-[0.98] transition-all duration-150 disabled:opacity-40 disabled:pointer-events-none"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {isLogin ? "Sign In" : "Create Account"}
             </button>
           </form>
-
-          {/* Toggle */}
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-            <button
-              onClick={() => {
-                openAuthModal(isLogin ? "signup" : "login");
-                setEmail("");
-                setPassword("");
-              }}
-              className="text-primary font-medium hover:underline focus:outline-none"
-            >
-              {isLogin ? "Sign Up" : "Sign In"}
-            </button>
-          </p>
         </div>
       </div>
     </div>
