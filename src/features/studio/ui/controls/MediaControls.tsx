@@ -13,12 +13,14 @@ import {
   X,
   Circle,
   Square,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
 import { cn } from "@/shared/lib/utils";
@@ -29,6 +31,8 @@ import { useShallow } from "zustand/react/shallow";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";
 import { useGoLiveStore } from "@/stores/goLive.store";
+import { AudioSettingsDialog } from "./AudioSettingsDialog";
+import { VideoSettingsDialog } from "./VideoSettingsDialog";
 
 
 interface MediaControlsProps {
@@ -73,6 +77,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
   // Local state for Smart Switch
   const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
+  const [isAudioSettingsOpen, setIsAudioSettingsOpen] = useState(false);
+  const [isVideoSettingsOpen, setIsVideoSettingsOpen] = useState(false);
   const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
 
   // Store hooks
@@ -219,6 +225,14 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 </DropdownMenuItem>
               ))
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setIsAudioSettingsOpen(true)}
+              className="text-xs"
+            >
+              <Settings className="w-3 h-3 mr-2" />
+              Audio Settings
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -283,6 +297,14 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 </DropdownMenuItem>
               ))
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setIsVideoSettingsOpen(true)}
+              className="text-xs"
+            >
+              <Settings className="w-3 h-3 mr-2" />
+              Video Settings
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -412,6 +434,9 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           setIsSourceSelectorOpen(false);
         }}
       />
+
+      <AudioSettingsDialog open={isAudioSettingsOpen} onOpenChange={setIsAudioSettingsOpen} />
+      <VideoSettingsDialog open={isVideoSettingsOpen} onOpenChange={setIsVideoSettingsOpen} />
     </>
   );
 };

@@ -10,7 +10,7 @@ import {
   Archive,
   Wrench,
   Settings,
-  AudioLines,
+  
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
@@ -29,7 +29,7 @@ import { GSAPAnimationsPanel } from "./panels/GSAPAnimationsPanel";
 import { FileVaultPanel } from "./panels/FileVaultPanel";
 import { ToolsPanel } from "./panels/ToolsPanel";
 import { SettingsPanel } from "./panels/SettingsPanel";
-import { AudioMixerPanel } from "./panels/AudioMixerPanel";
+
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
@@ -97,7 +97,6 @@ const sections = [
   { id: "text-presets", icon: Type, label: "Text" },
   { id: "saved-overlays", icon: Sparkles, label: "Overlays" },
   { id: "social-banners", icon: BadgeCheck, label: "Banners" },
-  { id: "audio-mixer", icon: AudioLines, label: "Mixer" },
   { id: "file-vault", icon: Archive, label: "Vault" },
   { id: "tools", icon: Wrench, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
@@ -290,7 +289,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               />
             )}
 
-          {activeSection === "audio-mixer" && <AudioMixerPanel />}
+          
 
           {activeSection === "settings" && <SettingsPanel />}
         </div>
