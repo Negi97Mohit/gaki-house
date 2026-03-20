@@ -29,7 +29,7 @@ import { GSAPAnimationsPanel } from "./panels/GSAPAnimationsPanel";
 import { FileVaultPanel } from "./panels/FileVaultPanel";
 import { ToolsPanel } from "./panels/ToolsPanel";
 import { SettingsPanel } from "./panels/SettingsPanel";
-import { AudioMixerPanel } from "./panels/AudioMixerPanel";
+
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
