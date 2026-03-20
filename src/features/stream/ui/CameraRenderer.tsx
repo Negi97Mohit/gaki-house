@@ -12,6 +12,8 @@ import { CinematicOverlay } from "./CinematicOverlay";
 import { CinematicEffect } from "./pip/cinematicShotData";
 import { getCinematicCanvasStyles } from "./pip/cinematicCanvasStyles";
 import { CinematicFilters } from "./pip/CinematicFilters";
+import { useSceneStore } from "@/stores/scene.store";
+import { useShallow } from "zustand/react/shallow";
 
 interface CameraRendererProps {
   stream: MediaStream | null;
