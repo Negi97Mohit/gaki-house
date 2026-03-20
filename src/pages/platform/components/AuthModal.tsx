@@ -315,37 +315,32 @@ export const AuthModal: React.FC = () => {
         </button>
 
         <div className="p-7 relative">
-          {/* Tab Switcher — underline style */}
-          <div className="flex items-center gap-6 mb-7 border-b border-border/40">
+          {/* Tab Switcher — minimal slash style */}
+          <div className="flex items-center gap-1.5 mb-7">
             <button
               type="button"
               onClick={() => { openAuthModal("login"); setEmail(""); setPassword(""); setConfirmPassword(""); }}
               className={cn(
-                "relative pb-3 text-sm font-semibold transition-colors duration-200",
+                "text-lg font-semibold tracking-tight transition-all duration-200",
                 isLogin
                   ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground/40 hover:text-muted-foreground/70"
               )}
             >
-              Sign In
-              {isLogin && (
-                <span className="absolute bottom-0 inset-x-0 h-[2px] bg-primary rounded-full" />
-              )}
+              Sign in
             </button>
+            <span className="text-lg font-light text-muted-foreground/30 select-none">/</span>
             <button
               type="button"
               onClick={() => { openAuthModal("signup"); setEmail(""); setPassword(""); setConfirmPassword(""); }}
               className={cn(
-                "relative pb-3 text-sm font-semibold transition-colors duration-200",
+                "text-lg font-semibold tracking-tight transition-all duration-200",
                 !isLogin
                   ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground/40 hover:text-muted-foreground/70"
               )}
             >
-              Sign Up
-              {!isLogin && (
-                <span className="absolute bottom-0 inset-x-0 h-[2px] bg-primary rounded-full" />
-              )}
+              Sign up
             </button>
           </div>
 
