@@ -52,6 +52,8 @@ interface SceneState {
     trackingSpeed: number;
     isFaceTrackingEnabled: boolean;
     canvasAspectRatio: string;
+    activeCinematicEffect: CinematicEffect;
+    manualZoom: number;
 
     // Undo/Redo state
     canUndo: boolean;
