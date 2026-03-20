@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { GeneratedOverlay, TextOverlayState, FileOverlayState, CaptionStyle, SceneState as GlobalSceneState } from '@/types/caption';
+import type { CinematicEffect } from '@/features/stream/ui/pip/cinematicShotData';
 
 interface SceneState {
     customMaskUrl: string | undefined;
@@ -51,6 +52,8 @@ interface SceneState {
     trackingSpeed: number;
     isFaceTrackingEnabled: boolean;
     canvasAspectRatio: string;
+    activeCinematicEffect: CinematicEffect;
+    manualZoom: number;
 
     // Undo/Redo state
     canUndo: boolean;
@@ -108,6 +111,8 @@ interface SceneState {
     setTrackingSpeed: (speed: number) => void;
     setIsFaceTrackingEnabled: (enabled: boolean) => void;
     setCanvasAspectRatio: (ratio: string) => void;
+    setActiveCinematicEffect: (effect: CinematicEffect) => void;
+    setManualZoom: (zoom: number) => void;
 
     triggerUndo: () => void;
     triggerRedo: () => void;
@@ -199,6 +204,8 @@ export const useSceneStore = create<SceneState>((set) => ({
     trackingSpeed: 0.5,
     isFaceTrackingEnabled: false,
     canvasAspectRatio: "16:9",
+    activeCinematicEffect: "none" as CinematicEffect,
+    manualZoom: 1.0,
 
     setPipRotation: (pipRotation) => set({ pipRotation }),
     setPipBorder: (pipBorder) => set({ pipBorder }),
@@ -221,6 +228,8 @@ export const useSceneStore = create<SceneState>((set) => ({
     setTrackingSpeed: (trackingSpeed) => set({ trackingSpeed }),
     setIsFaceTrackingEnabled: (isFaceTrackingEnabled) => set({ isFaceTrackingEnabled }),
     setCanvasAspectRatio: (canvasAspectRatio) => set({ canvasAspectRatio }),
+    setActiveCinematicEffect: (activeCinematicEffect) => set({ activeCinematicEffect }),
+    setManualZoom: (manualZoom) => set({ manualZoom }),
 
     triggerUndo: () => { },
     triggerRedo: () => { },
