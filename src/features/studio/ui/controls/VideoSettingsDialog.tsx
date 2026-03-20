@@ -16,6 +16,7 @@ import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useFilters } from "@/hooks/useFilters";
+import { useWebGLRenderLoop } from "@/features/canvas/hooks/useWebGLRenderLoop";
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 import {
   CinematicEffect,
