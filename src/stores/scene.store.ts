@@ -204,6 +204,8 @@ export const useSceneStore = create<SceneState>((set) => ({
     trackingSpeed: 0.5,
     isFaceTrackingEnabled: false,
     canvasAspectRatio: "16:9",
+    activeCinematicEffect: "none" as CinematicEffect,
+    manualZoom: 1.0,
 
     setPipRotation: (pipRotation) => set({ pipRotation }),
     setPipBorder: (pipBorder) => set({ pipBorder }),
