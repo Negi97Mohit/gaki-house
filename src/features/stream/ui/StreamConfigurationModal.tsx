@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { useAuth } from "@/pages/platform/context/AuthContext";
 import {
   Radio,
   Eye,
