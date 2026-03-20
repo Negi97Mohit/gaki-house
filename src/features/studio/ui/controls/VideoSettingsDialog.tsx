@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
-import { Check, Webcam, Sparkles, Sun, Zap, Wand2, Clapperboard, X, Search, Droplet } from "lucide-react";
+import { Check, Webcam, Sparkles, Sun, Zap, Wand2, Clapperboard, X, Search } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
@@ -22,6 +22,11 @@ import {
   CINEMATIC_PRESETS,
   CINEMATIC_CATEGORIES,
 } from "@/features/stream/ui/pip/cinematicShotData";
+import { CinematicOverlay } from "@/features/stream/ui/CinematicOverlay";
+import { getCinematicCanvasStyles } from "@/features/stream/ui/pip/cinematicCanvasStyles";
+
+// A reliable sample image for filter thumbnails
+const FILTER_SAMPLE_IMG = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=200&h=150&fit=crop&q=60";
 
 interface VideoSettingsDialogProps {
   open: boolean;
@@ -105,6 +110,7 @@ export const VideoSettingsDialog: React.FC<VideoSettingsDialogProps> = ({
               videoFilter={videoFilter}
               isBeautifyEnabled={isBeautifyEnabled}
               isLowLightEnabled={isLowLightEnabled}
+              activeCinematicEffect={activeCinematicEffect}
             />
             {/* Camera selector */}
             <div className="space-y-1">
@@ -280,12 +286,12 @@ const EffectsPanel: React.FC<{
                 )}
                 title={filter.name}
               >
-                <div
-                  className="w-full h-full rounded-lg"
-                  style={{
-                    filter: filter.style !== "none" ? filter.style : undefined,
-                    background: "linear-gradient(135deg, hsl(var(--primary)/0.3), hsl(var(--muted)))",
-                  }}
+                <img
+                  src={FILTER_SAMPLE_IMG}
+                  alt={filter.name}
+                  className="w-full h-full object-cover"
+                  style={{ filter: filter.style !== "none" ? filter.style : undefined }}
+                  loading="lazy"
                 />
                 <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-1 py-0.5">
                   <span className="text-white text-[8px] font-semibold truncate block text-center">{filter.name}</span>
@@ -317,7 +323,20 @@ const EffectsPanel: React.FC<{
                 )}
                 title={filter.name}
               >
-                <img src={filter.thumbnailUrl} alt={filter.name} className="w-full h-full object-cover rounded-lg" />
+                <img
+                  src={filter.thumbnailUrl}
+                  alt={filter.name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    // Fallback if placeholder URL fails
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/50 text-[9px] font-bold text-foreground/70 pointer-events-none">
+                  {filter.name}
+                </div>
                 <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent px-1 py-0.5">
                   <span className="text-white text-[8px] font-semibold truncate block text-center">{filter.name}</span>
                 </div>
@@ -437,7 +456,8 @@ const CameraPreview: React.FC<{
   videoFilter?: string;
   isBeautifyEnabled?: boolean;
   isLowLightEnabled?: boolean;
-}> = ({ deviceId, open, pipBorder, pipShadow, videoFilter, isBeautifyEnabled, isLowLightEnabled }) => {
+  activeCinematicEffect?: CinematicEffect;
+}> = ({ deviceId, open, pipBorder, pipShadow, videoFilter, isBeautifyEnabled, isLowLightEnabled, activeCinematicEffect }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -489,6 +509,11 @@ const CameraPreview: React.FC<{
   const borderStyle = pipBorder.width > 0 ? `${pipBorder.width}px solid ${pipBorder.color}` : undefined;
   const shadowStyle = pipShadow.blur > 0 ? `0 4px ${pipShadow.blur}px ${pipShadow.color}` : undefined;
 
+  // Cinematic canvas styles
+  const cinematicStyles = activeCinematicEffect && activeCinematicEffect !== "none"
+    ? getCinematicCanvasStyles(activeCinematicEffect)
+    : null;
+
   return (
     <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted/30 ring-1 ring-border/10">
       <video
@@ -497,8 +522,18 @@ const CameraPreview: React.FC<{
         playsInline
         muted
         className="w-full h-full object-cover"
-        style={{ border: borderStyle, boxShadow: shadowStyle, borderRadius: '0.75rem', filter: filterStyle }}
+        style={{
+          border: borderStyle,
+          boxShadow: shadowStyle,
+          borderRadius: '0.75rem',
+          filter: filterStyle,
+          ...cinematicStyles?.canvas,
+        }}
       />
+      {/* Cinematic overlay on top of video */}
+      {activeCinematicEffect && activeCinematicEffect !== "none" && (
+        <CinematicOverlay effect={activeCinematicEffect} />
+      )}
       {!open && (
         <div className="absolute inset-0 flex items-center justify-center">
           <Webcam className="w-8 h-8 text-muted-foreground/30" />
