@@ -289,7 +289,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
               />
             )}
 
-          {activeSection === "audio-mixer" && <AudioMixerPanel />}
+          
 
           {activeSection === "settings" && <SettingsPanel />}
         </div>
