@@ -13,6 +13,7 @@ import {
   X,
   Circle,
   Square,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
