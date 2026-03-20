@@ -76,6 +76,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
   // Local state for Smart Switch
   const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
+  const [isAudioSettingsOpen, setIsAudioSettingsOpen] = useState(false);
+  const [isVideoSettingsOpen, setIsVideoSettingsOpen] = useState(false);
   const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
 
   // Store hooks
