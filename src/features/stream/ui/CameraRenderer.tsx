@@ -90,8 +90,14 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [isHovered, setIsHovered] = useState(false);
-  const [cinematicEffect, setCinematicEffect] = useState<CinematicEffect>("none");
-  const [manualZoom, setManualZoom] = useState(1.0);
+  const { activeCinematicEffect: cinematicEffect, setActiveCinematicEffect: setCinematicEffect, manualZoom, setManualZoom } = useSceneStore(
+    useShallow((s) => ({
+      activeCinematicEffect: s.activeCinematicEffect,
+      setActiveCinematicEffect: s.setActiveCinematicEffect,
+      manualZoom: s.manualZoom,
+      setManualZoom: s.setManualZoom,
+    }))
+  );
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
   const activeStream = props.stream;
 
