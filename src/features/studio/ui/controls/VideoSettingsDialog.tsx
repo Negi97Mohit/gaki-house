@@ -486,52 +486,124 @@ const CameraPreview: React.FC<{
   useEffect(() => {
     if (!open) {
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(t => t.stop());
+        streamRef.current.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
       }
       setActiveStream(null);
       return;
     }
 
+    if (!navigator.mediaDevices?.getUserMedia) {
+      console.warn("[VideoSettings] MediaDevices API unavailable");
+      return;
+    }
+
     let cancelled = false;
+
+    const attachStreamToVideo = async (stream: MediaStream) => {
+      const video = videoRef.current;
+      if (!video) return false;
+
+      video.srcObject = stream;
+      video.muted = true;
+      video.playsInline = true;
+      video.autoplay = true;
+
+      try {
+        await video.play();
+      } catch (playError) {
+        console.warn("[VideoSettings] Video autoplay failed:", playError);
+      }
+
+      if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        return true;
+      }
+
+      await new Promise<void>((resolve) => {
+        const handleReady = () => {
+          cleanup();
+          resolve();
+        };
+
+        const handleError = () => {
+          cleanup();
+          resolve();
+        };
+
+        const cleanup = () => {
+          video.removeEventListener("loadedmetadata", handleReady);
+          video.removeEventListener("canplay", handleReady);
+          video.removeEventListener("error", handleError);
+        };
+
+        video.addEventListener("loadedmetadata", handleReady, { once: true });
+        video.addEventListener("canplay", handleReady, { once: true });
+        video.addEventListener("error", handleError, { once: true });
+      });
+
+      return video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+    };
+
     const startPreview = async () => {
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(t => t.stop());
+        streamRef.current.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
       }
-      try {
-        // Try exact device first, fall back to any camera on OverconstrainedError
-        let stream: MediaStream;
+
+      setActiveStream(null);
+
+      const localDeviceId = deviceId && deviceId !== "remote-peer" ? deviceId : undefined;
+      const attempts: MediaStreamConstraints[] = localDeviceId
+        ? [
+            { video: { deviceId: { exact: localDeviceId } }, audio: false },
+            { video: { deviceId: localDeviceId }, audio: false },
+            { video: true, audio: false },
+          ]
+        : [{ video: true, audio: false }];
+
+      for (const constraints of attempts) {
         try {
-          const constraints: MediaStreamConstraints = {
-            video: deviceId ? { deviceId: { exact: deviceId } } : true,
-            audio: false,
-          };
-          stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch (exactErr) {
-          console.warn("[VideoSettings] Exact device failed, falling back to default camera");
-          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          const isReady = await attachStreamToVideo(stream);
+
+          if (cancelled) {
+            stream.getTracks().forEach((t) => t.stop());
+            return;
+          }
+
+          if (isReady) {
+            streamRef.current = stream;
+            setActiveStream(stream);
+            return;
+          }
+
+          stream.getTracks().forEach((t) => t.stop());
+        } catch (error) {
+          console.warn("[VideoSettings] Preview attempt failed:", error);
         }
-        if (cancelled) { stream.getTracks().forEach(t => t.stop()); return; }
-        streamRef.current = stream;
-        setActiveStream(stream);
-        if (videoRef.current) videoRef.current.srcObject = stream;
-      } catch (err) {
-        console.warn("[VideoSettings] Preview failed:", err);
       }
+
+      console.warn("[VideoSettings] Unable to start camera preview");
     };
+
     startPreview();
 
     return () => {
       cancelled = true;
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(t => t.stop());
+        streamRef.current.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
+      }
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
       }
       setActiveStream(null);
     };
   }, [deviceId, open]);
 
-  // Build combined CSS videoFilter for beautify/lowlight on top of selected color filter
   const combinedVideoFilter = useMemo(() => {
     const parts: string[] = [];
     if (videoFilter && videoFilter !== "none") parts.push(videoFilter);
@@ -540,10 +612,8 @@ const CameraPreview: React.FC<{
     return parts.length > 0 ? parts.join(" ") : "none";
   }, [videoFilter, isBeautifyEnabled, isLowLightEnabled]);
 
-  // Determine what to pass to WebGL: interactive filter takes priority over CSS color filter
   const glVideoFilter = (activeInteractiveFilter && activeInteractiveFilter !== "none") ? "none" : combinedVideoFilter;
 
-  // Use the WebGL render loop — same pipeline as the main canvas
   useWebGLRenderLoop({
     canvasRef,
     videoRef,
@@ -562,7 +632,6 @@ const CameraPreview: React.FC<{
 
   return (
     <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted/30 ring-1 ring-border/10">
-      {/* Hidden video element feeds the WebGL canvas */}
       <video
         ref={videoRef}
         autoPlay
@@ -582,12 +651,11 @@ const CameraPreview: React.FC<{
           }}
         />
       </div>
-      {/* Cinematic overlay on top of canvas */}
       {activeCinematicEffect && activeCinematicEffect !== "none" && (
         <CinematicOverlay effect={activeCinematicEffect} />
       )}
-      {!open && (
-        <div className="absolute inset-0 flex items-center justify-center">
+      {!activeStream && (
+        <div className="absolute inset-0 flex items-center justify-center bg-muted/20">
           <Webcam className="w-8 h-8 text-muted-foreground/30" />
         </div>
       )}
