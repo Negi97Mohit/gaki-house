@@ -111,6 +111,8 @@ interface SceneState {
     setTrackingSpeed: (speed: number) => void;
     setIsFaceTrackingEnabled: (enabled: boolean) => void;
     setCanvasAspectRatio: (ratio: string) => void;
+    setActiveCinematicEffect: (effect: CinematicEffect) => void;
+    setManualZoom: (zoom: number) => void;
 
     triggerUndo: () => void;
     triggerRedo: () => void;
