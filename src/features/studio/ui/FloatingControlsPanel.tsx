@@ -97,7 +97,6 @@ const sections = [
   { id: "text-presets", icon: Type, label: "Text" },
   { id: "saved-overlays", icon: Sparkles, label: "Overlays" },
   { id: "social-banners", icon: BadgeCheck, label: "Banners" },
-  { id: "audio-mixer", icon: AudioLines, label: "Mixer" },
   { id: "file-vault", icon: Archive, label: "Vault" },
   { id: "tools", icon: Wrench, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
