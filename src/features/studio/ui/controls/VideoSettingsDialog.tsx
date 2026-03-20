@@ -112,6 +112,7 @@ export const VideoSettingsDialog: React.FC<VideoSettingsDialogProps> = ({
               isBeautifyEnabled={isBeautifyEnabled}
               isLowLightEnabled={isLowLightEnabled}
               activeCinematicEffect={activeCinematicEffect}
+              activeInteractiveFilter={activeInteractiveFilter}
             />
             {/* Camera selector */}
             <div className="space-y-1">
