@@ -102,6 +102,7 @@ const PlatformIcon: React.FC<{
 export const StreamConfigurationModal: React.FC<
   StreamConfigurationModalProps
 > = ({ onStartStream, onStopStream, externalOpen, onOpenChange }) => {
+  const { user, openAuthModal } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"list" | "add">("list");
   const [editingId, setEditingId] = useState<string | null>(null);
