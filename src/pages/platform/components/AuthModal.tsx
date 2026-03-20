@@ -308,7 +308,8 @@ export const AuthModal: React.FC = () => {
         {/* Close */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all z-10"
+          className="absolute top-3 right-3 p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-all z-10"
+          aria-label="Close"
         >
           <X className="w-4 h-4" />
         </button>
