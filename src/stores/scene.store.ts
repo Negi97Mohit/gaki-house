@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { GeneratedOverlay, TextOverlayState, FileOverlayState, CaptionStyle, SceneState as GlobalSceneState } from '@/types/caption';
+import type { CinematicEffect } from '@/features/stream/ui/pip/cinematicShotData';
 
 interface SceneState {
     customMaskUrl: string | undefined;
