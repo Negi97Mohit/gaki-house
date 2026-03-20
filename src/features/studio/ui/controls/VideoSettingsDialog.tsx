@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +16,7 @@ import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useFilters } from "@/hooks/useFilters";
+import { useWebGLRenderLoop } from "@/features/canvas/hooks/useWebGLRenderLoop";
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 import {
   CinematicEffect,
@@ -111,6 +112,7 @@ export const VideoSettingsDialog: React.FC<VideoSettingsDialogProps> = ({
               isBeautifyEnabled={isBeautifyEnabled}
               isLowLightEnabled={isLowLightEnabled}
               activeCinematicEffect={activeCinematicEffect}
+              activeInteractiveFilter={activeInteractiveFilter}
             />
             {/* Camera selector */}
             <div className="space-y-1">
@@ -457,9 +459,12 @@ const CameraPreview: React.FC<{
   isBeautifyEnabled?: boolean;
   isLowLightEnabled?: boolean;
   activeCinematicEffect?: CinematicEffect;
-}> = ({ deviceId, open, pipBorder, pipShadow, videoFilter, isBeautifyEnabled, isLowLightEnabled, activeCinematicEffect }) => {
+  activeInteractiveFilter?: string;
+}> = ({ deviceId, open, pipBorder, pipShadow, videoFilter, isBeautifyEnabled, isLowLightEnabled, activeCinematicEffect, activeInteractiveFilter }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const [activeStream, setActiveStream] = useState<MediaStream | null>(null);
 
   useEffect(() => {
     if (!open) {
@@ -467,6 +472,7 @@ const CameraPreview: React.FC<{
         streamRef.current.getTracks().forEach(t => t.stop());
         streamRef.current = null;
       }
+      setActiveStream(null);
       return;
     }
 
@@ -483,6 +489,7 @@ const CameraPreview: React.FC<{
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         if (cancelled) { stream.getTracks().forEach(t => t.stop()); return; }
         streamRef.current = stream;
+        setActiveStream(stream);
         if (videoRef.current) videoRef.current.srcObject = stream;
       } catch (err) {
         console.warn("[VideoSettings] Preview failed:", err);
@@ -496,41 +503,62 @@ const CameraPreview: React.FC<{
         streamRef.current.getTracks().forEach(t => t.stop());
         streamRef.current = null;
       }
+      setActiveStream(null);
     };
   }, [deviceId, open]);
 
-  // Build CSS filter string for preview
-  const filters: string[] = [];
-  if (videoFilter && videoFilter !== "none") filters.push(videoFilter);
-  if (isBeautifyEnabled) filters.push("blur(0.5px) saturate(1.1) brightness(1.05)");
-  if (isLowLightEnabled) filters.push("brightness(1.3) contrast(1.1)");
-  const filterStyle = filters.length > 0 ? filters.join(" ") : undefined;
+  // Build combined CSS videoFilter for beautify/lowlight on top of selected color filter
+  const combinedVideoFilter = useMemo(() => {
+    const parts: string[] = [];
+    if (videoFilter && videoFilter !== "none") parts.push(videoFilter);
+    if (isBeautifyEnabled) parts.push("blur(0.5px) saturate(1.1) brightness(1.05)");
+    if (isLowLightEnabled) parts.push("brightness(1.3) contrast(1.1)");
+    return parts.length > 0 ? parts.join(" ") : "none";
+  }, [videoFilter, isBeautifyEnabled, isLowLightEnabled]);
+
+  // Determine what to pass to WebGL: interactive filter takes priority over CSS color filter
+  const glVideoFilter = (activeInteractiveFilter && activeInteractiveFilter !== "none") ? "none" : combinedVideoFilter;
+
+  // Use the WebGL render loop — same pipeline as the main canvas
+  useWebGLRenderLoop({
+    canvasRef,
+    videoRef,
+    activeStream,
+    videoFilter: glVideoFilter,
+    activeInteractiveFilter: activeInteractiveFilter,
+    cinematicEffect: activeCinematicEffect,
+  });
 
   const borderStyle = pipBorder.width > 0 ? `${pipBorder.width}px solid ${pipBorder.color}` : undefined;
   const shadowStyle = pipShadow.blur > 0 ? `0 4px ${pipShadow.blur}px ${pipShadow.color}` : undefined;
 
-  // Cinematic canvas styles
   const cinematicStyles = activeCinematicEffect && activeCinematicEffect !== "none"
     ? getCinematicCanvasStyles(activeCinematicEffect)
     : null;
 
   return (
     <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-muted/30 ring-1 ring-border/10">
+      {/* Hidden video element feeds the WebGL canvas */}
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
-        className="w-full h-full object-cover"
-        style={{
-          border: borderStyle,
-          boxShadow: shadowStyle,
-          borderRadius: '0.75rem',
-          filter: filterStyle,
-          ...cinematicStyles?.canvas,
-        }}
+        className="hidden"
       />
-      {/* Cinematic overlay on top of video */}
+      <div className="w-full h-full relative" style={cinematicStyles?.container}>
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full"
+          style={{
+            border: borderStyle,
+            boxShadow: shadowStyle,
+            borderRadius: '0.75rem',
+            ...cinematicStyles?.canvas,
+          }}
+        />
+      </div>
+      {/* Cinematic overlay on top of canvas */}
       {activeCinematicEffect && activeCinematicEffect !== "none" && (
         <CinematicOverlay effect={activeCinematicEffect} />
       )}
