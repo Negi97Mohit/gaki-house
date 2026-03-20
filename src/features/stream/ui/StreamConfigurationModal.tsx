@@ -200,6 +200,11 @@ export const StreamConfigurationModal: React.FC<
 
   React.useEffect(() => {
     if (externalOpen !== undefined && externalOpen !== isOpen) {
+      if (externalOpen && !user) {
+        openAuthModal("login");
+        onOpenChange?.(false);
+        return;
+      }
       setIsOpen(externalOpen);
       if (externalOpen && destinations.length === 0) {
         setView("add");
