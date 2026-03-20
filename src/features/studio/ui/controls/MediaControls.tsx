@@ -297,6 +297,14 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 </DropdownMenuItem>
               ))
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setIsVideoSettingsOpen(true)}
+              className="text-xs"
+            >
+              <Settings className="w-3 h-3 mr-2" />
+              Video Settings
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
