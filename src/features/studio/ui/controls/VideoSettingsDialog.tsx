@@ -482,11 +482,18 @@ const CameraPreview: React.FC<{
         streamRef.current.getTracks().forEach(t => t.stop());
       }
       try {
-        const constraints: MediaStreamConstraints = {
-          video: deviceId ? { deviceId: { exact: deviceId } } : true,
-          audio: false,
-        };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        // Try exact device first, fall back to any camera on OverconstrainedError
+        let stream: MediaStream;
+        try {
+          const constraints: MediaStreamConstraints = {
+            video: deviceId ? { deviceId: { exact: deviceId } } : true,
+            audio: false,
+          };
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch (exactErr) {
+          console.warn("[VideoSettings] Exact device failed, falling back to default camera");
+          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        }
         if (cancelled) { stream.getTracks().forEach(t => t.stop()); return; }
         streamRef.current = stream;
         setActiveStream(stream);
