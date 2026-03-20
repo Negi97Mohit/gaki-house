@@ -32,7 +32,6 @@ import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector"
 import { useGoLiveStore } from "@/stores/goLive.store";
 import { AudioSettingsDialog } from "./AudioSettingsDialog";
 import { VideoSettingsDialog } from "./VideoSettingsDialog";
-import { useGoLiveStore } from "@/stores/goLive.store";
 
 
 interface MediaControlsProps {
