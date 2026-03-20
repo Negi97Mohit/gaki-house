@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { useAuth } from "@/pages/platform/context/AuthContext";
 import {
   Radio,
   Eye,
@@ -101,6 +102,7 @@ const PlatformIcon: React.FC<{
 export const StreamConfigurationModal: React.FC<
   StreamConfigurationModalProps
 > = ({ onStartStream, onStopStream, externalOpen, onOpenChange }) => {
+  const { user, openAuthModal } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"list" | "add">("list");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -199,6 +201,11 @@ export const StreamConfigurationModal: React.FC<
 
   React.useEffect(() => {
     if (externalOpen !== undefined && externalOpen !== isOpen) {
+      if (externalOpen && !user) {
+        openAuthModal("login");
+        onOpenChange?.(false);
+        return;
+      }
       setIsOpen(externalOpen);
       if (externalOpen && destinations.length === 0) {
         setView("add");
@@ -231,7 +238,13 @@ export const StreamConfigurationModal: React.FC<
           "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
         )}
         title="Stream Settings"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          if (!user) {
+            openAuthModal("login");
+            return;
+          }
+          setIsOpen(true);
+        }}
       >
         {isBroadcasting ? (
           <Wifi className="w-3 h-3" />
