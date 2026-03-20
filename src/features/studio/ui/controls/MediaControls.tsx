@@ -434,6 +434,9 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
           setIsSourceSelectorOpen(false);
         }}
       />
+
+      <AudioSettingsDialog open={isAudioSettingsOpen} onOpenChange={setIsAudioSettingsOpen} />
+      <VideoSettingsDialog open={isVideoSettingsOpen} onOpenChange={setIsVideoSettingsOpen} />
     </>
   );
 };
