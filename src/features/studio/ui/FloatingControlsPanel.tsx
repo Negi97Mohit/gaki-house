@@ -10,7 +10,7 @@ import {
   Archive,
   Wrench,
   Settings,
-  AudioLines,
+  
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
