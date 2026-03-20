@@ -237,7 +237,13 @@ export const StreamConfigurationModal: React.FC<
           "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
         )}
         title="Stream Settings"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          if (!user) {
+            openAuthModal("login");
+            return;
+          }
+          setIsOpen(true);
+        }}
       >
         {isBroadcasting ? (
           <Wifi className="w-3 h-3" />
