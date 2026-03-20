@@ -300,8 +300,8 @@ export const AuthModal: React.FC = () => {
 
   // ---- Auth Step (Login / Signup) ----
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-md">
-      <div className="relative w-full max-w-sm mx-4 bg-card border border-border rounded-3xl shadow-2xl shadow-black/30 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-md" onClick={handleClose}>
+      <div className="relative w-full max-w-sm mx-4 bg-card border border-border rounded-3xl shadow-2xl shadow-black/30 overflow-hidden animate-in fade-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
         {/* Subtle top gradient accent */}
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
@@ -315,31 +315,37 @@ export const AuthModal: React.FC = () => {
         </button>
 
         <div className="p-7 relative">
-          {/* Tab Switcher */}
-          <div className="flex items-center bg-muted rounded-2xl p-1 mb-7">
+          {/* Tab Switcher — underline style */}
+          <div className="flex items-center gap-6 mb-7 border-b border-border/40">
             <button
               type="button"
               onClick={() => { openAuthModal("login"); setEmail(""); setPassword(""); setConfirmPassword(""); }}
               className={cn(
-                "flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
+                "relative pb-3 text-sm font-semibold transition-colors duration-200",
                 isLogin
-                  ? "bg-card text-foreground shadow-sm"
+                  ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
               Sign In
+              {isLogin && (
+                <span className="absolute bottom-0 inset-x-0 h-[2px] bg-primary rounded-full" />
+              )}
             </button>
             <button
               type="button"
               onClick={() => { openAuthModal("signup"); setEmail(""); setPassword(""); setConfirmPassword(""); }}
               className={cn(
-                "flex-1 py-2 text-sm font-semibold rounded-xl transition-all duration-200",
+                "relative pb-3 text-sm font-semibold transition-colors duration-200",
                 !isLogin
-                  ? "bg-card text-foreground shadow-sm"
+                  ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
               Sign Up
+              {!isLogin && (
+                <span className="absolute bottom-0 inset-x-0 h-[2px] bg-primary rounded-full" />
+              )}
             </button>
           </div>
 
