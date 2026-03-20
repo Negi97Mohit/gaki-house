@@ -225,6 +225,14 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 </DropdownMenuItem>
               ))
             )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setIsAudioSettingsOpen(true)}
+              className="text-xs"
+            >
+              <Settings className="w-3 h-3 mr-2" />
+              Audio Settings
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
