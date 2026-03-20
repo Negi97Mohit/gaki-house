@@ -91,6 +91,23 @@ export const VideoSettingsDialog: React.FC<VideoSettingsDialogProps> = ({
     }))
   );
 
+  const localVideoDevices = useMemo(
+    () => videoDevices.filter((device) => device.deviceId && device.deviceId !== "remote-peer"),
+    [videoDevices]
+  );
+
+  useEffect(() => {
+    if (!open || localVideoDevices.length === 0) return;
+
+    const hasSelectedLocalCamera = localVideoDevices.some(
+      (device) => device.deviceId === selectedVideoDevice
+    );
+
+    if (!hasSelectedLocalCamera) {
+      setSelectedVideoDevice(localVideoDevices[0].deviceId);
+    }
+  }, [open, localVideoDevices, selectedVideoDevice, setSelectedVideoDevice]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl w-[95vw] max-h-[88vh] overflow-hidden bg-background/95 backdrop-blur-2xl border border-border/20 dark:border-white/10 rounded-2xl shadow-2xl p-0">
@@ -118,10 +135,10 @@ export const VideoSettingsDialog: React.FC<VideoSettingsDialogProps> = ({
             <div className="space-y-1">
               <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Camera</Label>
               <div className="space-y-0.5 max-h-20 overflow-y-auto">
-                {videoDevices.length === 0 ? (
+                {localVideoDevices.length === 0 ? (
                   <p className="text-[11px] text-muted-foreground py-1">No cameras found</p>
                 ) : (
-                  videoDevices.map((device, i) => (
+                  localVideoDevices.map((device, i) => (
                     <button
                       key={device.deviceId}
                       onClick={() => setSelectedVideoDevice(device.deviceId)}
