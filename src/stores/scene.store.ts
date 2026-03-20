@@ -228,6 +228,8 @@ export const useSceneStore = create<SceneState>((set) => ({
     setTrackingSpeed: (trackingSpeed) => set({ trackingSpeed }),
     setIsFaceTrackingEnabled: (isFaceTrackingEnabled) => set({ isFaceTrackingEnabled }),
     setCanvasAspectRatio: (canvasAspectRatio) => set({ canvasAspectRatio }),
+    setActiveCinematicEffect: (activeCinematicEffect) => set({ activeCinematicEffect }),
+    setManualZoom: (manualZoom) => set({ manualZoom }),
 
     triggerUndo: () => { },
     triggerRedo: () => { },
