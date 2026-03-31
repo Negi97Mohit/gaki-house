@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { notify } from "@/shared/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
+import { useSceneCollectionStore } from "@/stores/sceneCollection.store";
 import fixWebmDuration from "fix-webm-duration";
 
 const SERVER_URL = "http://localhost:3000";
@@ -411,6 +412,7 @@ class StreamService {
         rtmpUrl: dest.url,
         key: dest.key,
         mimeType,
+        outputConfig: useSceneCollectionStore.getState().outputConfig,
       });
     } else if (this.socket) {
       this.socket.emit("start-stream", {

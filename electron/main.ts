@@ -35,6 +35,25 @@ let server: http.Server | null = null;
 let recorderStream: fs.WriteStream | null = null;
 let currentRecordingPath: string | null = null;
 
+// --- HARDWARE ENCODER PROBING ---
+let availableEncoders: Set<string> = new Set();
+let encodersProbed = false;
+
+ffmpeg.getAvailableEncoders((err, encoders) => {
+  if (!err && encoders) {
+    availableEncoders = new Set(Object.keys(encoders));
+    console.log("[FFmpeg] Loaded encoders. Hardware support:", {
+      nvenc: availableEncoders.has("h264_nvenc"),
+      qsv: availableEncoders.has("h264_qsv"),
+      amf: availableEncoders.has("h264_amf"),
+      videotoolbox: availableEncoders.has("h264_videotoolbox"),
+    });
+  } else {
+    console.error("[FFmpeg] Failed to load encoders:", err);
+  }
+  encodersProbed = true;
+});
+
 // --- WINDOW MANAGEMENT ---
 
 function createWindow() {
@@ -103,42 +122,99 @@ const createFfmpegCommand = (
     rtmpUrl: string;
     key: string;
     mimeType?: string;
+    outputConfig?: any; // Matches OutputConfig from compositor.ts
   },
   onStart: (cmd: string) => void,
   onError: (err: Error) => void,
   onEnd: () => void
 ) => {
-  const { rtmpUrl, key, mimeType } = options;
+  const { rtmpUrl, key, mimeType, outputConfig } = options;
   const fullUrl = key ? `${rtmpUrl}/${key}` : rtmpUrl;
-  console.log(
-    `Initializing stream to: ${fullUrl} (Input: ${mimeType || "unknown"})`
-  );
+  
+  // Default fallback configuration
+  const config = outputConfig || {
+    resolution: { width: 1920, height: 1080 },
+    fps: 30,
+    videoBitrate: 4500,
+    encoder: 'auto',
+    preset: 'veryfast',
+    keyframeInterval: 2,
+    audioBitrate: 160,
+    audioSampleRate: 48000,
+  };
 
-  const isH264Input = mimeType?.includes("h264");
+  console.log(
+    `Initializing stream to: ${fullUrl} (Encoder Config: ${config.encoder} @ ${config.videoBitrate}kbps)`
+  );
 
   const command = ffmpeg().input(input);
   command.inputFormat("webm");
-  command.audioCodec("aac");
+  
+  // Process requested encoder vs hardware availability
+  let selectedEncoder = "libx264"; // Safe fallback
+  
+  const hwEncoders = [
+    { name: "nvenc", codec: "h264_nvenc" },
+    { name: "qsv", codec: "h264_qsv" },
+    { name: "amf", codec: "h264_amf" },
+    { name: "videotoolbox", codec: "h264_videotoolbox" },
+  ];
 
-  if (isH264Input) {
-    command.videoCodec("copy");
-    command.outputOptions("-bsf:v h264_mp4toannexb");
-  } else {
-    command.videoCodec("libx264");
-    command.outputOptions([
-      "-preset ultrafast",
-      "-tune zerolatency",
-      "-b:v 4500k",
-      "-maxrate 4500k",
-      "-bufsize 9000k",
-      "-g 60",
-      "-r 30",
-      "-vf scale=1920:-1",
-      "-pix_fmt yuv420p",
-    ]);
+  if (config.encoder === 'auto') {
+    // Probe best available hardware encoder
+    const bestHW = hwEncoders.find(hw => availableEncoders.has(hw.codec));
+    if (bestHW) {
+      selectedEncoder = bestHW.codec;
+      console.log(`[FFmpeg] Auto-selected hardware encoder: ${selectedEncoder}`);
+    } else {
+      console.log(`[FFmpeg] No hardware encoder detected, using libx264`);
+    }
+  } else if (config.encoder !== 'x264') {
+    // User requested a specific hardware encoder
+    const requested = hwEncoders.find(hw => hw.name === config.encoder);
+    if (requested && availableEncoders.has(requested.codec)) {
+      selectedEncoder = requested.codec;
+    } else {
+      console.warn(`[FFmpeg] Requested encoder ${config.encoder} not available, falling back to libx264`);
+    }
   }
 
-  command.outputOptions(["-f flv"]);
+  // Set audio config
+  command.audioCodec("aac");
+  command.audioBitrate(`${config.audioBitrate}k`);
+  command.audioFrequency(config.audioSampleRate);
+
+  // Set video config
+  command.videoCodec(selectedEncoder);
+  
+  const gopSize = config.fps * config.keyframeInterval;
+  
+  let outputOpts = [
+    `-preset ${config.preset}`,
+    `-b:v ${config.videoBitrate}k`,
+    `-maxrate ${config.videoBitrate}k`,
+    `-bufsize ${config.videoBitrate * 2}k`,
+    `-g ${gopSize}`,
+    `-r ${config.fps}`,
+    `-vf scale=${config.resolution.width}:${config.resolution.height}`,
+    "-pix_fmt yuv420p",
+  ];
+
+  // Encoder-specific tuning
+  if (selectedEncoder === "libx264") {
+    outputOpts.push("-tune zerolatency");
+  } else if (selectedEncoder === "h264_nvenc") {
+    // NVENC specific options for stream stability
+    outputOpts = outputOpts.filter(o => !o.includes('-preset'));
+    outputOpts.push(
+      "-preset p4",         // Modern NVENC preset balancing speed/quality
+      "-tune ll",           // Low latency tuning
+      "-rc cbr"             // Constant bitrate is better for RTMP
+    );
+  }
+
+  command.outputOptions(outputOpts);
+  command.outputOptions(["-f flv", "-flvflags no_duration_filesize"]);
   command.output(fullUrl);
 
   command.on("start", (cmd) => {
@@ -197,6 +273,15 @@ const convertToMp4 = (inputPath: string): Promise<string> => {
 
 function setupIpcHandlers() {
   const ffmpegCommands = new Map<string, ffmpeg.FfmpegCommand>();
+
+  // ENCODER PROBING HANDLER
+  ipcMain.handle("ffmpeg:get-encoders", async () => {
+    // Provide a short timeout waiting for probe to finish on startup if necessary
+    if (!encodersProbed) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    return Array.from(availableEncoders);
+  });
 
   // 1. STREAMING HANDLERS
   ipcMain.on("stream:start", (event, config) => {

@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld("electron", {
 
   // Stream Controls
   stream: {
+    getEncoders: () => ipcRenderer.invoke("ffmpeg:get-encoders"),
     start: (config: any) => ipcRenderer.send("stream:start", config),
     sendData: (chunk: any) => ipcRenderer.send("stream:data", chunk),
     stop: (config: any) => ipcRenderer.send("stream:stop", config),

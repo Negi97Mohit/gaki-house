@@ -33,17 +33,16 @@ export const useBroadcastController = ({
     videoDevices,
   });
 
-  const { compositeStream, isReady: isCompositeReady } = useCompositeStream({
-    canvasRef,
-    isEnabled: isVirtualCameraEnabled,
-    frameRate: 30,
+  const { outputStream, isReady: isCompositeReady, audioMixer } = useCompositeStream({
+    enabled: isVirtualCameraEnabled,
+    fps: 30,
   });
 
   useEffect(() => {
-    if (isCompositeReady && compositeStream) {
+    if (isCompositeReady && outputStream) {
       toast.success("🎥 Broadcasting Active!");
     }
-  }, [isCompositeReady, compositeStream]);
+  }, [isCompositeReady, outputStream]);
 
   const toggleSmartSwitch = () => {
     setIsSmartSwitchEnabled((prev) => !prev);
@@ -63,6 +62,7 @@ export const useBroadcastController = ({
     setIsVirtualCameraEnabled,
     toggleSmartSwitch,
     toggleBroadcast,
-    compositeStream,
+    compositeStream: outputStream,
+    audioMixer,
   };
 };

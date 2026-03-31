@@ -17,6 +17,7 @@ import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
 import { FatalErrorDialog } from "@/features/stream/ui/FatalErrorDialog"; // NEW IMPORT
 import { useOmegleStore } from "@/stores/omegle.store";
 import { OmegleMode } from "@/features/omegle/ui/OmegleMode";
+import { AudioMixer } from "@/components/audio/AudioMixer";
 
 const Index = () => {
   const editor = useEditorOrchestrator();
@@ -132,6 +133,13 @@ const Index = () => {
             userUid={user?.uid}
             userUsername={profile?.username}
           />
+
+          {/* Audio Mixer Panel */}
+          {broadcast.audioMixer && (
+            <div className="absolute bottom-20 right-4 z-50 shadow-2xl">
+              <AudioMixer audioMixer={broadcast.audioMixer} />
+            </div>
+          )}
 
           <FileVaultModal
             isOpen={vault.isOpen}
