@@ -586,6 +586,131 @@ function setupIpcHandlers() {
       }, 15000);
     });
   });
+
+  // 7. SCENE COLLECTION IMPORT/EXPORT HANDLERS
+
+  // Import: Open file dialog and read the selected scene collection file
+  ipcMain.handle("import:open-scene-collection", async () => {
+    if (!mainWindow) return { ok: false, error: "No main window" };
+
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: "Import Scene Collection",
+      filters: [
+        {
+          name: "Scene Collections",
+          extensions: ["json", "overlay", "zip"],
+        },
+        { name: "OBS Scene Collection", extensions: ["json"] },
+        { name: "Streamlabs Overlay", extensions: ["overlay", "zip"] },
+        { name: "All Files", extensions: ["*"] },
+      ],
+      properties: ["openFile"],
+    });
+
+    if (result.canceled || result.filePaths.length === 0) {
+      return { ok: false, canceled: true };
+    }
+
+    const filePath = result.filePaths[0];
+    const ext = path.extname(filePath).toLowerCase();
+
+    try {
+      if (ext === ".json") {
+        // Read JSON file directly
+        const content = fs.readFileSync(filePath, "utf-8");
+        return {
+          ok: true,
+          format: "json",
+          content,
+          fileName: path.basename(filePath),
+          filePath,
+        };
+      } else if (ext === ".overlay" || ext === ".zip") {
+        // Read as base64 for ZIP processing in the renderer
+        const buffer = fs.readFileSync(filePath);
+        return {
+          ok: true,
+          format: "zip",
+          content: buffer.toString("base64"),
+          fileName: path.basename(filePath),
+          filePath,
+        };
+      } else {
+        // Try reading as text (fallback)
+        const content = fs.readFileSync(filePath, "utf-8");
+        return {
+          ok: true,
+          format: "unknown",
+          content,
+          fileName: path.basename(filePath),
+          filePath,
+        };
+      }
+    } catch (err: any) {
+      return { ok: false, error: `Failed to read file: ${err.message}` };
+    }
+  });
+
+  // Export: Save dialog and write the scene collection JSON
+  ipcMain.handle(
+    "export:save-scene-collection",
+    async (_, { json, defaultName }: { json: string; defaultName?: string }) => {
+      if (!mainWindow) return { ok: false, error: "No main window" };
+
+      const result = await dialog.showSaveDialog(mainWindow, {
+        title: "Export Scene Collection",
+        defaultPath: defaultName ?? "scene-collection.json",
+        filters: [
+          { name: "OBS Scene Collection", extensions: ["json"] },
+        ],
+      });
+
+      if (result.canceled || !result.filePath) {
+        return { ok: false, canceled: true };
+      }
+
+      try {
+        fs.writeFileSync(result.filePath, json, "utf-8");
+        return { ok: true, filePath: result.filePath };
+      } catch (err: any) {
+        return { ok: false, error: `Failed to write file: ${err.message}` };
+      }
+    }
+  );
+
+  // Resolve missing assets: Open file dialog to find a missing file
+  ipcMain.handle(
+    "import:resolve-asset",
+    async (_, { originalPath, assetType }: { originalPath: string; assetType: string }) => {
+      if (!mainWindow) return { ok: false, error: "No main window" };
+
+      const extFilters: Record<string, string[]> = {
+        image: ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp"],
+        video: ["mp4", "webm", "mkv", "avi", "mov", "flv"],
+        audio: ["mp3", "ogg", "wav", "aac", "flac"],
+        stinger: ["mp4", "webm", "mov"],
+        other: ["*"],
+      };
+
+      const filters = extFilters[assetType] ?? extFilters.other;
+
+      const result = await dialog.showOpenDialog(mainWindow, {
+        title: `Locate: ${path.basename(originalPath)}`,
+        message: `The asset "${path.basename(originalPath)}" was not found at its original location. Please locate it.`,
+        filters: [
+          { name: "Asset Files", extensions: filters },
+          { name: "All Files", extensions: ["*"] },
+        ],
+        properties: ["openFile"],
+      });
+
+      if (result.canceled || result.filePaths.length === 0) {
+        return { ok: false, canceled: true };
+      }
+
+      return { ok: true, resolvedPath: result.filePaths[0] };
+    }
+  );
 }
 
 // --- SERVER & APP LIFECYCLE ---

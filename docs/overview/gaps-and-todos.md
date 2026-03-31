@@ -60,9 +60,9 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 - [x] **Compositor engine built**: WebGL compositor with OBS-compatible source model — See [Compositor](../electron/compositor.md)
 - [x] **Scene collection store**: Full Zustand store with CRUD for scenes, sources, filters, audio — See [sceneCollection.store](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/sceneCollection.store.ts)
 - [x] **Type system**: Complete OBS-compatible type definitions — See [compositor.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/compositor.ts)
-- [ ] Scene collection importers (OBS JSON parser, Streamlabs .overlay parser) — Phase 3
-- [ ] Export to OBS-compatible JSON — Phase 3
-- [ ] IPC handlers for import/export file dialogs — Phase 3
+- [x] **Scene collection importers**: OBS JSON parser + Streamlabs .overlay parser — See [obsImporter.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/services/importers/obsImporter.ts)
+- [x] **Export to OBS-compatible JSON**: Round-trip export — See [sceneExporter.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/services/importers/sceneExporter.ts)
+- [x] **IPC handlers**: File dialog integration for import/export — See [main.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/main.ts) section 7
 
 ### Mobile
 - [ ] Mobile pages exist but may lack feature parity with desktop
@@ -107,6 +107,24 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 - [x] Output MediaStream pipeline (compositor → captureStream → FFmpeg)
 
 → See [Compositor Architecture](../electron/compositor.md) for details
+
+### Phase 2: Source Model & Legacy Integration (Completed)
+- [x] Source factory functions for all 14 source types
+- [x] Legacy SceneState ↔ CompositorScene bidirectional adapter
+- [x] Compositor sync hook (useCompositorSync) wired into editor orchestrator
+
+→ See [compositor.md § Legacy Bridge Flow](../electron/compositor.md#legacy-bridge-flow)
+
+### Phase 3: Scene Collection Import/Export (Completed)
+- [x] OBS Studio JSON parser with full source type mapping (30+ OBS types)
+- [x] ABGR color conversion, filter chain reconstruction, group hierarchy
+- [x] Streamlabs .overlay/.zip importer with widget-to-source mapping
+- [x] OBS-compatible JSON exporter with round-trip fidelity
+- [x] Electron IPC handlers (file dialogs for import/export/asset resolution)
+- [x] Preload API exposure (window.electron.import / window.electron.export)
+- [x] Shared type system covering OBS + Streamlabs format definitions
+
+→ See [OBS Compositor](../electron/obs-compositor.md) for details
 
 ---
 

@@ -54,4 +54,16 @@ contextBridge.exposeInMainWorld("electron", {
 
   // Kick Browser Fetcher
   kickFetch: (url: string) => ipcRenderer.invoke("kick-fetch-url", url),
+
+  // Scene Collection Import/Export
+  import: {
+    openSceneCollection: () =>
+      ipcRenderer.invoke("import:open-scene-collection"),
+    resolveAsset: (originalPath: string, assetType: string) =>
+      ipcRenderer.invoke("import:resolve-asset", { originalPath, assetType }),
+  },
+  export: {
+    saveSceneCollection: (json: string, defaultName?: string) =>
+      ipcRenderer.invoke("export:save-scene-collection", { json, defaultName }),
+  },
 });

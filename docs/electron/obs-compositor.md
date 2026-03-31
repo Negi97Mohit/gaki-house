@@ -8,7 +8,7 @@
 
 The OBS compositor module handles **scene collection import and export**, enabling users to bring in existing stream setups from OBS Studio and Streamlabs Desktop with just a few clicks.
 
-> **Status:** Phase 1 (compositor engine) is implemented. Import/export is planned for Phase 3.
+> **Status:** Implemented (Phase 3). Import/export is fully functional.
 
 ## Architecture
 
@@ -28,15 +28,15 @@ External Format                    GAKI Internal
 ## Directory Structure
 
 ```
-src/services/importers/         — Import/export logic (planned)
-├── obsImporter.ts              — OBS Studio JSON parser
-├── streamlabsImporter.ts       — Streamlabs .overlay/.json parser
-├── sceneExporter.ts            — Export to OBS-compatible JSON
-└── types.ts                    — Shared importer types
+src/services/importers/         — Import/export logic
+├── index.ts                    — Barrel export
+├── types.ts                    — OBS/Streamlabs format types & source mapping tables
+├── obsImporter.ts              — OBS Studio JSON parser → SceneCollection
+├── streamlabsImporter.ts       — Streamlabs .overlay/.json parser → SceneCollection
+└── sceneExporter.ts            — SceneCollection → OBS-compatible JSON export
 
-electron/obs/                   — Electron-side support
-├── compositor/                 — Coordinate normalization utilities
-└── sources/                    — Source type mapping definitions
+electron/main.ts                — IPC handlers (import:open-scene-collection, export:save-scene-collection, import:resolve-asset)
+electron/preload.ts             — Renderer API (window.electron.import, window.electron.export)
 ```
 
 ## Scene Collection Import Flow
@@ -113,19 +113,23 @@ OBS / GAKI Compositor:
 | `scene` | `scene` | Nested scene reference |
 | `group` | `group` | Source group |
 
-## IPC Handlers (Planned)
+## IPC Handlers
 
-The Electron main process will expose:
+The Electron main process exposes these channels in [main.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/main.ts) (section 7):
 
 | Channel | Direction | Purpose |
 |---|---|---|
-| `import:obs-collection` | Renderer → Main | Open file dialog for .json |
-| `import:streamlabs-overlay` | Renderer → Main | Open file dialog for .overlay/.zip |
-| `export:scene-collection` | Renderer → Main | Save .json to disk |
-| `import:resolve-assets` | Renderer → Main | Dialog for missing asset files |
+| `import:open-scene-collection` | Renderer → Main | Opens file dialog (.json/.overlay/.zip), reads file, returns content |
+| `export:save-scene-collection` | Renderer → Main | Save dialog, writes JSON to disk |
+| `import:resolve-asset` | Renderer → Main | Dialog to locate a missing asset file |
 
-→ See [Preload API](./preload.md) for exposed IPC surface
-→ See [Main Process](./main-process.md) for IPC handler registration
+Renderer API (exposed via [preload.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/preload.ts)):
+
+```typescript
+window.electron.import.openSceneCollection()   // → { ok, format, content, fileName }
+window.electron.import.resolveAsset(path, type) // → { ok, resolvedPath }
+window.electron.export.saveSceneCollection(json, name) // → { ok, filePath }
+```
 
 ## Integration Points
 
