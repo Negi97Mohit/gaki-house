@@ -1,6 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { notify } from "@/shared/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
+import { useStreamHealthStore } from "@/stores/streamHealth.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneCollectionStore } from "@/stores/sceneCollection.store";
 import fixWebmDuration from "fix-webm-duration";
@@ -15,6 +16,7 @@ interface ElectronWindow {
       sendData: (chunk: ArrayBuffer) => void;
       stop: (config?: any) => void;
       onStatus: (callback: (data: any) => void) => void;
+      onHealth?: (callback: (data: any) => void) => void;
     };
   };
 }
@@ -397,6 +399,12 @@ class StreamService {
       this.handleStreamStatus(data);
     });
 
+    if (electron.stream.onHealth) {
+      electron.stream.onHealth((data: any) => {
+        useStreamHealthStore.getState().setMetrics(data);
+      });
+    }
+
     targets.forEach((dest) => {
       this.emitStartCommand(dest, mimeType);
     });
@@ -429,6 +437,9 @@ class StreamService {
       this.socket.on("stream-status", (data: any) =>
         this.handleStreamStatus(data)
       );
+      this.socket.on("stream-health", (data: any) => {
+        useStreamHealthStore.getState().setMetrics(data);
+      });
     }
 
     if (!this.socket.connected) {

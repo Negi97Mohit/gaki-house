@@ -14,7 +14,8 @@ import { AuthModal } from "@/pages/platform/components/AuthModal";
 import { useEditorOrchestrator } from "./Index/hooks/useEditorOrchestrator";
 import { useCanvasAi } from "./Index/hooks/useCanvasAi";
 import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
-import { FatalErrorDialog } from "@/features/stream/ui/FatalErrorDialog"; // NEW IMPORT
+import { FatalErrorDialog } from "@/features/stream/ui/FatalErrorDialog";
+import { StreamHealthPanel } from "@/features/stream/ui/StreamHealthPanel";
 import { useOmegleStore } from "@/stores/omegle.store";
 import { OmegleMode } from "@/features/omegle/ui/OmegleMode";
 import { AudioMixer } from "@/components/audio/AudioMixer";
@@ -140,6 +141,11 @@ const Index = () => {
               <AudioMixer audioMixer={broadcast.audioMixer} />
             </div>
           )}
+
+          {/* Stream Health HUD */}
+          <div className="absolute top-16 right-4 z-50">
+            <StreamHealthPanel />
+          </div>
 
           <FileVaultModal
             isOpen={vault.isOpen}

@@ -128,7 +128,8 @@ const createFfmpegCommand = (
   },
   onStart: (cmd: string) => void,
   onError: (err: Error) => void,
-  onEnd: () => void
+  onEnd: () => void,
+  onProgress?: (progress: any) => void
 ) => {
   const { rtmpUrl, key, mimeType, outputConfig } = options;
   const fullUrl = key ? `${rtmpUrl}/${key}` : rtmpUrl;
@@ -235,6 +236,12 @@ const createFfmpegCommand = (
     onEnd();
   });
 
+  if (onProgress) {
+    command.on("progress", (progress) => {
+      onProgress(progress);
+    });
+  }
+
   return command;
 };
 
@@ -315,6 +322,9 @@ function setupIpcHandlers() {
         () => {
           event.sender.send("stream:status", { id, status: "stopped" });
           ffmpegCommands.delete(id);
+        },
+        (progress) => {
+          event.sender.send("stream:health", { id, ...progress });
         }
       );
 
@@ -831,6 +841,9 @@ function startStreamingServer() {
         },
         () => {
           socket.emit("stream-status", "stopped");
+        },
+        (progress) => {
+          socket.emit("stream-health", progress);
         }
       );
       ffmpegCommand.run();
