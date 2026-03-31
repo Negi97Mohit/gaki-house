@@ -503,3 +503,175 @@ function legacyLayoutToGridLayout(layout: CanvasLayoutState): GridLayout | null 
     cells,
   };
 }
+
+// ─── CompositorScene → SceneState ────────────────────────────────────────────
+
+/**
+ * Convert a CompositorScene back into a legacy SceneState.
+ * This is used when importing an OBS or Streamlabs scene collection
+ * so the UI state correctly mirrors the imported scene.
+ */
+export function compositorSceneToLegacyScene(
+  compScene: CompositorScene
+): SceneState {
+  const textOverlays: TextOverlayState[] = [];
+  const fileOverlays: FileOverlayState[] = [];
+  const browserOverlays: BrowserOverlayState[] = [];
+  const activeOverlays: GeneratedOverlay[] = [];
+  
+  let isVideoOn = false;
+  let isAudioOn = true;
+  let screenShareMode: "off" | "screen" | "canvas" = "off";
+  let blankCanvasColor = "#000000";
+  let backgroundImageUrl: string | null = null;
+  let backgroundEffect: "none" | "image" | "blur" = "none";
+  let videoFilter = "none";
+  let selectedVideoDevice = undefined;
+
+  for (const source of compScene.sources) {
+    const layout = {
+      position: {
+        x: (source.transform.position.x / CANVAS_W) * 100,
+        y: (source.transform.position.y / CANVAS_H) * 100,
+      },
+      size: {
+        width: (source.transform.size.width / CANVAS_W) * 100,
+        height: (source.transform.size.height / CANVAS_H) * 100,
+      },
+      zIndex: 1,
+      rotation: source.transform.rotation,
+      isBehindUser: source.isBehindUser,
+    };
+
+    if (source.type === 'color' && source.name === 'Canvas Background') {
+      blankCanvasColor = source.settings.color || "#000000";
+    } else if (source.type === 'color' && source.settings.width === CANVAS_W) { // Also catch generic bg
+      blankCanvasColor = source.settings.color || "#000000";
+    } else if (source.type === 'image' && source.name === 'Background Image') {
+      backgroundImageUrl = source.settings.url;
+      backgroundEffect = 'image';
+    } else if (source.type === 'camera') {
+      isVideoOn = true;
+      if (source.audio && source.audio.muted) {
+        isAudioOn = false;
+      }
+      if (source.settings.deviceId) selectedVideoDevice = source.settings.deviceId;
+    } else if (source.type === 'screen_capture') {
+      screenShareMode = "screen";
+    } else if (source.type === 'text') {
+      textOverlays.push({
+        id: source.id,
+        content: source.settings.content || '',
+        style: {
+          fontFamily: source.settings.fontFamily || "Arial",
+          fontSize: source.settings.fontSize || 48,
+          color: source.settings.color || "#ffffff",
+          backgroundColor: source.settings.backgroundColor || "transparent",
+          position: layout.position,
+          shape: "rectangular",
+          animation: "none",
+          outline: !!source.settings.outline,
+          shadow: !!source.settings.shadow,
+          bold: source.settings.fontWeight === 'bold',
+          italic: source.settings.fontStyle === 'italic',
+          underline: false,
+          rotation: layout.rotation,
+          border: false,
+          borderColor: "#000000",
+          borderWidth: 0,
+          textAlign: source.settings.textAlign || "center",
+        },
+        layout,
+      });
+    } else if (source.type === 'image' || source.type === 'media') {
+      // Mock File object since files aren't physically present yet from UI perspective, but URL is.
+      const mockFile = new File([], source.name || "imported-file", { type: source.type === 'image' ? 'image/png' : 'video/mp4' });
+      fileOverlays.push({
+        id: source.id,
+        file: mockFile,
+        fileName: source.name || 'imported-file',
+        fileType: source.type === 'image' ? 'image' : 'video',
+        fileUrl: source.settings.url || "",
+        layout,
+      });
+    } else if (source.type === 'browser') {
+      browserOverlays.push({
+        id: source.id,
+        url: source.settings.url || "about:blank",
+        layout,
+      });
+    } else if (source.type === 'generated') {
+      activeOverlays.push({
+        id: source.id,
+        name: source.name || 'AI Overlay',
+        htmlContent: source.settings.htmlContent || "",
+        layout,
+      });
+    }
+  }
+
+  return {
+    id: compScene.id,
+    name: compScene.name,
+    canvasLayout: null,
+    textOverlays,
+    browserOverlays,
+    fileOverlays,
+    activeOverlays,
+    selectedVideoDevice,
+    selectedAudioDevice: undefined,
+    isAudioOn,
+    isVideoOn,
+    captionsEnabled: false,
+    screenShareMode,
+    isAiModeEnabled: false,
+    aiButtonPosition: { x: 50, y: 90 },
+    layoutMode: "solo",
+    cameraShape: "rectangle",
+    splitRatio: 0.5,
+    pipPosition: { x: 75, y: 75 },
+    pipSize: { width: 20, height: 20 },
+    pipRotation: 0,
+    videoFilter,
+    backgroundEffect,
+    backgroundImageUrl,
+    blankCanvasColor,
+    captionStyle: {
+      fontFamily: "Inter",
+      fontSize: 48,
+      color: "#ffffff",
+      backgroundColor: "rgba(0,0,0,0.5)",
+      position: { x: 50, y: 80 },
+      shape: "rounded",
+      animation: "fade",
+      outline: false,
+      shadow: true,
+      bold: true,
+      italic: false,
+      underline: false,
+      rotation: 0,
+      border: false,
+      borderColor: "#000000",
+      borderWidth: 0,
+    },
+    dynamicStyle: "Karaoke",
+    isAutoFramingEnabled: false,
+    zoomSensitivity: 4,
+    trackingSpeed: 0.08,
+    isBeautifyEnabled: false,
+    isLowLightEnabled: false,
+    isNeonEdgeEnabled: false,
+    neonIntensity: 20,
+    neonColor: "#00FFFF",
+    cameraBackground: "none",
+    customBackgroundUrl: null,
+    cameraAspectRatio: "16:9",
+    canvasAspectRatio: "16:9",
+    customAspectRatio: "",
+    isFaceTrackingEnabled: false,
+    activeInteractiveFilter: "none",
+    filterIntensity: 1,
+    filterColor: "#ffffff",
+    filterTarget: "both",
+  };
+}

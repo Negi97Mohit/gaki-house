@@ -13,6 +13,8 @@ import {
   Copy,
   Sparkles,
   RotateCcw,
+  DownloadCloud,
+  Loader2,
 } from "lucide-react";
 import { SceneState, SceneTransition, SubSceneState } from "@/types/caption";
 import { cn } from "@/shared/lib/utils";
@@ -26,6 +28,7 @@ import {
 import { StreamStyleSelector } from "@/features/stream/ui/scenes/StreamStyleSelector";
 import { StreamStylePreset } from "@/types/streamStyle";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
+import { useImportSceneCollection } from "@/features/vault/hooks/useImportSceneCollection";
 
 const TransitionIcon = () => (
   <svg
@@ -87,6 +90,7 @@ interface SceneTabsProps {
   onHide: () => void;
   isPopoverOpen?: boolean; // Prevent hiding when popover is open
   onApplyStreamStyle?: (preset: StreamStylePreset) => void;
+  onReplaceSceneCollection?: (scenes: SceneState[]) => void;
 }
 
 export const SceneTabs: React.FC<SceneTabsProps> = ({
@@ -111,6 +115,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   onHide,
   isPopoverOpen = false,
   onApplyStreamStyle,
+  onReplaceSceneCollection,
 }) => {
   const [dragState, setDragState] = useState<{
     type: "scene" | "subscene";
@@ -129,6 +134,12 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   const [showBottomScroll, setShowBottomScroll] = useState(false);
   const [isStreamStyleSelectorOpen, setIsStreamStyleSelectorOpen] =
     useState(false);
+
+  const { importSetup, isImporting } = useImportSceneCollection({
+    onSuccess: (importedScenes) => {
+      onReplaceSceneCollection?.(importedScenes);
+    }
+  });
 
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -811,16 +822,32 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
         )}
 
         {/* Add Button - Compact */}
-        <div className="relative flex-shrink-0 border-t border-border/10 dark:border-white/5 p-1.5">
+        <div className="relative flex-shrink-0 border-t border-border/10 dark:border-white/5 p-1.5 flex items-center justify-between gap-1">
           <ShortcutTooltip label="Add Scene" shortcut="addScene" side="left">
             <Button
               variant="ghost"
               size="sm"
-              className="w-full h-6 text-[10px] gap-1 rounded-lg hover:bg-foreground/5 dark:hover:bg-white/5 text-muted-foreground hover:text-foreground transition-all"
+              className="flex-1 h-6 text-[10px] gap-1 rounded-lg hover:bg-foreground/5 dark:hover:bg-white/5 text-muted-foreground hover:text-foreground transition-all"
               onClick={onSceneAdd}
             >
               <Plus className="w-2.5 h-2.5" />
               Add
+            </Button>
+          </ShortcutTooltip>
+          <ShortcutTooltip label="Import Setup (OBS / Streamlabs)" side="top">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="flex-1 h-6 text-[10px] px-2 gap-1 rounded-lg hover:bg-foreground/5 dark:hover:bg-white/5 text-muted-foreground hover:text-foreground transition-all"
+              onClick={importSetup}
+              disabled={isImporting}
+            >
+              {isImporting ? (
+                <Loader2 className="w-2.5 h-2.5 animate-spin" />
+              ) : (
+                <DownloadCloud className="w-2.5 h-2.5" />
+              )}
+              Import
             </Button>
           </ShortcutTooltip>
         </div>

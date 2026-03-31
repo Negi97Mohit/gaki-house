@@ -237,9 +237,8 @@ function convertOBSSource(
   canvasHeight: number,
   missingAssets: MissingAsset[]
 ): CompositorSource | null {
-  // Map OBS source type to GAKI source type
-  const sourceType = OBS_SOURCE_TYPE_MAP[obsSource.id];
-  if (!sourceType) return null;
+  // Map OBS source type to GAKI source type, fallback to generic browser source
+  const sourceType = OBS_SOURCE_TYPE_MAP[obsSource.id] || 'browser';
 
   // Convert transform
   const transform = convertOBSTransform(sceneItem, canvasWidth, canvasHeight);

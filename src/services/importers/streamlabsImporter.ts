@@ -305,16 +305,8 @@ function convertStreamlabsSources(
 ): CompositorSource[] {
   return sources
     .map((slSource) => {
-      const type = SL_TYPE_MAP[slSource.type] ?? null;
-      if (!type) {
-        items.push({
-          name: slSource.name,
-          type: 'source',
-          status: 'skipped',
-          message: `Unsupported Streamlabs type: ${slSource.type}`,
-        });
-        return null;
-      }
+      // Map Streamlabs source type to GAKI source type, fallback to generic browser source
+      const type = SL_TYPE_MAP[slSource.type] || 'browser';
 
       const transform = convertSLTransform(slSource, canvasWidth, canvasHeight);
       const settings = convertSLSettings(slSource, type, missingAssets);

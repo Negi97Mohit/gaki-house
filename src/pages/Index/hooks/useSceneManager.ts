@@ -643,6 +643,17 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     });
   };
 
+  const replaceSceneCollection = useCallback((newScenes: SceneState[]) => {
+    if (!newScenes || newScenes.length === 0) return;
+    setScenes(newScenes);
+    setActiveSceneId(newScenes[0].id);
+    setActiveSubsceneId(undefined);
+    setSceneTransitions([]); 
+    setHistory({});
+    setPreviousScene(null);
+    setActiveTransition(null);
+  }, []);
+
   const handleSceneRename = (sceneId: string, newName: string) => {
     setScenes((prev) =>
       prev.map((scene) =>
@@ -1016,6 +1027,7 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     handleToggleExpand,
     handleDuplicateScene,
     handleResetSceneToDefault,
+    replaceSceneCollection,
     // Stream Style
     createScenesFromStreamStyle,
     // Undo/Redo/Reset
