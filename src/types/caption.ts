@@ -276,7 +276,8 @@ export type TransitionType =
   | "reveal"
   | "bloom"
   | "iris_wipe"
-  | "breaker";
+  | "breaker"
+  | "stinger";
 
 export type TransitionEasing =
   | "ease-in"
@@ -295,6 +296,8 @@ export interface SceneTransition {
   animationOut: TransitionEasing;
   overlayEnabled: boolean;
   blendMode?: TransitionBlendMode;
+  stingerUrl?: string;         // local-asset://... mapped URL
+  stingerCutPoint?: number;    // 0.0 to 1.0 (defaults to 0.5)
 }
 
 // --- ADDED: State for a camera in a grid section ---

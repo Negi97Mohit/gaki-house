@@ -6,6 +6,8 @@ import {
   session,
   desktopCapturer,
   dialog,
+  protocol,
+  net,
 } from "electron";
 import path from "path";
 import http from "http";
@@ -879,6 +881,16 @@ ipcMain.handle("get-desktop-sources", async (event, options) => {
 });
 
 app.whenReady().then(() => {
+  // Register custom protocol for high-performance stinger & local media streaming
+  protocol.handle("local-asset", (request) => {
+    let filePath = decodeURIComponent(request.url.replace("local-asset://", ""));
+    // Strip query strings and hash hashes
+    filePath = filePath.split("?")[0].split("#")[0];
+    // Prevent directory traversal
+    filePath = path.normalize(filePath);
+    return net.fetch("file://" + filePath);
+  });
+
   createWindow();
   setupIpcHandlers();
   startStreamingServer();

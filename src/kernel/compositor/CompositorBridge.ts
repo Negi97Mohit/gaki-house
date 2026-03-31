@@ -24,6 +24,7 @@
  */
 
 import { serializeScene } from './SceneGraph';
+import { StingerController } from './StingerController';
 import type { CompositorEvent, CompositorCommand, SerializedTransition } from './types';
 import type { CompositorScene, OutputConfig, SceneTransition, DEFAULT_OUTPUT_CONFIG } from '@/types/compositor';
 
@@ -68,6 +69,7 @@ export class CompositorBridge {
   private previewRAF: number | null = null;
   private isReady = false;
   private isRunning = false;
+  private stingerController: StingerController;
 
   constructor(options: CompositorBridgeOptions = {}) {
     this.options = {
@@ -76,6 +78,9 @@ export class CompositorBridge {
       fps: 30,
       ...options,
     };
+    this.stingerController = new StingerController((bitmap) => {
+      this.sendCommand({ type: 'updateStingerFrame', frame: bitmap }, [bitmap]);
+    });
   }
 
   // ── Lifecycle ──
@@ -161,6 +166,7 @@ export class CompositorBridge {
   destroy(): void {
     this.stop();
     this.stopAllCaptures();
+    this.stingerController.destroy();
     this.sendCommand({ type: 'destroy' });
 
     if (this.outputCanvas) {
@@ -194,8 +200,14 @@ export class CompositorBridge {
       type: transition.type,
       duration: transition.duration,
       easing: transition.easing,
+      stingerCutPoint: transition.stingerCutPoint,
       isStinger: transition.type === 'stinger',
     };
+
+    if (serializedTransition.isStinger && transition.stingerUrl) {
+      this.stingerController.preload(transition.stingerUrl);
+      this.stingerController.play();
+    }
 
     this.sendCommand({
       type: 'transition',

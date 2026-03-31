@@ -75,6 +75,12 @@ self.onmessage = (e: MessageEvent<CompositorCommand>) => {
       }
       break;
 
+    case 'updateStingerFrame':
+      if (transitionRenderer && msg.frame) {
+        transitionRenderer.setStingerFrame(msg.frame);
+      }
+      break;
+
     case 'removeSourceFrame':
       sourceRenderer?.removeSource(msg.sourceId);
       break;
@@ -189,9 +195,15 @@ function handleTransition(
   currentScene = to;
 
   // Start the transition
-  transitionRenderer.start(transition.type, transition.duration, 'ease-in-out', () => {
-    // Transition complete — scene already set
-  });
+  transitionRenderer.start(
+    transition.type,
+    transition.duration,
+    transition.easing || 'ease-in-out',
+    transition.stingerCutPoint ?? 0.5,
+    () => {
+      // Transition complete — scene already set
+    }
+  );
 }
 
 // ─── Render Loop ─────────────────────────────────────────────────────────────

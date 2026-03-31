@@ -109,6 +109,7 @@ const TRANSITION_CATEGORIES: TransitionCategory[] = [
       { type: "bloom", name: "Bloom", icon: <CircleDot className="w-4 h-4" /> },
       { type: "iris_wipe", name: "Iris Wipe", icon: <Circle className="w-4 h-4" /> },
       { type: "breaker", name: "Breaker", icon: <Play className="w-4 h-4" /> },
+      { type: "stinger", name: "Stinger", icon: <Film className="w-4 h-4 text-purple-400" /> },
     ],
   },
 ];
@@ -144,9 +145,20 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
   if (!transition) return null;
 
   const [localDuration, setLocalDuration] = useState(transition.durationMs);
+  const [localCutPoint, setLocalCutPoint] = useState(transition.stingerCutPoint ?? 0.5);
   const [activeCategory, setActiveCategory] = useState("Basic");
 
   const currentCategory = TRANSITION_CATEGORIES.find(c => c.name === activeCategory);
+
+  const handleStingerSelect = async () => {
+    // Only works in Electron
+    if (window.electron?.import?.resolveAsset) {
+      const result = await window.electron.import.resolveAsset("stinger.webm", "stinger");
+      if (result.ok && result.resolvedPath) {
+        onTransitionChange(transition.id, { stingerUrl: result.resolvedPath });
+      }
+    }
+  };
 
   return (
     <PopoverPrimitive.Root open={true} onOpenChange={(open) => !open && onClose()}>
@@ -341,6 +353,51 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
                         {mode.label}
                       </button>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Stinger Details */}
+              {transition.type === "stinger" && (
+                <div className="space-y-4 pt-4 border-t border-border/30">
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Stinger File (WebM/MP4)</Label>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleStingerSelect}
+                        className="w-full justify-start text-xs h-8"
+                      >
+                        <Film className="w-3.5 h-3.5 mr-2" />
+                        {transition.stingerUrl ? transition.stingerUrl.split(/[/\\]/).pop() : "Select Video File..."}
+                      </Button>
+                    </div>
+                    {transition.stingerUrl?.toLowerCase().endsWith(".mp4") && (
+                      <p className="text-[10px] text-amber-500 bg-amber-500/10 p-1.5 rounded">
+                        <strong>Warning:</strong> MP4 files don't support transparency — the stinger will cover the full frame. We recommend using VP8/VP9 WebM.
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs text-muted-foreground">Cut Point</Label>
+                      <span className="text-xs font-mono text-foreground tabular-nums">
+                        {Math.round(localCutPoint * 100)}%
+                      </span>
+                    </div>
+                    <Slider
+                      value={[localCutPoint]}
+                      onValueChange={(v) => setLocalCutPoint(v[0])}
+                      onValueCommit={(v) =>
+                        onTransitionChange(transition.id, { stingerCutPoint: v[0] })
+                      }
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      className="w-full"
+                    />
                   </div>
                 </div>
               )}

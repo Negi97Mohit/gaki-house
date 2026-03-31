@@ -34,7 +34,9 @@ precision highp float;
 in vec2 v_texCoord;
 uniform sampler2D u_fromScene;
 uniform sampler2D u_toScene;
+uniform sampler2D u_stingerFrame; // Added for stinger
 uniform float u_progress; // 0.0 = from, 1.0 = to
+uniform float u_stingerCutPoint; // 0.0 = start, 1.0 = end
 uniform int u_type;       // Transition type enum
 
 out vec4 fragColor;
@@ -111,6 +113,13 @@ void main() {
     blurred /= samples;
     fragColor = mix(blurred, toColor, p);
 
+  } else if (u_type == 10) {
+    // STINGER — play video over base scene, switch base at u_stingerCutPoint
+    vec4 baseColor = p < u_stingerCutPoint ? fromColor : toColor;
+    vec4 stingerColor = texture(u_stingerFrame, v_texCoord);
+    // Alpha composite stinger over base
+    fragColor = vec4(mix(baseColor.rgb, stingerColor.rgb, stingerColor.a), max(baseColor.a, stingerColor.a));
+
   } else {
     // DEFAULT: crossfade
     fragColor = mix(fromColor, toColor, p);
@@ -131,6 +140,7 @@ const TRANSITION_TYPE_MAP: Record<string, number> = {
   'wipe_right': 7,
   'zoom': 8,
   'blur': 9,
+  'stinger': 10,
 };
 
 // ─── Easing Functions ────────────────────────────────────────────────────────
@@ -169,6 +179,8 @@ export class TransitionRenderer {
   private duration = 300;
   private typeEnum = 1; // fade
   private easingFn: (t: number) => number = easeInOutCubic;
+  private stingerCutPoint = 0.5;
+  private stingerTexture: WebGLTexture | null = null;
   private onComplete: (() => void) | null = null;
 
   constructor(gl: WebGL2RenderingContext) {
@@ -185,20 +197,36 @@ export class TransitionRenderer {
 
   /**
    * Start a transition between two FBO textures.
-   * Call renderFromScene / renderToScene first to populate the FBOs.
    */
   start(
     type: string,
     duration: number,
     easing: string,
+    stingerCutPoint: number = 0.5,
     onComplete: () => void
   ): void {
     this.typeEnum = TRANSITION_TYPE_MAP[type] ?? 1;
     this.duration = duration;
     this.easingFn = getEasing(easing);
+    this.stingerCutPoint = stingerCutPoint;
     this.startTime = performance.now();
     this.onComplete = onComplete;
     this.isActive = true;
+  }
+
+  /** Update the stinger mask texture, if any */
+  setStingerFrame(bitmap: ImageBitmap): void {
+    if (!this.stingerTexture) {
+      this.stingerTexture = this.gl.createTexture();
+    }
+    const gl = this.gl;
+    gl.bindTexture(gl.TEXTURE_2D, this.stingerTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bitmap);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    bitmap.close();
   }
 
   /** Get the FBO to render the outgoing scene into */
@@ -236,7 +264,14 @@ export class TransitionRenderer {
     gl.bindTexture(gl.TEXTURE_2D, this.toFBO.texture);
     gl.uniform1i(gl.getUniformLocation(this.program, 'u_toScene'), 1);
 
+    if (this.stingerTexture && this.typeEnum === 10) {
+      gl.activeTexture(gl.TEXTURE2);
+      gl.bindTexture(gl.TEXTURE_2D, this.stingerTexture);
+      gl.uniform1i(gl.getUniformLocation(this.program, 'u_stingerFrame'), 2);
+    }
+
     gl.uniform1f(gl.getUniformLocation(this.program, 'u_progress'), progress);
+    gl.uniform1f(gl.getUniformLocation(this.program, 'u_stingerCutPoint'), this.stingerCutPoint);
     gl.uniform1i(gl.getUniformLocation(this.program, 'u_type'), this.typeEnum);
 
     gl.bindVertexArray(this.quadVAO);
@@ -253,6 +288,10 @@ export class TransitionRenderer {
 
   destroy(): void {
     const { gl } = this;
+    if (this.stingerTexture) {
+      gl.deleteTexture(this.stingerTexture);
+      this.stingerTexture = null;
+    }
     this.destroyFBO(this.fromFBO);
     this.destroyFBO(this.toFBO);
     gl.deleteProgram(this.program);

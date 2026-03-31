@@ -11,6 +11,7 @@ export type CompositorCommand =
   | { type: 'init'; canvas: OffscreenCanvas; resolution: { width: number; height: number } }
   | { type: 'updateScene'; scene: SerializedScene }
   | { type: 'updateSource'; sourceId: string; frame: ImageBitmap; sourceType: string }
+  | { type: 'updateStingerFrame'; frame: ImageBitmap }
   | { type: 'removeSourceFrame'; sourceId: string }
   | { type: 'transition'; from: SerializedScene; to: SerializedScene; transition: SerializedTransition }
   | { type: 'setOutputConfig'; config: SerializedOutputConfig }
@@ -95,6 +96,8 @@ export interface SerializedTransition {
   easing: string;
   /** For stinger: stinger video frames are sent as ImageBitmaps */
   isStinger: boolean;
+  /** Cut point for stinger transitons (0..1) */
+  stingerCutPoint?: number;
 }
 
 export interface SerializedOutputConfig {
