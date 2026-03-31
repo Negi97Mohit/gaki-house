@@ -21,6 +21,15 @@
 | Understand the **canvas / scene compositor** | [Canvas System](./webapp/features/canvas-system.md) |
 | See all **external integrations** and API keys | [Integrations](./architecture/integrations.md) |
 | Get **dev setup** instructions | [Development Guide](./overview/dev-guide.md) |
+| Understand the **studio panels** (audio mixer, designs, etc.) | [Studio Panels](./webapp/components/studio-panels.md) |
+| Understand the **canvas internal components** (30 files) | [Canvas Internals](./webapp/components/canvas-internals.md) |
+| Understand **PiP camera controls** and menus | [PiP Controls](./webapp/components/pip-controls.md) |
+| Understand the **stream configuration** wizard | [Stream Config](./webapp/components/stream-config.md) |
+| Understand the **media controls** and video settings | [Media Controls](./webapp/components/media-controls.md) |
+| Understand **ambient effects** and cinematic overlays | [Ambient & Cinematic](./webapp/components/ambient-cinematic.md) |
+| Understand the **layout system** (15+ templates) | [Layout System](./webapp/features/layout-system.md) |
+| Understand the **animation editor** | [Animation Editor](./webapp/components/animation-editor.md) |
+| Understand the **grid section panels** (add/remove content) | [Grid Sections](./webapp/components/grid-sections.md) |
 | See what's **missing / TODO** | [Gaps & TODOs](./overview/gaps-and-todos.md) |
 
 ---
@@ -69,6 +78,7 @@ docs/
     │   ├── scene-management.md       — Multi-scene, transitions, undo/redo
     │   ├── draggable-elements.md     — Text, browser, file, graph overlays
     │   ├── streaming-feature.md      — Go-live UI & multi-destination
+    │   ├── layout-system.md          — 15+ layout templates & grid system
     │   ├── recording-feature.md      — Session recording & editor
     │   ├── asset-library.md          — Pexels, Pixabay, GIPHY search
     │   ├── vault.md                  — Asset vault & overlay packages
@@ -82,7 +92,15 @@ docs/
     │   ├── video-canvas.md           — The core stage component
     │   ├── bottom-navigation.md      — Main control bar
     │   ├── scene-tabs.md             — Scene management panel
-    │   └── settings-panel.md         — Floating controls / settings
+    │   ├── settings-panel.md         — Floating controls / settings
+    │   ├── studio-panels.md          — All 12 studio sidebar panels (deep)
+    │   ├── canvas-internals.md       — 30 canvas rendering components (deep)
+    │   ├── pip-controls.md           — PiP camera controls & 7 sub-menus
+    │   ├── stream-config.md          — Stream config modal & platform selector
+    │   ├── media-controls.md         — Media controls & video settings dialog
+    │   ├── ambient-cinematic.md      — Ambient backgrounds & cinematic overlays
+    │   ├── animation-editor.md       — Animation library & GSAP editor
+    │   └── grid-sections.md          — Grid section panels (add/remove/configure content)
     │
     ├── hooks/
     │   ├── README.md                 — Custom hooks index

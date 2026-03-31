@@ -29,6 +29,19 @@ These are the highest-impact components that define the application's visual and
 | **SceneTabs** | [scene-tabs.md](./scene-tabs.md) | Scene management panel (create, switch, reorder) |
 | **FloatingControlsPanel** | [settings-panel.md](./settings-panel.md) | Settings sidebar (captions, effects, styles) |
 
+## Deep-Dive Component Docs
+
+| Document | What it covers | Components Documented |
+|---|---|---|
+| [Studio Panels](./studio-panels.md) | All 12 sidebar panels | AudioMixer, CanvasDesigns, DynamicStyles, Settings, SocialBanners, FileVault, GSAP, Text, Tools, etc. |
+| [Canvas Internals](./canvas-internals.md) | All 30 canvas rendering files | CanvasView, CanvasContent, HoverToolbar, OverlayLayer, HybridDraggable, DraggableFileViewer, MultiLayerText, Excalidraw, 3D viewer, etc. |
+| [PiP Controls](./pip-controls.md) | PiP camera system | PipControlsToolbar + 7 sub-menus (Layout, Style, Effects, Cinematic, Background, Camera, Zoom) |
+| [Stream Config](./stream-config.md) | Broadcast setup UI | StreamConfigurationModal (47KB), StreamPlatformSelector (25KB), FatalErrorDialog, SavedSessions |
+| [Media Controls](./media-controls.md) | Bottom bar controls | MediaControls, AIControls, SceneControls, VideoSettingsDialog (30KB camera/effects settings) |
+| [Ambient & Cinematic](./ambient-cinematic.md) | Visual atmosphere | AmbientBackground (71KB, 15+ particle effects), CinematicOverlay (46KB, film/color/atmosphere effects) |
+| [Animation Editor](./animation-editor.md) | Animation creation | AnimationLibraryPanel, GSAPAnimationEditor, SmartTextAnimator |
+| [Grid Sections](./grid-sections.md) | Interactive grid panels | EmptyGridSection (add content), InteractiveGridSection (camera+text), GridSectionToolbar, CanvasDesignSelector |
+
 ## shadcn/ui Components
 
 Located in `src/shared/ui/`, these are pre-built, accessible UI primitives from the shadcn/ui library built on Radix UI:
