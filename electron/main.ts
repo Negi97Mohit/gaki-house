@@ -127,7 +127,7 @@ const createFfmpegCommand = (
     outputConfig?: any; // Matches OutputConfig from compositor.ts
   },
   onStart: (cmd: string) => void,
-  onError: (err: Error) => void,
+  onError: (err: Error, stdout?: string, stderr?: string) => void,
   onEnd: () => void,
   onProgress?: (progress: any) => void
 ) => {
@@ -163,16 +163,13 @@ const createFfmpegCommand = (
     { name: "videotoolbox", codec: "h264_videotoolbox" },
   ];
 
-  if (config.encoder === 'auto') {
-    // Probe best available hardware encoder
-    const bestHW = hwEncoders.find(hw => availableEncoders.has(hw.codec));
-    if (bestHW) {
-      selectedEncoder = bestHW.codec;
-      console.log(`[FFmpeg] Auto-selected hardware encoder: ${selectedEncoder}`);
-    } else {
-      console.log(`[FFmpeg] No hardware encoder detected, using libx264`);
-    }
-  } else if (config.encoder !== 'x264') {
+  if (config.encoder === 'auto' || config.encoder === 'x264') {
+    // Rely exclusively on libx264 (Software) for 'auto' because getAvailableEncoders() 
+    // only checks compiler support, NOT actual user hardware/driver presence.
+    // If a user lacks an NVIDIA card, NVENC instantly crashes with 'Cannot load nvcuda.dll'.
+    selectedEncoder = "libx264";
+    console.log(`[FFmpeg] Auto-selected universally perfectly-supported encoder: libx264`);
+  } else {
     // User requested a specific hardware encoder
     const requested = hwEncoders.find(hw => hw.name === config.encoder);
     if (requested && availableEncoders.has(requested.codec)) {
@@ -193,25 +190,24 @@ const createFfmpegCommand = (
   const gopSize = config.fps * config.keyframeInterval;
   
   let outputOpts = [
-    `-preset ${config.preset}`,
     `-b:v ${config.videoBitrate}k`,
     `-maxrate ${config.videoBitrate}k`,
     `-bufsize ${config.videoBitrate * 2}k`,
     `-g ${gopSize}`,
     `-r ${config.fps}`,
-    `-vf scale=${config.resolution.width}:${config.resolution.height}`,
-    "-pix_fmt yuv420p",
+    // Robsut filter for odd-dimension inputs: force scale and YUV420p conversion in one step
+    `-vf scale=${config.resolution.width}:${config.resolution.height}:force_original_aspect_ratio=decrease,pad=${config.resolution.width}:${config.resolution.height}:(ow-iw)/2:(oh-ih)/2,format=yuv420p`,
   ];
 
   // Encoder-specific tuning
   if (selectedEncoder === "libx264") {
+    outputOpts.push(`-preset ${config.preset}`);
     outputOpts.push("-tune zerolatency");
   } else if (selectedEncoder === "h264_nvenc") {
     // NVENC specific options for stream stability
     outputOpts = outputOpts.filter(o => !o.includes('-preset'));
     outputOpts.push(
-      "-preset p4",         // Modern NVENC preset balancing speed/quality
-      "-tune ll",           // Low latency tuning
+      "-zerolatency 1",     // Universally supported NVENC low latency
       "-rc cbr"             // Constant bitrate is better for RTMP
     );
   }
@@ -228,7 +224,7 @@ const createFfmpegCommand = (
   command.on("error", (err, stdout, stderr) => {
     if (err.message.includes("SIGKILL")) return;
     console.error("FFmpeg Error:", err.message);
-    onError(err);
+    onError(err, stdout, stderr);
   });
 
   command.on("end", () => {
@@ -270,8 +266,9 @@ const convertToMp4 = (inputPath: string): Promise<string> => {
           resolve(outputPath);
         }
       })
-      .on("error", (err) => {
-        console.error("[Recorder] Conversion failed:", err);
+      .on("error", (err, stdout, stderr) => {
+        console.error(`[FFmpeg] Error: ${err.message}`);
+        if (stderr) console.error(`[FFmpeg] STDERR: \n${stderr}`);
         // Return original file if conversion fails so user doesn't lose data
         resolve(inputPath);
       });
@@ -282,6 +279,8 @@ const convertToMp4 = (inputPath: string): Promise<string> => {
 
 function setupIpcHandlers() {
   const ffmpegCommands = new Map<string, ffmpeg.FfmpegCommand>();
+  const initSent = new Map<string, boolean>();
+  let initializationBuffer: Buffer | null = null;
 
   // ENCODER PROBING HANDLER
   ipcMain.handle("ffmpeg:get-encoders", async () => {
@@ -300,6 +299,7 @@ function setupIpcHandlers() {
       try {
         ffmpegCommands.get(id)?.kill("SIGKILL");
         ffmpegCommands.delete(id);
+        initSent.delete(id);
       } catch (e) { }
     }
 
@@ -311,13 +311,21 @@ function setupIpcHandlers() {
           event.sender.send("stream:status", { id, status: "started" });
           event.sender.send("stream:ffmpeg-ready", { id });
         },
-        (err) => {
+        (err, stdout, stderr) => {
+          let detailedError = err.message;
+          if (stderr) {
+            // Extract the last 5 lines of stderr for the UI toast
+            const lines = stderr.split('\n').filter(Boolean);
+            const tail = lines.slice(-5).join('\n');
+            detailedError += `\n>> ${tail}`;
+          }
           event.sender.send("stream:status", {
             id,
             status: "error",
-            error: err.message,
+            error: detailedError,
           });
           ffmpegCommands.delete(id);
+          initSent.delete(id);
         },
         () => {
           event.sender.send("stream:status", { id, status: "stopped" });
@@ -329,6 +337,7 @@ function setupIpcHandlers() {
       );
 
       ffmpegCommands.set(id, command);
+      initSent.set(id, false);
       command.run();
     } catch (error: any) {
       event.sender.send("stream:status", {
@@ -340,12 +349,30 @@ function setupIpcHandlers() {
   });
 
   ipcMain.on("stream:data", (event, data) => {
+    const buffer = Buffer.from(data);
+
+    // Capture WebM EBML initialization segment block explicitly
+    const isInitChunk = buffer.length > 4 && buffer[0] === 0x1a && buffer[1] === 0x45 && buffer[2] === 0xdf && buffer[3] === 0xa3;
+    if (isInitChunk) {
+      initializationBuffer = buffer;
+    }
+
     ffmpegCommands.forEach((command, id) => {
       if ((command as any).ffmpegProc) {
         const proc = (command as any).ffmpegProc;
         if (proc.stdin && proc.stdin.writable && !proc.killed) {
           try {
-            proc.stdin.write(Buffer.from(data));
+            if (isInitChunk) {
+              proc.stdin.write(buffer);
+              initSent.set(id, true);
+            } else {
+              // Late joiner or re-connected FFmpeg? Prepend cached init buffer if missed!
+              if (!initSent.get(id) && initializationBuffer) {
+                proc.stdin.write(initializationBuffer);
+                initSent.set(id, true);
+              }
+              proc.stdin.write(buffer);
+            }
           } catch (err) {
             console.error(`Write failed for stream ${id}:`, err);
           }
@@ -504,28 +531,11 @@ function setupIpcHandlers() {
   ipcMain.handle(
     "auth:google-oauth",
     async (event, { apiKey }: { apiKey: string }) => {
-      return new Promise(async (resolve) => {
+      return new Promise(async (resolve, reject) => {
         try {
-          // Fetch the Google client ID from Firebase's project config
-          const fetch = (await import("node-fetch")).default;
-          const configResp = await fetch(
-            `https://www.googleapis.com/identitytoolkit/v3/relyingparty/getProjectConfig?key=${apiKey}`
-          );
-          const configData = (await configResp.json()) as any;
-
-          // Find the Google provider's client ID
-          const googleProvider = configData?.idpConfig?.find(
-            (p: any) => p.provider === "GOOGLE"
-          );
-          const clientId = googleProvider?.clientId;
-
-          if (!clientId) {
-            console.error(
-              "[Auth] Could not find Google client ID from Firebase config"
-            );
-            resolve(null);
-            return;
-          }
+          // Safely hardcoding the Google Client ID specifically generated for this Firebase Project
+          // This bypasses the fragile getProjectConfig API fetch which sometimes caches missing providers.
+          const clientId = "696196670090-698euvvutelhc3v2ic0nfqcu2tr251vt.apps.googleusercontent.com";
 
           const redirectUri = "http://localhost";
           const scope = "openid email profile";
@@ -558,43 +568,50 @@ function setupIpcHandlers() {
             if (!authWindow.isDestroyed()) authWindow.close();
           };
 
-          // Use executeJavaScript to read the full URL including the fragment (#)
-          // Navigation events (will-navigate, will-redirect) strip the fragment,
-          // so we must read it from the page's own window.location after navigation.
+          const tryExtractTokensFromUrl = (fullUrl: string) => {
+            if (resolved || authWindow.isDestroyed()) return;
+            console.log("[Auth] Checking URL:", fullUrl);
+            if (
+              fullUrl &&
+              fullUrl.includes("#") &&
+              fullUrl.includes("id_token")
+            ) {
+              const hash = fullUrl.split("#")[1];
+              const params = new URLSearchParams(hash);
+              const idToken = params.get("id_token");
+              const accessToken = params.get("access_token");
+              if (idToken) {
+                console.log("[Auth] Successfully extracted tokens from URL");
+                tryResolve({ idToken, accessToken });
+              }
+            }
+          };
+
           const tryExtractTokensFromPage = async () => {
             if (resolved || authWindow.isDestroyed()) return;
             try {
               const fullUrl = await authWindow.webContents.executeJavaScript(
                 "window.location.href"
               );
-              console.log("[Auth] Page URL:", fullUrl);
-              if (
-                fullUrl &&
-                fullUrl.includes("#") &&
-                fullUrl.includes("id_token")
-              ) {
-                const hash = fullUrl.split("#")[1];
-                const params = new URLSearchParams(hash);
-                const idToken = params.get("id_token");
-                const accessToken = params.get("access_token");
-                if (idToken) {
-                  console.log("[Auth] Successfully extracted tokens");
-                  tryResolve({ idToken, accessToken });
-                }
-              }
+              tryExtractTokensFromUrl(fullUrl);
             } catch (e) {
-              // Window may have been destroyed, ignore
+              // Window may have been destroyed
             }
           };
-
           authWindow.loadURL(authUrl);
 
-          // After Google redirects to http://localhost#tokens, the page will
-          // either load (if something is on port 80) or fail. Either way,
-          // window.location.href will contain the fragment with our tokens.
+          // Catch navigation events that provide the URL directly (bypasses chrome-error page)
+          authWindow.webContents.on("will-navigate", (_, url) => {
+            if (url.startsWith(redirectUri)) tryExtractTokensFromUrl(url);
+          });
+          
+          authWindow.webContents.on("will-redirect", (_, url) => {
+            if (url.startsWith(redirectUri)) tryExtractTokensFromUrl(url);
+          });
+
           authWindow.webContents.on("did-navigate", (_, url) => {
             if (url.startsWith(redirectUri)) {
-              // Small delay to ensure the fragment is available in the page context
+              tryExtractTokensFromUrl(url);
               setTimeout(tryExtractTokensFromPage, 100);
             }
           });
@@ -603,7 +620,7 @@ function setupIpcHandlers() {
             "did-fail-load",
             (_, errorCode, errorDesc, validatedURL) => {
               if (validatedURL.startsWith(redirectUri)) {
-                setTimeout(tryExtractTokensFromPage, 100);
+                tryExtractTokensFromUrl(validatedURL);
               }
             }
           );
@@ -616,8 +633,9 @@ function setupIpcHandlers() {
             if (!resolved) resolve(null);
           });
         } catch (error) {
-          console.error("[Auth] Google OAuth error:", error);
-          resolve(null);
+          console.error("Google OAuth Error:", error);
+          // @ts-ignore
+          return reject(new Error("Failed to start Google OAuth flow: " + error.message));
         }
       });
     }

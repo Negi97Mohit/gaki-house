@@ -301,6 +301,12 @@ class StreamService {
             );
           }
         }
+
+        // Defeat Chromium's 0-delta MediaRecorder optimization crash:
+        // By changing 1 pixel slightly every frame, Chrome is forced to emit video frames consistently 
+        // to FFmpeg (avoiding 'Nothing was written into output file because streams received no packets').
+        this.ctx.fillStyle = `rgba(0, 0, 0, ${Math.random() * 0.01})`;
+        this.ctx.fillRect(0, 0, 1, 1);
       }
 
       this.animationFrameId = requestAnimationFrame(loop);
@@ -817,9 +823,10 @@ class StreamService {
   // --- Utils ---
   private getSupportedMimeType(): string {
     const types = [
-      "video/webm; codecs=h264",
-      "video/webm; codecs=vp9",
+      // Force VP8 priority. H264 inside WebM causes FFmpeg/Matroska demuxing fragmentation bugs
+      // when chunked through IPC or retried, whereas VP8 is natively robust in WebM.
       "video/webm; codecs=vp8",
+      "video/webm; codecs=vp9",
       "video/webm",
     ];
     return types.find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";

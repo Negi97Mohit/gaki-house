@@ -34,7 +34,7 @@ export const useBroadcastController = ({
   });
 
   const { outputStream, isReady: isCompositeReady, audioMixer } = useCompositeStream({
-    enabled: isVirtualCameraEnabled,
+    enabled: true,
     fps: 30,
   });
 
