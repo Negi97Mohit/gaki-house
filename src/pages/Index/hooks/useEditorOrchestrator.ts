@@ -15,6 +15,7 @@ import { useSessionData } from "./useSessionData";
 import { useDrawingController } from "./useDrawingController";
 import { useDynamicLayoutState } from "./useDynamicLayoutState";
 import { useSceneAudioStore } from "@/stores/sceneAudio.store";
+import { useCompositorSync } from "@/features/canvas/hooks/useCompositorSync";
 
 export const useEditorOrchestrator = () => {
 
@@ -37,6 +38,16 @@ export const useEditorOrchestrator = () => {
   useEffect(() => {
     setSceneAudioActiveId(activeSceneId);
   }, [activeSceneId, setSceneAudioActiveId]);
+
+  // --- COMPOSITOR SYNC ---
+  // Bridges legacy scene state → new CompositorScene → WebGL compositor
+  useCompositorSync({
+    scenes: sceneManager.scenes,
+    activeSceneId,
+    isTransitioning: sceneManager.isTransitioning,
+    activeTransition: sceneManager.activeTransition,
+    previousScene: sceneManager.previousScene,
+  });
 
   const mediaManager = useMediaManager({
     isAudioOn: activeScene?.isAudioOn || false,

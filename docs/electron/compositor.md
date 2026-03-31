@@ -60,6 +60,15 @@ src/kernel/compositor/
 ├── SourceRenderer.ts       — Renders sources as textured quads
 ├── TransitionRenderer.ts   — GPU-accelerated scene transitions
 └── FilterPipeline.ts       — Per-source filter chain (FBO passes)
+
+src/features/canvas/model/   (Phase 2: Source model integration)
+├── index.ts                — Barrel export
+├── sourceFactory.ts        — Factory functions for all 14 source types
+└── legacySceneAdapter.ts   — SceneState ↔ CompositorScene conversion
+
+src/features/canvas/hooks/   (Phase 2: Sync integration)
+├── useCompositorSync.ts    — Legacy → compositor store sync bridge
+└── useCompositorPreview.ts — Preview frame display
 ```
 
 ## Data Flow
@@ -217,6 +226,46 @@ Available filters:
 ### Hooks
 - [useCompositeStream](file:///c:/Users/Dell/Desktop/caption-cam/src/features/stream/hooks/useCompositeStream.ts) — Bridge lifecycle management
 - [useCompositorPreview](file:///c:/Users/Dell/Desktop/caption-cam/src/features/canvas/hooks/useCompositorPreview.ts) — Preview display
+- [useCompositorSync](file:///c:/Users/Dell/Desktop/caption-cam/src/features/canvas/hooks/useCompositorSync.ts) — Legacy scene → compositor store sync
+
+### Source Model (Phase 2)
+- [sourceFactory.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/features/canvas/model/sourceFactory.ts) — Factory functions for creating sources
+- [legacySceneAdapter.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/features/canvas/model/legacySceneAdapter.ts) — SceneState ↔ CompositorScene conversion
+
+### Legacy Bridge Flow
+
+Existing UI components continue to modify the legacy `SceneState` (via `useSceneManager`). The `useCompositorSync` hook watches those changes and pushes them to `sceneCollection.store`, which the compositor bridge reads from:
+
+```
+UI Action (drag overlay, change filter, etc.)
+    │
+    ▼
+useSceneManager.updateActiveScene()  →  SceneState updated
+    │
+    ▼
+useCompositorSync (watches SceneState)
+    │
+    ▼
+legacySceneAdapter.legacySceneToCompositorScene()
+    │  • Flat overlay arrays → hierarchical CompositorSource[]
+    │  • Percentage positions → absolute pixels (1920×1080)
+    │  • Camera effects → filter chains
+    │  • Canvas layouts → GridLayout
+    │
+    ▼
+sceneCollection.store.setCollection()  →  Zustand update
+    │
+    ▼
+useCompositeStream (subscribes to store)
+    │
+    ▼
+CompositorBridge.updateScene()  →  postMessage to Worker
+    │
+    ▼
+CompositorWorker renders frame
+```
+
+→ See [useEditorOrchestrator](file:///c:/Users/Dell/Desktop/caption-cam/src/pages/Index/hooks/useEditorOrchestrator.ts) for where useCompositorSync is called
 
 ### Related Docs
 → See [Canvas System](../webapp/features/canvas-system.md) for the UI editing layer
