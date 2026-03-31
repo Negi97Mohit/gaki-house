@@ -51,6 +51,9 @@ app.whenReady()
 | [Streaming Pipeline](./streaming.md) | RTMP streaming via FFmpeg (IPC + Socket.IO) |
 | [Recording Pipeline](./recording.md) | File-based recording with MP4 conversion |
 | [Compositor](./compositor.md) | WebGL GPU compositor pipeline (OffscreenCanvas + Web Worker) |
-| [OBS Compositor](./obs-compositor.md) | OBS/Streamlabs scene import and export |
+| [OBS Compositor](./obs-compositor.md) | OBS/Streamlabs scene architecture translation rules |
+| [Scene & Vault Importer](./scene-importer.md) | .overlay extraction and missing asset directory resolution |
+| [Stinger Transition Engine](./stinger-engine.md) | Native .webm streaming utilizing local-asset:// over `TRANSITION_FRAG` WebGL masks |
+| [Audio Mixer Engine](./audio-mixer.md) | Native Web Audio Context bridging for OBS-style monitoring and routing |
 
 → See [IPC Bridge](../architecture/ipc-bridge.md) for the complete IPC channel reference

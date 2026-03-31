@@ -27,7 +27,7 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 ## Feature Gaps
 
 ### Stream Feature
-- [ ] Stream health monitoring (dropped frames, bitrate display)
+- [x] Stream health monitoring (dropped frames, bitrate display) — See [Streaming](../electron/streaming.md)
 - [ ] Stream preview before going live
 - [ ] Multi-bitrate encoding options
 - [ ] Stream key validation before connecting
@@ -98,6 +98,12 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 
 ### Phase 1: Compositor Overhaul (Completed)
 - [x] WebGL compositor engine (OffscreenCanvas + Web Worker)
+- [x] Hardware Encoding integration (NVENC, QSV, AMF)
+- [x] WebAudio API based global Audio Mixer Engine
+- [x] OBS-style Stinger Engine (WebGL texture-mapping .webm files)
+- [x] `StingerController` and `local-asset://` file server implementation
+- [x] IPC bridged Stream Health Telemetry Hub (fluent-ffmpeg progress sync)
+- [x] Universal `SceneCollection` Vault (`.overlay` / `zip` unpacker support)
 - [x] OBS-compatible source model with 14 source types
 - [x] Scene collection Zustand store with full CRUD
 - [x] GPU-accelerated transitions (10 types: cut, fade, slide, wipe, zoom, blur)

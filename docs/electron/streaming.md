@@ -95,6 +95,12 @@ function createFfmpegCommand(
 
 **Output:** Always `-f flv` (FLV container for RTMP)
 
+### Hardware Encoding & Stream Health Telemetry
+
+**Encoder Priority:** At startup, `window.electron.stream.getEncoders()` invokes an `ffprobe` scan mapping hardware silicon backends (`h264_nvenc`, `h264_qsv`, `h264_amf`, `h264_videotoolbox`). Users can explicitly pick an encoder, or use "Auto", which selects the first hardware-accelerated encoder prior to falling back to `libx264`.
+
+**Fluent-FFmpeg Metrics:** During active streaming, `fluent-ffmpeg` streams continuous internal `on('progress')` reports out through an IPC `stream:health` event. This supplies our native `useStreamHealthStore` strictly bound UI (`StreamHealthPanel.tsx`) with real-time encoding FPS, live Bitrates, and timemarks to identify dropped frames or thermal throttling immediately on the broadcast deck.
+
 ## Multi-Destination Streaming
 
 The IPC-based path supports streaming to multiple RTMP endpoints simultaneously:
