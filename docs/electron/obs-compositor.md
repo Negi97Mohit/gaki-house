@@ -1,65 +1,136 @@
-# OBS Compositor
+# OBS Compositor — Scene Import / Export
 
-→ Back to [Index](../INDEX.md) | [Electron](./README.md)
+→ Back to [Index](../INDEX.md) | [Electron](./README.md) | [Compositor](./compositor.md)
 
 ---
 
 ## Overview
 
-The OBS compositor module (`electron/obs/`) provides scene collection import and composition capabilities inspired by OBS Studio and Streamlabs Desktop. This feature is **partially implemented**.
+The OBS compositor module handles **scene collection import and export**, enabling users to bring in existing stream setups from OBS Studio and Streamlabs Desktop with just a few clicks.
+
+> **Status:** Phase 1 (compositor engine) is implemented. Import/export is planned for Phase 3.
+
+## Architecture
+
+The module bridges between external scene collection formats and GAKI's internal `CompositorScene` model:
+
+```
+External Format                    GAKI Internal
+┌─────────────────┐               ┌─────────────────────┐
+│ OBS JSON        │──▶ Parser ──▶│ SceneCollection       │
+│ (.json)         │               │ (compositor.ts types) │
+├─────────────────┤               │                       │
+│ Streamlabs      │──▶ Parser ──▶│ Stored in             │
+│ (.overlay/.zip) │               │ sceneCollection.store │
+└─────────────────┘               └─────────────────────┘
+```
 
 ## Directory Structure
 
 ```
-electron/obs/
-├── compositor/     — Scene composition logic
-│   └── (files for normalizing source coordinates and rendering)
-└── sources/        — Source type definitions
-    └── (files defining camera, image, browser, and text sources)
+src/services/importers/         — Import/export logic (planned)
+├── obsImporter.ts              — OBS Studio JSON parser
+├── streamlabsImporter.ts       — Streamlabs .overlay/.json parser
+├── sceneExporter.ts            — Export to OBS-compatible JSON
+└── types.ts                    — Shared importer types
+
+electron/obs/                   — Electron-side support
+├── compositor/                 — Coordinate normalization utilities
+└── sources/                    — Source type mapping definitions
 ```
 
-## Capabilities (Planned/In Progress)
+## Scene Collection Import Flow
 
-### Scene Collection Import
-Import scene collections from:
-- **OBS Studio** — JSON-based scene collection files
-- **Streamlabs Desktop** — Overlay package format
+### OBS Studio (JSON)
 
-The importer normalizes coordinate systems between different applications (OBS uses absolute pixel coordinates, GAKI uses percentage-based positioning).
+OBS stores scene collections as `.json` files with the structure:
+```json
+{
+  "current_scene": "Main Scene",
+  "scene_order": [{ "name": "Main Scene" }, { "name": "BRB" }],
+  "sources": [
+    {
+      "id": "image_source",
+      "name": "Logo",
+      "settings": { "file": "C:\\overlay\\logo.png" },
+      "sync": 0
+    }
+  ]
+}
+```
 
-### Source Types
-Based on OBS source model:
-- **Video Capture** — Camera feeds
-- **Image** — Static image overlays
-- **Browser Source** — Embedded web pages
-- **Text (FreeType)** — Text overlays with font styling
-- **Display Capture** — Screen sources
-- **Window Capture** — Individual window sources
+The importer:
+1. Parses the JSON and extracts scenes + sources
+2. Maps OBS source IDs → GAKI `SourceType` (e.g., `image_source` → `image`)
+3. Converts OBS absolute pixel transforms → `SourceTransform` (pixel-based, matching OBS model)
+4. Resolves file paths (prompts dialog for missing assets)
+5. Stores extracted assets in the [Vault](../webapp/features/vault.md)
+6. Creates a `SceneCollection` in the [sceneCollection.store](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/sceneCollection.store.ts)
 
-### Coordinate Normalization
-OBS uses absolute pixel coordinates relative to a base canvas resolution (e.g., 1920×1080). GAKI uses percentage-based positioning. The compositor handles the conversion:
+### Streamlabs Desktop (.overlay / .zip)
+
+Streamlabs uses a ZIP-based `.overlay` package containing:
+- `manifest.json` — Package metadata and scene definitions
+- `assets/` — Screens, overlays, alerts, and transition media files
+
+The importer:
+1. Extracts the ZIP via JSZip
+2. Categorizes assets (Screens, Overlays, Alerts, Transitions)
+3. Stores assets in the Vault
+4. Parses scene definitions and creates `CompositorScene` objects
+
+## Coordinate System
+
+The new compositor uses **absolute pixel coordinates** (matching OBS), with the base canvas at 1920×1080:
 
 ```
-OBS:  { x: 480, y: 270, width: 960, height: 540 } on 1920×1080
-GAKI: { x: 25%, y: 25%, width: 50%, height: 50% }
+OBS / GAKI Compositor:
+  Source at (480, 270) with size (960, 540) on 1920×1080 canvas
+
+  ┌──────────────────────────────────────────┐ 1920
+  │                                          │
+  │    ┌────────────────────────┐            │
+  │    │      Source             │            │
+  │    │   (480, 270)           │            │ 1080
+  │    │   960 × 540            │            │
+  │    └────────────────────────┘            │
+  │                                          │
+  └──────────────────────────────────────────┘
 ```
+
+## Source Type Mapping
+
+| OBS Source ID | GAKI SourceType | Notes |
+|---|---|---|
+| `dshow_input` / `v4l2_input` | `camera` | Video capture device |
+| `monitor_capture` | `screen_capture` | Display capture |
+| `window_capture` | `window_capture` | Window capture |
+| `image_source` | `image` | Static image |
+| `ffmpeg_source` | `media` | Video/audio file |
+| `browser_source` | `browser` | Browser URL |
+| `text_gdiplus` / `text_ft2_source` | `text` | Text overlay |
+| `color_source` / `color_source_v3` | `color` | Solid color |
+| `scene` | `scene` | Nested scene reference |
+| `group` | `group` | Source group |
+
+## IPC Handlers (Planned)
+
+The Electron main process will expose:
+
+| Channel | Direction | Purpose |
+|---|---|---|
+| `import:obs-collection` | Renderer → Main | Open file dialog for .json |
+| `import:streamlabs-overlay` | Renderer → Main | Open file dialog for .overlay/.zip |
+| `export:scene-collection` | Renderer → Main | Save .json to disk |
+| `import:resolve-assets` | Renderer → Main | Dialog for missing asset files |
+
+→ See [Preload API](./preload.md) for exposed IPC surface
+→ See [Main Process](./main-process.md) for IPC handler registration
 
 ## Integration Points
 
-### Renderer Side
-- `src/services/importers/` — Scene collection file parsers
-- `src/lib/obs/` — OBS utility functions
-
-### Vault Integration
-Imported assets are managed through the **Vault** system:
-- `src/features/vault/` — Asset management UI and hooks
-- Assets from overlay packages are auto-categorized (Screens, Overlays, Alerts, Transitions)
-
-→ See [Vault](../webapp/features/vault.md) for asset management  
-→ See [Scene Management](../webapp/features/scene-management.md) for scene handling
-
-## Current Status
-
-> **⚠️ This feature is partially implemented.** The directory structure and basic importers exist, but full OBS WebSocket protocol support and complete scene reconstruction are not yet available.
-
-→ See [Gaps & TODOs](../overview/gaps-and-todos.md) for known issues
+→ See [Compositor](./compositor.md) for the rendering pipeline
+→ See [Scene Management](../webapp/features/scene-management.md) for scene CRUD
+→ See [Vault](../webapp/features/vault.md) for imported asset management
+→ See [Grid Sections](../webapp/components/grid-sections.md) for grid layout assignment
+→ See [Gaps & TODOs](../overview/gaps-and-todos.md) for implementation status

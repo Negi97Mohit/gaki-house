@@ -50,6 +50,7 @@ app.whenReady()
 | [Preload Script](./preload.md) | `preload.ts` API surface exposed to renderer |
 | [Streaming Pipeline](./streaming.md) | RTMP streaming via FFmpeg (IPC + Socket.IO) |
 | [Recording Pipeline](./recording.md) | File-based recording with MP4 conversion |
-| [OBS Compositor](./obs-compositor.md) | OBS scene import and compositor |
+| [Compositor](./compositor.md) | WebGL GPU compositor pipeline (OffscreenCanvas + Web Worker) |
+| [OBS Compositor](./obs-compositor.md) | OBS/Streamlabs scene import and export |
 
 → See [IPC Bridge](../architecture/ipc-bridge.md) for the complete IPC channel reference

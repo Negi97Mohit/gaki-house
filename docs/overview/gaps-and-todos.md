@@ -38,9 +38,12 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 - [ ] No export format options (only WebM/MP4)
 
 ### Canvas System
+- [x] **Compositor replaced**: DOM-based `captureStream()` replaced with WebGL compositor (OffscreenCanvas + Web Worker) — See [Compositor](../electron/compositor.md)
+- [x] **Scene model upgraded**: Flat overlay arrays replaced with OBS-compatible hierarchical `CompositorSource` model — See [compositor.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/compositor.ts)
+- [x] **Grid layout compositing**: Grid section panels now supported natively in the compositor
+- [x] **Source grouping**: Group source type now supported in the scene model
 - [ ] `useCanvasRenderer.ts` hook appears deprecated/superseded by `CameraRenderer.tsx`
 - [ ] Empty component directories: `src/components/audio/`, `src/components/canvas/`, `src/components/chat/`, `src/components/obs/`, `src/components/filters/` — all are stubs
-- [ ] Canvas does not support grouping or locking elements
 - [ ] No ruler/grid overlay for precise positioning
 
 ### AI Engine
@@ -54,9 +57,12 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 - [ ] Chat system appears incomplete
 
 ### OBS Integration
-- [ ] Scene collection importers (OBS/Streamlabs) are partially implemented
-- [ ] `electron/obs/compositor/` and `electron/obs/sources/` exist but may be incomplete
-- [ ] No support for OBS WebSocket protocol
+- [x] **Compositor engine built**: WebGL compositor with OBS-compatible source model — See [Compositor](../electron/compositor.md)
+- [x] **Scene collection store**: Full Zustand store with CRUD for scenes, sources, filters, audio — See [sceneCollection.store](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/sceneCollection.store.ts)
+- [x] **Type system**: Complete OBS-compatible type definitions — See [compositor.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/compositor.ts)
+- [ ] Scene collection importers (OBS JSON parser, Streamlabs .overlay parser) — Phase 3
+- [ ] Export to OBS-compatible JSON — Phase 3
+- [ ] IPC handlers for import/export file dialogs — Phase 3
 
 ### Mobile
 - [ ] Mobile pages exist but may lack feature parity with desktop
@@ -87,6 +93,22 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 - [ ] No CORS configuration beyond dev proxy
 - [ ] Firebase security rules not documented
 - [ ] `dangerouslySetInnerHTML` used for text overlay content
+
+## Recently Resolved
+
+### Phase 1: Compositor Overhaul (Completed)
+- [x] WebGL compositor engine (OffscreenCanvas + Web Worker)
+- [x] OBS-compatible source model with 14 source types
+- [x] Scene collection Zustand store with full CRUD
+- [x] GPU-accelerated transitions (10 types: cut, fade, slide, wipe, zoom, blur)
+- [x] Per-source filter pipeline (color correction, chroma key)
+- [x] Grid layout compositing (sources fit into grid cells)
+- [x] Preview frame pipeline (compositor → main thread → UI canvas)
+- [x] Output MediaStream pipeline (compositor → captureStream → FFmpeg)
+
+→ See [Compositor Architecture](../electron/compositor.md) for details
+
+---
 
 ## Cleanup Items
 - [ ] Delete `md_files_list.txt` (temporary)

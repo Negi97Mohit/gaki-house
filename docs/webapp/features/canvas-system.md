@@ -8,7 +8,41 @@
 
 The canvas system is the **core rendering engine**. It composites camera feeds, screen shares, overlays, captions, and effects into a single WYSIWYG canvas that can be streamed, recorded, or exported.
 
-## Architecture
+## Compositor Pipeline (New)
+
+The canvas system now uses a **dual-layer architecture**:
+
+| Layer | Purpose | Thread |
+|---|---|---|
+| **Editing Layer** (React DOM) | Interactive overlays, drag handles, snap guides, toolbars | Main thread |
+| **Compositing Layer** (WebGL) | GPU-accelerated source rendering for stream/recording output | Web Worker |
+
+The editing layer is what the user interacts with. The compositing layer produces the actual video output that goes to FFmpeg for streaming/recording.
+
+```
+Editing Layer (React DOM — what the user sees & interacts with)
+    │
+    ├── CanvasView.tsx (interactive overlays + drag/resize)
+    ├── sceneCollection.store (source transforms, settings)
+    │
+    ▼
+Compositing Layer (WebGL Worker — what gets streamed)
+    │
+    ├── CompositorBridge → CompositorWorker (OffscreenCanvas)
+    ├── SourceRenderer (textured quads per source)
+    ├── FilterPipeline (GLSL filter passes)
+    ├── TransitionRenderer (scene transitions)
+    │
+    ▼
+MediaStream → FFmpeg → RTMP / File
+```
+
+→ See [Compositor Architecture](../../electron/compositor.md) for the full GPU pipeline
+→ See [sceneCollection.store](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/sceneCollection.store.ts) for scene state
+
+---
+
+## Architecture (Editing Layer)
 
 ```
 ┌─────────────────────────────────────────────────────┐

@@ -19,6 +19,7 @@
 | Understand the **AI overlay engine** (Gemini) | [AI Engine](./webapp/features/ai-engine.md) |
 | Understand **live captions** (Deepgram) | [Caption System](./webapp/features/caption-system.md) |
 | Understand the **canvas / scene compositor** | [Canvas System](./webapp/features/canvas-system.md) |
+| Understand the **GPU compositor pipeline** | [Compositor Architecture](./electron/compositor.md) |
 | See all **external integrations** and API keys | [Integrations](./architecture/integrations.md) |
 | Get **dev setup** instructions | [Development Guide](./overview/dev-guide.md) |
 | Understand the **studio panels** (audio mixer, designs, etc.) | [Studio Panels](./webapp/components/studio-panels.md) |
@@ -60,7 +61,8 @@ docs/
 │   ├── preload.md                    — preload.ts API surface
 │   ├── streaming.md                  — RTMP / FFmpeg pipeline
 │   ├── recording.md                  — File-based recording & MP4 conversion
-│   └── obs-compositor.md             — OBS scene import / compositor
+│   ├── compositor.md                 — WebGL GPU compositor pipeline (NEW)
+│   └── obs-compositor.md             — OBS scene import / export
 │
 └── webapp/
     ├── README.md                     — Web app overview
