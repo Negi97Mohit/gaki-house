@@ -417,8 +417,8 @@ function browserOverlayToSource(browser: BrowserOverlayState): CompositorSource 
     type: 'browser',
     settings: {
       url: browser.url,
-      width: 1920,
-      height: 1080,
+      width: browser.width || 1920,
+      height: browser.height || 1080,
     },
     transform: {
       ...DEFAULT_TRANSFORM,
@@ -598,6 +598,8 @@ export function compositorSceneToLegacyScene(
       browserOverlays.push({
         id: source.id,
         url: source.settings.url || "about:blank",
+        width: source.settings.width,
+        height: source.settings.height,
         layout,
       });
     } else if (source.type === 'generated') {

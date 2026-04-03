@@ -2,6 +2,8 @@
 
 → Back to [Index](../INDEX.md) | [Overview](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 ## Core Framework

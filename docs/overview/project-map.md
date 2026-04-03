@@ -2,6 +2,8 @@
 
 → Back to [Index](../INDEX.md) | [Overview](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 This document maps every directory in the codebase with annotations explaining what each directory and key file does. Empty component directories (stubs for future work) are marked with `[STUB]`.
@@ -113,19 +115,32 @@ caption-cam/
 │   │   ├── goLive.store.ts              — Go-live modal state
 │   │   ├── omegle.store.ts              — Omegle matching state
 │   │   ├── sceneAudio.store.ts          — Per-scene audio state
-│   │   └── stream-manager.store.ts      — Stream manager state
+│   │   ├── stream-manager.store.ts      — Stream manager state
+│   │   └── streamHealth.store.ts        — Real-time stream health metrics
 │   │
 │   ├── kernel/                          — Low-level rendering engine
-│   │   └── engine/                      — WebGL rendering pipeline
-│   │       ├── GLRenderer.ts            — Main WebGL renderer
-│   │       ├── GLContext.ts             — WebGL context manager
-│   │       ├── ShaderManager.ts         — Shader compilation & caching
-│   │       ├── VideoTexture.ts          — Video-to-texture bridge
-│   │       ├── TimeWarp.ts              — Time-based shader effects
-│   │       ├── EventBus.ts              — Pub/sub event system
-│   │       ├── webgl.ts                 — WebGL utility functions
-│   │       ├── utils.ts                 — Engine utilities
-│   │       └── shaders/                 — GLSL shader programs
+│   │   ├── engine/                      — WebGL rendering pipeline
+│   │   │   ├── GLRenderer.ts            — Main WebGL renderer
+│   │   │   ├── GLContext.ts             — WebGL context manager
+│   │   │   ├── ShaderManager.ts         — Shader compilation & caching
+│   │   │   ├── VideoTexture.ts          — Video-to-texture bridge
+│   │   │   ├── TimeWarp.ts              — Time-based shader effects
+│   │   │   ├── EventBus.ts              — Pub/sub event system
+│   │   │   ├── webgl.ts                 — WebGL utility functions
+│   │   │   ├── utils.ts                 — Engine utilities
+│   │   │   └── shaders/                 — GLSL shader programs
+│   │   ├── compositor/                  — GPU scene compositor
+│   │   │   ├── index.ts                 — Barrel export
+│   │   │   ├── types.ts                 — Worker-safe serializable types
+│   │   │   ├── CompositorWorker.ts      — Web Worker: render loop + WebGL
+│   │   │   ├── CompositorBridge.ts      — Main thread: worker lifecycle
+│   │   │   ├── SceneGraph.ts            — Scene serialization for transfer
+│   │   │   ├── SourceRenderer.ts        — Textured quad rendering
+│   │   │   ├── TransitionRenderer.ts    — GPU scene transitions (10 types)
+│   │   │   ├── FilterPipeline.ts        — Per-source FBO filter chain
+│   │   │   └── StingerController.ts     — Stinger video transition playback
+│   │   └── audio/                       — Audio engine
+│   │       └── AudioMixerEngine.ts      — Web Audio API mixer & metering
 │   │
 │   ├── hooks/                           — Global custom React hooks
 │   │   ├── useAutoFraming.ts            — MediaPipe face tracking

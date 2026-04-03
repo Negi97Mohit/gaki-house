@@ -2,6 +2,8 @@
 
 → Back to [Index](../../INDEX.md) | [Hooks](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 All hooks in `src/hooks/` with their signatures, purpose, and key behaviors.

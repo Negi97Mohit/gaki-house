@@ -7,7 +7,7 @@ import type { SceneState } from '@/types/caption';
 import { useSceneCollectionStore } from '@/stores/sceneCollection.store';
 
 interface UseImportSceneCollectionOptions {
-  onSuccess?: (scenes: SceneState[]) => void;
+  onSuccess?: (collectionName: string, scenes: SceneState[]) => void;
 }
 
 export const useImportSceneCollection = ({ onSuccess }: UseImportSceneCollectionOptions = {}) => {
@@ -72,9 +72,9 @@ export const useImportSceneCollection = ({ onSuccess }: UseImportSceneCollection
       // (Optional) We can also directly push to useSceneCollectionStore if we want to bypass the wait for useCompositorSync
       // but useCompositorSync will pick it up automatically from legacy UI anyway.
       
-      // Call the success handler to replace the active UI scene collection
+      // Call the success handler to add the imported subscenes
       if (onSuccess) {
-        onSuccess(legacyScenes);
+        onSuccess(importedCollection.name || result.fileName || "Imported Setup", legacyScenes);
       }
 
       toast.success(`Successfully imported "${importedCollection.name || result.fileName}" with ${legacyScenes.length} scenes.`);

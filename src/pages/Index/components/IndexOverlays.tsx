@@ -45,7 +45,7 @@ export const IndexOverlays: React.FC<IndexOverlaysProps> = ({ editor }) => {
         isHidden={ui.isSceneTabsHidden}
         onHide={() => ui.setIsSceneTabsHidden(true)}
         isPopoverOpen={sceneManager.activeTransition !== null}
-        onReplaceSceneCollection={sceneManager.replaceSceneCollection}
+        onReplaceSceneCollection={sceneManager.addImportedCollection}
         onApplyStreamStyle={(preset: any) => {
           const newSubscenes = sceneManager.createScenesFromStreamStyle(preset);
           toast.success(

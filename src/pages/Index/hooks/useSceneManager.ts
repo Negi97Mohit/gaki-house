@@ -127,6 +127,50 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     [scenes, activeSceneId]
   );
 
+  // --- Subscene Management ---
+  const [activeSubsceneId, setActiveSubsceneId] = useState<string | undefined>(
+    undefined
+  );
+
+  // Compute effective scene that merges subscene canvas preset when subscene is active
+  const effectiveScene = useMemo(() => {
+    const scene = scenes.find((s) => s.id === activeSceneId);
+    if (!scene) return scene!;
+
+    // If no active subscene, return scene as-is
+    if (!activeSubsceneId) return scene;
+
+    // Find the active subscene
+    const subscene = scene.subscenes?.find((s) => s.id === activeSubsceneId);
+    if (!subscene || !subscene.canvasPreset) return scene;
+
+    const preset = subscene.canvasPreset;
+
+    // Apply full canvas preset to scene
+    return {
+      ...scene,
+      blankCanvasColor: preset.blankCanvasColor,
+      backgroundEffect: preset.backgroundEffect,
+      backgroundImageUrl: preset.backgroundImageUrl ?? scene.backgroundImageUrl,
+      layoutMode: preset.layoutMode,
+      cameraShape: preset.cameraShape,
+      pipPosition: preset.pipPosition,
+      pipSize: preset.pipSize,
+      pipBorder: preset.pipBorder ?? scene.pipBorder,
+      pipShadow: preset.pipShadow ?? scene.pipShadow,
+      videoFilter: preset.videoFilter,
+      textOverlays: preset.textOverlays,
+      fileOverlays: preset.fileOverlays ?? scene.fileOverlays,
+      browserOverlays: preset.browserOverlays ?? scene.browserOverlays,
+      activeOverlays: preset.activeOverlays ?? scene.activeOverlays,
+      canvasAspectRatio: preset.canvasAspectRatio ?? scene.canvasAspectRatio,
+      isBeautifyEnabled: preset.isBeautifyEnabled ?? scene.isBeautifyEnabled,
+      isNeonEdgeEnabled: preset.isNeonEdgeEnabled ?? scene.isNeonEdgeEnabled,
+      neonColor: preset.neonColor ?? scene.neonColor,
+      neonIntensity: preset.neonIntensity ?? scene.neonIntensity,
+    };
+  }, [scenes, activeSceneId, activeSubsceneId]);
+
   // --- STORE SYNC ---
   const canvasStore = useCanvasStore();
   const mediaStore = useMediaStore();
@@ -142,67 +186,67 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     isSyncingFromScene.current = true;
 
     // Media
-    if (mediaStore.isAudioOn !== activeScene.isAudioOn)
-      mediaStore.setAudioOn(activeScene.isAudioOn);
-    if (mediaStore.isVideoOn !== activeScene.isVideoOn)
-      mediaStore.setVideoOn(activeScene.isVideoOn);
-    if (mediaStore.selectedAudioDevice !== activeScene.selectedAudioDevice)
-      mediaStore.setSelectedAudioDevice(activeScene.selectedAudioDevice ?? "");
-    if (mediaStore.selectedVideoDevice !== activeScene.selectedVideoDevice)
-      mediaStore.setSelectedVideoDevice(activeScene.selectedVideoDevice ?? "");
-    if (mediaStore.screenShareMode !== activeScene.screenShareMode)
-      mediaStore.setScreenShareMode(activeScene.screenShareMode);
+    if (mediaStore.isAudioOn !== effectiveScene.isAudioOn)
+      mediaStore.setAudioOn(effectiveScene.isAudioOn);
+    if (mediaStore.isVideoOn !== effectiveScene.isVideoOn)
+      mediaStore.setVideoOn(effectiveScene.isVideoOn);
+    if (mediaStore.selectedAudioDevice !== effectiveScene.selectedAudioDevice)
+      mediaStore.setSelectedAudioDevice(effectiveScene.selectedAudioDevice ?? "");
+    if (mediaStore.selectedVideoDevice !== effectiveScene.selectedVideoDevice)
+      mediaStore.setSelectedVideoDevice(effectiveScene.selectedVideoDevice ?? "");
+    if (mediaStore.screenShareMode !== effectiveScene.screenShareMode)
+      mediaStore.setScreenShareMode(effectiveScene.screenShareMode);
 
     // Canvas
-    if (canvasStore.layoutMode !== activeScene.layoutMode)
-      canvasStore.setLayoutMode(activeScene.layoutMode);
-    if (canvasStore.cameraShape !== activeScene.cameraShape)
-      canvasStore.setCameraShape(activeScene.cameraShape);
-    if (canvasStore.splitRatio !== activeScene.splitRatio)
-      canvasStore.setSplitRatio(activeScene.splitRatio);
-    // Deep checks for objects might be needed or accept slight redundancy
+    if (canvasStore.layoutMode !== effectiveScene.layoutMode)
+      canvasStore.setLayoutMode(effectiveScene.layoutMode);
+    if (canvasStore.cameraShape !== effectiveScene.cameraShape)
+      canvasStore.setCameraShape(effectiveScene.cameraShape);
+    if (canvasStore.splitRatio !== effectiveScene.splitRatio)
+      canvasStore.setSplitRatio(effectiveScene.splitRatio);
+    // Deep checks for objects
     if (
       JSON.stringify(canvasStore.pipPosition) !==
-      JSON.stringify(activeScene.pipPosition)
+      JSON.stringify(effectiveScene.pipPosition)
     )
-      canvasStore.setPipPosition(activeScene.pipPosition);
+      canvasStore.setPipPosition(effectiveScene.pipPosition);
     if (
       JSON.stringify(canvasStore.pipSize) !==
-      JSON.stringify(activeScene.pipSize)
+      JSON.stringify(effectiveScene.pipSize)
     )
-      canvasStore.setPipSize(activeScene.pipSize);
+      canvasStore.setPipSize(effectiveScene.pipSize);
 
     // Scene
-    if (sceneStore.customMaskUrl !== activeScene.customMaskUrl)
-      sceneStore.setCustomMaskUrl(activeScene.customMaskUrl);
-    if (sceneStore.activeOverlays !== activeScene.activeOverlays)
-      sceneStore.setActiveOverlays(activeScene.activeOverlays);
-    if (sceneStore.textOverlays !== activeScene.textOverlays)
-      sceneStore.setTextOverlays(activeScene.textOverlays);
-    if (sceneStore.fileOverlays !== activeScene.fileOverlays)
-      sceneStore.setFileOverlays(activeScene.fileOverlays);
-    if (sceneStore.browserOverlays !== activeScene.browserOverlays)
-      sceneStore.setBrowserOverlays(activeScene.browserOverlays);
-    if (sceneStore.canvasLayout !== activeScene.canvasLayout)
-      sceneStore.setCanvasLayout(activeScene.canvasLayout);
-    if (sceneStore.backgroundEffect !== activeScene.backgroundEffect)
-      sceneStore.setBackgroundEffect(activeScene.backgroundEffect);
-    if (sceneStore.backgroundImageUrl !== activeScene.backgroundImageUrl)
-      sceneStore.setBackgroundImageUrl(activeScene.backgroundImageUrl);
-    if (sceneStore.videoFilter !== activeScene.videoFilter)
-      sceneStore.setVideoFilter(activeScene.videoFilter);
-    if (sceneStore.captionStyle !== activeScene.captionStyle)
-      sceneStore.setCaptionStyle(activeScene.captionStyle);
-    if (sceneStore.isAiModeEnabled !== activeScene.isAiModeEnabled)
-      sceneStore.setAiModeEnabled(activeScene.isAiModeEnabled);
-    if (sceneStore.captionsEnabled !== activeScene.captionsEnabled)
-      sceneStore.setCaptionsEnabled(activeScene.captionsEnabled);
+    if (sceneStore.customMaskUrl !== effectiveScene.customMaskUrl)
+      sceneStore.setCustomMaskUrl(effectiveScene.customMaskUrl);
+    if (sceneStore.activeOverlays !== effectiveScene.activeOverlays)
+      sceneStore.setActiveOverlays(effectiveScene.activeOverlays);
+    if (sceneStore.textOverlays !== effectiveScene.textOverlays)
+      sceneStore.setTextOverlays(effectiveScene.textOverlays);
+    if (sceneStore.fileOverlays !== effectiveScene.fileOverlays)
+      sceneStore.setFileOverlays(effectiveScene.fileOverlays);
+    if (sceneStore.browserOverlays !== effectiveScene.browserOverlays)
+      sceneStore.setBrowserOverlays(effectiveScene.browserOverlays);
+    if (sceneStore.canvasLayout !== effectiveScene.canvasLayout)
+      sceneStore.setCanvasLayout(effectiveScene.canvasLayout);
+    if (sceneStore.backgroundEffect !== effectiveScene.backgroundEffect)
+      sceneStore.setBackgroundEffect(effectiveScene.backgroundEffect);
+    if (sceneStore.backgroundImageUrl !== effectiveScene.backgroundImageUrl)
+      sceneStore.setBackgroundImageUrl(effectiveScene.backgroundImageUrl);
+    if (sceneStore.videoFilter !== effectiveScene.videoFilter)
+      sceneStore.setVideoFilter(effectiveScene.videoFilter);
+    if (sceneStore.captionStyle !== effectiveScene.captionStyle)
+      sceneStore.setCaptionStyle(effectiveScene.captionStyle);
+    if (sceneStore.isAiModeEnabled !== effectiveScene.isAiModeEnabled)
+      sceneStore.setAiModeEnabled(effectiveScene.isAiModeEnabled);
+    if (sceneStore.captionsEnabled !== effectiveScene.captionsEnabled)
+      sceneStore.setCaptionsEnabled(effectiveScene.captionsEnabled);
 
-    // Reset flag after render cycle (timeout helps with React batching)
+    // Reset flag
     setTimeout(() => {
       isSyncingFromScene.current = false;
     }, 0);
-  }, [activeScene]); // Dependency on activeScene ensures update on switch or legacy change
+  }, [effectiveScene]); 
 
   // 2. Sync STORE -> SCENE (Updates from Store UI)
   // We need to listen to all relevant store values.
@@ -414,19 +458,87 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
         );
         if (activeSceneIndex === -1) return prevScenes;
 
-        const currentScene = prevScenes[activeSceneIndex];
-        const newScene = updates(currentScene);
+        const baseScene = prevScenes[activeSceneIndex];
+        let currentEffectiveScene = baseScene;
+        const subscene = baseScene.subscenes?.find((s) => s.id === activeSubsceneId);
+
+        if (activeSubsceneId && subscene?.canvasPreset) {
+          const preset = subscene.canvasPreset;
+          currentEffectiveScene = {
+            ...baseScene,
+            blankCanvasColor: preset.blankCanvasColor,
+            backgroundEffect: preset.backgroundEffect,
+            backgroundImageUrl: preset.backgroundImageUrl ?? baseScene.backgroundImageUrl,
+            layoutMode: preset.layoutMode,
+            cameraShape: preset.cameraShape,
+            pipPosition: preset.pipPosition,
+            pipSize: preset.pipSize,
+            pipBorder: preset.pipBorder ?? baseScene.pipBorder,
+            pipShadow: preset.pipShadow ?? baseScene.pipShadow,
+            videoFilter: preset.videoFilter,
+            textOverlays: preset.textOverlays,
+            fileOverlays: preset.fileOverlays ?? baseScene.fileOverlays,
+            browserOverlays: preset.browserOverlays ?? baseScene.browserOverlays,
+            activeOverlays: preset.activeOverlays ?? baseScene.activeOverlays,
+            canvasAspectRatio: preset.canvasAspectRatio ?? baseScene.canvasAspectRatio,
+            isBeautifyEnabled: preset.isBeautifyEnabled ?? baseScene.isBeautifyEnabled,
+            isNeonEdgeEnabled: preset.isNeonEdgeEnabled ?? baseScene.isNeonEdgeEnabled,
+            neonColor: preset.neonColor ?? baseScene.neonColor,
+            neonIntensity: preset.neonIntensity ?? baseScene.neonIntensity,
+          };
+        }
+
+        const newEffectiveScene = updates(currentEffectiveScene);
 
         // If no change, don't update history or state
-        if (JSON.stringify(currentScene) === JSON.stringify(newScene)) {
+        if (JSON.stringify(currentEffectiveScene) === JSON.stringify(newEffectiveScene)) {
           return prevScenes;
+        }
+        
+        // Distribute changes back to baseScene and subscene.canvasPreset
+        let finalBaseScene = { ...baseScene };
+
+        if (activeSubsceneId && subscene?.canvasPreset) {
+          const presetOverrides = [
+            "blankCanvasColor", "backgroundEffect", "backgroundImageUrl", "layoutMode",
+            "cameraShape", "pipPosition", "pipSize", "pipBorder", "pipShadow",
+            "videoFilter", "textOverlays", "fileOverlays", "browserOverlays",
+            "activeOverlays", "canvasAspectRatio", "isBeautifyEnabled",
+            "isNeonEdgeEnabled", "neonColor", "neonIntensity",
+          ];
+          
+          const newPreset = { ...subscene.canvasPreset };
+          let presetChanged = false;
+
+          for (const key of Object.keys(newEffectiveScene) as (keyof SceneState)[]) {
+            const val = newEffectiveScene[key];
+
+            if (presetOverrides.includes(key as string)) {
+              if (JSON.stringify((currentEffectiveScene as any)[key]) !== JSON.stringify(val)) {
+                (newPreset as any)[key] = val;
+                presetChanged = true;
+              }
+            } else {
+              if (JSON.stringify((currentEffectiveScene as any)[key]) !== JSON.stringify(val)) {
+                (finalBaseScene as any)[key] = val;
+              }
+            }
+          }
+
+          if (presetChanged) {
+            finalBaseScene.subscenes = finalBaseScene.subscenes!.map((s) =>
+              s.id === activeSubsceneId ? { ...s, canvasPreset: newPreset } : s
+            );
+          }
+        } else {
+          finalBaseScene = { ...finalBaseScene, ...newEffectiveScene };
         }
 
         // Update History
         setHistory((prev) => {
           const sceneHistory = prev[activeSceneId] || { past: [], future: [] };
           // Limit history size to 50
-          const newPast = [...sceneHistory.past, currentScene].slice(-50);
+          const newPast = [...sceneHistory.past, baseScene].slice(-50);
           return {
             ...prev,
             [activeSceneId]: {
@@ -437,11 +549,11 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
         });
 
         const newScenes = [...prevScenes];
-        newScenes[activeSceneIndex] = newScene;
+        newScenes[activeSceneIndex] = finalBaseScene;
         return newScenes;
       });
     },
-    [activeSceneId]
+    [activeSceneId, activeSubsceneId]
   );
 
   const undo = useCallback(() => {
@@ -654,6 +766,56 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     setActiveTransition(null);
   }, []);
 
+  const addImportedCollection = useCallback((name: string, importedScenes: SceneState[]) => {
+    if (!importedScenes || importedScenes.length === 0) return;
+    
+    const parentId = generateSceneId();
+    const unifiedScene: SceneState = {
+      ...createDefaultScene(name),
+      id: parentId,
+      subscenes: importedScenes.map((ls, idx) => ({
+        id: ls.id,
+        name: ls.name,
+        parentId: parentId,
+        order: idx,
+        canvasPreset: {
+          id: ls.id,
+          name: ls.name,
+          blankCanvasColor: ls.blankCanvasColor,
+          backgroundEffect: ls.backgroundEffect,
+          backgroundImageUrl: ls.backgroundImageUrl,
+          layoutMode: ls.layoutMode,
+          cameraShape: ls.cameraShape,
+          pipPosition: ls.pipPosition,
+          pipSize: ls.pipSize,
+          pipBorder: ls.pipBorder,
+          pipShadow: ls.pipShadow,
+          videoFilter: ls.videoFilter,
+          canvasAspectRatio: ls.canvasAspectRatio,
+          isBeautifyEnabled: ls.isBeautifyEnabled,
+          isNeonEdgeEnabled: ls.isNeonEdgeEnabled,
+          neonColor: ls.neonColor,
+          neonIntensity: ls.neonIntensity,
+          textOverlays: ls.textOverlays,
+          fileOverlays: ls.fileOverlays,
+          browserOverlays: ls.browserOverlays,
+          activeOverlays: ls.activeOverlays,
+        }
+      })),
+      isExpanded: true,
+    };
+    
+    if (unifiedScene.subscenes && unifiedScene.subscenes.length > 0) {
+      unifiedScene.activeSubsceneId = unifiedScene.subscenes[0].id;
+    }
+
+    setScenes((prev) => [...prev, unifiedScene]);
+    setActiveSceneId(parentId);
+    if (unifiedScene.activeSubsceneId) {
+      setActiveSubsceneId(unifiedScene.activeSubsceneId);
+    }
+  }, []);
+
   const handleSceneRename = (sceneId: string, newName: string) => {
     setScenes((prev) =>
       prev.map((scene) =>
@@ -674,46 +836,8 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     }
   };
 
-  // --- Subscene Management ---
-  const [activeSubsceneId, setActiveSubsceneId] = useState<string | undefined>(
-    undefined
-  );
+    // --- (MOVED UP) Subscene Management ---
 
-  // Compute effective scene that merges subscene canvas preset when subscene is active
-  const effectiveScene = useMemo(() => {
-    const scene = scenes.find((s) => s.id === activeSceneId);
-    if (!scene) return scene!;
-
-    // If no active subscene, return scene as-is
-    if (!activeSubsceneId) return scene;
-
-    // Find the active subscene
-    const subscene = scene.subscenes?.find((s) => s.id === activeSubsceneId);
-    if (!subscene || !subscene.canvasPreset) return scene;
-
-    const preset = subscene.canvasPreset;
-
-    // Apply full canvas preset to scene
-    return {
-      ...scene,
-      blankCanvasColor: preset.blankCanvasColor,
-      backgroundEffect: preset.backgroundEffect,
-      backgroundImageUrl: preset.backgroundImageUrl ?? scene.backgroundImageUrl,
-      layoutMode: preset.layoutMode,
-      cameraShape: preset.cameraShape,
-      pipPosition: preset.pipPosition,
-      pipSize: preset.pipSize,
-      pipBorder: preset.pipBorder ?? scene.pipBorder,
-      pipShadow: preset.pipShadow ?? scene.pipShadow,
-      videoFilter: preset.videoFilter,
-      textOverlays: preset.textOverlays,
-      canvasAspectRatio: preset.canvasAspectRatio ?? scene.canvasAspectRatio,
-      isBeautifyEnabled: preset.isBeautifyEnabled ?? scene.isBeautifyEnabled,
-      isNeonEdgeEnabled: preset.isNeonEdgeEnabled ?? scene.isNeonEdgeEnabled,
-      neonColor: preset.neonColor ?? scene.neonColor,
-      neonIntensity: preset.neonIntensity ?? scene.neonIntensity,
-    };
-  }, [scenes, activeSceneId, activeSubsceneId]);
 
   const handleAddSubscene = useCallback((parentId: string) => {
     setScenes((prev) => {
@@ -1028,6 +1152,7 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     handleDuplicateScene,
     handleResetSceneToDefault,
     replaceSceneCollection,
+    addImportedCollection,
     // Stream Style
     createScenesFromStreamStyle,
     // Undo/Redo/Reset

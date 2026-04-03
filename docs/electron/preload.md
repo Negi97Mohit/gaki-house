@@ -2,9 +2,11 @@
 
 → Back to [Index](../INDEX.md) | [Electron](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
-→ Source: [preload.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/preload.ts) (58 lines)
+→ Source: [preload.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/preload.ts) (73 lines)
 
 ## Purpose
 
@@ -37,11 +39,13 @@ window.electron = {
 
   // Stream Controls
   stream: {
-    start: (config) => void,           // Fire-and-forget (ipcRenderer.send)
-    sendData: (chunk) => void,         // Fire-and-forget (ipcRenderer.send)
-    stop: (config) => void,            // Fire-and-forget (ipcRenderer.send)
-    onStatus: (callback) => void,      // Event listener (ipcRenderer.on)
-    onFfmpegReady: (callback) => void, // Event listener (ipcRenderer.on)
+    getEncoders: () => Promise<EncoderInfo[]>,    // Probe HW encoders
+    start: (config) => void,                       // Fire-and-forget (ipcRenderer.send)
+    sendData: (chunk) => void,                     // Fire-and-forget (ipcRenderer.send)
+    stop: (config) => void,                        // Fire-and-forget (ipcRenderer.send)
+    onStatus: (callback) => void,                  // Event listener (ipcRenderer.on)
+    onFfmpegReady: (callback) => void,             // Event listener (ipcRenderer.on)
+    onHealth: (callback) => void,                  // Event listener (stream health metrics)
   },
 
   // Recorder Controls
@@ -74,6 +78,15 @@ window.electron = {
 
   // Kick Browser Fetcher
   kickFetch: (url) => Promise<{ok, data}>,
+
+  // Scene Collection Import/Export
+  import: {
+    openSceneCollection: () => Promise<{ok, format, content, fileName}>,
+    resolveAsset: (originalPath, assetType) => Promise<{ok, resolvedPath}>,
+  },
+  export: {
+    saveSceneCollection: (json, defaultName?) => Promise<{ok, filePath}>,
+  },
 };
 ```
 
@@ -99,7 +112,11 @@ if (window.electron?.isElectron) {
 | Pattern | Methods | Use Case |
 |---|---|---|
 | **Fire-and-forget** (`send`) | `stream.start/stop/sendData`, `toggleFullscreen` | High-frequency events, no response needed |
-| **Request-response** (`invoke`) | `recorder.*`, `storage.*`, `auth.*`, `proxy.*` | Operations that return data |
-| **Event listener** (`on`) | `stream.onStatus`, `stream.onFfmpegReady` | Async notifications from main process |
+| **Request-response** (`invoke`) | `recorder.*`, `storage.*`, `auth.*`, `proxy.*`, `import.*`, `export.*` | Operations that return data |
+| **Event listener** (`on`) | `stream.onStatus`, `stream.onFfmpegReady`, `stream.onHealth` | Async notifications from main process |
+
+## Related Docs
 
 → See [IPC Bridge](../architecture/ipc-bridge.md) for the complete channel reference
+→ See [Electron–Webapp Bridge](../architecture/electron-webapp-bridge.md) for how the two runtimes connect
+→ See [OBS Compositor](./obs-compositor.md) for the import/export scene collection system

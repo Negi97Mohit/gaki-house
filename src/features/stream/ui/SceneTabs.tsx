@@ -90,7 +90,7 @@ interface SceneTabsProps {
   onHide: () => void;
   isPopoverOpen?: boolean; // Prevent hiding when popover is open
   onApplyStreamStyle?: (preset: StreamStylePreset) => void;
-  onReplaceSceneCollection?: (scenes: SceneState[]) => void;
+  onReplaceSceneCollection?: (name: string, scenes: SceneState[]) => void;
 }
 
 export const SceneTabs: React.FC<SceneTabsProps> = ({
@@ -136,8 +136,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
     useState(false);
 
   const { importSetup, isImporting } = useImportSceneCollection({
-    onSuccess: (importedScenes) => {
-      onReplaceSceneCollection?.(importedScenes);
+    onSuccess: (name, importedScenes) => {
+      onReplaceSceneCollection?.(name, importedScenes);
     }
   });
 

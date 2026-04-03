@@ -2,6 +2,8 @@
 
 → Back to [Index](../INDEX.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 ## High-Level Architecture
@@ -174,5 +176,6 @@ YouTube/Twitch/Kick RTMP server
 
 → See [State Management](./state-management.md) for store details  
 → See [IPC Bridge](./ipc-bridge.md) for Electron communication  
+→ See [Electron–Webapp Bridge](./electron-webapp-bridge.md) for how the two runtimes connect  
 → See [Routing](./routing.md) for route structure  
 → See [Integrations](./integrations.md) for external services

@@ -2,6 +2,8 @@
 
 → Back to [Index](../INDEX.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 ## Overview
@@ -22,8 +24,8 @@ The Electron layer wraps the React SPA in a native desktop window and adds capab
 
 ```
 electron/
-├── main.ts              — Main process entry point (704 lines)
-├── preload.ts           — Context bridge API (58 lines)
+├── main.ts              — Main process entry point (844 lines)
+├── preload.ts           — Context bridge API (73 lines)
 ├── rtmp-server.ts       — Alternative RTMP server module
 ├── generate-config.js   — Post-compile config generation
 ├── obs/                 — OBS integration
@@ -57,3 +59,4 @@ app.whenReady()
 | [Audio Mixer Engine](./audio-mixer.md) | Native Web Audio Context bridging for OBS-style monitoring and routing |
 
 → See [IPC Bridge](../architecture/ipc-bridge.md) for the complete IPC channel reference
+→ See [Electron–Webapp Bridge](../architecture/electron-webapp-bridge.md) for how the two runtimes connect

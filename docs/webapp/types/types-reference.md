@@ -2,6 +2,8 @@
 
 → Back to [Index](../../INDEX.md) | [Types](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 Core type definitions from `src/types/`.
@@ -236,6 +238,123 @@ interface VaultAsset {
   thumbnail?: string;
 }
 ```
+
+---
+
+## `compositor.ts` — GPU Compositor Types
+
+→ Source: [compositor.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/compositor.ts) (~14.9KB)
+
+Defines the entire type system for the WebGL compositor pipeline, OBS-compatible scene model, and import/export formats.
+
+### `SourceType`
+All 14 supported source types:
+```typescript
+type SourceType =
+  | 'camera' | 'screen_capture' | 'window_capture'
+  | 'image' | 'media' | 'browser'
+  | 'text' | 'color' | 'group' | 'scene'
+  | 'generated' | 'caption'
+  | 'slideshow' | 'ndi';
+```
+
+### `CompositorSource`
+A single renderable element in a scene:
+```typescript
+interface CompositorSource {
+  id: string;
+  name: string;
+  type: SourceType;
+  settings: Record<string, any>;     // Type-specific settings
+  transform: SourceTransform;         // Position, size, rotation, crop
+  filters: SourceFilter[];            // Per-source filter chain
+  visible: boolean;
+  locked: boolean;
+  audio: SourceAudioConfig;
+  children: CompositorSource[];       // For groups
+  opacity: number;
+  blendMode: GlobalCompositeOperation;
+  isBehindUser: boolean;              // Render behind camera
+}
+```
+
+### `SourceTransform`
+Pixel-based transforms (matching OBS coordinate system):
+```typescript
+interface SourceTransform {
+  position: { x: number; y: number };  // Absolute pixels on 1920×1080
+  size: { width: number; height: number };
+  rotation: number;                     // Degrees
+  crop: { top, bottom, left, right };   // Pixel crop
+  alignment: Alignment;                 // 9-point alignment
+  boundsType: 'none' | 'stretch' | 'scale_inner' | 'scale_outer';
+  bounds: { width: number; height: number };
+}
+```
+
+### `CompositorScene`
+A single scene containing multiple sources:
+```typescript
+interface CompositorScene {
+  id: string;
+  name: string;
+  sources: CompositorSource[];
+  transition: SceneTransition;
+  gridLayout: GridLayout | null;
+}
+```
+
+### `SceneCollection`
+Top-level container for an entire project:
+```typescript
+interface SceneCollection {
+  id: string;
+  name: string;
+  scenes: CompositorScene[];
+  activeSceneId: string;
+  canvasResolution: { width, height };
+  audioMixer: AudioMixerState;
+  defaultTransition: SceneTransition;
+  createdAt: string;
+  updatedAt: string;
+  importedFrom: string | null;
+}
+```
+
+### `SourceFilter`
+```typescript
+interface SourceFilter {
+  id: string;
+  name: string;
+  type: 'color_correction' | 'chroma_key' | 'custom';
+  enabled: boolean;
+  settings: Record<string, any>;
+}
+```
+
+### `GridLayout` & `GridCell`
+```typescript
+interface GridLayout {
+  rows: number;
+  columns: number;
+  gap: number;
+  cells: GridCell[];
+}
+interface GridCell {
+  id: string;
+  row: number;
+  column: number;
+  rowSpan: number;
+  columnSpan: number;
+  sourceId: string | null;
+}
+```
+
+### Default Constants
+Exports `DEFAULT_TRANSFORM`, `DEFAULT_AUDIO`, `DEFAULT_TRANSITION`, `DEFAULT_OUTPUT_CONFIG` for use in source/scene factory functions.
+
+→ See [Compositor Architecture](../../electron/compositor.md) for how these types are rendered
+→ See [sceneCollection.store](../../webapp/stores/stores-reference.md#usescenecollectionstore--compositor-scene-collection) for the runtime store
 
 ---
 

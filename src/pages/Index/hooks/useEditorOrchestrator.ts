@@ -42,7 +42,9 @@ export const useEditorOrchestrator = () => {
   // --- COMPOSITOR SYNC ---
   // Bridges legacy scene state → new CompositorScene → WebGL compositor
   useCompositorSync({
-    scenes: sceneManager.scenes,
+    scenes: sceneManager.scenes.map(s => 
+      s.id === activeSceneId && effectiveScene ? effectiveScene : s
+    ),
     activeSceneId,
     isTransitioning: sceneManager.isTransitioning,
     activeTransition: sceneManager.activeTransition,

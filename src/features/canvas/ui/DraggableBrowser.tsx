@@ -11,13 +11,7 @@ import {
 } from "lucide-react";
 import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
-import { GeneratedLayout } from "@/types/caption";
-
-export interface BrowserOverlayState {
-  id: string;
-  url: string;
-  layout: GeneratedLayout;
-}
+import { GeneratedLayout, BrowserOverlayState } from "@/types/caption";
 
 interface DraggableBrowserProps {
   overlay: BrowserOverlayState;
@@ -65,6 +59,14 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       : `https://${inputUrl}`;
     onUrlChange(overlay.id, formattedUrl);
   };
+
+  const browserWidth = overlay.width || 1920;
+  const browserHeight = overlay.height || 1080;
+  const visualW = (overlay.layout.size.width / 100) * sceneSize.width;
+  const visualH = (overlay.layout.size.height / 100) * sceneSize.height;
+  
+  const scaleX = visualW ? visualW / browserWidth : 1;
+  const scaleY = visualH ? visualH / browserHeight : 1;
 
   // Rotation now handled by HybridDraggable
 
@@ -156,14 +158,24 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
           </button>
         </div>
 
-        <div className="flex-grow w-full h-full relative border-none bg-white">
-          <iframe
-            ref={iframeRef}
-            src={overlay.url}
-            className="w-full h-full"
-            sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts"
-            title={`browser-overlay-${overlay.id}`}
-          />
+        <div className="flex-grow w-full h-full relative border-none bg-white overflow-hidden">
+          <div style={{
+            width: `${browserWidth}px`,
+            height: `${browserHeight}px`,
+            transform: `scale(${scaleX}, ${scaleY})`,
+            transformOrigin: "top left",
+            position: "absolute",
+            top: 0,
+            left: 0
+          }}>
+            <iframe
+              ref={iframeRef}
+              src={overlay.url}
+              className="w-full h-full"
+              sandbox="allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts"
+              title={`browser-overlay-${overlay.id}`}
+            />
+          </div>
           {/* Overlay to prevent iframe capturing clicks while dragging */}
           <div className="absolute inset-0 pointer-events-none" />
         </div>

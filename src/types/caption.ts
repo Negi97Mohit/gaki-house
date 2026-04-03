@@ -229,6 +229,8 @@ export interface FileOverlayState {
 export interface BrowserOverlayState {
   id: string;
   url: string;
+  width?: number; // Base iframe width
+  height?: number; // Base iframe height
   layout: GeneratedLayout;
 }
 
@@ -511,6 +513,9 @@ export interface SubSceneState {
     pipShadow?: { blur: number; color: string };
     videoFilter: string;
     textOverlays: TextOverlayState[];
+    fileOverlays?: FileOverlayState[];
+    browserOverlays?: BrowserOverlayState[];
+    activeOverlays?: GeneratedOverlay[];
     canvasAspectRatio?: string;
     isBeautifyEnabled?: boolean;
     isNeonEdgeEnabled?: boolean;

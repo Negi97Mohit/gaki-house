@@ -2,6 +2,8 @@
 
 → Back to [Index](../../INDEX.md) | [Stores](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 Complete API reference for all Zustand stores.
@@ -166,3 +168,99 @@ Minimal store for go-live modal visibility.
 → Source: [stream-manager.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/stream-manager.store.ts)
 
 Stream manager orchestration state.
+
+---
+
+## `useSceneCollectionStore` — Compositor Scene Collection
+
+→ Source: [sceneCollection.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/sceneCollection.store.ts) (~534 lines)
+
+**The canonical source of truth for the GPU compositor.** Holds all scene collections, scenes, sources, transforms, filters, audio config, and grid layouts. The compositor worker reads from this store via the bridge.
+
+### State
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `collection` | `SceneCollection` | Default collection | Active scene collection |
+| `outputConfig` | `OutputConfig` | Default (1920×1080, 30fps) | Output resolution and FPS |
+| `isTransitioning` | `boolean` | `false` | Whether a transition is playing |
+
+### `SceneCollection` Shape
+```typescript
+{
+  id: string;
+  name: string;
+  scenes: CompositorScene[];         // All scenes in the collection
+  activeSceneId: string;             // Currently active scene
+  canvasResolution: { width, height };
+  audioMixer: AudioMixerState;       // Master volume, per-source levels
+  defaultTransition: SceneTransition;
+  createdAt: string;
+  updatedAt: string;
+  importedFrom: string | null;       // Origin if imported
+}
+```
+
+### Collection Actions
+- `setCollection(collection)` / `resetCollection()` — Replace or reset the entire collection
+- `setCanvasResolution(width, height)` / `setDefaultTransition(transition)`
+
+### Scene Actions
+- `getActiveScene()` — Returns the currently active `CompositorScene`
+- `addScene(name?)` / `removeScene(sceneId)` / `renameScene(sceneId, name)`
+- `setActiveScene(sceneId)` / `reorderScenes(from, to)` / `duplicateScene(sceneId)`
+- `setSceneTransition(sceneId, transition)` / `setSceneGridLayout(sceneId, layout)`
+
+### Source Actions
+- `addSource(sceneId, type, name, settings?, transformOverrides?)`
+- `removeSource(sceneId, sourceId)` / `renameSource(sceneId, sourceId, name)`
+- `updateSourceSettings(sceneId, sourceId, settings)`
+- `updateSourceTransform(sceneId, sourceId, transform)`
+- `setSourceVisibility/Locked/Opacity` / `reorderSources` / `duplicateSource`
+- `moveSourceToScene(fromSceneId, toSceneId, sourceId)`
+
+### Filter Actions
+- `addFilter(sceneId, sourceId, filter)` / `removeFilter` / `updateFilter` / `reorderFilters`
+
+### Audio Actions
+- `setSourceAudio(sceneId, sourceId, audio)` / `setMasterVolume(volume)` / `setMasterMuted(muted)`
+
+### Grid Layout Actions
+- `assignSourceToCell(sceneId, cellId, sourceId)`
+
+### Persistence
+- `toJSON()` — Serialize collection + outputConfig to JSON string
+- `fromJSON(json)` — Deserialize and restore state
+
+→ See [Compositor Architecture](../../electron/compositor.md) for rendering pipeline
+→ See [OBS Compositor](../../electron/obs-compositor.md) for import/export
+
+---
+
+## `useStreamHealthStore` — Stream Health Metrics
+
+→ Source: [streamHealth.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/streamHealth.store.ts)
+
+Receives real-time encoding metrics from FFmpeg during an active stream via the `stream:health` IPC channel.
+
+### State
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `metrics` | `StreamHealthMetrics \| null` | `null` | Current health snapshot |
+
+### `StreamHealthMetrics` Shape
+```typescript
+{
+  frames: number;        // Total frames encoded
+  currentFps: number;    // Current encoding FPS
+  currentKbps: number;   // Current bitrate in kbps
+  targetSize: number;    // Output size in KB
+  timemark: string;      // FFmpeg timemark (HH:MM:SS.ms)
+}
+```
+
+### Actions
+- `setMetrics(metrics)` — Update from `stream:health` IPC events
+
+→ See [Streaming Pipeline](../../electron/streaming.md) for FFmpeg integration

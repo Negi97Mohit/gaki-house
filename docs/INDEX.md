@@ -2,6 +2,8 @@
 
 > **The blueprint for the entire codebase.** Every `.md` in this directory is cross-linked so any human or AI can navigate from high-level architecture down to individual component internals.
 
+> Last Updated: 2026-04-03
+
 ---
 
 ## How to Read This Documentation
@@ -11,6 +13,7 @@
 | Understand what the app **is** | [Overview](./overview/README.md) |
 | See the full **directory tree** and where code lives | [Project Map](./overview/project-map.md) |
 | Understand the **high-level architecture** and data flow | [Architecture](./architecture/README.md) |
+| Understand how **Electron ↔ Web App connect** | [Electron–Webapp Bridge](./architecture/electron-webapp-bridge.md) |
 | Dive into the **Electron desktop shell** | [Electron App](./electron/README.md) |
 | Dive into the **React web application** | [Web App](./webapp/README.md) |
 | Understand **state management** (Zustand stores) | [State Management](./architecture/state-management.md) |
@@ -20,7 +23,12 @@
 | Understand **live captions** (Deepgram) | [Caption System](./webapp/features/caption-system.md) |
 | Understand the **canvas / scene compositor** | [Canvas System](./webapp/features/canvas-system.md) |
 | Understand the **GPU compositor pipeline** | [Compositor Architecture](./electron/compositor.md) |
+| Understand the **scene import/export** system | [OBS Compositor](./electron/obs-compositor.md) |
+| Understand the **stinger transition engine** | [Stinger Engine](./electron/stinger-engine.md) |
+| Understand the **audio mixer engine** | [Audio Mixer](./electron/audio-mixer.md) |
+| Understand the **scene & vault importer** | [Scene Importer](./electron/scene-importer.md) |
 | See all **external integrations** and API keys | [Integrations](./architecture/integrations.md) |
+| Understand the **IPC bridge** (Electron ↔ Renderer) | [IPC Bridge](./architecture/ipc-bridge.md) |
 | Get **dev setup** instructions | [Development Guide](./overview/dev-guide.md) |
 | Understand the **studio panels** (audio mixer, designs, etc.) | [Studio Panels](./webapp/components/studio-panels.md) |
 | Understand the **canvas internal components** (30 files) | [Canvas Internals](./webapp/components/canvas-internals.md) |
@@ -50,6 +58,7 @@ docs/
 │
 ├── architecture/
 │   ├── README.md                     — High-level architecture & data flow
+│   ├── electron-webapp-bridge.md     — How Electron ↔ Web App connect (NEW)
 │   ├── state-management.md           — Zustand stores, React Context, localStorage
 │   ├── routing.md                    — Route map for desktop and web
 │   ├── ipc-bridge.md                 — Electron ↔ Renderer IPC contract
@@ -61,8 +70,11 @@ docs/
 │   ├── preload.md                    — preload.ts API surface
 │   ├── streaming.md                  — RTMP / FFmpeg pipeline
 │   ├── recording.md                  — File-based recording & MP4 conversion
-│   ├── compositor.md                 — WebGL GPU compositor pipeline (NEW)
-│   └── obs-compositor.md             — OBS scene import / export
+│   ├── compositor.md                 — WebGL GPU compositor pipeline
+│   ├── obs-compositor.md             — OBS scene import / export
+│   ├── scene-importer.md             — .overlay extraction & vault integration
+│   ├── stinger-engine.md             — Stinger transitions via WebGL shaders
+│   └── audio-mixer.md                — Web Audio mixer engine
 │
 └── webapp/
     ├── README.md                     — Web app overview

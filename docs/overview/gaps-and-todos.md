@@ -2,6 +2,8 @@
 
 → Back to [Index](../INDEX.md) | [Overview](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 This document tracks known gaps, incomplete features, and technical debt in the codebase.
@@ -131,6 +133,20 @@ The application has **no React Error Boundaries**. A single component crash (e.g
 - [x] Shared type system covering OBS + Streamlabs format definitions
 
 → See [OBS Compositor](../electron/obs-compositor.md) for details
+
+### Phase 4: Documentation Overhaul (Completed)
+- [x] Root `claude.md` with session-start instructions and documentation rules
+- [x] Centralized `electron-webapp-bridge.md` explaining Electron ↔ Webapp connection
+- [x] Updated `INDEX.md` with full documentation tree and all bridge/engine docs
+- [x] Updated `ipc-bridge.md` with 7 missing IPC channels
+- [x] Updated `preload.md` with full API surface (getEncoders, onHealth, import/export)
+- [x] Updated `stores-reference.md` with `useSceneCollectionStore` and `useStreamHealthStore`
+- [x] Updated `types-reference.md` with compositor.ts type documentation
+- [x] Updated `project-map.md` with compositor, audio, and streamHealth files
+- [x] Standardized all electron docs (scene-importer, stinger-engine, audio-mixer)
+- [x] All docs follow consistent template: navigation, source links, Last Updated dates
+
+→ See [Electron–Webapp Bridge](../architecture/electron-webapp-bridge.md) for the centralized connection doc
 
 ---
 

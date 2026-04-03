@@ -2,6 +2,8 @@
 
 → Back to [Index](../INDEX.md) | [Architecture](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 ## Overview
@@ -43,11 +45,13 @@ window.electron.getAppVersion(): Promise<string>
 
 | Method | Channel | Direction | Purpose |
 |---|---|---|---|
+| `stream.getEncoders()` | `ffmpeg:get-encoders` | invoke | Probe available hardware encoders |
 | `stream.start(config)` | `stream:start` | send | Start FFmpeg RTMP stream |
 | `stream.sendData(chunk)` | `stream:data` | send | Send WebM data chunk |
 | `stream.stop(config)` | `stream:stop` | send | Stop stream(s) |
 | `stream.onStatus(cb)` | `stream:status` | listen | Receive status updates |
 | `stream.onFfmpegReady(cb)` | `stream:ffmpeg-ready` | listen | FFmpeg process ready |
+| `stream.onHealth(cb)` | `stream:health` | listen | Receive real-time stream health metrics |
 
 **Config shape:**
 ```typescript
@@ -133,17 +137,34 @@ window.electron.kickFetch(url): Promise<{ok, data}>
 
 Opens a hidden BrowserWindow to load the URL (bypasses Cloudflare), extracts JSON from the page body. 15-second timeout.
 
+### Scene Collection Import/Export
+
+| Method | Channel | Direction | Purpose |
+|---|---|---|---|
+| `import.openSceneCollection()` | `import:open-scene-collection` | invoke | Open file dialog, read .json/.overlay/.zip |
+| `import.resolveAsset(path, type)` | `import:resolve-asset` | invoke | Dialog to locate a missing asset file |
+| `export.saveSceneCollection(json, name)` | `export:save-scene-collection` | invoke | Save dialog, write JSON to disk |
+
+**Returns:**
+- `openSceneCollection()` → `{ ok, format, content, fileName }`
+- `resolveAsset(path, type)` → `{ ok, resolvedPath }`
+- `saveSceneCollection(json, name)` → `{ ok, filePath }`
+
+→ See [OBS Compositor](../electron/obs-compositor.md) | [Scene Importer](../electron/scene-importer.md)
+
 ---
 
 ## IPC Channel Reference
 
 | Channel | Type | Handler Location | Purpose |
 |---|---|---|---|
+| `ffmpeg:get-encoders` | `handle` (invoke) | `setupIpcHandlers()` | Probe available HW encoders |
 | `stream:start` | `on` (send) | `setupIpcHandlers()` | Start FFmpeg stream |
 | `stream:data` | `on` (send) | `setupIpcHandlers()` | Pipe data to FFmpeg stdin |
 | `stream:stop` | `on` (send) | `setupIpcHandlers()` | Kill FFmpeg |
 | `stream:status` | `send` (→renderer) | FFmpeg callbacks | Stream status updates |
 | `stream:ffmpeg-ready` | `send` (→renderer) | FFmpeg `onStart` | FFmpeg process started |
+| `stream:health` | `send` (→renderer) | FFmpeg `on('progress')` | Real-time health metrics |
 | `recorder:start` | `handle` (invoke) | `setupIpcHandlers()` | Create file stream |
 | `recorder:write` | `handle` (invoke) | `setupIpcHandlers()` | Write to file |
 | `recorder:stop` | `handle` (invoke) | `setupIpcHandlers()` | Close + convert to MP4 |
@@ -154,5 +175,9 @@ Opens a hidden BrowserWindow to load the URL (bypasses Cloudflare), extracts JSO
 | `auth:google-oauth` | `handle` (invoke) | `setupIpcHandlers()` | Google OAuth flow |
 | `proxy:request` | `handle` (invoke) | `setupIpcHandlers()` | CORS-free HTTP request |
 | `kick-fetch-url` | `handle` (invoke) | `setupIpcHandlers()` | Browser-based URL fetch |
+| `import:open-scene-collection` | `handle` (invoke) | `setupIpcHandlers()` | Open file dialog for import |
+| `import:resolve-asset` | `handle` (invoke) | `setupIpcHandlers()` | Dialog to remap missing asset |
+| `export:save-scene-collection` | `handle` (invoke) | `setupIpcHandlers()` | Save dialog for JSON export |
+| `get-app-version` | `handle` (invoke) | `setupIpcHandlers()` | Return app version string |
 | `toggle-fullscreen` | `on` (send) | `app.whenReady()` | Toggle window fullscreen |
 | `get-desktop-sources` | `handle` (invoke) | top-level | Desktop capturer sources |

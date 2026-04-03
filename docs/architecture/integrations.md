@@ -2,6 +2,8 @@
 
 → Back to [Index](../INDEX.md) | [Architecture](./README.md)
 
+> Last Updated: 2026-04-03
+
 ---
 
 ## Google Gemini (AI Overlay Engine)

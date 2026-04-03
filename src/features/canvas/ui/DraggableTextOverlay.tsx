@@ -149,9 +149,12 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
   };
 
   const getStyleObject = () => {
+    const resolutionScale = sceneSize.height ? (sceneSize.height / 1080) : 1;
+    const finalScale = (scale || 1) * resolutionScale;
+
     const baseStyle: React.CSSProperties = {
       fontFamily: overlay.style.fontFamily,
-      fontSize: `${overlay.style.fontSize * (scale || 1)}px`,
+      fontSize: `${overlay.style.fontSize * finalScale}px`,
       fontWeight: overlay.style.bold ? "bold" : "normal",
       fontStyle: overlay.style.italic ? "italic" : "normal",
       textDecoration: overlay.style.underline ? "underline" : "none",
@@ -160,7 +163,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
       textShadow: overlay.style.textShadow
         ? overlay.style.textShadow.replace(
           /(-?\d*\.?\d+)px/g,
-          (match, p1) => `${parseFloat(p1) * (scale || 1)}px`
+          (match, p1) => `${parseFloat(p1) * finalScale}px`
         )
         : undefined,
     };
@@ -241,7 +244,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                 justifyContent: "center",
                 // Use background property to support both solid colors and gradients
                 background: overlay.style.backgroundColor || "transparent",
-                borderRadius: `${(overlay.style.borderRadius || 0) * (scale || 1)}px`,
+                borderRadius: `${(overlay.style.borderRadius || 0) * (scale || 1) * (sceneSize.height ? sceneSize.height / 1080 : 1)}px`,
               }}
             >
               {overlay.style.layers ? (
@@ -251,7 +254,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
                     "Double-click to edit"
                   }
                   layers={overlay.style.layers}
-                  scale={scale || 1}
+                  scale={(scale || 1) * (sceneSize.height ? sceneSize.height / 1080 : 1)}
                   fontSize={overlay.style.fontSize}
                   color={overlay.style.color}
                   letterSpacing={(overlay.style as any).letterSpacing} // Pass the indent/spacing
