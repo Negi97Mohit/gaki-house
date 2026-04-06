@@ -1,4 +1,5 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
+import type { BroadcastBus } from "@/kernel/engine/BroadcastBus";
 import { cn } from "@/shared/lib/utils";
 import { Loader } from "lucide-react";
 import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
@@ -20,6 +21,7 @@ import { OmegleMode } from "@/features/omegle/ui/OmegleMode";
 
 const Index = () => {
   const editor = useEditorOrchestrator();
+  const [kernel, setKernel] = useState<BroadcastBus | null>(null);
 
   const {
     activeScene,
@@ -48,6 +50,10 @@ const Index = () => {
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const vault = useFileVault();
   const { user, profile, openAuthModal, closeAuthModal, isAuthModalOpen, signOut } = useAuth();
+
+  const handleKernelReady = useCallback((bus: BroadcastBus) => {
+    setKernel(bus);
+  }, []);
 
   const handlePastedFiles = useCallback(
     (files: File[]) => {
@@ -115,11 +121,12 @@ const Index = () => {
         <>
           <CanvasContainer
             layoutManager={layoutManager}
-            remoteStream={remote.remoteStream}
+            remoteStream={editor.remote.remoteStream}
             vaultFiles={vault.files}
             onAddVaultFiles={vault.addFiles}
             onRemoveVaultFile={vault.removeFile}
             onClearVault={vault.clearVault}
+            onKernelReady={handleKernelReady}
           />
 
           <IndexOverlays editor={editor} />

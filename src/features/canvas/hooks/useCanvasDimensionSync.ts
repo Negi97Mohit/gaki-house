@@ -3,6 +3,7 @@ import { useEffect } from "react";
 interface UseCanvasDimensionSyncProps {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     sceneSize: { width: number; height: number };
+    kernelRef?: React.RefObject<any>; // BroadcastBus
 }
 
 /**
@@ -13,6 +14,7 @@ interface UseCanvasDimensionSyncProps {
 export const useCanvasDimensionSync = ({
     canvasRef,
     sceneSize,
+    kernelRef,
 }: UseCanvasDimensionSyncProps) => {
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -23,9 +25,18 @@ export const useCanvasDimensionSync = ({
         const height = Math.floor(sceneSize.height * dpr);
 
         if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = width;
-            canvas.height = height;
-            console.log(`[CanvasDimensionSync] Updated canvas dimensions to ${width}x${height} (dpr: ${dpr})`);
+            try {
+                canvas.width = width;
+                canvas.height = height;
+                console.log(`[CanvasDimensionSync] Updated canvas dimensions to ${width}x${height} (dpr: ${dpr})`);
+            } catch (err: any) {
+                // If the canvas is transferred to an OffscreenCanvas, setting width/height throws an InvalidStateError.
+                if (err.name === "InvalidStateError" && kernelRef?.current) {
+                    kernelRef.current.resize(width, height);
+                } else if (err.name !== "InvalidStateError") {
+                    throw err; // rethrow unexpected errors
+                }
+            }
         }
-    }, [canvasRef, sceneSize.width, sceneSize.height]);
+    }, [canvasRef, sceneSize.width, sceneSize.height, kernelRef]);
 };

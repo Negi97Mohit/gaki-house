@@ -1,3 +1,4 @@
+import type { BroadcastBus } from "@/kernel/engine/BroadcastBus";
 import {
     LayoutMode,
     CameraShape,
@@ -186,4 +187,9 @@ export interface VideoCanvasProps {
     setIsDrawing: (isDrawing: boolean) => void;
     excalidrawElements: readonly any[];
     setExcalidrawElements: (elements: readonly any[]) => void;
+    /**
+     * Fired once after the BroadcastBus is created and the OffscreenCanvas
+     * has been transferred to the worker. Index.tsx stores it in useState.
+     */
+    onKernelReady?: (kernel: BroadcastBus) => void;
 }

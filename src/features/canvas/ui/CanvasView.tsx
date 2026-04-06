@@ -38,11 +38,45 @@ import { SnapLines } from "@/features/canvas/ui/SnapLines";
 import { CanvasShell } from "@/features/canvas/ui/CanvasShell";
 import { CaptionLayer } from "@/features/canvas/ui/CaptionLayer";
 import { BannerToolbarLayer } from "@/features/canvas/ui/BannerToolbarLayer";
+import { BroadcastBus } from "@/kernel/engine/BroadcastBus";
+import { buildSceneGraph } from "@/kernel/engine/SceneGraph";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   useEffect(() => {
     console.log("[VideoCanvas] mounted");
   }, []);
+
+  // ─── BroadcastBus kernel (Phase C) ────────────────────────────────────────
+  // kernelRef guards against React strict-mode double-invoke.
+  // The ref holds the actual instance so cleanup destroys exactly what was created.
+  const kernelRef = useRef<BroadcastBus | null>(null);
+
+  useEffect(() => {
+    // Guard: skip if already initialised (strict-mode second invoke) or no canvas
+    if (kernelRef.current) return;
+    if (!props.canvasRef?.current) {
+      console.warn("[VideoCanvas] kernel useEffect: canvasRef.current is null — skipping");
+      return;
+    }
+
+    console.log("[VideoCanvas] creating BroadcastBus");
+    const kernel = new BroadcastBus(props.canvasRef.current);
+    kernelRef.current = kernel;
+
+    // Lift the instance to Index.tsx via onKernelReady
+    props.onKernelReady?.(kernel);
+
+    // NOTE: BroadcastBus is re-created on each scene switch because
+    // MemoizedVideoCanvas is re-keyed with activeScene.id in MainCanvasArea.
+    // This is a Phase C known limitation; addressed in a future cleanup pass
+    // by lifting the kernel to CanvasContainer.
+    return () => {
+      kernel.destroy();
+      kernelRef.current = null;
+      console.log("[VideoCanvas] BroadcastBus destroyed on unmount");
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally empty — kernel is created once per mount lifecycle
   const { theme } = useTheme();
 
   // Refs
@@ -95,6 +129,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   useCanvasDimensionSync({
     canvasRef: props.canvasRef,
     sceneSize,
+    kernelRef,
   });
 
   // Speech/Captions

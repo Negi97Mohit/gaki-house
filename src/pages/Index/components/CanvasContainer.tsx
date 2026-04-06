@@ -22,6 +22,8 @@ interface CanvasContainerProps {
   onRemoveVaultFile: (id: string) => void;
   onClearVault: () => void;
   remoteStream?: MediaStream | null;
+  /** Receives the BroadcastBus instance once created in VideoCanvas. */
+  onKernelReady?: (kernel: any) => void;
 }
 
 export const CanvasContainer: React.FC<CanvasContainerProps> = ({
@@ -31,6 +33,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   onRemoveVaultFile,
   onClearVault,
   remoteStream,
+  onKernelReady,
 }) => {
   useEffect(() => {
     console.log("[CanvasContainer] mounted");
@@ -94,8 +97,8 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
       onDeleteSavedOverlay: (_id: string) => {},
       onBannerTextStyleChange: bannerLogic.handleBannerTextStyleChange,
       onBannerTextClose: bannerLogic.onBannerTextClose,
-      onGridAssetSelect: (_id: string, _asset: AssetResult) => {},
-      onSectionCameraSettingsChange: (_id: string, _settings: any) => {},
+      handleGridAssetSelect: (_id: string, _asset: AssetResult) => {},
+      handleSectionCameraSettingsChange: (_id: string, _settings: any) => {},
     }),
     [
       handlerFns, updateActiveScene, layoutManager,
@@ -167,6 +170,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         previousSceneProps={previousSceneProps}
         globalCanvasProps={{
           remoteStream,
+          onKernelReady,
           isChatbotOpen,
           onChatbotToggle: (val: any) =>
             setChatbotOpen(typeof val === "function" ? val(isChatbotOpen) : val),
