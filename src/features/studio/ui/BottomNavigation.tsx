@@ -32,6 +32,7 @@ interface BottomNavigationProps {
   onToggleFullscreen?: () => void;
   onConnectRemote?: () => void;
   onToggleOmegle?: () => void;
+  onImportOBSScenes?: (scenes: import("@/types/caption").SceneState[]) => void;
   onOpenAuth?: () => void;
   onSignOut?: () => void;
   isSignedIn?: boolean;
@@ -60,6 +61,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   onToggleFullscreen,
   onConnectRemote,
   onToggleOmegle,
+  onImportOBSScenes,
   onOpenAuth,
   onSignOut,
   isSignedIn,
@@ -153,8 +155,12 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         />
         <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
-        <SceneControls onUndo={onUndo} onRedo={onRedo} onResetScene={onResetScene} />
-
+        <SceneControls
+          onUndo={onUndo}
+          onRedo={onRedo}
+          onResetScene={onResetScene}
+          onImportOBSScenes={onImportOBSScenes}
+        />
         <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
         <MediaControls

@@ -71,6 +71,24 @@ const Index = () => {
     }
   }, [isOmegleMode, enterOmegleMode, exitOmegleMode]);
 
+  const handleImportOBSScenes = useCallback(
+    (scenes: import("@/types/caption").SceneState[]) => {
+      console.log('[Index] handleImportOBSScenes called with', scenes.length, 'scene(s)');
+      if (!scenes.length) {
+        console.error('[Index] handleImportOBSScenes: scenes array is empty — nothing to import');
+        return;
+      }
+      const firstId = sceneManager.importScenes(scenes);
+      if (!firstId) {
+        console.error('[Index] handleImportOBSScenes: importScenes returned null — no ID to switch to');
+        return;
+      }
+      console.log('[Index] handleImportOBSScenes: switching to first imported scene', firstId);
+      sceneManager.handleSceneSelect(firstId);
+    },
+    [sceneManager]
+  );
+
   if (!activeScene || !effectiveScene) {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-background text-muted-foreground gap-4">
@@ -124,6 +142,7 @@ const Index = () => {
             onToggleFullscreen={ui.handleToggleFullscreen}
             onConnectRemote={() => remote.setIsRemoteModalOpen(true)}
             onToggleOmegle={handleToggleOmegle}
+            onImportOBSScenes={handleImportOBSScenes}
             onOpenAuth={() => openAuthModal("login")}
             onSignOut={signOut}
             isSignedIn={!!user}

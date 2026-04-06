@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Undo2, Redo2, RotateCcw } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useSceneStore } from "@/stores/scene.store";
 import { useShallow } from "zustand/react/shallow";
 import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
+import { OBSImportButton } from "./OBSImportButton";
+import { SceneState } from "@/types/caption";
 
 interface SceneControlsProps {
     onUndo: () => void;
     onRedo: () => void;
     onResetScene: () => void;
+    onImportOBSScenes?: (scenes: SceneState[]) => void;
 }
 
 export const SceneControls: React.FC<SceneControlsProps> = ({
     onUndo,
     onRedo,
     onResetScene,
+    onImportOBSScenes,
 }) => {
+    useEffect(() => {
+      console.log('[SceneControls] mounted');
+    }, []);
     const { canUndo, canRedo } = useSceneStore(
         useShallow((state) => ({
             canUndo: state.canUndo,
@@ -64,6 +71,10 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
                     <RotateCcw className="w-3.5 h-3.5" />
                 </Button>
             </ShortcutTooltip>
+
+            {onImportOBSScenes && (
+              <OBSImportButton onImportOBSScenes={onImportOBSScenes} />
+            )}
         </div>
     );
 };

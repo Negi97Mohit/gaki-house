@@ -988,6 +988,42 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     [activeSceneId]
   );
 
+  // --- OBS / Bulk Import ---
+  const importScenes = useCallback(
+    (newScenes: SceneState[]): string | null => {
+      console.log('[SceneManager] importScenes called with', newScenes.length, 'scenes');
+      if (!newScenes.length) {
+        console.error('[SceneManager] importScenes: received empty scenes array');
+        return null;
+      }
+
+      const firstId = newScenes[0].id;
+
+      // Append new scenes atomically
+      setScenes((prev) => [...prev, ...newScenes]);
+
+      // Create default cross_dissolve transitions between each consecutive new scene
+      const newTransitions: SceneTransition[] = newScenes.slice(0, -1).map((scene, idx) => ({
+        id: generateTransitionId(),
+        fromSceneId: scene.id,
+        toSceneId: newScenes[idx + 1].id,
+        type: 'cross_dissolve' as const,
+        durationMs: 300,
+        animationIn: 'ease-in-out' as const,
+        animationOut: 'ease-in-out' as const,
+        overlayEnabled: false,
+      }));
+
+      if (newTransitions.length > 0) {
+        setSceneTransitions((prev) => [...prev, ...newTransitions]);
+      }
+
+      console.log('[SceneManager] importScenes complete. First scene id:', firstId);
+      return firstId;
+    },
+    []
+  );
+
   return {
     scenes,
     activeScene,
@@ -1016,6 +1052,8 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
     handleToggleExpand,
     handleDuplicateScene,
     handleResetSceneToDefault,
+    // OBS / Bulk Import
+    importScenes,
     // Stream Style
     createScenesFromStreamStyle,
     // Undo/Redo/Reset
