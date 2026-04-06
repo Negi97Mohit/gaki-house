@@ -340,7 +340,9 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
         {fileOverlays
           .filter(
             (o) =>
-              filterDynamic(o.id) && checkLayer(o.layout as GeneratedLayout)
+              filterDynamic(o.id) && 
+              checkLayer(o.layout as GeneratedLayout) &&
+              !(o.fileUrl && o.fileUrl.startsWith("http://localhost:3000/stream?path="))
           )
           .map((file) => (
             <DraggableFileViewer

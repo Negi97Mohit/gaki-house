@@ -115,8 +115,15 @@ export function useOverlayMediaPool(
             video.playsInline = true;
             video.autoplay = true;
             // Offscreen but still in DOM so the browser decodes frames
-            video.style.cssText =
-              "position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;";
+            video.style.position = 'fixed';
+            video.style.top = '-9999px';
+            video.style.left = '-9999px';
+            video.style.width = '1px';
+            video.style.height = '1px';
+            video.style.opacity = '0';
+            video.style.pointerEvents = 'none';
+            video.style.zIndex = '-1';
+            video.style.visibility = 'hidden';
             document.body.appendChild(video);
             videoElements.push(video);
 
