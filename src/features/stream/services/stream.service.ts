@@ -3,6 +3,11 @@ import { notify } from "@/shared/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
 import fixWebmDuration from "fix-webm-duration";
+import { BroadcastBus } from "@/kernel/engine/BroadcastBus";
+import { AudioMixerEngine } from "@/kernel/engine/AudioMixerEngine";
+import { BroadcastEncoder } from "@/kernel/engine/BroadcastEncoder";
+
+export const USE_KERNEL_PIPELINE = true;
 
 const SERVER_URL = "http://localhost:3000";
 
@@ -27,6 +32,10 @@ class StreamService {
   private activeStream: MediaStream | null = null;
   private audioContext: AudioContext | null = null;
   private audioDestination: MediaStreamAudioDestinationNode | null = null;
+
+  // New Kernel Pipeline (Phase D)
+  private audioMixerEngine: AudioMixerEngine | null = null;
+  private broadcastEncoder: BroadcastEncoder | null = null;
 
   // Internal Pipeline (The "Mixer")
   // We use an intermediate canvas to ensure the stream never "breaks" 
@@ -341,14 +350,56 @@ class StreamService {
       // Reset Retries
       targets.forEach((t) => this.retryCounts.set(t.id, 0));
 
-      await this.startPipeline();
-      const mimeType = this.setupMediaRecorder();
+      if (USE_KERNEL_PIPELINE) {
+        // KNOWN LIMITATION: BroadcastBus is recreated on scene switches because
+        // it is instantiated inside CanvasView which remounts per scene.
+        // This will cause a brief stream drop during transitions.
+        // Fix: move BroadcastBus instantiation up to CanvasContainer in a future refactor.
+        // Tracked: Phase D known issue — stream drop on scene switch
+        
+        console.log("[StreamService] Using Kernel Pipeline (Phase D)");
+        const kernel = BroadcastBus.activeInstance;
+        if (!kernel) throw new Error("BroadcastBus active instance not found");
 
-      const isElectron = !!(window as ElectronWindow).electron;
-      if (isElectron) {
-        this.connectElectron(targets, mimeType);
+        const canvasStream = kernel.getStream();
+        if (!canvasStream) {
+          console.warn("[StreamService] Kernel getStream() returned null, stream might fail");
+        }
+
+        this.audioMixerEngine = new AudioMixerEngine();
+        const audioStream = await this.audioMixerEngine.start();
+
+        const activeTracks: MediaStreamTrack[] = [];
+        if (canvasStream) {
+          const vTracks = canvasStream.getVideoTracks();
+          console.log("[StreamService] Canvas video tracks:", vTracks.length, vTracks[0]?.readyState);
+          activeTracks.push(...vTracks);
+        }
+        if (audioStream) {
+          const aTracks = audioStream.getAudioTracks();
+          console.log("[StreamService] Audio tracks:", aTracks.length, aTracks[0]?.readyState);
+          activeTracks.push(...aTracks);
+        }
+        if (audioStream) activeTracks.push(...audioStream.getAudioTracks());
+
+        const finalStream = new MediaStream(activeTracks);
+
+        this.broadcastEncoder = new BroadcastEncoder();
+        this.broadcastEncoder.start(finalStream, {
+          targets,
+          onStatus: (data: any) => this.handleStreamStatus(data),
+        });
+
       } else {
-        await this.connectWeb(targets);
+        await this.startPipeline();
+        const mimeType = this.setupMediaRecorder();
+
+        const isElectron = !!(window as ElectronWindow).electron;
+        if (isElectron) {
+          this.connectElectron(targets, mimeType);
+        } else {
+          await this.connectWeb(targets);
+        }
       }
     } catch (err: any) {
       console.error("[StreamService] Start Failed:", err);
@@ -375,6 +426,7 @@ class StreamService {
     const isElectron = !!(window as ElectronWindow).electron;
 
     this.mediaRecorder.ondataavailable = async (e) => {
+      console.log(`[BroadcastEncoder] ondataavailable fired, size: ${e.data.size}`);
       if (e.data.size > 0) {
         if (isElectron) {
           const buffer = await e.data.arrayBuffer();
@@ -608,16 +660,24 @@ class StreamService {
     const isElectron = !!(window as ElectronWindow).electron;
 
     if (specificId) {
-      if (isElectron)
-        (window as ElectronWindow).electron?.stream.stop({ id: specificId });
-      else this.socket?.emit("stop-stream", { id: specificId });
+      if (USE_KERNEL_PIPELINE) {
+        this.broadcastEncoder?.stop(specificId);
+      } else {
+        if (isElectron)
+          (window as ElectronWindow).electron?.stream.stop({ id: specificId });
+        else this.socket?.emit("stop-stream", { id: specificId });
+      }
       useStreamStore.getState().setDestinationStatus(specificId, "idle");
     } else {
-      if (isElectron) (window as ElectronWindow).electron?.stream.stop();
-      else this.socket?.emit("stop-stream");
+      if (USE_KERNEL_PIPELINE) {
+        this.broadcastEncoder?.stop();
+      } else {
+        if (isElectron) (window as ElectronWindow).electron?.stream.stop();
+        else this.socket?.emit("stop-stream");
 
-      if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
-        this.mediaRecorder.stop();
+        if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
+          this.mediaRecorder.stop();
+        }
       }
 
       this.cleanupPipeline();
@@ -645,31 +705,38 @@ class StreamService {
     }
 
     this.isPipelineActive = false;
-    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
-    if (this.unsubMediaStore) this.unsubMediaStore();
 
-    // Stop internal mixer sources
-    this.activeStream?.getTracks().forEach((t) => t.stop());
-    this.currentVideoSource?.getTracks().forEach((t) => t.stop());
-    this.micStream?.getTracks().forEach((t) => t.stop());
+    if (USE_KERNEL_PIPELINE) {
+      this.audioMixerEngine?.destroy();
+      this.audioMixerEngine = null;
+      this.broadcastEncoder = null;
+    } else {
+      if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+      if (this.unsubMediaStore) this.unsubMediaStore();
 
-    // Clean up DOM elements
-    if (this.videoElement) {
-      this.videoElement.pause();
-      this.videoElement.srcObject = null;
-      this.videoElement.remove();
-      this.videoElement = null;
+      // Stop internal mixer sources
+      this.activeStream?.getTracks().forEach((t) => t.stop());
+      this.currentVideoSource?.getTracks().forEach((t) => t.stop());
+      this.micStream?.getTracks().forEach((t) => t.stop());
+
+      // Clean up DOM elements
+      if (this.videoElement) {
+        this.videoElement.pause();
+        this.videoElement.srcObject = null;
+        this.videoElement.remove();
+        this.videoElement = null;
+      }
+      if (this.canvas) {
+        this.canvas = null;
+      }
+
+      this.audioContext?.close();
+      this.activeStream = null;
+      this.currentVideoSource = null;
+      this.micStream = null;
+      this.audioContext = null;
+      this.audioDestination = null;
     }
-    if (this.canvas) {
-      this.canvas = null;
-    }
-
-    this.audioContext?.close();
-    this.activeStream = null;
-    this.currentVideoSource = null;
-    this.micStream = null;
-    this.audioContext = null;
-    this.audioDestination = null;
   }
 
   // --- 4. LOCAL RECORDING LOGIC ---
