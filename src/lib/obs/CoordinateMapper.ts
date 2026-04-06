@@ -9,7 +9,7 @@ import { OBSSceneItem } from "./OBSParser";
  *
  * Size resolution order:
  *   1. boundsType > 0 AND bounds non-zero  → use bounds
- *   2. Fallback → 30% × 20% (visible, safe)
+ *   2. Fallback → 30% × 20% placeholder + store obsScale for post-load recomputation
  */
 export function mapObsTransformToLayout(
   item: OBSSceneItem,
@@ -17,7 +17,7 @@ export function mapObsTransformToLayout(
   baseHeight: number
 ): GeneratedLayout {
   console.log(
-    `[CoordinateMapper] "${item.name}" pos(${item.pos.x},${item.pos.y}) bounds(${item.bounds.x},${item.bounds.y}) boundsType=${item.boundsType}`
+    `[CoordinateMapper] "${item.name}" pos(${item.pos.x},${item.pos.y}) scale(${item.scale.x},${item.scale.y}) bounds(${item.bounds.x},${item.bounds.y}) boundsType=${item.boundsType}`
   );
 
   const clamp = (v: number, lo: number, hi: number) =>
@@ -28,16 +28,20 @@ export function mapObsTransformToLayout(
 
   let widthPct: number;
   let heightPct: number;
+  let obsScale: { x: number; y: number } | undefined;
 
   if (item.boundsType > 0 && (item.bounds.x > 0 || item.bounds.y > 0)) {
     widthPct = clamp((item.bounds.x / baseWidth) * 100, 1, 100);
     heightPct = clamp((item.bounds.y / baseHeight) * 100, 1, 100);
   } else {
-    console.warn(
-      `[CoordinateMapper] "${item.name}": no usable bounds, using fallback 30×20%`
-    );
+    // Store raw scale so useOverlayMediaPool can recompute: scale × nativeDims
+    obsScale = { x: item.scale.x, y: item.scale.y };
+    // Placeholder size — will be overridden after file load
     widthPct = 30;
     heightPct = 20;
+    console.warn(
+      `[CoordinateMapper] "${item.name}": no usable bounds, storing obsScale(${item.scale.x},${item.scale.y}) for post-load recomputation`
+    );
   }
 
   return {
@@ -45,5 +49,6 @@ export function mapObsTransformToLayout(
     size: { width: widthPct, height: heightPct },
     zIndex: 10,
     rotation: item.rot,
+    obsScale,
   };
 }

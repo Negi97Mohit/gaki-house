@@ -40,6 +40,11 @@ contextBridge.exposeInMainWorld("electron", {
     appendLine: (line: string) => ipcRenderer.send("logger:append", line),
   },
 
+  // Asset File Reader (returns ArrayBuffer or null)
+  asset: {
+    readFile: (filePath: string) => ipcRenderer.invoke("asset:read-file", filePath),
+  },
+
   // Desktop Capturer
   getDesktopSources: (options: any) =>
     ipcRenderer.invoke("get-desktop-sources", options),

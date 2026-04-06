@@ -40,6 +40,7 @@ import { CaptionLayer } from "@/features/canvas/ui/CaptionLayer";
 import { BannerToolbarLayer } from "@/features/canvas/ui/BannerToolbarLayer";
 import { BroadcastBus } from "@/kernel/engine/BroadcastBus";
 import { buildSceneGraph } from "@/kernel/engine/SceneGraph";
+import { useOverlayMediaPool } from "@/kernel/hooks/useOverlayMediaPool";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   useEffect(() => {
@@ -201,6 +202,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isFaceTrackingEnabled: props.isAutoFramingEnabled,
     onUserPositionChange: props.onUserPositionChange,
   });
+
+  // F3: Overlay Media Pool (eager loading of OBS assets)
+  // Only start sending frames to the worker once ALL assets for the scene are ready.
+  const { items: overlayItems, isReady: overlaysReady } = useOverlayMediaPool(fileOverlays, sceneId);
+  
+  useEffect(() => {
+    if (overlaysReady && kernelRef.current) {
+      kernelRef.current.startOverlayFeeds(overlayItems);
+    } else if (!overlaysReady && kernelRef.current) {
+      kernelRef.current.stopOverlayFeeds();
+    }
+  }, [overlaysReady, overlayItems]);
 
   const hasScreenSection = props.canvasLayout?.sections.some(
     (s) => s.content.type === "screen"

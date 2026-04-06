@@ -116,7 +116,14 @@ export class BroadcastBus {
 
   public startScreenFeed(sourceVideo: HTMLVideoElement) {
     if (this.screenSourceVideo === sourceVideo) return;
-    this.stopScreenFeed();
+    
+    // Targeted fix for Strict Mode double-invoke: cancel rAF directly without triggering the warning log
+    if (this.screenFeedAnimationFrame !== null) {
+      cancelAnimationFrame(this.screenFeedAnimationFrame);
+      this.screenFeedAnimationFrame = null;
+      console.log("[BroadcastBus] startScreenFeed: cancelled previous screen rAF before restart");
+    }
+    
     this.screenSourceVideo = sourceVideo;
     console.log("[BroadcastBus] startScreenFeed: Linking screen video to worker via rAF");
 
@@ -147,6 +154,59 @@ export class BroadcastBus {
     }
     this.screenSourceVideo = null;
     console.log("[BroadcastBus] stopScreenFeed: Screen feed stopped");
+  }
+
+  // ─── F3: Overlay Feeds ────────────────────────────────────────────────────────
+
+  private overlayFeedAnimationFrame: number | null = null;
+  private overlaySources: Array<{ id: string, source: HTMLImageElement | HTMLVideoElement, x: number, y: number, w: number, h: number, isVideo: boolean }> = [];
+
+  public startOverlayFeeds(items: Array<{ id: string, type: 'image'|'video', source: HTMLImageElement | HTMLVideoElement, x: number, y: number, w: number, h: number }>) {
+    this.stopOverlayFeeds();
+    
+    this.overlaySources = items.map(item => ({
+      ...item,
+      isVideo: item.type === 'video'
+    }));
+
+    if (this.overlaySources.length === 0) return;
+
+    console.log(`[BroadcastBus] startOverlayFeeds: Linking ${items.length} overlays to worker via rAF`);
+
+    const loop = async () => {
+      if (this.isDestroyed || this.overlaySources.length === 0) return;
+
+      const frames = [];
+      for (const item of this.overlaySources) {
+        try {
+          const w = item.isVideo ? (item.source as HTMLVideoElement).videoWidth : (item.source as HTMLImageElement).naturalWidth;
+          const h = item.isVideo ? (item.source as HTMLVideoElement).videoHeight : (item.source as HTMLImageElement).naturalHeight;
+          if (w > 0 && h > 0) {
+            const bitmap = await createImageBitmap(item.source);
+            frames.push({ id: item.id, bitmap, x: item.x, y: item.y, w: item.w, h: item.h });
+          }
+        } catch (e) {
+          // Ignored (e.g. video not ready yet)
+        }
+      }
+
+      if (frames.length > 0) {
+        // Send batch of overlay frames to worker. Transfer bitmaps.
+        const bitmaps = frames.map(f => f.bitmap);
+        this.worker.postMessage({ type: "OVERLAY_FRAMES", frames }, bitmaps);
+      }
+
+      this.overlayFeedAnimationFrame = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  public stopOverlayFeeds() {
+    if (this.overlayFeedAnimationFrame) {
+      cancelAnimationFrame(this.overlayFeedAnimationFrame);
+      this.overlayFeedAnimationFrame = null;
+    }
+    this.overlaySources = [];
   }
 
   /**
@@ -248,6 +308,7 @@ export class BroadcastBus {
     this.isDestroyed = true;
     this.stopCameraFeed();
     this.stopScreenFeed();
+    this.stopOverlayFeeds();
     console.log("[BroadcastBus] destroy called");
 
     if (this.mirrorAnimationFrame) {

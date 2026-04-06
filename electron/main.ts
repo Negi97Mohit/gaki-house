@@ -610,6 +610,17 @@ function setupIpcHandlers() {
       }
     });
   });
+
+  // 8. ASSET FILE READER
+  ipcMain.handle("asset:read-file", async (_event, filePath: string) => {
+    try {
+      const buffer = await fs.promises.readFile(filePath);
+      return buffer;
+    } catch (err: any) {
+      console.error("[asset:read-file] Failed to read:", filePath, err.message);
+      return null;
+    }
+  });
 }
 
 // --- SERVER & APP LIFECYCLE ---

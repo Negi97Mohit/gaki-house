@@ -54,6 +54,8 @@ export type GeneratedLayout = {
   layerOrder?: "above-video" | "below-video" | "auto";
   isBehindUser?: boolean; // New prop for user segmentation depth
   is3D?: boolean;
+  /** Raw OBS scale from import — used to recompute size after native dims are known */
+  obsScale?: { x: number; y: number };
 };
 export interface GeneratedOverlay {
   id: string;

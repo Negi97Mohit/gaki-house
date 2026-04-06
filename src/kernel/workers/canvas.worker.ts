@@ -17,6 +17,7 @@ let pendingTo: SceneGraph | null = null;
 // F2 Compositing Cache
 let latestCamera: ImageBitmap | null = null;
 let latestScreen: ImageBitmap | null = null;
+let latestOverlays: Array<{ id: string, bitmap: ImageBitmap, x: number, y: number, w: number, h: number }> = [];
 // Generic persistent graph for F1/F2 background fill mapping
 let latestGraph: SceneGraph | null = null;
 
@@ -33,6 +34,7 @@ self.onmessage = (event: MessageEvent) => {
     width?: number;
     height?: number;
     bitmap?: ImageBitmap;
+    frames?: Array<{ id: string, bitmap: ImageBitmap, x: number, y: number, w: number, h: number }>;
   };
 
   switch (data.type) {
@@ -117,12 +119,25 @@ self.onmessage = (event: MessageEvent) => {
       break;
     }
 
+    case "OVERLAY_FRAMES": {
+      if (!ctx || !data.frames) return;
+      // Close old bitmaps
+      for (const frame of latestOverlays) {
+        frame.bitmap.close();
+      }
+      latestOverlays = data.frames;
+      drawF2CompositingSequence(ctx);
+      break;
+    }
+
     case "DESTROY": {
       ctx = null;
       pendingFrom = null;
       pendingTo = null;
       if (latestCamera) { latestCamera.close(); latestCamera = null; }
       if (latestScreen) { latestScreen.close(); latestScreen = null; }
+      for (const frame of latestOverlays) frame.bitmap.close();
+      latestOverlays = [];
       console.log("[canvas.worker] DESTROY: context released");
       self.close();
       break;
@@ -160,6 +175,15 @@ function drawF2CompositingSequence(ctx: OffscreenCanvasRenderingContext2D) {
       // F1 behavior -> Camera is full screen
       ctx.drawImage(latestCamera, 0, 0, ctx.canvas.width, ctx.canvas.height);
     }
+  }
+
+  // 4. OBS Overlays (Above Camera)
+  for (const frame of latestOverlays) {
+    const x = (frame.x / 100) * ctx.canvas.width;
+    const y = (frame.y / 100) * ctx.canvas.height;
+    const w = (frame.w / 100) * ctx.canvas.width;
+    const h = (frame.h / 100) * ctx.canvas.height;
+    ctx.drawImage(frame.bitmap, x, y, w, h);
   }
 
   // (Overlays and other generic scene layers not yet fully interleaved dynamically below)
