@@ -1,7 +1,5 @@
-import React, { useMemo, useRef } from "react";
-import { Rnd } from "react-rnd";
+import React, { useMemo, useRef, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { cn } from "@/shared/lib/utils";
 import { useShallow } from "zustand/react/shallow";
 import {
   LayoutMode,
@@ -21,10 +19,7 @@ import { useCanvasResize } from "../hooks/useCanvasResize";
 import { useCanvasSpeech } from "../hooks/useCanvasSpeech";
 import { useCanvasDimensionSync } from "../hooks/useCanvasDimensionSync";
 import { SnapLinesRef } from "./SnapLines";
-import {
-  getNumericAspectRatio,
-  getCanvasAspectRatioStyle,
-} from "@/features/canvas/ui/VideoCanvasHelpers";
+import { getCanvasAspectRatioStyle } from "@/features/canvas/ui/VideoCanvasHelpers";
 import { useVideoStreams } from "@/features/stream/hooks/useVideoStreams";
 import { usePipGestures } from "@/hooks/usePipGestures";
 import { Sparkles } from "lucide-react";
@@ -33,8 +28,6 @@ import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { CanvasHoverToolbar } from "@/features/canvas/ui/CanvasHoverToolbar";
 import { OverlayElement } from "@/hooks/useSnapGuides";
-import { CaptionRenderer } from "@/features/canvas/ui/CaptionRenderer";
-import { TextEditingToolbar } from "@/features/canvas/ui/TextEditingToolbar";
 import { VideoCanvasCamera } from "@/features/canvas/ui/VideoCanvasCamera";
 import { ForegroundUserLayer } from "@/features/canvas/ui/ForegroundUserLayer";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
@@ -42,8 +35,14 @@ import { VideoCanvasProps } from "@/types/videoCanvas";
 import { CanvasContent } from "@/features/canvas/ui/CanvasContent";
 import { OverlayLayer } from "@/features/canvas/ui/OverlayLayer";
 import { SnapLines } from "@/features/canvas/ui/SnapLines";
+import { CanvasShell } from "@/features/canvas/ui/CanvasShell";
+import { CaptionLayer } from "@/features/canvas/ui/CaptionLayer";
+import { BannerToolbarLayer } from "@/features/canvas/ui/BannerToolbarLayer";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
+  useEffect(() => {
+    console.log("[VideoCanvas] mounted");
+  }, []);
   const { theme } = useTheme();
 
   // Refs
@@ -258,40 +257,22 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     />
   );
 
-  const captionBaseStyle: React.CSSProperties = {
-    fontFamily: props.liveCaptionStyle.fontFamily,
-    fontSize: `${props.liveCaptionStyle.fontSize}px`,
-    color: props.liveCaptionStyle.color,
-    fontWeight: props.liveCaptionStyle.bold ? "bold" : "normal",
-    fontStyle: props.liveCaptionStyle.italic ? "italic" : "normal",
-    textDecoration: props.liveCaptionStyle.underline ? "underline" : "none",
-    textShadow: props.liveCaptionStyle.textShadow,
-  };
-
-  // Allow width to be dynamic based on style, default to ~50% or 600px equivalent
-  const captionWidthPercent = props.liveCaptionStyle.width || 50;
-  const captionWidth = (sceneSize.width * captionWidthPercent) / 100;
-  const captionHeight = "auto"; // Allow height to grow with text
+  // captionBaseStyle, captionWidth, captionHeight moved to CaptionLayer
 
   return (
-    <div
-      ref={canvasContainerRef}
-      className={cn(
-        "absolute inset-0 w-full h-full bg-neutral-900 overflow-hidden flex items-center justify-center",
-        !props.isMouseActive && props.isFullscreen && "cursor-none"
+    <CanvasShell
+      containerRef={canvasContainerRef}
+      sceneRef={sceneRef}
+      sceneStyle={getCanvasAspectRatioStyle(
+        props.sidebarProps.canvasAspectRatio,
+        props.sidebarProps.customAspectRatio
       )}
+      onClick={props.onDeselectAll}
+      onMouseEnter={() => setIsCanvasHovered(true)}
+      onMouseLeave={() => setIsCanvasHovered(false)}
+      isMouseActive={props.isMouseActive}
+      isFullscreen={props.isFullscreen}
     >
-      <div
-        ref={sceneRef}
-        className="relative overflow-hidden"
-        style={getCanvasAspectRatioStyle(
-          props.sidebarProps.canvasAspectRatio,
-          props.sidebarProps.customAspectRatio
-        )}
-        onClick={props.onDeselectAll}
-        onMouseEnter={() => setIsCanvasHovered(true)}
-        onMouseLeave={() => setIsCanvasHovered(false)}
-      >
         <CanvasHoverToolbar
           blankCanvasColor={props.blankCanvasColor}
           onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
@@ -327,219 +308,26 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           blankCanvasColor={props.blankCanvasColor}
         />
 
-        {captionsEnabled &&
-          (fullTranscript || interimTranscript) &&
-          sceneSize.width > 0 && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{ zIndex: "var(--z-caption)" }}
-            >
-              <Rnd
-                key={`${sceneSize.width}-${captionWidthPercent}`}
-                size={{
-                  width: captionWidth,
-                  height: "auto",
-                }}
-                position={{
-                  x:
-                    (sceneSize.width * props.liveCaptionStyle.position.x) /
-                    100 -
-                    captionWidth / 2,
-                  y:
-                    (sceneSize.height * props.liveCaptionStyle.position.y) /
-                    100 -
-                    50, // Approx vertical centering offset since height is auto
-                }}
-                enableResizing={{
-                  top: false,
-                  right: true,
-                  bottom: false,
-                  left: true,
-                  topRight: false,
-                  bottomRight: false,
-                  bottomLeft: false,
-                  topLeft: false,
-                }}
-                className="pointer-events-auto border-2 border-transparent hover:border-primary/50 transition-colors rounded-lg"
-                style={{ position: "absolute" }}
-                onDragStop={(e, d) => {
-                  const rect = d.node.getBoundingClientRect();
-                  const centerX = d.x + captionWidth / 2;
-                  const centerY = d.y + rect.height / 2;
+        <CaptionLayer
+          captionsEnabled={captionsEnabled}
+          fullTranscript={fullTranscript}
+          interimTranscript={interimTranscript}
+          sceneSize={sceneSize}
+          liveCaptionStyle={props.liveCaptionStyle as any}
+          dynamicStyle={props.dynamicStyle}
+          onCaptionLayoutChange={props.onCaptionLayoutChange}
+        />
 
-                  const newXPercent = (centerX / sceneSize.width) * 100;
-                  const newYPercent = (centerY / sceneSize.height) * 100;
-
-                  props.onCaptionLayoutChange({
-                    position: { x: newXPercent, y: newYPercent },
-                  });
-                }}
-                onResizeStop={(e, direction, ref, delta, position) => {
-                  const newWidthPx = parseInt(ref.style.width, 10);
-                  const newWidthPercent = (newWidthPx / sceneSize.width) * 100;
-
-                  // Update position (center) based on new width and new top-left (position)
-                  const newCenterX = position.x + newWidthPx / 2;
-                  const newXPercent = (newCenterX / sceneSize.width) * 100;
-
-                  // Maintain Y center
-                  const rect = ref.getBoundingClientRect();
-                  const newCenterY = position.y + rect.height / 2;
-                  const newYPercent = (newCenterY / sceneSize.height) * 100;
-
-                  props.onCaptionLayoutChange({
-                    size: { width: newWidthPercent, height: 0 },
-                    position: { x: newXPercent, y: newYPercent },
-                  });
-                }}
-              >
-                <CaptionRenderer
-                  text=""
-                  fullTranscript={fullTranscript}
-                  interimTranscript={interimTranscript}
-                  activeStyleId={props.dynamicStyle}
-                  captionStyle={props.liveCaptionStyle}
-                  baseStyle={captionBaseStyle}
-                />
-              </Rnd>
-            </div>
-          )}
-
-        {props.editingBannerText && props.onBannerTextStyleChange && (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ zIndex: "var(--z-text-toolbar, 9999)" }}
-          >
-            {(() => {
-              const bannerOverlay = generatedOverlays.find(
-                (o) => o.id === props.editingBannerText?.overlayId
-              );
-              if (!bannerOverlay) return null;
-
-              const position = {
-                x: (bannerOverlay.layout.position.x / 100) * sceneSize.width,
-                y: (bannerOverlay.layout.position.y / 100) * sceneSize.height,
-              };
-
-              const cssStyle = props.editingBannerText.style;
-              const captionStyle: CaptionStyle = {
-                ...props.liveCaptionStyle,
-                fontFamily: (cssStyle.fontFamily as string) || "Inter",
-                fontSize: parseInt((cssStyle.fontSize as string) || "24", 10),
-                color: (cssStyle.color as string) || "#ffffff",
-                backgroundColor:
-                  (cssStyle.backgroundColor as string) || "transparent",
-                bold:
-                  cssStyle.fontWeight === "bold" || cssStyle.fontWeight === 700,
-                italic: cssStyle.fontStyle === "italic",
-                underline:
-                  (cssStyle.textDecoration as string)?.includes("underline") ||
-                  false,
-                textShadow: cssStyle.textShadow as string,
-                textAlign: (cssStyle.textAlign as any) || "left",
-                position: { x: 0, y: 0 },
-                shape: "rectangular",
-                animation: "none",
-                outline: false,
-                shadow: false,
-                rotation: 0,
-                border: false,
-                borderColor: "transparent",
-                borderWidth: 0,
-              };
-
-              const proxyOverlay: TextOverlayState = {
-                id: props.editingBannerText.overlayId,
-                content: props.editingBannerText.currentText,
-                style: captionStyle,
-                layout: bannerOverlay.layout,
-              };
-
-              return (
-                <div className="pointer-events-auto">
-                  <TextEditingToolbar
-                    overlay={proxyOverlay}
-                    position={position}
-                    containerRef={sceneRef}
-                    elementWidth={
-                      (bannerOverlay.layout.size.width / 100) * sceneSize.width
-                    }
-                    elementHeight={
-                      (bannerOverlay.layout.size.height / 100) *
-                      sceneSize.height
-                    }
-                    onLayoutChange={(id: string, partialLayout: any) => {
-                      if (partialLayout.position)
-                        props.onOverlayLayoutChange(
-                          id,
-                          "position",
-                          partialLayout.position
-                        );
-                      if (partialLayout.size)
-                        props.onOverlayLayoutChange(
-                          id,
-                          "size",
-                          partialLayout.size
-                        );
-                      if (partialLayout.rotation !== undefined)
-                        props.onOverlayLayoutChange(
-                          id,
-                          "rotation",
-                          partialLayout.rotation
-                        );
-                      if (partialLayout.isBehindUser !== undefined) {
-                        props.onOverlayLayoutChange(
-                          id,
-                          "isBehindUser",
-                          partialLayout.isBehindUser
-                        );
-                        if (props.onUpdateOverlayMetadata) {
-                          props.onUpdateOverlayMetadata(id, {
-                            ...bannerOverlay.metadata,
-                            data: {
-                              ...bannerOverlay.metadata?.data,
-                              isBehindUser: partialLayout.isBehindUser,
-                            },
-                          });
-                        }
-                      }
-                    }}
-                    onStyleChange={(id, partialStyle) => {
-                      const newCssStyle: React.CSSProperties = {};
-                      if (partialStyle.fontFamily)
-                        newCssStyle.fontFamily = partialStyle.fontFamily;
-                      if (partialStyle.fontSize)
-                        newCssStyle.fontSize = `${partialStyle.fontSize}px`;
-                      if (partialStyle.color)
-                        newCssStyle.color = partialStyle.color;
-                      if (partialStyle.backgroundColor)
-                        newCssStyle.backgroundColor =
-                          partialStyle.backgroundColor;
-                      if (partialStyle.bold !== undefined)
-                        newCssStyle.fontWeight = partialStyle.bold
-                          ? "bold"
-                          : "normal";
-                      if (partialStyle.italic !== undefined)
-                        newCssStyle.fontStyle = partialStyle.italic
-                          ? "italic"
-                          : "normal";
-                      if (partialStyle.underline !== undefined)
-                        newCssStyle.textDecoration = partialStyle.underline
-                          ? "underline"
-                          : "none";
-                      if (partialStyle.textShadow !== undefined)
-                        newCssStyle.textShadow = partialStyle.textShadow;
-                      if (partialStyle.textAlign)
-                        newCssStyle.textAlign = partialStyle.textAlign;
-
-                      props.onBannerTextStyleChange?.(newCssStyle);
-                    }}
-                  />
-                </div>
-              );
-            })()}
-          </div>
-        )}
+        <BannerToolbarLayer
+          editingBannerText={props.editingBannerText}
+          generatedOverlays={generatedOverlays}
+          sceneRef={sceneRef}
+          sceneSize={sceneSize}
+          liveCaptionStyle={props.liveCaptionStyle}
+          onBannerTextStyleChange={props.onBannerTextStyleChange}
+          onOverlayLayoutChange={props.onOverlayLayoutChange}
+          onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+        />
 
         <canvas
           ref={props.canvasRef}
@@ -764,7 +552,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
             </React.Fragment>
           );
         })}
-      </div>
-    </div>
+    </CanvasShell>
   );
 };
