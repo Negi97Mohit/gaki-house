@@ -6,6 +6,8 @@
 
 import { SceneGraph } from "./SceneGraph";
 import { TransitionEngine } from "./TransitionEngine";
+import { EngineWatchdog } from "./EngineWatchdog";
+import { AppStateSync } from "./StateSynchronizer";
 
 // ─── Typed commands ───────────────────────────────────────────────────────────
 
@@ -28,6 +30,7 @@ export class BroadcastBus {
   private canvasStream: MediaStream | null = null;
   private mirrorAnimationFrame: number | null = null;
   private readonly rawCanvas: HTMLCanvasElement; // the proxy canvas
+  public readonly watchdog: EngineWatchdog;
 
   /**
    * @param canvas The raw HTMLCanvasElement whose control is transferred to the
@@ -43,6 +46,9 @@ export class BroadcastBus {
     BroadcastBus.activeInstance = this;
     this.rawCanvas = canvas;
     const offscreen = canvas.transferControlToOffscreen();
+
+    this.watchdog = new EngineWatchdog();
+    this.watchdog.start();
 
     // Phase D: The Double Canvas Mirror Workaround
     // Chromium Bug 754408: captureStream() on an HTMLCanvasElement that has been
@@ -135,6 +141,7 @@ export class BroadcastBus {
       try {
         // The rawCanvas acts as a proxy to the OffscreenCanvas worker.
         ctx.drawImage(this.rawCanvas, 0, 0, 1920, 1080);
+        this.watchdog.reportFrameTick();
       } catch (e) {
         // In rare cases where the context gets detached or isn't painted yet
       }
@@ -178,6 +185,8 @@ export class BroadcastBus {
       this.canvasStream.getTracks().forEach(t => t.stop());
       this.canvasStream = null;
     }
+
+    this.watchdog.stop();
 
     if (BroadcastBus.activeInstance === this) {
       BroadcastBus.activeInstance = null;

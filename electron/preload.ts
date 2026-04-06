@@ -35,6 +35,11 @@ contextBridge.exposeInMainWorld("electron", {
     delete: (key: string) => ipcRenderer.invoke("storage:delete", key),
   },
 
+  // Telemetry Logger
+  logger: {
+    appendLine: (line: string) => ipcRenderer.send("logger:append", line),
+  },
+
   // Desktop Capturer
   getDesktopSources: (options: any) =>
     ipcRenderer.invoke("get-desktop-sources", options),

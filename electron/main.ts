@@ -586,6 +586,30 @@ function setupIpcHandlers() {
       }, 15000);
     });
   });
+
+  // 7. LOGGER HANDLERS
+  const logPath = path.join(app.getPath("userData"), "telemetry.log");
+  const oldPath = path.join(app.getPath("userData"), "telemetry.old.log");
+  let checkingRotation = false;
+
+  ipcMain.on("logger:append", (event, line: string) => {
+    // Fire-and-forget async append prevents blocking any threads.
+    fs.appendFile(logPath, line + "\n", () => {
+      // Very cheap rotation check guard preventing stat races
+      if (!checkingRotation) {
+        checkingRotation = true;
+        fs.stat(logPath, (err, stats) => {
+          if (!err && stats.size > 10 * 1024 * 1024) { // 10MB limit
+            fs.rename(logPath, oldPath, () => {
+              checkingRotation = false;
+            });
+          } else {
+            checkingRotation = false;
+          }
+        });
+      }
+    });
+  });
 }
 
 // --- SERVER & APP LIFECYCLE ---

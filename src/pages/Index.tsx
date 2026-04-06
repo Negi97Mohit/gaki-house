@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, useState } from "react";
+import { useEffect } from "react";
 import type { BroadcastBus } from "@/kernel/engine/BroadcastBus";
 import { cn } from "@/shared/lib/utils";
 import { Loader } from "lucide-react";
@@ -18,7 +19,8 @@ import { useRtmpStream } from "@/features/stream/hooks/useRtmpStream";
 import { FatalErrorDialog } from "@/features/stream/ui/FatalErrorDialog"; // NEW IMPORT
 import { useOmegleStore } from "@/stores/omegle.store";
 import { OmegleMode } from "@/features/omegle/ui/OmegleMode";
-
+import { BroadcastStatsPanel } from "@/features/studio/ui/panels/BroadcastStatsPanel";
+import { AppStateSync } from "@/kernel/engine/StateSynchronizer";
 const Index = () => {
   const editor = useEditorOrchestrator();
   const [kernel, setKernel] = useState<BroadcastBus | null>(null);
@@ -77,6 +79,21 @@ const Index = () => {
     }
   }, [isOmegleMode, enterOmegleMode, exitOmegleMode]);
 
+
+  // Phase E: Restore persisted session state on mount
+  useEffect(() => {
+    AppStateSync.restore().then(savedState => {
+      if (savedState?.scenes?.length) {
+        console.log('[Index] Restoring', savedState.scenes.length, 'scene(s) from previous session');
+        const firstId = sceneManager.importScenes(savedState.scenes);
+        if (firstId) sceneManager.handleSceneSelect(firstId);
+      } else {
+        console.log('[Index] No previous session state found');
+      }
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+
   const handleImportOBSScenes = useCallback(
     (scenes: import("@/types/caption").SceneState[]) => {
       console.log('[Index] handleImportOBSScenes called with', scenes.length, 'scene(s)');
@@ -130,7 +147,7 @@ const Index = () => {
           />
 
           <IndexOverlays editor={editor} />
-
+          <BroadcastStatsPanel />
           <BottomNavigation
             onSaveLayout={layoutManager.handleSaveLayout}
             onAiCommandSubmit={processTranscript}
