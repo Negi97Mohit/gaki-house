@@ -9,9 +9,10 @@ import { toast } from "sonner";
 
 interface IndexOverlaysProps {
   editor: any; // Return type of useEditorOrchestrator
+  onSceneSelectOverride?: (sceneId: string, subsceneId?: string) => void;
 }
 
-export const IndexOverlays: React.FC<IndexOverlaysProps> = ({ editor }) => {
+export const IndexOverlays: React.FC<IndexOverlaysProps> = ({ editor, onSceneSelectOverride }) => {
   const {
     sceneManager,
     ui,
@@ -29,7 +30,7 @@ export const IndexOverlays: React.FC<IndexOverlaysProps> = ({ editor }) => {
         activeSceneId={sceneManager.activeSceneId}
         activeSubsceneId={sceneManager.activeSubsceneId}
         transitions={sceneManager.sceneTransitions}
-        onSceneSelect={sceneManager.handleSceneSelect}
+        onSceneSelect={onSceneSelectOverride || sceneManager.handleSceneSelect}
         onSceneAdd={sceneManager.handleAddScene}
         onSubsceneAdd={sceneManager.handleAddSubscene}
         onTransitionClick={sceneManager.setActiveTransition}

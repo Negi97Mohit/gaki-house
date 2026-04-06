@@ -41,6 +41,7 @@ import { BannerToolbarLayer } from "@/features/canvas/ui/BannerToolbarLayer";
 import { BroadcastBus } from "@/kernel/engine/BroadcastBus";
 import { buildSceneGraph } from "@/kernel/engine/SceneGraph";
 import { useOverlayMediaPool } from "@/kernel/hooks/useOverlayMediaPool";
+import { useStingerTransition } from "@/features/canvas/hooks/useStingerTransition";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   useEffect(() => {
@@ -202,6 +203,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     isFaceTrackingEnabled: props.isAutoFramingEnabled,
     onUserPositionChange: props.onUserPositionChange,
   });
+
+  // F2: Stinger Transition Hook
+  useStingerTransition(props.stingerConfig || null, kernelRef as any);
 
   // F3: Overlay Media Pool (eager loading of OBS assets)
   // Only start sending frames to the worker once ALL assets for the scene are ready.

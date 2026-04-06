@@ -18,6 +18,7 @@ let pendingTo: SceneGraph | null = null;
 let latestCamera: ImageBitmap | null = null;
 let latestScreen: ImageBitmap | null = null;
 let latestOverlays: Array<{ id: string, bitmap: ImageBitmap, x: number, y: number, w: number, h: number }> = [];
+let currentStinger: ImageBitmap | null = null;
 // Generic persistent graph for F1/F2 background fill mapping
 let latestGraph: SceneGraph | null = null;
 
@@ -130,6 +131,24 @@ self.onmessage = (event: MessageEvent) => {
       break;
     }
 
+    case "STINGER_START": {
+      if (currentStinger) {
+        currentStinger.close();
+      }
+      currentStinger = data.payload.bitmap;
+      if (ctx) drawF2CompositingSequence(ctx);
+      break;
+    }
+
+    case "STINGER_STOP": {
+      if (currentStinger) {
+        currentStinger.close();
+        currentStinger = null;
+      }
+      if (ctx) drawF2CompositingSequence(ctx);
+      break;
+    }
+
     case "DESTROY": {
       ctx = null;
       pendingFrom = null;
@@ -184,6 +203,11 @@ function drawF2CompositingSequence(ctx: OffscreenCanvasRenderingContext2D) {
     const w = (frame.w / 100) * ctx.canvas.width;
     const h = (frame.h / 100) * ctx.canvas.height;
     ctx.drawImage(frame.bitmap, x, y, w, h);
+  }
+
+  // 5. Stinger layer (Absolute Highest)
+  if (currentStinger) {
+    ctx.drawImage(currentStinger, 0, 0, ctx.canvas.width, ctx.canvas.height);
   }
 
   // (Overlays and other generic scene layers not yet fully interleaved dynamically below)

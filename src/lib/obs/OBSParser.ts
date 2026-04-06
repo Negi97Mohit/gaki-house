@@ -27,6 +27,14 @@ interface OBSRawCollection {
   scene_collection_name?: string;
   name?: string; // older export format
   sources?: OBSRawSource[];
+  transitions?: Array<{
+    id: string;
+    name: string;
+    settings: {
+      path?: string;
+      transition_point?: number;
+    };
+  }>;
 }
 
 // ─── Typed output shapes ──────────────────────────────────────────────────────
@@ -61,6 +69,10 @@ export interface OBSSceneCollection {
   baseWidth: number;
   /** OBS canvas height (typically 1080) */
   baseHeight: number;
+  stingerConfig?: {
+    path: string;
+    transitionPoint: number;
+  };
 }
 
 // ─── Parser ───────────────────────────────────────────────────────────────────
@@ -149,10 +161,23 @@ export function parseOBSCollection(json: unknown): OBSSceneCollection {
     return { name: rawScene.name, items };
   });
 
+  let stingerConfig;
+  if (Array.isArray(raw.transitions)) {
+    const stinger = raw.transitions.find((t) => t.id === "obs_stinger_transition");
+    if (stinger?.settings?.path && stinger?.settings?.transition_point !== undefined) {
+      stingerConfig = {
+        path: stinger.settings.path,
+        transitionPoint: stinger.settings.transition_point,
+      };
+      console.log(`[OBSParser] Found Stinger Transition: ${stingerConfig.path} (${stingerConfig.transitionPoint}ms)`);
+    }
+  }
+
   return {
     name: collectionName,
     scenes,
     baseWidth: DEFAULT_BASE_WIDTH,
     baseHeight: DEFAULT_BASE_HEIGHT,
+    stingerConfig,
   };
 }

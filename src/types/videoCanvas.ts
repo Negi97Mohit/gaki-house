@@ -17,6 +17,7 @@ import { RecordingSession } from "@/types/editor";
 
 export interface VideoCanvasProps {
     sceneId: string;
+    stingerConfig?: { path: string; transitionPoint: number } | null;
     isTransitioningIn?: boolean;
     isTransitioningOut?: boolean;
     transition?: SceneTransition | null;

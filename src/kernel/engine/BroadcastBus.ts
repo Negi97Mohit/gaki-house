@@ -114,6 +114,29 @@ export class BroadcastBus {
     this.cameraSourceCanvas = null;
   }
 
+  // F2 Stinger Support
+  public triggerStingerPlayback?: () => boolean;
+
+  public sendStingerFrame(bitmap: ImageBitmap) {
+    if (!this.worker) {
+      bitmap.close();
+      return;
+    }
+    this.worker.postMessage(
+      {
+        type: "STINGER_START",
+        payload: { bitmap }
+      },
+      [bitmap] // transfer ownership directly
+    );
+  }
+
+  public clearStinger() {
+    if (this.worker) {
+      this.worker.postMessage({ type: "STINGER_STOP" });
+    }
+  }
+
   public startScreenFeed(sourceVideo: HTMLVideoElement) {
     if (this.screenSourceVideo === sourceVideo) return;
     

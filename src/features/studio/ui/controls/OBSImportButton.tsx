@@ -9,7 +9,7 @@ import { parseOBSCollection } from "@/lib/obs/OBSParser";
 import { mapOBSCollectionToScenes } from "@/lib/obs/OBSSourceMapper";
 
 interface OBSImportButtonProps {
-  onImportOBSScenes: (scenes: SceneState[]) => void;
+  onImportOBSScenes: (scenes: SceneState[], stingerConfig?: { path: string; transitionPoint: number }) => void;
 }
 
 export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
@@ -54,7 +54,7 @@ export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
         console.log(
           `[OBSImportButton] Calling onImportOBSScenes with ${scenes.length} scene(s)`
         );
-        onImportOBSScenes(scenes);
+        onImportOBSScenes(scenes, collection.stingerConfig);
         toast.success(
           `Imported ${scenes.length} scene${scenes.length > 1 ? "s" : ""} from OBS`
         );

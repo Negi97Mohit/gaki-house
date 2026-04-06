@@ -24,6 +24,7 @@ import { AppStateSync } from "@/kernel/engine/StateSynchronizer";
 const Index = () => {
   const editor = useEditorOrchestrator();
   const [kernel, setKernel] = useState<BroadcastBus | null>(null);
+  const [stingerConfig, setStingerConfig] = useState<{ path: string; transitionPoint: number } | null>(null);
 
   const {
     activeScene,
@@ -79,6 +80,30 @@ const Index = () => {
     }
   }, [isOmegleMode, enterOmegleMode, exitOmegleMode]);
 
+  // F2: Stinger scene swap logic
+  const handleSceneSelectWithStinger = useCallback((sceneId: string, subsceneId?: string) => {
+    if (sceneId === editor.sceneManager.activeSceneId) return;
+    
+    const invokeSwitch = () => {
+      if (subsceneId) {
+        editor.sceneManager.handleSceneSelectWithSubscene(sceneId, subsceneId);
+      } else {
+        editor.sceneManager.handleSceneSelect(sceneId);
+      }
+    };
+
+    if (stingerConfig && kernel?.triggerStingerPlayback) {
+      const started = kernel.triggerStingerPlayback();
+      if (started) {
+        setTimeout(invokeSwitch, stingerConfig.transitionPoint);
+        return;
+      }
+    }
+    
+    console.warn("[Index] Stinger fallback - swapping instantly.");
+    invokeSwitch();
+  }, [editor.sceneManager, stingerConfig, kernel]);
+
 
   // Phase E: Restore persisted session state on mount
   useEffect(() => {
@@ -95,18 +120,26 @@ const Index = () => {
 
 
   const handleImportOBSScenes = useCallback(
-    (scenes: import("@/types/caption").SceneState[]) => {
+    (scenes: import("@/types/caption").SceneState[], incomingStingerConfig?: { path: string; transitionPoint: number }) => {
       console.log('[Index] handleImportOBSScenes called with', scenes.length, 'scene(s)');
       if (!scenes.length) {
         console.error('[Index] handleImportOBSScenes: scenes array is empty — nothing to import');
         return;
       }
+
+      if (incomingStingerConfig) {
+        console.log('[Index] Storing global stinger configuration:', incomingStingerConfig);
+        setStingerConfig(incomingStingerConfig);
+      }
+
       const firstId = sceneManager.importScenes(scenes);
       if (!firstId) {
         console.error('[Index] handleImportOBSScenes: importScenes returned null — no ID to switch to');
         return;
       }
       console.log('[Index] handleImportOBSScenes: switching to first imported scene', firstId);
+      
+      // First load instant without delaying so it boots
       sceneManager.handleSceneSelect(firstId);
     },
     [sceneManager]
@@ -144,9 +177,13 @@ const Index = () => {
             onRemoveVaultFile={vault.removeFile}
             onClearVault={vault.clearVault}
             onKernelReady={handleKernelReady}
+            stingerConfig={stingerConfig}
           />
 
-          <IndexOverlays editor={editor} />
+          <IndexOverlays 
+            editor={editor} 
+            onSceneSelectOverride={handleSceneSelectWithStinger} 
+          />
           <BroadcastStatsPanel />
           <BottomNavigation
             onSaveLayout={layoutManager.handleSaveLayout}

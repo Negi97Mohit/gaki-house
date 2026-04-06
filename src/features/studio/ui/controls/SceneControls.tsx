@@ -11,7 +11,10 @@ interface SceneControlsProps {
     onUndo: () => void;
     onRedo: () => void;
     onResetScene: () => void;
-    onImportOBSScenes?: (scenes: SceneState[]) => void;
+    onAutoSwitchToggle: (enabled: boolean) => void;
+    isAutoSwitching: boolean;
+    onImportOBSScenes?: (scenes: SceneState[], stingerConfig?: { path: string; transitionPoint: number }) => void;
+    onClearAllScenes?: () => void;
 }
 
 export const SceneControls: React.FC<SceneControlsProps> = ({

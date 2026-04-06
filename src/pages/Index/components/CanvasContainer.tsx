@@ -24,6 +24,7 @@ interface CanvasContainerProps {
   remoteStream?: MediaStream | null;
   /** Receives the BroadcastBus instance once created in VideoCanvas. */
   onKernelReady?: (kernel: any) => void;
+  stingerConfig?: { path: string; transitionPoint: number } | null;
 }
 
 export const CanvasContainer: React.FC<CanvasContainerProps> = ({
@@ -34,6 +35,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   onClearVault,
   remoteStream,
   onKernelReady,
+  stingerConfig,
 }) => {
   useEffect(() => {
     console.log("[CanvasContainer] mounted");
@@ -233,6 +235,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
           onUpdateOverlayMetadata: (id: string, metadata: any) =>
             setActiveOverlays(activeOverlays.map((o) => (o.id === id ? { ...o, metadata } : o))),
           onDeselectAll: selectionWrapper.handleDeselectAll,
+          stingerConfig,
         }}
         isTransitioning={isTransitioning}
         activeTransition={activeTransition as unknown as SceneTransition}
