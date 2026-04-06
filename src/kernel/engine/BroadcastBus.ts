@@ -17,6 +17,7 @@ export type BroadcastCommand =
   | { type: "RESIZE"; width: number; height: number }
   | { type: "TRANSITION_INIT"; from: SceneGraph; to: SceneGraph }
   | { type: "TRANSITION_FRAME"; alpha: number }
+  | { type: "CAMERA_FRAME"; bitmap: ImageBitmap }
   | { type: "DESTROY" };
 
 // ─── Bus ──────────────────────────────────────────────────────────────────────
@@ -31,6 +32,12 @@ export class BroadcastBus {
   private mirrorAnimationFrame: number | null = null;
   private readonly rawCanvas: HTMLCanvasElement; // the proxy canvas
   public readonly watchdog: EngineWatchdog;
+
+  private cameraFeedAnimationFrame: number | null = null;
+  private cameraSourceCanvas: HTMLCanvasElement | null = null;
+  
+  private screenFeedAnimationFrame: number | null = null;
+  private screenSourceVideo: HTMLVideoElement | null = null;
 
   /**
    * @param canvas The raw HTMLCanvasElement whose control is transferred to the
@@ -76,6 +83,71 @@ export class BroadcastBus {
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
+
+  public startCameraFeed(sourceCanvas: HTMLCanvasElement) {
+    if (this.cameraSourceCanvas === sourceCanvas) return;
+    this.stopCameraFeed();
+    this.cameraSourceCanvas = sourceCanvas;
+    console.log("[BroadcastBus] startCameraFeed: Linking camera canvas to worker via rAF");
+
+    const loop = async () => {
+      if (this.isDestroyed || !this.cameraSourceCanvas) return;
+      
+      try {
+        if (this.cameraSourceCanvas.width > 0 && this.cameraSourceCanvas.height > 0) {
+          const bitmap = await createImageBitmap(this.cameraSourceCanvas);
+          this.worker.postMessage({ type: "CAMERA_FRAME", bitmap }, [bitmap]);
+        }
+      } catch (e) {
+        // Ignored, might occur if canvas context is lost
+      }
+      this.cameraFeedAnimationFrame = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  public stopCameraFeed() {
+    if (this.cameraFeedAnimationFrame) {
+      cancelAnimationFrame(this.cameraFeedAnimationFrame);
+      this.cameraFeedAnimationFrame = null;
+    }
+    this.cameraSourceCanvas = null;
+  }
+
+  public startScreenFeed(sourceVideo: HTMLVideoElement) {
+    if (this.screenSourceVideo === sourceVideo) return;
+    this.stopScreenFeed();
+    this.screenSourceVideo = sourceVideo;
+    console.log("[BroadcastBus] startScreenFeed: Linking screen video to worker via rAF");
+
+    const loop = async () => {
+      if (this.isDestroyed || !this.screenSourceVideo) return;
+      
+      try {
+        if (this.screenSourceVideo.videoWidth > 0 && this.screenSourceVideo.videoHeight > 0) {
+          const bitmap = await createImageBitmap(this.screenSourceVideo);
+          this.worker.postMessage({ type: "SCREEN_FRAME", bitmap }, [bitmap]);
+        }
+      } catch (e) {
+        // Ignored, might occur if video isn't ready
+      }
+      this.screenFeedAnimationFrame = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  public stopScreenFeed() {
+    if (!this.screenSourceVideo && !this.screenFeedAnimationFrame) {
+      console.warn("[BroadcastBus] stopScreenFeed called but no screen feed is running.");
+      return;
+    }
+    if (this.screenFeedAnimationFrame) {
+      cancelAnimationFrame(this.screenFeedAnimationFrame);
+      this.screenFeedAnimationFrame = null;
+    }
+    this.screenSourceVideo = null;
+    console.log("[BroadcastBus] stopScreenFeed: Screen feed stopped");
+  }
 
   /**
    * Send a new scene graph snapshot for immediate rendering.
@@ -174,6 +246,8 @@ export class BroadcastBus {
   destroy(): void {
     if (this.isDestroyed) return;
     this.isDestroyed = true;
+    this.stopCameraFeed();
+    this.stopScreenFeed();
     console.log("[BroadcastBus] destroy called");
 
     if (this.mirrorAnimationFrame) {

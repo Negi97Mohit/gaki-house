@@ -28,6 +28,7 @@ interface CameraRendererProps {
   showAspectRatio?: boolean;
   cameraShape?: "rectangle" | "circle" | "rounded";
   onCameraShapeChange?: (shape: "rectangle" | "circle" | "rounded") => void;
+  onCameraCanvasReady?: (canvas: HTMLCanvasElement) => void;
   // Toolbar Props
   pipBorder?: { color: string; width: number };
   onPipBorderChange: (border: { color: string; width: number }) => void;
@@ -161,6 +162,14 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
       if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     };
   }, []);
+
+  const [hasFiredReady, setHasFiredReady] = useState(false);
+  useEffect(() => {
+    if (canvasRef.current && !hasFiredReady && props.onCameraCanvasReady) {
+      props.onCameraCanvasReady(canvasRef.current);
+      setHasFiredReady(true);
+    }
+  });
 
   // Time warp (slow-motion / hyperlapse) is now handled by the
   // TimeWarpBuffer inside GLRenderer — no playbackRate needed.

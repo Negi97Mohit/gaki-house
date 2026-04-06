@@ -14,6 +14,12 @@ let ctx: OffscreenCanvasRenderingContext2D | null = null;
 let pendingFrom: SceneGraph | null = null;
 let pendingTo: SceneGraph | null = null;
 
+// F2 Compositing Cache
+let latestCamera: ImageBitmap | null = null;
+let latestScreen: ImageBitmap | null = null;
+// Generic persistent graph for F1/F2 background fill mapping
+let latestGraph: SceneGraph | null = null;
+
 // ─── Message handler ──────────────────────────────────────────────────────────
 
 self.onmessage = (event: MessageEvent) => {
@@ -26,6 +32,7 @@ self.onmessage = (event: MessageEvent) => {
     alpha?: number;
     width?: number;
     height?: number;
+    bitmap?: ImageBitmap;
   };
 
   switch (data.type) {
@@ -49,14 +56,11 @@ self.onmessage = (event: MessageEvent) => {
     }
 
     case "RENDER": {
-      if (!ctx) {
-        console.warn("[canvas.worker] RENDER: ctx not ready");
-        return;
-      }
-      if (!data.graph) return;
+      if (!ctx || !data.graph) return;
       // Reset any pending transition state
       pendingFrom = null;
       pendingTo = null;
+      latestGraph = data.graph;
       clearCanvas(ctx);
       renderScene(ctx, data.graph, 1.0);
       console.log(
@@ -97,10 +101,28 @@ self.onmessage = (event: MessageEvent) => {
       break;
     }
 
+    case "CAMERA_FRAME": {
+      if (!ctx || !data.bitmap) return;
+      if (latestCamera) latestCamera.close();
+      latestCamera = data.bitmap;
+      drawF2CompositingSequence(ctx);
+      break;
+    }
+
+    case "SCREEN_FRAME": {
+      if (!ctx || !data.bitmap) return;
+      if (latestScreen) latestScreen.close();
+      latestScreen = data.bitmap;
+      drawF2CompositingSequence(ctx);
+      break;
+    }
+
     case "DESTROY": {
       ctx = null;
       pendingFrom = null;
       pendingTo = null;
+      if (latestCamera) { latestCamera.close(); latestCamera = null; }
+      if (latestScreen) { latestScreen.close(); latestScreen = null; }
       console.log("[canvas.worker] DESTROY: context released");
       self.close();
       break;
@@ -112,6 +134,36 @@ self.onmessage = (event: MessageEvent) => {
 };
 
 // ─── Rendering helpers ────────────────────────────────────────────────────────
+
+function drawF2CompositingSequence(ctx: OffscreenCanvasRenderingContext2D) {
+  clearCanvas(ctx);
+
+  // 1. Background fill
+  ctx.fillStyle = latestGraph?.blankCanvasColor ?? "#000000";
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  // 2. Screen share frame (full screen)
+  if (latestScreen) {
+    ctx.drawImage(latestScreen, 0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  // 3. Camera frame (PiP or Full depending on screen share presence)
+  if (latestCamera) {
+    if (latestScreen) {
+      // Screen share active -> Camera goes into PiP
+      const pipW = ctx.canvas.width * 0.3;
+      const pipH = ctx.canvas.height * 0.3;
+      const pipX = ctx.canvas.width * 0.65;
+      const pipY = ctx.canvas.height * 0.65;
+      ctx.drawImage(latestCamera, pipX, pipY, pipW, pipH);
+    } else {
+      // F1 behavior -> Camera is full screen
+      ctx.drawImage(latestCamera, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+  }
+
+  // (Overlays and other generic scene layers not yet fully interleaved dynamically below)
+}
 
 function clearCanvas(ctx: OffscreenCanvasRenderingContext2D): void {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

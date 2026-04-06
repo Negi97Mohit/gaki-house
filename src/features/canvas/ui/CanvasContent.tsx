@@ -71,6 +71,9 @@ interface CanvasContentProps {
   setIsDrawing: (isDrawing: boolean) => void;
   excalidrawElements: readonly any[];
   setExcalidrawElements: (elements: readonly any[]) => void;
+
+  onVideoElementReady?: (video: HTMLVideoElement) => void;
+  onVideoElementUnmount?: () => void;
 }
 
 export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
@@ -129,6 +132,9 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
     setIsDrawing,
     excalidrawElements,
     setExcalidrawElements,
+    
+    onVideoElementReady,
+    onVideoElementUnmount,
   } = props;
 
   if (dynamicLayout?.isActive && dynamicLayout.target) {
@@ -186,6 +192,8 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
       activeSequenceId={activeSequenceId}
       onUserPositionChange={onUserPositionChange}
       onCanvasLayoutChange={onCanvasLayoutChange}
+      onVideoElementReady={onVideoElementReady}
+      onVideoElementUnmount={onVideoElementUnmount}
     />
   ) : (
     renderCamera()
@@ -247,7 +255,7 @@ export const CanvasContent: React.FC<CanvasContentProps> = (props) => {
           onInternalDragStop={onInternalDragStop}
           onClose={() => onScreenShareModeChange("off")}
           renderContent={renderCamera}
-          renderScreen={() => <VideoPlayer stream={screenStream} />}
+          renderScreen={() => <VideoPlayer stream={screenStream} onVideoElementReady={onVideoElementReady} onVideoElementUnmount={onVideoElementUnmount} />}
           currentAspectRatio={
             cameraShape === "circle"
               ? 1

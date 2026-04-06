@@ -289,6 +289,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       onPipPositionChange={props.onPipPositionChange}
       onPipSizeChange={props.onPipSizeChange}
       onCameraAspectRatioChange={props.sidebarProps?.onCameraAspectRatioChange}
+      onCameraCanvasReady={(canvas) => kernelRef.current?.startCameraFeed(canvas)}
     />
   );
 
@@ -341,6 +342,8 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
           screenStream={screenStream}
           cameraStream={cameraStream}
           blankCanvasColor={props.blankCanvasColor}
+          onVideoElementReady={(video) => kernelRef.current?.startScreenFeed(video)}
+          onVideoElementUnmount={() => kernelRef.current?.stopScreenFeed()}
         />
 
         <CaptionLayer

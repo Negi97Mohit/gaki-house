@@ -38,6 +38,9 @@ interface ScreenShareViewProps {
   ) => void;
   onSetSectionDefault?: (sectionId: string) => void;
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
+  
+  onVideoElementReady?: (video: HTMLVideoElement) => void;
+  onVideoElementUnmount?: () => void;
 }
 
 export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
@@ -62,6 +65,8 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
   onSectionCameraSettingsChange,
   onSetSectionDefault,
   onUserPositionChange,
+  onVideoElementReady,
+  onVideoElementUnmount,
 }) => {
   // 1. If we have a Grid Layout, render it
   if (canvasLayout) {
@@ -126,7 +131,7 @@ export const ScreenShareView: React.FC<ScreenShareViewProps> = ({
 
   // 2. Screen Share Mode
   if (screenShareMode === "screen" && screenStream) {
-    return <VideoPlayer stream={screenStream} />;
+    return <VideoPlayer stream={screenStream} onVideoElementReady={onVideoElementReady} onVideoElementUnmount={onVideoElementUnmount} />;
   }
 
   // 3. Logic for Standard Canvas / PIP Background

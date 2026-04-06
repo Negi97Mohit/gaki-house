@@ -30,6 +30,7 @@ interface LegacyVideoCanvasCameraProps {
   onPipPositionChange?: (pos: { x: number; y: number }) => void;
   onPipSizeChange?: (size: { width: number; height: number }) => void;
   onCameraAspectRatioChange?: (ratio: string) => void;
+  onCameraCanvasReady?: (canvas: HTMLCanvasElement) => void;
 }
 
 // New props interface for grid sections
@@ -44,6 +45,7 @@ interface NewVideoCanvasCameraProps {
   activeSequenceId?: string | null;
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
   isActive?: boolean;
+  onCameraCanvasReady?: (canvas: HTMLCanvasElement) => void;
 }
 
 // Union type for both APIs
@@ -93,6 +95,7 @@ export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
       videoDevices,
       activeSequenceId,
       onUserPositionChange,
+      onCameraCanvasReady,
     } = props;
 
     const safeSettings = { ...DEFAULT_CAMERA_SETTINGS, ...cameraSettings };
@@ -116,6 +119,7 @@ export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
             isLowLightEnabled={safeSettings.isLowLightEnabled}
             isAutoFramingEnabled={safeSettings.isAutoFramingEnabled}
             videoFilter={safeSettings.videoFilter || "none"}
+            onCameraCanvasReady={onCameraCanvasReady}
             isNeonEdgeEnabled={safeSettings.isNeonEdgeEnabled}
             neonIntensity={safeSettings.neonIntensity || 50}
             neonColor={safeSettings.neonColor || "#00FFFF"}
@@ -216,6 +220,7 @@ export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
     processedCanvas,
     facePositionRef,
     onCameraAspectRatioChange,
+    onCameraCanvasReady,
   } = props;
 
   return (
@@ -236,6 +241,7 @@ export const VideoCanvasCamera: React.FC<VideoCanvasCameraProps> = (props) => {
           isLowLightEnabled={isLowLightEnabled}
           isAutoFramingEnabled={isAutoFramingEnabled}
           videoFilter={videoFilter}
+          onCameraCanvasReady={onCameraCanvasReady}
           isNeonEdgeEnabled={sidebarProps?.isNeonEdgeEnabled || false}
           neonIntensity={sidebarProps?.neonIntensity || 50}
           neonColor={sidebarProps?.neonColor || "#00FFFF"}

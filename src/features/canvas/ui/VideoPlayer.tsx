@@ -6,22 +6,32 @@ interface VideoPlayerProps {
   className?: string;
   style?: React.CSSProperties;
   muted?: boolean;
+  onVideoElementReady?: (video: HTMLVideoElement) => void;
+  onVideoElementUnmount?: () => void;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  stream,
-  className,
-  style,
-  muted = true,
-}) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
+  const { stream, className, style, muted = true } = props;
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const { onVideoElementReady, onVideoElementUnmount } = props;
 
   useEffect(() => {
     const videoElement = videoRef.current;
     if (videoElement && stream) {
       videoElement.srcObject = stream;
+      if (onVideoElementReady) {
+        onVideoElementReady(videoElement);
+      }
     }
-  }, [stream]);
+    
+    return () => {
+      // Safely notify that video element is cleaning up to stop stream hooks
+      if (onVideoElementUnmount) {
+        onVideoElementUnmount();
+      }
+    };
+  }, [stream, onVideoElementReady, onVideoElementUnmount]);
 
   return (
     <video
