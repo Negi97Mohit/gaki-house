@@ -45,7 +45,7 @@ export const IndexOverlays: React.FC<IndexOverlaysProps> = ({ editor, onSceneSel
         onResetScene={sceneManager.handleResetSceneToDefault}
         isHidden={ui.isSceneTabsHidden}
         onHide={() => ui.setIsSceneTabsHidden(true)}
-        isPopoverOpen={sceneManager.activeTransition !== null}
+        isPopoverOpen={sceneManager.activeTransition !== null && !sceneManager.isTransitioning}
         onApplyStreamStyle={(preset: any) => {
           const newSubscenes = sceneManager.createScenesFromStreamStyle(preset);
           toast.success(
@@ -55,7 +55,7 @@ export const IndexOverlays: React.FC<IndexOverlaysProps> = ({ editor, onSceneSel
       />
 
       <TransitionPopover
-        transition={sceneManager.activeTransition}
+        transition={sceneManager.isTransitioning ? null : sceneManager.activeTransition}
         onClose={() => sceneManager.setActiveTransition(null)}
         onTransitionChange={sceneManager.handleTransitionChange}
       />
