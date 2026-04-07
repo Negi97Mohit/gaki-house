@@ -50,6 +50,8 @@ export type GeneratedLayout = {
   size: { width: number; height: number };
   zIndex: number;
   rotation: number;
+  /** 0..1, defaults to 1 */
+  opacity?: number;
   // Control whether overlay should render above or below video elements
   layerOrder?: "above-video" | "below-video" | "auto";
   isBehindUser?: boolean; // New prop for user segmentation depth
@@ -57,6 +59,47 @@ export type GeneratedLayout = {
   /** Raw OBS scale from import — used to recompute size after native dims are known */
   obsScale?: { x: number; y: number };
 };
+
+// ─── OBS-style universal asset overlays (used by the asset editor) ─────────────
+
+export type ObsSourceType =
+  | "text"
+  | "image"
+  | "video"
+  | "browser"
+  | "color"
+  | "group"
+  | "unknown";
+
+export type ObsAssetData =
+  | { type: "text"; text: string; font: string; color: string; fontSize: number }
+  | {
+      type: "media";
+      path: string;
+      isVideo: boolean;
+      loop: boolean;
+      /** Optional media adjustments (Feature 5) */
+      brightness?: number; // 0..2, default 1
+      contrast?: number; // 0..2, default 1
+      borderRadius?: number; // px at 1920x1080 reference; DOM scales visually
+      crop?: { x: number; y: number; w: number; h: number }; // 0..1 in source space
+      playbackRate?: number; // video only
+      volume?: number; // 0..1, video only
+    }
+  | { type: "browser"; url: string; width: number; height: number }
+  | { type: "color"; color: string; borderRadius?: number }
+  | { type: "unknown"; rawType: string };
+
+export interface ObsOverlayState {
+  id: string;
+  name: string;
+  sourceType: ObsSourceType;
+  isVisible: boolean;
+  /** When true, editor interactions should be disabled */
+  isLocked?: boolean;
+  layout: GeneratedLayout;
+  sourceData: ObsAssetData;
+}
 export interface GeneratedOverlay {
   id: string;
   name: string;

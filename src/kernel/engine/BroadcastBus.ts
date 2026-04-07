@@ -8,6 +8,7 @@ import { SceneGraph } from "./SceneGraph";
 import { TransitionEngine } from "./TransitionEngine";
 import { EngineWatchdog } from "./EngineWatchdog";
 import { AppStateSync } from "./StateSynchronizer";
+import type { ObsOverlayState } from "@/types/caption";
 
 // ─── Typed commands ───────────────────────────────────────────────────────────
 
@@ -18,6 +19,25 @@ export type BroadcastCommand =
   | { type: "TRANSITION_INIT"; from: SceneGraph; to: SceneGraph }
   | { type: "TRANSITION_FRAME"; alpha: number }
   | { type: "CAMERA_FRAME"; bitmap: ImageBitmap }
+  | { type: "SCREEN_FRAME"; bitmap: ImageBitmap }
+  | {
+      type: "OVERLAY_FRAMES";
+      frames: Array<{
+        id: string;
+        bitmap: ImageBitmap;
+        x: number;
+        y: number;
+        w: number;
+        h: number;
+      }>;
+    }
+  | { type: "STINGER_START"; payload: { bitmap: ImageBitmap } }
+  | { type: "STINGER_STOP" }
+  // ─── OBS asset editor sync (Feature 9) ────────────────────────────────────
+  | { type: "UPDATE_ASSET"; asset: ObsOverlayState }
+  | { type: "REORDER_ASSETS"; orderedIds: string[] }
+  | { type: "REMOVE_ASSET"; id: string }
+  | { type: "BATCH_UPDATE"; overlays: ObsOverlayState[] }
   | { type: "DESTROY" };
 
 // ─── Bus ──────────────────────────────────────────────────────────────────────
@@ -38,6 +58,8 @@ export class BroadcastBus {
   
   private screenFeedAnimationFrame: number | null = null;
   private screenSourceVideo: HTMLVideoElement | null = null;
+  private assetUpdateRaf: number | null = null;
+  private pendingAssetUpdates = new Map<string, ObsOverlayState>();
 
   /**
    * @param canvas The raw HTMLCanvasElement whose control is transferred to the
@@ -233,6 +255,26 @@ export class BroadcastBus {
   }
 
   /**
+   * Throttled single-asset update: at most one UPDATE_ASSET per animation frame.
+   * Drops intermediate updates per asset id (keeps latest).
+   */
+  public dispatchAssetUpdateThrottled(asset: ObsOverlayState) {
+    if (this.isDestroyed) return;
+    this.pendingAssetUpdates.set(asset.id, asset);
+    if (this.assetUpdateRaf !== null) return;
+
+    this.assetUpdateRaf = requestAnimationFrame(() => {
+      this.assetUpdateRaf = null;
+      if (this.isDestroyed) return;
+      const updates = Array.from(this.pendingAssetUpdates.values());
+      this.pendingAssetUpdates.clear();
+      for (const a of updates) {
+        this.worker.postMessage({ type: "UPDATE_ASSET", asset: a } satisfies BroadcastCommand);
+      }
+    });
+  }
+
+  /**
    * Send a new scene graph snapshot for immediate rendering.
    */
   render(graph: SceneGraph): void {
@@ -333,6 +375,12 @@ export class BroadcastBus {
     this.stopScreenFeed();
     this.stopOverlayFeeds();
     console.log("[BroadcastBus] destroy called");
+
+    if (this.assetUpdateRaf !== null) {
+      cancelAnimationFrame(this.assetUpdateRaf);
+      this.assetUpdateRaf = null;
+    }
+    this.pendingAssetUpdates.clear();
 
     if (this.mirrorAnimationFrame) {
       cancelAnimationFrame(this.mirrorAnimationFrame);

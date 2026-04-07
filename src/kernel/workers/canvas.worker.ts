@@ -4,6 +4,7 @@
 // RULE: No DOM access, no React, no Electron IPC — pure Canvas 2D API only.
 
 import type { SceneGraph, SceneGraphLayer } from "../engine/SceneGraph";
+import type { ObsOverlayState } from "@/types/caption";
 
 export type {}; // ensures this file is treated as a module, not a script
 
@@ -29,6 +30,11 @@ let currentStinger: ImageBitmap | null = null;
 // Generic persistent graph for F1/F2 background fill mapping
 let latestGraph: SceneGraph | null = null;
 
+// ─── OBS asset editor render state (Feature 9) ────────────────────────────────
+let obsOverlaysById = new Map<string, ObsOverlayState>();
+let obsOrderedIds: string[] = [];
+let obsFramesById = new Map<string, ImageBitmap>();
+
 // ─── Message handler ──────────────────────────────────────────────────────────
 
 self.onmessage = (event: MessageEvent) => {
@@ -50,6 +56,11 @@ self.onmessage = (event: MessageEvent) => {
       w: number;
       h: number;
     }>;
+    asset?: ObsOverlayState;
+    overlays?: ObsOverlayState[];
+    orderedIds?: string[];
+    id?: string;
+    payload?: { bitmap: ImageBitmap };
   };
 
   switch (data.type) {
@@ -141,6 +152,46 @@ self.onmessage = (event: MessageEvent) => {
         frame.bitmap.close();
       }
       latestOverlays = data.frames;
+      // Keep a keyed mirror for the OBS editor rendering path
+      for (const [, bmp] of obsFramesById) bmp.close();
+      obsFramesById.clear();
+      for (const frame of data.frames) {
+        obsFramesById.set(frame.id, frame.bitmap);
+      }
+      drawF2CompositingSequence(ctx);
+      break;
+    }
+
+    case "UPDATE_ASSET": {
+      if (!ctx || !data.asset) return;
+      obsOverlaysById.set(data.asset.id, data.asset);
+      if (!obsOrderedIds.includes(data.asset.id)) obsOrderedIds.push(data.asset.id);
+      drawF2CompositingSequence(ctx);
+      break;
+    }
+
+    case "REORDER_ASSETS": {
+      if (!ctx || !data.orderedIds) return;
+      obsOrderedIds = data.orderedIds.slice();
+      drawF2CompositingSequence(ctx);
+      break;
+    }
+
+    case "REMOVE_ASSET": {
+      if (!ctx || !data.id) return;
+      obsOverlaysById.delete(data.id);
+      obsOrderedIds = obsOrderedIds.filter((x) => x !== data.id);
+      const bmp = obsFramesById.get(data.id);
+      if (bmp) bmp.close();
+      obsFramesById.delete(data.id);
+      drawF2CompositingSequence(ctx);
+      break;
+    }
+
+    case "BATCH_UPDATE": {
+      if (!ctx || !data.overlays) return;
+      obsOverlaysById = new Map(data.overlays.map((o) => [o.id, o]));
+      obsOrderedIds = data.overlays.map((o) => o.id);
       drawF2CompositingSequence(ctx);
       break;
     }
@@ -149,7 +200,7 @@ self.onmessage = (event: MessageEvent) => {
       if (currentStinger) {
         currentStinger.close();
       }
-      currentStinger = data.payload.bitmap;
+      currentStinger = data.payload!.bitmap;
       if (ctx) drawF2CompositingSequence(ctx);
       break;
     }
@@ -177,6 +228,10 @@ self.onmessage = (event: MessageEvent) => {
       }
       for (const frame of latestOverlays) frame.bitmap.close();
       latestOverlays = [];
+      for (const [, bmp] of obsFramesById) bmp.close();
+      obsFramesById.clear();
+      obsOverlaysById.clear();
+      obsOrderedIds = [];
       console.log("[canvas.worker] DESTROY: context released");
       self.close();
       break;
@@ -193,12 +248,24 @@ function drawF2CompositingSequence(ctx: OffscreenCanvasRenderingContext2D) {
   clearCanvas(ctx);
 
   // 4. OBS Overlays (Above Camera)
-  for (const frame of latestOverlays) {
-    const x = (frame.x / 100) * ctx.canvas.width;
-    const y = (frame.y / 100) * ctx.canvas.height;
-    const w = (frame.w / 100) * ctx.canvas.width;
-    const h = (frame.h / 100) * ctx.canvas.height;
-    ctx.drawImage(frame.bitmap, x, y, w, h);
+  // Prefer the new OBS editor path (ordered overlays + per-asset transforms),
+  // but fall back to legacy frame list if no overlay metadata is present.
+  if (obsOrderedIds.length > 0) {
+    for (const id of obsOrderedIds) {
+      const overlay = obsOverlaysById.get(id);
+      if (!overlay || overlay.isVisible === false) continue;
+      const bitmap = obsFramesById.get(id);
+      if (!bitmap) continue;
+      renderObsOverlay(ctx, overlay, bitmap);
+    }
+  } else {
+    for (const frame of latestOverlays) {
+      const x = (frame.x / 100) * ctx.canvas.width;
+      const y = (frame.y / 100) * ctx.canvas.height;
+      const w = (frame.w / 100) * ctx.canvas.width;
+      const h = (frame.h / 100) * ctx.canvas.height;
+      ctx.drawImage(frame.bitmap, x, y, w, h);
+    }
   }
 
   // 5. Stinger layer (Absolute Highest)
@@ -207,6 +274,65 @@ function drawF2CompositingSequence(ctx: OffscreenCanvasRenderingContext2D) {
   }
 
   // (Overlays and other generic scene layers not yet fully interleaved dynamically below)
+}
+
+function clamp01(n: number): number {
+  return Math.max(0, Math.min(1, n));
+}
+
+/**
+ * Full ctx.save/restore pattern for rendering one ObsOverlayState with:
+ * - percentage -> px mapping
+ * - rotation about center
+ * - opacity
+ * - crop (if present on media)
+ */
+function renderObsOverlay(
+  ctx: OffscreenCanvasRenderingContext2D,
+  overlay: ObsOverlayState,
+  bitmap: ImageBitmap,
+): void {
+  const { width: cw, height: ch } = ctx.canvas;
+  const x = (overlay.layout.position.x / 100) * cw;
+  const y = (overlay.layout.position.y / 100) * ch;
+  const w = (overlay.layout.size.width / 100) * cw;
+  const h = (overlay.layout.size.height / 100) * ch;
+
+  const opacity = clamp01(overlay.layout.opacity ?? 1);
+  const rotationRad = ((overlay.layout.rotation ?? 0) * Math.PI) / 180;
+
+  const cx = x + w / 2;
+  const cy = y + h / 2;
+
+  ctx.save();
+  ctx.globalAlpha = ctx.globalAlpha * opacity;
+  ctx.translate(cx, cy);
+  ctx.rotate(rotationRad);
+  ctx.translate(-w / 2, -h / 2);
+
+  // Crop is defined in source space (0..1)
+  let sx = 0;
+  let sy = 0;
+  let sw = bitmap.width;
+  let sh = bitmap.height;
+  if (overlay.sourceData.type === "media" && overlay.sourceData.crop) {
+    const c = overlay.sourceData.crop;
+    sx = Math.round(clamp01(c.x) * bitmap.width);
+    sy = Math.round(clamp01(c.y) * bitmap.height);
+    sw = Math.round(clamp01(c.w) * bitmap.width);
+    sh = Math.round(clamp01(c.h) * bitmap.height);
+    // Guard against invalid crops (zero/negative)
+    if (sw <= 0 || sh <= 0) {
+      ctx.restore();
+      return;
+    }
+    // Clamp within source bounds
+    if (sx + sw > bitmap.width) sw = bitmap.width - sx;
+    if (sy + sh > bitmap.height) sh = bitmap.height - sy;
+  }
+
+  ctx.drawImage(bitmap, sx, sy, sw, sh, 0, 0, w, h);
+  ctx.restore();
 }
 
 function clearCanvas(ctx: OffscreenCanvasRenderingContext2D): void {
