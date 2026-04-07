@@ -57,7 +57,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     // Guard: skip if already initialised (strict-mode second invoke) or no canvas
     if (kernelRef.current) return;
     if (!props.canvasRef?.current) {
-      console.warn("[VideoCanvas] kernel useEffect: canvasRef.current is null — skipping");
+      console.warn(
+        "[VideoCanvas] kernel useEffect: canvasRef.current is null — skipping",
+      );
       return;
     }
 
@@ -77,7 +79,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       kernelRef.current = null;
       console.log("[VideoCanvas] BroadcastBus destroyed on unmount");
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally empty — kernel is created once per mount lifecycle
   const { theme } = useTheme();
 
@@ -93,7 +95,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       setViewport: state.setViewport,
       sceneSize: state.sceneSize,
       containerSize: state.containerSize,
-    }))
+    })),
   );
 
   const {
@@ -121,7 +123,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       setDynamicPipPosition: state.setDynamicPipPosition,
       dynamicPipSize: state.dynamicPipSize,
       setDynamicPipSize: state.setDynamicPipSize,
-    }))
+    })),
   );
 
   // Resize Logic
@@ -184,7 +186,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         type: "generated" as const,
       })),
     ],
-    [textOverlays, browserOverlays, fileOverlays, generatedOverlays]
+    [textOverlays, browserOverlays, fileOverlays, generatedOverlays],
   );
 
   const hasBehindUserOverlay = useMemo(() => {
@@ -209,8 +211,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
 
   // F3: Overlay Media Pool (eager loading of OBS assets)
   // Only start sending frames to the worker once ALL assets for the scene are ready.
-  const { items: overlayItems, isReady: overlaysReady } = useOverlayMediaPool(fileOverlays, sceneId);
-  
+  const { items: overlayItems, isReady: overlaysReady } = useOverlayMediaPool(
+    fileOverlays,
+    sceneId,
+  );
+
   useEffect(() => {
     if (overlaysReady && kernelRef.current) {
       kernelRef.current.startOverlayFeeds(overlayItems);
@@ -220,7 +225,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   }, [overlaysReady, overlayItems]);
 
   const hasScreenSection = props.canvasLayout?.sections.some(
-    (s) => s.content.type === "screen"
+    (s) => s.content.type === "screen",
   );
 
   const { cameraStream, screenStream } = useVideoStreams({
@@ -236,12 +241,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         const updatedSections = props.canvasLayout.sections.map((s) =>
           s.content.type === "screen"
             ? { ...s, content: { type: "empty" } as const }
-            : s
+            : s,
         );
         if (
           updatedSections.some(
             (s, i) =>
-              s.content.type !== props.canvasLayout!.sections[i].content.type
+              s.content.type !== props.canvasLayout!.sections[i].content.type,
           )
         ) {
           props.onCanvasLayoutChange({
@@ -279,6 +284,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       className={className}
       style={style}
       stream={cameraStream}
+      isCameraOn={props.isVideoOn}
       cameraShape={props.cameraShape}
       pipBorder={props.pipBorder}
       pipShadow={props.pipShadow}
@@ -306,7 +312,9 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       onPipPositionChange={props.onPipPositionChange}
       onPipSizeChange={props.onPipSizeChange}
       onCameraAspectRatioChange={props.sidebarProps?.onCameraAspectRatioChange}
-      onCameraCanvasReady={(canvas) => kernelRef.current?.startCameraFeed(canvas)}
+      onCameraCanvasReady={(canvas) =>
+        kernelRef.current?.startCameraFeed(canvas)
+      }
     />
   );
 
@@ -318,7 +326,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       sceneRef={sceneRef}
       sceneStyle={getCanvasAspectRatioStyle(
         props.sidebarProps.canvasAspectRatio,
-        props.sidebarProps.customAspectRatio
+        props.sidebarProps.customAspectRatio,
       )}
       onClick={props.onDeselectAll}
       onMouseEnter={() => setIsCanvasHovered(true)}
@@ -326,287 +334,283 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       isMouseActive={props.isMouseActive}
       isFullscreen={props.isFullscreen}
     >
-        <CanvasHoverToolbar
-          blankCanvasColor={props.blankCanvasColor}
-          onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
-          onCanvasBackgroundUpload={props.onCanvasBackgroundUpload}
-          onCanvasBackgroundAssetSelect={props.onCanvasBackgroundAssetSelect}
-          isVisible={isCanvasHovered}
-          isMouseActive={props.isMouseActive}
-          canvasLayout={props.canvasLayout}
-          onCanvasLayoutChange={props.onCanvasLayoutChange}
-          activeSequenceId={props.activeSequenceId}
-          isChatbotOpen={props.isChatbotOpen}
-          onToggleChatbot={props.onChatbotToggle}
-        />
+      <CanvasHoverToolbar
+        blankCanvasColor={props.blankCanvasColor}
+        onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
+        onCanvasBackgroundUpload={props.onCanvasBackgroundUpload}
+        onCanvasBackgroundAssetSelect={props.onCanvasBackgroundAssetSelect}
+        isVisible={isCanvasHovered}
+        isMouseActive={props.isMouseActive}
+        canvasLayout={props.canvasLayout}
+        onCanvasLayoutChange={props.onCanvasLayoutChange}
+        activeSequenceId={props.activeSequenceId}
+        isChatbotOpen={props.isChatbotOpen}
+        onToggleChatbot={props.onChatbotToggle}
+      />
 
-        <CanvasContent
-          {...props}
-          dynamicLayout={dynamicLayout}
-          containerSize={containerSize}
-          dynamicPipSize={dynamicPipSize}
-          setDynamicPipSize={setDynamicPipSize}
-          dynamicPipPosition={dynamicPipPosition}
-          setDynamicPipPosition={setDynamicPipPosition}
-          dynamicSplitRatio={dynamicSplitRatio}
-          setDynamicSplitRatio={setDynamicSplitRatio}
-          setIsDraggingDynamicSplitter={setIsDraggingDynamicSplitter}
-          renderCamera={() => renderCamera()}
-          theme={theme}
-          fullTranscript={fullTranscript}
-          interimTranscript={interimTranscript}
-          sidebarProps={props.sidebarProps}
-          screenStream={screenStream}
-          cameraStream={cameraStream}
-          blankCanvasColor={props.blankCanvasColor}
-          onVideoElementReady={(video) => kernelRef.current?.startScreenFeed(video)}
-          onVideoElementUnmount={() => kernelRef.current?.stopScreenFeed()}
-        />
+      <CanvasContent
+        {...props}
+        dynamicLayout={dynamicLayout}
+        containerSize={containerSize}
+        dynamicPipSize={dynamicPipSize}
+        setDynamicPipSize={setDynamicPipSize}
+        dynamicPipPosition={dynamicPipPosition}
+        setDynamicPipPosition={setDynamicPipPosition}
+        dynamicSplitRatio={dynamicSplitRatio}
+        setDynamicSplitRatio={setDynamicSplitRatio}
+        setIsDraggingDynamicSplitter={setIsDraggingDynamicSplitter}
+        renderCamera={() => renderCamera()}
+        theme={theme}
+        fullTranscript={fullTranscript}
+        interimTranscript={interimTranscript}
+        sidebarProps={props.sidebarProps}
+        screenStream={screenStream}
+        cameraStream={cameraStream}
+        blankCanvasColor={props.blankCanvasColor}
+        onVideoElementReady={(video) =>
+          kernelRef.current?.startScreenFeed(video)
+        }
+        onVideoElementUnmount={() => kernelRef.current?.stopScreenFeed()}
+      />
 
-        <CaptionLayer
-          captionsEnabled={captionsEnabled}
-          fullTranscript={fullTranscript}
-          interimTranscript={interimTranscript}
-          sceneSize={sceneSize}
-          liveCaptionStyle={props.liveCaptionStyle as any}
-          dynamicStyle={props.dynamicStyle}
-          onCaptionLayoutChange={props.onCaptionLayoutChange}
-        />
+      <CaptionLayer
+        captionsEnabled={captionsEnabled}
+        fullTranscript={fullTranscript}
+        interimTranscript={interimTranscript}
+        sceneSize={sceneSize}
+        liveCaptionStyle={props.liveCaptionStyle as any}
+        dynamicStyle={props.dynamicStyle}
+        onCaptionLayoutChange={props.onCaptionLayoutChange}
+      />
 
-        <BannerToolbarLayer
-          editingBannerText={props.editingBannerText}
-          generatedOverlays={generatedOverlays}
-          sceneRef={sceneRef}
-          sceneSize={sceneSize}
-          liveCaptionStyle={props.liveCaptionStyle}
-          onBannerTextStyleChange={props.onBannerTextStyleChange}
-          onOverlayLayoutChange={props.onOverlayLayoutChange}
-          onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
-        />
+      <BannerToolbarLayer
+        editingBannerText={props.editingBannerText}
+        generatedOverlays={generatedOverlays}
+        sceneRef={sceneRef}
+        sceneSize={sceneSize}
+        liveCaptionStyle={props.liveCaptionStyle}
+        onBannerTextStyleChange={props.onBannerTextStyleChange}
+        onOverlayLayoutChange={props.onOverlayLayoutChange}
+        onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+      />
 
-        <canvas
-          ref={props.canvasRef}
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ zIndex: 100 }}
-        />
+      <canvas
+        ref={props.canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{ zIndex: 100 }}
+      />
 
-        <SnapLines ref={snapLinesRef} containerSize={sceneSize} />
+      <SnapLines ref={snapLinesRef} containerSize={sceneSize} />
 
-        {["below-video", "above-video"].map((order) => {
-          if (order === "below-video") {
-            return (
-              <div
-                key={order}
-                className="absolute inset-0 pointer-events-none"
-                style={{ zIndex: "var(--z-overlays-below-video)" }}
-              >
-                <OverlayLayer
-                  layerOrder="below-video"
-                  sceneId={sceneId}
-                  containerSize={sceneSize}
-                  viewport={viewport}
-                  htmlOverlays={generatedOverlays}
-                  browserOverlays={browserOverlays}
-                  fileOverlays={fileOverlays}
-                  textOverlays={textOverlays}
-                  activeDynamicTargetId={
-                    dynamicLayout?.isActive
-                      ? dynamicLayout.target?.id
-                      : undefined
-                  }
-                  onSetDynamicLayout={onSetDynamicLayout}
-                  onOverlayLayoutChange={props.onOverlayLayoutChange}
-                  onRemoveOverlay={props.onRemoveOverlay}
-                  onPreviewGenerated={props.onPreviewGenerated}
-                  onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
-                  selectedGeneratedId={props.selectedGeneratedId}
-                  onSelectGenerated={props.setSelectedGeneratedId}
-                  portalContainer={
-                    typeof props.portalContainer === "function"
-                      ? null
-                      : props.portalContainer
-                  }
-                  allOverlays={allOverlays}
-                  onSnapGuidesChange={(guides) =>
-                    snapLinesRef.current?.setGuides(guides)
-                  }
-                  onRemoveBrowser={props.onRemoveBrowser}
-                  onBrowserUrlChange={props.onBrowserUrlChange}
-                  onBrowserLayoutChange={props.onBrowserLayoutChange}
-                  selectedBrowserId={props.selectedBrowserId}
-                  onSelectBrowser={props.setSelectedBrowserId}
-                  onRemoveFile={props.onRemoveFile}
-                  onFileLayoutChange={props.onFileLayoutChange}
-                  onAddFile={props.onAddFile}
-                  selectedFileId={props.selectedFileId}
-                  onSelectFile={props.setSelectedFileId}
-                  onRemoveTextOverlay={props.onRemoveTextOverlay}
-                  onTextLayoutChange={props.onTextLayoutChange}
-                  onTextStyleChange={props.onTextStyleChange}
-                  onTextContentChange={props.onTextContentChange}
-                  selectedTextId={props.selectedTextId}
-                  onSelectText={props.setSelectedTextId}
-                  containerRef={sceneRef}
-                  isSpacePressed={isSpacePressed}
-                  onInternalDragStart={props.onInternalDragStart}
-                  onInternalDragStop={props.onInternalDragStop}
-                  onBannerDoubleClick={props.onBannerDoubleClick}
-                />
-              </div>
-            );
-          }
-
-          // --- ABOVE VIDEO ---
+      {["below-video", "above-video"].map((order) => {
+        if (order === "below-video") {
           return (
-            <React.Fragment key="above-video-group">
-              {/* 1. Overlays BEHIND User */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ zIndex: "var(--z-overlays-above-video)" }}
-              >
-                <OverlayLayer
-                  layerOrder="above-video"
-                  sceneId={sceneId}
-                  containerSize={sceneSize}
-                  viewport={viewport}
-                  htmlOverlays={generatedOverlays}
-                  browserOverlays={browserOverlays}
-                  fileOverlays={fileOverlays}
-                  textOverlays={textOverlays}
-                  activeDynamicTargetId={
-                    dynamicLayout?.isActive
-                      ? dynamicLayout.target?.id
-                      : undefined
-                  }
-                  onSetDynamicLayout={onSetDynamicLayout}
-                  onOverlayLayoutChange={props.onOverlayLayoutChange}
-                  onRemoveOverlay={props.onRemoveOverlay}
-                  onPreviewGenerated={props.onPreviewGenerated}
-                  onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
-                  selectedGeneratedId={props.selectedGeneratedId}
-                  onSelectGenerated={props.setSelectedGeneratedId}
-                  portalContainer={
-                    typeof props.portalContainer === "function"
-                      ? null
-                      : props.portalContainer
-                  }
-                  allOverlays={allOverlays}
-                  onSnapGuidesChange={(guides) =>
-                    snapLinesRef.current?.setGuides(guides)
-                  }
-                  onRemoveBrowser={props.onRemoveBrowser}
-                  onBrowserUrlChange={props.onBrowserUrlChange}
-                  onBrowserLayoutChange={props.onBrowserLayoutChange}
-                  selectedBrowserId={props.selectedBrowserId}
-                  onSelectBrowser={props.setSelectedBrowserId}
-                  onRemoveFile={props.onRemoveFile}
-                  onFileLayoutChange={props.onFileLayoutChange}
-                  onAddFile={props.onAddFile}
-                  selectedFileId={props.selectedFileId}
-                  onSelectFile={props.setSelectedFileId}
-                  onRemoveTextOverlay={props.onRemoveTextOverlay}
-                  onTextLayoutChange={props.onTextLayoutChange}
-                  onTextStyleChange={props.onTextStyleChange}
-                  onTextContentChange={props.onTextContentChange}
-                  selectedTextId={props.selectedTextId}
-                  onSelectText={props.setSelectedTextId}
-                  containerRef={sceneRef}
-                  isSpacePressed={isSpacePressed}
-                  onInternalDragStart={props.onInternalDragStart}
-                  onInternalDragStop={props.onInternalDragStop}
-                  onBannerDoubleClick={props.onBannerDoubleClick}
-                  filterBehindUser={true}
-                />
-              </div>
-
-              {/* 2. THE USER (Foreground Layer) */}
-              {(isTextDepthEnabled || hasBehindUserOverlay) &&
-                !props.canvasLayout &&
-                containerSize.width > 0 && (
-                  <ForegroundUserLayer
-                    videoRef={videoRef}
-                    processedCanvas={processedCanvas}
-                    facePositionRef={facePositionRef}
-                    videoFilter={props.videoFilter}
-                    isAutoFramingEnabled={props.isAutoFramingEnabled}
-                    zoomSensitivity={props.zoomSensitivity}
-                    trackingSpeed={props.trackingSpeed}
-                    containerSize={containerSize}
-                    layoutMode={props.layoutMode}
-                    pipPosition={props.pipPosition}
-                    pipSize={props.pipSize}
-                    pipRotation={props.pipRotation}
-                    cameraShape={props.cameraShape}
-                    pipBorder={props.pipBorder}
-                    pipShadow={props.pipShadow}
-                    customMaskUrl={props.customMaskUrl}
-                    sidebarProps={props.sidebarProps}
-                    isCameraOn={isVideoOn} // FIX: Pass camera state to handle unmounting
-                  />
-                )}
-
-              {/* 3. Overlays IN FRONT of User */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ zIndex: 1500 }}
-              >
-                <OverlayLayer
-                  layerOrder="above-video"
-                  sceneId={sceneId}
-                  containerSize={sceneSize}
-                  viewport={viewport}
-                  htmlOverlays={generatedOverlays}
-                  browserOverlays={browserOverlays}
-                  fileOverlays={fileOverlays}
-                  textOverlays={textOverlays}
-                  activeDynamicTargetId={
-                    dynamicLayout?.isActive
-                      ? dynamicLayout.target?.id
-                      : undefined
-                  }
-                  onSetDynamicLayout={onSetDynamicLayout}
-                  onOverlayLayoutChange={props.onOverlayLayoutChange}
-                  onRemoveOverlay={props.onRemoveOverlay}
-                  onPreviewGenerated={props.onPreviewGenerated}
-                  onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
-                  selectedGeneratedId={props.selectedGeneratedId}
-                  onSelectGenerated={props.setSelectedGeneratedId}
-                  portalContainer={
-                    typeof props.portalContainer === "function"
-                      ? null
-                      : props.portalContainer
-                  }
-                  allOverlays={allOverlays}
-                  onSnapGuidesChange={(guides) =>
-                    snapLinesRef.current?.setGuides(guides)
-                  }
-                  onRemoveBrowser={props.onRemoveBrowser}
-                  onBrowserUrlChange={props.onBrowserUrlChange}
-                  onBrowserLayoutChange={props.onBrowserLayoutChange}
-                  selectedBrowserId={props.selectedBrowserId}
-                  onSelectBrowser={props.setSelectedBrowserId}
-                  onRemoveFile={props.onRemoveFile}
-                  onFileLayoutChange={props.onFileLayoutChange}
-                  onAddFile={props.onAddFile}
-                  selectedFileId={props.selectedFileId}
-                  onSelectFile={props.setSelectedFileId}
-                  onRemoveTextOverlay={props.onRemoveTextOverlay}
-                  onTextLayoutChange={props.onTextLayoutChange}
-                  onTextStyleChange={props.onTextStyleChange}
-                  onTextContentChange={props.onTextContentChange}
-                  selectedTextId={props.selectedTextId}
-                  onSelectText={props.setSelectedTextId}
-                  containerRef={sceneRef}
-                  isSpacePressed={isSpacePressed}
-                  onInternalDragStart={props.onInternalDragStart}
-                  onInternalDragStop={props.onInternalDragStop}
-                  onBannerDoubleClick={props.onBannerDoubleClick}
-                  filterBehindUser={false}
-                />
-              </div>
-            </React.Fragment>
+            <div
+              key={order}
+              className="absolute inset-0 pointer-events-none"
+              style={{ zIndex: "var(--z-overlays-below-video)" }}
+            >
+              <OverlayLayer
+                layerOrder="below-video"
+                sceneId={sceneId}
+                containerSize={sceneSize}
+                viewport={viewport}
+                htmlOverlays={generatedOverlays}
+                browserOverlays={browserOverlays}
+                fileOverlays={fileOverlays}
+                textOverlays={textOverlays}
+                activeDynamicTargetId={
+                  dynamicLayout?.isActive ? dynamicLayout.target?.id : undefined
+                }
+                onSetDynamicLayout={onSetDynamicLayout}
+                onOverlayLayoutChange={props.onOverlayLayoutChange}
+                onRemoveOverlay={props.onRemoveOverlay}
+                onPreviewGenerated={props.onPreviewGenerated}
+                onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+                selectedGeneratedId={props.selectedGeneratedId}
+                onSelectGenerated={props.setSelectedGeneratedId}
+                portalContainer={
+                  typeof props.portalContainer === "function"
+                    ? null
+                    : props.portalContainer
+                }
+                allOverlays={allOverlays}
+                onSnapGuidesChange={(guides) =>
+                  snapLinesRef.current?.setGuides(guides)
+                }
+                onRemoveBrowser={props.onRemoveBrowser}
+                onBrowserUrlChange={props.onBrowserUrlChange}
+                onBrowserLayoutChange={props.onBrowserLayoutChange}
+                selectedBrowserId={props.selectedBrowserId}
+                onSelectBrowser={props.setSelectedBrowserId}
+                onRemoveFile={props.onRemoveFile}
+                onFileLayoutChange={props.onFileLayoutChange}
+                onAddFile={props.onAddFile}
+                selectedFileId={props.selectedFileId}
+                onSelectFile={props.setSelectedFileId}
+                onRemoveTextOverlay={props.onRemoveTextOverlay}
+                onTextLayoutChange={props.onTextLayoutChange}
+                onTextStyleChange={props.onTextStyleChange}
+                onTextContentChange={props.onTextContentChange}
+                selectedTextId={props.selectedTextId}
+                onSelectText={props.setSelectedTextId}
+                containerRef={sceneRef}
+                isSpacePressed={isSpacePressed}
+                onInternalDragStart={props.onInternalDragStart}
+                onInternalDragStop={props.onInternalDragStop}
+                onBannerDoubleClick={props.onBannerDoubleClick}
+              />
+            </div>
           );
-        })}
+        }
+
+        // --- ABOVE VIDEO ---
+        return (
+          <React.Fragment key="above-video-group">
+            {/* 1. Overlays BEHIND User */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ zIndex: "var(--z-overlays-above-video)" }}
+            >
+              <OverlayLayer
+                layerOrder="above-video"
+                sceneId={sceneId}
+                containerSize={sceneSize}
+                viewport={viewport}
+                htmlOverlays={generatedOverlays}
+                browserOverlays={browserOverlays}
+                fileOverlays={fileOverlays}
+                textOverlays={textOverlays}
+                activeDynamicTargetId={
+                  dynamicLayout?.isActive ? dynamicLayout.target?.id : undefined
+                }
+                onSetDynamicLayout={onSetDynamicLayout}
+                onOverlayLayoutChange={props.onOverlayLayoutChange}
+                onRemoveOverlay={props.onRemoveOverlay}
+                onPreviewGenerated={props.onPreviewGenerated}
+                onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+                selectedGeneratedId={props.selectedGeneratedId}
+                onSelectGenerated={props.setSelectedGeneratedId}
+                portalContainer={
+                  typeof props.portalContainer === "function"
+                    ? null
+                    : props.portalContainer
+                }
+                allOverlays={allOverlays}
+                onSnapGuidesChange={(guides) =>
+                  snapLinesRef.current?.setGuides(guides)
+                }
+                onRemoveBrowser={props.onRemoveBrowser}
+                onBrowserUrlChange={props.onBrowserUrlChange}
+                onBrowserLayoutChange={props.onBrowserLayoutChange}
+                selectedBrowserId={props.selectedBrowserId}
+                onSelectBrowser={props.setSelectedBrowserId}
+                onRemoveFile={props.onRemoveFile}
+                onFileLayoutChange={props.onFileLayoutChange}
+                onAddFile={props.onAddFile}
+                selectedFileId={props.selectedFileId}
+                onSelectFile={props.setSelectedFileId}
+                onRemoveTextOverlay={props.onRemoveTextOverlay}
+                onTextLayoutChange={props.onTextLayoutChange}
+                onTextStyleChange={props.onTextStyleChange}
+                onTextContentChange={props.onTextContentChange}
+                selectedTextId={props.selectedTextId}
+                onSelectText={props.setSelectedTextId}
+                containerRef={sceneRef}
+                isSpacePressed={isSpacePressed}
+                onInternalDragStart={props.onInternalDragStart}
+                onInternalDragStop={props.onInternalDragStop}
+                onBannerDoubleClick={props.onBannerDoubleClick}
+                filterBehindUser={true}
+              />
+            </div>
+
+            {/* 2. THE USER (Foreground Layer) */}
+            {(isTextDepthEnabled || hasBehindUserOverlay) &&
+              !props.canvasLayout &&
+              containerSize.width > 0 && (
+                <ForegroundUserLayer
+                  videoRef={videoRef}
+                  processedCanvas={processedCanvas}
+                  facePositionRef={facePositionRef}
+                  videoFilter={props.videoFilter}
+                  isAutoFramingEnabled={props.isAutoFramingEnabled}
+                  zoomSensitivity={props.zoomSensitivity}
+                  trackingSpeed={props.trackingSpeed}
+                  containerSize={containerSize}
+                  layoutMode={props.layoutMode}
+                  pipPosition={props.pipPosition}
+                  pipSize={props.pipSize}
+                  pipRotation={props.pipRotation}
+                  cameraShape={props.cameraShape}
+                  pipBorder={props.pipBorder}
+                  pipShadow={props.pipShadow}
+                  customMaskUrl={props.customMaskUrl}
+                  sidebarProps={props.sidebarProps}
+                  isCameraOn={isVideoOn} // FIX: Pass camera state to handle unmounting
+                />
+              )}
+
+            {/* 3. Overlays IN FRONT of User */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ zIndex: 1500 }}
+            >
+              <OverlayLayer
+                layerOrder="above-video"
+                sceneId={sceneId}
+                containerSize={sceneSize}
+                viewport={viewport}
+                htmlOverlays={generatedOverlays}
+                browserOverlays={browserOverlays}
+                fileOverlays={fileOverlays}
+                textOverlays={textOverlays}
+                activeDynamicTargetId={
+                  dynamicLayout?.isActive ? dynamicLayout.target?.id : undefined
+                }
+                onSetDynamicLayout={onSetDynamicLayout}
+                onOverlayLayoutChange={props.onOverlayLayoutChange}
+                onRemoveOverlay={props.onRemoveOverlay}
+                onPreviewGenerated={props.onPreviewGenerated}
+                onUpdateOverlayMetadata={props.onUpdateOverlayMetadata}
+                selectedGeneratedId={props.selectedGeneratedId}
+                onSelectGenerated={props.setSelectedGeneratedId}
+                portalContainer={
+                  typeof props.portalContainer === "function"
+                    ? null
+                    : props.portalContainer
+                }
+                allOverlays={allOverlays}
+                onSnapGuidesChange={(guides) =>
+                  snapLinesRef.current?.setGuides(guides)
+                }
+                onRemoveBrowser={props.onRemoveBrowser}
+                onBrowserUrlChange={props.onBrowserUrlChange}
+                onBrowserLayoutChange={props.onBrowserLayoutChange}
+                selectedBrowserId={props.selectedBrowserId}
+                onSelectBrowser={props.setSelectedBrowserId}
+                onRemoveFile={props.onRemoveFile}
+                onFileLayoutChange={props.onFileLayoutChange}
+                onAddFile={props.onAddFile}
+                selectedFileId={props.selectedFileId}
+                onSelectFile={props.setSelectedFileId}
+                onRemoveTextOverlay={props.onRemoveTextOverlay}
+                onTextLayoutChange={props.onTextLayoutChange}
+                onTextStyleChange={props.onTextStyleChange}
+                onTextContentChange={props.onTextContentChange}
+                selectedTextId={props.selectedTextId}
+                onSelectText={props.setSelectedTextId}
+                containerRef={sceneRef}
+                isSpacePressed={isSpacePressed}
+                onInternalDragStart={props.onInternalDragStart}
+                onInternalDragStop={props.onInternalDragStop}
+                onBannerDoubleClick={props.onBannerDoubleClick}
+                filterBehindUser={false}
+              />
+            </div>
+          </React.Fragment>
+        );
+      })}
     </CanvasShell>
   );
 };

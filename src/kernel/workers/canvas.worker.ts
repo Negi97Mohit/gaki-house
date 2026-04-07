@@ -17,7 +17,14 @@ let pendingTo: SceneGraph | null = null;
 // F2 Compositing Cache
 let latestCamera: ImageBitmap | null = null;
 let latestScreen: ImageBitmap | null = null;
-let latestOverlays: Array<{ id: string, bitmap: ImageBitmap, x: number, y: number, w: number, h: number }> = [];
+let latestOverlays: Array<{
+  id: string;
+  bitmap: ImageBitmap;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}> = [];
 let currentStinger: ImageBitmap | null = null;
 // Generic persistent graph for F1/F2 background fill mapping
 let latestGraph: SceneGraph | null = null;
@@ -35,7 +42,14 @@ self.onmessage = (event: MessageEvent) => {
     width?: number;
     height?: number;
     bitmap?: ImageBitmap;
-    frames?: Array<{ id: string, bitmap: ImageBitmap, x: number, y: number, w: number, h: number }>;
+    frames?: Array<{
+      id: string;
+      bitmap: ImageBitmap;
+      x: number;
+      y: number;
+      w: number;
+      h: number;
+    }>;
   };
 
   switch (data.type) {
@@ -53,7 +67,7 @@ self.onmessage = (event: MessageEvent) => {
         "[canvas.worker] INIT: OffscreenCanvas acquired",
         data.offscreen.width,
         "×",
-        data.offscreen.height
+        data.offscreen.height,
       );
       break;
     }
@@ -70,7 +84,7 @@ self.onmessage = (event: MessageEvent) => {
         "[canvas.worker] RENDER sceneId:",
         data.graph.sceneId,
         "layers:",
-        data.graph.layers.length
+        data.graph.layers.length,
       );
       break;
     }
@@ -81,7 +95,7 @@ self.onmessage = (event: MessageEvent) => {
       ctx.canvas.height = data.height;
       console.log(`[canvas.worker] RESIZE: ${data.width}×${data.height}`);
       // If we have a pending render state, we might want to re-render,
-      // but for Phase C we'll let the main thread re-trigger a RENDER if necessary, 
+      // but for Phase C we'll let the main thread re-trigger a RENDER if necessary,
       // or we just let it clear on the next render command.
       break;
     }
@@ -153,8 +167,14 @@ self.onmessage = (event: MessageEvent) => {
       ctx = null;
       pendingFrom = null;
       pendingTo = null;
-      if (latestCamera) { latestCamera.close(); latestCamera = null; }
-      if (latestScreen) { latestScreen.close(); latestScreen = null; }
+      if (latestCamera) {
+        latestCamera.close();
+        latestCamera = null;
+      }
+      if (latestScreen) {
+        latestScreen.close();
+        latestScreen = null;
+      }
       for (const frame of latestOverlays) frame.bitmap.close();
       latestOverlays = [];
       console.log("[canvas.worker] DESTROY: context released");
@@ -171,30 +191,6 @@ self.onmessage = (event: MessageEvent) => {
 
 function drawF2CompositingSequence(ctx: OffscreenCanvasRenderingContext2D) {
   clearCanvas(ctx);
-
-  // 1. Background fill
-  ctx.fillStyle = latestGraph?.blankCanvasColor ?? "#000000";
-  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-  // 2. Screen share frame (full screen)
-  if (latestScreen) {
-    ctx.drawImage(latestScreen, 0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  // 3. Camera frame (PiP or Full depending on screen share presence)
-  if (latestCamera) {
-    if (latestScreen) {
-      // Screen share active -> Camera goes into PiP
-      const pipW = ctx.canvas.width * 0.3;
-      const pipH = ctx.canvas.height * 0.3;
-      const pipX = ctx.canvas.width * 0.65;
-      const pipY = ctx.canvas.height * 0.65;
-      ctx.drawImage(latestCamera, pipX, pipY, pipW, pipH);
-    } else {
-      // F1 behavior -> Camera is full screen
-      ctx.drawImage(latestCamera, 0, 0, ctx.canvas.width, ctx.canvas.height);
-    }
-  }
 
   // 4. OBS Overlays (Above Camera)
   for (const frame of latestOverlays) {
@@ -226,16 +222,12 @@ function clearCanvas(ctx: OffscreenCanvasRenderingContext2D): void {
 function renderScene(
   ctx: OffscreenCanvasRenderingContext2D,
   graph: SceneGraph,
-  alpha: number
+  alpha: number,
 ): void {
   const { width, height } = ctx.canvas;
 
   ctx.save();
   ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
-
-  // Background
-  ctx.fillStyle = graph.blankCanvasColor ?? "#000000";
-  ctx.fillRect(0, 0, width, height);
 
   // Layers (pre-sorted by zIndex in buildSceneGraph)
   for (const layer of graph.layers) {
@@ -249,7 +241,7 @@ function renderLayer(
   ctx: OffscreenCanvasRenderingContext2D,
   layer: SceneGraphLayer,
   canvasWidth: number,
-  canvasHeight: number
+  canvasHeight: number,
 ): void {
   // Convert % coords to px
   const x = (layer.position.x / 100) * canvasWidth;
