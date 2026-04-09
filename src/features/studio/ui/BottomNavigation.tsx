@@ -12,6 +12,7 @@ import { UserMenuControl } from "./controls/UserMenuControl";
 import { DownloadControl } from "./controls/DownloadControl";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "@/stores/ui.store";
+import { HandoffControls } from "../../stream/ui/HandoffControls";
 
 interface BottomNavigationProps {
   onSaveLayout: () => void;
@@ -179,7 +180,9 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         />
 
         <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
+        <HandoffControls />
 
+        <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
         {onToggleOmegle && (
           <ShortcutTooltip label="Random Chat (Omegle)">
             <Button

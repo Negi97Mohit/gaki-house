@@ -187,5 +187,10 @@
     "vite": "^5.4.19",
     "vite-bundle-visualizer": "^1.2.1",
     "wait-on": "^9.0.3"
-  }
+  },
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "caption-cam-obs"
+  ]
 }

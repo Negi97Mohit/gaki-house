@@ -10,7 +10,6 @@ import {
   Archive,
   Wrench,
   Settings,
-  
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { CaptionStyle, GeneratedOverlay } from "@/types/caption";
@@ -159,10 +158,14 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
 
       {/* Minimal Sidebar Navigation */}
-      <div className={cn(
-        "relative bg-foreground/[0.02] dark:bg-white/[0.02] flex items-center gap-1",
-        isMobile ? "w-full border-b border-border/10 dark:border-white/5 flex-row overflow-x-auto no-scrollbar px-3 py-2 flex-shrink-0" : "w-12 border-r border-border/10 dark:border-white/5 flex-col py-3"
-      )}>
+      <div
+        className={cn(
+          "relative bg-foreground/[0.02] dark:bg-white/[0.02] flex items-center gap-1",
+          isMobile
+            ? "w-full border-b border-border/10 dark:border-white/5 flex-row overflow-x-auto no-scrollbar px-3 py-2 flex-shrink-0"
+            : "w-12 border-r border-border/10 dark:border-white/5 flex-col py-3",
+        )}
+      >
         {sections.map((section) => {
           const Icon = section.icon;
           const isActive = activeSection === section.id;
@@ -187,10 +190,14 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
                 {/* Active indicator */}
                 {isActive && (
-                  <div className={cn(
-                    "absolute bg-primary",
-                    isMobile ? "bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-5 rounded-t-full" : "left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full"
-                  )} />
+                  <div
+                    className={cn(
+                      "absolute bg-primary",
+                      isMobile
+                        ? "bottom-0 left-1/2 -translate-x-1/2 h-0.5 w-5 rounded-t-full"
+                        : "left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-r-full",
+                    )}
+                  />
                 )}
               </button>
             </ShortcutTooltip>
@@ -199,10 +206,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
       </div>
 
       {/* Content Area */}
-      <div className={cn(
-        "relative flex flex-col h-full",
-        isMobile ? "w-full flex-1 min-h-0" : "w-[380px]"
-      )}>
+      <div
+        className={cn(
+          "relative flex flex-col h-full",
+          isMobile ? "w-full flex-1 min-h-0" : "w-[380px]",
+        )}
+      >
         {/* Minimal Header - just close button */}
         <div className="flex items-center justify-between px-3 py-2 border-b border-border/10 dark:border-white/5">
           <span className="text-[10px] font-medium text-muted-foreground/70">
@@ -236,7 +245,7 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
 
           {activeSection === "animation-library" && (
             <GSAPAnimationsPanel
-              onSelectPreset={props.onSelectGSAPPreset || (() => { })}
+              onSelectPreset={props.onSelectGSAPPreset || (() => {})}
               selectedPresetId={props.selectedGSAPPresetId}
             />
           )}
@@ -288,8 +297,6 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
                 setIsDrawing={props.setIsDrawing}
               />
             )}
-
-          
 
           {activeSection === "settings" && <SettingsPanel />}
         </div>
