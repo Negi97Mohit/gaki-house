@@ -4,7 +4,7 @@ import { MainCanvasArea } from "./MainCanvasArea";
 import { FloatingControlsPanel } from "@/features/studio/ui/FloatingControlsPanel";
 import { FloatingLogo } from "@/features/studio/ui/FloatingLogo";
 import { SocialBannerEditor } from "@/features/banners/ui/SocialBannerEditor";
-import { GeneratedOverlay, SceneTransition } from "@/types/caption";
+import { GeneratedOverlay, SceneTransition, EmptyGridPanelState } from "@/types/caption";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { generateId } from "@/shared/lib/id";
 import { VaultFile } from "@/types/vault";
@@ -71,6 +71,68 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     isTransitioning, activeTransition,
     dynamicLayout,
   } = state;
+
+  // --- Empty Grid Panel state ---
+  const [emptyGridPanels, setEmptyGridPanels] = useState<EmptyGridPanelState[]>([]);
+  const [selectedEmptyGridPanelId, setSelectedEmptyGridPanelId] = useState<string | null>(null);
+
+  const handleAddEmptyGridPanel = useCallback(() => {
+    const newPanel: EmptyGridPanelState = {
+      id: generateId("egp"),
+      layout: {
+        position: { x: 30, y: 30 },
+        size: { width: 30, height: 25 },
+        zIndex: 500,
+        rotation: 0,
+        layerOrder: "above-video",
+      },
+    };
+    setEmptyGridPanels((prev) => [...prev, newPanel]);
+    setSelectedEmptyGridPanelId(newPanel.id);
+  }, []);
+
+  const handleRemoveEmptyGridPanel = useCallback((id: string) => {
+    setEmptyGridPanels((prev) => prev.filter((p) => p.id !== id));
+    setSelectedEmptyGridPanelId((prev) => (prev === id ? null : prev));
+  }, []);
+
+  const handleEmptyGridPanelLayoutChange = useCallback(
+    (id: string, layout: Partial<EmptyGridPanelState["layout"]>) => {
+      setEmptyGridPanels((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, layout: { ...p.layout, ...layout } } : p))
+      );
+    },
+    []
+  );
+
+  const handleEmptyGridPanelContentChange = useCallback(
+    (id: string, content: EmptyGridPanelState["content"]) => {
+      setEmptyGridPanels((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, content } : p))
+      );
+    },
+    []
+  );
+
+  const handleEmptyGridPanelAssetSelect = useCallback(
+    (panelId: string, asset: any) => {
+      // Route through asset selection — treat it like an image section content
+      setEmptyGridPanels((prev) =>
+        prev.map((p) =>
+          p.id === panelId
+            ? {
+                ...p,
+                content: {
+                  type: "image" as const,
+                  src: asset.url ?? asset.src ?? "",
+                },
+              }
+            : p
+        )
+      );
+    },
+    []
+  );
 
   const { updateActiveScene, selectionWrapper, ...handlerFns } = handlers;
 
@@ -236,6 +298,15 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
             setActiveOverlays(activeOverlays.map((o) => (o.id === id ? { ...o, metadata } : o))),
           onDeselectAll: selectionWrapper.handleDeselectAll,
           stingerConfig,
+          // Empty Grid Panels
+          emptyGridPanels,
+          selectedEmptyGridPanelId,
+          setSelectedEmptyGridPanelId,
+          onAddEmptyGridPanel: handleAddEmptyGridPanel,
+          onRemoveEmptyGridPanel: handleRemoveEmptyGridPanel,
+          onEmptyGridPanelLayoutChange: handleEmptyGridPanelLayoutChange,
+          onEmptyGridPanelContentChange: handleEmptyGridPanelContentChange,
+          onEmptyGridPanelAssetSelect: handleEmptyGridPanelAssetSelect,
         }}
         isTransitioning={isTransitioning}
         activeTransition={activeTransition as unknown as SceneTransition}

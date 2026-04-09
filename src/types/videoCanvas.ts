@@ -10,6 +10,7 @@ import {
     CanvasSectionCameraState,
     GeneratedOverlay,
     GeneratedLayout,
+    EmptyGridPanelState,
 } from "@/types/caption";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { BrowserOverlayState } from "@/features/canvas/ui/DraggableBrowser";
@@ -193,4 +194,20 @@ export interface VideoCanvasProps {
      * has been transferred to the worker. Index.tsx stores it in useState.
      */
     onKernelReady?: (kernel: BroadcastBus) => void;
+
+    // Empty Grid Panel support
+    emptyGridPanels?: EmptyGridPanelState[];
+    selectedEmptyGridPanelId?: string | null;
+    setSelectedEmptyGridPanelId?: (id: string | null) => void;
+    onAddEmptyGridPanel?: () => void;
+    onRemoveEmptyGridPanel?: (id: string) => void;
+    onEmptyGridPanelLayoutChange?: (
+        id: string,
+        layout: Partial<EmptyGridPanelState["layout"]>
+    ) => void;
+    onEmptyGridPanelContentChange?: (
+        id: string,
+        content: EmptyGridPanelState["content"]
+    ) => void;
+    onEmptyGridPanelAssetSelect?: (id: string, asset: any) => void;
 }

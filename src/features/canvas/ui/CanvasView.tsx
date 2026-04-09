@@ -157,6 +157,14 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     captionsEnabled,
     dynamicLayout,
     onSetDynamicLayout,
+    emptyGridPanels = [],
+    selectedEmptyGridPanelId,
+    setSelectedEmptyGridPanelId,
+    onAddEmptyGridPanel,
+    onRemoveEmptyGridPanel,
+    onEmptyGridPanelLayoutChange,
+    onEmptyGridPanelContentChange,
+    onEmptyGridPanelAssetSelect,
   } = props;
 
   // --- Text Behind User State ---
@@ -363,6 +371,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
         activeSequenceId={props.activeSequenceId}
         isChatbotOpen={props.isChatbotOpen}
         onToggleChatbot={props.onChatbotToggle}
+        onAddEmptyGridPanel={onAddEmptyGridPanel}
       />
 
       <CanvasContent
@@ -436,6 +445,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 browserOverlays={browserOverlays}
                 fileOverlays={fileOverlays}
                 textOverlays={textOverlays}
+                emptyGridPanels={[]}
                 activeDynamicTargetId={
                   dynamicLayout?.isActive ? dynamicLayout.target?.id : undefined
                 }
@@ -477,6 +487,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onInternalDragStop={props.onInternalDragStop}
                 onBannerDoubleClick={props.onBannerDoubleClick}
                 viewportScale={viewportScale}
+                selectedEmptyGridPanelId={selectedEmptyGridPanelId ?? null}
+                onSelectEmptyGridPanel={setSelectedEmptyGridPanelId ?? (() => {})}
+                onRemoveEmptyGridPanel={onRemoveEmptyGridPanel ?? (() => {})}
+                onEmptyGridPanelLayoutChange={onEmptyGridPanelLayoutChange ?? (() => {})}
               />
             </div>
           );
@@ -499,6 +513,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 browserOverlays={browserOverlays}
                 fileOverlays={fileOverlays}
                 textOverlays={textOverlays}
+                emptyGridPanels={[]}
                 activeDynamicTargetId={
                   dynamicLayout?.isActive ? dynamicLayout.target?.id : undefined
                 }
@@ -541,6 +556,10 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onBannerDoubleClick={props.onBannerDoubleClick}
                 filterBehindUser={true}
                 viewportScale={viewportScale}
+                selectedEmptyGridPanelId={null}
+                onSelectEmptyGridPanel={() => {}}
+                onRemoveEmptyGridPanel={() => {}}
+                onEmptyGridPanelLayoutChange={() => {}}
               />
             </div>
 
@@ -584,6 +603,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 browserOverlays={browserOverlays}
                 fileOverlays={fileOverlays}
                 textOverlays={textOverlays}
+                emptyGridPanels={emptyGridPanels}
                 activeDynamicTargetId={
                   dynamicLayout?.isActive ? dynamicLayout.target?.id : undefined
                 }
@@ -626,6 +646,12 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onBannerDoubleClick={props.onBannerDoubleClick}
                 filterBehindUser={false}
                 viewportScale={viewportScale}
+                selectedEmptyGridPanelId={selectedEmptyGridPanelId ?? null}
+                onSelectEmptyGridPanel={setSelectedEmptyGridPanelId ?? (() => {})}
+                onRemoveEmptyGridPanel={onRemoveEmptyGridPanel ?? (() => {})}
+                onEmptyGridPanelLayoutChange={onEmptyGridPanelLayoutChange ?? (() => {})}
+                onEmptyGridPanelContentChange={onEmptyGridPanelContentChange}
+                onEmptyGridPanelAssetSelect={onEmptyGridPanelAssetSelect}
               />
             </div>
           </React.Fragment>

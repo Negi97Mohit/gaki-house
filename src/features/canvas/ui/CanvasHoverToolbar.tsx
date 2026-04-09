@@ -16,6 +16,7 @@ import {
   Zap,
   Layout,
   Layers,
+  SquareDashed,
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 
@@ -45,6 +46,7 @@ interface CanvasHoverToolbarProps {
   onTextDepthToggle?: (enabled: boolean) => void;
   isChatbotOpen?: boolean;
   onToggleChatbot?: (open: boolean | ((prev: boolean) => boolean)) => void;
+  onAddEmptyGridPanel?: () => void;
 }
 
 // Helper component for auto-scrolling layouts
@@ -156,6 +158,7 @@ export const CanvasHoverToolbar = ({
   onTextDepthToggle,
   isChatbotOpen,
   onToggleChatbot,
+  onAddEmptyGridPanel,
 }: CanvasHoverToolbarProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { layoutTemplates, loading: templatesLoading } = useLayoutTemplates();
@@ -478,6 +481,19 @@ export const CanvasHoverToolbar = ({
         >
           <Sparkles className="h-3 w-3" />
         </Button>
+
+        {/* Add Empty Grid Panel */}
+        {onAddEmptyGridPanel && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative rounded-xl h-6 w-6 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all"
+            onClick={onAddEmptyGridPanel}
+            title="Add Empty Panel"
+          >
+            <SquareDashed className="h-3 w-3" />
+          </Button>
+        )}
 
         <Popover>
           <PopoverTrigger asChild>

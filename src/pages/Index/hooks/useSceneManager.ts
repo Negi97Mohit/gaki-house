@@ -41,6 +41,7 @@ const createDefaultScene = (name: string): SceneState => ({
   browserOverlays: [],
   fileOverlays: [],
   activeOverlays: [],
+  emptyGridPanels: [],
 
   selectedVideoDevice: undefined,
   selectedAudioDevice: undefined,

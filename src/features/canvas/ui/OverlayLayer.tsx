@@ -7,11 +7,13 @@ import {
   TextOverlayState,
   BrowserOverlayState,
   GeneratedLayout,
+  EmptyGridPanelState,
 } from "@/types/caption";
 import { DraggableHtmlOverlay } from "./DraggableHtmlOverlay";
 import { DraggableBrowser } from "@/features/canvas/ui/DraggableBrowser";
 import { DraggableFileViewer } from "@/features/canvas/ui/DraggableFileViewer";
 import { DraggableTextOverlay } from "@/features/canvas/ui/DraggableTextOverlay";
+import { DraggableEmptyGridPanel } from "@/features/canvas/ui/DraggableEmptyGridPanel";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { HybridDraggable } from "./HybridDraggable";
 import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
@@ -29,6 +31,7 @@ interface OverlayLayerProps {
   browserOverlays: BrowserOverlayState[];
   fileOverlays: FileOverlayState[];
   textOverlays: TextOverlayState[];
+  emptyGridPanels: EmptyGridPanelState[];
   activeDynamicTargetId?: string;
 
   // Handlers
@@ -69,6 +72,20 @@ interface OverlayLayerProps {
   onSelectText: any;
   isSpacePressed: boolean;
 
+  // EmptyGridPanel handlers
+  selectedEmptyGridPanelId: string | null;
+  onSelectEmptyGridPanel: (id: string | null) => void;
+  onRemoveEmptyGridPanel: (id: string) => void;
+  onEmptyGridPanelLayoutChange: (
+    id: string,
+    layout: Partial<EmptyGridPanelState["layout"]>
+  ) => void;
+  onEmptyGridPanelContentChange?: (
+    id: string,
+    content: EmptyGridPanelState["content"]
+  ) => void;
+  onEmptyGridPanelAssetSelect?: (id: string, asset: any) => void;
+
   // Global Drag handlers
   onInternalDragStart: any;
   onInternalDragStop: any;
@@ -91,6 +108,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
     browserOverlays,
     fileOverlays,
     textOverlays,
+    emptyGridPanels,
     activeDynamicTargetId,
     onSetDynamicLayout,
     onOverlayLayoutChange,
@@ -118,6 +136,12 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
     selectedTextId,
     onSelectText,
     isSpacePressed,
+    selectedEmptyGridPanelId,
+    onSelectEmptyGridPanel,
+    onRemoveEmptyGridPanel,
+    onEmptyGridPanelLayoutChange,
+    onEmptyGridPanelContentChange,
+    onEmptyGridPanelAssetSelect,
     onInternalDragStart,
     onInternalDragStop,
     selectedGeneratedId,
@@ -391,6 +415,28 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
               allOverlays={allOverlays}
               onSnapGuidesChange={onSnapGuidesChange}
               scale={viewport.scale}
+              viewportScale={viewportScale}
+            />
+          ))}
+
+        {/* Empty Grid Panels — always render on the above-video layer only */}
+        {layerOrder === "above-video" &&
+          !filterBehindUser &&
+          emptyGridPanels.map((panel) => (
+            <DraggableEmptyGridPanel
+              key={`${sceneId}-${panel.id}`}
+              overlay={panel}
+              sceneSize={containerSize}
+              isSelected={selectedEmptyGridPanelId === panel.id}
+              onSelect={onSelectEmptyGridPanel}
+              onRemove={onRemoveEmptyGridPanel}
+              onLayoutChange={onEmptyGridPanelLayoutChange}
+              onContentChange={onEmptyGridPanelContentChange}
+              onGridAssetSelect={onEmptyGridPanelAssetSelect}
+              onInternalDragStart={onInternalDragStart}
+              onInternalDragStop={onInternalDragStop}
+              allOverlays={allOverlays}
+              onSnapGuidesChange={onSnapGuidesChange}
               viewportScale={viewportScale}
             />
           ))}

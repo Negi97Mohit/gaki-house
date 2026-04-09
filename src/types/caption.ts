@@ -284,6 +284,21 @@ export interface TextOverlayState {
   layout: GeneratedLayout; // Re-use the existing layout definition
 }
 
+export interface EmptyGridPanelStyle {
+  backgroundColor?: string;
+  borderColor?: string;
+  borderRadius?: number;
+  opacity?: number;
+}
+
+export interface EmptyGridPanelState {
+  id: string;
+  layout: GeneratedLayout;
+  style?: EmptyGridPanelStyle;
+  /** Tracks what's placed inside this panel (mirrors CanvasSectionState.content) */
+  content?: CanvasSectionState["content"];
+}
+
 export type TransitionType =
   // Basic Transitions
   | "none"
@@ -578,6 +593,7 @@ export interface SceneState {
   browserOverlays: BrowserOverlayState[];
   fileOverlays: FileOverlayState[];
   activeOverlays: GeneratedOverlay[]; // AI-generated overlays
+  emptyGridPanels: EmptyGridPanelState[]; // User-placed empty grid panels
   // Device & Media State
   selectedVideoDevice: string | undefined;
   selectedAudioDevice: string | undefined;
