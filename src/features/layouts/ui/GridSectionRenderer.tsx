@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   CanvasSectionState,
   FileOverlayState,
@@ -12,10 +12,29 @@ import { CameraGridSection } from "@/features/layouts/ui/grid-section/CameraGrid
 import { ScreenShareGridSection } from "@/features/layouts/ui/grid-section/ScreenShareGridSection";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
 import { Video } from "lucide-react";
-import { useStreamManagerStore } from "@/stores/stream-manager.store";
 import { useScreenStream } from "@/features/stream/hooks/useScreenStream";
-// 1. Import the optimized VideoPlayer
-import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
+
+// NEW: Isolates the hook so it isn't called conditionally inside the switch block
+const ScreenShareRendererWrapper: React.FC<{
+  content: any;
+  screenStream?: MediaStream | null;
+  cameraStream?: MediaStream | null;
+}> = ({ content, screenStream, cameraStream }) => {
+  const managedStream = useScreenStream(content.sourceId);
+  const streamToRender = managedStream || screenStream;
+
+  if (!streamToRender) return <div className="w-full h-full bg-muted" />;
+  return (
+    <ScreenShareGridSection
+      stream={streamToRender}
+      cameraStream={cameraStream}
+      displayMode={
+        (content.displayMode as "cover" | "fit" | "stretch" | "center") ||
+        "cover"
+      }
+    />
+  );
+};
 
 export interface GridSectionRendererProps {
   section: CanvasSectionState;
@@ -27,22 +46,22 @@ export interface GridSectionRendererProps {
   backgroundImageUrl?: string;
   onSectionContentChange?: (
     sectionId: string,
-    content: CanvasSectionState["content"]
+    content: CanvasSectionState["content"],
   ) => void;
   onGridAssetSelect?: (sectionId: string, asset: AssetResult) => void;
   onSectionCameraSettingsChange?: (
     sectionId: string,
-    settings: Partial<CanvasSectionCameraState>
+    settings: Partial<CanvasSectionCameraState>,
   ) => void;
   videoDevices?: MediaDeviceInfo[];
   activeSequenceId?: string | null;
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
   cameraShape?: "rectangle" | "circle" | "rounded";
   backgroundEffect?: "none" | "blur" | "image";
+  forceInteractive?: boolean; // NEW: Passed down to empty grid section
   [key: string]: any;
 }
 
-// 2. Wrap in React.memo to prevent unnecessary re-renders from parent layout updates
 export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
   React.memo(
     ({
@@ -61,6 +80,7 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
       onUserPositionChange,
       cameraShape,
       backgroundEffect,
+      forceInteractive,
     }) => {
       const { content } = section;
       const isPreview = usePreviewMode();
@@ -68,12 +88,11 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
       switch (content.type) {
         case "color":
           const colorValue = content.color || blankCanvasColor;
-          const isGradientColor = colorValue?.includes("gradient");
           return (
             <div
               className="w-full h-full"
               style={
-                isGradientColor
+                colorValue?.includes("gradient")
                   ? { background: colorValue }
                   : { backgroundColor: colorValue }
               }
@@ -85,10 +104,11 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
             return (
               <EmptyGridSection
                 sectionId={section.id}
-                blankCanvasColor={blankCanvasColor}
+                blankCanvasColor={blankCanvasColor!}
                 backgroundImageUrl={backgroundImageUrl}
-                onSectionContentChange={onSectionContentChange}
-                onGridAssetSelect={onGridAssetSelect}
+                onSectionContentChange={onSectionContentChange!}
+                onGridAssetSelect={onGridAssetSelect!}
+                forceInteractive={forceInteractive}
               />
             );
           }
@@ -112,7 +132,6 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
               </div>
             );
           }
-
           return (
             <CameraGridSection
               sectionId={section.id}
@@ -129,26 +148,16 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
           );
 
         case "screen":
-          // Use the hook to ensure stream is created/retrieved
-          const managedStream = useScreenStream(content.sourceId);
-          // Fallback to older prop if no managed stream
-          const streamToRender = managedStream || screenStream;
-
-          if (!streamToRender) return <div className="w-full h-full bg-muted" />;
-
           return (
-            <ScreenShareGridSection
-              stream={streamToRender}
+            <ScreenShareRendererWrapper
+              content={content}
+              screenStream={screenStream}
               cameraStream={cameraStream}
-              displayMode={
-                (content.displayMode as "cover" | "fit" | "stretch" | "center") || "cover"
-              }
             />
           );
 
         case "file":
           let fileOverlay = fileOverlays?.find((f) => f.id === content.fileId);
-
           if (!fileOverlay && content.url && content.fileType) {
             fileOverlay = {
               id: section.id,
@@ -164,7 +173,6 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
               },
             };
           }
-
           if (!fileOverlay) return <div className="w-full h-full bg-muted" />;
           return (
             <div className="w-full h-full flex items-center justify-center">
@@ -174,7 +182,7 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
 
         case "text":
           const textOverlay = textOverlays?.find(
-            (t) => t.id === content.textId
+            (t) => t.id === content.textId,
           );
           if (!textOverlay) return <div className="w-full h-full bg-muted" />;
           return (
@@ -201,12 +209,13 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
           return (
             <EmptyGridSection
               sectionId={section.id}
-              blankCanvasColor={blankCanvasColor}
+              blankCanvasColor={blankCanvasColor!}
               backgroundImageUrl={backgroundImageUrl}
-              onSectionContentChange={onSectionContentChange}
-              onGridAssetSelect={onGridAssetSelect}
+              onSectionContentChange={onSectionContentChange!}
+              onGridAssetSelect={onGridAssetSelect!}
+              forceInteractive={forceInteractive}
             />
           );
       }
-    }
+    },
   );
