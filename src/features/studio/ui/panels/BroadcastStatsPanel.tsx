@@ -63,11 +63,12 @@ export const BroadcastStatsPanel: React.FC = () => {
   return (
     <div
       className={cn(
-        "fixed bottom-3 right-3 z-50 select-none transition-all duration-300 ease-out",
+        "fixed bottom-20 right-3 select-none transition-all duration-300 ease-out",
         visible
           ? "opacity-100 translate-y-0 scale-100"
           : "opacity-0 translate-y-2 scale-95 pointer-events-none"
       )}
+      style={{ zIndex: 2050 }}
       onMouseEnter={() => isHidden && setIsHovered(true)}
       onMouseLeave={() => isHidden && setIsHovered(false)}
     >
