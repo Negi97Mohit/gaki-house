@@ -74,27 +74,32 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     console.log("[BottomNavigation] mounted");
   }, []);
 
-  const { isMouseActive, isFullscreen, setFullscreen, setShowSettings } = useUiStore(
-    useShallow((state) => ({
-      isMouseActive: state.isMouseActive,
-      isFullscreen: state.isFullscreen,
-      setFullscreen: state.setFullscreen,
-      setShowSettings: state.setShowSettings,
-    }))
-  );
+  const { isMouseActive, isFullscreen, setFullscreen, setShowSettings } =
+    useUiStore(
+      useShallow((state) => ({
+        isMouseActive: state.isMouseActive,
+        isFullscreen: state.isFullscreen,
+        setFullscreen: state.setFullscreen,
+        setShowSettings: state.setShowSettings,
+      })),
+    );
 
   const [isElectron, setIsElectron] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkElectron =
-      (window as any).electron?.isElectron || /Electron/.test(navigator.userAgent);
+      (window as any).electron?.isElectron ||
+      /Electron/.test(navigator.userAgent);
     setIsElectron(!!checkElectron);
   }, []);
 
   // Fullscreen stays inline: 27 lines, under the 30-line extraction threshold
   const handleFullscreenToggle = () => {
-    if (onToggleFullscreen) { onToggleFullscreen(); return; }
+    if (onToggleFullscreen) {
+      onToggleFullscreen();
+      return;
+    }
     if (isElectron && (window as any).electron?.toggleFullscreen) {
       (window as any).electron.toggleFullscreen();
     } else {
@@ -113,7 +118,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         "shadow-2xl",
         isMouseActive
           ? "opacity-100 translate-y-0 scale-100"
-          : "opacity-0 translate-y-4 scale-95 pointer-events-none"
+          : "opacity-0 translate-y-4 scale-95 pointer-events-none",
       )}
       style={{ zIndex: "var(--z-floating-controls)" }}
     >
@@ -159,7 +164,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           onUndo={onUndo}
           onRedo={onRedo}
           onResetScene={onResetScene}
-          onImportOBSScenes={onImportOBSScenes}
+          onImportOBSScenes={isElectron ? onImportOBSScenes : undefined}
         />
         <div className="w-px h-5 bg-border/20 dark:bg-white/10 mx-1" />
 
@@ -226,7 +231,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200"
               onClick={handleFullscreenToggle}
             >
-              {isFullscreen ? <Shrink className="h-3.5 w-3.5" /> : <Expand className="h-3.5 w-3.5" />}
+              {isFullscreen ? (
+                <Shrink className="h-3.5 w-3.5" />
+              ) : (
+                <Expand className="h-3.5 w-3.5" />
+              )}
             </Button>
           </ShortcutTooltip>
         </div>
