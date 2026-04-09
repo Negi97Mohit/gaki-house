@@ -55,7 +55,8 @@ function getMimeType(filePath: string, fileType: string): string {
  */
 export function useOverlayMediaPool(
   fileOverlays: FileOverlayState[],
-  sceneId: string
+  sceneId: string,
+  onFileLayoutChange?: (id: string, layout: any) => void
 ): OverlayMediaPool {
   const [pool, setPool] = useState<OverlayMediaPool>({
     items: [],
@@ -141,10 +142,25 @@ export function useOverlayMediaPool(
             const nativeW = video.videoWidth || 1920;
             const nativeH = video.videoHeight || 1080;
 
-            // Recompute size using OBS scale × native dims
-            const scale = overlay.layout.obsScale || { x: 1, y: 1 };
-            const pixelW = scale.x * nativeW;
-            const pixelH = scale.y * nativeH;
+            let w = overlay.layout.size?.width;
+            let h = overlay.layout.size?.height;
+
+            if (overlay.layout.obsScale) {
+              const scale = overlay.layout.obsScale;
+              const pixelW = scale.x * nativeW;
+              const pixelH = scale.y * nativeH;
+              w = (pixelW / 1920) * 100;
+              h = (pixelH / 1080) * 100;
+
+              // Fire sync back to clear obsScale and set the definitive true layout size
+              onFileLayoutChange?.(overlay.id, {
+                size: { width: w, height: h },
+                obsScale: undefined
+              });
+            } else if (w == null || h == null) {
+              w = (nativeW / 1920) * 100;
+              h = (nativeH / 1080) * 100;
+            }
 
             items.push({
               id: overlay.id,
@@ -153,8 +169,8 @@ export function useOverlayMediaPool(
               blobUrl,
               x: overlay.layout.position.x,
               y: overlay.layout.position.y,
-              w: (pixelW / 1920) * 100,
-              h: (pixelH / 1080) * 100,
+              w,
+              h,
             });
           } else {
             const img = new Image();
@@ -168,9 +184,24 @@ export function useOverlayMediaPool(
             const nativeW = img.naturalWidth || 300;
             const nativeH = img.naturalHeight || 300;
 
-            const scale = overlay.layout.obsScale || { x: 1, y: 1 };
-            const pixelW = scale.x * nativeW;
-            const pixelH = scale.y * nativeH;
+            let w = overlay.layout.size?.width;
+            let h = overlay.layout.size?.height;
+
+            if (overlay.layout.obsScale) {
+              const scale = overlay.layout.obsScale;
+              const pixelW = scale.x * nativeW;
+              const pixelH = scale.y * nativeH;
+              w = (pixelW / 1920) * 100;
+              h = (pixelH / 1080) * 100;
+
+              onFileLayoutChange?.(overlay.id, {
+                size: { width: w, height: h },
+                obsScale: undefined
+              });
+            } else if (w == null || h == null) {
+              w = (nativeW / 1920) * 100;
+              h = (nativeH / 1080) * 100;
+            }
 
             items.push({
               id: overlay.id,
@@ -179,8 +210,8 @@ export function useOverlayMediaPool(
               blobUrl,
               x: overlay.layout.position.x,
               y: overlay.layout.position.y,
-              w: (pixelW / 1920) * 100,
-              h: (pixelH / 1080) * 100,
+              w,
+              h,
             });
           }
         } catch (err) {

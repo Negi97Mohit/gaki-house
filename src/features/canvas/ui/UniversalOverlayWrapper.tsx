@@ -26,6 +26,7 @@ interface UniversalOverlayWrapperProps {
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
   enableResizing?: boolean;
   isEditing?: boolean;
+  viewportScale?: number;
 }
 
 export const UniversalOverlayWrapper: React.FC<
@@ -49,6 +50,7 @@ export const UniversalOverlayWrapper: React.FC<
   onSnapGuidesChange,
   enableResizing = true,
   isEditing = false,
+  viewportScale = 1,
 }) => {
     // Edge Detection from Phase 1 (preserved)
     const isCloseToRightEdge = position.x + size.width > 95;
@@ -62,6 +64,7 @@ export const UniversalOverlayWrapper: React.FC<
         rotation={rotation}
         zIndex={zIndex}
         containerSize={containerSize}
+        viewportScale={viewportScale}
         isSelected={isSelected}
         onCommit={onCommit}
         onSelect={onSelect}

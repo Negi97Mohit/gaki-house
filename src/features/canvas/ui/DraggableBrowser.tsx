@@ -39,6 +39,7 @@ interface DraggableBrowserProps {
   viewport: { scale: number; x: number; y: number };
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
+  viewportScale?: number;
 }
 
 export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
@@ -54,6 +55,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   onInternalDragStop,
   allOverlays,
   onSnapGuidesChange,
+  viewportScale = 1,
 }) => {
   const [inputUrl, setInputUrl] = useState(overlay.url);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -76,6 +78,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
       rotation={overlay.layout.rotation}
       zIndex={overlay.layout.zIndex}
       containerSize={sceneSize}
+      viewportScale={viewportScale}
       isSelected={isSelected}
       minWidth={250}
       minHeight={200}

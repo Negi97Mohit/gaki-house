@@ -45,6 +45,7 @@ interface DraggableFileViewerProps {
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
   containerRef?: React.RefObject<HTMLElement>;
+  viewportScale?: number;
 }
 
 // FileRenderer (kept inline for simplicity, or import if separate)
@@ -117,6 +118,11 @@ export const FileRenderer: React.FC<{
       </div>
     );
   };
+
+  // Suppress visual double-rendering for OBS assets but preserve interaction hitbox
+  if (overlay.fileUrl?.startsWith("http://localhost:3000/stream?path=")) {
+    return <div className="w-full h-full bg-transparent" />;
+  }
 
   switch (overlay.fileType) {
     case "image":
@@ -435,6 +441,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   allOverlays,
   onSnapGuidesChange,
   containerRef,
+  viewportScale = 1,
 }) => {
   // Rotation now handled by HybridDraggable
   // const { toast } = useToast(); -> Removed
@@ -614,6 +621,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       rotation={overlay.layout.rotation}
       zIndex={overlay.layout.zIndex}
       containerSize={sceneSize}
+      viewportScale={viewportScale}
       isSelected={isSelected}
       minWidth={50} // Reduced min width to allow smaller logos
       minHeight={50}
@@ -630,7 +638,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       onSnapGuidesChange={onSnapGuidesChange}
       enableResizing={true}
       enableRotation={true}
-      lockAspectRatio={overlay.fileType === "image"}
+      lockAspectRatio={overlay.fileType === "image" || overlay.fileType === "video"}
       // Prevent drag when interacting with media controls or the 3D canvas
       // REMOVED 'video' from cancelSelector to allow dragging by clicking the video
       // ADDED 'input, button' to ensure controls still work
@@ -639,7 +647,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
       dragHandleSelector={is3DFile ? ".drag-handle" : undefined}
       className={cn(
         "group transition-colors duration-200", // FIXED: Changed from transition-all to prevent drag lag
-        overlay.fileType === "image" || overlay.fileType === "3d"
+        overlay.fileType === "image" || overlay.fileType === "3d" || overlay.fileUrl?.startsWith("http://localhost:3000/stream?path=")
           ? "bg-transparent"
           : "bg-card",
         isSelected
@@ -653,6 +661,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
             "flex-grow w-full h-full relative overflow-hidden rounded-lg",
             overlay.fileType !== "image" &&
               overlay.fileType !== "3d" &&
+              !overlay.fileUrl?.startsWith("http://localhost:3000/stream?path=") &&
               "bg-background/50"
           )}
         >

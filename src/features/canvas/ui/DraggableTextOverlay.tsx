@@ -28,6 +28,7 @@ interface DraggableTextOverlayProps {
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
   scale: number;
+  viewportScale?: number;
 }
 
 const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
@@ -43,6 +44,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
   allOverlays,
   onSnapGuidesChange,
   scale,
+  viewportScale = 1,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -209,6 +211,7 @@ const DraggableTextOverlayComponent: React.FC<DraggableTextOverlayProps> = ({
         onDoubleClick={() => setIsEditing(true)}
         allOverlays={allOverlays}
         onSnapGuidesChange={onSnapGuidesChange}
+        viewportScale={viewportScale}
       >
         <div
           className={cn(

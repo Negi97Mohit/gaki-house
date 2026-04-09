@@ -76,6 +76,8 @@ interface OverlayLayerProps {
   onSelectGenerated?: (id: string | null) => void;
   onBannerDoubleClick?: (id: string, e: React.MouseEvent) => void;
   filterBehindUser?: boolean;
+  /** Ratio of logical scene size to rendered DOM size — used to correct pointer deltas during drag/resize */
+  viewportScale?: number;
 }
 
 // 2. Wrap component in React.memo
@@ -122,6 +124,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
     onSelectGenerated,
     onBannerDoubleClick,
     filterBehindUser = false,
+    viewportScale = 1,
   }) => {
     const [showDesignSelector, setShowDesignSelector] = useState<string | null>(
       null
@@ -181,6 +184,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
                   rotation={overlay.layout.rotation}
                   zIndex={overlay.layout.zIndex}
                   containerSize={containerSize}
+                  viewportScale={viewportScale}
                   isSelected={isSelected}
                   cancelSelector=".banner-toolbar-btn"
                   onSelect={() => {
@@ -334,15 +338,14 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
               onSelect={onSelectBrowser}
               allOverlays={allOverlays}
               onSnapGuidesChange={onSnapGuidesChange}
+              viewportScale={viewportScale}
             />
           ))}
 
         {fileOverlays
           .filter(
             (o) =>
-              filterDynamic(o.id) && 
-              checkLayer(o.layout as GeneratedLayout) &&
-              !(o.fileUrl && o.fileUrl.startsWith("http://localhost:3000/stream?path="))
+              filterDynamic(o.id) && checkLayer(o.layout as GeneratedLayout)
           )
           .map((file) => (
             <DraggableFileViewer
@@ -361,6 +364,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
               allOverlays={allOverlays}
               onSnapGuidesChange={onSnapGuidesChange}
               containerRef={containerRef}
+              viewportScale={viewportScale}
             />
           ))}
 
@@ -387,6 +391,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
               allOverlays={allOverlays}
               onSnapGuidesChange={onSnapGuidesChange}
               scale={viewport.scale}
+              viewportScale={viewportScale}
             />
           ))}
       </div>

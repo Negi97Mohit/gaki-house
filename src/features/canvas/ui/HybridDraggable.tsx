@@ -32,7 +32,14 @@ export interface HybridDraggableProps {
   size: { width: number; height: number }; // Percentage (0-100)
   rotation?: number; // Degrees
   zIndex: number;
-  containerSize: { width: number; height: number }; // Pixels
+  containerSize: { width: number; height: number }; // Pixels (logical scene size)
+  /**
+   * The ratio of the scene's LOGICAL pixel size to its RENDERED pixel size on screen.
+   * When the canvas is letterboxed/zoomed, clientX deltas are in screen space but
+   * the element positions are in logical space, so we divide by this factor to align them.
+   * Pass: sceneSize.width / sceneRef.current.clientWidth  (or 1 if no scaling).
+   */
+  viewportScale?: number;
 
   // Interaction callbacks
   onCommit: (id: string, layout: LayoutUpdate) => void;
@@ -70,6 +77,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
   rotation = 0,
   zIndex,
   containerSize,
+  viewportScale = 1,
   onCommit,
   onSelect,
   onClick,
@@ -220,8 +228,13 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
     (e: PointerEvent) => {
       if (!elementRef.current || !enableDragging) return;
 
-      const deltaX = e.clientX - startStateRef.current.pointerX;
-      const deltaY = e.clientY - startStateRef.current.pointerY;
+      // Divide screen-space deltas by viewportScale to get logical canvas-space deltas.
+      // Without this, when the canvas is letterboxed (rendered smaller than its logical
+      // pixel size), the element moves faster than the cursor, creating the "outline
+      // ahead" bug.
+      const scale = viewportScale > 0 ? viewportScale : 1;
+      const deltaX = (e.clientX - startStateRef.current.pointerX) / scale;
+      const deltaY = (e.clientY - startStateRef.current.pointerY) / scale;
 
       if (
         !startStateRef.current.hasMoved &&
@@ -286,7 +299,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
         rotation: currentTransformRef.current.rotation,
       });
     },
-    [containerSize, calculateSnap, onSnapGuidesChange, enableDragging]
+    [containerSize, viewportScale, calculateSnap, onSnapGuidesChange, enableDragging]
   );
 
   const handleDragEnd = useCallback(
@@ -379,8 +392,10 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
     (e: PointerEvent | React.PointerEvent) => {
       if (!elementRef.current || mode !== "resizing" || !resizeHandle) return;
 
-      const deltaX = e.clientX - startStateRef.current.pointerX;
-      const deltaY = e.clientY - startStateRef.current.pointerY;
+      // Same scale correction as drag — resize handles live in screen space too.
+      const scale = viewportScale > 0 ? viewportScale : 1;
+      const deltaX = (e.clientX - startStateRef.current.pointerX) / scale;
+      const deltaY = (e.clientY - startStateRef.current.pointerY) / scale;
 
       let newWidth = startStateRef.current.elementWidth;
       let newHeight = startStateRef.current.elementHeight;

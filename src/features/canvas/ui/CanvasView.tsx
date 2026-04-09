@@ -214,6 +214,11 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
   const { items: overlayItems, isReady: overlaysReady } = useOverlayMediaPool(
     fileOverlays,
     sceneId,
+    (id, layout) => {
+      setTimeout(() => {
+        props.onFileLayoutChange?.(id, layout);
+      }, 0);
+    }
   );
 
   useEffect(() => {
@@ -223,6 +228,18 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       kernelRef.current.stopOverlayFeeds();
     }
   }, [overlaysReady, overlayItems]);
+
+  // Compute the ratio of logical scene pixels to rendered DOM pixels.
+  // When the canvas is letterboxed inside its container, sceneRef.clientWidth < sceneSize.width.
+  // HybridDraggable receives screen-space pointer events but works in logical pixels,
+  // so pointer deltas must be divided by this ratio to get 1:1 cursor tracking.
+  const viewportScale = React.useMemo(() => {
+    const el = sceneRef.current;
+    if (!el || sceneSize.width === 0) return 1;
+    const rendered = el.getBoundingClientRect().width;
+    return rendered > 0 ? sceneSize.width / rendered : 1;
+  }, [sceneSize.width]);
+  // Re-compute on resize by watching sceneSize (ResizeObserver already updates it).
 
   const hasScreenSection = props.canvasLayout?.sections.some(
     (s) => s.content.type === "screen",
@@ -459,6 +476,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onInternalDragStart={props.onInternalDragStart}
                 onInternalDragStop={props.onInternalDragStop}
                 onBannerDoubleClick={props.onBannerDoubleClick}
+                viewportScale={viewportScale}
               />
             </div>
           );
@@ -522,6 +540,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onInternalDragStop={props.onInternalDragStop}
                 onBannerDoubleClick={props.onBannerDoubleClick}
                 filterBehindUser={true}
+                viewportScale={viewportScale}
               />
             </div>
 
@@ -606,6 +625,7 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
                 onInternalDragStop={props.onInternalDragStop}
                 onBannerDoubleClick={props.onBannerDoubleClick}
                 filterBehindUser={false}
+                viewportScale={viewportScale}
               />
             </div>
           </React.Fragment>
