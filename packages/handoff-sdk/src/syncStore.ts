@@ -1,20 +1,26 @@
-import { createStore } from "zustand/vanilla";
-import { ConnectionState } from "livekit-client";
+import { create } from "zustand";
+import { HandoffDevice } from "./types/handoff";
 
-export interface HandoffState {
-  activeDeviceId: string | null;
+interface HandoffState {
+  activeDevice: string;
+  connectionState: string;
   isRelinquishing: boolean;
-  connectionState: ConnectionState | "disconnected";
+  availableDevices: HandoffDevice[];
+
   setActiveDevice: (id: string) => void;
-  setRelinquishing: (status: boolean) => void;
-  setConnectionState: (state: ConnectionState) => void;
+  setConnectionState: (state: string) => void;
+  setRelinquishing: (val: boolean) => void;
+  setAvailableDevices: (devices: HandoffDevice[]) => void;
 }
 
-export const handoffStore = createStore<HandoffState>((set) => ({
-  activeDeviceId: null,
-  isRelinquishing: false,
+export const handoffStore = create<HandoffState>((set) => ({
+  activeDevice: "",
   connectionState: "disconnected",
-  setActiveDevice: (id) => set({ activeDeviceId: id }),
-  setRelinquishing: (status) => set({ isRelinquishing: status }),
+  isRelinquishing: false,
+  availableDevices: [],
+
+  setActiveDevice: (id) => set({ activeDevice: id }),
   setConnectionState: (state) => set({ connectionState: state }),
+  setRelinquishing: (val) => set({ isRelinquishing: val }),
+  setAvailableDevices: (devices) => set({ availableDevices: devices }),
 }));
