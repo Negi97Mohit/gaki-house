@@ -107,7 +107,7 @@ const Index = () => {
     AppStateSync.restore().then(savedState => {
       if (savedState?.scenes?.length) {
         console.log('[Index] Restoring', savedState.scenes.length, 'scene(s) from previous session');
-        const firstId = sceneManager.importScenes(savedState.scenes);
+        const firstId = sceneManager.importScenes(savedState.scenes as SceneState[]);
         if (firstId) sceneManager.handleSceneSelect(firstId);
       } else {
         console.log('[Index] No previous session state found');
