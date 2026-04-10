@@ -7,6 +7,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@caption-cam/handoff-sdk": [
+        "./packages/handoff-sdk/src"
       ]
     },
     "skipLibCheck": true,

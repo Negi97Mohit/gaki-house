@@ -98,6 +98,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@caption-cam/handoff-sdk": path.resolve(__dirname, "./packages/handoff-sdk/src"),
     },
   },
   build: {
