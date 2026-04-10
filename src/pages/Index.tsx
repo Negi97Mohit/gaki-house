@@ -85,11 +85,8 @@ const Index = () => {
     if (sceneId === editor.sceneManager.activeSceneId) return;
     
     const invokeSwitch = () => {
-      if (subsceneId) {
-        editor.sceneManager.handleSceneSelectWithSubscene(sceneId, subsceneId);
-      } else {
-        editor.sceneManager.handleSceneSelect(sceneId);
-      }
+      editor.sceneManager.handleSceneSelect(sceneId);
+    
     };
 
     if (stingerConfig && kernel?.triggerStingerPlayback) {

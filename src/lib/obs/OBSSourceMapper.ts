@@ -151,6 +151,7 @@ function createDefaultSceneBase(name: string, id: string): SceneState {
     canvasAspectRatio: "16:9",
     customAspectRatio: "",
     isFaceTrackingEnabled: false,
+    emptyGridPanels: [],
   };
 }
 

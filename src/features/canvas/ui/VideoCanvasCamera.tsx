@@ -7,6 +7,7 @@ interface LegacyVideoCanvasCameraProps {
   className?: string;
   style?: React.CSSProperties;
   stream: MediaStream | null;
+  isCameraOn?: boolean;
   cameraShape?: CameraShape;
   pipBorder?: { color: string; width: number };
   pipShadow?: { blur: number; color: string };
