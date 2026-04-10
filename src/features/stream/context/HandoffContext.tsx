@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { db, auth } from "@/lib/firebase"; // Your existing Firebase client
 import {
   DeviceRegistry,
@@ -28,18 +34,29 @@ export const HandoffProvider: React.FC<{ children: React.ReactNode }> = ({
     streamManager: null,
   });
 
+  // Use a ref to ensure the cleanup function always has the latest instances
+  const instancesRef = useRef<HandoffContextValue>({
+    registry: null,
+    coordinator: null,
+    streamManager: null,
+  });
+
   useEffect(() => {
     // Wait for Firebase Auth to resolve
     const unsubscribeAuth = auth.onAuthStateChanged(async (user) => {
+      // 1. Disconnect previous instances before creating new ones (Fixes Ghost Devices on hot-reload)
+      instancesRef.current.registry?.disconnect();
+      instancesRef.current.coordinator?.disconnect();
+
       if (!user) {
         // Cleanup if logged out
-        instances.registry?.disconnect();
-        instances.coordinator?.disconnect();
-        setInstances({
+        const emptyState = {
           registry: null,
           coordinator: null,
           streamManager: null,
-        });
+        };
+        setInstances(emptyState);
+        instancesRef.current = emptyState;
         return;
       }
 
@@ -75,14 +92,15 @@ export const HandoffProvider: React.FC<{ children: React.ReactNode }> = ({
         streamManager,
       );
       coordinator.listenForSignals();
-
-      setInstances({ registry, coordinator, streamManager });
+      const newInstances = { registry, coordinator, streamManager };
+      instancesRef.current = newInstances;
+      setInstances(newInstances);
     });
 
     return () => {
       unsubscribeAuth();
-      instances.registry?.disconnect();
-      instances.coordinator?.disconnect();
+      instancesRef.current.registry?.disconnect();
+      instancesRef.current.coordinator?.disconnect();
     };
   }, []);
 
