@@ -47,8 +47,12 @@ export const HandoffProvider: React.FC<{ children: React.ReactNode }> = ({
       const isElectron = navigator.userAgent.toLowerCase().includes("electron");
       const platform: DevicePlatform = isElectron ? "desktop" : "web";
 
-      // Generate a unique ID for this specific app instance
-      const deviceId = `${platform}-${Math.random().toString(36).substr(2, 9)}`;
+      // Retrieve or generate a persistent unique ID for this specific browser/app instance
+      let deviceId = localStorage.getItem("gaki-device-id");
+      if (!deviceId) {
+        deviceId = `${platform}-${Math.random().toString(36).substr(2, 9)}`;
+        localStorage.setItem("gaki-device-id", deviceId);
+      }
 
       // 2. Initialize Stream Manager
       const apiUrl =
