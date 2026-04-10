@@ -7,12 +7,12 @@ import { ShortcutTooltip } from "@/shared/ui/shortcut-tooltip";
 import { OBSImportButton } from "./OBSImportButton";
 import { SceneState } from "@/types/caption";
 
-interface SceneControlsProps {
+export interface SceneControlsProps {
     onUndo: () => void;
     onRedo: () => void;
     onResetScene: () => void;
-    onAutoSwitchToggle: (enabled: boolean) => void;
-    isAutoSwitching: boolean;
+    onAutoSwitchToggle?: (enabled: boolean) => void;
+    isAutoSwitching?: boolean;
     onImportOBSScenes?: (scenes: SceneState[], stingerConfig?: { path: string; transitionPoint: number }) => void;
     onClearAllScenes?: () => void;
 }

@@ -7,7 +7,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { handoffStore } from "../syncStore";
-import { HandoffSignal } from "../types/handoff";
+import { HandoffSignal, SignalStatus } from "../types/handoff";
 import { StreamManager } from "./StreamManager";
 
 export class HandoffCoordinator {

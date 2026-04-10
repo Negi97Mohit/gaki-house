@@ -85,11 +85,8 @@ const Index = () => {
     if (sceneId === editor.sceneManager.activeSceneId) return;
     
     const invokeSwitch = () => {
-      if (subsceneId) {
-        editor.sceneManager.handleSceneSelectWithSubscene(sceneId, subsceneId);
-      } else {
-        editor.sceneManager.handleSceneSelect(sceneId);
-      }
+      editor.sceneManager.handleSceneSelect(sceneId);
+    
     };
 
     if (stingerConfig && kernel?.triggerStingerPlayback) {
@@ -110,7 +107,7 @@ const Index = () => {
     AppStateSync.restore().then(savedState => {
       if (savedState?.scenes?.length) {
         console.log('[Index] Restoring', savedState.scenes.length, 'scene(s) from previous session');
-        const firstId = sceneManager.importScenes(savedState.scenes);
+        const firstId = sceneManager.importScenes(savedState.scenes as import("@/types/caption").SceneState[]);
         if (firstId) sceneManager.handleSceneSelect(firstId);
       } else {
         console.log('[Index] No previous session state found');
