@@ -404,33 +404,100 @@ function setupIpcHandlers() {
   });
 
   // Google OAuth flow for Electron (bypasses auth/unauthorized-domain)
+  // Uses a temporary loopback HTTP server on port 80 to capture the OAuth redirect,
+  // since "http://localhost" is registered as an authorized redirect URI in Google Cloud Console.
   ipcMain.handle(
     "auth:google-oauth",
     async (event, { apiKey }: { apiKey: string }) => {
       return new Promise(async (resolve) => {
+        let loopbackServer: http.Server | null = null;
+        let authWindow: BrowserWindow | null = null;
+        let resolved = false;
+
+        const cleanup = () => {
+          if (loopbackServer) {
+            try { loopbackServer.close(); } catch (_) {}
+            loopbackServer = null;
+          }
+          if (authWindow && !authWindow.isDestroyed()) {
+            authWindow.close();
+          }
+          authWindow = null;
+        };
+
+        const tryResolve = (data: any) => {
+          if (resolved) return;
+          resolved = true;
+          resolve(data);
+          cleanup();
+        };
+
         try {
-          // Fetch the Google client ID from Firebase's project config
-          const fetch = (await import("node-fetch")).default;
-          const configResp = await fetch(
-            `https://www.googleapis.com/identitytoolkit/v3/relyingparty/getProjectConfig?key=${apiKey}`
-          );
-          const configData = (await configResp.json()) as any;
+          // Hardcoded Web SDK client ID (matches Firebase project)
+          const clientId =
+            "696196670090-698euvvutelhc3v2ic0nfqcu2tr251vt.apps.googleusercontent.com";
 
-          // Find the Google provider's client ID
-          const googleProvider = configData?.idpConfig?.find(
-            (p: any) => p.provider === "GOOGLE"
-          );
-          const clientId = googleProvider?.clientId;
+          // The redirect URI MUST exactly match what's registered in Google Cloud Console.
+          // "http://localhost" (port 80) is already registered.
+          const redirectUri = "http://localhost";
 
-          if (!clientId) {
-            console.error(
-              "[Auth] Could not find Google client ID from Firebase config"
-            );
-            resolve(null);
-            return;
+          // 1. Try to create a loopback HTTP server on port 80 to capture the redirect
+          let usingLoopbackServer = false;
+          loopbackServer = http.createServer((req, res) => {
+            if (req.method === "POST") {
+              let body = "";
+              req.on("data", (chunk: Buffer) => { body += chunk.toString(); });
+              req.on("end", () => {
+                res.writeHead(200, { "Content-Type": "text/plain" });
+                res.end("OK");
+                try {
+                  const params = new URLSearchParams(body);
+                  const idToken = params.get("id_token");
+                  const accessToken = params.get("access_token");
+                  if (idToken) {
+                    console.log("[Auth] Successfully extracted tokens via loopback server");
+                    tryResolve({ idToken, accessToken });
+                  }
+                } catch (e) {
+                  console.error("[Auth] Failed to parse token POST:", e);
+                }
+              });
+            } else {
+              // GET request — Google redirects here with tokens in the fragment (#id_token=...).
+              // Fragments are NOT sent to the server, so serve a page that reads and POSTs them.
+              res.writeHead(200, { "Content-Type": "text/html" });
+              res.end(`<!DOCTYPE html>
+<html><body><p>Signing in…</p><script>
+  var h = location.hash.substring(1);
+  if (h) {
+    fetch(location.origin, { method: "POST", body: h })
+      .then(function() { document.body.innerText = "Done! You can close this window."; })
+      .catch(function() { document.body.innerText = "Auth error. Close this window and try again."; });
+  } else {
+    document.body.innerText = "Auth error: no tokens received.";
+  }
+</script></body></html>`);
+            }
+          });
+
+          try {
+            await new Promise<void>((listenResolve, listenReject) => {
+              loopbackServer!.on("error", listenReject);
+              loopbackServer!.listen(80, "127.0.0.1", () => {
+                loopbackServer!.removeAllListeners("error");
+                listenResolve();
+              });
+            });
+            usingLoopbackServer = true;
+            console.log("[Auth] Loopback server listening on port 80");
+          } catch (portErr) {
+            // Port 80 is unavailable — fall back to fragment extraction via BrowserWindow
+            console.warn("[Auth] Port 80 unavailable, using fragment extraction fallback");
+            try { loopbackServer.close(); } catch (_) {}
+            loopbackServer = null;
           }
 
-          const redirectUri = "http://localhost";
+          // 2. Build the Google OAuth URL
           const scope = "openid email profile";
           const authUrl =
             `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -440,7 +507,8 @@ function setupIpcHandlers() {
             `&scope=${encodeURIComponent(scope)}` +
             `&nonce=${Date.now().toString(36)}`;
 
-          const authWindow = new BrowserWindow({
+          // 3. Open the auth window
+          authWindow = new BrowserWindow({
             width: 500,
             height: 700,
             show: true,
@@ -453,74 +521,73 @@ function setupIpcHandlers() {
             },
           });
 
-          let resolved = false;
-          const tryResolve = (data: any) => {
-            if (resolved) return;
-            resolved = true;
-            resolve(data);
-            if (!authWindow.isDestroyed()) authWindow.close();
-          };
-
-          // Use executeJavaScript to read the full URL including the fragment (#)
-          // Navigation events (will-navigate, will-redirect) strip the fragment,
-          // so we must read it from the page's own window.location after navigation.
-          const tryExtractTokensFromPage = async () => {
-            if (resolved || authWindow.isDestroyed()) return;
-            try {
-              const fullUrl = await authWindow.webContents.executeJavaScript(
-                "window.location.href"
-              );
-              console.log("[Auth] Page URL:", fullUrl);
-              if (
-                fullUrl &&
-                fullUrl.includes("#") &&
-                fullUrl.includes("id_token")
-              ) {
-                const hash = fullUrl.split("#")[1];
-                const params = new URLSearchParams(hash);
-                const idToken = params.get("id_token");
-                const accessToken = params.get("access_token");
-                if (idToken) {
-                  console.log("[Auth] Successfully extracted tokens");
-                  tryResolve({ idToken, accessToken });
-                }
-              }
-            } catch (e) {
-              // Window may have been destroyed, ignore
-            }
-          };
-
           authWindow.loadURL(authUrl);
 
-          // After Google redirects to http://localhost#tokens, the page will
-          // either load (if something is on port 80) or fail. Either way,
-          // window.location.href will contain the fragment with our tokens.
-          authWindow.webContents.on("did-navigate", (_, url) => {
-            if (url.startsWith(redirectUri)) {
-              // Small delay to ensure the fragment is available in the page context
-              setTimeout(tryExtractTokensFromPage, 100);
-            }
-          });
-
-          authWindow.webContents.on(
-            "did-fail-load",
-            (_, errorCode, errorDesc, validatedURL) => {
-              if (validatedURL.startsWith(redirectUri)) {
-                setTimeout(tryExtractTokensFromPage, 100);
+          // 4. If loopback server is NOT running, extract tokens from the BrowserWindow URL
+          if (!usingLoopbackServer) {
+            const tryExtractTokensFromPage = async () => {
+              if (resolved || !authWindow || authWindow.isDestroyed()) return;
+              try {
+                const fullUrl = await authWindow.webContents.executeJavaScript(
+                  "window.location.href"
+                );
+                if (fullUrl && fullUrl.includes("#") && fullUrl.includes("id_token")) {
+                  const hash = fullUrl.split("#")[1];
+                  const params = new URLSearchParams(hash);
+                  const idToken = params.get("id_token");
+                  const accessToken = params.get("access_token");
+                  if (idToken) {
+                    console.log("[Auth] Successfully extracted tokens via fragment");
+                    tryResolve({ idToken, accessToken });
+                  }
+                }
+              } catch (e) {
+                // Window may have been destroyed, ignore
               }
-            }
-          );
+            };
 
-          authWindow.webContents.on("did-finish-load", () => {
-            tryExtractTokensFromPage();
-          });
+            authWindow.webContents.on("did-navigate", (_, url) => {
+              if (url.startsWith(redirectUri)) {
+                setTimeout(tryExtractTokensFromPage, 200);
+              }
+            });
+
+            authWindow.webContents.on(
+              "did-fail-load",
+              (_, errorCode, errorDesc, validatedURL) => {
+                if (validatedURL.startsWith(redirectUri)) {
+                  setTimeout(tryExtractTokensFromPage, 200);
+                }
+              }
+            );
+
+            authWindow.webContents.on("did-finish-load", () => {
+              tryExtractTokensFromPage();
+            });
+          }
 
           authWindow.on("closed", () => {
-            if (!resolved) resolve(null);
+            authWindow = null;
+            if (!resolved) {
+              resolved = true;
+              resolve(null);
+              if (loopbackServer) {
+                try { loopbackServer.close(); } catch (_) {}
+                loopbackServer = null;
+              }
+            }
           });
+
+          // Safety timeout — 5 minutes
+          setTimeout(() => {
+            if (!resolved) {
+              console.warn("[Auth] OAuth timed out after 5 minutes");
+              tryResolve(null);
+            }
+          }, 5 * 60 * 1000);
         } catch (error) {
           console.error("[Auth] Google OAuth error:", error);
-          resolve(null);
+          tryResolve(null);
         }
       });
     }

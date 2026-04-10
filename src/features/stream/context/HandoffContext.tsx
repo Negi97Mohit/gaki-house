@@ -64,11 +64,26 @@ export const HandoffProvider: React.FC<{ children: React.ReactNode }> = ({
       const isElectron = navigator.userAgent.toLowerCase().includes("electron");
       const platform: DevicePlatform = isElectron ? "desktop" : "web";
 
-      // Retrieve or generate a persistent unique ID for this specific browser/app instance
-      let deviceId = localStorage.getItem("gaki-device-id");
-      if (!deviceId) {
-        deviceId = `${platform}-${Math.random().toString(36).substr(2, 9)}`;
-        localStorage.setItem("gaki-device-id", deviceId);
+      // Retrieve or generate a persistent unique ID for this specific browser/app instance.
+      // IMPORTANT: Electron and web must use separate storage to avoid sharing the same ID
+      // when both run on localhost in development.
+      let deviceId: string | null = null;
+      const electron = (window as any).electron;
+
+      if (electron?.storage) {
+        // Electron: use electron-store (completely separate from browser localStorage)
+        deviceId = (await electron.storage.get("gaki-device-id")) as string | null;
+        if (!deviceId) {
+          deviceId = `desktop-${Math.random().toString(36).substr(2, 9)}`;
+          await electron.storage.set("gaki-device-id", deviceId);
+        }
+      } else {
+        // Web browser: use a web-specific localStorage key
+        deviceId = localStorage.getItem("gaki-device-id-web");
+        if (!deviceId) {
+          deviceId = `web-${Math.random().toString(36).substr(2, 9)}`;
+          localStorage.setItem("gaki-device-id-web", deviceId);
+        }
       }
 
       // 2. Initialize Stream Manager

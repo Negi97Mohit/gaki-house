@@ -10,10 +10,16 @@ import {
 import { handoffStore } from "../syncStore";
 import { HandoffDevice, DevicePlatform } from "../types/handoff";
 
+/** Devices inactive for longer than this are considered stale and auto-removed. */
+const STALE_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes
+/** How often this device writes a heartbeat to Firestore. */
+const HEARTBEAT_INTERVAL_MS = 30 * 1000; // 30 seconds
+
 export class DeviceRegistry {
   private db: Firestore;
   private userId: string;
   private unsubscribe: (() => void) | null = null;
+  private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 
   public currentDevice: HandoffDevice;
 
@@ -56,7 +62,13 @@ export class DeviceRegistry {
       lastActive: serverTimestamp(),
     });
 
-    // 2. Listen to all devices active under this user's account
+    // 2. Start a heartbeat so other clients know we're still alive
+    this.heartbeatInterval = setInterval(() => {
+      setDoc(deviceRef, { lastActive: serverTimestamp() }, { merge: true })
+        .catch((err) => console.warn("Heartbeat write failed:", err));
+    }, HEARTBEAT_INTERVAL_MS);
+
+    // 3. Listen to all devices active under this user's account
     const devicesCollection = collection(
       this.db,
       `users/${this.userId}/active_devices`,
@@ -67,11 +79,18 @@ export class DeviceRegistry {
       (snapshot) => {
         const devices: HandoffDevice[] = [];
 
-        snapshot.forEach((doc) => {
-          const data = doc.data() as HandoffDevice;
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data() as HandoffDevice;
 
-          // Optional: Filter out stale devices (e.g., if the app crashed and didn't delete its doc)
-          // For now, we trust the disconnect() method.
+          // Filter out stale devices (no heartbeat within threshold)
+          const lastActive =
+            (data.lastActive as any)?.toMillis?.() ?? data.lastActive ?? 0;
+          if (typeof lastActive === "number" && Date.now() - lastActive > STALE_THRESHOLD_MS) {
+            // Auto-delete the stale doc (fire-and-forget)
+            deleteDoc(docSnap.ref).catch(() => {});
+            return;
+          }
+
           devices.push(data);
         });
 
@@ -109,6 +128,12 @@ export class DeviceRegistry {
    * Call this explicitly on logout or app quit.
    */
   public async disconnect() {
+    // Stop heartbeat
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+      this.heartbeatInterval = null;
+    }
+
     if (this.unsubscribe) {
       this.unsubscribe();
       this.unsubscribe = null;
@@ -128,3 +153,4 @@ export class DeviceRegistry {
     }
   }
 }
+
