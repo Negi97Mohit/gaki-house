@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+            "paths": {
+      "@/*": ["./src/*"],
+      "@caption-cam/core/*": ["../../packages/core/src/*"],
+      "@caption-cam/ui/*": ["../../packages/ui/src/*"],
+      "@caption-cam/engine/*": ["../../packages/engine/src/*"],
+      "@caption-cam/handoff-sdk/*": ["../../packages/handoff-sdk/src/*"]
+    },
+    "skipLibCheck": true,
+    "strict": false,
+    "target": "ES2020",
+    "useDefineForClassFields": true
+  },
+  "include": [
+    "src"
+  ]
+}
+
+

@@ -30,3 +30,8 @@ dist-ssr
 *log.txt
 lint_*.txt
 *_error.txt
+
+# pnpm cache
+.pnpm-store/
+
+*.exe

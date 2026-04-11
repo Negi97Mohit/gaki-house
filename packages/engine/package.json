@@ -1,0 +1,12 @@
+{
+  "name": "@caption-cam/engine",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "@caption-cam/core": "workspace:*"
+  }
+}

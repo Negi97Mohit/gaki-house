@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+            "paths": {
+      "@/*": ["./src/*"],
+      "@caption-cam/core/*": ["../../packages/core/src/*"],
+      "@caption-cam/ui/*": ["../../packages/ui/src/*"],
+      "@caption-cam/engine/*": ["../../packages/engine/src/*"],
+      "@caption-cam/handoff-sdk/*": ["../../packages/handoff-sdk/src/*"]
+    },
+    "skipLibCheck": true,
+    "strictNullChecks": false
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}
+
+
+
