@@ -2,6 +2,10 @@
   "name": "@caption-cam/desktop",
   "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Negi97Mohit/caption-cam"
+  },
   "main": "dist/main.js",
   "scripts": {
     "dev": "tsc && electron .",
