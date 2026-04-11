@@ -29,6 +29,10 @@
     "typescript": "^5.0.0"
   },
   "build": {
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    },
     "mac": {
       "entitlements": "../../build/entitlements.mac.plist",
       "target": "dmg",
