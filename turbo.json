@@ -11,7 +11,8 @@
     },
     "@caption-cam/desktop#release": {
       "dependsOn": ["@caption-cam/web#build", "^build"],
-      "outputs": ["dist/**", "release/**"]
+      "outputs": ["dist/**", "release/**"],
+      "env": ["GH_TOKEN", "GITHUB_TOKEN"]
     },
     "lint": {
       "dependsOn": ["^lint"]
