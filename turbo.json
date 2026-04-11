@@ -9,6 +9,10 @@
       "dependsOn": ["@caption-cam/web#build", "^build"],
       "outputs": ["dist/**", "release/**"]
     },
+    "@caption-cam/desktop#release": {
+      "dependsOn": ["@caption-cam/web#build", "^build"],
+      "outputs": ["dist/**", "release/**"]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },
