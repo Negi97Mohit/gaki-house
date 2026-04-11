@@ -1,7 +1,8 @@
 {
   "name": "@caption-cam/desktop",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
+  "author": "Creator Enji",
   "repository": {
     "type": "git",
     "url": "https://github.com/Negi97Mohit/caption-cam"
@@ -33,18 +34,23 @@
       "provider": "github",
       "releaseType": "release"
     },
+    "win": {
+      "target": "nsis",
+      "icon": "../../build/icon.ico",
+      "publisherName": "Creator Enji"
+    },
+    "nsis": {
+      "artifactName": "GAKI -House of Video Creation Setup.${ext}"
+    },
     "mac": {
       "entitlements": "../../build/entitlements.mac.plist",
       "target": "dmg",
       "icon": "../../build/icon.icns",
-      "hardenedRuntime": true
+      "hardenedRuntime": true,
+      "artifactName": "GAKI -House of Video Creation.${ext}"
     },
     "linux": {
       "target": "AppImage"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "../../build/icon.ico"
     },
     "productName": "GAKI - House of Video Creation",
     "files": [
