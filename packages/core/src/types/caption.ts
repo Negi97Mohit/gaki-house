@@ -461,6 +461,7 @@ export interface CanvasSectionCameraState {
   filterColor?: string;
   filterTarget?: "both" | "background" | "person";
   selectedDeviceId?: string;
+  isCameraEnabled?: boolean;
   // --- NEW: Canvas Design Support ---
   canvasDesignId?: string;
   layoutMode?: "solo" | "pip";
@@ -765,6 +766,7 @@ export const DEFAULT_CAMERA_STATE: CanvasSectionCameraState = {
   neonIntensity: 20,
   neonColor: "#00FFFF", // Default to cyan hex
   selectedDeviceId: undefined,
+  isCameraEnabled: true,
   cameraShape: "rectangle",
   cameraBackground: "none",
   customBackgroundUrl: null,

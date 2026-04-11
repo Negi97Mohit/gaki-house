@@ -110,6 +110,19 @@ export const DraggableEmptyGridPanel: React.FC<
           onSectionContentChange={(sectionId, newContent) =>
             onContentChange?.(sectionId, newContent)
           }
+          onSectionCameraSettingsChange={(sectionId, newSettings) => {
+            console.log(`[DraggableEmptyGridPanel] onSectionCameraSettingsChange called for sectionId=${sectionId}`);
+            console.log(`[DraggableEmptyGridPanel] current content:`, content);
+            console.log(`[DraggableEmptyGridPanel] newSettings:`, newSettings);
+            if (content?.type === "camera") {
+              onContentChange?.(sectionId, {
+                ...content,
+                settings: { ...content.settings, ...newSettings }
+              });
+            } else {
+              console.warn(`[DraggableEmptyGridPanel] Ignored settings change because content.type is not camera!`);
+            }
+          }}
           onGridAssetSelect={(sectionId, asset) =>
             onGridAssetSelect?.(sectionId, asset)
           }

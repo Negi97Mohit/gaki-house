@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect, useState } from "react";
 import { Button } from "@caption-cam/ui/button";
-import { PictureInPicture, MonitorUp } from "lucide-react";
+import { PictureInPicture, MonitorUp, Video, VideoOff } from "lucide-react";
 import { cn } from "@caption-cam/core/lib/utils";
 import { CameraShape } from "@caption-cam/core/types/caption";
 import { PipCameraMenu } from "./pip/PipCameraMenu";
@@ -73,6 +73,8 @@ interface PipControlsToolbarProps {
 
   videoDevices: MediaDeviceInfo[];
   selectedDeviceId?: string;
+  isCameraEnabled?: boolean;
+  onCameraToggle?: (enabled: boolean) => void;
   onCameraDeviceChange: (deviceId: string) => void;
 
   showAspectRatio?: boolean;
@@ -140,6 +142,34 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
     >
       {/* Subtle inner glow */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
+      
+      {props.onCameraToggle && (
+        <>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "h-9 w-9 rounded-xl hover:bg-background/60 transition-all",
+              props.isCameraEnabled === false && "bg-destructive/15 text-destructive hover:bg-destructive/20"
+            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+            }}
+            onPointerDown={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              console.log(`[PipControlsToolbar] camera toggle pointerDown! isCameraEnabled=${props.isCameraEnabled}`);
+              props.onCameraToggle?.(!props.isCameraEnabled);
+            }}
+            title={props.isCameraEnabled !== false ? "Turn Camera Off" : "Turn Camera On"}
+          >
+            {props.isCameraEnabled !== false ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
+          </Button>
+          <div className="w-[1px] h-4 bg-border/40 mx-1" />
+        </>
+      )}
+
       <PipCameraMenu
         videoDevices={props.videoDevices}
         selectedDeviceId={props.selectedDeviceId}

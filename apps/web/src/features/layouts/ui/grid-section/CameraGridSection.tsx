@@ -2,6 +2,7 @@ import React from "react";
 import { CanvasSectionCameraState } from "@caption-cam/core/types/caption";
 import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
 import { InteractiveGridSection } from "@/features/layouts/ui/InteractiveGridSection";
+import { usePanelStream } from "@/features/stream/hooks/usePanelStream";
 
 interface CameraGridSectionProps {
   sectionId: string;
@@ -56,9 +57,18 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
   onUserPositionChange,
   backgroundImageUrl,
 }) => {
-  // CHANGED: Use spread to merge defaults with actual settings.
-  // This ensures properties like 'videoFilter' are never undefined if missing from 'settings'.
   const safeSettings = { ...DEFAULT_SETTINGS, ...settings };
+  const isCameraEnabled = safeSettings.isCameraEnabled ?? true;
+
+  // NEW: Get per-panel isolated hardware stream if deviceId is specified
+  const { stream: panelStream } = usePanelStream(
+    safeSettings.selectedDeviceId, 
+    sectionId, 
+    isCameraEnabled
+  );
+  
+  const baseStream = panelStream || cameraStream;
+  const effectiveStream = isCameraEnabled ? baseStream : null;
 
   if (safeSettings.layoutMode === "pip") {
     return (
@@ -68,7 +78,7 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
         onUpdate={(newSettings) =>
           onSectionCameraSettingsChange(sectionId, newSettings)
         }
-        cameraStream={cameraStream}
+        cameraStream={effectiveStream}
         videoDevices={videoDevices}
         isActive={true}
         onSelect={() => {}}
@@ -78,7 +88,7 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
 
   return (
     <CameraRenderer
-      stream={cameraStream}
+      stream={effectiveStream}
       className="w-full h-full object-cover"
       style={{
         borderRadius:
@@ -91,6 +101,13 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
       portalContainer={null}
       videoDevices={videoDevices}
       selectedDeviceId={safeSettings.selectedDeviceId}
+      isCameraEnabled={isCameraEnabled}
+      onCameraToggle={(enabled) => {
+        console.log(`[CameraGridSection] onCameraToggle fired! enabled=${enabled}`);
+        onSectionCameraSettingsChange(sectionId, {
+          isCameraEnabled: enabled,
+        });
+      }}
       onCameraDeviceChange={(deviceId) =>
         onSectionCameraSettingsChange(sectionId, {
           selectedDeviceId: deviceId,

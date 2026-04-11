@@ -68,6 +68,8 @@ interface CameraRendererProps {
   onUserPositionChange?: (pos: { x: number; y: number } | null) => void;
   videoDevices?: MediaDeviceInfo[];
   selectedDeviceId?: string;
+  isCameraEnabled?: boolean;
+  onCameraToggle?: (enabled: boolean) => void;
   onCameraDeviceChange?: (deviceId: string) => void;
   onEnterPipMode?: () => void;
   isMouseActive?: boolean;
@@ -178,6 +180,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
     position: { x: 0, y: 0 },
     containerRef,
     ...props,
+    isCameraEnabled: props.isCameraEnabled ?? true,
+    onCameraToggle: props.onCameraToggle,
     onCameraDeviceChange: props.onCameraDeviceChange || (() => { }),
     onEnterPipMode: props.onEnterPipMode,
     isPipActive,

@@ -109,6 +109,7 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
                 onSectionContentChange={onSectionContentChange!}
                 onGridAssetSelect={onGridAssetSelect!}
                 forceInteractive={forceInteractive}
+                videoDevices={videoDevices}
               />
             );
           }
@@ -214,6 +215,7 @@ export const GridSectionRenderer: React.FC<GridSectionRendererProps> =
               onSectionContentChange={onSectionContentChange!}
               onGridAssetSelect={onGridAssetSelect!}
               forceInteractive={forceInteractive}
+              videoDevices={videoDevices}
             />
           );
       }

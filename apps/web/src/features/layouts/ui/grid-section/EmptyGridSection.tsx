@@ -53,6 +53,7 @@ interface EmptyGridSectionProps {
   ) => void;
   onGridAssetSelect: (sectionId: string, asset: AssetResult) => void;
   forceInteractive?: boolean; // NEW: Bypass Preview mode for floating draggable panels
+  videoDevices?: MediaDeviceInfo[]; // Added for camera picker
 }
 
 export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
@@ -62,6 +63,7 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
   onSectionContentChange,
   onGridAssetSelect,
   forceInteractive = false,
+  videoDevices = [],
 }) => {
   const isPreviewContext = usePreviewMode();
   const isPreview = isPreviewContext && !forceInteractive; // Allow override
@@ -194,16 +196,30 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
             <DropdownMenuItem onClick={() => setIsFileDialogOpen(true)}>
               <FileVideo className="h-4 w-4 mr-2" /> File / Media
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() =>
-                onSectionContentChange(sectionId, {
-                  type: "camera",
-                  settings: DEFAULT_CAMERA_STATE,
-                })
-              }
-            >
-              <Camera className="h-4 w-4 mr-2" /> Camera
-            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Camera className="h-4 w-4 mr-2" /> Camera
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="z-[1000] w-[240px]">
+                {videoDevices && videoDevices.length > 0 && (
+                  <>
+                    {videoDevices.map((device) => (
+                      <DropdownMenuItem
+                        key={device.deviceId}
+                        onClick={() =>
+                          onSectionContentChange(sectionId, {
+                            type: "camera",
+                            settings: { ...DEFAULT_CAMERA_STATE, selectedDeviceId: device.deviceId, isCameraEnabled: false },
+                          })
+                        }
+                      >
+                        {device.label || `Camera (${device.deviceId.slice(0, 5)})`}
+                      </DropdownMenuItem>
+                    ))}
+                  </>
+                )}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
             <DropdownMenuItem
               onClick={() => {
                 const isElectron = !!(window as any).electron;
