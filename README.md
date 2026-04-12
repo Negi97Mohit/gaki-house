@@ -1,49 +1,79 @@
-# GAKI Studio
+# 🎥 Caption Cam Studio
 
-**GAKI — House of Video Creation** is an AI-powered, multi-scene streaming and recording studio built with React, TypeScript, and Electron.
+> A production-grade, browser and desktop live streaming studio with OBS-like scene collections, AI features, and seamless device handoff.
+
+Caption Cam Studio is a modern, web-first approach to live streaming. By decoupling the rendering engine from the UI and leveraging WebGL, it achieves desktop-class scene composition directly in the browser, while offering an Electron shell for native OS capabilities like local RTMP ingest and hardware encoding.
 
 ---
 
-## What It Does
+## 🏗️ System Architecture
 
-- 🎬 **Multi-Scene Production** — Create and switch between scenes like OBS Studio
-- 🤖 **AI Overlay Engine** — Generate HTML/CSS/JS overlays from natural language (Gemini)
-- 🗣️ **Live Captions** — Real-time speech-to-text with 15+ animation styles (Deepgram)
-- 🎨 **WYSIWYG Canvas** — Figma-like drag-and-resize workspace with snap guides
-- 🔴 **RTMP Streaming** — Multi-destination streaming via FFmpeg (Electron)
-- ⏺️ **Recording** — File recording (MP4) and keyframe session recording
-- 📺 **Streaming Platform** — Twitch-like browse, search, and watch experience
-- 🎭 **WebGL Effects** — Neon Edge, Hologram, VHS, and 50+ CSS filters
-- 📱 **Remote Camera** — Use your phone as a camera via WebRTC
+This project is structured as a **pnpm monorepo** managed by Turborepo, separating concerns into distinct applications and shareable packages.
 
-## Quick Start
+- 🌐 **Web Studio (`apps/web`)**: The core React/Vite application. Handles the multi-layered video canvas, OBS JSON parsing, and scene transitions.
+- 🖥️ **Desktop Client (`apps/desktop`)**: The Electron wrapper. Exposes deep OS integrations, local file recording, and a local RTMP server.
+- 🧠 **ML Backend (`apps/ml-backend`)**: Python-based AI microservices for features like background removal and auto-framing.
+- 🔄 **Handoff Infrastructure**: Comprised of `apps/api-handoff`, `apps/api-signaling`, and `packages/handoff-sdk`. Enables seamless transfer of active broadcasts across devices.
+- ⚙️ **Engine (`packages/engine`)**: The core WebGL rendering loop and audio mixing, isolated for performance.
+
+---
+
+## ✨ Key Features
+
+- **OBS Scene Integration:** Import standard OBS Studio `.json` scene collections directly into the web canvas.
+- **Seamless Device Handoff:** Start streaming on your phone or web browser and seamlessly transfer the active broadcast to your desktop client without dropping the stream key connection.
+- **Multi-Layered Canvas:** Complex Zustand-managed state supporting draggable elements, PIP controls, and custom WebGL stingers.
+- **Modular Authentication:** Integrated Google/Gmail sign-in flows.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18+)
+- [pnpm](https://pnpm.io/) (v8+)
+
+### Installation
+
+1. Install dependencies across all workspaces:
 
 ```bash
-npm install
-npm run dev          # Web app on http://localhost:5173
-npm run electron:dev # Desktop app (Electron)
+pnpm install
 ```
 
-## 📖 Documentation
+2. Start the development environment (Web Studio + Signaling API):
 
-**All documentation lives in the [`docs/`](./docs/INDEX.md) directory.**
+```bash
+pnpm turbo run dev --filter=web --filter=api-signaling
+```
 
-Start with the **[Documentation Index](./docs/INDEX.md)** for a guided tour of the codebase.
+3. Build the Desktop (Electron) client:
 
-| Section | Description |
-|---|---|
-| [Overview](./docs/overview/README.md) | What GAKI Studio is, capabilities, tech stack |
-| [Architecture](./docs/architecture/README.md) | High-level architecture, data flow, state management |
-| [Electron App](./docs/electron/README.md) | Desktop shell, streaming, recording, IPC |
-| [Web App](./docs/webapp/README.md) | React SPA, features, components, hooks |
-| [Development Guide](./docs/overview/dev-guide.md) | Setup, build, run, deploy |
-| [Gaps & TODOs](./docs/overview/gaps-and-todos.md) | Known issues, missing features |
+```bash
+pnpm turbo run build --filter=desktop
+```
 
-## Tech Stack
+---
 
-React 18 • TypeScript • Vite • Electron • Zustand • Tailwind CSS • shadcn/ui  
-Google Gemini • Deepgram • MediaPipe • WebGL 2.0 • FFmpeg • PeerJS • Firebase
+## 📚 Documentation Directory
 
-## License
+To keep documentation maintainable and close to the code, detailed guides are split across the workspace.
 
-MIT
+**System Level:**
+
+- [System Architecture & State](docs/ARCHITECTURE.md)
+- [Cross-Device Handoff Flow](docs/HANDOFF_FLOW.md)
+- [Deployment Guide](docs/DEPLOYMENT.md)
+
+**App & Package Level:**
+
+- [Web Studio (Frontend)](apps/web/README.md)
+- [Desktop Client (Electron)](apps/desktop/README.md)
+- [Handoff SDK](packages/handoff-sdk/README.md)
+- [Rendering Engine](packages/engine/README.md)
+- [ML Backend](apps/ml-backend/README.md)
+
+---
+
+_Built with ❤️ using React, Zustand, Vite, and Electron._
