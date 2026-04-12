@@ -7,31 +7,64 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Diagnostic reports
+node_modules/
+jspm_packages/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Turborepo
+.turbo/
+
+# Build artifacts & Directories
+dist/
+build/
+out/
+.next/
+apps/desktop/release/
+apps/desktop/dist/
+
+# Conflicting Package Manager Lockfiles (Enforce pnpm)
+package-lock.json
+yarn.lock
+bun.lock
+bun.lockb
+
+# Python (ML Backend Proxy)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.env/
+
+# Electron/Native
+*.node
+*.dll
+*.exe
+*.pak
+*.icns
+*.asar
+*.bin
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor / OS directories
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-# Local Netlify folder
-.netlify
-
-# Temporary analysis and build logs
-*log.txt
-lint_*.txt
-*_error.txt
-
-# pnpm cache
-.pnpm-store/
-
-*.exe
