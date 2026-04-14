@@ -1,6 +1,8 @@
 // Single responsibility: outer canvas container, aspect-ratio shell, and background hosting.
 import React, { useEffect } from "react";
 import { cn } from "@caption-cam/core/lib/utils";
+import Guides from "@scena/react-guides";
+import { isV2Engine } from "@/features/canvas/lib/engineFlag";
 
 interface CanvasShellProps {
   containerRef: React.RefObject<HTMLDivElement>;
@@ -37,6 +39,16 @@ export const CanvasShell: React.FC<CanvasShellProps> = ({
         !isMouseActive && isFullscreen && "cursor-none"
       )}
     >
+      {isV2Engine && (
+        <>
+          <div className="absolute top-0 left-8 right-0 h-8 z-[9999] bg-neutral-900 border-b border-neutral-800">
+            <Guides type="horizontal" style={{ width: "100%", height: "32px" }} />
+          </div>
+          <div className="absolute top-8 left-0 bottom-0 w-8 z-[9999] bg-neutral-900 border-r border-neutral-800">
+            <Guides type="vertical" style={{ width: "32px", height: "100%" }} />
+          </div>
+        </>
+      )}
       <div
         ref={sceneRef}
         className="relative overflow-hidden"

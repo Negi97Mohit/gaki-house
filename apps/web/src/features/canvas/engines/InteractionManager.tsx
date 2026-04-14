@@ -1,9 +1,125 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import Moveable, { OnDrag, OnResize, OnRotate } from 'react-moveable';
+import Selecto from 'react-selecto';
+import { useEngineTargets } from './useEngineTargets';
+import { LayoutUpdate } from '@/features/canvas/ui/HybridDraggable'; // For type consistency
 
 interface InteractionManagerProps {
-    targets: Array<HTMLElement | SVGElement>;
+  selectedIds: string[];
+  containerSize: { width: number; height: number };
+  viewportScale?: number;
+  onOverlayLayoutChange?: (id: string, key: "position" | "size" | "rotation", value: any) => void;
 }
 
-export const InteractionManager: React.FC<InteractionManagerProps> = ({ targets }) => {
-    return null;
+export const InteractionManager: React.FC<InteractionManagerProps> = ({
+  selectedIds,
+  containerSize,
+  viewportScale = 1,
+  onOverlayLayoutChange,
+}) => {
+  const targets = useEngineTargets(selectedIds);
+  const moveableRef = useRef<Moveable>(null);
+
+  if (!targets.length) return null;
+
+  return (
+    <>
+      <Moveable
+        ref={moveableRef}
+      target={targets}
+      draggable={true}
+      resizable={true}
+      rotatable={true}
+      snappable={true}
+      snapCenter={true}
+      // Rulers and guides can be added here
+      onDrag={(e: OnDrag) => {
+        const { target, beforeTranslate } = e;
+        // Apply transform visually first (high frequency)
+        target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px) rotate(${e.transform.match(/rotate\(([^)]+)\)/)?.[1] || '0deg'})`;
+      }}
+      onDragEnd={(e) => {
+        if (!onOverlayLayoutChange) return;
+        const target = e.target as HTMLElement;
+        const id = target.getAttribute('data-engine-id');
+        if (!id) return;
+        
+        // Parse transform to get translate values
+        const transform = target.style.transform;
+        const match = transform.match(/translate\(([^p]+)px,\s*([^p]+)px\)/);
+        if (match) {
+          const x = parseFloat(match[1]);
+          const y = parseFloat(match[2]);
+          
+          // Convert to percentage
+          const percentX = (x / containerSize.width) * 100;
+          const percentY = (y / containerSize.height) * 100;
+          
+          onOverlayLayoutChange(id, 'position', { x: percentX, y: percentY });
+        }
+      }}
+      onResize={(e: OnResize) => {
+        const { target, width, height, drag } = e;
+        target.style.width = `${width}px`;
+        target.style.height = `${height}px`;
+        target.style.transform = `translate(${drag.beforeTranslate[0]}px, ${drag.beforeTranslate[1]}px) rotate(${e.transform.match(/rotate\(([^)]+)\)/)?.[1] || '0deg'})`;
+      }}
+      onResizeEnd={(e) => {
+        if (!onOverlayLayoutChange) return;
+        const target = e.target as HTMLElement;
+        const id = target.getAttribute('data-engine-id');
+        if (!id) return;
+        
+        const widthPercent = (target.offsetWidth / containerSize.width) * 100;
+        const heightPercent = (target.offsetHeight / containerSize.height) * 100;
+        
+        onOverlayLayoutChange(id, 'size', { width: widthPercent, height: heightPercent });
+        
+        // Trigger drag end to commit position if top/left resize handles were used
+        const transform = target.style.transform;
+        const match = transform.match(/translate\(([^p]+)px,\s*([^p]+)px\)/);
+        if (match) {
+          onOverlayLayoutChange(id, 'position', { 
+            x: (parseFloat(match[1]) / containerSize.width) * 100, 
+            y: (parseFloat(match[2]) / containerSize.height) * 100 
+          });
+        }
+      }}
+      onRotate={(e: OnRotate) => {
+        const { target, beforeRotate } = e;
+        // Keep existing translation, just update rotation
+        const transform = target.style.transform;
+        const translateMatch = transform.match(/translate\([^)]+\)/);
+        const translate = translateMatch ? translateMatch[0] : `translate(0px, 0px)`;
+        
+        target.style.transform = `${translate} rotate(${beforeRotate}deg)`;
+      }}
+      onRotateEnd={(e) => {
+        if (!onOverlayLayoutChange) return;
+        const target = e.target as HTMLElement;
+        const id = target.getAttribute('data-engine-id');
+        if (!id) return;
+        
+        const transform = target.style.transform;
+        const match = transform.match(/rotate\(([^d]+)deg\)/);
+        if (match) {
+          onOverlayLayoutChange(id, 'rotation', parseFloat(match[1]));
+        }
+      }}
+      />
+      <Selecto
+        dragContainer={document.body}
+        selectableTargets={["[data-engine-id]"]}
+        hitRate={0}
+        selectByClick={true}
+        selectFromInside={false}
+        toggleContinueSelect={["shift"]}
+        onSelect={(e) => {
+          e.added.forEach(el => {
+            el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+          });
+        }}
+      />
+    </>
+  );
 };

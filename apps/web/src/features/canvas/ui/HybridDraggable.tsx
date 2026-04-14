@@ -622,6 +622,7 @@ export const HybridDraggable: React.FC<HybridDraggableProps> = ({
   return (
     <div
       ref={elementRef}
+      data-engine-id={id}
       {...dragBind()}
       onClick={(e) => e.stopPropagation()}
       className={cn(

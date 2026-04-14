@@ -457,7 +457,20 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
             />
           ))}
           
-        {isV2Engine && <InteractionManager targets={[]} />}
+        {isV2Engine && (
+          <InteractionManager
+            selectedIds={[
+              selectedBrowserId,
+              selectedFileId,
+              selectedTextId,
+              selectedEmptyGridPanelId,
+              selectedGeneratedId,
+            ].filter(Boolean) as string[]}
+            containerSize={containerSize}
+            viewportScale={viewportScale}
+            onOverlayLayoutChange={onOverlayLayoutChange}
+          />
+        )}
       </div>
     );
   }
