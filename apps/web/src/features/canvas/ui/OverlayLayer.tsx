@@ -19,6 +19,8 @@ import { HybridDraggable } from "./HybridDraggable";
 import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
 import { BannerDesignSelectorToolbar } from "@/features/banners/ui/editor/components/BannerDesignSelectorToolbar";
 import { BannerDesign, isAnimatedBanner } from "@caption-cam/core/types/banner";
+import { isV2Engine } from "@/features/canvas/lib/engineFlag";
+import { InteractionManager } from "@/features/canvas/engines/InteractionManager";
 
 interface OverlayLayerProps {
   layerOrder: "above-video" | "below-video";
@@ -454,6 +456,8 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
               blankCanvasColor={blankCanvasColor}
             />
           ))}
+          
+        {isV2Engine && <InteractionManager targets={[]} />}
       </div>
     );
   }
