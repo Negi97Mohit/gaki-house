@@ -19,8 +19,9 @@ import { HybridDraggable } from "./HybridDraggable";
 import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
 import { BannerDesignSelectorToolbar } from "@/features/banners/ui/editor/components/BannerDesignSelectorToolbar";
 import { BannerDesign, isAnimatedBanner } from "@caption-cam/core/types/banner";
-import { isV2Engine } from "@/features/canvas/lib/engineFlag";
+import { isV2Engine, isDesktop } from "@/features/canvas/lib/engineFlag";
 import { InteractionManager } from "@/features/canvas/engines/InteractionManager";
+import { DesktopInteractionEngine } from "@/features/canvas/engines/DesktopInteractionEngine";
 
 interface OverlayLayerProps {
   layerOrder: "above-video" | "below-video";
@@ -457,7 +458,7 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
             />
           ))}
           
-        {isV2Engine && (
+        {isV2Engine && !isDesktop && (
           <InteractionManager
             selectedIds={[
               selectedBrowserId,
@@ -469,6 +470,26 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
             containerSize={containerSize}
             viewportScale={viewportScale}
             onOverlayLayoutChange={onOverlayLayoutChange}
+          />
+        )}
+        
+        {isV2Engine && isDesktop && (
+          <DesktopInteractionEngine
+            selectedIds={[
+              selectedBrowserId,
+              selectedFileId,
+              selectedTextId,
+              selectedEmptyGridPanelId,
+              selectedGeneratedId,
+            ].filter(Boolean) as string[]}
+            containerSize={containerSize}
+            viewportScale={viewportScale}
+            onOverlayLayoutChange={onOverlayLayoutChange}
+            updateOverlayNative={(id, bounds) => {
+              if (typeof window !== 'undefined' && (window as any).captionCamDesktopApi) {
+                (window as any).captionCamDesktopApi.updateOverlay(sceneId, id, bounds);
+              }
+            }}
           />
         )}
       </div>
