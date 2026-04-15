@@ -18,7 +18,7 @@ import {
   Maximize2,
   Minimize2,
 } from "lucide-react";
-import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
+import { EngineWrapper as HybridDraggable } from '@/features/canvas/engines/EngineWrapper';
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { ThreeDGSViewer } from "./ThreeDGSViewer";
 import { convertImageTo3D } from "@/services/mlsharp-api";

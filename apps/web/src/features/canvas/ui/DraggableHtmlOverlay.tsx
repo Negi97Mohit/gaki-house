@@ -5,6 +5,7 @@ import { GeneratedOverlay } from "@caption-cam/core/types/caption";
 import { generatePreview } from "@/lib/preview";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
 import { UniversalOverlayWrapper } from "./UniversalOverlayWrapper";
+import { EngineWrapper } from "@/features/canvas/engines/EngineWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import {
   AnimatedBannerRenderer,

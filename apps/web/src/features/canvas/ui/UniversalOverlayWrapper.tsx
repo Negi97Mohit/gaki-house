@@ -1,7 +1,8 @@
 import React from "react";
 import { cn } from "@caption-cam/core/lib/utils";
 import { X } from "lucide-react";
-import { HybridDraggable, LayoutUpdate } from "./HybridDraggable";
+import { LayoutUpdate } from "./HybridDraggable";
+import { EngineWrapper } from "@/features/canvas/engines/EngineWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
 interface UniversalOverlayWrapperProps {
@@ -57,7 +58,7 @@ export const UniversalOverlayWrapper: React.FC<
     const isCloseToTopEdge = position.y < 5;
 
     return (
-      <HybridDraggable
+      <EngineWrapper
         id={id}
         position={position}
         size={size}
@@ -112,6 +113,6 @@ export const UniversalOverlayWrapper: React.FC<
             </>
           )}
         </div>
-      </HybridDraggable>
+      </EngineWrapper>
     );
   };

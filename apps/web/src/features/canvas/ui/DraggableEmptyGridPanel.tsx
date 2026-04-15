@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { X } from "lucide-react";
 import { EmptyGridPanelState, CanvasSectionState } from "@caption-cam/core/types/caption";
-import { HybridDraggable } from "./HybridDraggable";
+import { EngineWrapper as HybridDraggable } from '@/features/canvas/engines/EngineWrapper';
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { GridSectionRenderer } from "@/features/layouts/ui/GridSectionRenderer";

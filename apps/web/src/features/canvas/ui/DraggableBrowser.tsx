@@ -9,7 +9,7 @@ import {
   X,
   Layers,
 } from "lucide-react";
-import { HybridDraggable } from "@/features/canvas/ui/HybridDraggable";
+import { EngineWrapper } from "@/features/canvas/engines/EngineWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { GeneratedLayout } from "@caption-cam/core/types/caption";
 
@@ -71,7 +71,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
   // Rotation now handled by HybridDraggable
 
   return (
-    <HybridDraggable
+    <EngineWrapper
       id={overlay.id}
       position={overlay.layout.position}
       size={overlay.layout.size}
@@ -183,6 +183,6 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
         </button>
 
       </div>
-    </HybridDraggable>
+    </EngineWrapper>
   );
 };

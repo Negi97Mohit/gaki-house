@@ -3,7 +3,7 @@ import { cn } from "@caption-cam/core/lib/utils";
 import { TextOverlayState } from "@caption-cam/core/types/caption";
 import { TextEditingToolbar } from "./TextEditingToolbar";
 import { MultiLayerTextRenderer } from "./MultiLayerTextRenderer";
-import { UniversalOverlayWrapper } from "@/features/canvas/ui/UniversalOverlayWrapper";
+import { EngineWrapper } from "@/features/canvas/engines/EngineWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 
 interface DraggableTextOverlayProps {
