@@ -9,6 +9,7 @@ interface InteractionManagerProps {
   containerSize: { width: number; height: number };
   viewportScale?: number;
   onOverlayLayoutChange?: (id: string, key: "position" | "size" | "rotation", value: any) => void;
+  onOverlayLayoutSync?: (id: string, key: "position" | "size" | "rotation", value: any) => void;
 }
 
 export const InteractionManager: React.FC<InteractionManagerProps> = ({
@@ -16,6 +17,7 @@ export const InteractionManager: React.FC<InteractionManagerProps> = ({
   containerSize,
   viewportScale = 1,
   onOverlayLayoutChange,
+  onOverlayLayoutSync,
 }) => {
   const targets = useEngineTargets(selectedIds);
   const moveableRef = useRef<Moveable>(null);
@@ -35,8 +37,17 @@ export const InteractionManager: React.FC<InteractionManagerProps> = ({
       // Rulers and guides can be added here
       onDrag={(e: OnDrag) => {
         const { target, beforeTranslate } = e;
-        // Apply transform visually first (high frequency)
         target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px) rotate(${e.transform.match(/rotate\(([^)]+)\)/)?.[1] || '0deg'})`;
+        
+        if (onOverlayLayoutSync) {
+          const id = target.getAttribute('data-engine-id');
+          if (id) {
+            onOverlayLayoutSync(id, 'position', {
+              x: (beforeTranslate[0] / containerSize.width) * 100,
+              y: (beforeTranslate[1] / containerSize.height) * 100
+            });
+          }
+        }
       }}
       onDragEnd={(e) => {
         if (!onOverlayLayoutChange) return;
@@ -63,6 +74,20 @@ export const InteractionManager: React.FC<InteractionManagerProps> = ({
         target.style.width = `${width}px`;
         target.style.height = `${height}px`;
         target.style.transform = `translate(${drag.beforeTranslate[0]}px, ${drag.beforeTranslate[1]}px) rotate(${e.transform.match(/rotate\(([^)]+)\)/)?.[1] || '0deg'})`;
+        
+        if (onOverlayLayoutSync) {
+          const id = target.getAttribute('data-engine-id');
+          if (id) {
+            onOverlayLayoutSync(id, 'size', {
+              width: (width / containerSize.width) * 100,
+              height: (height / containerSize.height) * 100
+            });
+            onOverlayLayoutSync(id, 'position', {
+              x: (drag.beforeTranslate[0] / containerSize.width) * 100,
+              y: (drag.beforeTranslate[1] / containerSize.height) * 100
+            });
+          }
+        }
       }}
       onResizeEnd={(e) => {
         if (!onOverlayLayoutChange) return;
@@ -87,12 +112,18 @@ export const InteractionManager: React.FC<InteractionManagerProps> = ({
       }}
       onRotate={(e: OnRotate) => {
         const { target, beforeRotate } = e;
-        // Keep existing translation, just update rotation
         const transform = target.style.transform;
         const translateMatch = transform.match(/translate\([^)]+\)/);
         const translate = translateMatch ? translateMatch[0] : `translate(0px, 0px)`;
         
         target.style.transform = `${translate} rotate(${beforeRotate}deg)`;
+        
+        if (onOverlayLayoutSync) {
+          const id = target.getAttribute('data-engine-id');
+          if (id) {
+            onOverlayLayoutSync(id, 'rotation', beforeRotate);
+          }
+        }
       }}
       onRotateEnd={(e) => {
         if (!onOverlayLayoutChange) return;
