@@ -40,7 +40,7 @@ interface DraggableFileViewerProps {
   ) => void;
   onSelect: (id: string) => void;
   onInternalDragStart: () => void;
-  onInternalDragStop: () => void;
+  onInternalDragStop?: () => void;
   viewport: { scale: number; x: number; y: number };
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
@@ -632,7 +632,7 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
           ...(layout.size && { size: layout.size }),
           ...(layout.rotation !== undefined && { rotation: layout.rotation }),
         });
-        onInternalDragStop();
+        onInternalDragStop?.();
       }}
       allOverlays={allOverlays}
       onSnapGuidesChange={onSnapGuidesChange}

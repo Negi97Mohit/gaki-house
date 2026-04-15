@@ -35,7 +35,7 @@ interface DraggableBrowserProps {
   isSelected: boolean;
   onSelect: (id: string) => void;
   onInternalDragStart: () => void;
-  onInternalDragStop: () => void;
+  onInternalDragStop?: () => void;
   viewport: { scale: number; x: number; y: number };
   allOverlays?: OverlayElement[];
   onSnapGuidesChange?: (guides: GuideLine[]) => void;
@@ -89,7 +89,7 @@ export const DraggableBrowser: React.FC<DraggableBrowserProps> = ({
           ...(layout.size && { size: layout.size }),
           ...(layout.rotation !== undefined && { rotation: layout.rotation }),
         });
-        onInternalDragStop();
+        onInternalDragStop?.();
       }}
       allOverlays={allOverlays}
       onSnapGuidesChange={onSnapGuidesChange}
