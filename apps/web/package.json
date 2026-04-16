@@ -14,56 +14,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "analyze": "vite-bundle-visualizer",
-    "electron:compile": "tsc electron/main.ts electron/preload.ts electron/rtmp-server.ts --outDir electron/dist --module commonjs --target es6 --esModuleInterop --skipLibCheck && node electron/generate-config.js",
-    "electron:dev": "concurrently -k \"npm run dev\" \"npm run electron:compile && wait-on tcp:5173 && electron .\"",
-    "electron:build": "npm run build && npm run electron:compile && electron-builder"
-  },
-  "build": {
-    "compression": "store",
-    "appId": "com.gaki.studio",
-    "productName": "Gaki - House of Video Creation",
-    "artifactName": "Gaki-House-of-Video-Creation-${version}.${ext}",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "electron/dist/**/*"
-    ],
-    "mac": {
-      "category": "public.app-category.video",
-      "icon": "build/icon.icns",
-      "target": {
-        "target": "dmg",
-        "arch": [
-          "universal"
-        ]
-      },
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
-    },
-    "win": {
-      "icon": "build/icon.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ]
-    },
-    "linux": {
-      "icon": "build/icon.png",
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    }
+    "analyze": "vite-bundle-visualizer"
   },
   "dependencies": {
     "@babel/standalone": "^7.28.4",
@@ -175,8 +126,6 @@
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
-    "electron": "^39.2.7",
-    "electron-builder": "^26.0.12",
     "eslint": "^9.32.0",
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
