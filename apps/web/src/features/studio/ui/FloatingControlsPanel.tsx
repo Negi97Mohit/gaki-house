@@ -12,9 +12,15 @@ import {
   Settings,
 } from "lucide-react";
 import { cn } from "@caption-cam/core/lib/utils";
-import { CaptionStyle, GeneratedOverlay } from "@caption-cam/core/types/caption";
+import {
+  CaptionStyle,
+  GeneratedOverlay,
+} from "@caption-cam/core/types/caption";
 import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
-import { SocialBannerDesign, SocialBannerData } from "@caption-cam/core/types/socialBanner";
+import {
+  SocialBannerDesign,
+  SocialBannerData,
+} from "@caption-cam/core/types/socialBanner";
 import { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
 import { VaultFile } from "@caption-cam/core/types/vault";
 import { useIsMobile } from "@caption-cam/core/hooks/use-mobile";
@@ -171,9 +177,12 @@ export const FloatingControlsPanel = (props: FloatingControlsPanelProps) => {
           const isActive = activeSection === section.id;
 
           return (
-            <ShortcutTooltip label={section.label} side="right">
+            <ShortcutTooltip
+              key={section.id}
+              label={section.label}
+              side="right"
+            >
               <button
-                key={section.id}
                 onClick={() =>
                   setActiveSection((prev) =>
                     prev === section.id ? null : section.id,

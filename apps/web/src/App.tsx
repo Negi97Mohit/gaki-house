@@ -179,7 +179,12 @@ const App = () => {
 
   // Cursor inactivity logic
   useEffect(() => {
+    let lastUpdate = 0;
     const handleActivity = () => {
+      const now = Date.now();
+      if (now - lastUpdate < 200) return; // Throttle to 5 times a second max
+      lastUpdate = now;
+
       document.body.classList.remove("cursor-inactive");
       useUiStore.getState().setMouseActive(true);
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);

@@ -38,7 +38,7 @@ class StreamService {
   private broadcastEncoder: BroadcastEncoder | null = null;
 
   // Internal Pipeline (The "Mixer")
-  // We use an intermediate canvas to ensure the stream never "breaks" 
+  // We use an intermediate canvas to ensure the stream never "breaks"
   // when we switch input sources (e.g. from Screen -> App Window)
   private canvas: HTMLCanvasElement | null = null;
   private ctx: CanvasRenderingContext2D | null = null;
@@ -152,15 +152,15 @@ class StreamService {
   private startObservingState() {
     if (this.unsubMediaStore) this.unsubMediaStore();
 
-    this.unsubMediaStore = useMediaStore.subscribe(
-      (state, prevState) => {
-        if (state.screenShareMode !== prevState.screenShareMode) {
-          console.log("[StreamService] Screen share mode changed. Updating source...");
-          // We add a small delay to ensure windows have resized/focused
-          setTimeout(() => this.updateVideoSource(), 500);
-        }
+    this.unsubMediaStore = useMediaStore.subscribe((state, prevState) => {
+      if (state.screenShareMode !== prevState.screenShareMode) {
+        console.log(
+          "[StreamService] Screen share mode changed. Updating source...",
+        );
+        // We add a small delay to ensure windows have resized/focused
+        setTimeout(() => this.updateVideoSource(), 500);
       }
-    );
+    });
   }
 
   /**
@@ -186,12 +186,14 @@ class StreamService {
         if (isSharingInternally) {
           // CASE 1: User is sharing content -> Capture the APP WINDOW
           // This allows us to show the "OBS-like" layout
-          console.log("[StreamService] Mode: Internal Share Active -> Target: App Window");
+          console.log(
+            "[StreamService] Mode: Internal Share Active -> Target: App Window",
+          );
           selectedSource = sources.find(
             (s: any) =>
               s.name.includes("caption-cam") ||
               s.name.includes("GAKI") ||
-              s.name.includes("Vite + React")
+              s.name.includes("Vite + React"),
           );
         }
 
@@ -239,7 +241,7 @@ class StreamService {
       if (newStream) {
         // 1. Stop old tracks
         if (this.currentVideoSource) {
-          this.currentVideoSource.getTracks().forEach(t => t.stop());
+          this.currentVideoSource.getTracks().forEach((t) => t.stop());
         }
 
         this.currentVideoSource = newStream;
@@ -247,22 +249,27 @@ class StreamService {
         // 2. Handle stream ending (User clicks "Stop Sharing" in system UI)
         newStream.getVideoTracks()[0].onended = () => {
           console.log("[StreamService] Source track ended externally.");
+          if (useStreamStore.getState().isRecording) {
+            this.stopRecording();
+          }
           this.stopStreaming();
         };
 
         // 3. Play stream in hidden video element (which feeds the canvas)
         if (this.videoElement) {
           this.videoElement.srcObject = newStream;
-          await this.videoElement.play().catch(e => console.error("Video play failed", e));
+          await this.videoElement
+            .play()
+            .catch((e) => console.error("Video play failed", e));
         }
 
         // 4. Re-mix audio (in case new source has system audio)
         this.mixAudioSources();
       }
-
     } catch (e) {
       console.error("[StreamService] Failed to update video source", e);
       notify.error("Failed to switch stream source");
+      throw e;
     }
   }
 
@@ -282,14 +289,15 @@ class StreamService {
         this.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
         // Draw Video Source with Letterboxing (Fit)
-        if (this.videoElement.readyState >= 2) { // HAVE_CURRENT_DATA
+        if (this.videoElement.readyState >= 2) {
+          // HAVE_CURRENT_DATA
           const videoWidth = this.videoElement.videoWidth;
           const videoHeight = this.videoElement.videoHeight;
 
           if (videoWidth && videoHeight) {
             const scale = Math.min(
               canvasWidth / videoWidth,
-              canvasHeight / videoHeight
+              canvasHeight / videoHeight,
             );
 
             const drawWidth = videoWidth * scale;
@@ -303,7 +311,7 @@ class StreamService {
               offsetX,
               offsetY,
               drawWidth,
-              drawHeight
+              drawHeight,
             );
           }
         }
@@ -330,8 +338,13 @@ class StreamService {
     }
 
     // 2. System Audio (from the captured screen/window)
-    if (this.currentVideoSource && this.currentVideoSource.getAudioTracks().length > 0) {
-      const source = this.audioContext.createMediaStreamSource(this.currentVideoSource);
+    if (
+      this.currentVideoSource &&
+      this.currentVideoSource.getAudioTracks().length > 0
+    ) {
+      const source = this.audioContext.createMediaStreamSource(
+        this.currentVideoSource,
+      );
       const gain = this.audioContext.createGain();
       gain.gain.value = 0.8;
       source.connect(gain);
@@ -356,14 +369,16 @@ class StreamService {
         // This will cause a brief stream drop during transitions.
         // Fix: move BroadcastBus instantiation up to CanvasContainer in a future refactor.
         // Tracked: Phase D known issue — stream drop on scene switch
-        
+
         console.log("[StreamService] Using Kernel Pipeline (Phase D)");
         const kernel = BroadcastBus.activeInstance;
         if (!kernel) throw new Error("BroadcastBus active instance not found");
 
         const canvasStream = kernel.getStream();
         if (!canvasStream) {
-          console.warn("[StreamService] Kernel getStream() returned null, stream might fail");
+          console.warn(
+            "[StreamService] Kernel getStream() returned null, stream might fail",
+          );
         }
 
         this.audioMixerEngine = new AudioMixerEngine();
@@ -372,12 +387,20 @@ class StreamService {
         const activeTracks: MediaStreamTrack[] = [];
         if (canvasStream) {
           const vTracks = canvasStream.getVideoTracks();
-          console.log("[StreamService] Canvas video tracks:", vTracks.length, vTracks[0]?.readyState);
+          console.log(
+            "[StreamService] Canvas video tracks:",
+            vTracks.length,
+            vTracks[0]?.readyState,
+          );
           activeTracks.push(...vTracks);
         }
         if (audioStream) {
           const aTracks = audioStream.getAudioTracks();
-          console.log("[StreamService] Audio tracks:", aTracks.length, aTracks[0]?.readyState);
+          console.log(
+            "[StreamService] Audio tracks:",
+            aTracks.length,
+            aTracks[0]?.readyState,
+          );
           activeTracks.push(...aTracks);
         }
         if (audioStream) activeTracks.push(...audioStream.getAudioTracks());
@@ -389,7 +412,6 @@ class StreamService {
           targets,
           onStatus: (data: any) => this.handleStreamStatus(data),
         });
-
       } else {
         await this.startPipeline();
         const mimeType = this.setupMediaRecorder();
@@ -426,7 +448,9 @@ class StreamService {
     const isElectron = !!(window as ElectronWindow).electron;
 
     this.mediaRecorder.ondataavailable = async (e) => {
-      console.log(`[BroadcastEncoder] ondataavailable fired, size: ${e.data.size}`);
+      console.log(
+        `[BroadcastEncoder] ondataavailable fired, size: ${e.data.size}`,
+      );
       if (e.data.size > 0) {
         if (isElectron) {
           const buffer = await e.data.arrayBuffer();
@@ -477,13 +501,13 @@ class StreamService {
     if (!this.socket) {
       this.socket = io(SERVER_URL);
       this.socket.on("stream-status", (data: any) =>
-        this.handleStreamStatus(data)
+        this.handleStreamStatus(data),
       );
     }
 
     if (!this.socket.connected) {
       await new Promise<void>((resolve) =>
-        this.socket!.once("connect", () => resolve())
+        this.socket!.once("connect", () => resolve()),
       );
     }
 
@@ -502,7 +526,7 @@ class StreamService {
 
     console.log(
       `[StreamService] Status Update [${id}]: ${status}`,
-      error || ""
+      error || "",
     );
 
     if (!id) return;
@@ -571,7 +595,9 @@ class StreamService {
 
     // Skip retry logic if this was an intentional stop
     if (this.isIntentionalStop) {
-      console.log(`[StreamService] Skipping retry for ${id} - intentional stop`);
+      console.log(
+        `[StreamService] Skipping retry for ${id} - intentional stop`,
+      );
       store.setDestinationStatus(id, "idle");
       return;
     }
@@ -586,7 +612,7 @@ class StreamService {
       const retryDelay = 2000 * nextRetry;
 
       console.log(
-        `[StreamService] Retry ${nextRetry}/${this.MAX_RETRIES} for ${id} in ${retryDelay}ms`
+        `[StreamService] Retry ${nextRetry}/${this.MAX_RETRIES} for ${id} in ${retryDelay}ms`,
       );
       store.setDestinationStatus(id, "error", `Retrying (${nextRetry})...`);
       store.setStreamStatus(`Connection Failed. Retrying...`);
@@ -687,7 +713,7 @@ class StreamService {
       store.setConnecting(false);
       store.setStreamStatus("Idle");
       store.destinations.forEach((d) =>
-        store.setDestinationStatus(d.id, "idle")
+        store.setDestinationStatus(d.id, "idle"),
       );
     }
 
@@ -699,7 +725,10 @@ class StreamService {
   private cleanupPipeline() {
     // Determine if we should really cleanup
     // If either broadcasting OR recording is active, we must keep pipeline
-    if (useStreamStore.getState().isBroadcasting || useStreamStore.getState().isRecording) {
+    if (
+      useStreamStore.getState().isBroadcasting ||
+      useStreamStore.getState().isRecording
+    ) {
       console.log("[StreamService] Pipeline kept alive for other process");
       return;
     }
@@ -784,11 +813,11 @@ class StreamService {
       this.recordingStartTime = Date.now();
       // Start duration timer
       this.startRecordingTimer();
-
     } catch (err: any) {
       console.error("[StreamService] Start Recording Failed:", err);
       notify.error(`Recording failed: ${err.message}`);
       useStreamStore.getState().setRecording(false);
+      this.cleanupPipeline();
     }
   }
 
@@ -842,7 +871,7 @@ class StreamService {
     document.body.appendChild(a);
     a.style.display = "none";
     a.href = url;
-    a.download = `recording-${new Date().toISOString().replace(/:/g, '-')}.webm`;
+    a.download = `recording-${new Date().toISOString().replace(/:/g, "-")}.webm`;
     a.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
@@ -854,9 +883,9 @@ class StreamService {
     if (this.recordingTimer) clearInterval(this.recordingTimer);
     const startTime = Date.now();
     this.recordingTimer = setInterval(() => {
-      useStreamStore.getState().setRecordingDuration(
-        Math.floor((Date.now() - startTime) / 1000)
-      );
+      useStreamStore
+        .getState()
+        .setRecordingDuration(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
   }
 
