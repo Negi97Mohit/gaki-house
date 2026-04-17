@@ -6,7 +6,14 @@ import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { DebugProvider } from "./context/DebugContext";
 import { LogProvider } from "./context/LogContext";
 import { AuthProvider } from "./pages/platform/context/AuthContext";
-import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  lazy,
+  Suspense,
+} from "react";
 import Loader from "@caption-cam/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
 import { useThemeStore } from "@/features/theme";
@@ -130,7 +137,7 @@ function ThemeInitializer() {
   const mode = useThemeStore((s) => s.mode);
   const fontFamily = useThemeStore((s) => s.fontFamily);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const root = document.documentElement;
     root.classList.remove(
       "theme-default",
