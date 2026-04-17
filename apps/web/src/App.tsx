@@ -158,7 +158,10 @@ function ThemeInitializer() {
         document.head.appendChild(link);
       }
     }
-    document.documentElement.style.fontFamily = `"${fontFamily}", system-ui, sans-serif`;
+    document.documentElement.style.setProperty(
+      "--font-app",
+      fontFamily === "geist-sans" ? "geist-sans" : `"${fontFamily}"`,
+    );
   }, [fontFamily]);
 
   return null;

@@ -74,6 +74,28 @@
         "image": "https://gaki.netlify.app/logo_256x256.png"
       }
     </script>
+    <script>
+      try {
+        // Prevent FOUC by reading Zustand persist state before React loads
+        var store = JSON.parse(
+          localStorage.getItem("theme-store") ||
+            localStorage.getItem("theme-storage") ||
+            "{}",
+        );
+        var state = store.state || {};
+        var theme = state.theme || "default";
+        var mode = state.mode !== undefined ? state.mode : "dark";
+        var font = state.fontFamily || "geist-sans";
+
+        var root = document.documentElement;
+        root.classList.add("theme-" + theme);
+        if (mode === "dark") root.classList.add("dark");
+        root.style.setProperty(
+          "--font-app",
+          font === "geist-sans" ? "geist-sans" : '"' + font + '"',
+        );
+      } catch (e) {}
+    </script>
   </head>
 
   <body>
