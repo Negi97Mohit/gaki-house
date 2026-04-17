@@ -24,6 +24,7 @@ import { useCanvasBanners } from "../hooks/useCanvasBanners";
 import { getAllPropsForScene } from "../utils/canvasProps";
 import { useCanvasState } from "../hooks/useCanvasState";
 import { useCanvasHandlers } from "../hooks/useCanvasHandlers";
+import { useMouseStore } from "@/stores/ui.store";
 
 interface CanvasContainerProps {
   layoutManager: any;
@@ -65,6 +66,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   // --- Wire state and handlers ---
   const state = useCanvasState();
   const handlers = useCanvasHandlers(state);
+  const isMouseActive = useMouseStore((s) => s.isMouseActive);
 
   const {
     activeScene,
@@ -85,7 +87,6 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     setSelectedTextId,
     selectedGeneratedId,
     setSelectedGeneratedId,
-    isMouseActive,
     isFullscreen,
     setFullscreen,
     isFsSidebarOpen,
@@ -100,8 +101,6 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
     dynamicLayout,
   } = state;
   const { updateActiveScene, selectionWrapper, ...handlerFns } = handlers;
-
-
 
   // --- Empty Grid Panel state (NOW BOUND TO THE NATIVE ENGINE) ---
   const emptyGridPanels: EmptyGridPanelState[] = useMemo(

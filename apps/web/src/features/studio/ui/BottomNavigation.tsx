@@ -11,7 +11,7 @@ import { AIControls } from "./controls/AIControls";
 import { UserMenuControl } from "./controls/UserMenuControl";
 import { DownloadControl } from "./controls/DownloadControl";
 import { useShallow } from "zustand/react/shallow";
-import { useUiStore } from "@/stores/ui.store";
+import { useUiStore, useMouseStore } from "@/stores/ui.store";
 import { HandoffControls } from "../../stream/ui/HandoffControls";
 
 interface BottomNavigationProps {
@@ -75,16 +75,14 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     console.log("[BottomNavigation] mounted");
   }, []);
 
-  const { isMouseActive, isFullscreen, setFullscreen, setShowSettings } =
-    useUiStore(
-      useShallow((state) => ({
-        isMouseActive: state.isMouseActive,
-        isFullscreen: state.isFullscreen,
-        setFullscreen: state.setFullscreen,
-        setShowSettings: state.setShowSettings,
-      })),
-    );
-
+  const { isFullscreen, setFullscreen, setShowSettings } = useUiStore(
+    useShallow((state) => ({
+      isFullscreen: state.isFullscreen,
+      setFullscreen: state.setFullscreen,
+      setShowSettings: state.setShowSettings,
+    })),
+  );
+  const isMouseActive = useMouseStore((state) => state.isMouseActive);
   const [isElectron, setIsElectron] = useState(false);
   const navigate = useNavigate();
 

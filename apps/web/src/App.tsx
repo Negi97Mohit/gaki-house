@@ -17,7 +17,7 @@ import {
 import Loader from "@caption-cam/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
 import { useThemeStore } from "@/features/theme";
-import { useUiStore } from "@/stores/ui.store";
+import { useUiStore, useMouseStore } from "@/stores/ui.store";
 import { HandoffProvider } from "@/features/stream/context/HandoffContext";
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -131,7 +131,7 @@ const MobileFollowing = lazy(() =>
 
 const queryClient = new QueryClient();
 
-// Initialize theme from persisted store on app load
+// Initialize theme from persisted store on app loade
 function ThemeInitializer() {
   const theme = useThemeStore((s) => s.theme);
   const mode = useThemeStore((s) => s.mode);
@@ -173,19 +173,14 @@ function ThemeInitializer() {
 
   return null;
 }
+const IS_ELECTRON =
+  typeof window !== "undefined" &&
+  window.navigator.userAgent.toLowerCase().includes("electron");
+const Router = IS_ELECTRON ? HashRouter : BrowserRouter;
 
 const App = () => {
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
   const [showLoader, setShowLoader] = useState(true);
-  const [isElectron, setIsElectron] = useState(false);
-
-  // Detect Electron Environment
-  useEffect(() => {
-    const checkElectron = window.navigator.userAgent
-      .toLowerCase()
-      .includes("electron");
-    setIsElectron(checkElectron);
-  }, []);
 
   // Cursor inactivity logic
   useEffect(() => {
@@ -196,11 +191,11 @@ const App = () => {
       lastUpdate = now;
 
       document.body.classList.remove("cursor-inactive");
-      useUiStore.getState().setMouseActive(true);
+      useMouseStore.getState().setMouseActive(true);
       if (inactivityTimer.current) clearTimeout(inactivityTimer.current);
       inactivityTimer.current = setTimeout(() => {
         document.body.classList.add("cursor-inactive");
-        useUiStore.getState().setMouseActive(false);
+        useMouseStore.getState().setMouseActive(false);
       }, 5000);
     };
     window.addEventListener("mousemove", handleActivity);
@@ -225,10 +220,6 @@ const App = () => {
       return () => window.removeEventListener("load", handleWindowLoad);
     }
   }, []);
-
-  // Choose the correct Router based on environment
-  // Electron needs HashRouter (file://), Web uses BrowserRouter (https://)
-  const Router = isElectron ? HashRouter : BrowserRouter;
 
   return (
     <HandoffProvider>
