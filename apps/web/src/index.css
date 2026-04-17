@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 .font-pixel {
-  font-family: 'Press Start 2P', cursive;
+  font-family: "Press Start 2P", cursive;
 }
 
 @font-face {
@@ -1575,7 +1575,6 @@
 }
 
 @layer components {
-
   /* Resize handles for Excalidraw overlay */
   .resize-handle {
     position: absolute;
@@ -1691,7 +1690,6 @@
 
   /* Onboarding animation */
   @keyframes pulse-border {
-
     0%,
     100% {
       box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
@@ -1715,11 +1713,15 @@
 
   .sharp-button {
     position: relative;
-    transition: all 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      opacity 0.15s ease;
   }
 
   .sharp-button::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     border: 1px solid transparent;
@@ -1731,7 +1733,7 @@
   }
 
   .sharp-button.active::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 50%;
@@ -1758,7 +1760,6 @@ body.cursor-inactive * {
 /* Add to your index.css file - REPLACE the existing @keyframes section */
 
 @layer base {
-
   /* Dissolve Animations */
   @keyframes dissolve-in {
     from {
@@ -1890,20 +1891,20 @@ body.cursor-inactive * {
 
   /* Pulse Glow - Pulsating border/shadow */
   @keyframes banner-pulse-glow {
-
     0%,
     100% {
       box-shadow: 0 0 20px rgba(var(--glow-color, 0, 255, 255), 0.4);
     }
 
     50% {
-      box-shadow: 0 0 40px rgba(var(--glow-color, 0, 255, 255), 0.8), 0 0 60px rgba(var(--glow-color, 0, 255, 255), 0.4);
+      box-shadow:
+        0 0 40px rgba(var(--glow-color, 0, 255, 255), 0.8),
+        0 0 60px rgba(var(--glow-color, 0, 255, 255), 0.4);
     }
   }
 
   /* Neon Flicker - Subtle flicker effect */
   @keyframes banner-neon-flicker {
-
     0%,
     100% {
       opacity: 1;
@@ -1932,7 +1933,6 @@ body.cursor-inactive * {
 
   /* Float - Subtle up/down movement */
   @keyframes banner-float {
-
     0%,
     100% {
       transform: translateY(0);
@@ -1993,7 +1993,6 @@ body.cursor-inactive * {
 
   /* Scale Pulse - Subtle breathing */
   @keyframes banner-breathe {
-
     0%,
     100% {
       transform: scale(1);
@@ -2115,7 +2114,6 @@ body.cursor-inactive * {
   }
 
   @keyframes letterbox-breathe {
-
     0%,
     100% {
       height: 12%;
@@ -2169,7 +2167,6 @@ body.cursor-inactive * {
   }
 
   @keyframes steadicam-float {
-
     0%,
     100% {
       transform: translate(0, 0);
@@ -2205,7 +2202,6 @@ body.cursor-inactive * {
   }
 
   @keyframes whip-pan {
-
     0%,
     40%,
     100% {
@@ -2221,7 +2217,6 @@ body.cursor-inactive * {
   }
 
   @keyframes snap-zoom {
-
     0%,
     70% {
       transform: scale(1);
@@ -2251,7 +2246,6 @@ body.cursor-inactive * {
   }
 
   @keyframes timelapse-shift {
-
     0%,
     100% {
       filter: brightness(1);
@@ -2283,7 +2277,6 @@ body.cursor-inactive * {
   }
 
   @keyframes drone-hover {
-
     0%,
     100% {
       transform: translateY(0);
@@ -2295,7 +2288,6 @@ body.cursor-inactive * {
   }
 
   @keyframes shoulder-bob {
-
     0%,
     100% {
       transform: translateY(0) rotate(0deg);
@@ -2311,7 +2303,6 @@ body.cursor-inactive * {
   }
 
   @keyframes crash-zoom {
-
     0%,
     60% {
       transform: scale(1);
@@ -2349,7 +2340,6 @@ body.cursor-inactive * {
   }
 
   @keyframes suspended-float {
-
     0%,
     100% {
       transform: translateY(0) scale(1);
@@ -2362,16 +2352,23 @@ body.cursor-inactive * {
 
   @keyframes rack-focus {
     0% {
-      mask: radial-gradient(ellipse 50% 50% at center, transparent 30%, black 80%);
+      mask: radial-gradient(
+        ellipse 50% 50% at center,
+        transparent 30%,
+        black 80%
+      );
     }
 
     100% {
-      mask: radial-gradient(ellipse 70% 70% at center, transparent 50%, black 100%);
+      mask: radial-gradient(
+        ellipse 70% 70% at center,
+        transparent 50%,
+        black 100%
+      );
     }
   }
 
   @keyframes focus-breathe {
-
     0%,
     100% {
       opacity: 0.5;
@@ -2397,7 +2394,6 @@ body.cursor-inactive * {
   }
 
   @keyframes manual-drift {
-
     0%,
     100% {
       opacity: 0.4;
@@ -2413,7 +2409,6 @@ body.cursor-inactive * {
   }
 
   @keyframes flicker {
-
     0%,
     100% {
       opacity: 1;
@@ -2435,7 +2430,6 @@ body.cursor-inactive * {
   }
 
   @keyframes suspense-pulse {
-
     0%,
     100% {
       opacity: 0.8;
@@ -2500,7 +2494,6 @@ body.cursor-inactive * {
   }
 
   @keyframes cinematic-shoulder-bob {
-
     0%,
     100% {
       transform: translateY(0) rotate(0deg);
@@ -2538,7 +2531,6 @@ body.cursor-inactive * {
   }
 
   @keyframes cinematic-steadicam {
-
     0%,
     100% {
       transform: translate(0, 0);
@@ -2554,7 +2546,6 @@ body.cursor-inactive * {
   }
 
   @keyframes cinematic-snap-zoom {
-
     0%,
     70% {
       transform: scale(1);
@@ -2570,7 +2561,6 @@ body.cursor-inactive * {
   }
 
   @keyframes cinematic-crash-zoom {
-
     0%,
     60% {
       transform: scale(1);
@@ -4073,7 +4063,6 @@ body.cursor-inactive * {
 }
 
 @keyframes cinematic-snap-zoom {
-
   0%,
   85% {
     transform: scale(1);
@@ -4093,7 +4082,6 @@ body.cursor-inactive * {
 }
 
 @keyframes cinematic-crash-zoom {
-
   0%,
   45% {
     transform: scale(1);
@@ -4257,7 +4245,7 @@ body.cursor-inactive * {
   min-width: 44px;
   min-height: 44px;
   border-radius: 12px;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 }
@@ -4361,8 +4349,12 @@ body.cursor-inactive * {
 
 /* ── Shimmer Loading Skeleton ────────────────────────────── */
 @keyframes mobile-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 .mobile-skeleton {
   background: linear-gradient(
@@ -4381,7 +4373,7 @@ body.cursor-inactive * {
   position: relative;
 }
 .mobile-thumb-zone::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;

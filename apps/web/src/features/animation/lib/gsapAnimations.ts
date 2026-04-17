@@ -60,7 +60,14 @@ export interface GSAPAnimationConfig {
 export interface GSAPPreset {
   id: string;
   name: string;
-  category: "reveal" | "kinetic" | "glitch" | "stylized" | "3d" | "text" | "effects";
+  category:
+    | "reveal"
+    | "kinetic"
+    | "glitch"
+    | "stylized"
+    | "3d"
+    | "text"
+    | "effects";
   description: string;
   config: GSAPAnimationConfig;
   preview?: string;
@@ -73,7 +80,7 @@ export interface GSAPPreset {
 
 export const createCinematicReveal = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const chars = element.querySelectorAll(".char");
@@ -102,7 +109,7 @@ export const createCinematicReveal = (
         clipPath: "inset(0% 0% 0% 0%)",
         duration: config.duration || 1,
         ease: config.ease || "power3.out",
-      }
+      },
     );
   }
 
@@ -111,7 +118,7 @@ export const createCinematicReveal = (
 
 export const createKineticType = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const intensity = config.intensity || 1;
@@ -129,7 +136,7 @@ export const createKineticType = (
       opacity: 1,
       duration: config.duration || 0.8,
       ease: "back.out(2.5)",
-    }
+    },
   );
 
   // Add a subtle bounce at the end
@@ -146,7 +153,7 @@ export const createKineticType = (
 
 export const createMorphGlitch = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const intensity = config.intensity || 1;
@@ -182,7 +189,7 @@ export const createMorphGlitch = (
 
 export const createElasticBounce = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const direction = config.direction || "up";
@@ -221,7 +228,7 @@ export const createElasticBounce = (
 
 export const createStaggerWave = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const chars = element.querySelectorAll(".char");
@@ -243,7 +250,12 @@ export const createStaggerWave = (
     tl.fromTo(
       element,
       { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: config.duration || 0.6, ease: "power2.out" }
+      {
+        opacity: 1,
+        y: 0,
+        duration: config.duration || 0.6,
+        ease: "power2.out",
+      },
     );
   }
 
@@ -252,14 +264,15 @@ export const createStaggerWave = (
 
 export const createPerspectiveFlip = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const direction = config.direction || "up";
 
   gsap.set(element.parentElement, { perspective: 1000 });
 
-  const rotationProp = direction === "up" || direction === "down" ? "rotationX" : "rotationY";
+  const rotationProp =
+    direction === "up" || direction === "down" ? "rotationX" : "rotationY";
   const rotationValue = direction === "up" || direction === "left" ? 90 : -90;
 
   tl.fromTo(
@@ -267,14 +280,21 @@ export const createPerspectiveFlip = (
     {
       opacity: 0,
       [rotationProp]: rotationValue,
-      transformOrigin: direction === "up" ? "bottom center" : direction === "down" ? "top center" : direction === "left" ? "right center" : "left center",
+      transformOrigin:
+        direction === "up"
+          ? "bottom center"
+          : direction === "down"
+            ? "top center"
+            : direction === "left"
+              ? "right center"
+              : "left center",
     },
     {
       opacity: 1,
       [rotationProp]: 0,
       duration: config.duration || 1,
       ease: "power3.out",
-    }
+    },
   );
 
   return tl;
@@ -282,21 +302,22 @@ export const createPerspectiveFlip = (
 
 export const createLiquidFill = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
 
   tl.fromTo(
     element,
     {
-      clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+      scaleY: 0,
+      transformOrigin: "bottom center",
       opacity: 1,
     },
     {
-      clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+      scaleY: 1,
       duration: config.duration || 1.2,
       ease: "power2.inOut",
-    }
+    },
   );
 
   return tl;
@@ -304,7 +325,7 @@ export const createLiquidFill = (
 
 export const createNeonFlicker = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const color = config.color || "#00ffff";
@@ -339,7 +360,7 @@ export const createNeonFlicker = (
 
 export const createTypewriter = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const chars = element.querySelectorAll(".char");
@@ -359,7 +380,7 @@ export const createTypewriter = (
 
 export const createScramble = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const chars = element.querySelectorAll(".char");
@@ -384,7 +405,7 @@ export const createScramble = (
             }
           },
         },
-        i * (config.stagger || 0.05)
+        i * (config.stagger || 0.05),
       );
     });
   }
@@ -394,7 +415,7 @@ export const createScramble = (
 
 export const createMagneticPull = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const chars = element.querySelectorAll(".char");
@@ -425,19 +446,39 @@ export const createMagneticPull = (
 
 export const createRubberBand = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
 
   tl.fromTo(
     element,
     { scaleX: 1, scaleY: 1, opacity: 0 },
-    { opacity: 1, duration: 0.1 }
+    { opacity: 1, duration: 0.1 },
   )
-    .to(element, { scaleX: 1.25, scaleY: 0.75, duration: 0.15, ease: "power2.out" })
-    .to(element, { scaleX: 0.75, scaleY: 1.25, duration: 0.15, ease: "power2.out" })
-    .to(element, { scaleX: 1.15, scaleY: 0.85, duration: 0.1, ease: "power2.out" })
-    .to(element, { scaleX: 0.95, scaleY: 1.05, duration: 0.1, ease: "power2.out" })
+    .to(element, {
+      scaleX: 1.25,
+      scaleY: 0.75,
+      duration: 0.15,
+      ease: "power2.out",
+    })
+    .to(element, {
+      scaleX: 0.75,
+      scaleY: 1.25,
+      duration: 0.15,
+      ease: "power2.out",
+    })
+    .to(element, {
+      scaleX: 1.15,
+      scaleY: 0.85,
+      duration: 0.1,
+      ease: "power2.out",
+    })
+    .to(element, {
+      scaleX: 0.95,
+      scaleY: 1.05,
+      duration: 0.1,
+      ease: "power2.out",
+    })
     .to(element, { scaleX: 1, scaleY: 1, duration: 0.1, ease: "power2.out" });
 
   return tl;
@@ -445,7 +486,7 @@ export const createRubberBand = (
 
 export const createShatter = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const chars = element.querySelectorAll(".char");
@@ -482,7 +523,7 @@ export const createShatter = (
 
 export const createInkReveal = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
 
@@ -499,7 +540,7 @@ export const createInkReveal = (
       clipPath: "circle(150% at 50% 50%)",
       duration: config.duration || 1.5,
       ease: "power2.out",
-    }
+    },
   );
 
   return tl;
@@ -507,19 +548,21 @@ export const createInkReveal = (
 
 export const createSpotlight = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
 
   tl.set(element, {
-    backgroundImage: "radial-gradient(circle at 0% 50%, transparent 0%, black 0%)",
+    backgroundImage:
+      "radial-gradient(circle at 0% 50%, transparent 0%, black 0%)",
     backgroundClip: "text",
     WebkitBackgroundClip: "text",
     color: "transparent",
   });
 
   tl.to(element, {
-    backgroundImage: "radial-gradient(circle at 100% 50%, transparent 100%, black 100%)",
+    backgroundImage:
+      "radial-gradient(circle at 100% 50%, transparent 100%, black 100%)",
     duration: config.duration || 1.5,
     ease: "power2.inOut",
   });
@@ -537,11 +580,12 @@ export const createSpotlight = (
 
 export const createWhipPan = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const direction = config.direction || "left";
-  const distance = direction === "left" || direction === "right" ? "100vw" : "100vh";
+  const distance =
+    direction === "left" || direction === "right" ? "100vw" : "100vh";
   const prop = direction === "left" || direction === "right" ? "x" : "y";
   const sign = direction === "left" || direction === "up" ? 1 : -1;
 
@@ -555,7 +599,7 @@ export const createWhipPan = (
       [prop]: 0,
       duration: config.duration || 0.4,
       ease: "power4.out",
-    }
+    },
   );
 
   // Motion blur effect simulation
@@ -563,7 +607,7 @@ export const createWhipPan = (
     element,
     { filter: "blur(10px)" },
     { filter: "blur(0px)", duration: 0.2 },
-    "<"
+    "<",
   );
 
   return tl;
@@ -571,7 +615,7 @@ export const createWhipPan = (
 
 export const createZoomPunch = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ) => {
   const tl = gsap.timeline({ delay: config.delay || 0 });
   const intensity = config.intensity || 1;
@@ -589,7 +633,7 @@ export const createZoomPunch = (
       filter: "blur(0px)",
       duration: config.duration || 0.5,
       ease: "power4.out",
-    }
+    },
   );
 
   // Subtle overshoot
@@ -986,7 +1030,7 @@ export const GSAP_PRESETS: GSAPPreset[] = [
 
 export const executeGSAPAnimation = (
   element: HTMLElement,
-  config: GSAPAnimationConfig
+  config: GSAPAnimationConfig,
 ): gsap.core.Timeline => {
   switch (config.type) {
     case "cinematic-reveal":
@@ -1023,11 +1067,13 @@ export const executeGSAPAnimation = (
       return createZoomPunch(element, config);
     default:
       // Fallback: simple fade
-      return gsap.timeline().fromTo(
-        element,
-        { opacity: 0 },
-        { opacity: 1, duration: config.duration || 0.5 }
-      );
+      return gsap
+        .timeline()
+        .fromTo(
+          element,
+          { opacity: 0 },
+          { opacity: 1, duration: config.duration || 0.5 },
+        );
   }
 };
 
@@ -1039,7 +1085,9 @@ export const splitTextToChars = (text: string): string => {
   return text
     .split("")
     .map((char) =>
-      char === " " ? '<span class="char">&nbsp;</span>' : `<span class="char">${char}</span>`
+      char === " "
+        ? '<span class="char">&nbsp;</span>'
+        : `<span class="char">${char}</span>`,
     )
     .join("");
 };

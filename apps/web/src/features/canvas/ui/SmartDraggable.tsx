@@ -4,7 +4,10 @@ import { Rnd, RndResizeCallback } from "react-rnd";
 import type { DraggableEvent, DraggableData } from "react-draggable";
 
 // Define local type since react-rnd doesn't export this
-type DraggableEventHandler = (e: DraggableEvent, data: DraggableData) => void | false;
+type DraggableEventHandler = (
+  e: DraggableEvent,
+  data: DraggableData,
+) => void | false;
 import { cn } from "@caption-cam/core/lib/utils";
 import {
   useSnapGuides,
@@ -34,7 +37,7 @@ interface SmartDraggableProps {
     layout: {
       position?: { x: number; y: number };
       size?: { width: number; height: number };
-    }
+    },
   ) => void;
   onSelect?: (id: string) => void;
   onDragStart?: () => void;
@@ -92,12 +95,13 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
   bounds = "parent",
   cancel,
 }) => {
-  // Local state for smooth 60fps updates
-  const [localState, setLocalState] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
+  const rndRef = useRef<any>(null);
+  // Transient state tracks coordinates without causing React to re-render
+  const transientState = useRef({
+    x: (position.x / 100) * containerSize.width || 0,
+    y: (position.y / 100) * containerSize.height || 0,
+    width: (size.width / 100) * containerSize.width || 0,
+    height: (size.height / 100) * containerSize.height || 0,
   });
 
   // Track interaction state
@@ -124,12 +128,14 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
       containerSize.width > 0 &&
       containerSize.height > 0
     ) {
-      setLocalState({
-        x: (position.x / 100) * containerSize.width,
-        y: (position.y / 100) * containerSize.height,
-        width: (size.width / 100) * containerSize.width,
-        height: (size.height / 100) * containerSize.height,
-      });
+      const x = (position.x / 100) * containerSize.width;
+      const y = (position.y / 100) * containerSize.height;
+      const width = (size.width / 100) * containerSize.width;
+      const height = (size.height / 100) * containerSize.height;
+
+      transientState.current = { x, y, width, height };
+      rndRef.current?.updatePosition({ x, y });
+      rndRef.current?.updateSize({ width, height });
     }
   }, [position, size, containerSize]);
 
@@ -146,13 +152,15 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     // Calculate percentages for snapping logic
     const currentXPercent = (d.x / containerSize.width) * 100;
     const currentYPercent = (d.y / containerSize.height) * 100;
-    const widthPercent = (localState.width / containerSize.width) * 100;
-    const heightPercent = (localState.height / containerSize.height) * 100;
+    const widthPercent =
+      (transientState.current.width / containerSize.width) * 100;
+    const heightPercent =
+      (transientState.current.height / containerSize.height) * 100;
 
     // Calculate snap guides (visual only during drag)
     const snapResult = calculateSnap(
       { x: currentXPercent, y: currentYPercent },
-      { width: widthPercent, height: heightPercent }
+      { width: widthPercent, height: heightPercent },
     );
 
     // OPTIMIZATION: Only update parent if guides have visually changed
@@ -165,7 +173,8 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     }
 
     // Update local state for smooth dragging
-    setLocalState((prev) => ({ ...prev, x: d.x, y: d.y }));
+    transientState.current.x = d.x;
+    transientState.current.y = d.y;
   };
 
   const handleDragStop: DraggableEventHandler = (e, d) => {
@@ -183,13 +192,14 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     // Calculate final position percentages
     let xPercent = (d.x / containerSize.width) * 100;
     let yPercent = (d.y / containerSize.height) * 100;
-    const wPercent = (localState.width / containerSize.width) * 100;
-    const hPercent = (localState.height / containerSize.height) * 100;
+    const wPercent = (transientState.current.width / containerSize.width) * 100;
+    const hPercent =
+      (transientState.current.height / containerSize.height) * 100;
 
     // Apply snapping to the final commit
     const snapResult = calculateSnap(
       { x: xPercent, y: yPercent },
-      { width: wPercent, height: hPercent }
+      { width: wPercent, height: hPercent },
     );
 
     xPercent = snapResult.snappedPosition.x;
@@ -211,12 +221,10 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
   };
 
   const handleResize: RndResizeCallback = (e, dir, ref, delta, position) => {
-    setLocalState({
-      x: position.x,
-      y: position.y,
-      width: parseInt(ref.style.width, 10),
-      height: parseInt(ref.style.height, 10),
-    });
+    transientState.current.x = position.x;
+    transientState.current.y = position.y;
+    transientState.current.width = parseInt(ref.style.width, 10);
+    transientState.current.height = parseInt(ref.style.height, 10);
   };
 
   const handleResizeStop: RndResizeCallback = (
@@ -224,7 +232,7 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
     dir,
     ref,
     delta,
-    position
+    position,
   ) => {
     isResizingRef.current = false;
     setIsInteracting(false);
@@ -252,8 +260,13 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
 
   return (
     <Rnd
-      size={{ width: localState.width, height: localState.height }}
-      position={{ x: localState.x, y: localState.y }}
+      ref={rndRef}
+      default={{
+        x: transientState.current.x,
+        y: transientState.current.y,
+        width: transientState.current.width,
+        height: transientState.current.height,
+      }}
       scale={scale}
       onDragStart={handleDragStart}
       onDrag={handleDrag}
@@ -271,7 +284,7 @@ export const SmartDraggable: React.FC<SmartDraggableProps> = ({
       className={cn(
         "pointer-events-auto group",
         className,
-        isInteracting ? "cursor-grabbing" : "cursor-grab"
+        isInteracting ? "cursor-grabbing" : "cursor-grab",
       )}
       style={{
         // Boost Z-Index while dragging so it floats above everything
