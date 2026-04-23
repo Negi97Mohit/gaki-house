@@ -1,0 +1,749 @@
+[
+  {
+    "id": "none",
+    "name": "None",
+    "description": "None filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=None&font=inter",
+    "style": {
+      "filter": "none"
+    }
+  },
+  {
+    "id": "neon-edge",
+    "name": "Neon Edge",
+    "description": "Neon Edge filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/00ffff/png?text=Neon&font=inter",
+    "style": {
+      "filter": "contrast(1.4) saturate(1.6) hue-rotate(160deg) brightness(1.1)"
+    }
+  },
+  {
+    "id": "hologram-fx",
+    "name": "Hologram",
+    "description": "Hologram filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ff00ff/png?text=Hologram&font=inter",
+    "style": {
+      "filter": "hue-rotate(280deg) saturate(1.8) contrast(1.2) brightness(1.1)"
+    }
+  },
+  {
+    "id": "pixel",
+    "name": "Pixelated",
+    "description": "Pixelated filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=Pixel&font=inter",
+    "style": {
+      "filter": "contrast(1.3) saturate(1.2)"
+    }
+  },
+  {
+    "id": "comic",
+    "name": "Comic Book",
+    "description": "Comic Book filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffff00/png?text=Comic&font=inter",
+    "style": {
+      "filter": "saturate(2) contrast(1.4) brightness(1.05)"
+    }
+  },
+  {
+    "id": "ascii",
+    "name": "ASCII",
+    "description": "ASCII filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/00ff00/png?text=ASCII&font=inter",
+    "style": {
+      "filter": "grayscale(1) contrast(1.6) brightness(1.1)"
+    }
+  },
+  {
+    "id": "thermal",
+    "name": "Thermal",
+    "description": "Thermal filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ff8800/png?text=Thermal&font=inter",
+    "style": {
+      "filter": "hue-rotate(330deg) saturate(2.5) contrast(1.3)"
+    }
+  },
+  {
+    "id": "mirror",
+    "name": "Mirror",
+    "description": "Mirror filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=Mirror&font=inter",
+    "style": {
+      "filter": "scaleX(-1) saturate(1.1)"
+    }
+  },
+  {
+    "id": "kaleidoscope",
+    "name": "Kaleidoscope",
+    "description": "Kaleidoscope filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=Scope&font=inter",
+    "style": {
+      "filter": "saturate(1.6) contrast(1.15) hue-rotate(45deg)"
+    }
+  },
+  {
+    "id": "oil-paint",
+    "name": "Oil Paint",
+    "description": "Oil Paint filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=Paint&font=inter",
+    "style": {
+      "filter": "saturate(1.3) contrast(1.15) blur(0.4px)"
+    }
+  },
+  {
+    "id": "sketch",
+    "name": "Sketch",
+    "description": "Sketch filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=Sketch&font=inter",
+    "style": {
+      "filter": "grayscale(1) contrast(1.5) brightness(1.1)"
+    }
+  },
+  {
+    "id": "prism",
+    "name": "Prism",
+    "description": "Prism filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=Prism&font=inter",
+    "style": {
+      "filter": "saturate(1.6) hue-rotate(90deg) contrast(1.1)"
+    }
+  },
+  {
+    "id": "vhs",
+    "name": "VHS",
+    "description": "VHS filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=VHS&font=inter",
+    "style": {
+      "filter": "saturate(1.4) contrast(1.1) hue-rotate(-10deg) brightness(1.05)"
+    }
+  },
+  {
+    "id": "infrared-fx",
+    "name": "Infrared",
+    "description": "Infrared filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ff0000/png?text=Infrared&font=inter",
+    "style": {
+      "filter": "hue-rotate(300deg) saturate(2) contrast(1.3) brightness(1.05)"
+    }
+  },
+  {
+    "id": "xray",
+    "name": "X-Ray",
+    "description": "X-Ray filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffffff/png?text=X-Ray&font=inter",
+    "style": {
+      "filter": "invert(1) grayscale(1) contrast(1.4)"
+    }
+  },
+  {
+    "id": "cyberpunk",
+    "name": "Cyberpunk",
+    "description": "Cyberpunk filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ff00ff/png?text=Cyber&font=inter",
+    "style": {
+      "filter": "hue-rotate(200deg) saturate(1.8) contrast(1.2)"
+    }
+  },
+  {
+    "id": "dominator",
+    "name": "Dominator",
+    "description": "Dominator filter effect",
+    "preview": "https://placehold.co/100x60/00ffff/000000/png?text=Dominator&font=inter",
+    "style": {
+      "filter": "hue-rotate(180deg) saturate(2) contrast(1.3) brightness(1.1)"
+    }
+  },
+  {
+    "id": "inspector",
+    "name": "Inspector",
+    "description": "Inspector filter effect",
+    "preview": "https://placehold.co/100x60/ff00ff/000000/png?text=Inspector&font=inter",
+    "style": {
+      "filter": "hue-rotate(290deg) saturate(1.7) contrast(1.2)"
+    }
+  },
+  {
+    "id": "manga",
+    "name": "Manga",
+    "description": "Manga filter effect",
+    "preview": "https://placehold.co/100x60/000000/ffffff/png?text=Manga",
+    "style": {
+      "filter": "grayscale(1) contrast(1.7) brightness(1.05)"
+    }
+  },
+  {
+    "id": "phantom",
+    "name": "Phantom",
+    "description": "Phantom filter effect",
+    "preview": "https://placehold.co/100x60/1a0000/ff0000/png?text=Phantom",
+    "style": {
+      "filter": "sepia(0.4) hue-rotate(330deg) saturate(1.5) contrast(1.2)"
+    }
+  },
+  {
+    "id": "matrix",
+    "name": "Matrix",
+    "description": "Matrix filter effect",
+    "preview": "https://placehold.co/100x60/001a00/00ff00/png?text=Matrix",
+    "style": {
+      "filter": "hue-rotate(90deg) saturate(2) contrast(1.3) brightness(0.95)"
+    }
+  },
+  {
+    "id": "sepia",
+    "name": "Sepia",
+    "description": "Sepia filter effect",
+    "preview": "https://placehold.co/100x60/2e2115/a68a6d/png?text=Sepia",
+    "style": {
+      "filter": "sepia(0.85) saturate(1.1) contrast(1.05)"
+    }
+  },
+  {
+    "id": "ocean",
+    "name": "Ocean",
+    "description": "Ocean filter effect",
+    "preview": "https://placehold.co/100x60/000033/0066cc/png?text=Ocean",
+    "style": {
+      "filter": "hue-rotate(180deg) saturate(1.4) brightness(1.05)"
+    }
+  },
+  {
+    "id": "sunset",
+    "name": "Sunset",
+    "description": "Sunset filter effect",
+    "preview": "https://placehold.co/100x60/2d1b4e/ffbe0b/png?text=Sunset",
+    "style": {
+      "filter": "saturate(1.5) hue-rotate(-15deg) brightness(1.05)"
+    }
+  },
+  {
+    "id": "gothic",
+    "name": "Gothic",
+    "description": "Gothic filter effect",
+    "preview": "https://placehold.co/100x60/0f0f0f/8a0303/png?text=Gothic",
+    "style": {
+      "filter": "grayscale(0.4) contrast(1.4) brightness(0.85) sepia(0.2)"
+    }
+  },
+  {
+    "id": "mint",
+    "name": "Mint",
+    "description": "Mint filter effect",
+    "preview": "https://placehold.co/100x60/1c3d35/4fffa3/png?text=Mint",
+    "style": {
+      "filter": "hue-rotate(110deg) saturate(1.4) brightness(1.08)"
+    }
+  },
+  {
+    "id": "golden",
+    "name": "Golden",
+    "description": "Golden filter effect",
+    "preview": "https://placehold.co/100x60/2a2200/ffd700/png?text=Golden",
+    "style": {
+      "filter": "sepia(0.5) saturate(1.6) brightness(1.1) hue-rotate(-10deg)"
+    }
+  },
+  {
+    "id": "lavender",
+    "name": "Lavender",
+    "description": "Lavender filter effect",
+    "preview": "https://placehold.co/100x60/1a0b2e/9d4edd/png?text=Lavender",
+    "style": {
+      "filter": "hue-rotate(260deg) saturate(1.4) brightness(1.05)"
+    }
+  },
+  {
+    "id": "ghibliSoft",
+    "name": "Ghibli Soft",
+    "description": "Ghibli Soft filter effect",
+    "preview": "https://placehold.co/100x60/3b4a3f/9fc9a3/png?text=Ghibli",
+    "style": {
+      "filter": "saturate(1.15) brightness(1.08) contrast(0.95)"
+    }
+  },
+  {
+    "id": "ghibliWarm",
+    "name": "Ghibli Warm",
+    "description": "Ghibli Warm filter effect",
+    "preview": "https://placehold.co/100x60/5c2d1f/e39e6d/png?text=Spirited",
+    "style": {
+      "filter": "sepia(0.25) saturate(1.3) brightness(1.05)"
+    }
+  },
+  {
+    "id": "arcane",
+    "name": "Arcane",
+    "description": "Arcane filter effect",
+    "preview": "https://placehold.co/100x60/1e1a24/654d7a/png?text=Arcane",
+    "style": {
+      "filter": "hue-rotate(260deg) saturate(1.4) contrast(1.15)"
+    }
+  },
+  {
+    "id": "watercolor",
+    "name": "Watercolor",
+    "description": "Watercolor filter effect",
+    "preview": "https://placehold.co/100x60/4a6572/aed6dc/png?text=Water",
+    "style": {
+      "filter": "saturate(0.85) brightness(1.1) contrast(0.9) blur(0.3px)"
+    }
+  },
+  {
+    "id": "oilPaint",
+    "name": "Anime Oil",
+    "description": "Anime Oil filter effect",
+    "preview": "https://placehold.co/100x60/2d1f1f/b37a5e/png?text=Oil",
+    "style": {
+      "filter": "saturate(1.4) contrast(1.2) blur(0.4px)"
+    }
+  },
+  {
+    "id": "samuraiInk",
+    "name": "Samurai Ink",
+    "description": "Samurai Ink filter effect",
+    "preview": "https://placehold.co/100x60/000000/ffffff/png?text=Sumi-e",
+    "style": {
+      "filter": "grayscale(1) contrast(1.6) brightness(1.05)"
+    }
+  },
+  {
+    "id": "ukiyoe",
+    "name": "Ukiyo-e",
+    "description": "Ukiyo-e filter effect",
+    "preview": "https://placehold.co/100x60/0d1b2a/1e6091/png?text=Ukiyo",
+    "style": {
+      "filter": "hue-rotate(190deg) saturate(1.3) contrast(1.1)"
+    }
+  },
+  {
+    "id": "comicBold",
+    "name": "Comic Bold",
+    "description": "Comic Bold filter effect",
+    "preview": "https://placehold.co/100x60/000000/ffffff/png?text=Comic",
+    "style": {
+      "filter": "saturate(1.8) contrast(1.5)"
+    }
+  },
+  {
+    "id": "pixarSoft",
+    "name": "Pixar Soft",
+    "description": "Pixar Soft filter effect",
+    "preview": "https://placehold.co/100x60/2e4057/7db9e8/png?text=3D",
+    "style": {
+      "filter": "saturate(1.2) brightness(1.08) contrast(1.05)"
+    }
+  },
+  {
+    "id": "neonHorror",
+    "name": "Neon Horror",
+    "description": "Neon Horror filter effect",
+    "preview": "https://placehold.co/100x60/0f0010/ff005c/png?text=Horror",
+    "style": {
+      "filter": "hue-rotate(320deg) saturate(2) contrast(1.3) brightness(0.9)"
+    }
+  },
+  {
+    "id": "infrared",
+    "name": "Infrared (Anime)",
+    "description": "Infrared (Anime) filter effect",
+    "preview": "https://placehold.co/100x60/2b0000/ff4500/png?text=Infra",
+    "style": {
+      "filter": "hue-rotate(300deg) saturate(2) contrast(1.25)"
+    }
+  },
+  {
+    "id": "frostBlue",
+    "name": "Frost Blue",
+    "description": "Frost Blue filter effect",
+    "preview": "https://placehold.co/100x60/001f3f/4da6ff/png?text=Frost",
+    "style": {
+      "filter": "hue-rotate(190deg) saturate(1.3) brightness(1.1)"
+    }
+  },
+  {
+    "id": "emerald",
+    "name": "Emerald",
+    "description": "Emerald filter effect",
+    "preview": "https://placehold.co/100x60/002b26/00a884/png?text=Emerald",
+    "style": {
+      "filter": "hue-rotate(130deg) saturate(1.5) contrast(1.1)"
+    }
+  },
+  {
+    "id": "demonSlayer",
+    "name": "Demon Slayer",
+    "description": "Demon Slayer filter effect",
+    "preview": "https://placehold.co/100x60/1a0b0b/50b37a/png?text=Slayer",
+    "style": {
+      "filter": "hue-rotate(120deg) saturate(1.4) contrast(1.2)"
+    }
+  },
+  {
+    "id": "bleach",
+    "name": "Bleach",
+    "description": "Bleach filter effect",
+    "preview": "https://placehold.co/100x60/0a0a0a/cccccc/png?text=Bleach",
+    "style": {
+      "filter": "grayscale(0.6) contrast(1.3) brightness(1.05)"
+    }
+  },
+  {
+    "id": "mechaBlue",
+    "name": "Mecha",
+    "description": "Mecha filter effect",
+    "preview": "https://placehold.co/100x60/000019/0033cc/png?text=Mecha",
+    "style": {
+      "filter": "hue-rotate(210deg) saturate(1.4) contrast(1.2) brightness(0.95)"
+    }
+  },
+  {
+    "id": "toxicGreen",
+    "name": "Toxic",
+    "description": "Toxic filter effect",
+    "preview": "https://placehold.co/100x60/003300/39ff14/png?text=Toxic",
+    "style": {
+      "filter": "hue-rotate(95deg) saturate(2) contrast(1.2) brightness(1.05)"
+    }
+  },
+  {
+    "id": "roseGold",
+    "name": "Rose Gold",
+    "description": "Rose Gold filter effect",
+    "preview": "https://placehold.co/100x60/4b2e2e/e9a6a6/png?text=Rose",
+    "style": {
+      "filter": "sepia(0.3) hue-rotate(-20deg) saturate(1.3) brightness(1.05)"
+    }
+  },
+  {
+    "id": "dreamscape",
+    "name": "Dreamscape",
+    "description": "Dreamscape filter effect",
+    "preview": "https://placehold.co/100x60/2d1f47/9b5de5/png?text=Dream",
+    "style": {
+      "filter": "hue-rotate(270deg) saturate(1.4) brightness(1.1) contrast(0.95)"
+    }
+  },
+  {
+    "id": "hologram",
+    "name": "Hologram (Anime)",
+    "description": "Hologram (Anime) filter effect",
+    "preview": "https://placehold.co/100x60/1f003f/5de5ff/png?text=Holo",
+    "style": {
+      "filter": "hue-rotate(190deg) saturate(1.7) contrast(1.15) brightness(1.1)"
+    }
+  },
+  {
+    "id": "bloodMoon",
+    "name": "Blood Moon",
+    "description": "Blood Moon filter effect",
+    "preview": "https://placehold.co/100x60/1a0000/a30000/png?text=Blood",
+    "style": {
+      "filter": "sepia(0.5) hue-rotate(-30deg) saturate(2) contrast(1.3) brightness(0.9)"
+    }
+  },
+  {
+    "id": "noirBlue",
+    "name": "Noir Blue",
+    "description": "Noir Blue filter effect",
+    "preview": "https://placehold.co/100x60/000014/4d4d7a/png?text=Noir",
+    "style": {
+      "filter": "grayscale(0.7) hue-rotate(210deg) contrast(1.2) brightness(0.95)"
+    }
+  },
+  {
+    "id": "pastelCute",
+    "name": "Kawaii",
+    "description": "Kawaii filter effect",
+    "preview": "https://placehold.co/100x60/6b4f7f/ffb3d9/png?text=Cute",
+    "style": {
+      "filter": "saturate(1.2) brightness(1.12) hue-rotate(310deg)"
+    }
+  },
+  {
+    "id": "glitchPurple",
+    "name": "Glitch Purple",
+    "description": "Glitch Purple filter effect",
+    "preview": "https://placehold.co/100x60/1a0020/aa00ff/png?text=Glitch",
+    "style": {
+      "filter": "hue-rotate(280deg) saturate(1.8) contrast(1.25)"
+    }
+  },
+  {
+    "id": "fireDragon",
+    "name": "Fire Dragon",
+    "description": "Fire Dragon filter effect",
+    "preview": "https://placehold.co/100x60/260000/ff4500/png?text=Fire",
+    "style": {
+      "filter": "hue-rotate(-20deg) saturate(2) contrast(1.3) brightness(1.05)"
+    }
+  },
+  {
+    "id": "victorianDaguerreotype",
+    "name": "Victorian",
+    "description": "Victorian filter effect",
+    "preview": "https://placehold.co/100x60/1a1410/f5e6d3/png?text=Victorian",
+    "style": {
+      "filter": "sepia(0.9) contrast(1.2) brightness(0.95)"
+    }
+  },
+  {
+    "id": "romanFreco",
+    "name": "Roman Fresco",
+    "description": "Roman Fresco filter effect",
+    "preview": "https://placehold.co/100x60/c85a54/f4e4c1/png?text=Roman",
+    "style": {
+      "filter": "sepia(0.4) saturate(1.2) contrast(1.05) brightness(1.05)"
+    }
+  },
+  {
+    "id": "spartanBronze",
+    "name": "Spartan",
+    "description": "Spartan filter effect",
+    "preview": "https://placehold.co/100x60/b87333/ffd7a8/png?text=Spartan",
+    "style": {
+      "filter": "sepia(0.6) saturate(1.5) hue-rotate(-15deg) brightness(1.05)"
+    }
+  },
+  {
+    "id": "egyptianPapyrus",
+    "name": "Egyptian",
+    "description": "Egyptian filter effect",
+    "preview": "https://placehold.co/100x60/d4a76a/faf4e8/png?text=Egypt",
+    "style": {
+      "filter": "sepia(0.7) saturate(1.2) brightness(1.1)"
+    }
+  },
+  {
+    "id": "medievalIllumination",
+    "name": "Medieval",
+    "description": "Medieval filter effect",
+    "preview": "https://placehold.co/100x60/1a0f26/daa520/png?text=Medieval",
+    "style": {
+      "filter": "sepia(0.4) saturate(1.4) contrast(1.15) brightness(0.95)"
+    }
+  },
+  {
+    "id": "xenomorphic",
+    "name": "Xenomorph",
+    "description": "Xenomorph filter effect",
+    "preview": "https://placehold.co/100x60/0d1f1f/7fff00/png?text=Alien",
+    "style": {
+      "filter": "hue-rotate(110deg) saturate(1.6) contrast(1.2) brightness(0.95)"
+    }
+  },
+  {
+    "id": "cosmicVoid",
+    "name": "Cosmic",
+    "description": "Cosmic filter effect",
+    "preview": "https://placehold.co/100x60/000000/9370db/png?text=Cosmic",
+    "style": {
+      "filter": "hue-rotate(260deg) saturate(1.5) contrast(1.25) brightness(0.9)"
+    }
+  },
+  {
+    "id": "abyssalDepth",
+    "name": "Abyss",
+    "description": "Abyss filter effect",
+    "preview": "https://placehold.co/100x60/000a1f/4fc3f7/png?text=Abyss",
+    "style": {
+      "filter": "hue-rotate(195deg) saturate(1.3) contrast(1.2) brightness(0.85)"
+    }
+  },
+  {
+    "id": "radioactiveDecay",
+    "name": "Radioactive",
+    "description": "Radioactive filter effect",
+    "preview": "https://placehold.co/100x60/1a1a00/ccff00/png?text=Toxic",
+    "style": {
+      "filter": "hue-rotate(75deg) saturate(2) contrast(1.25) brightness(1.05)"
+    }
+  },
+  {
+    "id": "renaissanceOil",
+    "name": "Renaissance",
+    "description": "Renaissance filter effect",
+    "preview": "https://placehold.co/100x60/2d1810/f0e68c/png?text=Oil",
+    "style": {
+      "filter": "sepia(0.45) saturate(1.3) contrast(1.15) brightness(1.02)"
+    }
+  },
+  {
+    "id": "byzantineMosaic",
+    "name": "Byzantine",
+    "description": "Byzantine filter effect",
+    "preview": "https://placehold.co/100x60/b8860b/ffd700/png?text=Mosaic",
+    "style": {
+      "filter": "sepia(0.4) saturate(1.6) contrast(1.2) brightness(1.05)"
+    }
+  },
+  {
+    "id": "artDeco",
+    "name": "Art Deco",
+    "description": "Art Deco filter effect",
+    "preview": "https://placehold.co/100x60/1a1a1a/ffd700/png?text=Deco",
+    "style": {
+      "filter": "sepia(0.3) saturate(1.4) contrast(1.2)"
+    }
+  },
+  {
+    "id": "cavePainting",
+    "name": "Cave Paint",
+    "description": "Cave Paint filter effect",
+    "preview": "https://placehold.co/100x60/2b1810/d2691e/png?text=Cave",
+    "style": {
+      "filter": "sepia(0.7) saturate(1.3) contrast(1.1) brightness(0.95)"
+    }
+  },
+  {
+    "id": "steampunkBrass",
+    "name": "Steampunk",
+    "description": "Steampunk filter effect",
+    "preview": "https://placehold.co/100x60/1f1108/cd7f32/png?text=Steam",
+    "style": {
+      "filter": "sepia(0.6) saturate(1.4) hue-rotate(-15deg) contrast(1.1)"
+    }
+  },
+  {
+    "id": "dystopianGrey",
+    "name": "Dystopia",
+    "description": "Dystopia filter effect",
+    "preview": "https://placehold.co/100x60/0f0f0f/696969/png?text=Grey",
+    "style": {
+      "filter": "grayscale(0.85) contrast(1.2) brightness(0.95)"
+    }
+  },
+  {
+    "id": "thermalImaging",
+    "name": "Thermal",
+    "description": "Thermal filter effect",
+    "preview": "https://placehold.co/100x60/000033/ff6600/png?text=Heat",
+    "style": {
+      "filter": "hue-rotate(330deg) saturate(2.5) contrast(1.4) brightness(1.05)"
+    }
+  },
+  {
+    "id": "xrayVision",
+    "name": "X-Ray",
+    "description": "X-Ray filter effect",
+    "preview": "https://placehold.co/100x60/000000/c0d6e4/png?text=XRay",
+    "style": {
+      "filter": "invert(1) grayscale(1) contrast(1.5)"
+    }
+  },
+  {
+    "id": "noirDetective",
+    "name": "Noir",
+    "description": "Noir filter effect",
+    "preview": "https://placehold.co/100x60/000000/ffffff/png?text=Noir",
+    "style": {
+      "filter": "grayscale(1) contrast(1.4) brightness(0.95)"
+    }
+  },
+  {
+    "id": "sovietPropaganda",
+    "name": "Soviet",
+    "description": "Soviet filter effect",
+    "preview": "https://placehold.co/100x60/cc0000/ffd700/png?text=Poster",
+    "style": {
+      "filter": "sepia(0.5) hue-rotate(-25deg) saturate(2) contrast(1.25)"
+    }
+  },
+  {
+    "id": "aztecSun",
+    "name": "Aztec",
+    "description": "Aztec filter effect",
+    "preview": "https://placehold.co/100x60/ff8c00/ffd700/png?text=Aztec",
+    "style": {
+      "filter": "sepia(0.4) hue-rotate(-15deg) saturate(1.7) brightness(1.08)"
+    }
+  },
+  {
+    "id": "norseIce",
+    "name": "Norse",
+    "description": "Norse filter effect",
+    "preview": "https://placehold.co/100x60/0a1f2e/5c8a9e/png?text=Ice",
+    "style": {
+      "filter": "hue-rotate(195deg) saturate(1.2) contrast(1.15) brightness(1.05)"
+    }
+  },
+  {
+    "id": "bioluminescent",
+    "name": "Bio-Lume",
+    "description": "Bio-Lume filter effect",
+    "preview": "https://placehold.co/100x60/001a0d/00ff88/png?text=Bio",
+    "style": {
+      "filter": "hue-rotate(140deg) saturate(2) contrast(1.25) brightness(1.05)"
+    }
+  },
+  {
+    "id": "volcanicMagma",
+    "name": "Magma",
+    "description": "Magma filter effect",
+    "preview": "https://placehold.co/100x60/1a0000/ff4500/png?text=Lava",
+    "style": {
+      "filter": "hue-rotate(-15deg) saturate(2) contrast(1.3) brightness(1.05)"
+    }
+  },
+  {
+    "id": "holographicGlitch",
+    "name": "Holo Glitch",
+    "description": "Holo Glitch filter effect",
+    "preview": "https://placehold.co/100x60/001f3f/00ffff/png?text=Holo",
+    "style": {
+      "filter": "hue-rotate(180deg) saturate(1.8) contrast(1.2) brightness(1.1)"
+    }
+  },
+  {
+    "id": "jadeDynasty",
+    "name": "Jade",
+    "description": "Jade filter effect",
+    "preview": "https://placehold.co/100x60/0d1f0d/00a36c/png?text=Jade",
+    "style": {
+      "filter": "hue-rotate(120deg) saturate(1.5) contrast(1.15)"
+    }
+  },
+  {
+    "id": "spectralHaunting",
+    "name": "Spectral",
+    "description": "Spectral filter effect",
+    "preview": "https://placehold.co/100x60/1f1f2e/7f7fb5/png?text=Ghost",
+    "style": {
+      "filter": "hue-rotate(240deg) saturate(0.9) contrast(1.2) brightness(0.95)"
+    }
+  },
+  {
+    "id": "edoPeriod",
+    "name": "Edo",
+    "description": "Edo filter effect",
+    "preview": "https://placehold.co/100x60/1a1410/f5deb3/png?text=Edo",
+    "style": {
+      "filter": "sepia(0.55) saturate(1.2) contrast(1.05) brightness(1.05)"
+    }
+  },
+  {
+    "id": "cyberneticAugment",
+    "name": "Cybernetic",
+    "description": "Cybernetic filter effect",
+    "preview": "https://placehold.co/100x60/000019/0099ff/png?text=Cyborg",
+    "style": {
+      "filter": "hue-rotate(205deg) saturate(1.6) contrast(1.2) brightness(1.05)"
+    }
+  },
+  {
+    "id": "desertMirage",
+    "name": "Mirage",
+    "description": "Mirage filter effect",
+    "preview": "https://placehold.co/100x60/f4a460/fff8dc/png?text=Sand",
+    "style": {
+      "filter": "sepia(0.4) saturate(1.3) brightness(1.1) hue-rotate(-10deg)"
+    }
+  },
+  {
+    "id": "crystalline",
+    "name": "Crystal",
+    "description": "Crystal filter effect",
+    "preview": "https://placehold.co/100x60/1a1f3f/6699ff/png?text=Gem",
+    "style": {
+      "filter": "hue-rotate(210deg) saturate(1.5) contrast(1.2) brightness(1.1)"
+    }
+  }
+]
