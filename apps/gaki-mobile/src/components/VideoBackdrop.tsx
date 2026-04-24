@@ -6,6 +6,12 @@ import WebGLVideoCanvas from "@/components/WebGLVideoCanvas";
 
 const SWIPE_THRESHOLD = 60;
 
+/** Wrapper that feeds AnimeStyles from FxContext into WebGLVideoCanvas */
+const WebGLVideoCanvasWithStyles = () => {
+  const { animeStyles } = useFx();
+  return <WebGLVideoCanvas animeStyles={animeStyles} />;
+};
+
 /**
  * Full-bleed live camera preview.
  *
@@ -82,7 +88,7 @@ const VideoBackdrop = () => {
       />
 
       {/* WebGL canvas: paints the video through the shader pipeline. */}
-      {!denied && <WebGLVideoCanvas />}
+      {!denied && <WebGLVideoCanvasWithStyles />}
 
       {/* Structural overlay engine (VHS, Cinematic, Glitch, Neon...) */}
       <OverlayEngine />

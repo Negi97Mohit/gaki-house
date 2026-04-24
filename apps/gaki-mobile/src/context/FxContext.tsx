@@ -1,4 +1,5 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import { useAnimeStyles, type AnimeStyle } from "@/hooks/useAnimeStyles";
 import canvasPresetsRaw from "@/data/canvasPresets.json";
 import captionPresetsRaw from "@/data/captionPresets.json";
 import animationLibraryRaw from "@/data/animationLibrary.json";
@@ -82,12 +83,15 @@ interface FxContextValue {
   setAnimationId: (id: string | null) => void;
   activeAnimation: AnimationPreset | null;
 
-  // Interactive filters (CSS-based, applied to <video>) — independent layer.
+  // Interactive filters (GLSL-based, applied via WebGL shader) — independent layer.
   interactiveFilterId: string;
   setInteractiveFilterId: (id: string) => void;
   activeInteractiveFilter: InteractiveFilter | null;
   /** Combined CSS filter string from both Filters + Interactive layers. */
   combinedFilterCss: string;
+
+  // AnimeStyles loaded from Firestore for tri-tone rendering (shader type 6)
+  animeStyles: Record<string, AnimeStyle>;
 
   // Cinematic shots (overlay-based, see CinematicShotRenderer) — independent.
   cinematicShotId: string | null;
@@ -149,6 +153,9 @@ export const FxProvider = ({ children }: { children: ReactNode }) => {
   const [cinematicShotId, setCinematicShotId] = useState<string | null>(null);
   const [overlayEdits, setOverlayEdits] = useState<Record<string, OverlayEdit>>({});
   const [captionEdits, setCaptionEdits] = useState<Record<string, CaptionEdit>>({});
+
+  // Load AnimeStyles from Firestore for tri-tone rendering
+  const { animeStyles } = useAnimeStyles();
 
   const updateCaptionEdit = useCallback(
     (captionId: string, patch: CaptionEdit) => {
@@ -263,6 +270,7 @@ export const FxProvider = ({ children }: { children: ReactNode }) => {
         setInteractiveFilterId,
         activeInteractiveFilter,
         combinedFilterCss,
+        animeStyles,
         cinematicShotId,
         setCinematicShotId,
         activeCinematicShot,
