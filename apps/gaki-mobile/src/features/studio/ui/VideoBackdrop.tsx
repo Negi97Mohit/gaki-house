@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useCamera } from "@/context/CameraContext";
 import { useFx } from "@/context/FxContext";
-import OverlayEngine from "@/components/OverlayEngine";
-import WebGLVideoCanvas from "@/components/WebGLVideoCanvas";
+import OverlayEngine from "@/features/canvas/ui/OverlayEngine";
+import WebGLVideoCanvas from "@/features/filters/ui/WebGLVideoCanvas";
 
 const SWIPE_THRESHOLD = 60;
 
