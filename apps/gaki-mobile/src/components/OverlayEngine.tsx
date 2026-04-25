@@ -381,7 +381,7 @@ const OverlayEngine = () => {
   if (!hasAnything) return null;
 
   return (
-    <div ref={containerRef} aria-hidden className="absolute inset-0 z-[6] pointer-events-none">
+    <div ref={containerRef} aria-hidden data-overlay className="absolute inset-0 z-[12] pointer-events-none">
       {/* === Interactive filter — own component layer (may capture taps) === */}
       {activeInteractiveFilter && (
         <InteractiveFilterRenderer

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import BottomNav, { Tab } from "@/components/BottomNav";
 import VideoBackdrop from "@/components/VideoBackdrop";
 import Logo from "@/components/Logo";
@@ -9,27 +10,66 @@ import DestinationsPanel from "@/components/screens/DestinationsScreen";
 import DiscoverScreen from "@/components/screens/DiscoverScreen";
 import RemoteControlScreen from "@/components/screens/RemoteControlScreen";
 import AuthSheet from "@/components/AuthSheet";
+import ProfileSheet from "@/components/ProfileSheet";
 import SheetDrawer from "@/components/SheetDrawer";
 import { CameraProvider } from "@/context/CameraContext";
 import { FxProvider } from "@/context/FxContext";
+import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
 type Drawer = "discover" | "remote" | "destinations" | "settings" | null;
 
+/** Maps URL pathname to the active drawer value. */
+const pathToDrawer = (pathname: string): Drawer => {
+  const segment = pathname.replace(/^\//, "").split("/")[0];
+  if (
+    segment === "discover" ||
+    segment === "remote" ||
+    segment === "destinations" ||
+    segment === "settings"
+  ) {
+    return segment;
+  }
+  return null; // "/studio" or any unknown path → studio (default)
+};
+
 const Index = () => {
-  const [activeDrawer, setActiveDrawer] = useState<Drawer>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Derive active drawer from the current URL path
+  const activeDrawer = useMemo(
+    () => pathToDrawer(location.pathname),
+    [location.pathname]
+  );
+
   const [authOpen, setAuthOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [immersive, setImmersive] = useState(false);
   const [assetsOpen, setAssetsOpen] = useState(false);
   const [discoverControlsVisible, setDiscoverControlsVisible] = useState(true);
 
   const handleTabChange = (next: Tab) => {
     if (next === "studio") {
-      setActiveDrawer(null);
+      navigate("/studio");
       return;
     }
-    setActiveDrawer((current) => (current === next ? null : (next as Drawer)));
+    // If tapping the already-active tab, go back to studio
+    if (activeDrawer === next) {
+      navigate("/studio");
+    } else {
+      navigate(`/${next}`);
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (user) {
+      setProfileOpen(true);
+    } else {
+      setAuthOpen(true);
+    }
   };
 
   // Tap on the empty preview area toggles immersive mode.
@@ -48,9 +88,13 @@ const Index = () => {
     const dt = Date.now() - downRef.t;
     const hit = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
     const target = e.target as HTMLElement | null;
+
+    // Skip if the tap is on an interactive element or a draggable canvas overlay
     if (
       hit?.closest("button, a, input, textarea, select, [role='button']") ||
-      target?.closest("button, a, input, textarea, select, [role='button']")
+      target?.closest("button, a, input, textarea, select, [role='button']") ||
+      hit?.closest("[data-overlay], .cursor-move") ||
+      target?.closest("[data-overlay], .cursor-move")
     ) {
       return;
     }
@@ -121,12 +165,12 @@ const Index = () => {
             )}
 
             {activeDrawer === "remote" && (
-              <RemoteControlScreen onBack={() => setActiveDrawer(null)} />
+              <RemoteControlScreen onBack={() => navigate("/studio")} />
             )}
 
             <SheetDrawer
               open={activeDrawer === "destinations"}
-              onClose={() => setActiveDrawer(null)}
+              onClose={() => navigate("/studio")}
               eyebrow="Destinations"
               title="Multistream"
             >
@@ -135,7 +179,7 @@ const Index = () => {
 
             <SheetDrawer
               open={activeDrawer === "settings"}
-              onClose={() => setActiveDrawer(null)}
+              onClose={() => navigate("/studio")}
               eyebrow="Settings"
               title="Preferences"
             >
@@ -154,7 +198,7 @@ const Index = () => {
             <BottomNav
               activeDrawer={activeDrawer}
               onChange={handleTabChange}
-              onProfileClick={() => setAuthOpen(true)}
+              onProfileClick={handleProfileClick}
             />
           </div>
 
@@ -175,7 +219,11 @@ const Index = () => {
             </button>
           )}
 
+          {/* Auth sheet — shown when not logged in */}
           <AuthSheet open={authOpen} onClose={() => setAuthOpen(false)} />
+
+          {/* Profile sheet — shown when logged in */}
+          <ProfileSheet open={profileOpen} onClose={() => setProfileOpen(false)} />
         </main>
       </FxProvider>
     </CameraProvider>

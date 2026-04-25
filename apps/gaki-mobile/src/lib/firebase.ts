@@ -2,16 +2,37 @@
 // Uses the same project as the web app (gaki-fb708)
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
+const requiredEnvVars = [
+  "VITE_FIREBASE_API_KEY",
+  "VITE_FIREBASE_AUTH_DOMAIN",
+  "VITE_FIREBASE_PROJECT_ID",
+  "VITE_FIREBASE_STORAGE_BUCKET",
+  "VITE_FIREBASE_MESSAGING_SENDER_ID",
+  "VITE_FIREBASE_APP_ID",
+] as const;
+
+// Validate that all required Firebase env vars are present
+for (const key of requiredEnvVars) {
+  if (!import.meta.env[key]) {
+    throw new Error(
+      `Missing Firebase env var: ${key}. ` +
+        `Copy .env.example to .env and fill in your Firebase config values.`
+    );
+  }
+}
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCYdOJlvYVlc5KMqnqFYC67_bUVWfU8XfA",
-  authDomain: "gaki-fb708.firebaseapp.com",
-  projectId: "gaki-fb708",
-  storageBucket: "gaki-fb708.firebasestorage.app",
-  messagingSenderId: "696196670090",
-  appId: "1:696196670090:web:91b7558f5dc050a1410373",
-  measurementId: "G-T9G91VS18Q",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+export const auth = getAuth(app);
