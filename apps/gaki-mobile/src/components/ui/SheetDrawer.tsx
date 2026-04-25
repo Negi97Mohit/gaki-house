@@ -42,6 +42,7 @@ const SheetDrawer = ({ open, onClose, title, eyebrow, children, transparent = fa
             onPointerDown={onClose}
           />
           <motion.div
+            data-sheet="true"
             className={
               transparent
                 ? "absolute bottom-0 inset-x-0 max-h-[85vh] flex flex-col bg-transparent p-4 pointer-events-auto safe-bottom"

@@ -91,8 +91,8 @@ const Index = () => {
 
     // Skip if the tap is on an interactive element or a draggable canvas overlay
     if (
-      hit?.closest("button, a, input, textarea, select, [role='button']") ||
-      target?.closest("button, a, input, textarea, select, [role='button']") ||
+      hit?.closest("button, a, input, textarea, select, [role='button'], [data-sheet='true']") ||
+      target?.closest("button, a, input, textarea, select, [role='button'], [data-sheet='true']") ||
       hit?.closest("[data-overlay], .cursor-move") ||
       target?.closest("[data-overlay], .cursor-move")
     ) {

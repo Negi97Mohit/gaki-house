@@ -13,6 +13,7 @@ export interface Profile {
   username?: string;
   display_name?: string;
   avatar_url?: string;
+  banner_url?: string;
   bio?: string;
   created_at?: string;
 }
@@ -25,6 +26,7 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   createProfile: (user: User, additionalData?: Partial<Profile>) => Promise<void>;
+  updateProfileData: (data: Partial<Profile>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -131,6 +133,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const updateProfileData = async (data: Partial<Profile>) => {
+    if (!user || !profile) return;
+    try {
+      await setDoc(doc(db, "users", user.uid), data, { merge: true });
+      setProfile({ ...profile, ...data });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      throw error;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -141,6 +154,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         signOut,
         refreshProfile,
         createProfile,
+        updateProfileData,
       }}
     >
       {children}
