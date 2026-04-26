@@ -9,6 +9,8 @@ interface CameraContextValue {
   denied: boolean;
   swapping: boolean;
   flip: () => void;
+  hardwareCaps: Record<string, any>;
+  applyHardwareConstraint: (capability: string, value: any) => Promise<boolean>;
 }
 
 const CameraContext = createContext<CameraContextValue | null>(null);
@@ -20,6 +22,7 @@ export const CameraProvider = ({ children }: { children: ReactNode }) => {
   const [active, setActive] = useState(false);
   const [denied, setDenied] = useState(false);
   const [swapping, setSwapping] = useState(false);
+  const [hardwareCaps, setHardwareCaps] = useState<Record<string, any>>({});
 
   const start = useCallback(async (mode: Facing) => {
     if (!navigator.mediaDevices?.getUserMedia) {
@@ -33,6 +36,14 @@ export const CameraProvider = ({ children }: { children: ReactNode }) => {
         audio: false,
       });
       streamRef.current = stream;
+      
+      // Probe capabilities
+      const track = stream.getVideoTracks()[0];
+      if (track && typeof track.getCapabilities === 'function') {
+        const caps = track.getCapabilities();
+        setHardwareCaps(caps || {});
+      }
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play().catch(() => {});
@@ -44,6 +55,26 @@ export const CameraProvider = ({ children }: { children: ReactNode }) => {
       setActive(false);
     }
   }, []);
+
+  const applyHardwareConstraint = useCallback(async (capability: string, value: any) => {
+    const track = streamRef.current?.getVideoTracks()[0];
+    if (!track) return false;
+
+    // Check if the capability exists in our probed caps
+    if (!(capability in hardwareCaps)) {
+      return false; // Fast fail
+    }
+
+    try {
+      await track.applyConstraints({
+        advanced: [{ [capability]: value }]
+      });
+      return true;
+    } catch (e) {
+      console.warn(`Failed to apply hardware constraint ${capability}:`, e);
+      return false;
+    }
+  }, [hardwareCaps]);
 
   useEffect(() => {
     start(facing);
@@ -66,7 +97,7 @@ export const CameraProvider = ({ children }: { children: ReactNode }) => {
   }, [facing, start]);
 
   return (
-    <CameraContext.Provider value={{ videoRef, facing, active, denied, swapping, flip }}>
+    <CameraContext.Provider value={{ videoRef, facing, active, denied, swapping, flip, hardwareCaps, applyHardwareConstraint }}>
       {children}
     </CameraContext.Provider>
   );

@@ -96,8 +96,15 @@ const EffectsPanel = () => {
     setInteractiveFilterId,
     cinematicShotId,
     setCinematicShotId,
+    cinematicSettings,
+    updateCinematicSettings,
+    activeCinematicShots,
   } = useFx();
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const hasEditableTransforms = useMemo(() => {
+    return activeCinematicShots.some(s => s.transform);
+  }, [activeCinematicShots]);
 
   // Preload fonts referenced by the currently visible category so thumbnails render correctly.
   const visibleFonts = useMemo(() => {
@@ -113,7 +120,7 @@ const EffectsPanel = () => {
   }, [visibleFonts]);
 
   return (
-    <div>
+    <div className="relative">
       {/* Category Pills */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-1 px-1 mb-4">
         {CATEGORIES.map((c) => {
@@ -257,6 +264,45 @@ const EffectsPanel = () => {
           </>
         )}
       </div>
+
+      {/* Cinematic Shot Settings Controls */}
+      {category === "Cinematic" && cinematicShotId !== null && hasEditableTransforms && (
+        <div className="absolute bottom-full left-0 right-0 mb-4 px-4 py-3 bg-neutral-900/80 backdrop-blur-md rounded-2xl border border-white/20 flex flex-col gap-4 shadow-2xl z-20">
+          <div className="flex items-center justify-between">
+            <span className="text-[12px] font-semibold text-white tracking-wide uppercase">Loop Effect</span>
+            <button
+              onClick={() => updateCinematicSettings({ loop: !(cinematicSettings.loop ?? false) })}
+              className={cn(
+                "w-12 h-6 rounded-full transition-colors relative",
+                (cinematicSettings.loop ?? false) ? "bg-white" : "bg-neutral-600"
+              )}
+            >
+              <div 
+                className={cn(
+                  "absolute top-[2px] w-[20px] h-[20px] rounded-full transition-all shadow-sm",
+                  (cinematicSettings.loop ?? false) ? "left-[26px] bg-neutral-900" : "left-[2px] bg-white"
+                )}
+              />
+            </button>
+          </div>
+          
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between items-center text-[12px] font-medium text-white tracking-wide">
+              <span>Playback Speed</span>
+              <span className="opacity-80">{(cinematicSettings.speedMultiplier ?? 1.0).toFixed(1)}x</span>
+            </div>
+            <input 
+              type="range" 
+              min="0.2" 
+              max="3.0" 
+              step="0.1"
+              value={cinematicSettings.speedMultiplier ?? 1.0}
+              onChange={(e) => updateCinematicSettings({ speedMultiplier: parseFloat(e.target.value) })}
+              className="w-full accent-white"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

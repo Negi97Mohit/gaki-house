@@ -1,24 +1,19 @@
-import { type CinematicPreset } from "@/data/types";
-import { SPECS, MOTION_ANIM, type Spec } from "../config/cinematicSpecs";
+import { type CinematicPreset } from "@/data/cinematicShots";
+import { OVERLAY_SPECS, type OverlaySpec } from "../config/cinematicSpecs";
 
 interface Props {
   preset: CinematicPreset;
 }
 
 const CinematicShotRenderer = ({ preset }: Props) => {
-  // Fall back to a tinted vignette using the preset color so unmapped IDs still feel intentional.
-  const spec: Spec = SPECS[preset.id] ?? {
-    vignette: "rgba(0,0,0,0.4)",
-    tint: { background: preset.color, blend: "overlay", opacity: 0.18 },
-  };
+  // Only render overlay elements here. Video transforms are handled by useVideoTransform.
+  const spec: OverlaySpec | undefined = OVERLAY_SPECS[preset.id];
 
-  const wrapperStyle: React.CSSProperties = {
-    transform: spec.rotate ? `rotate(${spec.rotate}deg)` : undefined,
-    animation: spec.motion ? MOTION_ANIM[spec.motion] : undefined,
-  };
+  // If no overlay spec exists for this shot, just return null (the video will still transform)
+  if (!spec) return null;
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={wrapperStyle}>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {/* backdrop-filter on the live video underneath */}
       {spec.filter && (
         <div
@@ -39,31 +34,7 @@ const CinematicShotRenderer = ({ preset }: Props) => {
         />
       )}
 
-      {/* split diopter — half-frame blur */}
-      {spec.splitDiopter && (
-        <div
-          className="absolute inset-y-0"
-          style={{
-            [spec.splitDiopter]: 0,
-            width: "50%",
-            backdropFilter: "blur(6px)",
-            WebkitBackdropFilter: "blur(6px)",
-          } as React.CSSProperties}
-        />
-      )}
 
-      {/* off-center sweet spot focus */}
-      {spec.offCenterFocus && (
-        <div
-          className="absolute inset-0"
-          style={{
-            backdropFilter: "blur(5px)",
-            WebkitBackdropFilter: "blur(5px)",
-            WebkitMaskImage: `radial-gradient(circle at ${spec.offCenterFocus.x}% ${spec.offCenterFocus.y}%, transparent 18%, black 55%)`,
-            maskImage: `radial-gradient(circle at ${spec.offCenterFocus.x}% ${spec.offCenterFocus.y}%, transparent 18%, black 55%)`,
-          }}
-        />
-      )}
 
       {/* vignette */}
       {spec.vignette && (

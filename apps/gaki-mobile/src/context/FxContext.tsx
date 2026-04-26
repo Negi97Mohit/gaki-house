@@ -93,10 +93,11 @@ interface FxContextValue {
   // AnimeStyles loaded from Firestore for tri-tone rendering (shader type 6)
   animeStyles: Record<string, AnimeStyle>;
 
-  // Cinematic shots (overlay-based, see CinematicShotRenderer) — independent.
   cinematicShotId: string | null;
   setCinematicShotId: (id: string | null) => void;
-  activeCinematicShot: CinematicPreset | null;
+  cinematicSettings: { loop?: boolean; speedMultiplier?: number };
+  updateCinematicSettings: (settings: { loop?: boolean; speedMultiplier?: number }) => void;
+  activeCinematicShots: CinematicPreset[];
 
   // Per-overlay user edits (position % + content + style overrides) keyed by `${presetId}:${overlayId}`
   overlayEdits: Record<string, OverlayEdit>;
@@ -151,6 +152,7 @@ export const FxProvider = ({ children }: { children: ReactNode }) => {
   const [animationId, setAnimationId] = useState<string | null>(null);
   const [interactiveFilterId, setInteractiveFilterId] = useState<string>("none");
   const [cinematicShotId, setCinematicShotId] = useState<string | null>(null);
+  const [cinematicSettings, setCinematicSettings] = useState<{ loop?: boolean; speedMultiplier?: number }>({});
   const [overlayEdits, setOverlayEdits] = useState<Record<string, OverlayEdit>>({});
   const [captionEdits, setCaptionEdits] = useState<Record<string, CaptionEdit>>({});
 
@@ -196,6 +198,10 @@ export const FxProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
+  const updateCinematicSettings = useCallback((settings: { loop?: boolean; speedMultiplier?: number }) => {
+    setCinematicSettings(prev => ({ ...prev, ...settings }));
+  }, []);
+
   const activeFilter = useMemo(
     () => FILTERS.find((f) => f.id === filterId) ?? FILTERS[0],
     [filterId]
@@ -223,10 +229,20 @@ export const FxProvider = ({ children }: { children: ReactNode }) => {
         : null,
     [interactiveFilterId]
   );
-  const activeCinematicShot = useMemo(
-    () => (cinematicShotId ? CINEMATIC_PRESETS.find((c) => c.id === cinematicShotId) ?? null : null),
-    [cinematicShotId]
-  );
+  const activeCinematicShots = useMemo(() => {
+    if (!cinematicShotId) return [];
+    const active: CinematicPreset[] = [];
+    const shot = CINEMATIC_PRESETS.find(c => c.id === cinematicShotId);
+    if (!shot) return [];
+    if (shot.combines?.length) {
+      shot.combines.forEach(baseId => {
+        const base = CINEMATIC_PRESETS.find(c => c.id === baseId);
+        if (base) active.push(base);
+      });
+    }
+    active.push(shot);
+    return active;
+  }, [cinematicShotId]);
   // Interactive filters render their own component layer (see
   // InteractiveFilterRenderer); we deliberately do NOT fold them into the
   // <video>'s CSS filter chain so the two systems stay independent.
@@ -273,7 +289,9 @@ export const FxProvider = ({ children }: { children: ReactNode }) => {
         animeStyles,
         cinematicShotId,
         setCinematicShotId,
-        activeCinematicShot,
+        cinematicSettings,
+        updateCinematicSettings,
+        activeCinematicShots,
         overlayEdits,
         updateOverlayEdit,
         resetOverlayEdits,

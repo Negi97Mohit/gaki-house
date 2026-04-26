@@ -81,7 +81,7 @@ const SheetDrawer = ({ open, onClose, title, eyebrow, children, transparent = fa
                 </button>
               </div>
             )}
-            <div className={transparent ? "flex-1 overflow-y-auto no-scrollbar -mx-1 px-1 pb-32" : "flex-1 overflow-y-auto no-scrollbar -mx-1 px-1 pb-36"}>
+            <div className={transparent ? "flex-1 overflow-visible -mx-1 px-1 pb-32" : "flex-1 overflow-y-auto no-scrollbar -mx-1 px-1 pb-36"}>
               {children}
             </div>
           </motion.div>

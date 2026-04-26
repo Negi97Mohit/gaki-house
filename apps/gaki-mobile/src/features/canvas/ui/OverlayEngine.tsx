@@ -14,7 +14,7 @@ const OverlayEngine = () => {
     activeCaption,
     activeAnimation,
     activeInteractiveFilter,
-    activeCinematicShot,
+    activeCinematicShots,
   } = useFx();
   const id = activeOverlay.id;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,7 +57,7 @@ const OverlayEngine = () => {
     activeCaption ||
     activeAnimation ||
     activeInteractiveFilter ||
-    activeCinematicShot;
+    activeCinematicShots.length > 0;
   if (!hasAnything) return null;
 
   return (
@@ -71,9 +71,9 @@ const OverlayEngine = () => {
       )}
 
       {/* === Cinematic shot — overlay-stack renderer === */}
-      {activeCinematicShot && (
-        <CinematicShotRenderer key={activeCinematicShot.id} preset={activeCinematicShot} />
-      )}
+      {activeCinematicShots.map(shot => (
+        <CinematicShotRenderer key={shot.id} preset={shot} />
+      ))}
 
       {/* Decorative legacy overlays — never intercept pointer events. */}
       <div className="pointer-events-none absolute inset-0">

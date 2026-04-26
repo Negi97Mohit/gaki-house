@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { LogOut, User, Loader2, Grid, Clock, Settings, Info, Camera } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useUserProfile } from "../hooks/useUserProfile";
 import SheetDrawer from "@/components/ui/SheetDrawer";
 import { cn } from "@/lib/utils";
 import { storage } from "@/lib/firebase";
@@ -143,7 +144,10 @@ const InfoTab = ({ profile, handleSignOut, signingOut, email }: any) => (
 );
 
 const ProfileSheet = ({ open, onClose }: ProfileSheetProps) => {
-  const { user, profile, signOut, updateProfileData } = useAuth();
+  const { user, profile: authProfile, signOut, updateProfileData } = useAuth();
+  const { profile: liveProfile, loading: profileLoading } = useUserProfile(user?.uid);
+  const profile = liveProfile || authProfile;
+
   const [signingOut, setSigningOut] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("content");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -279,7 +283,7 @@ const ProfileSheet = ({ open, onClose }: ProfileSheetProps) => {
 
           <div className="flex items-center gap-6 text-sm">
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-neutral-900 text-base">1.2K</span>
+              <span className="font-bold text-neutral-900 text-base">{profile?.followers || 0}</span>
               <span className="text-neutral-500">Followers</span>
             </div>
             <div className="flex items-center gap-1.5">

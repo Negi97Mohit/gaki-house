@@ -3,6 +3,9 @@ import { useCamera } from "@/context/CameraContext";
 import { useFx } from "@/context/FxContext";
 import OverlayEngine from "@/features/canvas/ui/OverlayEngine";
 import WebGLVideoCanvas from "@/features/filters/ui/WebGLVideoCanvas";
+import { useVideoTransform } from "@/features/effects/hooks/useVideoTransform";
+import { useGpuEffect } from "@/features/effects/hooks/useGpuEffect";
+import { cn } from "@/lib/utils";
 
 const SWIPE_THRESHOLD = 60;
 
@@ -23,13 +26,45 @@ const WebGLVideoCanvasWithStyles = () => {
  */
 const VideoBackdrop = () => {
   const { videoRef, facing, active, denied, swapping } = useCamera();
-  const { activeFilter, cycleFilter } = useFx();
+  const { activeFilter, cycleFilter, activeCinematicShots, cinematicSettings } = useFx();
 
   const [flash, setFlash] = useState<string | null>(null);
   const flashTimer = useRef<number | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const swipedRef = useRef(false);
+  const transformContainerRef = useRef<HTMLDivElement>(null);
+  const gpuCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  const { applyHardwareConstraint } = useCamera();
+  const [successfulHwShots, setSuccessfulHwShots] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const checkConstraints = async () => {
+      const successSet = new Set<string>();
+      for (const shot of activeCinematicShots) {
+        if (shot.hardwareConstraint) {
+          const success = await applyHardwareConstraint(
+            shot.hardwareConstraint.capability, 
+            shot.hardwareConstraint.value
+          );
+          if (success) {
+            successSet.add(shot.id);
+          }
+        }
+      }
+      setSuccessfulHwShots(successSet);
+    };
+    checkConstraints();
+  }, [activeCinematicShots, applyHardwareConstraint]);
+
+  useVideoTransform({ 
+    containerRef: transformContainerRef, 
+    shots: activeCinematicShots,
+    successfulHwShots,
+    cinematicSettings
+  });
+  useGpuEffect({ videoRef, canvasRef: gpuCanvasRef, shots: activeCinematicShots });
 
   const showFlash = (name: string) => {
     setFlash(name);
@@ -87,8 +122,15 @@ const VideoBackdrop = () => {
         style={{ display: "none" }}
       />
 
-      {/* WebGL canvas: paints the video through the shader pipeline. */}
-      {!denied && <WebGLVideoCanvasWithStyles />}
+      {/* Mirror selfie camera on an independent wrapper to protect it from useVideoTransform's inline styles */}
+      <div className={cn("absolute inset-0 origin-center", facing === "user" && "-scale-x-100")}>
+        {/* WebGL canvas wrapped with CSS transform receiver for Cinematic Shots */}
+        <div ref={transformContainerRef} className="absolute inset-0" style={{ willChange: "transform" }}>
+          {!denied && <WebGLVideoCanvasWithStyles />}
+          {/* Tier 2 GPU effect canvas */}
+          {!denied && <canvas ref={gpuCanvasRef} className="absolute inset-0 w-full h-full" style={{ display: 'none' }} />}
+        </div>
+      </div>
 
       {/* Structural overlay engine (VHS, Cinematic, Glitch, Neon...) */}
       <OverlayEngine />
@@ -110,12 +152,7 @@ const VideoBackdrop = () => {
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity" />
       )}
 
-      {/* Mirror selfie camera by flipping the *canvas container*. The shader
-          accepts a uMirror uniform but for the default selfie cam we just CSS-
-          flip the WebGL canvas — cheaper and avoids touching shader state. */}
-      {facing === "user" && (
-        <style>{`.bg-preview > div:nth-child(2) { transform: scaleX(-1); }`}</style>
-      )}
+
 
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_45%,_hsl(20_14%_8%/0.45)_100%)]" />
 

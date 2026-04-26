@@ -8,19 +8,11 @@ import {
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { getDefaultAvatar } from "../components/DefaultAvatar";
 
-export interface Profile {
-  id: string;
-  email: string;
-  username?: string;
-  display_name?: string;
-  avatar_url?: string;
-  bio?: string;
-  created_at?: string;
-}
+import { UserProfile } from "@caption-cam/core/types/profile";
 
 interface AuthContextType {
   user: User | null;
-  profile: Profile | null;
+  profile: UserProfile | null;
   loading: boolean;
   needsProfileSetup: boolean;
   isAuthModalOpen: boolean;
@@ -29,7 +21,7 @@ interface AuthContextType {
   closeAuthModal: () => void;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  createProfile: (user: User, additionalData?: Partial<Profile>) => Promise<void>;
+  createProfile: (user: User, additionalData?: Partial<UserProfile>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,7 +34,7 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [needsProfileSetup, setNeedsProfileSetup] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -53,10 +45,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const docRef = doc(db, "users", uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        setProfile(docSnap.data() as Profile);
+        setUserProfile(docSnap.data() as UserProfile);
         return true;
       } else {
-        setProfile(null);
+        setUserProfile(null);
         return false;
       }
     } catch (error) {
@@ -65,9 +57,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const createProfile = async (user: User, additionalData: Partial<Profile> = {}) => {
+  const createProfile = async (user: User, additionalData: Partial<UserProfile> = {}) => {
     try {
-      const newProfile: Profile = {
+      const newUserProfile: UserProfile = {
         id: user.uid,
         email: user.email || "",
         created_at: new Date().toISOString(),
@@ -77,8 +69,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...additionalData
       };
 
-      await setDoc(doc(db, "users", user.uid), newProfile, { merge: true });
-      setProfile(newProfile);
+      await setDoc(doc(db, "users", user.uid), newUserProfile, { merge: true });
+      setUserProfile(newUserProfile);
       setNeedsProfileSetup(false);
     } catch (error) {
       console.error("Error creating profile:", error);
@@ -94,8 +86,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        const hasProfile = await fetchProfile(currentUser.uid);
-        if (!hasProfile) {
+        const hasUserProfile = await fetchProfile(currentUser.uid);
+        if (!hasUserProfile) {
           // User is signed in but has no profile — prompt for setup
           setNeedsProfileSetup(true);
           setAuthModalTab("signup");
@@ -104,7 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setNeedsProfileSetup(false);
         }
       } else {
-        setProfile(null);
+        setUserProfile(null);
         setNeedsProfileSetup(false);
       }
       setLoading(false);
@@ -124,7 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await firebaseSignOut(auth);
       setUser(null);
-      setProfile(null);
+      setUserProfile(null);
       setNeedsProfileSetup(false);
     } catch (error) {
       console.error("Error signing out:", error);
