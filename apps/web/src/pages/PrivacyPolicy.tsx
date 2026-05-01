@@ -25,63 +25,138 @@ export const PrivacyPolicy = () => {
       <main className="container max-w-4xl mx-auto px-4 py-12 md:py-20">
         <article className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-a:text-primary hover:prose-a:text-primary/80 prose-a:transition-colors">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">Privacy Policy</h1>
-          <p className="text-lg text-muted-foreground lead">
-            Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </p>
-
+          <p className="text-lg text-muted-foreground lead">Last updated: May 01, 2026</p>
+          
           <hr className="my-8 border-border" />
 
-          <h2>1. Introduction</h2>
-          <p>
-            Welcome to <strong>GAKI - House of Video Creation</strong> ("we," "our," or "us"). We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website or use our application (regardless of where you visit it from) and tell you about your privacy rights and how the law protects you.
-          </p>
-
-          <h2>2. The Data We Collect About You</h2>
-          <p>
-            We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:
-          </p>
+          <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
+          <p>We use Your Personal Data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the <a href="https://www.termsfeed.com/privacy-policy-generator/" target="_blank" rel="noreferrer">Privacy Policy Generator</a>.</p>
+          
+          <h2>Interpretation and Definitions</h2>
+          <h3>Interpretation</h3>
+          <p>The words whose initial letters are capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.</p>
+          
+          <h3>Definitions</h3>
+          <p>For the purposes of this Privacy Policy:</p>
           <ul>
-            <li><strong>Identity Data</strong> includes first name, last name, username or similar identifier.</li>
-            <li><strong>Contact Data</strong> includes email address.</li>
-            <li><strong>Technical Data</strong> includes internet protocol (IP) address, your login data, browser type and version, time zone setting and location, browser plug-in types and versions, operating system and platform, and other technology on the devices you use to access this website.</li>
-            <li><strong>Profile Data</strong> includes your username and password, your interests, preferences, feedback and survey responses.</li>
-            <li><strong>Usage Data</strong> includes information about how you use our website, application, and services.</li>
+            <li><strong>Account</strong> means a unique account created for You to access our Service or parts of our Service.</li>
+            <li><strong>Affiliate</strong> means an entity that controls, is controlled by, or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.</li>
+            <li><strong>Application</strong> refers to GAKI - House of Video Creation, the software program provided by the Company.</li>
+            <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Privacy Policy) refers to GAKI - House of Video Creation.</li>
+            <li><strong>Cookies</strong> are small files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses.</li>
+            <li><strong>Country</strong> refers to: Massachusetts, United States</li>
+            <li><strong>Device</strong> means any device that can access the Service such as a computer, a cell phone or a digital tablet.</li>
+            <li><strong>Personal Data</strong> (or "Personal Information") is any information that relates to an identified or identifiable individual.
+              <br /><br />
+              We use "Personal Data" and "Personal Information" interchangeably unless a law uses a specific term.
+            </li>
+            <li><strong>Service</strong> refers to the Application or the Website or both.</li>
+            <li><strong>Service Provider</strong> means any natural or legal person who processes the data on behalf of the Company. It refers to third-party companies or individuals employed by the Company to facilitate the Service, to provide the Service on behalf of the Company, to perform services related to the Service or to assist the Company in analyzing how the Service is used.</li>
+            <li><strong>Usage Data</strong> refers to data collected automatically, either generated by the use of the Service or from the Service infrastructure itself (for example, the duration of a page visit).</li>
+            <li><strong>Website</strong> refers to GAKI - House of Video Creation, accessible from <a href="https://gaki.netlify.app" rel="external nofollow noopener noreferrer" target="_blank">https://gaki.netlify.app</a>.</li>
+            <li><strong>You</strong> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</li>
           </ul>
 
-          <h2>3. How We Use Your Personal Data</h2>
-          <p>
-            We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances:
-          </p>
+          <h2>Collecting and Using Your Personal Data</h2>
+          <h3>Types of Data Collected</h3>
+          <h4>Personal Data</h4>
+          <p>While using Our Service, We may ask You to provide Us with certain personally identifiable information that can be used to contact or identify You. Personally identifiable information may include, but is not limited to:</p>
           <ul>
-            <li>Where we need to perform the contract we are about to enter into or have entered into with you.</li>
-            <li>Where it is necessary for our legitimate interests (or those of a third party) and your interests and fundamental rights do not override those interests.</li>
-            <li>Where we need to comply with a legal obligation.</li>
+            <li>Email address</li>
+            <li>First name and last name</li>
           </ul>
 
-          <h2>4. Third-Party Authentication</h2>
-          <p>
-            We offer the ability to register and log in using third-party services (such as Google OAuth). If you choose to log in using a third-party service, we receive your profile information (such as your name and email address) from that provider. We use this information solely to create your account and provide our services to you.
-          </p>
+          <h4>Usage Data</h4>
+          <p>Usage Data is collected automatically when using the Service.</p>
+          <p>Usage Data may include information such as Your Device's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that You visit, the time and date of Your visit, the time spent on those pages, unique device identifiers and other diagnostic data.</p>
+          <p>When You access the Service by or through a mobile device, We may collect certain information automatically, including, but not limited to, the type of mobile device You use, Your mobile device's unique ID, the IP address of Your mobile device, Your mobile operating system, the type of mobile Internet browser You use, unique device identifiers and other diagnostic data.</p>
+          <p>We may also collect information that Your browser sends whenever You visit Our Service or when You access the Service by or through a mobile device.</p>
 
-          <h2>5. Data Security</h2>
-          <p>
-            We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used, or accessed in an unauthorized way, altered, or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors, and other third parties who have a business need to know.
-          </p>
+          <h4>Information Collected while Using the Application</h4>
+          <p>While using Our Application, in order to provide features of Our Application, We may collect, with Your prior permission:</p>
+          <ul>
+            <li>Pictures and other information from your Device's camera and photo library</li>
+          </ul>
+          <p>We use this information to provide features of Our Service, to improve and customize Our Service. The information may be uploaded to the Company's servers and/or a Service Provider's server or it may be simply stored on Your device.</p>
+          <p>You can enable or disable access to this information at any time, through Your Device settings.</p>
 
-          <h2>6. Your Legal Rights</h2>
-          <p>
-            Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to request access, correction, erasure, restriction, transfer, or to object to processing.
-          </p>
-          <p>
-            If you wish to exercise any of the rights set out above, please contact us at our support email.
-          </p>
+          <h4>Tracking Technologies and Cookies</h4>
+          <p>We use Cookies and similar tracking technologies to track the activity on Our Service and store certain information. Tracking technologies We use include beacons, tags, and scripts to collect and track information and to improve and analyze Our Service. The technologies We use may include:</p>
+          <ul>
+            <li><strong>Cookies or Browser Cookies.</strong> A cookie is a small file placed on Your Device. You can instruct Your browser to refuse all Cookies or to indicate when a Cookie is being sent. However, if You do not accept Cookies, You may not be able to use some parts of our Service.</li>
+            <li><strong>Web Beacons.</strong> Certain sections of our Service and our emails may contain small electronic files known as web beacons (also referred to as clear gifs, pixel tags, and single-pixel gifs) that permit the Company, for example, to count users who have visited those pages or opened an email and for other related website statistics.</li>
+          </ul>
+          <p>Cookies can be "Persistent" or "Session" Cookies. Persistent Cookies remain on Your personal computer or mobile device when You go offline, while Session Cookies are deleted as soon as You close Your web browser.</p>
 
-          <h2>7. Contact Us</h2>
-          <p>
-            If you have any questions about this privacy policy or our privacy practices, please contact us at:
-            <br />
-            <strong>Email:</strong> mohit.snegi123@gmail.com
-          </p>
+          <p>We use both Session and Persistent Cookies for the purposes set out below:</p>
+          <ul>
+            <li>
+              <strong>Necessary / Essential Cookies</strong>
+              <p>Type: Session Cookies<br />Administered by: Us<br />Purpose: These Cookies are essential to provide You with services available through the Website and to enable You to use some of its features.</p>
+            </li>
+            <li>
+              <strong>Cookies Policy / Notice Acceptance Cookies</strong>
+              <p>Type: Persistent Cookies<br />Administered by: Us<br />Purpose: These Cookies identify if users have accepted the use of cookies on the Website.</p>
+            </li>
+            <li>
+              <strong>Functionality Cookies</strong>
+              <p>Type: Persistent Cookies<br />Administered by: Us<br />Purpose: These Cookies allow Us to remember choices You make when You use the Website.</p>
+            </li>
+          </ul>
+
+          <h3>Use of Your Personal Data</h3>
+          <p>The Company may use Personal Data for the following purposes:</p>
+          <ul>
+            <li><strong>To provide and maintain our Service</strong>, including to monitor the usage of our Service.</li>
+            <li><strong>To manage Your Account:</strong> to manage Your registration as a user of the Service.</li>
+            <li><strong>For the performance of a contract:</strong> the development, compliance and undertaking of the purchase contract for the products.</li>
+            <li><strong>To contact You:</strong> To contact You by email, telephone calls, SMS, or other equivalent forms of electronic communication.</li>
+            <li><strong>To provide You</strong> with news, special offers, and general information about other goods.</li>
+            <li><strong>To manage Your requests:</strong> To attend and manage Your requests to Us.</li>
+            <li><strong>For business transfers:</strong> We may use Your Personal Data to evaluate or conduct a merger.</li>
+            <li><strong>For other purposes:</strong> We may use Your information for other purposes, such as data analysis.</li>
+          </ul>
+
+          <p>We may share Your Personal Data in the following situations:</p>
+          <ul>
+            <li><strong>With Service Providers:</strong> We may share Your Personal Data with Service Providers.</li>
+            <li><strong>For business transfers:</strong> We may share or transfer Your Personal Data in connection with any merger.</li>
+            <li><strong>With Affiliates:</strong> We may share Your Personal Data with Our affiliates.</li>
+            <li><strong>With business partners:</strong> We may share Your Personal Data with Our business partners.</li>
+            <li><strong>With other users:</strong> If Our Service offers public areas, Your information may be viewed by all users.</li>
+            <li><strong>With Your consent:</strong> We may disclose Your Personal Data for any other purpose with Your consent.</li>
+          </ul>
+
+          <h3>Retention of Your Personal Data</h3>
+          <p>The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use Your Personal Data to the extent necessary to comply with our legal obligations.</p>
+
+          <h3>Transfer of Your Personal Data</h3>
+          <p>Your information, including Personal Data, is processed at the Company's operating offices and in any other places where the parties involved in the processing are located. It means that this information may be transferred to — and maintained on — computers located outside of Your state.</p>
+
+          <h3>Delete Your Personal Data</h3>
+          <p>You have the right to delete or request that We assist in deleting the Personal Data that We have collected about You.</p>
+
+          <h3>Disclosure of Your Personal Data</h3>
+          <h4>Law enforcement</h4>
+          <p>Under certain circumstances, the Company may be required to disclose Your Personal Data if required to do so by law.</p>
+
+          <h3>Security of Your Personal Data</h3>
+          <p>The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure.</p>
+
+          <h2>Children's Privacy</h2>
+          <p>Our Service does not address anyone under the age of 16. We do not knowingly collect personally identifiable information from anyone under the age of 16.</p>
+
+          <h2>Links to Other Websites</h2>
+          <p>Our Service may contain links to other websites that are not operated by Us. If You click on a third party link, You will be directed to that third party's site.</p>
+
+          <h2>Changes to this Privacy Policy</h2>
+          <p>We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page.</p>
+
+          <h2>Contact Us</h2>
+          <p>If you have any questions about this Privacy Policy, You can contact us:</p>
+          <ul>
+            <li>By email: mohitenji@gmail.com</li>
+          </ul>
         </article>
       </main>
       
