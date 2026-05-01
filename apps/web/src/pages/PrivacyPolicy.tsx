@@ -30,7 +30,7 @@ export const PrivacyPolicy = () => {
           <hr className="my-8 border-border" />
 
           <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
-          <p>We use Your Personal Data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the <a href="https://www.termsfeed.com/privacy-policy-generator/" target="_blank" rel="noreferrer">Privacy Policy Generator</a>.</p>
+          <p>We use Your Personal Data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
           
           <h2>Interpretation and Definitions</h2>
           <h3>Interpretation</h3>
@@ -44,7 +44,7 @@ export const PrivacyPolicy = () => {
             <li><strong>Application</strong> refers to GAKI - House of Video Creation, the software program provided by the Company.</li>
             <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Privacy Policy) refers to GAKI - House of Video Creation.</li>
             <li><strong>Cookies</strong> are small files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses.</li>
-            <li><strong>Country</strong> refers to: Massachusetts, United States</li>
+            <li><strong>Country</strong> refers to: United States</li>
             <li><strong>Device</strong> means any device that can access the Service such as a computer, a cell phone or a digital tablet.</li>
             <li><strong>Personal Data</strong> (or "Personal Information") is any information that relates to an identified or identifiable individual.
               <br /><br />
@@ -113,14 +113,14 @@ export const PrivacyPolicy = () => {
             <li><strong>To contact You:</strong> To contact You by email, telephone calls, SMS, or other equivalent forms of electronic communication.</li>
             <li><strong>To provide You</strong> with news, special offers, and general information about other goods.</li>
             <li><strong>To manage Your requests:</strong> To attend and manage Your requests to Us.</li>
-            <li><strong>For business transfers:</strong> We may use Your Personal Data to evaluate or conduct a merger.</li>
+            <li><strong>For business transfers:</strong> We may use Your Personal Data to evaluate or conduct a merger, acquisition, or sale of assets, in which case Your Personal Data may be transferred.</li>
             <li><strong>For other purposes:</strong> We may use Your information for other purposes, such as data analysis.</li>
           </ul>
 
           <p>We may share Your Personal Data in the following situations:</p>
           <ul>
             <li><strong>With Service Providers:</strong> We may share Your Personal Data with Service Providers.</li>
-            <li><strong>For business transfers:</strong> We may share or transfer Your Personal Data in connection with any merger.</li>
+            <li><strong>For business transfers:</strong> We may share or transfer Your Personal Data in connection with any merger, acquisition, or sale of assets, in which case Your Personal Data may be transferred.</li>
             <li><strong>With Affiliates:</strong> We may share Your Personal Data with Our affiliates.</li>
             <li><strong>With business partners:</strong> We may share Your Personal Data with Our business partners.</li>
             <li><strong>With other users:</strong> If Our Service offers public areas, Your information may be viewed by all users.</li>
@@ -131,7 +131,7 @@ export const PrivacyPolicy = () => {
           <p>The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use Your Personal Data to the extent necessary to comply with our legal obligations.</p>
 
           <h3>Transfer of Your Personal Data</h3>
-          <p>Your information, including Personal Data, is processed at the Company's operating offices and in any other places where the parties involved in the processing are located. It means that this information may be transferred to — and maintained on — computers located outside of Your state.</p>
+          <p>Your information, including Personal Data, is processed at the Company's operating offices and in any other places where the parties involved in the processing are located. It means that this information may be transferred to — and maintained on — computers located outside of Your state, province, country or other governmental jurisdiction where data protection laws may differ.</p>
 
           <h3>Delete Your Personal Data</h3>
           <p>You have the right to delete or request that We assist in deleting the Personal Data that We have collected about You.</p>
@@ -144,7 +144,7 @@ export const PrivacyPolicy = () => {
           <p>The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure.</p>
 
           <h2>Children's Privacy</h2>
-          <p>Our Service does not address anyone under the age of 16. We do not knowingly collect personally identifiable information from anyone under the age of 16.</p>
+          <p>Our Service does not address anyone under the age of 18. We do not knowingly collect personally identifiable information from anyone under the age of 18.</p>
 
           <h2>Links to Other Websites</h2>
           <p>Our Service may contain links to other websites that are not operated by Us. If You click on a third party link, You will be directed to that third party's site.</p>
