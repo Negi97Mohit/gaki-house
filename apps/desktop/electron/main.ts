@@ -74,14 +74,8 @@ function createWindow() {
       url.includes("firebaseapp.com/__/auth/");
 
     if (isAuthUrl) {
-      return {
-        action: "allow",
-        overrideBrowserWindowOptions: {
-          autoHideMenuBar: true,
-          parent: mainWindow || undefined,
-          modal: true,
-        },
-      };
+      shell.openExternal(url);
+      return { action: "deny" };
     }
 
     if (url.startsWith("http:") || url.startsWith("https:")) {
@@ -503,21 +497,25 @@ function setupIpcHandlers() {
             `&scope=${encodeURIComponent(scope)}` +
             `&nonce=${Date.now().toString(36)}`;
 
-          // 3. Open the auth window
-          authWindow = new BrowserWindow({
-            width: 500,
-            height: 700,
-            show: true,
-            parent: mainWindow || undefined,
-            modal: true,
-            autoHideMenuBar: true,
-            webPreferences: {
-              nodeIntegration: false,
-              contextIsolation: true,
-            },
-          });
+          // 3. Open the auth in system browser if possible, else fallback to Electron window
+          if (usingLoopbackServer) {
+            shell.openExternal(authUrl);
+          } else {
+            authWindow = new BrowserWindow({
+              width: 500,
+              height: 700,
+              show: true,
+              parent: mainWindow || undefined,
+              modal: true,
+              autoHideMenuBar: true,
+              webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+              },
+            });
 
-          authWindow.loadURL(authUrl);
+            authWindow.loadURL(authUrl);
+          }
 
           // 4. If loopback server is NOT running, extract tokens from the BrowserWindow URL
           if (!usingLoopbackServer) {
@@ -562,17 +560,19 @@ function setupIpcHandlers() {
             });
           }
 
-          authWindow.on("closed", () => {
-            authWindow = null;
-            if (!resolved) {
-              resolved = true;
-              resolve(null);
-              if (loopbackServer) {
-                try { loopbackServer.close(); } catch (_) {}
-                loopbackServer = null;
+          if (authWindow) {
+            authWindow.on("closed", () => {
+              authWindow = null;
+              if (!resolved) {
+                resolved = true;
+                resolve(null);
+                if (loopbackServer) {
+                  try { loopbackServer.close(); } catch (_) {}
+                  loopbackServer = null;
+                }
               }
-            }
-          });
+            });
+          }
 
           // Safety timeout — 5 minutes
           setTimeout(() => {
