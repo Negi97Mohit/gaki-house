@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@caption-cam/ui/dialog";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
 import { ScrollArea } from "@caption-cam/ui/scroll-area";
 import { Monitor, AppWindow, X } from "lucide-react";
@@ -41,15 +36,12 @@ export const ScreenSourceSelector: React.FC<ScreenSourceSelectorProps> = ({
     useEffect(() => {
         if (isOpen) {
             loadSources();
-            // Poll for updates every 3 seconds while open
             const interval = setInterval(loadSources, 3000);
             return () => clearInterval(interval);
         }
     }, [isOpen, activeTab]);
 
     const loadSources = async () => {
-        // Prevent double loading if we wanted, but simple polling is fine for now
-        // setLoading(true); // Don't show loading on refresh to avoid flicker
         try {
             const allSources = await window.electron.getDesktopSources({
                 types: ["window", "screen"],
@@ -67,33 +59,91 @@ export const ScreenSourceSelector: React.FC<ScreenSourceSelectorProps> = ({
         activeTab === "screen" ? s.id.startsWith("screen") : s.id.startsWith("window")
     );
 
-    return (
-        <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl max-h-[80vh] flex flex-col p-0 gap-0 bg-background/95 backdrop-blur-xl border-white/10">
-                <DialogHeader className="p-4 border-b border-white/10">
-                    <DialogTitle className="flex items-center gap-2">
+    // Don't render anything when closed
+    if (!isOpen) return null;
+
+    // Bypass Radix Dialog entirely — use a plain portal to document.body
+    return createPortal(
+        <div
+            style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 99999,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
+            {/* Backdrop overlay */}
+            <div
+                style={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                    backdropFilter: "blur(4px)",
+                }}
+                onClick={() => onOpenChange(false)}
+            />
+
+            {/* Dialog content */}
+            <div
+                style={{
+                    position: "relative",
+                    zIndex: 1,
+                    width: "90%",
+                    maxWidth: "56rem",
+                    maxHeight: "80vh",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: "1rem",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    overflow: "hidden",
+                }}
+                className="bg-background/95 backdrop-blur-xl"
+            >
+                {/* Header */}
+                <div className="p-4 border-b border-white/10 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-lg font-semibold">
                         <Monitor className="w-5 h-5 text-primary" />
                         Share Content
-                    </DialogTitle>
-                </DialogHeader>
+                    </div>
+                    <button
+                        onClick={() => onOpenChange(false)}
+                        className="rounded-sm opacity-70 hover:opacity-100 transition-opacity"
+                    >
+                        <X className="h-4 w-4" />
+                    </button>
+                </div>
 
-                <Tabs
-                    value={activeTab}
-                    onValueChange={(v) => setActiveTab(v as any)}
-                    className="flex-1 flex flex-col overflow-hidden"
-                >
-                    <div className="px-4 pt-4">
-                        <TabsList className="w-full justify-start h-10 bg-white/5 p-1 rounded-lg">
-                            <TabsTrigger value="screen" className="flex-1 gap-2">
-                                <Monitor className="w-4 h-4" /> Screens
-                            </TabsTrigger>
-                            <TabsTrigger value="window" className="flex-1 gap-2">
-                                <AppWindow className="w-4 h-4" /> Windows
-                            </TabsTrigger>
-                        </TabsList>
+                {/* Tabs */}
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    <div className="px-4 pt-4 flex gap-2">
+                        <button
+                            onClick={() => setActiveTab("screen")}
+                            className={cn(
+                                "flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                                activeTab === "screen"
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-white/5 hover:bg-white/10"
+                            )}
+                        >
+                            <Monitor className="w-4 h-4" /> Screens
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("window")}
+                            className={cn(
+                                "flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                                activeTab === "window"
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-white/5 hover:bg-white/10"
+                            )}
+                        >
+                            <AppWindow className="w-4 h-4" /> Windows
+                        </button>
                     </div>
 
-                    <ScrollArea className="flex-1 p-4">
+                    {/* Source grid */}
+                    <div className="flex-1 overflow-auto p-4">
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pb-4">
                             {filteredSources.map((source) => (
                                 <button
@@ -123,7 +173,6 @@ export const ScreenSourceSelector: React.FC<ScreenSourceSelectorProps> = ({
                                             {source.name}
                                         </span>
                                     </div>
-                                    {/* Select Overlay */}
                                     <div className="absolute inset-0 rounded-xl ring-2 ring-primary/0 group-hover:ring-primary/50 transition-all pointer-events-none" />
                                 </button>
                             ))}
@@ -135,9 +184,10 @@ export const ScreenSourceSelector: React.FC<ScreenSourceSelectorProps> = ({
                                 </div>
                             )}
                         </div>
-                    </ScrollArea>
-                </Tabs>
-            </DialogContent>
-        </Dialog>
+                    </div>
+                </div>
+            </div>
+        </div>,
+        document.body
     );
 };

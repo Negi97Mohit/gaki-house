@@ -77,6 +77,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
   // Local state for Smart Switch
   const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
+  console.log('[MC] render — isSourceSelectorOpen:', isSourceSelectorOpen);
   const [isAudioSettingsOpen, setIsAudioSettingsOpen] = useState(false);
   const [isVideoSettingsOpen, setIsVideoSettingsOpen] = useState(false);
   const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
@@ -388,9 +389,14 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         >
           <DropdownMenuItem
             onClick={() => {
+              console.log('[MC] Screen item clicked');
               const isElectron = !!(window as any).electron;
+              console.log('[MC] isElectron:', isElectron);
               if (isElectron) {
-                setIsSourceSelectorOpen(true);
+                setTimeout(() => {
+                  console.log('[MC] setTimeout fired — calling setIsSourceSelectorOpen(true)');
+                  setIsSourceSelectorOpen(true);
+                }, 0);
               } else {
                 setScreenShareMode("screen");
               }
@@ -427,7 +433,10 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
 
       <ScreenSourceSelector
         isOpen={isSourceSelectorOpen}
-        onOpenChange={setIsSourceSelectorOpen}
+        onOpenChange={(open) => {
+          console.log('[MC] ScreenSourceSelector onOpenChange received:', open);
+          setIsSourceSelectorOpen(open);
+        }}
         onSelect={(sourceId) => {
           setSelectedScreenSourceId(sourceId);
           setScreenShareMode("screen");
