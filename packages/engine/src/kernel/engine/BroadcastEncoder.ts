@@ -82,6 +82,7 @@ export class BroadcastEncoder {
             rtmpUrl: dest.url,
             key: dest.key,
             mimeType,
+            platform: dest.platform, // Used for platform-specific resolutions in FFmpeg
           });
         });
 

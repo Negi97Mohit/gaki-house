@@ -102,6 +102,7 @@ const createFfmpegCommand = (
     rtmpUrl: string;
     key: string;
     mimeType?: string;
+    platform?: string;
   },
   onStart: (cmd: string) => void,
   onError: (err: Error) => void,
@@ -122,7 +123,8 @@ const createFfmpegCommand = (
     command.outputOptions("-bsf:v h264_mp4toannexb");
   } else {
     command.videoCodec("libx264");
-    command.outputOptions([
+    
+    const outputOptionsList = [
       "-preset ultrafast",
       "-tune zerolatency",
       "-b:v 4500k",
@@ -130,9 +132,22 @@ const createFfmpegCommand = (
       "-bufsize 9000k",
       "-g 60",
       "-r 30",
-      "-vf scale=1920:-1",
       "-pix_fmt yuv420p",
-    ]);
+    ];
+
+    const platformStr = (options.platform || "").toLowerCase();
+    
+    if (platformStr.includes("instagram") || platformStr.includes("tiktok") || platformStr.includes("custom_vertical")) {
+      // Individually resize for vertical platforms (9:16)
+      // We scale the width to 1080 (maintaining aspect ratio), then pad the height to 1920 with black bars.
+      // This ensures the FULL video is visible on Instagram without getting its sides cropped off.
+      outputOptionsList.push("-vf scale=1080:-1,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:color=black");
+    } else {
+      // Standard 16:9 scaling for YouTube, Twitch, etc.
+      outputOptionsList.push("-vf scale=1920:-1");
+    }
+
+    command.outputOptions(outputOptionsList);
   }
 
   command.outputOptions(["-f flv"]);
