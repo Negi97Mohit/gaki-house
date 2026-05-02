@@ -2,6 +2,7 @@ import { io, Socket } from "socket.io-client";
 import { notify } from "@caption-cam/core/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
+import { useSceneStore } from "@/stores/scene.store";
 import fixWebmDuration from "fix-webm-duration";
 import { BroadcastBus } from "@caption-cam/engine/kernel/engine/BroadcastBus";
 import { AudioMixerEngine } from "@caption-cam/engine/kernel/engine/AudioMixerEngine";
@@ -14,6 +15,7 @@ const SERVER_URL = "http://localhost:3000";
 interface ElectronWindow {
   electron?: {
     getDesktopSources: (options: any) => Promise<any[]>;
+    getAppWindowId: () => Promise<string | null>;
     stream: {
       start: (config: any) => void;
       sendData: (chunk: ArrayBuffer) => void;
@@ -45,6 +47,7 @@ class StreamService {
   private videoElement: HTMLVideoElement | null = null;
   private animationFrameId: number | null = null;
   private unsubMediaStore: (() => void) | null = null;
+  private unsubSceneStore: (() => void) | null = null;
 
   // Refs to source streams for cleanup
   private currentVideoSource: MediaStream | null = null;
@@ -150,10 +153,17 @@ class StreamService {
    */
   private startObservingState() {
     if (this.unsubMediaStore) this.unsubMediaStore();
+    if (this.unsubSceneStore) this.unsubSceneStore();
 
     this.unsubMediaStore = useMediaStore.subscribe((state, prevState) => {
       if (state.screenShareMode !== prevState.screenShareMode) {
         // We add a small delay to ensure windows have resized/focused
+        setTimeout(() => this.updateVideoSource(), 500);
+      }
+    });
+
+    this.unsubSceneStore = useSceneStore.subscribe((state, prevState) => {
+      if (state.canvasLayout !== prevState.canvasLayout) {
         setTimeout(() => this.updateVideoSource(), 500);
       }
     });
@@ -174,6 +184,21 @@ class StreamService {
     });
   }
 
+  private sceneHasScreenShare(sceneStore: any, mediaStore: any): boolean {
+    // Check 1: Global screen share mode is active
+    if (mediaStore.screenShareMode !== "off") return true;
+
+    // Check 2: Active scene's canvas layout has a "screen" section
+    const layout = sceneStore.canvasLayout;
+    if (layout?.sections) {
+      return layout.sections.some(
+        (s: any) => s.content?.type === "screen"
+      );
+    }
+
+    return false;
+  }
+
   /**
    * THE CORE LOGIC: Determines whether to capture "Raw Screen" or "App Window"
    */
@@ -181,7 +206,10 @@ class StreamService {
     try {
       const isElectron = !!(window as ElectronWindow).electron;
       const mediaStore = useMediaStore.getState();
+      const sceneStore = useSceneStore.getState();
       const isSharingInternally = mediaStore.screenShareMode !== "off";
+      const hasScreenShare = this.sceneHasScreenShare(sceneStore, mediaStore);
+      const isLive = useStreamStore.getState().isBroadcasting || useStreamStore.getState().isRecording;
 
       let newStream: MediaStream | null = null;
 
@@ -199,7 +227,10 @@ class StreamService {
         // 1. In App -> Stream App Window
         // 2. Sharing Screen (in App) -> Stream App Window
         // 3. Out of App (Not Sharing) -> Stream Entire Screen
-        if (this.isAppFocused) {
+        // 4. Streaming/Recording and Scene has Screen Share -> Stream App Window (always)
+        if (isLive && hasScreenShare) {
+          captureAppWindow = true;
+        } else if (this.isAppFocused) {
           captureAppWindow = true;
         } else {
           if (isSharingInternally) {
@@ -210,11 +241,21 @@ class StreamService {
         }
 
         if (captureAppWindow) {
-          selectedSource = sources.find(
-            (s: any) =>
-              s.name.includes("GAKI") ||
-              s.name.includes("Vite + React"),
-          );
+          const appWindowId = await electron.getAppWindowId?.();
+          if (appWindowId) {
+            console.log("[StreamService] Using exact app window ID from main process:", appWindowId);
+            // Even if not in sources, we can try to inject it or find it by ID
+            selectedSource = sources.find((s: any) => s.id === appWindowId) || { id: appWindowId };
+          } else {
+             console.warn("[StreamService] getAppWindowId not available or null.");
+          }
+          
+          if (!selectedSource) {
+            console.warn("[StreamService] Could not find app window by ID!");
+            if (isElectron && (window as any).electron?.logger) {
+               (window as any).electron.logger.appendLine(`[StreamService] Could not find app window by ID!`);
+            }
+          }
         }
 
         if (!selectedSource) {

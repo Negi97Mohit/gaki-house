@@ -50,6 +50,7 @@ contextBridge.exposeInMainWorld("electron", {
   // Desktop Capturer
   getDesktopSources: (options: any) =>
     ipcRenderer.invoke("get-desktop-sources", options),
+  getAppWindowId: () => ipcRenderer.invoke("get-app-window-id"),
 
   // Auth Controls
   auth: {

@@ -1,4 +1,4 @@
-﻿import {
+import {
   app,
   BrowserWindow,
   ipcMain,
@@ -775,6 +775,13 @@ ipcMain.handle("get-desktop-sources", async (event, options) => {
     thumbnail: source.thumbnail.toDataURL(),
     appIcon: source.appIcon ? source.appIcon.toDataURL() : null,
   }));
+});
+
+ipcMain.handle("get-app-window-id", () => {
+  if (mainWindow) {
+    return mainWindow.getMediaSourceId();
+  }
+  return null;
 });
 
 const gotTheLock = app.requestSingleInstanceLock();
