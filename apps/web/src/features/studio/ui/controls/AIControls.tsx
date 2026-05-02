@@ -1,13 +1,13 @@
 import React from "react";
 import { Sparkles } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
 import { useSceneStore } from "@/stores/scene.store";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore } from "@/stores/ui.store";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 import { AIChatbot } from "@/features/ai-assistant/ui/AIChatbot";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface AIControlsProps {
     onAiCommandSubmit: (text: string, targetId: string | null) => void;

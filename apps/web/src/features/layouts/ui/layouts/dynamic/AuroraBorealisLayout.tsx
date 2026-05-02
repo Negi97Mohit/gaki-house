@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { GridSectionWrapper } from "../GridSectionWrapper";
-import { CanvasSectionState, CanvasLayoutState } from "@caption-cam/core/types/caption";
-import { cn } from "@caption-cam/core/lib/utils";
+import { CanvasSectionState, CanvasLayoutState } from "@gaki/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { DynamicDeleteButton } from "./core/LayoutButtons";
@@ -10,7 +10,7 @@ import { EditableText } from "./core/EditableText";
 import { LayoutControlsPortal } from "./core/LayoutControlsPortal";
 import { Info, Plus, Settings2, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+import { ColorPicker } from "@gaki/ui/color-picker";
 
 // --- Helper: Hex to RGBA for Trail Effect ---
 const hexToRgba = (hex: string, alpha: number) => {

@@ -1,7 +1,7 @@
 // src/lib/ai.ts - Gemini-powered overlay generation
 
 import { MASTER_PROMPT, UPDATE_PROMPT } from "./ai/prompts";
-import { GenerationResult, UpdateAnalysis, UpdateChange } from "@caption-cam/core/types/ai";
+import { GenerationResult, UpdateAnalysis, UpdateChange } from "@gaki/core/types/ai";
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${API_KEY}`;

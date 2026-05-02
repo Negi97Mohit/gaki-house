@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { RecordingSession, EMPTY_SESSION } from "@caption-cam/core/types/editor";
-import { useLocalStorage } from "@caption-cam/core/hooks/useLocalStorage";
+import { RecordingSession, EMPTY_SESSION } from "@gaki/core/types/editor";
+import { useLocalStorage } from "@gaki/core/hooks/useLocalStorage";
 import { useSessionPlayback } from "@/features/stream/hooks/useSessionPlayback";
 
 export const useEditSession = () => {

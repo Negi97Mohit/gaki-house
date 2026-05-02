@@ -1,11 +1,11 @@
 // src/components/FloatingAssetSearch.tsx
 import React, { Suspense } from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@caption-cam/ui/popover";
+} from "@gaki/ui/popover";
 import { Search, Loader2 } from "lucide-react";
 import { AssetResult } from "./AssetLibrary";
 

@@ -1,8 +1,8 @@
 // src/lib/streamSceneDesigns.ts
 // Unique, hand-crafted canvas designs for each stream scene type
 
-import { StreamStyleTheme, StreamSceneType } from "@caption-cam/core/types/streamStyle";
-import { CaptionStyle, CaptionShape, CaptionAnimation, LayoutMode, CameraShape } from "@caption-cam/core/types/caption";
+import { StreamStyleTheme, StreamSceneType } from "@gaki/core/types/streamStyle";
+import { CaptionStyle, CaptionShape, CaptionAnimation, LayoutMode, CameraShape } from "@gaki/core/types/caption";
 
 export interface GeneratedSceneDesign {
   id: string;

@@ -10,7 +10,7 @@ Complete API reference for all Zustand stores.
 
 ## `useSceneStore` — Active Scene State
 
-→ Source: [scene.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/scene.store.ts)
+→ Source: [scene.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/scene.store.ts)
 
 ### State
 
@@ -59,7 +59,7 @@ All state fields have corresponding `set*` actions plus:
 
 ## `useStreamStore` — Broadcast & Recording
 
-→ Source: [stream.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/stream.store.ts)
+→ Source: [stream.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/stream.store.ts)
 
 **Persisted** via `zustand/middleware/persist` (destinations only).
 
@@ -92,7 +92,7 @@ All state fields have corresponding `set*` actions plus:
 
 ## `useMediaStore` — Device Management
 
-→ Source: [media.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/media.store.ts)
+→ Source: [media.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/media.store.ts)
 
 ### State
 
@@ -111,7 +111,7 @@ All state fields have corresponding `set*` actions plus:
 
 ## `useCanvasStore` — Viewport
 
-→ Source: [canvas.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/canvas.store.ts)
+→ Source: [canvas.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/canvas.store.ts)
 
 Manages canvas zoom, pan, and viewport dimensions.
 
@@ -119,7 +119,7 @@ Manages canvas zoom, pan, and viewport dimensions.
 
 ## `useUiStore` — UI Panels
 
-→ Source: [ui.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/ui.store.ts)
+→ Source: [ui.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/ui.store.ts)
 
 ### State
 
@@ -139,7 +139,7 @@ All setters support both direct values and updater functions: `set(true)` or `se
 
 ## `useOmegleStore` — Random Chat
 
-→ Source: [omegle.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/omegle.store.ts) (~8.6KB)
+→ Source: [omegle.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/omegle.store.ts) (~8.6KB)
 
 Manages the full Omegle-style matching lifecycle (searching, connected, disconnected, chat messages, interests).
 
@@ -147,7 +147,7 @@ Manages the full Omegle-style matching lifecycle (searching, connected, disconne
 
 ## `useSceneAudioStore` — Per-Scene Audio
 
-→ Source: [sceneAudio.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/sceneAudio.store.ts)
+→ Source: [sceneAudio.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/sceneAudio.store.ts)
 
 Per-scene audio settings (volume, mute state).
 
@@ -155,7 +155,7 @@ Per-scene audio settings (volume, mute state).
 
 ## `useGoLiveStore` — Go-Live Modal
 
-→ Source: [goLive.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/goLive.store.ts)
+→ Source: [goLive.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/goLive.store.ts)
 
 Minimal store for go-live modal visibility.
 
@@ -163,6 +163,6 @@ Minimal store for go-live modal visibility.
 
 ## `useStreamManagerStore` — Stream Manager
 
-→ Source: [stream-manager.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/stream-manager.store.ts)
+→ Source: [stream-manager.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/stream-manager.store.ts)
 
 Stream manager orchestration state.

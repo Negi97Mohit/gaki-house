@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { Label } from "@caption-cam/ui/label";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Label } from "@gaki/ui/label";
 import { User, Camera, X } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface SocialProfileFormProps {
     name: string;

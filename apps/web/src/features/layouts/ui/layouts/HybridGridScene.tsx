@@ -7,7 +7,7 @@ import {
   GRID_VERTEX_BASE,
   LIQUID_FRAGMENT,
   VOGUE_FRAGMENT,
-} from "@caption-cam/engine/kernel/engine/shaders/gridShaders";
+} from "@gaki/engine/kernel/engine/shaders/gridShaders";
 
 interface HybridGridSceneProps {
   effectType: "vogue" | "liquid" | "origami" | "void";

@@ -8,7 +8,7 @@ import {
   BrowserOverlayState,
   GeneratedLayout,
   EmptyGridPanelState,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { DraggableHtmlOverlay } from "./DraggableHtmlOverlay";
 import { DraggableBrowser } from "@/features/canvas/ui/DraggableBrowser";
 import { DraggableFileViewer } from "@/features/canvas/ui/DraggableFileViewer";
@@ -18,7 +18,7 @@ import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { EngineWrapper as HybridDraggable } from '@/features/canvas/engines/EngineWrapper';
 import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
 import { BannerDesignSelectorToolbar } from "@/features/banners/ui/editor/components/BannerDesignSelectorToolbar";
-import { BannerDesign, isAnimatedBanner } from "@caption-cam/core/types/banner";
+import { BannerDesign, isAnimatedBanner } from "@gaki/core/types/banner";
 import { isV2Engine, isDesktop } from "@/features/canvas/lib/engineFlag";
 import { InteractionManager } from "@/features/canvas/engines/InteractionManager";
 import { DesktopInteractionEngine } from "@/features/canvas/engines/DesktopInteractionEngine";
@@ -486,8 +486,8 @@ export const OverlayLayer = React.memo<OverlayLayerProps>(
             viewportScale={viewportScale}
             onOverlayLayoutChange={onOverlayLayoutChange}
             updateOverlayNative={(id, bounds) => {
-              if (typeof window !== 'undefined' && (window as any).captionCamDesktopApi) {
-                (window as any).captionCamDesktopApi.updateOverlay(sceneId, id, bounds);
+              if (typeof window !== 'undefined' && (window as any).gakiDesktopApi) {
+                (window as any).gakiDesktopApi.updateOverlay(sceneId, id, bounds);
               }
             }}
           />

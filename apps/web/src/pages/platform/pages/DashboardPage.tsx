@@ -4,7 +4,7 @@ import {
   BarChart3, Settings, Radio, DollarSign, TrendingUp, Users, Eye, Clock,
   ArrowUpRight, ArrowDownRight, Activity
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import { useStreams } from "../hooks/useStreams";
 import { formatViewerCount } from "../data/mockData";

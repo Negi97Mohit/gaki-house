@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { X } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface TelemetryData {
   fps: number;

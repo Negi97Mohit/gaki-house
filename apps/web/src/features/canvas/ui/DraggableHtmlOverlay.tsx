@@ -1,7 +1,7 @@
 // src/components/video-canvas/DraggableHtmlOverlay.tsx
 import React, { useRef, useEffect, useMemo } from "react";
 import { useTheme } from "next-themes";
-import { GeneratedOverlay } from "@caption-cam/core/types/caption";
+import { GeneratedOverlay } from "@gaki/core/types/caption";
 import { generatePreview } from "@/lib/preview";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
 import { UniversalOverlayWrapper } from "./UniversalOverlayWrapper";

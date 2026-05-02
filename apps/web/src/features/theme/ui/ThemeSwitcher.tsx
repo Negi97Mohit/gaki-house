@@ -1,7 +1,7 @@
 import { useThemeStore, themes, ThemeName } from "../model/theme.store";
 import { Moon, Sun, Check } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+import { cn } from "@gaki/core/lib/utils";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 
 export function ThemeSwitcher() {
   const { theme, mode, setTheme, toggleMode } = useThemeStore();

@@ -12,12 +12,12 @@ import {
   TextOverlayState,
   FileOverlayState,
   FileType,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { zIndex } from "@/lib/zIndex";
-import { generateId } from "@caption-cam/core/lib/id";
-import { VaultFile } from "@caption-cam/core/types/vault";
+import { generateId } from "@gaki/core/lib/id";
+import { VaultFile } from "@gaki/core/types/vault";
 
 // Hooks
 import { useCanvasPaste } from "@/pages/Index/hooks/useCanvasPaste";

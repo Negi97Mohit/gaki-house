@@ -1,7 +1,7 @@
 import React from 'react';
-import { ScrollArea, ScrollBar } from "@caption-cam/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@gaki/ui/scroll-area";
 import { STREAMING_PLATFORMS, PLATFORM_CATEGORIES, type StreamingPlatform } from '@/data/streamingPlatforms';
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { Check } from 'lucide-react';
 
 // Modern SVG icons for streaming platforms using Simple Icons (https://simpleicons.org)

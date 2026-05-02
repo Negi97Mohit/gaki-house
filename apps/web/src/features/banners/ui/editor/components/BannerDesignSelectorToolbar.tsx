@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { motion } from "framer-motion";
 import { Palette, Sparkles, X } from "lucide-react";
-import { ScrollArea, ScrollBar } from "@caption-cam/ui/scroll-area";
-import { cn } from "@caption-cam/core/lib/utils";
-import { BannerDesign } from "@caption-cam/core/types/banner";
-import { SocialBannerDesign } from "@caption-cam/core/types/socialBanner";
-import { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
+import { ScrollArea, ScrollBar } from "@gaki/ui/scroll-area";
+import { cn } from "@gaki/core/lib/utils";
+import { BannerDesign } from "@gaki/core/types/banner";
+import { SocialBannerDesign } from "@gaki/core/types/socialBanner";
+import { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
 
 import { useSocialBanners } from "@/features/banners/hooks/useSocialBanners";
 

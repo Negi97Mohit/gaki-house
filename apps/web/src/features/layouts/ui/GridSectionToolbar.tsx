@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   Palette,
   Image,
@@ -23,18 +23,18 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-} from "@caption-cam/ui/dropdown-menu";
-import { CanvasSectionState, DEFAULT_CAMERA_STATE } from "@caption-cam/core/types/caption";
+} from "@gaki/ui/dropdown-menu";
+import { CanvasSectionState, DEFAULT_CAMERA_STATE } from "@gaki/core/types/caption";
 import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@caption-cam/ui/popover";
+} from "@gaki/ui/popover";
 import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
-import { cn } from "@caption-cam/core/lib/utils";
+import { ColorPicker } from "@gaki/ui/color-picker";
+import { cn } from "@gaki/core/lib/utils";
 import { SearchButton } from "./layouts/dynamic/core/SearchButton";
 import { usePreviewMode } from "./layouts/dynamic/core/PreviewModeContext";
 import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";

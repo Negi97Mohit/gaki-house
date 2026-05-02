@@ -1,7 +1,7 @@
 import React, { useRef, useLayoutEffect, useState, useCallback } from "react";
 import { motion, useDragControls } from "framer-motion";
 import { useDynamicLayout } from "./DynamicLayoutContext";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 export interface EditableTextProps {
   sectionId?: string;

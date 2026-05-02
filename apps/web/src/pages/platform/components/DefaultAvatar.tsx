@@ -1,6 +1,6 @@
 import React from "react";
 import { User } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 // 10 default profile avatars using DiceBear Avatars API
 // Each uses a different style + seed for variety

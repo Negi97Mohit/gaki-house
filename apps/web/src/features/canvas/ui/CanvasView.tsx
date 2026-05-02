@@ -12,7 +12,7 @@ import {
   CanvasSectionCameraState,
   GeneratedOverlay,
   GeneratedLayout,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { useCanvasStore } from "../model/canvas.store";
 import { useUIStore } from "../model/ui.store";
 import { useCanvasResize } from "../hooks/useCanvasResize";
@@ -23,7 +23,7 @@ import { getCanvasAspectRatioStyle } from "@/features/canvas/ui/VideoCanvasHelpe
 import { useVideoStreams } from "@/features/stream/hooks/useVideoStreams";
 import { usePipGestures } from "@/hooks/usePipGestures";
 import { Sparkles } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { CanvasHoverToolbar } from "@/features/canvas/ui/CanvasHoverToolbar";
@@ -31,16 +31,16 @@ import { OverlayElement } from "@/hooks/useSnapGuides";
 import { VideoCanvasCamera } from "@/features/canvas/ui/VideoCanvasCamera";
 import { ForegroundUserLayer } from "@/features/canvas/ui/ForegroundUserLayer";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
-import { VideoCanvasProps } from "@caption-cam/core/types/videoCanvas";
+import { VideoCanvasProps } from "@gaki/core/types/videoCanvas";
 import { CanvasContent } from "@/features/canvas/ui/CanvasContent";
 import { OverlayLayer } from "@/features/canvas/ui/OverlayLayer";
 import { SnapLines } from "@/features/canvas/ui/SnapLines";
 import { CanvasShell } from "@/features/canvas/ui/CanvasShell";
 import { CaptionLayer } from "@/features/canvas/ui/CaptionLayer";
 import { BannerToolbarLayer } from "@/features/canvas/ui/BannerToolbarLayer";
-import { BroadcastBus } from "@caption-cam/engine/kernel/engine/BroadcastBus";
-import { buildSceneGraph } from "@caption-cam/engine/kernel/engine/SceneGraph";
-import { useOverlayMediaPool } from "@caption-cam/engine/kernel/hooks/useOverlayMediaPool";
+import { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
+import { buildSceneGraph } from "@gaki/engine/kernel/engine/SceneGraph";
+import { useOverlayMediaPool } from "@gaki/engine/kernel/hooks/useOverlayMediaPool";
 import { useStingerTransition } from "@/features/canvas/hooks/useStingerTransition";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {

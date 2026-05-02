@@ -8,7 +8,7 @@
       "@/*": [
         "./src/*"
       ],
-      "@caption-cam/handoff-sdk": [
+      "@gaki/handoff-sdk": [
         "./packages/handoff-sdk/src"
       ]
     },

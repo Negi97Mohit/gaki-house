@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useStreamStore } from "@/stores/stream.store";
 import { streamService } from "../services/stream.service";
-import { notify } from "@caption-cam/core/lib/notify";
+import { notify } from "@gaki/core/lib/notify";
 
 export const useRtmpStream = () => {
   const {

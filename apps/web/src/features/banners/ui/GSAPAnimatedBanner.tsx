@@ -7,7 +7,7 @@ import {
   executeGSAPAnimation,
   splitTextToChars,
 } from "@/features/animation/lib/gsapAnimations";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { ParticleEffectOverlay } from "./ParticleEffectOverlay";
 import { EffectType } from "@/lib/particleEffects";
 

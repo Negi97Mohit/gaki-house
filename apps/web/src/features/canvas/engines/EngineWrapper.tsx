@@ -1,7 +1,7 @@
 import React from 'react';
 import { isV2Engine } from "@/features/canvas/lib/engineFlag";
 import { HybridDraggable, HybridDraggableProps } from "@/features/canvas/ui/HybridDraggable";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 /**
  * Drop-in replacement for HybridDraggable that conditionally bypasses react-rnd

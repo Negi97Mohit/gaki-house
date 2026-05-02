@@ -17,7 +17,7 @@ import omegleDuo from './omegle-designs/omegle-design-duo.json';
 import omeglePresenter from './omegle-designs/omegle-design-presenter.json';
 import omegleAsymmetric from './omegle-designs/omegle-design-asymmetric.json';
 import omeglePortrait from './omegle-designs/omegle-design-portrait.json';
-import { OmegleDesign } from "@caption-cam/core/types/omegle";
+import { OmegleDesign } from "@gaki/core/types/omegle";
 
 export const omegleDesigns: OmegleDesign[] = [
     omegleSplitView as OmegleDesign,

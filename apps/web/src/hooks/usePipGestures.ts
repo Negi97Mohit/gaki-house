@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from "react";
-import { LayoutMode } from "@caption-cam/core/types/caption";
+import { LayoutMode } from "@gaki/core/types/caption";
 
 interface UsePipGesturesProps {
   layoutMode: LayoutMode;

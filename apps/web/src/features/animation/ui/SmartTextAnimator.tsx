@@ -1,7 +1,7 @@
 // src/components/SmartTextAnimator.tsx
 import React, { useState, useEffect } from "react";
-import { AnimationPreset } from "@caption-cam/core/types/animation";
-import { cn } from "@caption-cam/core/lib/utils";
+import { AnimationPreset } from "@gaki/core/types/animation";
+import { cn } from "@gaki/core/lib/utils";
 
 interface SmartTextAnimatorProps {
   preset: AnimationPreset;

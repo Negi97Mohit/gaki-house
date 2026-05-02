@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from "react";
-import { CanvasLayoutState } from "@caption-cam/core/types/caption";
+import { CanvasLayoutState } from "@gaki/core/types/caption";
 import { useLayoutEditor } from "@/features/layouts/hooks/useLayoutEditor";
 
 interface DynamicLayoutContextProps {

@@ -8,7 +8,7 @@ import {
   SlidersHorizontal,
   X,
 } from "lucide-react";
-import { Input } from "@caption-cam/ui/input";
+import { Input } from "@gaki/ui/input";
 import { cn } from "@/lib/utils";
 
 const FILTERS = [

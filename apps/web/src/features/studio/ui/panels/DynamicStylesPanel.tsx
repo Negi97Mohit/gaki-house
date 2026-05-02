@@ -1,9 +1,9 @@
 // src/components/panels/DynamicStylesPanel.tsx
 import React, { useState, useEffect } from "react";
-import { RadioGroup, RadioGroupItem } from "@caption-cam/ui/radio-group";
-import { Label } from "@caption-cam/ui/label";
-import { cn } from "@caption-cam/core/lib/utils";
-import { ScrollArea, ScrollBar } from "@caption-cam/ui/scroll-area";
+import { RadioGroup, RadioGroupItem } from "@gaki/ui/radio-group";
+import { Label } from "@gaki/ui/label";
+import { cn } from "@gaki/core/lib/utils";
+import { ScrollArea, ScrollBar } from "@gaki/ui/scroll-area";
 import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";
 
 interface DynamicStylesPanelProps {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Home, Search, Clapperboard, User, Radio } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 const TABS = [
   { icon: Home, label: "Home", path: "/m" },

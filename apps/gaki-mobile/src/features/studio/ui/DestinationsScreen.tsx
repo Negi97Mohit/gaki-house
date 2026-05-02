@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Switch } from "@caption-cam/ui/switch";
+import { Switch } from "@gaki/ui/switch";
 
 const platforms = [
   {

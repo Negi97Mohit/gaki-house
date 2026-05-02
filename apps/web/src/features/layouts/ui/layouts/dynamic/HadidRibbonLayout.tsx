@@ -15,10 +15,10 @@ import {
   useCursor,
 } from "@react-three/drei";
 import * as THREE from "three";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus, Trash2, LayoutTemplate, Type } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { Panel } from "./core/Panel";
 
 // --- 1. Linear Path ---

@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Rnd } from 'react-rnd';
-import { OmegleDesign } from "@caption-cam/core/types/omegle";
+import { OmegleDesign } from "@gaki/core/types/omegle";
 import { useOmegleStore } from '@/stores/omegle.store';
 import { OmeglePipToolbar } from './OmeglePipToolbar';
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { AmbientBackground } from '@/features/stream/ui/AmbientBackground';
 import { VideoOff, Users, Loader2 } from 'lucide-react';
 

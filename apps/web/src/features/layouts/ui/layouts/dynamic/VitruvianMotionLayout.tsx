@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface VitruvianMotionLayoutProps {
     sections: CanvasSectionState[];

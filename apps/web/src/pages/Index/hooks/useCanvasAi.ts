@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
-import { notify } from "@caption-cam/core/lib/notify";
-import { generateId } from "@caption-cam/core/lib/id";
-import { SceneState, GeneratedOverlay } from "@caption-cam/core/types/caption";
+import { notify } from "@gaki/core/lib/notify";
+import { generateId } from "@gaki/core/lib/id";
+import { SceneState, GeneratedOverlay } from "@gaki/core/types/caption";
 import { processCommandWithAgent, updateOverlay } from "@/lib/ai";
 
 interface UseCanvasAiProps {

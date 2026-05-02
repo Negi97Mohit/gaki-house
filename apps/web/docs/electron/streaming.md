@@ -119,7 +119,7 @@ ipcMain.on('stream:data', (_, data) => {
 
 ## Store Integration
 
-→ Source: [stream.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/stream.store.ts)
+→ Source: [stream.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/stream.store.ts)
 
 The `useStreamStore` manages destination state:
 ```typescript

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { cn } from "@caption-cam/core/lib/utils";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus, Trash2, Type } from "lucide-react";
 

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDown, ChevronUp, MessageSquare, ThumbsUp, ThumbsDown, Send } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useAuth } from "../context/AuthContext";
 
 interface Comment {

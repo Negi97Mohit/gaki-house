@@ -22,7 +22,7 @@ src/features/stream/ui/
 
 ## StreamConfigurationModal (47KB)
 
-→ Source: [StreamConfigurationModal.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/stream/ui/StreamConfigurationModal.tsx)
+→ Source: [StreamConfigurationModal.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/stream/ui/StreamConfigurationModal.tsx)
 
 A **multi-step broadcast wizard** that opens when the user clicks "Go Live":
 
@@ -70,7 +70,7 @@ destinations.map(dest => (
 
 ## StreamPlatformSelector (25KB)
 
-→ Source: [StreamPlatformSelector.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/stream/ui/StreamPlatformSelector.tsx)
+→ Source: [StreamPlatformSelector.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/stream/ui/StreamPlatformSelector.tsx)
 
 Pre-designed platform connection cards:
 
@@ -104,7 +104,7 @@ Shows when a **fatal stream error** occurs (FFmpeg crash, network failure):
 
 ## SavedSessionsPanel (5.4KB)
 
-→ Source: [SavedSessionsPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/stream/ui/SavedSessionsPanel.tsx)
+→ Source: [SavedSessionsPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/stream/ui/SavedSessionsPanel.tsx)
 
 Browse and manage past recording sessions:
 - Lists sessions from localStorage (`gaki-recorded-sessions`)

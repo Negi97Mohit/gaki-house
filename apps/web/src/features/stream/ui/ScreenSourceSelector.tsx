@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 import { Monitor, AppWindow, X } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface Source {
     id: string;

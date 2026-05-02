@@ -9,7 +9,7 @@ import { usePip } from "../context/PipContext";
 import { formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, addDoc, deleteDoc } from "firebase/firestore";

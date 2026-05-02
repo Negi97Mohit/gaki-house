@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   Plus,
   X,
@@ -14,18 +14,18 @@ import {
   Sparkles,
   RotateCcw,
 } from "lucide-react";
-import { SceneState, SceneTransition, SubSceneState } from "@caption-cam/core/types/caption";
-import { cn } from "@caption-cam/core/lib/utils";
+import { SceneState, SceneTransition, SubSceneState } from "@gaki/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@caption-cam/ui/dropdown-menu";
+} from "@gaki/ui/dropdown-menu";
 import { StreamStyleSelector } from "@/features/stream/ui/scenes/StreamStyleSelector";
-import { StreamStylePreset } from "@caption-cam/core/types/streamStyle";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { StreamStylePreset } from "@gaki/core/types/streamStyle";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 
 const TransitionIcon = () => (
   <svg

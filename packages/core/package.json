@@ -1,5 +1,5 @@
 {
-  "name": "@caption-cam/core",
+  "name": "@gaki/core",
   "version": "1.0.0",
   "private": true,
   "exports": {

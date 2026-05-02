@@ -1,8 +1,8 @@
 import React, { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Float, Sphere, MeshDistortMaterial, Html, OrbitControls } from "@react-three/drei";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus } from "lucide-react";
 import { Panel } from "./core/Panel";

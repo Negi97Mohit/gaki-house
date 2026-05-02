@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { CaptionStyleDef, DynamicStyleProps } from "@caption-cam/core/types/caption";
+import { CaptionStyleDef, DynamicStyleProps } from "@gaki/core/types/caption";
 
 // Helper to split text into stable word list
 function useWords(fullTranscript: string, interimTranscript: string) {

@@ -1,6 +1,6 @@
 // Single responsibility: inline banner text editing toolbar, shown when a generated overlay is being edited.
 import React, { useEffect } from "react";
-import { CaptionStyle, TextOverlayState, GeneratedOverlay } from "@caption-cam/core/types/caption";
+import { CaptionStyle, TextOverlayState, GeneratedOverlay } from "@gaki/core/types/caption";
 import { TextEditingToolbar } from "@/features/canvas/ui/TextEditingToolbar";
 
 interface BannerToolbarLayerProps {

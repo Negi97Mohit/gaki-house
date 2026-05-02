@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
 import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets"; // --- ADDED
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
-import { Button } from "@caption-cam/ui/button";
-import { ScrollArea, ScrollBar } from "@caption-cam/ui/scroll-area";
-import { cn } from "@caption-cam/core/lib/utils";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
+import { Button } from "@gaki/ui/button";
+import { ScrollArea, ScrollBar } from "@gaki/ui/scroll-area";
+import { cn } from "@gaki/core/lib/utils";
 import {
   LayoutGrid,
   Crown,

@@ -1,8 +1,8 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { Sparkles, Layers, Type } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { TextOverlayState } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { TextOverlayState } from "@gaki/core/types/caption";
 import { TextFormattingControls } from "@/features/caption/ui/text-toolbar/TextFormattingControls";
 import { FontControls } from "@/features/caption/ui/text-toolbar/FontControls";
 import { ColorControls } from "@/features/caption/ui/text-toolbar/ColorControls";

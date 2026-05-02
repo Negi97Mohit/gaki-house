@@ -1,11 +1,11 @@
 import React from "react";
 import { X } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Slider } from "@caption-cam/ui/slider";
-import { Switch } from "@caption-cam/ui/switch";
-import { Label } from "@caption-cam/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
-import { cn } from "@caption-cam/core/lib/utils";
+import { Button } from "@gaki/ui/button";
+import { Slider } from "@gaki/ui/slider";
+import { Switch } from "@gaki/ui/switch";
+import { Label } from "@gaki/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
+import { cn } from "@gaki/core/lib/utils";
 
 interface EditorControlsProps {
     show: boolean;

@@ -13,8 +13,8 @@ import {
   Check,
   Pause
 } from 'lucide-react';
-import { Button } from "@caption-cam/ui/button";
-import { Badge } from "@caption-cam/ui/badge";
+import { Button } from "@gaki/ui/button";
+import { Badge } from "@gaki/ui/badge";
 import { 
   Dialog,
   DialogContent,
@@ -22,15 +22,15 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter
-} from "@caption-cam/ui/dialog";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+} from "@gaki/ui/dialog";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 import { 
   STREAM_STYLE_PRESETS, 
   StreamStylePreset, 
   StreamSceneType,
   DEFAULT_STREAM_SCENES
-} from "@caption-cam/core/types/streamStyle";
-import { cn } from "@caption-cam/core/lib/utils";
+} from "@gaki/core/types/streamStyle";
+import { cn } from "@gaki/core/lib/utils";
 import { toast } from 'sonner';
 
 interface StreamStyleSelectorProps {

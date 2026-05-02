@@ -4,17 +4,17 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@caption-cam/ui/dialog";
+} from "@gaki/ui/dialog";
 import { Check, Webcam, Sparkles, Sun, Zap, Wand2, Clapperboard, X, Search } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
 import { useShallow } from "zustand/react/shallow";
-import { Slider } from "@caption-cam/ui/slider";
-import { Switch } from "@caption-cam/ui/switch";
-import { Label } from "@caption-cam/ui/label";
-import { Input } from "@caption-cam/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
+import { Slider } from "@gaki/ui/slider";
+import { Switch } from "@gaki/ui/switch";
+import { Label } from "@gaki/ui/label";
+import { Input } from "@gaki/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
 import { useFilters } from "@/hooks/useFilters";
 import { useWebGLRenderLoop } from "@/features/canvas/hooks/useWebGLRenderLoop";
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";

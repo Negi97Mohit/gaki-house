@@ -1,8 +1,8 @@
 import React from "react";
-import { Label } from "@caption-cam/ui/label";
-import { Slider } from "@caption-cam/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@caption-cam/ui/select";
-import { AnimationPreset } from "@caption-cam/core/types/animation";
+import { Label } from "@gaki/ui/label";
+import { Slider } from "@gaki/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@gaki/ui/select";
+import { AnimationPreset } from "@gaki/core/types/animation";
 
 interface MotionControlsProps {
     preset: AnimationPreset;

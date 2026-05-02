@@ -4,7 +4,7 @@
 
 ---
 
-→ Source: [main.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/main.ts) (704 lines)
+→ Source: [main.ts](file:///c:/Users/Dell/Desktop/gaki/electron/main.ts) (704 lines)
 
 ## Initialization Sequence
 

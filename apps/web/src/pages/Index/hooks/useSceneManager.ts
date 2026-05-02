@@ -13,8 +13,8 @@ import {
   CanvasLayoutState,
   LayoutMode,
   CameraShape,
-} from "@caption-cam/core/types/caption";
-import { StreamStylePreset } from "@caption-cam/core/types/streamStyle";
+} from "@gaki/core/types/caption";
+import { StreamStylePreset } from "@gaki/core/types/streamStyle";
 import { GeneratedSceneDesign, generateAllSceneDesigns } from "@/lib/streamSceneDesigns";
 
 // Stores

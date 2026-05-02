@@ -1,19 +1,19 @@
 // src/components/StyleControls.tsx
 
-import { CaptionStyle } from "@caption-cam/core/types/caption";
-import { Label } from "@caption-cam/ui/label";
+import { CaptionStyle } from "@gaki/core/types/caption";
+import { Label } from "@gaki/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@caption-cam/ui/select";
-import { Slider } from "@caption-cam/ui/slider";
-import { Switch } from "@caption-cam/ui/switch";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+} from "@gaki/ui/select";
+import { Slider } from "@gaki/ui/slider";
+import { Switch } from "@gaki/ui/switch";
+import { ColorPicker } from "@gaki/ui/color-picker";
 import { ALL_FONTS } from "@/lib/fonts";
-import { isTransparent } from "@caption-cam/core/lib/color-utils";
+import { isTransparent } from "@gaki/core/lib/color-utils";
 
 interface StyleControlsProps {
   style: CaptionStyle;

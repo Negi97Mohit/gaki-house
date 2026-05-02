@@ -1,4 +1,4 @@
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
 import {
   LayoutGrid,
   Crown,

@@ -1,6 +1,6 @@
 import React from "react";
 import { Wand2, Droplet, Sparkles, X } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +8,8 @@ import {
   DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from "@caption-cam/ui/dropdown-menu";
-import { cn } from "@caption-cam/core/lib/utils";
+} from "@gaki/ui/dropdown-menu";
+import { cn } from "@gaki/core/lib/utils";
 import { useFilters } from "@/hooks/useFilters";
 // import { FILTER_PRESETS } from "@/lib/filters"; // Deprecated
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";

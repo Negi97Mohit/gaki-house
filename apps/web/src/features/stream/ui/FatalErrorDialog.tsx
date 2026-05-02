@@ -5,8 +5,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@caption-cam/ui/dialog";
-import { Button } from "@caption-cam/ui/button";
+} from "@gaki/ui/dialog";
+import { Button } from "@gaki/ui/button";
 import { useStreamStore } from "@/stores/stream.store";
 
 export const FatalErrorDialog = () => {

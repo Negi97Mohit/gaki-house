@@ -4,7 +4,7 @@
 
 ---
 
-→ Source: [Index.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/pages/Index.tsx)
+→ Source: [Index.tsx](file:///c:/Users/Dell/Desktop/gaki/src/pages/Index.tsx)
 
 ## Overview
 

@@ -1,7 +1,7 @@
 // src/components/banner-editor/BannerInternalDraggable.tsx
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import { X } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 export interface BannerElementData {
   id: string;

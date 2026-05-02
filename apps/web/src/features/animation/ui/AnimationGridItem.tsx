@@ -1,10 +1,10 @@
 // src/components/AnimationGridItem.tsx
 import React, { memo } from "react";
 import { Play, Edit2, Trash2, Copy } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { SmartTextAnimator } from "./SmartTextAnimator";
-import { AnimationPreset } from "@caption-cam/core/types/animation";
-import { cn } from "@caption-cam/core/lib/utils";
+import { AnimationPreset } from "@gaki/core/types/animation";
+import { cn } from "@gaki/core/lib/utils";
 
 interface AnimationGridItemProps {
   preset: AnimationPreset;

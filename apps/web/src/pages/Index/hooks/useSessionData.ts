@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useLocalStorage } from "@caption-cam/core/hooks/useLocalStorage";
-import { GeneratedOverlay } from "@caption-cam/core/types/caption";
+import { useLocalStorage } from "@gaki/core/hooks/useLocalStorage";
+import { GeneratedOverlay } from "@gaki/core/types/caption";
 
 export const useSessionData = () => {
   const navigate = useNavigate();

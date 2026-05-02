@@ -8,7 +8,7 @@ import {
   useFeaturedStream,
 } from "@/pages/platform/hooks/useStreams";
 import { formatViewerCount } from "@/pages/platform/data/mockData";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { TrendingUp, Zap, Radio } from "lucide-react";
 
 type FeedTab = "foryou" | "following" | "trending";

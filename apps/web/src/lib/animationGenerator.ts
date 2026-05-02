@@ -1,5 +1,5 @@
 // src/lib/animationGenerator.ts
-import { AnimationPreset } from "@caption-cam/core/types/animation";
+import { AnimationPreset } from "@gaki/core/types/animation";
 
 export function generateHtmlFromPreset(preset: AnimationPreset): string {
   const { defaultContent, baseStyle, animationConfig } = preset;

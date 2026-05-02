@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="apps/web/public/logo_256x256.png" alt="Caption Cam Studio Logo" width="180"/>
-  <h1>🎥 Caption Cam Studio</h1>
+  <img src="apps/web/public/logo_256x256.png" alt="GAKI - House of Video Creation Logo" width="180"/>
+  <h1>🎥 GAKI - House of Video Creation</h1>
   <p><strong>A production-grade, browser and desktop live streaming studio with OBS-like scene collections, AI features, and seamless device handoff.</strong></p>
 
   [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -10,7 +10,7 @@
 
 <br/>
 
-Caption Cam Studio represents a modern, web-first paradigm for live streaming. By decoupling the rendering engine from the UI and leveraging WebGL, it delivers desktop-class scene composition directly in the browser. Coupled with an Electron shell, it provides deep OS integrations like local RTMP ingest and hardware encoding for a professional broadcast experience.
+GAKI - House of Video Creation represents a modern, web-first paradigm for live streaming. By decoupling the rendering engine from the UI and leveraging WebGL, it delivers desktop-class scene composition directly in the browser. Coupled with an Electron shell, it provides deep OS integrations like local RTMP ingest and hardware encoding for a professional broadcast experience.
 
 ## ✨ Highlights
 

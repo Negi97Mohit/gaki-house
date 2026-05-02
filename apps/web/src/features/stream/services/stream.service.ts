@@ -1,12 +1,12 @@
 import { io, Socket } from "socket.io-client";
-import { notify } from "@caption-cam/core/lib/notify";
+import { notify } from "@gaki/core/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
 import fixWebmDuration from "fix-webm-duration";
-import { BroadcastBus } from "@caption-cam/engine/kernel/engine/BroadcastBus";
-import { AudioMixerEngine } from "@caption-cam/engine/kernel/engine/AudioMixerEngine";
-import { BroadcastEncoder } from "@caption-cam/engine/kernel/engine/BroadcastEncoder";
+import { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
+import { AudioMixerEngine } from "@gaki/engine/kernel/engine/AudioMixerEngine";
+import { BroadcastEncoder } from "@gaki/engine/kernel/engine/BroadcastEncoder";
 
 export const USE_KERNEL_PIPELINE = false;
 

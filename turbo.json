@@ -9,12 +9,12 @@
       "dependsOn": ["^type-check"],
       "outputs": []
     },
-    "@caption-cam/desktop#build": {
-      "dependsOn": ["@caption-cam/web#build", "^build"],
+    "@gaki/desktop#build": {
+      "dependsOn": ["@gaki/web#build", "^build"],
       "outputs": ["dist/**", "release/**"]
     },
-    "@caption-cam/desktop#release": {
-      "dependsOn": ["@caption-cam/web#build", "^build"],
+    "@gaki/desktop#release": {
+      "dependsOn": ["@gaki/web#build", "^build"],
       "outputs": ["dist/**", "release/**"],
       "env": ["GH_TOKEN", "GITHUB_TOKEN"]
     },

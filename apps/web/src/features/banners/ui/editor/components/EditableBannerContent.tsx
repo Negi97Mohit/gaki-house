@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BannerElement, BannerElementData } from "./BannerElement";
 import { BannerCustomizationToolbar } from "./BannerCustomizationToolbar";
 import { BannerTextToolbar } from "./BannerTextToolbar"; // Import the missing toolbar
-import { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
+import { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
 
 // Re-export for use in other files
 export type { BannerElementData } from "./BannerElement";

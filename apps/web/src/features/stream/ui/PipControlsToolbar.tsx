@@ -1,8 +1,8 @@
 import React, { useRef, useLayoutEffect, useState } from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { PictureInPicture, MonitorUp, Video, VideoOff } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { CameraShape } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { CameraShape } from "@gaki/core/types/caption";
 import { PipCameraMenu } from "./pip/PipCameraMenu";
 import { PipBackgroundMenu } from "./pip/PipBackgroundMenu";
 import { PipEffectsMenu } from "./pip/PipEffectsMenu";

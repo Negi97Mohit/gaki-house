@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { BannerElementState, BannerContentData, BannerDesign, isStaticBanner } from "@caption-cam/core/types/banner";
+import { BannerElementState, BannerContentData, BannerDesign, isStaticBanner } from "@gaki/core/types/banner";
 
 interface UseBannerEditorProps {
     design: BannerDesign;

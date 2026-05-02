@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Download, Loader2 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { Button } from "@gaki/ui/button";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 
 interface DownloadControlProps {
   isElectron: boolean;
@@ -14,7 +14,7 @@ interface ReleaseLinks {
   mac: string;
 }
 
-const FALLBACK_URL = "https://github.com/Negi97Mohit/caption-cam/releases/latest";
+const FALLBACK_URL = "https://github.com/Negi97Mohit/gaki/releases/latest";
 
 export const DownloadControl: React.FC<DownloadControlProps> = ({ isElectron }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +24,7 @@ export const DownloadControl: React.FC<DownloadControlProps> = ({ isElectron }) 
   useEffect(() => {
     async function fetchLatestRelease() {
       try {
-        const res = await fetch("https://api.github.com/repos/Negi97Mohit/caption-cam/releases/latest");
+        const res = await fetch("https://api.github.com/repos/Negi97Mohit/gaki/releases/latest");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         

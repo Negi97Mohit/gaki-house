@@ -1,9 +1,9 @@
 // src/components/panels/StaticPresetsPanel.tsx
 import React, { useEffect, useRef } from "react";
 import { useCaptionPresets } from "@/hooks/useCaptionPresets";
-import { CaptionStyle } from "@caption-cam/core/types/caption";
-import { cn } from "@caption-cam/core/lib/utils";
-import { ScrollArea, ScrollBar } from "@caption-cam/ui/scroll-area";
+import { CaptionStyle } from "@gaki/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { ScrollArea, ScrollBar } from "@gaki/ui/scroll-area";
 
 interface StaticPresetsPanelProps {
   onStyleChange: (style: CaptionStyle) => void;

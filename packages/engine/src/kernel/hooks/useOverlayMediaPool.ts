@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FileOverlayState } from "@caption-cam/core/types/caption";
+import { FileOverlayState } from "@gaki/core/types/caption";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

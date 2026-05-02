@@ -82,6 +82,6 @@ All UI components use these CSS variables via Tailwind classes (e.g., `bg-backgr
 
 ## Font System
 
-→ Source: [fonts.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/lib/fonts.ts)
+→ Source: [fonts.ts](file:///c:/Users/Dell/Desktop/gaki/src/lib/fonts.ts)
 
 The font registry provides 100+ Google Font names organized by style category for use in caption styling and text overlays.

@@ -1,10 +1,10 @@
 // src/components/CustomStylesSelector.tsx
 
-import { AIDecision, GraphObject } from "@caption-cam/core/types/caption";
+import { AIDecision, GraphObject } from "@gaki/core/types/caption";
 import { CUSTOM_STYLES, CustomStyle } from "@/lib/customStyles";
 import { useMemo } from "react";
-import { Button } from "@caption-cam/ui/button";
-import { cn } from "@caption-cam/core/lib/utils";
+import { Button } from "@gaki/ui/button";
+import { cn } from "@gaki/core/lib/utils";
 
 interface CustomStylesSelectorProps {
   overlays: (AIDecision | GraphObject)[];

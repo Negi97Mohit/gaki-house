@@ -11,7 +11,7 @@ import {
   StreamManager,
   HandoffCoordinator,
   DevicePlatform,
-} from "@caption-cam/handoff-sdk";
+} from "@gaki/handoff-sdk";
 
 interface HandoffContextValue {
   registry: DeviceRegistry | null;

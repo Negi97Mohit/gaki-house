@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { Toaster as Sonner } from "@caption-cam/ui/sonner";
-import { Toaster } from "@caption-cam/ui/toaster";
-import { TooltipProvider } from "@caption-cam/ui/tooltip";
+import { Toaster as Sonner } from "@gaki/ui/sonner";
+import { Toaster } from "@gaki/ui/toaster";
+import { TooltipProvider } from "@gaki/ui/tooltip";
 import { AuthProvider } from "./context/AuthContext";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";

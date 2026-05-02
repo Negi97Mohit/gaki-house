@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/pages/platform/context/AuthContext";
 import { useThemeStore } from "@/features/theme";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 const THEMES = [
     { id: "default", name: "Gold", color: "bg-amber-400" },

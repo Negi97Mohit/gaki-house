@@ -1,7 +1,7 @@
 // Single responsibility: derive all event handler callbacks from canvas state values and setters.
 import { useCallback, useMemo, useEffect } from "react";
 import { toast } from "sonner";
-import { CaptionStyle } from "@caption-cam/core/types/caption";
+import { CaptionStyle } from "@gaki/core/types/caption";
 import type { useCanvasState } from "./useCanvasState";
 
 type CanvasState = ReturnType<typeof useCanvasState>;

@@ -1,6 +1,6 @@
 // src/hooks/usePublicPresets.ts
 import { useState, useEffect } from "react";
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
 import { db } from "@/lib/firebase"; // Import our database connection
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { toast } from "sonner";

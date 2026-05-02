@@ -2,9 +2,9 @@ import React from "react";
 import type {
   SocialBannerDesign,
   SocialBannerData,
-} from "@caption-cam/core/types/socialBanner";
+} from "@gaki/core/types/socialBanner";
 import { UniversalBannerRenderer } from "./banner/UniversalBannerRenderer";
-import { BannerElementState } from "@caption-cam/core/types/banner";
+import { BannerElementState } from "@gaki/core/types/banner";
 import { getPlatformIcon as sharedGetPlatformIcon } from "./banner/PlatformIcons";
 
 // Re-export getPlatformIcon for backward compatibility

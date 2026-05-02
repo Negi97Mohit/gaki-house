@@ -5,8 +5,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
-import { SHORTCUTS, ShortcutKey } from "@caption-cam/core/lib/shortcuts";
-import { cn } from "@caption-cam/core/lib/utils";
+import { SHORTCUTS, ShortcutKey } from "@gaki/core/lib/shortcuts";
+import { cn } from "@gaki/core/lib/utils";
 
 interface ShortcutTooltipProps {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
 import React from "react";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
-import { TextOverlayState } from "@caption-cam/core/types/caption";
+import { ColorPicker } from "@gaki/ui/color-picker";
+import { TextOverlayState } from "@gaki/core/types/caption";
 
 interface ColorControlsProps {
     overlay: TextOverlayState;

@@ -8,7 +8,7 @@ type DraggableEventHandler = (
   e: DraggableEvent,
   data: DraggableData,
 ) => void | false;
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   useSnapGuides,
   OverlayElement,

@@ -14,10 +14,10 @@ import {
   GeneratedOverlay,
   SceneTransition,
   EmptyGridPanelState,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
-import { generateId } from "@caption-cam/core/lib/id";
-import { VaultFile } from "@caption-cam/core/types/vault";
+import { generateId } from "@gaki/core/lib/id";
+import { VaultFile } from "@gaki/core/types/vault";
 import { useCanvasPaste } from "../hooks/useCanvasPaste";
 import { useCanvasAi } from "../hooks/useCanvasAi";
 import { useCanvasBanners } from "../hooks/useCanvasBanners";

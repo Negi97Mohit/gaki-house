@@ -10,7 +10,7 @@ import {
   Palette,
   Camera,
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,18 +19,18 @@ import {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-} from "@caption-cam/ui/dropdown-menu";
+} from "@gaki/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@caption-cam/ui/dialog";
-import { Input } from "@caption-cam/ui/input";
-import { Label } from "@caption-cam/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
-import { Popover, PopoverContent, PopoverTrigger } from "@caption-cam/ui/popover";
+} from "@gaki/ui/dialog";
+import { Input } from "@gaki/ui/input";
+import { Label } from "@gaki/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
+import { Popover, PopoverContent, PopoverTrigger } from "@gaki/ui/popover";
 import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { CanvasDesignSelector } from "./CanvasDesignSelector";
 import {
@@ -38,9 +38,9 @@ import {
   DEFAULT_CAMERA_STATE,
   CameraShape,
   FileType,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { usePreviewMode } from "@/features/layouts/ui/layouts/dynamic/core/PreviewModeContext";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";
 
 interface EmptyGridSectionProps {

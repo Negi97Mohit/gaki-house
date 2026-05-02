@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BroadcastBus } from "@caption-cam/engine/kernel/engine/BroadcastBus";
+import { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
 
 export function useStingerTransition(
   stingerConfig: { path: string; transitionPoint: number } | null,

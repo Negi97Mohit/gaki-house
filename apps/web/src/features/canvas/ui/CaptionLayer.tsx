@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { CaptionRenderer } from "@/features/canvas/ui/CaptionRenderer";
-import { CaptionStyle } from "@caption-cam/core/types/caption";
+import { CaptionStyle } from "@gaki/core/types/caption";
 
 interface CaptionLayerProps {
   captionsEnabled: boolean;

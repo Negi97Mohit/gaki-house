@@ -18,10 +18,10 @@
     "noUnusedParameters": false,
             "paths": {
       "@/*": ["./src/*"],
-      "@caption-cam/core/*": ["../../packages/core/src/*"],
-      "@caption-cam/ui/*": ["../../packages/ui/src/*"],
-      "@caption-cam/engine/*": ["../../packages/engine/src/*"],
-      "@caption-cam/handoff-sdk/*": ["../../packages/handoff-sdk/src/*"]
+      "@gaki/core/*": ["../../packages/core/src/*"],
+      "@gaki/ui/*": ["../../packages/ui/src/*"],
+      "@gaki/engine/*": ["../../packages/engine/src/*"],
+      "@gaki/handoff-sdk/*": ["../../packages/handoff-sdk/src/*"]
     },
     "skipLibCheck": true,
     "strict": false,

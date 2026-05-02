@@ -1,9 +1,9 @@
 _(Electron specifics)_
 
 ````markdown
-# Caption Cam - Desktop App
+# GAKI - Desktop App
 
-The Electron shell for Caption Cam Studio. This package provides native capabilities that the browser cannot handle alone.
+The Electron shell for GAKI - House of Video Creation. This package provides native capabilities that the browser cannot handle alone.
 
 ## Native Responsibilities
 

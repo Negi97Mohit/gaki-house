@@ -1,23 +1,23 @@
 import React from "react";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { Label } from "@caption-cam/ui/label";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Label } from "@gaki/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@caption-cam/ui/select";
+} from "@gaki/ui/select";
 import { Plus, Trash2 } from "lucide-react";
 import {
     SocialBannerData,
     SocialLink,
     SocialPlatform,
     PLATFORM_INFO,
-} from "@caption-cam/core/types/socialBanner";
-import { cn } from "@caption-cam/core/lib/utils";
-import { getPlatformIcon } from "@caption-cam/ui/icons/SocialIcons";
+} from "@gaki/core/types/socialBanner";
+import { cn } from "@gaki/core/lib/utils";
+import { getPlatformIcon } from "@gaki/ui/icons/SocialIcons";
 
 const ALL_PLATFORMS: SocialPlatform[] = [
     "github",

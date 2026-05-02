@@ -1,5 +1,5 @@
 {
-  "name": "@caption-cam/mobile",
+  "name": "@gaki/mobile",
   "author": "gaki",
   "description": "gaki - house of video creation",
   "private": true,
@@ -15,10 +15,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@caption-cam/core": "workspace:*",
-    "@caption-cam/engine": "workspace:*",
-    "@caption-cam/handoff-sdk": "workspace:*",
-    "@caption-cam/ui": "workspace:*",
+    "@gaki/core": "workspace:*",
+    "@gaki/engine": "workspace:*",
+    "@gaki/handoff-sdk": "workspace:*",
+    "@gaki/ui": "workspace:*",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",

@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState } from "react";
 import { useEffect } from "react";
-import type { BroadcastBus } from "@caption-cam/engine/kernel/engine/BroadcastBus";
-import { cn } from "@caption-cam/core/lib/utils";
+import type { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
+import { cn } from "@gaki/core/lib/utils";
 import { Loader } from "lucide-react";
 import { BottomNavigation } from "@/features/studio/ui/BottomNavigation";
 import { CanvasContainer } from "./Index/components/CanvasContainer";
@@ -20,7 +20,7 @@ import { FatalErrorDialog } from "@/features/stream/ui/FatalErrorDialog"; // NEW
 import { useOmegleStore } from "@/stores/omegle.store";
 import { OmegleMode } from "@/features/omegle/ui/OmegleMode";
 import { BroadcastStatsPanel } from "@/features/studio/ui/panels/BroadcastStatsPanel";
-import { AppStateSync } from "@caption-cam/engine/kernel/engine/StateSynchronizer";
+import { AppStateSync } from "@gaki/engine/kernel/engine/StateSynchronizer";
 
 const Index = () => {
   const editor = useEditorOrchestrator();

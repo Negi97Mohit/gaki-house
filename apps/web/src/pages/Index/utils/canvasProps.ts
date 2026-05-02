@@ -7,10 +7,10 @@ import {
   LayoutMode,
   CameraShape,
   CaptionStyle,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { toast } from "sonner";
-import { generateId } from "@caption-cam/core/lib/id";
+import { generateId } from "@gaki/core/lib/id";
 
 // Helper to clone overlay with new ID
 const newOverlay = (overlay: GeneratedOverlay) => ({

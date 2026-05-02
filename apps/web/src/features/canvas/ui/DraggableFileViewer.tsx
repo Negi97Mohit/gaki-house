@@ -1,7 +1,7 @@
 // src/features/canvas/ui/DraggableFileViewer.tsx
 import React, { useEffect, useState, useRef } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { FileOverlayState } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { FileOverlayState } from "@gaki/core/types/caption";
 import {
   X,
   File as FileIcon,
@@ -22,7 +22,7 @@ import { EngineWrapper as HybridDraggable } from '@/features/canvas/engines/Engi
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
 import { ThreeDGSViewer } from "./ThreeDGSViewer";
 import { convertImageTo3D } from "@/services/mlsharp-api";
-import { notify } from "@caption-cam/core/lib/notify";
+import { notify } from "@gaki/core/lib/notify";
 
 interface DraggableFileViewerProps {
   overlay: FileOverlayState;

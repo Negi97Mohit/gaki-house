@@ -1,17 +1,17 @@
 import { useState, useCallback, useEffect } from "react";
 import ReactDOMServer from "react-dom/server";
 import { toast } from "sonner";
-import { generateId } from "@caption-cam/core/lib/id";
+import { generateId } from "@gaki/core/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import { getPlatformIcon } from "@/features/banners/ui/SocialBannerRenderer";
-import { SceneState, GeneratedOverlay } from "@caption-cam/core/types/caption";
+import { SceneState, GeneratedOverlay } from "@gaki/core/types/caption";
 import {
   SocialBannerDesign,
   SocialBannerData,
   DEFAULT_BANNER_DATA,
   SocialPlatform,
-} from "@caption-cam/core/types/socialBanner";
-import { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
+} from "@gaki/core/types/socialBanner";
+import { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
 import socialBannersData from "@/data/socialBanners.json";
 
 // --- Helpers ---

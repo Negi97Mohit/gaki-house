@@ -4,7 +4,7 @@ import { Search, X, ArrowLeft, TrendingUp } from "lucide-react";
 import { MOCK_CATEGORIES, formatViewerCount } from "@/pages/platform/data/mockData";
 import { useStreams } from "@/pages/platform/hooks/useStreams";
 import { MobileStreamCard } from "../components/MobileStreamCard";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 const TRENDING_SEARCHES = ["Valorant", "Just Chatting", "Minecraft", "Music", "IRL", "Art"];
 

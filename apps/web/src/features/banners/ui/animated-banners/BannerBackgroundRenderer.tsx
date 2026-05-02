@@ -1,7 +1,7 @@
 // src/components/animated-banners/BannerBackgroundRenderer.tsx
 import React from "react";
 import { motion } from "framer-motion";
-import type { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
+import type { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
 import { GlitchMatrix } from "./GlitchMatrix";
 import { EsportsHUD } from "./EsportsHUD";
 import { InkFlow } from "./InkFlow";

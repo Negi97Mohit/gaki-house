@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import { useWebGLRenderLoop } from "@/features/canvas/hooks/useWebGLRenderLoop";
-import { CameraShape, LayoutMode } from "@caption-cam/core/types/caption";
+import { CameraShape, LayoutMode } from "@gaki/core/types/caption";
 import {
   getCameraShapeStyle,
   getNumericAspectRatio,
 } from "@/features/canvas/ui/VideoCanvasHelpers";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface ForegroundUserLayerProps {
   videoRef: React.RefObject<HTMLVideoElement>;

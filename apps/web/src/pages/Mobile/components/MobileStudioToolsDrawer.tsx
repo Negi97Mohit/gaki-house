@@ -4,7 +4,7 @@ import { Drawer } from "vaul";
 import { Paintbrush, Type, Settings } from "lucide-react";
 import { CanvasDesignsPanel } from "@/features/studio/ui/panels/CanvasDesignsPanel";
 import { TextPresetsPanel } from "@/features/studio/ui/panels/TextPresetsPanel";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface MobileStudioToolsDrawerProps {
     isOpen: boolean;

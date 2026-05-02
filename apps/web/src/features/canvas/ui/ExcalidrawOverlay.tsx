@@ -3,7 +3,7 @@ import {
   MainMenu,
 } from "@excalidraw/excalidraw";
 import { useTheme } from "next-themes";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   X,
   GripVertical,
@@ -13,14 +13,14 @@ import {
   Move,
 } from "lucide-react";
 import { Rnd } from "react-rnd";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@caption-cam/ui/dropdown-menu";
+} from "@gaki/ui/dropdown-menu";
 
 interface ExcalidrawOverlayProps {
   isVisible: boolean;

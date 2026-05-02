@@ -1,11 +1,11 @@
 {
-  "name": "@caption-cam/desktop",
+  "name": "@gaki/desktop",
   "version": "1.0.0",
   "private": true,
   "author": "Creator Enji",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Negi97Mohit/caption-cam"
+    "url": "https://github.com/Negi97Mohit/gaki"
   },
   "main": "dist/main.js",
   "scripts": {

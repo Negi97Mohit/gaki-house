@@ -1,8 +1,8 @@
 // src/features/studio/ui/panels/FileVaultPanel.tsx
 import React, { useCallback, useState } from 'react';
-import { Button } from "@caption-cam/ui/button";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
-import { VaultFile } from "@caption-cam/core/types/vault";
+import { Button } from "@gaki/ui/button";
+import { ScrollArea } from "@gaki/ui/scroll-area";
+import { VaultFile } from "@gaki/core/types/vault";
 import {
   Upload,
   Trash2,
@@ -16,7 +16,7 @@ import {
   Archive,
   X,
 } from 'lucide-react';
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { formatDistanceToNow } from 'date-fns';
 
 interface FileVaultPanelProps {

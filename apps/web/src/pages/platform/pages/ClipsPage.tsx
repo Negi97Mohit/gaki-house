@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Play, Eye, Clock, TrendingUp, Calendar } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { formatViewerCount } from "../data/mockData";
 
 type TabType = "clips" | "vods";

@@ -1,7 +1,7 @@
 import React from "react";
-import type { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
+import type { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
 import { UniversalBannerRenderer } from "@/features/banners/ui/banner/UniversalBannerRenderer";
-import { BannerContentData, BannerElementState } from "@caption-cam/core/types/banner";
+import { BannerContentData, BannerElementState } from "@gaki/core/types/banner";
 
 // Re-export shared types for backward compatibility
 export type { BannerContentData, BannerElementState };

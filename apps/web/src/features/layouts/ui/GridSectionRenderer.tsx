@@ -4,7 +4,7 @@ import {
   FileOverlayState,
   TextOverlayState,
   CanvasSectionCameraState,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { FileRenderer } from "@/features/canvas/ui/DraggableFileViewer";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { EmptyGridSection } from "@/features/layouts/ui/grid-section/EmptyGridSection";

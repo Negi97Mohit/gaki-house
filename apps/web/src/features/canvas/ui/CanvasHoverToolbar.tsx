@@ -20,15 +20,15 @@ import {
 } from "lucide-react";
 import React, { useRef, useState, useEffect } from "react";
 
-import { Button } from "@caption-cam/ui/button";
-import { cn } from "@caption-cam/core/lib/utils";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
-import { DropdownMenuContent } from "@caption-cam/ui/dropdown-menu";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
-import { Popover, PopoverContent, PopoverTrigger } from "@caption-cam/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
+import { Button } from "@gaki/ui/button";
+import { cn } from "@gaki/core/lib/utils";
+import { ColorPicker } from "@gaki/ui/color-picker";
+import { DropdownMenuContent } from "@gaki/ui/dropdown-menu";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
+import { Popover, PopoverContent, PopoverTrigger } from "@gaki/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
 import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
-import { CanvasLayoutState } from "@caption-cam/core/types/caption";
+import { CanvasLayoutState } from "@gaki/core/types/caption";
 import { GridLayoutPreview } from "@/features/layouts/ui/GridLayoutPreview";
 import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";
 

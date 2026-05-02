@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SlidersHorizontal, Expand, Shrink, Users, Home } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { cn } from "@caption-cam/core/lib/utils";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { Button } from "@gaki/ui/button";
+import { cn } from "@gaki/core/lib/utils";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 import { MediaControls } from "./controls/MediaControls";
 import { SceneControls } from "./controls/SceneControls";
 import { AIControls } from "./controls/AIControls";

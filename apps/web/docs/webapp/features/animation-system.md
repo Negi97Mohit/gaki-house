@@ -54,7 +54,7 @@ React hook for applying Anime.js animations to DOM elements.
 
 ## Stream Scene Designs
 
-→ Source: [streamSceneDesigns.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/lib/streamSceneDesigns.ts) (38KB)
+→ Source: [streamSceneDesigns.ts](file:///c:/Users/Dell/Desktop/gaki/src/lib/streamSceneDesigns.ts) (38KB)
 
 A large library of pre-designed stream scenes and overlay templates including:
 - Starting soon screens

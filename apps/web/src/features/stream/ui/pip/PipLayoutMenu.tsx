@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, Grid3X3 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,9 +8,9 @@ import {
   DropdownMenuPortal,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@caption-cam/ui/dropdown-menu";
-import { cn } from "@caption-cam/core/lib/utils";
-import { CameraShape } from "@caption-cam/core/types/caption";
+} from "@gaki/ui/dropdown-menu";
+import { cn } from "@gaki/core/lib/utils";
+import { CameraShape } from "@gaki/core/types/caption";
 
 export interface PipLayoutPreset {
   id: string;

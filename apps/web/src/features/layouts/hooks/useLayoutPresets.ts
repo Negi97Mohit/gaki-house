@@ -1,8 +1,8 @@
 // src/hooks/useLayoutPresets.ts
 import { useState, useCallback } from "react";
-import { LayoutPreset } from "@caption-cam/core/types/layoutPreset";
-import { useLocalStorage } from "@caption-cam/core/hooks/useLocalStorage";
-import { generateId } from "@caption-cam/core/lib/id";
+import { LayoutPreset } from "@gaki/core/types/layoutPreset";
+import { useLocalStorage } from "@gaki/core/hooks/useLocalStorage";
+import { generateId } from "@gaki/core/lib/id";
 
 export const useLayoutPresets = () => {
   const [presets, setPresets] = useLocalStorage<LayoutPreset[]>(

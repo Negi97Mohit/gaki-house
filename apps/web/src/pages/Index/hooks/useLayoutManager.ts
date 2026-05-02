@@ -13,15 +13,15 @@ import {
   CameraShape,
   CaptionShape,
   CaptionAnimation,
-} from "@caption-cam/core/types/caption";
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
-import { LayoutPreset } from "@caption-cam/core/types/layoutPreset";
+} from "@gaki/core/types/caption";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
+import { LayoutPreset } from "@gaki/core/types/layoutPreset";
 import {
   getScreenSize,
   getResponsivePipLayout,
   getResponsiveTextLayout,
 } from "@/lib/presetValidation";
-import { generateId } from "@caption-cam/core/lib/id";
+import { generateId } from "@gaki/core/lib/id";
 
 // Helper to generate IDs (same as in Index.tsx, duplicated for modularity or import if possible)
 interface UseLayoutManagerProps {

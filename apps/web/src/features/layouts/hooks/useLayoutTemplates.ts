@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
 
 export const useLayoutTemplates = () => {
     const [layoutTemplates, setLayoutTemplates] = useState<CanvasLayoutTemplate[]>([]);

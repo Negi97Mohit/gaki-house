@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@caption-cam/ui/dialog";
+} from "@gaki/ui/dialog";
 import { AudioMixerPanel } from "../panels/AudioMixerPanel";
 
 interface AudioSettingsDialogProps {

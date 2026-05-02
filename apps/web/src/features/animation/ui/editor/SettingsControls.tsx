@@ -1,8 +1,8 @@
 import React from "react";
-import { Label } from "@caption-cam/ui/label";
-import { Slider } from "@caption-cam/ui/slider";
-import { Switch } from "@caption-cam/ui/switch";
-import { AnimationPreset } from "@caption-cam/core/types/animation";
+import { Label } from "@gaki/ui/label";
+import { Slider } from "@gaki/ui/slider";
+import { Switch } from "@gaki/ui/switch";
+import { AnimationPreset } from "@gaki/core/types/animation";
 
 interface SettingsControlsProps {
     preset: AnimationPreset;

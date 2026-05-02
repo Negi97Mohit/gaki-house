@@ -12,7 +12,7 @@ Two large components provide **visual atmosphere** to the canvas — ambient bac
 
 ## AmbientBackground (71KB)
 
-→ Source: [AmbientBackground.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/stream/ui/AmbientBackground.tsx)
+→ Source: [AmbientBackground.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/stream/ui/AmbientBackground.tsx)
 
 The **largest single component** in the codebase. Provides animated background effects rendered on a full-screen `<canvas>` element behind the main content.
 
@@ -63,7 +63,7 @@ Each effect type has configurable parameters:
 
 ## CinematicOverlay (46KB)
 
-→ Source: [CinematicOverlay.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/stream/ui/CinematicOverlay.tsx)
+→ Source: [CinematicOverlay.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/stream/ui/CinematicOverlay.tsx)
 
 Renders **cinematic visual effects** as HTML/CSS overlays on top of the canvas:
 

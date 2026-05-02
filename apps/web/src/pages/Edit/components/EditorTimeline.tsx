@@ -7,9 +7,9 @@ import {
     Volume2,
     Layers
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Slider } from "@caption-cam/ui/slider";
-import { RecordingSession, SessionPlaybackState } from "@caption-cam/core/types/editor";
+import { Button } from "@gaki/ui/button";
+import { Slider } from "@gaki/ui/slider";
+import { RecordingSession, SessionPlaybackState } from "@gaki/core/types/editor";
 
 interface EditorTimelineProps {
     session: RecordingSession;

@@ -18,11 +18,11 @@ import {
   Copy,
   X,
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { cn } from "@caption-cam/core/lib/utils";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { cn } from "@gaki/core/lib/utils";
 import { STREAMING_PLATFORMS } from "@/data/streamingPlatforms";
-import { Switch } from "@caption-cam/ui/switch";
+import { Switch } from "@gaki/ui/switch";
 import { useStreamStore, StreamDestination } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 import { v4 as uuidv4 } from "uuid";

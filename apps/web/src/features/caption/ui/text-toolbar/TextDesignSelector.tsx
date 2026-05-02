@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { X, Ban } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
-import { ScrollArea, ScrollBar } from "@caption-cam/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
+import { ScrollArea, ScrollBar } from "@gaki/ui/scroll-area";
 import { useTextDesigns, TextDesign } from "@/hooks/useTextDesigns";
 import { MultiLayerTextRenderer } from "@/features/canvas/ui/MultiLayerTextRenderer";
-import { TextOverlayState } from "@caption-cam/core/types/caption";
-import { TextLayer } from "@caption-cam/core/types/textDesign";
-import { cn } from "@caption-cam/core/lib/utils";
+import { TextOverlayState } from "@gaki/core/types/caption";
+import { TextLayer } from "@gaki/core/types/textDesign";
+import { cn } from "@gaki/core/lib/utils";
 
 interface TextDesignSelectorProps {
   overlay: TextOverlayState;

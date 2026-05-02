@@ -12,7 +12,7 @@ import { useStreams } from "../hooks/useStreams";
 import { useAuth } from "../context/AuthContext";
 import { useGoLiveStore } from "@/stores/goLive.store";
 import { useThemeStore, type PlatformLayout } from "@/features/theme";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 const getStreamGridClasses = (layout: PlatformLayout) => {
   switch (layout) {

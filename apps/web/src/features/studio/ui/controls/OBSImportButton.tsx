@@ -2,11 +2,11 @@
 import React, { useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
-import { SceneState } from "@caption-cam/core/types/caption";
-import { parseOBSCollection } from "@caption-cam/engine/obs/OBSParser";
-import { mapOBSCollectionToScenes } from "@caption-cam/engine/obs/OBSSourceMapper";
+import { Button } from "@gaki/ui/button";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
+import { SceneState } from "@gaki/core/types/caption";
+import { parseOBSCollection } from "@gaki/engine/obs/OBSParser";
+import { mapOBSCollectionToScenes } from "@gaki/engine/obs/OBSSourceMapper";
 
 interface OBSImportButtonProps {
   onImportOBSScenes: (scenes: SceneState[], stingerConfig?: { path: string; transitionPoint: number }) => void;

@@ -1,13 +1,13 @@
 import React from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { Search } from "lucide-react";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@caption-cam/ui/popover";
+} from "@gaki/ui/popover";
 import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface SearchButtonProps {
     sectionId: string;

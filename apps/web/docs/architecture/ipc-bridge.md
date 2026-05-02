@@ -16,8 +16,8 @@ The Electron app uses **context isolation** with a **preload script** to expose 
                       result                     result
 ```
 
-→ Source: [preload.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/preload.ts)  
-→ Source: [main.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/main.ts)
+→ Source: [preload.ts](file:///c:/Users/Dell/Desktop/gaki/electron/preload.ts)  
+→ Source: [main.ts](file:///c:/Users/Dell/Desktop/gaki/electron/main.ts)
 
 ---
 

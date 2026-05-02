@@ -1,5 +1,5 @@
 // src/features/canvas/workers/canvas.worker.ts
-import { GLRenderer, RenderOptions } from "@caption-cam/engine/kernel/engine/GLRenderer";
+import { GLRenderer, RenderOptions } from "@gaki/engine/kernel/engine/GLRenderer";
 
 let renderer: GLRenderer | null = null;
 

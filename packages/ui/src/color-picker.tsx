@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Slider } from './slider';
 import { Input } from './input';
 import { Paintbrush, Palette, Plus, X, ChevronDown, ChevronUp, Save, Trash2 } from 'lucide-react';
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
     SOLID_COLOR_PRESETS,
     GRADIENT_PRESETS,
@@ -16,8 +16,8 @@ import {
     generateGradient,
     GradientPatternType,
     GradientOptions
-} from "@caption-cam/core/constants/color-presets";
-import { isGradient, addAlpha } from "@caption-cam/core/lib/color-utils";
+} from "@gaki/core/constants/color-presets";
+import { isGradient, addAlpha } from "@gaki/core/lib/color-utils";
 
 // ============= CUSTOM PRESETS STORAGE =============
 

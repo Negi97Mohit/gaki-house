@@ -9,7 +9,7 @@ import {
   CanvasSectionCameraState,
   LayoutMode,
   CameraShape,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 
 interface ScreenShareViewProps {

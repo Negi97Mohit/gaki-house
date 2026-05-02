@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 export type BadgeType = "mod" | "vip" | "sub" | "verified" | "owner";
 

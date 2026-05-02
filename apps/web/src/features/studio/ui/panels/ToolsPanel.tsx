@@ -1,6 +1,6 @@
 // src/features/studio/ui/panels/ToolsPanel.tsx
 import React from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { Type, Pencil, Search, HelpCircle } from "lucide-react";
 import { FloatingAssetSearch } from "@/features/assets/ui/FloatingAssetSearch";
 import { InstructionsDialog } from "@/features/studio/ui/InstructionsDialog";

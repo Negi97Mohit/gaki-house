@@ -1,6 +1,6 @@
 # System Architecture
 
-Caption Cam Studio is structured as a monorepo containing a web-based studio, an Electron desktop wrapper, signaling APIs, and custom rendering engines.
+GAKI - House of Video Creation is structured as a monorepo containing a web-based studio, an Electron desktop wrapper, signaling APIs, and custom rendering engines.
 
 ## High-Level Topology
 

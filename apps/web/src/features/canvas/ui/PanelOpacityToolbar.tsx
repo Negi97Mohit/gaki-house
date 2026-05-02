@@ -4,13 +4,13 @@ import {
   PATTERN_LABELS,
 } from "@/features/canvas/hooks/useCameraOpacity";
 import { Eye, EyeOff, ChevronDown } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@caption-cam/ui/tooltip";
+} from "@gaki/ui/tooltip";
 
 interface PanelOpacityToolbarProps {
   isEnabled: boolean;

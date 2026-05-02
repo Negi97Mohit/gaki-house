@@ -5,9 +5,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@caption-cam/ui/popover";
-import { Textarea } from "@caption-cam/ui/textarea";
-import { Button } from "@caption-cam/ui/button";
+} from "@gaki/ui/popover";
+import { Textarea } from "@gaki/ui/textarea";
+import { Button } from "@gaki/ui/button";
 import {
   Sparkles,
   Send,
@@ -22,9 +22,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@caption-cam/ui/select";
-import { Label } from "@caption-cam/ui/label";
-import { GeneratedOverlay } from "@caption-cam/core/types/caption";
+} from "@gaki/ui/select";
+import { Label } from "@gaki/ui/label";
+import { GeneratedOverlay } from "@gaki/core/types/caption";
 
 interface AICommandPopoverProps {
   onSubmit: (text: string, targetId: string | null) => void;

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { Type, Minus, Plus, ChevronDown } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { TextOverlayState } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { TextOverlayState } from "@gaki/core/types/caption";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@caption-cam/ui/popover";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+} from "@gaki/ui/popover";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 import { ALL_FONTS } from "@/lib/fonts";
 
 interface FontControlsProps {

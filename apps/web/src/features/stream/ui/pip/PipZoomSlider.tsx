@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Slider } from "@caption-cam/ui/slider";
+import { Button } from "@gaki/ui/button";
+import { Slider } from "@gaki/ui/slider";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@caption-cam/ui/popover";
-import { cn } from "@caption-cam/core/lib/utils";
+} from "@gaki/ui/popover";
+import { cn } from "@gaki/core/lib/utils";
 
 interface PipZoomSliderProps {
   manualZoom: number; // 1.0 = no zoom, range 0.5 to 3.0

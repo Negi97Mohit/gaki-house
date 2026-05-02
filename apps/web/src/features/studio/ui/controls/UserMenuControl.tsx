@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { LogIn, LogOut, User, Settings, LayoutDashboard } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@caption-cam/ui/popover";
+import { Button } from "@gaki/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@gaki/ui/popover";
 import { DefaultAvatar } from "@/pages/platform/components/DefaultAvatar";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 
 interface UserMenuControlProps {
   isSignedIn?: boolean;

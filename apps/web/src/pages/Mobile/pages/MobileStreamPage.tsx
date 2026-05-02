@@ -9,7 +9,7 @@ import { useStreams } from "@/pages/platform/hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { StreamPlayer } from "@/pages/platform/components/StreamPlayer";
 import { StreamChatEmbed } from "@/pages/platform/components/StreamChatEmbed";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useAuth } from "@/pages/platform/context/AuthContext";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, addDoc, deleteDoc } from "firebase/firestore";

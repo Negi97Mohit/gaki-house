@@ -6,8 +6,8 @@ import {
     Settings,
     Download
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { cn } from "@caption-cam/core/lib/utils";
+import { Button } from "@gaki/ui/button";
+import { cn } from "@gaki/core/lib/utils";
 
 interface EditorHeaderProps {
     sessionName: string;

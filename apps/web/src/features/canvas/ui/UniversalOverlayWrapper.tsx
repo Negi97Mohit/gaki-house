@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { X } from "lucide-react";
 import { LayoutUpdate } from "./HybridDraggable";
 import { EngineWrapper } from "@/features/canvas/engines/EngineWrapper";

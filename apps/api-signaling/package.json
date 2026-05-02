@@ -1,5 +1,5 @@
 {
-  "name": "@caption-cam/api-signaling",
+  "name": "@gaki/api-signaling",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { SceneState } from "@caption-cam/core/types/caption";
+import { SceneState } from "@gaki/core/types/caption";
 import { toast } from "sonner";
 
 interface UseSmartCameraSwitcherProps {

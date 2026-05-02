@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
-import { CanvasSectionCameraState, CameraShape } from "@caption-cam/core/types/caption";
+import { CanvasSectionCameraState, CameraShape } from "@gaki/core/types/caption";
 
 // Legacy props interface for backward compatibility with CanvasView
 interface LegacyVideoCanvasCameraProps {

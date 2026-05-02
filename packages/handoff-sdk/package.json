@@ -1,5 +1,5 @@
 {
-  "name": "@caption-cam/handoff-sdk",
+  "name": "@gaki/handoff-sdk",
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {

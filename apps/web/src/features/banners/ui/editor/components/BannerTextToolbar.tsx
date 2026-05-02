@@ -2,15 +2,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Bold, Minus, Plus } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@caption-cam/ui/select";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+} from "@gaki/ui/select";
+import { ColorPicker } from "@gaki/ui/color-picker";
 
 interface BannerTextToolbarProps {
   fontSize: number;

@@ -16,8 +16,8 @@
 ### 1. Clone & Install
 
 ```bash
-git clone <repo-url> caption-cam
-cd caption-cam
+git clone <repo-url> gaki
+cd gaki
 npm install
 ```
 

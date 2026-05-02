@@ -1,5 +1,5 @@
 PHASE 1 — MONOREPO & INFRASTRUCTURE AUDIT
-Here is the deep architectural and infrastructure audit for the root monorepo setup of the Caption Cam / GAKI project.
+Here is the deep architectural and infrastructure audit for the root monorepo setup of the GAKI / GAKI project.
 
 1.1 Dependency & Workspace Health
 CRITICAL 🔴: Electron Version Split-Brain
@@ -24,7 +24,7 @@ Location: apps/desktop/package.json and apps/api-signaling/package.json
 
 Issue: Both packages independently declare ffmpeg-static, fluent-ffmpeg, and socket.io.
 
-Fix: Ensure these versions are strictly aligned across the workspace using a root-level pnpm override or by extracting media-handling logic into a shared @caption-cam/media-core package.
+Fix: Ensure these versions are strictly aligned across the workspace using a root-level pnpm override or by extracting media-handling logic into a shared @gaki/media-core package.
 
 1.2 Build Pipeline Issues
 HIGH 🟠: Missing Quality Gates in Turborepo Task Graph
@@ -107,7 +107,7 @@ Fix: Convert the job to a matrix strategy running across windows-latest, macos-l
 [MEDIUM] Evaluate onlyBuiltDependencies in the root package.json to ensure websocket native extensions (bufferutil) are allowed to build for performance.
 
 PHASE 2 — SECURITY AUDIT
-Here is the targeted, app-by-app security audit for the Caption Cam / GAKI monorepo.
+Here is the targeted, app-by-app security audit for the GAKI / GAKI monorepo.
 
 apps/desktop (Electron Wrapper) Security Report
 CRITICAL 🔴

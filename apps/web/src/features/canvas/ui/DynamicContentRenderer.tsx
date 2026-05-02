@@ -2,7 +2,7 @@ import React from "react";
 import { HtmlOverlayRenderer } from "./HtmlOverlayRenderer";
 import { FileRenderer } from "@/features/canvas/ui/DraggableFileViewer";
 import { CaptionRenderer } from "@/features/canvas/ui/CaptionRenderer";
-import { GeneratedLayout } from "@caption-cam/core/types/caption";
+import { GeneratedLayout } from "@gaki/core/types/caption";
 
 interface DynamicContentRendererProps {
   target: {

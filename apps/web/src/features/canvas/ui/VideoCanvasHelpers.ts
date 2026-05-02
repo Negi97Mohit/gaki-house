@@ -1,5 +1,5 @@
 import React from "react";
-import { CameraShape } from "@caption-cam/core/types/caption";
+import { CameraShape } from "@gaki/core/types/caption";
 import { ASPECT_RATIOS } from "@/lib/backgrounds";
 
 export const getNumericAspectRatio = (

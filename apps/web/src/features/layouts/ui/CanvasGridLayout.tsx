@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef, Suspense } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   CanvasLayoutState,
   CanvasSectionState,
   FileOverlayState,
   TextOverlayState,
   CanvasSectionCameraState,
-} from "@caption-cam/core/types/caption";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
+} from "@gaki/core/types/caption";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { Loader2 } from "lucide-react";
 import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";

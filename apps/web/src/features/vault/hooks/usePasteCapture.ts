@@ -1,6 +1,6 @@
 // src/features/vault/hooks/usePasteCapture.ts
 import { useEffect, useCallback } from 'react';
-import { VaultFile } from "@caption-cam/core/types/vault";
+import { VaultFile } from "@gaki/core/types/vault";
 
 interface UsePasteCaptureOptions {
   enabled?: boolean;

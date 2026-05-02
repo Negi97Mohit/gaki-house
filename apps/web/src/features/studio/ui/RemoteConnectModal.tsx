@@ -6,7 +6,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@caption-cam/ui/dialog";
+} from "@gaki/ui/dialog";
 import { Loader2, Smartphone, CheckCircle2 } from "lucide-react";
 
 interface RemoteConnectModalProps {
@@ -26,7 +26,7 @@ export const RemoteConnectModal = ({
   // You should replace 'https://app.captioncam.com' with your actual production URL
   const isElectron = navigator.userAgent.toLowerCase().includes("electron");
   const baseUrl = isElectron
-    ? "https://caption-cam.vercel.app" // REPLACE with your hosted web app URL
+    ? "https://gaki.vercel.app" // REPLACE with your hosted web app URL
     : `${window.location.protocol}//${window.location.host}`;
 
   const connectionUrl = peerId ? `${baseUrl}/remote-cam?target=${peerId}` : "";

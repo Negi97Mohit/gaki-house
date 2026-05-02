@@ -4,7 +4,7 @@
 
 ---
 
-→ Source: [preload.ts](file:///c:/Users/Dell/Desktop/caption-cam/electron/preload.ts) (58 lines)
+→ Source: [preload.ts](file:///c:/Users/Dell/Desktop/gaki/electron/preload.ts) (58 lines)
 
 ## Purpose
 

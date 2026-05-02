@@ -11,19 +11,19 @@ import {
   Wrench,
   Settings,
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   CaptionStyle,
   GeneratedOverlay,
-} from "@caption-cam/core/types/caption";
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
+} from "@gaki/core/types/caption";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
 import {
   SocialBannerDesign,
   SocialBannerData,
-} from "@caption-cam/core/types/socialBanner";
-import { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
-import { VaultFile } from "@caption-cam/core/types/vault";
-import { useIsMobile } from "@caption-cam/core/hooks/use-mobile";
+} from "@gaki/core/types/socialBanner";
+import { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
+import { VaultFile } from "@gaki/core/types/vault";
+import { useIsMobile } from "@gaki/core/hooks/use-mobile";
 
 // Sub-components
 import { CanvasDesignsPanel } from "./panels/CanvasDesignsPanel";
@@ -37,7 +37,7 @@ import { SettingsPanel } from "./panels/SettingsPanel";
 
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 
 interface FloatingControlsPanelProps {
   style: CaptionStyle;

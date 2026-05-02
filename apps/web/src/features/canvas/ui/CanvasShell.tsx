@@ -1,6 +1,6 @@
 // Single responsibility: outer canvas container, aspect-ratio shell, and background hosting.
 import React, { useEffect } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import Guides from "@scena/react-guides";
 import { isV2Engine } from "@/features/canvas/lib/engineFlag";
 

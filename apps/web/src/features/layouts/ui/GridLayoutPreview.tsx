@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { CanvasGridLayoutRenderer } from "./CanvasGridLayout";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
-import { CanvasLayoutState, DEFAULT_CAMERA_STATE } from "@caption-cam/core/types/caption";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
+import { CanvasLayoutState, DEFAULT_CAMERA_STATE } from "@gaki/core/types/caption";
 import { PreviewModeProvider } from "./layouts/dynamic/core/PreviewModeContext";
 
 interface GridLayoutPreviewProps {

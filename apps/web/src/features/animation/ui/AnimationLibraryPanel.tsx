@@ -10,15 +10,15 @@ import {
   Paintbrush,
   Layers,
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@caption-cam/ui/tabs";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@gaki/ui/tabs";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 import { SmartTextAnimator } from "./SmartTextAnimator";
 import { AnimationEditor } from "./AnimationEditor";
 import { GSAPAnimationEditor } from "./GSAPAnimationEditor";
-import { AnimationPreset } from "@caption-cam/core/types/animation";
-import { cn } from "@caption-cam/core/lib/utils";
+import { AnimationPreset } from "@gaki/core/types/animation";
+import { cn } from "@gaki/core/lib/utils";
 import { useAnimationLibrary } from "@/features/animation/hooks/useAnimationLibrary";
 import { ANIMATION_CATEGORIES } from "@/lib/animationLibrary";
 import { toast } from "sonner";

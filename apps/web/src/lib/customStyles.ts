@@ -1,6 +1,6 @@
 // src/lib/customStyles.ts
 
-import { CaptionStyle } from "@caption-cam/core/types/caption";
+import { CaptionStyle } from "@gaki/core/types/caption";
 
 export interface CustomStyle {
   id: string;

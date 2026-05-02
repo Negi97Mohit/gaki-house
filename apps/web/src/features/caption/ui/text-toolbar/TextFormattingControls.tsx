@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   Bold,
   Italic,
@@ -9,11 +9,11 @@ import {
   AlignRight,
   MoveHorizontal,
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { TextOverlayState } from "@caption-cam/core/types/caption";
-import { Popover, PopoverContent, PopoverTrigger } from "@caption-cam/ui/popover";
-import { Slider } from "@caption-cam/ui/slider";
-import { Label } from "@caption-cam/ui/label";
+import { cn } from "@gaki/core/lib/utils";
+import { TextOverlayState } from "@gaki/core/types/caption";
+import { Popover, PopoverContent, PopoverTrigger } from "@gaki/ui/popover";
+import { Slider } from "@gaki/ui/slider";
+import { Label } from "@gaki/ui/label";
 
 interface TextFormattingControlsProps {
   overlay: TextOverlayState;

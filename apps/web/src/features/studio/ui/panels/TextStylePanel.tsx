@@ -1,7 +1,7 @@
 // src/components/panels/TextStylePanel.tsx
 import React from "react";
 import { StyleControls } from "@/features/caption/ui/StyleControls";
-import { CaptionStyle } from "@caption-cam/core/types/caption";
+import { CaptionStyle } from "@gaki/core/types/caption";
 
 interface TextStylePanelProps {
   style: CaptionStyle;

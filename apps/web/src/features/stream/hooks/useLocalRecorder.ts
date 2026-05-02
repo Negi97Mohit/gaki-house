@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
 import { useStreamStore } from "@/stores/stream.store";
-import { notify } from "@caption-cam/core/lib/notify";
+import { notify } from "@gaki/core/lib/notify";
 import fixWebmDuration from "fix-webm-duration";
 
 // Define Electron Interface for Recorder IPC

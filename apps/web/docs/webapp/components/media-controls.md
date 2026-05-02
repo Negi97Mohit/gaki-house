@@ -23,7 +23,7 @@ src/features/studio/ui/controls/
 
 ## MediaControls (15KB)
 
-→ Source: [MediaControls.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/controls/MediaControls.tsx)
+→ Source: [MediaControls.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/controls/MediaControls.tsx)
 
 The central control cluster in the bottom navigation bar:
 
@@ -61,7 +61,7 @@ Each media button has a secondary popover for detailed settings:
 
 ## VideoSettingsDialog (30KB)
 
-→ Source: [VideoSettingsDialog.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/controls/VideoSettingsDialog.tsx)
+→ Source: [VideoSettingsDialog.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/controls/VideoSettingsDialog.tsx)
 
 A **comprehensive camera settings dialog** with tabbed sections:
 
@@ -98,7 +98,7 @@ A **comprehensive camera settings dialog** with tabbed sections:
 
 ## AIControls (2.6KB)
 
-→ Source: [AIControls.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/controls/AIControls.tsx)
+→ Source: [AIControls.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/controls/AIControls.tsx)
 
 AI assistant trigger in the bottom bar:
 - Opens `AIChatbot` or `AICommandPopover`
@@ -110,7 +110,7 @@ AI assistant trigger in the bottom bar:
 
 ## SceneControls (2.6KB)
 
-→ Source: [SceneControls.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/controls/SceneControls.tsx)
+→ Source: [SceneControls.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/controls/SceneControls.tsx)
 
 History and scene management buttons:
 

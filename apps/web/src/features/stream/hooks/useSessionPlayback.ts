@@ -1,6 +1,6 @@
 // src/hooks/useSessionPlayback.ts
 
-import { RecordingSession, ComponentTrack, Keyframe } from "@caption-cam/core/types/editor";
+import { RecordingSession, ComponentTrack, Keyframe } from "@gaki/core/types/editor";
 import {
   CaptionStyle,
   GeneratedOverlay,
@@ -8,7 +8,7 @@ import {
   CameraShape,
   FileOverlayState,
   BrowserOverlayState,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { useMemo } from "react";
 
 // Helper to find the correct state from keyframes for a given timestamp

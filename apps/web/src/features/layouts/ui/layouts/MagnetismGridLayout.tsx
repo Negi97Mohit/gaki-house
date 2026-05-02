@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
-import { cn } from "@caption-cam/core/lib/utils";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
+import { cn } from "@gaki/core/lib/utils";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { GridSectionRenderer } from "../GridSectionRenderer";
 import {

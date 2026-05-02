@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Peer from "peerjs";
 import { useSearchParams } from "react-router-dom";
-import { Button } from "@caption-cam/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@caption-cam/ui/card";
+import { Button } from "@gaki/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@gaki/ui/card";
 import { Camera, Mic, MicOff, Video, VideoOff, RefreshCw } from "lucide-react";
 
 const RemoteCamera = () => {
@@ -65,9 +65,9 @@ const RemoteCamera = () => {
         // Persist targetId logic
         let currentTargetId = targetId;
         if (currentTargetId) {
-            localStorage.setItem("caption-cam-target-id", currentTargetId);
+            localStorage.setItem("gaki-target-id", currentTargetId);
         } else {
-            currentTargetId = localStorage.getItem("caption-cam-target-id");
+            currentTargetId = localStorage.getItem("gaki-target-id");
         }
 
         if (!currentTargetId) {

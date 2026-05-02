@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Smile } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 const EMOTE_CATEGORIES = [
   {

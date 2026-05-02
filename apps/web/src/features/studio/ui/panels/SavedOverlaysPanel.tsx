@@ -1,9 +1,9 @@
 // src/components/panels/SavedOverlaysPanel.tsx
 import React from "react";
 import { Sparkles, Trash2 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { GeneratedOverlay } from "@caption-cam/core/types/caption";
-import { cn } from "@caption-cam/core/lib/utils";
+import { Button } from "@gaki/ui/button";
+import { GeneratedOverlay } from "@gaki/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
 
 interface SavedOverlaysPanelProps {
   savedOverlays: GeneratedOverlay[];

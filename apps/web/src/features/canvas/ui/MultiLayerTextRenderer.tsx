@@ -3,7 +3,7 @@ import {
   TextDesignLayer,
   TextLayer,
   TextDesignPreset,
-} from "@caption-cam/core/types/textDesign";
+} from "@gaki/core/types/textDesign";
 
 interface MultiLayerTextRendererProps {
   text: string;

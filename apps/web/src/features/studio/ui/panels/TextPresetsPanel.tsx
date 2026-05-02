@@ -1,7 +1,7 @@
 // src/features/studio/ui/panels/TextPresetsPanel.tsx
 import React, { useState } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@caption-cam/ui/tabs";
-import { CaptionStyle } from "@caption-cam/core/types/caption";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@gaki/ui/tabs";
+import { CaptionStyle } from "@gaki/core/types/caption";
 import { DynamicStylesPanel } from "./DynamicStylesPanel";
 import { StaticPresetsPanel } from "./StaticPresetsPanel";
 import { TextStylePanel } from "./TextStylePanel";

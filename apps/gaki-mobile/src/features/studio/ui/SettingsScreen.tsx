@@ -9,7 +9,7 @@ import {
   Smartphone,
   Gauge,
 } from "lucide-react";
-import { Switch } from "@caption-cam/ui/switch";
+import { Switch } from "@gaki/ui/switch";
 
 const SettingsScreen = () => {
   const [saveToRoll, setSaveToRoll] = useState(true);

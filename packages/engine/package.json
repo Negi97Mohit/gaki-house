@@ -1,5 +1,5 @@
 {
-  "name": "@caption-cam/engine",
+  "name": "@gaki/engine",
   "version": "1.0.0",
   "private": true,
   "exports": {
@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "three": "^0.160.0",
-    "@caption-cam/core": "workspace:*"
+    "@gaki/core": "workspace:*"
   }
 }

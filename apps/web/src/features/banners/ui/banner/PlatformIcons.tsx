@@ -1,6 +1,6 @@
 import React from "react";
 import { Github, Globe } from "lucide-react";
-import { SocialPlatform } from "@caption-cam/core/types/banner";
+import { SocialPlatform } from "@gaki/core/types/banner";
 
 // Custom SVG icons using Simple Icons (https://simpleicons.org)
 const TwitchIcon = () => (

@@ -1,13 +1,13 @@
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { generateId } from "@caption-cam/core/lib/id";
+import { generateId } from "@gaki/core/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import { generateHtmlFromPreset } from "@/lib/animationGenerator";
 import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
-import { AnimationPreset } from "@caption-cam/core/types/animation";
+import { AnimationPreset } from "@gaki/core/types/animation";
 import { GSAPPreset } from "@/features/animation/lib/gsapAnimations";
-import { GeneratedOverlay, TextOverlayState } from "@caption-cam/core/types/caption";
-import { SceneState } from "@caption-cam/core/types/caption";
+import { GeneratedOverlay, TextOverlayState } from "@gaki/core/types/caption";
+import { SceneState } from "@gaki/core/types/caption";
 
 interface UseOverlayHandlersProps {
   activeScene: SceneState;

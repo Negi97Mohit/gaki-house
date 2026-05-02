@@ -20,14 +20,14 @@ import {
   ChevronRight,
   Info,
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { Slider } from "@caption-cam/ui/slider";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@caption-cam/ui/tooltip";
+import { cn } from "@gaki/core/lib/utils";
+import { Slider } from "@gaki/ui/slider";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@gaki/ui/tooltip";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneAudioStore } from "@/stores/sceneAudio.store";
-import { SceneAudioTrack } from "@caption-cam/core/types/caption";
+import { SceneAudioTrack } from "@gaki/core/types/caption";
 
 /* ─── Section Card wrapper ─── */
 const MixerSection: React.FC<{

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { streamService } from "../services/stream.service";
-import { notify } from "@caption-cam/core/lib/notify";
+import { notify } from "@gaki/core/lib/notify";
 
 export const useMediaPipeline = () => {
   const [isPipelineReady, setIsPipelineReady] = useState(false);

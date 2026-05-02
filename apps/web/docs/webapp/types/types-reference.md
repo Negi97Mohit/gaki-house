@@ -10,7 +10,7 @@ Core type definitions from `src/types/`.
 
 ## `caption.ts` — Core Scene Model
 
-→ Source: [caption.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/caption.ts) (~17.7KB)
+→ Source: [caption.ts](file:///c:/Users/Dell/Desktop/gaki/src/types/caption.ts) (~17.7KB)
 
 The largest type file, defining the fundamental data model.
 
@@ -159,7 +159,7 @@ type CameraShape = 'rectangle' | 'circle' | 'square' | 'rounded';
 
 ## `editor.ts` — Recording & Playback
 
-→ Source: [editor.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/editor.ts)
+→ Source: [editor.ts](file:///c:/Users/Dell/Desktop/gaki/src/types/editor.ts)
 
 ### `RecordingSession`
 ```typescript
@@ -200,7 +200,7 @@ interface Keyframe<T> {
 
 ## `videoCanvas.ts` — Canvas Component Types
 
-→ Source: [videoCanvas.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/videoCanvas.ts) (~7.3KB)
+→ Source: [videoCanvas.ts](file:///c:/Users/Dell/Desktop/gaki/src/types/videoCanvas.ts) (~7.3KB)
 
 Defines the prop types for `VideoCanvas` and its sub-components.
 
@@ -208,7 +208,7 @@ Defines the prop types for `VideoCanvas` and its sub-components.
 
 ## `streamStyle.ts` — Stream Design Types
 
-→ Source: [streamStyle.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/streamStyle.ts) (~5KB)
+→ Source: [streamStyle.ts](file:///c:/Users/Dell/Desktop/gaki/src/types/streamStyle.ts) (~5KB)
 
 Types for stream scene designs (starting soon, BRB, etc.).
 
@@ -216,7 +216,7 @@ Types for stream scene designs (starting soon, BRB, etc.).
 
 ## `omegle.ts` — Random Chat Types
 
-→ Source: [omegle.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/omegle.ts) (~5KB)
+→ Source: [omegle.ts](file:///c:/Users/Dell/Desktop/gaki/src/types/omegle.ts) (~5KB)
 
 Types for the Omegle-style matching and chat system.
 
@@ -224,7 +224,7 @@ Types for the Omegle-style matching and chat system.
 
 ## `vault.ts` — Vault Types
 
-→ Source: [vault.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/types/vault.ts)
+→ Source: [vault.ts](file:///c:/Users/Dell/Desktop/gaki/src/types/vault.ts)
 
 ```typescript
 interface VaultAsset {

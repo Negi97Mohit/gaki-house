@@ -1,8 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
-import { cn } from "@caption-cam/core/lib/utils";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
 import { Plus } from "lucide-react";
 import { Panel } from "./core/Panel";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";

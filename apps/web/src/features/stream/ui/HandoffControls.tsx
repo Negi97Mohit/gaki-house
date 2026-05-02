@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useHandoffSystem } from "../context/HandoffContext";
-import { handoffStore } from "@caption-cam/handoff-sdk";
+import { handoffStore } from "@gaki/handoff-sdk";
 import { Monitor, Smartphone, Globe, ArrowRight, Download, Cast } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
-import { cn } from "@caption-cam/core/lib/utils";
+import { Button } from "@gaki/ui/button";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
+import { cn } from "@gaki/core/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@caption-cam/ui/popover";
+} from "@gaki/ui/popover";
 
 export const HandoffControls: React.FC = () => {
   const { coordinator, registry } = useHandoffSystem();

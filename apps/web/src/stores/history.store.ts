@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ObsOverlayState } from "@caption-cam/core/types/caption";
+import type { ObsOverlayState } from "@gaki/core/types/caption";
 
 const DEFAULT_MAX = 50;
 

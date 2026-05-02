@@ -1,7 +1,7 @@
 // src/hooks/usePointerInteraction.ts
 
 import { useCallback, useRef, useEffect } from 'react';
-import { useRAFThrottle } from "@caption-cam/core/hooks/useRAFThrottle";
+import { useRAFThrottle } from "@gaki/core/hooks/useRAFThrottle";
 
 export interface PointerInteractionCallbacks {
     onStart?: (e: PointerEvent) => void;

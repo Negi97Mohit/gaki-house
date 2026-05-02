@@ -1,13 +1,13 @@
 // src/components/InstructionsDialog.tsx
 import React from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@caption-cam/ui/dialog";
+} from "@gaki/ui/dialog";
 import {
   Info,
   Sparkles,

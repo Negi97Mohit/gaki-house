@@ -1,6 +1,6 @@
-import { Toaster } from "@caption-cam/ui/toaster";
-import { Toaster as Sonner } from "@caption-cam/ui/sonner";
-import { TooltipProvider } from "@caption-cam/ui/tooltip";
+import { Toaster } from "@gaki/ui/toaster";
+import { Toaster as Sonner } from "@gaki/ui/sonner";
+import { TooltipProvider } from "@gaki/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { DebugProvider } from "./context/DebugContext";
@@ -14,7 +14,7 @@ import {
   lazy,
   Suspense,
 } from "react";
-import Loader from "@caption-cam/ui/Loader";
+import Loader from "@gaki/ui/Loader";
 import { StyleSync } from "@/features/caption/ui/StyleSync";
 import { useThemeStore } from "@/features/theme";
 import { useUiStore, useMouseStore } from "@/stores/ui.store";

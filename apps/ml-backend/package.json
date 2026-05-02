@@ -1,1 +1,1 @@
-{ "name": "@caption-cam/ml-backend", "version": "1.0.0", "private": true, "scripts": { "dev": "echo \"ML Backend bypassed for local dev\"" } }
+{ "name": "@gaki/ml-backend", "version": "1.0.0", "private": true, "scripts": { "dev": "echo \"ML Backend bypassed for local dev\"" } }

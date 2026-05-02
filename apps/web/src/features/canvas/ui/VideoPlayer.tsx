@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface VideoPlayerProps {
   stream: MediaStream | null;

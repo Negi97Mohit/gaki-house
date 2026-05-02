@@ -1,7 +1,7 @@
 // src/hooks/useCanvasPresets.ts
 import { useState, useCallback, useEffect } from "react";
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
-import { useLocalStorage } from "@caption-cam/core/hooks/useLocalStorage";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
+import { useLocalStorage } from "@gaki/core/hooks/useLocalStorage";
 import { db } from "@/lib/firebase"; // --- ADDED: Import db
 import {
   collection,
@@ -14,7 +14,7 @@ import {
   onSnapshot
 } from "firebase/firestore"; // --- ADDED: Import firestore functions
 import { toast } from "sonner"; // --- ADDED: Import toast
-import { generateId } from "@caption-cam/core/lib/id";
+import { generateId } from "@gaki/core/lib/id";
 
 export const useCanvasPresets = () => {
   const [customPresets, setCustomPresets] = useLocalStorage<CanvasPreset[]>(

@@ -7,7 +7,7 @@ import {
   BrowserOverlayState,
   GeneratedLayout,
   FileType,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { OBSScene, OBSSceneItem, OBSSceneCollection } from "./OBSParser";
 import { mapObsTransformToLayout } from "./CoordinateMapper";
 

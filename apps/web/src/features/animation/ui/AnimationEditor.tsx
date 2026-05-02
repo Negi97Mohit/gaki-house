@@ -1,21 +1,21 @@
 // src/components/AnimationEditor.tsx
 import React, { useState, useEffect } from "react";
 import { Sparkles } from "lucide-react";
-import { AnimationPreset } from "@caption-cam/core/types/animation";
+import { AnimationPreset } from "@gaki/core/types/animation";
 import { SmartTextAnimator } from "./SmartTextAnimator";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { Label } from "@caption-cam/ui/label";
-import { Slider } from "@caption-cam/ui/slider";
-import { Switch } from "@caption-cam/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Label } from "@gaki/ui/label";
+import { Slider } from "@gaki/ui/slider";
+import { Switch } from "@gaki/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@caption-cam/ui/select";
+} from "@gaki/ui/select";
 import {
   ArrowLeft,
   Save,

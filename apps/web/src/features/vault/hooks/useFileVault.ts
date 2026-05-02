@@ -1,8 +1,8 @@
 // src/features/vault/hooks/useFileVault.ts
 import { useState, useEffect, useCallback } from 'react';
-import { VaultFile } from "@caption-cam/core/types/vault";
-import { generateId } from "@caption-cam/core/lib/id";
-import { notify } from "@caption-cam/core/lib/notify";
+import { VaultFile } from "@gaki/core/types/vault";
+import { generateId } from "@gaki/core/lib/id";
+import { notify } from "@gaki/core/lib/notify";
 
 const VAULT_STORAGE_KEY = 'lovable-file-vault';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB limit per file for localStorage

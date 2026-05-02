@@ -50,4 +50,4 @@ jobs:
       - name: Build & Publish Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm turbo run release --filter=@caption-cam/desktop
+        run: pnpm turbo run release --filter=@gaki/desktop

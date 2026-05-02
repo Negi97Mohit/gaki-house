@@ -1,4 +1,4 @@
-import { WebRTCConfig } from "@caption-cam/core/types/omegle";
+import { WebRTCConfig } from "@gaki/core/types/omegle";
 
 export class WebRTCConnection {
     private peerConnection: RTCPeerConnection | null = null;

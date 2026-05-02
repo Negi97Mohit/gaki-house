@@ -115,16 +115,16 @@ importers:
 
   apps/gaki-mobile:
     dependencies:
-      '@caption-cam/core':
+      '@gaki/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@caption-cam/engine':
+      '@gaki/engine':
         specifier: workspace:*
         version: link:../../packages/engine
-      '@caption-cam/handoff-sdk':
+      '@gaki/handoff-sdk':
         specifier: workspace:*
         version: link:../../packages/handoff-sdk
-      '@caption-cam/ui':
+      '@gaki/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@hookform/resolvers':
@@ -355,21 +355,21 @@ importers:
       '@babel/standalone':
         specifier: ^7.28.4
         version: 7.29.2
-      '@caption-cam/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@caption-cam/handoff-sdk':
-        specifier: workspace:*
-        version: link:../../packages/handoff-sdk
-      '@caption-cam/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@deepgram/sdk':
         specifier: ^4.11.2
         version: 4.11.3(encoding@0.1.13)
       '@excalidraw/excalidraw':
         specifier: ^0.18.0
         version: 0.18.0(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@gaki/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@gaki/handoff-sdk':
+        specifier: workspace:*
+        version: link:../../packages/handoff-sdk
+      '@gaki/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@hookform/resolvers':
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.72.1(react@18.3.1))
@@ -738,7 +738,7 @@ importers:
 
   packages/engine:
     dependencies:
-      '@caption-cam/core':
+      '@gaki/core':
         specifier: workspace:*
         version: link:../core
       three:
@@ -769,7 +769,7 @@ importers:
 
   packages/ui:
     dependencies:
-      '@caption-cam/core':
+      '@gaki/core':
         specifier: workspace:*
         version: link:../core
       '@radix-ui/react-accordion':

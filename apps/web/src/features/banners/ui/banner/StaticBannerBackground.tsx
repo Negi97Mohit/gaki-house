@@ -1,5 +1,5 @@
 import React from "react";
-import { SocialBannerDesign } from "@caption-cam/core/types/banner";
+import { SocialBannerDesign } from "@gaki/core/types/banner";
 
 interface StaticBannerBackgroundProps {
     design: SocialBannerDesign;

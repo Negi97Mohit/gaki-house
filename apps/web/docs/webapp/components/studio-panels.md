@@ -33,7 +33,7 @@ All panels live in `src/features/studio/ui/panels/`.
 
 ## Settings Panel
 
-→ Source: [SettingsPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/SettingsPanel.tsx)
+→ Source: [SettingsPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/SettingsPanel.tsx)
 
 A multi-section settings dialog with tabbed navigation:
 
@@ -58,7 +58,7 @@ A multi-section settings dialog with tabbed navigation:
 
 ## Audio Mixer Panel
 
-→ Source: [AudioMixerPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/AudioMixerPanel.tsx) (40KB — the largest panel)
+→ Source: [AudioMixerPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/AudioMixerPanel.tsx) (40KB — the largest panel)
 
 A **professional-grade audio mixer** with features rivaling desktop DAWs:
 
@@ -108,7 +108,7 @@ Full audio track management system:
 
 ## Canvas Designs Panel
 
-→ Source: [CanvasDesignsPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/CanvasDesignsPanel.tsx) (23KB)
+→ Source: [CanvasDesignsPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/CanvasDesignsPanel.tsx) (23KB)
 
 Provides **pre-designed stream scene templates**:
 - Starting Soon screens
@@ -121,13 +121,13 @@ Provides **pre-designed stream scene templates**:
 
 Templates are full HTML/CSS/JS strings that render as overlays. Users click a design to apply it to the current scene.
 
-→ Uses designs from [streamSceneDesigns.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/lib/streamSceneDesigns.ts) (38KB library)
+→ Uses designs from [streamSceneDesigns.ts](file:///c:/Users/Dell/Desktop/gaki/src/lib/streamSceneDesigns.ts) (38KB library)
 
 ---
 
 ## Dynamic Styles Panel
 
-→ Source: [DynamicStylesPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/DynamicStylesPanel.tsx) (8KB)
+→ Source: [DynamicStylesPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/DynamicStylesPanel.tsx) (8KB)
 
 Caption animation style picker with live previews:
 - Each style shows an animated preview of how captions will look
@@ -140,7 +140,7 @@ Caption animation style picker with live previews:
 
 ## Static Presets Panel
 
-→ Source: [StaticPresetsPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/StaticPresetsPanel.tsx) (5.5KB)
+→ Source: [StaticPresetsPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/StaticPresetsPanel.tsx) (5.5KB)
 
 Pre-built caption style presets (font, colors, background, border):
 - Each preset is a complete `CaptionStyle` object
@@ -152,7 +152,7 @@ Pre-built caption style presets (font, colors, background, border):
 
 ## Social Banners Panel
 
-→ Source: [SocialBannersPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/SocialBannersPanel.tsx) (16KB)
+→ Source: [SocialBannersPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/SocialBannersPanel.tsx) (16KB)
 
 Pre-built social media overlays:
 - YouTube subscribe banners
@@ -168,7 +168,7 @@ Each banner is a styled HTML template that can be customized with the user's soc
 
 ## GSAP Animations Panel
 
-→ Source: [GSAPAnimationsPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/GSAPAnimationsPanel.tsx) (3KB)
+→ Source: [GSAPAnimationsPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/GSAPAnimationsPanel.tsx) (3KB)
 
 Entry point to the GSAP animation editor:
 - Browse animation presets
@@ -181,7 +181,7 @@ Entry point to the GSAP animation editor:
 
 ## File Vault Panel
 
-→ Source: [FileVaultPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/FileVaultPanel.tsx) (10KB)
+→ Source: [FileVaultPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/FileVaultPanel.tsx) (10KB)
 
 Asset vault browser within the sidebar:
 - Opens `FileVaultModal` for full vault management
@@ -194,7 +194,7 @@ Asset vault browser within the sidebar:
 
 ## Saved Overlays Panel
 
-→ Source: [SavedOverlaysPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/SavedOverlaysPanel.tsx) (2.4KB)
+→ Source: [SavedOverlaysPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/SavedOverlaysPanel.tsx) (2.4KB)
 
 Library of previously generated AI overlays:
 - Thumbnail previews
@@ -205,7 +205,7 @@ Library of previously generated AI overlays:
 
 ## Text Presets Panel
 
-→ Source: [TextPresetsPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/TextPresetsPanel.tsx) (2.7KB)
+→ Source: [TextPresetsPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/TextPresetsPanel.tsx) (2.7KB)
 
 Pre-designed text overlay templates:
 - Styled text designs (gradient headers, outlined text, etc.)
@@ -215,7 +215,7 @@ Pre-designed text overlay templates:
 
 ## Tools Panel
 
-→ Source: [ToolsPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/studio/ui/panels/ToolsPanel.tsx) (2.5KB)
+→ Source: [ToolsPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/studio/ui/panels/ToolsPanel.tsx) (2.5KB)
 
 Quick access tool buttons:
 - Add Text Overlay

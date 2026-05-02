@@ -11,14 +11,14 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@caption-cam/ui/popover";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+} from "@gaki/ui/popover";
+import { ScrollArea } from "@gaki/ui/scroll-area";
+import { ColorPicker } from "@gaki/ui/color-picker";
 import { ALL_FONTS } from "@/lib/fonts";
 
 interface LayoutEditorToolbarProps {

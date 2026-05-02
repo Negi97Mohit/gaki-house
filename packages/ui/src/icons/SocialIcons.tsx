@@ -11,7 +11,7 @@ import {
   Tv,
   MessageCircle,
 } from "lucide-react";
-import { SocialPlatform } from "@caption-cam/core/types/socialBanner";
+import { SocialPlatform } from "@gaki/core/types/socialBanner";
 
 export const TwitchIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">

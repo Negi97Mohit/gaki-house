@@ -12,11 +12,11 @@ import {
   Image,
   Minus
 } from 'lucide-react';
-import { Button } from "@caption-cam/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@caption-cam/ui/popover";
-import { Slider } from "@caption-cam/ui/slider";
+import { Button } from "@gaki/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@gaki/ui/popover";
+import { Slider } from "@gaki/ui/slider";
 import { BannerElementData } from './BannerElement';
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+import { ColorPicker } from "@gaki/ui/color-picker";
 
 interface BannerCustomizationToolbarProps {
   elements: BannerElementData[];

@@ -4,7 +4,7 @@ import {
   CanvasLayoutState,
   CanvasSectionContent,
   DEFAULT_CAMERA_STATE,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { toast } from "sonner";
 
 interface UseGridSequencerProps {

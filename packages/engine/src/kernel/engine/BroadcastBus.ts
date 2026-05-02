@@ -8,7 +8,7 @@ import { SceneGraph } from "./SceneGraph";
 import { TransitionEngine } from "./TransitionEngine";
 import { EngineWatchdog } from "./EngineWatchdog";
 import { AppStateSync } from "./StateSynchronizer";
-import type { ObsOverlayState } from "@caption-cam/core/types/caption";
+import type { ObsOverlayState } from "@gaki/core/types/caption";
 
 // ─── Typed commands ───────────────────────────────────────────────────────────
 

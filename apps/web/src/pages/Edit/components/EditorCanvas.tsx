@@ -7,8 +7,8 @@ import {
     ZoomIn,
     ZoomOut
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { RecordingSession, SessionPlaybackState } from "@caption-cam/core/types/editor";
+import { Button } from "@gaki/ui/button";
+import { RecordingSession, SessionPlaybackState } from "@gaki/core/types/editor";
 
 interface EditorCanvasProps {
     session: RecordingSession;

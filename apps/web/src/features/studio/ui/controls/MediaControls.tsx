@@ -15,20 +15,20 @@ import {
   Square,
   Settings,
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@caption-cam/ui/dropdown-menu";
-import { cn } from "@caption-cam/core/lib/utils";
+} from "@gaki/ui/dropdown-menu";
+import { cn } from "@gaki/core/lib/utils";
 import { StreamConfigurationModal } from "@/features/stream/ui/StreamConfigurationModal";
 import { useMediaStore } from "@/stores/media.store";
 import { useStreamStore } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 import { ScreenSourceSelector } from "@/features/stream/ui/ScreenSourceSelector";
 import { useGoLiveStore } from "@/stores/goLive.store";
 import { AudioSettingsDialog } from "./AudioSettingsDialog";

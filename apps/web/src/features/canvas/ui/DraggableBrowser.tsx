@@ -1,6 +1,6 @@
 // src/components/DraggableBrowser.tsx
 import React, { useState, useRef } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { EngineWrapper } from "@/features/canvas/engines/EngineWrapper";
 import { OverlayElement, GuideLine } from "@/hooks/useSnapGuides";
-import { GeneratedLayout } from "@caption-cam/core/types/caption";
+import { GeneratedLayout } from "@gaki/core/types/caption";
 
 export interface BrowserOverlayState {
   id: string;

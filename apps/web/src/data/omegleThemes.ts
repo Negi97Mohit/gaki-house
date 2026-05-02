@@ -1,4 +1,4 @@
-import { OmegleTheme } from "@caption-cam/core/types/omegle";
+import { OmegleTheme } from "@gaki/core/types/omegle";
 
 export const omegleThemes: OmegleTheme[] = [
     // 1. Midnight Dark - Deep dark theme with purple accents

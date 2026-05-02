@@ -5,7 +5,7 @@ import { useCameraEffects } from "@/hooks/useCameraEffects";
 import { useWebGLRenderLoop } from "@/features/canvas/hooks/useWebGLRenderLoop";
 import { usePictureInPicture } from "@/hooks/usePictureInPicture";
 import { PipControlsToolbar } from "./PipControlsToolbar";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { AmbientBackground } from "./AmbientBackground";
 import { PipLayoutPreset } from "./pip/PipLayoutMenu";
 import { CinematicOverlay } from "./CinematicOverlay";

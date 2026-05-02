@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useSmartCameraSwitcher } from "@/features/stream/hooks/useSmartCameraSwitcher";
 import { useCompositeStream } from "@/features/stream/hooks/useCompositeStream";
-import { SceneState } from "@caption-cam/core/types/caption";
+import { SceneState } from "@gaki/core/types/caption";
 
 interface UseBroadcastControllerProps {
   scenes: SceneState[];

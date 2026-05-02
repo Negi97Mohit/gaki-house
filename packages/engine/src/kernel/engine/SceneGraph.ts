@@ -7,7 +7,7 @@ import {
   TextOverlayState,
   FileOverlayState,
   BrowserOverlayState,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 
 // ─── Layer types ──────────────────────────────────────────────────────────────
 

@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Undo2, Redo2, RotateCcw } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { useSceneStore } from "@/stores/scene.store";
 import { useShallow } from "zustand/react/shallow";
-import { ShortcutTooltip } from "@caption-cam/ui/shortcut-tooltip";
+import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 import { OBSImportButton } from "./OBSImportButton";
-import { SceneState } from "@caption-cam/core/types/caption";
+import { SceneState } from "@gaki/core/types/caption";
 
 export interface SceneControlsProps {
     onUndo: () => void;

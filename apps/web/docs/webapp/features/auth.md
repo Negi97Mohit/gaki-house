@@ -20,7 +20,7 @@ src/features/auth/
 
 ## Auth Context
 
-→ Source: [AuthContext.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/pages/platform/context/AuthContext.tsx)
+→ Source: [AuthContext.tsx](file:///c:/Users/Dell/Desktop/gaki/src/pages/platform/context/AuthContext.tsx)
 
 The `AuthProvider` wraps the router and provides authentication state:
 - Current user object

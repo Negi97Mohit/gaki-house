@@ -167,7 +167,7 @@ Each camera section can have **text overlays** rendered on top of the camera:
 
 ## Canvas Design Selector
 
-→ Source: [CanvasDesignSelector.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/layouts/ui/grid-section/CanvasDesignSelector.tsx)
+→ Source: [CanvasDesignSelector.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/layouts/ui/grid-section/CanvasDesignSelector.tsx)
 
 When the user picks "Canvas Designs" from the Add menu, a visual template picker opens:
 
@@ -215,7 +215,7 @@ Each preset card shows a **visual preview** with the PiP camera position & shape
 
 ## Grid Section Toolbar
 
-→ Source: [GridSectionToolbar.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/layouts/ui/GridSectionToolbar.tsx)
+→ Source: [GridSectionToolbar.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/layouts/ui/GridSectionToolbar.tsx)
 
 A **floating toolbar** that appears on hover over any filled section. Controls vary by content type:
 

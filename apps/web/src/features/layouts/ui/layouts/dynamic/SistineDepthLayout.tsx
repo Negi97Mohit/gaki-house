@@ -9,8 +9,8 @@ import {
 import {
   CanvasSectionState,
   CanvasLayoutState,
-} from "@caption-cam/core/types/caption";
-import { cn } from "@caption-cam/core/lib/utils";
+} from "@gaki/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
 import { DynamicLayoutWrapper } from "./core/DynamicLayoutWrapper";
 import { useDynamicLayout } from "./core/DynamicLayoutContext";
 import { Panel } from "./core/Panel";

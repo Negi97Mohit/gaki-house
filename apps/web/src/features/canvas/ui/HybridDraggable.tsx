@@ -1,7 +1,7 @@
 // src/components/video-canvas/HybridDraggable.tsx
 
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { usePointerInteraction } from "@/hooks/usePointerInteraction";
 import { useTransformMatrix } from "@/hooks/useTransformMatrix";
 import {

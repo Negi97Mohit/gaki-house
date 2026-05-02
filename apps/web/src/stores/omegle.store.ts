@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ChatMessage, MatchStatus, OmegleConnection } from "@caption-cam/core/types/omegle";
+import { ChatMessage, MatchStatus, OmegleConnection } from "@gaki/core/types/omegle";
 
 interface OmegleState {
     // Connection state

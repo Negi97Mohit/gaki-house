@@ -2,7 +2,7 @@ import React from "react";
 import { useDynamicLayout } from "./DynamicLayoutContext";
 import { usePreviewMode } from "./PreviewModeContext";
 import { Plus, Trash2 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { EditableText } from "./EditableText";
 import {
   AlertDialog,
@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@caption-cam/ui/alert-dialog";
+} from "@gaki/ui/alert-dialog";
 
 export const DynamicDeleteButton: React.FC<{
   sectionId: string;

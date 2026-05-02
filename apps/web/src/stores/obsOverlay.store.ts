@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import type { ObsOverlayState } from "@caption-cam/core/types/caption";
+import type { ObsOverlayState } from "@gaki/core/types/caption";
 import { useHistoryStore } from "@/stores/history.store";
-import { BroadcastBus } from "@caption-cam/engine/kernel/engine/BroadcastBus";
+import { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
 
 function replaceById(items: ObsOverlayState[], asset: ObsOverlayState): ObsOverlayState[] {
   const idx = items.findIndex((o) => o.id === asset.id);

@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { StreamSceneType, StreamStyleTheme } from "@caption-cam/core/types/streamStyle";
-import { cn } from "@caption-cam/core/lib/utils";
+import { StreamSceneType, StreamStyleTheme } from "@gaki/core/types/streamStyle";
+import { cn } from "@gaki/core/lib/utils";
 
 interface StreamSceneRendererProps {
   sceneType: StreamSceneType;

@@ -13,14 +13,14 @@ export const useRemotePeer = () => {
         if (peerRef.current) return;
 
         // Get or create persistent device ID
-        let deviceId = localStorage.getItem("caption-cam-device-id");
+        let deviceId = localStorage.getItem("gaki-device-id");
         if (!deviceId) {
             // Import dynamically if needed or just use random string if uuid not available in scope
             // But we can add uuid import at top. Let's do that in a separate edit or use a simple randomizer here for now to avoid breaking imports in this chunk.
             // Wait, I can't easily add import at top with ReplaceFileContent if I am targeting this block. 
             // I will use crypto.randomUUID() which is available in modern browsers.
             deviceId = crypto.randomUUID(); 
-            localStorage.setItem("caption-cam-device-id", deviceId);
+            localStorage.setItem("gaki-device-id", deviceId);
         }
 
         const peer = new Peer(deviceId);

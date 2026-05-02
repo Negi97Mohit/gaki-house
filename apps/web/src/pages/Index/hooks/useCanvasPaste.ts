@@ -1,7 +1,7 @@
 // src/pages/Index/hooks/useCanvasPaste.ts
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { generateId } from "@caption-cam/core/lib/id";
+import { generateId } from "@gaki/core/lib/id";
 import { zIndex } from "@/lib/zIndex";
 import {
   SceneState,
@@ -9,7 +9,7 @@ import {
   BrowserOverlayState,
   TextOverlayState,
   FileType, // Import the updated type
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 
 interface UseCanvasPasteProps {
   activeScene: SceneState;

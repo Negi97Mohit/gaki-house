@@ -4,7 +4,7 @@ import { Settings, Calendar, Users, Grid3X3, Play, Heart } from "lucide-react";
 import { formatViewerCount } from "@/pages/platform/data/mockData";
 import { useStreams } from "@/pages/platform/hooks/useStreams";
 import { useAuth } from "@/pages/platform/context/AuthContext";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 export const MobileProfilePage: React.FC = () => {
     const { username } = useParams();

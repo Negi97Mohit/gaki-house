@@ -1,9 +1,9 @@
 // src/components/video-canvas/PipWindow.tsx
 import React, { useState, useEffect } from "react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { RotateCcw, X } from "lucide-react";
-import { cn, throttle } from "@caption-cam/core/lib/utils";
-import { CameraShape } from "@caption-cam/core/types/caption";
+import { cn, throttle } from "@gaki/core/lib/utils";
+import { CameraShape } from "@gaki/core/types/caption";
 import { SmartDraggable } from "./SmartDraggable";
 
 interface PipWindowProps {

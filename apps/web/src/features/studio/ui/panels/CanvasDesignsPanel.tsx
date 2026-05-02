@@ -15,13 +15,13 @@ import {
   Clock,
   Users,
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { ScrollArea, ScrollBar } from "@caption-cam/ui/scroll-area";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { ScrollArea, ScrollBar } from "@gaki/ui/scroll-area";
 import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
 import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
-import { cn } from "@caption-cam/core/lib/utils";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
+import { cn } from "@gaki/core/lib/utils";
 
 // Import the actual renderer for dynamic layouts
 import { CanvasGridLayout } from "@/features/layouts/ui/CanvasGridLayout";

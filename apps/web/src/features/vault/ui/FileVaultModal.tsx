@@ -6,10 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@caption-cam/ui/dialog";
-import { Button } from "@caption-cam/ui/button";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
-import { VaultFile } from "@caption-cam/core/types/vault";
+} from "@gaki/ui/dialog";
+import { Button } from "@gaki/ui/button";
+import { ScrollArea } from "@gaki/ui/scroll-area";
+import { VaultFile } from "@gaki/core/types/vault";
 import {
   Upload,
   Trash2,
@@ -23,7 +23,7 @@ import {
   Archive,
   X,
 } from 'lucide-react';
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { formatDistanceToNow } from 'date-fns';
 
 interface FileVaultModalProps {

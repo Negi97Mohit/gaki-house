@@ -21,7 +21,7 @@ The web application is a React 18 SPA built with Vite and TypeScript. It runs bo
 5. **Cursor inactivity** — Auto-hides UI after 5 seconds of no mouse movement
 6. **Splash screen** — `Loader` component shown for 2 seconds on startup
 
-→ Source: [App.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/App.tsx)
+→ Source: [App.tsx](file:///c:/Users/Dell/Desktop/gaki/src/App.tsx)
 
 ## Architecture Layers
 

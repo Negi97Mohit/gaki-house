@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { AnimationPreset, AnimationCategory } from "@caption-cam/core/types/animation";
+import { AnimationPreset, AnimationCategory } from "@gaki/core/types/animation";
 import { toast } from "sonner";
-import { generateId } from "@caption-cam/core/lib/id";
+import { generateId } from "@gaki/core/lib/id";
 
 export const ANIMATION_CATEGORIES: AnimationCategory[] = [
   "All",

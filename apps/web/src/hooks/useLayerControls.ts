@@ -9,7 +9,7 @@ import {
     BrowserOverlayState,
     GeneratedOverlay,
     GeneratedLayout,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 
 export type ElementType = "text" | "file" | "browser" | "generated" | "camera";
 

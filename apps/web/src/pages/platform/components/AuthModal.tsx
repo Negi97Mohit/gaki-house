@@ -12,7 +12,7 @@ import {
 } from "firebase/auth";
 import { auth, db, firebaseConfig } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 const PASSWORD_RULES = [
   { label: "At least 8 characters", test: (p: string) => p.length >= 8 },

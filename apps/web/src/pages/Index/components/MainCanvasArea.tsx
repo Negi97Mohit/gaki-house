@@ -1,7 +1,7 @@
 // src/pages/index/components/MainCanvasArea.tsx
 import React, { memo } from "react";
 import { VideoCanvas } from "@/features/canvas/ui/CanvasView";
-import { SceneState, SceneTransition } from "@caption-cam/core/types/caption";
+import { SceneState, SceneTransition } from "@gaki/core/types/caption";
 import { AmbientBackground } from "@/features/stream/ui/AmbientBackground";
 
 // Memoize VideoCanvas to prevent unnecessary re-renders

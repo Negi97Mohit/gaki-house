@@ -6,14 +6,14 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-} from "@caption-cam/ui/dialog";
-import { Button } from "@caption-cam/ui/button";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+} from "@gaki/ui/dialog";
+import { Button } from "@gaki/ui/button";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 import { User, Save } from "lucide-react";
 import {
     SocialBannerData,
     DEFAULT_BANNER_DATA,
-} from "@caption-cam/core/types/socialBanner";
+} from "@gaki/core/types/socialBanner";
 import { SocialProfileForm } from "@/features/banners/ui/social-banner/SocialProfileForm";
 import { SocialLinkList } from "@/features/banners/ui/social-banner/SocialLinkList";
 

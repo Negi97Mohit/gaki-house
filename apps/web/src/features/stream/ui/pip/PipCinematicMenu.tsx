@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Clapperboard, X, Search } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuPortal,
-} from "@caption-cam/ui/dropdown-menu";
-import { cn } from "@caption-cam/core/lib/utils";
-import { Input } from "@caption-cam/ui/input";
+} from "@gaki/ui/dropdown-menu";
+import { cn } from "@gaki/core/lib/utils";
+import { Input } from "@gaki/ui/input";
 import {
   CinematicEffect,
   CinematicPreset,

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   CanvasSectionState,
   FileOverlayState,
   TextOverlayState,
   CanvasSectionCameraState,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { GridSectionToolbar } from "../GridSectionToolbar";
 import { GridSectionRenderer } from "../GridSectionRenderer";

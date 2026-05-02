@@ -4,13 +4,13 @@ import {
   PATTERN_LABELS,
 } from "@/features/canvas/hooks/useCameraOpacity";
 import { Eye, EyeOff } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@caption-cam/ui/tooltip";
+} from "@gaki/ui/tooltip";
 import { useUiStore } from "@/stores/ui.store";
 import { useShallow } from "zustand/react/shallow";
 

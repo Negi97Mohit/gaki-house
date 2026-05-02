@@ -7,8 +7,8 @@ import {
     Lock,
     Unlock,
 } from 'lucide-react';
-import { cn } from "@caption-cam/core/lib/utils";
-import { Button } from "@caption-cam/ui/button";
+import { cn } from "@gaki/core/lib/utils";
+import { Button } from "@gaki/ui/button";
 
 interface PipToolbarProps {
     target: 'stranger' | 'local';

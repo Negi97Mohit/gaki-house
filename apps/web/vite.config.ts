@@ -140,13 +140,13 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@caption-cam/core": path.resolve(__dirname, "../../packages/core/src"),
-      "@caption-cam/ui": path.resolve(__dirname, "../../packages/ui/src"),
-      "@caption-cam/engine": path.resolve(
+      "@gaki/core": path.resolve(__dirname, "../../packages/core/src"),
+      "@gaki/ui": path.resolve(__dirname, "../../packages/ui/src"),
+      "@gaki/engine": path.resolve(
         __dirname,
         "../../packages/engine/src",
       ),
-      "@caption-cam/handoff-sdk": path.resolve(
+      "@gaki/handoff-sdk": path.resolve(
         __dirname,
         "../../packages/handoff-sdk/src",
       ),

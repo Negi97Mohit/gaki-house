@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { UserProfile } from "@caption-cam/core/types/profile";
+import { UserProfile } from "@gaki/core/types/profile";
 
 export const useUserProfile = (uid: string | undefined | null) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);

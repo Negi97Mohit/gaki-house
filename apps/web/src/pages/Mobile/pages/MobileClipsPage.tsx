@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MobileReelsCard } from "../components/MobileReelsCard";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { TrendingUp, Calendar, Eye } from "lucide-react";
 
 type SortType = "trending" | "recent" | "views";

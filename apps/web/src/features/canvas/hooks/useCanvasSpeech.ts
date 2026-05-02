@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useDeepgramSpeech } from "@/features/ai-assistant/hooks/useDeepgramSpeech";
-import { throttle } from "@caption-cam/core/lib/utils";
+import { throttle } from "@gaki/core/lib/utils";
 
 export const useCanvasSpeech = ({
     isAudioOn,

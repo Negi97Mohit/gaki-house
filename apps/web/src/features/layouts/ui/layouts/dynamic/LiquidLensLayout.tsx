@@ -1,9 +1,9 @@
 import React, { useRef, useMemo, useState, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
-import { LiquidShaderMaterial } from "@caption-cam/engine/kernel/engine/shaders/liquidShader";
+import { LiquidShaderMaterial } from "@gaki/engine/kernel/engine/shaders/liquidShader";
 import { useTexture, Html, ScrollControls, useScroll } from "@react-three/drei";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
 import { GridSectionWrapper } from "../GridSectionWrapper";
 import { Plus, Trash2, Type, MousePointer2 } from "lucide-react";
 

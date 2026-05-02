@@ -1,5 +1,5 @@
 // Single responsibility: convert OBS absolute-pixel item transforms to app GeneratedLayout percentages.
-import { GeneratedLayout } from "@caption-cam/core/types/caption";
+import { GeneratedLayout } from "@gaki/core/types/caption";
 import { OBSSceneItem } from "./OBSParser";
 
 /**

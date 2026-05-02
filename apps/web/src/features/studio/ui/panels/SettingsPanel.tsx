@@ -1,12 +1,12 @@
 import { ThemeSwitcher } from "@/features/theme";
 import { Palette, Monitor, Volume2, Keyboard, Info, Maximize, ZoomIn, Grid3X3 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useState } from "react";
-import { SHORTCUTS } from "@caption-cam/core/lib/shortcuts";
-import { Label } from "@caption-cam/ui/label";
-import { Slider } from "@caption-cam/ui/slider";
-import { Switch } from "@caption-cam/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@caption-cam/ui/select";
+import { SHORTCUTS } from "@gaki/core/lib/shortcuts";
+import { Label } from "@gaki/ui/label";
+import { Slider } from "@gaki/ui/slider";
+import { Switch } from "@gaki/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@gaki/ui/select";
 import gakiLogo from "/logo_256x256.png";
 
 type SettingsSection = "appearance" | "display" | "audio" | "shortcuts" | "about";

@@ -3,7 +3,7 @@ import { X, Volume2, VolumeX, Maximize2, GripHorizontal } from "lucide-react";
 import { usePip } from "../context/PipContext";
 import { StreamPlayer } from "./StreamPlayer";
 import { useNavigate } from "react-router-dom";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { zIndex } from "@/lib/zIndex";
 
 const PIP_WIDTH = 400;

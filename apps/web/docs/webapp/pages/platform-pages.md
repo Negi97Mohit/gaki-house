@@ -10,7 +10,7 @@ The platform section (`/platform/*`) is a **Twitch/Kick-like streaming platform*
 
 All platform pages are wrapped in `PlatformLayout` which provides a persistent **sidebar navigation** with links to Home, Browse, Following, Clips, and user-specific sections.
 
-→ Source: [PlatformLayout.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/pages/platform/PlatformLayout.tsx)
+→ Source: [PlatformLayout.tsx](file:///c:/Users/Dell/Desktop/gaki/src/pages/platform/PlatformLayout.tsx)
 
 ## Pages
 

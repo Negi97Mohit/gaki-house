@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect, useCallback } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { TextOverlayState } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { TextOverlayState } from "@gaki/core/types/caption";
 import { TextEditingToolbar } from "./TextEditingToolbar";
 import { MultiLayerTextRenderer } from "./MultiLayerTextRenderer";
 import { UniversalOverlayWrapper } from "@/features/canvas/ui/UniversalOverlayWrapper";

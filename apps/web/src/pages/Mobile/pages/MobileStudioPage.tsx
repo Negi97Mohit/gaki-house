@@ -7,7 +7,7 @@ import {
   Bold, Italic, AlignLeft, AlignCenter, AlignRight,
   Search, Image, Loader2, Settings,
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { toast } from "sonner";
 import { MobileCanvasContainer } from "../components/MobileCanvasContainer";
 import { useMediaStore } from "@/stores/media.store";
@@ -25,7 +25,7 @@ import { CINEMATIC_PRESETS, CINEMATIC_CATEGORIES, type CinematicEffect } from "@
 import { useCanvasPresets } from "@/features/canvas/hooks/useCanvasPresets";
 import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";
 import { CANVAS_PRESET_CATEGORIES } from "@/lib/canvasPresets";
-import { CanvasPreset } from "@caption-cam/core/types/canvasPreset";
+import { CanvasPreset } from "@gaki/core/types/canvasPreset";
 import {
   searchImages as apiSearchImages,
   searchGifs as apiSearchGifs,

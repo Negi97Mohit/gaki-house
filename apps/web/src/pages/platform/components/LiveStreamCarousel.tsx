@@ -4,7 +4,7 @@ import { Users, Volume2, VolumeX } from "lucide-react";
 import { StreamChannel, formatViewerCount, PLATFORM_META } from "../data/mockData";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { StreamPlayer, isEmbeddablePlatform } from "./StreamPlayer";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import type { PlatformLayout } from "@/features/theme";
 
 interface LiveStreamCarouselProps {

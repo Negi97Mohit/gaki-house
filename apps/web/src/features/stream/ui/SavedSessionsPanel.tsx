@@ -1,15 +1,15 @@
 // src/components/SavedSessionsPanel.tsx
 import React, { useState } from "react";
-import { LayoutPreset } from "@caption-cam/core/types/layoutPreset";
-import { Button } from "@caption-cam/ui/button";
-import { Card } from "@caption-cam/ui/card";
+import { LayoutPreset } from "@gaki/core/types/layoutPreset";
+import { Button } from "@gaki/ui/button";
+import { Card } from "@gaki/ui/card";
 import {
   Layers,
   CheckCircle,
   Trash2,
   X,
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { toast } from "sonner";
 
 interface SavedSessionsPanelProps {

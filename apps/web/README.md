@@ -1,6 +1,6 @@
-# Caption Cam Studio - Web UI
+# GAKI - House of Video Creation - Web UI
 
-The frontend application for Caption Cam Studio. This is a highly complex React application that mimics the functionality of OBS Studio in the browser.
+The frontend application for GAKI - House of Video Creation. This is a highly complex React application that mimics the functionality of OBS Studio in the browser.
 
 ## Tech Stack
 

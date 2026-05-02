@@ -1,8 +1,8 @@
 import React from "react";
 import { Rnd } from "react-rnd";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { DynamicContentRenderer } from "@/features/canvas/ui/DynamicContentRenderer";
-import { GeneratedLayout } from "@caption-cam/core/types/caption";
+import { GeneratedLayout } from "@gaki/core/types/caption";
 
 export interface DynamicLayoutConfig {
   isActive: boolean;

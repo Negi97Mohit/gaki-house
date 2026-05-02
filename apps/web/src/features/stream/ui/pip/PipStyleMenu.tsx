@@ -9,7 +9,7 @@ import {
     Minimize2,
     Settings2,
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -18,11 +18,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuCheckboxItem,
     DropdownMenuLabel,
-} from "@caption-cam/ui/dropdown-menu";
-import { Slider } from "@caption-cam/ui/slider";
-import { Label } from "@caption-cam/ui/label";
-import { CameraShape } from "@caption-cam/core/types/caption";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+} from "@gaki/ui/dropdown-menu";
+import { Slider } from "@gaki/ui/slider";
+import { Label } from "@gaki/ui/label";
+import { CameraShape } from "@gaki/core/types/caption";
+import { ColorPicker } from "@gaki/ui/color-picker";
 
 interface PipStyleMenuProps {
     cameraShape?: CameraShape;

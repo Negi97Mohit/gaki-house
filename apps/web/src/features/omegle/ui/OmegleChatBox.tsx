@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Rnd } from 'react-rnd';
 import { useOmegleStore } from '@/stores/omegle.store';
-import { OmegleDesign } from "@caption-cam/core/types/omegle";
-import { cn } from "@caption-cam/core/lib/utils";
+import { OmegleDesign } from "@gaki/core/types/omegle";
+import { cn } from "@gaki/core/lib/utils";
 import { Send, GripHorizontal } from 'lucide-react';
 
 interface OmegleChatBoxProps {

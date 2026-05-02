@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { AnimatePresence } from "framer-motion";
-import { isStaticBanner, BannerDesign, BannerContentData, BannerElementState } from "@caption-cam/core/types/banner";
+import { isStaticBanner, BannerDesign, BannerContentData, BannerElementState } from "@gaki/core/types/banner";
 import { useBannerEditor } from "@/features/banners/hooks/useBannerEditor";
 import { StaticBannerBackground } from "./StaticBannerBackground";
 import { BannerBackgroundRenderer } from "@/features/banners/ui/animated-banners/BannerBackgroundRenderer";

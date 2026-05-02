@@ -1,4 +1,4 @@
-import { handoffStore } from "@caption-cam/handoff-sdk";
+import { handoffStore } from "@gaki/handoff-sdk";
 import { useHandoffSystem } from "../context/HandoffContext";
 
 export function useHandoff() {

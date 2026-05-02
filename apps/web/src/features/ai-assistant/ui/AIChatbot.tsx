@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Send, X, Bot, User, Sparkles, MessageSquare, Square, Check, Copy, ChevronDown } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
-import { cn } from "@caption-cam/core/lib/utils";
-import { notify } from "@caption-cam/core/lib/notify";
-import { Popover, PopoverContent, PopoverTrigger } from "@caption-cam/ui/popover";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { ScrollArea } from "@gaki/ui/scroll-area";
+import { cn } from "@gaki/core/lib/utils";
+import { notify } from "@gaki/core/lib/notify";
+import { Popover, PopoverContent, PopoverTrigger } from "@gaki/ui/popover";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -150,7 +150,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
             const response = await fetch(`${API_BASE_URL}/v1/models`, {
                 headers: {
                     Authorization: `Bearer ${API_KEY}`,
-                    "User-Agent": "CaptionCam/1.0",
+                    "User-Agent": "Gaki/1.0",
                 },
             });
 

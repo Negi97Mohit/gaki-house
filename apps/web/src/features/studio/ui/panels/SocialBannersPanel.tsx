@@ -6,10 +6,10 @@ import {
   Layers,
   User,
 } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
-import { cn } from "@caption-cam/core/lib/utils";
+import { Button } from "@gaki/ui/button";
+import { ScrollArea } from "@gaki/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
+import { cn } from "@gaki/core/lib/utils";
 import { SocialBannerEditor } from "@/features/banners/ui/SocialBannerEditor";
 import {
   SocialBannerRenderer,
@@ -20,8 +20,8 @@ import {
   SocialBannerData,
   SocialBannerDesign,
   DEFAULT_BANNER_DATA,
-} from "@caption-cam/core/types/socialBanner";
-import { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
+} from "@gaki/core/types/socialBanner";
+import { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
 
 import { useSocialBanners } from "@/features/banners/hooks/useSocialBanners";
 

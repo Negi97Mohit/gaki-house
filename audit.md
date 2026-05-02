@@ -1,5 +1,5 @@
 You are a senior full-stack architect and security auditor tasked with performing a 
-deep, structured diagnosis of the "Caption Cam / GAKI" monorepo.
+deep, structured diagnosis of the "GAKI / GAKI" monorepo.
 
 The goal is NOT just to list issues — it is to produce a prioritized, actionable 
 markdown report I can work through one item at a time, from app level → feature 

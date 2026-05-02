@@ -6,7 +6,7 @@ import { useStreams } from "@/pages/platform/hooks/useStreams";
 import { MobileStreamCard } from "../components/MobileStreamCard";
 import { MobileCategoryPill } from "../components/MobileCategoryPill";
 import { formatViewerCount } from "@/pages/platform/data/mockData";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useNavigate } from "react-router-dom";
 
 const TAGS = ["All", "Gaming", "IRL", "Music", "Creative", "Esports", "Tech", "Food", "Fitness"];

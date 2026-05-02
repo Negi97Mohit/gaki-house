@@ -94,7 +94,7 @@ nsis:
     !macroend
 
     !addplugindir /x86-unicode "C:\Users\Dell\.cache\electron-builder\nsis\nsis-resources-3.4.1\plugins\x86-unicode"
-    !include "C:\Users\Dell\AppData\Local\Temp\t-s0OrGm\0-messages.nsh"
+    !include "C:\Users\Dell\AppData\Local\Temp\t-yq1EF3\0-messages.nsh"
 
     Var newStartMenuLink
     Var oldStartMenuLink

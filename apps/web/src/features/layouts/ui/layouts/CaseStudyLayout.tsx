@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
+import { cn } from "@gaki/core/lib/utils";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 import { ChevronRight } from "lucide-react";
 import { DynamicLayoutWrapper } from "./dynamic/core/DynamicLayoutWrapper";

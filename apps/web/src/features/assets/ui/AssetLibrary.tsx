@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { VirtuosoGrid } from "react-virtuoso";
-import { Input } from "@caption-cam/ui/input";
-import { Button } from "@caption-cam/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Button } from "@gaki/ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@caption-cam/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
 import { Search, Loader2, X } from "lucide-react";
-import { notify } from "@caption-cam/core/lib/notify";
+import { notify } from "@gaki/core/lib/notify";
 import {
   searchImages as apiSearchImages,
   searchGifs as apiSearchGifs,

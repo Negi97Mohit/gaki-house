@@ -24,7 +24,7 @@ src/features/animation/ui/
 
 ## AnimationLibraryPanel (16KB)
 
-→ Source: [AnimationLibraryPanel.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/animation/ui/AnimationLibraryPanel.tsx)
+→ Source: [AnimationLibraryPanel.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/animation/ui/AnimationLibraryPanel.tsx)
 
 A browsable library of animation presets:
 
@@ -65,7 +65,7 @@ Timeline-based editor for fine-tuning animation properties:
 
 ## GSAPAnimationEditor (17KB)
 
-→ Source: [GSAPAnimationEditor.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/animation/ui/GSAPAnimationEditor.tsx)
+→ Source: [GSAPAnimationEditor.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/animation/ui/GSAPAnimationEditor.tsx)
 
 A specialized editor for GSAP timeline animations:
 

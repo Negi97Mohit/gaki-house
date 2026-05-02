@@ -16,7 +16,7 @@ The asset library lets users search and add stock images, videos, and GIFs to th
 
 ## API Clients
 
-→ Source: [assetApis.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/lib/assetApis.ts)
+→ Source: [assetApis.ts](file:///c:/Users/Dell/Desktop/gaki/src/lib/assetApis.ts)
 
 ### `searchImages(query, page)`
 Searches both Pexels and Pixabay simultaneously, returns merged results.

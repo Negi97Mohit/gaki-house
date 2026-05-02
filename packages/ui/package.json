@@ -1,5 +1,5 @@
 {
-  "name": "@caption-cam/ui",
+  "name": "@gaki/ui",
   "version": "1.0.0",
   "private": true,
   "exports": {
@@ -33,7 +33,7 @@
     "@radix-ui/react-radio-group": "^1.1.3",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-avatar": "^1.0.4",
-    "@caption-cam/core": "workspace:*",
+    "@gaki/core": "workspace:*",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-toggle-group": "^1.0.4",

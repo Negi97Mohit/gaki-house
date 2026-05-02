@@ -7,7 +7,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
-import { UserProfile } from "@caption-cam/core/types/profile";
+import { UserProfile } from "@gaki/core/types/profile";
 
 interface AuthContextType {
   user: User | null;

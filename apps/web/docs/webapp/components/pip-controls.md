@@ -26,7 +26,7 @@ PipControlsToolbar.tsx (9.4KB)           — Main PiP toolbar container
 ---
 
 ## PipControlsToolbar
-→ Source: [PipControlsToolbar.tsx](file:///c:/Users/Dell/Desktop/caption-cam/src/features/stream/ui/PipControlsToolbar.tsx)
+→ Source: [PipControlsToolbar.tsx](file:///c:/Users/Dell/Desktop/gaki/src/features/stream/ui/PipControlsToolbar.tsx)
 
 A floating toolbar that appears below or beside the PiP camera window. Renders icon buttons for each sub-menu.
 

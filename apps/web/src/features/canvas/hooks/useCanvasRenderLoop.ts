@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { GLRenderer } from "@caption-cam/engine/kernel/engine/GLRenderer";
+import { GLRenderer } from "@gaki/engine/kernel/engine/GLRenderer";
 
 // Worker import (Vite syntax)
 import CanvasWorker from "../workers/canvas.worker?worker";

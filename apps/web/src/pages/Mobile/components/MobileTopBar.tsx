@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, X, Heart } from "lucide-react";
 import { useAuth } from "@/pages/platform/context/AuthContext";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 export const MobileTopBar: React.FC = () => {
   const navigate = useNavigate();

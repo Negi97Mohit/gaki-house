@@ -1,7 +1,7 @@
 // src/hooks/useSnapGuides.ts
 
 import { useMemo } from 'react';
-import { GeneratedLayout } from "@caption-cam/core/types/caption";
+import { GeneratedLayout } from "@gaki/core/types/caption";
 
 export interface SnapPoint {
     value: number; // Position in percentage

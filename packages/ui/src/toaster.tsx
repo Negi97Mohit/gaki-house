@@ -1,4 +1,4 @@
-import { useToast } from "@caption-cam/core/hooks/use-toast";
+import { useToast } from "@gaki/core/hooks/use-toast";
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "./toast";
 
 export function Toaster() {

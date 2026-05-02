@@ -1,7 +1,7 @@
 _(SDK documentation)_
 
 ````markdown
-# @caption-cam/handoff-sdk
+# @gaki/handoff-sdk
 
 A framework-agnostic TypeScript SDK for discovering sibling devices and synchronizing stream states.
 
@@ -11,14 +11,14 @@ _(Managed via pnpm workspace)_
 
 ```json
 "dependencies": {
-  "@caption-cam/handoff-sdk": "workspace:*"
+  "@gaki/handoff-sdk": "workspace:*"
 }
 ```
 ````
 
 Usage Example
 TypeScript
-import { DeviceRegistry, HandoffCoordinator } from '@caption-cam/handoff-sdk';
+import { DeviceRegistry, HandoffCoordinator } from '@gaki/handoff-sdk';
 
 // 1. Register the current device
 const registry = new DeviceRegistry(firebaseToken);

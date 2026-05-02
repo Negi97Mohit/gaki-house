@@ -1,9 +1,9 @@
 // src/components/CaptionRenderer.tsx
 import React from "react";
 import { DYNAMIC_STYLES } from "@/lib/dynamicCaptionStyles";
-import { DynamicStyleProps } from "@caption-cam/core/types/caption";
-import { CaptionStyle } from "@caption-cam/core/types/caption";
-import { cn } from "@caption-cam/core/lib/utils";
+import { DynamicStyleProps } from "@gaki/core/types/caption";
+import { CaptionStyle } from "@gaki/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
 
 interface CaptionRendererProps extends DynamicStyleProps {
   activeStyleId: string;

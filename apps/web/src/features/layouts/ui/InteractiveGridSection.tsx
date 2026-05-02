@@ -1,24 +1,24 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Rnd } from "react-rnd";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import {
   CanvasSectionCameraState,
   TextOverlayState,
   DEFAULT_CAMERA_STATE,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
 import { DraggableTextOverlay } from "@/features/canvas/ui/DraggableTextOverlay";
 import { PipControlsToolbar } from "@/features/stream/ui/PipControlsToolbar";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import { Paintbrush, Plus, Type } from "lucide-react";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+import { ColorPicker } from "@gaki/ui/color-picker";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@caption-cam/ui/dropdown-menu";
-import { generateId } from "@caption-cam/core/lib/id";
+} from "@gaki/ui/dropdown-menu";
+import { generateId } from "@gaki/core/lib/id";
 
 interface InteractiveGridSectionProps {
   sectionId: string;

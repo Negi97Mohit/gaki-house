@@ -4,10 +4,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@caption-cam/ui/dialog";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { Label } from "@caption-cam/ui/label";
+} from "@gaki/ui/dialog";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Label } from "@gaki/ui/label";
 import { auth, firebaseConfig } from "@/lib/firebase";
 import {
   createUserWithEmailAndPassword,
@@ -18,7 +18,7 @@ import {
 } from "firebase/auth";
 import { Loader, Eye, EyeOff, Check, X } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 interface AuthModalProps {
   isOpen: boolean;

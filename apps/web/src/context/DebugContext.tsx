@@ -1,6 +1,6 @@
 import React from "react";
 import { create } from "zustand";
-import { AIDecision } from "@caption-cam/core/types/caption";
+import { AIDecision } from "@gaki/core/types/caption";
 
 type DebugInfo = {
   rawTranscript: string;

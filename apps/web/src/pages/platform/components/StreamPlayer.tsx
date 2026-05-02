@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import { StreamChannel, PlatformType } from "../data/mockData";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 
 // Platforms that reliably support autoplay embedding (muted)
 // Excluded: bilibili (requires login), niconico (requires login), dlive (loads full page, no embed player)

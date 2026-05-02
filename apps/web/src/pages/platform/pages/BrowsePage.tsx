@@ -5,7 +5,7 @@ import { useStreams } from "../hooks/useStreams";
 import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
 import { CategoryCard } from "../components/CategoryCard";
 import { StreamCardHover } from "../components/StreamCardHover";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useThemeStore, type PlatformLayout } from "@/features/theme";
 import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 

@@ -4,7 +4,7 @@
 // RULE: No DOM access, no React, no Electron IPC — pure Canvas 2D API only.
 
 import type { SceneGraph, SceneGraphLayer } from "../engine/SceneGraph";
-import type { ObsOverlayState } from "@caption-cam/core/types/caption";
+import type { ObsOverlayState } from "@gaki/core/types/caption";
 
 export type {}; // ensures this file is treated as a module, not a script
 

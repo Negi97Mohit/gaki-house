@@ -1,5 +1,5 @@
 import React from "react";
-import { CanvasSectionCameraState } from "@caption-cam/core/types/caption";
+import { CanvasSectionCameraState } from "@gaki/core/types/caption";
 import { CameraRenderer } from "@/features/stream/ui/CameraRenderer";
 import { InteractiveGridSection } from "@/features/layouts/ui/InteractiveGridSection";
 import { usePanelStream } from "@/features/stream/hooks/usePanelStream";

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { CanvasLayoutState } from "@caption-cam/core/types/caption";
-import { CanvasLayoutTemplate } from "@caption-cam/core/types/layout";
+import { CanvasLayoutState } from "@gaki/core/types/caption";
+import { CanvasLayoutTemplate } from "@gaki/core/types/layout";
 
 interface UseGridResizingProps {
     layout: CanvasLayoutState;

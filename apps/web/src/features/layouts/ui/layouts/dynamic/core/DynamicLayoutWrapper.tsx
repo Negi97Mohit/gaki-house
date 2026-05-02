@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { CanvasSectionState, CanvasLayoutState } from "@caption-cam/core/types/caption";
+import { CanvasSectionState, CanvasLayoutState } from "@gaki/core/types/caption";
 import { useLayoutEditor } from "@/features/layouts/hooks/useLayoutEditor";
 import { LayoutEditorToolbar } from "../../LayoutEditorToolbar";
 import { LayoutSettingsCtrl } from "../../LayoutSettingsCtrl";

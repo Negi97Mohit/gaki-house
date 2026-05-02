@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { GSAP_PRESETS, GSAPPreset } from "@/features/animation/lib/gsapAnimations";
 import { GSAPPresetPreview } from "@/features/banners/ui/GSAPAnimatedBanner";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { Sparkles, Zap, Box, Type, Paintbrush, Layers } from "lucide-react";
 
 interface GSAPAnimationsPanelProps {

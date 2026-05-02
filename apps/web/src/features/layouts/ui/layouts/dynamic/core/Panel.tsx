@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { CanvasSectionState } from "@caption-cam/core/types/caption";
+import { CanvasSectionState } from "@gaki/core/types/caption";
 import { GridSectionWrapper } from "../../GridSectionWrapper";
 import { useDynamicLayout } from "./DynamicLayoutContext";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { DynamicDeleteButton } from "./LayoutButtons";
 
 interface PanelProps {

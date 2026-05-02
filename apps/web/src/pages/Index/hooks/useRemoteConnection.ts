@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRemotePeer } from "@/hooks/useRemotePeer";
-import { SceneState } from "@caption-cam/core/types/editor";
+import { SceneState } from "@gaki/core/types/editor";
 import { useMediaStore } from "@/stores/media.store"; // Import store
 
 export const useRemoteConnection = (activeScene: SceneState | null) => {

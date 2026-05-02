@@ -1,7 +1,7 @@
 // src/lib/presetValidation.ts
 // Utilities to validate and constrain preset layouts to ensure they fit within canvas bounds
 
-import { CanvasPreset, CanvasPresetTextOverlay } from "@caption-cam/core/types/canvasPreset";
+import { CanvasPreset, CanvasPresetTextOverlay } from "@gaki/core/types/canvasPreset";
 
 export interface ScreenSize {
   width: number;

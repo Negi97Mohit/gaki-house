@@ -3,7 +3,7 @@ import {
   CanvasLayoutState,
   CanvasSectionState,
   ExtendedCSSProperties,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 
 export interface UseLayoutEditorProps {
   layout: CanvasLayoutState;

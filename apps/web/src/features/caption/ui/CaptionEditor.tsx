@@ -1,10 +1,10 @@
-import { Card } from "@caption-cam/ui/card";
-import { Label } from "@caption-cam/ui/label";
-import { Slider } from "@caption-cam/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@caption-cam/ui/select";
-import { Switch } from "@caption-cam/ui/switch";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
-import { CaptionStyle } from "@caption-cam/core/types/caption";
+import { Card } from "@gaki/ui/card";
+import { Label } from "@gaki/ui/label";
+import { Slider } from "@gaki/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@gaki/ui/select";
+import { Switch } from "@gaki/ui/switch";
+import { ColorPicker } from "@gaki/ui/color-picker";
+import { CaptionStyle } from "@gaki/core/types/caption";
 
 interface CaptionEditorProps {
   style: CaptionStyle;

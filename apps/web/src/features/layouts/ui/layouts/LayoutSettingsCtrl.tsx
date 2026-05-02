@@ -4,9 +4,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@caption-cam/ui/popover";
-import { Label } from "@caption-cam/ui/label";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+} from "@gaki/ui/popover";
+import { Label } from "@gaki/ui/label";
+import { ColorPicker } from "@gaki/ui/color-picker";
 import { usePreviewMode } from "./dynamic/core/PreviewModeContext";
 
 interface LayoutSettingsCtrlProps {

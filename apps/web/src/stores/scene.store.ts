@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GeneratedOverlay, TextOverlayState, FileOverlayState, CaptionStyle, SceneState as GlobalSceneState, EmptyGridPanelState } from "@caption-cam/core/types/caption";
+import { GeneratedOverlay, TextOverlayState, FileOverlayState, CaptionStyle, SceneState as GlobalSceneState, EmptyGridPanelState } from "@gaki/core/types/caption";
 import type { CinematicEffect } from '@/features/stream/ui/pip/cinematicShotData';
 
 interface SceneState {

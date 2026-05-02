@@ -48,7 +48,7 @@ Disconnect → Match next or return to lobby
 
 ## Store
 
-→ Source: [omegle.store.ts](file:///c:/Users/Dell/Desktop/caption-cam/src/stores/omegle.store.ts)
+→ Source: [omegle.store.ts](file:///c:/Users/Dell/Desktop/gaki/src/stores/omegle.store.ts)
 
 The `useOmegleStore` manages matching state:
 - Connection status

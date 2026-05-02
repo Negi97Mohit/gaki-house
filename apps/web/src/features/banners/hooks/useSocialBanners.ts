@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { SocialBannerDesign } from "@caption-cam/core/types/socialBanner";
-import { AnimatedBannerDesign } from "@caption-cam/core/types/animatedBanner";
+import { SocialBannerDesign } from "@gaki/core/types/socialBanner";
+import { AnimatedBannerDesign } from "@gaki/core/types/animatedBanner";
 
 export const useSocialBanners = () => {
     const [socialBanners, setSocialBanners] = useState<SocialBannerDesign[]>([]);

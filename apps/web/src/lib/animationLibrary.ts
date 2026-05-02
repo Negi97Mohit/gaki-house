@@ -1,5 +1,5 @@
 // src/lib/animationLibrary.ts
-import { AnimationPreset, AnimationCategory } from "@caption-cam/core/types/animation";
+import { AnimationPreset, AnimationCategory } from "@gaki/core/types/animation";
 
 export const ANIMATION_CATEGORIES: AnimationCategory[] = [
   "All",

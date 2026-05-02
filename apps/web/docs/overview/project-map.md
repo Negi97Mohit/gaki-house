@@ -7,7 +7,7 @@
 This document maps every directory in the codebase with annotations explaining what each directory and key file does. Empty component directories (stubs for future work) are marked with `[STUB]`.
 
 ```
-caption-cam/
+gaki/
 │
 ├── .env / .env.local / .env.example    — Environment variables (API keys)
 ├── package.json                         — Project config, scripts, dependencies

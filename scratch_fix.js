@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-const b64Path = 'c:\\Users\\Dell\\Desktop\\caption-cam\\b64.txt';
-const mainTsPath = 'c:\\Users\\Dell\\Desktop\\caption-cam\\apps\\desktop\\electron\\main.ts';
+const b64Path = 'c:\\Users\\Dell\\Desktop\\gaki\\b64.txt';
+const mainTsPath = 'c:\\Users\\Dell\\Desktop\\gaki\\apps\\desktop\\electron\\main.ts';
 
 const b64 = fs.readFileSync(b64Path, 'utf8').trim();
 let mainTs = fs.readFileSync(mainTsPath, 'utf8');

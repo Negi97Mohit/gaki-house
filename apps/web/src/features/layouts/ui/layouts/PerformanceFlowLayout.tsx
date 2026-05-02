@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import { Plus, Trash2 } from "lucide-react";

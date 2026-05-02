@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { Button } from "@caption-cam/ui/button";
-import { Slider } from "@caption-cam/ui/slider";
-import { Switch } from "@caption-cam/ui/switch";
-import { Label } from "@caption-cam/ui/label";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+import { Button } from "@gaki/ui/button";
+import { Slider } from "@gaki/ui/slider";
+import { Switch } from "@gaki/ui/switch";
+import { Label } from "@gaki/ui/label";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 import {
   SceneTransition,
   TransitionType,
   TransitionEasing,
   TransitionBlendMode,
-} from "@caption-cam/core/types/caption";
+} from "@gaki/core/types/caption";
 import {
   X,
   Scissors,
@@ -42,7 +42,7 @@ import {
   Circle,
   Play,
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import {
   Select,
@@ -50,7 +50,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@caption-cam/ui/select";
+} from "@gaki/ui/select";
 
 interface TransitionCategory {
   name: string;

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { LayoutMode, CameraShape } from "@caption-cam/core/types/caption";
+import { LayoutMode, CameraShape } from "@gaki/core/types/caption";
 
 interface CanvasState {
     layoutMode: LayoutMode;

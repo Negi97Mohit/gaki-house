@@ -1,18 +1,18 @@
 // src/components/GSAPAnimationEditor.tsx
 import React, { useState, useEffect, useMemo } from "react";
-import { Button } from "@caption-cam/ui/button";
-import { Input } from "@caption-cam/ui/input";
-import { Label } from "@caption-cam/ui/label";
-import { Slider } from "@caption-cam/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@caption-cam/ui/select";
-import { Switch } from "@caption-cam/ui/switch";
+import { Button } from "@gaki/ui/button";
+import { Input } from "@gaki/ui/input";
+import { Label } from "@gaki/ui/label";
+import { Slider } from "@gaki/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@gaki/ui/select";
+import { Switch } from "@gaki/ui/switch";
 import { X, Save, RotateCcw, Play, Copy } from "lucide-react";
 import { GSAPPreset, GSAPAnimationConfig, GSAPAnimationType } from "@/features/animation/lib/gsapAnimations";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 import { ParticleEffectOverlay } from "@/features/banners/ui/ParticleEffectOverlay";
 import { EffectType } from "@/lib/particleEffects";
 import { generateGSAPHtml } from "@/lib/gsapHtmlGenerator";
-import { ColorPicker } from "@caption-cam/ui/color-picker";
+import { ColorPicker } from "@gaki/ui/color-picker";
 
 // Map effect animation types to particle effect types
 const EFFECT_TYPE_MAP: Record<string, EffectType> = {

@@ -5,7 +5,7 @@ import {
   Zap, Send, AtSign, Eye, EyeOff, Search, ShieldCheck, Fingerprint,
   CircleUserRound, Camera, Type, FileText, ChevronRight, LayoutGrid, Monitor
 } from "lucide-react";
-import { cn } from "@caption-cam/core/lib/utils";
+import { cn } from "@gaki/core/lib/utils";
 import { useAuth } from "../context/AuthContext";
 import { db } from "@/lib/firebase";
 import { doc, updateDoc, getDoc, collection, query, where, getDocs, setDoc } from "firebase/firestore";

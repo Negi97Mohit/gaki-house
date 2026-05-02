@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { TextDesignPreset } from "@caption-cam/core/types/textDesign";
+import { TextDesignPreset } from "@gaki/core/types/textDesign";
 
 // Extended TextDesign with optional legacy style support
 export interface TextDesign extends Omit<TextDesignPreset, 'layers'> {

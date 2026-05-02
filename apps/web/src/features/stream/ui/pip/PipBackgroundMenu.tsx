@@ -1,6 +1,6 @@
 import React from "react";
 import { Image } from "lucide-react";
-import { Button } from "@caption-cam/ui/button";
+import { Button } from "@gaki/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +8,8 @@ import {
   DropdownMenuPortal,
   DropdownMenuCheckboxItem,
   DropdownMenuLabel,
-} from "@caption-cam/ui/dropdown-menu";
-import { Input } from "@caption-cam/ui/input";
+} from "@gaki/ui/dropdown-menu";
+import { Input } from "@gaki/ui/input";
 import { ASPECT_RATIOS } from "@/lib/backgrounds";
 
 interface PipBackgroundMenuProps {

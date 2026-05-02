@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { cn } from "@caption-cam/core/lib/utils";
-import { CanvasLayoutState, CanvasSectionState } from "@caption-cam/core/types/caption";
+import { cn } from "@gaki/core/lib/utils";
+import { CanvasLayoutState, CanvasSectionState } from "@gaki/core/types/caption";
 import { GridSectionWrapper } from "./GridSectionWrapper";
 import { EditableText } from "@/features/layouts/ui/layouts/dynamic/core/EditableText";
 import { DynamicLayoutWrapper } from "./dynamic/core/DynamicLayoutWrapper";

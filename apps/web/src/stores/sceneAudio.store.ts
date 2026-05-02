@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { SceneAudioTrack } from "@caption-cam/core/types/caption";
+import { SceneAudioTrack } from "@gaki/core/types/caption";
 
 interface SceneInfo {
   id: string;

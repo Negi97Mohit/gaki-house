@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { OmegleDesign } from "@caption-cam/core/types/omegle";
+import { OmegleDesign } from "@gaki/core/types/omegle";
 import { useOmegleStore } from '@/stores/omegle.store';
 import { getOmegleDesignNames } from '@/data/omegleDesigns';
 import { omegleThemes } from '@/data/omegleThemes';
@@ -14,16 +14,16 @@ import {
     Sparkles,
     Sun,
 } from 'lucide-react';
-import { cn } from "@caption-cam/core/lib/utils";
-import { Button } from "@caption-cam/ui/button";
+import { cn } from "@gaki/core/lib/utils";
+import { Button } from "@gaki/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
     DropdownMenuLabel,
-} from "@caption-cam/ui/dropdown-menu";
-import { ScrollArea } from "@caption-cam/ui/scroll-area";
+} from "@gaki/ui/dropdown-menu";
+import { ScrollArea } from "@gaki/ui/scroll-area";
 
 interface OmegleControlsProps {
     design: OmegleDesign;
