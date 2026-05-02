@@ -70,8 +70,6 @@ export class BroadcastBus {
    * be addressed in a future cleanup pass by lifting the kernel to CanvasContainer).
    */
   constructor(canvas: HTMLCanvasElement) {
-    console.log("[BroadcastBus] constructor — transferring canvas to worker");
-
     BroadcastBus.activeInstance = this;
     this.rawCanvas = canvas;
     const offscreen = canvas.transferControlToOffscreen();
@@ -101,7 +99,6 @@ export class BroadcastBus {
     this.worker.postMessage({ type: "INIT", offscreen }, [offscreen]);
 
     this.transitionEngine = new TransitionEngine();
-    console.log("[BroadcastBus] worker started");
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
@@ -110,7 +107,6 @@ export class BroadcastBus {
     if (this.cameraSourceCanvas === sourceCanvas) return;
     this.stopCameraFeed();
     this.cameraSourceCanvas = sourceCanvas;
-    console.log("[BroadcastBus] startCameraFeed: Linking camera canvas to worker via rAF");
 
     const loop = async () => {
       if (this.isDestroyed || !this.cameraSourceCanvas) return;
@@ -166,11 +162,9 @@ export class BroadcastBus {
     if (this.screenFeedAnimationFrame !== null) {
       cancelAnimationFrame(this.screenFeedAnimationFrame);
       this.screenFeedAnimationFrame = null;
-      console.log("[BroadcastBus] startScreenFeed: cancelled previous screen rAF before restart");
     }
     
     this.screenSourceVideo = sourceVideo;
-    console.log("[BroadcastBus] startScreenFeed: Linking screen video to worker via rAF");
 
     const loop = async () => {
       if (this.isDestroyed || !this.screenSourceVideo) return;
@@ -198,7 +192,6 @@ export class BroadcastBus {
       this.screenFeedAnimationFrame = null;
     }
     this.screenSourceVideo = null;
-    console.log("[BroadcastBus] stopScreenFeed: Screen feed stopped");
   }
 
   // ─── F3: Overlay Feeds ────────────────────────────────────────────────────────
@@ -215,8 +208,6 @@ export class BroadcastBus {
     }));
 
     if (this.overlaySources.length === 0) return;
-
-    console.log(`[BroadcastBus] startOverlayFeeds: Linking ${items.length} overlays to worker via rAF`);
 
     const loop = async () => {
       if (this.isDestroyed || this.overlaySources.length === 0) return;
@@ -374,7 +365,6 @@ export class BroadcastBus {
     this.stopCameraFeed();
     this.stopScreenFeed();
     this.stopOverlayFeeds();
-    console.log("[BroadcastBus] destroy called");
 
     if (this.assetUpdateRaf !== null) {
       cancelAnimationFrame(this.assetUpdateRaf);

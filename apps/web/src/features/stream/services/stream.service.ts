@@ -78,8 +78,6 @@ class StreamService {
       return this.activeStream;
     }
 
-    console.log("[StreamService] Starting Pipeline...");
-
     // 1. Initialize the Mixer (Canvas + Video Element)
     this.initMixer();
 
@@ -154,9 +152,6 @@ class StreamService {
 
     this.unsubMediaStore = useMediaStore.subscribe((state, prevState) => {
       if (state.screenShareMode !== prevState.screenShareMode) {
-        console.log(
-          "[StreamService] Screen share mode changed. Updating source...",
-        );
         // We add a small delay to ensure windows have resized/focused
         setTimeout(() => this.updateVideoSource(), 500);
       }
@@ -185,10 +180,6 @@ class StreamService {
 
         if (isSharingInternally) {
           // CASE 1: User is sharing content -> Capture the APP WINDOW
-          // This allows us to show the "OBS-like" layout
-          console.log(
-            "[StreamService] Mode: Internal Share Active -> Target: App Window",
-          );
           selectedSource = sources.find(
             (s: any) =>
               s.name.includes("caption-cam") ||
@@ -199,7 +190,6 @@ class StreamService {
 
         if (!selectedSource) {
           // CASE 2: User is NOT sharing (or App not found) -> Capture RAW SCREEN
-          console.log("[StreamService] Mode: Default -> Target: Raw Screen");
           selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
         }
 
@@ -226,7 +216,6 @@ class StreamService {
         // If we don't have a stream yet, we ask for "Entire Screen".
         // If we already have one, we keep it (seamless).
         if (!this.currentVideoSource) {
-          console.log("[StreamService] Web Mode: Requesting Display Media");
           newStream = await navigator.mediaDevices.getDisplayMedia({
             video: { width: 1920, height: 1080 },
             audio: false,
@@ -387,23 +376,12 @@ class StreamService {
         const activeTracks: MediaStreamTrack[] = [];
         if (canvasStream) {
           const vTracks = canvasStream.getVideoTracks();
-          console.log(
-            "[StreamService] Canvas video tracks:",
-            vTracks.length,
-            vTracks[0]?.readyState,
-          );
           activeTracks.push(...vTracks);
         }
         if (audioStream) {
           const aTracks = audioStream.getAudioTracks();
-          console.log(
-            "[StreamService] Audio tracks:",
-            aTracks.length,
-            aTracks[0]?.readyState,
-          );
           activeTracks.push(...aTracks);
         }
-        if (audioStream) activeTracks.push(...audioStream.getAudioTracks());
 
         const finalStream = new MediaStream(activeTracks);
 
@@ -439,7 +417,6 @@ class StreamService {
     if (!this.activeStream) throw new Error("No active stream for recorder");
 
     const mimeType = this.getSupportedMimeType();
-    console.log(`[StreamService] Using codec: ${mimeType}`);
 
     this.mediaRecorder = new MediaRecorder(this.activeStream, {
       mimeType,
@@ -449,9 +426,6 @@ class StreamService {
     const isElectron = !!(window as ElectronWindow).electron;
 
     this.mediaRecorder.ondataavailable = async (e) => {
-      console.log(
-        `[BroadcastEncoder] ondataavailable fired, size: ${e.data.size}`,
-      );
       if (e.data.size > 0) {
         if (isElectron) {
           const buffer = await e.data.arrayBuffer();
@@ -564,7 +538,6 @@ class StreamService {
       const currentDest = store.destinations.find((d) => d.id === id);
 
       if (currentDest && currentDest.status === "starting") {
-        console.log(`[StreamService] Verification passed for ${id}`);
         store.setDestinationStatus(id, "connected");
         this.retryCounts.set(id, 0);
 
@@ -628,7 +601,6 @@ class StreamService {
       const dest = store.destinations.find((d) => d.id === id);
       if (dest) {
         setTimeout(() => {
-          console.log(`[StreamService] Retrying connection for ${id}`);
           const mimeType = this.mediaRecorder?.mimeType || "video/webm";
           this.emitStartCommand(dest, mimeType);
         }, retryDelay);
@@ -679,7 +651,6 @@ class StreamService {
   }
 
   public stopStreaming(specificId?: string) {
-    console.log("[StreamService] Stop Streaming:", specificId || "ALL");
     this.isIntentionalStop = true;
 
     if (this.countdownInterval) {
@@ -737,7 +708,6 @@ class StreamService {
       useStreamStore.getState().isBroadcasting ||
       useStreamStore.getState().isRecording
     ) {
-      console.log("[StreamService] Pipeline kept alive for other process");
       return;
     }
 
@@ -785,7 +755,6 @@ class StreamService {
 
   public async startRecording() {
     try {
-      console.log("[StreamService] Starting Recording...");
       useStreamStore.getState().setRecording(true);
 
       // Ensure pipeline is running (mixer, audio, etc.)

@@ -18,11 +18,10 @@ export class BroadcastEncoder {
   private stream: MediaStream | null = null;
 
   constructor() {
-    console.log("[BroadcastEncoder] instance created");
+    // Singleton encoder
   }
 
   start(stream: MediaStream, config: BroadcastEncoderConfig) {
-    console.log("[BroadcastEncoder] start() called");
     this.stream = stream;
 
     // We rely on window.electron being injected via preload
@@ -32,45 +31,79 @@ export class BroadcastEncoder {
       return;
     }
 
+    // Register status/progress listeners BEFORE ffmpeg starts so no events are missed
     electron.stream.onStatus(config.onStatus);
-    
     if (electron.stream.onProgress && config.onProgress) {
       electron.stream.onProgress(config.onProgress);
     }
 
     const mimeType = this.getSupportedMimeType();
-    console.log(`[BroadcastEncoder] Using codec: ${mimeType}`);
+    console.log(`[BroadcastEncoder] Selected mimeType: ${mimeType || "empty (fallback)"}`);
 
     this.mediaRecorder = new MediaRecorder(this.stream, {
       mimeType,
-      videoBitsPerSecond: 4000000, // 4Mbps default
+      videoBitsPerSecond: 4000000,
     });
 
+    let ffmpegStarted = false;
+    let pendingChunks: ArrayBuffer[] = [];
+    const targetIds = config.targets.map((t) => t.id);
+    const readyTargets = new Set<string>();
+
+    if (electron.stream.onFfmpegReady) {
+      electron.stream.onFfmpegReady((data: { id: string }) => {
+        console.log(`[BroadcastEncoder] Target ${data.id} is ffmpeg-ready.`);
+        readyTargets.add(data.id);
+        
+        // If all targets have spawned and are ready for data, flush the buffers!
+        const allReady = targetIds.every((id) => readyTargets.has(id));
+        if (allReady && pendingChunks.length > 0) {
+          console.log(`[BroadcastEncoder] All ${targetIds.length} targets ready. Flushing ${pendingChunks.length} chunks.`);
+          pendingChunks.forEach((chunk) => electron.stream.sendData(chunk));
+          pendingChunks = [];
+        }
+      });
+    }
+
     this.mediaRecorder.ondataavailable = async (e) => {
-      console.log(`[BroadcastEncoder] chunk size: ${e.data.size}`);
-      if (e.data.size > 0 && electron.stream) {
-        const buffer = await e.data.arrayBuffer();
-        electron.stream.sendData(buffer);
+      if (e.data.size === 0 || !electron.stream) return;
+
+      const buffer = await e.data.arrayBuffer();
+
+      if (!ffmpegStarted) {
+        ffmpegStarted = true;
+        pendingChunks.push(buffer);
+        console.log(`[BroadcastEncoder] First chunk received (${buffer.byteLength} bytes). Starting ${config.targets.length} target(s) via IPC...`);
+
+        // Start ffmpeg now that we have the first WebM chunk (with the header)
+        config.targets.forEach((dest) => {
+          electron.stream.start({
+            id: dest.id,
+            rtmpUrl: dest.url,
+            key: dest.key,
+            mimeType,
+          });
+        });
+
+        // We no longer forcefully flush. We must wait for ffmpeg-ready signal to guarantee no WebM header chunks are lost.
+
+      } else {
+        const allReady = targetIds.every((id) => readyTargets.has(id));
+        if (!allReady) {
+          console.log(`[BroadcastEncoder] Buffering chunk (${buffer.byteLength} bytes), waiting for targets...`);
+          pendingChunks.push(buffer);
+        } else {
+          electron.stream.sendData(buffer);
+        }
       }
     };
 
-    // Begin chunking immediately
+    // Start chunking — first ondataavailable fires after 1000ms
+    console.log("[BroadcastEncoder] Starting MediaRecorder...");
     this.mediaRecorder.start(1000);
-
-    // Bootstrap endpoints
-    config.targets.forEach((dest) => {
-      console.log(`[BroadcastEncoder] Emitting start for destination: ${dest.id}`);
-      electron.stream.start({
-        id: dest.id,
-        rtmpUrl: dest.url,
-        key: dest.key,
-        mimeType,
-      });
-    });
   }
 
   stop(specificId?: string) {
-    console.log(`[BroadcastEncoder] stop() called (destination: ${specificId || 'ALL'})`);
     const electron = (window as any).electron;
     
     if (specificId && electron) {
@@ -89,7 +122,6 @@ export class BroadcastEncoder {
 
     this.mediaRecorder = null;
     this.stream = null;
-    console.log("[BroadcastEncoder] Encoding pipeline halted");
   }
 
   private getSupportedMimeType(): string {
