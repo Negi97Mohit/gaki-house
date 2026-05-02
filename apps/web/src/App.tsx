@@ -180,6 +180,24 @@ const IS_ELECTRON =
   window.navigator.userAgent.toLowerCase().includes("electron");
 const Router = IS_ELECTRON ? HashRouter : BrowserRouter;
 
+const ElectronTitleBar = () => {
+  if (!IS_ELECTRON) return null;
+  return (
+    <div 
+      className="fixed top-0 left-0 w-full h-8 z-[9999] flex items-center justify-center pointer-events-none"
+    >
+      <div 
+        className="w-1/3 min-w-[200px] h-full pointer-events-auto flex items-center justify-center group"
+        style={{ WebkitAppRegion: "drag" } as any}
+      >
+        <div className="opacity-0 group-hover:opacity-40 transition-opacity duration-500 text-[9px] font-semibold tracking-[0.3em] text-foreground uppercase select-none">
+          Gaki
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const inactivityTimer = useRef<NodeJS.Timeout | null>(null);
   const [showLoader, setShowLoader] = useState(true);
@@ -238,6 +256,7 @@ const App = () => {
                 <Sonner />
                 {/* Router is now dynamic */}
                 <Router>
+                  <ElectronTitleBar />
                   <AuthProvider>
                     <Suspense fallback={<Loader visible={true} />}>
                       <Routes>

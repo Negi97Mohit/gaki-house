@@ -49,6 +49,12 @@ function createWindow() {
     minWidth: 800,
     minHeight: 600,
     backgroundColor: "#000000",
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#000000",
+      symbolColor: "#ffffff",
+      height: 32,
+    },
     icon: path.join(__dirname, "../../build/icon.png"),
     webPreferences: {
       nodeIntegration: true,
