@@ -66,12 +66,20 @@ export const useAuth = () => {
     }
   };
 
+  const cancelGoogleSignIn = () => {
+    const electron = (window as any).electron;
+    if (electron?.auth?.cancelGoogleOAuth) {
+      electron.auth.cancelGoogleOAuth();
+    }
+  };
+
   return {
     user,
     loading,
     isAuthModalOpen,
     setIsAuthModalOpen,
     googleSignIn,
+    cancelGoogleSignIn,
     signOut
   };
 };

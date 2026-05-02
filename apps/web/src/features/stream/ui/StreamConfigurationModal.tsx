@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useAuth } from "@/pages/platform/context/AuthContext";
 import {
   Radio,
@@ -15,14 +16,9 @@ import {
   Pencil,
   Sparkles,
   Copy,
+  X,
 } from "lucide-react";
 import { Button } from "@caption-cam/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@caption-cam/ui/dialog";
 import { Input } from "@caption-cam/ui/input";
 import { cn } from "@caption-cam/core/lib/utils";
 import { STREAMING_PLATFORMS } from "@/data/streamingPlatforms";
@@ -112,6 +108,7 @@ export const StreamConfigurationModal: React.FC<
   const [newKey, setNewKey] = useState("");
   const [showKey, setShowKey] = useState(false);
 
+
   const {
     destinations,
     addDestination,
@@ -199,20 +196,6 @@ export const StreamConfigurationModal: React.FC<
 
   const activeCount = destinations.filter((d) => d.enabled).length;
 
-  React.useEffect(() => {
-    if (externalOpen !== undefined && externalOpen !== isOpen) {
-      if (externalOpen && !user) {
-        openAuthModal("login");
-        onOpenChange?.(false);
-        return;
-      }
-      setIsOpen(externalOpen);
-      if (externalOpen && destinations.length === 0) {
-        setView("add");
-      }
-    }
-  }, [externalOpen]);
-
   const resetAndClose = () => {
     setView("list");
     setNewUrl("");
@@ -227,46 +210,37 @@ export const StreamConfigurationModal: React.FC<
     if (!open) resetAndClose();
   };
 
-  return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <Button
-        variant="ghost"
-        size="icon"
-        className={cn(
-          "rounded-xl h-7 w-7 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
-          isBroadcasting &&
-          "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
-        )}
-        title="Stream Settings"
-        onClick={() => {
-          if (!user) {
-            openAuthModal("login");
-            return;
-          }
-          setIsOpen(true);
-        }}
-      >
-        {isBroadcasting ? (
-          <Wifi className="w-3 h-3" />
-        ) : (
-          <Radio className="w-3 h-3" />
-        )}
-      </Button>
+  React.useEffect(() => {
+    if (externalOpen === undefined) return;
+    setIsOpen(externalOpen);
+    if (externalOpen && destinations.length === 0) {
+      setView("add");
+    }
+    if (!externalOpen) resetAndClose();
+  }, [externalOpen]);
 
-      <DialogContent
+  const modalContent = (
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        style={{ zIndex: 99998 }}
+        onClick={() => handleOpenChange(false)}
+      />
+      {/* Panel */}
+      <div
         className={cn(
-          "w-[360px] max-w-[90vw] p-0 gap-0",
-          "max-h-[85vh]",
-          "flex flex-col",
-          "bg-background/70 dark:bg-background/50 backdrop-blur-2xl",
-          "border border-border/20 dark:border-white/10",
-          "rounded-2xl shadow-2xl shadow-black/10 dark:shadow-black/40",
-          "overflow-hidden"
+          "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+          "w-[360px] max-w-[90vw] max-h-[85vh]",
+          "flex flex-col rounded-2xl overflow-hidden",
+          "bg-background border border-border/30",
+          "shadow-2xl"
         )}
+        style={{ zIndex: 99999 }}
       >
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.06] to-transparent pointer-events-none" />
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
         {/* Header */}
-        <DialogHeader className="px-5 pt-5 pb-4">
+        <div className="px-5 pt-5 pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
@@ -287,30 +261,35 @@ export const StreamConfigurationModal: React.FC<
                 )}
               </div>
               <div>
-                <DialogTitle className="text-sm font-semibold tracking-tight">
+                <p className="text-sm font-semibold tracking-tight text-foreground">
                   {view === "add"
-                    ? editingId
-                      ? "Edit Destination"
-                      : "New Destination"
-                    : "Stream"}
-                </DialogTitle>
+                    ? editingId ? "Edit Destination" : "New Destination"
+                    : "Stream Settings"}
+                </p>
                 <p className="text-[10px] text-muted-foreground mt-0.5">
                   {view === "add"
                     ? "Configure your stream endpoint"
                     : isBroadcasting
                       ? "Currently broadcasting"
-                      : `${destinations.length} destination${destinations.length !== 1 ? "s" : ""
-                      }`}
+                      : `${destinations.length} destination${destinations.length !== 1 ? "s" : ""}`}
                 </p>
               </div>
             </div>
-            {isBroadcasting && (
-              <span className="text-[9px] uppercase tracking-wider font-semibold text-red-500 bg-red-500/10 px-2 py-1 rounded-full">
-                Live
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {isBroadcasting && (
+                <span className="text-[9px] uppercase tracking-wider font-semibold text-red-500 bg-red-500/10 px-2 py-1 rounded-full">
+                  Live
+                </span>
+              )}
+              <button
+                onClick={() => handleOpenChange(false)}
+                className="w-7 h-7 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/5 transition-all"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-        </DialogHeader>
+        </div>
 
         <div className="h-px bg-border/30 dark:bg-white/5" />
 
@@ -751,7 +730,26 @@ export const StreamConfigurationModal: React.FC<
             )}
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
+  );
+
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn(
+          "rounded-xl h-7 w-7 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
+          isBroadcasting && "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
+        )}
+        title="Stream Settings"
+        onClick={() => setIsOpen(true)}
+      >
+        {isBroadcasting ? <Wifi className="w-3 h-3" /> : <Radio className="w-3 h-3" />}
+      </Button>
+
+      {isOpen && createPortal(modalContent, document.body)}
+    </>
   );
 };
