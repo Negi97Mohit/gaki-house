@@ -7,7 +7,7 @@ import { BroadcastBus } from "@caption-cam/engine/kernel/engine/BroadcastBus";
 import { AudioMixerEngine } from "@caption-cam/engine/kernel/engine/AudioMixerEngine";
 import { BroadcastEncoder } from "@caption-cam/engine/kernel/engine/BroadcastEncoder";
 
-export const USE_KERNEL_PIPELINE = true;
+export const USE_KERNEL_PIPELINE = false;
 
 const SERVER_URL = "http://localhost:3000";
 
@@ -53,6 +53,7 @@ class StreamService {
   // State flags
   private isPipelineActive = false;
   private countdownInterval: NodeJS.Timeout | null = null;
+  private isAppFocused = true;
 
   // Connection Management
   private verifyingTimers = new Map<string, NodeJS.Timeout>();
@@ -156,6 +157,21 @@ class StreamService {
         setTimeout(() => this.updateVideoSource(), 500);
       }
     });
+
+    // Track app focus state for dynamic source switching
+    window.addEventListener("focus", () => {
+      if (!this.isAppFocused) {
+        this.isAppFocused = true;
+        this.updateVideoSource();
+      }
+    });
+
+    window.addEventListener("blur", () => {
+      if (this.isAppFocused) {
+        this.isAppFocused = false;
+        this.updateVideoSource();
+      }
+    });
   }
 
   /**
@@ -177,19 +193,32 @@ class StreamService {
         });
 
         let selectedSource: any = null;
+        let captureAppWindow = false;
 
-        if (isSharingInternally) {
-          // CASE 1: User is sharing content -> Capture the APP WINDOW
+        // Dynamic Source Logic Option A:
+        // 1. In App -> Stream App Window
+        // 2. Sharing Screen (in App) -> Stream App Window
+        // 3. Out of App (Not Sharing) -> Stream Entire Screen
+        if (this.isAppFocused) {
+          captureAppWindow = true;
+        } else {
+          if (isSharingInternally) {
+            captureAppWindow = true;
+          } else {
+            captureAppWindow = false;
+          }
+        }
+
+        if (captureAppWindow) {
           selectedSource = sources.find(
             (s: any) =>
-              s.name.includes("caption-cam") ||
               s.name.includes("GAKI") ||
               s.name.includes("Vite + React"),
           );
         }
 
         if (!selectedSource) {
-          // CASE 2: User is NOT sharing (or App not found) -> Capture RAW SCREEN
+          // Capture RAW SCREEN
           selectedSource = sources.find((s: any) => s.id.startsWith("screen"));
         }
 
@@ -393,12 +422,18 @@ class StreamService {
         });
       } else {
         await this.startPipeline();
-        const mimeType = this.setupMediaRecorder();
-
+        
         const isElectron = !!(window as ElectronWindow).electron;
         if (isElectron) {
-          this.connectElectron(targets, mimeType);
+          if (!this.activeStream) throw new Error("No active stream for recorder");
+          this.broadcastEncoder = new BroadcastEncoder();
+          this.broadcastEncoder.start(this.activeStream, {
+            targets,
+            onStatus: (data: any) => this.handleStreamStatus(data),
+            onProgress: (data: any) => this.handleStreamProgress(data),
+          });
         } else {
+          const mimeType = this.setupMediaRecorder();
           await this.connectWeb(targets);
         }
       }
@@ -665,20 +700,17 @@ class StreamService {
     const isElectron = !!(window as ElectronWindow).electron;
 
     if (specificId) {
-      if (USE_KERNEL_PIPELINE) {
+      if (USE_KERNEL_PIPELINE || isElectron) {
         this.broadcastEncoder?.stop(specificId);
       } else {
-        if (isElectron)
-          (window as ElectronWindow).electron?.stream.stop({ id: specificId });
-        else this.socket?.emit("stop-stream", { id: specificId });
+        this.socket?.emit("stop-stream", { id: specificId });
       }
       useStreamStore.getState().setDestinationStatus(specificId, "idle");
     } else {
-      if (USE_KERNEL_PIPELINE) {
+      if (USE_KERNEL_PIPELINE || isElectron) {
         this.broadcastEncoder?.stop();
       } else {
-        if (isElectron) (window as ElectronWindow).electron?.stream.stop();
-        else this.socket?.emit("stop-stream");
+        this.socket?.emit("stop-stream");
 
         if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
           this.mediaRecorder.stop();
@@ -743,6 +775,7 @@ class StreamService {
       this.micStream = null;
       this.audioContext = null;
       this.audioDestination = null;
+      this.broadcastEncoder = null;
     }
   }
 
