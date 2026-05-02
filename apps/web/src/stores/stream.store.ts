@@ -9,6 +9,8 @@ export interface StreamDestination {
   enabled: boolean;
   status: "idle" | "starting" | "connected" | "live" | "error";
   error?: string;
+  fps?: number;
+  kbps?: number;
 }
 
 export type RecordingStatus =

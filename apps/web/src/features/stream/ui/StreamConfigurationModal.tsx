@@ -369,8 +369,14 @@ export const StreamConfigurationModal: React.FC<
                                 {dest.platform}
                               </span>
                               {dest.status === "live" && (
-                                <span className="shrink-0 text-[8px] bg-emerald-500/15 text-emerald-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide">
+                                <span className="shrink-0 text-[8px] bg-emerald-500/15 text-emerald-500 px-1.5 py-0.5 rounded-full font-medium uppercase tracking-wide flex items-center gap-1">
                                   Live
+                                  {dest.fps !== undefined && (
+                                    <>
+                                      <span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
+                                      {Math.round(dest.fps)} FPS
+                                    </>
+                                  )}
                                 </span>
                               )}
                               {dest.status === "connected" && (

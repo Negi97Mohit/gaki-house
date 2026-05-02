@@ -17,6 +17,8 @@ contextBridge.exposeInMainWorld("electron", {
       ipcRenderer.on("stream:status", (_, data) => callback(data)),
     onFfmpegReady: (callback: any) =>
       ipcRenderer.on("stream:ffmpeg-ready", (_, data) => callback(data)),
+    onProgress: (callback: any) =>
+      ipcRenderer.on("stream:progress", (_, data) => callback(data)),
   },
 
   // Recorder Controls

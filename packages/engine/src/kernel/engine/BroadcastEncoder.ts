@@ -10,6 +10,7 @@
 export interface BroadcastEncoderConfig {
   targets: any[];
   onStatus: (data: any) => void;
+  onProgress?: (data: any) => void;
 }
 
 export class BroadcastEncoder {
@@ -32,6 +33,10 @@ export class BroadcastEncoder {
     }
 
     electron.stream.onStatus(config.onStatus);
+    
+    if (electron.stream.onProgress && config.onProgress) {
+      electron.stream.onProgress(config.onProgress);
+    }
 
     const mimeType = this.getSupportedMimeType();
     console.log(`[BroadcastEncoder] Using codec: ${mimeType}`);

@@ -411,6 +411,7 @@ class StreamService {
         this.broadcastEncoder.start(finalStream, {
           targets,
           onStatus: (data: any) => this.handleStreamStatus(data),
+          onProgress: (data: any) => this.handleStreamProgress(data),
         });
       } else {
         await this.startPipeline();
@@ -540,6 +541,13 @@ class StreamService {
       this.startVerification(id);
     } else if (status === "stopped") {
       store.setDestinationStatus(id, "idle");
+    }
+  }
+
+  private handleStreamProgress(data: any) {
+    const { id, fps, kbps } = data;
+    if (id && typeof fps === "number") {
+      useStreamStore.getState().updateDestination(id, { fps, kbps });
     }
   }
 
