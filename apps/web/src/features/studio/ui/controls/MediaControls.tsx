@@ -69,15 +69,15 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
 
   useEffect(() => {
     if (shouldOpenStreamConfig) {
-      setGoLiveModalOpen(true);
       clearGoLive();
+      setGoLiveModalOpen(true);
     }
   }, [shouldOpenStreamConfig, clearGoLive]);
 
-  // Local state for Smart Switch
+
+  // Local state
   const [isSmartSwitchEnabled, setIsSmartSwitchEnabled] = useState(false);
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
-  console.log('[MC] render — isSourceSelectorOpen:', isSourceSelectorOpen);
   const [isAudioSettingsOpen, setIsAudioSettingsOpen] = useState(false);
   const [isVideoSettingsOpen, setIsVideoSettingsOpen] = useState(false);
   const onSmartSwitchToggle = () => setIsSmartSwitchEnabled((prev) => !prev);
@@ -132,19 +132,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
   );
 
 
-  // --- DEBUG HANDLER ---
   const handleRecordClick = () => {
-    console.log("--- DEBUG: Record Button Clicked ---");
-    console.log("isRecording State:", isRecording);
-
-    if (onToggleRecord) {
-      console.log("onToggleRecord prop exists. Calling it...");
-      onToggleRecord();
-    } else {
-      console.error(
-        "ERROR: onToggleRecord prop is UNDEFINED. Check parent component!"
-      );
-    }
+    onToggleRecord?.();
   };
 
   // Helper to toggle device selection (select if new, deselect if same)
@@ -389,14 +378,9 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
         >
           <DropdownMenuItem
             onClick={() => {
-              console.log('[MC] Screen item clicked');
               const isElectron = !!(window as any).electron;
-              console.log('[MC] isElectron:', isElectron);
               if (isElectron) {
-                setTimeout(() => {
-                  console.log('[MC] setTimeout fired — calling setIsSourceSelectorOpen(true)');
-                  setIsSourceSelectorOpen(true);
-                }, 0);
+                setTimeout(() => setIsSourceSelectorOpen(true), 0);
               } else {
                 setScreenShareMode("screen");
               }
@@ -433,10 +417,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
 
       <ScreenSourceSelector
         isOpen={isSourceSelectorOpen}
-        onOpenChange={(open) => {
-          console.log('[MC] ScreenSourceSelector onOpenChange received:', open);
-          setIsSourceSelectorOpen(open);
-        }}
+        onOpenChange={(open) => setIsSourceSelectorOpen(open)}
         onSelect={(sourceId) => {
           setSelectedScreenSourceId(sourceId);
           setScreenShareMode("screen");

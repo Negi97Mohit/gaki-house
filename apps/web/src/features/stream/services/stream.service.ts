@@ -34,6 +34,10 @@ class StreamService {
   private activeStream: MediaStream | null = null;
   private audioContext: AudioContext | null = null;
   private audioDestination: MediaStreamAudioDestinationNode | null = null;
+  // Self-monitoring (sidetone) — routes mic & system audio to local speakers.
+  // Defaults to 0 (silent) to prevent feedback loops; user raises via Master Output.
+  private monitorGain: GainNode | null = null;
+  private _lastMonitorVolume = 0.8; // remembered for unmute
 
   // New Kernel Pipeline (Phase D)
   private audioMixerEngine: AudioMixerEngine | null = null;
@@ -63,6 +67,9 @@ class StreamService {
   private retryCounts = new Map<string, number>();
   private MAX_RETRIES = 3;
   private isIntentionalStop = false;
+
+  // Audio gate interval IDs — stored so they can be cleared on pipeline stop
+  private _gateIntervals: ReturnType<typeof setInterval>[] = [];
 
   private constructor() {
     // Singleton
@@ -96,9 +103,14 @@ class StreamService {
     try {
       this.micStream = await navigator.mediaDevices.getUserMedia({
         audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
+          // Disable all voice-call processing — these destroy music and
+          // create pumping/breathing artefacts on streams. Streamers want
+          // raw mic input routed through a proper audio graph, not a phone call.
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+          sampleRate: 48000,
+          channelCount: 2,
         },
         video: false,
       });
@@ -107,8 +119,18 @@ class StreamService {
     }
 
     // 4. Audio Mixing Setup
-    this.audioContext = new AudioContext();
+    // ─ 48kHz matches the desktop capture and mic sample rates exactly,
+    //   eliminating real-time resampling (a major cause of choppy system audio).
+    // ─ 'interactive' latency hint minimises processing buffer depth.
+    this.audioContext = new AudioContext({ sampleRate: 48000, latencyHint: 'interactive' });
     this.audioDestination = this.audioContext.createMediaStreamDestination();
+
+    // AudioContext starts suspended in many browsers until a user gesture.
+    // Resume it immediately — we are inside a button click handler so this is safe.
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume().catch(() => {});
+    }
+
     this.mixAudioSources();
 
     // 5. Create the Final Output Stream from the Mixer Canvas
@@ -243,11 +265,9 @@ class StreamService {
         if (captureAppWindow) {
           const appWindowId = await electron.getAppWindowId?.();
           if (appWindowId) {
-            console.log("[StreamService] Using exact app window ID from main process:", appWindowId);
-            // Even if not in sources, we can try to inject it or find it by ID
             selectedSource = sources.find((s: any) => s.id === appWindowId) || { id: appWindowId };
           } else {
-             console.warn("[StreamService] getAppWindowId not available or null.");
+            console.warn("[StreamService] getAppWindowId not available or null.");
           }
           
           if (!selectedSource) {
@@ -265,7 +285,17 @@ class StreamService {
 
         if (selectedSource) {
           newStream = await navigator.mediaDevices.getUserMedia({
-            audio: false, // Audio handled by mixer
+            // Request system audio alongside the video so the mixer can
+            // pick it up via currentVideoSource.getAudioTracks().
+            // Gracefully degrades: if the OS/source has no audio tracks the
+            // mixer's length-check below handles it silently.
+            audio: {
+              // @ts-ignore
+              mandatory: {
+                chromeMediaSource: "desktop",
+                chromeMediaSourceId: selectedSource.id,
+              },
+            },
             video: {
               // @ts-ignore
               mandatory: {
@@ -384,31 +414,212 @@ class StreamService {
   private mixAudioSources() {
     if (!this.audioContext || !this.audioDestination) return;
 
-    // Resetting context connections is complex, so we just append.
-    // In a production app, you might want to disconnect old nodes first.
+    const ctx = this.audioContext;
 
-    // 1. Mic Input
-    if (this.micStream && this.micStream.getAudioTracks().length > 0) {
-      const source = this.audioContext.createMediaStreamSource(this.micStream);
-      const gain = this.audioContext.createGain();
-      gain.gain.value = 1.0;
-      source.connect(gain);
-      gain.connect(this.audioDestination);
+    // ─── Peak limiter on the master bus ───────────────────────────────────────
+    // Sits between all sources and the stream destination.
+    // Prevents digital clipping when combined levels exceed 0 dBFS.
+    const masterLimiter = this.createPeakLimiter(ctx);
+    masterLimiter.connect(this.audioDestination);
+
+    // ─── Monitor gain (self-hearing / sidetone) ───────────────────────────────
+    // ONLY the microphone is routed here.
+    // System audio must NOT go through the monitor:
+    //   Desktop loopback capture grabs whatever plays on the speakers.
+    //   If we also push system audio to speakers via monitorGain, the loopback
+    //   re-captures it → doubled/phased audio → choppy broken computer audio.
+    //   The user already hears computer audio normally through their speakers;
+    //   routing it through the graph as well is redundant AND destructive.
+    if (!this.monitorGain) {
+      this.monitorGain = ctx.createGain();
+      this.monitorGain.gain.value = 0; // silent by default — user raises via Master Output
+      this.monitorGain.connect(ctx.destination);
     }
 
-    // 2. System Audio (from the captured screen/window)
+    // ─── 1. Microphone (with full filter chain) ───────────────────────────────
+    //    micSource → [notch 60Hz] → [HPF 80Hz] → [noise gate] → masterLimiter
+    //    Also tapped to monitorGain so the streamer can hear themselves.
+    if (this.micStream && this.micStream.getAudioTracks().length > 0) {
+      const micSource = ctx.createMediaStreamSource(this.micStream);
+      const micChain  = this.createMicFilterChain(ctx, micSource);
+
+      const micGain = ctx.createGain();
+      micGain.gain.value = 1.0;
+      micChain.connect(micGain);
+      micGain.connect(masterLimiter);  // → outgoing stream (via limiter)
+      micChain.connect(this.monitorGain); // → local speakers (sidetone only)
+    }
+
+    // ─── 2. System / Computer Audio ───────────────────────────────────────────
+    //    → outgoing stream ONLY (viewers hear the streamer's computer audio)
+    //    NOT routed to speakers — the OS already plays it there naturally.
+    //    A DynamicsCompressorNode smooths amplitude spikes from the loopback
+    //    capture's bursty, uneven chunk delivery.
     if (
       this.currentVideoSource &&
       this.currentVideoSource.getAudioTracks().length > 0
     ) {
-      const source = this.audioContext.createMediaStreamSource(
-        this.currentVideoSource,
-      );
-      const gain = this.audioContext.createGain();
-      gain.gain.value = 0.8;
-      source.connect(gain);
-      gain.connect(this.audioDestination);
+      const sysSource = ctx.createMediaStreamSource(this.currentVideoSource);
+
+      // 60Hz notch — removes electrical hum from the loopback capture path
+      const sysNotch = ctx.createBiquadFilter();
+      sysNotch.type = 'notch';
+      sysNotch.frequency.value = 60;
+      sysNotch.Q.value = 8;
+
+      // Noise gate — cuts static/silence between actual audio.
+      // System audio loopback has a higher noise floor than a mic, so we use
+      // a slightly higher threshold (-40 dBFS vs -48 dBFS for mic).
+      // Fast attack (5ms) so music/game audio isn't chopped at the start.
+      // Longer release (200ms) so decaying sounds aren't cut off abruptly.
+      const sysGate = this.createAudioGate(ctx, -40, 0.005, 0.200);
+
+      // Compressor evens out the bursty chunks that desktop loopback produces.
+      const compressor = ctx.createDynamicsCompressor();
+      compressor.threshold.value = -24;
+      compressor.knee.value       = 10;
+      compressor.ratio.value      = 4;
+      compressor.attack.value     = 0.003;
+      compressor.release.value    = 0.15;
+
+      const sysGain = ctx.createGain();
+      sysGain.gain.value = 0.85;
+
+      // Chain: source → notch → gate → compressor → gain → limiter
+      sysSource.connect(sysNotch);
+      sysNotch.connect(sysGate.input);
+      sysGate.output.connect(compressor);
+      compressor.connect(sysGain);
+      sysGain.connect(masterLimiter);
+      // ✗ NOT connected to monitorGain — prevents the feedback/double-capture loop
     }
+  }
+
+  /**
+   * Builds the mic processing chain:
+   *   micSource → [60Hz notch] → [80Hz HPF] → [noise gate] → output GainNode
+   *
+   * Returns the output GainNode. Connect it to stream destination and/or monitor.
+   */
+  private createMicFilterChain(
+    ctx: AudioContext,
+    micSource: MediaStreamAudioSourceNode,
+    thresholdDb: number = -48,
+  ): GainNode {
+    // 60Hz notch — kills electrical ground-loop hum
+    const notch = ctx.createBiquadFilter();
+    notch.type = 'notch';
+    notch.frequency.value = 60; // change to 50 for EU power grids
+    notch.Q.value = 10;
+
+    // 80Hz high-pass — kills low rumble / keyboard / desk thuds
+    const hpf = ctx.createBiquadFilter();
+    hpf.type = 'highpass';
+    hpf.frequency.value = 80;
+    hpf.Q.value = 0.707; // Butterworth — flat response above cutoff
+
+    // Noise gate via the shared helper
+    const gate = this.createAudioGate(ctx, thresholdDb, 0.010, 0.120);
+
+    // Wire: micSource → notch → hpf → gate.input ; gate.output returned
+    micSource.connect(notch);
+    notch.connect(hpf);
+    hpf.connect(gate.input);
+
+    return gate.output;
+  }
+
+  /**
+   * Generic noise gate — works for any audio source.
+   *
+   * Returns { input, output } so the caller can splice it into any chain:
+   *   upstream.connect(gate.input);
+   *   gate.output.connect(downstream);
+   *
+   * How it works:
+   *   - An AnalyserNode taps the input to measure RMS every 16ms.
+   *   - When RMS (in dBFS) rises above thresholdDb the output GainNode
+   *     ramps to 1.0 with attackTc time-constant.
+   *   - When RMS falls back below the threshold it ramps to 0 with releaseTc.
+   *   - This cleanly silences static / loopback hiss between real audio events.
+   */
+  private createAudioGate(
+    ctx: AudioContext,
+    thresholdDb: number,  // e.g. -48 for mic, -40 for system audio
+    attackTc:  number,    // seconds  (e.g. 0.010)
+    releaseTc: number,    // seconds  (e.g. 0.120)
+  ): { input: AnalyserNode; output: GainNode } {
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    const rmsBuffer = new Float32Array(analyser.frequencyBinCount);
+
+    const gateGain = ctx.createGain();
+    gateGain.gain.value = 0; // closed by default
+
+    // The analyser node acts as both the measurement tap AND the audio passthrough
+    // to gateGain — the gate gain controls whether audio flows out.
+    analyser.connect(gateGain);
+
+    let gateOpen = false;
+    const id = setInterval(() => {
+      if (ctx.state === 'closed') return;
+      analyser.getFloatTimeDomainData(rmsBuffer);
+      const rms = Math.sqrt(
+        rmsBuffer.reduce((sum, v) => sum + v * v, 0) / rmsBuffer.length,
+      );
+      const dbFS = 20 * Math.log10(Math.max(rms, 1e-10));
+      const shouldOpen = dbFS > thresholdDb;
+
+      if (shouldOpen && !gateOpen) {
+        gateGain.gain.setTargetAtTime(1, ctx.currentTime, attackTc);
+        gateOpen = true;
+      } else if (!shouldOpen && gateOpen) {
+        gateGain.gain.setTargetAtTime(0, ctx.currentTime, releaseTc);
+        gateOpen = false;
+      }
+    }, 16);
+
+    this._gateIntervals.push(id);
+
+    return { input: analyser, output: gateGain };
+  }
+
+  /**
+   * Peak limiter on the master bus.
+   * Prevents digital clipping when mic + system audio sum above 0 dBFS.
+   * High ratio (20:1) approximates a brick-wall limiter.
+   */
+  private createPeakLimiter(ctx: AudioContext): DynamicsCompressorNode {
+    const limiter = ctx.createDynamicsCompressor();
+    limiter.threshold.value = -1.0;  // 1 dBFS below digital ceiling
+    limiter.knee.value       = 0;    // hard knee — true limiting behaviour
+    limiter.ratio.value      = 20;   // 20:1 ≈ brick-wall
+    limiter.attack.value     = 0.001; // 1ms — catches transients before they clip
+    limiter.release.value    = 0.1;   // 100ms
+    return limiter;
+  }
+
+  /**
+   * Set the local monitor (sidetone) volume. Called by the UI's Master Output
+   * fader. Range: 0.0 (silent) – 1.0 (full). Does NOT affect the outgoing stream.
+   */
+  public setMonitorVolume(volume: number) {
+    const clamped = Math.max(0, Math.min(1, volume));
+    if (clamped > 0) this._lastMonitorVolume = clamped;
+    if (this.monitorGain && this.audioContext) {
+      this.monitorGain.gain.setTargetAtTime(
+        clamped,
+        this.audioContext.currentTime,
+        0.02, // 20ms smooth ramp to avoid clicks
+      );
+    }
+  }
+
+  /**
+   * Mute or unmute local monitor without affecting the outgoing stream.
+   */
+  public setMonitorMuted(muted: boolean) {
+    this.setMonitorVolume(muted ? 0 : this._lastMonitorVolume);
   }
 
   // --- 2. STREAMING CONNECTION LOGIC ---
@@ -575,11 +786,6 @@ class StreamService {
       typeof data === "string" ? { status: data } : data;
     const store = useStreamStore.getState();
 
-    console.log(
-      `[StreamService] Status Update [${id}]: ${status}`,
-      error || "",
-    );
-
     if (!id) return;
 
     if (status === "error") {
@@ -698,7 +904,7 @@ class StreamService {
   }
 
   private startCountdown() {
-    console.log("[StreamService] All targets verified. Starting Countdown...");
+
     const store = useStreamStore.getState();
     let count = 3;
 
@@ -809,6 +1015,14 @@ class StreamService {
       if (this.canvas) {
         this.canvas = null;
       }
+
+      // Disconnect monitor gain before closing context
+      this.monitorGain?.disconnect();
+      this.monitorGain = null;
+
+      // Clear noise-gate polling intervals before closing context
+      this._gateIntervals.forEach(clearInterval);
+      this._gateIntervals = [];
 
       this.audioContext?.close();
       this.activeStream = null;

@@ -133,19 +133,9 @@ export const StreamConfigurationModal: React.FC<
   const availablePlatforms = STREAMING_PLATFORMS.filter((p) => !p.comingSoon);
 
   const handleSaveDestination = () => {
-    console.log(
-      "[StreamModal] handleSaveDestination clicked. Mode:",
-      editingId ? "Edit" : "Add"
-    );
-
-    if (!newKey && !newUrl) {
-      console.warn("[StreamModal] Cannot save: URL and Key are empty");
-      return;
-    }
+    if (!newKey && !newUrl) return;
 
     if (editingId) {
-      // Update existing
-      console.log("[StreamModal] Updating existing destination:", editingId);
       updateDestination(editingId, {
         platform: selectedPlatform ? selectedPlatform.name : "Custom",
         url: newUrl,
@@ -161,7 +151,6 @@ export const StreamConfigurationModal: React.FC<
         enabled: true,
         status: "idle",
       };
-      console.log("[StreamModal] Adding new destination:", dest);
       addDestination(dest);
     }
 
@@ -172,7 +161,6 @@ export const StreamConfigurationModal: React.FC<
   };
 
   const handleEditDestination = (dest: StreamDestination) => {
-    console.log("[StreamModal] Edit requested for:", dest.id);
     setEditingId(dest.id);
     setNewUrl(dest.url);
     setNewKey(dest.key);
@@ -450,10 +438,7 @@ export const StreamConfigurationModal: React.FC<
                           "hover:opacity-90 transition-opacity"
                         )}
                         onClick={() => {
-                          console.log("[StreamModal] Go Live clicked.");
-                          const firstEnabled = destinations.find(
-                            (d) => d.enabled
-                          );
+                          const firstEnabled = destinations.find((d) => d.enabled);
                           if (firstEnabled) {
                             onStartStream?.();
                           } else {
@@ -481,7 +466,6 @@ export const StreamConfigurationModal: React.FC<
                             : "bg-red-500 hover:bg-red-600 text-white"
                         )}
                         onClick={() => {
-                          console.log("[StreamModal] End Broadcast clicked.");
                           onStopStream?.();
                         }}
                       >
@@ -734,6 +718,15 @@ export const StreamConfigurationModal: React.FC<
     </>
   );
 
+  // Gate: unauthenticated users go to login instead of stream settings
+  const handleTriggerClick = () => {
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+    setIsOpen(true);
+  };
+
   return (
     <>
       <Button
@@ -743,8 +736,8 @@ export const StreamConfigurationModal: React.FC<
           "rounded-xl h-7 w-7 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all",
           isBroadcasting && "bg-red-500/10 text-red-500 hover:bg-red-500/20 animate-pulse"
         )}
-        title="Stream Settings"
-        onClick={() => setIsOpen(true)}
+        title={user ? "Stream Settings" : "Sign in to stream"}
+        onClick={handleTriggerClick}
       >
         {isBroadcasting ? <Wifi className="w-3 h-3" /> : <Radio className="w-3 h-3" />}
       </Button>

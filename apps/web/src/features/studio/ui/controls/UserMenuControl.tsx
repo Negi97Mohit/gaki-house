@@ -31,7 +31,6 @@ export const UserMenuControl: React.FC<UserMenuControlProps> = ({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
-    console.log("[UserMenuControl] mounted");
   }, []);
 
   if (isSignedIn) {

@@ -122,7 +122,12 @@ const createFfmpegCommand = (
 
   const command = ffmpeg().input(input);
   command.inputFormat("webm");
+  // Explicit audio settings \u2014 without these FFmpeg guesses and often
+  // produces 64kbps mono at mismatched sample rates (tinny, degraded quality).
   command.audioCodec("aac");
+  command.audioBitrate("192k");
+  command.audioFrequency(48000);
+  command.audioChannels(2);
 
   if (isH264Input) {
     command.videoCodec("copy");

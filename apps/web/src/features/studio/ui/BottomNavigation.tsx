@@ -72,7 +72,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   userUsername,
 }) => {
   useEffect(() => {
-    console.log("[BottomNavigation] mounted");
   }, []);
 
   const { isFullscreen, setFullscreen, setShowSettings } = useUiStore(

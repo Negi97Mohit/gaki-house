@@ -42,7 +42,10 @@ export class BroadcastEncoder {
 
     this.mediaRecorder = new MediaRecorder(this.stream, {
       mimeType,
-      videoBitsPerSecond: 4000000,
+      videoBitsPerSecond: 4_000_000,
+      // 320kbps Opus — FFmpeg will transcode this to clean 192k AAC for RTMP.
+      // Browser default (~96kbps) is too low and causes dull/muffled stream audio.
+      audioBitsPerSecond: 320_000,
     });
 
     let ffmpegStarted = false;
@@ -99,9 +102,9 @@ export class BroadcastEncoder {
       }
     };
 
-    // Start chunking — first ondataavailable fires after 1000ms
-    console.log("[BroadcastEncoder] Starting MediaRecorder...");
-    this.mediaRecorder.start(1000);
+    // 250ms chunks — reduces A/V sync drift vs the previous 1s chunks.
+    // Smaller intervals also mean less data is lost on any single transport hiccup.
+    this.mediaRecorder.start(250);
   }
 
   stop(specificId?: string) {

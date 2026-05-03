@@ -28,6 +28,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@gaki/
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneAudioStore } from "@/stores/sceneAudio.store";
 import { SceneAudioTrack } from "@gaki/core/types/caption";
+import { streamService } from "@/features/stream/services/stream.service";
 
 /* ─── Section Card wrapper ─── */
 const MixerSection: React.FC<{
@@ -845,6 +846,19 @@ export function AudioMixerPanel() {
   const [masterVolume, setMasterVolume] = useState(80);
   const [masterMuted, setMasterMuted] = useState(false);
 
+  // Wire the fader to the live audio graph so the user can
+  // control their local self-monitoring (sidetone) volume.
+  const handleMasterVolumeChange = (v: number) => {
+    setMasterVolume(v);
+    streamService.setMonitorVolume(v / 100);
+  };
+
+  const handleMasterMuteToggle = () => {
+    const nextMuted = !masterMuted;
+    setMasterMuted(nextMuted);
+    streamService.setMonitorMuted(nextMuted);
+  };
+
   const [showAddTrack, setShowAddTrack] = useState(false);
   const [addMode, setAddMode] = useState<"file" | "url">("file");
   const [urlInput, setUrlInput] = useState("");
@@ -954,8 +968,8 @@ export function AudioMixerPanel() {
             icon={<Speaker className="w-4 h-4" />}
             volume={masterVolume}
             isMuted={masterMuted}
-            onVolumeChange={setMasterVolume}
-            onMuteToggle={() => setMasterMuted(!masterMuted)}
+            onVolumeChange={handleMasterVolumeChange}
+            onMuteToggle={handleMasterMuteToggle}
             extra={<OutputSoundTest volume={masterVolume} muted={masterMuted} />}
           />
         </MixerSection>

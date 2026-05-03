@@ -24,7 +24,6 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
     onImportOBSScenes,
 }) => {
     useEffect(() => {
-      console.log('[SceneControls] mounted');
     }, []);
     const { canUndo, canRedo } = useSceneStore(
         useShallow((state) => ({
