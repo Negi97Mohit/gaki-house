@@ -1,4 +1,5 @@
 import React from "react";
+import AppLogo from "./AppLogo";
 
 interface LoaderProps {
   visible: boolean;
@@ -26,10 +27,9 @@ const Loader: React.FC<LoaderProps> = ({ visible }) => {
         />
 
         {/* App Logo */}
-        <img
-          src="./icon.png"
-          alt="Loading"
-          className="w-16 h-16 object-contain animate-pulse"
+        <AppLogo
+          size={64}
+          className="animate-pulse"
           style={{ animationDuration: "1.2s" }}
         />
       </div>

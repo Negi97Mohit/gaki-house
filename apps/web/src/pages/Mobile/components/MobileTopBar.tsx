@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AppLogo from "@gaki/ui/AppLogo";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, X, Heart } from "lucide-react";
 import { useAuth } from "@/pages/platform/context/AuthContext";
@@ -32,10 +33,9 @@ export const MobileTopBar: React.FC = () => {
       >
         {/* Logo */}
         <Link to="/m" className="flex items-center gap-2.5" aria-label="GAKI Home">
-          <img
-            src="./icon.png"
-            alt="GAKI"
-            className="w-7 h-7 rounded-lg shadow-sm"
+          <AppLogo
+            size={28}
+            className="rounded-lg shadow-sm"
           />
           <span className="text-foreground font-black text-base tracking-tight">
             GAKI

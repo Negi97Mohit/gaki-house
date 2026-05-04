@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="apps/web/public/logo_256x256.png" alt="GAKI - House of Video Creation Logo" width="180"/>
+  <img src="apps/web/public/logo.svg" alt="GAKI - House of Video Creation Logo" width="180"/>
   <h1>🎥 GAKI - House of Video Creation</h1>
   <p><strong>A production-grade, browser and desktop live streaming studio with OBS-like scene collections, AI features, and seamless device handoff.</strong></p>
 

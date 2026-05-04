@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import AppLogo from "@gaki/ui/AppLogo";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Bell, X } from "lucide-react";
 import { MOCK_CATEGORIES, formatViewerCount } from "../data/mockData";
@@ -73,7 +74,7 @@ export const PlatformTopNav: React.FC = () => {
       {/* Left: Logo */}
       <div className="flex items-center gap-3">
         <Link to="/platform" className="flex items-center gap-2.5 group">
-          <img src="./icon.png" alt="GAKI" className="w-7 h-7 rounded-lg group-hover:scale-105 transition-transform duration-200" />
+          <AppLogo size={28} className="rounded-lg group-hover:scale-105 transition-transform duration-200" />
           <span className="text-foreground font-bold text-base tracking-tight hidden sm:inline">
             GAKI
           </span>

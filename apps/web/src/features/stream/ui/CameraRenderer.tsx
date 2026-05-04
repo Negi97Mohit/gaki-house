@@ -1,4 +1,5 @@
 // src/components/CameraRenderer.tsx
+import AppLogo from "@gaki/ui/AppLogo";
 import { createPortal } from "react-dom";
 import React, { useRef, useState, useEffect } from "react";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
@@ -215,9 +216,8 @@ export const CameraRenderer: React.FC<CameraRendererProps> = (props) => {
         <div className="absolute inset-0 w-full h-full">
           <AmbientBackground />
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
-            <img
-              src="./icon.png"
-              alt="GAKI Logo"
+            <AppLogo
+              size={50}
               className="w-[10%] min-w-[20px] max-w-[50px] h-auto object-contain drop-shadow-2xl mb-4"
             />
             {props.selectedDeviceId === "remote-peer" && (
