@@ -60,6 +60,10 @@ interface SceneState {
     canUndo: boolean;
     canRedo: boolean;
 
+    undoTrigger: number;
+    redoTrigger: number;
+    resetTrigger: number;
+
     // Actions
     setCustomMaskUrl: (url: string | undefined) => void;
     setActiveOverlays: (overlays: GeneratedOverlay[]) => void;
@@ -151,6 +155,10 @@ export const useSceneStore = create<SceneState>((set) => ({
     canUndo: false,
     canRedo: false,
 
+    undoTrigger: 0,
+    redoTrigger: 0,
+    resetTrigger: 0,
+
     setCustomMaskUrl: (customMaskUrl) => set({ customMaskUrl }),
     setActiveOverlays: (activeOverlays) => set({ activeOverlays }),
 
@@ -235,7 +243,7 @@ export const useSceneStore = create<SceneState>((set) => ({
     setActiveCinematicEffect: (activeCinematicEffect) => set({ activeCinematicEffect }),
     setManualZoom: (manualZoom) => set({ manualZoom }),
 
-    triggerUndo: () => { },
-    triggerRedo: () => { },
-    triggerReset: () => { },
+    triggerUndo: () => set(state => ({ undoTrigger: state.undoTrigger + 1 })),
+    triggerRedo: () => set(state => ({ redoTrigger: state.redoTrigger + 1 })),
+    triggerReset: () => set(state => ({ resetTrigger: state.resetTrigger + 1 })),
 }));

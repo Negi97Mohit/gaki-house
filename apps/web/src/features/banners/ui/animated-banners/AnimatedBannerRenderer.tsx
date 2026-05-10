@@ -42,7 +42,6 @@ export const AnimatedBannerRenderer: React.FC<AnimatedBannerRendererProps> = ({
       design={design}
       contentData={data}
       isEditing={isEditing}
-      onClick={() => { }} // Handle click if needed
       containerSize={containerSize}
       elementStates={elementStates}
       onElementStatesChange={onElementStatesChange}

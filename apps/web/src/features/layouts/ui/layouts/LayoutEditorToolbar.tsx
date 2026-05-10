@@ -125,7 +125,7 @@ export const LayoutEditorToolbar: React.FC<LayoutEditorToolbarProps> = ({
             <ChevronDown className="w-3 h-3 opacity-50" />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-48 p-0 bg-popover" align="start">
+        <PopoverContent className="w-48 p-0 bg-popover" align="start" style={{ zIndex: 10000 }} /* above toolbar z-index */>
           <ScrollArea className="h-64">
             <div className="p-1">
               {ALL_FONTS.map((font) => (

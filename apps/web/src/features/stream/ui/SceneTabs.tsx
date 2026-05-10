@@ -418,7 +418,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   onClick={(e) => {
                     if (editingId) return;
                     const target = e.target as HTMLElement;
-                    if (target.closest("[data-expand-toggle]")) return;
+                    if (target.closest("[data-expand-toggle]") || target.closest("button") || target.tagName === "INPUT") return;
                     onSceneSelect(scene.id);
                   }}
                   onDoubleClick={() => handleDoubleClick(scene.id, scene.name)}
@@ -428,8 +428,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                     {hasSubscenes ? (
                       <button
                         data-expand-toggle
+                        onPointerDown={(e) => e.stopPropagation()}
                         onClick={(e) => {
-                          e.stopPropagation();
                           e.preventDefault();
                           onToggleExpand?.(scene.id);
                         }}
@@ -468,7 +468,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                       onBlur={() => handleNameSubmit(scene.id)}
                       onKeyDown={(e) => handleKeyDown(e, scene.id)}
                       className="flex-1 bg-transparent border-b border-primary/50 outline-none text-[11px] min-w-0"
-                      onClick={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
                     />
                   ) : (
                     <span
@@ -488,7 +488,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                         variant="ghost"
                         size="icon"
                         className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-all rounded-md hover:bg-foreground/10"
-                        onClick={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
                       >
                         <MoreHorizontal className="h-2.5 w-2.5" />
                       </Button>
@@ -625,9 +625,11 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                   : "hover:bg-foreground/5 dark:hover:bg-white/5",
                                 isSubDragging && "opacity-40"
                               )}
-                              onClick={() =>
-                                onSceneSelect(scene.id, subscene.id)
-                              }
+                              onClick={(e) => {
+                                const target = e.target as HTMLElement;
+                                if (target.closest("button") || target.tagName === "INPUT") return;
+                                onSceneSelect(scene.id, subscene.id);
+                              }}
                               onDoubleClick={() =>
                                 handleDoubleClick(subscene.id, subscene.name)
                               }
@@ -646,7 +648,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                     handleKeyDown(e, scene.id, subscene.id)
                                   }
                                   className="flex-1 bg-transparent border-b border-primary/50 text-[10px] outline-none min-w-0"
-                                  onClick={(e) => e.stopPropagation()}
+                                  onPointerDown={(e) => e.stopPropagation()}
                                 />
                               ) : (
                                 <span
@@ -666,8 +668,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                   variant="ghost"
                                   size="icon"
                                   className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 rounded-md hover:bg-foreground/10"
+                                  onPointerDown={(e) => e.stopPropagation()}
                                   onClick={(e) => {
-                                    e.stopPropagation();
                                     onSubsceneClose(scene.id, subscene.id);
                                   }}
                                 >
@@ -694,8 +696,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                                       ? "text-muted-foreground/60 hover:text-primary"
                                       : "text-muted-foreground/20 hover:text-primary"
                                   )}
+                                  onPointerDown={(e) => e.stopPropagation()}
                                   onClick={(e) => {
-                                    e.stopPropagation();
                                     if (subscene.transitionToNext) {
                                       onTransitionClick(
                                         subscene.transitionToNext
@@ -762,8 +764,8 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                           ? "text-muted-foreground/50 hover:text-primary border-transparent"
                           : "text-muted-foreground/20 border-dashed border-border/20 hover:border-primary/30 hover:text-primary"
                       )}
+                      onPointerDown={(e) => e.stopPropagation()}
                       onClick={(e) => {
-                        e.stopPropagation();
                         if (transitionToNext) {
                           onTransitionClick(transitionToNext);
                         } else {

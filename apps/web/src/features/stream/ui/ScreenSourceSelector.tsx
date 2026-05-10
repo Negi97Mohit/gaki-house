@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@gaki/ui/tabs";
 import { ScrollArea } from "@gaki/ui/scroll-area";
 import { Monitor, AppWindow, X } from "lucide-react";
 import { cn } from "@gaki/core/lib/utils";
+import { zIndex } from "@/lib/zIndex";
 
 interface Source {
     id: string;
@@ -68,7 +69,7 @@ export const ScreenSourceSelector: React.FC<ScreenSourceSelectorProps> = ({
             style={{
                 position: "fixed",
                 inset: 0,
-                zIndex: 99999,
+                zIndex: zIndex.streamModalOverlay,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

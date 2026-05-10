@@ -72,6 +72,10 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [activeTab, setActiveTab] = useState("upload");
   const [isSourceSelectorOpen, setIsSourceSelectorOpen] = useState(false);
+  const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
+
+  // DEBUG: Track dialog state
+  console.log(`[EmptyGridSection ${sectionId}] render — isFileDialogOpen=${isFileDialogOpen}, isPreview=${isPreview}`);
 
   const getFileType = (file: File): FileType => {
     if (file.type.startsWith("image/")) return "image";
@@ -149,7 +153,8 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
       {/* FIXED: We only stop drag propagation on the control cluster itself, not the whole panel */}
       <div
         className="flex flex-col items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-        onPointerDown={(e) => e.stopPropagation()}
+        /* WARNING: Removed onPointerDown stopPropagation to allow Radix Popover/Dropdown to close on outside click. 
+           If clicking this toolbar triggers canvas dragging, we need to handle the pointerdown selectively instead of stopping all. */
         onMouseDown={(e) => e.stopPropagation()}
       >
         <Popover>
@@ -193,7 +198,15 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
             >
               <Palette className="h-4 w-4 mr-2" /> Solid Color
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setIsFileDialogOpen(true)}>
+            <DropdownMenuItem
+              onSelect={() => {
+                console.log(`[EmptyGridSection ${sectionId}] File/Media onSelect FIRED`);
+                setTimeout(() => {
+                  console.log(`[EmptyGridSection ${sectionId}] setTimeout callback — setting isFileDialogOpen=true`);
+                  setIsFileDialogOpen(true);
+                }, 100);
+              }}
+            >
               <FileVideo className="h-4 w-4 mr-2" /> File / Media
             </DropdownMenuItem>
             <DropdownMenuSub>
@@ -221,10 +234,13 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuItem
-              onClick={() => {
+              onSelect={() => {
                 const isElectron = !!(window as any).electron;
-                if (isElectron) setIsSourceSelectorOpen(true);
-                else onSectionContentChange(sectionId, { type: "screen" });
+                if (isElectron) {
+                  setTimeout(() => setIsSourceSelectorOpen(true), 100);
+                } else {
+                  onSectionContentChange(sectionId, { type: "screen" });
+                }
               }}
             >
               <Monitor className="h-4 w-4 mr-2" /> Share Screen
@@ -250,60 +266,66 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
             </DropdownMenuSub>
           </DropdownMenuContent>
         </DropdownMenu>
-
-        <Dialog open={isFileDialogOpen} onOpenChange={setIsFileDialogOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Open File</DialogTitle>
-            </DialogHeader>
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-            >
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="upload">Upload</TabsTrigger>
-                <TabsTrigger value="url">URL</TabsTrigger>
-              </TabsList>
-              <TabsContent value="upload" className="py-4">
-                <div
-                  className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50"
-                  onClick={() =>
-                    document.getElementById("file-upload-input")?.click()
-                  }
-                >
-                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    Click to upload or drag and drop
-                  </p>
-                  <input
-                    type="file"
-                    id="file-upload-input"
-                    className="hidden"
-                    onChange={(e) => {
-                      if (e.target.files?.[0])
-                        handleFileSelect(e.target.files[0]);
-                    }}
-                  />
-                </div>
-              </TabsContent>
-              <TabsContent value="url" className="py-4 space-y-4">
-                <div className="space-y-2">
-                  <Label>File URL</Label>
-                  <Input
-                    placeholder="https://example.com/video.mp4"
-                    value={fileUrlInput}
-                    onChange={(e) => setFileUrlInput(e.target.value)}
-                  />
-                </div>
-                <Button className="w-full" onClick={handleUrlSubmit}>
-                  <LinkIcon className="h-4 w-4 mr-2" /> Open URL
-                </Button>
-              </TabsContent>
-            </Tabs>
-          </DialogContent>
-        </Dialog>
       </div>
+
+      {/* Dialog must be OUTSIDE the opacity-0 hover div to avoid focus/mount issues */}
+      <Dialog open={isFileDialogOpen} onOpenChange={(open) => {
+        console.log(`[EmptyGridSection ${sectionId}] Dialog onOpenChange called with: ${open}`);
+        setIsFileDialogOpen(open);
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Open File</DialogTitle>
+            <DialogDescription>Upload a file or provide a URL to add media to this section.</DialogDescription>
+          </DialogHeader>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="upload">Upload</TabsTrigger>
+              <TabsTrigger value="url">URL</TabsTrigger>
+            </TabsList>
+            <TabsContent value="upload" className="py-4">
+              <div
+                className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50"
+                onClick={() =>
+                  document.getElementById("file-upload-input")?.click()
+                }
+              >
+                <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Click to upload or drag and drop
+                </p>
+                <input
+                  type="file"
+                  id="file-upload-input"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files?.[0])
+                      handleFileSelect(e.target.files[0]);
+                  }}
+                />
+              </div>
+            </TabsContent>
+            <TabsContent value="url" className="py-4 space-y-4">
+              <div className="space-y-2">
+                <Label>File URL</Label>
+                <Input
+                  placeholder="https://example.com/video.mp4"
+                  value={fileUrlInput}
+                  onChange={(e) => setFileUrlInput(e.target.value)}
+                />
+              </div>
+              <Button className="w-full" onClick={handleUrlSubmit}>
+                <LinkIcon className="h-4 w-4 mr-2" /> Open URL
+              </Button>
+            </TabsContent>
+          </Tabs>
+        </DialogContent>
+      </Dialog>
+
       <ScreenSourceSelector
         isOpen={isSourceSelectorOpen}
         onOpenChange={setIsSourceSelectorOpen}

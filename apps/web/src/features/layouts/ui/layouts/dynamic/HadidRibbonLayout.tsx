@@ -108,7 +108,10 @@ const RibbonItem = React.memo(
                   onBlur={(e) =>
                     onRename && onRename(section.id, e.target.value)
                   }
-                  onKeyDown={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') return;
+                    e.stopPropagation();
+                  }}
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>

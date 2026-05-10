@@ -26,6 +26,7 @@ import { Switch } from "@gaki/ui/switch";
 import { useStreamStore, StreamDestination } from "@/stores/stream.store";
 import { useShallow } from "zustand/react/shallow";
 import { v4 as uuidv4 } from "uuid";
+import { zIndex } from "@/lib/zIndex";
 
 interface StreamConfigurationModalProps {
   onStartStream?: () => void;
@@ -99,6 +100,7 @@ export const StreamConfigurationModal: React.FC<
   StreamConfigurationModalProps
 > = ({ onStartStream, onStopStream, externalOpen, onOpenChange }) => {
   const { user, openAuthModal } = useAuth();
+  const modalRef = React.useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<"list" | "add">("list");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -212,11 +214,12 @@ export const StreamConfigurationModal: React.FC<
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-        style={{ zIndex: 99998 }}
+        style={{ zIndex: zIndex.streamModalOverlay }}
         onClick={() => handleOpenChange(false)}
       />
       {/* Panel */}
       <div
+        ref={modalRef}
         className={cn(
           "fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
           "w-[360px] max-w-[90vw] max-h-[85vh]",
@@ -224,7 +227,7 @@ export const StreamConfigurationModal: React.FC<
           "bg-background border border-border/30",
           "shadow-2xl"
         )}
-        style={{ zIndex: 99999 }}
+        style={{ zIndex: zIndex.streamModalInner }}
       >
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
         {/* Header */}

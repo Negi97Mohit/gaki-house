@@ -91,8 +91,9 @@ export const PipCinematicMenu: React.FC<PipCinematicMenuProps> = ({
           sideOffset={10}
           className="z-[var(--z-text-toolbar)] w-72 max-h-[75vh] bg-background/95 backdrop-blur-xl border-border/40 p-0 flex flex-col"
           onCloseAutoFocus={(e) => e.preventDefault()}
-          onPointerDownOutside={(e) => e.preventDefault()}
-          onInteractOutside={(e) => e.preventDefault()}
+          /* WARNING: Removed onPointerDownOutside and onInteractOutside preventDefault blocks. 
+             If global canvas pointer listeners (e.g. usePointerInteraction) aggressively capture clicks here and cause 
+             this menu to instantly reopen or misbehave, we may need to selectively filter the event target. */
           onFocusOutside={(e) => e.preventDefault()}
         >
           {/* Header */}

@@ -81,7 +81,10 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
         cameraStream={effectiveStream}
         videoDevices={videoDevices}
         isActive={true}
-        onSelect={() => {}}
+        onSelect={() => {
+          // TODO: Implement section selection logic (propagate from parent)
+          console.debug("[CameraGridSection] PIP section selected", sectionId);
+        }}
       />
     );
   }

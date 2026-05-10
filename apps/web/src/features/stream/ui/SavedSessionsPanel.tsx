@@ -49,9 +49,11 @@ export const SavedSessionsPanel: React.FC<SavedSessionsPanelProps> = ({
     <div
       className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
       style={{ zIndex: "var(--z-sessions-panel)" }}
-      onClick={onClose}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
-      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-neutral-900 shadow-2xl animate-in slide-in-from-right duration-300" onClick={(e) => e.stopPropagation()}>
+      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-neutral-900 shadow-2xl animate-in slide-in-from-right duration-300">
         {/* Header */}
         <div className="h-16 border-b border-neutral-800 flex items-center justify-between px-6">
           <div className="flex items-center gap-3">

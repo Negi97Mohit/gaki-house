@@ -181,7 +181,6 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     containerSize={containerSize}
                     onPositionChange={handlePositionChange}
                     onSelect={setSelectedId}
-                    onDoubleClick={() => { }}
                     onRemove={(id) => handleVisibilityChange(id, false)}
                     content={
                         <div
@@ -311,7 +310,6 @@ export const UniversalBannerRenderer: React.FC<UniversalBannerRendererProps> = (
                     containerSize={containerSize}
                     onPositionChange={handlePositionChange}
                     onSelect={setSelectedId}
-                    onDoubleClick={() => { }}
                     onRemove={(id) => handleVisibilityChange(id, false)}
                     content={
                         <div style={{ display: "flex", gap: "8px" }}>

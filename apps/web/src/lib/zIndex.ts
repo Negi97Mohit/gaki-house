@@ -27,5 +27,7 @@ export const zIndex = {
   sessionsPanel: 5050,
   textToolbar: 9990,
   loader: 9999,
-  transitionPopoverDropdown: 2050,
+  streamModal: 10000,
+  streamModalInner: 10001,
+  streamModalOverlay: 10002,
 };
