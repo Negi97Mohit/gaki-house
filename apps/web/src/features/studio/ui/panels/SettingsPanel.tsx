@@ -1,26 +1,52 @@
-import { ThemeSwitcher } from "@/features/theme";
-import { Palette, Monitor, Volume2, Keyboard, Info, Maximize, ZoomIn, Grid3X3 } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { 
+  Palette, 
+  Monitor, 
+  Volume2, 
+  Keyboard, 
+  Info, 
+  Maximize, 
+  ZoomIn, 
+  Grid3X3, 
+  Mic, 
+  Speaker, 
+  Sliders, 
+  CheckCircle2, 
+  Search, 
+  ExternalLink,
+  VolumeX,
+  Volume1,
+} from "lucide-react";
 import { cn } from "@gaki/core/lib/utils";
-import { useState } from "react";
 import { SHORTCUTS } from "@gaki/core/lib/shortcuts";
 import { Label } from "@gaki/ui/label";
 import { Slider } from "@gaki/ui/slider";
 import { Switch } from "@gaki/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@gaki/ui/select";
+import { Input } from "@gaki/ui/input";
+import { useMediaStore } from "@/stores/media.store";
+import { useUiStore } from "@/stores/ui.store";
+import { useThemeStore, themes } from "@/features/theme/model/theme.store";
+import { ThemeSwitcher } from "@/features/theme";
 import gakiLogo from "/logo_256x256.png";
 
 type SettingsSection = "appearance" | "display" | "audio" | "shortcuts" | "about";
 
-const sections: { id: SettingsSection; label: string; icon: React.ElementType }[] = [
-  { id: "appearance", label: "Appearance", icon: Palette },
+interface SectionTab {
+  id: SettingsSection;
+  label: string;
+  icon: React.ElementType;
+}
+
+const SECTIONS: SectionTab[] = [
+  { id: "appearance", label: "Theme", icon: Palette },
   { id: "display", label: "Display", icon: Monitor },
   { id: "audio", label: "Audio", icon: Volume2 },
-  { id: "shortcuts", label: "Shortcuts", icon: Keyboard },
+  { id: "shortcuts", label: "Hotkeys", icon: Keyboard },
   { id: "about", label: "About", icon: Info },
 ];
 
-// Organize shortcuts by category
-const shortcutCategories = {
+const SHORTCUT_CATEGORIES = {
   "System & View": ["fullscreen", "settings"],
   "AI Assistant": ["aiAssistant"],
   "Canvas & History": ["undo", "redo", "resetScene", "delete"],
@@ -30,7 +56,7 @@ const shortcutCategories = {
   "Element Creation": ["addText", "openAssetLibrary", "toggleDrawing"],
 } as const;
 
-const shortcutLabels: Record<string, string> = {
+const SHORTCUT_LABELS: Record<string, string> = {
   fullscreen: "Toggle Fullscreen",
   settings: "Open Settings",
   aiAssistant: "AI Assistant",
@@ -54,272 +80,507 @@ const shortcutLabels: Record<string, string> = {
   toggleDrawing: "Toggle Drawing",
 };
 
+const ZOOM_PRESETS = [50, 75, 100, 125, 150, 200];
+
 export function SettingsPanel() {
   const [activeSection, setActiveSection] = useState<SettingsSection>("appearance");
+
+  // Stores
+  const { isFullscreen, setFullscreen } = useUiStore();
+  const { audioDevices, selectedAudioDevice, setSelectedAudioDevice } = useMediaStore();
+  const { theme } = useThemeStore();
+
+  // Local state
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [showGrid, setShowGrid] = useState(true);
-  const [snapToGrid, setSnapToGrid] = useState(true);
+  const [showGrid, setShowGrid] = useState(false);
+  const [snapToGrid, setSnapToGrid] = useState(false);
+
   const [masterVolume, setMasterVolume] = useState(80);
-  const [micVolume, setMicVolume] = useState(100);
-  const [audioOutput, setAudioOutput] = useState("default");
-  const [audioInput, setAudioInput] = useState("default");
+  const [micLevel, setMicLevel] = useState(100);
+  const [selectedOutput, setSelectedOutput] = useState("default");
   const [noiseSuppression, setNoiseSuppression] = useState(true);
   const [echoCancellation, setEchoCancellation] = useState(true);
 
+  // Shortcuts search & category filter
+  const [shortcutSearch, setShortcutSearch] = useState("");
+  const [selectedShortcutCategory, setSelectedShortcutCategory] = useState<string>("all");
+
+  // Filtered devices
+  const micDevices = audioDevices.filter((d) => d.kind === "audioinput");
+  const outputDevices = audioDevices.filter((d) => d.kind === "audiooutput");
+
+  // Filtered shortcuts
+  const filteredShortcuts = useMemo(() => {
+    const query = shortcutSearch.trim().toLowerCase();
+    const categoriesToSearch =
+      selectedShortcutCategory === "all"
+        ? Object.entries(SHORTCUT_CATEGORIES)
+        : Object.entries(SHORTCUT_CATEGORIES).filter(([cat]) => cat === selectedShortcutCategory);
+
+    const result: { category: string; items: { key: string; label: string; display: string }[] }[] = [];
+
+    for (const [category, keys] of categoriesToSearch) {
+      const matchingItems: { key: string; label: string; display: string }[] = [];
+      for (const key of keys) {
+        const shortcutInfo = SHORTCUTS[key as keyof typeof SHORTCUTS];
+        const label = SHORTCUT_LABELS[key] || key;
+        const display = shortcutInfo?.display || "";
+
+        if (!query || label.toLowerCase().includes(query) || display.toLowerCase().includes(query)) {
+          matchingItems.push({ key, label, display });
+        }
+      }
+      if (matchingItems.length > 0) {
+        result.push({ category, items: matchingItems });
+      }
+    }
+
+    return result;
+  }, [shortcutSearch, selectedShortcutCategory]);
+
   return (
-    <div className="flex flex-col h-full -m-4">
-      {/* Section Navigation - Compact */}
-      <div className="flex gap-1 p-2 overflow-x-auto border-b border-border/10" style={{ scrollbarWidth: 'none' }}>
-        {sections.map((section) => {
-          const Icon = section.icon;
-          const isActive = activeSection === section.id;
+    <div className="relative flex flex-col gap-3.5 w-full antialiased">
+      {/* ─── Sub-Section Navigation: Full Border Change + Thin Underline ─── */}
+      <div className="flex items-center gap-1.5 overflow-x-auto p-1 rounded-2xl bg-white/[0.03] border border-white/[0.08] slim-scrollbar">
+        {SECTIONS.map((sec) => {
+          const Icon = sec.icon;
+          const isActive = activeSection === sec.id;
           return (
             <button
-              key={section.id}
-              onClick={() => setActiveSection(section.id)}
+              key={sec.id}
+              onClick={() => setActiveSection(sec.id)}
               className={cn(
-                "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium transition-all whitespace-nowrap",
+                "relative flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl text-[11px] font-medium tracking-wide whitespace-nowrap transition-all duration-200 border",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5"
+                  ? "border-primary bg-primary/10 text-white shadow-[0_0_12px_rgba(var(--primary-rgb),0.2)] ring-1 ring-primary/40 font-semibold"
+                  : "border-transparent hover:border-white/15 text-zinc-300 hover:text-white bg-transparent hover:bg-white/[0.04]"
               )}
             >
-              <Icon className="w-3 h-3" />
-              {section.label}
+              <Icon className={cn("w-3.5 h-3.5 shrink-0 transition-colors", isActive ? "text-primary" : "text-zinc-400")} />
+              <span>{sec.label}</span>
+
+              {/* Thin Underline Indicator */}
+              {isActive && (
+                <span className="absolute -bottom-px left-2 right-2 h-[2px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* Content Area */}
-      <div className="flex-1 overflow-y-auto p-3" style={{ scrollbarWidth: 'none' }}>
-        {activeSection === "appearance" && <ThemeSwitcher />}
+      {/* ─── 1. Appearance Section ─── */}
+      {activeSection === "appearance" && (
+        <div className="animate-in fade-in-50 duration-200 w-full">
+          <ThemeSwitcher />
+        </div>
+      )}
 
-        {activeSection === "display" && (
-          <div className="space-y-4">
-            {/* Zoom Level */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
-              <div className="flex items-center gap-2">
-                <ZoomIn className="w-3.5 h-3.5 text-muted-foreground" />
-                <Label className="text-[11px] font-medium">Zoom Level</Label>
-                <span className="ml-auto text-[10px] text-muted-foreground">{zoomLevel}%</span>
+      {/* ─── 2. Display Section ─── */}
+      {activeSection === "display" && (
+        <div className="animate-in fade-in-50 duration-200 space-y-3 w-full">
+          {/* Zoom Control Card */}
+          <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+                  <ZoomIn className="w-4 h-4" />
+                </div>
+                <div>
+                  <Label className="text-[12px] font-semibold text-white tracking-tight">Canvas Zoom</Label>
+                  <p className="text-[10px] text-zinc-400 font-normal">Scale studio workspace viewport</p>
+                </div>
               </div>
+              <span className="text-[11px] font-mono font-bold text-primary px-2.5 py-0.5 rounded-lg bg-primary/10 border border-primary/25">
+                {zoomLevel}%
+              </span>
+            </div>
+
+            <div className="pt-1">
               <Slider
                 value={[zoomLevel]}
-                onValueChange={([v]) => setZoomLevel(v)}
                 min={50}
                 max={200}
-                step={10}
+                step={5}
+                onValueChange={([v]) => setZoomLevel(v)}
                 className="w-full"
               />
             </div>
 
-            {/* Grid Settings */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Grid3X3 className="w-3.5 h-3.5 text-muted-foreground" />
-                <span className="text-[11px] font-medium">Grid Settings</span>
+            <div className="flex items-center gap-1.5 pt-1 overflow-x-auto slim-scrollbar">
+              {ZOOM_PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  onClick={() => setZoomLevel(preset)}
+                  className={cn(
+                    "flex-1 py-1 rounded-lg text-[10px] font-mono transition-all border text-center font-medium",
+                    zoomLevel === preset
+                      ? "border-primary bg-primary/15 text-primary font-semibold ring-1 ring-primary/30 shadow-sm"
+                      : "border-white/10 text-zinc-400 hover:text-white bg-white/[0.02] hover:bg-white/[0.05]"
+                  )}
+                >
+                  {preset}%
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Grid Settings & Fullscreen Card */}
+          <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+                <Grid3X3 className="w-4 h-4" />
               </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-[10px] text-muted-foreground">Show Grid</Label>
-                <Switch checked={showGrid} onCheckedChange={setShowGrid} className="scale-75" />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-[10px] text-muted-foreground">Snap to Grid</Label>
-                <Switch checked={snapToGrid} onCheckedChange={setSnapToGrid} className="scale-75" />
+              <div>
+                <Label className="text-[12px] font-semibold text-white tracking-tight">Canvas Guides & Display</Label>
+                <p className="text-[10px] text-zinc-400 font-normal">Snapping & fullscreen workspace</p>
               </div>
             </div>
 
-            {/* Fullscreen */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10">
-              <div className="flex items-center gap-2">
-                <Maximize className="w-3.5 h-3.5 text-muted-foreground" />
-                <span className="text-[11px] font-medium">Fullscreen Mode</span>
-                <kbd className="ml-auto px-1.5 py-0.5 text-[9px] font-mono bg-muted/50 border border-border/30 rounded text-muted-foreground">
-                  F
-                </kbd>
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all">
+                <div>
+                  <Label className="text-[11px] font-medium text-white cursor-pointer">
+                    Show Canvas Grid
+                  </Label>
+                  <p className="text-[9px] text-zinc-400">Display coordinate guidelines</p>
+                </div>
+                <Switch checked={showGrid} onCheckedChange={setShowGrid} />
+              </div>
+
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all">
+                <div>
+                  <Label className="text-[11px] font-medium text-white cursor-pointer">
+                    Snap to Grid
+                  </Label>
+                  <p className="text-[9px] text-zinc-400">Auto-align dragged elements</p>
+                </div>
+                <Switch checked={snapToGrid} onCheckedChange={setSnapToGrid} />
+              </div>
+
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all">
+                <div>
+                  <Label className="text-[11px] font-medium text-white cursor-pointer">
+                    Fullscreen Mode
+                  </Label>
+                  <p className="text-[9px] text-zinc-400">Borderless broadcast canvas</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <kbd className="px-2 py-0.5 text-[9px] font-mono font-medium bg-white/[0.06] border border-white/15 rounded text-white">
+                    F
+                  </kbd>
+                  <Switch checked={isFullscreen} onCheckedChange={setFullscreen} />
+                </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {activeSection === "audio" && (
-          <div className="space-y-4">
-            {/* Master Volume */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
-              <div className="flex items-center gap-2">
-                <Volume2 className="w-3.5 h-3.5 text-muted-foreground" />
-                <Label className="text-[11px] font-medium">Master Volume</Label>
-                <span className="ml-auto text-[10px] text-muted-foreground">{masterVolume}%</span>
+      {/* ─── 3. Audio Section ─── */}
+      {activeSection === "audio" && (
+        <div className="animate-in fade-in-50 duration-200 space-y-3 w-full">
+          {/* Microphone Input Card */}
+          <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+                <Mic className="w-4 h-4" />
+              </div>
+              <div>
+                <Label className="text-[12px] font-semibold text-white tracking-tight">Microphone Input</Label>
+                <p className="text-[10px] text-zinc-400 font-normal">Hardware capture device</p>
+              </div>
+            </div>
+
+            <Select
+              value={selectedAudioDevice || "default"}
+              onValueChange={setSelectedAudioDevice}
+            >
+              <SelectTrigger className="w-full text-[11px] font-medium h-9 bg-white/[0.04] border border-white/10 hover:border-primary text-white rounded-xl px-3 transition-all">
+                <SelectValue placeholder="Select microphone" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default" className="text-[11px]">
+                  System Default Microphone
+                </SelectItem>
+                {micDevices.map((d) => (
+                  <SelectItem key={d.deviceId} value={d.deviceId} className="text-[11px]">
+                    {d.label || `Microphone (${d.deviceId.slice(0, 8)}...)`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <div className="space-y-1.5 pt-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-zinc-300 font-medium">Input Gain Level</span>
+                <span className="font-mono text-primary font-semibold text-[11px]">{micLevel}%</span>
+              </div>
+              <Slider
+                value={[micLevel]}
+                min={0}
+                max={100}
+                step={5}
+                onValueChange={([v]) => setMicLevel(v)}
+              />
+            </div>
+          </div>
+
+          {/* Audio Output Card */}
+          <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+                <Speaker className="w-4 h-4" />
+              </div>
+              <div>
+                <Label className="text-[12px] font-semibold text-white tracking-tight">Playback Monitor</Label>
+                <p className="text-[10px] text-zinc-400 font-normal">Monitoring destination</p>
+              </div>
+            </div>
+
+            <Select value={selectedOutput} onValueChange={setSelectedOutput}>
+              <SelectTrigger className="w-full text-[11px] font-medium h-9 bg-white/[0.04] border border-white/10 hover:border-primary text-white rounded-xl px-3 transition-all">
+                <SelectValue placeholder="Select monitor output" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default" className="text-[11px]">
+                  System Default Output
+                </SelectItem>
+                {outputDevices.map((d) => (
+                  <SelectItem key={d.deviceId} value={d.deviceId} className="text-[11px]">
+                    {d.label || `Output (${d.deviceId.slice(0, 8)}...)`}
+                  </SelectItem>
+                ))}
+                {outputDevices.length === 0 && (
+                  <>
+                    <SelectItem value="speakers" className="text-[11px]">Speakers</SelectItem>
+                    <SelectItem value="headphones" className="text-[11px]">Headphones</SelectItem>
+                  </>
+                )}
+              </SelectContent>
+            </Select>
+
+            <div className="space-y-1.5 pt-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-zinc-300 font-medium flex items-center gap-1.5">
+                  {masterVolume === 0 ? <VolumeX className="w-3.5 h-3.5 text-zinc-400" /> : <Volume1 className="w-3.5 h-3.5 text-primary" />}
+                  Master Volume
+                </span>
+                <span className="font-mono text-primary font-semibold text-[11px]">{masterVolume}%</span>
               </div>
               <Slider
                 value={[masterVolume]}
+                min={0}
+                max={100}
+                step={5}
                 onValueChange={([v]) => setMasterVolume(v)}
-                min={0}
-                max={100}
-                step={5}
-                className="w-full"
               />
             </div>
+          </div>
 
-            {/* Microphone */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[11px] font-medium">Microphone</span>
+          {/* Audio Processing (DSP Filters) */}
+          <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary">
+                <Sliders className="w-4 h-4" />
               </div>
-              <div className="space-y-2">
-                <Label className="text-[10px] text-muted-foreground">Input Device</Label>
-                <Select value={audioInput} onValueChange={setAudioInput}>
-                  <SelectTrigger className="h-7 text-[10px]">
-                    <SelectValue placeholder="Select microphone" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default" className="text-[10px]">System Default</SelectItem>
-                    <SelectItem value="builtin" className="text-[10px]">Built-in Microphone</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div>
+                <Label className="text-[12px] font-semibold text-white tracking-tight">Audio Processing (DSP)</Label>
+                <p className="text-[10px] text-zinc-400 font-normal">Acoustic noise suppression & echo gating</p>
               </div>
-              <div className="flex items-center gap-2">
-                <Label className="text-[10px] text-muted-foreground">Level</Label>
-                <span className="ml-auto text-[10px] text-muted-foreground">{micVolume}%</span>
-              </div>
-              <Slider
-                value={[micVolume]}
-                onValueChange={([v]) => setMicVolume(v)}
-                min={0}
-                max={100}
-                step={5}
-                className="w-full"
-              />
             </div>
 
-            {/* Output */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-2">
-              <Label className="text-[10px] text-muted-foreground">Output Device</Label>
-              <Select value={audioOutput} onValueChange={setAudioOutput}>
-                <SelectTrigger className="h-7 text-[10px]">
-                  <SelectValue placeholder="Select output" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default" className="text-[10px]">System Default</SelectItem>
-                  <SelectItem value="speakers" className="text-[10px]">Speakers</SelectItem>
-                  <SelectItem value="headphones" className="text-[10px]">Headphones</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Audio Processing */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10 space-y-3">
-              <span className="text-[11px] font-medium">Audio Processing</span>
-              <div className="flex items-center justify-between">
-                <Label className="text-[10px] text-muted-foreground">Noise Suppression</Label>
-                <Switch checked={noiseSuppression} onCheckedChange={setNoiseSuppression} className="scale-75" />
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all">
+                <div>
+                  <Label className="text-[11px] font-medium text-white cursor-pointer">
+                    Noise Suppression
+                  </Label>
+                  <p className="text-[9px] text-zinc-400">Eliminates room & fan hiss</p>
+                </div>
+                <Switch checked={noiseSuppression} onCheckedChange={setNoiseSuppression} />
               </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-[10px] text-muted-foreground">Echo Cancellation</Label>
-                <Switch checked={echoCancellation} onCheckedChange={setEchoCancellation} className="scale-75" />
+
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-white/15 transition-all">
+                <div>
+                  <Label className="text-[11px] font-medium text-white cursor-pointer">
+                    Echo Cancellation
+                  </Label>
+                  <p className="text-[9px] text-zinc-400">Prevents acoustic loopback</p>
+                </div>
+                <Switch checked={echoCancellation} onCheckedChange={setEchoCancellation} />
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {activeSection === "shortcuts" && (
-          <div className="space-y-3">
-            {Object.entries(shortcutCategories).map(([category, keys]) => (
-              <div key={category} className="p-3 rounded-xl bg-transparent border border-border/10">
-                <h4 className="text-[10px] font-semibold text-muted-foreground mb-2">{category}</h4>
-                <div className="space-y-1.5">
-                  {keys.map((key) => {
-                    const shortcut = SHORTCUTS[key as keyof typeof SHORTCUTS];
-                    if (!shortcut) return null;
-                    return (
-                      <div key={key} className="flex items-center justify-between py-1">
-                        <span className="text-[10px] text-foreground/80">{shortcutLabels[key] || key}</span>
-                        <kbd className="inline-flex items-center justify-center min-w-[24px] h-5 px-1.5 bg-muted/60 border border-border/40 rounded text-[9px] font-mono font-medium text-muted-foreground">
-                          {shortcut.display}
-                        </kbd>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+      {/* ─── 4. Shortcuts Section ─── */}
+      {activeSection === "shortcuts" && (
+        <div className="animate-in fade-in-50 duration-200 space-y-3 w-full">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <Input
+              placeholder="Search hotkeys (e.g. mic, mute, zoom, undo)..."
+              value={shortcutSearch}
+              onChange={(e) => setShortcutSearch(e.target.value)}
+              className="h-9 pl-9 text-[11px] font-medium bg-white/[0.04] border-white/10 text-white placeholder:text-zinc-500 rounded-xl focus-visible:ring-primary"
+            />
+          </div>
+
+          <div
+            className="flex items-center gap-1.5 overflow-x-auto pb-1 slim-scrollbar"
+          >
+            <button
+              onClick={() => setSelectedShortcutCategory("all")}
+              className={cn(
+                "relative px-3 py-1.5 rounded-full text-[10px] font-medium tracking-wide shrink-0 transition-all border",
+                selectedShortcutCategory === "all"
+                  ? "border-primary bg-primary/10 text-white shadow-sm ring-1 ring-primary/30"
+                  : "border-white/10 text-zinc-300 hover:text-white bg-white/[0.02]"
+              )}
+            >
+              All
+              {selectedShortcutCategory === "all" && (
+                <span className="absolute -bottom-px left-2 right-2 h-[1.5px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
+              )}
+            </button>
+            {Object.keys(SHORTCUT_CATEGORIES).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedShortcutCategory(cat)}
+                className={cn(
+                  "relative px-3 py-1.5 rounded-full text-[10px] font-medium tracking-wide shrink-0 transition-all border",
+                  selectedShortcutCategory === cat
+                    ? "border-primary bg-primary/10 text-white shadow-sm ring-1 ring-primary/30"
+                    : "border-white/10 text-zinc-300 hover:text-white bg-white/[0.02]"
+                )}
+              >
+                {cat}
+                {selectedShortcutCategory === cat && (
+                  <span className="absolute -bottom-px left-2 right-2 h-[1.5px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
+                )}
+              </button>
             ))}
           </div>
-        )}
 
-        {activeSection === "about" && (
-          <div className="space-y-3">
-            {/* Logo & Title */}
-            <div className="p-4 rounded-xl bg-transparent border border-border/10">
-              <div className="flex items-center gap-3 mb-3">
-                <img src={gakiLogo} alt="GAKI Logo" className="w-10 h-10 rounded-lg" />
-                <div>
-                  <h3 className="text-sm font-bold bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">GAKI</h3>
-                  <p className="text-[10px] text-muted-foreground">House of Video Creation</p>
+          {filteredShortcuts.length === 0 ? (
+            <div className="p-8 text-center rounded-2xl bg-white/[0.02] border border-white/10">
+              <p className="text-[12px] font-medium text-zinc-400">No matching shortcuts found.</p>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {filteredShortcuts.map(({ category, items }) => (
+                <div
+                  key={category}
+                  className="rounded-2xl p-3.5 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm space-y-2"
+                >
+                  <h4 className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 px-1">
+                    {category}
+                  </h4>
+
+                  <div className="space-y-1">
+                    {items.map(({ key, label, display }) => {
+                      const keys = display.split("+");
+                      return (
+                        <div
+                          key={key}
+                          className="flex items-center justify-between py-1.5 px-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] transition-colors"
+                        >
+                          <span className="text-[11px] text-white font-medium">{label}</span>
+                          <div className="flex items-center gap-1">
+                            {keys.map((k, i) => (
+                              <kbd
+                                key={i}
+                                className="inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 bg-white/[0.06] border border-white/15 rounded text-[9px] font-mono font-semibold text-white shadow-sm"
+                              >
+                                {k}
+                              </kbd>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <span className="ml-auto px-2 py-0.5 text-[9px] font-medium bg-primary/10 text-primary rounded-full">v1.0.0</span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ─── 5. About Section ─── */}
+      {activeSection === "about" && (
+        <div className="animate-in fade-in-50 duration-200 space-y-3 w-full">
+          <div className="rounded-2xl p-5 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm flex flex-col items-center text-center space-y-3">
+            <div className="relative">
+              <img
+                src={gakiLogo}
+                alt="GAKI Studio"
+                className="w-16 h-16 rounded-2xl shadow-xl border-2 border-white/20"
+              />
+              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 text-[9px] font-mono font-bold bg-primary text-primary-foreground rounded-full shadow-md">
+                v1.0
+              </span>
+            </div>
+
+            <div>
+              <h3 className="text-base font-semibold text-white tracking-tight">
+                GAKI Studio
+              </h3>
+              <p className="text-[11px] text-zinc-300 font-medium mt-0.5">House of Video Creation</p>
+            </div>
+
+            <p className="text-[11px] text-zinc-300 font-normal leading-relaxed max-w-[280px]">
+              A free, high-performance browser streaming and recording mixer powered by WebRTC & WebCodecs.
+            </p>
+
+            <div className="pt-3 border-t border-white/10 w-full flex items-center justify-between text-left">
+              <div>
+                <span className="text-[9px] text-zinc-400 font-normal block">Creator</span>
+                <span className="text-[11px] font-semibold text-white">Creator Enji</span>
               </div>
-              <p className="text-[11px] leading-relaxed text-muted-foreground">
-                A <span className="text-primary font-medium">free multiplatform streaming app</span>. One click and go live everywhere you want,
-                with professional stream and video setups.
-              </p>
-            </div>
-
-            {/* Features */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10">
-              <h4 className="text-[10px] font-semibold text-muted-foreground mb-2">Features</h4>
-              <ul className="space-y-1.5">
-                <li className="flex items-center gap-2 text-[10px] text-foreground/80">
-                  <span className="text-primary">✓</span> Multiplatform streaming - go live everywhere
-                </li>
-                <li className="flex items-center gap-2 text-[10px] text-foreground/80">
-                  <span className="text-primary">✓</span> Professional stream & video setups
-                </li>
-                <li className="flex items-center gap-2 text-[10px] text-foreground/80">
-                  <span className="text-primary">✓</span> One-click broadcast
-                </li>
-                <li className="flex items-center gap-2 text-[10px] text-foreground/80">
-                  <span className="text-primary">✓</span> AI-powered features
-                </li>
-              </ul>
-            </div>
-
-            {/* Creator */}
-            <div className="p-3 rounded-xl bg-transparent border border-border/10">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-muted-foreground">Created with love ❤️❤️❤️ by</span>
-                  <span className="text-[11px] font-semibold text-foreground">Creator Enji</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <a
-                    href="https://www.linkedin.com/in/mohit-singh-negi/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-foreground/5 hover:bg-primary/20 transition-colors group"
-                    title="LinkedIn"
-                  >
-                    <svg className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </a>
-                  <a
-                    href="https://github.com/Negi97Mohit"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-1.5 rounded-lg bg-foreground/5 hover:bg-primary/20 transition-colors group"
-                    title="GitHub"
-                  >
-                    <svg className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                    </svg>
-                  </a>
-                </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://www.linkedin.com/in/mohit-singh-negi/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-[10px] font-medium text-white transition-all flex items-center gap-1.5"
+                >
+                  LinkedIn <ExternalLink className="w-3 h-3 opacity-80" />
+                </a>
+                <a
+                  href="https://github.com/Negi97Mohit"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-[10px] font-medium text-white transition-all flex items-center gap-1.5"
+                >
+                  GitHub <ExternalLink className="w-3 h-3 opacity-80" />
+                </a>
               </div>
             </div>
           </div>
-        )}
-      </div>
+
+          <div className="rounded-2xl p-4 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm space-y-2.5">
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+              Studio Architecture
+            </h4>
+
+            <div className="space-y-2 text-[11px]">
+              {[
+                "Multiplatform streaming (YouTube, Twitch, Kick)",
+                "Hardware-accelerated WebGL kernel compositor",
+                "Ultra low-latency WebRTC broadcast pipeline",
+                "Cross-device mobile camera & deck handoff",
+              ].map((feat, i) => (
+                <div key={i} className="flex items-center gap-2.5 text-zinc-200 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                  <span className="leading-snug">{feat}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

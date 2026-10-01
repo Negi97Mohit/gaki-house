@@ -30,4 +30,6 @@ export const zIndex = {
   streamModal: 10000,
   streamModalInner: 10001,
   streamModalOverlay: 10002,
+  fileVaultPreview: 10000,
+  broadcastStats: 2050,
 };

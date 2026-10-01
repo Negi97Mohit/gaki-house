@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { X } from "lucide-react";
 import { cn } from "@gaki/core/lib/utils";
+import { zIndex } from "@/lib/zIndex";
 
 interface TelemetryData {
   fps: number;
@@ -68,7 +69,7 @@ export const BroadcastStatsPanel: React.FC = () => {
           ? "opacity-100 translate-y-0 scale-100"
           : "opacity-0 translate-y-2 scale-95 pointer-events-none"
       )}
-      style={{ zIndex: 2050 }}
+      style={{ zIndex: zIndex.broadcastStats }}
       onMouseEnter={() => isHidden && setIsHovered(true)}
       onMouseLeave={() => isHidden && setIsHovered(false)}
     >

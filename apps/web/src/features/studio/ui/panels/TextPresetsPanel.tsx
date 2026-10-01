@@ -5,6 +5,8 @@ import { CaptionStyle } from "@gaki/core/types/caption";
 import { DynamicStylesPanel } from "./DynamicStylesPanel";
 import { StaticPresetsPanel } from "./StaticPresetsPanel";
 import { TextStylePanel } from "./TextStylePanel";
+import { Sparkles, Type, Sliders } from "lucide-react";
+import { cn } from "@gaki/core/lib/utils";
 
 interface TextPresetsPanelProps {
   style: CaptionStyle;
@@ -26,30 +28,59 @@ export const TextPresetsPanel: React.FC<TextPresetsPanelProps> = ({
   const [activeTab, setActiveTab] = useState("dynamic");
 
   return (
-    <div className="space-y-4 font-mono">
+    <div className="space-y-3.5 w-full antialiased">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full grid grid-cols-3 h-9 bg-card border border-border">
-          <TabsTrigger
-            value="dynamic"
-            className="text-xs font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-          >
-            DYNAMIC
-          </TabsTrigger>
-          <TabsTrigger
-            value="presets"
-            className="text-xs font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-          >
-            PRESETS
-          </TabsTrigger>
-          <TabsTrigger
-            value="custom"
-            className="text-xs font-mono tracking-wide data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-          >
-            CUSTOM
-          </TabsTrigger>
-        </TabsList>
+        {/* Capsule Tabs with Border & Underline Indicator */}
+        <div className="flex items-center justify-center p-1 rounded-2xl bg-white/[0.03] border border-white/[0.08] shadow-sm">
+          <TabsList className="w-full grid grid-cols-3 h-9 bg-transparent p-0 gap-1 border-0">
+            <TabsTrigger
+              value="dynamic"
+              className={cn(
+                "relative flex items-center justify-center gap-1.5 rounded-xl text-[11px] font-medium tracking-wide transition-all",
+                "data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-white data-[state=active]:ring-1 data-[state=active]:ring-primary/40",
+                "text-zinc-300 hover:text-white border border-transparent"
+              )}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Dynamic
+              {activeTab === "dynamic" && (
+                <span className="absolute -bottom-px left-3 right-3 h-[2px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
+              )}
+            </TabsTrigger>
 
-        <TabsContent value="dynamic" className="mt-4">
+            <TabsTrigger
+              value="presets"
+              className={cn(
+                "relative flex items-center justify-center gap-1.5 rounded-xl text-[11px] font-medium tracking-wide transition-all",
+                "data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-white data-[state=active]:ring-1 data-[state=active]:ring-primary/40",
+                "text-zinc-300 hover:text-white border border-transparent"
+              )}
+            >
+              <Type className="w-3.5 h-3.5" />
+              Presets
+              {activeTab === "presets" && (
+                <span className="absolute -bottom-px left-3 right-3 h-[2px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
+              )}
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="custom"
+              className={cn(
+                "relative flex items-center justify-center gap-1.5 rounded-xl text-[11px] font-medium tracking-wide transition-all",
+                "data-[state=active]:border-primary data-[state=active]:bg-primary/10 data-[state=active]:text-white data-[state=active]:ring-1 data-[state=active]:ring-primary/40",
+                "text-zinc-300 hover:text-white border border-transparent"
+              )}
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              Custom
+              {activeTab === "custom" && (
+                <span className="absolute -bottom-px left-3 right-3 h-[2px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
+              )}
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent value="dynamic" className="mt-3.5 focus-visible:outline-none">
           <DynamicStylesPanel
             dynamicStyle={dynamicStyle}
             onDynamicStyleChange={onDynamicStyleChange}
@@ -57,7 +88,7 @@ export const TextPresetsPanel: React.FC<TextPresetsPanelProps> = ({
           />
         </TabsContent>
 
-        <TabsContent value="presets" className="mt-4">
+        <TabsContent value="presets" className="mt-3.5 focus-visible:outline-none">
           <StaticPresetsPanel
             currentStyle={style}
             onStyleChange={onStyleChange}
@@ -66,7 +97,7 @@ export const TextPresetsPanel: React.FC<TextPresetsPanelProps> = ({
           />
         </TabsContent>
 
-        <TabsContent value="custom" className="mt-4">
+        <TabsContent value="custom" className="mt-3.5 focus-visible:outline-none">
           <TextStylePanel
             style={style}
             onStyleChange={onStyleChange}

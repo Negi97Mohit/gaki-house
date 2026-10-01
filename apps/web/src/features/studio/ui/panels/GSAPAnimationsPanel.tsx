@@ -32,49 +32,59 @@ export const GSAPAnimationsPanel: React.FC<GSAPAnimationsPanelProps> = ({
       : GSAP_PRESETS.filter((p) => p.category === activeCategory);
 
   return (
-    <div className="flex flex-col h-full -m-4">
-      {/* Category Tabs - Compact */}
-      <div className="flex gap-1 p-2 overflow-x-auto border-b border-border/10" style={{ scrollbarWidth: 'none' }}>
+    <div className="flex flex-col gap-3.5 w-full antialiased">
+      {/* Category Pills - Horizontal Scroll With Underline Indicator */}
+      <div 
+        className="flex items-center gap-1.5 overflow-x-auto pb-1 slim-scrollbar" 
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
         {CATEGORIES.map((cat) => {
           const Icon = cat.icon;
+          const isActive = activeCategory === cat.id;
           return (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               className={cn(
-                "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap transition-all",
-                activeCategory === cat.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5"
+                "relative flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-medium tracking-wide whitespace-nowrap transition-all duration-150 border shrink-0",
+                isActive
+                  ? "border-primary bg-primary/10 text-white shadow-sm ring-1 ring-primary/40"
+                  : "border-white/10 hover:border-white/20 text-zinc-300 hover:text-white bg-white/[0.02]"
               )}
             >
-              <Icon className="w-3 h-3" />
-              {cat.name}
+              <Icon className={cn("w-3 h-3 transition-colors", isActive ? "text-primary" : "text-zinc-400")} />
+              <span>{cat.name}</span>
+
+              {isActive && (
+                <span className="absolute -bottom-px left-2 right-2 h-[1.5px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* Presets Grid - Full content area */}
-      <div className="flex-1 overflow-y-auto p-2" style={{ scrollbarWidth: 'none' }}>
-        <div className="grid grid-cols-2 gap-2">
-          {filteredPresets.map((preset) => (
+      {/* Presets Grid - Responsive Multi-Column Layout */}
+      <div className="grid grid-cols-2 gap-2.5">
+        {filteredPresets.map((preset) => (
+          <div 
+            key={preset.id}
+            className="rounded-xl overflow-hidden border border-white/10 hover:border-primary/50 transition-all duration-150 shadow-sm"
+          >
             <GSAPPresetPreview
-              key={preset.id}
               preset={preset}
               isSelected={selectedPresetId === preset.id}
               onClick={() => onSelectPreset(preset)}
             />
-          ))}
-        </div>
-
-        {filteredPresets.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-32 text-muted-foreground/50">
-            <Sparkles className="w-6 h-6 mb-2" />
-            <p className="text-xs">No animations</p>
           </div>
-        )}
+        ))}
       </div>
+
+      {filteredPresets.length === 0 && (
+        <div className="flex flex-col items-center justify-center p-10 text-center rounded-2xl bg-white/[0.02] border border-white/10">
+          <Sparkles className="w-8 h-8 mb-2 text-zinc-400" />
+          <p className="text-[12px] font-medium text-zinc-300">No animations found in this category.</p>
+        </div>
+      )}
     </div>
   );
 };

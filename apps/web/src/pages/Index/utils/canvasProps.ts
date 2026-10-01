@@ -225,6 +225,14 @@ export const getAllPropsForScene = (
         callbacks.updateSceneProperty("filterTarget", val),
       savedOverlays: data.savedOverlays,
       onCanvasBackgroundUpload: callbacks.handleCanvasBackgroundUpload,
+      onCanvasBackgroundAssetSelect: (asset: AssetResult) => {
+        callbacks.updateSceneProperty("backgroundImageUrl", asset.downloadUrl);
+        callbacks.updateSceneProperty("backgroundEffect", "image");
+      },
+      canvasLayout: scene.canvasLayout,
+      onCanvasLayoutChange: (val: CanvasLayoutState | null) =>
+        callbacks.updateSceneProperty("canvasLayout", val),
+      activeSequenceId: scene.activeSequenceId,
       onAddSavedOverlay: callbacks.onAddSavedOverlay,
       onDeleteSavedOverlay: callbacks.onDeleteSavedOverlay,
       cameraBackground: scene.cameraBackground,

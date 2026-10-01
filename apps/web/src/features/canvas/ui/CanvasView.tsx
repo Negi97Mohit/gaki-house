@@ -26,7 +26,6 @@ import { Sparkles } from "lucide-react";
 import { Button } from "@gaki/ui/button";
 import { AICommandPopover } from "@/features/ai-assistant/ui/AICommandPopover";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
-import { CanvasHoverToolbar } from "@/features/canvas/ui/CanvasHoverToolbar";
 import { OverlayElement } from "@/hooks/useSnapGuides";
 import { VideoCanvasCamera } from "@/features/canvas/ui/VideoCanvasCamera";
 import { ForegroundUserLayer } from "@/features/canvas/ui/ForegroundUserLayer";
@@ -359,21 +358,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       isMouseActive={props.isMouseActive}
       isFullscreen={props.isFullscreen}
     >
-      <CanvasHoverToolbar
-        blankCanvasColor={props.blankCanvasColor}
-        onBlankCanvasColorChange={props.sidebarProps.onBlankCanvasColorChange}
-        onCanvasBackgroundUpload={props.onCanvasBackgroundUpload}
-        onCanvasBackgroundAssetSelect={props.onCanvasBackgroundAssetSelect}
-        isVisible={isCanvasHovered}
-        isMouseActive={props.isMouseActive}
-        canvasLayout={props.canvasLayout}
-        onCanvasLayoutChange={props.onCanvasLayoutChange}
-        activeSequenceId={props.activeSequenceId}
-        isChatbotOpen={props.isChatbotOpen}
-        onToggleChatbot={props.onChatbotToggle}
-        onAddEmptyGridPanel={onAddEmptyGridPanel}
-      />
-
       <CanvasContent
         {...props}
         dynamicLayout={dynamicLayout}

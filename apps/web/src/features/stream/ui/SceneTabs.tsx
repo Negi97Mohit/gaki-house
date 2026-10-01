@@ -316,7 +316,7 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
   return (
     <div
       className={cn(
-        "fixed top-1/2 right-3 -translate-y-1/2",
+        "fixed top-1/2 right-4 -translate-y-1/2",
         "transition-all duration-300 ease-in-out",
         effectivelyHidden
           ? "translate-x-full opacity-0 pointer-events-none"
@@ -324,33 +324,36 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
       )}
       style={{ zIndex: "var(--z-scene-tabs)" }}
     >
-      {/* Main Container - Sleek glass island */}
-      <div className="relative bg-background/80 dark:bg-background/60 backdrop-blur-2xl border border-border/20 dark:border-white/10 rounded-2xl w-44 max-h-[60vh] flex flex-col pointer-events-auto shadow-2xl shadow-black/10 dark:shadow-black/30">
-        {/* Subtle inner glow */}
+      {/* Main Container - Sleek glass dock */}
+      <div className="relative bg-zinc-950/85 backdrop-blur-2xl border border-white/10 rounded-2xl w-56 max-h-[65vh] flex flex-col pointer-events-auto shadow-2xl shadow-black/60">
+        {/* Subtle inner top glow */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none" />
         
-        {/* Header - Compact */}
-        <div className="relative flex-shrink-0 flex items-center justify-between px-2.5 py-2 border-b border-border/10 dark:border-white/5">
-          <div className="flex items-center gap-1.5">
-            <Layers className="w-3 h-3 text-muted-foreground/70" />
-            <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+        {/* Header - Refined studio style */}
+        <div className="relative flex-shrink-0 flex items-center justify-between px-3 py-2.5 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <Layers className="w-3.5 h-3.5 text-primary" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
               Scenes
             </span>
+            <span className="px-1.5 py-0.2 text-[9px] font-mono rounded-full bg-white/10 text-zinc-400">
+              {scenes.length}
+            </span>
           </div>
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1">
             <button
-              className="w-5 h-5 flex items-center justify-center text-primary/80 hover:text-primary rounded-lg hover:bg-primary/10 transition-all"
+              className="w-6 h-6 flex items-center justify-center text-primary hover:text-primary-foreground hover:bg-primary/20 rounded-lg transition-all"
               onClick={() => setIsStreamStyleSelectorOpen(true)}
               title="Stream Styles"
             >
-              <Sparkles className="w-3 h-3" />
+              <Sparkles className="w-3.5 h-3.5" />
             </button>
             <ShortcutTooltip label="Hide Scenes" shortcut="toggleGridLayout" side="left">
               <button
-                className="w-5 h-5 flex items-center justify-center text-muted-foreground/60 hover:text-foreground rounded-lg hover:bg-foreground/5 transition-all"
+                className="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-all"
                 onClick={onHide}
               >
-                <ChevronRight className="w-3 h-3" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </ShortcutTooltip>
           </div>
@@ -409,10 +412,10 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                   onDrop={handleDrop}
                   onDragEnd={handleDragEnd}
                   className={cn(
-                    "group flex items-center h-7 px-2 rounded-xl cursor-pointer transition-all duration-200",
+                    "group flex items-center h-8 px-2.5 my-0.5 rounded-xl cursor-pointer transition-all duration-200 border",
                     isActive
-                      ? "bg-primary/15 dark:bg-primary/20 text-foreground"
-                      : "hover:bg-foreground/5 dark:hover:bg-white/5",
+                      ? "bg-primary/20 text-white font-medium border-primary/30 shadow-xs shadow-primary/20"
+                      : "border-transparent hover:bg-white/[0.06] text-zinc-300 hover:text-white",
                     isDragging && "opacity-40"
                   )}
                   onClick={(e) => {
@@ -444,10 +447,10 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
                     ) : (
                       <div
                         className={cn(
-                          "w-1 h-1 rounded-full transition-colors",
+                          "w-1.5 h-1.5 rounded-full transition-all",
                           isActive
-                            ? "bg-primary"
-                            : "bg-muted-foreground/30"
+                            ? "bg-primary ring-2 ring-primary/40 shadow-xs shadow-primary"
+                            : "bg-zinc-600 group-hover:bg-zinc-400"
                         )}
                       />
                     )}
@@ -812,17 +815,17 @@ export const SceneTabs: React.FC<SceneTabsProps> = ({
           </button>
         )}
 
-        {/* Add Button - Compact */}
-        <div className="relative flex-shrink-0 border-t border-border/10 dark:border-white/5 p-1.5">
+        {/* Add Button - Modern Studio style */}
+        <div className="relative flex-shrink-0 border-t border-white/10 p-2">
           <ShortcutTooltip label="Add Scene" shortcut="addScene" side="left">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="w-full h-6 text-[10px] gap-1 rounded-lg hover:bg-foreground/5 dark:hover:bg-white/5 text-muted-foreground hover:text-foreground transition-all"
+              className="w-full h-7 text-xs font-medium gap-1.5 rounded-xl border border-white/10 hover:border-primary/40 hover:bg-primary/10 text-zinc-300 hover:text-white transition-all shadow-xs"
               onClick={onSceneAdd}
             >
-              <Plus className="w-2.5 h-2.5" />
-              Add
+              <Plus className="w-3 h-3 text-primary" />
+              <span>Add Scene</span>
             </Button>
           </ShortcutTooltip>
         </div>

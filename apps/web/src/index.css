@@ -1688,6 +1688,30 @@
     background: hsl(var(--primary));
   }
 
+  /* Ultra-slim minimalist scrollbar for floating studio panel */
+  .slim-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+
+  .slim-scrollbar::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+
+  .slim-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .slim-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+  }
+
+  .slim-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+
   /* Onboarding animation */
   @keyframes pulse-border {
     0%,

@@ -85,3 +85,13 @@ The core React/Vite application for the GAKI live streaming studio. It acts as t
 - **If you see pattern** `use...Store`, it means global state is handled via Zustand. Prefer zustand subscriptions (`store.subscribe`) for high-frequency updates (like mouse/pointer moves) rather than React re-renders.
 
 ---
+
+> [2026-09-30] Reverted experimental full-header refactor. Redesigned Studio Settings menu designs panel (CanvasDesignsPanel) with integrated quick canvas background color, upload, curated assets, and layout templates from original top floating menu. Redesigned SceneTabs side floating menu with refined dark glass dock, scene count, and improved row interactions. Ensured Solo layout default and clean bottom menu without PiP. Status: 🟢 PRODUCTION. Agent: Antigravity.
+> [2026-09-30] Retired CanvasHoverToolbar top floating menu; absorbed all controls (background color, custom upload, asset library, layout gallery, transformation controls, sequence order, chatbot, empty panel) into CanvasDesignsPanel. Replaced heavy DOM/ResizeObserver layout previews with instant CSS-only cards. Eliminated mouse-inactivity auto-hide from FloatingControlsPanel. Connected SettingsPanel to real media and UI stores (microphones, audio outputs, fullscreen toggle). Fixed raw z-index violations in FileVaultPanel and BroadcastStatsPanel using zIndex.ts constants. Status: 🟢 PRODUCTION. Agent: Antigravity.
+> [2026-10-01] Fully overhauled Studio Floating Controls & Settings Deck (`FloatingControlsPanel.tsx`) and all member panels (`SettingsPanel.tsx`, `ThemeSwitcher.tsx`, `ToolsPanel.tsx`, `GSAPAnimationsPanel.tsx`, `TextPresetsPanel.tsx`, `SavedOverlaysPanel.tsx`, `SocialBannersPanel.tsx`, `FileVaultPanel.tsx`). Moved the section list to the bottom as a smooth horizontally scrollable dock. Solved text contrast completely with solid zinc-900 chip buttons, high-contrast white bold typography, and explicit borders across all themes. Sized the panel to a balanced adaptable floating card (`w-[460px]-w-[540px]`, `h-[68vh]`) that leaves the video canvas unobstructed, with adaptable content across all sections. Status: 🟢 PRODUCTION. Agent: Antigravity.
+> [2026-10-01] Refined typography across the studio panel with elegant tracking and font weights (`geist-sans`). Added `.slim-scrollbar` minimalist scrollbar utility. Updated selected options to use full primary border color changes and luminous thin underline indicators. Status: 🟢 PRODUCTION. Agent: Antigravity.
+
+
+
+
+

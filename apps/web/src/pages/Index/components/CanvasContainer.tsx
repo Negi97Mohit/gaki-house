@@ -310,8 +310,14 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
         onRemoveVaultFile={onRemoveVaultFile}
         onClearVault={onClearVault}
         onAddTextOverlay={() => {}}
-        onAssetSelect={(_asset: any) => {}}
         setIsDrawing={setIsDrawing}
+        isChatbotOpen={isChatbotOpen}
+        onToggleChatbot={(val: any) =>
+          setChatbotOpen(
+            typeof val === "function" ? val(isChatbotOpen) : val,
+          )
+        }
+        onAddEmptyGridPanel={handleAddEmptyGridPanel}
         portalContainer={mainContainerRef.current || undefined}
       />
 
