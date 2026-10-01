@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Undo2, Redo2, RotateCcw } from "lucide-react";
+import { Undo2, Redo2 } from "lucide-react";
 import { Button } from "@gaki/ui/button";
 import { useSceneStore } from "@/stores/scene.store";
 import { useShallow } from "zustand/react/shallow";
@@ -38,7 +38,7 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 disabled:opacity-30 transition-all duration-200"
+                    className="rounded-xl h-8 w-8 text-white/75 hover:text-white hover:bg-white/[0.08] disabled:opacity-25 disabled:hover:bg-transparent transition-all duration-150"
                     onClick={onUndo}
                     disabled={!canUndo}
                     aria-label="Undo last action"
@@ -52,25 +52,13 @@ export const SceneControls: React.FC<SceneControlsProps> = ({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 disabled:opacity-30 transition-all duration-200"
+                    className="rounded-xl h-8 w-8 text-white/75 hover:text-white hover:bg-white/[0.08] disabled:opacity-25 disabled:hover:bg-transparent transition-all duration-150"
                     onClick={onRedo}
                     disabled={!canRedo}
                     aria-label="Redo last action"
                     aria-disabled={!canRedo}
                 >
                     <Redo2 className="w-3.5 h-3.5" />
-                </Button>
-            </ShortcutTooltip>
-
-            <ShortcutTooltip label="Reset Scene" shortcut="resetScene">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-xl h-8 w-8 hover:bg-destructive/10 text-destructive hover:text-destructive transition-all duration-200"
-                    onClick={onResetScene}
-                    aria-label="Reset Scene to Default"
-                >
-                    <RotateCcw className="w-3.5 h-3.5" />
                 </Button>
             </ShortcutTooltip>
 

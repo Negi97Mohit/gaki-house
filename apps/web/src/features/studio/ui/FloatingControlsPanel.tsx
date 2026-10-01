@@ -246,22 +246,22 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (
       />
 
       {/* Header */}
-      <div className="relative z-10 flex-none flex items-center justify-between gap-3 pl-5 pr-3 pt-4 pb-3">
+      <div className="relative z-10 flex-none flex items-center justify-between gap-3 pl-5 pr-3 pt-4 pb-3 border-b border-white/[0.06]">
         <div className="min-w-0">
-          <h3 className="text-[15px] font-medium tracking-tight text-white/95 truncate leading-tight">
+          <h3 className="text-[12.5px] font-mono uppercase tracking-[0.14em] font-medium text-white/90 truncate leading-tight">
             {currentTab.label}
           </h3>
-          <p className="mt-0.5 text-[11px] text-white/45 truncate">
+          <p className="mt-0.5 text-[10.5px] font-normal tracking-wide text-white/45 truncate">
             {currentTab.description}
           </p>
         </div>
         <button
           onClick={closePanel}
-          className="w-7 h-7 shrink-0 flex items-center justify-center rounded-full text-white/45 hover:text-white hover:bg-white/[0.08] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+          className="w-7 h-7 shrink-0 flex items-center justify-center rounded-xl text-white/45 hover:text-white border border-transparent hover:border-white/15 hover:bg-white/[0.04] transition-all duration-150 focus-visible:outline-none"
           title="Close (Esc)"
           aria-label="Close panel"
         >
-          <X className="w-4 h-4" strokeWidth={1.75} />
+          <X className="w-3.5 h-3.5" strokeWidth={1.5} />
         </button>
       </div>
 
@@ -377,7 +377,7 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (
       {/* Dock */}
       <nav
         aria-label="Studio sections"
-        className="relative z-10 flex-none flex items-stretch overflow-x-auto select-none border-t border-white/[0.07] bg-black/30 px-1"
+        className="relative z-10 flex-none flex items-stretch overflow-x-auto select-none border-t border-white/[0.06] bg-[#08080c]/85 backdrop-blur-xl px-1 no-scrollbar"
       >
         {SECTIONS.map((section) => {
           const Icon = section.icon;
@@ -389,26 +389,30 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (
               aria-current={isActive ? "page" : undefined}
               title={section.description}
               className={cn(
-                "group relative flex-1 min-w-[58px] flex flex-col items-center gap-1 pt-2.5 pb-2 text-[10px] tracking-wide",
-                "transition-colors duration-150 focus-visible:outline-none focus-visible:bg-white/[0.05]",
-                isActive ? "text-white" : "text-white/40 hover:text-white/75",
+                "group relative flex-1 min-w-[56px] flex flex-col items-center gap-1.5 pt-2.5 pb-2 text-[9px] font-mono tracking-[0.14em] uppercase transition-all duration-150 focus-visible:outline-none",
+                isActive
+                  ? "text-white font-medium"
+                  : "text-white/40 hover:text-white/75",
               )}
             >
+              {/* Luminous thin line indicator - no solid blocks */}
               <span
                 aria-hidden
                 className={cn(
-                  "absolute top-0 left-3 right-3 h-px bg-primary transition-opacity duration-200",
-                  isActive ? "opacity-100" : "opacity-0",
+                  "absolute top-0 left-2.5 right-2.5 h-[1.5px] rounded-full transition-all duration-200",
+                  isActive
+                    ? "bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)] opacity-100"
+                    : "opacity-0 group-hover:opacity-30 bg-white/40",
                 )}
               />
               <Icon
                 className={cn(
-                  "w-[17px] h-[17px] transition-colors",
-                  isActive && "text-primary",
+                  "w-[15px] h-[15px] transition-colors",
+                  isActive ? "text-white" : "text-white/40 group-hover:text-white/75",
                 )}
-                strokeWidth={1.6}
+                strokeWidth={1.5}
               />
-              <span>{section.label}</span>
+              <span className="truncate max-w-[50px]">{section.label}</span>
             </button>
           );
         })}

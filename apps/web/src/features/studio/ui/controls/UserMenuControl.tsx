@@ -110,7 +110,7 @@ export const UserMenuControl: React.FC<UserMenuControlProps> = ({
       <Button
         variant="ghost"
         size="icon"
-        className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 text-primary hover:text-primary transition-all duration-200"
+        className="rounded-xl h-8 w-8 text-white/80 hover:text-white hover:bg-white/[0.08] active:scale-95 transition-all duration-150"
         onClick={onOpenAuth}
         data-floating-trigger
       >

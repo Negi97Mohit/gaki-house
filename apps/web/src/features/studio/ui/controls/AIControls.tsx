@@ -51,7 +51,7 @@ export const AIControls: React.FC<AIControlsProps> = ({
                     variant="ghost"
                     size="icon"
                     className={cn(
-                        "rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 transition-all duration-200",
+                        "rounded-xl h-8 w-8 text-foreground/80 dark:text-white/90 hover:text-foreground dark:hover:text-white hover:bg-foreground/10 dark:hover:bg-white/15 transition-all duration-200",
                         isChatbotOpen && "bg-primary/15 text-primary"
                     )}
                     aria-label="Open AI Assistant"

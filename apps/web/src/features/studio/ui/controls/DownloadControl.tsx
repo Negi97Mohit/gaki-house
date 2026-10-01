@@ -131,7 +131,7 @@ export const DownloadControl: React.FC<DownloadControlProps> = ({ isElectron }) 
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-xl h-8 w-8 hover:bg-foreground/5 dark:hover:bg-white/10 text-primary hover:text-primary transition-all duration-200"
+          className="rounded-xl h-8 w-8 hover:bg-foreground/10 dark:hover:bg-white/15 text-primary hover:text-primary transition-all duration-200"
           type="button"
           onClick={() => {
             console.log("[DownloadControl] Button strictly clicked!");
