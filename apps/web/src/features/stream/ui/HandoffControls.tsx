@@ -38,12 +38,12 @@ export const HandoffControls: React.FC = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-xl h-8 w-8 text-foreground/80 dark:text-white/90 hover:text-foreground dark:hover:text-white hover:bg-foreground/10 dark:hover:bg-white/15 transition-all duration-200 relative"
+            className="group relative rounded-xl h-8 w-8 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white border border-transparent hover:border-black/10 dark:hover:border-white/15 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] active:scale-95 transition-all duration-150 flex items-center justify-center"
             data-floating-trigger
           >
             <Cast className="w-3.5 h-3.5" />
             {otherDevices.length > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary" />
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
             )}
           </Button>
         </PopoverTrigger>

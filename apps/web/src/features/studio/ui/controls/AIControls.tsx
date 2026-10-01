@@ -51,13 +51,14 @@ export const AIControls: React.FC<AIControlsProps> = ({
                     variant="ghost"
                     size="icon"
                     className={cn(
-                        "rounded-xl h-8 w-8 text-foreground/80 dark:text-white/90 hover:text-foreground dark:hover:text-white hover:bg-foreground/10 dark:hover:bg-white/15 transition-all duration-200",
-                        isChatbotOpen && "bg-primary/15 text-primary"
+                        "group relative rounded-xl h-8 w-8 text-white/70 hover:text-white border border-transparent hover:border-white/15 hover:bg-white/[0.04] active:scale-95 transition-all duration-150 flex items-center justify-center",
+                        isChatbotOpen &&
+                          "border-white/30 text-white after:absolute after:bottom-1 after:left-2 after:right-2 after:h-[1.5px] after:bg-white after:rounded-full after:shadow-[0_0_6px_rgba(255,255,255,0.8)]"
                     )}
                     aria-label="Open AI Assistant"
                     onClick={handleAIClick}
                 >
-                    <Sparkles className="w-3.5 h-3.5 text-primary" />
+                    <Sparkles className="w-3.5 h-3.5 text-white/80 group-hover:text-white" />
                 </Button>
             </ShortcutTooltip>
             

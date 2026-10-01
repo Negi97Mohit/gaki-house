@@ -10,8 +10,6 @@ import {
   Monitor,
   Paintbrush,
   X,
-  Circle,
-  Square,
   Settings,
 } from "lucide-react";
 import { Button } from "@gaki/ui/button";
@@ -48,15 +46,6 @@ interface MediaControlsProps {
    */
   part?: "all" | "devices" | "broadcast";
 }
-
-const formatDuration = (seconds: number) => {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s
-    .toString()
-    .padStart(2, "0")}`;
-};
 
 export const MediaControls: React.FC<MediaControlsProps> = ({
   onStartStream,
@@ -123,21 +112,13 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
     isBroadcasting,
     isConnecting,
     streamStatus,
-    isRecording,
-    recordingDuration,
   } = useStreamStore(
     useShallow((state) => ({
       isBroadcasting: state.isBroadcasting,
       isConnecting: state.isConnecting,
       streamStatus: state.streamStatus,
-      isRecording: state.isRecording,
-      recordingDuration: state.recordingDuration,
     })),
   );
-
-  const handleRecordClick = () => {
-    onToggleRecord?.();
-  };
 
   // Helper to toggle device selection (select if new, deselect if same)
   const handleAudioSelect = (deviceId: string) => {
@@ -165,8 +146,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             className={cn(
               "flex items-center h-8 rounded-xl border transition-all duration-200",
               isAudioOn
-                ? "bg-transparent border-white/[0.1] hover:border-white/25 text-white/80 hover:text-white"
-                : "bg-transparent border-red-500/40 text-red-400 hover:border-red-500/60 shadow-[0_0_8px_-2px_rgba(239,68,68,0.35)]"
+                ? "bg-transparent border-black/[0.08] dark:border-white/[0.08] hover:border-black/20 dark:hover:border-white/20 text-zinc-700 dark:text-zinc-200 hover:text-zinc-950 dark:hover:text-white"
+                : "bg-red-500/[0.04] border-red-500/40 text-red-500 dark:text-red-400 hover:border-red-500/60 shadow-[0_0_8px_-2px_rgba(239,68,68,0.35)]"
             )}
             role="group"
             aria-label="Microphone Controls"
@@ -184,11 +165,11 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 {isAudioOn ? (
                   <Mic className="w-3.5 h-3.5" />
                 ) : (
-                  <MicOff className="w-3.5 h-3.5 text-red-400" />
+                  <MicOff className="w-3.5 h-3.5 text-red-500 dark:text-red-400" />
                 )}
               </button>
             </ShortcutTooltip>
-            <div className={cn("w-px h-3.5", isAudioOn ? "bg-white/[0.08]" : "bg-red-500/30")} />
+            <div className={cn("w-px h-3.5", isAudioOn ? "bg-black/[0.08] dark:bg-white/[0.08]" : "bg-red-500/30")} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -202,7 +183,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
               <DropdownMenuContent
                 side="top"
                 align="center"
-                className="bg-[#0f0f14]/95 backdrop-blur-2xl border border-white/[0.1] rounded-xl shadow-2xl max-h-64 overflow-y-auto text-white"
+                className="bg-white/95 dark:bg-[#0f0f14]/95 backdrop-blur-2xl border border-zinc-200 dark:border-white/[0.1] rounded-xl shadow-2xl max-h-64 overflow-y-auto text-zinc-900 dark:text-white"
                 style={{ zIndex: 2015 }}
               >
                 {audioDevices.length === 0 ? (
@@ -226,7 +207,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                     </DropdownMenuItem>
                   ))
                 )}
-                <DropdownMenuSeparator className="bg-white/[0.08]" />
+                <DropdownMenuSeparator className="bg-zinc-200 dark:bg-white/[0.08]" />
                 <DropdownMenuItem
                   onClick={() => setIsAudioSettingsOpen(true)}
                   className="text-xs"
@@ -243,8 +224,8 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             className={cn(
               "flex items-center h-8 rounded-xl border transition-all duration-200",
               isVideoOn
-                ? "bg-transparent border-white/[0.1] hover:border-white/25 text-white/80 hover:text-white"
-                : "bg-transparent border-red-500/40 text-red-400 hover:border-red-500/60 shadow-[0_0_8px_-2px_rgba(239,68,68,0.35)]"
+                ? "bg-transparent border-black/[0.08] dark:border-white/[0.08] hover:border-black/20 dark:hover:border-white/20 text-zinc-700 dark:text-zinc-200 hover:text-zinc-950 dark:hover:text-white"
+                : "bg-red-500/[0.04] border-red-500/40 text-red-500 dark:text-red-400 hover:border-red-500/60 shadow-[0_0_8px_-2px_rgba(239,68,68,0.35)]"
             )}
             role="group"
             aria-label="Camera Controls"
@@ -262,11 +243,11 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                 {isVideoOn ? (
                   <Webcam className="w-3.5 h-3.5" />
                 ) : (
-                  <VideoOff className="w-3.5 h-3.5 text-red-400" />
+                  <VideoOff className="w-3.5 h-3.5 text-red-500 dark:text-red-400" />
                 )}
               </button>
             </ShortcutTooltip>
-            <div className={cn("w-px h-3.5", isVideoOn ? "bg-white/[0.08]" : "bg-red-500/25")} />
+            <div className={cn("w-px h-3.5", isVideoOn ? "bg-black/[0.08] dark:bg-white/[0.08]" : "bg-red-500/30")} />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -280,7 +261,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
               <DropdownMenuContent
                 side="top"
                 align="center"
-                className="bg-[#0f0f14]/95 backdrop-blur-2xl border border-white/[0.1] rounded-xl shadow-2xl max-h-64 overflow-y-auto text-white"
+                className="bg-white/95 dark:bg-[#0f0f14]/95 backdrop-blur-2xl border border-zinc-200 dark:border-white/[0.1] rounded-xl shadow-2xl max-h-64 overflow-y-auto text-zinc-900 dark:text-white"
                 style={{ zIndex: 2015 }}
               >
                 {videoDevices.length === 0 ? (
@@ -304,7 +285,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                     </DropdownMenuItem>
                   ))
                 )}
-                <DropdownMenuSeparator className="bg-white/[0.08]" />
+                <DropdownMenuSeparator className="bg-zinc-200 dark:bg-white/[0.08]" />
                 <DropdownMenuItem
                   onClick={() => setIsVideoSettingsOpen(true)}
                   className="text-xs"
@@ -330,7 +311,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
                     "group relative rounded-xl h-8 w-8 transition-all duration-200",
                     screenShareMode !== "off"
                       ? "border border-primary/50 text-primary bg-transparent after:absolute after:bottom-1 after:left-2 after:right-2 after:h-[1.5px] after:bg-primary after:rounded-full after:shadow-[0_0_6px_rgba(var(--primary),0.8)]"
-                      : "text-white/70 hover:text-white border border-transparent hover:border-white/15 hover:bg-white/[0.04]",
+                      : "text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white border border-transparent hover:border-black/10 dark:hover:border-white/15 hover:bg-black/[0.04] dark:hover:bg-white/[0.04]",
                   )}
                 >
                   <ScreenShare className="h-3.5 w-3.5" />
@@ -340,7 +321,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
             <DropdownMenuContent
               side="top"
               align="center"
-              className="bg-[#0f0f14]/95 backdrop-blur-2xl border border-white/[0.1] rounded-xl shadow-2xl text-white"
+              className="bg-white/95 dark:bg-[#0f0f14]/95 backdrop-blur-2xl border border-zinc-200 dark:border-white/[0.1] rounded-xl shadow-2xl text-zinc-900 dark:text-white"
               style={{ zIndex: 2015 }}
             >
               <DropdownMenuItem
@@ -404,38 +385,7 @@ export const MediaControls: React.FC<MediaControlsProps> = ({
       )}
 
       {showBroadcast && (
-        <div className="flex items-center gap-1.5" role="group" aria-label="Broadcast Actions">
-          {/* Recording Control */}
-          <ShortcutTooltip
-            label={isRecording ? "Stop Recording" : "Start Recording"}
-          >
-            <Button
-              variant="ghost"
-              size={isRecording ? "sm" : "icon"}
-              onClick={handleRecordClick}
-              className={cn(
-                "group relative rounded-xl transition-all duration-200",
-                isRecording
-                  ? "h-8 px-2.5 gap-2 border border-red-500/40 bg-transparent text-red-400 after:absolute after:bottom-1 after:left-2.5 after:right-2.5 after:h-[1.5px] after:bg-red-500 after:rounded-full after:shadow-[0_0_6px_rgba(239,68,68,0.8)]"
-                  : "h-8 w-8 text-white/70 hover:text-white border border-transparent hover:border-white/15 hover:bg-white/[0.04]",
-              )}
-            >
-              {isRecording ? (
-                <>
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
-                  </span>
-                  <span className="font-mono text-[10px] tabular-nums text-red-300 font-medium tracking-wider">
-                    {formatDuration(recordingDuration)}
-                  </span>
-                </>
-              ) : (
-                <Circle className="w-3.5 h-3.5 text-red-400 stroke-[1.5]" />
-              )}
-            </Button>
-          </ShortcutTooltip>
-
+        <div className="flex items-center shrink-0" role="group" aria-label="Broadcast Actions">
           <StreamConfigurationModal
             onStartStream={onStartStream}
             onStopStream={onStopStream}

@@ -782,12 +782,12 @@ export const StreamConfigurationModal: React.FC<
         variant="ghost"
         size="sm"
         className={cn(
-          "group relative rounded-xl h-8 gap-2 px-3 text-[10.5px] font-mono tracking-[0.14em] uppercase font-medium transition-all duration-200 active:scale-95",
+          "group relative rounded-xl h-8 gap-1.5 px-2.5 text-[9px] font-mono tracking-[0.16em] uppercase font-normal transition-all duration-200 active:scale-95",
           isBroadcasting
             ? "border border-red-500/40 bg-red-500/[0.04] text-red-400 hover:border-red-500/60"
             : isConnecting
               ? "border border-amber-500/40 bg-amber-500/[0.04] text-amber-300 hover:border-amber-500/60"
-              : "border border-white/15 bg-white/[0.02] text-white/85 hover:border-white/30 hover:text-white hover:bg-white/[0.05]",
+              : "border border-white/10 bg-transparent text-white/70 hover:border-white/20 hover:text-white hover:bg-white/[0.03]",
         )}
         title={user ? "Stream Settings" : "Sign in to stream"}
         aria-label={
@@ -803,23 +803,23 @@ export const StreamConfigurationModal: React.FC<
         <span
           aria-hidden
           className={cn(
-            "absolute bottom-1 left-2.5 right-2.5 h-[1.5px] rounded-full transition-all duration-300",
+            "absolute bottom-0.5 left-2 right-2 h-[1px] rounded-full transition-all duration-300",
             isBroadcasting
               ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)]"
               : isConnecting
                 ? "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]"
-                : "bg-white/20 group-hover:bg-white/50",
+                : "bg-transparent group-hover:bg-white/30",
           )}
         />
         {isBroadcasting ? (
-          <span className="relative flex h-2 w-2">
+          <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
           </span>
         ) : isConnecting ? (
-          <Loader2 className="w-3 h-3 animate-spin text-amber-400" />
+          <Loader2 className="w-2.5 h-2.5 animate-spin text-amber-400" />
         ) : (
-          <Radio className="w-3 h-3 text-white/70" strokeWidth={1.75} />
+          <Radio className="w-2.5 h-2.5 opacity-60 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
         )}
         <span className="hidden sm:inline">
           {isBroadcasting ? "LIVE" : isConnecting ? "CONNECTING" : "GO LIVE"}

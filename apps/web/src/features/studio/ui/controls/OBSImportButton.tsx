@@ -90,7 +90,7 @@ export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-xl h-8 w-8 text-foreground/80 dark:text-white/90 hover:text-foreground dark:hover:text-white hover:bg-foreground/10 dark:hover:bg-white/15 transition-all duration-200"
+          className="rounded-xl h-8 w-8 text-white/70 hover:text-white border border-transparent hover:border-white/15 hover:bg-white/[0.04] active:scale-95 transition-all duration-150 flex items-center justify-center"
           onClick={() => {
             if (!inputRef.current) {
               console.error(

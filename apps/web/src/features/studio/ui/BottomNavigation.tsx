@@ -6,8 +6,6 @@ import { Button } from "@gaki/ui/button";
 import { cn } from "@gaki/core/lib/utils";
 import { ShortcutTooltip } from "@gaki/ui/shortcut-tooltip";
 import { MediaControls } from "./controls/MediaControls";
-import { SceneControls } from "./controls/SceneControls";
-import { AIControls } from "./controls/AIControls";
 import { UserMenuControl } from "./controls/UserMenuControl";
 import { useShallow } from "zustand/react/shallow";
 import { useUiStore, useMouseStore } from "@/stores/ui.store";
@@ -43,13 +41,13 @@ interface BottomNavigationProps {
   userUsername?: string;
 }
 
-// Minimal chic button styling for the floating dock
+// Minimal chic button styling for the floating dock (supports light & dark mode)
 const ISLAND_BTN =
-  "group relative rounded-xl h-8 w-8 text-white/70 hover:text-white border border-transparent hover:border-white/15 hover:bg-white/[0.04] active:scale-95 transition-all duration-150 flex items-center justify-center";
+  "group relative rounded-xl h-8 w-8 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white border border-transparent hover:border-black/10 dark:hover:border-white/15 hover:bg-black/[0.04] dark:hover:bg-white/[0.04] active:scale-95 transition-all duration-150 flex items-center justify-center";
 
 /** Sleek hairline divider between functional clusters */
 const Divider = () => (
-  <div className="w-px h-4 bg-white/[0.08] mx-0.5 shrink-0" aria-hidden="true" />
+  <div className="w-px h-4 bg-black/[0.08] dark:bg-white/[0.08] mx-0.5 shrink-0" aria-hidden="true" />
 );
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -124,11 +122,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
         "fixed left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-1.5rem)]",
         "bottom-[max(1.25rem,env(safe-area-inset-bottom))]",
         "rounded-2xl backdrop-blur-2xl",
-        "bg-[#0b0b10]/90 dark:bg-[#09090e]/95",
-        "border border-white/[0.08] dark:border-white/[0.1]",
-        "shadow-[0_20px_50px_-12px_rgba(0,0,0,0.7),0_1px_0_0_rgba(255,255,255,0.06)_inset]",
+        "bg-white/80 dark:bg-[#0c0c11]/85",
+        "border border-black/[0.08] dark:border-white/[0.08]",
+        "shadow-[0_16px_36px_-8px_rgba(0,0,0,0.08),0_1px_0_0_rgba(255,255,255,0.8)_inset] dark:shadow-[0_20px_48px_-10px_rgba(0,0,0,0.7),0_1px_0_0_rgba(255,255,255,0.06)_inset]",
         "transition-[opacity,transform] duration-300 ease-out",
-        "[&_button:focus-visible]:outline-none [&_button:focus-visible]:ring-1 [&_button:focus-visible]:ring-white/40",
+        "[&_button:focus-visible]:outline-none [&_button:focus-visible]:ring-1 [&_button:focus-visible]:ring-black/20 dark:[&_button:focus-visible]:ring-white/30",
         isVisible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-4 pointer-events-none",
@@ -138,7 +136,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       {/* Hairline highlight along top edge */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+        className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/20 to-transparent"
       />
       <div
         ref={scrollRef}
@@ -168,7 +166,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               className={cn(
                 ISLAND_BTN,
                 showSettings &&
-                  "border-white/30 text-white after:absolute after:bottom-1 after:left-2 after:right-2 after:h-[1.5px] after:bg-white after:rounded-full after:shadow-[0_0_6px_rgba(255,255,255,0.8)]",
+                  "border-black/20 dark:border-white/30 text-zinc-950 dark:text-white after:absolute after:bottom-1 after:left-2 after:right-2 after:h-[1.5px] after:bg-zinc-900 dark:after:bg-white after:rounded-full after:shadow-[0_0_4px_rgba(0,0,0,0.2)] dark:after:shadow-[0_0_6px_rgba(255,255,255,0.8)]",
               )}
               onClick={() => setShowSettings((prev) => !prev)}
               aria-label="Studio panel"
@@ -205,31 +203,15 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
         <Divider />
 
-        {/* Editing: Undo/Redo & Layout Controls Slot */}
-        <div className="flex items-center gap-0.5 shrink-0">
-          <SceneControls
-            onUndo={onUndo}
-            onRedo={onRedo}
-            onResetScene={onResetScene}
-            onImportOBSScenes={isElectron ? onImportOBSScenes : undefined}
-          />
-          <div
-            id="layout-controls-slot"
-            className="flex items-center gap-0.5 empty:hidden [&>button]:h-8 [&>button]:w-8 [&>button]:rounded-xl"
-          />
-        </div>
+        {/* Dynamic Layout Slot (if active) */}
+        <div
+          id="layout-controls-slot"
+          className="flex items-center gap-0.5 empty:hidden [&>button]:h-8 [&>button]:w-8 [&>button]:rounded-xl shrink-0"
+        />
 
-        <Divider />
-
-        {/* Tools: Handoff, AI Chatbot, Fullscreen */}
+        {/* Tools: Handoff, Fullscreen */}
         <div className="flex items-center gap-0.5 shrink-0">
           <HandoffControls />
-          <AIControls
-            onAiCommandSubmit={onAiCommandSubmit}
-            isAiProcessing={isAiProcessing}
-            hasAiPopoverAutoOpenedRef={hasAiPopoverAutoOpenedRef}
-            portalContainer={portalContainer}
-          />
           <ShortcutTooltip
             label={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
             shortcut="fullscreen"
