@@ -49,13 +49,8 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
   };
 
   return (
-    <div className="space-y-4 font-mono">
-      {/* Section Label */}
-      <div className="pb-3 border-b border-border">
-        <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
-          Select Style Preset
-        </span>
-      </div>
+    <div className="space-y-4">
+      <p className="text-[11px] text-white/45">Pick a caption style</p>
 
       {isHorizontal ? (
         <ScrollArea className="w-full">
@@ -71,11 +66,11 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
                   onClick={() => handlePresetSelect(preset)}
                   title={preset.name}
                   className={cn(
-                    "group relative overflow-hidden flex-shrink-0 w-36 border transition-all duration-150",
+                    "group relative overflow-hidden rounded-[10px] flex-shrink-0 w-36 border transition-colors duration-150",
                     // NEW: Selected styling
                     isSelected
-                      ? "border-primary ring-2 ring-primary ring-offset-1 ring-offset-background"
-                      : "border-border hover:border-primary"
+                      ? "border-primary"
+                      : "border-white/[0.08] hover:border-white/20",
                   )}
                 >
                   <img
@@ -86,18 +81,18 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/90 to-transparent p-2 pt-4">
                     <span
                       className={cn(
-                        "text-[10px] font-medium tracking-wide",
-                        isSelected ? "text-primary" : "text-foreground"
+                        "text-[11px]",
+                        isSelected ? "text-primary" : "text-foreground",
                       )}
                     >
-                      {preset.name.toUpperCase()}
+                      {preset.name}
                     </span>
                   </div>
                 </button>
               );
             })}
           </div>
-          <ScrollBar orientation="horizontal" className="h-1.5" />
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       ) : (
         <div className="grid grid-cols-2 gap-2">
@@ -112,11 +107,11 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
                 onClick={() => handlePresetSelect(preset)}
                 title={preset.name}
                 className={cn(
-                  "group relative overflow-hidden border transition-all duration-150",
+                  "group relative overflow-hidden rounded-[10px] border transition-colors duration-150",
                   // NEW: Selected styling
                   isSelected
-                    ? "border-primary ring-2 ring-primary ring-offset-1 ring-offset-background"
-                    : "border-border hover:border-primary"
+                    ? "border-primary"
+                    : "border-white/[0.08] hover:border-white/20",
                 )}
               >
                 <img
@@ -127,11 +122,11 @@ export const StaticPresetsPanel: React.FC<StaticPresetsPanelProps> = ({
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background via-background/90 to-transparent p-2 pt-4">
                   <span
                     className={cn(
-                      "text-[10px] font-medium tracking-wide",
-                      isSelected ? "text-primary" : "text-foreground"
+                      "text-[11px]",
+                      isSelected ? "text-primary" : "text-foreground",
                     )}
                   >
-                    {preset.name.toUpperCase()}
+                    {preset.name}
                   </span>
                 </div>
               </button>

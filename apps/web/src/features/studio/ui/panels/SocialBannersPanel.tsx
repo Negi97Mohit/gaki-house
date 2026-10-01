@@ -1,11 +1,5 @@
 import React, { useState, useEffect, Suspense } from "react";
-import {
-  Edit3,
-  Check,
-  Sparkles,
-  Layers,
-  User,
-} from "lucide-react";
+import { Edit3, Check, Sparkles, Layers, User } from "lucide-react";
 import { cn } from "@gaki/core/lib/utils";
 import { SocialBannerEditor } from "@/features/banners/ui/SocialBannerEditor";
 import {
@@ -28,7 +22,7 @@ interface SocialBannersPanelProps {
   onAddBanner: (design: SocialBannerDesign, data: SocialBannerData) => void;
   onAddAnimatedBanner?: (
     design: AnimatedBannerDesign,
-    data: SocialBannerData
+    data: SocialBannerData,
   ) => void;
 }
 
@@ -43,7 +37,8 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"static" | "animated">("static");
 
-  const { socialBanners: designs, animatedBanners: ANIMATED_BANNER_DESIGNS } = useSocialBanners();
+  const { socialBanners: designs, animatedBanners: ANIMATED_BANNER_DESIGNS } =
+    useSocialBanners();
 
   // Load user data from localStorage
   useEffect(() => {
@@ -95,7 +90,10 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
     if (onAddAnimatedBanner) {
       onAddAnimatedBanner(design, userData);
     } else {
-      const layoutMap: Record<string, "horizontal" | "vertical" | "compact" | "card"> = {
+      const layoutMap: Record<
+        string,
+        "horizontal" | "vertical" | "compact" | "card"
+      > = {
         frame: "horizontal",
         horizontal: "horizontal",
         vertical: "vertical",
@@ -130,78 +128,67 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
   return (
     <div className="space-y-3.5 w-full antialiased">
       {/* Profile Card */}
-      <div className="rounded-2xl p-3.5 bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-sm flex items-center justify-between">
+      <div className="rounded-xl p-3.5 sp-card flex items-center justify-between">
         {hasUserInfo ? (
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary shrink-0">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-primary shrink-0">
               <User className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <span className="text-[12px] font-semibold text-white truncate block">
+              <span className="text-[12px] font-medium text-white truncate block">
                 {userData.name}
               </span>
               <div className="flex items-center gap-1.5 mt-0.5">
                 {userData.links.slice(0, 4).map((link, i) => {
                   const Icon = getPlatformIcon(link.platform);
-                  return <Icon key={i} className="w-3 h-3 text-zinc-400" />;
+                  return <Icon key={i} className="w-3 h-3 text-white/45" />;
                 })}
               </div>
             </div>
           </div>
         ) : (
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-zinc-400">
+            <div className="w-8 h-8 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-white/45">
               <User className="w-4 h-4" />
             </div>
             <div>
-              <span className="text-[11px] font-semibold text-white">Creator Profile</span>
-              <p className="text-[9px] text-zinc-400">Configure your streamer name & socials</p>
+              <span className="text-[11px] font-medium text-white">
+                Creator Profile
+              </span>
+              <p className="text-[9px] text-white/45">
+                Configure your streamer name & socials
+              </p>
             </div>
           </div>
         )}
 
         <button
           onClick={() => setIsEditorOpen(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-medium bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-primary/50 text-white transition-all duration-150 shrink-0 shadow-sm"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-medium bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-primary/50 text-white transition-all duration-150 shrink-0 "
         >
           <Edit3 className="w-3 h-3 text-primary" />
           <span>{hasUserInfo ? "Edit Info" : "Setup Profile"}</span>
         </button>
       </div>
 
-      {/* Tabs: Static vs Animated Banners with Underline */}
-      <div className="flex items-center gap-1.5 pb-1">
-        <button
-          onClick={() => setActiveTab("static")}
-          className={cn(
-            "relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-150 border",
-            activeTab === "static"
-              ? "border-primary bg-primary/10 text-white ring-1 ring-primary/40 shadow-sm font-semibold"
-              : "border-white/10 text-zinc-300 hover:text-white bg-white/[0.02]"
-          )}
-        >
-          <Layers className="w-3.5 h-3.5" />
-          <span>Static Banners</span>
-          {activeTab === "static" && (
-            <span className="absolute -bottom-px left-3 right-3 h-[2px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab("animated")}
-          className={cn(
-            "relative flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-150 border",
-            activeTab === "animated"
-              ? "border-primary bg-primary/10 text-white ring-1 ring-primary/40 shadow-sm font-semibold"
-              : "border-white/10 text-zinc-300 hover:text-white bg-white/[0.02]"
-          )}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Animated Lower Thirds</span>
-          {activeTab === "animated" && (
-            <span className="absolute -bottom-px left-3 right-3 h-[2px] bg-primary rounded-full shadow-[0_0_6px_var(--primary)]" />
-          )}
-        </button>
+      {/* Static vs animated banners */}
+      <div className="sp-tabs">
+        {(
+          [
+            { id: "static", label: "Static", Icon: Layers },
+            { id: "animated", label: "Animated lower thirds", Icon: Sparkles },
+          ] as const
+        ).map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            onClick={() => setActiveTab(id)}
+            data-active={activeTab === id}
+            className="sp-tab focus-visible:outline-none"
+          >
+            <Icon className="w-3.5 h-3.5" strokeWidth={1.6} />
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Banners List */}
@@ -212,9 +199,10 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
               key={design.id}
               onClick={() => handleSelectDesign(design)}
               className={cn(
-                "group relative w-full rounded-2xl overflow-hidden text-left transition-all duration-150 border",
-                "bg-white/[0.03] border-white/10 hover:border-primary/60 shadow-sm",
-                recentlyAdded === design.id && "border-green-500 ring-2 ring-green-500/50"
+                "group relative w-full rounded-xl overflow-hidden text-left transition-all duration-150 border",
+                "bg-white/[0.03] border-white/10 hover:border-primary/60 ",
+                recentlyAdded === design.id &&
+                  "border-green-500 ring-2 ring-green-500/50",
               )}
             >
               <div className="relative w-full h-24 bg-black/40 flex items-center justify-center overflow-hidden">
@@ -249,7 +237,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                 </div>
 
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="bg-primary text-primary-foreground text-[10px] font-semibold px-3 py-1 rounded-full shadow-md">
+                  <div className="bg-primary text-primary-foreground text-[10px] font-medium px-3 py-1 rounded-full ">
                     Insert Banner
                   </div>
                 </div>
@@ -257,10 +245,10 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
 
               <div className="p-3 flex items-center justify-between border-t border-white/[0.06] bg-white/[0.01]">
                 <div className="min-w-0">
-                  <p className="text-[11px] font-semibold text-white truncate">
+                  <p className="text-[11px] font-medium text-white truncate">
                     {design.name}
                   </p>
-                  <p className="text-[9px] text-zinc-400 truncate mt-0.5">
+                  <p className="text-[9px] text-white/45 truncate mt-0.5">
                     {design.description}
                   </p>
                 </div>
@@ -280,16 +268,21 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
           {ANIMATED_BANNER_DESIGNS.map((design) => (
             <button
               key={design.id}
-              onClick={() => handleSelectAnimatedBanner(design as AnimatedBannerDesign)}
+              onClick={() =>
+                handleSelectAnimatedBanner(design as AnimatedBannerDesign)
+              }
               className={cn(
-                "group relative w-full rounded-2xl overflow-hidden text-left transition-all duration-150 border",
-                "bg-white/[0.03] border-white/10 hover:border-primary/60 shadow-sm",
-                recentlyAdded === design.id && "border-green-500 ring-2 ring-green-500/50"
+                "group relative w-full rounded-xl overflow-hidden text-left transition-all duration-150 border",
+                "bg-white/[0.03] border-white/10 hover:border-primary/60 ",
+                recentlyAdded === design.id &&
+                  "border-green-500 ring-2 ring-green-500/50",
               )}
             >
               <div className="relative w-full h-24 overflow-hidden bg-black/50">
                 <Suspense
-                  fallback={<div className="absolute inset-0 bg-white/[0.05] animate-pulse" />}
+                  fallback={
+                    <div className="absolute inset-0 bg-white/[0.05] animate-pulse" />
+                  }
                 >
                   <AnimatedBannerRenderer
                     design={design as AnimatedBannerDesign}
@@ -298,7 +291,7 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                 </Suspense>
 
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="bg-primary text-primary-foreground text-[10px] font-semibold px-3 py-1 rounded-full shadow-md">
+                  <div className="bg-primary text-primary-foreground text-[10px] font-medium px-3 py-1 rounded-full ">
                     Insert Animated
                   </div>
                 </div>
@@ -308,11 +301,11 @@ export const SocialBannersPanel: React.FC<SocialBannersPanelProps> = ({
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3 text-primary shrink-0" />
-                    <p className="text-[11px] font-semibold text-white truncate">
+                    <p className="text-[11px] font-medium text-white truncate">
                       {design.name}
                     </p>
                   </div>
-                  <p className="text-[9px] text-zinc-400 truncate mt-0.5">
+                  <p className="text-[9px] text-white/45 truncate mt-0.5">
                     {design.description}
                   </p>
                 </div>

@@ -34,13 +34,8 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
   };
 
   return (
-    <div className="space-y-4 font-mono">
-      {/* Section Label */}
-      <div className="pb-3 border-b border-border">
-        <span className="text-xs font-medium text-muted-foreground tracking-wide uppercase">
-          Select Animation
-        </span>
-      </div>
+    <div className="space-y-4">
+      <p className="text-[11px] text-white/45">Pick how captions animate</p>
 
       {isHorizontal ? (
         <ScrollArea className="w-full">
@@ -57,10 +52,10 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                 <div
                   key={styleDef.id}
                   className={cn(
-                    "relative border overflow-hidden transition-all duration-150 cursor-pointer group w-36 shrink-0",
+                    "relative border rounded-[10px] overflow-hidden transition-colors duration-150 cursor-pointer group w-36 shrink-0",
                     isSelected
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
+                      ? "border-primary"
+                      : "border-white/[0.08] hover:border-white/20",
                   )}
                   onClick={() => onDynamicStyleChange(styleDef.id)}
                 >
@@ -78,9 +73,9 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                         style={
                           isSelected
                             ? {
-                              ...previewBaseStyle,
-                              color: "hsl(var(--primary))",
-                            }
+                                ...previewBaseStyle,
+                                color: "hsl(var(--primary))",
+                              }
                             : previewBaseStyle
                         }
                       >
@@ -91,9 +86,9 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                           baseStyle={
                             isSelected
                               ? {
-                                ...previewBaseStyle,
-                                color: "hsl(var(--primary))",
-                              }
+                                  ...previewBaseStyle,
+                                  color: "hsl(var(--primary))",
+                                }
                               : previewBaseStyle
                           }
                         />
@@ -103,25 +98,20 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                     {/* Label */}
                     <div
                       className={cn(
-                        "px-2 py-1.5 text-center text-[10px] font-medium tracking-wide transition-colors",
+                        "px-2 py-2 text-center text-[11px] transition-colors",
                         isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-card text-muted-foreground group-hover:text-foreground"
+                          ? "text-primary"
+                          : "text-white/55 group-hover:text-white",
                       )}
                     >
-                      {styleDef.name.toUpperCase()}
+                      {styleDef.name}
                     </div>
                   </Label>
-
-                  {/* Active indicator */}
-                  {isSelected && (
-                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
-                  )}
                 </div>
               );
             })}
           </RadioGroup>
-          <ScrollBar orientation="horizontal" className="h-1.5" />
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       ) : (
         <RadioGroup
@@ -137,10 +127,10 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
               <div
                 key={styleDef.id}
                 className={cn(
-                  "relative border overflow-hidden transition-all duration-150 cursor-pointer group",
+                  "relative border rounded-[10px] overflow-hidden transition-colors duration-150 cursor-pointer group",
                   isSelected
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
+                    ? "border-primary"
+                    : "border-white/[0.08] hover:border-white/20",
                 )}
                 onClick={() => onDynamicStyleChange(styleDef.id)}
               >
@@ -158,9 +148,9 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                       style={
                         isSelected
                           ? {
-                            ...previewBaseStyle,
-                            color: "hsl(var(--primary))",
-                          }
+                              ...previewBaseStyle,
+                              color: "hsl(var(--primary))",
+                            }
                           : previewBaseStyle
                       }
                     >
@@ -171,9 +161,9 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                         baseStyle={
                           isSelected
                             ? {
-                              ...previewBaseStyle,
-                              color: "hsl(var(--primary))",
-                            }
+                                ...previewBaseStyle,
+                                color: "hsl(var(--primary))",
+                              }
                             : previewBaseStyle
                         }
                       />
@@ -183,20 +173,15 @@ export const DynamicStylesPanel: React.FC<DynamicStylesPanelProps> = ({
                   {/* Label */}
                   <div
                     className={cn(
-                      "px-2 py-1.5 text-center text-[10px] font-medium tracking-wide transition-colors",
+                      "px-2 py-2 text-center text-[11px] transition-colors",
                       isSelected
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-card text-muted-foreground group-hover:text-foreground"
+                        ? "text-primary"
+                        : "text-white/55 group-hover:text-white",
                     )}
                   >
-                    {styleDef.name.toUpperCase()}
+                    {styleDef.name}
                   </div>
                 </Label>
-
-                {/* Active indicator */}
-                {isSelected && (
-                  <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary" />
-                )}
               </div>
             );
           })}

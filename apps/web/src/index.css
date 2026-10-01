@@ -1688,28 +1688,182 @@
     background: hsl(var(--primary));
   }
 
-  /* Ultra-slim minimalist scrollbar for floating studio panel */
-  .slim-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  /* ───────────────────────────────────────────────────────────────
+     Studio floating panel design language
+     Everything below is scoped to .studio-panel so the rest of the
+     app keeps its normal scrollbars.
+     ─────────────────────────────────────────────────────────────── */
+  .studio-panel {
+    --sp-line: rgba(255, 255, 255, 0.07);
+    --sp-line-hi: rgba(255, 255, 255, 0.16);
+    --sp-text: rgba(255, 255, 255, 0.92);
+    --sp-dim: rgba(255, 255, 255, 0.56);
+    --sp-faint: rgba(255, 255, 255, 0.34);
+    --sp-thumb: rgba(255, 255, 255, 0.2);
   }
 
-  .slim-scrollbar::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
+  /* Thin-line scrollbar: a 2px thumb, no track, no arrows.
+     NOTE: Chromium 121+ ignores ::-webkit-scrollbar sizing whenever
+     scrollbar-width / scrollbar-color is set, so those two properties
+     are only applied where ::-webkit-scrollbar is unsupported (Firefox). */
+  .studio-panel ::-webkit-scrollbar,
+  .studio-panel::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
   }
-
-  .slim-scrollbar::-webkit-scrollbar-track {
+  .studio-panel ::-webkit-scrollbar-track,
+  .studio-panel ::-webkit-scrollbar-button,
+  .studio-panel ::-webkit-scrollbar-corner {
     background: transparent;
+    display: none;
   }
-
-  .slim-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 9999px;
+  .studio-panel ::-webkit-scrollbar-thumb {
+    background: var(--sp-thumb);
+    border: 0;
+    border-radius: 0;
+    transition: background 0.15s ease;
   }
-
-  .slim-scrollbar::-webkit-scrollbar-thumb:hover {
+  .studio-panel ::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--primary));
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    .studio-panel,
+    .studio-panel * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--sp-thumb) transparent;
+    }
+  }
+
+  /* Radix ScrollArea (packages/ui/scroll-area) draws its own bar. */
+  .studio-panel [data-scrollbar] {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+  .studio-panel [data-scrollbar][data-orientation="vertical"] {
+    width: 2px !important;
+  }
+  .studio-panel [data-scrollbar][data-orientation="horizontal"] {
+    height: 2px !important;
+  }
+  .studio-panel [data-scrollbar-thumb] {
+    border-radius: 0 !important;
+    background: var(--sp-thumb) !important;
+  }
+  .studio-panel [data-scrollbar-thumb]:hover {
+    background: hsl(var(--primary)) !important;
+  }
+
+  /* Legacy helper classes now resolve to the same thin line. */
+  .slim-scrollbar,
+  .sharp-scrollbar {
+    overscroll-behavior: contain;
+  }
+
+  /* Soft fade where scrolled content meets the header / dock. */
+  .sp-scroll {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 14px,
+      #000 calc(100% - 14px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 14px,
+      #000 calc(100% - 14px),
+      transparent 100%
+    );
+    overscroll-behavior: contain;
+  }
+
+  /* Flat, hairline surface used instead of glassy cards. */
+  .sp-card {
+    border: 1px solid var(--sp-line);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Underline tabs (sub-navigation inside a panel). */
+  .sp-tabs {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--sp-line);
+  }
+  .sp-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 0 9px;
+    font-size: 12px;
+    font-weight: 450;
+    white-space: nowrap;
+    color: var(--sp-dim);
+    transition: color 0.15s ease;
+  }
+  .sp-tab:hover {
+    color: var(--sp-text);
+  }
+  .sp-tab::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: hsl(var(--primary));
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+  }
+  .sp-tab[data-active="true"] {
+    color: var(--sp-text);
+  }
+  .sp-tab[data-active="true"]::after {
+    transform: scaleX(1);
+  }
+
+  /* Quiet filter chips. */
+  .sp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    white-space: nowrap;
+    color: var(--sp-dim);
+    transition:
+      color 0.15s ease,
+      background 0.15s ease;
+  }
+  .sp-chip:hover {
+    color: var(--sp-text);
+  }
+  .sp-chip[data-active="true"] {
+    color: var(--sp-text);
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Selectable tile: hairline border, the selected one gets a primary line. */
+  .sp-tile {
+    border: 1px solid var(--sp-line);
+    border-radius: 10px;
+    overflow: hidden;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+  .sp-tile:hover {
+    border-color: var(--sp-line-hi);
+  }
+  .sp-tile[data-active="true"] {
+    border-color: hsl(var(--primary));
   }
 
   /* Onboarding animation */
@@ -4269,7 +4423,10 @@ body.cursor-inactive * {
   min-width: 44px;
   min-height: 44px;
   border-radius: 12px;
-  transition: background-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease,
+    opacity 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 }

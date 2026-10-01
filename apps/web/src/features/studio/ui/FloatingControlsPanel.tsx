@@ -114,26 +114,71 @@ interface SectionMeta {
 }
 
 const SECTIONS: SectionMeta[] = [
-  { id: "canvas-designs", icon: LayoutGrid, label: "Designs", description: "Canvas layout & backgrounds" },
-  { id: "animation-library", icon: Library, label: "Animations", description: "Motion graphics & GSAP" },
-  { id: "text-presets", icon: Type, label: "Text", description: "Dynamic typography & captions" },
-  { id: "saved-overlays", icon: Sparkles, label: "Overlays", description: "Custom stream graphics" },
-  { id: "social-banners", icon: BadgeCheck, label: "Banners", description: "Social handles & lower thirds" },
-  { id: "file-vault", icon: Archive, label: "Vault", description: "Media assets & dropzone" },
-  { id: "tools", icon: Wrench, label: "Tools", description: "Canvas drawing & stickers" },
-  { id: "settings", icon: Settings, label: "Settings", description: "Audio DSP, hotkeys & themes" },
+  {
+    id: "canvas-designs",
+    icon: LayoutGrid,
+    label: "Designs",
+    description: "Canvas layout & backgrounds",
+  },
+  {
+    id: "animation-library",
+    icon: Library,
+    label: "Animations",
+    description: "Motion graphics & GSAP",
+  },
+  {
+    id: "text-presets",
+    icon: Type,
+    label: "Text",
+    description: "Dynamic typography & captions",
+  },
+  {
+    id: "saved-overlays",
+    icon: Sparkles,
+    label: "Overlays",
+    description: "Custom stream graphics",
+  },
+  {
+    id: "social-banners",
+    icon: BadgeCheck,
+    label: "Banners",
+    description: "Social handles & lower thirds",
+  },
+  {
+    id: "file-vault",
+    icon: Archive,
+    label: "Vault",
+    description: "Media assets & dropzone",
+  },
+  {
+    id: "tools",
+    icon: Wrench,
+    label: "Tools",
+    description: "Canvas drawing & stickers",
+  },
+  {
+    id: "settings",
+    icon: Settings,
+    label: "Settings",
+    description: "Audio DSP, hotkeys & themes",
+  },
 ];
 
-export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (props) => {
+export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (
+  props,
+) => {
   const { isOpen, onClose: closePanel } = props;
   const [activeSection, setActiveSection] = useState<string>("canvas-designs");
   const panelRef = useRef<HTMLDivElement>(null);
-  const scrollNavRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Active theme ambient colors for dynamic background glow
   const { theme } = useThemeStore();
   const activeThemeConfig = themes[theme] || themes.eventHorizon;
-  const ambientColors = activeThemeConfig.ambient?.colors || ["#ffb45e", "#c8643c"];
+  const ambientColors = activeThemeConfig.ambient?.colors || [
+    "#ffb45e",
+    "#c8643c",
+  ];
 
   // Click outside to close
   useEffect(() => {
@@ -164,77 +209,66 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (prop
     };
   }, [isOpen, closePanel]);
 
-  const currentTab = SECTIONS.find((s) => s.id === activeSection) || SECTIONS[0];
-  const CurrentIcon = currentTab.icon;
+  // Each section starts at the top
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top: 0 });
+  }, [activeSection]);
+
+  const currentTab =
+    SECTIONS.find((s) => s.id === activeSection) || SECTIONS[0];
 
   return (
     <div
       ref={panelRef}
       className={cn(
-        "fixed flex flex-col overflow-hidden antialiased",
-        "transition-all duration-300 ease-out",
-        // Adaptable responsive sizing
+        "studio-panel fixed flex flex-col overflow-hidden antialiased",
+        "transition-[opacity,transform] duration-200 ease-out",
         "w-[calc(100vw-2rem)] sm:w-[460px] md:w-[500px] lg:w-[540px]",
         "max-w-[calc(100vw-2rem)]",
         "h-[70vh] sm:h-[68vh] max-h-[640px]",
-        // Positioned neatly at bottom-left alongside the canvas
         "bottom-20 left-4 sm:left-6",
-        // Chic glass container
-        "rounded-3xl",
-        "backdrop-blur-3xl bg-zinc-950/90 dark:bg-[#0a0a0f]/95",
-        "border border-white/[0.14] dark:border-white/10",
-        "shadow-[0_24px_80px_rgba(0,0,0,0.7)]",
+        "rounded-2xl bg-[#0c0c10]/95 backdrop-blur-2xl",
+        "border border-white/[0.08]",
+        "shadow-[0_24px_60px_-12px_rgba(0,0,0,0.65)]",
         isOpen
-          ? "opacity-100 translate-y-0 pointer-events-auto visible scale-100"
-          : "opacity-0 translate-y-5 pointer-events-none invisible scale-[0.97]"
+          ? "opacity-100 translate-y-0 pointer-events-auto visible"
+          : "opacity-0 translate-y-3 pointer-events-none invisible",
       )}
-      style={{
-        zIndex: "var(--z-floating-panel)",
-      }}
+      style={{ zIndex: "var(--z-floating-panel)" }}
     >
-      {/* ─── Ambient Dynamic Theme Glow ─── */}
+      {/* Single, quiet wash of the active theme's ambient colour */}
       <div
-        className="pointer-events-none absolute -top-24 -right-24 w-60 h-60 rounded-full blur-[90px] opacity-20 transition-all duration-700"
-        style={{ background: ambientColors[0] || "var(--primary)" }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-24 -left-24 w-60 h-60 rounded-full blur-[90px] opacity-15 transition-all duration-700"
-        style={{ background: ambientColors[1] || ambientColors[0] || "var(--primary)" }}
+        aria-hidden
+        className="pointer-events-none absolute inset-0 transition-[background] duration-700"
+        style={{
+          background: `radial-gradient(90% 45% at 100% 0%, ${ambientColors[0] || "#ffb45e"}1a, transparent 70%)`,
+        }}
       />
 
-      {/* ─── Top Header: Minimal Elegant Title & Close ─── */}
-      <div className="relative z-10 flex-none px-4 py-3 border-b border-white/[0.08] dark:border-white/[0.06] bg-white/[0.02] flex items-center justify-between">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary shrink-0">
-            <CurrentIcon className="w-4 h-4" />
-          </div>
-          <div className="min-w-0">
-            <h3 className="text-[13px] font-semibold tracking-tight text-white truncate leading-tight">
-              {currentTab.label}
-            </h3>
-            <p className="text-[10px] text-zinc-400 font-normal tracking-wide truncate">
-              {currentTab.description}
-            </p>
-          </div>
+      {/* Header */}
+      <div className="relative z-10 flex-none flex items-center justify-between gap-3 pl-5 pr-3 pt-4 pb-3">
+        <div className="min-w-0">
+          <h3 className="text-[15px] font-medium tracking-tight text-white/95 truncate leading-tight">
+            {currentTab.label}
+          </h3>
+          <p className="mt-0.5 text-[11px] text-white/45 truncate">
+            {currentTab.description}
+          </p>
         </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono font-medium text-zinc-400 bg-white/[0.04] border border-white/10 rounded-md">
-            ESC
-          </kbd>
-          <button
-            onClick={closePanel}
-            className="w-7 h-7 flex items-center justify-center rounded-xl bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 text-zinc-400 hover:text-white transition-all duration-150"
-            title="Close panel (Esc)"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        <button
+          onClick={closePanel}
+          className="w-7 h-7 shrink-0 flex items-center justify-center rounded-full text-white/45 hover:text-white hover:bg-white/[0.08] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+          title="Close (Esc)"
+          aria-label="Close panel"
+        >
+          <X className="w-4 h-4" strokeWidth={1.75} />
+        </button>
       </div>
 
-      {/* ─── Middle: Slim-Scrollbar Content Area ─── */}
+      {/* Content: the scrollbar here is a 2px line inset from the rounded edge */}
       <div
-        className="relative z-10 flex-1 overflow-y-auto p-4 w-full min-h-0 slim-scrollbar"
+        ref={contentRef}
+        className="sp-scroll relative z-10 flex-1 min-h-0 w-full overflow-y-auto overflow-x-hidden pl-5 pr-4 py-4 mr-0.5"
       >
         {activeSection === "canvas-designs" && (
           <div className="animate-in fade-in-50 duration-200 w-full">
@@ -251,7 +285,9 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (prop
               blankCanvasColor={props.blankCanvasColor}
               onBlankCanvasColorChange={props.onBlankCanvasColorChange}
               onCanvasBackgroundUpload={props.onCanvasBackgroundUpload}
-              onCanvasBackgroundAssetSelect={props.onCanvasBackgroundAssetSelect || props.onAssetSelect}
+              onCanvasBackgroundAssetSelect={
+                props.onCanvasBackgroundAssetSelect || props.onAssetSelect
+              }
               canvasLayout={props.canvasLayout}
               onCanvasLayoutChange={props.onCanvasLayoutChange}
               activeSequenceId={props.activeSequenceId}
@@ -338,43 +374,45 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (prop
         )}
       </div>
 
-      {/* ─── Bottom: HORIZONTALLY SCROLLABLE Section List With Full Border Color + Thin Underline Indicator ─── */}
-      <div 
-        ref={scrollNavRef}
-        className="relative z-10 flex-none px-3 py-2.5 border-t border-white/[0.08] dark:border-white/[0.06] bg-black/60 dark:bg-black/70 backdrop-blur-xl"
+      {/* Dock */}
+      <nav
+        aria-label="Studio sections"
+        className="relative z-10 flex-none flex items-stretch overflow-x-auto select-none border-t border-white/[0.07] bg-black/30 px-1"
       >
-        <div 
-          className="flex items-center gap-1.5 overflow-x-auto pb-1 -mb-1 select-none slim-scrollbar"
-        >
-          {SECTIONS.map((section) => {
-            const Icon = section.icon;
-            const isActive = activeSection === section.id;
-
-            return (
-              <button
-                key={section.id}
-                onClick={() => setActiveSection(section.id)}
+        {SECTIONS.map((section) => {
+          const Icon = section.icon;
+          const isActive = activeSection === section.id;
+          return (
+            <button
+              key={section.id}
+              onClick={() => setActiveSection(section.id)}
+              aria-current={isActive ? "page" : undefined}
+              title={section.description}
+              className={cn(
+                "group relative flex-1 min-w-[58px] flex flex-col items-center gap-1 pt-2.5 pb-2 text-[10px] tracking-wide",
+                "transition-colors duration-150 focus-visible:outline-none focus-visible:bg-white/[0.05]",
+                isActive ? "text-white" : "text-white/40 hover:text-white/75",
+              )}
+            >
+              <span
+                aria-hidden
                 className={cn(
-                  "relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-[11px] font-medium tracking-wide whitespace-nowrap transition-all duration-200 shrink-0 border",
-                  isActive
-                    ? "border-primary bg-primary/10 text-white shadow-[0_0_15px_rgba(var(--primary-rgb),0.25)] ring-1 ring-primary/40 font-semibold"
-                    : "border-white/10 hover:border-white/25 text-zinc-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.06]"
+                  "absolute top-0 left-3 right-3 h-px bg-primary transition-opacity duration-200",
+                  isActive ? "opacity-100" : "opacity-0",
                 )}
-              >
-                <Icon className={cn("w-3.5 h-3.5 shrink-0 transition-colors", isActive ? "text-primary" : "text-zinc-400")} />
-                <span>
-                  {section.label}
-                </span>
-
-                {/* Elegant Thin Underline Indicator */}
-                {isActive && (
-                  <span className="absolute -bottom-px left-3 right-3 h-[2px] bg-primary rounded-full shadow-[0_0_8px_var(--primary)]" />
+              />
+              <Icon
+                className={cn(
+                  "w-[17px] h-[17px] transition-colors",
+                  isActive && "text-primary",
                 )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+                strokeWidth={1.6}
+              />
+              <span>{section.label}</span>
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 };

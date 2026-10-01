@@ -1,5 +1,5 @@
 // src/features/studio/ui/panels/FileVaultPanel.tsx
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState } from "react";
 import { VaultFile } from "@gaki/core/types/vault";
 import {
   Upload,
@@ -13,28 +13,28 @@ import {
   Eye,
   Archive,
   X,
-} from 'lucide-react';
+} from "lucide-react";
 import { cn } from "@gaki/core/lib/utils";
 import { zIndex } from "@/lib/zIndex";
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from "date-fns";
 
 interface FileVaultPanelProps {
   files: VaultFile[];
-  onAddFiles: (files: FileList | File[], source: VaultFile['source']) => void;
+  onAddFiles: (files: FileList | File[], source: VaultFile["source"]) => void;
   onRemoveFile: (id: string) => void;
   onClearVault: () => void;
 }
 
 const getFileIcon = (type: string) => {
-  if (type.startsWith('image/')) return Image;
-  if (type.startsWith('video/')) return Film;
-  if (type.startsWith('audio/')) return Music;
-  if (type.includes('zip') || type.includes('rar') || type.includes('tar'))
+  if (type.startsWith("image/")) return Image;
+  if (type.startsWith("video/")) return Film;
+  if (type.startsWith("audio/")) return Music;
+  if (type.includes("zip") || type.includes("rar") || type.includes("tar"))
     return Archive;
   if (
-    type.includes('text') ||
-    type.includes('pdf') ||
-    type.includes('document')
+    type.includes("text") ||
+    type.includes("pdf") ||
+    type.includes("document")
   )
     return FileText;
   return File;
@@ -74,24 +74,24 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
       setIsDragging(false);
 
       if (e.dataTransfer.files?.length > 0) {
-        onAddFiles(e.dataTransfer.files, 'drop');
+        onAddFiles(e.dataTransfer.files, "drop");
       }
     },
-    [onAddFiles]
+    [onAddFiles],
   );
 
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files?.length) {
-        onAddFiles(e.target.files, 'upload');
-        e.target.value = '';
+        onAddFiles(e.target.files, "upload");
+        e.target.value = "";
       }
     },
-    [onAddFiles]
+    [onAddFiles],
   );
 
   const handleDownload = useCallback((file: VaultFile) => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = file.dataUrl;
     link.download = file.name;
     link.click();
@@ -99,10 +99,10 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
 
   const canPreview = (file: VaultFile) => {
     return (
-      file.type.startsWith('image/') ||
-      file.type.startsWith('video/') ||
-      file.type.startsWith('audio/') ||
-      file.type === 'application/pdf'
+      file.type.startsWith("image/") ||
+      file.type.startsWith("video/") ||
+      file.type.startsWith("audio/") ||
+      file.type === "application/pdf"
     );
   };
 
@@ -114,11 +114,11 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={cn(
-          'relative border-2 border-dashed rounded-2xl p-5 transition-all duration-200 text-center',
-          'bg-white/[0.02] backdrop-blur-xl',
+          "relative border-2 border-dashed rounded-xl p-5 transition-all duration-200 text-center",
+          "bg-white/[0.02] ",
           isDragging
-            ? 'border-primary bg-primary/10 shadow-[0_0_24px_rgba(var(--primary-rgb),0.2)] scale-[1.01]'
-            : 'border-white/15 hover:border-primary/60 hover:bg-white/[0.04]'
+            ? "border-primary bg-primary/[0.06]"
+            : "border-white/15 hover:border-primary/60 hover:bg-white/[0.04]",
         )}
       >
         <input
@@ -128,18 +128,21 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
         <div className="flex flex-col items-center gap-1.5 pointer-events-none">
-          <div className="w-9 h-9 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary mb-0.5">
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center text-primary mb-0.5">
             <Upload
               className={cn(
-                'w-4 h-4 transition-transform duration-150',
-                isDragging ? 'scale-110 text-primary' : 'text-primary'
+                "w-4 h-4 transition-transform duration-150",
+                isDragging ? "scale-110 text-primary" : "text-primary",
               )}
             />
           </div>
-          <p className="text-[12px] font-semibold text-white tracking-tight">
-            Drop assets here <span className="font-normal text-zinc-400">or click to browse</span>
+          <p className="text-[12px] font-medium text-white tracking-tight">
+            Drop assets here{" "}
+            <span className="font-normal text-white/45">
+              or click to browse
+            </span>
           </p>
-          <p className="text-[10px] text-zinc-400 font-mono">
+          <p className="text-[10px] text-white/45 font-mono">
             Images, audio, video & docs • Ctrl+V to paste
           </p>
         </div>
@@ -148,8 +151,10 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
       {/* File List Header */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
-          <span className="text-[12px] font-semibold text-white tracking-tight">Stored Files</span>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-white/[0.05] border border-white/10 text-zinc-300">
+          <span className="text-[12px] font-medium text-white tracking-tight">
+            Stored Files
+          </span>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-white/[0.05] border border-white/10 text-white/65">
             {files.length}
           </span>
         </div>
@@ -166,22 +171,24 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
 
       {/* File List */}
       {files.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-8 text-center rounded-2xl bg-white/[0.02] border border-white/10">
-          <Archive className="w-8 h-8 mb-2 text-zinc-500" />
-          <p className="text-[12px] font-medium text-zinc-400">Vault is empty. Upload media to access during broadcast.</p>
+        <div className="flex flex-col items-center justify-center py-8 text-center rounded-xl bg-white/[0.02] border border-white/10">
+          <Archive className="w-8 h-8 mb-2 text-white/35" />
+          <p className="text-[12px] font-medium text-white/45">
+            Vault is empty. Upload media to access during broadcast.
+          </p>
         </div>
       ) : (
         <div className="space-y-2">
           {files.map((file) => {
             const Icon = getFileIcon(file.type);
-            const isImage = file.type.startsWith('image/');
+            const isImage = file.type.startsWith("image/");
 
             return (
               <div
                 key={file.id}
                 className={cn(
-                  "group flex items-center gap-3 p-3 rounded-2xl transition-all duration-150 border",
-                  "bg-white/[0.03] border-white/10 hover:border-primary/60 hover:bg-white/[0.06] shadow-sm"
+                  "group flex items-center gap-3 p-3 rounded-xl transition-all duration-150 border",
+                  "bg-white/[0.03] border-white/10 hover:border-primary/60 hover:bg-white/[0.06] ",
                 )}
               >
                 {/* Thumbnail or Icon */}
@@ -199,9 +206,11 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
 
                 {/* File Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-semibold text-white truncate">{file.name}</p>
-                  <p className="text-[9px] text-zinc-400 font-mono mt-0.5">
-                    {formatFileSize(file.size)} •{' '}
+                  <p className="text-[11px] font-medium text-white truncate">
+                    {file.name}
+                  </p>
+                  <p className="text-[9px] text-white/45 font-mono mt-0.5">
+                    {formatFileSize(file.size)} •{" "}
                     {formatDistanceToNow(file.createdAt, { addSuffix: true })}
                   </p>
                 </div>
@@ -246,7 +255,7 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
           onClick={() => setPreviewFile(null)}
         >
           <div
-            className="relative max-w-2xl max-h-[85vh] bg-zinc-950 border border-white/15 rounded-2xl overflow-hidden shadow-2xl p-4 flex flex-col items-center"
+            className="relative max-w-2xl max-h-[85vh] bg-zinc-950 border border-white/15 rounded-xl overflow-hidden p-4 flex flex-col items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -256,24 +265,26 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
               <X className="w-4 h-4" />
             </button>
 
-            <h3 className="text-sm font-semibold text-white mb-3 truncate max-w-[80%]">{previewFile.name}</h3>
+            <h3 className="text-sm font-medium text-white mb-3 truncate max-w-[80%]">
+              {previewFile.name}
+            </h3>
 
             <div className="overflow-auto max-h-[65vh] flex items-center justify-center rounded-xl bg-black/60 p-2 slim-scrollbar">
-              {previewFile.type.startsWith('image/') && (
+              {previewFile.type.startsWith("image/") && (
                 <img
                   src={previewFile.dataUrl}
                   alt={previewFile.name}
                   className="max-h-[60vh] max-w-full object-contain rounded-lg"
                 />
               )}
-              {previewFile.type.startsWith('video/') && (
+              {previewFile.type.startsWith("video/") && (
                 <video
                   src={previewFile.dataUrl}
                   controls
                   className="max-h-[60vh] max-w-full rounded-lg"
                 />
               )}
-              {previewFile.type.startsWith('audio/') && (
+              {previewFile.type.startsWith("audio/") && (
                 <audio src={previewFile.dataUrl} controls className="w-80" />
               )}
             </div>
