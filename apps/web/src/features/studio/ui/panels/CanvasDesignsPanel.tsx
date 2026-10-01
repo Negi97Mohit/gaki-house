@@ -40,6 +40,8 @@ import { cn } from "@gaki/core/lib/utils";
 import { AssetLibrary, AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { useLayoutTemplates } from "@/features/layouts/hooks/useLayoutTemplates";
 import { GridLayoutPreview } from "@/features/layouts/ui/GridLayoutPreview";
+import { CollapsibleSection } from "./CollapsibleSection";
+import { HScrollStrip } from "./HScrollStrip";
 
 export interface CanvasDesignsPanelProps {
   activePresetId?: string;
@@ -71,6 +73,12 @@ export interface CanvasDesignsPanelProps {
   isTextDepthEnabled?: boolean;
   onTextDepthToggle?: (enabled: boolean) => void;
 }
+
+// Tile widths are relative to the scroll strip (cqw = 1% of its width), clamped
+// so they stay readable in a narrow mobile panel and don't balloon in a wide one.
+// Roughly 4.5 layout tiles / 3.5 preset cards are visible, hinting at the scroll.
+const LAYOUT_TILE_WIDTH = "clamp(56px, 21cqw, 84px)";
+const PRESET_TILE_WIDTH = "clamp(84px, 28cqw, 124px)";
 
 // --- Lightweight CSS-only preset preview (no DOM layout rendering) ---
 const PresetCard = memo(
@@ -104,8 +112,9 @@ const PresetCard = memo(
     return (
       <button
         onClick={() => onSelect(preset)}
+        style={{ width: PRESET_TILE_WIDTH }}
         className={cn(
-          "group relative flex flex-col rounded-xl overflow-hidden cursor-pointer transition-colors duration-150",
+          "group relative flex flex-col shrink-0 snap-start rounded-xl overflow-hidden cursor-pointer transition-colors duration-150",
           "border bg-white/[0.02]",
           isSelected
             ? "border-primary"
@@ -143,7 +152,7 @@ const PresetCard = memo(
         </div>
 
         {/* Name + tag */}
-        <div className="flex items-center justify-between px-2 py-1.5">
+        <div className="flex items-center justify-between gap-1 px-1.5 py-1">
           <span className="text-[10px] font-medium text-white/65 truncate">
             {preset.name}
           </span>
@@ -380,6 +389,50 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
     (t) => t.category === "static",
   );
 
+  // One template tile, shared by the Dynamic and Static strips
+  const renderTemplate = (template: (typeof layoutTemplates)[number]) => {
+    const isActive = canvasLayout?.templateId === template.id;
+    return (
+      <button
+        key={template.id}
+        style={{ width: LAYOUT_TILE_WIDTH }}
+        className={cn(
+          "group relative flex flex-col items-center gap-1 p-1 shrink-0 snap-start cursor-pointer rounded-lg transition-all duration-150",
+          "border",
+          isActive
+            ? "bg-primary/8 border-primary/30"
+            : "border-transparent hover:bg-foreground/[0.03] hover:border-border/20",
+        )}
+        onClick={() => handleLayoutTemplateSelect(template.id)}
+      >
+        <div
+          className={cn(
+            "relative w-full overflow-hidden rounded",
+            isActive && "outline outline-1 outline-primary/60",
+          )}
+        >
+          <GridLayoutPreview
+            sections={template.sections}
+            templateId={template.id}
+          />
+        </div>
+        <span
+          className={cn(
+            "text-[9px] font-medium truncate w-full text-center",
+            isActive ? "text-primary" : "text-muted-foreground/60",
+          )}
+        >
+          {template.name}
+        </span>
+        {isActive && (
+          <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-primary/15 flex items-center justify-center">
+            <Check className="w-2 h-2 text-primary" />
+          </div>
+        )}
+      </button>
+    );
+  };
+
   return (
     <div className="flex flex-col gap-3">
       {/* ─── Section 1: Quick Actions Bar (from retired toolbar) ─── */}
@@ -493,16 +546,12 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
         )}
       </div>
 
-      {/* ─── Section 2: Grid Layouts (from retired toolbar) ─── */}
-      <div className="rounded-xl border border-white/[0.06] bg-foreground/[0.02] p-2.5 space-y-2.5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <Grid3x3 className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-[11px] font-medium text-muted-foreground">
-              Layouts
-            </span>
-          </div>
-          {canvasLayout && canvasLayout.templateId && (
+      {/* ─── Section 2: Grid Layouts (collapsible, horizontal strips) ─── */}
+      <CollapsibleSection
+        title="Layouts"
+        icon={Grid3x3}
+        actions={
+          canvasLayout && canvasLayout.templateId ? (
             <Button
               variant="ghost"
               size="sm"
@@ -511,9 +560,9 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
             >
               <X className="w-3 h-3" /> Clear
             </Button>
-          )}
-        </div>
-
+          ) : null
+        }
+      >
         {/* Solo view quick button */}
         <Button
           variant={
@@ -549,94 +598,14 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
             ))}
           </TabsList>
           <TabsContent value="dynamic" className="mt-3">
-            <div className="grid grid-cols-3 gap-1.5">
-              {dynamicTemplates.map((template) => {
-                const isActive = canvasLayout?.templateId === template.id;
-                return (
-                  <button
-                    key={template.id}
-                    className={cn(
-                      "group relative flex flex-col items-center gap-1 p-1.5 cursor-pointer rounded-lg transition-all duration-150",
-                      "border",
-                      isActive
-                        ? "bg-primary/8 border-primary/30  "
-                        : "border-transparent hover:bg-foreground/[0.03] hover:border-border/20",
-                    )}
-                    onClick={() => handleLayoutTemplateSelect(template.id)}
-                  >
-                    <div
-                      className={cn(
-                        "relative w-full overflow-hidden rounded",
-                        isActive && "outline outline-1 outline-primary/60",
-                      )}
-                    >
-                      <GridLayoutPreview
-                        sections={template.sections}
-                        templateId={template.id}
-                      />
-                    </div>
-                    <span
-                      className={cn(
-                        "text-[9px] font-medium truncate w-full text-center",
-                        isActive ? "text-primary" : "text-muted-foreground/60",
-                      )}
-                    >
-                      {template.name}
-                    </span>
-                    {isActive && (
-                      <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-primary/15 flex items-center justify-center">
-                        <Check className="w-2 h-2 text-primary" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <HScrollStrip trackClassName="gap-1.5 pb-1">
+              {dynamicTemplates.map(renderTemplate)}
+            </HScrollStrip>
           </TabsContent>
           <TabsContent value="static" className="mt-3">
-            <div className="grid grid-cols-3 gap-1.5">
-              {staticTemplates.map((template) => {
-                const isActive = canvasLayout?.templateId === template.id;
-                return (
-                  <button
-                    key={template.id}
-                    className={cn(
-                      "group relative flex flex-col items-center gap-1 p-1.5 cursor-pointer rounded-lg transition-all duration-150",
-                      "border",
-                      isActive
-                        ? "bg-primary/8 border-primary/30  "
-                        : "border-transparent hover:bg-foreground/[0.03] hover:border-border/20",
-                    )}
-                    onClick={() => handleLayoutTemplateSelect(template.id)}
-                  >
-                    <div
-                      className={cn(
-                        "relative w-full overflow-hidden rounded",
-                        isActive && "outline outline-1 outline-primary/60",
-                      )}
-                    >
-                      <GridLayoutPreview
-                        sections={template.sections}
-                        templateId={template.id}
-                      />
-                    </div>
-                    <span
-                      className={cn(
-                        "text-[9px] font-medium truncate w-full text-center",
-                        isActive ? "text-primary" : "text-muted-foreground/60",
-                      )}
-                    >
-                      {template.name}
-                    </span>
-                    {isActive && (
-                      <div className="absolute top-1 right-1 w-3 h-3 rounded-full bg-primary/15 flex items-center justify-center">
-                        <Check className="w-2 h-2 text-primary" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <HScrollStrip trackClassName="gap-1.5 pb-1">
+              {staticTemplates.map(renderTemplate)}
+            </HScrollStrip>
           </TabsContent>
         </Tabs>
 
@@ -697,70 +666,75 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
           </div>
         )}
 
-        {/* Sequence Order Controls */}
+        {/* Sequence Order Controls — nested, collapsed by default (can grow long) */}
         {canvasLayout?.sectionOrder && canvasLayout.sectionOrder.length > 0 && (
-          <div className="pt-1 border-t border-white/[0.06] space-y-1">
-            <div className="flex items-center gap-1.5">
-              <ListOrdered className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[10px] font-medium text-muted-foreground">
-                Sequence Order
-              </span>
-              <span className="ml-auto text-[9px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                {canvasLayout.sectionOrder.length}
-              </span>
-            </div>
-            {canvasLayout.sectionOrder.map((sectionId, index) => (
-              <div
-                key={sectionId}
-                className="flex items-center gap-1 h-6 px-1.5 rounded-md bg-foreground/[0.02] border border-white/[0.04]"
-              >
-                <span className="text-[9px] font-mono text-muted-foreground w-4">
-                  {index + 1}.
-                </span>
-                <span className="text-[10px] text-foreground/80 truncate flex-1">
-                  {sectionId}
-                </span>
-                {activeSequenceId === sectionId && (
-                  <span className="text-[8px] font-medium text-green-400 animate-pulse">
-                    LIVE
-                  </span>
-                )}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-4 w-4 rounded"
-                  onClick={() => moveSequenceItem(index, "up")}
-                  disabled={index === 0}
-                >
-                  <ArrowUp className="w-2.5 h-2.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-4 w-4 rounded"
-                  onClick={() => moveSequenceItem(index, "down")}
-                  disabled={index === canvasLayout.sectionOrder!.length - 1}
-                >
-                  <ArrowDown className="w-2.5 h-2.5" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-4 w-4 rounded text-muted-foreground hover:text-destructive"
-                  onClick={() => removeFromOrder(sectionId)}
-                >
-                  <X className="w-2.5 h-2.5" />
-                </Button>
+          <div className="border-t border-white/[0.06] pt-1">
+            <CollapsibleSection
+              variant="plain"
+              title="Sequence Order"
+              icon={ListOrdered}
+              badge={canvasLayout.sectionOrder.length}
+              defaultOpen={false}
+            >
+              <div className="space-y-1">
+                {canvasLayout.sectionOrder.map((sectionId, index) => (
+                  <div
+                    key={sectionId}
+                    className="flex items-center gap-1 h-6 px-1.5 rounded-md bg-foreground/[0.02] border border-white/[0.04]"
+                  >
+                    <span className="text-[9px] font-mono text-muted-foreground w-4">
+                      {index + 1}.
+                    </span>
+                    <span className="text-[10px] text-foreground/80 truncate flex-1">
+                      {sectionId}
+                    </span>
+                    {activeSequenceId === sectionId && (
+                      <span className="text-[8px] font-medium text-green-400 animate-pulse">
+                        LIVE
+                      </span>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-4 w-4 rounded"
+                      onClick={() => moveSequenceItem(index, "up")}
+                      disabled={index === 0}
+                    >
+                      <ArrowUp className="w-2.5 h-2.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-4 w-4 rounded"
+                      onClick={() => moveSequenceItem(index, "down")}
+                      disabled={index === canvasLayout.sectionOrder!.length - 1}
+                    >
+                      <ArrowDown className="w-2.5 h-2.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-4 w-4 rounded text-muted-foreground hover:text-destructive"
+                      onClick={() => removeFromOrder(sectionId)}
+                    >
+                      <X className="w-2.5 h-2.5" />
+                    </Button>
+                  </div>
+                ))}
               </div>
-            ))}
+            </CollapsibleSection>
           </div>
         )}
-      </div>
+      </CollapsibleSection>
 
-      {/* ─── Section 3: Canvas Presets ─── */}
-      <div className="flex flex-col gap-2">
+      {/* ─── Section 3: Canvas Presets (collapsible, horizontal strips) ─── */}
+      <CollapsibleSection
+        title="Presets"
+        icon={LayoutGrid}
+        badge={filteredCanvasPresets.length}
+      >
         {/* Category filter pills */}
-        <div className="-mx-1 flex items-center gap-0.5 overflow-x-auto pb-1.5">
+        <HScrollStrip trackClassName="items-center gap-0.5 pb-0.5">
           <button
             onClick={() => setSelectedCategory("all")}
             className={cn(
@@ -802,20 +776,28 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
             <Users className="w-3 h-3" />
             Community
           </button>
-        </div>
+        </HScrollStrip>
 
-        {/* Preset cards grid — lightweight CSS-only previews */}
-        <div className="grid grid-cols-2 gap-2">
-          {filteredCanvasPresets.map((preset) => (
-            <PresetCard
-              key={preset.id}
-              preset={preset}
-              isSelected={selectedPresetId === preset.id}
-              onSelect={handleSelect}
-            />
-          ))}
-        </div>
-      </div>
+        {/* Preset cards — one scrollable row, lightweight CSS-only previews */}
+        {filteredCanvasPresets.length > 0 ? (
+          <HScrollStrip trackClassName="gap-2 pb-1">
+            {filteredCanvasPresets.map((preset) => (
+              <PresetCard
+                key={preset.id}
+                preset={preset}
+                isSelected={selectedPresetId === preset.id}
+                onSelect={handleSelect}
+              />
+            ))}
+          </HScrollStrip>
+        ) : (
+          <p className="py-3 text-center text-[11px] text-white/35">
+            {isLoadingPublic && selectedCategory === "community"
+              ? "Loading…"
+              : "Nothing here yet"}
+          </p>
+        )}
+      </CollapsibleSection>
 
       {/* ─── Section 4: Save Preset ─── */}
       {onSaveCanvasPreset && (
