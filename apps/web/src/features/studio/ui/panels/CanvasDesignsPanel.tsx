@@ -156,7 +156,7 @@ const PresetCard = memo(
           <span className="text-[10px] font-medium text-white/65 truncate">
             {preset.name}
           </span>
-          <span className="text-[9px] text-white/35 font-mono uppercase tracking-wider">
+          <span className="text-[9px] text-white/35 font-sans uppercase tracking-wider">
             {preset.styleTags?.[0] || ""}
           </span>
         </div>
@@ -682,7 +682,7 @@ export const CanvasDesignsPanel: React.FC<CanvasDesignsPanelProps> = ({
                     key={sectionId}
                     className="flex items-center gap-1 h-6 px-1.5 rounded-md bg-foreground/[0.02] border border-white/[0.04]"
                   >
-                    <span className="text-[9px] font-mono text-muted-foreground w-4">
+                    <span className="text-[9px] font-sans text-muted-foreground w-4">
                       {index + 1}.
                     </span>
                     <span className="text-[10px] text-foreground/80 truncate flex-1">

@@ -49,7 +49,7 @@ export const ToolsPanel: React.FC<ToolsPanelProps> = ({
                 <Search className="w-3.5 h-3.5" strokeWidth={1.75} />
                 Search assets
               </span>
-              <kbd className="text-[10px] font-mono text-white/35">L</kbd>
+              <kbd className="text-[10px] font-sans text-white/35">L</kbd>
             </button>
           )}
         />

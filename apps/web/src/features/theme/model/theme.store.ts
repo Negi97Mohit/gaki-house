@@ -175,7 +175,7 @@ export const APP_FONTS = [
 
 export type AppFont = (typeof APP_FONTS)[number];
 
-export const DEFAULT_THEME: ThemeName = "eventHorizon";
+export const DEFAULT_THEME: ThemeName = "phyllotaxis";
 
 export const themes: Record<ThemeName, ThemeConfig> = {
   eventHorizon: {
@@ -623,7 +623,7 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: "app-theme",
-      version: 2,
+      version: 3,
       // old saved theme names (iceQueen etc.) no longer exist
       migrate: (persisted: any) => ({
         ...persisted,

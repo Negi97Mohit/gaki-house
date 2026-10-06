@@ -142,7 +142,7 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
               or click to browse
             </span>
           </p>
-          <p className="text-[10px] text-white/45 font-mono">
+          <p className="text-[10px] text-white/45 font-sans">
             Images, audio, video & docs • Ctrl+V to paste
           </p>
         </div>
@@ -154,7 +154,7 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
           <span className="text-[12px] font-medium text-white tracking-tight">
             Stored Files
           </span>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-white/[0.05] border border-white/10 text-white/65">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-sans font-medium bg-white/[0.05] border border-white/10 text-white/65">
             {files.length}
           </span>
         </div>
@@ -209,7 +209,7 @@ export const FileVaultPanel: React.FC<FileVaultPanelProps> = ({
                   <p className="text-[11px] font-medium text-white truncate">
                     {file.name}
                   </p>
-                  <p className="text-[9px] text-white/45 font-mono mt-0.5">
+                  <p className="text-[9px] text-white/45 font-sans mt-0.5">
                     {formatFileSize(file.size)} •{" "}
                     {formatDistanceToNow(file.createdAt, { addSuffix: true })}
                   </p>

@@ -78,7 +78,7 @@ export const BroadcastStatsPanel: React.FC = () => {
           "flex items-center gap-3 px-3 py-1.5 rounded-lg",
           "bg-background/30 backdrop-blur-md",
           "border border-border/10",
-          "text-[10px] tracking-wide font-mono"
+          "text-[10px] tracking-wide font-sans"
         )}
       >
         {/* Status dot */}

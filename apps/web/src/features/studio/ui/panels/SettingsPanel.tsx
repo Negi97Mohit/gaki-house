@@ -219,7 +219,7 @@ export function SettingsPanel() {
                   </p>
                 </div>
               </div>
-              <span className="text-[11px] font-mono font-medium text-primary px-2.5 py-0.5 rounded-lg bg-primary/10 border border-primary/25">
+              <span className="text-[11px] font-sans font-medium text-primary px-2.5 py-0.5 rounded-lg bg-primary/10 border border-primary/25">
                 {zoomLevel}%
               </span>
             </div>
@@ -241,7 +241,7 @@ export function SettingsPanel() {
                   key={preset}
                   onClick={() => setZoomLevel(preset)}
                   className={cn(
-                    "flex-1 py-1 rounded-lg text-[10px] font-mono transition-all border text-center font-medium",
+                    "flex-1 py-1 rounded-lg text-[10px] font-sans transition-all border text-center font-medium",
                     zoomLevel === preset
                       ? "border-primary text-primary"
                       : "border-white/10 text-white/45 hover:text-white bg-white/[0.02] hover:bg-white/[0.05]",
@@ -304,7 +304,7 @@ export function SettingsPanel() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <kbd className="px-2 py-0.5 text-[9px] font-mono font-medium bg-white/[0.06] border border-white/15 rounded text-white">
+                  <kbd className="px-2 py-0.5 text-[9px] font-sans font-medium bg-white/[0.06] border border-white/15 rounded text-white">
                     F
                   </kbd>
                   <Switch
@@ -365,7 +365,7 @@ export function SettingsPanel() {
                 <span className="text-white/65 font-medium">
                   Input Gain Level
                 </span>
-                <span className="font-mono text-primary font-medium text-[11px]">
+                <span className="font-sans text-primary font-medium text-[11px]">
                   {micLevel}%
                 </span>
               </div>
@@ -435,7 +435,7 @@ export function SettingsPanel() {
                   )}
                   Master Volume
                 </span>
-                <span className="font-mono text-primary font-medium text-[11px]">
+                <span className="font-sans text-primary font-medium text-[11px]">
                   {masterVolume}%
                 </span>
               </div>
@@ -558,7 +558,7 @@ export function SettingsPanel() {
                             {keys.map((k, i) => (
                               <kbd
                                 key={i}
-                                className="inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 bg-white/[0.06] border border-white/15 rounded text-[9px] font-mono font-medium text-white "
+                                className="inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 bg-white/[0.06] border border-white/15 rounded text-[9px] font-sans font-medium text-white "
                               >
                                 {k}
                               </kbd>
@@ -585,7 +585,7 @@ export function SettingsPanel() {
                 alt="GAKI Studio"
                 className="w-16 h-16 rounded-xl border-2 border-white/20"
               />
-              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 text-[9px] font-mono font-medium bg-primary text-primary-foreground rounded-full ">
+              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 text-[9px] font-sans font-medium bg-primary text-primary-foreground rounded-full ">
                 v1.0
               </span>
             </div>

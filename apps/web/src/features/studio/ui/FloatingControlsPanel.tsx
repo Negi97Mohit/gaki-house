@@ -248,10 +248,10 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (
       {/* Header */}
       <div className="relative z-10 flex-none flex items-center justify-between gap-3 pl-5 pr-3 pt-4 pb-3 border-b border-white/[0.06]">
         <div className="min-w-0">
-          <h3 className="text-[12.5px] font-mono uppercase tracking-[0.14em] font-medium text-white/90 truncate leading-tight">
+          <h3 className="text-[12.5px] font-sans font-light tracking-wide text-white/90 truncate leading-tight">
             {currentTab.label}
           </h3>
-          <p className="mt-0.5 text-[10.5px] font-normal tracking-wide text-white/45 truncate">
+          <p className="mt-0.5 text-[10.5px] font-sans font-light tracking-normal text-white/40 truncate">
             {currentTab.description}
           </p>
         </div>
@@ -387,19 +387,20 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (
               key={section.id}
               onClick={() => setActiveSection(section.id)}
               aria-current={isActive ? "page" : undefined}
-              title={section.description}
+              aria-label={section.label}
+              title={`${section.label} — ${section.description}`}
               className={cn(
-                "group relative flex-1 min-w-[56px] flex flex-col items-center gap-1.5 pt-2.5 pb-2 text-[9px] font-mono tracking-[0.14em] uppercase transition-all duration-150 focus-visible:outline-none",
+                "group relative flex-1 min-w-[36px] flex items-center justify-center py-2.5 transition-all duration-150 focus-visible:outline-none",
                 isActive
-                  ? "text-white font-medium"
-                  : "text-white/40 hover:text-white/75",
+                  ? "text-white"
+                  : "text-white/35 hover:text-white/70",
               )}
             >
-              {/* Luminous thin line indicator - no solid blocks */}
+              {/* Luminous thin line indicator */}
               <span
                 aria-hidden
                 className={cn(
-                  "absolute top-0 left-2.5 right-2.5 h-[1.5px] rounded-full transition-all duration-200",
+                  "absolute top-0 left-3 right-3 h-[1.5px] rounded-full transition-all duration-200",
                   isActive
                     ? "bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)] opacity-100"
                     : "opacity-0 group-hover:opacity-30 bg-white/40",
@@ -407,12 +408,11 @@ export const FloatingControlsPanel: React.FC<FloatingControlsPanelProps> = (
               />
               <Icon
                 className={cn(
-                  "w-[15px] h-[15px] transition-colors",
-                  isActive ? "text-white" : "text-white/40 group-hover:text-white/75",
+                  "w-[14px] h-[14px] transition-colors",
+                  isActive ? "text-white" : "text-white/35 group-hover:text-white/70",
                 )}
-                strokeWidth={1.5}
+                strokeWidth={1.4}
               />
-              <span className="truncate max-w-[50px]">{section.label}</span>
             </button>
           );
         })}
