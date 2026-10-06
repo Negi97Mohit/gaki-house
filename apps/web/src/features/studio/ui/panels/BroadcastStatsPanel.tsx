@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { cn } from "@gaki/core/lib/utils";
 import { zIndex } from "@/lib/zIndex";
+import { useMouseStore } from "@/stores/ui.store";
 
 interface TelemetryData {
   fps: number;
@@ -15,11 +16,11 @@ export const BroadcastStatsPanel: React.FC = () => {
     memoryMb: 0,
     isFailed: false,
   });
-  const [isHidden, setIsHidden] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const isMouseActive = useMouseStore((state) => state.isMouseActive);
 
   useEffect(() => {
-    const handleTelemetry = (e: any) => {
+    const handleTelemetry = (e: Event) => {
       setTelemetry((e as CustomEvent<TelemetryData>).detail);
     };
     const handleFailure = () => {
@@ -33,88 +34,77 @@ export const BroadcastStatsPanel: React.FC = () => {
     };
   }, []);
 
-  // Corner hover zone detection
-  useEffect(() => {
-    if (!isHidden) return;
-    const handleMouseMove = (e: MouseEvent) => {
-      const threshold = 80;
-      const inCorner =
-        window.innerWidth - e.clientX <= threshold &&
-        window.innerHeight - e.clientY <= threshold;
-      setIsHovered(inCorner);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [isHidden]);
-
   const getFpsColor = () => {
     if (telemetry.isFailed || telemetry.fps < 20) return "text-red-400";
-    if (telemetry.fps < 45) return "text-yellow-400";
+    if (telemetry.fps < 45) return "text-amber-400";
     return "text-emerald-400";
   };
 
   const getDotColor = () => {
     if (telemetry.isFailed || telemetry.fps < 20) return "bg-red-400 animate-pulse";
-    if (telemetry.fps < 45) return "bg-yellow-400";
+    if (telemetry.fps < 45) return "bg-amber-400";
     return "bg-emerald-400";
   };
 
-  const visible = !isHidden || isHovered;
+  // Sync with the same isMouseActive that controls BottomNavigation & FloatingControlsPanel.
+  // If user manually dismissed, stay hidden regardless.
+  const visible = !isDismissed && isMouseActive;
 
   return (
     <div
       className={cn(
-        "fixed bottom-20 right-3 select-none transition-all duration-300 ease-out",
+        "fixed select-none transition-all duration-300 ease-out",
+        // Responsive positioning: sits above the bottom nav dock
+        "bottom-[calc(max(1.25rem,env(safe-area-inset-bottom))+3.5rem)] right-3",
+        "sm:right-4",
         visible
           ? "opacity-100 translate-y-0 scale-100"
           : "opacity-0 translate-y-2 scale-95 pointer-events-none"
       )}
       style={{ zIndex: zIndex.broadcastStats }}
-      onMouseEnter={() => isHidden && setIsHovered(true)}
-      onMouseLeave={() => isHidden && setIsHovered(false)}
     >
       <div
         className={cn(
-          "flex items-center gap-3 px-3 py-1.5 rounded-lg",
-          "bg-background/30 backdrop-blur-md",
-          "border border-border/10",
-          "text-[10px] tracking-wide font-sans"
+          "flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3 py-1.5 rounded-xl",
+          // Solid dark background for guaranteed contrast on any canvas content
+          "bg-zinc-900/95 dark:bg-zinc-950/95 backdrop-blur-lg",
+          "border border-white/[0.08]",
+          "shadow-[0_4px_16px_-2px_rgba(0,0,0,0.4)]",
+          "text-[10px] sm:text-[11px] tracking-wide font-sans"
         )}
       >
         {/* Status dot */}
-        <div className={cn("w-1.5 h-1.5 rounded-full", getDotColor())} />
+        <div className={cn("w-1.5 h-1.5 rounded-full shrink-0", getDotColor())} />
 
         {/* FPS */}
-        <span className={cn("tabular-nums", getFpsColor())}>
+        <span className={cn("tabular-nums font-medium", getFpsColor())}>
           {telemetry.isFailed ? "FAIL" : `${telemetry.fps}`}
         </span>
 
         {/* Separator */}
-        <span className="text-muted-foreground/30">·</span>
+        <span className="text-zinc-500" aria-hidden>·</span>
 
         {/* Memory */}
-        <span className="text-muted-foreground/60 tabular-nums">
+        <span className="text-zinc-400 tabular-nums">
           {telemetry.memoryMb.toFixed(0)}M
         </span>
 
         {/* Failure message */}
         {telemetry.isFailed && (
           <>
-            <span className="text-muted-foreground/30">·</span>
-            <span className="text-red-400/80 text-[9px] uppercase tracking-widest">
+            <span className="text-zinc-500" aria-hidden>·</span>
+            <span className="text-red-400 text-[9px] sm:text-[10px] uppercase tracking-widest font-medium">
               restart kernel
             </span>
           </>
         )}
 
-        {/* Hide button */}
+        {/* Dismiss button */}
         <button
-          onClick={() => {
-            setIsHidden((prev) => !prev);
-            setIsHovered(false);
-          }}
-          className="ml-1 p-0.5 rounded text-muted-foreground/40 hover:text-foreground/60 transition-colors"
-          aria-label={isHidden ? "Pin stats panel" : "Hide stats panel"}
+          onClick={() => setIsDismissed(true)}
+          className="ml-0.5 p-0.5 rounded text-zinc-500 hover:text-zinc-200 transition-colors"
+          aria-label="Dismiss stats panel"
+          title="Dismiss"
         >
           <X className="w-2.5 h-2.5" />
         </button>

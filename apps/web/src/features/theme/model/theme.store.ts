@@ -4,11 +4,36 @@ import { persist } from "zustand/middleware";
 export type ThemeName =
   | "eventHorizon"
   | "silkFilaments"
+  | "turingBloom"
+  | "radialSpectrum"
+  | "liquidMetaballs"
+  | "torusKnot"
+  | "shapeMorph"
   | "orbitalGlobe"
   | "hypercube"
   | "halftoneTide"
   | "harmonograph"
   | "flowField"
+  | "chatCascade"
+  | "viewerPulse"
+  | "heartsFloat"
+  | "hypeTrain"
+  | "splitScreen"
+  | "pixelInvaders"
+  | "radarSweep"
+  | "checkerRun"
+  | "lootPillars"
+  | "trackLanes"
+  | "bounceArcs"
+  | "floodlights"
+  | "runway"
+  | "satinDrape"
+  | "stitchPattern"
+  | "archLight"
+  | "isoBlocks"
+  | "blueprintDraft"
+  | "lidarScan"
+  | "goldenSpiral"
   | "plexusDrift"
   | "spectralCurtains"
   | "prismBeams"
@@ -567,6 +592,318 @@ export const themes: Record<ThemeName, ThemeConfig> = {
     },
     accent: "#f472b6",
     glow: "rgba(244, 114, 182, 0.3)",
+  },
+  chatCascade: {
+    name: "Chat Cascade",
+    description: "Anonymous chat bubbles drifting up the screen",
+    colors: { light: "#772ce8", dark: "#a970ff" },
+    ambient: {
+      type: "chatCascade",
+      colors: ["#a970ff", "#c4a1ff", "#772ce8", "#e5d4ff"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#a970ff",
+    glow: "rgba(169, 112, 255, 0.3)",
+  },
+  viewerPulse: {
+    name: "Viewer Pulse",
+    description: "A live viewer chart with raid spikes",
+    colors: { light: "#2fbf0b", dark: "#53fc18" },
+    ambient: {
+      type: "viewerPulse",
+      colors: ["#53fc18", "#2fbf0b", "#d9ffc7"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#53fc18",
+    glow: "rgba(83, 252, 24, 0.3)",
+  },
+  heartsFloat: {
+    name: "Hearts Live",
+    description: "Reactions floating up from the corner",
+    colors: { light: "#dd2a7b", dark: "#f06aa5" },
+    ambient: {
+      type: "heartsFloat",
+      colors: ["#f58529", "#dd2a7b", "#8134af", "#feda77"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#dd2a7b",
+    glow: "rgba(221, 42, 123, 0.3)",
+  },
+  hypeTrain: {
+    name: "Hype Train",
+    description: "Light capsules racing down slanted rails",
+    colors: { light: "#e60026", dark: "#ff4d6d" },
+    ambient: {
+      type: "hypeTrain",
+      colors: ["#ff0033", "#ff6b6b", "#ffffff", "#ffd166"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#ff0033",
+    glow: "rgba(255, 0, 51, 0.3)",
+  },
+  pixelInvaders: {
+    name: "Pixel Invaders",
+    description: "A marching 8-bit formation under fire",
+    colors: { light: "#16a34a", dark: "#39ff14" },
+    ambient: {
+      type: "pixelInvaders",
+      colors: ["#39ff14", "#00e5ff", "#ff2bd6", "#ffe600"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#39ff14",
+    glow: "rgba(57, 255, 20, 0.3)",
+  },
+  radarSweep: {
+    name: "Radar Sweep",
+    description: "Tactical HUD radar with decaying blips",
+    colors: { light: "#0f9d6a", dark: "#3dffa2" },
+    ambient: {
+      type: "radarSweep",
+      colors: ["#3dffa2", "#9dffd1", "#1aa86b"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#3dffa2",
+    glow: "rgba(61, 255, 162, 0.3)",
+  },
+  checkerRun: {
+    name: "Checkered Flag",
+    description: "A racing floor rushing toward you",
+    colors: { light: "#e11d48", dark: "#ff3b30" },
+    ambient: {
+      type: "checkerRun",
+      colors: ["#f4f4f5", "#a1a1aa", "#ff3b30"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#ff3b30",
+    glow: "rgba(255, 59, 48, 0.3)",
+  },
+  lootPillars: {
+    name: "Loot Drop",
+    description: "Rarity-colored light pillars with rising shards",
+    colors: { light: "#7c3aed", dark: "#a855f7" },
+    ambient: {
+      type: "lootPillars",
+      colors: ["#9ca3af", "#22c55e", "#3b82f6", "#a855f7", "#f59e0b"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#f59e0b",
+    glow: "rgba(245, 158, 11, 0.3)",
+  },
+  trackLanes: {
+    name: "Track & Field",
+    description: "Runners lapping an athletics oval",
+    colors: { light: "#e4572e", dark: "#f3a712" },
+    ambient: {
+      type: "trackLanes",
+      colors: ["#e4572e", "#f3a712", "#a8c686", "#669bbc"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#f3a712",
+    glow: "rgba(243, 167, 18, 0.3)",
+  },
+  bounceArcs: {
+    name: "Slam Arc",
+    description: "Long-exposure ball bounces with strobing trails",
+    colors: { light: "#ea580c", dark: "#ff7a1a" },
+    ambient: {
+      type: "bounceArcs",
+      colors: ["#ff7a1a", "#ffd23f", "#ffffff", "#3bceac"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#ff7a1a",
+    glow: "rgba(255, 122, 26, 0.3)",
+  },
+  floodlights: {
+    name: "Floodlights",
+    description: "Stadium night lights sweeping the pitch",
+    colors: { light: "#b08900", dark: "#fff4d6" },
+    ambient: {
+      type: "floodlights",
+      colors: ["#fff4d6", "#cfe8ff", "#ffe7a3", "#e8f1ff"],
+      intensity: 0.7,
+      speed: 0.9,
+    },
+    accent: "#ffe7a3",
+    glow: "rgba(255, 231, 163, 0.3)",
+  },
+  runway: {
+    name: "Runway",
+    description: "A catwalk in perspective with a roaming spotlight",
+    colors: { light: "#a8843a", dark: "#c9a962" },
+    ambient: {
+      type: "runway",
+      colors: ["#f5e6c8", "#c9a962", "#ffffff"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#c9a962",
+    glow: "rgba(201, 169, 98, 0.3)",
+  },
+  satinDrape: {
+    name: "Satin Drape",
+    description: "Slow silk folds with a specular sheen",
+    colors: { light: "#6b1d3a", dark: "#f0b7c8" },
+    ambient: {
+      type: "satinDrape",
+      colors: ["#6b1d3a", "#f0b7c8", "#ffffff"],
+      intensity: 0.8,
+      speed: 0.8,
+    },
+    accent: "#f0b7c8",
+    glow: "rgba(240, 183, 200, 0.25)",
+  },
+  stitchPattern: {
+    name: "Pattern Paper",
+    description: "Dashed stitch lines and seam allowances",
+    colors: { light: "#e07a5f", dark: "#f4efe6" },
+    ambient: {
+      type: "stitchPattern",
+      colors: ["#f4efe6", "#e07a5f", "#81b29a", "#3d405b"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#e07a5f",
+    glow: "rgba(224, 122, 95, 0.25)",
+  },
+  archLight: {
+    name: "Arcade Light",
+    description: "Sun patches sliding across an arched colonnade",
+    colors: { light: "#c9822f", dark: "#f2b36b" },
+    ambient: {
+      type: "archLight",
+      colors: ["#e9e1d3", "#f2b36b", "#9ec5e8"],
+      intensity: 0.7,
+      speed: 1,
+    },
+    accent: "#f2b36b",
+    glow: "rgba(242, 179, 107, 0.3)",
+  },
+  isoBlocks: {
+    name: "Iso City",
+    description: "Breathing isometric blocks",
+    colors: { light: "#6366f1", dark: "#7dd3fc" },
+    ambient: {
+      type: "isoBlocks",
+      colors: ["#7dd3fc", "#a78bfa", "#f472b6", "#fbbf24"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#a78bfa",
+    glow: "rgba(167, 139, 250, 0.3)",
+  },
+  blueprintDraft: {
+    name: "Blueprint",
+    description: "A floor plan drafting itself wall by wall",
+    colors: { light: "#2563eb", dark: "#7fb2ff" },
+    ambient: {
+      type: "blueprintDraft",
+      colors: ["#e6f1ff", "#7fb2ff", "#9ad0ff"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#7fb2ff",
+    glow: "rgba(127, 178, 255, 0.3)",
+  },
+  lidarScan: {
+    name: "LiDAR",
+    description: "A scan front revealing a point-cloud cityscape",
+    colors: { light: "#0d9488", dark: "#5eead4" },
+    ambient: {
+      type: "lidarScan",
+      colors: ["#5eead4", "#38bdf8", "#a78bfa", "#f0abfc"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#5eead4",
+    glow: "rgba(94, 234, 212, 0.3)",
+  },
+  goldenSpiral: {
+    name: "Golden Ratio",
+    description: "The φ rectangle and its spiral, drawn square by square",
+    colors: { light: "#a8843a", dark: "#e8c27a" },
+    ambient: {
+      type: "goldenSpiral",
+      colors: ["#e8c27a", "#f4ead5", "#c9a962", "#7aa2e8"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#e8c27a",
+    glow: "rgba(232, 194, 122, 0.3)",
+  },
+  turingBloom: {
+    name: "Turing Bloom",
+    description: "Reaction-diffusion coral growing like living ink",
+    colors: { light: "#d9467a", dark: "#ff7eb6" },
+    ambient: {
+      type: "turingBloom",
+      colors: ["#ff7eb6", "#ffd6a5", "#c4b5fd"],
+      intensity: 0.9,
+      speed: 1,
+    },
+    accent: "#ff7eb6",
+    glow: "rgba(255, 126, 182, 0.3)",
+  },
+  radialSpectrum: {
+    name: "Spectrum Halo",
+    description: "A beat-driven radial equalizer with burst particles",
+    colors: { light: "#7c3aed", dark: "#00f0ff" },
+    ambient: {
+      type: "radialSpectrum",
+      colors: ["#00f0ff", "#7c3aed", "#ff2e93", "#ffd166"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#ff2e93",
+    glow: "rgba(255, 46, 147, 0.3)",
+  },
+  liquidMetaballs: {
+    name: "Liquid Light",
+    description: "Glossy metaballs with soft halos and bright rims",
+    colors: { light: "#e0306a", dark: "#ff3d81" },
+    ambient: {
+      type: "liquidMetaballs",
+      colors: ["#6c5ce7", "#ff3d81", "#ff9e4a", "#ffd93d"],
+      intensity: 0.9,
+      speed: 1,
+    },
+    accent: "#ff9e4a",
+    glow: "rgba(255, 158, 74, 0.3)",
+  },
+  torusKnot: {
+    name: "Torus Knot",
+    description: "A tumbling 3D wireframe tube with depth-shaded strokes",
+    colors: { light: "#6366f1", dark: "#7dd3fc" },
+    ambient: {
+      type: "torusKnot",
+      colors: ["#7dd3fc", "#c4b5fd", "#f9a8d4"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#c4b5fd",
+    glow: "rgba(196, 181, 253, 0.3)",
+  },
+  shapeMorph: {
+    name: "Shape Morph",
+    description: "A swarm that flows between heart, star, loop and bloom",
+    colors: { light: "#db2777", dark: "#f472b6" },
+    ambient: {
+      type: "shapeMorph",
+      colors: ["#f472b6", "#fbbf24", "#34d399", "#60a5fa"],
+      intensity: 0.8,
+      speed: 1,
+    },
+    accent: "#fbbf24",
+    glow: "rgba(251, 191, 36, 0.3)",
   },
 };
 
