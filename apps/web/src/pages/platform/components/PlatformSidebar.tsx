@@ -47,7 +47,7 @@ export const PlatformSidebar: React.FC<{ forceCollapsed?: boolean }> = ({ forceC
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: MOCK_CHANNELS = [] } = useStreams();
+  const { data: channels = [] } = useStreams();
   const { user } = useAuth();
 
   const NAV_ITEMS = [...PUBLIC_NAV_ITEMS, ...(user ? AUTH_NAV_ITEMS : [])].sort((a, b) => {
@@ -55,8 +55,8 @@ export const PlatformSidebar: React.FC<{ forceCollapsed?: boolean }> = ({ forceC
     return order.indexOf(a.path) - order.indexOf(b.path);
   });
 
-  const liveChannels = MOCK_CHANNELS.filter((c) => c.isLive && c.platform);
-  const channelsByPlatform = liveChannels.reduce<Record<string, typeof MOCK_CHANNELS>>((acc, ch) => {
+  const liveChannels = channels.filter((c) => c.isLive && c.platform);
+  const channelsByPlatform = liveChannels.reduce<Record<string, typeof channels>>((acc, ch) => {
     const p = ch.platform!;
     if (!acc[p]) acc[p] = [];
     acc[p].push(ch);

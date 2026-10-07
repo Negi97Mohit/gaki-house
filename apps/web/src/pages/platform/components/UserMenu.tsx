@@ -21,7 +21,7 @@ export const UserMenu: React.FC = () => {
     return (
       <button
         onClick={() => openAuthModal("login")}
-        className="px-4 py-1.5 bg-primary text-primary-foreground text-xs font-semibold rounded-xl hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-200"
+        className="px-4 py-1.5 text-[11px] font-medium tracking-[0.08em] uppercase text-zinc-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 rounded-full transition-all duration-200"
       >
         Sign In
       </button>

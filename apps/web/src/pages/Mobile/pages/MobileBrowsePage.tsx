@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Search, ArrowLeft } from "lucide-react";
-import { MOCK_CATEGORIES, PLATFORM_META, PlatformType } from "@/pages/platform/data/mockData";
+import { PLATFORM_META, PlatformType, type Category } from "@/pages/platform/data/mockData";
 import { useStreams } from "@/pages/platform/hooks/useStreams";
 import { MobileStreamCard } from "../components/MobileStreamCard";
 import { MobileCategoryPill } from "../components/MobileCategoryPill";
@@ -18,14 +18,17 @@ export const MobileBrowsePage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const { data: streams = [] } = useStreams();
 
+    // Categories will come from Supabase — empty until wired up
+    const categories: Category[] = [];
+
     // Filter categories by tag
     const filteredCategories = selectedTag === "All"
-        ? MOCK_CATEGORIES
-        : MOCK_CATEGORIES.filter((c) => c.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase())));
+        ? categories
+        : categories.filter((c) => c.tags.some((t) => t.toLowerCase().includes(selectedTag.toLowerCase())));
 
     // If viewing a specific category
     if (category) {
-        const cat = MOCK_CATEGORIES.find((c) => c.slug === category);
+        const cat = categories.find((c) => c.slug === category);
         const categoryStreams = streams.filter((s) => s.categorySlug === category);
 
         return (

@@ -8,11 +8,6 @@ export const SkeletonStreamCard: React.FC = () => (
       <div className="flex-1 space-y-2">
         <div className="h-3.5 bg-muted rounded w-4/5" />
         <div className="h-3 bg-muted rounded w-3/5" />
-        <div className="h-2.5 bg-muted rounded w-2/5" />
-        <div className="flex gap-1 mt-1">
-          <div className="h-4 w-12 bg-muted rounded" />
-          <div className="h-4 w-10 bg-muted rounded" />
-        </div>
       </div>
     </div>
   </div>

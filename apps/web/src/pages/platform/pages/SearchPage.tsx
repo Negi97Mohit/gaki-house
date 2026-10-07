@@ -1,86 +1,105 @@
-import React from "react";
-import { useSearchParams } from "react-router-dom";
-import { Search } from "lucide-react";
-import { MOCK_CATEGORIES } from "../data/mockData";
-import { useStreams } from "../hooks/useStreams";
-import { StreamCard } from "../components/StreamCard";
-import { CategoryCard } from "../components/CategoryCard";
+import React, { useState } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { Search, Radio, Tv } from "lucide-react";
+import { GakiStreamCard } from "../components/GakiStreamCard";
+import { StreamDetailModal } from "../components/StreamDetailModal";
+import { type GakiStreamer } from "../data/mockData";
 
 export const SearchPage: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const query = searchParams.get("q")?.toLowerCase() || "";
-  const { data: MOCK_CHANNELS = [] } = useStreams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get("q") || "";
+  const [searchInput, setSearchInput] = useState(query);
+  const [streamers] = useState<GakiStreamer[]>([]);
+  const [selectedStreamer, setSelectedStreamer] = useState<GakiStreamer | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const matchedChannels = query
-    ? MOCK_CHANNELS.filter(
-      (c) =>
-        c.displayName.toLowerCase().includes(query) ||
-        c.username.toLowerCase().includes(query) ||
-        c.title.toLowerCase().includes(query) ||
-        c.category.toLowerCase().includes(query)
-    )
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      setSearchParams({ q: searchInput.trim() });
+    }
+  };
+
+  const filteredStreamers = query.trim()
+    ? streamers.filter(
+        (s) =>
+          s.displayName.toLowerCase().includes(query.toLowerCase()) ||
+          s.username.toLowerCase().includes(query.toLowerCase()) ||
+          s.streamTitle.toLowerCase().includes(query.toLowerCase()) ||
+          s.category.toLowerCase().includes(query.toLowerCase()) ||
+          s.tags.some((t) => t.toLowerCase().includes(query.toLowerCase()))
+      )
     : [];
-
-  const matchedCategories = query
-    ? MOCK_CATEGORIES.filter(
-      (c) =>
-        c.name.toLowerCase().includes(query) ||
-        c.tags.some((t) => t.toLowerCase().includes(query))
-    )
-    : [];
-
-  const hasResults = matchedChannels.length > 0 || matchedCategories.length > 0;
 
   return (
-    <div className="p-6 pb-12">
-      <div className="flex items-center gap-3 mb-6">
-        <Search className="w-5 h-5 text-muted-foreground" />
-        <h1 className="text-2xl font-bold text-foreground">
-          {query ? `Results for "${searchParams.get("q")}"` : "Search"}
-        </h1>
+    <div className="min-h-screen bg-zinc-950 text-white pt-20 px-6 sm:px-12 md:px-16 pb-24 select-none">
+      {/* Search Header */}
+      <div className="mb-8 pb-6 border-b border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            Search Results
+          </h1>
+          {query && (
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+              Showing results for <span className="text-white font-semibold">"{query}"</span>
+            </p>
+          )}
+        </div>
+
+        {/* Search Input */}
+        <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-72">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search creators, categories..."
+            className="w-full bg-white/[0.05] border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/25"
+          />
+        </form>
       </div>
 
-      {!query && (
-        <p className="text-muted-foreground text-sm">
-          Type something in the search bar to find channels and categories.
-        </p>
-      )}
+      {filteredStreamers.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredStreamers.map((streamer) => (
+            <GakiStreamCard
+              key={streamer.uid}
+              streamer={streamer}
+              onOpenDetails={(s) => {
+                setSelectedStreamer(s);
+                setIsModalOpen(true);
+              }}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="py-24 flex flex-col items-center justify-center text-center">
+          <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+            <Search className="w-7 h-7 text-zinc-600" />
+          </div>
 
-      {query && !hasResults && (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Search className="w-12 h-12 text-muted-foreground/40 mb-4" />
-          <p className="text-lg font-semibold text-foreground mb-1">No results found</p>
-          <p className="text-sm text-muted-foreground">
-            Try searching for a different channel, category, or tag.
+          <h2 className="text-lg font-bold text-white">
+            {query ? `No creators found for "${query}"` : "Enter a search query"}
+          </h2>
+          <p className="text-xs text-zinc-400 mt-1.5 max-w-sm leading-relaxed">
+            Try searching for game titles, creator usernames, or categories like "Gaming" or "Music".
           </p>
+
+          <Link
+            to="/platform"
+            className="mt-6 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-red-950"
+          >
+            <Tv className="w-4 h-4" />
+            Back to Browse
+          </Link>
         </div>
       )}
 
-      {matchedCategories.length > 0 && (
-        <section className="mb-10">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
-            Categories
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-5">
-            {matchedCategories.map((cat) => (
-              <CategoryCard key={cat.id} category={cat} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {matchedChannels.length > 0 && (
-        <section>
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
-            Live Channels
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-            {matchedChannels.map((ch) => (
-              <StreamCard key={ch.id} channel={ch} />
-            ))}
-          </div>
-        </section>
-      )}
+      <StreamDetailModal
+        streamer={selectedStreamer}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

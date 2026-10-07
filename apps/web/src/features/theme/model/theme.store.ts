@@ -18,7 +18,6 @@ export type ThemeName =
   | "viewerPulse"
   | "heartsFloat"
   | "hypeTrain"
-  | "splitScreen"
   | "pixelInvaders"
   | "radarSweep"
   | "checkerRun"

@@ -1,337 +1,247 @@
-import React, { useState, useRef } from "react";
-import { useParams } from "react-router-dom";
-import { MOCK_CATEGORIES, PLATFORM_META, PlatformType, PLATFORM_CATEGORY_LABELS } from "../data/mockData";
-import { useStreams } from "../hooks/useStreams";
-import { getPlatformIcon } from "@/features/banners/ui/banner/PlatformIcons";
-import { CategoryCard } from "../components/CategoryCard";
-import { StreamCardHover } from "../components/StreamCardHover";
+import React, { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Gamepad2, MessageSquare, Trophy, Palette, Music, Cpu, Mic, Radio, Search, Play, ArrowLeft } from "lucide-react";
+import { GakiStreamCard } from "../components/GakiStreamCard";
+import { StreamDetailModal } from "../components/StreamDetailModal";
+import { type GakiStreamer } from "../data/mockData";
+import { useAuth } from "../context/AuthContext";
+import { useGoLiveStore } from "@/stores/goLive.store";
 import { cn } from "@gaki/core/lib/utils";
-import { useThemeStore, type PlatformLayout } from "@/features/theme";
-import { ChevronLeft, ChevronRight, SlidersHorizontal } from "lucide-react";
 
-const getBrowseStreamGrid = (layout: PlatformLayout) => {
-  switch (layout) {
-    case "compact":
-      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3";
-    case "cozy":
-      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
-    case "theater":
-      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4";
-    case "magazine":
-      return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 auto-rows-[220px]";
-    case "cinematic":
-      return "flex flex-col gap-6 max-w-5xl mx-auto";
-    case "mosaic":
-      return "columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-3";
-    case "feed":
-      return "flex flex-col items-center gap-6 max-w-3xl mx-auto";
-    default:
-      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5";
-  }
+// Real data hook placeholder
+const useGakiStreamers = (): { data: GakiStreamer[]; isLoading: boolean } => {
+  return { data: [], isLoading: false };
 };
 
-const ALL_TAGS = [
-  "All", "IRL", "Shooter", "FPS", "MOBA", "Action", "Sandbox", "Adventure",
-  "Battle Royale", "Tactical", "Creative", "Food", "Casual",
-  "Fitness", "Talk Show", "Educational", "Sports", "Entertainment",
-  "Relaxation", "Tech",
+const BROWSE_CATEGORIES = [
+  {
+    slug: "gaming",
+    name: "Gaming",
+    icon: Gamepad2,
+    gradient: "from-purple-900/60 to-zinc-950",
+    accent: "text-purple-400",
+    description: "Esports, battle royales, speedruns, and casual play",
+  },
+  {
+    slug: "just-chatting",
+    name: "Just Chatting",
+    icon: MessageSquare,
+    gradient: "from-blue-900/60 to-zinc-950",
+    accent: "text-blue-400",
+    description: "Talk shows, reaction streams, Q&As, and IRL streams",
+  },
+  {
+    slug: "esports",
+    name: "Esports & Tournaments",
+    icon: Trophy,
+    gradient: "from-amber-900/60 to-zinc-950",
+    accent: "text-amber-400",
+    description: "Live competitive tournaments and professional leagues",
+  },
+  {
+    slug: "creative",
+    name: "Creative & Coding",
+    icon: Palette,
+    gradient: "from-pink-900/60 to-zinc-950",
+    accent: "text-pink-400",
+    description: "Software engineering, game dev, 3D modeling, and design",
+  },
+  {
+    slug: "music",
+    name: "Music & Performing Arts",
+    icon: Music,
+    gradient: "from-emerald-900/60 to-zinc-950",
+    accent: "text-emerald-400",
+    description: "Live DJ sets, instrumentals, jam sessions, and performances",
+  },
+  {
+    slug: "tech",
+    name: "Tech & Science",
+    icon: Cpu,
+    gradient: "from-cyan-900/60 to-zinc-950",
+    accent: "text-cyan-400",
+    description: "Hardware teardowns, AI benchmarks, and gadgets",
+  },
+  {
+    slug: "podcasts",
+    name: "Podcasts & Talks",
+    icon: Mic,
+    gradient: "from-rose-900/60 to-zinc-950",
+    accent: "text-rose-400",
+    description: "Long-form interviews, debates, and audio discussions",
+  },
 ];
-
-const ALL_PLATFORMS: PlatformType[] = [
-  "youtube", "twitch", "facebook", "tiktok", "instagram", "x", "linkedin",
-  "kick", "rumble", "dlive", "trovo", "bilibili", "nimotv",
-  "vimeo", "vk", "mixcloud", "brightcove", "jwplayer", "kaltura", "ibm", "wowza", "mux", "aws",
-  "owncast", "peertube", "nginx", "wowzaserver", "antmedia", "red5", "mediasoup",
-];
-
-const PLATFORM_FILTER_GROUPS = [
-  { key: "all" as const, label: "All" },
-  { key: "major" as const, label: "Popular" },
-  { key: "gaming" as const, label: "Gaming" },
-  { key: "professional" as const, label: "Pro" },
-  { key: "selfhosted" as const, label: "Self-Hosted" },
-];
-
-const PLATFORMS_BY_GROUP: Record<string, PlatformType[]> = {
-  major: ["youtube", "twitch", "facebook", "tiktok", "instagram", "x", "linkedin"],
-  gaming: ["kick", "rumble", "dlive", "trovo", "bilibili", "nimotv"],
-  professional: ["vimeo", "vk", "mixcloud", "brightcove", "jwplayer", "kaltura", "ibm", "wowza", "mux", "aws"],
-  selfhosted: ["owncast", "peertube", "nginx", "wowzaserver", "antmedia", "red5", "mediasoup"],
-};
-
-type FilterSelection = "all" | "major" | "gaming" | "professional" | "selfhosted" | PlatformType;
-
-// ── Horizontal scroll container with arrows ──
-const HorizontalScroll: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  const updateScroll = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
-  };
-
-  const scroll = (dir: number) => {
-    scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
-  };
-
-  return (
-    <div className={cn("relative group/scroll", className)}>
-      {canScrollLeft && (
-        <button
-          onClick={() => scroll(-1)}
-          className="absolute left-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-r from-background via-background/80 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity"
-        >
-          <ChevronLeft className="w-5 h-5 text-foreground" />
-        </button>
-      )}
-      <div
-        ref={scrollRef}
-        onScroll={updateScroll}
-        className="flex gap-4 overflow-x-auto scrollbar-none scroll-smooth pb-1"
-      >
-        {children}
-      </div>
-      {canScrollRight && (
-        <button
-          onClick={() => scroll(1)}
-          className="absolute right-0 top-0 bottom-0 z-10 w-10 flex items-center justify-center bg-gradient-to-l from-background via-background/80 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity"
-        >
-          <ChevronRight className="w-5 h-5 text-foreground" />
-        </button>
-      )}
-    </div>
-  );
-};
-
-// ── Minimal filter pill row ──
-const FilterPills: React.FC<{
-  items: string[];
-  selected: string;
-  onSelect: (v: string) => void;
-}> = ({ items, selected, onSelect }) => (
-  <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
-    {items.map((item) => (
-      <button
-        key={item}
-        onClick={() => onSelect(item)}
-        className={cn(
-          "px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all shrink-0",
-          selected === item
-            ? "bg-primary text-primary-foreground shadow-sm"
-            : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-        )}
-      >
-        {item}
-      </button>
-    ))}
-  </div>
-);
 
 export const BrowsePage: React.FC = () => {
-  const { category } = useParams();
-  const [selectedTag, setSelectedTag] = useState("All");
-  const [selectedFilter, setSelectedFilter] = useState<FilterSelection>("all");
-  const [showPlatforms, setShowPlatforms] = useState(false);
-  const { data: MOCK_CHANNELS = [] } = useStreams();
-  const platformLayout = useThemeStore((s) => s.platformLayout);
-  const streamGrid = getBrowseStreamGrid(platformLayout);
+  const { category: activeCategorySlug } = useParams<{ category?: string }>();
+  const { data: streamers, isLoading } = useGakiStreamers();
+  const navigate = useNavigate();
+  const { user, openAuthModal } = useAuth();
+  const requestGoLive = useGoLiveStore((s) => s.requestGoLive);
 
-  const getFilteredPlatforms = (): PlatformType[] | null => {
-    if (selectedFilter === "all") return null;
-    if (PLATFORMS_BY_GROUP[selectedFilter]) return PLATFORMS_BY_GROUP[selectedFilter];
-    return [selectedFilter as PlatformType];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStreamer, setSelectedStreamer] = useState<GakiStreamer | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleGoLive = () => {
+    if (!user) {
+      openAuthModal("login");
+      return;
+    }
+    requestGoLive();
+    navigate("/");
   };
 
-  const filterByPlatform = (channels: typeof MOCK_CHANNELS) => {
-    const platforms = getFilteredPlatforms();
-    if (!platforms) return channels;
-    return channels.filter((c) => c.platform && platforms.includes(c.platform));
-  };
+  const currentCategory = activeCategorySlug
+    ? BROWSE_CATEGORIES.find((c) => c.slug === activeCategorySlug)
+    : null;
 
-  // ── Category detail view ──
-  if (category) {
-    const cat = MOCK_CATEGORIES.find((c) => c.slug === category);
-    let streams = MOCK_CHANNELS.filter((c) => c.categorySlug === category);
-    streams = filterByPlatform(streams);
-    const filteredStreams =
-      selectedTag === "All"
-        ? streams
-        : streams.filter((s) => s.tags.some((t) => t.toLowerCase() === selectedTag.toLowerCase()));
-    const streamTags = ["All", ...new Set(MOCK_CHANNELS.filter((c) => c.categorySlug === category).flatMap((s) => s.tags))];
+  const filteredCategories = searchQuery
+    ? BROWSE_CATEGORIES.filter((c) =>
+        c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : BROWSE_CATEGORIES;
 
+  // Streamers matching active category
+  const categoryStreamers = streamers.filter((s) => {
+    if (!activeCategorySlug) return true;
     return (
-      <div className="p-6 lg:p-8 pb-16 max-w-[1800px] mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground tracking-tight">{cat?.name || category}</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            {filteredStreams.length} channels streaming
-          </p>
-        </div>
-
-        <div className="space-y-4 mb-8">
-          <div className="flex items-center gap-3">
-            <FilterPills items={PLATFORM_FILTER_GROUPS.map(g => g.label)} selected={PLATFORM_FILTER_GROUPS.find(g => g.key === selectedFilter)?.label || "All"} onSelect={(label) => {
-              const group = PLATFORM_FILTER_GROUPS.find(g => g.label === label);
-              if (group) { setSelectedFilter(group.key); setShowPlatforms(false); }
-            }} />
-            <button
-              onClick={() => setShowPlatforms(!showPlatforms)}
-              className={cn(
-                "p-2 rounded-lg transition-colors shrink-0",
-                showPlatforms ? "bg-primary/10 text-primary" : "bg-muted/60 text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-            </button>
-          </div>
-
-          {showPlatforms && <PlatformChips selectedFilter={selectedFilter} onSelect={setSelectedFilter} />}
-
-          <FilterPills items={streamTags} selected={selectedTag} onSelect={setSelectedTag} />
-        </div>
-
-        <div className={streamGrid}>
-          {filteredStreams.map((ch, i) => (
-            <StreamCardHover key={ch.id} channel={ch} layout={platformLayout} featured={platformLayout === "magazine" && i === 0} />
-          ))}
-        </div>
-        {filteredStreams.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
-            <p className="text-sm">No streams found</p>
-          </div>
-        )}
-      </div>
+      s.category.toLowerCase().includes(activeCategorySlug.toLowerCase()) ||
+      s.tags.some((t) => t.toLowerCase().includes(activeCategorySlug.toLowerCase()))
     );
-  }
-
-  // ── Default browse view ──
-  const filteredCategories =
-    selectedTag === "All"
-      ? MOCK_CATEGORIES
-      : MOCK_CATEGORIES.filter((c) => c.tags.some((t) => t.toLowerCase() === selectedTag.toLowerCase()));
-
-  const liveChannels = filterByPlatform(MOCK_CHANNELS.filter((c) => c.isLive));
+  });
 
   return (
-    <div className="p-6 lg:p-8 pb-16 max-w-[1800px] mx-auto space-y-10">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground tracking-tight">Browse</h1>
-        <p className="text-muted-foreground text-sm mt-1">Discover live channels and categories</p>
+    <div className="min-h-screen bg-zinc-950 text-foreground pt-20 px-6 sm:px-12 md:px-16 pb-24 select-none">
+      {/* Category Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-white/[0.06]">
+        <div>
+          {activeCategorySlug ? (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate("/platform/browse")}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+                aria-label="Back to all categories"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  {currentCategory ? currentCategory.name : activeCategorySlug}
+                </h1>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Live broadcasts in this category
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                Browse Categories
+              </h1>
+              <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+                Explore channels and discover concurrent multi-platform streams
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Search bar inside Browse */}
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search categories..."
+            className="w-full bg-white/[0.05] border border-white/10 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/25"
+          />
+        </div>
       </div>
 
-      {/* Platform filters — horizontal scroll */}
-      <div className="space-y-3">
-        <HorizontalScroll>
-          <button
-            onClick={() => setSelectedFilter("all")}
-            className={cn(
-              "px-4 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all shrink-0",
-              selectedFilter === "all"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-          >
-            All
-          </button>
-          {ALL_PLATFORMS.map((p) => {
-            const meta = PLATFORM_META[p];
-            const PIcon = getPlatformIcon(p);
-            const isActive = selectedFilter === p;
-            return (
+      {/* If viewing a specific category */}
+      {activeCategorySlug ? (
+        <div>
+          {categoryStreamers.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {categoryStreamers.map((streamer) => (
+                <GakiStreamCard
+                  key={streamer.uid}
+                  streamer={streamer}
+                  onOpenDetails={(s) => {
+                    setSelectedStreamer(s);
+                    setIsModalOpen(true);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="py-20 flex flex-col items-center justify-center text-center">
+              <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-4">
+                <Radio className="w-6 h-6 text-zinc-500" />
+              </div>
+              <h2 className="text-lg font-bold text-white">No active streams in this category</h2>
+              <p className="text-xs text-zinc-400 mt-1 max-w-sm">
+                Be the first creator to go live here and broadcast to Twitch, YouTube, and Kick simultaneously.
+              </p>
               <button
-                key={p}
-                onClick={() => setSelectedFilter(p)}
-                className={cn(
-                  "px-3 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition-all shrink-0 flex items-center gap-1.5 border",
-                  isActive
-                    ? "text-white border-transparent shadow-sm"
-                    : "bg-muted/60 text-muted-foreground hover:text-foreground border-transparent hover:bg-muted"
-                )}
-                style={isActive ? { backgroundColor: meta.color, color: meta.textColor } : undefined}
+                onClick={handleGoLive}
+                className="mt-6 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-lg transition-all flex items-center gap-2"
               >
-                <PIcon className="w-3.5 h-3.5" style={{ color: isActive ? meta.textColor : meta.color }} />
-                {meta.label}
+                <Radio className="w-3.5 h-3.5" />
+                Go Live Now
               </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Categories Grid */
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          {filteredCategories.map((cat) => {
+            const Icon = cat.icon;
+            return (
+              <Link
+                key={cat.slug}
+                to={`/platform/browse/${cat.slug}`}
+                className="group relative aspect-[16/10] rounded-2xl overflow-hidden border border-white/[0.06] hover:border-white/25 transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl hover:shadow-black"
+              >
+                {/* Background Gradient */}
+                <div className={cn("absolute inset-0 bg-gradient-to-br", cat.gradient)} />
+                <div className="absolute inset-0 bg-zinc-950/40 group-hover:bg-zinc-950/20 transition-colors" />
+
+                {/* Content */}
+                <div className="absolute inset-0 p-5 flex flex-col justify-between z-10">
+                  <div className="flex items-center justify-between">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <Icon className={cn("w-5 h-5", cat.accent)} />
+                    </div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 bg-black/40 px-2 py-0.5 rounded">
+                      Explore
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 className="text-base font-black text-white tracking-tight group-hover:text-primary transition-colors">
+                      {cat.name}
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
+                      {cat.description}
+                    </p>
+                  </div>
+                </div>
+              </Link>
             );
           })}
-        </HorizontalScroll>
-
-        <FilterPills items={ALL_TAGS} selected={selectedTag} onSelect={setSelectedTag} />
-      </div>
-
-      {/* Top Categories — Horizontal Scroll */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">Top Categories</h2>
-          <span className="text-xs text-muted-foreground">{filteredCategories.length} categories</span>
         </div>
-        <HorizontalScroll>
-          {filteredCategories.map((cat) => (
-            <div key={cat.id} className="shrink-0 w-[140px] sm:w-[160px]">
-              <CategoryCard category={cat} />
-            </div>
-          ))}
-          {filteredCategories.length === 0 && (
-            <p className="text-muted-foreground text-sm py-8 w-full text-center">No categories found</p>
-          )}
-        </HorizontalScroll>
-      </section>
+      )}
 
-      {/* Live Channels */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-foreground">
-            {selectedFilter === "all"
-              ? "Live Now"
-              : PLATFORM_META[selectedFilter as PlatformType]
-                ? `${PLATFORM_META[selectedFilter as PlatformType].label} — Live`
-                : `${PLATFORM_CATEGORY_LABELS[selectedFilter] || selectedFilter} — Live`}
-          </h2>
-          <span className="text-xs text-muted-foreground">{liveChannels.length} streams</span>
-        </div>
-        <div className={streamGrid}>
-          {liveChannels.map((ch, i) => (
-            <StreamCardHover key={ch.id} channel={ch} layout={platformLayout} featured={platformLayout === "magazine" && i === 0} />
-          ))}
-        </div>
-        {liveChannels.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-            <p className="text-sm">No live channels</p>
-          </div>
-        )}
-      </section>
+      {/* Stream Detail Modal */}
+      <StreamDetailModal
+        streamer={selectedStreamer}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
-
-// ── Platform chips panel ──
-const PlatformChips: React.FC<{ selectedFilter: FilterSelection; onSelect: (f: FilterSelection) => void }> = ({ selectedFilter, onSelect }) => (
-  <div className="flex flex-wrap gap-1.5 p-3 bg-muted/30 rounded-xl border border-border/40">
-    {ALL_PLATFORMS.map((p) => {
-      const meta = PLATFORM_META[p];
-      const PIcon = getPlatformIcon(p);
-      const isActive = selectedFilter === p;
-      return (
-        <button
-          key={p}
-          onClick={() => onSelect(p)}
-          className={cn(
-            "px-2.5 py-1 text-[11px] font-medium rounded-full whitespace-nowrap transition-all shrink-0 flex items-center gap-1 border",
-            isActive
-              ? "text-white border-transparent shadow-sm"
-              : "bg-background text-muted-foreground hover:text-foreground border-border/40 hover:border-border"
-          )}
-          style={isActive ? { backgroundColor: meta.color, color: meta.textColor } : undefined}
-        >
-          <PIcon className="w-3 h-3" style={{ color: isActive ? meta.textColor : meta.color }} />
-          {meta.label}
-        </button>
-      );
-    })}
-  </div>
-);

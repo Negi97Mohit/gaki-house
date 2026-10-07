@@ -1,89 +1,17 @@
-// Aggregator — merges API data with mock fallback
-import { StreamChannel, MOCK_CHANNELS, PlatformType } from "../data/mockData";
-import { fetchYouTubeLiveStreams } from "./youtubeService";
-import { fetchTwitchLiveStreams } from "./twitchService";
-import { fetchKickLiveStreams } from "./kickService";
-import { fetchDLiveLiveStreams } from "./dliveService";
-import { fetchTrovoLiveStreams } from "./trovoService";
-import { fetchRumbleLiveStreams } from "./rumbleService";
+import type { StreamChannel } from "../data/mockData";
 
 /**
- * Fetches live streams from all configured platform APIs.
- * For platforms without API support, returns mock data.
+ * Stream aggregator — currently disabled.
+ * Will be replaced with GAKI-native stream fetching from Supabase.
  *
- * Flow:
- * 1. Call YouTube + Twitch + Kick APIs in parallel
- * 2. For platforms with API results, replace mock data for that platform
- * 3. For platforms without APIs (or on failure), keep mock data
+ * The old external platform fetchers (YouTube, Twitch, Kick, etc.) are
+ * preserved in their individual service files for future enrichment use,
+ * but are not called here until the GAKI-first model is built.
  */
 export async function fetchAllStreams(): Promise<StreamChannel[]> {
-    const hasYouTubeKey = !!import.meta.env.VITE_YOUTUBE_API_KEY;
-    const hasTwitchKey = !!import.meta.env.VITE_TWITCH_CLIENT_ID;
-    const hasTrovoKey = !!import.meta.env.VITE_TROVO_CLIENT_ID;
-
-
-    // Always fetch Kick (via proxy), as it doesn't need a key in this dev setup
-    // But we treat it as "optional" if it fails
-
-    // Fetch from available APIs in parallel
-    const [youtubeStreams, twitchStreams, kickStreams, dliveStreams, trovoStreams, rumbleStreams] = await Promise.all([
-        hasYouTubeKey ? fetchYouTubeLiveStreams(12) : Promise.resolve([]),
-        hasTwitchKey ? fetchTwitchLiveStreams(12) : Promise.resolve([]),
-        fetchKickLiveStreams(),
-        fetchDLiveLiveStreams(12),
-        hasTrovoKey ? fetchTrovoLiveStreams(12) : Promise.resolve([]),
-        fetchRumbleLiveStreams(),
-    ]);
-
-    // Determine which platforms have live API data
-    const apiPlatforms = new Set<PlatformType>();
-    if (youtubeStreams.length > 0) apiPlatforms.add("youtube");
-    if (twitchStreams.length > 0) apiPlatforms.add("twitch");
-    if (kickStreams.length > 0) apiPlatforms.add("kick");
-    if (dliveStreams.length > 0) apiPlatforms.add("dlive");
-    if (trovoStreams.length > 0) apiPlatforms.add("trovo");
-    if (rumbleStreams.length > 0) apiPlatforms.add("rumble");
-
-    // Merge: API data first (sorted by viewers desc)
-    // Merge: API data first, then Mock data (which now contains real static streams)
-    // We combine them to ensure the app always feels "rich" and populated
-    const allStreams = [
-        ...youtubeStreams,
-        ...twitchStreams,
-        ...kickStreams,
-        ...dliveStreams,
-        ...trovoStreams,
-        ...rumbleStreams,
-        ...MOCK_CHANNELS
-    ];
-    const uniqueStreams = Array.from(new Map(allStreams.map(item => [item.username + item.platform, item])).values());
-
-    // Filter: only keep streams that are live AND on reliably embeddable/viewable platforms
-    const RELIABLE_PLATFORMS: Set<PlatformType> = new Set([
-        "youtube", "twitch", "kick", "trovo", "rumble"
-    ]);
-
-    const liveAndPlayable = uniqueStreams.filter(stream => {
-        // Must be marked as live
-        if (!stream.isLive) return false;
-        // Must be on a platform that reliably autoplays without sign-in
-        if (stream.platform && !RELIABLE_PLATFORMS.has(stream.platform)) return false;
-        // Must have a stream URL or username for embedding
-        if (!stream.streamUrl && !stream.username) return false;
-        return true;
-    });
-
-    // Sort by viewers descending
-    return liveAndPlayable.sort((a, b) => b.viewers - a.viewers);
+  return [];
 }
 
-/**
- * Check if any platform APIs are configured.
- * Useful for showing "using mock data" warnings in UI.
- */
 export function hasAnyApiKeys(): boolean {
-    return !!(
-        import.meta.env.VITE_YOUTUBE_API_KEY ||
-        import.meta.env.VITE_TWITCH_CLIENT_ID
-    );
+  return !!(import.meta.env.VITE_YOUTUBE_API_KEY || import.meta.env.VITE_TWITCH_CLIENT_ID);
 }

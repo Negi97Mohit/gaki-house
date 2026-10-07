@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Search, X, ArrowLeft, TrendingUp } from "lucide-react";
-import { MOCK_CATEGORIES, formatViewerCount } from "@/pages/platform/data/mockData";
+import { formatViewerCount, type Category } from "@/pages/platform/data/mockData";
 import { useStreams } from "@/pages/platform/hooks/useStreams";
 import { MobileStreamCard } from "../components/MobileStreamCard";
 import { cn } from "@gaki/core/lib/utils";
@@ -32,8 +32,11 @@ export const MobileSearchPage: React.FC = () => {
         )
         : [];
 
+    // Categories will come from Supabase — empty until wired up
+    const categories: Category[] = [];
+
     const matchedCategories = trimmed
-        ? MOCK_CATEGORIES.filter(
+        ? categories.filter(
             (c) =>
                 c.name.toLowerCase().includes(trimmed) ||
                 c.tags.some((t) => t.toLowerCase().includes(trimmed))

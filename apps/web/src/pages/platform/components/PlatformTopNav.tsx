@@ -1,19 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
 import AppLogo from "@gaki/ui/AppLogo";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, Bell, X } from "lucide-react";
-import { MOCK_CATEGORIES, formatViewerCount } from "../data/mockData";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Search, Bell, X, ArrowLeft } from "lucide-react";
 import { useStreams } from "../hooks/useStreams";
 import { UserMenu } from "./UserMenu";
 import { useAuth } from "../context/AuthContext";
 import { useGoLiveStore } from "@/stores/goLive.store";
+import { cn } from "@gaki/core/lib/utils";
 
-export const PlatformTopNav: React.FC = () => {
+interface PlatformTopNavProps {
+  isScrolled?: boolean;
+}
+
+export const PlatformTopNav: React.FC<PlatformTopNavProps> = ({ isScrolled = false }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [query, setQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const { user, openAuthModal } = useAuth();
   const requestGoLive = useGoLiveStore((s) => s.requestGoLive);
@@ -27,10 +33,6 @@ export const PlatformTopNav: React.FC = () => {
         c.displayName.toLowerCase().includes(trimmed) ||
         c.username.toLowerCase().includes(trimmed)
     ).slice(0, 5)
-    : [];
-
-  const matchedCategories = trimmed
-    ? MOCK_CATEGORIES.filter((c) => c.name.toLowerCase().includes(trimmed)).slice(0, 3)
     : [];
 
   const showDropdown = isFocused && trimmed.length > 0;
@@ -60,126 +62,178 @@ export const PlatformTopNav: React.FC = () => {
   };
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target as Node)
+      ) {
         setIsFocused(false);
+        if (!query) {
+          setIsSearchOpen(false);
+        }
       }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [query]);
+
+  // Navigation options: Home, Browse, and Following (only when user is logged in)
+  const navLinks = [
+    { label: "Home", path: "/platform" },
+    { label: "Browse", path: "/platform/browse" },
+    ...(user ? [{ label: "Following", path: "/platform/following" }] : []),
+  ];
 
   return (
-    <header className="h-14 bg-background/80 backdrop-blur-xl border-b border-border/10 flex items-center px-5 gap-5 shrink-0 z-50">
-      {/* Left: Logo */}
-      <div className="flex items-center gap-3">
+    <header
+      className={cn(
+        "fixed top-0 left-0 right-0 h-16 z-40 px-6 sm:px-12 md:px-16 flex items-center justify-between transition-all duration-300 select-none",
+        isScrolled
+          ? "bg-zinc-950/95 backdrop-blur-md border-b border-white/[0.06] shadow-xl shadow-black/40"
+          : "bg-gradient-to-b from-black/90 via-black/40 to-transparent"
+      )}
+    >
+      {/* Left: Brand Logo & Navigation Links */}
+      <div className="flex items-center gap-8">
+        {/* Brand Logo - Gaki */}
         <Link to="/platform" className="flex items-center gap-2.5 group">
-          <AppLogo size={28} className="rounded-lg group-hover:scale-105 transition-transform duration-200" />
-          <span className="text-foreground font-bold text-base tracking-tight hidden sm:inline">
-            GAKI
+          <AppLogo size={28} className="rounded-lg group-hover:scale-105 transition-transform" />
+          <span className="text-white font-bold text-base tracking-tight font-sans">
+            Gaki
           </span>
         </Link>
-      </div>
 
-      {/* Center: Search */}
-      <div className="flex-1 max-w-md mx-auto relative" ref={dropdownRef}>
-        <form onSubmit={handleSubmit}>
-          <div className="relative group">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60 group-focus-within:text-primary/70 transition-colors duration-200" />
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setIsFocused(true)}
-              placeholder="Search channels, categories..."
-              className="w-full bg-muted/40 border border-border/20 rounded-xl pl-10 pr-9 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/30 focus:bg-muted/60 focus:ring-1 focus:ring-primary/10 transition-all duration-200"
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors duration-150"
+        {/* Clean chic navigation links */}
+        <nav className="hidden md:flex items-center gap-6 text-xs font-medium">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <Link
+                key={link.label}
+                to={link.path}
+                className={cn(
+                  "transition-colors duration-200 tracking-wide",
+                  isActive ? "text-white font-semibold" : "text-zinc-400 hover:text-zinc-200"
+                )}
               >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-        </form>
-
-        {/* Search Suggestions Dropdown */}
-        {showDropdown && (matchedChannels.length > 0 || matchedCategories.length > 0) && (
-          <div className="absolute top-full mt-2 left-0 right-0 bg-card/95 backdrop-blur-xl border border-border/20 rounded-xl shadow-2xl shadow-black/10 z-[100] overflow-hidden max-h-[400px] overflow-y-auto">
-            {matchedChannels.length > 0 && (
-              <div className="p-2">
-                <p className="text-[11px] uppercase tracking-widest text-muted-foreground/50 font-semibold px-2 py-1.5">
-                  Channels
-                </p>
-                {matchedChannels.map((ch) => (
-                  <button
-                    key={ch.id}
-                    onClick={() => handleSelect(`/platform/stream/${ch.username}`)}
-                    className="flex items-center gap-3 w-full px-2.5 py-2 rounded-lg hover:bg-accent/40 transition-colors text-left group"
-                  >
-                    <img src={ch.avatar} alt="" className="w-8 h-8 rounded-full bg-muted ring-1 ring-border/10" />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">{ch.displayName}</p>
-                      <p className="text-xs text-muted-foreground/60 truncate">{ch.category}</p>
-                    </div>
-                    {ch.isLive && (
-                      <span className="flex items-center gap-1.5 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
-                        <span className="text-[11px] text-muted-foreground/60 tabular-nums">{formatViewerCount(ch.viewers)}</span>
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {matchedCategories.length > 0 && (
-              <div className="p-2 border-t border-border/10">
-                <p className="text-[11px] uppercase tracking-widest text-muted-foreground/50 font-semibold px-2 py-1.5">
-                  Categories
-                </p>
-                {matchedCategories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => handleSelect(`/platform/browse/${cat.slug}`)}
-                    className="flex items-center gap-3 w-full px-2.5 py-2 rounded-lg hover:bg-accent/40 transition-colors text-left group"
-                  >
-                    <img src={cat.thumbnail} alt="" className="w-8 h-10 rounded-md object-cover bg-muted ring-1 ring-border/10" />
-                    <div>
-                      <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{cat.name}</p>
-                      <p className="text-xs text-muted-foreground/60">{formatViewerCount(cat.viewers)} watching</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            <button
-              onClick={() => handleSubmit({ preventDefault: () => { } } as React.FormEvent)}
-              className="w-full px-4 py-2.5 text-sm text-primary/80 font-medium hover:bg-accent/30 hover:text-primary transition-all border-t border-border/10 text-left"
-            >
-              Search for "{query}"
-            </button>
-          </div>
-        )}
+                {link.label}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center gap-2 sm:gap-2.5">
-        <button className="p-2 rounded-xl hover:bg-accent/40 text-muted-foreground/60 hover:text-foreground transition-all duration-200">
-          <Bell className="w-[18px] h-[18px]" strokeWidth={1.8} />
-        </button>
-        <UserMenu />
+      {/* Right: Search, Notifications (if signed in), Back to Studio, Sign In / Profile, Go Live */}
+      <div className="flex items-center gap-3 sm:gap-3.5">
+        {/* Expandable Search */}
+        <div ref={searchContainerRef} className="relative flex items-center">
+          <form
+            onSubmit={handleSubmit}
+            className={cn(
+              "flex items-center transition-all duration-300 ease-out border rounded-full overflow-hidden",
+              isSearchOpen
+                ? "w-48 sm:w-60 bg-black/80 border-white/20 px-3 py-1.5"
+                : "w-8 h-8 bg-transparent border-transparent justify-center"
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setIsSearchOpen(true);
+                setTimeout(() => inputRef.current?.focus(), 50);
+              }}
+              className="text-zinc-400 hover:text-white transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+
+            {isSearchOpen && (
+              <>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  placeholder="Search creators..."
+                  className="w-full bg-transparent border-none text-xs text-white placeholder:text-zinc-500 focus:outline-none ml-2"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => setQuery("")}
+                    className="text-zinc-400 hover:text-white transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </>
+            )}
+          </form>
+
+          {/* Search suggestions dropdown */}
+          {showDropdown && matchedChannels.length > 0 && (
+            <div className="absolute top-full mt-2 right-0 w-64 bg-zinc-950/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 z-50">
+              <p className="text-[10px] uppercase font-bold tracking-wider text-zinc-500 px-2 py-1">
+                Creators
+              </p>
+              {matchedChannels.map((ch) => (
+                <button
+                  key={ch.id}
+                  onClick={() => handleSelect(`/platform/stream/${ch.username}`)}
+                  className="flex items-center gap-2.5 w-full p-2 rounded-lg hover:bg-white/10 text-left transition-colors"
+                >
+                  <img src={ch.avatar} alt="" className="w-7 h-7 rounded-full bg-zinc-800" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold text-white truncate">{ch.displayName}</p>
+                    <p className="text-[10px] text-zinc-400 truncate">{ch.category}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Notifications (only shown if user is signed in) */}
+        {user && (
+          <button
+            className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+            aria-label="Notifications"
+          >
+            <Bell className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* Back to Studio Main Page (placed right before / next to Sign In on the left) */}
+        <Link
+          to="/"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium text-zinc-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/20 transition-all duration-200 group shrink-0"
+          title="Back to Studio"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5 text-zinc-400 group-hover:text-white" />
+          <span className="hidden sm:inline tracking-wide font-sans">Studio</span>
+        </Link>
+
+        {/* User Profile or Chic Sign In Button */}
+        {user ? (
+          <UserMenu />
+        ) : (
+          <button
+            onClick={() => openAuthModal("login")}
+            className="px-4 py-1.5 text-[11px] font-medium tracking-[0.08em] uppercase text-zinc-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-white/25 rounded-full transition-all duration-200"
+          >
+            Sign In
+          </button>
+        )}
+
+        {/* Chic Vogue Modern Go Live CTA with #53cac7 border and non-white background */}
         <button
           onClick={handleGoLive}
-          className="ml-1 sm:ml-2 px-4 py-1.5 bg-destructive/90 hover:bg-destructive text-destructive-foreground text-xs font-semibold rounded-xl hover:shadow-lg hover:shadow-destructive/20 transition-all duration-200 flex items-center gap-2"
+          className="px-4 py-1.5 rounded-full bg-transparent hover:bg-[#53cac7]/10 text-white hover:text-[#53cac7] text-[11px] font-semibold tracking-[0.06em] uppercase transition-all duration-200 flex items-center gap-2 active:scale-95 border border-[#53cac7] shadow-[0_0_12px_rgba(83,202,199,0.15)] hover:shadow-[0_0_18px_rgba(83,202,199,0.3)]"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse" />
-          Go Live
+          <span className="w-1.5 h-1.5 rounded-full bg-[#53cac7] animate-pulse" />
+          <span>Go Live</span>
         </button>
       </div>
     </header>
