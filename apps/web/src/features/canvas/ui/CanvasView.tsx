@@ -30,7 +30,7 @@ import { OverlayElement } from "@/hooks/useSnapGuides";
 import { VideoCanvasCamera } from "@/features/canvas/ui/VideoCanvasCamera";
 import { ForegroundUserLayer } from "@/features/canvas/ui/ForegroundUserLayer";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
-import { VideoCanvasProps } from "@gaki/core/types/videoCanvas";
+import { VideoCanvasProps } from "@/types/videoCanvas";
 import { CanvasContent } from "@/features/canvas/ui/CanvasContent";
 import { OverlayLayer } from "@/features/canvas/ui/OverlayLayer";
 import { SnapLines } from "@/features/canvas/ui/SnapLines";

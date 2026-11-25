@@ -11,8 +11,7 @@
     "skipLibCheck": true,
     "types": ["node"],
     "paths": {
-      "@gaki/core/*": ["../../packages/core/src/*"],
-      "@/*": ["../../apps/web/src/*"]
+      "@gaki/core/*": ["../../packages/core/src/*"]
     }
   },
   "include": ["src/**/*"]

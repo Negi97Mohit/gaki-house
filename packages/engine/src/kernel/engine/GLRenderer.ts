@@ -2,7 +2,7 @@ import { GLContext } from "./GLContext";
 import { VideoTexture } from "./VideoTexture";
 import { ShaderManager } from "./ShaderManager";
 import { parseFilterString } from "./utils";
-import { AnimeStyles } from "@/lib/animeStyles";
+import { AnimeStyles } from "./animeStylesStore";
 import { TimeWarpBuffer } from "./TimeWarp";
 
 export interface RenderOptions {

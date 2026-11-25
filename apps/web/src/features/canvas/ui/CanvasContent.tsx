@@ -7,7 +7,7 @@ import { ScreenShareView } from "@/features/canvas/ui/ScreenShareView";
 import { PipWindow } from "@/features/canvas/ui/PipWindow";
 import { VideoPlayer } from "@/features/canvas/ui/VideoPlayer";
 import { getNumericAspectRatio } from "@/features/canvas/ui/VideoCanvasHelpers";
-import { VideoCanvasProps } from "@gaki/core/types/videoCanvas";
+import { VideoCanvasProps } from "@/types/videoCanvas";
 import { ExcalidrawOverlay } from "@/features/canvas/ui/ExcalidrawOverlay";
 import { useCameraOpacity } from "@/features/canvas/hooks/useCameraOpacity";
 import { CameraOpacityOverlay } from "@/features/canvas/ui/CameraOpacityOverlay";

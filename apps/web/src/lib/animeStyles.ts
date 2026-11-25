@@ -1,31 +1,13 @@
 // src/lib/animeStyles.ts
 import { ColorUtils, ImageProcessor } from "./utils/imageProcessing";
+import { AnimeStyles, updateAnimeStyles, type TriToneConfig } from "@gaki/engine/kernel/engine/animeStylesStore";
 
-export interface TriToneConfig {
-  shadowColor: string;
-  midColor: string;
-  highlightColor: string;
-  skinColor: string;
-  lowThreshold: number;
-  highThreshold: number;
-  detailSensitivity?: number;
-  edgeThreshold?: number;
-  skinDetectionStrength?: number;
-}
+export { AnimeStyles, updateAnimeStyles, type TriToneConfig };
 
 export interface ProcessedImageData {
   imageData: ImageData;
   processingTime: number;
 }
-
-let AnimeStyles: Record<string, TriToneConfig> = {};
-
-export { AnimeStyles };
-
-// Export a function to update the styles
-export const updateAnimeStyles = (newStyles: Record<string, TriToneConfig>) => {
-  AnimeStyles = { ...AnimeStyles, ...newStyles };
-};
 
 export function applyTriTone(
   ctx: CanvasRenderingContext2D,

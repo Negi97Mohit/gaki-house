@@ -16,6 +16,7 @@
     "./kernel/engine/TimeWarp": "./src/kernel/engine/TimeWarp.ts",
     "./kernel/engine/TransitionEngine": "./src/kernel/engine/TransitionEngine.ts",
     "./kernel/engine/VideoTexture": "./src/kernel/engine/VideoTexture.ts",
+    "./kernel/engine/animeStylesStore": "./src/kernel/engine/animeStylesStore.ts",
     "./kernel/engine/shaders/gridShaders": "./src/kernel/engine/shaders/gridShaders.ts",
     "./kernel/engine/shaders/liquidShader": "./src/kernel/engine/shaders/liquidShader.ts",
     "./kernel/hooks/useOverlayMediaPool": "./src/kernel/hooks/useOverlayMediaPool.ts",

@@ -28,8 +28,7 @@
     "./types/streamStyle": "./src/types/streamStyle.ts",
     "./types/textDesign": "./src/types/textDesign.ts",
     "./types/toast": "./src/types/toast.ts",
-    "./types/vault": "./src/types/vault.ts",
-    "./types/videoCanvas": "./src/types/videoCanvas.ts"
+    "./types/vault": "./src/types/vault.ts"
   },
   "dependencies": {
     "clsx": "^2.1.0",
