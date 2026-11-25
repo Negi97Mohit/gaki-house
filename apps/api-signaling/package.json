@@ -4,7 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"no tests for plain-JS signaling server\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "start": "node index.js",
     "start:signaling": "node signaling-server.js",
     "dev:signaling": "nodemon signaling-server.js",
@@ -22,5 +23,8 @@
     "ffmpeg-static": "catalog:",
     "fluent-ffmpeg": "catalog:",
     "socket.io": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "catalog:"
   }
 }
