@@ -39,9 +39,6 @@ async function getTwitchAppToken(): Promise<{ token: string; clientId: string } 
     }
 }
 
-// NEW: Fetch Stream Key for logged-in user
-export async function fetchTwitchStreamKey(userToken: string): Promise<string | null> {
-    const clientId = import.meta.env.VITE_TWITCH_CLIENT_ID;
 export async function fetchTwitchStreamKey(userToken: string): Promise<string | null> {
     const clientId = CLIENT_ID;
     if (!clientId) return null;
