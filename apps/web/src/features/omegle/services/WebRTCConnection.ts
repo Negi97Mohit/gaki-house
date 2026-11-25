@@ -37,7 +37,6 @@ export class WebRTCConnection {
                         this.peerConnection.addTrack(track, this.localStream);
                     }
                 });
-            } else {
             }
 
             // Handle remote stream
@@ -82,10 +81,7 @@ export class WebRTCConnection {
             };
 
             // Handle ICE connection state changes
-            this.peerConnection.oniceconnectionstatechange = () => {
-            };
-
-        } catch (error) {
+} catch (error) {
             console.error('[WebRTC] Failed to initialize peer connection:', error);
             this.onErrorCallback?.(error as Error);
             throw error;

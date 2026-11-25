@@ -4,7 +4,6 @@ import React, {
   useRef,
   useMemo,
   useState,
-  useEffect,
 } from "react";
 import { MainCanvasArea } from "./MainCanvasArea";
 import { FloatingControlsPanel } from "@/features/studio/ui/FloatingControlsPanel";
@@ -51,10 +50,7 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   onKernelReady,
   stingerConfig,
 }) => {
-  useEffect(() => {
-  }, []);
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+const canvasRef = useRef<HTMLCanvasElement>(null);
   const mainContainerRef = useRef<HTMLDivElement>(null);
   const hasAiPopoverAutoOpenedRef = useRef(false);
   const [isDrawing, setIsDrawing] = useState(false);

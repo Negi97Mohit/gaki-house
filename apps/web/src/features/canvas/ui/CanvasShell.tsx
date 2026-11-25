@@ -27,10 +27,7 @@ export const CanvasShell: React.FC<CanvasShellProps> = ({
   isFullscreen,
   children,
 }) => {
-  useEffect(() => {
-  }, []);
-
-  return (
+return (
     <div
       ref={containerRef}
       className={cn(

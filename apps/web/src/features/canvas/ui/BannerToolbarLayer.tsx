@@ -28,10 +28,7 @@ export const BannerToolbarLayer: React.FC<BannerToolbarLayerProps> = ({
   onOverlayLayoutChange,
   onUpdateOverlayMetadata,
 }) => {
-  useEffect(() => {
-  }, []);
-
-  if (!editingBannerText || !onBannerTextStyleChange) return null;
+if (!editingBannerText || !onBannerTextStyleChange) return null;
 
   const bannerOverlay = generatedOverlays.find((o) => o.id === editingBannerText.overlayId);
   if (!bannerOverlay) return null;

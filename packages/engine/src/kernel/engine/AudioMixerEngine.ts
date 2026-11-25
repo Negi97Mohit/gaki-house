@@ -36,10 +36,7 @@ export class AudioMixerEngine {
     // 2. We can add systemStream loopback logic here in the future via electron IPC
     // For now, return what we have (even if it's empty, MediaRecorder can still process it, or just return null if empty)
     
-    if (!this.micStream && !this.systemStream) {
-    }
-    
-    return this.audioDestination.stream;
+return this.audioDestination.stream;
   }
 
   destroy() {

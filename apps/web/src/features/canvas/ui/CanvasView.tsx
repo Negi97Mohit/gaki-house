@@ -43,10 +43,7 @@ import { useOverlayMediaPool } from "@gaki/engine/kernel/hooks/useOverlayMediaPo
 import { useStingerTransition } from "@/features/canvas/hooks/useStingerTransition";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
-  useEffect(() => {
-  }, []);
-
-  // ─── BroadcastBus kernel (Phase C) ────────────────────────────────────────
+// ─── BroadcastBus kernel (Phase C) ────────────────────────────────────────
   // kernelRef guards against React strict-mode double-invoke.
   // The ref holds the actual instance so cleanup destroys exactly what was created.
   const kernelRef = useRef<BroadcastBus | null>(null);

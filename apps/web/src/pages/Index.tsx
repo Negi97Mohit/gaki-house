@@ -122,7 +122,6 @@ const Index = () => {
           savedState.scenes as import("@/types/caption").SceneState[],
         );
         if (firstId) sceneManager.handleSceneSelect(firstId);
-      } else {
       }
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

@@ -1,5 +1,5 @@
 // Single responsibility: file-picker UI that reads an OBS .json, parses it, and fires onImportOBSScenes.
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
 import { Button } from "@gaki/ui/button";
@@ -17,10 +17,7 @@ export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-  }, []);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) {
       console.error("[OBSImportButton] handleFileChange: no file selected");

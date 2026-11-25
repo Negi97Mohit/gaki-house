@@ -37,9 +37,7 @@ export const useCompositeStream = ({
       setCompositeStream(stream);
       
       // Log stream tracks
-      stream.getTracks().forEach(track => {
-      });
-    } catch (error) {
+} catch (error) {
       console.error('[VirtualCamera] Failed to capture stream:', error);
     }
 

@@ -198,9 +198,7 @@ export const OmegleMode: React.FC = () => {
 
             // Setup WebRTC event listeners
             webrtc.onRemoteStream((stream) => {
-                stream.getTracks().forEach(track => {
-                });
-                setRemoteStream(stream);
+setRemoteStream(stream);
                 toast.success('Connected to stranger!');
             });
 

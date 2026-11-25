@@ -1,5 +1,5 @@
 // Single responsibility: subscribe to all Zustand stores and expose a unified canvas state snapshot.
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useCanvasStore } from "@/stores/canvas.store";
 import { useMediaStore } from "@/stores/media.store";
@@ -7,10 +7,7 @@ import { useSceneStore } from "@/stores/scene.store";
 import { useUiStore } from "@/stores/ui.store";
 
 export function useCanvasState() {
-  useEffect(() => {
-  }, []);
-
-  // --- Canvas Store ---
+// --- Canvas Store ---
   const {
     layoutMode,
     setLayoutMode,

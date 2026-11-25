@@ -11,10 +11,7 @@ export interface TransitionConfig {
 export class TransitionEngine {
   private rafId: number | null = null;
 
-  constructor() {
-  }
-
-  /**
+/**
    * Run a cross-dissolve transition on the main-thread RAF loop.
    * @param config  Transition type and duration.
    * @param onFrame Called each frame with alpha ∈ [0, 1].
