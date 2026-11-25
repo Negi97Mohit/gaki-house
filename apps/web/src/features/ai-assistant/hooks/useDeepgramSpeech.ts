@@ -7,14 +7,22 @@ import {
 } from "@deepgram/sdk";
 import { useContinuousAudio } from "./useContinuousAudio";
 import { toast } from "sonner";
+import { auth } from "@/lib/firebase";
 
 // DEEPGRAM_API_KEY is server-only. The client fetches a short-lived temporary key
-// from /.netlify/functions/deepgram-token (30-second TTL, speech:write scope only).
+// from /.netlify/functions/deepgram-token (10-second TTL, usage:write scope only).
 const DEEPGRAM_TOKEN_ENDPOINT = "/.netlify/functions/deepgram-token";
 
 async function fetchDeepgramKey(): Promise<string | null> {
   try {
-    const res = await fetch(DEEPGRAM_TOKEN_ENDPOINT);
+    const idToken = await auth.currentUser?.getIdToken();
+    if (!idToken) {
+      console.warn("[useDeepgramSpeech] Signed-in user required for Deepgram token");
+      return null;
+    }
+    const res = await fetch(DEEPGRAM_TOKEN_ENDPOINT, {
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
     if (!res.ok) {
       console.warn("[useDeepgramSpeech] Token endpoint returned", res.status);
       return null;

@@ -22,7 +22,7 @@ pnpm --filter @gaki/web build
 - **Double canvas mirror**: Chromium Bug 754408 blocks `captureStream()` on `OffscreenCanvas`; `BroadcastBus` mirrors onto a hidden main-thread 1920x1080 canvas.
 - **BroadcastBus lifecycle**: Currently tied to `CanvasView`, causing brief stream drops on scene switch.
 - **Z-index tiers**: Some peer/mutually-exclusive layers intentionally share values in `src/lib/zIndex.ts` (`videoPip`/`draggableElement` = 100, HUD triggers = 2020, popovers = 2030, modals = 10000).
-- **Secrets**: `TWITCH_CLIENT_SECRET` and `DEEPGRAM_API_KEY` are server-only in Netlify functions; never prefix secrets with `VITE_`.
+- **Secrets**: `TWITCH_CLIENT_SECRET`, `DEEPGRAM_API_KEY`, `KICK_CLIENT_SECRET` (if used), `ALLOWED_ORIGINS`, and `FIREBASE_WEB_API_KEY` are server-only in Netlify functions (`netlify/functions/`); never prefix secrets with `VITE_`. `deepgram-token.ts`, `twitch-token.ts`, and `kick-proxy.ts` enforce strict origin allowlists and per-IP rate limits (`deepgram-token.ts` also requires a signed-in Firebase ID token and issues 10s `usage:write` keys).
 
 ## "Never" Rules
 - Never hardcode raw `z-index` values outside `src/lib/zIndex.ts`.
