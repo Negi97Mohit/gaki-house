@@ -55,3 +55,4 @@ See [AGENTS.md](AGENTS.md) for the full list. Critical ones:
 ---
 
 > [2026-10-06] Created root CLAUDE.md. Cleaned up stale audit files (audit.md, CLEAN&PROD.md, diagnotis.md, PRODUCTION.md). Agent: Antigravity.
+> [2026-11-25] Phase 2 & 2b cleanup on `chore/agent-friendly-cleanup`: removed dead files, unused deps, consolidated `apps/web/docs/` into `docs/architecture.md` & `docs/decisions/`, untracked `.env` files, and cleaned comment/console noise. Agent: Antigravity.
