@@ -3,7 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*"
+    "./kernel/engine/AudioMixerEngine": "./src/kernel/engine/AudioMixerEngine.ts",
+    "./kernel/engine/BroadcastBus": "./src/kernel/engine/BroadcastBus.ts",
+    "./kernel/engine/BroadcastEncoder": "./src/kernel/engine/BroadcastEncoder.ts",
+    "./kernel/engine/BroadcastLogger": "./src/kernel/engine/BroadcastLogger.ts",
+    "./kernel/engine/EngineWatchdog": "./src/kernel/engine/EngineWatchdog.ts",
+    "./kernel/engine/GLContext": "./src/kernel/engine/GLContext.ts",
+    "./kernel/engine/GLRenderer": "./src/kernel/engine/GLRenderer.ts",
+    "./kernel/engine/SceneGraph": "./src/kernel/engine/SceneGraph.ts",
+    "./kernel/engine/ShaderManager": "./src/kernel/engine/ShaderManager.ts",
+    "./kernel/engine/StateSynchronizer": "./src/kernel/engine/StateSynchronizer.ts",
+    "./kernel/engine/TimeWarp": "./src/kernel/engine/TimeWarp.ts",
+    "./kernel/engine/TransitionEngine": "./src/kernel/engine/TransitionEngine.ts",
+    "./kernel/engine/VideoTexture": "./src/kernel/engine/VideoTexture.ts",
+    "./kernel/engine/shaders/gridShaders": "./src/kernel/engine/shaders/gridShaders.ts",
+    "./kernel/engine/shaders/liquidShader": "./src/kernel/engine/shaders/liquidShader.ts",
+    "./kernel/hooks/useOverlayMediaPool": "./src/kernel/hooks/useOverlayMediaPool.ts",
+    "./obs/OBSParser": "./src/obs/OBSParser.ts",
+    "./obs/OBSSourceMapper": "./src/obs/OBSSourceMapper.ts"
   },
   "dependencies": {
     "@gaki/core": "workspace:*",
@@ -14,6 +31,8 @@
     "react": ">=18.0.0"
   },
   "devDependencies": {
-    "@types/uuid": "^11.0.0"
+    "@types/node": "^22.0.0",
+    "@types/three": "^0.160.0",
+    "@types/uuid": "^10.0.0"
   }
 }
