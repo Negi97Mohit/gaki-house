@@ -19,12 +19,20 @@ export function GoLiveButton({ phase, isLive, endStream, startCountdown }: Props
           e.stopPropagation();
           e.preventDefault();
           if (phase === "countdown") return;
-          isLive ? endStream() : startCountdown();
+          if (isLive) {
+            endStream();
+          } else {
+            startCountdown();
+          }
         }}
         onClick={(e) => {
           e.stopPropagation();
           if (phase === "countdown") return;
-          isLive ? endStream() : startCountdown();
+          if (isLive) {
+            endStream();
+          } else {
+            startCountdown();
+          }
         }}
         disabled={phase === "countdown"}
         aria-label={isLive ? "End stream" : "Go live"}

@@ -8,7 +8,9 @@
     "start": "node index.js",
     "start:signaling": "node signaling-server.js",
     "dev:signaling": "nodemon signaling-server.js",
-    "dev": "node index.js"
+    "dev": "node index.js",
+    "type-check": "echo \"JS service - no tsc\"",
+    "lint": "echo \"no eslint config for api-signaling\""
   },
   "keywords": [],
   "author": "",

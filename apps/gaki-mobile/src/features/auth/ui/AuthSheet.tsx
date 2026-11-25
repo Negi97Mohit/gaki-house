@@ -54,8 +54,9 @@ const AuthSheet = ({ open, onClose }: AuthSheetProps) => {
       setEmail("");
       setPassword("");
       onClose();
-    } catch (err: any) {
-      const code = err?.code || "";
+    } catch (err: unknown) {
+      const authErr = err as { code?: string };
+      const code = authErr?.code || "";
       const messages: Record<string, string> = {
         "auth/email-already-in-use": "This email is already registered.",
         "auth/invalid-email": "Please enter a valid email address.",
@@ -86,9 +87,10 @@ const AuthSheet = ({ open, onClose }: AuthSheetProps) => {
         description: `Welcome, ${credential.user.displayName || "there"}!`,
       });
       onClose();
-    } catch (err: any) {
-      if (err?.code === "auth/popup-closed-by-user") return;
-      const message = err?.message || "Google sign-in failed. Try again.";
+    } catch (err: unknown) {
+      const authErr = err as { code?: string; message?: string };
+      if (authErr?.code === "auth/popup-closed-by-user") return;
+      const message = authErr?.message || "Google sign-in failed. Try again.";
       setError(message);
       toast.error("Google sign-in failed", { description: message });
     } finally {
@@ -109,14 +111,15 @@ const AuthSheet = ({ open, onClose }: AuthSheetProps) => {
         description: "Welcome to Gaki.",
       });
       onClose();
-    } catch (err: any) {
-      if (err?.code === "auth/popup-closed-by-user") return;
+    } catch (err: unknown) {
+      const authErr = err as { code?: string; message?: string };
+      if (authErr?.code === "auth/popup-closed-by-user") return;
       // TODO(mobile): Configure Apple Sign-In Service ID + key file in Firebase console;
       // until then, Firebase throws auth/operation-not-allowed.
       const message =
-        err?.code === "auth/operation-not-allowed"
+        authErr?.code === "auth/operation-not-allowed"
           ? "Apple Sign-In is not yet configured. Use email or Google instead."
-          : err?.message || "Apple sign-in failed. Try again.";
+          : authErr?.message || "Apple sign-in failed. Try again.";
       setError(message);
       toast.error("Apple sign-in failed", { description: message });
     } finally {
@@ -126,7 +129,7 @@ const AuthSheet = ({ open, onClose }: AuthSheetProps) => {
 
   // Drag-to-dismiss handler
   const handleDragEnd = (
-    _: any,
+    _: unknown,
     info: { offset: { y: number }; velocity: { y: number } }
   ) => {
     if (info.offset.y > 100 || info.velocity.y > 500) {

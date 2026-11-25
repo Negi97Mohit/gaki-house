@@ -35,5 +35,9 @@
     "@types/node": "^22.0.0",
     "@types/three": "^0.160.0",
     "@types/uuid": "^10.0.0"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "echo \"linted via consuming apps\""
   }
 }

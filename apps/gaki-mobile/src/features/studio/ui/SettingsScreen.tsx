@@ -8,14 +8,24 @@ import {
   FileJson,
   Smartphone,
   Gauge,
+  type LucideIcon,
 } from "lucide-react";
 import { Switch } from "@gaki/ui/switch";
+
+interface SettingsItem {
+  icon: LucideIcon;
+  label: string;
+  value?: string;
+  chevron?: boolean;
+  toggle?: { value: boolean; set: React.Dispatch<React.SetStateAction<boolean>> };
+  featured?: boolean;
+}
 
 const SettingsScreen = () => {
   const [saveToRoll, setSaveToRoll] = useState(true);
   const [notifications, setNotifications] = useState(true);
 
-  const sections = [
+  const sections: { title: string; items: SettingsItem[] }[] = [
     {
       title: "Broadcast",
       items: [
@@ -78,7 +88,7 @@ const SettingsScreen = () => {
             {section.title}
           </div>
           <div className="rounded-2xl bg-white/30 border border-white/50 overflow-hidden">
-            {section.items.map((item: any, i) => {
+            {section.items.map((item, i) => {
               const Icon = item.icon;
               return (
                 <div

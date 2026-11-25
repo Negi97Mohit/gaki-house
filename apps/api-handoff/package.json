@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit",
+    "lint": "echo \"no eslint config for api-handoff\""
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

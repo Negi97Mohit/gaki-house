@@ -71,5 +71,9 @@
     "lucide-react": "catalog:",
     "next-themes": "^0.2.1",
     "sonner": "catalog:"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "echo \"linted via consuming apps\""
   }
 }

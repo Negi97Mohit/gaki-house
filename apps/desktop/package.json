@@ -11,7 +11,9 @@
   "scripts": {
     "dev": "tsc && electron .",
     "build": "tsc && electron-builder",
-    "release": "tsc && electron-builder --publish always"
+    "release": "tsc && electron-builder --publish always",
+    "type-check": "tsc --noEmit",
+    "lint": "echo \"no eslint config for desktop\""
   },
   "dependencies": {
     "async": "^3.2.6",

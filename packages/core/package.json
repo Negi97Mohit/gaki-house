@@ -37,5 +37,9 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "echo \"linted via consuming apps\""
   }
 }

@@ -1,6 +1,14 @@
 import React from 'react';
 
-const AppLogo = ({ size = 200, color = "#4FD1C5", strokeWidth = 6, className = "" }) => {
+interface AppLogoProps {
+  size?: number;
+  color?: string;
+  strokeWidth?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const AppLogo = ({ size = 200, color = "#4FD1C5", strokeWidth = 6, className = "", style }: AppLogoProps) => {
   return (
     <svg
       width={size}
@@ -9,6 +17,7 @@ const AppLogo = ({ size = 200, color = "#4FD1C5", strokeWidth = 6, className = "
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
+      style={style}
     >
       {/* Outer Square Frame */}
       <rect

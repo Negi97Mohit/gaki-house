@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "lint": "echo \"no eslint config for handoff-sdk\""
   },
   "dependencies": {
     "firebase": "catalog:",

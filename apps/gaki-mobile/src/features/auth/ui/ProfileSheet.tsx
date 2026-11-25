@@ -15,7 +15,14 @@ interface ProfileSheetProps {
 
 type TabType = "content" | "history" | "settings" | "info";
 
-const TabButton = ({ active, onClick, icon, label }: any) => (
+interface TabButtonProps {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}
+
+const TabButton = ({ active, onClick, icon, label }: TabButtonProps) => (
   <button
     onClick={onClick}
     className={cn(
@@ -96,7 +103,14 @@ const SettingsTab = () => (
   </div>
 );
 
-const InfoTab = ({ profile, handleSignOut, signingOut, email }: any) => (
+interface InfoTabProps {
+  profile: { username?: string; created_at?: string | number | Date } | null;
+  handleSignOut: () => void;
+  signingOut: boolean;
+  email: string | null | undefined;
+}
+
+const InfoTab = ({ profile, handleSignOut, signingOut, email }: InfoTabProps) => (
   <div className="pb-8">
     <div className="rounded-2xl bg-neutral-50/80 border border-neutral-100 shadow-sm p-4 mb-4">
       <div className="text-[10px] font-bold tracking-[0.15em] uppercase text-neutral-400 mb-3">

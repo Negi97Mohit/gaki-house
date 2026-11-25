@@ -1,1 +1,9 @@
-{ "name": "@gaki/typescript-config", "version": "1.0.0", "private": true }
+{
+  "name": "@gaki/typescript-config",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "type-check": "echo \"config package\"",
+    "lint": "echo \"config package\""
+  }
+}
