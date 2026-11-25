@@ -1,249 +1,95 @@
-# 🤖 GAKI Monorepo — Agent Standing Orders
-> **For:** Antigravity Agent (persistent workspace instructions)
-> **Goal:** Ship every app in this monorepo to production grade.
-> **Rule #1:** If you are unsure about anything, STOP and read the relevant CLAUDE.md before touching code.
+# GAKI Monorepo — Agent Instructions
+
+Single source of truth for AI agents working in this repository. Before modifying any workspace, also read that workspace's `AGENTS.md` (if present).
 
 ---
 
-## 🔴 MANDATORY BOOT SEQUENCE
-**Every single session, before writing a single line of code:**
+## Purpose
 
-```
-1. Read  →  /CLAUDE.md                          (root monorepo overview)
-2. Read  →  /apps/<relevant-app>/CLAUDE.md      (the app you are working in)
-3. Read  →  /packages/<relevant-pkg>/CLAUDE.md  (any package you will touch)
-4. Scan  →  The 🔴 Known Broken section of every CLAUDE.md you read
-5. Confirm → You understand the current status before proceeding
-```
-
-Do not skip this even if the task seems trivial.
-A 30-second read prevents a 3-hour regression.
-
----
-
-## 📍 MONOREPO MAP
-This is a **pnpm monorepo** using **Turborepo**.
-
-### Apps
-| Path | What It Is | CLAUDE.md |
-|---|---|---|
-| `apps/web` | Main browser studio — React/Vite broadcast mixer | ✅ Exists |
-| `apps/gaki-mobile` | Mobile PWA — remote stream deck + camera source | ✅ Exists |
-| `apps/desktop` | Electron wrapper around `apps/web` + FFmpeg pipe | ✅ Exists |
-| `apps/api-handoff` | Express server — vends LiveKit tokens for handoff sessions | ✅ Exists |
-| `apps/api-signaling` | Socket.io WebRTC broker — powers Omegle Mode matching | ✅ Exists |
-| `apps/ml-backend` | Modal FastAPI — T4 GPU inference + ML-Sharp bridge | ✅ Exists |
-
-### Packages
-| Path | What It Is | CLAUDE.md |
-|---|---|---|
-| `packages/core` | Shared types, constants, utility hooks | ✅ Exists |
-| `packages/engine` | WebGL/Canvas/Audio kernel pipeline | ✅ Exists |
-| `packages/handoff-sdk` | Cross-device streaming coordination SDK | ✅ Exists |
-| `packages/ui` | Radix UI component library | ✅ Exists |
-
-**Never** treat these as independent projects. Every change can cascade.
+A **pnpm** + **Turborepo** monorepo for the GAKI live-streaming platform:
+- `apps/web` — Main browser studio (React/Vite broadcast mixer, canvas compositor, multi-platform streaming)
+- `apps/gaki-mobile` — Mobile PWA (remote stream deck + camera source)
+- `apps/desktop` — Electron wrapper around `apps/web` + native FFmpeg pipe
+- `apps/api-handoff` — Express server vending LiveKit tokens for handoff sessions
+- `apps/api-signaling` — Socket.io WebRTC broker for Omegle Mode matching
+- `apps/ml-backend` — Modal FastAPI service for T4 GPU inference + ML-Sharp bridge
+- `packages/core` — Shared types, constants, and utility hooks (leaf package)
+- `packages/engine` — WebGL/Canvas/Audio kernel pipeline (`BroadcastBus`, OBS parser)
+- `packages/handoff-sdk` — Cross-device streaming coordination SDK
+- `packages/ui` — Radix UI component library
+- `packages/config-typescript` — Shared TypeScript base configs
 
 ---
 
-## 🧠 HOW TO THINK ABOUT EVERY TASK
+## Commands
 
-Before writing a single line of code, answer these 5 questions in your reasoning:
+Run from the monorepo root:
 
-```
-1. SCOPE    — Which apps AND packages does this task touch?
-2. STATUS   — What does the CLAUDE.md say about the current state of that area?
-3. RISK     — What is in the 🚫 "Do Not Touch" section that is nearby?
-4. CONTRACT — What does this module expose to other apps? Will I break it?
-5. GOAL     — Does my solution move this toward production grade, or just patch?
-```
-
-If you cannot answer all 5, read more code before acting.
-
----
-
-## 🏗️ PRODUCTION GRADE DEFINITION
-> A feature is **production grade** when ALL of the following are true:
-
-- [ ] No `console.log`, `TODO`, `FIXME`, or `throw new Error("not implemented")` in the hot path
-- [ ] No hardcoded secrets, test keys, or localhost URLs (except documented OAuth exceptions)
-- [ ] Error states are handled — network failures, permission denials, stream drops, GPU timeouts
-- [ ] No silent failures — the user sees clear feedback when something goes wrong
-- [ ] TypeScript strict mode passes with zero `any` escapes in new code
-- [ ] Environment variables are validated at startup with a clear error if missing
-- [ ] The relevant CLAUDE.md status is updated to 🟢
-- [ ] If you added a workaround or non-obvious pattern, it is in 🧠 Business Logic
-
----
-
-## 🎯 CURRENT PRODUCTION TARGETS (Priority Order)
-
-Work top-to-bottom. Do not start a lower priority while a higher one is 🔴.
-Update this table in the CLAUDE.md after every task that changes a status.
-
-| # | Target | Touches | Status | Done When |
-|---|---|---|---|---|
-| 1 | Seamless scene transitions | `apps/web`, `packages/engine` | 🔴 BROKEN | `BroadcastBus` survives scene switches, zero stream drop |
-| 2 | Cross-device handoff lifecycle | `apps/web`, `apps/api-handoff`, `packages/handoff-sdk` | 🟡 UNSTABLE | Full start → transfer → resume with no dropped frames or auth failures |
-| 3 | Desktop Electron build | `apps/desktop` | 🟡 UNKNOWN | Clean build, auto-update working, native window capture confirmed |
-| 4 | Mobile streaming client | `apps/gaki-mobile` | 🟡 UNKNOWN | Go-live from mobile with camera + effects confirmed working end-to-end |
-| 5 | ML backend integration | `apps/ml-backend`, `apps/web` | 🟡 UNKNOWN | At least one ML feature returning real inference from Modal in production |
-| 6 | Signaling server hardening | `apps/api-signaling` | 🟡 UNKNOWN | Connection drops handled, rooms cleaned up, deployed with health checks |
-
----
-
-## 🔁 AFTER EVERY COMPLETED TASK — UPDATE THE CLAUDE.md
-
-This is **not optional**. After every task, for every CLAUDE.md of every file you touched:
-
-```
-1. Update the status of any feature you changed   (🔴 → 🟡 → 🟢)
-2. If you discovered a non-obvious behavior       → add it to 🧠 Business Logic
-3. If you found a new fragile pattern             → add it to 🚫 What NOT to Touch
-4. If you fixed a 🔴 Known Broken item           → move it to 🟢 Working Features
-5. If you introduced a new feature or file        → add it to 📁 Directory Map
-6. Append a changelog line at the bottom:
-```
-
-```
-> [YYYY-MM-DD] Fixed X in file Y. Status: 🔴 → 🟢. Agent: Antigravity.
-```
-
-If the CLAUDE.md was not updated, **the task is not done.**
-
----
-
-## 🚨 WHEN YOU ARE STUCK — RECOVERY PROTOCOL
-
-Run these steps in order. Stop at the first one that unblocks you.
-
-```
-STEP 1 → Re-read 🧠 Business Logic in the relevant CLAUDE.md.
-          The answer is probably already documented.
-
-STEP 2 → Search the codebase for the exact error message or function name.
-          Look for other call sites — the pattern is likely used elsewhere.
-
-STEP 3 → Check 🔴 Known Broken.
-          You may be hitting a documented bug, not one you introduced.
-
-STEP 4 → Read the primary Zustand store for the feature area.
-          Stores in src/stores/ are the source of truth. Start there.
-
-STEP 5 → Check if the behavior differs between Electron and Web.
-          Look for `window.__IS_ELECTRON__` guards — many bugs are env-specific.
-
-STEP 6 → Check cross-app contracts.
-          If the bug is in api-handoff or api-signaling, check what apps/web
-          and packages/handoff-sdk expect from those services.
-
-STEP 7 → If you are about to break a 🚫 rule, STOP.
-          Document why the rule should change. Do not silently break it.
+```bash
+pnpm install              # Install all workspace dependencies
+pnpm check                # Run type-check, lint, and test across all workspaces
+pnpm boundary-check       # Verify package boundaries & zero cycles (dependency-cruiser)
+pnpm build                # Build all workspaces via Turborepo
+pnpm type-check           # Run TypeScript checks across all workspaces
+pnpm lint                 # Run ESLint across all workspaces
+pnpm test                 # Run Vitest test suites across all workspaces
+pnpm --filter @gaki/web dev
+pnpm --filter @gaki/mobile dev
 ```
 
 ---
 
-## ⚙️ MONOREPO RULES — NEVER BREAK THESE
+## Boundaries
 
-### Package Management
-- **Never** `npm install` inside an app. Use `pnpm add` from the monorepo root.
-- **Never** duplicate a utility that exists in `@gaki/core` or `@gaki/ui`.
-- **Always** check `packages/core/src/types/` before defining a new TypeScript type.
-- New shared utilities belong in `packages/core`, not inside any app.
-
-### State Management (`apps/web`, `apps/gaki-mobile`)
-- Global state lives in Zustand stores (`src/stores/`). Do not create React Context for global state.
-- For high-frequency updates (pointer, audio frame ticks), use `store.subscribe()` not React re-renders.
-- Stores are the single source of truth. If UI and store disagree, fix the store, not the UI.
-
-### Z-Index (`apps/web`)
-- **Never** write a raw `z-index` number in CSS or Tailwind anywhere.
-- All z-index values live in `apps/web/src/lib/zIndex.ts` as named constants.
-- Adding a new visual layer = add a named constant first, then use it.
-
-### Audio DSP (`apps/web` — `stream.service.ts`)
-- Do not modify noise gate thresholds, attack/release times, or the -48/-40 dBFS rules.
-- These were tuned to fix audio chopping and breathing artifacts in production.
-- Audio routing changes can cause feedback loops that are invisible in dev.
-
-### WebGL / OffscreenCanvas (`packages/engine`)
-- Do not **copy** the OffscreenCanvas. It must be **transferred** via `transferControlToOffscreen()`.
-- Do not re-instantiate `BroadcastBus` inside React component renders.
-- `BroadcastBus` must live above the scene tree and survive scene switches.
-
-### Electron OAuth (`apps/desktop`)
-- The Google OAuth redirect must remain `http://localhost:3456`.
-- Custom domains fail silently inside Electron wrappers. Do not change this.
-
-### LiveKit / Handoff (`apps/api-handoff`, `packages/handoff-sdk`)
-- Tokens are short-lived. Do not cache them client-side between sessions.
-- The handoff coordinator assumes a single active room per device pair. Do not create parallel rooms.
-
-### ML Backend (`apps/ml-backend`)
-- Modal cold starts can take 10–30 seconds on T4 GPU containers. The client must handle this with a timeout and user feedback, not a silent spinner.
-- The ML-Sharp subprocess is Apple Silicon only. Do not call it in the Modal cloud container path.
-
-### Environment Variables (all apps)
-- Never hardcode a key anywhere.
-- Every new env var must be added to the app's `.env.example` with a comment explaining its purpose.
-- Apps must validate required env vars at startup and throw a named error if missing.
+Enforced by `.dependency-cruiser.cjs` (`pnpm boundary-check`):
+1. **No circular package dependencies** (`@gaki/core` <-> `@gaki/ui` or any other cycle is forbidden).
+2. **Packages never import from apps** (no `packages/*` -> `apps/*` or `@/...` app alias inside packages).
+3. **Use explicit `exports` maps**: Import package subpaths declared in each package's `package.json` `exports` field (e.g. `@gaki/core/lib/utils`, `@gaki/ui/button`). Do **not** create barrel `index.ts` files (`docs/decisions/no-barrel-exports.md`).
+4. **Shared dependencies**: Declare shared versions in `pnpm-workspace.yaml` `catalog:` and reference `"catalog:"` in workspace `package.json` files. Each package must declare the dependencies it imports itself.
 
 ---
 
-## 📝 STATUS LEGEND
-Use these consistently across every CLAUDE.md in the monorepo:
+## Gotchas
 
-| Icon | Meaning |
-|---|---|
-| 🟢 **PRODUCTION** | Working in production, no known issues |
-| 🟡 **UNSTABLE** | Works in dev or partially, known prod issues |
-| 🟡 **UNKNOWN** | Cannot verify without running the app |
-| 🟡 **IN PROGRESS** | Actively being built, not yet shippable |
-| 🔴 **BROKEN** | Does not work, documented bug |
-| 🔴 **DISABLED** | Intentionally off, needs work to re-enable |
-| ⚫ **STUB** | File exists, logic not implemented |
+- **Audio DSP**: Noise gate thresholds, attack/release times, and `-48/-40 dBFS` rules in `apps/web/src/features/stream/services/stream-audio-dsp.ts` and `stream.service.ts` are production-tuned (`docs/decisions/audio-dsp-no-touch.md`).
+- **Audio feedback**: `stream.service.ts` routes mic sidetone to `monitorGain` (default 0), never system audio, to prevent loopback feedback.
+- **OffscreenCanvas**: Must be **transferred** via `transferControlToOffscreen()`, never copied.
+- **BroadcastBus**: Currently tied to `CanvasView` and re-instantiates on scene switches (known issue causing brief stream drops). Do not instantiate `BroadcastBus` inside React render cycles.
+- **Electron OAuth**: Google OAuth redirect inside `apps/desktop` must stay `http://localhost:3456`; custom domains fail inside Electron wrappers.
+- **Modal cold starts**: `apps/ml-backend` T4 GPU containers take 10–30s on cold start; clients must handle timeouts with user feedback.
+- **Secrets**: Server-only secrets (`TWITCH_CLIENT_SECRET`, `KICK_CLIENT_SECRET`, `DEEPGRAM_API_KEY`) must never use the `VITE_` prefix. Browser clients obtain short-lived tokens from Netlify functions (`apps/web/netlify/functions/`).
 
 ---
 
-## ✅ TASK COMPLETE TEMPLATE
-End **every** response with this block. No exceptions.
+## "Never" Rules
 
-```
-## ✅ Task Complete
-
-**Files modified:**
-  - path/to/file.ts — what changed
-
-**CLAUDE.md updated:** YES / NO
-  - If NO: reason why
-
-**Status changes:**
-  - `FeatureName` in `apps/X` → was 🔴, now 🟡 (what changed and why)
-
-**Remaining blockers:**
-  - Anything still broken, at risk, or dependent on another task
-
-**Next recommended task:**
-  - What to do next, referencing the priority table above
-```
+1. Never run `npm install` inside an app or package directory — use `pnpm add` from the root.
+2. Never hardcode a raw `z-index` number in CSS or Tailwind — use `apps/web/src/lib/zIndex.ts`.
+3. Never modify audio DSP constants in `stream.service.ts` / `stream-audio-dsp.ts` without explicit instruction.
+4. Never copy an `OffscreenCanvas` instead of transferring it via `transferControlToOffscreen()`.
+5. Never re-instantiate `BroadcastBus` inside a React render cycle.
+6. Never change the Electron OAuth redirect away from `http://localhost:3456`.
+7. Never call the Apple Silicon ML-Sharp subprocess in a non-Modal path or expose secrets in `VITE_*` variables or committed `.env` files.
+8. Never create barrel `index.ts` files in `packages/*`.
+9. Never increase `@gaki/web` ESLint warnings past the `--max-warnings` ceiling.
 
 ---
 
-## ☠️ HARD STOPS — NEVER DO THESE UNDER ANY CIRCUMSTANCES
+## Common Mistakes
 
-1. Modifying audio DSP constants in `stream.service.ts` without explicit user instruction
-2. Writing a raw `z-index` number anywhere outside `zIndex.ts`
-3. Copying instead of transferring the OffscreenCanvas
-4. Running `npm install` inside any app directory
-5. Changing the Electron OAuth redirect away from `localhost:3456`
-6. Re-instantiating `BroadcastBus` inside a React component render cycle
-7. Calling the ML-Sharp Apple Silicon subprocess from the Modal cloud path
-8. Storing secrets in source code or committing a real `.env` file
-9. Finishing a task without updating the relevant CLAUDE.md
-10. Skipping the boot sequence because the task "seems small"
+- **Importing `@/...` inside `packages/*`**: `@/` resolves to `apps/web/src/`. Always import from `@gaki/core/*` or relative paths inside packages.
+- **Adding `React.Context` for global state**: Global state belongs in Zustand stores (`src/stores/`). For high-frequency updates (pointer, audio ticks), use `store.subscribe()` instead of React re-renders.
+- **Relying on hoisted dependencies**: Always declare imported packages in the importing workspace's own `package.json`.
+- **Caching LiveKit handoff tokens client-side**: Tokens are short-lived and scoped per session; fetch fresh tokens from `api-handoff`.
+- **Checking `.env` values**: Never print or commit real `.env` values; document required keys in `.env.example`.
 
 ---
 
-*This file is the agent's standing orders. It does not expire.*
-*Treat it as law until the user explicitly revises it.*
-*Last updated: 2026-05-10*
+## Current Production Priorities
+
+1. **Seamless scene transitions** (`apps/web`, `packages/engine`) — Lift `BroadcastBus` above `CanvasView` so it survives scene switches.
+2. **Cross-device handoff lifecycle** (`apps/web`, `apps/api-handoff`, `packages/handoff-sdk`) — Stabilize full start -> transfer -> resume.
+3. **Desktop Electron build** (`apps/desktop`) — Verify auto-update and native window capture end-to-end.
+4. **Mobile streaming client** (`apps/gaki-mobile`) — Verify go-live with camera + effects end-to-end.
+5. **ML backend integration** (`apps/ml-backend`, `apps/web`) — Verify production Modal inference.
+6. **Signaling server hardening** (`apps/api-signaling`) — Connection drop handling, room cleanup, health checks.
