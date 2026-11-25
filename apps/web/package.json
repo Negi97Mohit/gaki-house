@@ -14,7 +14,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "analyze": "vite-bundle-visualizer"
+    "analyze": "vite-bundle-visualizer",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@deepgram/sdk": "^4.11.2",
@@ -122,6 +124,8 @@
     "typescript-eslint": "catalog:",
     "vite": "catalog:",
     "vite-bundle-visualizer": "^1.2.1",
+    "vitest": "catalog:",
+    "jsdom": "catalog:",
     "wait-on": "^9.0.3"
   },
   "workspaces": [

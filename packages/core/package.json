@@ -38,8 +38,13 @@
   "peerDependencies": {
     "react": ">=18.0.0"
   },
+  "devDependencies": {
+    "vitest": "catalog:"
+  },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "echo \"linted via consuming apps\""
+    "lint": "echo \"linted via consuming apps\"",
+    "test": "vitest run",
+    "test:watch": "vitest"
   }
 }
