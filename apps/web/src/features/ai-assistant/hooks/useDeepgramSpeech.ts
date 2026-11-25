@@ -8,7 +8,24 @@ import {
 import { useContinuousAudio } from "./useContinuousAudio";
 import { toast } from "sonner";
 
-const DEEPGRAM_API_KEY = import.meta.env.VITE_DEEPGRAM_API_KEY;
+// DEEPGRAM_API_KEY is server-only. The client fetches a short-lived temporary key
+// from /.netlify/functions/deepgram-token (30-second TTL, speech:write scope only).
+const DEEPGRAM_TOKEN_ENDPOINT = "/.netlify/functions/deepgram-token";
+
+async function fetchDeepgramKey(): Promise<string | null> {
+  try {
+    const res = await fetch(DEEPGRAM_TOKEN_ENDPOINT);
+    if (!res.ok) {
+      console.warn("[useDeepgramSpeech] Token endpoint returned", res.status);
+      return null;
+    }
+    const data = (await res.json()) as { key?: string };
+    return data.key ?? null;
+  } catch (err) {
+    console.warn("[useDeepgramSpeech] Failed to fetch token:", err);
+    return null;
+  }
+}
 
 interface UseDeepgramSpeechProps {
   onPartialTranscript: (transcript: string) => void;
@@ -63,13 +80,14 @@ export const useDeepgramSpeech = ({
     captureRefs.current = { startCapture, stopCapture };
   }, [startCapture, stopCapture]);
 
-  const startRecognition = useCallback(() => {
+  const startRecognition = useCallback(async () => {
     if (connectionRef.current) {
       return;
     }
 
-    if (!DEEPGRAM_API_KEY) {
-      console.warn("[useDeepgramSpeech] Missing API Key");
+    const apiKey = await fetchDeepgramKey();
+    if (!apiKey) {
+      console.warn("[useDeepgramSpeech] Could not obtain Deepgram key");
       return;
     }
 
@@ -77,7 +95,7 @@ export const useDeepgramSpeech = ({
       const currentId = Date.now();
       connectionIdRef.current = currentId;
 
-      const deepgram = createClient(DEEPGRAM_API_KEY);
+      const deepgram = createClient(apiKey);
 
       const connection = deepgram.listen.live({
         model: "nova-2",
