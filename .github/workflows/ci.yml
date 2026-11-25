@@ -8,7 +8,7 @@ on:
 
 jobs:
   checks:
-    name: Boundaries, Type-Check & Build
+    name: Env, Boundaries, Check & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -26,8 +26,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check .env.example parity & secrets
+        run: pnpm env-check
+
       - name: Check package boundaries
         run: pnpm boundary-check
 
-      - name: Build monorepo
-        run: pnpm build
+      - name: Run type-check, lint, and tests
+        run: pnpm check
+
+      - name: Build web and mobile apps
+        run: pnpm --filter @gaki/web --filter @gaki/mobile build
+
+      - name: Dead code report (knip)
+        continue-on-error: true
+        run: pnpm dead-code

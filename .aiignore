@@ -1,0 +1,33 @@
+# Dependencies & build artifacts
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+release/
+**/release/
+.turbo/
+**/.turbo/
+coverage/
+**/coverage/
+
+# Lockfile & generated binaries
+pnpm-lock.yaml
+*.exe
+*.blockmap
+*.log
+
+# Local environment secrets (never read or expose)
+.env
+**/.env
+.env.local
+**/.env.local
+.env.*.local
+**/.env.*.local
+!.env.example
+!**/.env.example
+
+# ML weights & large media
+apps/ml-backend/**/weights/
+*.ply
+*.mp4
+*.webm

@@ -16,10 +16,15 @@
     "test": "turbo run test",
     "check": "turbo run type-check lint test",
     "boundary-check": "depcruise --config .dependency-cruiser.cjs apps/web/src apps/gaki-mobile/src packages/core/src packages/engine/src packages/ui/src",
+    "env-check": "node scripts/check-env-examples.mjs",
+    "dead-code": "knip",
+    "prepare": "husky",
     "clean": "turbo run clean"
   },
   "devDependencies": {
     "dependency-cruiser": "^18.9.0",
+    "husky": "^9.1.7",
+    "knip": "^6.48.0",
     "turbo": "latest"
   },
   "packageManager": "pnpm@10.33.0",
