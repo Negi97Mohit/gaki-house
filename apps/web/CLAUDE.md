@@ -69,9 +69,13 @@ The core React/Vite application for the GAKI live streaming studio. It acts as t
 - **Offscreen Canvas Transfer:** Do not interfere with how `canvas.worker.ts` receives control via `transferControlToOffscreen()`. It is fragile and can easily crash the WebGL context if copied instead of transferred.
 
 ## 🧪 Testing
-- **How to run tests:** TypeScript checks are run via `npm run type-check`.
-- **What's covered:** 🟡 UNKNOWN. There appears to be no automated unit testing (Vitest/Jest) configured directly in this package. 
-- **What has no tests but should:** `stream.service.ts` logic, `obsParser.ts` coordinate mapping, and audio graph routing.
+- **How to run tests:** `pnpm test` (vitest run) or `pnpm type-check`
+- **Config:** `vitest.config.ts` — jsdom environment, path alias `@` → `src/`
+- **What's covered:** 🟢 Smoke tests added in Phase 3.7:
+  - `src/__tests__/zIndex.smoke.test.ts` — Regression guard: all z-index constants must be unique positive integers. **Found and fixed 8 duplicates on first run.**
+  - `src/__tests__/sceneDefaults.smoke.test.ts` — `createDefaultScene()` shape and default field values
+  - `src/__tests__/theme.store.smoke.test.ts` — `useThemeStore` initial state, `setTheme`, `toggleMode`
+- **What has no tests but should:** `stream.service.ts` logic, `obsParser.ts` coordinate mapping, audio graph routing.
 
 ## 🚀 Deployment
 - **Where this app is deployed:** Netlify (for web access) and bundled into an Electron app (`apps/desktop`).
@@ -107,5 +111,5 @@ The core React/Vite application for the GAKI live streaming studio. It acts as t
 > [2026-10-07] Refined PlatformTopNav: moved Studio return button before Sign In, gated notifications to authenticated users only, and styled Go Live button with #53cac7 border and non-white background. Status: 🟢 PRODUCTION. Agent: Antigravity.
 > [2026-10-07] Redesigned AuthModal with clean, chic, minimal Vogue modern styling: adaptive light/dark mode typography, click-outside-to-close with mousedown handler, and elegant circular close button with fine stroke icon. Build verified. Status: 🟢 PRODUCTION. Agent: Antigravity.
 > [2026-10-07] Refined AuthModal: fixed layout shift so modal size remains rock-solid when toggling between Sign In and Sign Up, added Gaki AppLogo brand header, enhanced mobile-to-desktop viewport responsiveness, and polished inputs with chic sharp borders and subtle teal focus indicators. Build verified. Status: 🟢 PRODUCTION. Agent: Antigravity.
-> [2026-10-07] Redesigned AuthModal with sharp modern architectural aesthetic: converted inputs and action buttons to crisp sharp corners (`rounded`), moved 'Continue with Google' button to the bottom beneath the email/password form and divider, rendered official Gaki AppLogo (`#53cac7`, stroke width 6) in both Auth and Profile Setup steps with clean sharp close button, and verified clean build (`pnpm --filter @gaki/web build`). Status: 🟢 PRODUCTION. Agent: Antigravity.
+> [2026-11-25] Phase 3 (agent-friendly cleanup) on `chore/agent-friendly-cleanup`: exports maps, boundary enforcement (dependency-cruiser, 0 violations), core↔ui cycle broken, 10 largest files split into modules, pnpm catalog (36 deps), lint/type-check scripts added to all 12 workspaces, 17 mobile lint errors fixed. Phase 3.7: added 36 smoke tests across core/engine/web; fixed 8 duplicate z-index values discovered by new regression guard. Status: 🟢 PRODUCTION. Agent: Antigravity.
 

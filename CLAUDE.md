@@ -43,6 +43,10 @@ pnpm install                                          # Install all deps
 pnpm turbo run dev --filter=web                       # Dev the web studio
 pnpm turbo run dev --filter=web --filter=api-signaling # Dev with signaling
 pnpm turbo run build --filter=desktop                 # Build Electron
+pnpm turbo run test                                   # Run all smoke tests (36 tests, 10 tasks)
+pnpm turbo run type-check                             # Type-check all 12 packages
+pnpm turbo run lint                                   # Lint all packages
+pnpm boundary-check                                   # dependency-cruiser (0 violations)
 ```
 
 ## 🚫 Monorepo Rules
@@ -56,3 +60,4 @@ See [AGENTS.md](AGENTS.md) for the full list. Critical ones:
 
 > [2026-10-06] Created root CLAUDE.md. Cleaned up stale audit files (audit.md, CLEAN&PROD.md, diagnotis.md, PRODUCTION.md). Agent: Antigravity.
 > [2026-11-25] Phase 2 & 2b cleanup on `chore/agent-friendly-cleanup`: removed dead files, unused deps, consolidated `apps/web/docs/` into `docs/architecture.md` & `docs/decisions/`, untracked `.env` files, and cleaned comment/console noise. Agent: Antigravity.
+> [2026-11-25] Phase 3 on `chore/agent-friendly-cleanup`: exports maps for all packages, dependency-cruiser boundary enforcement (0 violations/790 modules), core↔ui cycle broken via toast type extraction, 10 largest files split into modules, pnpm catalog (36 shared deps), lint/type-check scripts across all 12 workspaces, 17 mobile lint errors fixed. Phase 3.7: 36 smoke tests (core: 18, engine: 4, web: 13, mobile: 1); fixed 8 pre-existing duplicate z-index values. pnpm turbo run test: 10/10 tasks pass. Agent: Antigravity.
