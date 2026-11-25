@@ -12,9 +12,11 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
+    "boundary-check": "depcruise --config .dependency-cruiser.cjs apps/web/src apps/gaki-mobile/src packages/core/src packages/engine/src packages/ui/src",
     "clean": "turbo run clean"
   },
   "devDependencies": {
+    "dependency-cruiser": "^18.9.0",
     "turbo": "latest"
   },
   "packageManager": "pnpm@10.33.0",
