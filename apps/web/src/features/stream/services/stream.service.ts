@@ -3,27 +3,23 @@ import { notify } from "@gaki/core/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
-import fixWebmDuration from "fix-webm-duration";
 import { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
 import { AudioMixerEngine } from "@gaki/engine/kernel/engine/AudioMixerEngine";
 import { BroadcastEncoder } from "@gaki/engine/kernel/engine/BroadcastEncoder";
+import type { ElectronWindow } from "./stream.types";
+import {
+  createAudioGate,
+  createMicFilterChain,
+  createPeakLimiter,
+} from "./stream-audio-dsp";
+import {
+  getSupportedMimeType,
+  saveFixedWebmRecording,
+} from "./stream-recording";
 
 export const USE_KERNEL_PIPELINE = false;
 
 const SERVER_URL = "http://localhost:3000";
-
-interface ElectronWindow {
-  electron?: {
-    getDesktopSources: (options: any) => Promise<any[]>;
-    getAppWindowId: () => Promise<string | null>;
-    stream: {
-      start: (config: any) => void;
-      sendData: (chunk: ArrayBuffer) => void;
-      stop: (config?: any) => void;
-      onStatus: (callback: (data: any) => void) => void;
-    };
-  };
-}
 
 class StreamService {
   private static instance: StreamService;
@@ -418,7 +414,7 @@ class StreamService {
     // ─── Peak limiter on the master bus ───────────────────────────────────────
     // Sits between all sources and the stream destination.
     // Prevents digital clipping when combined levels exceed 0 dBFS.
-    const masterLimiter = this.createPeakLimiter(ctx);
+    const masterLimiter = createPeakLimiter(ctx);
     masterLimiter.connect(this.audioDestination);
 
     // ─── Monitor gain (self-hearing / sidetone) ───────────────────────────────
@@ -440,7 +436,7 @@ class StreamService {
     //    Also tapped to monitorGain so the streamer can hear themselves.
     if (this.micStream && this.micStream.getAudioTracks().length > 0) {
       const micSource = ctx.createMediaStreamSource(this.micStream);
-      const micChain  = this.createMicFilterChain(ctx, micSource);
+      const micChain  = createMicFilterChain(ctx, micSource, this._gateIntervals);
 
       const micGain = ctx.createGain();
       micGain.gain.value = 1.0;
@@ -471,7 +467,7 @@ class StreamService {
       // a slightly higher threshold (-40 dBFS vs -48 dBFS for mic).
       // Fast attack (5ms) so music/game audio isn't chopped at the start.
       // Longer release (200ms) so decaying sounds aren't cut off abruptly.
-      const sysGate = this.createAudioGate(ctx, -40, 0.005, 0.200);
+      const sysGate = createAudioGate(ctx, this._gateIntervals, -40, 0.005, 0.200);
 
       // Compressor evens out the bursty chunks that desktop loopback produces.
       const compressor = ctx.createDynamicsCompressor();
@@ -492,110 +488,6 @@ class StreamService {
       sysGain.connect(masterLimiter);
       // ✗ NOT connected to monitorGain — prevents the feedback/double-capture loop
     }
-  }
-
-  /**
-   * Builds the mic processing chain:
-   *   micSource → [60Hz notch] → [80Hz HPF] → [noise gate] → output GainNode
-   *
-   * Returns the output GainNode. Connect it to stream destination and/or monitor.
-   */
-  private createMicFilterChain(
-    ctx: AudioContext,
-    micSource: MediaStreamAudioSourceNode,
-    thresholdDb: number = -48,
-  ): GainNode {
-    // 60Hz notch — kills electrical ground-loop hum
-    const notch = ctx.createBiquadFilter();
-    notch.type = 'notch';
-    notch.frequency.value = 60; // change to 50 for EU power grids
-    notch.Q.value = 10;
-
-    // 80Hz high-pass — kills low rumble / keyboard / desk thuds
-    const hpf = ctx.createBiquadFilter();
-    hpf.type = 'highpass';
-    hpf.frequency.value = 80;
-    hpf.Q.value = 0.707; // Butterworth — flat response above cutoff
-
-    // Noise gate via the shared helper
-    const gate = this.createAudioGate(ctx, thresholdDb, 0.010, 0.120);
-
-    // Wire: micSource → notch → hpf → gate.input ; gate.output returned
-    micSource.connect(notch);
-    notch.connect(hpf);
-    hpf.connect(gate.input);
-
-    return gate.output;
-  }
-
-  /**
-   * Generic noise gate — works for any audio source.
-   *
-   * Returns { input, output } so the caller can splice it into any chain:
-   *   upstream.connect(gate.input);
-   *   gate.output.connect(downstream);
-   *
-   * How it works:
-   *   - An AnalyserNode taps the input to measure RMS every 16ms.
-   *   - When RMS (in dBFS) rises above thresholdDb the output GainNode
-   *     ramps to 1.0 with attackTc time-constant.
-   *   - When RMS falls back below the threshold it ramps to 0 with releaseTc.
-   *   - This cleanly silences static / loopback hiss between real audio events.
-   */
-  private createAudioGate(
-    ctx: AudioContext,
-    thresholdDb: number,  // e.g. -48 for mic, -40 for system audio
-    attackTc:  number,    // seconds  (e.g. 0.010)
-    releaseTc: number,    // seconds  (e.g. 0.120)
-  ): { input: AnalyserNode; output: GainNode } {
-    const analyser = ctx.createAnalyser();
-    analyser.fftSize = 256;
-    const rmsBuffer = new Float32Array(analyser.frequencyBinCount);
-
-    const gateGain = ctx.createGain();
-    gateGain.gain.value = 0; // closed by default
-
-    // The analyser node acts as both the measurement tap AND the audio passthrough
-    // to gateGain — the gate gain controls whether audio flows out.
-    analyser.connect(gateGain);
-
-    let gateOpen = false;
-    const id = setInterval(() => {
-      if (ctx.state === 'closed') return;
-      analyser.getFloatTimeDomainData(rmsBuffer);
-      const rms = Math.sqrt(
-        rmsBuffer.reduce((sum, v) => sum + v * v, 0) / rmsBuffer.length,
-      );
-      const dbFS = 20 * Math.log10(Math.max(rms, 1e-10));
-      const shouldOpen = dbFS > thresholdDb;
-
-      if (shouldOpen && !gateOpen) {
-        gateGain.gain.setTargetAtTime(1, ctx.currentTime, attackTc);
-        gateOpen = true;
-      } else if (!shouldOpen && gateOpen) {
-        gateGain.gain.setTargetAtTime(0, ctx.currentTime, releaseTc);
-        gateOpen = false;
-      }
-    }, 16);
-
-    this._gateIntervals.push(id);
-
-    return { input: analyser, output: gateGain };
-  }
-
-  /**
-   * Peak limiter on the master bus.
-   * Prevents digital clipping when mic + system audio sum above 0 dBFS.
-   * High ratio (20:1) approximates a brick-wall limiter.
-   */
-  private createPeakLimiter(ctx: AudioContext): DynamicsCompressorNode {
-    const limiter = ctx.createDynamicsCompressor();
-    limiter.threshold.value = -1.0;  // 1 dBFS below digital ceiling
-    limiter.knee.value       = 0;    // hard knee — true limiting behaviour
-    limiter.ratio.value      = 20;   // 20:1 ≈ brick-wall
-    limiter.attack.value     = 0.001; // 1ms — catches transients before they clip
-    limiter.release.value    = 0.1;   // 100ms
-    return limiter;
   }
 
   /**
@@ -1086,52 +978,14 @@ class StreamService {
   }
 
   private async downloadRecording() {
-    if (this.recordedChunks.length === 0) return;
-
-    try {
-      const blob = new Blob(this.recordedChunks, {
-        type: this.localRecorder?.mimeType || "video/webm",
-      });
-
-      // Calculate duration
-      const duration = this.recordingStartTime
-        ? Date.now() - this.recordingStartTime
-        : 0;
-
-      // Fix metadata
-      const fixedBlob = await new Promise<Blob>((resolve) => {
-        fixWebmDuration(blob, duration, (fixed) => {
-          resolve(fixed);
-        });
-      });
-
-      // Electron specific save or Web download
-      const isElectron = !!(window as ElectronWindow).electron;
-
-      if (isElectron) {
-        this.triggerBrowserDownload(fixedBlob);
-      } else {
-        this.triggerBrowserDownload(fixedBlob);
-      }
-
+    const saved = await saveFixedWebmRecording(
+      this.recordedChunks,
+      this.localRecorder?.mimeType,
+      this.recordingStartTime,
+    );
+    if (saved) {
       this.recordedChunks = [];
-    } catch (e) {
-      console.error("Failed to download recording", e);
-      notify.error("Failed to save recording");
     }
-  }
-
-  private triggerBrowserDownload(blob: Blob) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style.display = "none";
-    a.href = url;
-    a.download = `recording-${new Date().toISOString().replace(/:/g, "-")}.webm`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-    notify.success("Recording saved!");
   }
 
   private recordingTimer: NodeJS.Timeout | null = null;
@@ -1155,13 +1009,7 @@ class StreamService {
 
   // --- Utils ---
   private getSupportedMimeType(): string {
-    const types = [
-      "video/webm; codecs=h264",
-      "video/webm; codecs=vp9",
-      "video/webm; codecs=vp8",
-      "video/webm",
-    ];
-    return types.find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";
+    return getSupportedMimeType();
   }
 }
 
