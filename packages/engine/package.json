@@ -26,7 +26,7 @@
   "dependencies": {
     "@gaki/core": "workspace:*",
     "three": "^0.160.0",
-    "uuid": "^13.0.0"
+    "uuid": "catalog:"
   },
   "peerDependencies": {
     "react": ">=18.0.0"

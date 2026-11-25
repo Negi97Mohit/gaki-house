@@ -4,6 +4,96 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@eslint/js':
+      specifier: ^9.32.0
+      version: 9.39.4
+    autoprefixer:
+      specifier: ^10.4.21
+      version: 10.4.27
+    clsx:
+      specifier: ^2.1.0
+      version: 2.1.1
+    cors:
+      specifier: ^2.8.6
+      version: 2.8.6
+    electron-store:
+      specifier: ^8.2.0
+      version: 8.2.0
+    eslint:
+      specifier: ^9.32.0
+      version: 9.39.4
+    eslint-plugin-react-hooks:
+      specifier: ^5.2.0
+      version: 5.2.0
+    eslint-plugin-react-refresh:
+      specifier: ^0.4.20
+      version: 0.4.26
+    ffmpeg-static:
+      specifier: ^5.3.0
+      version: 5.3.0
+    firebase:
+      specifier: ^12.12.1
+      version: 12.12.1
+    fluent-ffmpeg:
+      specifier: ^2.1.3
+      version: 2.1.3
+    framer-motion:
+      specifier: ^12.38.0
+      version: 12.38.0
+    globals:
+      specifier: ^15.15.0
+      version: 15.15.0
+    lucide-react:
+      specifier: ^0.462.0
+      version: 0.462.0
+    node-fetch:
+      specifier: ^2.7.0
+      version: 2.7.0
+    postcss:
+      specifier: ^8.5.6
+      version: 8.5.9
+    react:
+      specifier: ^18.3.1
+      version: 18.3.1
+    react-dom:
+      specifier: ^18.3.1
+      version: 18.3.1
+    react-router-dom:
+      specifier: ^6.30.1
+      version: 6.30.3
+    socket.io:
+      specifier: ^4.8.3
+      version: 4.8.3
+    sonner:
+      specifier: ^1.7.4
+      version: 1.7.4
+    tailwind-merge:
+      specifier: ^2.6.0
+      version: 2.6.1
+    tailwindcss:
+      specifier: ^3.4.17
+      version: 3.4.19
+    tailwindcss-animate:
+      specifier: ^1.0.7
+      version: 1.0.7
+    typescript:
+      specifier: ^5.9.3
+      version: 5.9.3
+    typescript-eslint:
+      specifier: ^8.38.0
+      version: 8.58.1
+    uuid:
+      specifier: ^13.0.0
+      version: 13.0.0
+    vite:
+      specifier: ^5.4.19
+      version: 5.4.21
+    zustand:
+      specifier: ^5.0.12
+      version: 5.0.12
+
 importers:
 
   .:
@@ -18,7 +108,7 @@ importers:
   apps/api-handoff:
     dependencies:
       cors:
-        specifier: ^2.8.6
+        specifier: 'catalog:'
         version: 2.8.6
       dotenv:
         specifier: ^16.6.1
@@ -49,25 +139,25 @@ importers:
         specifier: ^4.21.0
         version: 4.21.0
       typescript:
-        specifier: ^5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
 
   apps/api-signaling:
     dependencies:
       cors:
-        specifier: ^2.8.5
+        specifier: 'catalog:'
         version: 2.8.6
       express:
         specifier: ^5.2.1
         version: 5.2.1
       ffmpeg-static:
-        specifier: ^5.3.0
+        specifier: 'catalog:'
         version: 5.3.0
       fluent-ffmpeg:
-        specifier: ^2.1.3
+        specifier: 'catalog:'
         version: 2.1.3
       socket.io:
-        specifier: ^4.8.3
+        specifier: 'catalog:'
         version: 4.8.3
 
   apps/desktop:
@@ -76,22 +166,22 @@ importers:
         specifier: ^3.2.6
         version: 3.2.6
       electron-store:
-        specifier: ^8.2.0
+        specifier: 'catalog:'
         version: 8.2.0
       ffmpeg-static:
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.3.0
       fluent-ffmpeg:
-        specifier: ^2.1.3
+        specifier: 'catalog:'
         version: 2.1.3
       node-fetch:
-        specifier: ^2.7.0
+        specifier: 'catalog:'
         version: 2.7.0(encoding@0.1.13)
       node-media-server:
         specifier: ^2.6.2
         version: 2.7.4
       socket.io:
-        specifier: ^4.8.3
+        specifier: 'catalog:'
         version: 4.8.3
     devDependencies:
       '@types/fluent-ffmpeg':
@@ -107,7 +197,7 @@ importers:
         specifier: ^24.13.3
         version: 24.13.3(electron-builder-squirrel-windows@24.13.3)
       typescript:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.9.3
 
   apps/gaki-mobile:
@@ -209,28 +299,28 @@ importers:
         specifier: ^0.160.0
         version: 0.160.0
       firebase:
-        specifier: ^12.12.1
+        specifier: 'catalog:'
         version: 12.12.1
       framer-motion:
-        specifier: ^12.38.0
+        specifier: 'catalog:'
         version: 12.38.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       lucide-react:
-        specifier: ^0.462.0
+        specifier: 'catalog:'
         version: 0.462.0(react@18.3.1)
       react:
-        specifier: ^18.3.1
+        specifier: 'catalog:'
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.1
+        specifier: 'catalog:'
         version: 18.3.1(react@18.3.1)
       react-router-dom:
-        specifier: ^6.30.1
+        specifier: 'catalog:'
         version: 6.30.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sonner:
-        specifier: ^1.7.4
+        specifier: 'catalog:'
         version: 1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwindcss-animate:
-        specifier: ^1.0.7
+        specifier: 'catalog:'
         version: 1.0.7(tailwindcss@3.4.19(tsx@4.21.0))
       three:
         specifier: ^0.160.0
@@ -240,7 +330,7 @@ importers:
         version: 3.25.76
     devDependencies:
       '@eslint/js':
-        specifier: ^9.32.0
+        specifier: 'catalog:'
         version: 9.39.4
       '@tailwindcss/typography':
         specifier: ^0.5.16
@@ -264,37 +354,37 @@ importers:
         specifier: ^3.11.0
         version: 3.11.0(vite@5.4.21(@types/node@22.19.17)(sass@1.51.0))
       autoprefixer:
-        specifier: ^10.4.21
+        specifier: 'catalog:'
         version: 10.4.27(postcss@8.5.9)
       eslint:
-        specifier: ^9.32.0
+        specifier: 'catalog:'
         version: 9.39.4(jiti@1.21.7)
       eslint-plugin-react-hooks:
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(eslint@9.39.4(jiti@1.21.7))
       eslint-plugin-react-refresh:
-        specifier: ^0.4.20
+        specifier: 'catalog:'
         version: 0.4.26(eslint@9.39.4(jiti@1.21.7))
       globals:
-        specifier: ^15.15.0
+        specifier: 'catalog:'
         version: 15.15.0
       jsdom:
         specifier: ^20.0.3
         version: 20.0.3
       postcss:
-        specifier: ^8.5.6
+        specifier: 'catalog:'
         version: 8.5.9
       tailwindcss:
-        specifier: ^3.4.17
+        specifier: 'catalog:'
         version: 3.4.19(tsx@4.21.0)
       typescript:
-        specifier: ^5.8.3
+        specifier: 'catalog:'
         version: 5.9.3
       typescript-eslint:
-        specifier: ^8.38.0
+        specifier: 'catalog:'
         version: 8.58.1(eslint@9.39.4(jiti@1.21.7))(typescript@5.9.3)
       vite:
-        specifier: ^5.4.19
+        specifier: 'catalog:'
         version: 5.4.21(@types/node@22.19.17)(sass@1.51.0)
       vitest:
         specifier: ^3.2.4
@@ -440,16 +530,16 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       electron-store:
-        specifier: ^8.2.0
+        specifier: 'catalog:'
         version: 8.2.0
       firebase:
-        specifier: ^12.6.0
-        version: 12.12.0
+        specifier: 'catalog:'
+        version: 12.12.1
       fix-webm-duration:
         specifier: ^1.0.6
         version: 1.0.6
       framer-motion:
-        specifier: ^12.23.22
+        specifier: 'catalog:'
         version: 12.38.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       gsap:
         specifier: ^3.14.2
@@ -458,7 +548,7 @@ importers:
         specifier: ^1.11.13
         version: 1.11.13
       lucide-react:
-        specifier: ^0.462.0
+        specifier: 'catalog:'
         version: 0.462.0(react@18.3.1)
       next-themes:
         specifier: ^0.3.0
@@ -470,10 +560,10 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0(react@18.3.1)
       react:
-        specifier: ^18.3.1
+        specifier: 'catalog:'
         version: 18.3.1
       react-dom:
-        specifier: ^18.3.1
+        specifier: 'catalog:'
         version: 18.3.1(react@18.3.1)
       react-draggable:
         specifier: ^4.7.2
@@ -491,7 +581,7 @@ importers:
         specifier: ^10.5.3
         version: 10.5.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router-dom:
-        specifier: ^6.30.1
+        specifier: 'catalog:'
         version: 6.30.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-selecto:
         specifier: ^1.26.3
@@ -506,35 +596,35 @@ importers:
         specifier: ^1.26.3
         version: 1.26.3
       socket.io:
-        specifier: ^4.8.3
+        specifier: 'catalog:'
         version: 4.8.3
       socket.io-client:
         specifier: ^4.8.3
         version: 4.8.3
       sonner:
-        specifier: ^1.7.4
+        specifier: 'catalog:'
         version: 1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwind-merge:
-        specifier: ^2.6.0
+        specifier: 'catalog:'
         version: 2.6.1
       tailwindcss-animate:
-        specifier: ^1.0.7
+        specifier: 'catalog:'
         version: 1.0.7(tailwindcss@3.4.19(tsx@4.21.0))
       three:
         specifier: ^0.182.0
         version: 0.182.0
       uuid:
-        specifier: ^13.0.0
+        specifier: 'catalog:'
         version: 13.0.0
       vaul:
         specifier: ^0.9.9
         version: 0.9.9(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       zustand:
-        specifier: ^5.0.9
+        specifier: 'catalog:'
         version: 5.0.12(@types/react@18.3.28)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     devDependencies:
       '@eslint/js':
-        specifier: ^9.32.0
+        specifier: 'catalog:'
         version: 9.39.4
       '@netlify/functions':
         specifier: ^5.1.2
@@ -561,7 +651,7 @@ importers:
         specifier: ^3.11.0
         version: 3.11.0(vite@5.4.21(@types/node@22.19.17)(sass@1.51.0))
       autoprefixer:
-        specifier: ^10.4.21
+        specifier: 'catalog:'
         version: 10.4.27(postcss@8.5.9)
       concurrently:
         specifier: ^9.2.1
@@ -570,7 +660,7 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       eslint:
-        specifier: ^9.32.0
+        specifier: 'catalog:'
         version: 9.39.4(jiti@1.21.7)
       eslint-import-resolver-typescript:
         specifier: ^3.7.0
@@ -579,13 +669,13 @@ importers:
         specifier: ^2.31.0
         version: 2.32.0(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@1.21.7))
       eslint-plugin-react-hooks:
-        specifier: ^5.2.0
+        specifier: 'catalog:'
         version: 5.2.0(eslint@9.39.4(jiti@1.21.7))
       eslint-plugin-react-refresh:
-        specifier: ^0.4.20
+        specifier: 'catalog:'
         version: 0.4.26(eslint@9.39.4(jiti@1.21.7))
       globals:
-        specifier: ^15.15.0
+        specifier: 'catalog:'
         version: 15.15.0
       lovable-tagger:
         specifier: ^1.1.10
@@ -594,22 +684,22 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0(typescript@5.9.3)
       node-fetch:
-        specifier: ^2.7.0
+        specifier: 'catalog:'
         version: 2.7.0(encoding@0.1.13)
       postcss:
-        specifier: ^8.5.6
+        specifier: 'catalog:'
         version: 8.5.9
       tailwindcss:
-        specifier: ^3.4.17
+        specifier: 'catalog:'
         version: 3.4.19(tsx@4.21.0)
       typescript:
-        specifier: ^5.8.3
+        specifier: 'catalog:'
         version: 5.9.3
       typescript-eslint:
-        specifier: ^8.38.0
+        specifier: 'catalog:'
         version: 8.58.1(eslint@9.39.4(jiti@1.21.7))(typescript@5.9.3)
       vite:
-        specifier: ^5.4.19
+        specifier: 'catalog:'
         version: 5.4.21(@types/node@22.19.17)(sass@1.51.0)
       vite-bundle-visualizer:
         specifier: ^1.2.1
@@ -625,16 +715,16 @@ importers:
   packages/core:
     dependencies:
       clsx:
-        specifier: ^2.1.0
+        specifier: 'catalog:'
         version: 2.1.1
       react:
         specifier: '>=18.0.0'
         version: 18.3.1
       sonner:
-        specifier: ^2.0.7
-        version: 2.0.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: 'catalog:'
+        version: 1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwind-merge:
-        specifier: ^2.2.1
+        specifier: 'catalog:'
         version: 2.6.1
 
   packages/engine:
@@ -649,7 +739,7 @@ importers:
         specifier: ^0.160.0
         version: 0.160.1
       uuid:
-        specifier: ^13.0.0
+        specifier: 'catalog:'
         version: 13.0.0
     devDependencies:
       '@types/node':
@@ -665,13 +755,13 @@ importers:
   packages/handoff-sdk:
     dependencies:
       firebase:
-        specifier: ^12.12.0
-        version: 12.12.0
+        specifier: 'catalog:'
+        version: 12.12.1
       livekit-client:
         specifier: ^2.18.1
         version: 2.18.1(@types/dom-mediacapture-record@1.0.22)
       zustand:
-        specifier: ^5.0.12
+        specifier: 'catalog:'
         version: 5.0.12(@types/react@18.3.28)(react@18.3.1)(use-sync-external-store@1.6.0(react@18.3.1))
     devDependencies:
       '@types/node':
@@ -681,7 +771,7 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       typescript:
-        specifier: ^5.9.3
+        specifier: 'catalog:'
         version: 5.9.3
 
   packages/ui:
@@ -774,11 +864,11 @@ importers:
         specifier: ^0.7.0
         version: 0.7.1
       clsx:
-        specifier: ^2.1.0
+        specifier: 'catalog:'
         version: 2.1.1
       lucide-react:
-        specifier: ^0.359.0
-        version: 0.359.0(react@18.3.1)
+        specifier: 'catalog:'
+        version: 0.462.0(react@18.3.1)
       next-themes:
         specifier: ^0.2.1
         version: 0.2.1(next@16.2.3(@opentelemetry/api@1.9.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sass@1.51.0))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -789,7 +879,7 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       sonner:
-        specifier: ^1.4.3
+        specifier: 'catalog:'
         version: 1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
 packages:
@@ -1481,13 +1571,6 @@ packages:
 
   '@fastify/busboy@3.2.0':
     resolution: {integrity: sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA==}
-
-  '@firebase/ai@2.11.0':
-    resolution: {integrity: sha512-+oqOne/h5J51LezazR+VyzKe3AK455W29JXnb4jOeVvQhC7FymledN5+XE+w5vEcMhRQ6n1f62fdGs4A44X32A==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@firebase/app': 0.x
-      '@firebase/app-types': 0.x
 
   '@firebase/ai@2.11.1':
     resolution: {integrity: sha512-WGTF81W3WBKJY+c7xqTzO15OGAkCAs8cpADqflAI0skhTZjIkhF0qyf55rq4Ctt6jKygkv99rPfMrjAHTgXaVQ==}
@@ -5293,6 +5376,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -5465,9 +5549,6 @@ packages:
   firebase-admin@13.8.0:
     resolution: {integrity: sha512-iawoQkmZbsA+2DY5UEuB8f6jSlskzzySoye0D2F6e3zlDZX9DUcXf0HhZqLUn/P6WhLGvTf6ZtCmshZvhAgTYg==}
     engines: {node: '>=18'}
-
-  firebase@12.12.0:
-    resolution: {integrity: sha512-5Ap+pN5iEJUvBlQEZEmLuUm7Gvu6I5xv1jZ5SiSNyw4jrwlHo+4tmZv3OPPoKfN9eo1kBwyyBvi+pWHIPXwfYw==}
 
   firebase@12.12.1:
     resolution: {integrity: sha512-ee7xA+bTJLfjB9BP/8FQr3EkxmpAAGc1lNc5QkWgTDpUw24HYXFPm7FEWRdLtGnygxIdYpFmepSc5VjkI6NHhw==}
@@ -5877,10 +5958,6 @@ packages:
 
   ignore@7.0.16:
     resolution: {integrity: sha512-52N+Y4HRMOJmbLmr+DqO4iSRyyB7N52gm7PWCT6h0p978+oKbqHCB7gIJIwZvBUsjlSdWbrBFqUSmIFNZMpn0A==}
-    engines: {node: '>= 4'}
-
-  ignore@7.0.5:
-    resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
     engines: {node: '>= 4'}
 
   image-blob-reduce@3.0.1:
@@ -6444,11 +6521,6 @@ packages:
 
   lru-memoizer@2.3.0:
     resolution: {integrity: sha512-GXn7gyHAMhO13WSKrIiNfztwxodVsP8IoZ3XfrJV4yH2x0/OeTO/FIaAHTY5YekdGgW94njfuKmyyt1E0mR6Ug==}
-
-  lucide-react@0.359.0:
-    resolution: {integrity: sha512-bxVL+rM/wacjpT0BKShA6r5IIKb6LCRg+ltFG9pnnIwaRX8kK3hq8v5JwMpT7RC6XeqB5cSaaV6GapPWWmtliw==}
-    peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0
 
   lucide-react@0.462.0:
     resolution: {integrity: sha512-NTL7EbAao9IFtuSivSZgrAh4fZd09Lr+6MTkqIxuHaH2nnYiYIzXPo06cOxHg9wKLdj6LL8TByG4qpePqwgx/g==}
@@ -7900,12 +7972,6 @@ packages:
 
   sonner@1.7.4:
     resolution: {integrity: sha512-DIS8z4PfJRbIyfVFDVnK9rO3eYDtse4Omcm6bt0oEr5/jtLgysmjuBl1frJ9E/EQZrFmKx2A8m/s5s9CRXIzhw==}
-    peerDependencies:
-      react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
-      react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
-
-  sonner@2.0.7:
-    resolution: {integrity: sha512-W6ZN4p58k8aDKA4XPcx2hpIQXBRAgyiWVkYhT7CvK6D3iAu7xjvVyhQHg2/iaKJZ1XVJ4r7XuwGL+WGEK37i9w==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
@@ -9383,16 +9449,6 @@ snapshots:
   '@excalidraw/random-username@1.1.0': {}
 
   '@fastify/busboy@3.2.0': {}
-
-  '@firebase/ai@2.11.0(@firebase/app-types@0.9.4)(@firebase/app@0.14.11)':
-    dependencies:
-      '@firebase/app': 0.14.11
-      '@firebase/app-check-interop-types': 0.3.3
-      '@firebase/app-types': 0.9.4
-      '@firebase/component': 0.7.2
-      '@firebase/logger': 0.5.0
-      '@firebase/util': 1.15.0
-      tslib: 2.8.1
 
   '@firebase/ai@2.11.1(@firebase/app-types@0.9.4)(@firebase/app@0.14.11)':
     dependencies:
@@ -11693,7 +11749,7 @@ snapshots:
       '@typescript-eslint/utils': 8.58.1(eslint@9.39.4(jiti@1.21.7))(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.58.1
       eslint: 9.39.4(jiti@1.21.7)
-      ignore: 7.0.5
+      ignore: 7.0.16
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -11784,7 +11840,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.58.1
       debug: 4.4.3
       minimatch: 10.2.5
-      semver: 7.7.4
+      semver: 7.8.6
       tinyglobby: 0.2.16
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -11978,10 +12034,6 @@ snapshots:
       acorn-walk: 8.3.5
 
   acorn-jsx-walk@2.0.0: {}
-
-  acorn-jsx@5.3.2(acorn@8.16.0):
-    dependencies:
-      acorn: 8.16.0
 
   acorn-jsx@5.3.2(acorn@8.19.0):
     dependencies:
@@ -12589,7 +12641,7 @@ snapshots:
       json-schema-typed: 7.0.3
       onetime: 5.1.2
       pkg-up: 3.1.0
-      semver: 7.7.4
+      semver: 7.8.6
 
   config-file-ts@0.2.6:
     dependencies:
@@ -13628,8 +13680,8 @@ snapshots:
 
   espree@10.4.0:
     dependencies:
-      acorn: 8.16.0
-      acorn-jsx: 5.3.2(acorn@8.16.0)
+      acorn: 8.19.0
+      acorn-jsx: 5.3.2(acorn@8.19.0)
       eslint-visitor-keys: 4.2.1
 
   esprima@4.0.1: {}
@@ -13891,39 +13943,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
       - supports-color
-
-  firebase@12.12.0:
-    dependencies:
-      '@firebase/ai': 2.11.0(@firebase/app-types@0.9.4)(@firebase/app@0.14.11)
-      '@firebase/analytics': 0.10.21(@firebase/app@0.14.11)
-      '@firebase/analytics-compat': 0.2.27(@firebase/app-compat@0.5.11)(@firebase/app@0.14.11)
-      '@firebase/app': 0.14.11
-      '@firebase/app-check': 0.11.2(@firebase/app@0.14.11)
-      '@firebase/app-check-compat': 0.4.2(@firebase/app-compat@0.5.11)(@firebase/app@0.14.11)
-      '@firebase/app-compat': 0.5.11
-      '@firebase/app-types': 0.9.4
-      '@firebase/auth': 1.13.0(@firebase/app@0.14.11)
-      '@firebase/auth-compat': 0.6.5(@firebase/app-compat@0.5.11)(@firebase/app-types@0.9.4)(@firebase/app@0.14.11)
-      '@firebase/data-connect': 0.6.0(@firebase/app@0.14.11)
-      '@firebase/database': 1.1.2
-      '@firebase/database-compat': 2.1.3
-      '@firebase/firestore': 4.14.0(@firebase/app@0.14.11)
-      '@firebase/firestore-compat': 0.4.8(@firebase/app-compat@0.5.11)(@firebase/app-types@0.9.4)(@firebase/app@0.14.11)
-      '@firebase/functions': 0.13.3(@firebase/app@0.14.11)
-      '@firebase/functions-compat': 0.4.3(@firebase/app-compat@0.5.11)(@firebase/app@0.14.11)
-      '@firebase/installations': 0.6.21(@firebase/app@0.14.11)
-      '@firebase/installations-compat': 0.2.21(@firebase/app-compat@0.5.11)(@firebase/app-types@0.9.4)(@firebase/app@0.14.11)
-      '@firebase/messaging': 0.12.25(@firebase/app@0.14.11)
-      '@firebase/messaging-compat': 0.2.25(@firebase/app-compat@0.5.11)(@firebase/app@0.14.11)
-      '@firebase/performance': 0.7.11(@firebase/app@0.14.11)
-      '@firebase/performance-compat': 0.2.24(@firebase/app-compat@0.5.11)(@firebase/app@0.14.11)
-      '@firebase/remote-config': 0.8.2(@firebase/app@0.14.11)
-      '@firebase/remote-config-compat': 0.2.23(@firebase/app-compat@0.5.11)(@firebase/app@0.14.11)
-      '@firebase/storage': 0.14.2(@firebase/app@0.14.11)
-      '@firebase/storage-compat': 0.4.2(@firebase/app-compat@0.5.11)(@firebase/app-types@0.9.4)(@firebase/app@0.14.11)
-      '@firebase/util': 1.15.0
-    transitivePeerDependencies:
-      - '@react-native-async-storage/async-storage'
 
   firebase@12.12.1:
     dependencies:
@@ -14451,8 +14470,6 @@ snapshots:
   ignore@5.3.2: {}
 
   ignore@7.0.16: {}
-
-  ignore@7.0.5: {}
 
   image-blob-reduce@3.0.1:
     dependencies:
@@ -15002,10 +15019,6 @@ snapshots:
     dependencies:
       lodash.clonedeep: 4.5.0
       lru-cache: 6.0.0
-
-  lucide-react@0.359.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
 
   lucide-react@0.462.0(react@18.3.1):
     dependencies:
@@ -16847,7 +16860,7 @@ snapshots:
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
-      semver: 7.7.4
+      semver: 7.8.6
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.34.5
       '@img/sharp-darwin-x64': 0.34.5
@@ -16979,11 +16992,6 @@ snapshots:
       - utf-8-validate
 
   sonner@1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  sonner@2.0.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
