@@ -6,7 +6,14 @@
     "./*": "./src/*"
   },
   "dependencies": {
+    "@gaki/core": "workspace:*",
     "three": "^0.160.0",
-    "@gaki/core": "workspace:*"
+    "uuid": "^13.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^11.0.0"
   }
 }
