@@ -111,8 +111,8 @@ const AuthSheet = ({ open, onClose }: AuthSheetProps) => {
       onClose();
     } catch (err: any) {
       if (err?.code === "auth/popup-closed-by-user") return;
-      // TODO: Apple Sign-In requires Service ID + key file configured in Firebase console.
-      // Until that's done, this will throw an auth/operation-not-allowed error.
+      // TODO(mobile): Configure Apple Sign-In Service ID + key file in Firebase console;
+      // until then, Firebase throws auth/operation-not-allowed.
       const message =
         err?.code === "auth/operation-not-allowed"
           ? "Apple Sign-In is not yet configured. Use email or Google instead."

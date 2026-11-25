@@ -52,7 +52,6 @@ export const CanvasContainer: React.FC<CanvasContainerProps> = ({
   stingerConfig,
 }) => {
   useEffect(() => {
-    console.log("[CanvasContainer] mounted");
   }, []);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);

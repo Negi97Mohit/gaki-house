@@ -35,11 +35,9 @@ export const useCompositeStream = ({
       // This canvas should contain the full composed scene
       const stream = canvas.captureStream(frameRate);
       setCompositeStream(stream);
-      console.log('[VirtualCamera] Composite stream created:', stream.id);
       
       // Log stream tracks
       stream.getTracks().forEach(track => {
-        console.log('[VirtualCamera] Track:', track.kind, track.label, track.enabled);
       });
     } catch (error) {
       console.error('[VirtualCamera] Failed to capture stream:', error);
@@ -48,7 +46,6 @@ export const useCompositeStream = ({
     return () => {
       if (compositeStream) {
         compositeStream.getTracks().forEach(track => track.stop());
-        console.log('[VirtualCamera] Composite stream stopped');
       }
     };
   }, [canvasRef.current, isEnabled, frameRate]);

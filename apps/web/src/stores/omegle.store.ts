@@ -108,7 +108,6 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
 
     // Actions
     enterOmegleMode: () => {
-        console.log('[OmegleStore] Entering Omegle mode');
         set({
             isOmegleMode: true,
             messages: [],
@@ -118,7 +117,6 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     },
 
     exitOmegleMode: () => {
-        console.log('[OmegleStore] Exiting Omegle mode');
 
         // Clean up streams
         const { connection } = get();
@@ -134,22 +132,18 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     },
 
     setSelectedDesign: (designId: string) => {
-        console.log('[OmegleStore] Setting design:', designId);
         set({ selectedDesign: designId });
     },
 
     setOmegleTheme: (themeId: string) => {
-        console.log('[OmegleStore] Setting global Omegle theme:', themeId);
         set({ selectedOmegleTheme: themeId });
     },
 
     setChatTheme: (themeId: string) => {
-        console.log('[OmegleStore] Setting chat theme:', themeId);
         set({ selectedChatTheme: themeId });
     },
 
     setMatchStatus: (status: MatchStatus) => {
-        console.log('[OmegleStore] Match status:', status);
         set(state => ({
             connection: { ...state.connection, matchStatus: status },
             isSearching: status === 'searching',
@@ -220,7 +214,6 @@ export const useOmegleStore = create<OmegleState>((set, get) => ({
     },
 
     resetConnection: () => {
-        console.log('[OmegleStore] Resetting connection');
         const { connection } = get();
 
         // Clean up existing stream

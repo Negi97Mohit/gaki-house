@@ -54,30 +54,3 @@ export const CinematicFilters = () => {
         </svg>
     );
 };
-
-// Actually, let's try to implement the one from the CameraRenderer placeholder I saw in the file view previously?
-// Wait, I saw:
-// <filter id="svgf-barrel" ...>
-//    <feMorphology operator="dilate" ... />
-// </filter>
-// In the CameraRenderer file I read!
-// Let me double check if it was commented out or just ineffective.
-
-/*
-In CameraRenderer.tsx (lines 206-219):
-<svg width="0" height="0" style={{ position: "absolute" }}>
-  <defs>
-    <filter id="svgf-barrel" colorInterpolationFilters="sRGB">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="clean" />
-      <feComponentTransfer in="clean" result="barrel"> ... </feComponentTransfer>
-      <feMorphology operator="dilate" radius="0.5" in="barrel" result="expand" />
-      <feComposite in="SourceGraphic" in2="expand" operator="in" />
-    </filter>
-  </defs>
-</svg>
-
-This existing filter definition basically does nothing or just a slight dilate.
-It's NOT a real barrel distortion. 
-
-For real barrel distortion in SVG without WebGL, we need a DisplacementMap with a radial gradient SOURCE.
-*/

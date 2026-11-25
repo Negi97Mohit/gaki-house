@@ -28,7 +28,6 @@ export const useCanvasDimensionSync = ({
             try {
                 canvas.width = width;
                 canvas.height = height;
-                console.log(`[CanvasDimensionSync] Updated canvas dimensions to ${width}x${height} (dpr: ${dpr})`);
             } catch (err: any) {
                 // If the canvas is transferred to an OffscreenCanvas, setting width/height throws an InvalidStateError.
                 if (err.name === "InvalidStateError" && kernelRef?.current) {

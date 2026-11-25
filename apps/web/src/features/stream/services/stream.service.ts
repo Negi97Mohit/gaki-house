@@ -337,7 +337,6 @@ class StreamService {
 
         // 2. Handle stream ending (User clicks "Stop Sharing" in system UI)
         newStream.getVideoTracks()[0].onended = () => {
-          console.log("[StreamService] Source track ended externally.");
           if (useStreamStore.getState().isRecording) {
             this.stopRecording();
           }
@@ -640,7 +639,6 @@ class StreamService {
         // Fix: move BroadcastBus instantiation up to CanvasContainer in a future refactor.
         // Tracked: Phase D known issue — stream drop on scene switch
 
-        console.log("[StreamService] Using Kernel Pipeline (Phase D)");
         const kernel = BroadcastBus.activeInstance;
         if (!kernel) throw new Error("BroadcastBus active instance not found");
 
@@ -858,9 +856,6 @@ class StreamService {
 
     // Skip retry logic if this was an intentional stop
     if (this.isIntentionalStop) {
-      console.log(
-        `[StreamService] Skipping retry for ${id} - intentional stop`,
-      );
       store.setDestinationStatus(id, "idle");
       return;
     }
@@ -874,9 +869,6 @@ class StreamService {
 
       const retryDelay = 2000 * nextRetry;
 
-      console.log(
-        `[StreamService] Retry ${nextRetry}/${this.MAX_RETRIES} for ${id} in ${retryDelay}ms`,
-      );
       store.setDestinationStatus(id, "error", `Retrying (${nextRetry})...`);
       store.setStreamStatus(`Connection Failed. Retrying...`);
 
@@ -1087,7 +1079,6 @@ class StreamService {
   }
 
   public stopRecording() {
-    console.log("[StreamService] Stopping Recording...");
     if (this.localRecorder && this.localRecorder.state !== "inactive") {
       this.localRecorder.stop();
     }

@@ -267,7 +267,6 @@ export async function updateOverlay(
   try {
     const analysis = await analyzeUpdateRequest(existingHtml, updatePrompt);
 
-    console.log("Update Analysis:", analysis);
 
     let updatedHtml: string;
 

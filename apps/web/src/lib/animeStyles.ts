@@ -1,7 +1,6 @@
 // src/lib/animeStyles.ts
 import { ColorUtils, ImageProcessor } from "./utils/imageProcessing";
 
-// ===== TYPES AND INTERFACES =====
 export interface TriToneConfig {
   shadowColor: string;
   midColor: string;
@@ -19,7 +18,6 @@ export interface ProcessedImageData {
   processingTime: number;
 }
 
-// ===== PRESET STYLES =====
 let AnimeStyles: Record<string, TriToneConfig> = {};
 
 export { AnimeStyles };
@@ -29,7 +27,6 @@ export const updateAnimeStyles = (newStyles: Record<string, TriToneConfig>) => {
   AnimeStyles = { ...AnimeStyles, ...newStyles };
 };
 
-// ===== MAIN PROCESSING FUNCTION =====
 export function applyTriTone(
   ctx: CanvasRenderingContext2D,
   imageData: ImageData,

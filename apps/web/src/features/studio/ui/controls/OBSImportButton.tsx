@@ -18,7 +18,6 @@ export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    console.log("[OBSImportButton] mounted");
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,18 +27,13 @@ export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
       return;
     }
 
-    console.log(`[OBSImportButton] Reading file: ${file.name}`);
 
     const reader = new FileReader();
     reader.onload = (evt) => {
       try {
         const raw = JSON.parse(evt.target?.result as string);
-        console.log("[OBSImportButton] JSON parsed successfully");
 
         const collection = parseOBSCollection(raw);
-        console.log(
-          `[OBSImportButton] Collection "${collection.name}" has ${collection.scenes.length} scene(s)`
-        );
 
         const scenes = mapOBSCollectionToScenes(collection);
 
@@ -51,9 +45,6 @@ export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
           return;
         }
 
-        console.log(
-          `[OBSImportButton] Calling onImportOBSScenes with ${scenes.length} scene(s)`
-        );
         onImportOBSScenes(scenes, collection.stingerConfig);
         toast.success(
           `Imported ${scenes.length} scene${scenes.length > 1 ? "s" : ""} from OBS`
@@ -98,7 +89,6 @@ export const OBSImportButton: React.FC<OBSImportButtonProps> = ({
               );
               return;
             }
-            console.log("[OBSImportButton] Opening file picker");
             inputRef.current.click();
           }}
           aria-label="Import OBS scenes"

@@ -23,7 +23,6 @@ export const ThreeDGSViewer: React.FC<ThreeDGSViewerProps> = ({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    console.log(`[3DGS] Initializing viewer for file: ${fileName}`);
 
     let viewer: any = null;
 
@@ -62,7 +61,6 @@ export const ThreeDGSViewer: React.FC<ThreeDGSViewerProps> = ({
           format: formatVal,
         });
 
-        console.log(`[3DGS] Scene loaded. Attempting to fit camera...`);
 
         // --- Auto-Fit Logic ---
         try {
@@ -113,18 +111,11 @@ export const ThreeDGSViewer: React.FC<ThreeDGSViewerProps> = ({
                 controls.update?.();
               }
 
-              console.log(
-                `[3DGS] Auto-fitted camera to center:`,
-                center,
-                `distance:`,
-                cameraDistance
-              );
             }
           }
         } catch (fitErr) {
           console.warn("[3DGS] Failed to auto-fit camera:", fitErr);
         }
-        // ----------------------
 
         viewer.start();
         setIsLoading(false);

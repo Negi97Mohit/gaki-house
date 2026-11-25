@@ -26,23 +26,19 @@ export const useRemotePeer = () => {
         const peer = new Peer(deviceId);
 
         peer.on("open", (id) => {
-            console.log("My peer ID is: " + id);
             setPeerId(id);
         });
 
         peer.on("call", (call) => {
-            console.log("Received call");
             call.answer(); // Answer the call without sending a stream back (one-way)
 
             call.on("stream", (stream) => {
-                console.log("Received remote stream");
                 setRemoteStream(stream);
                 setIsConnected(true);
                 toast.success("Remote camera connected!");
             });
 
             call.on("close", () => {
-                console.log("Call closed");
                 setRemoteStream(null);
                 setIsConnected(false);
                 toast.info("Remote camera disconnected");

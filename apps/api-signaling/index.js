@@ -16,12 +16,10 @@ const io = new Server(httpServer, {
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
   const ffmpegProcesses = new Map();
 
   socket.on("start-stream", ({ id, rtmpUrl, key }) => {
     const streamUrl = `${rtmpUrl}/${key}`;
-    console.log(`Starting stream [${id}]`);
 
     // Cleanup existing
     const existing = ffmpegProcesses.get(id);
@@ -58,7 +56,6 @@ io.on("connection", (socket) => {
       ])
       .output(streamUrl)
       .on("start", (cmd) => {
-        console.log(`FFmpeg started [${id}]`);
         socket.emit("stream-status", { id, status: "started" });
         state.isReady = true;
         if (state.buffer.length > 0) {
@@ -121,5 +118,4 @@ io.on("connection", (socket) => {
 
 const PORT = 3000;
 httpServer.listen(PORT, () => {
-  console.log(`Streaming Server running on port ${PORT}`);
 });

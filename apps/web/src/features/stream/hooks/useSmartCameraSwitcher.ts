@@ -163,16 +163,11 @@ export const useSmartCameraSwitcher = ({
 
     deviceToSceneRef.current = uniqueDevices;
 
-    console.log(
-      "[SmartSwitch] 🔍 Devices to track:",
-      Array.from(uniqueDevices.keys()).map((d) => d.substring(0, 8) + "...")
-    );
 
     const setupStreams = async () => {
       // Remove unused streams
       for (const [deviceId, camera] of streamsRef.current.entries()) {
         if (!uniqueDevices.has(deviceId)) {
-          console.log(`[SmartSwitch] 🛑 Stopping: ${deviceId.substring(0, 8)}...`);
           if (deviceId !== "remote-peer") {
             camera.stream.getTracks().forEach((t) => t.stop());
           }
@@ -194,7 +189,6 @@ export const useSmartCameraSwitcher = ({
             if (deviceId === "remote-peer") {
               if (remoteStream) {
                 stream = remoteStream;
-                console.log("[SmartSwitch] 📱 Found Remote Stream");
               }
             } else {
               stream = await navigator.mediaDevices.getUserMedia({
@@ -205,7 +199,6 @@ export const useSmartCameraSwitcher = ({
                 },
                 audio: false,
               });
-              console.log(`[SmartSwitch] ✅ Camera: ${deviceId.substring(0, 8)}...`);
             }
 
             if (stream) {
@@ -227,7 +220,6 @@ export const useSmartCameraSwitcher = ({
 
               lastTimestampRef.current.set(deviceId, 0);
 
-              console.log(`[SmartSwitch] 🔌 Ready: ${deviceId.substring(0, 8)}...`);
             }
           } catch (e) {
             console.warn(`[SmartSwitch] Could not setup ${deviceId.substring(0, 8)}...`, e);
@@ -237,7 +229,6 @@ export const useSmartCameraSwitcher = ({
 
       if (streamsRef.current.size > 0) {
         setIsDetectorReady(true);
-        console.log("[SmartSwitch] ✅ Eye Gaze Detection Ready");
       }
     };
 
@@ -299,15 +290,11 @@ export const useSmartCameraSwitcher = ({
                 (focusScoresRef.current.get(deviceId) || 0) + gazeScore;
               focusScoresRef.current.set(deviceId, currentScore);
 
-              console.log(
-                `[SmartSwitch] 👁️ ${sceneName} - Gaze: ${gazeScore.toFixed(2)}, Total: ${currentScore.toFixed(2)}`
-              );
 
               // Check if we should switch
               if (currentScore > 5 && now - lastSwitchTimeRef.current > 2000) {
                 const targetScene = scenes.find((s) => s.id === sceneId);
                 if (targetScene && targetScene.id !== activeSceneId) {
-                  console.log(`[SmartSwitch] 🎬 CUT TO: ${targetScene.name}`);
                   toast.success(`Auto-switched to ${targetScene.name}`, {
                     duration: 1500,
                   });

@@ -173,8 +173,7 @@ export const useBannerEditor = ({
             socialY = centerY - (25 / 2); // Center items approx 25px high
         }
 
-        // TODO: specific overrides for 'vertical', 'card', etc. if needed
-        // For now, this horizontal logic covers the reported "Neon Glow" case
+        // TODO(web): Add layout overrides for 'vertical' and 'card' banner presets if needed
 
         return [
             {

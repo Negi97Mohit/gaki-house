@@ -1000,7 +1000,6 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
   // --- OBS / Bulk Import ---
   const importScenes = useCallback(
     (newScenes: SceneState[]): string | null => {
-      console.log('[SceneManager] importScenes called with', newScenes.length, 'scenes');
       if (!newScenes.length) {
         console.error('[SceneManager] importScenes: received empty scenes array');
         return null;
@@ -1027,7 +1026,6 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
         setSceneTransitions((prev) => [...prev, ...newTransitions]);
       }
 
-      console.log('[SceneManager] importScenes complete. First scene id:', firstId);
       return firstId;
     },
     []

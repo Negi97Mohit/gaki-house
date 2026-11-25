@@ -1,6 +1,5 @@
 // src/lib/utils/imageProcessing.ts
 
-// ===== COLOR UTILITIES =====
 export class ColorUtils {
   private static hexCache = new Map<string, [number, number, number]>();
 
@@ -48,7 +47,6 @@ export class ColorUtils {
   }
 }
 
-// ===== IMAGE PROCESSING UTILITIES =====
 export class ImageProcessor {
   static createLuminanceMap(
     data: Uint8ClampedArray,

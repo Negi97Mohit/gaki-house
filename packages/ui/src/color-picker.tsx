@@ -19,7 +19,6 @@ import {
 } from "@gaki/core/constants/color-presets";
 import { isGradient, addAlpha } from "@gaki/core/lib/color-utils";
 
-// ============= CUSTOM PRESETS STORAGE =============
 
 const CUSTOM_GRADIENTS_KEY = 'custom-gradient-presets';
 const MAX_CUSTOM_PRESETS = 12;
@@ -49,7 +48,6 @@ const removeCustomPreset = (gradient: string): string[] => {
     return updated;
 };
 
-// ============= TYPES =============
 
 export type ColorPickerVariant = 'button' | 'inline' | 'compact' | 'minimal' | 'circle';
 
@@ -69,7 +67,6 @@ export interface ColorPickerProps {
     darkMode?: boolean;
 }
 
-// ============= HELPER FUNCTIONS =============
 
 const parseColorValue = (color: string): string => {
     if (!color) return '#000000';
@@ -92,7 +89,6 @@ const parseAlpha = (color: string): number => {
     return 1;
 };
 
-// ============= COMPACT PRESET GRID =============
 
 interface PresetGridProps {
     presets: string[];
@@ -125,7 +121,6 @@ const PresetGrid: React.FC<PresetGridProps> = ({ presets, selectedValue, onSelec
     </div>
 );
 
-// ============= COMPACT COLOR INPUT =============
 
 interface CompactColorInputProps {
     value: string;
@@ -192,7 +187,6 @@ const CompactColorInput: React.FC<CompactColorInputProps> = ({
     </div>
 );
 
-// ============= COMPACT GRADIENT EDITOR =============
 
 interface GradientEditorProps {
     value: string;
@@ -540,7 +534,6 @@ const GradientEditor: React.FC<GradientEditorProps> = ({ value, onChange }) => {
     );
 };
 
-// ============= MAIN COLOR PICKER COMPONENT =============
 
 export const ColorPicker: React.FC<ColorPickerProps> = ({
     value,
@@ -582,7 +575,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         lg: 'w-6 h-6',
     };
 
-    // ============= RENDER TRIGGER BASED ON VARIANT =============
 
     const renderTrigger = () => {
         switch (variant) {
@@ -700,7 +692,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
         }
     };
 
-    // ============= POPOVER CONTENT =============
 
     const renderContent = () => (
         <div
@@ -794,7 +785,6 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
     );
 };
 
-// ============= INLINE COLOR PICKER (No Popover) =============
 
 export interface InlineColorPickerProps {
     value: string;
@@ -899,6 +889,5 @@ export const InlineColorPicker: React.FC<InlineColorPickerProps> = ({
     );
 };
 
-// ============= EXPORTS =============
 
 export default ColorPicker;

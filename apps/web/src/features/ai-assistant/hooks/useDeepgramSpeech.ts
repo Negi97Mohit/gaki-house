@@ -65,7 +65,6 @@ export const useDeepgramSpeech = ({
 
   const startRecognition = useCallback(() => {
     if (connectionRef.current) {
-      console.log("[useDeepgramSpeech] Already active.");
       return;
     }
 
@@ -78,7 +77,6 @@ export const useDeepgramSpeech = ({
       const currentId = Date.now();
       connectionIdRef.current = currentId;
 
-      console.log("[useDeepgramSpeech] Connecting...");
       const deepgram = createClient(DEEPGRAM_API_KEY);
 
       const connection = deepgram.listen.live({
@@ -95,7 +93,6 @@ export const useDeepgramSpeech = ({
       connection.on(LiveTranscriptionEvents.Open, () => {
         // Race condition check: Ensure this is still the active session
         if (connectionIdRef.current === currentId) {
-          console.log("[useDeepgramSpeech] Connection OPEN. Starting capture.");
           captureRefs.current.startCapture();
           setIsRecording(true);
           toast.success("Captions started");
@@ -118,7 +115,6 @@ export const useDeepgramSpeech = ({
 
       // Event: CLOSE
       connection.on(LiveTranscriptionEvents.Close, () => {
-        console.log("[useDeepgramSpeech] Connection CLOSED.");
         if (connectionIdRef.current === currentId) {
           captureRefs.current.stopCapture();
           setIsRecording(false);
@@ -139,7 +135,6 @@ export const useDeepgramSpeech = ({
   }, []);
 
   const stopRecognition = useCallback(() => {
-    console.log("[useDeepgramSpeech] Stopping...");
 
     // Invalidate current session ID immediately
     connectionIdRef.current = 0;

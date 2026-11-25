@@ -21,7 +21,6 @@ export class SignalingClient {
         this.serverUrl = serverUrl ||
             import.meta.env.VITE_SIGNALING_URL ||
             'http://localhost:3001';
-        console.log('[SignalingClient] Connecting to:', this.serverUrl);
     }
 
     connect(): Promise<void> {
@@ -40,7 +39,6 @@ export class SignalingClient {
             });
 
             this.socket.on('connect', () => {
-                console.log('[SignalingClient] Connected to signaling server');
                 this.isConnected = true;
                 this.setupEventListeners();
                 resolve();
@@ -52,7 +50,6 @@ export class SignalingClient {
             });
 
             this.socket.on('disconnect', () => {
-                console.log('[SignalingClient] Disconnected from signaling server');
                 this.isConnected = false;
             });
         });
@@ -62,22 +59,18 @@ export class SignalingClient {
         if (!this.socket) return;
 
         this.socket.on('match-found', (data) => {
-            console.log('[SignalingClient] Match found:', data);
             this.onMatchFoundCallback?.(data);
         });
 
         this.socket.on('match-status', (data) => {
-            console.log('[SignalingClient] Match status:', data.status);
             this.onMatchStatusCallback?.(data.status);
         });
 
         this.socket.on('webrtc-offer', (data) => {
-            console.log('[SignalingClient] Received WebRTC offer');
             this.onWebRTCOfferCallback?.(data);
         });
 
         this.socket.on('webrtc-answer', (data) => {
-            console.log('[SignalingClient] Received WebRTC answer');
             this.onWebRTCAnswerCallback?.(data);
         });
 
@@ -86,17 +79,14 @@ export class SignalingClient {
         });
 
         this.socket.on('receive-message', (data) => {
-            console.log('[SignalingClient] Received message');
             this.onMessageCallback?.(data);
         });
 
         this.socket.on('media-state-changed', (data) => {
-            console.log('[SignalingClient] Partner media state changed:', data.state);
             this.onMediaStateChangedCallback?.(data.state);
         });
 
         this.socket.on('partner-disconnected', (data) => {
-            console.log('[SignalingClient] Partner disconnected:', data.reason);
             this.onPartnerDisconnectedCallback?.(data);
         });
 
@@ -107,22 +97,18 @@ export class SignalingClient {
     }
 
     requestMatch() {
-        console.log('[SignalingClient] Requesting match...');
         this.socket?.emit('request-match');
     }
 
     cancelMatch() {
-        console.log('[SignalingClient] Cancelling match request');
         this.socket?.emit('cancel-match');
     }
 
     sendWebRTCOffer(offer: RTCSessionDescriptionInit, roomId: string) {
-        console.log('[SignalingClient] Sending WebRTC offer');
         this.socket?.emit('webrtc-offer', { offer, roomId });
     }
 
     sendWebRTCAnswer(answer: RTCSessionDescriptionInit, roomId: string) {
-        console.log('[SignalingClient] Sending WebRTC answer');
         this.socket?.emit('webrtc-answer', { answer, roomId });
     }
 
@@ -135,18 +121,15 @@ export class SignalingClient {
     }
 
     nextStranger() {
-        console.log('[SignalingClient] Requesting next stranger');
         this.socket?.emit('next-stranger');
     }
 
     leaveRoom() {
-        console.log('[SignalingClient] Leaving room');
         this.socket?.emit('leave-room');
     }
 
     disconnect() {
         if (this.socket) {
-            console.log('[SignalingClient] Disconnecting...');
             this.socket.disconnect();
             this.socket = null;
             this.isConnected = false;

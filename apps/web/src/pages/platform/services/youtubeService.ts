@@ -189,7 +189,6 @@ function getCachedStreams(): StreamChannel[] | null {
             localStorage.removeItem(CACHE_KEY);
             return null;
         }
-        console.log(`[YouTubeService] Using cached data (${entry.streams.length} streams, age: ${Math.round((Date.now() - entry.timestamp) / 1000)}s)`);
         return entry.streams;
     } catch { return null; }
 }
@@ -207,7 +206,6 @@ function setCachedStreams(streams: StreamChannel[]): void {
 export async function fetchYouTubeLiveStreams(maxResults = 12): Promise<StreamChannel[]> {
     const regionCode = getUserRegionCode();
     const lang = getUserLanguage();
-    console.log(`[YouTubeService] Fetching live streams (region=${regionCode}, lang=${lang})...`);
 
     try {
         // ──────────────────────────────────────────────────────────
@@ -226,7 +224,6 @@ export async function fetchYouTubeLiveStreams(maxResults = 12): Promise<StreamCh
         const seen = new Set<string>();
         const allStreams: InnertubeStreamResult[] = [];
         searchResults.forEach((results, i) => {
-            console.log(`[YouTubeService]   "${LIVE_SEARCH_QUERIES[i]}": ${results.length} live streams`);
             for (const s of results) {
                 if (!seen.has(s.videoId)) {
                     seen.add(s.videoId);
@@ -235,7 +232,6 @@ export async function fetchYouTubeLiveStreams(maxResults = 12): Promise<StreamCh
             }
         });
 
-        console.log(`[YouTubeService] Total unique live streams found: ${allStreams.length}`);
 
         if (allStreams.length === 0) {
             console.warn("[YouTubeService] Innertube returned 0 live streams. Using cache...");
@@ -334,7 +330,6 @@ export async function fetchYouTubeLiveStreams(maxResults = 12): Promise<StreamCh
 
         // Cache results
         setCachedStreams(streams);
-        console.log(`[YouTubeService] ✅ Returning ${streams.length} live streams.`);
         return streams;
     } catch (err) {
         console.error("[YouTubeService] Failed:", err);

@@ -35,10 +35,6 @@ const StudioScreen = ({ onOpenAssets }: StudioScreenProps = {}) => {
     const handleGlobalTouch = (e: TouchEvent | MouseEvent) => {
       const target = e.target as HTMLElement;
       const zIndex = window.getComputedStyle(target).zIndex;
-      console.log(`[🔍 GLOBAL TAP] Event: ${e.type}`);
-      console.log(`[🔍 GLOBAL TAP] Element:`, target.tagName);
-      console.log(`[🔍 GLOBAL TAP] Classes:`, target.className);
-      console.log(`[🔍 GLOBAL TAP] Z-Index:`, zIndex);
     };
     
     window.addEventListener('touchstart', handleGlobalTouch);

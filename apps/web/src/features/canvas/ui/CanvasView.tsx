@@ -44,7 +44,6 @@ import { useStingerTransition } from "@/features/canvas/hooks/useStingerTransiti
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
   useEffect(() => {
-    console.log("[VideoCanvas] mounted");
   }, []);
 
   // ─── BroadcastBus kernel (Phase C) ────────────────────────────────────────
@@ -62,7 +61,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       return;
     }
 
-    console.log("[VideoCanvas] creating BroadcastBus");
     const kernel = new BroadcastBus(props.canvasRef.current);
     kernelRef.current = kernel;
 
@@ -76,7 +74,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     return () => {
       kernel.destroy();
       kernelRef.current = null;
-      console.log("[VideoCanvas] BroadcastBus destroyed on unmount");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally empty — kernel is created once per mount lifecycle

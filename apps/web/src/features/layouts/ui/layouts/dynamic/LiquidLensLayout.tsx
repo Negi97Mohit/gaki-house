@@ -128,11 +128,8 @@ const FloatingGridContent = ({
         // Standard grid spacing
         let x = (col - 1) * 5.0;
 
-        // Correction for 1 or 2 items
         if (sections.length === 1) x = 0;
         if (sections.length === 2) x = i === 0 ? -2.5 : 2.5;
-        // Correction for row 2 if incomplete
-        // if (i >= 3 && sections.length === 4) x = 0; 
 
         const y = -(row * 4.0) + 2.0;
 

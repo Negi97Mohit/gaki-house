@@ -49,7 +49,6 @@ export function useStingerTransition(
         };
 
         setIsReady(true);
-        console.log(`[useStingerTransition] Loaded stinger webm (${stingerConfig.path})`);
       } catch (err) {
         console.error("[useStingerTransition] Failed to load stinger:", err);
       }

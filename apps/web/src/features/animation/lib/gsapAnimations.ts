@@ -74,9 +74,7 @@ export interface GSAPPreset {
   particleEffect?: string; // Links to EffectType from particleEffects.ts
 }
 
-// =====================================================
 // ANIMATION DEFINITIONS
-// =====================================================
 
 export const createCinematicReveal = (
   element: HTMLElement,
@@ -650,9 +648,7 @@ export const createZoomPunch = (
   return tl;
 };
 
-// =====================================================
 // PRESET LIBRARY
-// =====================================================
 
 export const GSAP_PRESETS: GSAPPreset[] = [
   {
@@ -830,9 +826,7 @@ export const GSAP_PRESETS: GSAPPreset[] = [
       intensity: 1,
     },
   },
-  // =====================================================
   // NEW PARTICLE EFFECT ANIMATIONS (16 effects)
-  // =====================================================
   {
     id: "fire-blaze",
     name: "🔥 Fire Blaze",
@@ -1024,9 +1018,7 @@ export const GSAP_PRESETS: GSAPPreset[] = [
   },
 ];
 
-// =====================================================
 // ANIMATION EXECUTOR
-// =====================================================
 
 export const executeGSAPAnimation = (
   element: HTMLElement,
@@ -1077,9 +1069,7 @@ export const executeGSAPAnimation = (
   }
 };
 
-// =====================================================
 // TEXT SPLITTING UTILITY
-// =====================================================
 
 export const splitTextToChars = (text: string): string => {
   return text

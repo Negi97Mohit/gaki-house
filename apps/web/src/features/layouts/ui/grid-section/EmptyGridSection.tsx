@@ -75,7 +75,6 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
   const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
 
   // DEBUG: Track dialog state
-  console.log(`[EmptyGridSection ${sectionId}] render — isFileDialogOpen=${isFileDialogOpen}, isPreview=${isPreview}`);
 
   const getFileType = (file: File): FileType => {
     if (file.type.startsWith("image/")) return "image";
@@ -200,9 +199,7 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
             </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={() => {
-                console.log(`[EmptyGridSection ${sectionId}] File/Media onSelect FIRED`);
                 setTimeout(() => {
-                  console.log(`[EmptyGridSection ${sectionId}] setTimeout callback — setting isFileDialogOpen=true`);
                   setIsFileDialogOpen(true);
                 }, 100);
               }}
@@ -270,7 +267,6 @@ export const EmptyGridSection: React.FC<EmptyGridSectionProps> = ({
 
       {/* Dialog must be OUTSIDE the opacity-0 hover div to avoid focus/mount issues */}
       <Dialog open={isFileDialogOpen} onOpenChange={(open) => {
-        console.log(`[EmptyGridSection ${sectionId}] Dialog onOpenChange called with: ${open}`);
         setIsFileDialogOpen(open);
       }}>
         <DialogContent>

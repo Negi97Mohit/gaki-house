@@ -8,7 +8,6 @@ export class AudioMixerEngine {
   private systemStream: MediaStream | null = null;
 
   async start(): Promise<MediaStream | null> {
-    console.log("[AudioMixerEngine] Initializing audio context...");
     this.audioContext = new window.AudioContext();
     this.audioDestination = this.audioContext.createMediaStreamDestination();
 
@@ -29,7 +28,6 @@ export class AudioMixerEngine {
         micGain.gain.value = 1.0;
         micSource.connect(micGain);
         micGain.connect(this.audioDestination);
-        console.log("[AudioMixerEngine] Microphone connected");
       }
     } catch (e) {
       console.warn("[AudioMixerEngine] Mic access denied/failed, broadcasting silent/video-only", e);
@@ -39,14 +37,12 @@ export class AudioMixerEngine {
     // For now, return what we have (even if it's empty, MediaRecorder can still process it, or just return null if empty)
     
     if (!this.micStream && !this.systemStream) {
-      console.log("[AudioMixerEngine] No audio devices initialized (video only)");
     }
     
     return this.audioDestination.stream;
   }
 
   destroy() {
-    console.log("[AudioMixerEngine] Destroying audio pipeline");
     if (this.micStream) {
       this.micStream.getTracks().forEach((t) => t.stop());
       this.micStream = null;

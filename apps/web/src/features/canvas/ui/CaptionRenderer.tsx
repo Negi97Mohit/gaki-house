@@ -34,10 +34,6 @@ export const CaptionRenderer: React.FC<CaptionRendererProps> = ({
   // You were calculating this correctly for the log...
   const text = (props.fullTranscript + " " + props.interimTranscript).trim();
 
-  console.log(`[CaptionRenderer] Rendering with text: "${text}"`, {
-    activeStyleId,
-    text,
-  });
 
   if (!text) return null;
 

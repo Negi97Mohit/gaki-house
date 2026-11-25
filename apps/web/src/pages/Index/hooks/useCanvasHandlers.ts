@@ -8,7 +8,6 @@ type CanvasState = ReturnType<typeof useCanvasState>;
 
 export function useCanvasHandlers(state: CanvasState) {
   useEffect(() => {
-    console.log("[useCanvasHandlers] mounted");
   }, []);
 
   const {
@@ -73,7 +72,6 @@ export function useCanvasHandlers(state: CanvasState) {
 
   const updateActiveScene = useCallback(
     (updater: (scene: any) => any) => {
-      console.log("[useCanvasHandlers] updateActiveScene called");
       const n = updater(activeScene);
       const a = activeScene;
 
@@ -226,7 +224,6 @@ export function useCanvasHandlers(state: CanvasState) {
 
   const updateSceneProperty = useCallback(
     (key: string, value: any) => {
-      console.log(`[useCanvasHandlers] updateSceneProperty: ${key}`);
       const map: Record<string, (v: any) => void> = {
         isAudioOn: setAudioOn,
         isVideoOn: setVideoOn,

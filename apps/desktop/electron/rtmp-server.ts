@@ -25,14 +25,12 @@ export class RtmpServer {
   start() {
     if (this.nms) {
       this.nms.run();
-      console.log("RTMP Server started");
     }
   }
 
   stop() {
     if (this.nms) {
       this.nms.stop();
-      console.log("RTMP Server stopped");
     }
   }
 }

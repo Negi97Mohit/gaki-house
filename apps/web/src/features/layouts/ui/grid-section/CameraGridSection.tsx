@@ -82,8 +82,7 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
         videoDevices={videoDevices}
         isActive={true}
         onSelect={() => {
-          // TODO: Implement section selection logic (propagate from parent)
-          console.debug("[CameraGridSection] PIP section selected", sectionId);
+          // TODO(web): Propagate section selection from parent
         }}
       />
     );
@@ -106,7 +105,6 @@ export const CameraGridSection: React.FC<CameraGridSectionProps> = ({
       selectedDeviceId={safeSettings.selectedDeviceId}
       isCameraEnabled={isCameraEnabled}
       onCameraToggle={(enabled) => {
-        console.log(`[CameraGridSection] onCameraToggle fired! enabled=${enabled}`);
         onSectionCameraSettingsChange(sectionId, {
           isCameraEnabled: enabled,
         });

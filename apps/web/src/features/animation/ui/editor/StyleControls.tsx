@@ -4,15 +4,11 @@ import { Slider } from "@gaki/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@gaki/ui/select";
 import { AnimationPreset } from "@gaki/core/types/animation";
 import { ColorPicker } from "@gaki/ui/color-picker";
-// import { ALL_FONTS } from "@/lib/fonts"; // Ensuring this import is available or we default
 
 interface StyleControlsProps {
     preset: AnimationPreset;
     updatePreset: (section: keyof AnimationPreset, key: string, value: any) => void;
 }
-
-// Fallback if ALL_FONTS not available via prop, but we will import it.
-// Or we can define it locally if validation fails.
 const FONTS = [
     "Inter",
     "Roboto",

@@ -87,9 +87,6 @@ app.post("/stop-broadcast", requireAuth, async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(
-    `📡 Secure Handoff API with Egress running on http://localhost:${PORT}`,
-  );
 });
 
 

@@ -111,9 +111,6 @@ export const DraggableEmptyGridPanel: React.FC<
             onContentChange?.(sectionId, newContent)
           }
           onSectionCameraSettingsChange={(sectionId, newSettings) => {
-            console.log(`[DraggableEmptyGridPanel] onSectionCameraSettingsChange called for sectionId=${sectionId}`);
-            console.log(`[DraggableEmptyGridPanel] current content:`, content);
-            console.log(`[DraggableEmptyGridPanel] newSettings:`, newSettings);
             if (content?.type === "camera") {
               onContentChange?.(sectionId, {
                 ...content,

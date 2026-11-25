@@ -47,7 +47,6 @@ export const SmartTextAnimator: React.FC<SmartTextAnimatorProps> = ({
       }
     }
   }, [baseStyle.fontFamily]);
-  // -----------------------------
 
   // --- LOOPING LOGIC ---
   const [key, setKey] = useState(0);
@@ -72,7 +71,6 @@ export const SmartTextAnimator: React.FC<SmartTextAnimatorProps> = ({
       setKey((prev) => prev + 1);
     }
   }, [playing]);
-  // ---------------------
 
   const containerStyle: React.CSSProperties = {
     ...style,

@@ -243,7 +243,6 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ isOpen, onClose }) => {
 
         } catch (error: any) {
             if (error.name === 'AbortError') {
-                console.log('Fetch aborted');
                 return;
             }
             console.error("Error sending message:", error);

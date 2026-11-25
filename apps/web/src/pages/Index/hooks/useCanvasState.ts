@@ -8,7 +8,6 @@ import { useUiStore } from "@/stores/ui.store";
 
 export function useCanvasState() {
   useEffect(() => {
-    console.log("[useCanvasState] mounted");
   }, []);
 
   // --- Canvas Store ---

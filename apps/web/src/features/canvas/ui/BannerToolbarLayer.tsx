@@ -29,7 +29,6 @@ export const BannerToolbarLayer: React.FC<BannerToolbarLayerProps> = ({
   onUpdateOverlayMetadata,
 }) => {
   useEffect(() => {
-    console.log("[BannerToolbarLayer] mounted");
   }, []);
 
   if (!editingBannerText || !onBannerTextStyleChange) return null;

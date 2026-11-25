@@ -28,7 +28,6 @@ export const CanvasShell: React.FC<CanvasShellProps> = ({
   children,
 }) => {
   useEffect(() => {
-    console.log("[CanvasShell] mounted");
   }, []);
 
   return (

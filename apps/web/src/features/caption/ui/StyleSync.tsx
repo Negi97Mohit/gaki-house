@@ -11,7 +11,6 @@ export const StyleSync = () => {
 
     useEffect(() => {
         if (!loading && animeStyles && Object.keys(animeStyles).length > 0) {
-            console.log("Synchronizing AnimeStyles...");
             updateAnimeStyles(animeStyles);
         }
     }, [animeStyles, loading]);

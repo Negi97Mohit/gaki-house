@@ -58,7 +58,6 @@ function createStyle(partial: Partial<CaptionStyle> & { fontFamily: string; font
   };
 }
 
-// ========== STARTING SOON DESIGNS ==========
 function generateStartingSoonDesign(theme: StreamStyleTheme, styleId: string): GeneratedSceneDesign {
   const baseId = `${styleId}-starting-soon`;
   
@@ -233,7 +232,6 @@ function generateStartingSoonDesign(theme: StreamStyleTheme, styleId: string): G
   }
 }
 
-// ========== LIVE SCENE DESIGNS ==========
 function generateLiveDesign(theme: StreamStyleTheme, styleId: string): GeneratedSceneDesign {
   const baseId = `${styleId}-live`;
   
@@ -388,7 +386,6 @@ function generateLiveDesign(theme: StreamStyleTheme, styleId: string): Generated
   }
 }
 
-// ========== BRB DESIGNS ==========
 function generateBRBDesign(theme: StreamStyleTheme, styleId: string): GeneratedSceneDesign {
   const baseId = `${styleId}-brb`;
   
@@ -557,7 +554,6 @@ function generateBRBDesign(theme: StreamStyleTheme, styleId: string): GeneratedS
   }
 }
 
-// ========== INTERMISSION DESIGNS ==========
 function generateIntermissionDesign(theme: StreamStyleTheme, styleId: string): GeneratedSceneDesign {
   const baseId = `${styleId}-intermission`;
   
@@ -725,7 +721,6 @@ function generateIntermissionDesign(theme: StreamStyleTheme, styleId: string): G
   }
 }
 
-// ========== ENDING DESIGNS ==========
 function generateEndingDesign(theme: StreamStyleTheme, styleId: string): GeneratedSceneDesign {
   const baseId = `${styleId}-ending`;
   
@@ -892,7 +887,6 @@ function generateEndingDesign(theme: StreamStyleTheme, styleId: string): Generat
   }
 }
 
-// ========== OFFLINE DESIGNS ==========
 function generateOfflineDesign(theme: StreamStyleTheme, styleId: string): GeneratedSceneDesign {
   const baseId = `${styleId}-offline`;
   
@@ -1055,7 +1049,6 @@ function generateOfflineDesign(theme: StreamStyleTheme, styleId: string): Genera
   }
 }
 
-// ========== MAIN GENERATOR ==========
 export function generateAllSceneDesigns(theme: StreamStyleTheme, styleId: string): GeneratedSceneDesign[] {
   return [
     generateStartingSoonDesign(theme, styleId),
