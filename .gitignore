@@ -71,3 +71,5 @@ Thumbs.db
 *.sw?
 
 .pnpm-store/
+test-results/
+playwright-report/
