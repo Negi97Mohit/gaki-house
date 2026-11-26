@@ -99,10 +99,14 @@ test.describe("Studio Smoke Tests", () => {
     const { consoleErrors, pageErrors } = await setupMockedBrowser(page);
 
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(2000);
+    await page.waitForSelector("#root > *", { timeout: 25_000 }).catch(() => {});
+    await page.waitForTimeout(1000);
 
     const rootHtml = await page.locator("#root").innerHTML();
-    expect(rootHtml.length).toBeGreaterThan(50);
+    expect(
+      rootHtml.length,
+      `#root stayed empty. pageErrors=${pageErrors.join("; ")} consoleErrors=${consoleErrors.join("; ")}`,
+    ).toBeGreaterThan(50);
 
     // Try opening layout/transition controls if present in the studio UI
     const transitionBtn = page
