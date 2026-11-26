@@ -1,7 +1,7 @@
 # Fix a Bug
 
 1. Locate the failing module:
-   - Streaming / RTMP / audio DSP: `apps/web/src/features/stream/services/stream.service.ts` (do not alter DSP constants in `stream-audio-dsp.ts`).
+   - Streaming / RTMP / audio DSP: `apps/web/src/features/stream/services/stream-publisher.ts` (multistream/retries) and `stream.service.ts` (pipeline/audio; do not alter DSP constants in `stream-audio-dsp.ts`).
    - Canvas / WebGL kernel: `packages/engine/src/kernel/engine/BroadcastBus.ts`.
    - Signaling / Omegle: `apps/api-signaling/signaling-server.js`.
    - Cross-device handoff: `packages/handoff-sdk/src/media/HandoffCoordinator.ts` & `StreamManager.ts`.

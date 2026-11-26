@@ -1,12 +1,11 @@
-import { io, Socket } from "socket.io-client";
 import { notify } from "@gaki/core/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
-import { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
 import { AudioMixerEngine } from "@gaki/engine/kernel/engine/AudioMixerEngine";
 import { BroadcastEncoder } from "@gaki/engine/kernel/engine/BroadcastEncoder";
 import type { ElectronWindow } from "./stream.types";
+import { StreamPublisher, type StreamTarget } from "./stream-publisher";
 import {
   createAudioGate,
   createMicFilterChain,
@@ -19,13 +18,10 @@ import {
 
 export const USE_KERNEL_PIPELINE = false;
 
-const SERVER_URL = "http://localhost:3000";
-
 class StreamService {
   private static instance: StreamService;
 
   // Persistent State
-  private socket: Socket | null = null;
   private mediaRecorder: MediaRecorder | null = null;
   private activeStream: MediaStream | null = null;
   private audioContext: AudioContext | null = null;
@@ -53,19 +49,28 @@ class StreamService {
   private currentVideoSource: MediaStream | null = null;
   private micStream: MediaStream | null = null;
 
-  // State flags
-  private isPipelineActive = false;
-  private countdownInterval: NodeJS.Timeout | null = null;
-  private isAppFocused = true;
-
-  // Connection Management
-  private verifyingTimers = new Map<string, NodeJS.Timeout>();
-  private retryCounts = new Map<string, number>();
-  private MAX_RETRIES = 3;
-  private isIntentionalStop = false;
-
   // Audio gate interval IDs — stored so they can be cleared on pipeline stop
   private _gateIntervals: ReturnType<typeof setInterval>[] = [];
+
+  private publisher = new StreamPublisher({
+    useKernelPipeline: USE_KERNEL_PIPELINE,
+    startPipeline: () => this.startPipeline(),
+    cleanupPipeline: () => this.cleanupPipeline(),
+    getActiveStream: () => this.activeStream,
+    getSupportedMimeType: () => this.getSupportedMimeType(),
+    onKernelEngines: (mixer, encoder) => {
+      this.audioMixerEngine = mixer;
+      this.broadcastEncoder = encoder;
+    },
+  });
+
+  // Preserved for test harness / socket inspection
+  private get socket() {
+    return this.publisher.socket;
+  }
+  private set socket(val) {
+    this.publisher.socket = val;
+  }
 
   private constructor() {
     // Singleton
@@ -513,355 +518,14 @@ class StreamService {
     this.setMonitorVolume(muted ? 0 : this._lastMonitorVolume);
   }
 
-  // --- 2. STREAMING CONNECTION LOGIC ---
+  // --- 2. STREAMING CONNECTION LOGIC (delegated to StreamPublisher) ---
 
-  public async startStreaming(targets: any[]) {
-    try {
-      this.isIntentionalStop = false;
-      useStreamStore.getState().setConnecting(true);
-      useStreamStore.getState().setStreamStatus("Initializing...");
-
-      // Reset Retries
-      targets.forEach((t) => this.retryCounts.set(t.id, 0));
-
-      if (USE_KERNEL_PIPELINE) {
-        // KNOWN LIMITATION: BroadcastBus is recreated on scene switches because
-        // it is instantiated inside CanvasView which remounts per scene.
-        // This will cause a brief stream drop during transitions.
-        // Fix: move BroadcastBus instantiation up to CanvasContainer in a future refactor.
-        // Tracked: Phase D known issue — stream drop on scene switch
-
-        const kernel = BroadcastBus.activeInstance;
-        if (!kernel) throw new Error("BroadcastBus active instance not found");
-
-        const canvasStream = kernel.getStream();
-        if (!canvasStream) {
-          console.warn(
-            "[StreamService] Kernel getStream() returned null, stream might fail",
-          );
-        }
-
-        this.audioMixerEngine = new AudioMixerEngine();
-        const audioStream = await this.audioMixerEngine.start();
-
-        const activeTracks: MediaStreamTrack[] = [];
-        if (canvasStream) {
-          const vTracks = canvasStream.getVideoTracks();
-          activeTracks.push(...vTracks);
-        }
-        if (audioStream) {
-          const aTracks = audioStream.getAudioTracks();
-          activeTracks.push(...aTracks);
-        }
-
-        const finalStream = new MediaStream(activeTracks);
-
-        this.broadcastEncoder = new BroadcastEncoder();
-        this.broadcastEncoder.start(finalStream, {
-          targets,
-          onStatus: (data: any) => this.handleStreamStatus(data),
-          onProgress: (data: any) => this.handleStreamProgress(data),
-        });
-      } else {
-        await this.startPipeline();
-        
-        const isElectron = !!(window as ElectronWindow).electron;
-        if (isElectron) {
-          if (!this.activeStream) throw new Error("No active stream for recorder");
-          this.broadcastEncoder = new BroadcastEncoder();
-          this.broadcastEncoder.start(this.activeStream, {
-            targets,
-            onStatus: (data: any) => this.handleStreamStatus(data),
-            onProgress: (data: any) => this.handleStreamProgress(data),
-          });
-        } else {
-          const mimeType = this.setupMediaRecorder();
-          await this.connectWeb(targets);
-        }
-      }
-    } catch (err: any) {
-      console.error("[StreamService] Start Failed:", err);
-      notify.error(`Start failed: ${err.message}`);
-      this.stopStreaming();
-    }
-  }
-
-  private setupMediaRecorder(): string {
-    if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
-      return this.mediaRecorder.mimeType;
-    }
-
-    if (!this.activeStream) throw new Error("No active stream for recorder");
-
-    const mimeType = this.getSupportedMimeType();
-
-    this.mediaRecorder = new MediaRecorder(this.activeStream, {
-      mimeType,
-      videoBitsPerSecond: 4000000, // 4Mbps
-    });
-
-    const isElectron = !!(window as ElectronWindow).electron;
-
-    this.mediaRecorder.ondataavailable = async (e) => {
-      if (e.data.size > 0) {
-        if (isElectron) {
-          const buffer = await e.data.arrayBuffer();
-          (window as ElectronWindow).electron?.stream.sendData(buffer);
-        } else if (this.socket && this.socket.connected) {
-          this.socket.emit("binary-stream", e.data);
-        }
-      }
-    };
-
-    this.mediaRecorder.start(1000); // Send chunks every 1s
-    return mimeType;
-  }
-
-  private connectElectron(targets: any[], mimeType: string) {
-    const electron = (window as ElectronWindow).electron!;
-
-    electron.stream.onStatus((data: any) => {
-      this.handleStreamStatus(data);
-    });
-
-    targets.forEach((dest) => {
-      this.emitStartCommand(dest, mimeType);
-    });
-  }
-
-  private emitStartCommand(dest: any, mimeType: string) {
-    const isElectron = !!(window as ElectronWindow).electron;
-    useStreamStore.getState().setDestinationStatus(dest.id, "starting");
-
-    if (isElectron) {
-      (window as ElectronWindow).electron!.stream.start({
-        id: dest.id,
-        rtmpUrl: dest.url,
-        key: dest.key,
-        mimeType,
-      });
-    } else if (this.socket) {
-      this.socket.emit("start-stream", {
-        id: dest.id,
-        rtmpUrl: dest.url,
-        key: dest.key,
-      });
-    }
-  }
-
-  private async connectWeb(targets: any[]) {
-    if (!this.socket) {
-      this.socket = io(SERVER_URL);
-      this.socket.on("stream-status", (data: any) =>
-        this.handleStreamStatus(data),
-      );
-    }
-
-    if (!this.socket.connected) {
-      await new Promise<void>((resolve) =>
-        this.socket!.once("connect", () => resolve()),
-      );
-    }
-
-    targets.forEach((dest) => {
-      useStreamStore.getState().setDestinationStatus(dest.id, "starting");
-      this.emitStartCommand(dest, "video/webm");
-    });
-  }
-
-  // --- 3. STATUS HANDLING ---
-
-  private handleStreamStatus(data: any) {
-    const { id, status, error } =
-      typeof data === "string" ? { status: data } : data;
-    const store = useStreamStore.getState();
-
-    if (!id) return;
-
-    if (status === "error") {
-      this.handleConnectionError(id, error);
-      return;
-    }
-
-    if (status === "started") {
-      this.startVerification(id);
-    } else if (status === "stopped") {
-      store.setDestinationStatus(id, "idle");
-    }
-  }
-
-  private handleStreamProgress(data: any) {
-    const { id, fps, kbps } = data;
-    if (id && typeof fps === "number") {
-      useStreamStore.getState().updateDestination(id, { fps, kbps });
-    }
-  }
-
-  private startVerification(id: string) {
-    useStreamStore.getState().setDestinationStatus(id, "starting");
-    useStreamStore.getState().setStreamStatus("Verifying Connection...");
-
-    if (this.verifyingTimers.has(id)) {
-      clearTimeout(this.verifyingTimers.get(id)!);
-    }
-
-    const timer = setTimeout(() => {
-      const store = useStreamStore.getState();
-      const currentDest = store.destinations.find((d) => d.id === id);
-
-      if (currentDest && currentDest.status === "starting") {
-        store.setDestinationStatus(id, "connected");
-        this.retryCounts.set(id, 0);
-
-        const updatedStore = useStreamStore.getState();
-        const allConnected = updatedStore.destinations
-          .filter((d) => d.enabled)
-          .every((d) => d.status === "connected" || d.status === "live");
-
-        if (
-          allConnected &&
-          !updatedStore.isBroadcasting &&
-          !this.countdownInterval
-        ) {
-          this.startCountdown();
-        }
-      }
-    }, 3000);
-
-    this.verifyingTimers.set(id, timer);
-  }
-
-  private handleConnectionError(id: string, errorMsg: string) {
-    const store = useStreamStore.getState();
-
-    // 1. ABORT COUNTDOWN / VERIFICATION
-    if (this.verifyingTimers.has(id)) {
-      clearTimeout(this.verifyingTimers.get(id)!);
-      this.verifyingTimers.delete(id);
-    }
-
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-      this.countdownInterval = null;
-      store.setCountdown(null);
-    }
-
-    // Skip retry logic if this was an intentional stop
-    if (this.isIntentionalStop) {
-      store.setDestinationStatus(id, "idle");
-      return;
-    }
-
-    // 2. CHECK RETRY LOGIC
-    const currentRetries = this.retryCounts.get(id) || 0;
-
-    if (currentRetries < this.MAX_RETRIES) {
-      const nextRetry = currentRetries + 1;
-      this.retryCounts.set(id, nextRetry);
-
-      const retryDelay = 2000 * nextRetry;
-
-      store.setDestinationStatus(id, "error", `Retrying (${nextRetry})...`);
-      store.setStreamStatus(`Connection Failed. Retrying...`);
-
-      const dest = store.destinations.find((d) => d.id === id);
-      if (dest) {
-        setTimeout(() => {
-          const mimeType = this.mediaRecorder?.mimeType || "video/webm";
-          this.emitStartCommand(dest, mimeType);
-        }, retryDelay);
-      }
-    } else {
-      // 3. FINAL FAILURE
-      console.error(`[StreamService] Max retries exceeded for ${id}`);
-      store.setDestinationStatus(id, "error", errorMsg);
-      store.setStreamStatus("Connection Failed");
-      store.setConnecting(false);
-      store.setBroadcasting(false);
-
-      if (store.setFatalError) {
-        store.setFatalError(errorMsg);
-      } else {
-        notify.error("Critical Stream Error: " + errorMsg);
-      }
-    }
-  }
-
-  private startCountdown() {
-
-    const store = useStreamStore.getState();
-    let count = 3;
-
-    store.setCountdown(count);
-    store.setStreamStatus("Starting...");
-
-    this.countdownInterval = setInterval(() => {
-      count--;
-      store.setCountdown(count);
-
-      if (count <= 0) {
-        clearInterval(this.countdownInterval!);
-        this.countdownInterval = null;
-        store.setCountdown(null);
-        store.setBroadcasting(true);
-        store.setConnecting(false);
-        store.setStreamStatus("Live");
-
-        store.destinations.forEach((d) => {
-          if (d.status === "connected") {
-            store.setDestinationStatus(d.id, "live");
-          }
-        });
-      }
-    }, 1000);
+  public async startStreaming(targets: StreamTarget[]) {
+    return this.publisher.startStreaming(targets);
   }
 
   public stopStreaming(specificId?: string) {
-    this.isIntentionalStop = true;
-
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-      this.countdownInterval = null;
-      useStreamStore.getState().setCountdown(null);
-    }
-
-    this.verifyingTimers.forEach((t) => clearTimeout(t));
-    this.verifyingTimers.clear();
-
-    const isElectron = !!(window as ElectronWindow).electron;
-
-    if (specificId) {
-      if (USE_KERNEL_PIPELINE || isElectron) {
-        this.broadcastEncoder?.stop(specificId);
-      } else {
-        this.socket?.emit("stop-stream", { id: specificId });
-      }
-      useStreamStore.getState().setDestinationStatus(specificId, "idle");
-    } else {
-      if (USE_KERNEL_PIPELINE || isElectron) {
-        this.broadcastEncoder?.stop();
-      } else {
-        this.socket?.emit("stop-stream");
-
-        if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
-          this.mediaRecorder.stop();
-        }
-      }
-
-      this.cleanupPipeline();
-
-      const store = useStreamStore.getState();
-      store.setBroadcasting(false);
-      store.setConnecting(false);
-      store.setStreamStatus("Idle");
-      store.destinations.forEach((d) =>
-        store.setDestinationStatus(d.id, "idle"),
-      );
-    }
-
-    setTimeout(() => {
-      this.isIntentionalStop = false;
-    }, 1000);
+    this.publisher.stopStreaming(specificId);
   }
 
   private cleanupPipeline() {
