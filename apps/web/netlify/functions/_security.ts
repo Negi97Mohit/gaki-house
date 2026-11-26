@@ -64,7 +64,8 @@ export function checkOrigin(
   };
 }
 
-// Per-IP sliding-window rate limiter (in-memory per warm function instance)
+// Per-instance, best-effort sliding-window rate limiter (in-memory per warm function instance).
+// Firebase Auth verification (verifyFirebaseAuth) is the real protection on user-scoped endpoints.
 const ipHits = new Map<string, number[]>();
 
 export function _resetRateLimitForTests() {

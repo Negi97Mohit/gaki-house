@@ -85,14 +85,15 @@ Monorepo cleanup, modularization, boundary enforcement, security hardening, and 
 - **Verification commands:** `pnpm --filter @gaki/web exec vitest run src/__tests__/stream.service.test.ts` and `pnpm --filter @gaki/web type-check`
 - **Result:** Pass (5 files, max 276 lines).
 
-### Task B: Add a new UI component to the studio
-- **Files an agent reads (4 files, all <= 300 lines):**
+### Task B: Add a new panel in the studio sidebar that reads from a store
+- **Structural fix:** Split `FloatingControlsPanel.tsx` (422 lines -> 152 lines) by extracting `STUDIO_PANEL_SECTIONS` into `apps/web/src/features/studio/ui/panels/panelRegistry.tsx` (227 lines).
+- **Files an agent reads/edits (4 files, all <= 300 lines):**
   1. `AGENTS.md` (59 lines)
-  2. `packages/ui/AGENTS.md` (19 lines)
-  3. `packages/ui/package.json` (67 lines)
-  4. `apps/web/src/lib/zIndex.ts` (40 lines, if layered)
+  2. `apps/web/AGENTS.md` (37 lines)
+  3. `apps/web/src/features/studio/ui/panels/panelRegistry.tsx` (227 lines)
+  4. Target Zustand store in `apps/web/src/stores/` (e.g. `stream.store.ts` 110 lines or `ui.store.ts` 63 lines) + new panel file in `src/features/studio/ui/panels/`
 - **Verification commands:** `pnpm --filter @gaki/web type-check`, `pnpm --filter @gaki/web lint`, `pnpm boundary-check`
-- **Result:** Pass (4 files, max 67 lines).
+- **Result:** Pass (4 files, max 227 lines).
 
 ### Task C: Add a new API route to `api-signaling`
 - **Files an agent reads (4 files, all <= 300 lines):**
