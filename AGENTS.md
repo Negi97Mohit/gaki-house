@@ -64,3 +64,4 @@ Enforced by `.dependency-cruiser.cjs` (`pnpm boundary-check`):
 - **Relying on hoisted dependencies**: Declare every imported package in the importing workspace's `package.json`.
 - **Caching LiveKit handoff tokens client-side**: Fetch fresh scoped tokens from `api-handoff`.
 - **Inspecting `.env` values**: Never print or commit real `.env` values; keep `.env.example` in sync (`pnpm env-check`).
+- **Confusing the two stream stores**: `stream-manager.store.ts` manages raw `MediaStream` sources (camera/screen tracks). Broadcast destination state (connected, live, error, retries) lives in `stream.store.ts`. Multistream publish logic is in `stream-publisher.ts → handleConnectionError`.
