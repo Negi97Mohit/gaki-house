@@ -40,3 +40,7 @@ jobs:
 
       - name: Dead code check (knip)
         run: pnpm dead-code
+
+      - name: Dead code advisory (unused exports & types)
+        continue-on-error: true
+        run: pnpm dead-code:advisory

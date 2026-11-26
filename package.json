@@ -18,6 +18,7 @@
     "boundary-check": "depcruise --config .dependency-cruiser.cjs apps/web/src apps/gaki-mobile/src packages/core/src packages/engine/src packages/ui/src",
     "env-check": "node scripts/check-env-examples.mjs",
     "dead-code": "knip",
+    "dead-code:advisory": "knip --include exports,types",
     "prepare": "husky",
     "clean": "turbo run clean"
   },
