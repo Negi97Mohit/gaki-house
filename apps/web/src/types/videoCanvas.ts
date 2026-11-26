@@ -1,4 +1,4 @@
-import type { BroadcastBus } from "@/kernel/engine/BroadcastBus";
+import type { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
 import {
     LayoutMode,
     CameraShape,
@@ -11,10 +11,10 @@ import {
     GeneratedOverlay,
     GeneratedLayout,
     EmptyGridPanelState,
-} from "@/types/caption";
+} from "@gaki/core/types/caption";
 import { AssetResult } from "@/features/assets/ui/AssetLibrary";
 import { BrowserOverlayState } from "@/features/canvas/ui/DraggableBrowser";
-import { RecordingSession } from "@/types/editor";
+import { RecordingSession } from "@gaki/core/types/editor";
 
 export interface VideoCanvasProps {
     sceneId: string;

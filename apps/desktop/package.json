@@ -16,12 +16,10 @@
     "lint": "echo \"no eslint config for desktop\""
   },
   "dependencies": {
-    "async": "^3.2.6",
     "electron-store": "catalog:",
     "ffmpeg-static": "catalog:",
     "fluent-ffmpeg": "catalog:",
     "node-fetch": "catalog:",
-    "node-media-server": "^2.6.2",
     "socket.io": "catalog:"
   },
   "devDependencies": {

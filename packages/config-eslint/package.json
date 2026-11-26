@@ -7,6 +7,14 @@
     "./base": "./base.config.js",
     "./guardrails": "./guardrails.js"
   },
+  "dependencies": {
+    "@eslint/js": "catalog:",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-react-refresh": "catalog:",
+    "globals": "catalog:",
+    "typescript-eslint": "catalog:"
+  },
   "scripts": {
     "type-check": "echo \"config package\"",
     "lint": "echo \"config package\""

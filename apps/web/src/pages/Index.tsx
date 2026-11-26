@@ -119,7 +119,7 @@ const Index = () => {
     AppStateSync.restore().then((savedState) => {
       if (savedState?.scenes?.length) {
         const firstId = sceneManager.importScenes(
-          savedState.scenes as import("@/types/caption").SceneState[],
+          savedState.scenes as import("@gaki/core/types/caption").SceneState[],
         );
         if (firstId) sceneManager.handleSceneSelect(firstId);
       }
@@ -128,7 +128,7 @@ const Index = () => {
 
   const handleImportOBSScenes = useCallback(
     (
-      scenes: import("@/types/caption").SceneState[],
+      scenes: import("@gaki/core/types/caption").SceneState[],
       incomingStingerConfig?: { path: string; transitionPoint: number },
     ) => {
       if (!scenes.length) {

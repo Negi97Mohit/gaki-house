@@ -38,6 +38,5 @@ jobs:
       - name: Build web and mobile apps
         run: pnpm --filter @gaki/web --filter @gaki/mobile build
 
-      - name: Dead code report (knip)
-        continue-on-error: true
+      - name: Dead code check (knip)
         run: pnpm dead-code

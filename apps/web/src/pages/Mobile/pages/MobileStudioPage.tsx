@@ -277,7 +277,7 @@ export const MobileStudioPage: React.FC = () => {
   const handleAssetSelect = (asset: any) => {
     const url = asset.downloadUrl || asset.previewUrl;
     const blob = new File([], asset.alt || "image", { type: asset.type || "image/jpeg" });
-    const newOverlay: import("@/types/caption").FileOverlayState = {
+    const newOverlay: import("@gaki/core/types/caption").FileOverlayState = {
       id: `file-${Date.now()}`,
       file: blob,
       fileName: asset.alt || "image",

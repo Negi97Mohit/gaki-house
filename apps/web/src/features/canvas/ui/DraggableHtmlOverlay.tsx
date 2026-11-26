@@ -77,7 +77,7 @@ export const DraggableHtmlOverlay: React.FC<DraggableHtmlOverlayProps> = ({
       const found = ANIMATED_BANNER_DESIGNS.find(
         (d) => d.id === overlay.metadata?.animatedBannerId
       );
-      return found as import("@/types/animatedBanner").AnimatedBannerDesign | undefined;
+      return found as import("@gaki/core/types/animatedBanner").AnimatedBannerDesign | undefined;
     }
     return undefined;
   }, [overlay.metadata]);
