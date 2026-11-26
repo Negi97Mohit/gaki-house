@@ -39,7 +39,7 @@ export default tseslint.config(
       "@typescript-eslint/ban-ts-comment": "warn",
       "@typescript-eslint/no-require-imports": "warn",
       "@typescript-eslint/no-empty-object-type": "warn",
-      "react-hooks/rules-of-hooks": "warn",
+      "react-hooks/rules-of-hooks": "error",
       "no-case-declarations": "warn",
       "no-useless-escape": "warn",
       "no-empty": "warn",

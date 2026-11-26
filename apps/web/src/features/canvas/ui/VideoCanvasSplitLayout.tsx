@@ -48,6 +48,11 @@ export const VideoCanvasSplitLayout: React.FC<VideoCanvasSplitLayoutProps> = ({
   interimTranscript,
   sidebarProps,
 }) => {
+  // Refs for direct DOM manipulation (Transient State Pattern)
+  const leftPaneRef = React.useRef<HTMLDivElement>(null);
+  const rightPaneRef = React.useRef<HTMLDivElement>(null);
+  const isDraggingRef = React.useRef(false);
+
   if (!dynamicLayout.isActive || !dynamicLayout.target) return null;
 
   if (dynamicLayout.mode === "pip") {
@@ -99,11 +104,6 @@ export const VideoCanvasSplitLayout: React.FC<VideoCanvasSplitLayoutProps> = ({
   }
 
   const isVertical = dynamicLayout.mode === "split-vertical";
-
-  // Refs for direct DOM manipulation (Transient State Pattern)
-  const leftPaneRef = React.useRef<HTMLDivElement>(null);
-  const rightPaneRef = React.useRef<HTMLDivElement>(null);
-  const isDraggingRef = React.useRef(false);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();

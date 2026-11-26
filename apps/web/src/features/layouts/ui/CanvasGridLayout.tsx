@@ -58,6 +58,7 @@ export const CanvasGridLayoutRenderer: React.FC<CanvasGridLayoutRendererProps> =
 ) => {
   const { layout, template, containerRef } = props;
   const tId = layout.templateId;
+  const isPreview = usePreviewMode();
 
   // 3D / WebGL layouts check for preview mode safety
   const isHeavyWebGL = [
@@ -86,40 +87,32 @@ export const CanvasGridLayoutRenderer: React.FC<CanvasGridLayoutRendererProps> =
         tId === "kinetic-typography" && "bg-[#E5E5E5]"
       )}
     >
-      {(() => {
-        const isPreview = usePreviewMode();
-
-        if (isPreview && isHeavyWebGL) {
-          return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-900 border border-white/10 p-4 text-center">
-              <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-2">
-                <span className="text-xl">✨</span>
-              </div>
-              <p className="text-xs font-medium text-white/70 tracking-wider uppercase">
-                {template.name || "3D Layout"}
-              </p>
-              <p className="text-[10px] text-white/40 mt-1">
-                3D Preview Disabled
-              </p>
-            </div>
-          );
-        }
-
-        return (
-          <Suspense fallback={
-            <div className="w-full h-full flex items-center justify-center bg-muted/5">
-              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground/50" />
-            </div>
-          }>
-            <LayoutComponent
-              // Pass all props directly, type casting if needed for specific layouts
-              // The dynamic layouts all generally accept `sections` and other generic props
-              sections={layout.sections}
-              {...props}
-            />
-          </Suspense>
-        );
-      })()}
+      {isPreview && isHeavyWebGL ? (
+        <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-900 border border-white/10 p-4 text-center">
+          <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-2">
+            <span className="text-xl">✨</span>
+          </div>
+          <p className="text-xs font-medium text-white/70 tracking-wider uppercase">
+            {template.name || "3D Layout"}
+          </p>
+          <p className="text-[10px] text-white/40 mt-1">
+            3D Preview Disabled
+          </p>
+        </div>
+      ) : (
+        <Suspense fallback={
+          <div className="w-full h-full flex items-center justify-center bg-muted/5">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground/50" />
+          </div>
+        }>
+          <LayoutComponent
+            // Pass all props directly, type casting if needed for specific layouts
+            // The dynamic layouts all generally accept `sections` and other generic props
+            sections={layout.sections}
+            {...props}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

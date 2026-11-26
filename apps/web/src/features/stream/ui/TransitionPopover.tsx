@@ -141,10 +141,10 @@ export const TransitionPopover: React.FC<TransitionPopoverProps> = ({
   onTransitionChange,
   onClose,
 }) => {
-  if (!transition) return null;
-
-  const [localDuration, setLocalDuration] = useState(transition.durationMs);
+  const [localDuration, setLocalDuration] = useState(transition?.durationMs ?? 300);
   const [activeCategory, setActiveCategory] = useState("Basic");
+
+  if (!transition) return null;
 
   const currentCategory = TRANSITION_CATEGORIES.find(c => c.name === activeCategory);
 
