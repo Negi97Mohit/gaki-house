@@ -18,6 +18,7 @@ import {
   _resetTwitchTokenCacheForTests,
 } from "../../netlify/functions/twitch-token";
 import { handler as kickHandler } from "../../netlify/functions/kick-proxy";
+import { handler as geminiHandler } from "../../netlify/functions/gemini-proxy";
 import { _resetRateLimitForTests } from "../../netlify/functions/_security";
 
 const dummyContext = {} as HandlerContext;
@@ -142,5 +143,40 @@ describe("hardened netlify functions", () => {
     const blocked = await twitchHandler(makeEvent(), dummyContext);
     expect(blocked?.statusCode).toBe(429);
     expect(blocked?.headers?.["Retry-After"]).toBeDefined();
+  });
+
+  it("gemini-proxy requires POST, allowed origin, and Firebase auth", async () => {
+    process.env.GEMINI_API_KEY = "gem-secret";
+
+    const unauthRes = await geminiHandler(
+      makeEvent({ httpMethod: "POST", body: JSON.stringify({ prompt: "hi" }) }),
+      dummyContext,
+    );
+    expect(unauthRes?.statusCode).toBe(401);
+
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ users: [{ localId: "user-gem" }] }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ candidates: [{ content: { parts: [{ text: "ok" }] } }] }),
+      });
+
+    const okRes = await geminiHandler(
+      makeEvent({
+        httpMethod: "POST",
+        headers: {
+          origin: "http://localhost:5173",
+          authorization: "Bearer valid-firebase-jwt",
+          "x-nf-client-connection-ip": "8.8.8.8",
+        },
+        body: JSON.stringify({ prompt: "hello", systemPrompt: "sys" }),
+      }),
+      dummyContext,
+    );
+    expect(okRes?.statusCode).toBe(200);
+    expect(fetchMock.mock.calls[1][0]).toContain("key=gem-secret");
   });
 });
