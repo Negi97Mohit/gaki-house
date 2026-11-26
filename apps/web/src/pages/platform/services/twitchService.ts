@@ -2,51 +2,45 @@
 import { StreamChannel, PlatformType } from "../data/mockData";
 
 const TWITCH_API_BASE = "https://api.twitch.tv/helix";
-const TWITCH_AUTH_URL = "https://id.twitch.tv/oauth2/token";
 
-let cachedToken: { token: string; expiresAt: number } | null = null;
+// VITE_TWITCH_CLIENT_ID is public (sent in Client-ID header per Twitch spec).
+// TWITCH_CLIENT_SECRET is server-only — the client calls /.netlify/functions/twitch-token instead.
+const CLIENT_ID = import.meta.env.VITE_TWITCH_CLIENT_ID as string | undefined;
+const TOKEN_ENDPOINT = "/.netlify/functions/twitch-token";
 
-async function getTwitchAppToken(): Promise<string | null> {
-    const clientId = import.meta.env.VITE_TWITCH_CLIENT_ID;
-    const clientSecret = import.meta.env.VITE_TWITCH_CLIENT_SECRET;
-    if (!clientId || !clientSecret) return null;
+interface TwitchTokenResponse {
+    access_token: string;
+    client_id: string;
+}
+
+let cachedToken: { token: string; clientId: string; expiresAt: number } | null = null;
+
+async function getTwitchAppToken(): Promise<{ token: string; clientId: string } | null> {
+    if (!CLIENT_ID) return null;
 
     // Return cached token if still valid (with 5 min buffer)
     if (cachedToken && Date.now() < cachedToken.expiresAt - 300_000) {
-        return cachedToken.token;
+        return { token: cachedToken.token, clientId: cachedToken.clientId };
     }
 
     try {
-        const res = await fetch(TWITCH_AUTH_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({
-                client_id: clientId,
-                client_secret: clientSecret,
-                grant_type: "client_credentials",
-            }),
-        });
-
+        const res = await fetch(TOKEN_ENDPOINT);
         if (!res.ok) {
-            console.error("[TwitchService] Auth error:", res.status);
+            console.error("[TwitchService] Token proxy error:", res.status);
             return null;
         }
-
-        const data = await res.json();
-        cachedToken = {
-            token: data.access_token,
-            expiresAt: Date.now() + data.expires_in * 1000,
-        };
-        return cachedToken.token;
+        const data = (await res.json()) as TwitchTokenResponse;
+        // Cache for 1 hour (proxy manages real expiry)
+        cachedToken = { token: data.access_token, clientId: data.client_id, expiresAt: Date.now() + 3_600_000 };
+        return { token: cachedToken.token, clientId: cachedToken.clientId };
     } catch (err) {
-        console.error("[TwitchService] Auth failed:", err);
+        console.error("[TwitchService] Token fetch failed:", err);
         return null;
     }
 }
 
-// NEW: Fetch Stream Key for logged-in user
 export async function fetchTwitchStreamKey(userToken: string): Promise<string | null> {
-    const clientId = import.meta.env.VITE_TWITCH_CLIENT_ID;
+    const clientId = CLIENT_ID;
     if (!clientId) return null;
 
     try {
@@ -138,19 +132,18 @@ function mapTwitchCategory(gameName: string): { name: string; slug: string } {
 export async function fetchTwitchLiveStreams(
     maxResults = 12
 ): Promise<StreamChannel[]> {
-    const clientId = import.meta.env.VITE_TWITCH_CLIENT_ID;
-    if (!clientId) {
+    if (!CLIENT_ID) {
         console.warn("[TwitchService] No Client ID configured (VITE_TWITCH_CLIENT_ID). Using mock data.");
         return [];
     }
 
-    const token = await getTwitchAppToken();
-    if (!token) return [];
+    const auth = await getTwitchAppToken();
+    if (!auth) return [];
 
     try {
         const headers = {
-            "Client-ID": clientId,
-            Authorization: `Bearer ${token}`,
+            "Client-ID": auth.clientId,
+            Authorization: `Bearer ${auth.token}`,
         };
 
         // Step 1: Get top live streams

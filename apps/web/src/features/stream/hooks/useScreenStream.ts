@@ -25,7 +25,6 @@ export const useScreenStream = (sourceId?: string) => {
         let mounted = true;
 
         const startStream = async () => {
-            console.log(`[useScreenStream] Starting stream for ${sourceId}`);
             try {
                 const constraints = {
                     audio: false,
@@ -40,20 +39,17 @@ export const useScreenStream = (sourceId?: string) => {
                 const newStream = await navigator.mediaDevices.getUserMedia(
                     constraints as MediaStreamConstraints
                 );
-                console.log(`[useScreenStream] Got stream for ${sourceId}:`, newStream.id);
 
                 if (mounted) {
                     addStream(sourceId, newStream);
                     setStream(newStream);
 
                     newStream.getVideoTracks()[0].onended = () => {
-                        console.log(`[useScreenStream] Stream ended for ${sourceId}`);
                         // Handle stream ended (e.g. user clicked "Stop sharing" on system UI)
                         removeStream(sourceId);
                         if (mounted) setStream(null);
                     };
                 } else {
-                    console.log(`[useScreenStream] Unmounted before stream ready for ${sourceId}`);
                     // If unmounted during load, close it immediately
                     newStream.getTracks().forEach(t => t.stop());
                 }

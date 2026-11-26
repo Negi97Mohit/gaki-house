@@ -443,8 +443,6 @@ export const DraggableFileViewer: React.FC<DraggableFileViewerProps> = ({
   containerRef,
   viewportScale = 1,
 }) => {
-  // Rotation now handled by HybridDraggable
-  // const { toast } = useToast(); -> Removed
   const [isGenerating3D, setIsGenerating3D] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [savedLayout, setSavedLayout] = useState<{

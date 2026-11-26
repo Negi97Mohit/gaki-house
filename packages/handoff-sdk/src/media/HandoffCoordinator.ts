@@ -56,7 +56,6 @@ export class HandoffCoordinator {
         }
       } else if (signal.status === "ACCEPTED") {
         // We sent an OFFER, and the target device accepted it. Time to step down.
-        console.log(`✅ Target device accepted the handoff. Relinquishing...`);
         await this.streamManager.relinquishStream();
         await deleteDoc(signalRef); // Clean up
       }

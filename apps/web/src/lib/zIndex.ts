@@ -1,4 +1,9 @@
 // src/lib/zIndex.ts
+// Layers intentionally share values within the same visual tier:
+// - videoPip & draggableElement (100): peer canvas items; draggable elements elevate to 150 on hover and 200 when active.
+// - sceneTabs, floatingLogo, floatingPanelTrigger, aiPopoverTrigger (2020): peer HUD chrome above fullscreenCanvas/floatingControls, below floatingPanel (2025).
+// - floatingPanelDropdown, aiPopoverContent, assetPopover (2030): mutually exclusive popovers/dropdowns above floatingPanel (2025).
+// - streamModal & fileVaultPreview (10000): mutually exclusive top-level modals above loader (9999).
 export const zIndex = {
   base: 1,
   canvasOverlay: 10,

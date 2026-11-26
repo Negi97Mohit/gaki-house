@@ -53,25 +53,21 @@ export const OmegleVideoLayout: React.FC<OmegleVideoLayoutProps> = ({ design }) 
             const isLive = videoTrack.readyState === 'live';
             const isMuted = videoTrack.muted;
 
-            console.log('[OmegleVideoLayout] Track status:', { isEnabled, isLive, isMuted });
             setIsRemoteCameraEnabled(isEnabled && isLive && !isMuted);
         };
 
         checkStatus();
 
         const handleMute = () => {
-            console.log('[OmegleVideoLayout] Remote track muted');
             setIsRemoteCameraEnabled(false);
         };
 
         const handleUnmute = () => {
-            console.log('[OmegleVideoLayout] Remote track unmuted');
             // Re-verify status on unmute
             checkStatus();
         };
 
         const handleEnded = () => {
-            console.log('[OmegleVideoLayout] Remote track ended');
             setIsRemoteCameraEnabled(false);
         };
 

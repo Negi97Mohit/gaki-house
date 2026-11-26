@@ -16,9 +16,6 @@ export function mapObsTransformToLayout(
   baseWidth: number,
   baseHeight: number
 ): GeneratedLayout {
-  console.log(
-    `[CoordinateMapper] "${item.name}" pos(${item.pos.x},${item.pos.y}) scale(${item.scale.x},${item.scale.y}) bounds(${item.bounds.x},${item.bounds.y}) boundsType=${item.boundsType}`
-  );
 
   const clamp = (v: number, lo: number, hi: number) =>
     Math.max(lo, Math.min(hi, v));

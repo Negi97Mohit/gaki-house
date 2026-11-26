@@ -118,31 +118,19 @@ const Index = () => {
   useEffect(() => {
     AppStateSync.restore().then((savedState) => {
       if (savedState?.scenes?.length) {
-        console.log(
-          "[Index] Restoring",
-          savedState.scenes.length,
-          "scene(s) from previous session",
-        );
         const firstId = sceneManager.importScenes(
-          savedState.scenes as import("@/types/caption").SceneState[],
+          savedState.scenes as import("@gaki/core/types/caption").SceneState[],
         );
         if (firstId) sceneManager.handleSceneSelect(firstId);
-      } else {
-        console.log("[Index] No previous session state found");
       }
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleImportOBSScenes = useCallback(
     (
-      scenes: import("@/types/caption").SceneState[],
+      scenes: import("@gaki/core/types/caption").SceneState[],
       incomingStingerConfig?: { path: string; transitionPoint: number },
     ) => {
-      console.log(
-        "[Index] handleImportOBSScenes called with",
-        scenes.length,
-        "scene(s)",
-      );
       if (!scenes.length) {
         console.error(
           "[Index] handleImportOBSScenes: scenes array is empty — nothing to import",
@@ -151,10 +139,6 @@ const Index = () => {
       }
 
       if (incomingStingerConfig) {
-        console.log(
-          "[Index] Storing global stinger configuration:",
-          incomingStingerConfig,
-        );
         setStingerConfig(incomingStingerConfig);
       }
 
@@ -165,10 +149,6 @@ const Index = () => {
         );
         return;
       }
-      console.log(
-        "[Index] handleImportOBSScenes: switching to first imported scene",
-        firstId,
-      );
 
       // First load instant without delaying so it boots
       sceneManager.handleSceneSelect(firstId);

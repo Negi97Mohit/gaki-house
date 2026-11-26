@@ -33,11 +33,7 @@ export const CaptionLayer: React.FC<CaptionLayerProps> = ({
   dynamicStyle,
   onCaptionLayoutChange,
 }) => {
-  useEffect(() => {
-    console.log("[CaptionLayer] mounted");
-  }, []);
-
-  if (!captionsEnabled || (!fullTranscript && !interimTranscript) || sceneSize.width === 0) {
+if (!captionsEnabled || (!fullTranscript && !interimTranscript) || sceneSize.width === 0) {
     return null;
   }
 

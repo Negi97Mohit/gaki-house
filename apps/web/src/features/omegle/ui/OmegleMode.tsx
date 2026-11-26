@@ -39,14 +39,12 @@ export const OmegleMode: React.FC = () => {
     useEffect(() => {
         const initialize = async () => {
             try {
-                console.log('[OmegleMode] Initializing...');
 
                 // Initialize signaling client
                 const signaling = new SignalingClient();
                 signalingRef.current = signaling;
 
                 await signaling.connect();
-                console.log('[OmegleMode] Connected to signaling server');
 
                 // Try to get local media stream (optional - user can use text-only)
                 try {
@@ -55,7 +53,6 @@ export const OmegleMode: React.FC = () => {
                         audio: true,
                     });
 
-                    console.log('[OmegleMode] Got local media stream');
                     localStreamRef.current = stream;
                     setLocalStream(stream);
                 } catch (mediaError) {
@@ -90,7 +87,6 @@ export const OmegleMode: React.FC = () => {
     useEffect(() => {
         const { isCameraEnabled, isMicEnabled, connection } = useOmegleStore.getState();
         if (signalingRef.current && connection.roomId) {
-            console.log('[OmegleMode] Broadcasting media state:', { video: isCameraEnabled, audio: isMicEnabled });
             signalingRef.current.sendMediaState({
                 video: isCameraEnabled,
                 audio: isMicEnabled,
@@ -108,7 +104,6 @@ export const OmegleMode: React.FC = () => {
         });
 
         signaling.onMatchFound(async ({ roomId, partnerId, isInitiator }) => {
-            console.log('[OmegleMode] Match found!', { roomId, partnerId, isInitiator });
             toast.dismiss();
             toast.success('Stranger found! Connecting...');
 
@@ -120,13 +115,10 @@ export const OmegleMode: React.FC = () => {
         });
 
         signaling.onWebRTCOffer(async ({ offer }) => {
-            console.log('[OmegleMode] Received WebRTC offer');
 
             if (webrtcRef.current) {
                 try {
-                    console.log('[OmegleMode] Creating answer for received offer...');
                     const answer = await webrtcRef.current.createAnswer(offer);
-                    console.log('[OmegleMode] Answer created, sending to peer');
                     // Use the roomId from the current connection state
                     const roomId = useOmegleStore.getState().connection.roomId;
                     if (roomId) {
@@ -143,7 +135,6 @@ export const OmegleMode: React.FC = () => {
         });
 
         signaling.onWebRTCAnswer(async ({ answer }) => {
-            console.log('[OmegleMode] Received WebRTC answer');
 
             if (webrtcRef.current) {
                 await webrtcRef.current.setRemoteAnswer(answer);
@@ -157,7 +148,6 @@ export const OmegleMode: React.FC = () => {
         });
 
         signaling.onMediaStateChanged((state) => {
-            console.log('[OmegleMode] Remote media state changed:', state);
             useOmegleStore.getState().setRemoteMediaState(state);
         });
 
@@ -172,7 +162,6 @@ export const OmegleMode: React.FC = () => {
         });
 
         signaling.onPartnerDisconnected(({ reason }) => {
-            console.log('[OmegleMode] Partner disconnected:', reason);
 
             // If partner clicked "Next", automatically search for new partner
             if (reason === 'next-clicked') {
@@ -200,7 +189,6 @@ export const OmegleMode: React.FC = () => {
         localStream: MediaStream | null
     ) => {
         try {
-            console.log('[OmegleMode] Setting up WebRTC', { hasLocalStream: !!localStream });
             const webrtc = new WebRTCConnection();
             webrtcRef.current = webrtc;
 
@@ -210,11 +198,7 @@ export const OmegleMode: React.FC = () => {
 
             // Setup WebRTC event listeners
             webrtc.onRemoteStream((stream) => {
-                console.log('[OmegleMode] 🎥 Received remote stream with', stream.getTracks().length, 'tracks');
-                stream.getTracks().forEach(track => {
-                    console.log(`[OmegleMode] Track: ${track.kind}, enabled: ${track.enabled}, state: ${track.readyState}`);
-                });
-                setRemoteStream(stream);
+setRemoteStream(stream);
                 toast.success('Connected to stranger!');
             });
 
@@ -223,7 +207,6 @@ export const OmegleMode: React.FC = () => {
             });
 
             webrtc.onConnectionStateChange((state) => {
-                console.log('[OmegleMode] WebRTC state:', state);
 
                 if (state === 'failed' || state === 'closed') {
                     toast.error('Connection lost');
@@ -258,7 +241,6 @@ export const OmegleMode: React.FC = () => {
     }, [resetConnection, setMatchStatus]);
 
     const cleanup = () => {
-        console.log('[OmegleMode] Cleaning up...');
 
         if (webrtcRef.current) {
             webrtcRef.current.close();

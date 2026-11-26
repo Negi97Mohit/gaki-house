@@ -23,9 +23,16 @@ export function useGpuEffect({ videoRef, canvasRef, shots }: GpuEffectOptions) {
 
   // Check battery level periodically
   useEffect(() => {
-    if (!('getBattery' in navigator)) return;
-    let checkInterval: number;
-    (navigator as any).getBattery().then((battery: any) => {
+    interface BatteryManager extends EventTarget {
+      charging: boolean;
+      level: number;
+    }
+    interface NavigatorWithBattery extends Navigator {
+      getBattery?: () => Promise<BatteryManager>;
+    }
+    const nav = navigator as NavigatorWithBattery;
+    if (!nav.getBattery) return;
+    nav.getBattery().then((battery) => {
       const checkBattery = () => {
         if (!battery.charging && battery.level < 0.20) {
           setThermalDegraded(true);

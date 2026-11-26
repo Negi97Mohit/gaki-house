@@ -19,6 +19,7 @@ dist/
 build/
 out/
 .next/
+.netlify/
 apps/desktop/release/
 apps/desktop/dist/
 
@@ -70,3 +71,5 @@ Thumbs.db
 *.sw?
 
 .pnpm-store/
+test-results/
+playwright-report/

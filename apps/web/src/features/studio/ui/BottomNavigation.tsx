@@ -31,7 +31,7 @@ interface BottomNavigationProps {
   onToggleFullscreen?: () => void;
   onConnectRemote?: () => void;
   onToggleOmegle?: () => void;
-  onImportOBSScenes?: (scenes: import("@/types/caption").SceneState[]) => void;
+  onImportOBSScenes?: (scenes: import("@gaki/core/types/caption").SceneState[]) => void;
   onOpenAuth?: () => void;
   onSignOut?: () => void;
   isSignedIn?: boolean;

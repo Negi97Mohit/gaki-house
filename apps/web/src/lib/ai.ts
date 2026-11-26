@@ -2,39 +2,27 @@
 
 import { MASTER_PROMPT, UPDATE_PROMPT } from "./ai/prompts";
 import { GenerationResult, UpdateAnalysis, UpdateChange } from "@gaki/core/types/ai";
+import { auth } from "@/lib/firebase";
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${API_KEY}`;
+const GEMINI_PROXY_URL = "/.netlify/functions/gemini-proxy";
 
 async function callGemini(
   prompt: string,
   systemPrompt: string
 ): Promise<string> {
-  if (!API_KEY) {
-    throw new Error(
-      "VITE_GEMINI_API_KEY is missing. Add it to your .env file."
-    );
+  const idToken = await auth.currentUser?.getIdToken();
+  if (!idToken) {
+    throw new Error("Sign in required to use AI overlay generation.");
   }
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(GEMINI_PROXY_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
       },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [{ text: systemPrompt }, { text: prompt }],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.8,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 8192,
-        },
-      }),
+      body: JSON.stringify({ prompt, systemPrompt }),
     });
 
     if (!response.ok) {
@@ -267,7 +255,6 @@ export async function updateOverlay(
   try {
     const analysis = await analyzeUpdateRequest(existingHtml, updatePrompt);
 
-    console.log("Update Analysis:", analysis);
 
     let updatedHtml: string;
 

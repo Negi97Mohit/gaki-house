@@ -68,7 +68,6 @@ export const useVideoStreams = ({
 
         if (selectedCameraDevice === "remote-peer") {
           if (remoteStream) {
-            console.log("✅ Using Remote Stream");
             setCameraStream(remoteStream);
             // We don't set activeCameraStreamRef here because we don't want to stop the remote tracks
             // when switching devices (we want to keep the connection alive).
@@ -90,7 +89,6 @@ export const useVideoStreams = ({
           return;
         }
 
-        console.log("✅ Camera stream active:", stream.id);
 
         // Stop previous stream if any (double check)
         if (activeCameraStreamRef.current) {
@@ -131,7 +129,6 @@ export const useVideoStreams = ({
       (activeScreenStreamRef.current as any)._sourceId !== selectedScreenSourceId;
 
     if (hasSourceChanged) {
-      console.log("Source changed, stopping old stream...");
       if (activeScreenStreamRef.current) {
         stopTracks(activeScreenStreamRef.current);
         activeScreenStreamRef.current = null;
@@ -176,21 +173,17 @@ export const useVideoStreams = ({
             stream = await navigator.mediaDevices.getUserMedia(constraints);
             // Tag with source ID
             if (selectedScreenSourceId) (stream as any)._sourceId = selectedScreenSourceId;
-            console.log("✅ Electron Screen stream attached:", stream.id);
 
           } else {
             // --- Web Logic ---
-            console.log("🌍 Requesting Web Display Media...");
             stream = await navigator.mediaDevices.getDisplayMedia({
               video: true,
               audio: isAudioOn
             });
-            console.log("✅ Web Display Media attached:", stream.id);
           }
 
           const videoTrack = stream.getVideoTracks()[0];
           videoTrack.onended = () => {
-            console.log("🛑 Screen share ended");
             onScreenShareEnd();
             stopTracks(stream);
             toast.info("Screen sharing stopped");

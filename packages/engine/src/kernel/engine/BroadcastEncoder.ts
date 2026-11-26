@@ -38,7 +38,6 @@ export class BroadcastEncoder {
     }
 
     const mimeType = this.getSupportedMimeType();
-    console.log(`[BroadcastEncoder] Selected mimeType: ${mimeType || "empty (fallback)"}`);
 
     this.mediaRecorder = new MediaRecorder(this.stream, {
       mimeType,
@@ -55,13 +54,11 @@ export class BroadcastEncoder {
 
     if (electron.stream.onFfmpegReady) {
       electron.stream.onFfmpegReady((data: { id: string }) => {
-        console.log(`[BroadcastEncoder] Target ${data.id} is ffmpeg-ready.`);
         readyTargets.add(data.id);
         
         // If all targets have spawned and are ready for data, flush the buffers!
         const allReady = targetIds.every((id) => readyTargets.has(id));
         if (allReady && pendingChunks.length > 0) {
-          console.log(`[BroadcastEncoder] All ${targetIds.length} targets ready. Flushing ${pendingChunks.length} chunks.`);
           pendingChunks.forEach((chunk) => electron.stream.sendData(chunk));
           pendingChunks = [];
         }
@@ -76,7 +73,6 @@ export class BroadcastEncoder {
       if (!ffmpegStarted) {
         ffmpegStarted = true;
         pendingChunks.push(buffer);
-        console.log(`[BroadcastEncoder] First chunk received (${buffer.byteLength} bytes). Starting ${config.targets.length} target(s) via IPC...`);
 
         // Start ffmpeg now that we have the first WebM chunk (with the header)
         config.targets.forEach((dest) => {
@@ -94,7 +90,6 @@ export class BroadcastEncoder {
       } else {
         const allReady = targetIds.every((id) => readyTargets.has(id));
         if (!allReady) {
-          console.log(`[BroadcastEncoder] Buffering chunk (${buffer.byteLength} bytes), waiting for targets...`);
           pendingChunks.push(buffer);
         } else {
           electron.stream.sendData(buffer);

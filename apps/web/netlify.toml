@@ -2,9 +2,15 @@
 
 [build]
   # This command builds your Vite app for production
-  command = "npm run build"
+  command = "pnpm run build"
   # Vite's output directory is 'dist'
   publish = "dist"
+  # Rebuild when apps/web or shared workspace packages change
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../packages"
+
+[build.environment]
+  HUSKY = "0"
+  NODE_VERSION = "22"
 
 [functions]
   directory = "netlify/functions"

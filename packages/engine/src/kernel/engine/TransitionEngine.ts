@@ -11,11 +11,7 @@ export interface TransitionConfig {
 export class TransitionEngine {
   private rafId: number | null = null;
 
-  constructor() {
-    console.log("[TransitionEngine] created");
-  }
-
-  /**
+/**
    * Run a cross-dissolve transition on the main-thread RAF loop.
    * @param config  Transition type and duration.
    * @param onFrame Called each frame with alpha ∈ [0, 1].
@@ -46,25 +42,21 @@ export class TransitionEngine {
         this.rafId = requestAnimationFrame(tick);
       } else {
         this.rafId = null;
-        console.log("[TransitionEngine] crossDissolve complete");
         onComplete();
       }
     };
 
     this.rafId = requestAnimationFrame(tick);
-    console.log(`[TransitionEngine] crossDissolve started — ${durationMs}ms`);
   }
 
   cancel(): void {
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
-      console.log("[TransitionEngine] cancelled");
     }
   }
 
   destroy(): void {
     this.cancel();
-    console.log("[TransitionEngine] destroyed");
   }
 }

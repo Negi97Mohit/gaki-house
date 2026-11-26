@@ -99,6 +99,3 @@ export interface CanvasPreset {
   };
   canvasLayout?: CanvasLayoutState | null;
 }
-
-// Re-export from lib for convenience
-export { CANVAS_PRESETS, CANVAS_PRESET_CATEGORIES, getPresetsByCategory, getPresetById } from "@/lib/canvasPresets";

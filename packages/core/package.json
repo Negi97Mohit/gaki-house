@@ -3,11 +3,50 @@
   "version": "1.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*"
+    "./constants/color-presets": "./src/constants/color-presets.ts",
+    "./hooks/use-mobile": "./src/hooks/use-mobile.tsx",
+    "./hooks/use-toast": "./src/hooks/use-toast.ts",
+    "./hooks/useLocalStorage": "./src/hooks/useLocalStorage.ts",
+    "./hooks/useRAFThrottle": "./src/hooks/useRAFThrottle.ts",
+    "./lib/color-utils": "./src/lib/color-utils.ts",
+    "./lib/id": "./src/lib/id.ts",
+    "./lib/notify": "./src/lib/notify.ts",
+    "./lib/shortcuts": "./src/lib/shortcuts.ts",
+    "./lib/utils": "./src/lib/utils.ts",
+    "./types/ai": "./src/types/ai.ts",
+    "./types/animatedBanner": "./src/types/animatedBanner.ts",
+    "./types/animation": "./src/types/animation.ts",
+    "./types/banner": "./src/types/banner.ts",
+    "./types/canvasPreset": "./src/types/canvasPreset.ts",
+    "./types/caption": "./src/types/caption.ts",
+    "./types/editor": "./src/types/editor.ts",
+    "./types/layout": "./src/types/layout.ts",
+    "./types/layoutPreset": "./src/types/layoutPreset.ts",
+    "./types/omegle": "./src/types/omegle.ts",
+    "./types/profile": "./src/types/profile.ts",
+    "./types/socialBanner": "./src/types/socialBanner.ts",
+    "./types/streamStyle": "./src/types/streamStyle.ts",
+    "./types/textDesign": "./src/types/textDesign.ts",
+    "./types/toast": "./src/types/toast.ts",
+    "./types/vault": "./src/types/vault.ts"
   },
   "dependencies": {
-    "clsx": "^2.1.0",
-    "sonner": "^2.0.7",
-    "tailwind-merge": "^2.2.1"
+    "clsx": "catalog:",
+    "sonner": "catalog:",
+    "tailwind-merge": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "vitest": "catalog:",
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 15",
+    "test": "vitest run",
+    "test:watch": "vitest"
   }
 }

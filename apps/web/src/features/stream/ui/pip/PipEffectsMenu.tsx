@@ -11,7 +11,6 @@ import {
 } from "@gaki/ui/dropdown-menu";
 import { cn } from "@gaki/core/lib/utils";
 import { useFilters } from "@/hooks/useFilters";
-// import { FILTER_PRESETS } from "@/lib/filters"; // Deprecated
 import { INTERACTIVE_FILTER_PRESETS } from "@/lib/interactiveFilters";
 
 interface PipEffectsMenuProps {

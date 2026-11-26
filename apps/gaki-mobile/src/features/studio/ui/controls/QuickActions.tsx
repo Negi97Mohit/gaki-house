@@ -58,13 +58,11 @@ export function QuickActions({
             onPointerUp={(e) => e.stopPropagation()}
             onTouchStart={(e) => { console.log(`[🔥 QUICK ACTION] touchStart (${a.id})`); e.stopPropagation(); }}
             onTouchEnd={(e) => {
-              console.log(`[🔥 QUICK ACTION] touchEnd (${a.id})`);
               e.stopPropagation();
               e.preventDefault();
               a.onClick();
             }}
             onClick={(e) => {
-              console.log(`[🔥 QUICK ACTION] click (${a.id})`);
               e.stopPropagation();
               a.onClick();
             }}

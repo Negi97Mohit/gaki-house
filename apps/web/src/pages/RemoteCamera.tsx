@@ -97,13 +97,11 @@ const RemoteCamera = () => {
 
             peer.on("open", (id) => {
                 if (!isActive) return;
-                console.log(`My Peer ID: ${id}. Connecting to: ${currentTargetId}`);
 
                 const call = peer.call(currentTargetId!, stream);
                 callInstance = call;
 
                 call.on("close", () => {
-                    console.log("Call closed");
                     if (isActive) {
                         setStatus("connecting");
                         setErrorMsg("Connection lost. Reconnecting...");

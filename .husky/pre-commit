@@ -1,0 +1,3 @@
+pnpm env-check
+pnpm boundary-check
+pnpm type-check

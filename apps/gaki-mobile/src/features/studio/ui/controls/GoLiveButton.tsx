@@ -16,17 +16,23 @@ export function GoLiveButton({ phase, isLive, endStream, startCountdown }: Props
         onPointerUp={(e) => e.stopPropagation()}
         onTouchStart={(e) => { console.log("[🔥 GO LIVE] touchStart"); e.stopPropagation(); }}
         onTouchEnd={(e) => {
-          console.log("[🔥 GO LIVE] touchEnd");
           e.stopPropagation();
           e.preventDefault();
           if (phase === "countdown") return;
-          isLive ? endStream() : startCountdown();
+          if (isLive) {
+            endStream();
+          } else {
+            startCountdown();
+          }
         }}
         onClick={(e) => {
-          console.log("[🔥 GO LIVE] click");
           e.stopPropagation();
           if (phase === "countdown") return;
-          isLive ? endStream() : startCountdown();
+          if (isLive) {
+            endStream();
+          } else {
+            startCountdown();
+          }
         }}
         disabled={phase === "countdown"}
         aria-label={isLive ? "End stream" : "Go live"}

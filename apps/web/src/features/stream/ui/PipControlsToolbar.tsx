@@ -159,7 +159,6 @@ export const PipControlsToolbar: React.FC<PipControlsToolbarProps> = (
             onPointerDown={(e) => {
               e.stopPropagation();
               e.preventDefault();
-              console.log(`[PipControlsToolbar] camera toggle pointerDown! isCameraEnabled=${props.isCameraEnabled}`);
               props.onCameraToggle?.(!props.isCameraEnabled);
             }}
             title={props.isCameraEnabled !== false ? "Turn Camera Off" : "Turn Camera On"}

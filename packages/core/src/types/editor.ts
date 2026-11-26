@@ -5,7 +5,7 @@ import {
   GeneratedOverlay,
   LayoutMode,
   CameraShape,
-} from "@/types/caption";
+} from "./caption";
 
 export interface Keyframe<T> {
   timestamp: number;

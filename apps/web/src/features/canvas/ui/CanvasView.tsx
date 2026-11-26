@@ -30,7 +30,7 @@ import { OverlayElement } from "@/hooks/useSnapGuides";
 import { VideoCanvasCamera } from "@/features/canvas/ui/VideoCanvasCamera";
 import { ForegroundUserLayer } from "@/features/canvas/ui/ForegroundUserLayer";
 import { useCameraEffects } from "@/hooks/useCameraEffects";
-import { VideoCanvasProps } from "@gaki/core/types/videoCanvas";
+import { VideoCanvasProps } from "@/types/videoCanvas";
 import { CanvasContent } from "@/features/canvas/ui/CanvasContent";
 import { OverlayLayer } from "@/features/canvas/ui/OverlayLayer";
 import { SnapLines } from "@/features/canvas/ui/SnapLines";
@@ -43,11 +43,7 @@ import { useOverlayMediaPool } from "@gaki/engine/kernel/hooks/useOverlayMediaPo
 import { useStingerTransition } from "@/features/canvas/hooks/useStingerTransition";
 
 export const VideoCanvas = (props: VideoCanvasProps) => {
-  useEffect(() => {
-    console.log("[VideoCanvas] mounted");
-  }, []);
-
-  // ─── BroadcastBus kernel (Phase C) ────────────────────────────────────────
+// ─── BroadcastBus kernel (Phase C) ────────────────────────────────────────
   // kernelRef guards against React strict-mode double-invoke.
   // The ref holds the actual instance so cleanup destroys exactly what was created.
   const kernelRef = useRef<BroadcastBus | null>(null);
@@ -62,7 +58,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
       return;
     }
 
-    console.log("[VideoCanvas] creating BroadcastBus");
     const kernel = new BroadcastBus(props.canvasRef.current);
     kernelRef.current = kernel;
 
@@ -76,7 +71,6 @@ export const VideoCanvas = (props: VideoCanvasProps) => {
     return () => {
       kernel.destroy();
       kernelRef.current = null;
-      console.log("[VideoCanvas] BroadcastBus destroyed on unmount");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally empty — kernel is created once per mount lifecycle

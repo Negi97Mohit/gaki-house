@@ -22,7 +22,6 @@ const useLogStore = create<LogStore>((set) => ({
       message,
       data,
     };
-    console.log(`[${type}] ${message}`, data || "");
     set((state) => ({ logEntries: [...state.logEntries, newEntry] }));
   },
 }));

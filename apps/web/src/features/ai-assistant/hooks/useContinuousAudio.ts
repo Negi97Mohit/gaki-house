@@ -71,9 +71,6 @@ export function useContinuousAudio({
       mediaRecorderRef.current &&
       mediaRecorderRef.current.state !== "inactive"
     ) {
-      console.log(
-        "[useContinuousAudio] Recorder already active. Skipping start."
-      );
       return;
     }
 
@@ -89,9 +86,6 @@ export function useContinuousAudio({
         console.warn("[useContinuousAudio] Audio track is disabled (muted).");
       }
 
-      console.log(
-        `[useContinuousAudio] Starting recorder with ${audioTracks.length} track(s).`
-      );
 
       // 4. Initialize Recorder with best MIME type
       const finalMimeType = getSupportedMimeType(mimeType);
@@ -121,9 +115,6 @@ export function useContinuousAudio({
       // 6. Start Recording
       recorder.start(timesliceMs);
       setIsCapturing(true);
-      console.log(
-        `[useContinuousAudio] Capture started (${finalMimeType || "default"}).`
-      );
     } catch (err: any) {
       console.error("[useContinuousAudio] Failed to start capture:", err);
       onErrorRef.current?.(err);
@@ -135,7 +126,6 @@ export function useContinuousAudio({
   const stopCapture = useCallback(() => {
     if (!mediaRecorderRef.current) return;
 
-    console.log("[useContinuousAudio] Stopping capture...");
     try {
       if (mediaRecorderRef.current.state !== "inactive") {
         mediaRecorderRef.current.stop();

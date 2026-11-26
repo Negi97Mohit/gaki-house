@@ -244,7 +244,6 @@ export const AuthModal: React.FC = () => {
     }
   };
 
-  // ===================== STEP 1: PROFILE SETUP =====================
   if (effectiveStep === "profile-setup") {
     return (
       <div
@@ -361,7 +360,6 @@ export const AuthModal: React.FC = () => {
     );
   }
 
-  // ===================== STEP 2: MAIN AUTH MODAL (FIXED CONSISTENT HEIGHT) =====================
   return (
     <div
       onMouseDown={handleBackdropMouseDown}

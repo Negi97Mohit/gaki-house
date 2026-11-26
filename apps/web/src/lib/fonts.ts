@@ -24,7 +24,6 @@ export const preloadFont = async (fontName: string, text = "Text"): Promise<void
     try {
         // This triggers the browser to download the font if it's defined in @font-face (HTML link tag)
         await document.fonts.load(`1em "${fontName}"`, text);
-        console.log(`[FontLoader] Loaded "${fontName}"`);
     } catch (err) {
         console.warn(`[FontLoader] Failed to load "${fontName}"`, err);
     }

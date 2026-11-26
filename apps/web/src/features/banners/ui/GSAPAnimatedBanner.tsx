@@ -176,9 +176,7 @@ export const GSAPAnimatedBanner: React.FC<GSAPAnimatedBannerProps> = ({
   );
 };
 
-// =====================================================
 // PRESET PREVIEW COMPONENT
-// =====================================================
 
 interface GSAPPresetPreviewProps {
   preset: GSAPPreset;

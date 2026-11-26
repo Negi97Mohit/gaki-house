@@ -223,9 +223,6 @@ export function useOverlayMediaPool(
       }
 
       if (!cancelled) {
-        console.log(
-          `[OverlayMediaPool] Scene ${sceneId} ready — ${items.length} overlays loaded`
-        );
         setPool({ items, isReady: true });
       }
     };

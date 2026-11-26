@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 type Facing = "user" | "environment";
+type HardwareCapabilities = MediaTrackCapabilities | Record<string, unknown>;
 
 interface CameraContextValue {
   videoRef: React.RefObject<HTMLVideoElement>;
@@ -9,8 +10,8 @@ interface CameraContextValue {
   denied: boolean;
   swapping: boolean;
   flip: () => void;
-  hardwareCaps: Record<string, any>;
-  applyHardwareConstraint: (capability: string, value: any) => Promise<boolean>;
+  hardwareCaps: HardwareCapabilities;
+  applyHardwareConstraint: (capability: string, value: unknown) => Promise<boolean>;
 }
 
 const CameraContext = createContext<CameraContextValue | null>(null);
@@ -22,7 +23,7 @@ export const CameraProvider = ({ children }: { children: ReactNode }) => {
   const [active, setActive] = useState(false);
   const [denied, setDenied] = useState(false);
   const [swapping, setSwapping] = useState(false);
-  const [hardwareCaps, setHardwareCaps] = useState<Record<string, any>>({});
+  const [hardwareCaps, setHardwareCaps] = useState<HardwareCapabilities>({});
 
   const start = useCallback(async (mode: Facing) => {
     if (!navigator.mediaDevices?.getUserMedia) {
@@ -56,7 +57,7 @@ export const CameraProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const applyHardwareConstraint = useCallback(async (capability: string, value: any) => {
+  const applyHardwareConstraint = useCallback(async (capability: string, value: unknown) => {
     const track = streamRef.current?.getVideoTracks()[0];
     if (!track) return false;
 

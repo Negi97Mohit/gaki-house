@@ -20,14 +20,11 @@ const activeRooms = new Map();
 // User to room mapping - maps socketId to roomId
 const userRooms = new Map();
 
-console.log("🚀 Omegle Signaling Server Starting...");
 
 io.on("connection", (socket) => {
-  console.log(`✅ Client connected: ${socket.id}`);
 
   // User requests to find a random stranger
   socket.on("request-match", () => {
-    console.log(`🔍 ${socket.id} requesting match...`);
 
     // Check if user is already in queue or in a room
     if (matchmakingQueue.includes(socket.id)) {
@@ -68,9 +65,6 @@ io.on("connection", (socket) => {
       userRooms.set(socket.id, roomId);
       userRooms.set(partnerId, roomId);
 
-      console.log(`🎯 Match found! Room: ${roomId}`);
-      console.log(`   User 1: ${socket.id}`);
-      console.log(`   User 2: ${partnerId}`);
 
       // Notify both users they've been matched
       socket.emit("match-found", {
@@ -88,7 +82,6 @@ io.on("connection", (socket) => {
       // No one waiting, add to queue
       matchmakingQueue.push(socket.id);
       socket.emit("match-status", { status: "searching" });
-      console.log(`⏳ ${socket.id} added to queue. Queue size: ${matchmakingQueue.length}`);
     }
   });
 
@@ -98,7 +91,6 @@ io.on("connection", (socket) => {
     if (index > -1) {
       matchmakingQueue.splice(index, 1);
       socket.emit("match-status", { status: "cancelled" });
-      console.log(`❌ ${socket.id} cancelled search. Queue size: ${matchmakingQueue.length}`);
     }
   });
 
@@ -111,7 +103,6 @@ io.on("connection", (socket) => {
     }
 
     const partnerId = room.user1 === socket.id ? room.user2 : room.user1;
-    console.log(`📤 Forwarding offer from ${socket.id} to ${partnerId}`);
 
     socket.to(partnerId).emit("webrtc-offer", {
       offer,
@@ -128,7 +119,6 @@ io.on("connection", (socket) => {
     }
 
     const partnerId = room.user1 === socket.id ? room.user2 : room.user1;
-    console.log(`📥 Forwarding answer from ${socket.id} to ${partnerId}`);
 
     socket.to(partnerId).emit("webrtc-answer", {
       answer,
@@ -159,7 +149,6 @@ io.on("connection", (socket) => {
     }
 
     const partnerId = room.user1 === socket.id ? room.user2 : room.user1;
-    console.log(`🎥 Media state changed for ${socket.id}:`, state);
 
     socket.to(partnerId).emit("media-state-changed", {
       state,
@@ -184,7 +173,6 @@ io.on("connection", (socket) => {
       timestamp: Date.now(),
     });
 
-    console.log(`💬 Message from ${socket.id} to ${partnerId}: ${message.substring(0, 50)}...`);
   });
 
   // User wants to skip to next stranger
@@ -196,7 +184,6 @@ io.on("connection", (socket) => {
         const partnerId = room.user1 === socket.id ? room.user2 : room.user1;
         const partnerSocket = io.sockets.sockets.get(partnerId);
 
-        console.log(`⏭️  ${socket.id} clicked "Next"`);
 
         // Notify partner that user disconnected
         if (partnerSocket) {
@@ -221,13 +208,11 @@ io.on("connection", (socket) => {
 
   // User disconnects or exits Omegle mode
   socket.on("disconnect", () => {
-    console.log(`🔌 Client disconnected: ${socket.id}`);
 
     // Remove from queue if waiting
     const queueIndex = matchmakingQueue.indexOf(socket.id);
     if (queueIndex > -1) {
       matchmakingQueue.splice(queueIndex, 1);
-      console.log(`   Removed from queue. Queue size: ${matchmakingQueue.length}`);
     }
 
     // Notify partner if in a room
@@ -305,9 +290,6 @@ app.get("/stats", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.SIGNALING_PORT || process.env.PORT || 3001;
 httpServer.listen(PORT, () => {
-  console.log(`\n🎉 Omegle Signaling Server running on port ${PORT}`);
-  console.log(`📊 Stats: http://localhost:${PORT}/stats`);
-  console.log(`🏥 Health: http://localhost:${PORT}/health\n`);
 });

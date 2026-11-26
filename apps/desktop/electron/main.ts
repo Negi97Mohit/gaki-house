@@ -453,7 +453,6 @@ function setupIpcHandlers() {
         };
 
         ipcMain.handleOnce("auth:google-oauth-cancel", () => {
-          console.log("[Auth] Cancelled by frontend");
           tryResolve(null);
         });
 
@@ -486,7 +485,6 @@ function setupIpcHandlers() {
                   const idToken = params.get("id_token");
                   const accessToken = params.get("access_token");
                   if (idToken) {
-                    console.log("[Auth] Successfully extracted tokens via loopback server");
                     tryResolve({ idToken, accessToken });
                   }
                 } catch (e) {
@@ -584,7 +582,6 @@ function setupIpcHandlers() {
               });
             });
             usingLoopbackServer = true;
-            console.log("[Auth] Loopback server listening on port 3456");
           } catch (portErr) {
             // Port 3456 is unavailable â€” fall back to fragment extraction via BrowserWindow
             console.warn("[Auth] Port 3456 unavailable, using fragment extraction fallback");
@@ -636,7 +633,6 @@ function setupIpcHandlers() {
                   const idToken = params.get("id_token");
                   const accessToken = params.get("access_token");
                   if (idToken) {
-                    console.log("[Auth] Successfully extracted tokens via fragment");
                     tryResolve({ idToken, accessToken });
                   }
                 }

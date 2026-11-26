@@ -182,7 +182,6 @@ function mapItem(
       style: { ...defaultTextCaptionStyle(), color },
       layout,
     };
-    console.log(`[OBSSourceMapper] Mapped text source "${item.name}"`);
     return { textOverlays: [overlay], fileOverlays: [], browserOverlays: [] };
   }
 
@@ -203,7 +202,6 @@ function mapItem(
       fileUrl,
       layout,
     };
-    console.log(`[OBSSourceMapper] Mapped image source "${item.name}" → ${fileUrl}`);
     return { textOverlays: [], fileOverlays: [overlay], browserOverlays: [] };
   }
 
@@ -225,7 +223,6 @@ function mapItem(
       fileUrl,
       layout,
     };
-    console.log(`[OBSSourceMapper] Mapped video source "${item.name}" → ${fileUrl}`);
     return { textOverlays: [], fileOverlays: [overlay], browserOverlays: [] };
   }
 
@@ -238,7 +235,6 @@ function mapItem(
       return null;
     }
     const overlay: BrowserOverlayState = { id: uuidv4(), url, layout };
-    console.log(`[OBSSourceMapper] Mapped browser source "${item.name}" → ${url}`);
     return { textOverlays: [], fileOverlays: [], browserOverlays: [overlay] };
   }
 
@@ -263,13 +259,11 @@ export function mapOBSSceneToSceneState(
   obsScene: OBSScene,
   collection: OBSSceneCollection
 ): SceneState {
-  console.log(`[OBSSourceMapper] Mapping scene "${obsScene.name}"`);
 
   const scene = createDefaultSceneBase(obsScene.name, uuidv4());
 
   for (const item of obsScene.items) {
     if (!item.visible) {
-      console.log(`[OBSSourceMapper] Skipping hidden item "${item.name}"`);
       continue;
     }
 
@@ -287,9 +281,6 @@ export function mapOBSSceneToSceneState(
     scene.browserOverlays = [...scene.browserOverlays, ...mapped.browserOverlays];
   }
 
-  console.log(
-    `[OBSSourceMapper] Scene "${obsScene.name}" → ${scene.textOverlays.length} text, ${scene.fileOverlays.length} file, ${scene.browserOverlays.length} browser overlays`
-  );
 
   return scene;
 }
@@ -300,8 +291,5 @@ export function mapOBSSceneToSceneState(
 export function mapOBSCollectionToScenes(
   collection: OBSSceneCollection
 ): SceneState[] {
-  console.log(
-    `[OBSSourceMapper] mapOBSCollectionToScenes: ${collection.scenes.length} scene(s)`
-  );
   return collection.scenes.map((s) => mapOBSSceneToSceneState(s, collection));
 }

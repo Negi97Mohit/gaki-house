@@ -21,7 +21,6 @@ export const FatalErrorDialog = () => {
     try {
       localStorage.clear();
       sessionStorage.clear();
-      console.log("Local/Session storage cleared.");
     } catch (e) {
       console.error("Failed to clear storage:", e);
     }

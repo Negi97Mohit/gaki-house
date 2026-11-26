@@ -1,35 +1,27 @@
-import { io, Socket } from "socket.io-client";
 import { notify } from "@gaki/core/lib/notify";
 import { useStreamStore } from "@/stores/stream.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
-import fixWebmDuration from "fix-webm-duration";
-import { BroadcastBus } from "@gaki/engine/kernel/engine/BroadcastBus";
 import { AudioMixerEngine } from "@gaki/engine/kernel/engine/AudioMixerEngine";
 import { BroadcastEncoder } from "@gaki/engine/kernel/engine/BroadcastEncoder";
+import type { ElectronWindow } from "./stream.types";
+import { StreamPublisher, type StreamTarget } from "./stream-publisher";
+import {
+  createAudioGate,
+  createMicFilterChain,
+  createPeakLimiter,
+} from "./stream-audio-dsp";
+import {
+  getSupportedMimeType,
+  saveFixedWebmRecording,
+} from "./stream-recording";
 
 export const USE_KERNEL_PIPELINE = false;
-
-const SERVER_URL = "http://localhost:3000";
-
-interface ElectronWindow {
-  electron?: {
-    getDesktopSources: (options: any) => Promise<any[]>;
-    getAppWindowId: () => Promise<string | null>;
-    stream: {
-      start: (config: any) => void;
-      sendData: (chunk: ArrayBuffer) => void;
-      stop: (config?: any) => void;
-      onStatus: (callback: (data: any) => void) => void;
-    };
-  };
-}
 
 class StreamService {
   private static instance: StreamService;
 
   // Persistent State
-  private socket: Socket | null = null;
   private mediaRecorder: MediaRecorder | null = null;
   private activeStream: MediaStream | null = null;
   private audioContext: AudioContext | null = null;
@@ -57,19 +49,28 @@ class StreamService {
   private currentVideoSource: MediaStream | null = null;
   private micStream: MediaStream | null = null;
 
-  // State flags
-  private isPipelineActive = false;
-  private countdownInterval: NodeJS.Timeout | null = null;
-  private isAppFocused = true;
-
-  // Connection Management
-  private verifyingTimers = new Map<string, NodeJS.Timeout>();
-  private retryCounts = new Map<string, number>();
-  private MAX_RETRIES = 3;
-  private isIntentionalStop = false;
-
   // Audio gate interval IDs — stored so they can be cleared on pipeline stop
   private _gateIntervals: ReturnType<typeof setInterval>[] = [];
+
+  private publisher = new StreamPublisher({
+    useKernelPipeline: USE_KERNEL_PIPELINE,
+    startPipeline: () => this.startPipeline(),
+    cleanupPipeline: () => this.cleanupPipeline(),
+    getActiveStream: () => this.activeStream,
+    getSupportedMimeType: () => this.getSupportedMimeType(),
+    onKernelEngines: (mixer, encoder) => {
+      this.audioMixerEngine = mixer;
+      this.broadcastEncoder = encoder;
+    },
+  });
+
+  // Preserved for test harness / socket inspection
+  private get socket() {
+    return this.publisher.socket;
+  }
+  private set socket(val) {
+    this.publisher.socket = val;
+  }
 
   private constructor() {
     // Singleton
@@ -337,7 +338,6 @@ class StreamService {
 
         // 2. Handle stream ending (User clicks "Stop Sharing" in system UI)
         newStream.getVideoTracks()[0].onended = () => {
-          console.log("[StreamService] Source track ended externally.");
           if (useStreamStore.getState().isRecording) {
             this.stopRecording();
           }
@@ -419,7 +419,7 @@ class StreamService {
     // ─── Peak limiter on the master bus ───────────────────────────────────────
     // Sits between all sources and the stream destination.
     // Prevents digital clipping when combined levels exceed 0 dBFS.
-    const masterLimiter = this.createPeakLimiter(ctx);
+    const masterLimiter = createPeakLimiter(ctx);
     masterLimiter.connect(this.audioDestination);
 
     // ─── Monitor gain (self-hearing / sidetone) ───────────────────────────────
@@ -441,7 +441,7 @@ class StreamService {
     //    Also tapped to monitorGain so the streamer can hear themselves.
     if (this.micStream && this.micStream.getAudioTracks().length > 0) {
       const micSource = ctx.createMediaStreamSource(this.micStream);
-      const micChain  = this.createMicFilterChain(ctx, micSource);
+      const micChain  = createMicFilterChain(ctx, micSource, this._gateIntervals);
 
       const micGain = ctx.createGain();
       micGain.gain.value = 1.0;
@@ -472,7 +472,7 @@ class StreamService {
       // a slightly higher threshold (-40 dBFS vs -48 dBFS for mic).
       // Fast attack (5ms) so music/game audio isn't chopped at the start.
       // Longer release (200ms) so decaying sounds aren't cut off abruptly.
-      const sysGate = this.createAudioGate(ctx, -40, 0.005, 0.200);
+      const sysGate = createAudioGate(ctx, this._gateIntervals, -40, 0.005, 0.200);
 
       // Compressor evens out the bursty chunks that desktop loopback produces.
       const compressor = ctx.createDynamicsCompressor();
@@ -493,110 +493,6 @@ class StreamService {
       sysGain.connect(masterLimiter);
       // ✗ NOT connected to monitorGain — prevents the feedback/double-capture loop
     }
-  }
-
-  /**
-   * Builds the mic processing chain:
-   *   micSource → [60Hz notch] → [80Hz HPF] → [noise gate] → output GainNode
-   *
-   * Returns the output GainNode. Connect it to stream destination and/or monitor.
-   */
-  private createMicFilterChain(
-    ctx: AudioContext,
-    micSource: MediaStreamAudioSourceNode,
-    thresholdDb: number = -48,
-  ): GainNode {
-    // 60Hz notch — kills electrical ground-loop hum
-    const notch = ctx.createBiquadFilter();
-    notch.type = 'notch';
-    notch.frequency.value = 60; // change to 50 for EU power grids
-    notch.Q.value = 10;
-
-    // 80Hz high-pass — kills low rumble / keyboard / desk thuds
-    const hpf = ctx.createBiquadFilter();
-    hpf.type = 'highpass';
-    hpf.frequency.value = 80;
-    hpf.Q.value = 0.707; // Butterworth — flat response above cutoff
-
-    // Noise gate via the shared helper
-    const gate = this.createAudioGate(ctx, thresholdDb, 0.010, 0.120);
-
-    // Wire: micSource → notch → hpf → gate.input ; gate.output returned
-    micSource.connect(notch);
-    notch.connect(hpf);
-    hpf.connect(gate.input);
-
-    return gate.output;
-  }
-
-  /**
-   * Generic noise gate — works for any audio source.
-   *
-   * Returns { input, output } so the caller can splice it into any chain:
-   *   upstream.connect(gate.input);
-   *   gate.output.connect(downstream);
-   *
-   * How it works:
-   *   - An AnalyserNode taps the input to measure RMS every 16ms.
-   *   - When RMS (in dBFS) rises above thresholdDb the output GainNode
-   *     ramps to 1.0 with attackTc time-constant.
-   *   - When RMS falls back below the threshold it ramps to 0 with releaseTc.
-   *   - This cleanly silences static / loopback hiss between real audio events.
-   */
-  private createAudioGate(
-    ctx: AudioContext,
-    thresholdDb: number,  // e.g. -48 for mic, -40 for system audio
-    attackTc:  number,    // seconds  (e.g. 0.010)
-    releaseTc: number,    // seconds  (e.g. 0.120)
-  ): { input: AnalyserNode; output: GainNode } {
-    const analyser = ctx.createAnalyser();
-    analyser.fftSize = 256;
-    const rmsBuffer = new Float32Array(analyser.frequencyBinCount);
-
-    const gateGain = ctx.createGain();
-    gateGain.gain.value = 0; // closed by default
-
-    // The analyser node acts as both the measurement tap AND the audio passthrough
-    // to gateGain — the gate gain controls whether audio flows out.
-    analyser.connect(gateGain);
-
-    let gateOpen = false;
-    const id = setInterval(() => {
-      if (ctx.state === 'closed') return;
-      analyser.getFloatTimeDomainData(rmsBuffer);
-      const rms = Math.sqrt(
-        rmsBuffer.reduce((sum, v) => sum + v * v, 0) / rmsBuffer.length,
-      );
-      const dbFS = 20 * Math.log10(Math.max(rms, 1e-10));
-      const shouldOpen = dbFS > thresholdDb;
-
-      if (shouldOpen && !gateOpen) {
-        gateGain.gain.setTargetAtTime(1, ctx.currentTime, attackTc);
-        gateOpen = true;
-      } else if (!shouldOpen && gateOpen) {
-        gateGain.gain.setTargetAtTime(0, ctx.currentTime, releaseTc);
-        gateOpen = false;
-      }
-    }, 16);
-
-    this._gateIntervals.push(id);
-
-    return { input: analyser, output: gateGain };
-  }
-
-  /**
-   * Peak limiter on the master bus.
-   * Prevents digital clipping when mic + system audio sum above 0 dBFS.
-   * High ratio (20:1) approximates a brick-wall limiter.
-   */
-  private createPeakLimiter(ctx: AudioContext): DynamicsCompressorNode {
-    const limiter = ctx.createDynamicsCompressor();
-    limiter.threshold.value = -1.0;  // 1 dBFS below digital ceiling
-    limiter.knee.value       = 0;    // hard knee — true limiting behaviour
-    limiter.ratio.value      = 20;   // 20:1 ≈ brick-wall
-    limiter.attack.value     = 0.001; // 1ms — catches transients before they clip
-    limiter.release.value    = 0.1;   // 100ms
-    return limiter;
   }
 
   /**
@@ -622,362 +518,14 @@ class StreamService {
     this.setMonitorVolume(muted ? 0 : this._lastMonitorVolume);
   }
 
-  // --- 2. STREAMING CONNECTION LOGIC ---
+  // --- 2. STREAMING CONNECTION LOGIC (delegated to StreamPublisher) ---
 
-  public async startStreaming(targets: any[]) {
-    try {
-      this.isIntentionalStop = false;
-      useStreamStore.getState().setConnecting(true);
-      useStreamStore.getState().setStreamStatus("Initializing...");
-
-      // Reset Retries
-      targets.forEach((t) => this.retryCounts.set(t.id, 0));
-
-      if (USE_KERNEL_PIPELINE) {
-        // KNOWN LIMITATION: BroadcastBus is recreated on scene switches because
-        // it is instantiated inside CanvasView which remounts per scene.
-        // This will cause a brief stream drop during transitions.
-        // Fix: move BroadcastBus instantiation up to CanvasContainer in a future refactor.
-        // Tracked: Phase D known issue — stream drop on scene switch
-
-        console.log("[StreamService] Using Kernel Pipeline (Phase D)");
-        const kernel = BroadcastBus.activeInstance;
-        if (!kernel) throw new Error("BroadcastBus active instance not found");
-
-        const canvasStream = kernel.getStream();
-        if (!canvasStream) {
-          console.warn(
-            "[StreamService] Kernel getStream() returned null, stream might fail",
-          );
-        }
-
-        this.audioMixerEngine = new AudioMixerEngine();
-        const audioStream = await this.audioMixerEngine.start();
-
-        const activeTracks: MediaStreamTrack[] = [];
-        if (canvasStream) {
-          const vTracks = canvasStream.getVideoTracks();
-          activeTracks.push(...vTracks);
-        }
-        if (audioStream) {
-          const aTracks = audioStream.getAudioTracks();
-          activeTracks.push(...aTracks);
-        }
-
-        const finalStream = new MediaStream(activeTracks);
-
-        this.broadcastEncoder = new BroadcastEncoder();
-        this.broadcastEncoder.start(finalStream, {
-          targets,
-          onStatus: (data: any) => this.handleStreamStatus(data),
-          onProgress: (data: any) => this.handleStreamProgress(data),
-        });
-      } else {
-        await this.startPipeline();
-        
-        const isElectron = !!(window as ElectronWindow).electron;
-        if (isElectron) {
-          if (!this.activeStream) throw new Error("No active stream for recorder");
-          this.broadcastEncoder = new BroadcastEncoder();
-          this.broadcastEncoder.start(this.activeStream, {
-            targets,
-            onStatus: (data: any) => this.handleStreamStatus(data),
-            onProgress: (data: any) => this.handleStreamProgress(data),
-          });
-        } else {
-          const mimeType = this.setupMediaRecorder();
-          await this.connectWeb(targets);
-        }
-      }
-    } catch (err: any) {
-      console.error("[StreamService] Start Failed:", err);
-      notify.error(`Start failed: ${err.message}`);
-      this.stopStreaming();
-    }
-  }
-
-  private setupMediaRecorder(): string {
-    if (this.mediaRecorder && this.mediaRecorder.state === "recording") {
-      return this.mediaRecorder.mimeType;
-    }
-
-    if (!this.activeStream) throw new Error("No active stream for recorder");
-
-    const mimeType = this.getSupportedMimeType();
-
-    this.mediaRecorder = new MediaRecorder(this.activeStream, {
-      mimeType,
-      videoBitsPerSecond: 4000000, // 4Mbps
-    });
-
-    const isElectron = !!(window as ElectronWindow).electron;
-
-    this.mediaRecorder.ondataavailable = async (e) => {
-      if (e.data.size > 0) {
-        if (isElectron) {
-          const buffer = await e.data.arrayBuffer();
-          (window as ElectronWindow).electron?.stream.sendData(buffer);
-        } else if (this.socket && this.socket.connected) {
-          this.socket.emit("binary-stream", e.data);
-        }
-      }
-    };
-
-    this.mediaRecorder.start(1000); // Send chunks every 1s
-    return mimeType;
-  }
-
-  private connectElectron(targets: any[], mimeType: string) {
-    const electron = (window as ElectronWindow).electron!;
-
-    electron.stream.onStatus((data: any) => {
-      this.handleStreamStatus(data);
-    });
-
-    targets.forEach((dest) => {
-      this.emitStartCommand(dest, mimeType);
-    });
-  }
-
-  private emitStartCommand(dest: any, mimeType: string) {
-    const isElectron = !!(window as ElectronWindow).electron;
-    useStreamStore.getState().setDestinationStatus(dest.id, "starting");
-
-    if (isElectron) {
-      (window as ElectronWindow).electron!.stream.start({
-        id: dest.id,
-        rtmpUrl: dest.url,
-        key: dest.key,
-        mimeType,
-      });
-    } else if (this.socket) {
-      this.socket.emit("start-stream", {
-        id: dest.id,
-        rtmpUrl: dest.url,
-        key: dest.key,
-      });
-    }
-  }
-
-  private async connectWeb(targets: any[]) {
-    if (!this.socket) {
-      this.socket = io(SERVER_URL);
-      this.socket.on("stream-status", (data: any) =>
-        this.handleStreamStatus(data),
-      );
-    }
-
-    if (!this.socket.connected) {
-      await new Promise<void>((resolve) =>
-        this.socket!.once("connect", () => resolve()),
-      );
-    }
-
-    targets.forEach((dest) => {
-      useStreamStore.getState().setDestinationStatus(dest.id, "starting");
-      this.emitStartCommand(dest, "video/webm");
-    });
-  }
-
-  // --- 3. STATUS HANDLING ---
-
-  private handleStreamStatus(data: any) {
-    const { id, status, error } =
-      typeof data === "string" ? { status: data } : data;
-    const store = useStreamStore.getState();
-
-    if (!id) return;
-
-    if (status === "error") {
-      this.handleConnectionError(id, error);
-      return;
-    }
-
-    if (status === "started") {
-      this.startVerification(id);
-    } else if (status === "stopped") {
-      store.setDestinationStatus(id, "idle");
-    }
-  }
-
-  private handleStreamProgress(data: any) {
-    const { id, fps, kbps } = data;
-    if (id && typeof fps === "number") {
-      useStreamStore.getState().updateDestination(id, { fps, kbps });
-    }
-  }
-
-  private startVerification(id: string) {
-    useStreamStore.getState().setDestinationStatus(id, "starting");
-    useStreamStore.getState().setStreamStatus("Verifying Connection...");
-
-    if (this.verifyingTimers.has(id)) {
-      clearTimeout(this.verifyingTimers.get(id)!);
-    }
-
-    const timer = setTimeout(() => {
-      const store = useStreamStore.getState();
-      const currentDest = store.destinations.find((d) => d.id === id);
-
-      if (currentDest && currentDest.status === "starting") {
-        store.setDestinationStatus(id, "connected");
-        this.retryCounts.set(id, 0);
-
-        const updatedStore = useStreamStore.getState();
-        const allConnected = updatedStore.destinations
-          .filter((d) => d.enabled)
-          .every((d) => d.status === "connected" || d.status === "live");
-
-        if (
-          allConnected &&
-          !updatedStore.isBroadcasting &&
-          !this.countdownInterval
-        ) {
-          this.startCountdown();
-        }
-      }
-    }, 3000);
-
-    this.verifyingTimers.set(id, timer);
-  }
-
-  private handleConnectionError(id: string, errorMsg: string) {
-    const store = useStreamStore.getState();
-
-    // 1. ABORT COUNTDOWN / VERIFICATION
-    if (this.verifyingTimers.has(id)) {
-      clearTimeout(this.verifyingTimers.get(id)!);
-      this.verifyingTimers.delete(id);
-    }
-
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-      this.countdownInterval = null;
-      store.setCountdown(null);
-    }
-
-    // Skip retry logic if this was an intentional stop
-    if (this.isIntentionalStop) {
-      console.log(
-        `[StreamService] Skipping retry for ${id} - intentional stop`,
-      );
-      store.setDestinationStatus(id, "idle");
-      return;
-    }
-
-    // 2. CHECK RETRY LOGIC
-    const currentRetries = this.retryCounts.get(id) || 0;
-
-    if (currentRetries < this.MAX_RETRIES) {
-      const nextRetry = currentRetries + 1;
-      this.retryCounts.set(id, nextRetry);
-
-      const retryDelay = 2000 * nextRetry;
-
-      console.log(
-        `[StreamService] Retry ${nextRetry}/${this.MAX_RETRIES} for ${id} in ${retryDelay}ms`,
-      );
-      store.setDestinationStatus(id, "error", `Retrying (${nextRetry})...`);
-      store.setStreamStatus(`Connection Failed. Retrying...`);
-
-      const dest = store.destinations.find((d) => d.id === id);
-      if (dest) {
-        setTimeout(() => {
-          const mimeType = this.mediaRecorder?.mimeType || "video/webm";
-          this.emitStartCommand(dest, mimeType);
-        }, retryDelay);
-      }
-    } else {
-      // 3. FINAL FAILURE
-      console.error(`[StreamService] Max retries exceeded for ${id}`);
-      store.setDestinationStatus(id, "error", errorMsg);
-      store.setStreamStatus("Connection Failed");
-      store.setConnecting(false);
-      store.setBroadcasting(false);
-
-      if (store.setFatalError) {
-        store.setFatalError(errorMsg);
-      } else {
-        notify.error("Critical Stream Error: " + errorMsg);
-      }
-    }
-  }
-
-  private startCountdown() {
-
-    const store = useStreamStore.getState();
-    let count = 3;
-
-    store.setCountdown(count);
-    store.setStreamStatus("Starting...");
-
-    this.countdownInterval = setInterval(() => {
-      count--;
-      store.setCountdown(count);
-
-      if (count <= 0) {
-        clearInterval(this.countdownInterval!);
-        this.countdownInterval = null;
-        store.setCountdown(null);
-        store.setBroadcasting(true);
-        store.setConnecting(false);
-        store.setStreamStatus("Live");
-
-        store.destinations.forEach((d) => {
-          if (d.status === "connected") {
-            store.setDestinationStatus(d.id, "live");
-          }
-        });
-      }
-    }, 1000);
+  public async startStreaming(targets: StreamTarget[]) {
+    return this.publisher.startStreaming(targets);
   }
 
   public stopStreaming(specificId?: string) {
-    this.isIntentionalStop = true;
-
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-      this.countdownInterval = null;
-      useStreamStore.getState().setCountdown(null);
-    }
-
-    this.verifyingTimers.forEach((t) => clearTimeout(t));
-    this.verifyingTimers.clear();
-
-    const isElectron = !!(window as ElectronWindow).electron;
-
-    if (specificId) {
-      if (USE_KERNEL_PIPELINE || isElectron) {
-        this.broadcastEncoder?.stop(specificId);
-      } else {
-        this.socket?.emit("stop-stream", { id: specificId });
-      }
-      useStreamStore.getState().setDestinationStatus(specificId, "idle");
-    } else {
-      if (USE_KERNEL_PIPELINE || isElectron) {
-        this.broadcastEncoder?.stop();
-      } else {
-        this.socket?.emit("stop-stream");
-
-        if (this.mediaRecorder && this.mediaRecorder.state !== "inactive") {
-          this.mediaRecorder.stop();
-        }
-      }
-
-      this.cleanupPipeline();
-
-      const store = useStreamStore.getState();
-      store.setBroadcasting(false);
-      store.setConnecting(false);
-      store.setStreamStatus("Idle");
-      store.destinations.forEach((d) =>
-        store.setDestinationStatus(d.id, "idle"),
-      );
-    }
-
-    setTimeout(() => {
-      this.isIntentionalStop = false;
-    }, 1000);
+    this.publisher.stopStreaming(specificId);
   }
 
   private cleanupPipeline() {
@@ -1087,7 +635,6 @@ class StreamService {
   }
 
   public stopRecording() {
-    console.log("[StreamService] Stopping Recording...");
     if (this.localRecorder && this.localRecorder.state !== "inactive") {
       this.localRecorder.stop();
     }
@@ -1095,52 +642,14 @@ class StreamService {
   }
 
   private async downloadRecording() {
-    if (this.recordedChunks.length === 0) return;
-
-    try {
-      const blob = new Blob(this.recordedChunks, {
-        type: this.localRecorder?.mimeType || "video/webm",
-      });
-
-      // Calculate duration
-      const duration = this.recordingStartTime
-        ? Date.now() - this.recordingStartTime
-        : 0;
-
-      // Fix metadata
-      const fixedBlob = await new Promise<Blob>((resolve) => {
-        fixWebmDuration(blob, duration, (fixed) => {
-          resolve(fixed);
-        });
-      });
-
-      // Electron specific save or Web download
-      const isElectron = !!(window as ElectronWindow).electron;
-
-      if (isElectron) {
-        this.triggerBrowserDownload(fixedBlob);
-      } else {
-        this.triggerBrowserDownload(fixedBlob);
-      }
-
+    const saved = await saveFixedWebmRecording(
+      this.recordedChunks,
+      this.localRecorder?.mimeType,
+      this.recordingStartTime,
+    );
+    if (saved) {
       this.recordedChunks = [];
-    } catch (e) {
-      console.error("Failed to download recording", e);
-      notify.error("Failed to save recording");
     }
-  }
-
-  private triggerBrowserDownload(blob: Blob) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    document.body.appendChild(a);
-    a.style.display = "none";
-    a.href = url;
-    a.download = `recording-${new Date().toISOString().replace(/:/g, "-")}.webm`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-    notify.success("Recording saved!");
   }
 
   private recordingTimer: NodeJS.Timeout | null = null;
@@ -1164,13 +673,7 @@ class StreamService {
 
   // --- Utils ---
   private getSupportedMimeType(): string {
-    const types = [
-      "video/webm; codecs=h264",
-      "video/webm; codecs=vp9",
-      "video/webm; codecs=vp8",
-      "video/webm",
-    ];
-    return types.find((t) => MediaRecorder.isTypeSupported(t)) || "video/webm";
+    return getSupportedMimeType();
   }
 }
 

@@ -33,7 +33,7 @@ let latestGraph: SceneGraph | null = null;
 // ─── OBS asset editor render state (Feature 9) ────────────────────────────────
 let obsOverlaysById = new Map<string, ObsOverlayState>();
 let obsOrderedIds: string[] = [];
-let obsFramesById = new Map<string, ImageBitmap>();
+const obsFramesById = new Map<string, ImageBitmap>();
 
 // ─── Message handler ──────────────────────────────────────────────────────────
 
@@ -74,12 +74,6 @@ self.onmessage = (event: MessageEvent) => {
         console.error("[canvas.worker] INIT: getContext('2d') returned null");
         return;
       }
-      console.log(
-        "[canvas.worker] INIT: OffscreenCanvas acquired",
-        data.offscreen.width,
-        "×",
-        data.offscreen.height,
-      );
       break;
     }
 
@@ -91,12 +85,6 @@ self.onmessage = (event: MessageEvent) => {
       latestGraph = data.graph;
       clearCanvas(ctx);
       renderScene(ctx, data.graph, 1.0);
-      console.log(
-        "[canvas.worker] RENDER sceneId:",
-        data.graph.sceneId,
-        "layers:",
-        data.graph.layers.length,
-      );
       break;
     }
 
@@ -104,7 +92,6 @@ self.onmessage = (event: MessageEvent) => {
       if (!ctx || data.width === undefined || data.height === undefined) return;
       ctx.canvas.width = data.width;
       ctx.canvas.height = data.height;
-      console.log(`[canvas.worker] RESIZE: ${data.width}×${data.height}`);
       // If we have a pending render state, we might want to re-render,
       // but for Phase C we'll let the main thread re-trigger a RENDER if necessary,
       // or we just let it clear on the next render command.
@@ -115,7 +102,6 @@ self.onmessage = (event: MessageEvent) => {
       // Store both graphs once — TRANSITION_FRAME messages only send alpha.
       pendingFrom = data.from ?? null;
       pendingTo = data.to ?? null;
-      console.log("[canvas.worker] TRANSITION_INIT received");
       break;
     }
 
@@ -232,7 +218,6 @@ self.onmessage = (event: MessageEvent) => {
       obsFramesById.clear();
       obsOverlaysById.clear();
       obsOrderedIds = [];
-      console.log("[canvas.worker] DESTROY: context released");
       self.close();
       break;
     }

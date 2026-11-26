@@ -8,9 +8,9 @@ interface SceneState {
 
     textOverlays: TextOverlayState[];
     fileOverlays: FileOverlayState[];
-    browserOverlays: any[]; // TODO: Import BrowserOverlayState
+    browserOverlays: any[]; // TODO(web): Type with BrowserOverlayState
     emptyGridPanels: EmptyGridPanelState[];
-    canvasLayout: any; // TODO: Import CanvasLayoutState
+    canvasLayout: any; // TODO(web): Type with CanvasLayoutState
 
     backgroundEffect: 'none' | 'blur' | 'image';
     backgroundImageUrl: string | undefined;

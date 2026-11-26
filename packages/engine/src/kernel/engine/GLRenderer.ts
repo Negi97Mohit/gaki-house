@@ -2,7 +2,7 @@ import { GLContext } from "./GLContext";
 import { VideoTexture } from "./VideoTexture";
 import { ShaderManager } from "./ShaderManager";
 import { parseFilterString } from "./utils";
-import { AnimeStyles } from "@/lib/animeStyles";
+import { AnimeStyles } from "./animeStylesStore";
 import { TimeWarpBuffer } from "./TimeWarp";
 
 export interface RenderOptions {
@@ -286,7 +286,7 @@ export class GLRenderer {
       this.shaderManager.activate("cinematic");
 
       let strength = 0.0;
-      let cylindricalRatio = 1.0;
+      const cylindricalRatio = 1.0;
 
       if (options.cinematicEffect === "fisheye") strength = 0.4;
       else if (options.cinematicEffect === "security-fisheye") strength = 0.8;

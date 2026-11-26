@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.HANDOFF_PORT || process.env.PORT || 3001;
 
 // Initialize the Egress Client
 const egressClient = new EgressClient(
@@ -87,9 +87,6 @@ app.post("/stop-broadcast", requireAuth, async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(
-    `📡 Secure Handoff API with Egress running on http://localhost:${PORT}`,
-  );
 });
 
 

@@ -7,8 +7,33 @@ import {
 } from "@deepgram/sdk";
 import { useContinuousAudio } from "./useContinuousAudio";
 import { toast } from "sonner";
+import { auth } from "@/lib/firebase";
 
-const DEEPGRAM_API_KEY = import.meta.env.VITE_DEEPGRAM_API_KEY;
+// DEEPGRAM_API_KEY is server-only. The client fetches a short-lived temporary key
+// from /.netlify/functions/deepgram-token (10-second TTL, usage:write scope only).
+const DEEPGRAM_TOKEN_ENDPOINT = "/.netlify/functions/deepgram-token";
+
+async function fetchDeepgramKey(): Promise<string | null> {
+  try {
+    const idToken = await auth.currentUser?.getIdToken();
+    if (!idToken) {
+      console.warn("[useDeepgramSpeech] Signed-in user required for Deepgram token");
+      return null;
+    }
+    const res = await fetch(DEEPGRAM_TOKEN_ENDPOINT, {
+      headers: { Authorization: `Bearer ${idToken}` },
+    });
+    if (!res.ok) {
+      console.warn("[useDeepgramSpeech] Token endpoint returned", res.status);
+      return null;
+    }
+    const data = (await res.json()) as { key?: string };
+    return data.key ?? null;
+  } catch (err) {
+    console.warn("[useDeepgramSpeech] Failed to fetch token:", err);
+    return null;
+  }
+}
 
 interface UseDeepgramSpeechProps {
   onPartialTranscript: (transcript: string) => void;
@@ -63,14 +88,14 @@ export const useDeepgramSpeech = ({
     captureRefs.current = { startCapture, stopCapture };
   }, [startCapture, stopCapture]);
 
-  const startRecognition = useCallback(() => {
+  const startRecognition = useCallback(async () => {
     if (connectionRef.current) {
-      console.log("[useDeepgramSpeech] Already active.");
       return;
     }
 
-    if (!DEEPGRAM_API_KEY) {
-      console.warn("[useDeepgramSpeech] Missing API Key");
+    const apiKey = await fetchDeepgramKey();
+    if (!apiKey) {
+      console.warn("[useDeepgramSpeech] Could not obtain Deepgram key");
       return;
     }
 
@@ -78,8 +103,7 @@ export const useDeepgramSpeech = ({
       const currentId = Date.now();
       connectionIdRef.current = currentId;
 
-      console.log("[useDeepgramSpeech] Connecting...");
-      const deepgram = createClient(DEEPGRAM_API_KEY);
+      const deepgram = createClient(apiKey);
 
       const connection = deepgram.listen.live({
         model: "nova-2",
@@ -95,7 +119,6 @@ export const useDeepgramSpeech = ({
       connection.on(LiveTranscriptionEvents.Open, () => {
         // Race condition check: Ensure this is still the active session
         if (connectionIdRef.current === currentId) {
-          console.log("[useDeepgramSpeech] Connection OPEN. Starting capture.");
           captureRefs.current.startCapture();
           setIsRecording(true);
           toast.success("Captions started");
@@ -118,7 +141,6 @@ export const useDeepgramSpeech = ({
 
       // Event: CLOSE
       connection.on(LiveTranscriptionEvents.Close, () => {
-        console.log("[useDeepgramSpeech] Connection CLOSED.");
         if (connectionIdRef.current === currentId) {
           captureRefs.current.stopCapture();
           setIsRecording(false);
@@ -139,7 +161,6 @@ export const useDeepgramSpeech = ({
   }, []);
 
   const stopRecognition = useCallback(() => {
-    console.log("[useDeepgramSpeech] Stopping...");
 
     // Invalidate current session ID immediately
     connectionIdRef.current = 0;

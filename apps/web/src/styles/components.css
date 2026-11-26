@@ -1,0 +1,373 @@
+@layer components {
+  /* Resize handles for Excalidraw overlay */
+  .resize-handle {
+    position: absolute;
+    user-select: none;
+    z-index: 10;
+  }
+
+  .resize-handle-top,
+  .resize-handle-bottom {
+    width: 100%;
+    height: 10px;
+  }
+
+  .resize-handle-left,
+  .resize-handle-right {
+    width: 10px;
+    height: 100%;
+  }
+
+  .resize-handle-corner {
+    width: 20px;
+    height: 20px;
+    z-index: 11;
+  }
+
+  /* Visual feedback on hover */
+  .group:hover .resize-handle::after {
+    content: "";
+    position: absolute;
+    background: hsl(var(--primary) / 0.3);
+    transition: background 0.2s;
+  }
+
+  .group:hover .resize-handle-top::after,
+  .group:hover .resize-handle-bottom::after {
+    width: 100%;
+    height: 3px;
+    left: 0;
+  }
+
+  .group:hover .resize-handle-top::after {
+    top: 3px;
+  }
+
+  .group:hover .resize-handle-bottom::after {
+    bottom: 3px;
+  }
+
+  .group:hover .resize-handle-left::after,
+  .group:hover .resize-handle-right::after {
+    width: 3px;
+    height: 100%;
+    top: 0;
+  }
+
+  .group:hover .resize-handle-left::after {
+    left: 3px;
+  }
+
+  .group:hover .resize-handle-right::after {
+    right: 3px;
+  }
+
+  .group:hover .resize-handle-corner::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: hsl(var(--primary) / 0.5);
+  }
+
+  /* Minimalistic & Modern Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--primary));
+  }
+
+  /* Sharp Panel Scrollbar - Override for floating panel */
+  .sharp-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .sharp-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--background) / 0.3);
+  }
+
+  .sharp-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.6);
+    border-radius: 0;
+  }
+
+  .sharp-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+
+  /* ───────────────────────────────────────────────────────────────
+     Studio floating panel design language
+     Everything below is scoped to .studio-panel so the rest of the
+     app keeps its normal scrollbars.
+     ─────────────────────────────────────────────────────────────── */
+  .studio-panel {
+    --sp-line: rgba(255, 255, 255, 0.07);
+    --sp-line-hi: rgba(255, 255, 255, 0.16);
+    --sp-text: rgba(255, 255, 255, 0.92);
+    --sp-dim: rgba(255, 255, 255, 0.56);
+    --sp-faint: rgba(255, 255, 255, 0.34);
+    --sp-thumb: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Thin-line scrollbar: a 2px thumb, no track, no arrows.
+     NOTE: Chromium 121+ ignores ::-webkit-scrollbar sizing whenever
+     scrollbar-width / scrollbar-color is set, so those two properties
+     are only applied where ::-webkit-scrollbar is unsupported (Firefox). */
+  .studio-panel ::-webkit-scrollbar,
+  .studio-panel::-webkit-scrollbar {
+    width: 2px;
+    height: 2px;
+  }
+  .studio-panel ::-webkit-scrollbar-track,
+  .studio-panel ::-webkit-scrollbar-button,
+  .studio-panel ::-webkit-scrollbar-corner {
+    background: transparent;
+    display: none;
+  }
+  .studio-panel ::-webkit-scrollbar-thumb {
+    background: var(--sp-thumb);
+    border: 0;
+    border-radius: 0;
+    transition: background 0.15s ease;
+  }
+  .studio-panel ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    .studio-panel,
+    .studio-panel * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--sp-thumb) transparent;
+    }
+  }
+
+  /* Radix ScrollArea (packages/ui/scroll-area) draws its own bar. */
+  .studio-panel [data-scrollbar] {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+  .studio-panel [data-scrollbar][data-orientation="vertical"] {
+    width: 2px !important;
+  }
+  .studio-panel [data-scrollbar][data-orientation="horizontal"] {
+    height: 2px !important;
+  }
+  .studio-panel [data-scrollbar-thumb] {
+    border-radius: 0 !important;
+    background: var(--sp-thumb) !important;
+  }
+  .studio-panel [data-scrollbar-thumb]:hover {
+    background: hsl(var(--primary)) !important;
+  }
+
+  /* Legacy helper classes now resolve to the same thin line. */
+  .slim-scrollbar,
+  .sharp-scrollbar {
+    overscroll-behavior: contain;
+  }
+
+  /* Soft fade where scrolled content meets the header / dock. */
+  .sp-scroll {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 14px,
+      #000 calc(100% - 14px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      #000 14px,
+      #000 calc(100% - 14px),
+      transparent 100%
+    );
+    overscroll-behavior: contain;
+  }
+
+  /* Flat, hairline surface used instead of glassy cards. */
+  .sp-card {
+    border: 1px solid var(--sp-line);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Underline tabs (sub-navigation inside a panel). */
+  .sp-tabs {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--sp-line);
+  }
+  .sp-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 0 9px;
+    font-size: 11px;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 450;
+    white-space: nowrap;
+    color: var(--sp-dim);
+    transition: color 0.15s ease;
+  }
+  .sp-tab:hover {
+    color: var(--sp-text);
+  }
+  .sp-tab::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1.5px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+  }
+  .sp-tab[data-active="true"] {
+    color: #ffffff;
+  }
+  .sp-tab[data-active="true"]::after {
+    transform: scaleX(1);
+  }
+
+  /* Quiet filter chips - minimal thin line border, no solid fills */
+  .sp-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 4px 11px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--sp-dim);
+    border: 1px solid transparent;
+    background: transparent;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  .sp-chip:hover {
+    color: var(--sp-text);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .sp-chip[data-active="true"] {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.35);
+    background: transparent;
+  }
+
+  /* Selectable tile: hairline border, the selected one gets a primary line. */
+  .sp-tile {
+    border: 1px solid var(--sp-line);
+    border-radius: 10px;
+    overflow: hidden;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+  .sp-tile:hover {
+    border-color: var(--sp-line-hi);
+  }
+  .sp-tile[data-active="true"] {
+    border-color: hsl(var(--primary));
+  }
+
+  /* Onboarding animation */
+  @keyframes pulse-border {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 0 4px hsl(var(--primary) / 0.1);
+    }
+  }
+
+  .animate-pulse-border {
+    animation: pulse-border 2s ease-in-out infinite;
+  }
+
+  /* Sharp Panel Styles */
+  .sharp-panel {
+    --panel-bg: hsl(var(--background));
+    --panel-border: hsl(var(--border));
+    --panel-accent: hsl(var(--primary));
+  }
+
+  .sharp-button {
+    position: relative;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      opacity 0.15s ease;
+  }
+
+  .sharp-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+
+  .sharp-button:hover::before {
+    border-color: hsl(var(--primary) / 0.5);
+  }
+
+  .sharp-button.active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 60%;
+    background: hsl(var(--primary));
+  }
+}
+
+.hide-cursor {
+  cursor: none;
+}
+
+body.cursor-inactive * {
+  cursor: none !important;
+}
+
+.aicp-content {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+}
+

@@ -1,114 +1,29 @@
 // src/pages/index/hooks/useSceneManager.ts
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 // Types
 import {
   SceneState,
   SceneTransition,
   SubSceneState,
-  TextOverlayState,
-  CaptionShape,
-  CaptionAnimation,
   CanvasLayoutState,
-  LayoutMode,
-  CameraShape,
 } from "@gaki/core/types/caption";
 import { StreamStylePreset } from "@gaki/core/types/streamStyle";
-import { GeneratedSceneDesign, generateAllSceneDesigns } from "@/lib/streamSceneDesigns";
+import {
+  type UseSceneManagerProps,
+  generateSceneId,
+  generateSubsceneId,
+  generateTransitionId,
+  createDefaultScene,
+} from "./scene-manager/sceneDefaults";
+import { buildSubscenesFromStreamStyle } from "./scene-manager/streamStyleSubscenes";
+
+export type { UseSceneManagerProps };
 
 // Stores
 import { useCanvasStore } from "@/stores/canvas.store";
 import { useMediaStore } from "@/stores/media.store";
 import { useSceneStore } from "@/stores/scene.store";
-
-// Props interface
-export interface UseSceneManagerProps {
-  // recording prop removed
-}
-
-// Helper ID generators
-const generateSceneId = () => `scene-${uuidv4()}`;
-const generateSubsceneId = () => `subscene-${uuidv4()}`;
-const generateTransitionId = () => `transition-${uuidv4()}`;
-
-// Helper to create a pristine default scene
-const createDefaultScene = (name: string): SceneState => ({
-  id: uuidv4(),
-  name,
-  canvasLayout: null,
-  textOverlays: [],
-  browserOverlays: [],
-  fileOverlays: [],
-  activeOverlays: [],
-  emptyGridPanels: [],
-
-  selectedVideoDevice: undefined,
-  selectedAudioDevice: undefined,
-  isAudioOn: false,
-  isVideoOn: false,
-  captionsEnabled: true,
-  screenShareMode: "off",
-  isAiModeEnabled: false,
-  aiButtonPosition: { x: 20, y: 20 },
-
-  layoutMode: "solo",
-  cameraShape: "rectangle",
-  splitRatio: 0.5,
-  pipPosition: { x: 75, y: 75 },
-  pipSize: { width: 20, height: 20 },
-  pipRotation: 0,
-  pipBorder: { color: "#FFFFFF", width: 0 },
-  pipShadow: { blur: 0, color: "rgba(0,0,0,0.5)" },
-
-  videoFilter: "none",
-  backgroundEffect: "none",
-  backgroundImageUrl: null,
-  blankCanvasColor: "#000000",
-
-  captionStyle: {
-    fontFamily: "Inter",
-    fontSize: 24,
-    color: "#FFFFFF",
-    backgroundColor: "rgba(0,0,0,0.5)",
-    position: { x: 50, y: 90 },
-    shape: "rounded",
-    animation: "fade",
-    outline: false,
-    shadow: true,
-    bold: false,
-    italic: false,
-    underline: false,
-    rotation: 0,
-    border: false,
-    borderColor: "#000000",
-    borderWidth: 2,
-    textAlign: "center",
-  },
-  dynamicStyle: "none",
-
-  activeInteractiveFilter: "none",
-  filterIntensity: 0.5,
-  filterColor: "#22d3ee",
-  filterTarget: "both",
-
-  isAutoFramingEnabled: false,
-  zoomSensitivity: 0.5,
-  trackingSpeed: 0.5,
-  isBeautifyEnabled: false,
-  isLowLightEnabled: false,
-  isNeonEdgeEnabled: false,
-  neonIntensity: 0.8,
-  neonColor: "#00ff00",
-
-  cameraBackground: "none",
-  customBackgroundUrl: null,
-  activeSequenceId: null,
-  cameraAspectRatio: "16:9",
-  canvasAspectRatio: "16:9",
-  customAspectRatio: "",
-  isFaceTrackingEnabled: false,
-});
 
 export const useSceneManager = ({ }: UseSceneManagerProps) => {
   const [scenes, setScenes] = useState<SceneState[]>(() => [
@@ -893,85 +808,7 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
   // --- Create subscenes from Stream Style Preset using generateAllSceneDesigns ---
   const createScenesFromStreamStyle = useCallback(
     (preset: StreamStylePreset) => {
-      // Generate unique designs for this theme
-      const generatedDesigns = generateAllSceneDesigns(preset.theme, preset.id);
-
-      const newSubscenes: SubSceneState[] = [];
-
-      // Create a subscene for each generated design
-      generatedDesigns.forEach(
-        (design: GeneratedSceneDesign, index: number) => {
-          const subsceneId = generateSubsceneId();
-
-          // Convert GeneratedSceneDesign text overlays to TextOverlayState
-          const textOverlays: TextOverlayState[] = design.textOverlays.map(
-            (overlay, i) => ({
-              id: `${subsceneId}-text-${i}-${Date.now()}`,
-              content: overlay.content,
-              style: {
-                fontFamily: overlay.style.fontFamily,
-                fontSize: overlay.style.fontSize,
-                color: overlay.style.color,
-                backgroundColor: overlay.style.backgroundColor || "transparent",
-                position: overlay.style.position,
-                shape: overlay.style.shape || ("rounded" as CaptionShape),
-                animation:
-                  overlay.style.animation || ("fade" as CaptionAnimation),
-                outline: overlay.style.outline ?? false,
-                shadow: overlay.style.shadow ?? true,
-                bold: overlay.style.bold ?? false,
-                italic: overlay.style.italic ?? false,
-                underline: overlay.style.underline ?? false,
-                textShadow: overlay.style.textShadow,
-                rotation: overlay.style.rotation || 0,
-                border: overlay.style.border ?? false,
-                borderColor: overlay.style.borderColor || "#FFFFFF",
-                borderWidth: overlay.style.borderWidth ?? 0,
-                letterSpacing: overlay.style.letterSpacing,
-                padding: overlay.style.padding,
-                textAlign: overlay.style.textAlign,
-              },
-              layout: {
-                position: overlay.layout.position,
-                size: overlay.layout.size,
-                zIndex: overlay.layout.zIndex,
-                rotation: overlay.layout.rotation,
-              },
-            })
-          );
-
-          const newSubscene: SubSceneState = {
-            id: subsceneId,
-            name: design.name,
-            parentId: activeSceneId,
-            order: index,
-            canvasPreset: {
-              id: design.id,
-              name: design.name,
-              blankCanvasColor: design.blankCanvasColor,
-              backgroundEffect: design.backgroundEffect,
-              backgroundImageUrl: design.backgroundGradient, // Use gradient as background
-              // Map layoutMode - use pip as fallback for unsupported modes
-              layoutMode: (["solo", "split-vertical", "split-horizontal", "pip"].includes(design.layoutMode)
-                ? design.layoutMode
-                : "pip") as LayoutMode,
-              cameraShape: design.cameraShape as CameraShape,
-              pipPosition: design.pipPosition,
-              pipSize: design.pipSize,
-              pipBorder: design.pipBorder,
-              // Convert pipShadow string to object format if needed
-              pipShadow: design.pipShadow
-                ? { blur: 20, color: design.pipShadow }
-                : undefined,
-              videoFilter: design.videoFilter,
-              textOverlays,
-              canvasAspectRatio: design.canvasAspectRatio,
-            },
-          };
-
-          newSubscenes.push(newSubscene);
-        }
-      );
+      const newSubscenes = buildSubscenesFromStreamStyle(preset, activeSceneId);
 
       // Add subscenes to the active scene
       setScenes((prev) =>
@@ -1000,7 +837,6 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
   // --- OBS / Bulk Import ---
   const importScenes = useCallback(
     (newScenes: SceneState[]): string | null => {
-      console.log('[SceneManager] importScenes called with', newScenes.length, 'scenes');
       if (!newScenes.length) {
         console.error('[SceneManager] importScenes: received empty scenes array');
         return null;
@@ -1027,7 +863,6 @@ export const useSceneManager = ({ }: UseSceneManagerProps) => {
         setSceneTransitions((prev) => [...prev, ...newTransitions]);
       }
 
-      console.log('[SceneManager] importScenes complete. First scene id:', firstId);
       return firstId;
     },
     []

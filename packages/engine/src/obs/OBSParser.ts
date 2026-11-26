@@ -85,7 +85,6 @@ const DEFAULT_BASE_HEIGHT = 1080;
  * Throws a descriptive error if the JSON is not a recognisable OBS export.
  */
 export function parseOBSCollection(json: unknown): OBSSceneCollection {
-  console.log("[OBSParser] parseOBSCollection called");
 
   if (typeof json !== "object" || json === null) {
     throw new Error("[OBSParser] Invalid input: expected a JSON object");
@@ -110,9 +109,6 @@ export function parseOBSCollection(json: unknown): OBSSceneCollection {
     }
   }
 
-  console.log(
-    `[OBSParser] Found ${sourceMap.size} non-scene sources in collection`
-  );
 
   // Extract scenes (sources whose id is "scene")
   const rawScenes = raw.sources.filter((s) => s.id === "scene");
@@ -123,7 +119,6 @@ export function parseOBSCollection(json: unknown): OBSSceneCollection {
     );
   }
 
-  console.log(`[OBSParser] Found ${rawScenes.length} scene(s) to parse`);
 
   const scenes: OBSScene[] = rawScenes.map((rawScene) => {
     const rawItems: OBSRawSceneItem[] = Array.isArray(rawScene.settings?.items)
@@ -154,9 +149,6 @@ export function parseOBSCollection(json: unknown): OBSSceneCollection {
       });
     }
 
-    console.log(
-      `[OBSParser] Scene "${rawScene.name}": parsed ${items.length} item(s)`
-    );
 
     return { name: rawScene.name, items };
   });
@@ -169,7 +161,6 @@ export function parseOBSCollection(json: unknown): OBSSceneCollection {
         path: stinger.settings.path,
         transitionPoint: stinger.settings.transition_point,
       };
-      console.log(`[OBSParser] Found Stinger Transition: ${stingerConfig.path} (${stingerConfig.transitionPoint}ms)`);
     }
   }
 

@@ -21,7 +21,7 @@ const SheetDrawer = ({ open, onClose, title, eyebrow, children, transparent = fa
   }, [open, onClose]);
 
   const handleDragEnd = (
-    _: any,
+    _: unknown,
     info: { offset: { y: number }; velocity: { y: number } }
   ) => {
     if (info.offset.y > 100 || info.velocity.y > 500) {
