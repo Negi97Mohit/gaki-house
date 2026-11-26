@@ -32,7 +32,6 @@ const config: KnipConfig = {
       project: ["*.js!"],
     },
     "packages/*": {
-      entry: ["src/**/*.{ts,tsx}!"],
       project: ["src/**/*.{ts,tsx}!"],
     },
   },
