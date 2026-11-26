@@ -51,4 +51,5 @@ export const guardrailRules = {
     },
   ],
   "gaki/no-commented-out-code": "warn",
+  "max-lines": ["warn", { max: 300, skipBlankLines: true, skipComments: true }],
 };

@@ -13,7 +13,7 @@
     "build": "tsc && electron-builder",
     "release": "tsc && electron-builder --publish always",
     "type-check": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 29"
+    "lint": "eslint . --max-warnings 30"
   },
   "dependencies": {
     "electron-store": "catalog:",

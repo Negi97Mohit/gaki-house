@@ -40,7 +40,7 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 22",
+    "lint": "eslint . --max-warnings 23",
     "test": "vitest run",
     "test:watch": "vitest"
   }

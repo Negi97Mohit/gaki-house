@@ -62,7 +62,7 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 1"
+    "lint": "eslint . --max-warnings 2"
   },
   "devDependencies": {
     "@gaki/eslint-config": "workspace:*",
