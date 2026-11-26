@@ -2,6 +2,11 @@
   "name": "@gaki/eslint-config",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "exports": {
+    "./base": "./base.config.js",
+    "./guardrails": "./guardrails.js"
+  },
   "scripts": {
     "type-check": "echo \"config package\"",
     "lint": "echo \"config package\""
