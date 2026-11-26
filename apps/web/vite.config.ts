@@ -190,7 +190,7 @@ export default defineConfig({
       allow: ["../.."],
     },
     strictPort: true,
-    port: 5173,
+    port: Number(process.env.VITE_WEB_PORT || process.env.PORT) || 5173,
     proxy: {
       "/api/kick": {
         target: "https://kick.com/api/v1",

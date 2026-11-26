@@ -290,6 +290,6 @@ app.get("/stats", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.SIGNALING_PORT || process.env.PORT || 3001;
 httpServer.listen(PORT, () => {
 });

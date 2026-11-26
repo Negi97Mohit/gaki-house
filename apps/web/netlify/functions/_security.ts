@@ -14,7 +14,10 @@ function getAllowedOrigins(): Set<string> {
     .split(",")
     .map((o) => o.trim())
     .filter(Boolean);
-  return new Set([...DEFAULT_ALLOWED_ORIGINS, ...configured]);
+  const dynamicLocal = [process.env.VITE_WEB_PORT, process.env.NETLIFY_DEV_PORT]
+    .filter(Boolean)
+    .flatMap((p) => [`http://localhost:${p}`, `http://127.0.0.1:${p}`]);
+  return new Set([...DEFAULT_ALLOWED_ORIGINS, ...dynamicLocal, ...configured]);
 }
 
 function extractOrigin(event: HandlerEvent): string | null {
