@@ -6,24 +6,28 @@ import { VideoCanvasSplitLayout } from "@/features/canvas/ui/VideoCanvasSplitLay
 import { CanvasGridLayout } from "@/features/layouts/ui/CanvasGridLayout";
 import { TransitionPopover } from "@/features/stream/ui/TransitionPopover";
 
+let mockLayoutLoading = false;
+
 vi.mock("@/features/layouts/hooks/useLayoutTemplates", () => ({
   useLayoutTemplates: () => ({
-    loading: false,
-    templateRecord: {
-      default: {
-        id: "default",
-        name: "Default",
-        sections: [
-          {
-            id: "s1",
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100,
+    loading: mockLayoutLoading,
+    templateRecord: mockLayoutLoading
+      ? null
+      : {
+          default: {
+            id: "default",
+            name: "Default",
+            sections: [
+              {
+                id: "s1",
+                x: 0,
+                y: 0,
+                width: 100,
+                height: 100,
+              },
+            ],
           },
-        ],
-      },
-    },
+        },
   }),
 }));
 
@@ -118,30 +122,36 @@ describe("Fixed rules-of-hooks components smoke", () => {
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
-  it("renders CanvasGridLayout across empty and populated states without hook errors", () => {
+  it("renders CanvasGridLayout across loading (early return) and populated states without hook errors", () => {
+    const gridProps = {
+      layout: {
+        templateId: "default",
+        sections: {
+          s1: { id: "s1", content: { type: "empty" as const } },
+        },
+      },
+      cameraStream: null,
+      screenStream: null,
+      fileOverlays: [],
+      textOverlays: [],
+      blankCanvasColor: "#000000",
+      onSectionContentChange: vi.fn(),
+      onGridAssetSelect: vi.fn(),
+      layoutMode: "grid",
+      cameraShape: "rectangle" as const,
+      pipSize: { width: 320, height: 180 },
+      onSectionCameraSettingsChange: vi.fn(),
+      backgroundEffect: "none" as const,
+    };
+
+    mockLayoutLoading = true;
     act(() => {
-      root.render(
-        React.createElement(CanvasGridLayout, {
-          layout: {
-            templateId: "default",
-            sections: {
-              s1: { id: "s1", content: { type: "empty" } },
-            },
-          },
-          cameraStream: null,
-          screenStream: null,
-          fileOverlays: [],
-          textOverlays: [],
-          blankCanvasColor: "#000000",
-          onSectionContentChange: vi.fn(),
-          onGridAssetSelect: vi.fn(),
-          layoutMode: "grid",
-          cameraShape: "rectangle",
-          pipSize: { width: 320, height: 180 },
-          onSectionCameraSettingsChange: vi.fn(),
-          backgroundEffect: "none",
-        }),
-      );
+      root.render(React.createElement(CanvasGridLayout, gridProps));
+    });
+
+    mockLayoutLoading = false;
+    act(() => {
+      root.render(React.createElement(CanvasGridLayout, gridProps));
     });
 
     expect(consoleErrorSpy).not.toHaveBeenCalled();
