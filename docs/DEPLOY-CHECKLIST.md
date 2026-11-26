@@ -14,6 +14,15 @@ Configure these in **Netlify Site Settings -> Environment variables** (never pre
 | `NETLIFY_PREVIEW_SITE` | `_security.ts` (`checkOrigin`) | Optional Netlify site slug (e.g. `gaki-app`) to allow `https://deploy-preview-<PR>--<site>.netlify.app` when `CONTEXT !== "production"` | Netlify Site Settings -> General -> Site name |
 | `KICK_CLIENT_SECRET` | Reserved (future `kick-token`) | Kick OAuth client secret (currently unused; `kick-proxy.ts` proxies public Kick v1 endpoints) | Kick Developer Portal (when OAuth flow is wired) |
 
+## Required Client-Side Firebase Config (Public)
+`apps/web/src/lib/firebase.ts` validates these at runtime and throws if any are missing:
+- `VITE_FIREBASE_API_KEY`
+- `VITE_FIREBASE_AUTH_DOMAIN`
+- `VITE_FIREBASE_PROJECT_ID`
+- `VITE_FIREBASE_STORAGE_BUCKET`
+- `VITE_FIREBASE_MESSAGING_SENDER_ID`
+- `VITE_FIREBASE_APP_ID`
+
 ## Pre-Deploy Verification
 1. Ensure local `apps/web/.env` has no `VITE_TWITCH_CLIENT_SECRET`, `VITE_KICK_CLIENT_SECRET`, `VITE_DEEPGRAM_API_KEY`, or `VITE_GEMINI_API_KEY`.
 2. Run `pnpm env-check` to confirm `.env.example` parity and zero tracked or `VITE_*` secrets.
