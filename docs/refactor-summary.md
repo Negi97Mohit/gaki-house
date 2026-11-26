@@ -51,14 +51,14 @@ Monorepo cleanup, modularization, boundary enforcement, security hardening, and 
 | Comment lines in `ts/tsx/js/jsx` diff | — | **1,594 removed**, 459 added (**net -1,135**) |
 | Remaining files > 300 lines (`apps/`, `packages/`) | — | **104** (top: `animations.css` 2210, `tokens.css` 1556, `effects-geometry.ts` 1203, `stream.service.ts` ~675, `CinematicOverlay.tsx` 970) |
 | ESLint errors | 17 (mobile) + web errors | **0** across all 12 workspaces |
-| ESLint warnings (`@gaki/web` / `@gaki/mobile`) | Uncapped | **594** (`--max-warnings 594`) / **14** (`--max-warnings 14`) |
+| ESLint warnings (`@gaki/web` / `@gaki/mobile`) | Uncapped | **588** (`--max-warnings 588`) / **14** (`--max-warnings 14`) |
 | `knip` dead-code issues | 23 files, 77 deps, 12 devDeps, 7 unresolved imports | **0** (`exclude: ["exports", "types", "duplicates"]`) |
 | Automated Vitest tests | 1 dummy test (mobile) | **52 tests** across 6 workspaces (18 core, 4 engine, 24 web, 3 signaling, 2 handoff-sdk, 1 mobile) |
 
 ---
 
 ## 3. Remaining Lint Warnings & Knip Findings
-- **`@gaki/web` (594 warnings, ceiling `--max-warnings 594`):** Dominated by `@typescript-eslint/no-explicit-any` (~479), `react-refresh/only-export-components` (34), `react-hooks/exhaustive-deps` (34), `@typescript-eslint/no-unused-expressions` (11), and `prefer-const` (9).
+- **`@gaki/web` (588 warnings, ceiling `--max-warnings 588`):** Dominated by `@typescript-eslint/no-explicit-any` (~479), `react-refresh/only-export-components` (34), `react-hooks/exhaustive-deps` (34), `@typescript-eslint/no-unused-expressions` (11), and `prefer-const` (9). `react-hooks/rules-of-hooks` is enforced at `"error"` with 0 violations.
 - **`@gaki/mobile` (14 warnings, ceiling `--max-warnings 14`):** `no-console` (6), `react-refresh/only-export-components` (5), `react-hooks/exhaustive-deps` (2), unused eslint-disable (1).
 - **`knip`:** 0 blocking issues. `exports`, `types`, and `duplicates` are excluded in `knip.ts` while legacy unused exports (138) are pruned incrementally.
 
@@ -76,25 +76,29 @@ Monorepo cleanup, modularization, boundary enforcement, security hardening, and 
 ## 5. Three-Task Agent Test
 
 ### Task A: Fix a multistream publisher bug
-- **Files an agent reads (4 files, all <= 300 lines):**
-  1. `apps/web/AGENTS.md` (50 lines)
-  2. `apps/web/src/features/stream/services/stream-publisher.ts` (270 lines — extracted from `stream.service.ts` specifically so this task stays under 300 lines)
-  3. `apps/web/src/stores/stream.store.ts` (125 lines)
-  4. `apps/web/src/__tests__/stream.service.test.ts` (225 lines)
-- **Result:** Pass (4 files, max 270 lines).
+- **Files an agent reads (5 files, all <= 300 lines):**
+  1. `AGENTS.md` (59 lines)
+  2. `apps/web/AGENTS.md` (30 lines)
+  3. `apps/web/src/features/stream/services/stream-publisher.ts` (276 lines — extracted from `stream.service.ts` specifically so this task stays under 300 lines)
+  4. `apps/web/src/stores/stream.store.ts` (110 lines)
+  5. `apps/web/src/__tests__/stream.service.test.ts` (196 lines)
+- **Verification commands:** `pnpm --filter @gaki/web exec vitest run src/__tests__/stream.service.test.ts` and `pnpm --filter @gaki/web type-check`
+- **Result:** Pass (5 files, max 276 lines).
 
-### Task B: Add a UI component
+### Task B: Add a new UI component to the studio
 - **Files an agent reads (4 files, all <= 300 lines):**
-  1. `packages/ui/AGENTS.md` (31 lines)
-  2. `packages/ui/package.json` (~65 lines)
-  3. `packages/core/src/lib/utils.ts` (~40 lines)
+  1. `AGENTS.md` (59 lines)
+  2. `packages/ui/AGENTS.md` (19 lines)
+  3. `packages/ui/package.json` (67 lines)
   4. `apps/web/src/lib/zIndex.ts` (40 lines, if layered)
-- **Result:** Pass (4 files, max ~65 lines).
+- **Verification commands:** `pnpm --filter @gaki/web type-check`, `pnpm --filter @gaki/web lint`, `pnpm boundary-check`
+- **Result:** Pass (4 files, max 67 lines).
 
-### Task C: Add an API route
+### Task C: Add a new API route to `api-signaling`
 - **Files an agent reads (4 files, all <= 300 lines):**
-  1. `apps/web/netlify/functions/_security.ts` (175 lines)
-  2. `apps/web/netlify.toml` (55 lines)
-  3. `apps/web/src/__tests__/netlify-functions.test.ts` (~180 lines)
-  4. *(Or for Handoff API)* `apps/api-handoff/src/index.ts` (92 lines) + `apps/api-handoff/AGENTS.md` (28 lines)
-- **Result:** Pass (3–4 files, max 180 lines).
+  1. `AGENTS.md` (59 lines)
+  2. `apps/api-signaling/AGENTS.md` (20 lines)
+  3. `apps/api-signaling/signaling-server.js` (242 lines)
+  4. `apps/api-signaling/__tests__/signaling-server.test.js` (157 lines)
+- **Verification commands:** `pnpm --filter @gaki/api-signaling test`
+- **Result:** Pass (4 files, max 242 lines).
