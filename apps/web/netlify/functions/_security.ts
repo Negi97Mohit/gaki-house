@@ -35,13 +35,29 @@ function extractOrigin(event: HandlerEvent): string | null {
   return null;
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function isAllowedPreviewOrigin(origin: string): boolean {
+  // Production must keep strict exact matching only.
+  if (process.env.CONTEXT === "production") return false;
+  const siteName = (process.env.NETLIFY_PREVIEW_SITE || "").trim();
+  if (!siteName) return false;
+  const previewPattern = new RegExp(
+    `^https://deploy-preview-\\d+--${escapeRegExp(siteName)}\\.netlify\\.app$`,
+  );
+  return previewPattern.test(origin);
+}
+
 export function checkOrigin(
   event: HandlerEvent,
 ): { allowed: true; origin: string; headers: Record<string, string> } | { allowed: false; response: HandlerResponse } {
   const origin = extractOrigin(event);
   const allowlist = getAllowedOrigins();
+  const isAllowed = Boolean(origin && (allowlist.has(origin) || isAllowedPreviewOrigin(origin)));
 
-  if (!origin || !allowlist.has(origin)) {
+  if (!origin || !isAllowed) {
     return {
       allowed: false,
       response: {

@@ -179,4 +179,47 @@ describe("hardened netlify functions", () => {
     expect(okRes?.statusCode).toBe(200);
     expect(fetchMock.mock.calls[1][0]).toContain("key=gem-secret");
   });
+
+  it("allows Netlify deploy previews matching NETLIFY_PREVIEW_SITE except in production", async () => {
+    process.env.NETLIFY_PREVIEW_SITE = "gaki-app";
+    process.env.CONTEXT = "deploy-preview";
+    fetchMock.mockResolvedValue({
+      ok: true,
+      text: async () => JSON.stringify({ ok: true }),
+    });
+
+    const allowedPreview = await kickHandler(
+      makeEvent({
+        headers: { origin: "https://deploy-preview-42--gaki-app.netlify.app" },
+        queryStringParameters: { path: "/channels/xqc" },
+      }),
+      dummyContext,
+    );
+    expect(allowedPreview?.statusCode).toBe(200);
+    expect(allowedPreview?.headers?.["Access-Control-Allow-Origin"]).toBe(
+      "https://deploy-preview-42--gaki-app.netlify.app",
+    );
+
+    const wrongSite = await kickHandler(
+      makeEvent({
+        headers: { origin: "https://deploy-preview-42--evil-site.netlify.app" },
+        queryStringParameters: { path: "/channels/xqc" },
+      }),
+      dummyContext,
+    );
+    expect(wrongSite?.statusCode).toBe(403);
+
+    process.env.CONTEXT = "production";
+    const blockedInProd = await kickHandler(
+      makeEvent({
+        headers: { origin: "https://deploy-preview-42--gaki-app.netlify.app" },
+        queryStringParameters: { path: "/channels/xqc" },
+      }),
+      dummyContext,
+    );
+    expect(blockedInProd?.statusCode).toBe(403);
+
+    delete process.env.NETLIFY_PREVIEW_SITE;
+    delete process.env.CONTEXT;
+  });
 });
