@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm check*)",
+      "Bash(pnpm lint*)",
+      "Bash(pnpm test*)",
+      "Bash(pnpm type-check*)",
+      "Bash(pnpm build*)",
+      "Bash(pnpm boundary-check*)",
+      "Bash(pnpm env-check*)",
+      "Bash(pnpm dead-code*)",
+      "Bash(pnpm --filter * test*)",
+      "Bash(pnpm --filter * lint*)",
+      "Bash(pnpm --filter * type-check*)",
+      "Bash(pnpm --filter * build*)",
+      "Bash(pnpm turbo run check*)",
+      "Bash(pnpm turbo run lint*)",
+      "Bash(pnpm turbo run test*)",
+      "Bash(pnpm turbo run type-check*)",
+      "Bash(pnpm turbo run build*)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(netlify deploy*)",
+      "Bash(modal deploy*)",
+      "Bash(firebase deploy*)",
+      "Bash(pnpm --filter @gaki/desktop release*)"
+    ]
+  }
+}
