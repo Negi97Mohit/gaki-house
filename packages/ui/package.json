@@ -62,6 +62,10 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "echo \"linted via consuming apps\""
+    "lint": "eslint . --max-warnings 1"
+  },
+  "devDependencies": {
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
   }
 }

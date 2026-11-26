@@ -34,11 +34,13 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/three": "^0.160.0",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "echo \"linted via consuming apps\"",
+    "lint": "eslint . --max-warnings 22",
     "test": "vitest run",
     "test:watch": "vitest"
   }

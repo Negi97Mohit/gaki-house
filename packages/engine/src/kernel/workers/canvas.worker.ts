@@ -33,7 +33,7 @@ let latestGraph: SceneGraph | null = null;
 // ─── OBS asset editor render state (Feature 9) ────────────────────────────────
 let obsOverlaysById = new Map<string, ObsOverlayState>();
 let obsOrderedIds: string[] = [];
-let obsFramesById = new Map<string, ImageBitmap>();
+const obsFramesById = new Map<string, ImageBitmap>();
 
 // ─── Message handler ──────────────────────────────────────────────────────────
 

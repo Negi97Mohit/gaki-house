@@ -286,7 +286,7 @@ export class GLRenderer {
       this.shaderManager.activate("cinematic");
 
       let strength = 0.0;
-      let cylindricalRatio = 1.0;
+      const cylindricalRatio = 1.0;
 
       if (options.cinematicEffect === "fisheye") strength = 0.4;
       else if (options.cinematicEffect === "security-fisheye") strength = 0.8;

@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     "./base": "./base.config.js",
-    "./guardrails": "./guardrails.js"
+    "./guardrails": "./guardrails.js",
+    "./workspace": "./workspace.js"
   },
   "dependencies": {
     "@eslint/js": "catalog:",

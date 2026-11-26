@@ -7,14 +7,16 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "type-check": "tsc --noEmit",
-    "lint": "echo \"no eslint config for api-handoff\""
+    "lint": "eslint . --max-warnings 1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^22.19.17",
     "tsx": "^4.21.0",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
   },
   "dependencies": {
     "cors": "catalog:",

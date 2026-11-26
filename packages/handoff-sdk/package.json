@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "type-check": "tsc --noEmit",
-    "lint": "echo \"no eslint config for handoff-sdk\"",
+    "lint": "eslint . --max-warnings 5",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -17,6 +17,8 @@
   "devDependencies": {
     "@types/node": "^26.6.10",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
   }
 }

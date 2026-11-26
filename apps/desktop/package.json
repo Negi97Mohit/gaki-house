@@ -13,7 +13,7 @@
     "build": "tsc && electron-builder",
     "release": "tsc && electron-builder --publish always",
     "type-check": "tsc --noEmit",
-    "lint": "echo \"no eslint config for desktop\""
+    "lint": "eslint . --max-warnings 29"
   },
   "dependencies": {
     "electron-store": "catalog:",
@@ -27,7 +27,9 @@
     "@types/node": "^20.0.0",
     "electron": "^30.0.0",
     "electron-builder": "^24.13.3",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
   },
   "build": {
     "publish": {

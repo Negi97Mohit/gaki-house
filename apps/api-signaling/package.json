@@ -11,7 +11,7 @@
     "dev:signaling": "nodemon signaling-server.js",
     "dev": "node index.js",
     "type-check": "echo \"JS service - no tsc\"",
-    "lint": "echo \"no eslint config for api-signaling\""
+    "lint": "eslint . --max-warnings 3"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,8 @@
     "socket.io": "catalog:"
   },
   "devDependencies": {
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
   }
 }

@@ -39,11 +39,13 @@
     "react": ">=18.0.0"
   },
   "devDependencies": {
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "@gaki/eslint-config": "workspace:*",
+    "eslint": "catalog:"
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "echo \"linted via consuming apps\"",
+    "lint": "eslint . --max-warnings 13",
     "test": "vitest run",
     "test:watch": "vitest"
   }
